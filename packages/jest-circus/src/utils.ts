@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,12 @@ import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
-import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
+import {
+  ErrorWithStack,
+  convertDescriptorToString,
+  formatTime,
+  isPromise,
+} from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
@@ -73,6 +78,7 @@ export const makeTest = (
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
+  numPassingAsserts: 0,
   parent,
   retryReasons: [],
   seenDone: false,
@@ -165,9 +171,15 @@ export const describeBlockHasTests = (
     child => child.type === 'test' || describeBlockHasTests(child),
   );
 
-const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
+const _makeTimeoutMessage = (
+  timeout: number,
+  isHook: boolean,
+  takesDoneCallback: boolean,
+) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
+  }${
+    takesDoneCallback && ' while waiting for `done()` to be called'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
@@ -187,16 +199,17 @@ export const callAsyncCircusFn = (
   let completed = false;
 
   const {fn, asyncError} = testOrHook;
+  const doneCallback = takesDoneCallback(fn);
 
   return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (takesDoneCallback(fn)) {
+    if (doneCallback) {
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {
@@ -266,13 +279,7 @@ export const callAsyncCircusFn = (
       }
     }
 
-    // If it's a Promise, return it. Test for an object with a `then` function
-    // to support custom Promise implementations.
-    if (
-      typeof returnedValue === 'object' &&
-      returnedValue !== null &&
-      typeof returnedValue.then === 'function'
-    ) {
+    if (isPromise(returnedValue)) {
       returnedValue.then(() => resolve(), reject);
       return;
     }
@@ -364,6 +371,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
+    numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     status,
     testPath: Array.from(testPath),
@@ -485,7 +493,7 @@ export const parseSingleTestResult = (
       : ancestorTitles.join(' '),
     invocations: testResult.invocations,
     location: testResult.location,
-    numPassingAsserts: 0,
+    numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: Array.from(testResult.retryReasons),
     status,
     title: testResult.testPath[testResult.testPath.length - 1],

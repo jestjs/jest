@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {fileURLToPath} from 'url';
+import {types} from 'util';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
@@ -122,11 +123,12 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | TestResult.SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | number | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: string,
   reuseMessage?: boolean,
+  noTitle?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
@@ -134,6 +136,8 @@ export const formatExecError = (
   }
 
   let message, stack;
+  let cause = '';
+  const subErrors = [];
 
   if (typeof error === 'string' || !error) {
     error || (error = 'EMPTY ERROR');
@@ -145,6 +149,47 @@ export const formatExecError = (
       typeof error.stack === 'string'
         ? error.stack
         : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    if ('cause' in error) {
+      const prefix = '\n\nCause:\n';
+      if (typeof error.cause === 'string' || typeof error.cause === 'number') {
+        cause += `${prefix}${error.cause}`;
+      } else if (
+        types.isNativeError(error.cause) ||
+        error.cause instanceof Error
+      ) {
+        /* `isNativeError` is used, because the error might come from another realm.
+         `instanceof Error` is used because `isNativeError` does return `false` for some
+         things that are `instanceof Error` like the errors provided in
+         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
+        */
+        const formatted = formatExecError(
+          error.cause,
+          config,
+          options,
+          testPath,
+          reuseMessage,
+          true,
+        );
+        cause += `${prefix}${formatted}`;
+      }
+    }
+    if ('errors' in error && Array.isArray(error.errors)) {
+      for (const subError of error.errors) {
+        subErrors.push(
+          formatExecError(
+            subError,
+            config,
+            options,
+            testPath,
+            reuseMessage,
+            true,
+          ),
+        );
+      }
+    }
+  }
+  if (cause !== '') {
+    cause = indentAllLines(cause);
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -174,13 +219,20 @@ export const formatExecError = (
 
   let messageToUse;
 
-  if (reuseMessage) {
+  if (reuseMessage || noTitle) {
     messageToUse = ` ${message.trim()}`;
   } else {
     messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
   }
+  const title = noTitle ? '' : `${TITLE_INDENT + TITLE_BULLET}`;
+  const subErrorStr =
+    subErrors.length > 0
+      ? indentAllLines(
+          `\n\nErrors contained in AggregateError:\n${subErrors.join('\n')}`,
+        )
+      : '';
 
-  return `${TITLE_INDENT + TITLE_BULLET + messageToUse + stack}\n`;
+  return `${title + messageToUse + stack + cause + subErrorStr}\n`;
 };
 
 const removeInternalStackEntries = (

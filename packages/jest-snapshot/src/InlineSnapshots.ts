@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type {ParseResult, PluginItem} from '@babel/core';
-import {Expression, File, Program, isAwaitExpression} from '@babel/types';
+import type {Expression, File, Program} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -27,10 +27,9 @@ const generate = (
   // @ts-expect-error requireOutside Babel transform
   requireOutside('@babel/generator') as typeof import('@babel/generator')
 ).default;
-// @ts-expect-error requireOutside Babel transform
-const {file, templateElement, templateLiteral} = requireOutside(
-  '@babel/types',
-) as typeof import('@babel/types');
+const {file, isAwaitExpression, templateElement, templateLiteral} =
+  // @ts-expect-error requireOutside Babel transform
+  requireOutside('@babel/types') as typeof import('@babel/types');
 // @ts-expect-error requireOutside Babel transform
 const {parseSync} = requireOutside(
   '@babel/core',
@@ -297,14 +296,15 @@ const runPrettier = (
     ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
     : null;
 
-  // Detect the parser for the test file.
+  // Prioritize parser found in the project config.
+  // If not found detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
   // @ts-expect-error - `inferredParser` is `string`
   const inferredParser: PrettierParserName | null | undefined =
-    prettier.getFileInfo
+    (config && typeof config.parser === 'string' && config.parser) ||
+    (prettier.getFileInfo
       ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-      : (config && typeof config.parser === 'string' && config.parser) ||
-        simpleDetectParser(sourceFilePath);
+      : simpleDetectParser(sourceFilePath));
 
   if (!inferredParser) {
     throw new Error(

@@ -71,6 +71,25 @@ exports[`no stack 1`] = `
 "
 `;
 
+exports[`on node >=15.0.0 should return the inner errors of an AggregateError 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    AggregateError:
+
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:440:22)</intensity>
+
+    Errors contained in AggregateError:
+     Err 1
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:441:7)</intensity>
+
+     Err 2
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:442:7)</intensity>
+
+"
+`;
+
 exports[`retains message in babel code frame error 1`] = `
 "<bold><red>  <bold>● </intensity><bold>Babel test</color></intensity>
 
@@ -110,5 +129,20 @@ exports[`should not exclude vendor from stack trace 1`] = `
 <dim></intensity>
 <dim>      <dim>at Object.it (</intensity><dim>__tests__/vendor/cool_test.js<dim>:6:666)</intensity><dim></intensity>
 <dim>      <dim>at Object.asyncFn (</intensity><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</intensity><dim></intensity>
+"
+`;
+
+exports[`should return the error cause if there is one 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Test exception
+
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:419:17)</intensity>
+
+    Cause:
+     Cause Error
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:422:17)</intensity>
+
 "
 `;

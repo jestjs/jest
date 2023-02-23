@@ -1,33 +1,22 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
 import circus from '../';
 
-describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
+describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'] as const)(
   '%s hooks error throwing',
-  (fn: Circus.HookType) => {
-    test.each([
-      ['String'],
-      [1],
-      [[]],
-      [{}],
-      [Symbol('hello')],
-      [true],
-      [null],
-      [undefined],
-    ])(
+  fn => {
+    test.each(['String', 1, [], {}, Symbol('hello'), true, null, undefined])(
       `${fn} throws an error when %p is provided as a first argument to it`,
       el => {
         expect(() => {
+          // @ts-expect-error: Testing runtime errors here
           circus[fn](el);
-        }).toThrowError(
-          'Invalid first argument. It must be a callback function.',
-        );
+        }).toThrow('Invalid first argument. It must be a callback function.');
       },
     );
   },

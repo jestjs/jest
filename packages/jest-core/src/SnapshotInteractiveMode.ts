@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ import {KEYS} from 'jest-watcher';
 const {ARROW, CLEAR} = specialChars;
 
 export default class SnapshotInteractiveMode {
-  private _pipe: NodeJS.WritableStream;
+  private readonly _pipe: NodeJS.WritableStream;
   private _isActive: boolean;
   private _updateTestRunnerConfig!: (
     assertion: AssertionLocation | null,

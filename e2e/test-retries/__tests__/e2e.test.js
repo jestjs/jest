@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,7 +20,7 @@ jest.retryTimes(3);
 it('retries', () => {
   const tries = parseInt(fs.readFileSync(countPath, 'utf8'), 10);
   fs.writeFileSync(countPath, `${tries + 1}`, 'utf8');
-  expect(tries).toEqual(3);
+  expect(tries).toBe(3);
 });
 
 afterAll(() => {

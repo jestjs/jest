@@ -168,6 +168,12 @@ A glob pattern relative to `rootDir` matching the files that coverage info needs
 
 Forces test results output highlighting even if stdout is not a TTY.
 
+:::note
+
+Alternatively you can set the environment variable `FORCE_COLOR=true` to forcefully enable or `FORCE_COLOR=false` to disable colorized output. The use of `FORCE_COLOR` overrides all other color support checks.
+
+:::
+
 ### `--config=<path>`
 
 Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
@@ -176,11 +182,13 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
+### `--coverageDirectory=<path>`
+
+The directory where Jest should output its coverage files.
+
 ### `--coverageProvider=<provider>`
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
-
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `--debug`
 
@@ -204,11 +212,14 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--filter=<file>`
 
-Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with the "filtered" property. Especially useful when used in conjunction with a testing infrastructure to filter known broken, e.g.
+Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with shape `{ filtered: Array<{ test: string }> }`. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests, e.g.
 
 ```js title="my-filter.js"
 module.exports = testPaths => {
-  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
+  const allowedPaths = testPaths
+    .filter(filteringFunction)
+    .map(test => ({test})); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
+
   return {
     filtered: allowedPaths,
   };
@@ -299,6 +310,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--openHandlesTimeout=<milliseconds>`
+
+When `--detectOpenHandles` and `--forceExit` are _disabled_, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
+
 ### `--outputFile=<filename>`
 
 Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
@@ -309,7 +324,29 @@ Allows the test suite to pass when no files are found.
 
 ### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option.
+
+:::note
+
+If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+:::
+
+### `--randomize`
+
+Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed=<num>`](#--seednum) for more info.
+
+Seed value is displayed when this option is set. Equivalent to setting the CLI option [`--showSeed`](#--showseed).
+
+```bash
+jest --randomize --seed 1234
+```
+
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
+
+:::
 
 ### `--reporters`
 
@@ -343,6 +380,20 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 :::
 
+### `--seed=<num>`
+
+Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive (`-2147483648` (`-(2 ** 31)`) and `2147483647` (`2 ** 31 - 1`) in decimal).
+
+```bash
+jest --seed=1324
+```
+
+:::tip
+
+If this option is not specified Jest will randomly generate the value. You can use the [`--showSeed`](#--showseed) flag to print the seed in the test report summary.
+
+:::
+
 ### `--selectProjects <project1> ... <projectN>`
 
 Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
@@ -373,6 +424,12 @@ jest --shard=3/3
 
 Print your Jest config and then exits.
 
+### `--showSeed`
+
+Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednum) for the details.
+
+Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boolean).
+
 ### `--silent`
 
 Prevent tests from printing messages through the console.
@@ -385,7 +442,9 @@ A JSON string with options that will be passed to the `testEnvironment`. The rel
 
 Adds a `location` field to test results. Useful if you want to report the location of a test in a reporter.
 
-Note that `column` is 0-indexed while `line` is not.
+:::note
+
+In the resulting object `column` is 0-indexed while `line` is not.
 
 ```json
 {
@@ -394,13 +453,15 @@ Note that `column` is 0-indexed while `line` is not.
 }
 ```
 
+:::
+
 ### `--testMatch glob1 ... globN`
 
 The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
 
 ### `--testNamePattern=<regex>`
 
-Alias: -t. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `'GET /api/posts with auth'`, then you can use `jest -t=auth`.
 
 :::tip
 
@@ -450,12 +511,32 @@ Alias: `-v`. Print the version and exit.
 
 Watch files for changes and rerun tests related to changed files. If you want to re-run all tests when a file has changed, use the `--watchAll` option instead.
 
+:::tip
+
+Use `--no-watch` (or `--watch=false`) to explicitly disable the watch mode if it was enabled using `--watch`. In most CI environments, this is automatically handled for you.
+
+:::
+
 ### `--watchAll`
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+:::tip
+
+Use `--no-watchAll` (or `--watchAll=false`) to explicitly disable the watch mode if it was enabled using `--watchAll`. In most CI environments, this is automatically handled for you.
+
+:::
 
 ### `--watchman`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
+
+### `--workerThreads`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+:::caution
+
+This is **experimental feature**. See the [`workerThreads` configuration option](Configuration.md#workerthreads) for more details.
+
+:::

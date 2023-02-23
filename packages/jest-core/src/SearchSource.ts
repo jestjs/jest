@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -55,9 +55,9 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 };
 
 export default class SearchSource {
-  private _context: TestContext;
+  private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
-  private _testPathCases: TestPathCases = [];
+  private readonly _testPathCases: TestPathCases = [];
 
   constructor(context: TestContext) {
     const {config} = context;

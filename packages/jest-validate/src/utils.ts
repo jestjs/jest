@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,6 +22,8 @@ export const format = (value: unknown): string =>
 export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
+    : typeof value === 'undefined'
+    ? 'undefined'
     : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {

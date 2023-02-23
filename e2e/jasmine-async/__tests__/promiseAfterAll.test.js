@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,12 +22,12 @@ describe('promise afterAll', () => {
 
   // passing tests
   it('runs afterAll after all tests', () => {
-    expect(this.flag).toBe(undefined);
+    expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(true);
   });
 
   it('waits for afterAll to asynchronously complete before each test', () => {
-    expect(this.flag).toBe(undefined);
+    expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(true);
   });
 });

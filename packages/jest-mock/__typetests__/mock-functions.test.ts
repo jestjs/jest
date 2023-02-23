@@ -1,9 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/// <reference lib="dom" />
 
 import {
   expectAssignable,
@@ -11,7 +13,17 @@ import {
   expectNotAssignable,
   expectType,
 } from 'tsd-lite';
-import {Mock, SpyInstance, fn, spyOn} from 'jest-mock';
+import {
+  Mock,
+  Replaced,
+  SpiedClass,
+  SpiedFunction,
+  SpiedGetter,
+  SpiedSetter,
+  fn,
+  replaceProperty,
+  spyOn,
+} from 'jest-mock';
 
 // jest.fn()
 
@@ -250,6 +262,13 @@ expectType<Mock<() => Promise<string>>>(
 );
 expectError(fn(() => Promise.resolve('')).mockRejectedValueOnce());
 
+expectType<void>(mockFn.withImplementation(mockFnImpl, () => {}));
+expectType<Promise<void>>(
+  mockFn.withImplementation(mockFnImpl, async () => {}),
+);
+
+expectError(mockFn.withImplementation(mockFnImpl));
+
 // jest.spyOn()
 
 const spiedArray = ['a', 'b'];
@@ -313,26 +332,30 @@ expectNotAssignable<Function>(spy); // eslint-disable-line @typescript-eslint/ba
 expectError(spy());
 expectError(new spy());
 
-expectType<SpyInstance<typeof spiedObject.methodA>>(
+expectType<SpiedFunction<typeof spiedObject.methodA>>(
   spyOn(spiedObject, 'methodA'),
 );
-expectType<SpyInstance<typeof spiedObject.methodB>>(
+expectType<SpiedFunction<typeof spiedObject.methodB>>(
   spyOn(spiedObject, 'methodB'),
 );
-expectType<SpyInstance<typeof spiedObject.methodC>>(
+expectType<SpiedFunction<typeof spiedObject.methodC>>(
   spyOn(spiedObject, 'methodC'),
 );
 
-expectType<SpyInstance<() => boolean>>(spyOn(spiedObject, 'propertyB', 'get'));
-expectType<SpyInstance<(value: boolean) => void>>(
+expectType<SpiedGetter<typeof spiedObject.propertyB>>(
+  spyOn(spiedObject, 'propertyB', 'get'),
+);
+expectType<SpiedSetter<typeof spiedObject.propertyB>>(
   spyOn(spiedObject, 'propertyB', 'set'),
 );
 expectError(spyOn(spiedObject, 'propertyB'));
 expectError(spyOn(spiedObject, 'methodB', 'get'));
 expectError(spyOn(spiedObject, 'methodB', 'set'));
 
-expectType<SpyInstance<() => string>>(spyOn(spiedObject, 'propertyA', 'get'));
-expectType<SpyInstance<(value: string) => void>>(
+expectType<SpiedGetter<typeof spiedObject.propertyA>>(
+  spyOn(spiedObject, 'propertyA', 'get'),
+);
+expectType<SpiedSetter<typeof spiedObject.propertyA>>(
   spyOn(spiedObject, 'propertyA', 'set'),
 );
 expectError(spyOn(spiedObject, 'propertyA'));
@@ -344,40 +367,38 @@ expectError(spyOn(true, 'methodA'));
 expectError(spyOn(spiedObject));
 expectError(spyOn());
 
-expectType<SpyInstance<(arg: any) => boolean>>(
+expectType<SpiedFunction<typeof Array.isArray>>(
   spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
 );
 expectError(spyOn(spiedArray, 'isArray'));
 
-expectType<SpyInstance<() => string>>(
+expectType<SpiedFunction<typeof spiedFunction.toString>>(
   spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
 );
 expectError(spyOn(spiedFunction, 'toString'));
 
-expectType<SpyInstance<(value: string | number | Date) => Date>>(
-  spyOn(globalThis, 'Date'),
-);
-expectType<SpyInstance<() => number>>(spyOn(Date, 'now'));
+expectType<SpiedClass<typeof Date>>(spyOn(globalThis, 'Date'));
+expectType<SpiedFunction<typeof Date.now>>(spyOn(Date, 'now'));
 
 // object with index signatures
 
-expectType<SpyInstance<typeof indexSpiedObject.methodA>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodA>>(
   spyOn(indexSpiedObject, 'methodA'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodB>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodB>>(
   spyOn(indexSpiedObject, 'methodB'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodC>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodC>>(
   spyOn(indexSpiedObject, 'methodC'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodE>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodE>>(
   spyOn(indexSpiedObject, 'methodE'),
 );
 
-expectType<SpyInstance<() => {a: string}>>(
+expectType<SpiedGetter<typeof indexSpiedObject.propertyA>>(
   spyOn(indexSpiedObject, 'propertyA', 'get'),
 );
-expectType<SpyInstance<(value: {a: string}) => void>>(
+expectType<SpiedSetter<typeof indexSpiedObject.propertyA>>(
   spyOn(indexSpiedObject, 'propertyA', 'set'),
 );
 expectError(spyOn(indexSpiedObject, 'propertyA'));
@@ -412,50 +433,132 @@ interface OptionalInterface {
 
 const optionalSpiedObject = {} as OptionalInterface;
 
-expectType<SpyInstance<(one: string) => SomeClass>>(
+expectType<SpiedClass<NonNullable<typeof optionalSpiedObject.constructorA>>>(
   spyOn(optionalSpiedObject, 'constructorA'),
 );
-expectType<SpyInstance<(one: string, two: boolean) => SomeClass>>(
+expectType<SpiedClass<typeof optionalSpiedObject.constructorB>>(
   spyOn(optionalSpiedObject, 'constructorB'),
 );
 
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'get'));
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'set'));
 
-expectType<SpyInstance<(a: boolean) => void>>(
+expectType<SpiedFunction<NonNullable<typeof optionalSpiedObject.methodA>>>(
   spyOn(optionalSpiedObject, 'methodA'),
 );
-expectType<SpyInstance<(b: string) => boolean>>(
+expectType<SpiedFunction<typeof optionalSpiedObject.methodB>>(
   spyOn(optionalSpiedObject, 'methodB'),
 );
 
 expectError(spyOn(optionalSpiedObject, 'methodA', 'get'));
 expectError(spyOn(optionalSpiedObject, 'methodA', 'set'));
 
-expectType<SpyInstance<() => number>>(
+expectType<SpiedGetter<NonNullable<typeof optionalSpiedObject.propertyA>>>(
   spyOn(optionalSpiedObject, 'propertyA', 'get'),
 );
-expectType<SpyInstance<(arg: number) => void>>(
+expectType<SpiedSetter<NonNullable<typeof optionalSpiedObject.propertyA>>>(
   spyOn(optionalSpiedObject, 'propertyA', 'set'),
 );
-expectType<SpyInstance<() => number>>(
+expectType<SpiedGetter<NonNullable<typeof optionalSpiedObject.propertyB>>>(
   spyOn(optionalSpiedObject, 'propertyB', 'get'),
 );
-expectType<SpyInstance<(arg: number) => void>>(
+expectType<SpiedSetter<NonNullable<typeof optionalSpiedObject.propertyB>>>(
   spyOn(optionalSpiedObject, 'propertyB', 'set'),
 );
-expectType<SpyInstance<() => number | undefined>>(
+expectType<SpiedGetter<typeof optionalSpiedObject.propertyC>>(
   spyOn(optionalSpiedObject, 'propertyC', 'get'),
 );
-expectType<SpyInstance<(arg: number | undefined) => void>>(
+expectType<SpiedSetter<typeof optionalSpiedObject.propertyC>>(
   spyOn(optionalSpiedObject, 'propertyC', 'set'),
 );
-expectType<SpyInstance<() => string>>(
+expectType<SpiedGetter<typeof optionalSpiedObject.propertyD>>(
   spyOn(optionalSpiedObject, 'propertyD', 'get'),
 );
-expectType<SpyInstance<(arg: string) => void>>(
+expectType<SpiedSetter<typeof optionalSpiedObject.propertyD>>(
   spyOn(optionalSpiedObject, 'propertyD', 'set'),
 );
 
 expectError(spyOn(optionalSpiedObject, 'propertyA'));
 expectError(spyOn(optionalSpiedObject, 'propertyB'));
+
+// properties of `prototype`
+
+expectType<SpiedFunction<(key: string, value: string) => void>>(
+  spyOn(Storage.prototype, 'setItem').mockImplementation(
+    (key: string, value: string) => {},
+  ),
+);
+
+expectError(
+  spyOn(Storage.prototype, 'setItem').mockImplementation(
+    (key: string, value: number) => {},
+  ),
+);
+
+// replaceProperty + Replaced
+
+const obj = {
+  fn: () => {},
+
+  property: 1,
+};
+
+expectType<Replaced<number>>(replaceProperty(obj, 'property', 1));
+expectType<void>(replaceProperty(obj, 'property', 1).replaceValue(1).restore());
+
+expectError(replaceProperty(obj, 'invalid', 1));
+expectError(replaceProperty(obj, 'property', 'not a number'));
+expectError(replaceProperty(obj, 'fn', () => {}));
+
+expectError(replaceProperty(obj, 'property', 1).replaceValue('not a number'));
+
+interface ComplexObject {
+  numberOrUndefined: number | undefined;
+  optionalString?: string;
+  multipleTypes: number | string | {foo: number} | null;
+}
+declare const complexObject: ComplexObject;
+
+interface ObjectWithDynamicProperties {
+  [key: string]: boolean;
+}
+declare const objectWithDynamicProperties: ObjectWithDynamicProperties;
+
+// Resulting type should retain the original property type
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', undefined),
+);
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', 1),
+);
+
+expectError(
+  replaceProperty(
+    complexObject,
+    'numberOrUndefined',
+    'string is not valid TypeScript type',
+  ),
+);
+
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', 'foo'),
+);
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', undefined),
+);
+
+expectType<Replaced<boolean>>(
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', true),
+);
+expectError(
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', undefined),
+);
+
+expectError(replaceProperty(complexObject, 'not a property', undefined));
+
+expectType<Replaced<ComplexObject['multipleTypes']>>(
+  replaceProperty(complexObject, 'multipleTypes', 1)
+    .replaceValue('foo')
+    .replaceValue({foo: 1})
+    .replaceValue(null),
+);

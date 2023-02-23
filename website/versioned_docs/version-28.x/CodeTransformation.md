@@ -36,6 +36,14 @@ You can write your own transformer. The API of a transformer is as follows:
 interface TransformOptions<TransformerConfig = unknown> {
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
+  /**
+   * The value is:
+   * - `false` if Jest runs without Node ESM flag `--experimental-vm-modules`
+   * - `true` if the file extension is defined in [extensionsToTreatAsEsm](Configuration.md#extensionstotreatasesm-arraystring)
+   * and Jest runs with Node ESM flag `--experimental-vm-modules`
+   *
+   * See more at https://jestjs.io/docs/28x/ecmascript-modules
+   */
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
   instrument: boolean;
@@ -140,7 +148,11 @@ Though not required, we _highly recommend_ implementing `getCacheKey` as well, s
 
 Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export `createTransformer`, a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
-Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+:::note
+
+[ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+
+:::
 
 :::tip
 

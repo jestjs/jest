@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,8 +31,8 @@ export default class Farm {
   private readonly _taskQueue: TaskQueue;
 
   constructor(
-    private _numOfWorkers: number,
-    private _callback: WorkerCallback,
+    private readonly _numOfWorkers: number,
+    private readonly _callback: WorkerCallback,
     options: WorkerFarmOptions = {},
   ) {
     this._computeWorkerKey = options.computeWorkerKey;

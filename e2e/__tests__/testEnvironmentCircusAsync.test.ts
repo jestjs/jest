@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@ skipSuiteOnJasmine();
 
 it('calls asynchronous handleTestEvent in testEnvironment', () => {
   const result = runJest('test-environment-circus-async');
-  expect(result.failed).toEqual(true);
+  expect(result.failed).toBe(true);
 
   const lines = result.stdout.split('\n');
   expect(lines).toMatchInlineSnapshot(`

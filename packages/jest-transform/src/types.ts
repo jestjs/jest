@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,7 +24,7 @@ export interface Options
 }
 
 // `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
-interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
+export interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 
@@ -149,7 +149,7 @@ export type Transformer<TransformerConfig = unknown> =
 export type TransformerCreator<
   X extends Transformer<TransformerConfig>,
   TransformerConfig = unknown,
-> = (transformerConfig?: TransformerConfig) => X;
+> = (transformerConfig?: TransformerConfig) => X | Promise<X>;
 
 /**
  * Instead of having your custom transformer implement the Transformer interface

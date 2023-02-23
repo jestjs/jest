@@ -4,6 +4,9 @@ on:
   issues:
     types: [labeled]
 
+permissions:
+  issues: write # to close issues (peter-evans/close-issue)
+
 jobs:
   questions:
     name: Questions

@@ -1,12 +1,14 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
@@ -44,7 +46,7 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
+      setupArgs = init[3];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -58,6 +60,28 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
 
     case CHILD_MESSAGE_MEM_USAGE:
       reportMemoryUsage();
+      break;
+
+    case CHILD_MESSAGE_CALL_SETUP:
+      if (initialized) {
+        reportSuccess(void 0);
+      } else {
+        const main = require(file!);
+
+        initialized = true;
+
+        if (main.setup) {
+          execFunction(
+            main.setup,
+            main,
+            setupArgs,
+            reportSuccess,
+            reportInitializeError,
+          );
+        } else {
+          reportSuccess(void 0);
+        }
+      }
       break;
 
     default:
@@ -138,7 +162,7 @@ function execMethod(method: string, args: Array<unknown>): void {
   let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }
@@ -157,11 +181,6 @@ function execMethod(method: string, args: Array<unknown>): void {
 
   execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
 }
-
-const isPromise = (obj: any): obj is PromiseLike<unknown> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
 
 function execFunction(
   fn: UnknownFunction,

@@ -118,17 +118,27 @@ For example: A mock function `f` that has been called twice, with the arguments 
 
 Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances), [`mockFn.mock.contexts`](#mockfnmockcontexts) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.
 
+The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
+
+:::warning
+
 Beware that `mockFn.mockClear()` will replace `mockFn.mock`, not just reset the values of its properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
-The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
+:::
 
 ### `mockFn.mockReset()`
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
+This is useful when you want to completely reset a _mock_ back to its initial state.
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
+
+:::info
+
+Resetting a mock created with `jest.spyOn()` will result in a function with no return value.
+
+:::
 
 ### `mockFn.mockRestore()`
 
@@ -136,9 +146,13 @@ Does everything that [`mockFn.mockReset()`](#mockfnmockreset) does, and also res
 
 This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
 
-Beware that `mockFn.mockRestore()` only works when the mock was created with `jest.spyOn()`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
-
 The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is available to restore mocks automatically before each test.
+
+:::info
+
+`mockFn.mockRestore()` only works when the mock was created with `jest.spyOn()`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
+
+:::
 
 ### `mockFn.mockImplementation(fn)`
 
@@ -163,6 +177,8 @@ mockFn(3); // 39
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42
@@ -207,12 +223,13 @@ export class SomeClass {
 ```
 
 ```ts title="SomeClass.test.ts"
+import {jest} from '@jest/globals';
 import {SomeClass} from './SomeClass';
 
 jest.mock('./SomeClass'); // this happens automatically with automocking
 
 const mockMethod = jest.fn<(a: string, b: string) => void>();
-SomeClass.mockImplementation(() => {
+jest.mocked(SomeClass).mockImplementation(() => {
   return {
     method: mockMethod,
   };
@@ -239,6 +256,8 @@ mockFn((err, val) => console.log(val)); // false
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<(cb: (a: null, b: boolean) => void) => void>()
   .mockImplementationOnce(cb => cb(null, true))
@@ -286,7 +305,7 @@ Received number of calls:    0
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn(function () {
@@ -295,6 +314,12 @@ jest.fn(function () {
 ```
 
 ### `mockFn.mockReturnValue(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementation(() => value);
+```
 
 Accepts a value that will be returned whenever the mock function is called.
 
@@ -309,6 +334,8 @@ mock(); // 43
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mock = jest.fn<() => number>();
 
 mock.mockReturnValue(42);
@@ -319,6 +346,12 @@ mock(); // 43
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementationOnce(() => value);
+```
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
@@ -336,6 +369,8 @@ mockFn(); // 'default'
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<() => string>()
   .mockReturnValue('default')
@@ -350,7 +385,7 @@ mockFn(); // 'default'
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -367,6 +402,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest.fn<() => Promise<number>>().mockResolvedValue(43);
 
@@ -376,7 +413,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -400,6 +437,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -416,7 +455,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -435,6 +474,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<never>>()
@@ -446,7 +487,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
@@ -467,6 +508,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -511,7 +554,7 @@ test('calculate calls add', () => {
   // requiring `add`.
   calculate(mockAdd, 1, 2);
 
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
+  expect(mockAdd).toHaveBeenCalledTimes(1);
+  expect(mockAdd).toHaveBeenCalledWith(1, 2);
 });
 ```

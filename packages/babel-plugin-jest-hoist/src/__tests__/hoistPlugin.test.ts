@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -130,6 +130,23 @@ pluginTester({
         });
 
         jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'TS typeof usage in jest.mock': {
+      babelOptions: {
+        babelrc: false,
+        configFile: false,
+        filename: path.resolve(__dirname, '../file.ts'),
+        presets: [[require.resolve('@babel/preset-typescript')]],
+      },
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          const actual = jest.requireActual('some-module');
+
+          return jest.fn<typeof actual.method>();
+        });
       `),
       formatResult,
       snapshot: true,

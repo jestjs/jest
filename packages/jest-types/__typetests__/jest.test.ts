@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,13 +9,13 @@ import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
 import type {
   Mock,
+  MockInstance,
   Mocked,
   MockedClass,
   MockedFunction,
   MockedObject,
   MockedShallow,
   ModuleMocker,
-  SpyInstance,
 } from 'jest-mock';
 
 expectType<typeof jest>(
@@ -97,6 +97,10 @@ expectError(jest.enableAutomock('moduleName'));
 
 expectType<typeof jest>(jest.isolateModules(() => {}));
 expectError(jest.isolateModules());
+
+expectType<Promise<void>>(jest.isolateModulesAsync(async () => {}));
+expectError(jest.isolateModulesAsync(() => {}));
+expectError(jest.isolateModulesAsync());
 
 expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
@@ -216,7 +220,7 @@ const spiedObject = {
 const surelySpy = jest.spyOn(spiedObject, 'methodA');
 
 if (jest.isMockFunction(surelySpy)) {
-  expectType<SpyInstance<(a: number, b: string) => boolean>>(surelySpy);
+  expectType<MockInstance<(a: number, b: string) => boolean>>(surelySpy);
 
   surelySpy.mockReturnValueOnce(false);
   expectError(surelyMock.mockReturnValueOnce(123));
@@ -262,6 +266,8 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
+expectType<ModuleMocker['replaceProperty']>(jest.replaceProperty);
+
 // Mock<T>
 
 expectType<Mock<() => boolean>>({} as jest.Mock<() => boolean>);
@@ -287,6 +293,8 @@ function someFunction(a: string, b?: number): boolean {
 const someObject = {
   SomeClass,
 
+  _propertyC: false,
+
   methodA() {
     return;
   },
@@ -304,7 +312,15 @@ const someObject = {
   },
 
   propertyA: 123,
+
   propertyB: 'value',
+
+  set propertyC(value) {
+    this._propertyC = value;
+  },
+  get propertyC() {
+    return this._propertyC;
+  },
 
   someClassInstance: new SomeClass('value'),
 };
@@ -433,6 +449,40 @@ expectError(
 
 expectAssignable<typeof someObject>(mockObjectB);
 
+// Replaced
+
+expectAssignable<jest.Replaced<number>>(
+  jest.replaceProperty(someObject, 'propertyA', 123),
+);
+
+// Spied
+
+expectAssignable<jest.Spied<typeof someObject.methodA>>(
+  jest.spyOn(someObject, 'methodA'),
+);
+
+expectAssignable<jest.Spied<typeof someObject.SomeClass>>(
+  jest.spyOn(someObject, 'SomeClass'),
+);
+
+// Spied*
+
+expectAssignable<jest.SpiedClass<typeof someObject.SomeClass>>(
+  jest.spyOn(someObject, 'SomeClass'),
+);
+
+expectAssignable<jest.SpiedFunction<typeof someObject.methodB>>(
+  jest.spyOn(someObject, 'methodB'),
+);
+
+expectAssignable<jest.SpiedGetter<typeof someObject.propertyC>>(
+  jest.spyOn(someObject, 'propertyC', 'get'),
+);
+
+expectAssignable<jest.SpiedSetter<typeof someObject.propertyC>>(
+  jest.spyOn(someObject, 'propertyC', 'set'),
+);
+
 // Mock Timers
 
 expectType<void>(jest.advanceTimersByTime(6000));
@@ -534,3 +584,9 @@ expectError(jest.retryTimes());
 
 expectType<typeof jest>(jest.setTimeout(6000));
 expectError(jest.setTimeout());
+
+expectType<number>(jest.getSeed());
+expectError(jest.getSeed(123));
+
+expectType<boolean>(jest.isEnvironmentTornDown());
+expectError(jest.isEnvironmentTornDown(123));

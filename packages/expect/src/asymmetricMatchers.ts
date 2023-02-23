@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ import {
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
-import {getState} from './jestMatchersObject';
+import {getCustomEqualityTesters, getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherContext,
@@ -73,6 +73,7 @@ export abstract class AsymmetricMatcher<T>
 
   protected getMatcherContext(): MatcherContext {
     return {
+      customTesters: getCustomEqualityTesters(),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       dontThrow: () => {},
       ...getState<MatcherState>(),
@@ -185,7 +186,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: Array<unknown>) {
+  asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         `You must provide an array to ${this.toString()}, not '${typeof this
@@ -193,11 +194,14 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       );
     }
 
+    const matcherContext = this.getMatcherContext();
     const result =
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
-          other.some(another => equals(item, another)),
+          other.some(another =>
+            equals(item, another, matcherContext.customTesters),
+          ),
         ));
 
     return this.inverse ? !result : result;
@@ -227,10 +231,15 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 
     let result = true;
 
+    const matcherContext = this.getMatcherContext();
     for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])
+        !equals(
+          this.sample[property],
+          other[property],
+          matcherContext.customTesters,
+        )
       ) {
         result = false;
         break;
@@ -257,8 +266,8 @@ class StringContaining extends AsymmetricMatcher<string> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && other.includes(this.sample);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && other.includes(this.sample);
 
     return this.inverse ? !result : result;
   }
@@ -280,8 +289,8 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     super(new RegExp(sample), inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && this.sample.test(other);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
   }
@@ -296,7 +305,8 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
 }
 
 class CloseTo extends AsymmetricMatcher<number> {
-  private precision: number;
+  private readonly precision: number;
+
   constructor(sample: number, precision = 2, inverse = false) {
     if (!isA('Number', sample)) {
       throw new Error('Expected is not a Number');
@@ -311,8 +321,8 @@ class CloseTo extends AsymmetricMatcher<number> {
     this.precision = precision;
   }
 
-  asymmetricMatch(other: number) {
-    if (!isA('Number', other)) {
+  asymmetricMatch(other: unknown) {
+    if (!isA<number>('Number', other)) {
       return false;
     }
     let result = false;

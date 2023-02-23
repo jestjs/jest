@@ -1,11 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
+import type {Tester} from '@jest/expect-utils';
 import {getType} from 'jest-get-type';
 import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
@@ -28,10 +29,12 @@ if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
     assertionCalls: 0,
     expectedAssertionsNumber: null,
     isExpectingAssertions: false,
+    numPassingAsserts: 0,
     suppressedErrors: [], // errors that are not thrown immediately.
   };
   Object.defineProperty(globalThis, JEST_MATCHERS_OBJECT, {
     value: {
+      customEqualityTesters: [],
       matchers: Object.create(null),
       state: defaultState,
     },
@@ -121,4 +124,21 @@ export const setMatchers = (
   });
 
   Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
+};
+
+export const getCustomEqualityTesters = (): Array<Tester> =>
+  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters;
+
+export const addCustomEqualityTesters = (newTesters: Array<Tester>): void => {
+  if (!Array.isArray(newTesters)) {
+    throw new TypeError(
+      `expect.customEqualityTesters: Must be set to an array of Testers. Was given "${getType(
+        newTesters,
+      )}"`,
+    );
+  }
+
+  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters.push(
+    ...newTesters,
+  );
 };

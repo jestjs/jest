@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -53,7 +53,7 @@ const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
 
   static readonly filename = __filename;
 
@@ -106,20 +106,20 @@ export default class SummaryReporter extends BaseReporter {
         this._globalConfig,
       );
 
-      if (numTotalTestSuites) {
-        let message = getSummary(aggregatedResults, {
-          estimatedTime: this._estimatedTime,
-        });
+      let message = getSummary(aggregatedResults, {
+        estimatedTime: this._estimatedTime,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
+      });
 
-        if (!this._globalConfig.silent) {
-          message += `\n${
-            wasInterrupted
-              ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(testContexts, this._globalConfig)
-          }`;
-        }
-        this.log(message);
+      if (!this._globalConfig.silent) {
+        message += `\n${
+          wasInterrupted
+            ? chalk.bold.red('Test run was interrupted.')
+            : this._getTestSummary(testContexts, this._globalConfig)
+        }`;
       }
+      this.log(message);
     }
   }
 

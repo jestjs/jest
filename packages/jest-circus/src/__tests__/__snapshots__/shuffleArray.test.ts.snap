@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rngBuilder creates a randomizer given seed 1 1`] = `
+Array [
+  0,
+  2,
+  4,
+  0,
+  2,
+  8,
+  5,
+  9,
+  9,
+  5,
+]
+`;
+
+exports[`rngBuilder creates a randomizer given seed 2 1`] = `
+Array [
+  10,
+  1,
+  0,
+  7,
+  4,
+  4,
+  5,
+  0,
+  10,
+  3,
+]
+`;
+
+exports[`rngBuilder creates a randomizer given seed 4 1`] = `
+Array [
+  8,
+  10,
+  3,
+  2,
+  5,
+  2,
+  3,
+  4,
+  8,
+  5,
+]
+`;
+
+exports[`rngBuilder creates a randomizer given seed 8 1`] = `
+Array [
+  4,
+  6,
+  0,
+  5,
+  10,
+  0,
+  3,
+  9,
+  5,
+  6,
+]
+`;
+
+exports[`rngBuilder creates a randomizer given seed 16 1`] = `
+Array [
+  7,
+  9,
+  3,
+  2,
+  8,
+  1,
+  6,
+  1,
+  10,
+  1,
+]
+`;
+
+exports[`shuffleArray shuffles list ["a", "b", "c", "d"] 1`] = `
+Array [
+  "c",
+  "b",
+  "a",
+  "d",
+]
+`;
+
+exports[`shuffleArray shuffles list ["a", "b", "c"] 1`] = `
+Array [
+  "b",
+  "a",
+  "c",
+]
+`;
+
+exports[`shuffleArray shuffles list ["a", "b"] 1`] = `
+Array [
+  "a",
+  "b",
+]
+`;
+
+exports[`shuffleArray shuffles list ["a"] 1`] = `
+Array [
+  "a",
+]
+`;

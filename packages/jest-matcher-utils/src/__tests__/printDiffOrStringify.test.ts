@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -206,12 +206,12 @@ describe('printDiffOrStringify', () => {
     });
 
     test('map', () => {
-      const expected: Map<unknown, unknown> = new Map([
+      const expected = new Map<string, unknown>([
         ['a', 1],
         ['b', expect.any(Number)],
         ['c', 3],
       ]);
-      const received: Map<unknown, unknown> = new Map([
+      const received = new Map<string, unknown>([
         ['a', 1],
         ['b', 2],
         ['c', 2],
@@ -254,13 +254,13 @@ describe('printDiffOrStringify', () => {
     });
 
     test('circular map', () => {
-      const expected: Map<unknown, unknown> = new Map([
+      const expected = new Map<string, unknown>([
         ['a', 1],
         ['b', expect.any(Number)],
         ['c', 3],
       ]);
       expected.set('circular', expected);
-      const received: Map<unknown, unknown> = new Map([
+      const received = new Map<string, unknown>([
         ['a', 1],
         ['b', 2],
         ['c', 2],

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -36,11 +36,43 @@ describe('.hasAssertions()', () => {
   });
 
   it('throws if expected is not undefined', () => {
-    jestExpect(() => {
+    expect(() => {
       // @ts-expect-error
       jestExpect.hasAssertions(2);
     }).toThrowErrorMatchingSnapshot();
   });
 
   it('hasAssertions not leaking to global state', () => {});
+});
+
+describe('numPassingAsserts', () => {
+  it('verify the default value of numPassingAsserts', () => {
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(0);
+  });
+
+  it('verify the resetting of numPassingAsserts after a test', () => {
+    expect('a').toBe('a');
+    expect('a').toBe('a');
+    // reset state
+    jestExpect.extractExpectedAssertionsErrors();
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(0);
+  });
+
+  it('verify the correctness of numPassingAsserts count for passing test', () => {
+    expect('a').toBe('a');
+    expect('a').toBe('a');
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(2);
+  });
+
+  it('verify the correctness of numPassingAsserts count for failing test', () => {
+    expect('a').toBe('a');
+    try {
+      expect('a').toBe('b');
+    } catch (error) {}
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(1);
+  });
 });

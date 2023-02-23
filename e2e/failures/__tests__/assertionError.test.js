@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -74,6 +74,23 @@ test('assert.doesNotThrow', () => {
 
 test('assert.throws', () => {
   assert.throws(() => {});
+});
+
+test('assert.throws with different error messages', () => {
+  assert.throws(
+    () => {
+      throw new Error('message 1');
+    },
+    {
+      message: 'message 2',
+    },
+  );
+});
+
+test('assert.throws with different error types', () => {
+  assert.throws(() => {
+    throw new SyntaxError('message 1');
+  }, TypeError);
 });
 
 test('async', async () => {

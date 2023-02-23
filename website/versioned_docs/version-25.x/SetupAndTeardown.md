@@ -63,7 +63,7 @@ test('city database has San Juan', () => {
 
 ## Scoping
 
-By default, the `beforeAll` and `afterAll` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `beforeAll` and `afterAll` blocks only apply to the tests within that `describe` block.
+The top level `before*` and `after*` hooks apply to every test in a file. The hooks declared inside a `describe` block apply only to the tests within that `describe` block.
 
 For example, let's say we had not just a city database, but also a food database. We could do different setup for different tests:
 
@@ -141,7 +141,7 @@ describe('outer', () => {
     console.log('describe inner 1');
     test('test 1', () => {
       console.log('test for describe inner 1');
-      expect(true).toEqual(true);
+      expect(true).toBe(true);
     });
   });
 
@@ -149,14 +149,14 @@ describe('outer', () => {
 
   test('test 1', () => {
     console.log('test for describe outer');
-    expect(true).toEqual(true);
+    expect(true).toBe(true);
   });
 
   describe('describe inner 2', () => {
     console.log('describe inner 2');
     test('test for describe inner 2', () => {
       console.log('test for describe inner 2');
-      expect(false).toEqual(false);
+      expect(false).toBe(false);
     });
   });
 
