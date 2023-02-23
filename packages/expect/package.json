@@ -15,7 +15,8 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
-    "./build/matchers": "./build/matchers.js"
+    "./build/matchers": "./build/matchers.js",
+    "./build/asymmetricMatchers": "./build/asymmetricMatchers.js"
   },
   "dependencies": {
     "@jest/expect-utils": "workspace:^",
