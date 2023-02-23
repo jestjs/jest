@@ -12,16 +12,7 @@ export type RandomNumberGenerator = {
   next: (from: number, to: number) => number;
 };
 
-export const rngBuilder = (
-  seed: number,
-): RandomNumberGenerator => {
-  const upperBoundSeedValue = 2 ** 31;
-  if (seed < -upperBoundSeedValue || seed > upperBoundSeedValue - 1) {
-    throw new Error(
-      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive instead it is ${seed}`,
-    );
-  }
-
+export const rngBuilder = (seed: number): RandomNumberGenerator => {
   const gen = xoroshiro128plus(seed);
   return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
 };
@@ -32,8 +23,7 @@ export default function shuffleArray<T>(
   array: Array<T>,
   random: RandomNumberGenerator,
 ): Array<T> {
-  const length = array == null ? 0 : array.length;
-
+  const length = array.length;
   if (length === 0) {
     return [];
   }

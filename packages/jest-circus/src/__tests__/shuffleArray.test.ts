@@ -17,15 +17,6 @@ describe('rngBuilder', () => {
       .map(() => rng.next(0, 10));
     expect(results).toMatchSnapshot();
   });
-
-  test('throwing is seed is too large or too small', () => {
-    expect(() => rngBuilder(2 ** 33)).toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive instead it is 8589934592',
-    );
-    expect(() => rngBuilder(-(2 ** 33))).toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive instead it is -8589934592',
-    );
-  });
 });
 
 describe('shuffleArray', () => {
