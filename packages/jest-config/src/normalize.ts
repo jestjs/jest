@@ -1045,7 +1045,7 @@ export default async function normalize(
   ) {
     throw new ValidationError(
       'Validation Error',
-      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive instead it is ${newOptions.seed}`,
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - instead it is ${newOptions.seed}`,
     );
   }
 
