@@ -21,8 +21,8 @@ import {
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
-  await dispatch({name: 'run_start'});
   const rng = randomize ? rngBuilder(seed) : undefined;
+  await dispatch({name: 'run_start'});
 
   await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
   await dispatch({name: 'run_finish'});
