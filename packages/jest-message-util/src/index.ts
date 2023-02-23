@@ -389,7 +389,7 @@ type FailedResults = Array<{
 
 function isErrorOrStackWithCause(
   errorOrStack: Error | string,
-): errorOrStack is Error & {cause: Error} {
+): errorOrStack is Error & {cause: Error | string} {
   return (
     typeof errorOrStack !== 'string' &&
     'cause' in errorOrStack &&
