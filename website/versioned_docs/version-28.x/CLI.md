@@ -475,7 +475,7 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 :::tip
 
-Use `--no-watch` to explicitly disable the watch mode if it was enable using `--watch`. In most CI environments, this is automatically handled for you.
+Use `--no-watch` (or `--watch=false`) to explicitly disable the watch mode if it was enabled using `--watch`. In most CI environments, this is automatically handled for you.
 
 :::
 
@@ -485,7 +485,7 @@ Watch files for changes and rerun all tests when something changes. If you want 
 
 :::tip
 
-Use `--no-watchAll` to explicitly disable the watch mode if it was enable using `--watchAll`. In most CI environments, this is automatically handled for you.
+Use `--no-watchAll` (or `--watchAll=false`) to explicitly disable the watch mode if it was enabled using `--watchAll`. In most CI environments, this is automatically handled for you.
 
 :::
 
