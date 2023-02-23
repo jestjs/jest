@@ -2,8 +2,10 @@
 
 ### Features
 
+- `[jest-changed-files]` Support Sapling ([#13941](https://github.com/facebook/jest/pull/13941))
 - `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
-- `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
+- `[jest-cli, jest-config, @jest/core, jest-haste-map, @jest/reporters, jest-runner, jest-runtime, @jest/types]` Add `workerThreads` configuration option to allow using [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization ([#13939](https://github.com/facebook/jest/pull/13939))
+- `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
 
 ### Fixes
 

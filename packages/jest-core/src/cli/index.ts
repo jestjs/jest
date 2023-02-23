@@ -157,6 +157,7 @@ const buildContextsAndHasteMaps = async (
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,
+        workerThreads: globalConfig.workerThreads,
       });
       hasteMapInstances[index] = hasteMapInstance;
       return createContext(config, await hasteMapInstance.build());

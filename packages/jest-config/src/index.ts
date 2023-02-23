@@ -141,6 +141,7 @@ const groupOptions = (
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
     workerIdleMemoryLimit: options.workerIdleMemoryLimit,
+    workerThreads: options.workerThreads,
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
