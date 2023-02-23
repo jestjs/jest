@@ -17,7 +17,7 @@ test('two plus two is four', () => {
 
 In this code, `expect(2 + 2)` returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
 
-`toBe` uses `Object.is` to test exact equality. If you want to check the value of an object, use `toEqual` or `toStrictEqual` instead:
+`toBe` uses `Object.is` to test exact equality. If you want to check the value of an object, use `toEqual`:
 
 ```js
 test('object assignment', () => {
@@ -31,7 +31,7 @@ test('object assignment', () => {
 
 :::tip
 
-Using `toStrictEqual` is preferred over using `toEqual`. `toEqual` simply ignores `undefined` values, whereas `toStrictEqual` takes them into account.
+`toEqual` ignores object keys with `undefined` properties, `undefined` array items, array sparseness, or object type mismatch. To take these into account use `toStrictEqual` instead.
 
 :::
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -35,6 +35,21 @@ describe('Custom Reporters Integration on jest-circus', () => {
         ],
       }),
       'addFail.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test('push test case results for todo tests', () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: [
+          'default',
+          '<rootDir>/reporters/AssertionCountsReporter.js',
+        ],
+      }),
+      'todo.test.js',
     ]);
 
     expect(stdout).toMatchSnapshot();

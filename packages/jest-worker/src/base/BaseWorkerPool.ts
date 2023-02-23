@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,6 +7,7 @@
 
 import mergeStream = require('merge-stream');
 import {
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
   PoolExitResult,
   WorkerInterface,
@@ -85,6 +86,29 @@ export default class BaseWorkerPool {
 
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
     throw Error('Missing method createWorker in WorkerPool');
+  }
+
+  async start(): Promise<void> {
+    await Promise.all(
+      this._workers.map(async worker => {
+        await worker.waitForWorkerReady();
+
+        await new Promise<void>((resolve, reject) => {
+          worker.send(
+            [CHILD_MESSAGE_CALL_SETUP],
+            emptyMethod,
+            error => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve();
+              }
+            },
+            emptyMethod,
+          );
+        });
+      }),
+    );
   }
 
   async end(): Promise<PoolExitResult> {

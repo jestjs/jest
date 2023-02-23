@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,6 +9,7 @@
 import pLimit = require('p-limit');
 import git from './git';
 import hg from './hg';
+import sl from './sl';
 import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
@@ -25,6 +26,7 @@ const mutex = pLimit(5);
 
 const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
+const findSlRoot = (dir: string) => mutex(() => sl.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
   roots: Array<string>,
@@ -42,8 +44,12 @@ export const getChangedFilesForRoots = async (
     hg.findChangedFiles(repo, changedFilesOptions),
   );
 
+  const slPromises = Array.from(repos.sl).map(repo =>
+    sl.findChangedFiles(repo, changedFilesOptions),
+  );
+
   const changedFiles = (
-    await Promise.all(gitPromises.concat(hgPromises))
+    await Promise.all([...gitPromises, ...hgPromises, ...slPromises])
   ).reduce((allFiles, changedFilesInTheRepo) => {
     for (const file of changedFilesInTheRepo) {
       allFiles.add(file);
@@ -69,8 +75,11 @@ export const findRepos = async (roots: Array<string>): Promise<Repos> => {
     ),
   );
 
+  const slRepos = await Promise.all(roots.map(findSlRoot));
+
   return {
     git: new Set(gitRepos.filter(notEmpty)),
     hg: new Set(hgRepos.filter(notEmpty)),
+    sl: new Set(slRepos.filter(notEmpty)),
   };
 };

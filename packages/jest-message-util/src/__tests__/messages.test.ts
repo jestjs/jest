@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,6 +9,7 @@
 import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
+import {onNodeVersions} from '@jest/test-utils';
 import {
   formatExecError,
   formatResultsErrors,
@@ -412,4 +413,46 @@ it('getTopFrame should return a path for mjs files', () => {
   const frame = getTopFrame(stack);
 
   expect(frame!.file).toBe(expectedFile);
+});
+
+it('should return the error cause if there is one', () => {
+  const error = new Error('Test exception');
+  // TODO pass `cause` to the `Error` constructor when lowest supported Node version is 16.9.0 and above
+  // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V16.md#error-cause
+  error.cause = new Error('Cause Error');
+  const message = formatExecError(
+    error,
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+  expect(message).toMatchSnapshot();
+});
+
+// TODO remove this wrapper when the lowest supported Node version is v16
+onNodeVersions('>=15.0.0', () => {
+  it('should return the inner errors of an AggregateError', () => {
+    // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
+    if (AggregateError) {
+      const aggError = new AggregateError([
+        new Error('Err 1'),
+        new Error('Err 2'),
+      ]);
+      const message = formatExecError(
+        aggError,
+        {
+          rootDir: '',
+          testMatch: [],
+        },
+        {
+          noStackTrace: false,
+        },
+      );
+      expect(message).toMatchSnapshot();
+    }
+  });
 });

@@ -1,11 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import * as path from 'path';
+import {performance} from 'perf_hooks';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -179,6 +180,7 @@ export default async function runJest({
 
   const searchSources = contexts.map(context => new SearchSource(context));
 
+  performance.mark('jest/getTestPaths:start');
   const testRunData: TestRunData = await Promise.all(
     contexts.map(async (context, index) => {
       const searchSource = searchSources[index];
@@ -195,6 +197,7 @@ export default async function runJest({
       return {context, matches};
     }),
   );
+  performance.mark('jest/getTestPaths:end');
 
   if (globalConfig.shard) {
     if (typeof sequencer.shard !== 'function') {
@@ -260,7 +263,9 @@ export default async function runJest({
   }
 
   if (hasTests) {
+    performance.mark('jest/globalSetup:start');
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+    performance.mark('jest/globalSetup:end');
   }
 
   if (changedFilesPromise) {
@@ -289,14 +294,24 @@ export default async function runJest({
     ...testSchedulerContext,
   });
 
+  // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
+  performance.mark('jest/scheduleAndRun:start', {
+    detail: {numTests: allTests.length},
+  });
   const results = await scheduler.scheduleTests(allTests, testWatcher);
+  performance.mark('jest/scheduleAndRun:start');
 
+  performance.mark('jest/cacheResults:start');
   sequencer.cacheResults(allTests, results);
+  performance.mark('jest/cacheResults:end');
 
   if (hasTests) {
+    performance.mark('jest/globalTeardown:start');
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
+    performance.mark('jest/globalTeardown:end');
   }
 
+  performance.mark('jest/processResults:start');
   await processResults(results, {
     collectHandles,
     json: globalConfig.json,
@@ -305,4 +320,5 @@ export default async function runJest({
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
+  performance.mark('jest/processResults:end');
 }

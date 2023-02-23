@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -79,6 +79,7 @@ type Options = {
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
+  workerThreads?: boolean;
 };
 
 type InternalOptions = {
@@ -103,6 +104,7 @@ type InternalOptions = {
   throwOnModuleCollision: boolean;
   useWatchman: boolean;
   watch: boolean;
+  workerThreads?: boolean;
 };
 
 type Watcher = {
@@ -267,6 +269,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
       watch: !!options.watch,
+      workerThreads: options.workerThreads,
     };
     this._console = options.console || globalThis.console;
 
@@ -748,6 +751,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
+          enableWorkerThreads: this._options.workerThreads,
           exposedMethods: ['getSha1', 'worker'],
           forkOptions: {serialization: 'json'},
           maxRetries: 3,

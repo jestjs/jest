@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -206,6 +206,7 @@ export type DefaultOptions = {
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerThreads: boolean;
 };
 
 export type DisplayName = {
@@ -326,6 +327,7 @@ export type InitialOptions = Partial<{
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
   workerIdleMemoryLimit: number | string;
+  workerThreads: boolean;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -419,6 +421,8 @@ export type GlobalConfig = {
     config: Record<string, unknown>;
   }> | null;
   workerIdleMemoryLimit?: number;
+  // TODO: make non-optional in Jest 30
+  workerThreads?: boolean;
 };
 
 export type ProjectConfig = {
@@ -574,5 +578,6 @@ export type Argv = Arguments<
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
     workerIdleMemoryLimit: number | string;
+    workerThreads: boolean;
   }>
 >;

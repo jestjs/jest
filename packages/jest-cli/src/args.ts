@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -707,6 +707,12 @@ export const options: {[key: string]: Options} = {
     description:
       'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
+    type: 'boolean',
+  },
+  workerThreads: {
+    description:
+      'Whether to use worker threads for parallelization. Child processes ' +
+      'are used by default.',
     type: 'boolean',
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "29.4.1",
+  "version": "29.4.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -23,6 +23,7 @@
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
     "@tsd/typescript": "^4.9.0",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",

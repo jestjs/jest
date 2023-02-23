@@ -1,15 +1,14 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import semver = require('semver');
-import type {Global} from '@jest/types';
+/* eslint-disable jest/no-focused-tests */
 
-declare const describe: Global.TestFrameworkGlobals['describe'];
-declare const test: Global.TestFrameworkGlobals['test'];
+import semver = require('semver');
+import {describe, test} from '@jest/globals';
 
 export function isJestJasmineRun(): boolean {
   return process.env.JEST_JASMINE === '1';

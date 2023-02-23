@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import semver = require('semver');
-import {cleanup, run, testIfHg, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, testIfSl, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
@@ -340,6 +340,50 @@ testIfHg('gets changed files for hg', async () => {
 
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test2"`, DIR);
+
+  writeFiles(DIR, {
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
+  });
+
+  ({stdout, stderr} = runJest(DIR, ['-o']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+
+  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+});
+
+const SL = 'sl --config ui.username=jest_test';
+testIfSl('gets changed files for sl', async () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
+    'file1.js': 'module.exports = {}',
+    'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+  });
+
+  run(`${SL} init --git`, DIR);
+  run(`${SL} add .`, DIR);
+  run(`${SL} commit -m "test"`, DIR);
+
+  let stdout;
+  let stderr;
+
+  ({stdout} = runJest(DIR, ['-o']));
+  expect(stdout).toMatch('No tests found related to files changed');
+
+  writeFiles(DIR, {
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    'file2.js': 'module.exports = {}',
+    'file3.js': "require('./file2')",
+  });
+
+  ({stderr} = runJest(DIR, ['-o']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+
+  run(`${SL} add .`, DIR);
+  run(`${SL} commit -m "test2"`, DIR);
 
   writeFiles(DIR, {
     '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",

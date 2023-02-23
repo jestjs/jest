@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -186,6 +186,7 @@ export const initialOptions: Config.InitialOptions = {
   ],
   watchman: true,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
+  workerThreads: true,
 };
 
 export const initialProjectOptions: Config.InitialProjectOptions = {
