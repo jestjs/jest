@@ -2398,3 +2398,17 @@ This option allows comments in `package.json`. Include the comment text as the v
   }
 }
 ```
+
+### `workerThreads`
+
+Default: `false`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+Using worker threads may help to improve [performance](https://github.com/nodejs/node/discussions/44264).
+
+:::caution
+
+This is **experimental feature**. Keep in mind that the worker threads use structured clone instead of `JSON.stringify()` to serialize messages. This means that built-in JavaScript objects as `BigInt`, `Map` or `Set` will get serialized properly. However extra properties set on `Error`, `Map` or `Set` will not be passed on through the serialization step. For more details see the article on [structured clone](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+
+:::

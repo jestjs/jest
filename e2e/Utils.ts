@@ -336,3 +336,36 @@ export const testIfHg = (...args: Parameters<typeof test>) => {
     test.skip(...args);
   }
 };
+
+// Certain environments (like CITGM and GH Actions) do not come with sapling installed
+let slIsInstalled: boolean | null = null;
+export const testIfSl = (...args: Parameters<typeof test>) => {
+  if (slIsInstalled === null) {
+    slIsInstalled = which.sync('sl', {nothrow: true}) !== null;
+  }
+
+  if (slIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Sapling (sl) is not installed - skipping some tests');
+    test.skip(...args);
+  }
+};
+
+export const testIfSlAndHg = (...args: Parameters<typeof test>) => {
+  if (slIsInstalled === null) {
+    slIsInstalled = which.sync('sl', {nothrow: true}) !== null;
+  }
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (slIsInstalled && hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn(
+      'Sapling (sl) or Mercurial (hg) is not installed - skipping some tests',
+    );
+    test.skip(...args);
+  }
+};

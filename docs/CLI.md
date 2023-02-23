@@ -491,18 +491,32 @@ Alias: `-v`. Print the version and exit.
 
 Watch files for changes and rerun tests related to changed files. If you want to re-run all tests when a file has changed, use the `--watchAll` option instead.
 
+:::tip
+
+Use `--no-watch` (or `--watch=false`) to explicitly disable the watch mode if it was enabled using `--watch`. In most CI environments, this is automatically handled for you.
+
+:::
+
 ### `--watchAll`
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode.
-
 :::tip
 
-In most CI environments, this is automatically handled for you.
+Use `--no-watchAll` (or `--watchAll=false`) to explicitly disable the watch mode if it was enabled using `--watchAll`. In most CI environments, this is automatically handled for you.
 
 :::
 
 ### `--watchman`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
+
+### `--workerThreads`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+:::caution
+
+This is **experimental feature**. See the [`workerThreads` configuration option](Configuration.md#workerthreads) for more details.
+
+:::
