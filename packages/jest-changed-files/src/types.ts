@@ -13,7 +13,7 @@ export type Options = {
 };
 
 type Paths = Set<string>;
-export type Repos = {git: Paths; hg: Paths};
+export type Repos = {git: Paths; hg: Paths; sl: Paths};
 export type ChangedFiles = {repos: Repos; changedFiles: Paths};
 export type ChangedFilesPromise = Promise<ChangedFiles>;
 
