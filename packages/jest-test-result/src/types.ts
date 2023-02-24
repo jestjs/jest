@@ -77,7 +77,7 @@ export type AggregatedResult = AggregatedResultWithoutCoverage & {
 
 export type TestResultsProcessor = (
   results: AggregatedResult,
-) => AggregatedResult;
+) => AggregatedResult | Promise<AggregatedResult>;
 
 export type Suite = {
   title: string;
