@@ -116,10 +116,12 @@ export const initialOptions: Config.InitialOptions = {
   notifyMode: 'failure-change',
   onlyChanged: false,
   onlyFailures: false,
+  openHandlesTimeout: 1000,
   passWithNoTests: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
+  randomize: false,
   reporters: [
     'default',
     'custom-reporter-1',
@@ -186,6 +188,7 @@ export const initialOptions: Config.InitialOptions = {
   ],
   watchman: true,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
+  workerThreads: true,
 };
 
 export const initialProjectOptions: Config.InitialProjectOptions = {
@@ -261,6 +264,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
+  openHandlesTimeout: 1000,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   resetMocks: false,

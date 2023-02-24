@@ -13,6 +13,7 @@ const testCaseReportHandler =
   (testPath: string, sendMessageToJest: TestFileEvent) =>
   (event: Circus.Event): void => {
     switch (event.name) {
+      case 'test_todo':
       case 'test_done': {
         const testResult = makeSingleTestResult(event.test);
         const testCaseResult = parseSingleTestResult(testResult);

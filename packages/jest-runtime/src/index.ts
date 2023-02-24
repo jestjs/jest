@@ -79,6 +79,7 @@ type HasteMapOptions = {
   resetCache: boolean;
   watch?: boolean;
   watchman: boolean;
+  workerThreads?: boolean;
 };
 
 interface InternalModuleOptions extends Required<CallerTransformOptions> {
@@ -370,6 +371,7 @@ export default class Runtime {
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options?.watchman,
       watch: options?.watch,
+      workerThreads: options?.workerThreads,
     });
   }
 
@@ -1338,7 +1340,6 @@ export default class Runtime {
 
   teardown(): void {
     this.restoreAllMocks();
-    this.resetAllMocks();
     this.resetModules();
 
     this._internalModuleRegistry.clear();

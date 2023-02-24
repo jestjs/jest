@@ -1078,6 +1078,12 @@ Specifies notification mode. Requires `notify: true`.
 - `success-change`: send a notification when tests pass or once when it fails.
 - `failure-change`: send a notification when tests fail or once when it passes.
 
+### `openHandlesTimeout` \[number]
+
+Default: `1000`
+
+Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
+
 ### `preset` \[string]
 
 Default: `undefined`
@@ -1215,6 +1221,12 @@ When using multi-project runner, it's recommended to add a `displayName` for eac
 With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the _child's root directory_ even if they are defined in the root-level configuration.
 
 :::
+
+### `randomize` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--randomize`](CLI.md#--randomize) flag to randomize the order of the tests in a file.
 
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
@@ -2398,3 +2410,17 @@ This option allows comments in `package.json`. Include the comment text as the v
   }
 }
 ```
+
+### `workerThreads`
+
+Default: `false`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+Using worker threads may help to improve [performance](https://github.com/nodejs/node/discussions/44264).
+
+:::caution
+
+This is **experimental feature**. Keep in mind that the worker threads use structured clone instead of `JSON.stringify()` to serialize messages. This means that built-in JavaScript objects as `BigInt`, `Map` or `Set` will get serialized properly. However extra properties set on `Error`, `Map` or `Set` will not be passed on through the serialization step. For more details see the article on [structured clone](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+
+:::
