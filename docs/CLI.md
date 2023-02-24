@@ -310,6 +310,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--openHandlesTimeout=<milliseconds>`
+
+When `--detectOpenHandles` and `--forceExit` are _disabled_, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
+
 ### `--outputFile=<filename>`
 
 Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
@@ -325,6 +329,22 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 :::note
 
 If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+:::
+
+### `--randomize`
+
+Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed=<num>`](#--seednum) for more info.
+
+Seed value is displayed when this option is set. Equivalent to setting the CLI option [`--showSeed`](#--showseed).
+
+```bash
+jest --randomize --seed 1234
+```
+
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
 
 :::
 

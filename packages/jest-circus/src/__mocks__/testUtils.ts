@@ -26,7 +26,10 @@ interface Result extends ExecaSyncReturnValue {
   error: string;
 }
 
-export const runTest = (source: string) => {
+export const runTest = (
+  source: string,
+  opts?: {seed?: number; randomize?: boolean},
+) => {
   const filename = createHash('sha1')
     .update(source)
     .digest('hex')
@@ -44,7 +47,9 @@ export const runTest = (source: string) => {
     global.afterAll = circus.afterAll;
 
     const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}').default;
-    const addEventHandler = require('${CIRCUS_STATE_PATH}').addEventHandler;
+    const {addEventHandler, getState} = require('${CIRCUS_STATE_PATH}');
+    getState().randomize = ${opts?.randomize};
+    getState().seed = ${opts?.seed ?? 0};
     addEventHandler(testEventHandler);
 
     ${source};

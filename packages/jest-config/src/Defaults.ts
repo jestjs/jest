@@ -60,6 +60,7 @@ const defaultOptions: Config.DefaultOptions = {
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
+  openHandlesTimeout: 1000,
   passWithNoTests: false,
   prettierPath: 'prettier',
   resetMocks: false,

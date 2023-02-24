@@ -3,15 +3,19 @@
 ### Features
 
 - `[jest-changed-files]` Support Sapling ([#13941](https://github.com/facebook/jest/pull/13941))
+- `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
 - `[jest-cli, jest-config, @jest/core, jest-haste-map, @jest/reporters, jest-runner, jest-runtime, @jest/types]` Add `workerThreads` configuration option to allow using [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization ([#13939](https://github.com/facebook/jest/pull/13939))
+- `[jest-config]` Add `openHandlesTimeout` option to configure possible open handles warning. ([#13875](https://github.com/facebook/jest/pull/13875))
 - `[@jest/create-cache-key-function]` Allow passing `length` argument to `createCacheKey()` function and set its default value to `16` on Windows ([#13827](https://github.com/facebook/jest/pull/13827))
-- `[jest-message-util]` Add support for [AggregateError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) ([#13946](https://github.com/facebook/jest/pull/13946))
+- `[jest-message-util]` Add support for [AggregateError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) ([#13946](https://github.com/facebook/jest/pull/13946) & [#13947](https://github.com/facebook/jest/pull/13947))
+- `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it` ([#13935](https://github.com/facebook/jest/pull/13935))
 - `[jest-reporters]` Add `summaryThreshold` option to summary reporter to allow overriding the internal threshold that is used to print the summary of all failed tests when the number of test suites surpasses it ([#13895](https://github.com/facebook/jest/pull/13895))
 - `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
 
 ### Fixes
 
 - `[jest-circus]` Send test case results for `todo` tests ([#13915](https://github.com/facebook/jest/pull/13915))
+- `[jest-circus]` Update message printed on test timeout ([#13830](https://github.com/facebook/jest/pull/13830))
 
 ### Chore & Maintenance
 

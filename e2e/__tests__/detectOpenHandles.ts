@@ -29,6 +29,20 @@ it('prints message about flag on slow tests', async () => {
   expect(textAfterTest).toMatchSnapshot();
 });
 
+it('prints message about flag on slow tests with a custom timeout', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'outside',
+    '--openHandlesTimeout=500',
+  ]);
+  await run.waitUntil(({stderr}) =>
+    stderr.includes('Jest did not exit 0.5 seconds'),
+  );
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toMatchSnapshot();
+});
+
 it('prints message about flag on forceExit', async () => {
   const run = runContinuous('detect-open-handles', ['outside', '--forceExit']);
   await run.waitUntil(({stderr}) => stderr.includes('Force exiting Jest'));

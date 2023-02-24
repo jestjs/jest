@@ -178,6 +178,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
@@ -274,11 +275,13 @@ export type InitialOptions = Partial<{
   notifyMode: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   outputFile: string;
   passWithNoTests: boolean;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
+  randomize: boolean;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -391,8 +394,10 @@ export type GlobalConfig = {
   outputFile?: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   projects: Array<string>;
+  randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
@@ -452,6 +457,7 @@ export type ProjectConfig = {
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
+  openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
   resetMocks: boolean;
@@ -537,6 +543,7 @@ export type Argv = Arguments<
     preset: string | null | undefined;
     prettierPath: string | null | undefined;
     projects: Array<string>;
+    randomize: boolean;
     reporters: Array<string>;
     resetMocks: boolean;
     resetModules: boolean;

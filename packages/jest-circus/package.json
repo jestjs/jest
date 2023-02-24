@@ -35,6 +35,7 @@
     "jest-util": "workspace:^",
     "p-limit": "^3.1.0",
     "pretty-format": "workspace:^",
+    "pure-rand": "^6.0.0",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.3"
   },

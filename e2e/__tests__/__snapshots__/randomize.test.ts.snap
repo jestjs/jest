@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works with each 1`] = `
+"  ✓ test1
+  ✓ test2
+  ✓ test3
+  describe2
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe1
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe3
+    ✓ test11
+    ✓ test12
+    ✓ test10
+    describe4
+      ✓ test14
+      ✓ test15
+      ✓ test13"
+`;
+
+exports[`works with hooks 1`] = `
+"  ✓ test1
+  ✓ test2
+  ✓ test3
+  describe2
+    ✓ test7
+    ✓ test9
+    ✓ test8
+  describe1
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe3
+    ✓ test11
+    ✓ test12
+    ✓ test10
+    describe4
+      ✓ test14
+      ✓ test15
+      ✓ test13"
+`;
+
+exports[`works with passing tests 1`] = `
+"  ✓ test1
+  ✓ test2
+  ✓ test3
+  describe2
+    ✓ test7
+    ✓ test9
+    ✓ test8
+  describe1
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe3
+    ✓ test11
+    ✓ test12
+    ✓ test10
+    describe4
+      ✓ test14
+      ✓ test15
+      ✓ test13"
+`;
+
+exports[`works with snapshots 1`] = `
+"  ✓ test1
+  ✓ test2
+  ✓ test3
+  describe2
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe1
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe3
+    ✓ test11
+    ✓ test12
+    ✓ test10
+    describe4
+      ✓ test14
+      ✓ test15
+      ✓ test13"
+`;

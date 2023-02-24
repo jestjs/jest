@@ -215,7 +215,9 @@ export type State = {
   // the original ones.
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
   parentProcess: Process | null; // process object from the outer scope
+  randomize?: boolean;
   rootDescribeBlock: DescribeBlock;
+  seed: number;
   testNamePattern?: RegExp | null;
   testTimeout: number;
   unhandledErrors: Array<Exception>;
