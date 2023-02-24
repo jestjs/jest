@@ -1,6 +1,6 @@
 {
   "name": "jest-message-util",
-  "version": "29.3.1",
+  "version": "29.4.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -33,7 +33,8 @@
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.0",
     "@types/graceful-fs": "^4.1.3",
-    "@types/micromatch": "^4.0.1"
+    "@types/micromatch": "^4.0.1",
+    "tempy": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

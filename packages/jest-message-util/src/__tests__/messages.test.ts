@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,6 +9,7 @@
 import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
+import {onNodeVersions} from '@jest/test-utils';
 import {
   formatExecError,
   formatResultsErrors,
@@ -35,6 +36,8 @@ const unixStackTrace =
   at Object.it (build/__tests__/messages-test.js:45:41)
   at Object.<anonymous> (../jest-jasmine2/build/jasmine-pit.js:35:32)
   at attemptAsync (../jest-jasmine2/build/jasmine-2.4.1.js:1919:24)`;
+const unixError = new Error(unixStackTrace.replace(/\n\s*at [\s\s]*/m, ''));
+unixError.stack = unixStackTrace;
 
 const assertionStack =
   '  ' +
@@ -56,6 +59,10 @@ const assertionStack =
       at process._tickCallback (internal/process/next_tick.js:188:7)
       at internal/process/next_tick.js:188:7
 `;
+const assertionError = new Error(
+  assertionStack.replace(/\n\s*at [\s\s]*/m, ''),
+);
+assertionError.stack = assertionStack;
 
 const vendorStack =
   '  ' +
@@ -83,6 +90,90 @@ const babelStack =
      \u001b[90m 22 | \u001b[39m      )\u001b[33m;\u001b[39m
      \u001b[90m 23 | \u001b[39m    } \u001b[36melse\u001b[39m \u001b[36mif\u001b[39m (\u001b[36mtypeof\u001b[39m render \u001b[33m!==\u001b[39m \u001b[32m'function'\u001b[39m) {\u001b[0m
 `;
+const babelError = new Error(babelStack.replace(/\n\s*at [\s\s]*/m, ''));
+babelError.stack = babelStack;
+
+function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+  const error = new Error(message, opts);
+  if (opts.cause !== error.cause) {
+    // Error with cause not supported in legacy versions of node, we just polyfill it
+    Object.assign(error, opts);
+  }
+  return error;
+}
+
+const errorWithCauseNestedNested = new Error('boom');
+errorWithCauseNestedNested.stack = `Error: boom
+    at h (cause.test.js:2:9)
+    at h (cause.test.js:6:5)
+    at g (cause.test.js:13:5)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithCauseNested = buildErrorWithCause('intercepted by g', {
+  cause: errorWithCauseNestedNested,
+});
+errorWithCauseNested.stack = `Error: intercepted by g
+    at g (cause.test.js:8:11)
+    at g (cause.test.js:13:5)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithCause = buildErrorWithCause('intercepted by f', {
+  cause: errorWithCauseNested,
+});
+errorWithCause.stack = `Error: intercepted by f
+    at f (cause.test.js:15:11)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithStringCause = buildErrorWithCause('boom', {
+  cause: 'string cause',
+});
+errorWithStringCause.stack = `Error: boom
+    at f (cause.test.js:15:11)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -94,7 +185,7 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [unixError],
         failureMessages: [unixStackTrace],
         fullName: 'full name',
         invocations: undefined,
@@ -142,7 +233,7 @@ it('formatStackTrace should strip node internals', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [assertionError],
         failureMessages: [assertionStack],
         fullName: 'full name',
         invocations: undefined,
@@ -200,7 +291,7 @@ it('retains message in babel code frame error', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [babelError],
         failureMessages: [babelStack],
         fullName: 'full name',
         invocations: undefined,
@@ -209,6 +300,64 @@ it('retains message in babel code frame error', () => {
         retryReasons: undefined,
         status: 'failed',
         title: 'Babel test',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('formatStackTrace should properly handle deeply nested causes', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [errorWithCause],
+        failureMessages: [errorWithCause.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'Error with cause test',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('formatStackTrace should properly handle string causes', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [errorWithStringCause],
+        failureMessages: [errorWithStringCause.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'Error with string cause test',
       },
     ],
     {
@@ -412,4 +561,44 @@ it('getTopFrame should return a path for mjs files', () => {
   const frame = getTopFrame(stack);
 
   expect(frame!.file).toBe(expectedFile);
+});
+
+it('should return the error cause if there is one', () => {
+  const error = new Error('Test exception');
+  // TODO pass `cause` to the `Error` constructor when lowest supported Node version is 16.9.0 and above
+  // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V16.md#error-cause
+  error.cause = new Error('Cause Error');
+  const message = formatExecError(
+    error,
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+  expect(message).toMatchSnapshot();
+});
+
+// TODO remove this wrapper when the lowest supported Node version is v16
+onNodeVersions('>=15.0.0', () => {
+  it('should return the inner errors of an AggregateError', () => {
+    // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
+    const aggError = new AggregateError([
+      new Error('Err 1'),
+      new Error('Err 2'),
+    ]);
+    const message = formatExecError(
+      aggError,
+      {
+        rootDir: '',
+        testMatch: [],
+      },
+      {
+        noStackTrace: false,
+      },
+    );
+    expect(message).toMatchSnapshot();
+  });
 });

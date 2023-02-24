@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -36,6 +36,7 @@ export const CHILD_MESSAGE_INITIALIZE = 0;
 export const CHILD_MESSAGE_CALL = 1;
 export const CHILD_MESSAGE_END = 2;
 export const CHILD_MESSAGE_MEM_USAGE = 3;
+export const CHILD_MESSAGE_CALL_SETUP = 4;
 
 export const PARENT_MESSAGE_OK = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR = 1;
@@ -61,6 +62,7 @@ export interface WorkerPoolInterface {
   getWorkers(): Array<WorkerInterface>;
   createWorker(options: WorkerOptions): WorkerInterface;
   send: WorkerCallback;
+  start(): Promise<void>;
   end(): Promise<PoolExitResult>;
 }
 
@@ -223,11 +225,14 @@ export type ChildMessageEnd = [
 
 export type ChildMessageMemUsage = [type: typeof CHILD_MESSAGE_MEM_USAGE];
 
+export type ChildMessageCallSetup = [type: typeof CHILD_MESSAGE_CALL_SETUP];
+
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
   | ChildMessageEnd
-  | ChildMessageMemUsage;
+  | ChildMessageMemUsage
+  | ChildMessageCallSetup;
 
 // Messages passed from the children to the parent.
 

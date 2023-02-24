@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -64,6 +64,16 @@ describe('Runtime', () => {
 
       expect(mock1).not.toHaveBeenCalled();
       expect(mock2).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('jest.isEnvironmentTornDown()', () => {
+    it('should be set to true when the environment is torn down', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      expect(root.jest.isEnvironmentTornDown()).toBe(false);
+      runtime.teardown();
+      expect(root.jest.isEnvironmentTornDown()).toBe(true);
     });
   });
 });

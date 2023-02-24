@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -78,6 +78,7 @@ export const makeTest = (
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
+  numPassingAsserts: 0,
   parent,
   retryReasons: [],
   seenDone: false,
@@ -170,10 +171,16 @@ export const describeBlockHasTests = (
     child => child.type === 'test' || describeBlockHasTests(child),
   );
 
-const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
+const _makeTimeoutMessage = (
+  timeout: number,
+  isHook: boolean,
+  takesDoneCallback: boolean,
+) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
-  }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
+  }${
+    takesDoneCallback && ' while waiting for `done()` to be called'
+  }.\nAdd a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
@@ -192,16 +199,17 @@ export const callAsyncCircusFn = (
   let completed = false;
 
   const {fn, asyncError} = testOrHook;
+  const doneCallback = takesDoneCallback(fn);
 
   return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (takesDoneCallback(fn)) {
+    if (doneCallback) {
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {
@@ -363,6 +371,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
+    numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     status,
     testPath: Array.from(testPath),
@@ -484,7 +493,7 @@ export const parseSingleTestResult = (
       : ancestorTitles.join(' '),
     invocations: testResult.invocations,
     location: testResult.location,
-    numPassingAsserts: 0,
+    numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: Array.from(testResult.retryReasons),
     status,
     title: testResult.testPath[testResult.testPath.length - 1],

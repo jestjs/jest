@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -91,11 +91,11 @@ describe('isCoreModule', () => {
     expect(isCore).toBe(true);
   });
 
-  it('returns false if using `node:` URLs and `moduleName` is not a core module.', () => {
+  it('returns true if using `node:` URLs and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:not-a-core-module');
-    expect(isCore).toBe(false);
+    expect(isCore).toBe(true);
   });
 });
 
@@ -314,6 +314,90 @@ describe('findNodeModule', () => {
       });
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('imports', () => {
+    const importsRoot = path.resolve(__dirname, '../__mocks__/imports');
+
+    test('supports internal reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.cjs'),
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './foo-import/internal.cjs'),
+      );
+    });
+
+    test('supports external reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          importsRoot,
+          './foo-import/node_modules/external-foo/main.js',
+        ),
+      );
+    });
+
+    test('supports nested pattern', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './nested-import/index.cjs'),
+        conditions: ['node', 'require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './nested-import/node.cjs'),
+      );
+    });
+
+    describe('supports array pattern', () => {
+      test('resolve to first found', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['import'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/node.mjs'),
+        );
+      });
+
+      test('skip over not met nested condition', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['browser'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/browser.cjs'),
+        );
+      });
+
+      test('match nested condition', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['chrome', 'browser'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/chrome.cjs'),
+        );
+      });
+    });
+
+    test('fails for non-existent mapping', () => {
+      expect(() => {
+        Resolver.findNodeModule('#something-else', {
+          basedir: path.resolve(importsRoot, './foo-import/index.js'),
+          conditions: [],
+        });
+      }).toThrow('Missing "#something-else" specifier in "foo-import" package');
     });
   });
 });

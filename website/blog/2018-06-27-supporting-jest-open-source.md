@@ -17,13 +17,13 @@ In this post we'll outline what the Jest Open Collective is, the structure, and 
 
 <!--truncate-->
 
-# The Jest Open Collective
+## The Jest Open Collective
 
 ![Banner image for Jest Open Collective](/img/blog/collective.png)
 
 Open Collective is a platform to manage groups of people transparently. Jest joins projects like [webpack](https://opencollective.com/webpack), [Babel](https://opencollective.com/babel), [Mocha](https://opencollective.com/mochajs), [Preact](https://opencollective.com/preact), [Vue](https://opencollective.com/vuejs), and many more in supporting the open source community through the Open Collective platform.
 
-## What is the Jest Open Collective
+### What is the Jest Open Collective
 
 The Jest Open Collective is a group of open source contributors who operate in full transparency to:
 
@@ -31,7 +31,7 @@ The Jest Open Collective is a group of open source contributors who operate in f
 - Approve expenses submitted by the community
 - Give everyone visibility on the budget
 
-## What is the structure of the collective
+### What is the structure of the collective
 
 The Jest Open Collective is currently managed by three non-Facebook core contributors from the open source community:
 
@@ -43,15 +43,15 @@ Michal has been an active Jest contributor since September 2016, Simen joined th
 
 There are two levels of support for the collective: Backer and Sponsor.
 
-### Backers
+#### Backers
 
 Backers of the collective are individuals contributing at least \$2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
-### Sponsors
+#### Sponsors
 
-Sponsors of the collective are individuals and organizations contributing at least \$100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
+Sponsors of the collective are individuals and organizations contributing at least $100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
-## What is the goal of the collective
+### What is the goal of the collective
 
 The goal of the collective is to support the work of open source contributors to Jest in order to make testing delightful.
 
@@ -64,7 +64,7 @@ To achieve that goal, we will use the funds to:
 
 This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/fbjest)!
 
-# Thank You
+## Thank You
 
 Finally, thank you to everyone who contributes to the Jest community and open source in general. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together.
 

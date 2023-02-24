@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -912,8 +912,10 @@ export default async function normalize(
       case 'notifyMode':
       case 'onlyChanged':
       case 'onlyFailures':
+      case 'openHandlesTimeout':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'randomize':
       case 'replname':
       case 'resetMocks':
       case 'resetModules':
@@ -936,6 +938,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerThreads':
         value = oldOptions[key];
         break;
       case 'workerIdleMemoryLimit':
@@ -1026,11 +1029,14 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
-  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
+  newOptions.randomize = newOptions.randomize || argv.randomize;
+
+  newOptions.showSeed =
+    newOptions.randomize || newOptions.showSeed || argv.showSeed;
 
   const upperBoundSeedValue = 2 ** 31;
 
-  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  // bounds are determined by xoroshiro128plus which is used in v8 and is used here (at time of writing)
   newOptions.seed =
     argv.seed ??
     Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
@@ -1040,7 +1046,7 @@ export default async function normalize(
   ) {
     throw new ValidationError(
       'Validation Error',
-      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - instead it is ${newOptions.seed}`,
     );
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -178,6 +178,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
@@ -206,6 +207,7 @@ export type DefaultOptions = {
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerThreads: boolean;
 };
 
 export type DisplayName = {
@@ -273,11 +275,13 @@ export type InitialOptions = Partial<{
   notifyMode: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   outputFile: string;
   passWithNoTests: boolean;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
+  randomize: boolean;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -326,6 +330,7 @@ export type InitialOptions = Partial<{
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
   workerIdleMemoryLimit: number | string;
+  workerThreads: boolean;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -389,8 +394,10 @@ export type GlobalConfig = {
   outputFile?: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   projects: Array<string>;
+  randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
@@ -419,6 +426,8 @@ export type GlobalConfig = {
     config: Record<string, unknown>;
   }> | null;
   workerIdleMemoryLimit?: number;
+  // TODO: make non-optional in Jest 30
+  workerThreads?: boolean;
 };
 
 export type ProjectConfig = {
@@ -448,6 +457,7 @@ export type ProjectConfig = {
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
+  openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
   resetMocks: boolean;
@@ -533,6 +543,7 @@ export type Argv = Arguments<
     preset: string | null | undefined;
     prettierPath: string | null | undefined;
     projects: Array<string>;
+    randomize: boolean;
     reporters: Array<string>;
     resetMocks: boolean;
     resetModules: boolean;
@@ -574,5 +585,6 @@ export type Argv = Arguments<
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
     workerIdleMemoryLimit: number | string;
+    workerThreads: boolean;
   }>
 >;

@@ -5,7 +5,15 @@ title: Expect
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
+:::tip
+
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
+
+:::
+
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
+
+<TypeScriptExamplesNote />
 
 ## Methods
 
@@ -37,29 +45,56 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
-```js
-expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
-    const pass = received >= floor && received <= ceiling;
-    if (pass) {
-      return {
-        message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
-        pass: false,
-      };
-    }
-  },
-});
+```js tab={"span":3} title="toBeWithinRange.js"
+import {expect} from '@jest/globals';
 
-test('numeric ranges', () => {
-  expect(100).toBeWithinRange(90, 110);
-  expect(101).not.toBeWithinRange(0, 100);
+function toBeWithinRange(actual, floor, ceiling) {
+  if (
+    typeof actual !== 'number' ||
+    typeof floor !== 'number' ||
+    typeof ceiling !== 'number'
+  ) {
+    throw new Error('These must be of type number!');
+  }
+
+  const pass = actual >= floor && actual <= ceiling;
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} not to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: false,
+    };
+  }
+}
+
+expect.extend({
+  toBeWithinRange,
+});
+```
+
+```js title="__tests__/ranges.test.js"
+import {expect, test} from '@jest/globals';
+import '../toBeWithinRange';
+
+test('is within range', () => expect(100).toBeWithinRange(90, 110));
+
+test('is NOT within range', () => expect(101).not.toBeWithinRange(0, 100));
+
+test('asymmetric ranges', () => {
   expect({apples: 6, bananas: 3}).toEqual({
     apples: expect.toBeWithinRange(1, 10),
     bananas: expect.not.toBeWithinRange(11, 20),
@@ -67,22 +102,109 @@ test('numeric ranges', () => {
 });
 ```
 
-:::note
-
-In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
-
-```ts
-interface CustomMatchers<R = unknown> {
-  toBeWithinRange(floor: number, ceiling: number): R;
-}
-
-declare global {
-  namespace jest {
-    interface Expect extends CustomMatchers {}
-    interface Matchers<R> extends CustomMatchers<R> {}
-    interface InverseAsymmetricMatchers extends CustomMatchers {}
+```ts title="toBeWithinRange.d.ts"
+// optionally add a type declaration, e.g. it enables autocompletion in IDEs
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
   }
 }
+
+export {};
+```
+
+```ts tab={"span":2} title="toBeWithinRange.ts"
+import {expect} from '@jest/globals';
+import type {MatcherFunction} from 'expect';
+
+const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
+  // `floor` and `ceiling` get types from the line above
+  // it is recommended to type them as `unknown` and to validate the values
+  function (actual, floor, ceiling) {
+    if (
+      typeof actual !== 'number' ||
+      typeof floor !== 'number' ||
+      typeof ceiling !== 'number'
+    ) {
+      throw new Error('These must be of type number!');
+    }
+
+    const pass = actual >= floor && actual <= ceiling;
+    if (pass) {
+      return {
+        message: () =>
+          // `this` context will have correct typings
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: false,
+      };
+    }
+  };
+
+expect.extend({
+  toBeWithinRange,
+});
+
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
+  }
+}
+```
+
+```ts tab title="__tests__/ranges.test.ts"
+import {expect, test} from '@jest/globals';
+import '../toBeWithinRange';
+
+test('is within range', () => expect(100).toBeWithinRange(90, 110));
+
+test('is NOT within range', () => expect(101).not.toBeWithinRange(0, 100));
+
+test('asymmetric ranges', () => {
+  expect({apples: 6, bananas: 3}).toEqual({
+    apples: expect.toBeWithinRange(1, 10),
+    bananas: expect.not.toBeWithinRange(11, 20),
+  });
+});
+```
+
+:::tip
+
+The type declaration of the matcher can live in a `.d.ts` file or in an imported `.ts` module (see JS and TS examples above respectively). If you keep the declaration in a `.d.ts` file, make sure that it is included in the program and that it is a valid module, i.e. it has at least an empty `export {}`.
+
+:::
+
+:::tip
+
+Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
+
+```js
+import {expect} from '@jest/globals';
+// remember to export `toBeWithinRange` as well
+import {toBeWithinRange} from './toBeWithinRange';
+
+expect.extend({
+  toBeWithinRange,
+});
 ```
 
 :::
@@ -1227,6 +1349,12 @@ describe('the La Croix cans on my desk', () => {
 
 :::tip
 
+`toEqual` ignores object keys with `undefined` properties, `undefined` array items, array sparseness, or object type mismatch. To take these into account use [`.toStrictEqual`](#tostrictequalvalue) instead.
+
+:::
+
+:::info
+
 `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
 
 :::
@@ -1327,13 +1455,14 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `.toStrictEqual(value)`
 
-Use `.toStrictEqual` to test that objects have the same types as well as structure.
+Use `.toStrictEqual` to test that objects have the same structure and type.
 
 Differences from `.toEqual`:
 
-- Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
-- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
-- Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
+- keys with `undefined` properties are checked, e.g. `{a: undefined, b: 2}` will not equal `{b: 2}`;
+- `undefined` items are taken into account, e.g. `[2]` will not equal `[2, undefined]`;
+- array sparseness is checked, e.g. `[, 1]` will not equal `[undefined, 1]`;
+- object types are checked, e.g. a class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
 class LaCroix {

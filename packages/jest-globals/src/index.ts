@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,6 +16,7 @@ import type {
   MockedClass as JestMockedClass,
   MockedFunction as JestMockedFunction,
   MockedObject as JestMockedObject,
+  Replaced as JestReplaced,
   Spied as JestSpied,
   SpiedClass as JestSpiedClass,
   SpiedFunction as JestSpiedFunction,
@@ -63,6 +64,10 @@ declare namespace jest {
    * Wraps an object type with Jest mock type definitions.
    */
   export type MockedObject<T extends object> = JestMockedObject<T>;
+  /**
+   * Constructs the type of a replaced property.
+   */
+  export type Replaced<T> = JestReplaced<T>;
   /**
    * Constructs the type of a spied class or function.
    */

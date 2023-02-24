@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -2150,14 +2150,14 @@ describe('seed', () => {
         seed: 2 ** 33,
       } as Config.Argv),
     ).rejects.toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is 8589934592',
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is 8589934592',
     );
     await expect(
       normalize({rootDir: '/root/'}, {
         seed: -(2 ** 33),
       } as Config.Argv),
     ).rejects.toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is -8589934592',
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is -8589934592',
     );
   });
 });
@@ -2181,5 +2181,35 @@ describe('showSeed', () => {
   test('showSeed is false when neither is set', async () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
     expect(options.showSeed).toBeFalsy();
+  });
+
+  test('showSeed is true when randomize is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+});
+
+describe('randomize', () => {
+  test('randomize is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      randomize: true,
+    } as Config.Argv);
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is set when the config is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.randomize).toBeFalsy();
   });
 });

@@ -82,6 +82,8 @@ jobs:
         run: yarn lint
       - name: run prettier
         run: yarn lint:prettier:ci
+      - name: check changelog
+        run: yarn check-changelog
       - name: check copyright headers
         run: yarn check-copyright-headers
 

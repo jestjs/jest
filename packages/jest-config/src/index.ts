@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -113,9 +113,11 @@ const groupOptions = (
     notifyMode: options.notifyMode,
     onlyChanged: options.onlyChanged,
     onlyFailures: options.onlyFailures,
+    openHandlesTimeout: options.openHandlesTimeout,
     outputFile: options.outputFile,
     passWithNoTests: options.passWithNoTests,
     projects: options.projects,
+    randomize: options.randomize,
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
@@ -140,6 +142,7 @@ const groupOptions = (
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
     workerIdleMemoryLimit: options.workerIdleMemoryLimit,
+    workerThreads: options.workerThreads,
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
@@ -168,6 +171,7 @@ const groupOptions = (
     moduleNameMapper: options.moduleNameMapper,
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
+    openHandlesTimeout: options.openHandlesTimeout,
     prettierPath: options.prettierPath,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,

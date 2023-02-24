@@ -5,7 +5,11 @@ title: Expect
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
+:::tip
+
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
+
+:::
 
 import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
@@ -203,40 +207,7 @@ expect.extend({
 });
 ```
 
-:::note
-
-In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
-
-```ts title="toBeWithinRange.ts"
-expect.extend({
-  toBeWithinRange(received: number, floor: number, ceiling: number) {
-    // ...
-  },
-});
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
-  }
-}
-```
-
-If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
-
-```ts
-interface CustomMatchers<R = unknown> {
-  toBeWithinRange(floor: number, ceiling: number): R;
-}
-declare global {
-  namespace jest {
-    interface Expect extends CustomMatchers {}
-    interface Matchers<R> extends CustomMatchers<R> {}
-    interface InverseAsymmetricMatchers extends CustomMatchers {}
-  }
-}
-export {};
-```
+:::
 
 #### Async Matchers
 
@@ -1378,6 +1349,12 @@ describe('the La Croix cans on my desk', () => {
 
 :::tip
 
+`toEqual` ignores object keys with `undefined` properties, `undefined` array items, array sparseness, or object type mismatch. To take these into account use [`.toStrictEqual`](#tostrictequalvalue) instead.
+
+:::
+
+:::info
+
 `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
 
 :::
@@ -1478,13 +1455,14 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `.toStrictEqual(value)`
 
-Use `.toStrictEqual` to test that objects have the same types as well as structure.
+Use `.toStrictEqual` to test that objects have the same structure and type.
 
 Differences from `.toEqual`:
 
-- Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
-- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
-- Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
+- keys with `undefined` properties are checked, e.g. `{a: undefined, b: 2}` will not equal `{b: 2}`;
+- `undefined` items are taken into account, e.g. `[2]` will not equal `[2, undefined]`;
+- array sparseness is checked, e.g. `[, 1]` will not equal `[undefined, 1]`;
+- object types are checked, e.g. a class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
 class LaCroix {

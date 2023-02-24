@@ -3,5 +3,6 @@
   "compilerOptions": {
     "rootDir": "./"
   },
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "references": [{"path": "../packages/test-utils"}]
 }

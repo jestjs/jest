@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ export type Options = {
 };
 
 type Paths = Set<string>;
-export type Repos = {git: Paths; hg: Paths};
+export type Repos = {git: Paths; hg: Paths; sl: Paths};
 export type ChangedFiles = {repos: Repos; changedFiles: Paths};
 export type ChangedFilesPromise = Promise<ChangedFiles>;
 

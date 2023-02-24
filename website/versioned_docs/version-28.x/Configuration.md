@@ -801,7 +801,7 @@ module.exports = {
 
 :::info
 
-Note that if you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+If you also have specified [`rootDir`](#rootdir-string), the resolution of this file will be relative to that root directory.
 
 :::
 
@@ -1282,9 +1282,13 @@ Pretty foo: Object {
 }
 ```
 
+:::tip
+
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
 More about serializers API can be found [here](https://github.com/facebook/jest/tree/main/packages/pretty-format/README.md#serialize).
+
+:::
 
 ### `testEnvironment` \[string]
 
@@ -1393,7 +1397,7 @@ For example, in `jest-environment-jsdom`, you can override options given to [`js
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
 
-These options can also be passed in a docblock, similar to `testEnvironment`. Note that it must be parseable by `JSON.parse`. Example:
+These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`:
 
 ```js
 /**
@@ -1663,17 +1667,19 @@ Example:
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```json
 {
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+    "<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)"
   ]
 }
 ```
 
 It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+Also note that you need using '\`${path.join(\_\_dirname, '../..')}/node_modules/.pnpm/...\`' instead of `<rootDir>/node_modules/.pnpm/...` when the config file is under `~/packages/lib-a/`, or using relative pattern `node_modules/(?!.pnpm|package-a|@scope/pkg-b)` to match the second 'node_modules/' in "node_modules/.pnpm/@scope+pkg-b@xxx/node_modules/@scope/pkg-b/"
 
 :::
 
@@ -1683,7 +1689,7 @@ Default: `[]`
 
 An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them. If a module's path matches any of the patterns in this list, it will not be automatically mocked by the module loader.
 
-This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lodash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
+This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like `underscore`, `lodash`, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
 
