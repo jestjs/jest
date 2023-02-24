@@ -17,6 +17,7 @@ import {
   Reporter,
   ReporterContext,
   SummaryReporter,
+  SummaryReporterOptions,
   VerboseReporter,
 } from '@jest/reporters';
 import {
@@ -336,7 +337,7 @@ class TestScheduler {
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
     const reporters = this._globalConfig.reporters || [['default', {}]];
-    let summaryOptions;
+    let summaryOptions: SummaryReporterOptions | null = null;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {

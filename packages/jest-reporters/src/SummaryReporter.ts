@@ -49,7 +49,7 @@ const NPM_EVENTS = new Set([
 const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
   process.env;
 
-type SummaryReporterOptions = {
+export type SummaryReporterOptions = {
   summaryThreshold?: number;
 };
 
