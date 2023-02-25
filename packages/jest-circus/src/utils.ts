@@ -179,7 +179,7 @@ const _makeTimeoutMessage = (
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
   }${
-    takesDoneCallback && ' while waiting for `done()` to be called'
+    takesDoneCallback ? ' while waiting for `done()` to be called' : ''
   }.\nAdd a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
