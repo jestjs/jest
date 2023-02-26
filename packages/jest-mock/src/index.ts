@@ -177,7 +177,6 @@ export interface Replaced<T = unknown> {
    * Restore property to its original value known at the time of mocking.
    */
   restore(): void;
-
   /**
    * Change the value of the property.
    */
@@ -1332,8 +1331,13 @@ export class ModuleMocker {
     T extends object,
     K extends PropertyLikeKeys<T>,
     V extends T[K],
-  >(object: T, propertyKey: K, value: V): Replaced<T[K]> {
-    if (object === undefined || object == null) {
+  >(
+    object: T,
+    propertyKey: K,
+    value: V,
+    options?: {tolerateUndefined?: boolean},
+  ): Replaced<T[K]> {
+    if (object == null) {
       throw new Error(
         `replaceProperty could not find an object on which to replace ${String(
           propertyKey,
@@ -1341,7 +1345,7 @@ export class ModuleMocker {
       );
     }
 
-    if (propertyKey === undefined || propertyKey === null) {
+    if (propertyKey == null) {
       throw new Error('No property name supplied');
     }
 
@@ -1359,14 +1363,14 @@ export class ModuleMocker {
       descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
       proto = Object.getPrototypeOf(proto);
     }
-    if (!descriptor) {
+    if (!descriptor && !options?.tolerateUndefined) {
       throw new Error(`${String(propertyKey)} property does not exist`);
     }
-    if (!descriptor.configurable) {
+    if (descriptor?.configurable === false) {
       throw new Error(`${String(propertyKey)} is not declared configurable`);
     }
 
-    if (descriptor.get !== undefined) {
+    if (descriptor?.get !== undefined) {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
@@ -1376,7 +1380,7 @@ export class ModuleMocker {
       );
     }
 
-    if (descriptor.set !== undefined) {
+    if (descriptor?.set !== undefined) {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
@@ -1386,7 +1390,7 @@ export class ModuleMocker {
       );
     }
 
-    if (typeof descriptor.value === 'function') {
+    if (typeof descriptor?.value === 'function') {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
@@ -1406,7 +1410,7 @@ export class ModuleMocker {
       object,
       propertyKey,
     );
-    const originalValue = descriptor.value;
+    const originalValue = descriptor?.value;
 
     const restore: ReplacedPropertyRestorer<T, K> = () => {
       if (isPropertyOwner) {

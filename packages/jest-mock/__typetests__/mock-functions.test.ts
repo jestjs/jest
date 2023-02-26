@@ -562,3 +562,10 @@ expectType<Replaced<ComplexObject['multipleTypes']>>(
     .replaceValue({foo: 1})
     .replaceValue(null),
 );
+
+expectType<Replaced<string | undefined>>(
+  replaceProperty(process.env, 'CI', 'true', {tolerateUndefined: true}),
+);
+expectError<Replaced<string | undefined>>(
+  replaceProperty(process.env, 'CI', 'true', {tolerateUndefined: 'all'}),
+);

@@ -1980,7 +1980,7 @@ describe('moduleMocker', () => {
       expect(obj.property).toBe(1);
     });
 
-    it('should allow mocking a property multiple times', () => {
+    it('should allow replacing a property multiple times', () => {
       const obj = {
         property: 1,
       };
@@ -2000,8 +2000,8 @@ describe('moduleMocker', () => {
       expect(obj.property).toBe(1);
     });
 
-    it('should allow mocking with value of different type', () => {
-      const obj = {
+    it('should allow replacing with value of different type', () => {
+      const obj: {property: unknown} = {
         property: 1,
       };
 
@@ -2014,6 +2014,36 @@ describe('moduleMocker', () => {
       replaced.restore();
 
       expect(obj.property).toBe(1);
+    });
+
+    it('should allow replacing undefined property, when `tolerateUndefined: true` is set', () => {
+      const obj: {property: number | undefined} = {
+        property: undefined,
+      };
+
+      const replaced = moduleMocker.replaceProperty(obj, 'property', 2, {
+        tolerateUndefined: true,
+      });
+
+      expect(obj.property).toBe(2);
+
+      replaced.restore();
+
+      expect(obj).toStrictEqual({property: undefined});
+    });
+
+    it('should allow adding nonexistent property, when `tolerateUndefined: true` is set', () => {
+      const obj: Record<string, unknown> = {};
+
+      const replaced = moduleMocker.replaceProperty(obj, 'nonexistent', 2, {
+        tolerateUndefined: true,
+      });
+
+      expect(obj.nonexistent).toBe(2);
+
+      replaced.restore();
+
+      expect(obj).not.toHaveProperty('nonexistent');
     });
 
     describe('should throw', () => {

@@ -614,9 +614,9 @@ See the [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for detai
 
 Determines if the given function is a mocked function.
 
-### `jest.replaceProperty(object, propertyKey, value)`
+### `jest.replaceProperty(object, propertyKey, value, options?)`
 
-Replace `object[propertyKey]` with a `value`. The property must already exist on the object. The same property might be replaced multiple times. Returns a Jest [replaced property](MockFunctionAPI.md#replaced-properties).
+Replace `object[propertyKey]` with a `value`. The same property might be replaced multiple times. Returns a Jest [replaced property](MockFunctionAPI.md#replaced-properties).
 
 :::note
 
@@ -660,6 +660,22 @@ test('isLocalhost returns true when HOSTNAME is localhost', () => {
 test('isLocalhost returns false when HOSTNAME is not localhost', () => {
   jest.replaceProperty(process, 'env', {HOSTNAME: 'not-localhost'});
   expect(utils.isLocalhost()).toBe(false);
+});
+```
+
+Jest will make sure that the target property exists on the object and its value is not `undefined`. To skip this precaution, use `tolerateUndefined` option:
+
+```js
+const isCI = () => process.env.CI === 'true';
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+test('when process.env.CI is true', () => {
+  jest.replaceProperty(process.env, 'CI', 'true', {tolerateUndefined: true});
+
+  expect(isCI()).toBe(true);
 });
 ```
 
