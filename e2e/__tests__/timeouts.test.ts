@@ -30,9 +30,13 @@ test('exceeds the timeout', () => {
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 20 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 20 ms for a test\.)/;
 
   expect(rest).toMatch(/(jest\.setTimeout\(20\))/);
-  expect(rest).toMatch(/(Exceeded timeout of 20 ms for a test\.)/);
+  expect(rest).toMatch(regexToMatch);
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
@@ -77,7 +81,11 @@ test('exceeds the command line testTimeout', () => {
     '--testTimeout=200',
   ]);
   const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(/(Exceeded timeout of 200 ms for a test\.)/);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 200 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 200 ms for a test\.)/;
+  expect(rest).toMatch(regexToMatch);
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
@@ -121,7 +129,11 @@ test('exceeds the timeout parameter', () => {
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(/(Exceeded timeout of 200 ms for a test\.)/);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 200 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 200 ms for a test\.)/;
+  expect(rest).toMatch(regexToMatch);
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
@@ -160,10 +172,12 @@ test('exceeds the timeout specifying that `done` has not been called', () => {
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
+  const regexToMatch =
+    process.env.JEST_JASMINE === '1'
+      ? /(Async callback was not invoked within the 20 ms timeout specified by jest\.setTimeout\.)/
+      : /(Exceeded timeout of 20 ms for a test while waiting for `done\(\)` to be called\.)/;
   expect(rest).toMatch(/(jest\.setTimeout\(20\))/);
-  expect(rest).toMatch(
-    /(Exceeded timeout of 20 ms for a test while waiting for `done\(\)` to be called\.)/,
-  );
+  expect(rest).toMatch(regexToMatch);
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
