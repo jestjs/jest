@@ -2099,11 +2099,25 @@ describe('moduleMocker', () => {
           Object.defineProperty(obj, 'property', {
             configurable: false,
             value: 1,
-            writable: false,
+            writable: true,
           });
 
           moduleMocker.replaceProperty(obj, 'property', 2);
         }).toThrow('property is not declared configurable');
+      });
+
+      it('when property is not writable', () => {
+        expect(() => {
+          const obj = {};
+
+          Object.defineProperty(obj, 'property', {
+            configurable: true,
+            value: 1,
+            writable: false,
+          });
+
+          moduleMocker.replaceProperty(obj, 'property', 2);
+        }).toThrow('property is not declared writable');
       });
 
       it('when trying to mock a method', () => {

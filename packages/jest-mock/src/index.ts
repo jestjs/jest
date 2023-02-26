@@ -1366,8 +1366,12 @@ export class ModuleMocker {
     if (!descriptor && !options?.tolerateUndefined) {
       throw new Error(`${String(propertyKey)} property does not exist`);
     }
+
     if (descriptor?.configurable === false) {
       throw new Error(`${String(propertyKey)} is not declared configurable`);
+    }
+    if (descriptor?.writable === false) {
+      throw new Error(`${String(propertyKey)} is not declared writable`);
     }
 
     if (descriptor?.get !== undefined) {
