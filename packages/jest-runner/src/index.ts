@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -105,6 +105,7 @@ export default class TestRunner extends EmittingTestRunner {
     }
 
     const worker = new Worker(require.resolve('./testWorker'), {
+      enableWorkerThreads: this._globalConfig.workerThreads,
       exposedMethods: ['worker'],
       forkOptions: {serialization: 'json', stdio: 'pipe'},
       // The workerIdleMemoryLimit should've been converted to a number during

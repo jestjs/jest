@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -805,6 +805,21 @@ describe('printPropertiesAndReceived', () => {
       path: expect.any(String),
     };
 
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
+  });
+
+  test('only highlight non passing properties', () => {
+    const received = {
+      a: 1,
+      b: 'some string',
+      c: 'another string',
+    };
+    const properties = {
+      a: expect.any(Number),
+      b: expect.any(Number),
+    };
     expect(
       printPropertiesAndReceived(properties, received, false),
     ).toMatchSnapshot();

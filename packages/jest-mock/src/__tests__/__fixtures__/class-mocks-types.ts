@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -52,3 +52,16 @@ export default class SuperTestClass {
 }
 
 export class TestClass extends SuperTestClass {}
+
+export function testFunction1() {
+  return 'testFunction1';
+}
+
+function testFunction() {
+  return 'testFunction2';
+}
+export const testFunction2 = testFunction;
+
+export const testFunction3 = () => {
+  return 'testFunction3';
+};

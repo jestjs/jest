@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -99,6 +99,23 @@ it('keeps custom project id based on the projects rootDir', async () => {
   expect((options.projects as Array<Config.InitialProjectOptions>)[0].id).toBe(
     id,
   );
+});
+
+it('validation warning occurs when options not for projects is set', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true, // an option not for projects
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(1);
 });
 
 it('keeps custom ids based on the rootDir', async () => {
@@ -1082,6 +1099,10 @@ describe('preset', () => {
       jest.requireActual('./jest-preset.json'),
     );
 
+    const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
+      ? /Unexpected token } in JSON at position (104|110)[\s\S]* at /
+      : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
+
     await expect(
       normalize(
         {
@@ -1090,9 +1111,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrow(
-      /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
-    );
+    ).rejects.toThrow(errorMessage);
   });
 
   test('throws when preset evaluation throws type error', async () => {
@@ -1105,9 +1124,9 @@ describe('preset', () => {
       {virtual: true},
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '>=16.9.1')
-      ? "TypeError: Cannot read properties of undefined (reading 'call')"
-      : /TypeError: Cannot read property 'call' of undefined[\s\S]* at /;
+    const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
+      ? /TypeError: Cannot read property 'call' of undefined[\s\S]* at /
+      : "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
       normalize(
@@ -2131,14 +2150,14 @@ describe('seed', () => {
         seed: 2 ** 33,
       } as Config.Argv),
     ).rejects.toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is 8589934592',
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is 8589934592',
     );
     await expect(
       normalize({rootDir: '/root/'}, {
         seed: -(2 ** 33),
       } as Config.Argv),
     ).rejects.toThrow(
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is -8589934592',
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is -8589934592',
     );
   });
 });
@@ -2162,5 +2181,35 @@ describe('showSeed', () => {
   test('showSeed is false when neither is set', async () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
     expect(options.showSeed).toBeFalsy();
+  });
+
+  test('showSeed is true when randomize is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+});
+
+describe('randomize', () => {
+  test('randomize is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      randomize: true,
+    } as Config.Argv);
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is set when the config is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.randomize).toBeFalsy();
   });
 });

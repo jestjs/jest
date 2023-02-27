@@ -772,7 +772,7 @@ If you specify a global reference value (like an object or array) here, and some
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L357-L419) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L421-L478).
 
 :::info
 
@@ -807,7 +807,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L357-L419) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L421-L478).
 
 :::info
 
@@ -1128,7 +1128,7 @@ export default config;
 
 :::info
 
-If you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+If you also have specified [`rootDir`](#rootdir-string), the resolution of this file will be relative to that root directory.
 
 :::
 
@@ -1330,7 +1330,7 @@ Hungry for reporters? Take a look at long list of [awesome reporters](https://gi
 
 :::
 
-Custom reporter module must export a class that takes `globalConfig`, `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
+Custom reporter module must export a class that takes [`globalConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L357-L419), `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
 
 ```js title="custom-reporter.js"
 class CustomReporter {
@@ -1512,7 +1512,7 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L357-L419) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1783,7 +1783,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [global config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L284) and [project config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L349) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [`globalConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L357-L419) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.1.2/packages/jest-types/src/Config.ts#L421-L478) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
@@ -1871,7 +1871,7 @@ For example, in `jest-environment-jsdom`, you can override options given to [`js
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
 
-These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`. Example:
+These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`:
 
 ```js
 /**
@@ -2197,13 +2197,20 @@ export default config;
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2215,7 +2222,14 @@ import type {Config} from 'jest';
 
 const config: Config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 

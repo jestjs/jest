@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -70,3 +70,17 @@ export default function nodeModulesPaths(
 
   return options.paths ? dirs.concat(options.paths) : dirs;
 }
+
+function findGlobalPaths(): Array<string> {
+  const {root} = path.parse(process.cwd());
+  const globalPath = path.join(root, 'node_modules');
+  const resolvePaths = require.resolve.paths('/');
+
+  if (resolvePaths) {
+    // the global paths start one after the root node_modules
+    const rootIndex = resolvePaths.indexOf(globalPath);
+    return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
+  }
+  return [];
+}
+export const GlobalPaths = findGlobalPaths();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -132,11 +132,17 @@ const readResultsAndExit = (
     }
 
     exit(code);
-  } else if (!globalConfig.detectOpenHandles) {
+  } else if (
+    !globalConfig.detectOpenHandles &&
+    globalConfig.openHandlesTimeout !== 0
+  ) {
+    const timeout = globalConfig.openHandlesTimeout;
     setTimeout(() => {
       console.warn(
         chalk.yellow.bold(
-          'Jest did not exit one second after the test run has completed.\n\n',
+          `Jest did not exit ${
+            timeout === 1000 ? 'one second' : `${timeout / 1000} seconds`
+          } after the test run has completed.\n\n'`,
         ) +
           chalk.yellow(
             'This usually means that there are asynchronous operations that ' +
@@ -144,6 +150,6 @@ const readResultsAndExit = (
               '`--detectOpenHandles` to troubleshoot this issue.',
           ),
       );
-    }, 1000).unref();
+    }, timeout).unref();
   }
 };

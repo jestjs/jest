@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -87,6 +87,8 @@ expectError(typedWorkerFarm.runTestAsync());
 
 expectError(typedWorkerFarm.setup());
 expectError(typedWorkerFarm.teardown());
+
+expectType<Promise<void>>(typedWorkerFarm.start());
 
 expectError<Promise<void>>(typedWorkerFarm.end());
 expectType<Promise<{forceExited: boolean}>>(typedWorkerFarm.end());

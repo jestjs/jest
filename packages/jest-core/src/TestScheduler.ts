@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -347,7 +347,10 @@ class TestScheduler {
             : this.addReporter(new DefaultReporter(this._globalConfig));
           break;
         case 'github-actions':
-          GITHUB_ACTIONS && this.addReporter(new GitHubActionsReporter());
+          GITHUB_ACTIONS &&
+            this.addReporter(
+              new GitHubActionsReporter(this._globalConfig, options),
+            );
           break;
         case 'summary':
           summary = true;

@@ -263,7 +263,7 @@ This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, un
 
 ## Mocking a specific method of a class
 
-Lets say that you want to mock or spy the method `playSoundFile` within the class `SoundPlayer`. A simple example:
+Lets say that you want to mock or spy on the method `playSoundFile` within the class `SoundPlayer`. A simple example:
 
 ```javascript
 // your jest test file below
@@ -306,7 +306,7 @@ export default class SoundPlayer {
 }
 ```
 
-You can mock/spy them easily, here is an example:
+You can mock/spy on them easily, here is an example:
 
 ```javascript
 // your jest test file below

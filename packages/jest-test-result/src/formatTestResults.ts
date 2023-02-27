@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -33,6 +33,21 @@ const formatTestResult = (
     };
   }
 
+  if (testResult.skipped) {
+    const now = Date.now();
+    return {
+      assertionResults: testResult.testResults,
+      coverage: {},
+      endTime: now,
+      message: testResult.failureMessage ?? '',
+      name: testResult.testFilePath,
+      startTime: now,
+      status: 'skipped',
+      summary: '',
+    };
+  }
+
+  const allTestsExecuted = testResult.numPendingTests === 0;
   const allTestsPassed = testResult.numFailingTests === 0;
   return {
     assertionResults: testResult.testResults,
@@ -44,7 +59,11 @@ const formatTestResult = (
     message: testResult.failureMessage ?? '',
     name: testResult.testFilePath,
     startTime: testResult.perfStats.start,
-    status: allTestsPassed ? 'passed' : 'failed',
+    status: allTestsPassed
+      ? allTestsExecuted
+        ? 'passed'
+        : 'focused'
+      : 'failed',
     summary: '',
   };
 };

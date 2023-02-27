@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -300,7 +300,7 @@ const config = {
           src: 'img/oss_logo.png',
           href: 'https://opensource.facebook.com',
         },
-        copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc. and affiliates. Built with Docusaurus.`,
       },
       algolia: {
         indexName: 'jest-v2',

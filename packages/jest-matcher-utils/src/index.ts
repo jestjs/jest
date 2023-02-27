@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -363,12 +363,7 @@ export const printDiffOrStringify = (
 
   if (isLineDiffable(expected, received)) {
     const {replacedExpected, replacedReceived} =
-      replaceMatchedToAsymmetricMatcher(
-        deepCyclicCopyReplaceable(expected),
-        deepCyclicCopyReplaceable(received),
-        [],
-        [],
-      );
+      replaceMatchedToAsymmetricMatcher(expected, received, [], []);
     const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
@@ -412,7 +407,21 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   return true;
 };
 
-function replaceMatchedToAsymmetricMatcher(
+export function replaceMatchedToAsymmetricMatcher(
+  replacedExpected: unknown,
+  replacedReceived: unknown,
+  expectedCycles: Array<unknown>,
+  receivedCycles: Array<unknown>,
+): {replacedExpected: unknown; replacedReceived: unknown} {
+  return _replaceMatchedToAsymmetricMatcher(
+    deepCyclicCopyReplaceable(replacedExpected),
+    deepCyclicCopyReplaceable(replacedReceived),
+    expectedCycles,
+    receivedCycles,
+  );
+}
+
+function _replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
   replacedReceived: unknown,
   expectedCycles: Array<unknown>,
@@ -446,7 +455,7 @@ function replaceMatchedToAsymmetricMatcher(
         expectedReplaceable.set(key, receivedValue);
       }
     } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
-      const replaced = replaceMatchedToAsymmetricMatcher(
+      const replaced = _replaceMatchedToAsymmetricMatcher(
         expectedValue,
         receivedValue,
         expectedCycles,

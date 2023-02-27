@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,11 +10,11 @@ import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
 export type Options = {
-  clearTimeout: typeof globalThis['clearTimeout'];
+  clearTimeout: (typeof globalThis)['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: typeof globalThis['setTimeout'];
+  setTimeout: (typeof globalThis)['setTimeout'];
   userContext: unknown;
 };
 

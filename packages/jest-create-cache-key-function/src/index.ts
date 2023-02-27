@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,7 +40,11 @@ type NewGetCacheKeyFunction = (
 
 type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
-function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
+function getGlobalCacheKey(
+  files: Array<string>,
+  values: Array<string>,
+  length: number,
+) {
   return [
     process.env.NODE_ENV,
     process.env.BABEL_ENV,
@@ -52,10 +56,13 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
       createHash('sha1'),
     )
     .digest('hex')
-    .substring(0, 32);
+    .substring(0, length);
 }
 
-function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
+function getCacheKeyFunction(
+  globalCacheKey: string,
+  length: number,
+): GetCacheKeyFunction {
   return (sourceText, sourcePath, configString, options) => {
     // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
     // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
@@ -71,13 +78,22 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
       .digest('hex')
-      .substring(0, 32);
+      .substring(0, length);
   };
 }
 
+/**
+ * Returns a function that can be used to generate cache keys based on source code of provided files and provided values.
+ *
+ * @param files - Array of absolute paths to files whose code should be accounted for when generating cache key
+ * @param values - Array of string values that should be accounted for when generating cache key
+ * @param length - Length of the resulting key. The default is `32`, or `16` on Windows.
+ * @returns A function that can be used to generate cache keys.
+ */
 export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
+  length = process.platform === 'win32' ? 16 : 32,
 ): GetCacheKeyFunction {
-  return getCacheKeyFunction(getGlobalCacheKey(files, values));
+  return getCacheKeyFunction(getGlobalCacheKey(files, values, length), length);
 }

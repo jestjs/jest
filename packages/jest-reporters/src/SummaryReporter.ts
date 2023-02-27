@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -106,22 +106,20 @@ export default class SummaryReporter extends BaseReporter {
         this._globalConfig,
       );
 
-      if (numTotalTestSuites) {
-        let message = getSummary(aggregatedResults, {
-          estimatedTime: this._estimatedTime,
-          seed: this._globalConfig.seed,
-          showSeed: this._globalConfig.showSeed,
-        });
+      let message = getSummary(aggregatedResults, {
+        estimatedTime: this._estimatedTime,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
+      });
 
-        if (!this._globalConfig.silent) {
-          message += `\n${
-            wasInterrupted
-              ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(testContexts, this._globalConfig)
-          }`;
-        }
-        this.log(message);
+      if (!this._globalConfig.silent) {
+        message += `\n${
+          wasInterrupted
+            ? chalk.bold.red('Test run was interrupted.')
+            : this._getTestSummary(testContexts, this._globalConfig)
+        }`;
       }
+      this.log(message);
     }
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,6 +22,10 @@ type Cache = {
 export type ShardOptions = {
   shardIndex: number;
   shardCount: number;
+};
+
+type ShardPositionOptions = ShardOptions & {
+  suiteLength: number;
 };
 
 /**
@@ -72,6 +76,19 @@ export default class TestSequencer {
     return cache;
   }
 
+  private _shardPosition(options: ShardPositionOptions): number {
+    const shardRest = options.suiteLength % options.shardCount;
+    const ratio = options.suiteLength / options.shardCount;
+
+    return new Array(options.shardIndex)
+      .fill(true)
+      .reduce<number>((acc, _, shardIndex) => {
+        const dangles = shardIndex < shardRest;
+        const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
+        return acc + shardSize;
+      }, 0);
+  }
+
   /**
    * Select tests for shard requested via --shard=shardIndex/shardCount
    * Sharding is applied before sorting
@@ -97,9 +114,17 @@ export default class TestSequencer {
     tests: Array<Test>,
     options: ShardOptions,
   ): Array<Test> | Promise<Array<Test>> {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardStart = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex - 1,
+      suiteLength: tests.length,
+    });
+
+    const shardEnd = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex,
+      suiteLength: tests.length,
+    });
 
     return tests
       .map(test => {

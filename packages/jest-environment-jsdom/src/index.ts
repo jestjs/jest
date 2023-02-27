@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -66,8 +66,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         ...projectConfig.testEnvironmentOptions,
       },
     );
-    const global = (this.global = this.dom.window.document
-      .defaultView as unknown as Win);
+    const global = (this.global = this.dom.window as unknown as Win);
 
     if (global == null) {
       throw new Error('JSDOM did not return a Window object');

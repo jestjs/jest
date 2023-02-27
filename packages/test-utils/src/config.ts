@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,6 +40,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   notifyMode: 'failure-change',
   onlyChanged: false,
   onlyFailures: false,
+  openHandlesTimeout: 1000,
   outputFile: undefined,
   passWithNoTests: false,
   projects: [],
@@ -92,6 +93,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   moduleNameMapper: [],
   modulePathIgnorePatterns: [],
   modulePaths: [],
+  openHandlesTimeout: 1000,
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,

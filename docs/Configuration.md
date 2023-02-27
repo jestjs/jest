@@ -772,7 +772,7 @@ If you specify a global reference value (like an object or array) here, and some
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -807,7 +807,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -1078,6 +1078,12 @@ Specifies notification mode. Requires `notify: true`.
 - `success-change`: send a notification when tests pass or once when it fails.
 - `failure-change`: send a notification when tests fail or once when it passes.
 
+### `openHandlesTimeout` \[number]
+
+Default: `1000`
+
+Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
+
 ### `preset` \[string]
 
 Default: `undefined`
@@ -1216,6 +1222,12 @@ With the `projects` option enabled, Jest will copy the root-level configuration 
 
 :::
 
+### `randomize` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--randomize`](CLI.md#--randomize) flag to randomize the order of the tests in a file.
+
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`
@@ -1278,12 +1290,12 @@ export default config;
 
 #### GitHub Actions Reporter
 
-If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages:
+If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages and (if used with `'silent: false'`) print logs with github group features for easy navigation. Note that `'default'` should not be used in this case as `'github-actions'` will handle that already, so remember to also include `'summary'`. If you wish to use it only for annotations simply leave only the reporter without options as the default value of `'silent'` is `'true'`:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
-  reporters: ['default', 'github-actions'],
+  reporters: [['github-actions', {silent: false}], 'summary'],
 };
 
 module.exports = config;
@@ -1293,7 +1305,7 @@ module.exports = config;
 import type {Config} from 'jest';
 
 const config: Config = {
-  reporters: ['default', 'github-actions'],
+  reporters: [['github-actions', {silent: false}], 'summary'],
 };
 
 export default config;
@@ -1330,7 +1342,7 @@ Hungry for reporters? Take a look at long list of [awesome reporters](https://gi
 
 :::
 
-Custom reporter module must export a class that takes `globalConfig`, `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
+Custom reporter module must export a class that takes [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422), `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
 
 ```js title="custom-reporter.js"
 class CustomReporter {
@@ -1512,7 +1524,7 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1789,7 +1801,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [global config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L284) and [project config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L349) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
@@ -2203,13 +2215,20 @@ export default config;
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative pattern to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2221,7 +2240,14 @@ import type {Config} from 'jest';
 
 const config: Config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2256,7 +2282,7 @@ An array of RegExp patterns that are matched against all source file paths befor
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
 
-Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
+Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg, .sl). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
 
 ```js tab
 /** @type {import('jest').Config} */
@@ -2361,3 +2387,17 @@ This option allows comments in `package.json`. Include the comment text as the v
   }
 }
 ```
+
+### `workerThreads`
+
+Default: `false`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+Using worker threads may help to improve [performance](https://github.com/nodejs/node/discussions/44264).
+
+:::caution
+
+This is **experimental feature**. Keep in mind that the worker threads use structured clone instead of `JSON.stringify()` to serialize messages. This means that built-in JavaScript objects as `BigInt`, `Map` or `Set` will get serialized properly. However extra properties set on `Error`, `Map` or `Set` will not be passed on through the serialization step. For more details see the article on [structured clone](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+
+:::
