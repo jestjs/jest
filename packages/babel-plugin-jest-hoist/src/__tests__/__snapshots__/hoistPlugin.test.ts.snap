@@ -262,7 +262,7 @@ jest.mock('some-module', () => {
   return class Mocked extends Actual {
     constructor() {
       super();
-      jest.spyOn(module, 'add');
+      jest.spyOn(this, 'add');
     }
   };
 });
@@ -275,7 +275,7 @@ _getJestObj().mock('some-module', () => {
   return class Mocked extends Actual {
     constructor() {
       super();
-      _getJestObj().spyOn(module, 'add');
+      _getJestObj().spyOn(this, 'add');
     }
   };
 });

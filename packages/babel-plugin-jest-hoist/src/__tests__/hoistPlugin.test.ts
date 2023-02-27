@@ -169,7 +169,7 @@ pluginTester({
           return class Mocked extends Actual {
             constructor() {
               super();
-              jest.spyOn(module, 'add');
+              jest.spyOn(this, 'add');
             }
           };
         });
