@@ -1267,7 +1267,6 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          this._v8CoverageSources!.has(res.url) &&
           shouldInstrument(res.url, this._coverageOptions, this._config),
       )
       .map(result => {
