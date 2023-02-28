@@ -43,6 +43,55 @@ test('works fine when function throws error', () => {
   }
 });
 
+test('works fine when function throws error with cause', () => {
+  const filename = 'works-fine-when-function-throws-error-with-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      expect(() => {
+        throw new Error('apple', {
+          cause: new Error('banana', {
+            cause: new Error('orange')
+          })
+        });
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
+    expect(exitCode).toBe(0);
+  }
+});
+
+test('works fine when function throws error with string cause', () => {
+  const filename =
+    'works-fine-when-function-throws-error-with-string-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      expect(() => {
+        throw new Error('apple', {
+          cause: 'here is a cause'
+        });
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
+    expect(exitCode).toBe(0);
+  }
+});
+
 test('updates existing snapshot', () => {
   const filename = 'updates-existing-snapshot.test.js';
   const template = makeTemplate(`

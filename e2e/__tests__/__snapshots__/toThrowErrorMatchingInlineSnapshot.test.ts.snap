@@ -18,6 +18,37 @@ exports[`updates existing snapshot: updated snapshot 1`] = `
 "
 `;
 
+exports[`works fine when function throws error with cause: initial write with cause 1`] = `
+"test('works fine when function throws error', () => {
+  expect(() => {
+    throw new Error('apple', {
+      cause: new Error('banana', {
+        cause: new Error('orange'),
+      }),
+    });
+  }).toThrowErrorMatchingInlineSnapshot(\`
+    "apple
+    Cause: banana
+    Cause: orange"
+  \`);
+});
+"
+`;
+
+exports[`works fine when function throws error with string cause: initial write with cause 1`] = `
+"test('works fine when function throws error', () => {
+  expect(() => {
+    throw new Error('apple', {
+      cause: 'here is a cause',
+    });
+  }).toThrowErrorMatchingInlineSnapshot(\`
+    "apple
+    Cause: here is a cause"
+  \`);
+});
+"
+`;
+
 exports[`works fine when function throws error: initial write 1`] = `
 "test('works fine when function throws error', () => {
   expect(() => {
