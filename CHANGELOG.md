@@ -9,6 +9,7 @@
 - `[@jest/create-cache-key-function]` Allow passing `length` argument to `createCacheKey()` function and set its default value to `16` on Windows ([#13827](https://github.com/facebook/jest/pull/13827))
 - `[jest-message-util]` Add support for [AggregateError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) ([#13946](https://github.com/facebook/jest/pull/13946) & [#13947](https://github.com/facebook/jest/pull/13947))
 - `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it` ([#13935](https://github.com/facebook/jest/pull/13935))
+- `[jest-snapshot]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/facebook/jest/pull/13965))
 - `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
 
 ### Fixes
