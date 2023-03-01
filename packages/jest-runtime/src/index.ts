@@ -1267,7 +1267,12 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          shouldInstrument(res.url, this._coverageOptions, this._config),
+          shouldInstrument(
+            res.url,
+            this._coverageOptions,
+            this._config,
+            Array.from(this._v8CoverageSources!.keys()),
+          ),
       )
       .map(result => {
         const transformedFile = this._v8CoverageSources!.get(result.url);

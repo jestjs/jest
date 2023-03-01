@@ -34,6 +34,7 @@ export default function shouldInstrument(
   filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
+  loadedFilenames?: Array<string>,
 ): boolean {
   if (!options.collectCoverage) {
     return false;
@@ -58,6 +59,14 @@ export default function shouldInstrument(
     if (globsToMatcher(config.testMatch)(replacePathSepForGlob(filename))) {
       return false;
     }
+  }
+
+  if (
+    options.collectCoverageFrom.length === 0 &&
+    loadedFilenames != null &&
+    !loadedFilenames.includes(filename)
+  ) {
+    return false;
   }
 
   if (
