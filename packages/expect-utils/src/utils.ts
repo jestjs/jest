@@ -370,19 +370,15 @@ export const subsetEquality = (
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const typeEquality = (a: any, b: any): boolean | undefined => {
-  // Since Jest globals are different from Node globals,
-  // constructors are different even between arrays when comparing properties of mock objects.
-  // Both of them should be able to compare correctly when they are array-to-array.
-  // https://github.com/facebook/jest/issues/2549
-  const areBothArray =
-    Array.isArray(a) &&
-    Array.isArray(b) &&
-    a.constructor.toString() === b.constructor.toString();
   if (
     a == null ||
     b == null ||
     a.constructor === b.constructor ||
-    areBothArray
+    // Since Jest globals are different from Node globals,
+    // constructors are different even between arrays when comparing properties of mock objects.
+    // Both of them should be able to compare correctly when they are array-to-array.
+    // https://github.com/facebook/jest/issues/2549
+    (Array.isArray(a) && Array.isArray(b))
   ) {
     return undefined;
   }
