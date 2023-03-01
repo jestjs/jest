@@ -53,12 +53,7 @@ import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {
-  createDirectory,
-  deepCyclicCopy,
-  globsToMatcher,
-  replacePathSepForGlob,
-} from 'jest-util';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -1265,18 +1260,6 @@ export default class Runtime {
       throw new Error('You need to call `stopCollectingV8Coverage` first.');
     }
 
-    const coverageMatcher = this._coverageOptions.collectCoverageFrom.length
-      ? globsToMatcher(this._coverageOptions.collectCoverageFrom)
-      : undefined;
-    const matchesCoveragePattern = (file: string) => {
-      if (coverageMatcher) {
-        return coverageMatcher(
-          replacePathSepForGlob(path.relative(this._config.rootDir, file)),
-        );
-      }
-      return this._v8CoverageSources!.has(file);
-    };
-
     return this._v8CoverageResult
       .filter(res => res.url.startsWith('file://'))
       .map(res => ({...res, url: fileURLToPath(res.url)}))
@@ -1284,7 +1267,6 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          matchesCoveragePattern(res.url) &&
           shouldInstrument(res.url, this._coverageOptions, this._config),
       )
       .map(result => {
