@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {isJestJasmineRun} from '@jest/test-utils';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -94,22 +93,29 @@ test('works with snapshot failures with hint', () => {
   ).toMatchSnapshot();
 });
 
-(isJestJasmineRun() ? test.skip : test)('works with error with cause', () => {
+test('works with error with cause', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
 
   expect(summary).toMatchSnapshot();
 });
 
-(isJestJasmineRun() ? test.skip : test)(
-  'works with error with cause thrown outside tests',
-  () => {
-    const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
-    const summary = normalizeDots(cleanStderr(stderr));
+test('works with error with cause thrown outside tests', () => {
+  const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
 
-    expect(summary).toMatchSnapshot();
-  },
-);
+  const sanitizedSummary = summary
+    .replace(/ Suite\.f /g, ' f ') // added by jasmine runner
+    .split('\n')
+    .map(line => line.trim()) // jasmine runner does not come with the same indentation
+    .join('\n');
+
+  expect(
+    // jasmine runner differ from circus one in this case, we just start
+    // the comparison when the stack starts to be reported
+    sanitizedSummary.substring(sanitizedSummary.indexOf('error during f')),
+  ).toMatchSnapshot();
+});
 
 test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
