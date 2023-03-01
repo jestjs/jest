@@ -151,6 +151,32 @@ pluginTester({
       formatResult,
       snapshot: true,
     },
+    'jest.spyOn call on the imported module': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          const module = jest.requireActual('some-module');
+          jest.spyOn(module, 'add');
+          return module;
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'jest.spyOn call in class constructor': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          const Actual = jest.requireActual('some-module');
+          return class Mocked extends Actual {
+            constructor() {
+              super();
+              jest.spyOn(this, 'add');
+            }
+          };
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
   },
   /* eslint-enable */
 });
