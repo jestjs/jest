@@ -167,7 +167,7 @@ const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 `.trim()}\n`,
     );
-  }
+  },
 );
 
 test('saveInlineSnapshots() can handle tsx without prettier', () => {
