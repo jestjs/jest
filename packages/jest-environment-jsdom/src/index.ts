@@ -160,13 +160,6 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       this.global.close();
-
-      // Dispose "document" to prevent "load" event from triggering.
-
-      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
-      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
-      // document should be accessible within disconnectedCallback.
-      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error: this.global not allowed to be `null`
