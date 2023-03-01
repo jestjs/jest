@@ -17,6 +17,7 @@
 - `[jest-circus]` Update message printed on test timeout ([#13830](https://github.com/facebook/jest/pull/13830))
 - `[jest-circus]` Avoid creating the word "testfalse" when `takesDoneCallback` is `false` in the message printed on test timeout AND updated timeouts test ([#13954](https://github.com/facebook/jest/pull/13954))
 - `[@jest/test-result]` Allow `TestResultsProcessor` type to return a Promise ([#13950](https://github.com/facebook/jest/pull/13950))
+- `[jest-runtime]` Support coverage with v8 for scripts loaded with `vm.runInContext`. Note: `collectCoverageFrom` must be set for it to work ([#](https://github.com/facebook/jest/pull/13962))
 
 ### Chore & Maintenance
 
