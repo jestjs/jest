@@ -24,11 +24,13 @@ describe('shouldInstrument', () => {
       filename = defaultFilename,
       options: Partial<Options>,
       config: Partial<Config.ProjectConfig>,
+      loadedFilenames?: Array<string>,
     ) => {
       const result = shouldInstrument(
         filename,
         {...defaultOptions, ...options},
         {...defaultConfig, ...config},
+        loadedFilenames,
       );
       expect(result).toBe(true);
     };
@@ -99,6 +101,24 @@ describe('shouldInstrument', () => {
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
+
+    it('when file is in loadedFilenames list', () => {
+      testShouldInstrument(
+        'do/collect/coverage.js',
+        defaultOptions,
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is in not loadedFilenames list, but matches collectCoverageFrom', () => {
+      testShouldInstrument(
+        'do/collect/coverage.js',
+        {collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js']},
+        defaultConfig,
+        ['dont/collect/coverage.js'],
+      );
+    });
   });
 
   describe('should return false', () => {
@@ -106,11 +126,13 @@ describe('shouldInstrument', () => {
       filename = defaultFilename,
       options: Partial<Options>,
       config: Partial<Config.ProjectConfig>,
+      loadedFilenames?: Array<string>,
     ) => {
       const result = shouldInstrument(
         filename,
         {...defaultOptions, ...options},
         {...defaultConfig, ...config},
+        loadedFilenames,
       );
       expect(result).toBe(false);
     };
@@ -204,6 +226,24 @@ describe('shouldInstrument', () => {
       testShouldInstrument('setupTest.js', defaultOptions, {
         setupFilesAfterEnv: ['setupTest.js'],
       });
+    });
+
+    it('when file is not in loadedFilenames list', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.js',
+        defaultOptions,
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is in not loadedFilenames list and does not match collectCoverageFrom', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.js',
+        {collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js']},
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
     });
   });
 });
