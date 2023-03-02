@@ -81,7 +81,7 @@ const saveSnapshotsForFile = (
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
   const presets = [require.resolve('babel-preset-current-node-syntax')];
   const plugins: Array<PluginItem> = [];
-  if (/\.tsx?$/.test(sourceFilePath)) {
+  if (/\.([cm]?ts|tsx)$/.test(sourceFilePath)) {
     plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
       {isTSX: sourceFilePath.endsWith('x')},
