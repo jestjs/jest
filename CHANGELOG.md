@@ -23,6 +23,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-snapshot]` Remove dependency on `jest-haste-map` ([#13977](https://github.com/facebook/jest/pull/13977))
+
 ### Performance
 
 ## 29.4.3

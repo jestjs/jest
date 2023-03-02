@@ -8,7 +8,6 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
-import type {IHasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -31,7 +30,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, MatchSnapshotConfig} from './types';
+import type {Context, FileSystem, MatchSnapshotConfig} from './types';
 import {deepMerge, escapeBacktickString, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
@@ -110,11 +109,11 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: string, hasteFS: IHasteFS): boolean =>
-  hasteFS.exists(filePath) || fs.existsSync(filePath);
+const fileExists = (filePath: string, fileSystem: FileSystem): boolean =>
+  fileSystem.exists(filePath) || fs.existsSync(filePath);
 
 export const cleanup = (
-  hasteFS: IHasteFS,
+  fileSystem: FileSystem,
   update: Config.SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
   testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
@@ -123,7 +122,7 @@ export const cleanup = (
   filesRemovedList: Array<string>;
 } => {
   const pattern = `\\.${EXTENSION}$`;
-  const files = hasteFS.matchFiles(pattern);
+  const files = fileSystem.matchFiles(pattern);
   let testIgnorePatternsRegex: RegExp | null = null;
   if (testPathIgnorePatterns && testPathIgnorePatterns.length > 0) {
     testIgnorePatternsRegex = new RegExp(testPathIgnorePatterns.join('|'));
@@ -137,7 +136,7 @@ export const cleanup = (
       return false;
     }
 
-    if (!fileExists(testPath, hasteFS)) {
+    if (!fileExists(testPath, fileSystem)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
