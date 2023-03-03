@@ -12629,6 +12629,7 @@ __metadata:
     jest-util: "workspace:^"
     jest-validate: "workspace:^"
     prompts: ^2.0.1
+    tsd-lite: ^0.6.0
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -13116,7 +13117,6 @@ __metadata:
     graceful-fs: ^4.2.9
     jest-diff: "workspace:^"
     jest-get-type: "workspace:^"
-    jest-haste-map: "workspace:^"
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
