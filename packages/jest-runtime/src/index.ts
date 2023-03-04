@@ -1271,7 +1271,7 @@ export default class Runtime {
             res.url,
             this._coverageOptions,
             this._config,
-            Array.from(this._v8CoverageSources!.keys()),
+            /* loadedFilenames */ Array.from(this._v8CoverageSources!.keys()),
           ),
       )
       .map(result => {
