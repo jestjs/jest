@@ -15,8 +15,7 @@ export function check(argv: Config.Argv): true {
     Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
   ) {
     throw new Error(
-      'Both --runInBand and --maxWorkers were specified, but these two ' +
-        'options do not make sense together. Which is it?',
+      'Both --runInBand and --maxWorkers were specified, only one is allowed.',
     );
   }
 
@@ -28,17 +27,16 @@ export function check(argv: Config.Argv): true {
   ]) {
     if (argv[key] && argv.watchAll) {
       throw new Error(
-        `Both --${key} and --watchAll were specified, but these two ` +
-          'options do not make sense together. Try the --watch option which ' +
-          'reruns only tests related to changed files.',
+        `Both --${key} and --watchAll were specified, but cannot be used ` +
+          'together. Try the --watch option which reruns only tests ' +
+          'related to changed files.',
       );
     }
   }
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      'Both --onlyFailures and --watchAll were specified, but these two ' +
-        'options do not make sense together.',
+      'Both --onlyFailures and --watchAll were specified, only one is allowed.',
     );
   }
 
