@@ -106,3 +106,15 @@ test('prints correct coverage report, if a TS module is transpiled by custom tra
   expect(exitCode).toBe(0);
   expect(stdout).toMatchSnapshot();
 });
+
+test('vm script coverage generator', () => {
+  const dir = path.resolve(__dirname, '../vmscript-coverage');
+  const {stdout, exitCode} = runJest(
+    dir,
+    ['--coverage', '--coverage-provider', 'v8'],
+    {stripAnsi: true},
+  );
+
+  expect(exitCode).toBe(0);
+  expect(stdout).toMatchSnapshot();
+});

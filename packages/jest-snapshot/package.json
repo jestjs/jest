@@ -34,7 +34,6 @@
     "graceful-fs": "^4.2.9",
     "jest-diff": "workspace:^",
     "jest-get-type": "workspace:^",
-    "jest-haste-map": "workspace:^",
     "jest-matcher-utils": "workspace:^",
     "jest-message-util": "workspace:^",
     "jest-util": "workspace:^",

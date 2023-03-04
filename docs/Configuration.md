@@ -1334,6 +1334,29 @@ const config: Config = {
 export default config;
 ```
 
+The `summary` reporter accepts options. Since it is included in the `default` reporter you may also pass the options there.
+
+```js tab
+/** @type {import('jest').Config} */
+const config = {
+  reporters: [['default', {summaryThreshold: 10}]],
+};
+
+module.exports = config;
+```
+
+```ts tab
+import type {Config} from 'jest';
+
+const config: Config = {
+  reporters: [['default', {summaryThreshold: 10}]],
+};
+
+export default config;
+```
+
+The `summaryThreshold` option behaves in the following way, if the total number of test suites surpasses this threshold, a detailed summary of all failed tests will be printed after executing all the tests. It defaults to `20`.
+
 #### Custom Reporters
 
 :::tip

@@ -433,6 +433,27 @@ function formatErrorStack(
   return `${message}\n${stack}${cause}`;
 }
 
+function failureDetailsToErrorOrStack(
+  failureDetails: unknown,
+  content: string,
+): Error | string {
+  if (!failureDetails) {
+    return content;
+  }
+  if (types.isNativeError(failureDetails) || failureDetails instanceof Error) {
+    return failureDetails; // receiving raw errors for jest-circus
+  }
+  if (
+    typeof failureDetails === 'object' &&
+    'error' in failureDetails &&
+    (types.isNativeError(failureDetails.error) ||
+      failureDetails.error instanceof Error)
+  ) {
+    return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
+  }
+  return content;
+}
+
 export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
@@ -459,11 +480,10 @@ export const formatResultsErrors = (
 
   return failedResults
     .map(({result, content, failureDetails}) => {
-      const rootErrorOrStack: Error | string =
-        failureDetails &&
-        (types.isNativeError(failureDetails) || failureDetails instanceof Error)
-          ? failureDetails
-          : content;
+      const rootErrorOrStack = failureDetailsToErrorOrStack(
+        failureDetails,
+        content,
+      );
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +

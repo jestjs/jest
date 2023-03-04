@@ -132,40 +132,43 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   );
 });
 
-test('saveInlineSnapshots() can handle typescript without prettier', () => {
-  const filename = path.join(dir, 'my.test.ts');
-  fs.writeFileSync(
-    filename,
-    `${`
+test.each([['ts'], ['cts'], ['mts']])(
+  'saveInlineSnapshots() can handle typescript without prettier - %s extension',
+  extension => {
+    const filename = path.join(dir, `my.test.${extension}`);
+    fs.writeFileSync(
+      filename,
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
 `.trim()}\n`,
-  );
+    );
 
-  saveInlineSnapshots(
-    [
-      {
-        frame: {column: 11, file: filename, line: 5} as Frame,
-        snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
-      },
-    ],
-    dir,
-    null,
-  );
+    saveInlineSnapshots(
+      [
+        {
+          frame: {column: 11, file: filename, line: 5} as Frame,
+          snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
+        },
+      ],
+      dir,
+      null,
+    );
 
-  expect(fs.readFileSync(filename, 'utf8')).toBe(
-    `${`
+    expect(fs.readFileSync(filename, 'utf8')).toBe(
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 `.trim()}\n`,
-  );
-});
+    );
+  },
+);
 
 test('saveInlineSnapshots() can handle tsx without prettier', () => {
   const filename = path.join(dir, 'my.test.tsx');
