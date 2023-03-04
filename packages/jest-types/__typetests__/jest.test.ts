@@ -574,6 +574,18 @@ expectError(jest.useFakeTimers('modern'));
 expectType<typeof jest>(jest.useRealTimers());
 expectError(jest.useRealTimers(true));
 
+expectType<Promise<number>>(jest.tickAsync(250));
+expectError(jest.tickAsync());
+
+expectType<Promise<number>>(jest.nextAsync());
+expectError(jest.nextAsync('jest'));
+
+expectType<Promise<number>>(jest.runAllAsync());
+expectError(jest.runAllAsync('jest'));
+
+expectType<Promise<number>>(jest.runToLastAsync());
+expectError(jest.runToLastAsync('jest'));
+
 // Misc
 
 expectType<typeof jest>(jest.retryTimes(3));

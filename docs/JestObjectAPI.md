@@ -983,6 +983,54 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
+### `jest.nextAsync()`
+
+Advances the clock to the the moment of the first scheduled timer.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
+### `jest.runAllAsync()`
+
+Runs all pending timers until there are none remaining.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
+### `jest.runToLastAsync()`
+
+Takes note of the last scheduled timer when it is run, and advances the clock to that time firing callbacks as necessary.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
+### `jest.tickAsync()`
+
+Advance the clock, firing callbacks if necessary.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ## Misc
 
 ### `jest.getSeed()`

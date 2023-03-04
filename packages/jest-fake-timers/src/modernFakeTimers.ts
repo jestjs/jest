@@ -137,6 +137,34 @@ export default class FakeTimers {
     return 0;
   }
 
+  nextAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.nextAsync();
+    }
+    return Promise.resolve(0);
+  }
+
+  runAllAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.runAllAsync();
+    }
+    return Promise.resolve(0);
+  }
+
+  runToLastAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.runToLastAsync();
+    }
+    return Promise.resolve(0);
+  }
+
+  tickAsync(time: string | number): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.tickAsync(time);
+    }
+    return Promise.resolve(0);
+  }
+
   private _checkFakeTimers() {
     if (!this._fakingTime) {
       this._global.console.warn(
