@@ -995,7 +995,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.runAllTimers()`
+### `jest.runAllTimersAsync()`
 
 Runs all pending timers until there are none remaining.
 
@@ -1019,7 +1019,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.advanceTimersByTimeAsync()`
+### `jest.advanceTimersByTimeAsync(msToRun)`
 
 Advance the clock, firing callbacks if necessary.
 
