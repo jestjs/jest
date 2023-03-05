@@ -73,9 +73,7 @@ it('makes a non-existing relative worker throw', () => {
 });
 
 it('supports URLs', () => {
-  const absoluteWorkerPath = '/tmp/baz.js';
-
-  const workerPathUrl = pathToFileURL(absoluteWorkerPath);
+  const workerPathUrl = pathToFileURL(__filename);
 
   // eslint-disable-next-line no-new
   new WorkerFarm(workerPathUrl, {exposedMethods: ['foo', 'bar']});
@@ -83,16 +81,8 @@ it('supports URLs', () => {
   new WorkerFarm(workerPathUrl.href, {exposedMethods: ['foo', 'bar']});
 
   expect(WorkerPool).toHaveBeenCalledTimes(2);
-  expect(WorkerPool).toHaveBeenNthCalledWith(
-    1,
-    absoluteWorkerPath,
-    expect.anything(),
-  );
-  expect(WorkerPool).toHaveBeenNthCalledWith(
-    2,
-    absoluteWorkerPath,
-    expect.anything(),
-  );
+  expect(WorkerPool).toHaveBeenNthCalledWith(1, __filename, expect.anything());
+  expect(WorkerPool).toHaveBeenNthCalledWith(2, __filename, expect.anything());
 });
 
 it('exposes the right API using default working', () => {
