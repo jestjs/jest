@@ -960,7 +960,7 @@ describe('FakeTimers', () => {
     });
   });
 
-  describe('nextAsync', () => {
+  describe('advanceTimersToNextTimerAsync', () => {
     it('should advance the clock at the moment of the first scheduled timer', async () => {
       const global = {
         Date,
@@ -979,16 +979,16 @@ describe('FakeTimers', () => {
         global.setTimeout(spy, 100);
       }, 100);
 
-      await timers.nextAsync();
+      await timers.advanceTimersToNextTimerAsync();
       expect(timers.now()).toBe(100);
 
-      await timers.nextAsync();
+      await timers.advanceTimersToNextTimerAsync();
       expect(timers.now()).toBe(200);
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  describe('runAllAsync', () => {
+  describe('runAllTimersAsync', () => {
     it('should advance the clock to the last scheduled timer', async () => {
       const global = {
         Date,
@@ -1009,14 +1009,14 @@ describe('FakeTimers', () => {
         global.setTimeout(spy2, 200);
       }, 100);
 
-      await timers.runAllAsync();
+      await timers.runAllTimersAsync();
       expect(timers.now()).toBe(300);
       expect(spy).toHaveBeenCalled();
       expect(spy2).toHaveBeenCalled();
     });
   });
 
-  describe('runToLastAsync', () => {
+  describe('runOnlyPendingTimersAsync', () => {
     it('should advance the clock to the last scheduled timer', async () => {
       const global = {
         Date,
@@ -1037,14 +1037,14 @@ describe('FakeTimers', () => {
         await Promise.resolve();
       }, 100);
 
-      await timers.runToLastAsync();
+      await timers.runOnlyPendingTimersAsync();
       expect(timers.now()).toBe(100);
       expect(spy).toHaveBeenCalled();
       expect(spy2).toHaveBeenCalled();
     });
   });
 
-  describe('tickAsync', () => {
+  describe('advanceTimersByTimeAsync', () => {
     it('should advance the clock', async () => {
       const global = {
         Date,
@@ -1062,7 +1062,7 @@ describe('FakeTimers', () => {
         global.setTimeout(spy, 100);
       }, 100);
 
-      await timers.tickAsync(200);
+      await timers.advanceTimersByTimeAsync(200);
       expect(spy).toHaveBeenCalled();
     });
   });

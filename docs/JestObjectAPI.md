@@ -983,7 +983,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.nextAsync()`
+### `jest.advanceTimersToNextTimerAsync()`
 
 Advances the clock to the the moment of the first scheduled timer.
 
@@ -995,7 +995,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.runAllAsync()`
+### `jest.runAllTimers()`
 
 Runs all pending timers until there are none remaining.
 
@@ -1007,7 +1007,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.runToLastAsync()`
+### `jest.runOnlyPendingTimersAsync()`
 
 Takes note of the last scheduled timer when it is run, and advances the clock to that time firing callbacks as necessary.
 
@@ -1019,7 +1019,7 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
-### `jest.tickAsync()`
+### `jest.advanceTimersByTimeAsync()`
 
 Advance the clock, firing callbacks if necessary.
 

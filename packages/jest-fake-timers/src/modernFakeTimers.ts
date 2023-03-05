@@ -52,10 +52,24 @@ export default class FakeTimers {
     }
   }
 
+  runAllTimersAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.runAllAsync();
+    }
+    return Promise.resolve(0);
+  }
+
   runOnlyPendingTimers(): void {
     if (this._checkFakeTimers()) {
       this._clock.runToLast();
     }
+  }
+
+  runOnlyPendingTimersAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.runToLastAsync();
+    }
+    return Promise.resolve(0);
   }
 
   advanceTimersToNextTimer(steps = 1): void {
@@ -72,10 +86,24 @@ export default class FakeTimers {
     }
   }
 
+  advanceTimersToNextTimerAsync(): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.nextAsync();
+    }
+    return Promise.resolve(0);
+  }
+
   advanceTimersByTime(msToRun: number): void {
     if (this._checkFakeTimers()) {
       this._clock.tick(msToRun);
     }
+  }
+
+  advanceTimersByTimeAsync(msToRun: number): Promise<number> {
+    if (this._checkFakeTimers()) {
+      return this._clock.tickAsync(msToRun);
+    }
+    return Promise.resolve(0);
   }
 
   runAllTicks(): void {
@@ -135,34 +163,6 @@ export default class FakeTimers {
     }
 
     return 0;
-  }
-
-  nextAsync(): Promise<number> {
-    if (this._checkFakeTimers()) {
-      return this._clock.nextAsync();
-    }
-    return Promise.resolve(0);
-  }
-
-  runAllAsync(): Promise<number> {
-    if (this._checkFakeTimers()) {
-      return this._clock.runAllAsync();
-    }
-    return Promise.resolve(0);
-  }
-
-  runToLastAsync(): Promise<number> {
-    if (this._checkFakeTimers()) {
-      return this._clock.runToLastAsync();
-    }
-    return Promise.resolve(0);
-  }
-
-  tickAsync(time: string | number): Promise<number> {
-    if (this._checkFakeTimers()) {
-      return this._clock.tickAsync(time);
-    }
-    return Promise.resolve(0);
   }
 
   private _checkFakeTimers() {

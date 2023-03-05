@@ -2231,8 +2231,30 @@ export default class Runtime {
     const jestObject: Jest = {
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
+      advanceTimersByTimeAsync: (msToRun: number): Promise<number> => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.advanceTimersByTimeAsync(msToRun);
+        } else {
+          throw new TypeError(
+            '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
       advanceTimersToNextTimer: (steps?: number) =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
+      advanceTimersToNextTimerAsync: (): Promise<number> => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.advanceTimersToNextTimerAsync();
+        } else {
+          throw new TypeError(
+            '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
@@ -2274,17 +2296,6 @@ export default class Runtime {
       isolateModulesAsync: this.isolateModulesAsync,
       mock,
       mocked,
-      nextAsync: (): Promise<number> => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.nextAsync();
-        } else {
-          throw new TypeError(
-            '`jest.nextAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
       now: () => _getFakeTimers().now(),
       replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
@@ -2293,17 +2304,6 @@ export default class Runtime {
       resetModules,
       restoreAllMocks,
       retryTimes,
-      runAllAsync: (): Promise<number> => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.runAllAsync();
-        } else {
-          throw new TypeError(
-            '`jest.runAllAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
       runAllImmediates: () => {
         const fakeTimers = _getFakeTimers();
 
@@ -2317,15 +2317,26 @@ export default class Runtime {
       },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
-      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runToLastAsync: (): Promise<number> => {
+      runAllTimersAsync: (): Promise<number> => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.runToLastAsync();
+          return fakeTimers.runAllTimersAsync();
         } else {
           throw new TypeError(
-            '`jest.runToLastAsync()` is not available when using legacy fake timers.',
+            '`jest.runAllTimersAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
+      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
+      runOnlyPendingTimersAsync: (): Promise<number> => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.runOnlyPendingTimersAsync();
+        } else {
+          throw new TypeError(
+            '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',
           );
         }
       },
@@ -2344,17 +2355,6 @@ export default class Runtime {
       },
       setTimeout,
       spyOn,
-      tickAsync: (time: number | string): Promise<number> => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.tickAsync(time);
-        } else {
-          throw new TypeError(
-            '`jest.tickAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
       unmock,
       unstable_mockModule: mockModule,
       useFakeTimers,

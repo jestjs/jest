@@ -61,6 +61,17 @@ export interface Jest {
    */
   advanceTimersByTime(msToRun: number): void;
   /**
+   * Advances all timers by `msToRun` milliseconds, firing callbacks if necessary.
+   *
+   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   *
+   * @returns
+   * Fake milliseconds since the unix epoch.
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  advanceTimersByTimeAsync(msToRun: number): Promise<number>;
+  /**
    * Advances all timers by the needed milliseconds so that only the next
    * timeouts/intervals will run. Optionally, you can provide steps, so it will
    * run steps amount of next timeouts/intervals.
@@ -196,7 +207,7 @@ export interface Jest {
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  nextAsync(): Promise<number>;
+  advanceTimersToNextTimerAsync(): Promise<number>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
@@ -293,18 +304,6 @@ export interface Jest {
     options?: {logErrorsBeforeRetry?: boolean},
   ): Jest;
   /**
-   * Runs all pending timers until there are none remaining.
-   *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-   *
-   * @returns Fake milliseconds since the unix epoch.
-   * @remarks
-   * If new timers are added while it is executing they will be run as well.
-   * @remarks
-   * Not available when using legacy fake timers implementation.
-   */
-  runAllAsync: () => Promise<number>;
-  /**
    * Exhausts tasks queued by `setImmediate()`.
    *
    * @remarks
@@ -322,6 +321,19 @@ export interface Jest {
    */
   runAllTimers(): void;
   /**
+   * Exhausts the macro-task queue (i.e., all tasks queued by `setTimeout()`
+   * and `setInterval()`).
+   *
+   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   *
+   * @returns Fake milliseconds since the unix epoch.
+   * @remarks
+   * If new timers are added while it is executing they will be run as well.
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  runAllTimersAsync: () => Promise<number>;
+  /**
    * Executes only the macro-tasks that are currently pending (i.e., only the
    * tasks that have been queued by `setTimeout()` or `setInterval()` up to this
    * point). If any of the currently pending macro-tasks schedule new
@@ -329,16 +341,19 @@ export interface Jest {
    */
   runOnlyPendingTimers(): void;
   /**
-   * Takes note of the last scheduled timer when it is run, and advances the clock to
-   * that time firing callbacks as necessary.
+   * Executes only the macro-tasks that are currently pending (i.e., only the
+   * tasks that have been queued by `setTimeout()` or `setInterval()` up to this
+   * point). If any of the currently pending macro-tasks schedule new
+   * macro-tasks, those new tasks will not be executed by this call.
    *
    * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   *
    * @returns
    * Fake milliseconds since the unix epoch.
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  runToLastAsync: () => Promise<number>;
+  runOnlyPendingTimersAsync: () => Promise<number>;
   /**
    * Explicitly supplies the mock object that the module system should return
    * for the specified module.
@@ -378,18 +393,6 @@ export interface Jest {
    * behavior from most other test libraries.
    */
   spyOn: ModuleMocker['spyOn'];
-  /**
-   * Advance the clock, firing callbacks if necessary.
-   *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-   *
-   * @param time How many ticks to advance by.
-   * @returns
-   * Fake milliseconds since the unix epoch.
-   * @remarks
-   * Not available when using legacy fake timers implementation.
-   */
-  tickAsync(time: string | number): Promise<number>;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from `require()` (e.g. that it should always return the
