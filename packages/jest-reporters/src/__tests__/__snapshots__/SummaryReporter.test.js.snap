@@ -59,3 +59,36 @@ exports[`snapshots needs update with yarn test 1`] = `
 <dim>Ran all test suites</intensity><dim>.</intensity>
 "
 `;
+
+exports[`summaryThreshold option Should not print failure messages when number of test suites is equal to the threshold 1`] = `
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`summaryThreshold option Should not print failure messages when number of test suites is under the threshold 1`] = `
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`summaryThreshold option Should print failure messages when number of test suites is over the threshold 1`] = `
+"<bold>Summary of all failing tests</intensity>
+</><inverse><bold><red> FAIL </color></intensity></inverse></> <dim>../</intensity><bold>path1</intensity>
+FailureMessage1
+</><inverse><bold><red> FAIL </color></intensity></inverse></> <dim>../</intensity><bold>path2</intensity>
+FailureMessage2
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;

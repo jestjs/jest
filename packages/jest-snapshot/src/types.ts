@@ -13,6 +13,14 @@ export interface Context extends MatcherContext {
   snapshotState: SnapshotState;
 }
 
+// This is typically implemented by `jest-haste-map`'s `HasteFS`, but we
+// partially reproduce the interface here to avoid a dependency.
+
+export interface FileSystem {
+  exists(path: string): boolean;
+  matchFiles(pattern: RegExp | string): Array<string>;
+}
+
 export type MatchSnapshotConfig = {
   context: Context;
   hint?: string;

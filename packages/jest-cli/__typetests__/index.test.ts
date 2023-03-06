@@ -3,7 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  */
 
-export {run} from './run';
-export {options as yargsOptions} from './args';
+import {expectType} from 'tsd-lite';
+import type {Options} from 'yargs';
+import {yargsOptions} from 'jest-cli';
+
+expectType<{[key: string]: Options}>(yargsOptions);
