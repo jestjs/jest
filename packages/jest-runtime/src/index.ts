@@ -2231,11 +2231,14 @@ export default class Runtime {
     const jestObject: Jest = {
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
-      advanceTimersByTimeAsync: (msToRun: number): Promise<number> => {
+      advanceTimersByTimeAsync: async (msToRun: number): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.advanceTimersByTimeAsync(msToRun);
+        if (
+          fakeTimers === this._environment.fakeTimersModern &&
+          typeof fakeTimers.advanceTimersByTimeAsync === 'function'
+        ) {
+          await fakeTimers.advanceTimersByTimeAsync(msToRun);
         } else {
           throw new TypeError(
             '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
@@ -2244,11 +2247,14 @@ export default class Runtime {
       },
       advanceTimersToNextTimer: (steps?: number) =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
-      advanceTimersToNextTimerAsync: (): Promise<number> => {
+      advanceTimersToNextTimerAsync: async (): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.advanceTimersToNextTimerAsync();
+        if (
+          fakeTimers === this._environment.fakeTimersModern &&
+          typeof fakeTimers.advanceTimersToNextTimerAsync === 'function'
+        ) {
+          await fakeTimers.advanceTimersToNextTimerAsync();
         } else {
           throw new TypeError(
             '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
@@ -2317,11 +2323,14 @@ export default class Runtime {
       },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
-      runAllTimersAsync: (): Promise<number> => {
+      runAllTimersAsync: async (): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.runAllTimersAsync();
+        if (
+          fakeTimers === this._environment.fakeTimersModern &&
+          typeof fakeTimers.runAllTimersAsync === 'function'
+        ) {
+          await fakeTimers.runAllTimersAsync();
         } else {
           throw new TypeError(
             '`jest.runAllTimersAsync()` is not available when using legacy fake timers.',
@@ -2329,11 +2338,14 @@ export default class Runtime {
         }
       },
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runOnlyPendingTimersAsync: (): Promise<number> => {
+      runOnlyPendingTimersAsync: async (): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.runOnlyPendingTimersAsync();
+        if (
+          fakeTimers === this._environment.fakeTimersModern &&
+          typeof fakeTimers.runOnlyPendingTimersAsync === 'function'
+        ) {
+          await fakeTimers.runOnlyPendingTimersAsync();
         } else {
           throw new TypeError(
             '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',

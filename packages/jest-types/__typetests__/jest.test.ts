@@ -488,9 +488,15 @@ expectAssignable<jest.SpiedSetter<typeof someObject.propertyC>>(
 expectType<void>(jest.advanceTimersByTime(6000));
 expectError(jest.advanceTimersByTime());
 
+expectType<Promise<void>>(jest.advanceTimersByTimeAsync(6000));
+expectError(jest.advanceTimersByTimeAsync());
+
 expectType<void>(jest.advanceTimersToNextTimer());
 expectType<void>(jest.advanceTimersToNextTimer(2));
 expectError(jest.advanceTimersToNextTimer('2'));
+
+expectType<Promise<void>>(jest.advanceTimersToNextTimerAsync());
+expectError(jest.advanceTimersToNextTimerAsync('2'));
 
 expectType<void>(jest.clearAllTimers());
 expectError(jest.clearAllTimers(false));
@@ -513,8 +519,14 @@ expectError(jest.runAllTicks(true));
 expectType<void>(jest.runAllTimers());
 expectError(jest.runAllTimers(false));
 
+expectType<Promise<void>>(jest.runAllTimersAsync());
+expectError(jest.runAllTimersAsync(false));
+
 expectType<void>(jest.runOnlyPendingTimers());
 expectError(jest.runOnlyPendingTimers(true));
+
+expectType<Promise<void>>(jest.runOnlyPendingTimersAsync());
+expectError(jest.runOnlyPendingTimersAsync(true));
 
 expectType<void>(jest.setSystemTime());
 expectType<void>(jest.setSystemTime(1483228800000));
@@ -573,18 +585,6 @@ expectError(jest.useFakeTimers('modern'));
 
 expectType<typeof jest>(jest.useRealTimers());
 expectError(jest.useRealTimers(true));
-
-expectType<Promise<number>>(jest.advanceTimersByTimeAsync(250));
-expectError(jest.advanceTimersByTimeAsync());
-
-expectType<Promise<number>>(jest.advanceTimersToNextTimerAsync());
-expectError(jest.advanceTimersToNextTimerAsync('jest'));
-
-expectType<Promise<number>>(jest.runAllTimersAsync());
-expectError(jest.runAllTimersAsync('jest'));
-
-expectType<Promise<number>>(jest.runOnlyPendingTimersAsync());
-expectError(jest.runOnlyPendingTimersAsync('jest'));
 
 // Misc
 

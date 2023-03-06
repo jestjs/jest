@@ -65,18 +65,25 @@ export interface Jest {
    *
    * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
    *
-   * @returns
-   * Fake milliseconds since the unix epoch.
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  advanceTimersByTimeAsync(msToRun: number): Promise<number>;
+  advanceTimersByTimeAsync(msToRun: number): Promise<void>;
   /**
    * Advances all timers by the needed milliseconds so that only the next
    * timeouts/intervals will run. Optionally, you can provide steps, so it will
    * run steps amount of next timeouts/intervals.
    */
   advanceTimersToNextTimer(steps?: number): void;
+  /**
+   * Advances the clock to the the moment of the first scheduled timer, firing it.
+   *
+   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  advanceTimersToNextTimerAsync(): Promise<void>;
   /**
    * Disables automatic mocking in the module loader.
    */
@@ -197,17 +204,6 @@ export interface Jest {
    * `isolateModulesAsync`.
    */
   isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
-  /**
-   * Advances the clock to the the moment of the first scheduled timer, firing it.
-   *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-   *
-   * @returns
-   * Fake milliseconds since the unix epoch.
-   * @remarks
-   * Not available when using legacy fake timers implementation.
-   */
-  advanceTimersToNextTimerAsync(): Promise<number>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
@@ -332,7 +328,7 @@ export interface Jest {
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  runAllTimersAsync: () => Promise<number>;
+  runAllTimersAsync: () => Promise<void>;
   /**
    * Executes only the macro-tasks that are currently pending (i.e., only the
    * tasks that have been queued by `setTimeout()` or `setInterval()` up to this
@@ -348,12 +344,10 @@ export interface Jest {
    *
    * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
    *
-   * @returns
-   * Fake milliseconds since the unix epoch.
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  runOnlyPendingTimersAsync: () => Promise<number>;
+  runOnlyPendingTimersAsync: () => Promise<void>;
   /**
    * Explicitly supplies the mock object that the module system should return
    * for the specified module.

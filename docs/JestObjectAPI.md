@@ -921,6 +921,18 @@ When this API is called, all pending macro-tasks and micro-tasks will be execute
 
 This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
 
+### `jest.runAllTimersAsync()`
+
+Runs all pending timers until there are none remaining.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.runAllImmediates()`
 
 Exhausts all tasks queued by `setImmediate()`.
@@ -937,17 +949,53 @@ Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
 
+### `jest.advanceTimersByTimeAsync(msToRun)`
+
+Advance the clock, firing callbacks if necessary.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.runOnlyPendingTimers()`
 
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
 
 This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
 
+### `jest.runOnlyPendingTimersAsync()`
+
+Takes note of the last scheduled timer when it is run, and advances the clock to that time firing callbacks as necessary.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.advanceTimersToNextTimer(steps)`
 
 Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
 
 Optionally, you can provide `steps`, so it will run `steps` amount of next timeouts/intervals.
+
+### `jest.advanceTimersToNextTimerAsync()`
+
+Advances the clock to the the moment of the first scheduled timer.
+
+Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
 
 ### `jest.clearAllTimers()`
 
@@ -976,54 +1024,6 @@ This function is not available when using legacy fake timers implementation.
 ### `jest.getRealSystemTime()`
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
-
-:::info
-
-This function is not available when using legacy fake timers implementation.
-
-:::
-
-### `jest.advanceTimersToNextTimerAsync()`
-
-Advances the clock to the the moment of the first scheduled timer.
-
-Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-
-:::info
-
-This function is not available when using legacy fake timers implementation.
-
-:::
-
-### `jest.runAllTimersAsync()`
-
-Runs all pending timers until there are none remaining.
-
-Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-
-:::info
-
-This function is not available when using legacy fake timers implementation.
-
-:::
-
-### `jest.runOnlyPendingTimersAsync()`
-
-Takes note of the last scheduled timer when it is run, and advances the clock to that time firing callbacks as necessary.
-
-Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
-
-:::info
-
-This function is not available when using legacy fake timers implementation.
-
-:::
-
-### `jest.advanceTimersByTimeAsync(msToRun)`
-
-Advance the clock, firing callbacks if necessary.
-
-Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
 
 :::info
 
