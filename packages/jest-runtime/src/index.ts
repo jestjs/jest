@@ -2234,11 +2234,13 @@ export default class Runtime {
       advanceTimersByTimeAsync: async (msToRun: number): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (
-          fakeTimers === this._environment.fakeTimersModern &&
+        if (fakeTimers === this._environment.fakeTimersModern) {
           // TODO: remove this check in Jest 30
-          typeof fakeTimers.advanceTimersByTimeAsync === 'function'
-        ) {
+          if (typeof fakeTimers.advanceTimersByTimeAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
           await fakeTimers.advanceTimersByTimeAsync(msToRun);
         } else {
           throw new TypeError(
@@ -2251,11 +2253,13 @@ export default class Runtime {
       advanceTimersToNextTimerAsync: async (steps?: number): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (
-          fakeTimers === this._environment.fakeTimersModern &&
+        if (fakeTimers === this._environment.fakeTimersModern) {
           // TODO: remove this check in Jest 30
-          typeof fakeTimers.advanceTimersToNextTimerAsync === 'function'
-        ) {
+          if (typeof fakeTimers.advanceTimersToNextTimerAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
           await fakeTimers.advanceTimersToNextTimerAsync(steps);
         } else {
           throw new TypeError(
@@ -2328,11 +2332,13 @@ export default class Runtime {
       runAllTimersAsync: async (): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (
-          fakeTimers === this._environment.fakeTimersModern &&
+        if (fakeTimers === this._environment.fakeTimersModern) {
           // TODO: remove this check in Jest 30
-          typeof fakeTimers.runAllTimersAsync === 'function'
-        ) {
+          if (typeof fakeTimers.runAllTimersAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
           await fakeTimers.runAllTimersAsync();
         } else {
           throw new TypeError(
@@ -2344,11 +2350,13 @@ export default class Runtime {
       runOnlyPendingTimersAsync: async (): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
-        if (
-          fakeTimers === this._environment.fakeTimersModern &&
+        if (fakeTimers === this._environment.fakeTimersModern) {
           // TODO: remove this check in Jest 30
-          typeof fakeTimers.runOnlyPendingTimersAsync === 'function'
-        ) {
+          if (typeof fakeTimers.runOnlyPendingTimersAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
           await fakeTimers.runOnlyPendingTimersAsync();
         } else {
           throw new TypeError(
