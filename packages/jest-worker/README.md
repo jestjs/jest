@@ -49,9 +49,9 @@ To use `worker_threads` instead of default `child_process` you have to pass `ena
 
 The `Worker` export is a constructor that is initialized by passing the worker path, plus an options object.
 
-### `workerPath: string` (required)
+### `workerPath: string | URL` (required)
 
-Node module name or absolute path of the file to be loaded in the child processes. Use `require.resolve` to transform a relative path into an absolute one.
+Node module name or absolute path or file URL of the file to be loaded in the child processes. You can use `require.resolve` to transform a relative path into an absolute one.
 
 ### `options: Object` (optional)
 
