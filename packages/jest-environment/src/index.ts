@@ -322,7 +322,6 @@ export interface Jest {
    *
    * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
    *
-   * @returns Fake milliseconds since the unix epoch.
    * @remarks
    * If new timers are added while it is executing they will be run as well.
    * @remarks
