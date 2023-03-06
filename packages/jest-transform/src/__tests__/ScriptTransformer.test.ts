@@ -2049,7 +2049,7 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
+  it('regardless of sync/async, does not reuse the in-memory cache between different projects v2', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
