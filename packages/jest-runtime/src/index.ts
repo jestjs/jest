@@ -2215,7 +2215,7 @@ export default class Runtime {
             );
           };
 
-    const setTimeout = (timeout: number) => {
+    const setTimeout: Jest['setTimeout'] = timeout => {
       this._environment.global[testTimeoutSymbol] = timeout;
       return jestObject;
     };
@@ -2229,9 +2229,9 @@ export default class Runtime {
     };
 
     const jestObject: Jest = {
-      advanceTimersByTime: (msToRun: number) =>
+      advanceTimersByTime: msToRun =>
         _getFakeTimers().advanceTimersByTime(msToRun),
-      advanceTimersByTimeAsync: async (msToRun: number): Promise<void> => {
+      advanceTimersByTimeAsync: async msToRun => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
@@ -2248,9 +2248,9 @@ export default class Runtime {
           );
         }
       },
-      advanceTimersToNextTimer: (steps?: number) =>
+      advanceTimersToNextTimer: steps =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
-      advanceTimersToNextTimerAsync: async (steps?: number): Promise<void> => {
+      advanceTimersToNextTimerAsync: async steps => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
@@ -2271,16 +2271,14 @@ export default class Runtime {
       autoMockOn: enableAutomock,
       clearAllMocks,
       clearAllTimers: () => _getFakeTimers().clearAllTimers(),
-      createMockFromModule: (moduleName: string) =>
-        this._generateMock(from, moduleName),
+      createMockFromModule: moduleName => this._generateMock(from, moduleName),
       deepUnmock,
       disableAutomock,
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFromModule: (moduleName: string) =>
-        this._generateMock(from, moduleName),
+      genMockFromModule: moduleName => this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
@@ -2329,7 +2327,7 @@ export default class Runtime {
       },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
-      runAllTimersAsync: async (): Promise<void> => {
+      runAllTimersAsync: async () => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
@@ -2347,7 +2345,7 @@ export default class Runtime {
         }
       },
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runOnlyPendingTimersAsync: async (): Promise<void> => {
+      runOnlyPendingTimersAsync: async () => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
@@ -2364,9 +2362,8 @@ export default class Runtime {
           );
         }
       },
-      setMock: (moduleName: string, mock: unknown) =>
-        setMockFactory(moduleName, () => mock),
-      setSystemTime: (now?: number | Date) => {
+      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
+      setSystemTime: now => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
