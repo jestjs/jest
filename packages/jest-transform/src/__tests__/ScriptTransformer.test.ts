@@ -2056,7 +2056,26 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(4);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      1,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      2,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      3,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      4,
+      '/fruits/banana.js',
+      'utf8',
+    );
   });
 
   it('preload transformer when using `createScriptTransformer`', async () => {
