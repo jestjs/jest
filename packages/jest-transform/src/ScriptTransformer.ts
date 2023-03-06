@@ -107,6 +107,8 @@ class ScriptTransformer {
       projectCaches.set(configString, projectCache);
     }
 
+    console.log({configString});
+
     this._cache = projectCache;
   }
 
@@ -700,6 +702,8 @@ class ScriptTransformer {
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
     const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    console.log({scriptCacheKey});
+
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -728,6 +732,8 @@ class ScriptTransformer {
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
     const scriptCacheKey = getScriptCacheKey(filename, instrument);
+
+    console.log({scriptCacheKey});
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
