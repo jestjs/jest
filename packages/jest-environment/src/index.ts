@@ -323,7 +323,7 @@ export interface Jest {
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  runAllTimersAsync: () => Promise<void>;
+  runAllTimersAsync(): Promise<void>;
   /**
    * Executes only the macro-tasks that are currently pending (i.e., only the
    * tasks that have been queued by `setTimeout()` or `setInterval()` up to this
@@ -340,7 +340,7 @@ export interface Jest {
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  runOnlyPendingTimersAsync: () => Promise<void>;
+  runOnlyPendingTimersAsync(): Promise<void>;
   /**
    * Explicitly supplies the mock object that the module system should return
    * for the specified module.
