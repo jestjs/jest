@@ -923,7 +923,7 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 ### `jest.runAllTimersAsync()`
 
-Asynchronous equivalent of `jest.runAllTimers()`.
+Asynchronous equivalent of `jest.runAllTimers()`. It allows any scheduled promise callbacks to execute _before_ running the timers.
 
 :::info
 
@@ -949,7 +949,7 @@ When this API is called, all timers are advanced by `msToRun` milliseconds. All 
 
 ### `jest.advanceTimersByTimeAsync(msToRun)`
 
-Asynchronous equivalent of `jest.advanceTimersByTime(msToRun)`.
+Asynchronous equivalent of `jest.advanceTimersByTime(msToRun)`. It allows any scheduled promise callbacks to execute _before_ running the timers.
 
 :::info
 
@@ -965,7 +965,7 @@ This is useful for scenarios such as one where the module being tested schedules
 
 ### `jest.runOnlyPendingTimersAsync()`
 
-Asynchronous equivalent of `jest.runOnlyPendingTimers()`.
+Asynchronous equivalent of `jest.runOnlyPendingTimers()`. It allows any scheduled promise callbacks to execute _before_ running the timers.
 
 :::info
 
@@ -981,7 +981,7 @@ Optionally, you can provide `steps`, so it will run `steps` amount of next timeo
 
 ### `jest.advanceTimersToNextTimerAsync(steps)`
 
-Asynchronous equivalent of `jest.advanceTimersToNextTimer(steps)`.
+Asynchronous equivalent of `jest.advanceTimersToNextTimer(steps)`. It allows any scheduled promise callbacks to execute _before_ running the timers.
 
 :::info
 
