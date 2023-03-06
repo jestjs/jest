@@ -496,6 +496,7 @@ expectType<void>(jest.advanceTimersToNextTimer(2));
 expectError(jest.advanceTimersToNextTimer('2'));
 
 expectType<Promise<void>>(jest.advanceTimersToNextTimerAsync());
+expectType<Promise<void>>(jest.advanceTimersToNextTimerAsync(2));
 expectError(jest.advanceTimersToNextTimerAsync('2'));
 
 expectType<void>(jest.clearAllTimers());

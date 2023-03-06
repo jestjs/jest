@@ -63,7 +63,8 @@ export interface Jest {
   /**
    * Advances all timers by `msToRun` milliseconds, firing callbacks if necessary.
    *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   * Also breaks the event loop, allowing any scheduled promise callbacks
+   * to execute _before_ running the timers.
    *
    * @remarks
    * Not available when using legacy fake timers implementation.
@@ -77,13 +78,16 @@ export interface Jest {
   advanceTimersToNextTimer(steps?: number): void;
   /**
    * Advances the clock to the the moment of the first scheduled timer, firing it.
+   * Optionally, you can provide steps, so it will run steps amount of
+   * next timeouts/intervals.
    *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   * Also breaks the event loop, allowing any scheduled promise callbacks
+   * to execute _before_ running the timers.
    *
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  advanceTimersToNextTimerAsync(): Promise<void>;
+  advanceTimersToNextTimerAsync(steps?: number): Promise<void>;
   /**
    * Disables automatic mocking in the module loader.
    */
@@ -320,7 +324,8 @@ export interface Jest {
    * Exhausts the macro-task queue (i.e., all tasks queued by `setTimeout()`
    * and `setInterval()`).
    *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   * Also breaks the event loop, allowing any scheduled promise callbacks
+   * to execute _before_ running the timers.
    *
    * @remarks
    * If new timers are added while it is executing they will be run as well.
@@ -341,7 +346,8 @@ export interface Jest {
    * point). If any of the currently pending macro-tasks schedule new
    * macro-tasks, those new tasks will not be executed by this call.
    *
-   * Also breaks the event loop, allowing any scheduled promise callbacks to execute _before_ running the timers.
+   * Also breaks the event loop, allowing any scheduled promise callbacks
+   * to execute _before_ running the timers.
    *
    * @remarks
    * Not available when using legacy fake timers implementation.

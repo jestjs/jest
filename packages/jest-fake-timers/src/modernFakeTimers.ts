@@ -84,9 +84,17 @@ export default class FakeTimers {
     }
   }
 
-  async advanceTimersToNextTimerAsync(): Promise<void> {
+  async advanceTimersToNextTimerAsync(steps = 1): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.nextAsync();
+      for (let i = steps; i > 0; i--) {
+        await this._clock.nextAsync();
+        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
+        await this._clock.tickAsync(0);
+
+        if (this._clock.countTimers() === 0) {
+          break;
+        }
+      }
     }
   }
 

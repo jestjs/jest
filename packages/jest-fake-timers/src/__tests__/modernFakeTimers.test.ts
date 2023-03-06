@@ -986,6 +986,30 @@ describe('FakeTimers', () => {
       expect(timers.now()).toBe(200);
       expect(spy).toHaveBeenCalled();
     });
+
+    it('should advance the clock at the moment of the n-th scheduled timer', async () => {
+      const global = {
+        Date,
+        Promise,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      const timers = new FakeTimers({config: makeProjectConfig(), global});
+      timers.useFakeTimers();
+      timers.setSystemTime(0);
+
+      const spy = jest.fn();
+      global.setTimeout(async () => {
+        await Promise.resolve();
+        global.setTimeout(spy, 100);
+      }, 100);
+
+      await timers.advanceTimersToNextTimerAsync(2);
+
+      expect(timers.now()).toBe(200);
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('runAllTimersAsync', () => {

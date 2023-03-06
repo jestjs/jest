@@ -2236,6 +2236,7 @@ export default class Runtime {
 
         if (
           fakeTimers === this._environment.fakeTimersModern &&
+          // TODO: remove this check in Jest 30
           typeof fakeTimers.advanceTimersByTimeAsync === 'function'
         ) {
           await fakeTimers.advanceTimersByTimeAsync(msToRun);
@@ -2247,14 +2248,15 @@ export default class Runtime {
       },
       advanceTimersToNextTimer: (steps?: number) =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
-      advanceTimersToNextTimerAsync: async (): Promise<void> => {
+      advanceTimersToNextTimerAsync: async (steps?: number): Promise<void> => {
         const fakeTimers = _getFakeTimers();
 
         if (
           fakeTimers === this._environment.fakeTimersModern &&
+          // TODO: remove this check in Jest 30
           typeof fakeTimers.advanceTimersToNextTimerAsync === 'function'
         ) {
-          await fakeTimers.advanceTimersToNextTimerAsync();
+          await fakeTimers.advanceTimersToNextTimerAsync(steps);
         } else {
           throw new TypeError(
             '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
@@ -2328,6 +2330,7 @@ export default class Runtime {
 
         if (
           fakeTimers === this._environment.fakeTimersModern &&
+          // TODO: remove this check in Jest 30
           typeof fakeTimers.runAllTimersAsync === 'function'
         ) {
           await fakeTimers.runAllTimersAsync();
@@ -2343,6 +2346,7 @@ export default class Runtime {
 
         if (
           fakeTimers === this._environment.fakeTimersModern &&
+          // TODO: remove this check in Jest 30
           typeof fakeTimers.runOnlyPendingTimersAsync === 'function'
         ) {
           await fakeTimers.runOnlyPendingTimersAsync();
