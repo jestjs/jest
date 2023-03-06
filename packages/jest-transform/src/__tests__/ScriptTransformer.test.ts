@@ -2019,23 +2019,13 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
-  it.only('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
+  it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
     });
 
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
-
-    // const anotherScriptTransformer = await createScriptTransformer({
-    //   ...config,
-    //   transform: [['\\.js$', 'css-preprocessor', {}]],
-    // });
-
-    // await anotherScriptTransformer.transformAsync(
-    //   '/fruits/banana.js',
-    //   getCoverageOptions(),
-    // );
 
     const yetAnotherScriptTransformer = await createScriptTransformer({
       ...config,
@@ -2045,15 +2035,6 @@ describe('ScriptTransformer', () => {
       '/fruits/banana.js',
       getCoverageOptions(),
     );
-
-    // const fruityScriptTransformer = await createScriptTransformer({
-    //   ...config,
-    //   transform: [['\\.js$', 'test_async_preprocessor', {}]],
-    // });
-    // await fruityScriptTransformer.transformAsync(
-    //   '/fruits/banana.js',
-    //   getCoverageOptions(),
-    // );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     expect(fs.readFileSync).toHaveBeenNthCalledWith(
@@ -2066,16 +2047,65 @@ describe('ScriptTransformer', () => {
       '/fruits/banana.js',
       'utf8',
     );
-    // expect(fs.readFileSync).toHaveBeenNthCalledWith(
-    //   3,
-    //   '/fruits/banana.js',
-    //   'utf8',
-    // );
-    // expect(fs.readFileSync).toHaveBeenNthCalledWith(
-    //   4,
-    //   '/fruits/banana.js',
-    //   'utf8',
-    // );
+  });
+
+  it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {}]],
+    });
+
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+
+    const anotherScriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'css-preprocessor', {}]],
+    });
+
+    await anotherScriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions(),
+    );
+
+    const yetAnotherScriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {}]],
+    });
+    yetAnotherScriptTransformer.transform(
+      '/fruits/banana.js',
+      getCoverageOptions(),
+    );
+
+    const fruityScriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'test_async_preprocessor', {}]],
+    });
+    await fruityScriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions(),
+    );
+
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      1,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      2,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      3,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      4,
+      '/fruits/banana.js',
+      'utf8',
+    );
   });
 
   it('preload transformer when using `createScriptTransformer`', async () => {
