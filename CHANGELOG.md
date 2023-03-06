@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.5.0
+
+### Features
+
 - `[jest-changed-files]` Support Sapling ([#13941](https://github.com/facebook/jest/pull/13941))
 - `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
 - `[jest-cli, jest-config, @jest/core, jest-haste-map, @jest/reporters, jest-runner, jest-runtime, @jest/types]` Add `workerThreads` configuration option to allow using [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization ([#13939](https://github.com/facebook/jest/pull/13939))
@@ -30,8 +40,6 @@
 ### Chore & Maintenance
 
 - `[jest-snapshot]` Remove dependency on `jest-haste-map` ([#13977](https://github.com/facebook/jest/pull/13977))
-
-### Performance
 
 ## 29.4.3
 
