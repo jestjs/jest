@@ -660,6 +660,32 @@ Returns the number of fake timers still left to run.
 
 ## Misc
 
+### `jest.retryTimes(numRetries, options?)`
+
+Runs failed tests n-times until they pass or until the max number of retries is exhausted.
+
+```js
+jest.retryTimes(3);
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+Returns the `jest` object for chaining.
+
+:::caution
+
+`jest.retryTimes()` must be declared at the top level of a test file or in a `describe` block.
+
+:::
+
+:::info
+
+This function is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
 ### `jest.setTimeout(timeout)`
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
@@ -675,18 +701,3 @@ Example:
 ```js
 jest.setTimeout(1000); // 1 second
 ```
-
-### `jest.retryTimes()`
-
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus)!
-
-Example in a test:
-
-```js
-jest.retryTimes(3);
-test('will fail', () => {
-  expect(true).toBe(false);
-});
-```
-
-Returns the `jest` object for chaining.
