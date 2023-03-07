@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-environment-jsdom, jest-environment-node]` Fix assignment of `customExportConditions` via `testEnvironmentOptions` when custom env subclass defines a default value ([#13989](https://github.com/facebook/jest/pull/13989))
+
 ### Chore & Maintenance
 
 ### Performance
