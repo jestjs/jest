@@ -1395,9 +1395,8 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 For example, you can override options passed to [`jsdom`](https://github.com/jsdom/jsdom):
 
-```js tab
-/** @type {import('jest').Config} */
-const config = {
+```js
+module.exports = {
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     html: '<html lang="zh-cmn-Hant"></html>',
@@ -1405,23 +1404,6 @@ const config = {
     userAgent: 'Agent/007',
   },
 };
-
-module.exports = config;
-```
-
-```ts tab
-import type {Config} from 'jest';
-
-const config: Config = {
-  testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    html: '<html lang="zh-cmn-Hant"></html>',
-    url: 'https://jestjs.io/',
-    userAgent: 'Agent/007',
-  },
-};
-
-export default config;
 ```
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
