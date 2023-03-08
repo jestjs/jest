@@ -1408,29 +1408,13 @@ module.exports = {
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
 
-```js tab
-/** @type {import('jest').Config} */
-const config = {
+```js
+module.exports = {
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['react-native'],
   },
 };
-
-module.exports = config;
-```
-
-```ts tab
-import type {Config} from 'jest';
-
-const config: Config = {
-  testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    customExportConditions: ['react-native'],
-  },
-};
-
-export default config;
 ```
 
 These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`:
