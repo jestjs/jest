@@ -1186,7 +1186,36 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
+
+For example, you can override options passed to [`jsdom`](https://github.com/jsdom/jsdom):
+
+```js tab
+/** @type {import('jest').Config} */
+const config = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    html: '<html lang="zh-cmn-Hant"></html>',
+    userAgent: 'Agent/007',
+  },
+};
+
+module.exports = config;
+```
+
+```ts tab
+import type {Config} from 'jest';
+
+const config: Config = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    html: '<html lang="zh-cmn-Hant"></html>',
+    userAgent: 'Agent/007',
+  },
+};
+
+export default config;
+```
 
 ### `testFailureExitCode` \[number]
 
