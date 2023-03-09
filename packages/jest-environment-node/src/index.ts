@@ -64,6 +64,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
+  private _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -147,7 +148,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
         Array.isArray(customExportConditions) &&
         customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -201,7 +202,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {
