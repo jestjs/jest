@@ -112,7 +112,7 @@ module.exports = fs;
 
 Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s build-in module:
 
-```javascript title="__tests__/FileSummarizer-test.js"
+```javascript title="__tests__/FileSummarizer.test.js"
 'use strict';
 
 jest.mock('fs');
