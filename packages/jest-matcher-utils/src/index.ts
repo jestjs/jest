@@ -67,6 +67,7 @@ export const DIM_COLOR = chalk.dim;
 
 const MULTILINE_REGEXP = /\n/;
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot
+const NO_BREAK_SPACE_SYMBOL = '\u{00A0}';
 
 const NUMBERS = [
   'zero',
@@ -131,10 +132,19 @@ export const highlightTrailingWhitespace = (text: string): string =>
 const replaceTrailingSpaces = (text: string): string =>
   text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
+// Replaces the byte order mark character with the no break
+// space symbol to highlight string differences.
+const replaceByteOrderMarks = (text: string): string =>
+  text.replace(/\uFEFF/gm, NO_BREAK_SPACE_SYMBOL);
+
 export const printReceived = (object: unknown): string =>
-  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
+  RECEIVED_COLOR(
+    replaceByteOrderMarks(replaceTrailingSpaces(stringify(object))),
+  );
 export const printExpected = (value: unknown): string =>
-  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
+  EXPECTED_COLOR(
+    replaceByteOrderMarks(replaceTrailingSpaces(stringify(value))),
+  );
 
 export function printWithType<T>(
   name: string,

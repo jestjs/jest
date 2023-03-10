@@ -292,6 +292,13 @@ describe('.toBe()', () => {
       );
     }
   });
+
+  it('should highlight byte order mark character in diff', () => {
+    // issue 10584
+    const a = '\uFEFFTest content';
+    const b = 'Test content';
+    expect(() => jestExpect(a).toBe(b)).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.toStrictEqual()', () => {

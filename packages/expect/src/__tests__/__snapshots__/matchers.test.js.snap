@@ -463,6 +463,13 @@ Expected: <g>false</>
 Received: <r>true</>
 `;
 
+exports[`.toBe() should highlight byte order mark character in diff 1`] = `
+<d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
+
+Expected: <g>"Test content"</>
+Received: <r>"<i> </i>Test content"</>
+`;
+
 exports[`.toBeCloseTo {pass: false} expect(-Infinity).toBeCloseTo(-1.23) 1`] = `
 <d>expect(</><r>received</><d>).</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
