@@ -38,6 +38,7 @@
 - `[jest-environment-jsdom]` Stop setting `document` to `null` on teardown ([#13972](https://github.com/facebook/jest/pull/13972))
 - `[@jest/expect-utils]` Update `toStrictEqual()` to be able to check `jest.fn().mock.calls` ([#13960](https://github.com/facebook/jest/pull/13960))
 - `[@jest/test-result]` Allow `TestResultsProcessor` type to return a Promise ([#13950](https://github.com/facebook/jest/pull/13950))
+- `[jest-matcher-utils]` Highlights the [byte order mark character](https://en.wikipedia.org/wiki/Byte_order_mark) in diff ([#13997](https://github.com/facebook/jest/pull/13997))
 
 ### Chore & Maintenance
 
