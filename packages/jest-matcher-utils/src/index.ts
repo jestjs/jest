@@ -582,3 +582,33 @@ export const matcherHint = (
 
   return hint;
 };
+
+export const checkZeroWidthSpace = (
+  received: unknown,
+  expected: unknown,
+): string => {
+  const createNote = (str: string, isReceived: boolean): string | undefined => {
+    // eslint-disable-next-line no-misleading-character-class
+    const zwspRegExp = RegExp(
+      '[\\u001c-\\u001f\\u11a3-\\u11a7\\u180e\\u200b-\\u200f\\u2060\\u3164\\u034f\\u202a-\\u202e\\u2061-\\u2063\\ufeff]',
+    );
+
+    const pos = str.search(zwspRegExp);
+    if (pos !== -1) {
+      return `Note: A zero-width space exists at index ${pos - 1} of ${
+        isReceived ? 'Received' : 'Expected'
+      }.`;
+    }
+    return undefined;
+  };
+
+  const note =
+    createNote(stringify(received), true) ||
+    createNote(stringify(expected), false);
+
+  if (note) {
+    return `\n${chalk.yellow(note)}`;
+  } else {
+    return '';
+  }
+};

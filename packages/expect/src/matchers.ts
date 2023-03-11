@@ -26,6 +26,7 @@ import {
   MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
+  checkZeroWidthSpace,
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
@@ -131,7 +132,8 @@ const matchers: MatchersObject = {
               EXPECTED_LABEL,
               RECEIVED_LABEL,
               isExpand(this.expand),
-            )
+            ) +
+            checkZeroWidthSpace(received, expected)
           );
         };
 
@@ -641,7 +643,8 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          );
+          ) +
+          checkZeroWidthSpace(received, expected);
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
@@ -978,7 +981,8 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          );
+          ) +
+          checkZeroWidthSpace(received, expected);
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
