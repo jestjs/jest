@@ -394,7 +394,8 @@ Output:
 No tests found
 ```
 
-Passing an exact path will execute only the given test:
+However, passing an exact path will execute only the given test:
+
 ```bash
 jest --runTestsByPath __tests__/t1.test.js
 ```
