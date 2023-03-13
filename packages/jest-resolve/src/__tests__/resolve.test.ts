@@ -723,6 +723,18 @@ describe('nodeModulesPaths', () => {
     const result = nodeModulesPaths(src, {paths: ['./customFolder']});
     expect(result[result.length - 1]).toBe('./customFolder');
   });
+
+  it('provides custom module multy paths after node_modules', () => {
+    const src = require.resolve('../');
+    const result = nodeModulesPaths(src, {
+      paths: ['./customFolder', './customFolder2', './customFolder3'],
+    });
+    expect(result.slice(-3)).toStrictEqual([
+      './customFolder',
+      './customFolder2',
+      './customFolder3',
+    ]);
+  });
 });
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
