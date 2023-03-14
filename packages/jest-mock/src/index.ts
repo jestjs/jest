@@ -184,10 +184,7 @@ export interface Replaced<T = unknown> {
   replaceValue(value: T): this;
 }
 
-type ReplacedPropertyRestorer<
-  T extends object,
-  K extends PropertyLikeKeys<T>,
-> = {
+type ReplacedPropertyRestorer<T extends object, K extends keyof T> = {
   (): void;
   object: T;
   property: K;
@@ -995,10 +992,10 @@ export class ModuleMocker {
   /**
    * Check whether the given property of an object has been already replaced.
    */
-  private _findReplacedProperty<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-  >(object: T, propertyKey: K): ReplacedPropertyRestorer<T, K> | undefined {
+  private _findReplacedProperty<T extends object, K extends keyof T>(
+    object: T,
+    propertyKey: K,
+  ): ReplacedPropertyRestorer<T, K> | undefined {
     for (const {restore} of this._spyState) {
       if (
         'object' in restore &&
@@ -1328,11 +1325,11 @@ export class ModuleMocker {
     return descriptor[accessType] as Mock;
   }
 
-  replaceProperty<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-    V extends T[K],
-  >(object: T, propertyKey: K, value: V): Replaced<T[K]> {
+  replaceProperty<T extends object, K extends keyof T>(
+    object: T,
+    propertyKey: K,
+    value: T[K],
+  ): Replaced<T[K]> {
     if (object === undefined || object == null) {
       throw new Error(
         `replaceProperty could not find an object on which to replace ${String(
