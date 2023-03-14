@@ -177,7 +177,6 @@ export interface Replaced<T = unknown> {
    * Restore property to its original value known at the time of mocking.
    */
   restore(): void;
-
   /**
    * Change the value of the property.
    */
