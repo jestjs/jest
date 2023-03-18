@@ -53,7 +53,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "prettier": "^2.1.1",
-    "tsd-lite": "^0.6.0"
+    "tsd-lite": "^0.7.0"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
