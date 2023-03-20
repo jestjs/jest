@@ -60,8 +60,15 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
   let descriptors: Record<string, PropertyDescriptor> = {};
   let obj = object;
   do {
-    descriptors = Object.assign({}, Object.getOwnPropertyDescriptors(obj), descriptors)
-  } while ( (obj = Object.getPrototypeOf( obj )) && obj !== Object.getPrototypeOf({}) );
+    descriptors = Object.assign(
+      {},
+      Object.getOwnPropertyDescriptors(obj),
+      descriptors,
+    );
+  } while (
+    (obj = Object.getPrototypeOf(obj)) &&
+    obj !== Object.getPrototypeOf({})
+  );
 
   cycles.set(object, newObject);
 
