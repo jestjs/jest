@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Updated documentation for the `--runTestsByPath` CLI command ([#14004](https://github.com/facebook/jest/pull/14004))
+
 ### Performance
 
 ## 29.5.0
