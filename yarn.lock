@@ -2728,7 +2728,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
@@ -2740,7 +2740,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect@workspace:packages/jest-expect"
   dependencies:
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     expect: "workspace:^"
     jest-snapshot: "workspace:^"
     tsd-lite: ^0.7.0
@@ -2789,7 +2789,7 @@ __metadata:
     "@lerna-lite/cli": ^1.11.3
     "@microsoft/api-extractor": ^7.33.4
     "@tsconfig/node14": ^1.0.3
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
@@ -2854,7 +2854,7 @@ __metadata:
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
-    typescript: ^4.8.2
+    typescript: ^4.9.5
     which: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -2870,7 +2870,7 @@ __metadata:
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
     "@jridgewell/trace-mapping": ^0.3.15
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
@@ -3041,7 +3041,7 @@ __metadata:
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
     "@jest/schemas": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
@@ -4383,10 +4383,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:^4.9.0":
-  version: 4.9.4
-  resolution: "@tsd/typescript@npm:4.9.4"
-  checksum: 08eafe058e0e8b2421945d0faa477ca443eee0fcb81a05e4405d5123b7379578d8b4918f9079e4d31538b4ce2bb69f32d62406b9f52b07e90e39fb725c4ee2b0
+"@tsd/typescript@npm:^4.9.5":
+  version: 4.9.5
+  resolution: "@tsd/typescript@npm:4.9.5"
+  checksum: f9f01ecf2094e0ac83e56cc57430bdf81da82aa20424280002b44ea29cdc171388a9777262257f550800bf76567774521728e1ef6e191633ae6f723ee64d396a
   languageName: node
   linkType: hard
 
@@ -5724,7 +5724,7 @@ __metadata:
     jest-zone-patch: "*"
     rxjs: ^7.5.5
     tslib: ^2.0.0
-    typescript: ^4.8.2
+    typescript: ^4.9.5
     zone.js: ~0.11.3
   languageName: unknown
   linkType: soft
@@ -9637,7 +9637,7 @@ __metadata:
     babel-jest: "workspace:^"
     expect: "workspace:^"
     jest: "workspace:^"
-    typescript: ^4.8.2
+    typescript: ^4.9.5
   languageName: unknown
   linkType: soft
 
@@ -9772,7 +9772,7 @@ __metadata:
     jest-environment-jsdom: "workspace:^"
     react: 18.2.0
     react-dom: ^18.2.0
-    typescript: ^4.8.2
+    typescript: ^4.9.5
   languageName: unknown
   linkType: soft
 
@@ -9837,7 +9837,7 @@ __metadata:
     "@fast-check/jest": ^1.3.0
     "@jest/expect-utils": "workspace:^"
     "@jest/test-utils": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     chalk: ^4.0.0
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
@@ -12617,7 +12617,7 @@ __metadata:
     "@jest/core": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/prompts": ^2.0.1
@@ -12674,7 +12674,7 @@ __metadata:
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
-    typescript: ^4.8.2
+    typescript: ^4.9.5
   peerDependencies:
     "@types/node": "*"
     ts-node: ">=9.0.0"
@@ -12878,7 +12878,7 @@ __metadata:
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/node": "*"
     jest-util: "workspace:^"
     tsd-lite: ^0.7.0
@@ -12961,7 +12961,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/graceful-fs": ^4.1.3
     "@types/pnpapi": ^0.0.2
     "@types/resolve": ^1.20.2
@@ -13002,7 +13002,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
@@ -13103,7 +13103,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/babel__core": ^7.1.14
     "@types/babel__traverse": ^7.0.6
     "@types/graceful-fs": ^4.1.3
@@ -13257,7 +13257,7 @@ __metadata:
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
     react-markdown: ^8.0.0
-    typescript: ^4.8.2
+    typescript: ^4.9.5
   languageName: unknown
   linkType: soft
 
@@ -13266,7 +13266,7 @@ __metadata:
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
     "@babel/core": ^7.11.6
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
@@ -13317,7 +13317,7 @@ __metadata:
   dependencies:
     "@jest/core": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ^4.9.0
+    "@tsd/typescript": ^4.9.5
     import-local: ^3.0.2
     jest-cli: "workspace:^"
     tsd-lite: ^0.7.0
@@ -20504,13 +20504,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.8.2":
-  version: 4.9.4
-  resolution: "typescript@npm:4.9.4"
+"typescript@npm:^4.9.5":
+  version: 4.9.5
+  resolution: "typescript@npm:4.9.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: e782fb9e0031cb258a80000f6c13530288c6d63f1177ed43f770533fdc15740d271554cdae86701c1dd2c83b082cea808b07e97fd68b38a172a83dbf9e0d0ef9
+  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
   languageName: node
   linkType: hard
 
@@ -20524,13 +20524,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
-  version: 4.9.4
-  resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=23ec76"
+"typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
+  version: 4.9.5
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 3e2ab0772908676d9b9cb83398c70003a3b08e1c6b3b122409df9f4b520f2fdaefa20c3d7d57dce283fed760ac94b3ce94d4a7fa875127b67852904425a1f0dc
+  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
   languageName: node
   linkType: hard
 
