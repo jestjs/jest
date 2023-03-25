@@ -12617,6 +12617,7 @@ __metadata:
     "@jest/core": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
+    "@tsd/typescript": ^4.9.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/prompts": ^2.0.1
