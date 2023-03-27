@@ -85,6 +85,23 @@ const sendMessageToJest: TestFileEvent = (eventName, args) => {
   messageParent([eventName, args]);
 };
 
+const sanitizeTestResult = (result: TestResult) => {
+  const hasOwn = Object.prototype.hasOwnProperty;
+  for (const testResult of result.testResults) {
+    for (const failureDetail of testResult.failureDetails as Array<any>) {
+      for (const key in failureDetail) {
+        if (
+          hasOwn.call(failureDetail, key) &&
+          typeof failureDetail[key] === 'function'
+        ) {
+          delete failureDetail[key];
+        }
+      }
+    }
+  }
+  return result;
+};
+
 export async function worker({
   config,
   globalConfig,
@@ -92,7 +109,7 @@ export async function worker({
   context,
 }: WorkerData): Promise<TestResult> {
   try {
-    return await runTest(
+    const result = await runTest(
       path,
       globalConfig,
       config,
@@ -106,6 +123,7 @@ export async function worker({
       },
       sendMessageToJest,
     );
+    return sanitizeTestResult(result);
   } catch (error: any) {
     throw formatError(error);
   }

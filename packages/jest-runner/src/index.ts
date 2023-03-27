@@ -107,7 +107,7 @@ export default class TestRunner extends EmittingTestRunner {
     const worker = new Worker(require.resolve('./testWorker'), {
       enableWorkerThreads: this._globalConfig.workerThreads,
       exposedMethods: ['worker'],
-      forkOptions: {serialization: 'json', stdio: 'pipe'},
+      forkOptions: {stdio: 'pipe'},
       // The workerIdleMemoryLimit should've been converted to a number during
       // the normalization phase.
       idleMemoryLimit:
