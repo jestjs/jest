@@ -711,6 +711,17 @@ describe('moduleMocker', () => {
       return expect(promise).resolves.toBe('abcd');
     });
 
+    it('supports mocking resolvable async functions without passing a value', () => {
+      const fn = moduleMocker.fn();
+      fn.mockResolvedValue();
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
+
+      return expect(promise).resolves.toBeUndefined();
+    });
+
     it('supports mocking resolvable async functions only once', () => {
       const fn = moduleMocker.fn();
       fn.mockResolvedValue('abcd');
