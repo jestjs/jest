@@ -780,6 +780,18 @@ describe('moduleMocker', () => {
       ]);
     });
 
+    it('supports mocking rejectable async functions only once without passing a value', () => {
+      const err = new Error('rejected');
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue(err);
+      fn.mockRejectedValueOnce();
+
+      return Promise.all([
+        expect(fn()).rejects.toBeUndefined(),
+        expect(fn()).rejects.toBe(err),
+      ]);
+    });
+
     describe('return values', () => {
       it('tracks return values', () => {
         const fn = moduleMocker.fn(x => x * 2);

@@ -169,7 +169,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockResolvedValue(value?: ResolveType<T>): this;
   mockResolvedValueOnce(value?: ResolveType<T>): this;
   mockRejectedValue(value?: RejectType<T>): this;
-  mockRejectedValueOnce(value: RejectType<T>): this;
+  mockRejectedValueOnce(value?: RejectType<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -801,7 +801,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.resolve(value),
         );
 
-      f.mockRejectedValue = (value: unknown) =>
+      f.mockRejectedValue = (value?: unknown) =>
         f.mockImplementation(() =>
           this._environmentGlobal.Promise.reject(value),
         );
