@@ -62,6 +62,7 @@ expectType<Mock<() => undefined>>(
     .mockReturnValue()
     .mockReturnValueOnce()
     .mockResolvedValue()
+    .mockResolvedValueOnce()
 );
 
 expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
@@ -248,7 +249,6 @@ expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockResolvedValueOnce('Mock value'),
 );
 expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce(123));
-expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce());
 
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValue(new Error('Mock error')),
