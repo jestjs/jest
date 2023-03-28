@@ -59,6 +59,7 @@ expectType<Mock<() => undefined>>(
   fn(() => undefined)
     .mockImplementation()
     .mockImplementationOnce()
+    .mockReturnValue()
 );
 
 expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
@@ -220,7 +221,6 @@ expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnValue(false),
 );
 expectError(mockFn.mockReturnValue('true'));
-expectError(mockFn.mockReturnValue());
 
 expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockReturnValue(Promise.resolve('mock value')),

@@ -663,6 +663,16 @@ describe('moduleMocker', () => {
       expect(obj.func()).not.toBe('some text');
     });
 
+    it('supports mock value returning undefined when not passing a value', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValue();
+
+      expect(obj.func()).toBeUndefined();
+    });
+
     it('supports mock value once returning undefined', () => {
       const obj = {
         func: () => 'some text',
