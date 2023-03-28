@@ -159,7 +159,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockReset(): this;
   mockRestore(): void;
   mockImplementation(fn?: T): this;
-  mockImplementationOnce(fn: T): this;
+  mockImplementationOnce(fn?: T): this;
   withImplementation(fn: T, callback: () => Promise<unknown>): Promise<void>;
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
@@ -806,11 +806,11 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockImplementationOnce = (fn: T) => {
+      f.mockImplementationOnce = (fn?: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.specificMockImpls.push(fn);
+        fn && mockConfig.specificMockImpls.push(fn);
         return f;
       };
 
