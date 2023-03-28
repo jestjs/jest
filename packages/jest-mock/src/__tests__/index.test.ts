@@ -756,6 +756,17 @@ describe('moduleMocker', () => {
       return expect(promise).rejects.toBe(err);
     });
 
+    it('supports mocking rejectable async functions without passing a value', () => {
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue();
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
+
+      return expect(promise).rejects.toBeUndefined();
+    });
+
     it('supports mocking rejectable async functions only once', () => {
       const defaultErr = new Error('default rejected');
       const err = new Error('rejected');
