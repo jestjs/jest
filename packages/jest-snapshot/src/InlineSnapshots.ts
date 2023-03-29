@@ -234,7 +234,7 @@ const traverseAst = (
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
-  traverseFast(ast, function (node: Node) {
+  traverseFast(ast, (node: Node) => {
     if (node.type !== 'CallExpression') return;
 
     const {arguments: args, callee} = node;
@@ -340,7 +340,7 @@ const createFormattingParser =
     options.parser = inferredParser;
 
     const ast = parsers[inferredParser](text, options);
-    traverse(ast, function (node: Node, ancestors: TraversalAncestors) {
+    traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
       if (node.type !== 'CallExpression') return;
 
       const {arguments: args, callee} = node;
