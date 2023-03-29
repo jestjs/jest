@@ -1201,6 +1201,16 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
     });
+
+    it('supports mocking functions implementations only once without passing a value', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+      moduleMocker.spyOn(obj, 'func').mockImplementationOnce();
+
+      expect(obj.func()).toBeUndefined();
+      expect(obj.func()).toBe('Default Text');
+    });
   });
 
   describe('withImplementation', () => {
