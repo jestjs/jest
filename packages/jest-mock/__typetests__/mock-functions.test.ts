@@ -55,8 +55,8 @@ expectType<Mock<() => string>>(
     .mockReturnValueOnce('value'),
 );
 
-expectType<Mock<() => undefined>>(
-  fn(() => undefined)
+expectType<Mock<() => Promise<void>>>(
+  fn(async () => {})
     .mockImplementation()
     .mockImplementationOnce()
     .mockReturnValue()
@@ -65,6 +65,14 @@ expectType<Mock<() => undefined>>(
     .mockResolvedValueOnce()
     .mockRejectedValue()
     .mockRejectedValueOnce(),
+);
+
+expectType<Mock<() => void>>(
+  fn(() => {})
+    .mockImplementation()
+    .mockImplementationOnce()
+    .mockReturnValue()
+    .mockReturnValueOnce(),
 );
 
 expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
