@@ -691,6 +691,7 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(obj, 'func').mockReturnValueOnce();
 
       expect(obj.func()).toBeUndefined();
+      expect(obj.func()).toBe('some text');
     });
 
     it('mockReturnValueOnce mocks value just once', () => {
