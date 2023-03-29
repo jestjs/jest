@@ -2,8 +2,6 @@
 
 ### Features
 
-- `[jest-mock]` Update `mockImplementation`, `mockImplementationOnce`, `mockReturnValue`, `mockReturnValueOnce`, `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` to make their arguments optional ([#14035](https://github.com/facebook/jest/pull/14035))
-
 ### Fixes
 
 ### Chore & Maintenance
