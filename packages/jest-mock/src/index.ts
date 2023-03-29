@@ -711,8 +711,10 @@ export class ModuleMocker {
 
             // If mockImplementationOnce()/mockImplementation() is last set,
             // implementation use the mock
+            const specificMockImplsLength = mockConfig.specificMockImpls.length;
             let specificMockImpl = mockConfig.specificMockImpls.shift();
-            if (specificMockImpl === undefined) {
+
+            if (specificMockImpl === undefined && !specificMockImplsLength) {
               specificMockImpl = mockConfig.mockImpl;
             }
             if (specificMockImpl) {
@@ -810,7 +812,7 @@ export class ModuleMocker {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        fn && mockConfig.specificMockImpls.push(fn);
+        mockConfig.specificMockImpls.push(fn);
         return f;
       };
 
