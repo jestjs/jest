@@ -251,7 +251,7 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
 type MockFunctionConfig = {
   mockImpl: Function | undefined;
   mockName: string;
-  specificMockImpls: Array<Function>;
+  specificMockImpls: Array<Function | undefined>;
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
