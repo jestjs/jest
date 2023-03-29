@@ -1129,6 +1129,34 @@ describe('moduleMocker', () => {
     });
   });
 
+  describe('mockImplementation', () => {
+    it('supports mocking functions implementations', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+
+      expect(obj.func()).toBe('Default Text');
+
+      moduleMocker.spyOn(obj, 'func').mockImplementation(() => 'Foo');
+
+      expect(obj.func()).toBe('Foo');
+      expect(obj.func()).toBe('Foo');
+    });
+
+    it('supports mocking functions implementations without passing a value', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+
+      expect(obj.func()).toBe('Default Text');
+
+      moduleMocker.spyOn(obj, 'func').mockImplementation();
+
+      expect(obj.func()).toBeUndefined();
+      expect(obj.func()).toBeUndefined();
+    });
+  });
+
   describe('mockImplementationOnce', () => {
     it('should mock constructor', () => {
       const mock1 = jest.fn();
