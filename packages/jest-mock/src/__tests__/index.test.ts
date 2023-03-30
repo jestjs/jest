@@ -1140,7 +1140,6 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(obj, 'func').mockImplementation(() => 'Foo');
 
       expect(obj.func()).toBe('Foo');
-      expect(obj.func()).toBe('Foo');
     });
 
     it('supports mocking functions implementations without passing a value', () => {
@@ -1152,7 +1151,6 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(obj, 'func').mockImplementation();
 
-      expect(obj.func()).toBeUndefined();
       expect(obj.func()).toBeUndefined();
     });
   });
