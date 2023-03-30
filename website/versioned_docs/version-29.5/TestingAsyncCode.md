@@ -126,8 +126,8 @@ Jest will throw an error, if the same test function is passed a `done()` callbac
 You can also use the `.resolves` matcher in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 ```js
-test('the data is peanut butter', () => {
-  return expect(fetchData()).resolves.toBe('peanut butter');
+test('the data is peanut butter', async () => {
+  await expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 
@@ -136,8 +136,8 @@ Be sure to return the assertion—if you omit this `return` statement, your test
 If you expect a promise to be rejected, use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
 
 ```js
-test('the fetch fails with an error', () => {
-  return expect(fetchData()).rejects.toMatch('error');
+test('the fetch fails with an error', async () => {
+  await expect(fetchData()).rejects.toMatch('error');
 });
 ```
 
