@@ -711,10 +711,11 @@ export class ModuleMocker {
 
             // If mockImplementationOnce()/mockImplementation() is last set,
             // implementation use the mock
-            const specificMockImplsLength = mockConfig.specificMockImpls.length;
-            let specificMockImpl = mockConfig.specificMockImpls.shift();
+            let specificMockImpl: Function | undefined;
 
-            if (specificMockImpl === undefined && !specificMockImplsLength) {
+            if (mockConfig.specificMockImpls.length) {
+              specificMockImpl = mockConfig.specificMockImpls.shift();
+            } else {
               specificMockImpl = mockConfig.mockImpl;
             }
             if (specificMockImpl) {
