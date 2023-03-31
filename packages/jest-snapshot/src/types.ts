@@ -27,8 +27,15 @@ export type MatchSnapshotConfig = {
   inlineSnapshot?: string;
   isInline: boolean;
   matcherName: string;
+  snapshotName?: string;
   properties?: object;
   received: any;
+};
+
+export type SnapshotNameConfig = {
+  hint?: string;
+  snapshotName?: string;
+  currentTestName?: string;
 };
 
 export type SnapshotData = Record<string, string>;
@@ -47,6 +54,19 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
     propertyMatchers: Partial<U>,
     hint?: string,
   ): R;
+  /**
+   * This ensures that a value matches the most recent snapshot.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
+   */
+  toMatchNamedSnapshot<U extends Record<keyof T, unknown>>(
+    propertyMatchers: Partial<U>,
+    snapshot?: string,
+  ): R;
+  /**
+   * This ensures that a value matches the most recent snapshot.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
+   */
+  toMatchNamedSnapshot(snapshotName?: string): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.

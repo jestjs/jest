@@ -25,6 +25,11 @@
 
 ### Performance
 
+## 29.6.0
+
+### Features
+
+- `[jest-snapshot]` Add `toMatchNamedSnapshot` to bring snapshot support to concurrent mode
 ## 29.5.0
 
 ### Features
