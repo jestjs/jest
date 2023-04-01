@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-changed-files]` Loads .json config file from provided path in package.json ([#13941]())
+- `[jest-changed-files]` Loads .json config file from provided path in package.json ([#14044](https://github.com/facebook/jest/pull/14044))
 
 ### Fixes
 
