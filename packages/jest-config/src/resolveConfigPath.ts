@@ -76,7 +76,9 @@ const resolveConfigPathByTraversing = (
 
   const packageJson = findPackageJson(pathToResolve);
   if (packageJson && hasPackageJsonJestKey(packageJson)) {
-    configFiles.push(packageJson);
+    const referencedJsonConfig = findReferencingJsonByJestKey(packageJson);
+
+    configFiles.push(referencedJsonConfig || packageJson);
   }
 
   if (!skipMultipleConfigError && configFiles.length > 1) {
@@ -109,6 +111,19 @@ const findPackageJson = (pathToResolve: string) => {
   }
 
   return undefined;
+};
+
+const findReferencingJsonByJestKey = (packagePath: string) => {
+  try {
+    const content = fs().readFileSync(packagePath, 'utf8');
+    const jestConfigPath = JSON.parse(content).jest;
+
+    if (typeof jestConfigPath === 'string' && isFile(jestConfigPath)) {
+      return path().resolve(jestConfigPath);
+    }
+  } catch {
+    return undefined;
+  }
 };
 
 const hasPackageJsonJestKey = (packagePath: string) => {
