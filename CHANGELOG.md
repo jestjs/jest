@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-changed-files]` Loads .json config file from provided path in package.json ([#13941]())
+
 ### Fixes
 
 - `[jest-environment-jsdom, jest-environment-node]` Fix assignment of `customExportConditions` via `testEnvironmentOptions` when custom env subclass defines a default value ([#13989](https://github.com/facebook/jest/pull/13989))
