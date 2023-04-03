@@ -54,7 +54,7 @@
     "jest-changed-files": "workspace:^",
     "jest-junit": "^15.0.0",
     "jest-mock": "workspace:^",
-    "jest-runner-tsd": "^4.0.0",
+    "jest-runner-tsd": "^5.0.0",
     "jest-serializer-ansi-escapes": "^2.0.1",
     "jest-silent-reporter": "^0.5.0",
     "jest-snapshot": "workspace:^",
@@ -181,5 +181,5 @@
     "jest-environment-node": "workspace:^",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.3.1"
+  "packageManager": "yarn@3.5.0"
 }

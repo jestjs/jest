@@ -372,7 +372,39 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 ### `--runTestsByPath`
 
-Run only the tests that were specified with their exact paths.
+Run only the tests that were specified with their exact paths. This avoids converting them into a regular expression and matching it against every single file.
+
+For example, given the following file structure:
+
+```bash
+__tests__
+└── t1.test.js # test
+└── t2.test.js # test
+```
+
+When ran with a pattern, no test is found:
+
+```bash
+jest --runTestsByPath __tests__/t
+```
+
+Output:
+
+```bash
+No tests found
+```
+
+However, passing an exact path will execute only the given test:
+
+```bash
+jest --runTestsByPath __tests__/t1.test.js
+```
+
+Output:
+
+```bash
+PASS __tests__/t1.test.js
+```
 
 :::tip
 

@@ -21,12 +21,10 @@
     "@babel/generator": "^7.7.2",
     "@babel/plugin-syntax-jsx": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
-    "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.3.3",
     "@jest/expect-utils": "workspace:^",
     "@jest/transform": "workspace:^",
     "@jest/types": "workspace:^",
-    "@types/babel__traverse": "^7.0.6",
     "@types/prettier": "^2.1.5",
     "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
@@ -53,7 +51,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "prettier": "^2.1.1",
-    "tsd-lite": "^0.6.0"
+    "tsd-lite": "^0.7.0"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
