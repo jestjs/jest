@@ -194,7 +194,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: string): void => {
   try {
-    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
+    fs.mkdirSync(path.dirname(filePath), {recursive: true});
   } catch {}
 };
 
