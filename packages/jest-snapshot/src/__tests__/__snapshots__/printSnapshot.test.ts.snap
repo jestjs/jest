@@ -178,6 +178,21 @@ Snapshot state must be initialized
 Snapshot state has value: undefined
 `;
 
+exports[`matcher error toThrowErrorMatchingNamedSnapshot Received value must be a function 1`] = `
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingNamedSnapshot<d>()</>
+
+<b>Matcher error</>: <r>received</> value must be a function
+
+Received has type:  number
+Received has value: <r>13</>
+`;
+
+exports[`matcher error toThrowErrorMatchingNamedSnapshot Snapshot matchers cannot be used with not 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toThrowErrorMatchingNamedSnapshot<d>()</>
+
+<b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
+`;
+
 exports[`matcher error toThrowErrorMatchingSnapshot Received value must be a function 1`] = `
 <d>expect(</><r>received</><d>).</>toThrowErrorMatchingSnapshot<d>()</>
 

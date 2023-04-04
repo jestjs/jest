@@ -16,6 +16,7 @@ import {
   toMatchNamedSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingNamedSnapshot,
   toThrowErrorMatchingSnapshot,
 } from '../';
 import type SnapshotState from '../State';
@@ -528,6 +529,45 @@ describe('matcher error', () => {
     });
 
     // Future test: Snapshot hint must be a string
+  });
+
+  describe('toThrowErrorMatchingNamedSnapshot', () => {
+    test('Received value must be a function', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      } as Context;
+      const received = 13;
+      const fromPromise = false;
+
+      expect(() => {
+        toThrowErrorMatchingNamedSnapshot.call(
+          context,
+          received,
+          '',
+          fromPromise,
+        );
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('Snapshot matchers cannot be used with not', () => {
+      const snapshotName = 'to-throw-snapshot';
+      const context = {
+        isNot: true,
+        promise: '',
+      } as Context;
+      const received = new Error('received');
+      const fromPromise = true;
+
+      expect(() => {
+        toThrowErrorMatchingNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+          fromPromise,
+        );
+      }).toThrowErrorMatchingSnapshot();
+    });
   });
 });
 
