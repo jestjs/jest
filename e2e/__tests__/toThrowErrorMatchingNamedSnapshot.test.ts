@@ -10,7 +10,10 @@ import * as fs from 'graceful-fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../to-throw-error-matching-snapshot');
+const DIR = path.resolve(
+  __dirname,
+  '../to-throw-error-matching-named-snapshot',
+);
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));
@@ -21,7 +24,7 @@ test('works fine when function throws error', () => {
   const template =
     makeTemplate(`test('works fine when function throws error', () => {
        expect(() => { throw new Error('apple'); })
-         .toThrowErrorMatchingSnapshot();
+         .toThrowErrorMatchingNamedSnapshot('works-fine');
     });
     `);
 
@@ -37,7 +40,7 @@ test("throws the error if tested function didn't throw error", () => {
   const filename = 'throws-if-tested-function-did-not-throw.test.js';
   const template =
     makeTemplate(`test('throws the error if tested function did not throw error', () => {
-      expect(() => {}).toThrowErrorMatchingSnapshot();
+      expect(() => {}).toThrowErrorMatchingNamedSnapshot('error if did not throw error');
     });
     `);
 
@@ -49,11 +52,11 @@ test("throws the error if tested function didn't throw error", () => {
   }
 });
 
-test('accepts custom snapshot hint', () => {
+test('accepts custom snapshot name', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
   const template = makeTemplate(`test('accepts custom snapshot name', () => {
       expect(() => { throw new Error('apple'); })
-        .toThrowErrorMatchingSnapshot('custom-hint');
+        .toThrowErrorMatchingNamedSnapshot('custom-name');
     });
     `);
 
@@ -70,7 +73,7 @@ test('cannot be used with .not', () => {
   const template = makeTemplate(`test('cannot be used with .not', () => {
        expect(() => { throw new Error('apple'); })
          .not
-         .toThrowErrorMatchingSnapshot();
+         .toThrowErrorMatchingNamedSnapshot('cannot-used-with-not');
     });
     `);
 
@@ -86,14 +89,13 @@ test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
   const template =
     makeTemplate(`test('should support rejecting promises', () => {
-      return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+      return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingNamedSnapshot('support-reject');
     });
   `);
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    console.log(stderr);
 
     const snapshot = fs.readFileSync(
       `${TESTS_DIR}/__snapshots__/${filename}.snap`,
@@ -101,7 +103,7 @@ test('should support rejecting promises', () => {
     );
 
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(snapshot).toMatchSnapshot();
+    expect(snapshot).toMatchNamedSnapshot('support-reject');
     expect(exitCode).toBe(0);
   }
 });

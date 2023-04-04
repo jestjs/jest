@@ -12,6 +12,7 @@ import {
   toMatchNamedSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingNamedSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 import type {JestExpect} from './types';
@@ -33,6 +34,7 @@ function createJestExpect(): JestExpect {
     toMatchNamedSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
+    toThrowErrorMatchingNamedSnapshot,
     toThrowErrorMatchingSnapshot,
   });
 

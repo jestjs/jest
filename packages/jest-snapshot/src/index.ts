@@ -546,12 +546,37 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
   );
 };
 
+export const toThrowErrorMatchingNamedSnapshot: MatcherFunctionWithContext<
+  Context,
+  [snapshotName?: string, fromPromise?: boolean]
+> = function (received, snapshotName, fromPromise) {
+  const matcherName = 'toThrowErrorMatchingNamedSnapshot';
+
+  return _toThrowErrorMatchingSnapshot(
+    {
+      context: this,
+      isInline: false,
+      matcherName,
+      received,
+      snapshotName,
+    },
+    fromPromise,
+  );
+};
+
 const _toThrowErrorMatchingSnapshot = (
   config: MatchSnapshotConfig,
   fromPromise?: boolean,
 ) => {
-  const {context, hint, inlineSnapshot, isInline, matcherName, received} =
-    config;
+  const {
+    context,
+    hint,
+    inlineSnapshot,
+    isInline,
+    matcherName,
+    snapshotName,
+    received,
+  } = config;
 
   context.dontThrow && context.dontThrow();
 
@@ -606,5 +631,6 @@ const _toThrowErrorMatchingSnapshot = (
     isInline,
     matcherName,
     received: error.message,
+    snapshotName,
   });
 };
