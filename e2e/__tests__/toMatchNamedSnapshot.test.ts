@@ -289,3 +289,51 @@ test('handles property matchers with deep properties', () => {
     expect(exitCode).toBe(1);
   }
 });
+
+test('support concurrent testing', () => {
+  const filename = 'match-snapshot-when-test-concurrent.test.js';
+  const template = makeTemplate(`describe('group 1', () => {
+        $1('concurrent 1', async () => {
+          expect('concurrent 1-1').toMatchNamedSnapshot('test1');
+          $2
+        });
+
+        $1('concurrent 2', async () => {
+          expect('concurrent 1-2').toMatchNamedSnapshot('test2');
+          $2
+        });
+      });
+
+      describe('group 2', () => {
+        $1('concurrent 1', async () => {
+          expect('concurrent 2-1').toMatchNamedSnapshot('test3');
+          $2
+        });
+
+        $1('concurrent 2', async () => {
+          expect('concurrent 2-2').toMatchNamedSnapshot('test4');
+          $2
+        });
+      });
+      `);
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['test'])});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    console.log(stderr);
+
+    expect(exitCode).toBe(0);
+  }
+
+  {
+    writeFiles(TESTS_DIR, {
+      [filename]: template([
+        'test.concurrent',
+        'await new Promise(resolve => setTimeout(resolve, 5000));',
+      ]),
+    });
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    console.log(stderr);
+
+    expect(exitCode).toBe(0);
+  }
+});
