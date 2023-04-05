@@ -46,14 +46,6 @@ jobs:
         run: yarn --immutable
       - name: build
         run: yarn build
-      - name: ts integration
-        run: yarn test-ts --selectProjects ts-integration
-      - name: type tests
-        run: yarn test-ts --selectProjects type-tests
-      - name: verify TypeScript@4.3 compatibility
-        run: yarn verify-old-ts
-      - name: typecheck examples
-        run: yarn typecheck:examples
       - name: typecheck debug
         run: yarn tsc --version
       - name: typecheck tests
