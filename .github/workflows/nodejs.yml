@@ -54,6 +54,8 @@ jobs:
         run: yarn verify-old-ts
       - name: typecheck examples
         run: yarn typecheck:examples
+      - name: typecheck debug
+        run: yarn tsc --version
       - name: typecheck tests
         run: yarn typecheck:tests
       - name: run ESLint with type info
