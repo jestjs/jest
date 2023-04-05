@@ -88,6 +88,7 @@ Also Jest's configuration json can be referenced through the `"jest"` key in the
   "name": "my-project",
   "jest": "<path_to_json_config_file>"
 }
+```
 
 ## Options
 
