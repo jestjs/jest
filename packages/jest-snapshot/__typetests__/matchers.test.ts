@@ -11,8 +11,10 @@ import {
   Context,
   SnapshotState,
   toMatchInlineSnapshot,
+  toMatchNamedSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingNamedSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
@@ -77,6 +79,43 @@ expectType<ExpectationResult>(
 );
 
 expectError(toMatchInlineSnapshot({received: 'value'}));
+
+// toMatchNamedSnapshot
+
+expectType<ExpectationResult>(
+  toMatchNamedSnapshot.call({} as Context, {received: 'value'}),
+);
+
+expectType<ExpectationResult>(
+  toMatchNamedSnapshot.call({} as Context, {received: 'value'}),
+);
+
+expectType<ExpectationResult>(
+  toMatchNamedSnapshot.call(
+    {} as Context,
+    {received: 'value'},
+    'snapshot name',
+  ),
+);
+
+expectType<ExpectationResult>(
+  toMatchNamedSnapshot.call(
+    {} as Context,
+    {received: 'value'},
+    {property: 'match'},
+  ),
+);
+
+expectType<ExpectationResult>(
+  toMatchNamedSnapshot.call(
+    {} as Context,
+    {received: 'value'},
+    {property: 'match'},
+    'snapshot name',
+  ),
+);
+
+expectError(toMatchNamedSnapshot({received: 'value'}));
 
 // toThrowErrorMatchingSnapshot
 
@@ -145,3 +184,37 @@ expectType<ExpectationResult>(
 );
 
 expectError(toThrowErrorMatchingInlineSnapshot({received: 'value'}));
+
+// toThrowErrorMatchingNamedSnapshot
+
+expectType<ExpectationResult>(
+  toThrowErrorMatchingNamedSnapshot.call({} as Context, new Error('received')),
+);
+
+expectType<ExpectationResult>(
+  toThrowErrorMatchingNamedSnapshot.call(
+    {} as Context,
+    new Error('received'),
+    'snapshot name',
+  ),
+);
+
+expectType<ExpectationResult>(
+  toThrowErrorMatchingNamedSnapshot.call(
+    {} as Context,
+    new Error('received'),
+    'snapshot name',
+    true, // fromPromise
+  ),
+);
+
+expectType<ExpectationResult>(
+  toThrowErrorMatchingNamedSnapshot.call(
+    {} as Context,
+    new Error('received'),
+    undefined,
+    false, // fromPromise
+  ),
+);
+
+expectError(toThrowErrorMatchingSnapshot({received: 'value'}));
