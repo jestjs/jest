@@ -115,11 +115,11 @@ const findPackageJson = (pathToResolve: string) => {
 
 const findReferencingJsonByJestKey = (packagePath: string) => {
   try {
-    const content = fs().readFileSync(packagePath, 'utf8');
+    const content = fs.readFileSync(packagePath, 'utf8');
     const jestConfigPath = JSON.parse(content).jest;
 
     if (typeof jestConfigPath === 'string' && isFile(jestConfigPath)) {
-      return path().resolve(jestConfigPath);
+      return path.resolve(jestConfigPath);
     }
   } catch {
     return undefined;
