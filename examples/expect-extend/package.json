@@ -10,7 +10,7 @@
     "babel-jest": "workspace:^",
     "expect": "workspace:^",
     "jest": "workspace:^",
-    "typescript": "^4.8.2"
+    "typescript": "^5.0.3"
   },
   "scripts": {
     "test": "jest"
