@@ -75,10 +75,9 @@ const resolveConfigPathByTraversing = (
   ).filter(isFile);
 
   const packageJson = findPackageJson(pathToResolve);
-  if (packageJson && hasPackageJsonJestKey(packageJson)) {
-    const referencedJsonConfig = findReferencingJsonByJestKey(packageJson);
 
-    configFiles.push(referencedJsonConfig || packageJson);
+  if (packageJson) {
+    configFiles.push(resolveJestKey(packageJson) || packageJson);
   }
 
   if (!skipMultipleConfigError && configFiles.length > 1) {
@@ -113,23 +112,28 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const findReferencingJsonByJestKey = (packagePath: string) => {
+const resolveJestKey = (packagePath: string) => {
   try {
     const content = fs.readFileSync(packagePath, 'utf8');
-    const jestConfigPath = JSON.parse(content).jest;
+    const parsedPackageJson  = JSON.parse(content);
 
-    if (typeof jestConfigPath === 'string' && isFile(jestConfigPath)) {
-      return path.resolve(jestConfigPath);
+    if(hasPackageJsonJestKey(parsedPackageJson)){
+      const { jest } = parsedPackageJson;
+
+      if (typeof jest === 'string' && isFile(jest)) {
+        return path.resolve(jest);
+      }
     }
+    
+    return packagePath;
   } catch {
     return undefined;
   }
 };
 
-const hasPackageJsonJestKey = (packagePath: string) => {
-  const content = fs.readFileSync(packagePath, 'utf8');
+const hasPackageJsonJestKey = (parsedPackageJson: any) => {
   try {
-    return 'jest' in JSON.parse(content);
+    return 'jest' in parsedPackageJson;
   } catch {
     // If package is not a valid JSON
     return false;
