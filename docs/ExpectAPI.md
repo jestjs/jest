@@ -886,6 +886,12 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](/blog/2016/07/27/jest-14) for more information on snapshot testing.
 
+### `.toThrowErrorMatchingNamedSnapshot(snapshotName?)`
+
+Use `.toThrowErrorMatchingNamedSnapshot` to test that a functino throws an error matching the most recent snapshot when it is called.
+
+You can provide an optional `snapshotName` string argument that functions as the test name. By providing a snapshot name (as opposed to letting Jest infer the name from context) snapshot names can be guaranteed to be consistent across test runs, whatever the context at the time of evaluation. Jest always appends a number at the end of a snapshot name.
+
 ### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 
 Use `.toThrowErrorMatchingInlineSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
