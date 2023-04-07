@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Close Issue
-        uses: peter-evans/close-issue@v2
+        uses: peter-evans/close-issue@v3
         if: "${{ github.event.label.name == ':speech_balloon: Question' }}"
         with:
           comment: Please note this issue tracker is not a help forum. We recommend using [StackOverflow](https://stackoverflow.com/questions/tagged/jestjs) or our [discord channel](https://discord.gg/j6FKKQQrW9) for questions.
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Close Issue
-        uses: peter-evans/close-issue@v2
+        uses: peter-evans/close-issue@v3
         if: "${{ github.event.label.name == 'Needs Reproduction' }}"
         with:
           comment: As noted in the [Bug Report template](https://github.com/facebook/jest/blob/main/.github/ISSUE_TEMPLATE/bug.yml), all bug reports requires a minimal reproduction. Please open up a new issue providing one. Read more at https://stackoverflow.com/help/minimal-reproducible-example.
