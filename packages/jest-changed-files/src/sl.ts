@@ -56,7 +56,7 @@ const adapter: SCMAdapter = {
 
   getRoot: async cwd => {
     try {
-      const result = await execa('sl', ['root'], {cwd, env});
+      const result = await execa('sl', ['root'], {cwd, env, timeout: 250});
 
       return result.stdout;
     } catch {
