@@ -139,6 +139,7 @@ function typeTests() {
     execa.sync('yarn', ['test-types'], {cwd, stdio: 'inherit'});
   } finally {
     execa.sync('git', ['checkout', 'yarn.lock'], {cwd});
+    execa.sync('yarn', ['install'], {cwd});
   }
 
   function verifyInstalledTsdTypescript() {

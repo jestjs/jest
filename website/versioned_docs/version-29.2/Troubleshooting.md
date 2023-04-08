@@ -167,24 +167,22 @@ Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecommen
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
-<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
-
-```bash
+```bash npm2yarn
 # Using Jest CLI
 jest --runInBand
 
-# Using yarn test (e.g. with create-react-app)
-yarn test --runInBand
+# Using your package manager's `test` script (e.g. with create-react-app)
+npm test -- --runInBand
 ```
 
 Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
 
-```bash
+```bash npm2yarn
 # Using Jest CLI
 jest --maxWorkers=4
 
-# Using yarn test (e.g. with create-react-app)
-yarn test --maxWorkers=4
+# Using your package manager's `test` script (e.g. with create-react-app)
+npm test -- --maxWorkers=4
 ```
 
 If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to detect number of CPUs, and pass that to Jest.
