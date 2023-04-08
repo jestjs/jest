@@ -114,5 +114,9 @@ export default function shouldInstrument(
     }
   }
 
+  if (filename.endsWith('.json')) {
+    return false;
+  }
+
   return true;
 }
