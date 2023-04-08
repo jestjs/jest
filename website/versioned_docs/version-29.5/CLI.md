@@ -49,11 +49,9 @@ jest --watchAll #runs all tests
 
 Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
-<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+## Using with package manager
 
-## Using with yarn
-
-If you run Jest via `yarn test`, you can pass the command line arguments directly as Jest arguments.
+If you run Jest via your package manager, you can still pass the command line arguments directly as Jest arguments.
 
 Instead of:
 
@@ -63,23 +61,7 @@ jest -u -t="ColorPicker"
 
 you can use:
 
-```bash
-yarn test -u -t="ColorPicker"
-```
-
-## Using with npm scripts
-
-If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments.
-
-Instead of:
-
-```bash
-jest -u -t="ColorPicker"
-```
-
-you can use:
-
-```bash
+```bash npm2yarn
 npm test -- -u -t="ColorPicker"
 ```
 
