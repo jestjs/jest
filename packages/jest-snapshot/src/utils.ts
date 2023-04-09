@@ -220,7 +220,9 @@ export const saveSnapshotFile = (
   );
 };
 
-const isAnyOrAnything = (input: any) =>
+const isAnyOrAnything = (input: object) =>
+  '$$typeof' in input &&
+  input.$$typeof === Symbol.for('jest.asymmetricMatcher') &&
   ['Any', 'Anything'].includes(input.constructor.name);
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
