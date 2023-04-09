@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
+
 ### Fixes
 
 - `[jest-config]` Handle frozen config object ([#14054](https://github.com/facebook/jest/pull/14054))
