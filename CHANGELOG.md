@@ -4,6 +4,7 @@
 
 - `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
 - `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
+- `[jest-snapshot]` Add `toMatchNamedSnapshot` to bring snapshot support to concurrent mode
 
 ### Fixes
 
@@ -24,12 +25,6 @@
 - `[docs]` Update jest statistics of use and downloads in website Index.
 
 ### Performance
-
-## 29.6.0
-
-### Features
-
-- `[jest-snapshot]` Add `toMatchNamedSnapshot` to bring snapshot support to concurrent mode
 
 ## 29.5.0
 
