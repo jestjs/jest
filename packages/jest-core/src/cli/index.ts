@@ -43,7 +43,6 @@ export async function runCLI(
   globalConfig: Config.GlobalConfig;
 }> {
   performance.mark('jest/runCLI:start');
-  let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
@@ -96,23 +95,12 @@ export async function runCLI(
     );
   }
 
-  await _run10000(
+  const results = await runCore(
     globalConfig,
     configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
-    r => {
-      results = r;
-    },
   );
-
-  if (argv.watch || argv.watchAll) {
-    // If in watch mode, return the promise that will never resolve.
-    // If the watch mode is interrupted, watch should handle the process
-    // shutdown.
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return new Promise(() => {});
-  }
 
   if (!results) {
     throw new Error(
@@ -167,13 +155,28 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-const _run10000 = async (
+/**
+ * Runs Jest either in watch mode or as a one-off. This is a lower-level API than `runCLI` and is intended for internal use by `runCLI` or externally.
+ * Note that `process.exit` might be called when using `globalConfig.watch` or `globalConfig.watchAll` is true.
+ *
+ * @param globalConfig The global configuration to use for this run. It can be obtained using `readConfigs` (imported from 'jest-config').
+ * @param configs The project configurations to run. It can be obtained using `readConfigs` (imported from 'jest-config').
+ * @param warnForDeprecations Whether or not to warn for deprecation messages when `globalConfig.watch` or `globalConfig.watchAll` is true.
+ * @param outputStream The stream to write output to. If not provided, it defaults to `process.stdout`.
+ * @returns A Promise that resolves to the result, or never resolves when `globalConfig.watch` or `globalConfig.watchAll` is true.
+ * @example
+ * import { runCore, readConfigs } from 'jest';
+ *
+ * const { globalConfig, configs } = await readConfigs(process.argv, [process.cwd()]);
+ * const results = await runCore(globalConfig, configs);
+ * console.log(results);
+ */
+export const runCore = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
-  hasDeprecationWarnings: boolean,
-  outputStream: NodeJS.WriteStream,
-  onComplete: OnCompleteCallback,
-) => {
+  warnForDeprecations = false,
+  outputStream: NodeJS.WriteStream = process.stdout,
+): Promise<AggregatedResult> => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
@@ -222,36 +225,47 @@ const _run10000 = async (
   );
   performance.mark('jest/buildContextsAndHasteMaps:end');
 
-  globalConfig.watch || globalConfig.watchAll
-    ? await runWatch(
-        contexts,
-        configs,
-        hasDeprecationWarnings,
-        globalConfig,
-        outputStream,
-        hasteMapInstances,
-        filter,
-      )
-    : await runWithoutWatch(
-        globalConfig,
-        contexts,
-        outputStream,
-        onComplete,
-        changedFilesPromise,
-        filter,
-      );
+  if (globalConfig.watch || globalConfig.watchAll) {
+    await runWatch(
+      contexts,
+      configs,
+      warnForDeprecations,
+      globalConfig,
+      outputStream,
+      hasteMapInstances,
+      filter,
+    );
+    // If in watch mode, return the promise that will never resolve.
+    // If the watch mode is interrupted, watch should handle the process
+    // shutdown.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return new Promise(() => {});
+  } else {
+    let result: AggregatedResult;
+    await runWithoutWatch(
+      globalConfig,
+      contexts,
+      outputStream,
+      r => {
+        result = r;
+      },
+      changedFilesPromise,
+      filter,
+    );
+    return result!;
+  }
 };
 
 const runWatch = async (
   contexts: Array<TestContext>,
   _configs: Array<Config.ProjectConfig>,
-  hasDeprecationWarnings: boolean,
+  warnForDeprecations: boolean,
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<IHasteMap>,
   filter?: Filter,
 ) => {
-  if (hasDeprecationWarnings) {
+  if (warnForDeprecations) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
       return await watch(

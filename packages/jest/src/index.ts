@@ -12,6 +12,9 @@ export {
   createTestScheduler,
   getVersion,
   runCLI,
+  readConfigs,
+  readInitialOptions,
+  runCore,
 } from '@jest/core';
 
 export {run} from 'jest-cli';
