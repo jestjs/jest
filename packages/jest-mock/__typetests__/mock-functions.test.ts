@@ -497,20 +497,25 @@ expectError(
 
 // replaceProperty + Replaced
 
-const obj = {
-  fn: () => {},
-
+const replaceObject = {
+  method: () => {},
   property: 1,
 };
 
-expectType<Replaced<number>>(replaceProperty(obj, 'property', 1));
-expectType<void>(replaceProperty(obj, 'property', 1).replaceValue(1).restore());
+expectType<Replaced<number>>(replaceProperty(replaceObject, 'property', 1));
+expectType<Replaced<() => void>>(
+  replaceProperty(replaceObject, 'method', () => {}),
+);
+expectType<void>(
+  replaceProperty(replaceObject, 'property', 1).replaceValue(1).restore(),
+);
 
-expectError(replaceProperty(obj, 'invalid', 1));
-expectError(replaceProperty(obj, 'property', 'not a number'));
-expectError(replaceProperty(obj, 'fn', () => {}));
+expectError(replaceProperty(replaceObject, 'invalid', 1));
+expectError(replaceProperty(replaceObject, 'property', 'not a number'));
 
-expectError(replaceProperty(obj, 'property', 1).replaceValue('not a number'));
+expectError(
+  replaceProperty(replaceObject, 'property', 1).replaceValue('not a number'),
+);
 
 interface ComplexObject {
   numberOrUndefined: number | undefined;
