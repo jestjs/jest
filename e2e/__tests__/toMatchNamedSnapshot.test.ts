@@ -188,7 +188,7 @@ test('accepts custom snapshot name', () => {
 test('handles property matchers', () => {
   const filename = 'handle-property-matchers.test.js';
   const template = makeTemplate(`test('handles property matchers', () => {
-        expect({createdAt: $1}).toMatchNamedSnapshot({createdAt: expect.any(Date)}, 'property-matchers');
+        expect({createdAt: $1}).toMatchNamedSnapshot('property-matchers',{createdAt: expect.any(Date)});
       });
       `);
 
@@ -215,11 +215,11 @@ test('handles property matchers', () => {
 });
 
 test('handles invalid property matchers', () => {
-  const filename = 'handle-property-matchers.test.js';
+  const filename = 'handle-invalid-property-matchers.test.js';
   {
     writeFiles(TESTS_DIR, {
       [filename]: `test('invalid property matchers', () => {
-          expect({foo: 'bar'}).toMatchNamedSnapshot(null, 'null-property-matcher');
+          expect({foo: 'bar'}).toMatchNamedSnapshot('null-property-matcher', null);
         });
       `,
     });
@@ -227,19 +227,20 @@ test('handles invalid property matchers', () => {
     expect(stderr).toMatch('Expected properties must be an object');
     expect(exitCode).toBe(1);
   }
+});
+
+test('handles undefined property matchers', () => {
+  const filename = 'handle-undefined-property-matchers.test.js';
   {
     writeFiles(TESTS_DIR, {
       [filename]: `test('invalid property matchers', () => {
-          expect({foo: 'bar'}).toMatchNamedSnapshot(undefined, 'undefined-property-matcher');
+          expect({foo: 'bar'}).toMatchNamedSnapshot('undefined-property-matcher', undefined);
         });
       `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Expected properties must be an object');
-    expect(stderr).toMatch(
-      "To provide a snapshot name without properties: toMatchNamedSnapshot('snapshotName')",
-    );
-    expect(exitCode).toBe(1);
+    expect(stderr).toMatch('1 snapshot written');
+    expect(exitCode).toBe(0);
   }
 });
 
@@ -247,7 +248,7 @@ test('handles property matchers with deep properties', () => {
   const filename = 'handle-property-matchers-with-name.test.js';
   const template =
     makeTemplate(`test('handles property matchers with deep properties', () => {
-        expect({ user: { createdAt: $1, name: $2 }}).toMatchNamedSnapshot({ user: { createdAt: expect.any(Date), name: $2 }}, 'deep-property-matchers');
+        expect({ user: { createdAt: $1, name: $2 }}).toMatchNamedSnapshot('deep-property-matchers', { user: { createdAt: expect.any(Date), name: $2 }});
       });
       `);
 

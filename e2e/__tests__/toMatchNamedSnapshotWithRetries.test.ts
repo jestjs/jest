@@ -61,14 +61,14 @@ test('works with a single snapshot', () => {
 test('works when multiple tests have snapshots but only one of them failed multiple times', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(`
-    test('passing snapshots', () => expect('foo').toMatchNamedSnapshot());
+    test('passing snapshots', () => expect('foo').toMatchNamedSnapshot('passing snapshots'));
     describe('with retries', () => {
       let index = 0;
       afterEach(() => {
         index += 1;
       });
       jest.retryTimes($2);
-      test('snapshots', () => expect($1).toMatchNamedSnapshot());
+      test('snapshots', () => expect($1).toMatchNamedSnapshot('with retries'));
     });
   `);
 
