@@ -230,15 +230,31 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
 export const toMatchNamedSnapshot: MatcherFunctionWithContext<
   Context,
   [snapshotName: string, properties?: object]
-> = function (received, snapshotName, properties?) {
+> = function (received: unknown, snapshotName: unknown, properties?: unknown) {
   const matcherName = 'toMatchNamedSnapshot';
 
+  if (typeof snapshotName !== 'string') {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    const printedWithType = printWithType(
+      'Expected snapshotName',
+      snapshotName,
+      printExpected,
+    );
+
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+        `Expected ${EXPECTED_COLOR('snapshotName')} must be a string`,
+        printedWithType,
+      ),
+    );
+  }
+
   if (properties !== undefined) {
-    if (
-      Array.isArray(properties) ||
-      typeof properties !== 'object' ||
-      properties === null
-    ) {
+    if (typeof properties !== 'object' || properties === null) {
       const options: MatcherHintOptions = {
         isNot: this.isNot,
         promise: this.promise,
@@ -530,8 +546,28 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
 export const toThrowErrorMatchingNamedSnapshot: MatcherFunctionWithContext<
   Context,
   [snapshotName: string, fromPromise?: boolean]
-> = function (received, snapshotName, fromPromise) {
+> = function (received: unknown, snapshotName: unknown, fromPromise: unknown) {
   const matcherName = 'toThrowErrorMatchingNamedSnapshot';
+
+  if (typeof snapshotName !== 'string') {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    const printedWithType = printWithType(
+      'Expected snapshotName',
+      snapshotName,
+      printExpected,
+    );
+
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+        `Expected ${EXPECTED_COLOR('snapshotName')} must be a string`,
+        printedWithType,
+      ),
+    );
+  }
 
   return _toThrowErrorMatchingSnapshot(
     {

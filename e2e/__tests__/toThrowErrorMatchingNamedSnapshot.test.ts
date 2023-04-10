@@ -52,6 +52,22 @@ test("throws the error if tested function didn't throw error", () => {
   }
 });
 
+test('throws the error if snapshot name is not string', () => {
+  const filename = 'throws-if-tested-function-did-not-throw.test.js';
+  const template =
+    makeTemplate(`test('throws the error if snapshot name is not string', () => {
+      expect(() => { throw new Error('apple'); }).toThrowErrorMatchingNamedSnapshot(true);
+    });
+    `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Expected snapshotName must be a string');
+    expect(exitCode).toBe(1);
+  }
+});
+
 test('accepts custom snapshot name', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
   const template = makeTemplate(`test('accepts custom snapshot name', () => {

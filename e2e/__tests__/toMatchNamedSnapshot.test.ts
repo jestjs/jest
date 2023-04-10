@@ -170,6 +170,23 @@ test('mark snapshots as obsolete in skipped tests if snapshot name does not matc
   }
 });
 
+test('throws the error if snapshot name is not string', () => {
+  const filename = 'no-obsolete-if-skipped.test.js';
+  const template = makeTemplate(`
+      test('will be error', () => {
+        expect({a: 6}).toMatchNamedSnapshot(true);
+      });
+      `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['test.skip'])});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    console.log(stderr);
+    expect(stderr).toMatch('Expected snapshotName must be a string');
+    expect(exitCode).toBe(1);
+  }
+});
+
 test('accepts custom snapshot name', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
   const template = makeTemplate(`test('accepts custom snapshot name', () => {
