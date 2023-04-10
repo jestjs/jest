@@ -416,6 +416,7 @@ expectError(
 );
 
 expectType<void>(expect('abc').toMatchNamedSnapshot('snapshot name'));
+expectError<void>(expect('abc').toMatchNamedSnapshot());
 
 expectType<void>(
   expect({
@@ -456,6 +457,11 @@ expectType<void>(
   expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('inline snapshot here'),
 );
 expectError(expect(jest.fn()).toThrowErrorMatchingInlineSnapshot(true));
+
+expectType<void>(
+  expect(jest.fn()).toThrowErrorMatchingNamedSnapshot('snapshot-name'),
+);
+expectError<void>(expect(jest.fn()).toThrowErrorMatchingNamedSnapshot());
 
 // extend
 
