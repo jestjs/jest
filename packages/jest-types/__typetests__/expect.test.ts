@@ -415,6 +415,38 @@ expectError(
   }),
 );
 
+expectType<void>(expect('abc').toMatchNamedSnapshot('snapshot name'));
+
+expectType<void>(
+  expect({
+    date: new Date(),
+    name: 'John Doe',
+  }).toMatchNamedSnapshot('snapshot name', {
+    date: expect.any(Date),
+    name: expect.any(String),
+  }),
+);
+
+expectType<void>(
+  expect({
+    date: new Date(),
+    name: 'John Doe',
+  }).toMatchNamedSnapshot('snapshot name', {
+    date: expect.any(Date),
+    name: expect.any(String),
+  }),
+);
+
+expectError(
+  expect({
+    date: new Date(),
+    name: 'John Doe',
+  }).toMatchNamedSnapshot('snapshot name', {
+    date: expect.any(Date),
+    time: expect.any(Date),
+  }),
+);
+
 expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot());
 expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot('hint'));
 expectError(expect(jest.fn()).toThrowErrorMatchingSnapshot(true));
