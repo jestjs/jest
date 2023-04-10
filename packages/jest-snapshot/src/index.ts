@@ -229,7 +229,7 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
 
 export const toMatchNamedSnapshot: MatcherFunctionWithContext<
   Context,
-  [propertiesOrSnapshot?: object | string, snapshotName?: string]
+  [propertiesOrSnapshotName?: object | string, snapshotName?: string]
 > = function (received, propertiesOrSnapshotName, snapshotName) {
   const matcherName = 'toMatchNamedSnapshot';
   let properties;

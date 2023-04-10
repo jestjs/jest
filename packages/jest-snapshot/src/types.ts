@@ -57,18 +57,16 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
   /**
    * This ensures that a value matches the specific snapshot.
    * Instead of use current test name in global state, it will use the specific name to find the snapshot.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
+   */
+  toMatchNamedSnapshot(snapshotName?: string): R;
+  /**
+   * This ensures that a value matches the specific snapshot with property matchers.
+   * Instead of use current test name in global state, it will use the specific name to find the snapshot.
    */
   toMatchNamedSnapshot<U extends Record<keyof T, unknown>>(
     propertyMatchers: Partial<U>,
     snapshot?: string,
   ): R;
-  /**
-   * This ensures that a value matches the specific snapshot.
-   * Instead of use current test name in global state, it will use the specific name to find the snapshot.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchNamedSnapshot(snapshotName?: string): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
@@ -93,12 +91,11 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
    */
   toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
-
   /**
    * Used to test that a function throws a error matching the specific snapshot.
    * Instead of use current test name in global state, it will use the specific name to find the snapshot.
    */
-  toThrowErrorMatchingNamedSnapshot(name?: string): R;
+  toThrowErrorMatchingNamedSnapshot(snapshotName?: string): R;
 }
 
 export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;
