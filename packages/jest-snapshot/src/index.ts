@@ -233,7 +233,7 @@ export const toMatchNamedSnapshot: MatcherFunctionWithContext<
 > = function (received, snapshotName, properties?) {
   const matcherName = 'toMatchNamedSnapshot';
 
-  if (properties) {
+  if (properties !== undefined) {
     if (
       Array.isArray(properties) ||
       typeof properties !== 'object' ||

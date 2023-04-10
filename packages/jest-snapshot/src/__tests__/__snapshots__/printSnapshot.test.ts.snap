@@ -60,17 +60,9 @@ Expected properties has value: <g>[Function]</>
 exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (null) with snapshot name 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
 
-Snapshot state must be initialized
+<b>Matcher error</>: Expected <g>properties</> must be an object
 
-Snapshot state has value: undefined
-`;
-
-exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-Snapshot state must be initialized
-
-Snapshot state has value: undefined
+Expected properties has value: <g>null</>
 `;
 
 exports[`matcher error toMatchNamedSnapshot Snapshot state must be initialized 1`] = `

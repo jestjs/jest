@@ -311,21 +311,6 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Expected properties must be an object (null) without snapshot name', () => {
-      const context = {
-        isNot: false,
-        promise: '',
-      } as Context;
-      const properties = null;
-      const snapshotName =
-        'toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name';
-
-      expect(() => {
-        // @ts-expect-error: Testing runtime error
-        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
-      }).toThrowErrorMatchingSnapshot();
-    });
-
     test('Expected properties must be an object (array)', () => {
       const context = {
         isNot: false,
@@ -333,7 +318,7 @@ describe('matcher error', () => {
       } as Context;
       const properties: Array<unknown> = [];
       const snapshotName =
-        'toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name';
+        'toMatchNamedSnapshot Expected properties must be an object (array)';
 
       expect(() => {
         toMatchNamedSnapshot.call(context, received, snapshotName, properties);
