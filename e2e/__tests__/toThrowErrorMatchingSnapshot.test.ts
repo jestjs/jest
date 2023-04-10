@@ -93,7 +93,6 @@ test('should support rejecting promises', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    console.log(stderr);
 
     const snapshot = fs.readFileSync(
       `${TESTS_DIR}/__snapshots__/${filename}.snap`,
