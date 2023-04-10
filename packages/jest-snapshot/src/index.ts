@@ -229,39 +229,25 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
 
 export const toMatchNamedSnapshot: MatcherFunctionWithContext<
   Context,
-  [propertiesOrSnapshotName?: object | string, snapshotName?: string]
-> = function (received, propertiesOrSnapshotName, snapshotName) {
+  [snapshotName: string, properties?: object]
+> = function (received, snapshotName, properties?) {
   const matcherName = 'toMatchNamedSnapshot';
-  let properties;
 
-  const length = arguments.length;
-  if (length === 2 && typeof propertiesOrSnapshotName === 'string') {
-    snapshotName = propertiesOrSnapshotName;
-  } else if (length >= 2) {
+  if (properties) {
     if (
-      Array.isArray(propertiesOrSnapshotName) ||
-      typeof propertiesOrSnapshotName !== 'object' ||
-      propertiesOrSnapshotName === null
+      Array.isArray(properties) ||
+      typeof properties !== 'object' ||
+      properties === null
     ) {
       const options: MatcherHintOptions = {
         isNot: this.isNot,
         promise: this.promise,
       };
-      let printedWithType = printWithType(
+      const printedWithType = printWithType(
         'Expected properties',
-        propertiesOrSnapshotName,
+        properties,
         printExpected,
       );
-
-      if (length === 3) {
-        options.secondArgument = 'snapshotName';
-        options.secondArgumentColor = BOLD_WEIGHT;
-
-        if (propertiesOrSnapshotName == null) {
-          printedWithType +=
-            "\n\nTo provide a snapshot name without properties: toMatchNamedSnapshot('snapshotName')";
-        }
-      }
 
       throw new Error(
         matcherErrorMessage(
@@ -271,11 +257,6 @@ export const toMatchNamedSnapshot: MatcherFunctionWithContext<
         ),
       );
     }
-
-    // Future breaking change: Snapshot hint must be a string
-    // if (arguments.length === 3 && typeof hint !== 'string') {}
-
-    properties = propertiesOrSnapshotName;
   }
 
   return _toMatchSnapshot({
@@ -548,7 +529,7 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
 
 export const toThrowErrorMatchingNamedSnapshot: MatcherFunctionWithContext<
   Context,
-  [snapshotName?: string, fromPromise?: boolean]
+  [snapshotName: string, fromPromise?: boolean]
 > = function (received, snapshotName, fromPromise) {
   const matcherName = 'toThrowErrorMatchingNamedSnapshot';
 

@@ -47,7 +47,7 @@ describe('throw matcher can take func', () => {
       () => {
         throw new Error('coconut');
       },
-      undefined,
+      '',
       false,
     );
 

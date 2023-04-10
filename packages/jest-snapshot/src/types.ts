@@ -58,14 +58,14 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
    * This ensures that a value matches the specific snapshot.
    * Instead of use current test name in global state, it will use the specific name to find the snapshot.
    */
-  toMatchNamedSnapshot(snapshotName?: string): R;
+  toMatchNamedSnapshot(snapshotName: string): R;
   /**
    * This ensures that a value matches the specific snapshot with property matchers.
    * Instead of use current test name in global state, it will use the specific name to find the snapshot.
    */
   toMatchNamedSnapshot<U extends Record<keyof T, unknown>>(
+    snapshot: string,
     propertyMatchers: Partial<U>,
-    snapshot?: string,
   ): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
@@ -95,7 +95,7 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
    * Used to test that a function throws a error matching the specific snapshot.
    * Instead of use current test name in global state, it will use the specific name to find the snapshot.
    */
-  toThrowErrorMatchingNamedSnapshot(snapshotName?: string): R;
+  toThrowErrorMatchingNamedSnapshot(snapshotName: string): R;
 }
 
 export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;

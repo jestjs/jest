@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`change text value 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchSnapshot<d>(</>properties<d>, </><b>hint</><d>)</>
+<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>(</>properties<d>)</>
 
-Snapshot name: \`with properties: <b>change text value</> 1\`
+Snapshot name: \`with properties 1\`
 
 <m>- Snapshot  - 1</>
 <t>+ Received  + 1</>
@@ -58,21 +58,19 @@ Expected properties has value: <g>[Function]</>
 `;
 
 exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (null) with snapshot name 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>, </><b>snapshotName</><d>)</>
+<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
 
-<b>Matcher error</>: Expected <g>properties</> must be an object
+Snapshot state must be initialized
 
-Expected properties has value: <g>null</>
-
-To provide a snapshot name without properties: toMatchNamedSnapshot('snapshotName')
+Snapshot state has value: undefined
 `;
 
 exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
 
-<b>Matcher error</>: Expected <g>properties</> must be an object
+Snapshot state must be initialized
 
-Expected properties has value: <g>null</>
+Snapshot state has value: undefined
 `;
 
 exports[`matcher error toMatchNamedSnapshot Snapshot state must be initialized 1`] = `

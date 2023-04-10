@@ -82,11 +82,7 @@ expectError(toMatchInlineSnapshot({received: 'value'}));
 
 // toMatchNamedSnapshot
 
-expectType<ExpectationResult>(
-  toMatchNamedSnapshot.call({} as Context, {received: 'value'}),
-);
-
-expectType<ExpectationResult>(
+expectError<ExpectationResult>(
   toMatchNamedSnapshot.call({} as Context, {received: 'value'}),
 );
 
@@ -98,7 +94,7 @@ expectType<ExpectationResult>(
   ),
 );
 
-expectType<ExpectationResult>(
+expectError<ExpectationResult>(
   toMatchNamedSnapshot.call(
     {} as Context,
     {received: 'value'},
@@ -110,8 +106,8 @@ expectType<ExpectationResult>(
   toMatchNamedSnapshot.call(
     {} as Context,
     {received: 'value'},
-    {property: 'match'},
     'snapshot name',
+    {property: 'match'},
   ),
 );
 
@@ -187,7 +183,7 @@ expectError(toThrowErrorMatchingInlineSnapshot({received: 'value'}));
 
 // toThrowErrorMatchingNamedSnapshot
 
-expectType<ExpectationResult>(
+expectError<ExpectationResult>(
   toThrowErrorMatchingNamedSnapshot.call({} as Context, new Error('received')),
 );
 
@@ -205,15 +201,6 @@ expectType<ExpectationResult>(
     new Error('received'),
     'snapshot name',
     true, // fromPromise
-  ),
-);
-
-expectType<ExpectationResult>(
-  toThrowErrorMatchingNamedSnapshot.call(
-    {} as Context,
-    new Error('received'),
-    undefined,
-    false, // fromPromise
   ),
 );
 

@@ -289,9 +289,11 @@ describe('matcher error', () => {
         promise: '',
       } as Context;
       const properties = () => {};
+      const snapshotName =
+        'toMatchNamedSnapshot Expected properties must be an object (non-null)';
 
       expect(() => {
-        toMatchNamedSnapshot.call(context, received, properties);
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -305,7 +307,7 @@ describe('matcher error', () => {
 
       expect(() => {
         // @ts-expect-error: Testing runtime error
-        toMatchNamedSnapshot.call(context, received, properties, snapshotName);
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -315,10 +317,12 @@ describe('matcher error', () => {
         promise: '',
       } as Context;
       const properties = null;
+      const snapshotName =
+        'toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name';
 
       expect(() => {
         // @ts-expect-error: Testing runtime error
-        toMatchNamedSnapshot.call(context, received, properties);
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -328,9 +332,11 @@ describe('matcher error', () => {
         promise: '',
       } as Context;
       const properties: Array<unknown> = [];
+      const snapshotName =
+        'toMatchNamedSnapshot Expected properties must be an object (null) without snapshot name';
 
       expect(() => {
-        toMatchNamedSnapshot.call(context, received, properties);
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -342,16 +348,25 @@ describe('matcher error', () => {
         snapshotState: {},
       } as Context;
       const properties = {};
+      const snapshotName =
+        'toMatchNamedSnapshot received value must be an object';
 
       test('(non-null)', () => {
         expect(() => {
-          toMatchNamedSnapshot.call(context, 'string', properties);
+          toMatchNamedSnapshot.call(
+            context,
+            'string',
+            snapshotName,
+            properties,
+          );
         }).toThrowErrorMatchingSnapshot();
       });
 
       test('(null)', () => {
+        const snapshotName = 'toMatchNamedSnapshot (null)';
+
         expect(() => {
-          toMatchNamedSnapshot.call(context, null, properties);
+          toMatchNamedSnapshot.call(context, null, snapshotName, properties);
         }).toThrowErrorMatchingSnapshot();
       });
     });
@@ -831,8 +846,8 @@ describe('pass false', () => {
           const {message, pass} = toMatchNamedSnapshot.call(
             context,
             new RangeError('Invalid array length'),
-            {name: 'Error'},
             snapshotName,
+            {name: 'Error'},
           ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchNamedSnapshot(snapshotName);
@@ -849,8 +864,8 @@ describe('pass false', () => {
           const {message, pass} = toMatchNamedSnapshot.call(
             context,
             received,
-            properties,
             snapshotName,
+            properties,
           ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchNamedSnapshot(snapshotName);
@@ -890,11 +905,11 @@ describe('pass false', () => {
         };
         const snapshotName = 'change text value';
 
-        const {message, pass} = toMatchSnapshot.call(
+        const {message, pass} = toMatchNamedSnapshot.call(
           context,
           received,
-          properties,
           snapshotName,
+          properties,
         ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchNamedSnapshot(snapshotName);

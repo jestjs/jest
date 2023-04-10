@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type Context, toMatchSnapshot} from '../';
+import {Context, toMatchSnapshot} from '../';
 
 test('returns matcher name, expected and actual values', () => {
   const mockedContext = {
