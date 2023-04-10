@@ -7,6 +7,7 @@
 
 export {default as SearchSource} from './SearchSource';
 export {createTestScheduler} from './TestScheduler';
-export {runCLI, runCore} from './cli';
+export {runCLI} from './cli';
+export {runCore} from './runCore';
 export {default as getVersion} from './version';
 export {readConfigs, readInitialOptions} from 'jest-config';

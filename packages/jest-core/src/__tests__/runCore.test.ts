@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import {resolve} from 'path';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
-import {runCore} from '../';
+import * as jestUtil from 'jest-util';
+import {runCore} from '../runCore';
 import runJest from '../runJest';
 
 jest.mock('jest-runtime', () => ({
@@ -22,15 +21,25 @@ jest.mock('../runJest', () =>
     onComplete({results: {success: true}});
   }),
 );
+jest.mock('jest-util', () => {
+  const original = jest.requireActual<typeof jestUtil>('jest-util');
+
+  return {
+    ...original,
+    createDirectory: jest.fn(),
+  };
+});
 
 describe(runCore, () => {
+  beforeEach(() => {
+    jest.spyOn(jestUtil, 'createDirectory').mockReturnValue();
+  });
+
   it('should run once and provide the result', async () => {
     const actualResult = await runCore(makeGlobalConfig(), [
-      makeProjectConfig({
-        cacheDirectory: resolve(tmpdir(), 'jest_runCore_test'),
-      }),
+      makeProjectConfig(),
     ]);
     expect(jest.mocked(runJest)).toHaveBeenCalled();
-    expect(actualResult).toEqual({results: {success: true}});
+    expect(actualResult).toEqual({result: {results: {success: true}}});
   });
 });
