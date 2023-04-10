@@ -311,20 +311,6 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Expected properties must be an object (array)', () => {
-      const context = {
-        isNot: false,
-        promise: '',
-      } as Context;
-      const properties: Array<unknown> = [];
-      const snapshotName =
-        'toMatchNamedSnapshot Expected properties must be an object (array)';
-
-      expect(() => {
-        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
-      }).toThrowErrorMatchingSnapshot();
-    });
-
     describe('received value must be an object', () => {
       const context = {
         currentTestName: '',

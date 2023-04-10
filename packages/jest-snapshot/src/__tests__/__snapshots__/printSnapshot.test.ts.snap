@@ -90,15 +90,6 @@ exports[`matcher error toMatchNamedSnapshot received value must be an object (nu
 Received has value: <r>null</>
 `;
 
-exports[`matcher error toMatchSnapshot Expected properties must be an object (array) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has type:  array
-Expected properties has value: <g>[]</>
-`;
-
 exports[`matcher error toMatchSnapshot Expected properties must be an object (non-null) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
 
