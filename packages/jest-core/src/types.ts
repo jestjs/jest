@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test, TestContext} from '@jest/test-result';
+import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
 
 export type Stats = {
   roots: number;
@@ -42,3 +42,14 @@ export type FilterResult = {
 export type Filter = (testPaths: Array<string>) => Promise<{
   filtered: Array<FilterResult>;
 }>;
+
+export type OnCompleteCallback = (
+  results: AggregatedResult,
+) => void | undefined;
+
+/**
+ * The result of running runCore.
+ */
+export type RunCoreResult = {
+  result: AggregatedResult;
+};

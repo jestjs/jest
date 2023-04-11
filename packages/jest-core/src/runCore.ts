@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {performance} from 'perf_hooks';
 import exit = require('exit');
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
@@ -18,19 +19,10 @@ import getChangedFilesPromise from './getChangedFilesPromise';
 import createContext from './lib/createContext';
 import handleDeprecationWarnings from './lib/handleDeprecationWarnings';
 import runJest from './runJest';
-import type {Filter} from './types';
+import type {Filter, RunCoreResult} from './types';
 import watch from './watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
-
-type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
-
-/**
- * The result of running runCore.
- */
-export type RunCoreResult = {
-  result: AggregatedResult;
-};
 
 /**
  * Runs Jest either in watch mode or as a one-off. This is a lower-level API than `runCLI` and is intended for internal use by `runCLI` or externally.
