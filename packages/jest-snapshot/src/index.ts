@@ -546,7 +546,7 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
 export const toThrowErrorMatchingNamedSnapshot: MatcherFunctionWithContext<
   Context,
   [snapshotName: string, fromPromise?: boolean]
-> = function (received: unknown, snapshotName: unknown, fromPromise: unknown) {
+> = function (received: unknown, snapshotName: unknown, fromPromise) {
   const matcherName = 'toThrowErrorMatchingNamedSnapshot';
 
   if (typeof snapshotName !== 'string') {
