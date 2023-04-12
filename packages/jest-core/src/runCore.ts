@@ -19,7 +19,7 @@ import getChangedFilesPromise from './getChangedFilesPromise';
 import createContext from './lib/createContext';
 import handleDeprecationWarnings from './lib/handleDeprecationWarnings';
 import runJest from './runJest';
-import type {Filter, RunCoreResult} from './types';
+import type {Filter, OnCompleteCallback, RunCoreResult} from './types';
 import watch from './watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
