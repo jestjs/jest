@@ -18,6 +18,15 @@ Object {
 }
 `;
 
+exports[`init has-jest-config-file-cts ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
 exports[`init has-jest-config-file-js ask the user whether to override config or not user answered with "Yes" 1`] = `
 Object {
   "initial": true,
@@ -52,6 +61,67 @@ Object {
   "name": "continue",
   "type": "confirm",
 }
+`;
+
+exports[`init project using jest.config.cts ask the user whether he wants to use Typescript or not user answered with "Yes" 1`] = `
+Array [
+  Object {
+    "initial": true,
+    "message": "Would you like to use Jest when running "test" script in "package.json"?",
+    "name": "scripts",
+    "type": "confirm",
+  },
+  Object {
+    "initial": false,
+    "message": "Would you like to use Typescript for the configuration file?",
+    "name": "useTypescript",
+    "type": "confirm",
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "title": "node",
+        "value": "node",
+      },
+      Object {
+        "title": "jsdom (browser-like)",
+        "value": "jsdom",
+      },
+    ],
+    "initial": 0,
+    "message": "Choose the test environment that will be used for testing",
+    "name": "environment",
+    "type": "select",
+  },
+  Object {
+    "initial": false,
+    "message": "Do you want Jest to add coverage reports?",
+    "name": "coverage",
+    "type": "confirm",
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "title": "v8",
+        "value": "v8",
+      },
+      Object {
+        "title": "babel",
+        "value": "babel",
+      },
+    ],
+    "initial": 0,
+    "message": "Which provider should be used to instrument code for coverage?",
+    "name": "coverageProvider",
+    "type": "select",
+  },
+  Object {
+    "initial": false,
+    "message": "Automatically clear mock calls, instances, contexts and results before every test?",
+    "name": "clearMocks",
+    "type": "confirm",
+  },
+]
 `;
 
 exports[`init project using jest.config.ts ask the user whether he wants to use Typescript or not user answered with "Yes" 1`] = `
