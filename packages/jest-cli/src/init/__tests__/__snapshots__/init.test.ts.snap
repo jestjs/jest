@@ -209,7 +209,6 @@ module.exports = {
   //   "cjs",
   //   "jsx",
   //   "ts",
-  //   "cts",
   //   "tsx",
   //   "json",
   //   "node"
