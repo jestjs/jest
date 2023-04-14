@@ -9820,8 +9820,8 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 18.2.0
-    react-test-renderer: 18.2.0
+    react: 17.0.2
+    react-test-renderer: 17.0.2
   languageName: unknown
   linkType: soft
 
