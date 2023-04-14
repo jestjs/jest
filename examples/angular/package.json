@@ -15,7 +15,7 @@
     "core-js": "^3.2.1",
     "rxjs": "^7.5.5",
     "tslib": "^2.0.0",
-    "typescript": "^4.8.2",
+    "typescript": "^5.0.4",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
