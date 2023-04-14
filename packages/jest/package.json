@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@tsd/typescript": "^4.9.0",
-    "tsd-lite": "^0.6.0"
+    "tsd-lite": "^0.7.0"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"

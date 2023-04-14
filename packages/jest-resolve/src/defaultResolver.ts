@@ -108,11 +108,11 @@ const defaultResolver: SyncResolver = (path, options) => {
 
   const pathToResolve = getPathInModule(path, resolveOptions);
 
+  // resolveSync dereferences symlinks to ensure we don't create a separate
+  // module instance depending on how it was referenced.
   const result = resolveSync(pathToResolve, resolveOptions);
 
-  // Dereference symlinks to ensure we don't create a separate
-  // module instance depending on how it was referenced.
-  return realpathSync(result);
+  return result;
 };
 
 export default defaultResolver;

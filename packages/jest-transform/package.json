@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/core": "^7.11.6",
     "@jest/types": "workspace:^",
-    "@jridgewell/trace-mapping": "^0.3.15",
+    "@jridgewell/trace-mapping": "^0.3.18",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^4.0.0",
     "convert-source-map": "^2.0.0",
