@@ -2,21 +2,13 @@
 
 'use strict';
 
-import {act} from 'react-dom/test-utils';
 import renderer from 'react-test-renderer';
 import Clock from '../Clock';
 
-jest.useFakeTimers().setSystemTime(1482363367071);
+jest.useFakeTimers();
+Date.now = jest.fn(() => 1482363367071);
 
 it('renders correctly', () => {
-  act(() => {
-    const reactTestRenderer = renderer.create(<Clock />);
-    const tree = reactTestRenderer.toJSON();
-
-    try {
-      expect(tree).toMatchSnapshot();
-    } finally {
-      reactTestRenderer.unmount();
-    }
-  });
+  const tree = renderer.create(<Clock />).toJSON();
+  expect(tree).toMatchSnapshot();
 });
