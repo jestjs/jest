@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@jest/types": "workspace:^",
-		"@jest/expect-utils": "workspace:^",
+    "@jest/expect-utils": "workspace:^",
     "@types/node": "*",
     "jest-util": "workspace:^"
   },
