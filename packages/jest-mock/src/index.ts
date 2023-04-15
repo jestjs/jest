@@ -7,6 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+import {equals} from '@jest/expect-utils';
 import {isPromise} from 'jest-util';
 
 export type MockMetadataType =
@@ -170,6 +171,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
+  mockWhen(...args: Parameters<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -817,6 +819,31 @@ export class ModuleMocker {
         f.mockImplementation(() =>
           this._environmentGlobal.Promise.reject(value),
         );
+
+      f.mockWhen = (...args: Parameters<T>): Mock<T> => {
+        const makeImpl = () =>
+          mocker._makeComponent(
+            metadata as MockMetadata<T, 'function'>,
+            spyState,
+          );
+        const mockConfig = this._ensureMockConfig(f);
+        const previousImplementation = mockConfig.mockImpl ?? makeImpl();
+        const thisImplementation = makeImpl();
+
+        const combinedImplementation = function (
+          this: ThisParameterType<T>,
+          ...callArgs: Parameters<T>
+        ): ReturnType<T> {
+          if (equals(callArgs, args)) {
+            return thisImplementation.apply(this, callArgs);
+          }
+          return previousImplementation.apply(this, callArgs);
+        } as T;
+
+        f.mockImplementation(combinedImplementation);
+
+        return thisImplementation;
+      };
 
       f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
