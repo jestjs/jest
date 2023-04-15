@@ -119,6 +119,12 @@ describe('shouldInstrument', () => {
         ['dont/collect/coverage.js'],
       );
     });
+
+    it('when file is a .json module, but matches forceCoverageMatch', () => {
+      testShouldInstrument('do/collect/coverage.json', defaultOptions, {
+        forceCoverageMatch: ['**/do/**/*.json'],
+      });
+    });
   });
 
   describe('should return false', () => {
@@ -243,6 +249,14 @@ describe('shouldInstrument', () => {
         {collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js']},
         defaultConfig,
         ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is a .json module', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.json',
+        defaultOptions,
+        defaultConfig,
       );
     });
   });
