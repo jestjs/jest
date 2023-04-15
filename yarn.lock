@@ -12958,6 +12958,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
+    "@jest/expect-utils": "workspace:^"
     "@jest/types": "workspace:^"
     "@tsd/typescript": ^4.9.0
     "@types/node": "*"

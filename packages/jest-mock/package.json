@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
     "@jest/expect-utils": "workspace:^",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "jest-util": "workspace:^"
   },
