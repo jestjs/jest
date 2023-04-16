@@ -52,6 +52,12 @@ More information on how snapshot testing works and why we built it can be found 
 
 :::
 
+:::tip
+
+The `toMatchSnapshot` matcher infers the name based on the test function context when the snapshot is evaluated. This can cause snapshots in tests that are run concurrently to have different names on each test run. If you want to guarantee consistent names, you can use the `toMatchNamedSnapshot` matcher.
+
+:::
+
 ### Updating Snapshots
 
 It's straightforward to spot when a snapshot test fails after a bug has been introduced. When that happens, go ahead and fix the issue and make sure your snapshot tests are passing again. Now, let's talk about the case when a snapshot test is failing due to an intentional implementation change.
@@ -263,10 +269,6 @@ Now, every time the snapshot test case runs, `Date.now()` will return `148236336
 ### 3. Use descriptive snapshot names
 
 Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.
-
-:::tip
-
-The `toMatchSnapshot` matcher infers the name based on the test function context when the snapshot is evaluated. This can cause snapshots in tests that are run concurrently to have different names on each test run. If you want to guarantee consistent names, you can use the `toMatchNamedSnapshot` matcher.
 
 :::
 
