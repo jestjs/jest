@@ -270,8 +270,6 @@ Now, every time the snapshot test case runs, `Date.now()` will return `148236336
 
 Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.
 
-:::
-
 For example, compare:
 
 ```js
