@@ -750,7 +750,7 @@ This ensures that a value matches the most recent snapshot. Check out [the Snaps
 
 You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
 
-By setting the `snapshotName` explicitly  (as opposed to letting Jest infer the name from context) it can be guaranteed to be consistent across test runs, whatever the context at the time of evaluation. Jest always appends a number at the end of a snapshot name.
+By setting the `snapshotName` explicitly (as opposed to letting Jest infer the name from context) it can be guaranteed to be consistent across test runs, whatever the context at the time of evaluation. Jest always appends a number at the end of a snapshot name.
 
 Jest sorts snapshots by name in the corresponding `.snap` file.
 
