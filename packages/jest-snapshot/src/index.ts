@@ -73,7 +73,7 @@ const printSnapshotName = (
 };
 
 const getSnapshotName = (config: SnapshotNameConfig): string => {
-  const {snapshotName, currentTestName, hint} = config;
+  const {currentTestName, hint, snapshotName} = config;
 
   if (snapshotName) {
     return snapshotName;
@@ -355,8 +355,8 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     inlineSnapshot,
     isInline,
     matcherName,
-    snapshotName,
     properties,
+    snapshotName,
   } = config;
   let {received} = config;
 
@@ -591,8 +591,8 @@ const _toThrowErrorMatchingSnapshot = (
     inlineSnapshot,
     isInline,
     matcherName,
-    snapshotName,
     received,
+    snapshotName,
   } = config;
 
   context.dontThrow && context.dontThrow();
