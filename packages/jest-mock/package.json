@@ -22,7 +22,7 @@
     "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "tsd-lite": "^0.7.0"
   },
   "engines": {
