@@ -1309,6 +1309,15 @@ describe('moduleMocker', () => {
         moduleMocker.spyOn(null, 'method');
       }).toThrow('spyOn could not find an object to spy on for method');
       expect(() => {
+        moduleMocker.spyOn({} as Record<string, any>, '');
+      }).toThrow('No property name supplied');
+      expect(() => {
+        moduleMocker.spyOn({} as Record<number, any>, NaN);
+      }).toThrow('No property name supplied');
+      expect(() => {
+        moduleMocker.spyOn({}, undefined);
+      }).toThrow('No property name supplied');
+      expect(() => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow(
         "Cannot spy on the method property because it is not a function; undefined given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
@@ -1318,6 +1327,19 @@ describe('moduleMocker', () => {
       }).toThrow(
         "Cannot spy on the method property because it is not a function; number given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
       );
+    });
+
+    it('should not throw when spying on a method named `0`', () => {
+      let haveBeenCalled = false;
+      const obj = {
+        0: () => {
+          haveBeenCalled = true;
+        },
+      };
+      const spy = moduleMocker.spyOn(obj, 0);
+      obj[0].call(null);
+      expect(haveBeenCalled).toBe(true);
+      expect(spy).toHaveBeenCalled();
     });
 
     it('supports clearing a spy', () => {

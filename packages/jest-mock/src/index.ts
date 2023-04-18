@@ -1168,7 +1168,7 @@ export class ModuleMocker {
       );
     }
 
-    if (!methodKey) {
+    if (!methodKey && !Number.isFinite(methodKey)) {
       throw new Error('No property name supplied');
     }
 
