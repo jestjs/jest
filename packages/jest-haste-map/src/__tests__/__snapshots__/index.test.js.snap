@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the most recent duplicate is fixed 1`] = `
 "The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or exclude files until there remains only one of these:

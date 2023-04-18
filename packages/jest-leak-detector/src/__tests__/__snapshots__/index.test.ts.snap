@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`complains if the value is a primitive 1`] = `"Primitives cannot leak memory. You passed a undefined: <undefined>"`;
 
