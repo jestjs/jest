@@ -27,7 +27,7 @@ import type {InlineSnapshot, SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
-export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
+export const SNAPSHOT_GUIDE_LINK = 'http://facebook.github.io/jest/docs/snapshot-testing.html';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
     'we recommend that you revert any local changes to tests or other code, ' +
