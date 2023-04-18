@@ -171,7 +171,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
-  mockWhen(...args: Parameters<T>): this;
+  whenCalledWith(...args: Parameters<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -820,7 +820,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockWhen = (...args: Parameters<T>): Mock<T> => {
+      f.whenCalledWith = (...args: Parameters<T>): Mock<T> => {
         const makeImpl = () =>
           mocker._makeComponent(
             metadata as MockMetadata<T, 'function'>,

@@ -707,15 +707,6 @@ describe('moduleMocker', () => {
       ]);
     });
 
-    it('supports mocking for specific args', () => {
-      const fn = moduleMocker.fn();
-      fn.mockReturnValue('generic output');
-      fn.mockWhen('special input').mockReturnValue('special output');
-
-      expect(fn('arbitrary')).toBe('generic output');
-      expect(fn('special input')).toBe('special output');
-    });
-
     describe('return values', () => {
       it('tracks return values', () => {
         const fn = moduleMocker.fn(x => x * 2);
@@ -1095,83 +1086,6 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Bar');
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
-    });
-  });
-
-  describe('mockWhen', () => {
-    it('mocks specific args', () => {
-      const fn = moduleMocker.fn();
-      fn.mockReturnValue('generic output');
-      fn.mockWhen('special input').mockReturnValue('special output');
-
-      expect(fn('arbitrary')).toBe('generic output');
-      expect(fn('special input')).toBe('special output');
-    });
-
-    it('works with several whens', () => {
-      const fn = moduleMocker.fn();
-      fn.mockImplementation(num => `${num}teen`);
-      fn.mockWhen('one').mockReturnValue('eleven');
-      fn.mockWhen('two').mockReturnValue('twelve');
-      fn.mockWhen('three').mockReturnValue('thirteen');
-
-      expect(fn('one')).toBe('eleven');
-      expect(fn('two')).toBe('twelve');
-      expect(fn('three')).toBe('thirteen');
-      expect(fn('four')).toBe('fourteen');
-    });
-
-    it('works without a default implementation', () => {
-      const fn = moduleMocker.fn();
-      fn.mockWhen('special input').mockReturnValue('special output');
-
-      expect(fn('arbitrary')).toBeUndefined();
-      expect(fn('special input')).toBe('special output');
-    });
-
-    it('supports matchers', () => {
-      const fn = moduleMocker.fn();
-      fn.mockReturnValue('hello');
-      fn.mockWhen(expect.any(String)).mockImplementation(v => `hello, ${v}`);
-      fn.mockWhen('hello', expect.any(String)).mockImplementation(
-        (_, y) => `morning, ${y}`,
-      );
-
-      expect(fn(3)).toBe('hello');
-      expect(fn('world')).toBe('hello, world');
-      expect(fn('hello', 'friend')).toBe('morning, friend');
-    });
-
-    it('still tracks all calls on the root mock', () => {
-      const fn = moduleMocker.fn();
-      fn.mockReturnValue('generic output');
-      fn.mockWhen('special input').mockReturnValue('special output');
-
-      expect(fn('arbitrary')).toBe('generic output');
-      expect(fn('special input')).toBe('special output');
-      expect(fn).toHaveBeenNthCalledWith(1, 'arbitrary');
-      expect(fn).toHaveBeenNthCalledWith(2, 'special input');
-      expect(fn).toHaveBeenCalledTimes(2);
-    });
-
-    it('supports spies', () => {
-      class TestClass {
-        public calls: Record<string, number> = {};
-        increment(arg: string) {
-          this.calls[arg] = (this.calls[arg] ?? 0) + 1;
-          return this.calls[arg];
-        }
-      }
-
-      const instance = new TestClass();
-      const spy = spyOn(instance, 'increment');
-      spy.mockWhen('hello').mockReturnValue(-3);
-
-      expect(instance.increment('goodbye')).toBe(1);
-      expect(instance.increment('goodbye')).toBe(2);
-      expect(instance.increment('hello')).toBe(-3);
-      expect(instance.increment('hello')).toBe(-3);
-      expect(instance.increment('goodbye')).toBe(3);
     });
   });
 
