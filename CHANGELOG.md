@@ -13,6 +13,7 @@
 - `[jest-mock]` Tweak typings to allow `jest.replaceProperty()` replace methods ([#14008](https://github.com/facebook/jest/pull/14008))
 - `[jest-snapshot]` Fix a potential bug when not using prettier and improve performance ([#14036](https://github.com/facebook/jest/pull/14036))
 - `[@jest/transform]` Do not instrument `.json` modules ([#14048](https://github.com/facebook/jest/pull/14048))
+- `[jest-mock]` Fix `jest.spyOn()` to correctly handle `0` as a method/property name ([#14082](https://github.com/facebook/jest/pull/14082))
 
 ### Chore & Maintenance
 
