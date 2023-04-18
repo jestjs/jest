@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-runtime]` Bind `jest.isolateModulesAsync` to `this` ([#14083](https://github.com/facebook/jest/pull/14083))
 - `[jest-config]` Handle frozen config object ([#14054](https://github.com/facebook/jest/pull/14054))
 - `[jest-core]` Always use workers in watch mode to avoid crashes ([#14059](https://github.com/facebook/jest/pull/14059)).
 - `[jest-environment-jsdom, jest-environment-node]` Fix assignment of `customExportConditions` via `testEnvironmentOptions` when custom env subclass defines a default value ([#13989](https://github.com/facebook/jest/pull/13989))
