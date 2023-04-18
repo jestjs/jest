@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ScriptTransformer (in sync mode) throws an error if \`process\` isn't defined 1`] = `
 "<red><bold>● Invalid synchronous transformer module:</intensity></color>

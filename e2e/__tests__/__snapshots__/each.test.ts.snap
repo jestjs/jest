@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`formats args with pretty format when given %p 1`] = `
 "PASS __tests__/pretty.test.js

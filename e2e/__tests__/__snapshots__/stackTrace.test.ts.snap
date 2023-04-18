@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Stack Trace does not print a stack trace for errors when --noStackTrace is given 1`] = `
 "Test Suites: 1 failed, 1 total

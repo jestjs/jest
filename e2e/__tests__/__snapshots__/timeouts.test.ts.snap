@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`does not exceed the command line testTimeout 1`] = `
 "PASS __tests__/a-banana.js
