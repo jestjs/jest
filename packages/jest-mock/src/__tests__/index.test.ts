@@ -1445,6 +1445,23 @@ describe('moduleMocker', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('supports spying on a symbol-keyed method', () => {
+      const k = Symbol();
+
+      let haveBeenCalled = false;
+      const obj = {
+        [k]: () => {
+          haveBeenCalled = true;
+        },
+      };
+
+      const spy = moduleMocker.spyOn(obj, k);
+      obj[k].call(null);
+
+      expect(haveBeenCalled).toBe(true);
+      expect(spy).toHaveBeenCalled();
+    });
+
     it('supports spying on a method which is defined on a function', () => {
       let haveBeenCalled = false;
       const obj = () => true;
@@ -2253,6 +2270,18 @@ describe('moduleMocker', () => {
       moduleMocker.replaceProperty(obj, 0, 'null');
 
       expect(obj[0]).toBe('null');
+    });
+
+    it('supports replacing a symbol-keyed property', () => {
+      const k = Symbol();
+
+      const obj = {
+        [k]: 'zero',
+      };
+
+      moduleMocker.replaceProperty(obj, k, 'null');
+
+      expect(obj[k]).toBe('null');
     });
 
     it('supports replacing a property which is defined on a function', () => {
