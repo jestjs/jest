@@ -76,4 +76,56 @@ describe('Runtime', () => {
       expect(root.jest.isEnvironmentTornDown()).toBe(true);
     });
   });
+
+  describe('jest.isolateModules', () => {
+    it('isolates the modules', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      root.jest.isolateModules(() => {
+        const exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+
+      root.jest.isolateModules(() => {
+        const exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+    });
+  });
+
+  describe('jest.isolateModulesAsync', () => {
+    it('isolates the modules', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      await root.jest.isolateModulesAsync(async () => {
+        const exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+
+      await root.jest.isolateModulesAsync(async () => {
+        const exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+    });
+  });
 });
