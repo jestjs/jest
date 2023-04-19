@@ -2197,6 +2197,9 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
+    const isolateModulesAsync = (fn: () => Promise<void>): Promise<void> => {
+      return this.isolateModulesAsync(fn);
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =
@@ -2303,7 +2306,7 @@ export default class Runtime {
       isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
-      isolateModulesAsync: this.isolateModulesAsync,
+      isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
