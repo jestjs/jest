@@ -163,11 +163,7 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
   if (length === 2 && typeof propertiesOrHint === 'string') {
     hint = propertiesOrHint;
   } else if (length >= 2) {
-    if (
-      Array.isArray(propertiesOrHint) ||
-      typeof propertiesOrHint !== 'object' ||
-      propertiesOrHint === null
-    ) {
+    if (typeof propertiesOrHint !== 'object' || propertiesOrHint === null) {
       const options: MatcherHintOptions = {
         isNot: this.isNot,
         promise: this.promise,
@@ -234,7 +230,6 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
     }
 
     if (
-      Array.isArray(propertiesOrSnapshot) ||
       typeof propertiesOrSnapshot !== 'object' ||
       propertiesOrSnapshot === null
     ) {
