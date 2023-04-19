@@ -13,6 +13,7 @@ import {
   WorkerInterface,
   WorkerOptions,
   WorkerPoolOptions,
+  WorkerStates,
 } from '../types';
 
 // How long to wait for the child process to terminate
@@ -28,9 +29,11 @@ export default class BaseWorkerPool {
   private readonly _stdout: NodeJS.ReadableStream;
   protected readonly _options: WorkerPoolOptions;
   private readonly _workers: Array<WorkerInterface>;
+  private readonly _workerPath: string;
 
   constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
+    this._workerPath = workerPath;
     this._workers = new Array(options.numWorkers);
 
     const stdout = mergeStream();
@@ -82,6 +85,24 @@ export default class BaseWorkerPool {
 
   getWorkerById(workerId: number): WorkerInterface {
     return this._workers[workerId];
+  }
+
+  restartWorkerIfShutDown(workerId: number): void {
+    if (this._workers[workerId].state === WorkerStates.SHUT_DOWN) {
+      const {forkOptions, maxRetries, resourceLimits, setupArgs} =
+        this._options;
+      const workerOptions: WorkerOptions = {
+        forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
+        maxRetries,
+        resourceLimits,
+        setupArgs,
+        workerId,
+        workerPath: this._workerPath,
+      };
+      const worker = this.createWorker(workerOptions);
+      this._workers[workerId] = worker;
+    }
   }
 
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
