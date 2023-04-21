@@ -6,5 +6,7 @@
  */
 
 describe('client', () => {
-  it('should work', () => {});
+  it('should work', () => {
+    expect(typeof document).toBe('object');
+  });
 });

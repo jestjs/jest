@@ -1,73 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`runCore Jest programmatically 1`] = `
-Object {
-  "numFailedTestSuites": 0,
-  "numFailedTests": 0,
-  "numPassedTestSuites": 1,
-  "numPassedTests": 1,
-  "numPendingTestSuites": 0,
-  "numPendingTests": 0,
-  "numRuntimeErrorTestSuites": 0,
-  "numTodoTests": 0,
-  "numTotalTestSuites": 1,
-  "numTotalTests": 1,
-  "openHandles": Array [],
-  "snapshot": Object {
-    "added": 0,
-    "didUpdate": false,
-    "failure": false,
-    "filesAdded": 0,
-    "filesRemoved": 0,
-    "filesRemovedList": Array [],
-    "filesUnmatched": 0,
-    "filesUpdated": 0,
-    "matched": 0,
-    "total": 0,
-    "unchecked": 0,
-    "uncheckedKeysByFile": Array [],
-    "unmatched": 0,
-    "updated": 0,
-  },
-  "success": true,
-  "testResults": Array [
-    Object {
-      "failureMessage": null,
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": Array [],
-      "skipped": false,
-      "snapshot": Object {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": Array [],
-        "unmatched": 0,
-        "updated": 0,
-      },
-      "testFilePath": "src/app.spec.js",
-      "testResults": Array [
-        Object {
-          "ancestorTitles": Array [
-            "jest-core",
-          ],
-          "failureDetails": Array [],
-          "failureMessages": Array [],
-          "fullName": "jest-core should run this test",
-          "invocations": 1,
-          "location": null,
-          "numPassingAsserts": 0,
-          "retryReasons": Array [],
-          "status": "passed",
-          "title": "should run this test",
-        },
-      ],
-    },
-  ],
-  "wasInterrupted": false,
-}
+exports[`runCore Jest programmatically: stdout 1`] = `"runCore success, 1 passed tests."`;
+
+exports[`runCore Jest programmatically: summary 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
 `;

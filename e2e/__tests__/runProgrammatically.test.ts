@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {relative, resolve} from 'path';
-import type {AggregatedResult} from '@jest/test-result';
-import {run} from '../Utils';
+import {resolve} from 'path';
+import stripAnsi = require('strip-ansi');
+import {extractSummary, run} from '../Utils';
 
 const dir = resolve(__dirname, '..', 'run-programmatically');
 
@@ -22,23 +22,9 @@ test('runCLI Jest programmatically esm', () => {
 });
 
 test('runCore Jest programmatically', () => {
-  const {stdout} = run('node core.mjs', dir);
-  const {startTime, ...results}: AggregatedResult = JSON.parse(
-    stdout.split('==== results ====')[1],
-  );
+  const {stderr, stdout} = run('node core.mjs', dir);
+  const {summary} = extractSummary(stripAnsi(stderr));
 
-  const prunedResults = {
-    ...results,
-
-    testResults: results.testResults.map(
-      ({testFilePath, perfStats, ...testFileData}) => ({
-        ...testFileData,
-        testFilePath: relative(dir, testFilePath),
-        testResults: testFileData.testResults.map(
-          ({duration, ...testResult}) => testResult,
-        ),
-      }),
-    ),
-  };
-  expect(prunedResults).toMatchSnapshot();
+  expect(summary).toMatchSnapshot('summary');
+  expect(stdout).toMatchSnapshot('stdout');
 });
