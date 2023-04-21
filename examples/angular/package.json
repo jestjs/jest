@@ -11,7 +11,7 @@
     "@angular/core": "^12.0.0",
     "@angular/forms": "^12.0.0",
     "@angular/platform-browser": "^12.0.0",
-    "@angular/platform-browser-dynamic": "^12.0.0",
+    "@angular/platform-browser-dynamic": "^15.2.8",
     "core-js": "^3.2.1",
     "rxjs": "^7.5.5",
     "tslib": "^2.0.0",
