@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {run} from 'jest';
+import {runCLI} from 'jest';
 
 // Running Jest like this is not officially supported,
 // but it is common practice until there is a proper API as a substitute.
-run(process.argv);
+runCLI(process.argv);
