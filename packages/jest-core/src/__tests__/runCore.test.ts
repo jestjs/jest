@@ -9,6 +9,7 @@ import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import * as jestUtil from 'jest-util';
 import {runCore} from '../runCore';
 import runJest from '../runJest';
+import watch from '../watch';
 
 jest.mock('jest-runtime', () => ({
   createHasteMap: () => ({
@@ -21,6 +22,7 @@ jest.mock('../runJest', () =>
     onComplete({results: {success: true}});
   }),
 );
+jest.mock('../watch', () => jest.fn());
 jest.mock('jest-util', () => {
   const original = jest.requireActual<typeof jestUtil>('jest-util');
 
@@ -41,5 +43,17 @@ describe(runCore, () => {
     ]);
     expect(jest.mocked(runJest)).toHaveBeenCalled();
     expect(actualResult).toEqual({result: {results: {success: true}}});
+  });
+
+  it('should provide stderr as output stream when useStderr is true', async () => {
+    await runCore(makeGlobalConfig({useStderr: true}), [makeProjectConfig()]);
+    expect(jest.mocked(runJest)).toHaveBeenCalledWith(
+      expect.objectContaining({outputStream: process.stderr}),
+    );
+  });
+
+  it('should not watch when watch is false', async () => {
+    await runCore(makeGlobalConfig({watch: false}), [makeProjectConfig()]);
+    expect(jest.mocked(watch)).not.toHaveBeenCalled();
   });
 });
