@@ -11,12 +11,12 @@ import {extractSummary, run} from '../Utils';
 
 const dir = resolve(__dirname, '..', 'run-programmatically');
 
-test('runCLI Jest programmatically cjs', () => {
+test('run Jest programmatically cjs', () => {
   const {stdout} = run('node cjs.js --version', dir);
   expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[-\S]*-dev$/);
 });
 
-test('runCLI Jest programmatically esm', () => {
+test('run Jest programmatically esm', () => {
   const {stdout} = run('node index.js --version', dir);
   expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[-\S]*-dev$/);
 });
