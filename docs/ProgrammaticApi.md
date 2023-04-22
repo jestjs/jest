@@ -130,7 +130,7 @@ const {results} = runCLI(
     findRelatedTests: true,
 
     // Pass the initial options
-    config: JSON.stringify(config)
+    config: JSON.stringify(config),
   },
   ['.'],
 );
