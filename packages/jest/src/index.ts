@@ -11,9 +11,9 @@ export {
   SearchSource,
   createTestScheduler,
   getVersion,
-  runCLI,
   readConfigs,
   readInitialOptions,
+  runCLI,
   runCore,
 } from '@jest/core';
 
