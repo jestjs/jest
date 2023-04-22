@@ -35,7 +35,7 @@ const {print: preRunMessagePrint} = preRunMessage;
  * import {runCore, readConfigs} from 'jest';
  *
  * const {globalConfig, configs} = await readConfigs(process.argv, [process.cwd()]);
- * const results = await runCore(globalConfig, configs);
+ * const {results} = await runCore(globalConfig, configs);
  * console.log(results);
  */
 export async function runCore(
@@ -43,8 +43,8 @@ export async function runCore(
   projectConfigs: Array<Config.ProjectConfig>,
 ): Promise<RunCoreResult> {
   const outputStream = globalConfig.useStderr ? process.stderr : process.stdout;
-  const result = await _run(globalConfig, projectConfigs, false, outputStream);
-  return {result};
+  const results = await _run(globalConfig, projectConfigs, false, outputStream);
+  return {results};
 }
 
 const buildContextsAndHasteMaps = async (

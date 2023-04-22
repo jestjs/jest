@@ -12,5 +12,5 @@ const runConfig = Object.freeze({
   collectCoverage: false,
   watch: false,
 });
-const {result} = await jest.runCore(runConfig, configs);
-console.log(`runCore success, ${result.numPassedTests} passed tests.`);
+const {results} = await jest.runCore(runConfig, configs);
+console.log(`runCore success, ${results.numPassedTests} passed tests.`);

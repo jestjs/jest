@@ -42,7 +42,7 @@ describe(runCore, () => {
       makeProjectConfig(),
     ]);
     expect(jest.mocked(runJest)).toHaveBeenCalled();
-    expect(actualResult).toEqual({result: {results: {success: true}}});
+    expect(actualResult).toEqual({results: {results: {success: true}}});
   });
 
   it('should provide stderr as output stream when useStderr is true', async () => {

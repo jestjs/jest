@@ -51,5 +51,5 @@ export type OnCompleteCallback = (
  * The result of running runCore.
  */
 export type RunCoreResult = {
-  result: AggregatedResult;
+  results: AggregatedResult;
 };
