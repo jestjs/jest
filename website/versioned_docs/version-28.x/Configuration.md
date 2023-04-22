@@ -1393,9 +1393,29 @@ Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
 
-For example, in `jest-environment-jsdom`, you can override options given to [`jsdom`](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", url: 'https://jestjs.io/', userAgent: "Agent/007"}`.
+For example, you can override options passed to [`jsdom`](https://github.com/jsdom/jsdom):
+
+```js
+module.exports = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    html: '<html lang="zh-cmn-Hant"></html>',
+    url: 'https://jestjs.io/',
+    userAgent: 'Agent/007',
+  },
+};
+```
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
+
+```js
+module.exports = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['react-native'],
+  },
+};
+```
 
 These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`:
 

@@ -1256,7 +1256,19 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
+
+For example, you can override options passed to [`jsdom`](https://github.com/jsdom/jsdom):
+
+```js
+module.exports = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    html: '<html lang="zh-cmn-Hant"></html>',
+    userAgent: 'Agent/007',
+  },
+};
+```
 
 ### `testFailureExitCode` \[number]
 

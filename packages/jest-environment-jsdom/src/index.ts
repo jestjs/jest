@@ -38,6 +38,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
+  private _configuredExportConditions?: Array<string>;
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -119,7 +120,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         Array.isArray(customExportConditions) &&
         customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -170,7 +171,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {

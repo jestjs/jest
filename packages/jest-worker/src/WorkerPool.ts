@@ -24,6 +24,7 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     onEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
+    this.restartWorkerIfShutDown(workerId);
     this.getWorkerById(workerId).send(request, onStart, onEnd, onCustomMessage);
   }
 

@@ -43,7 +43,7 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
-test('should not skips non-enumerables', () => {
+test('should not skip non-enumerables', () => {
   const obj = {};
   Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
 
@@ -64,6 +64,18 @@ test('copies symbols', () => {
   const obj = {[symbol]: 42};
 
   expect(deepCyclicCopyReplaceable(obj)[symbol]).toBe(42);
+});
+
+test('copies value of inherited getters', () => {
+  class Foo {
+    #foo = 42;
+    get foo() {
+      return this.#foo;
+    }
+  }
+  const obj = new Foo();
+
+  expect(deepCyclicCopyReplaceable(obj).foo).toBe(42);
 });
 
 test('copies arrays as array objects', () => {

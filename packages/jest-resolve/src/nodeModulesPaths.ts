@@ -52,23 +52,25 @@ export default function nodeModulesPaths(
     parsed = path.parse(parsed.dir);
   }
 
-  const dirs = paths
-    .reduce<Array<string>>(
-      (dirs, aPath) =>
-        dirs.concat(
-          modules.map(moduleDir =>
-            path.isAbsolute(moduleDir)
-              ? aPath === basedirAbs
-                ? moduleDir
-                : ''
-              : path.join(prefix, aPath, moduleDir),
-          ),
-        ),
-      [],
-    )
-    .filter(dir => dir !== '');
+  const dirs = paths.reduce<Array<string>>((dirs, aPath) => {
+    for (const moduleDir of modules) {
+      if (path.isAbsolute(moduleDir)) {
+        if (aPath === basedirAbs && moduleDir) {
+          dirs.push(moduleDir);
+        }
+      } else {
+        dirs.push(path.join(prefix, aPath, moduleDir));
+      }
+    }
 
-  return options.paths ? dirs.concat(options.paths) : dirs;
+    return dirs;
+  }, []);
+
+  if (options.paths) {
+    dirs.push(...options.paths);
+  }
+
+  return dirs;
 }
 
 function findGlobalPaths(): Array<string> {

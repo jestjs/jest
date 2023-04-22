@@ -52,12 +52,30 @@ jobs:
         run: yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
+      - name: run ESLint with type info
+        run: yarn lint-ts-files
+
+  typecheck:
+    name: Typecheck Examples and Tests
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:ts
       - name: typecheck examples
         run: yarn typecheck:examples
       - name: typecheck tests
         run: yarn typecheck:tests
-      - name: run ESLint with type info
-        run: yarn lint-ts-files
 
   lint:
     name: Lint
