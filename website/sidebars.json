@@ -45,6 +45,7 @@
     "configuration",
     "cli",
     "environment-variables",
-    "code-transformation"
+    "code-transformation",
+    "programmatic-api"
   ]
 }
