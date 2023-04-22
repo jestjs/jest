@@ -23,7 +23,7 @@ const stringifyOption = (
   return `${optionDescription}\n${stringifiedObject
     .split('\n')
     .map(line => `  ${linePrefix}${line}`)
-    .join('\n')},\n`;
+    .join('\n')},`;
 };
 
 const generateConfigFile = (
@@ -78,22 +78,30 @@ const generateConfigFile = (
     }
   }
 
-  const configHeaderMessage = `/*
- * For a detailed explanation regarding each configuration property${
-   useTypescript ? ' and type check' : ''
- }, visit:
+  const configHeaderMessage = `/**
+ * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
-
 `;
 
-  return `${
-    configHeaderMessage +
-    (useTypescript || generateEsm
-      ? 'export default {\n'
-      : 'module.exports = {\n') +
-    properties.join('\n')
-  }};\n`;
+  const jsDeclaration = `/** @type {import('jest').Config} */
+const config = {`;
+
+  const tsDeclaration = `import type {Config} from 'jest';
+
+const config: Config = {`;
+
+  const cjsExport = 'module.exports = config;';
+  const esmExport = 'export default config;';
+
+  return [
+    configHeaderMessage,
+    useTypescript ? tsDeclaration : jsDeclaration,
+    properties.join('\n\n'),
+    '};\n',
+    useTypescript || generateEsm ? esmExport : cjsExport,
+    '',
+  ].join('\n');
 };
 
 export default generateConfigFile;
