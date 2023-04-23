@@ -23,6 +23,8 @@ Disables automatic mocking in the module loader.
 
 Automatic mocking should be enabled via [`automock`](Configuration.md#automock-boolean) configuration option for this method to have any effect. Also see documentation of the configuration option for more details.
 
+:::
+
 Jest configuration:
 
 ```json
