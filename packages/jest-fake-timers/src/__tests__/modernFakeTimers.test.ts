@@ -857,11 +857,11 @@ describe('FakeTimers', () => {
 
       timers.useRealTimers();
 
-      expect(clearTimeoutMockRestore).toHaveBeenCalled();
-      expect(setTimeoutMockRestore).toHaveBeenCalled();
-      expect(clearIntervalMockRestore).toHaveBeenCalled();
-      expect(setIntervalMockRestore).toHaveBeenCalled();
-      expect(processNextTickMockRestore).toHaveBeenCalled();
+      expect(clearTimeoutMockRestore).toHaveBeenCalledTimes(1);
+      expect(setTimeoutMockRestore).toHaveBeenCalledTimes(1);
+      expect(clearIntervalMockRestore).toHaveBeenCalledTimes(1);
+      expect(setIntervalMockRestore).toHaveBeenCalledTimes(1);
+      expect(processNextTickMockRestore).toHaveBeenCalledTimes(1);
     });
   });
 
