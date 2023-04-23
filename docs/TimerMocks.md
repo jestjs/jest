@@ -42,7 +42,7 @@ test('waits 1 second before ending the game', () => {
 
 :::note
 
-The spied `setTimeout()` in the example above would be restored after calling `jest.useRealTimers()`. This is because the real and fake versions of a method are treated as two different functions.
+The spied `setTimeout()` in the example above would be restored after calling `jest.useRealTimers()`. This is because the real method and its fake implementation are treated as two different functions.
 
 :::
 
