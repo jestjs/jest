@@ -821,6 +821,48 @@ describe('FakeTimers', () => {
       expect(global.setImmediate).toBe(nativeSetImmediate);
       expect(global.clearImmediate).toBe(nativeClearImmediate);
     });
+
+    it('restores spied APIs', () => {
+      const global = {
+        Date,
+        clearInterval,
+        clearTimeout,
+        process,
+        setInterval,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      const timers = new FakeTimers({config: makeProjectConfig(), global});
+
+      timers.useFakeTimers();
+
+      const clearTimeoutMockRestore = jest.fn();
+      global.clearTimeout._isMockFunction = true;
+      global.clearTimeout.mockRestore = clearTimeoutMockRestore;
+
+      const setTimeoutMockRestore = jest.fn();
+      global.setTimeout._isMockFunction = true;
+      global.setTimeout.mockRestore = setTimeoutMockRestore;
+
+      const clearIntervalMockRestore = jest.fn();
+      global.clearInterval._isMockFunction = true;
+      global.clearInterval.mockRestore = clearIntervalMockRestore;
+
+      const setIntervalMockRestore = jest.fn();
+      global.setInterval._isMockFunction = true;
+      global.setInterval.mockRestore = setIntervalMockRestore;
+
+      const processNextTickMockRestore = jest.fn();
+      global.process.nextTick._isMockFunction = true;
+      global.process.nextTick.mockRestore = processNextTickMockRestore;
+
+      timers.useRealTimers();
+
+      expect(clearTimeoutMockRestore).toHaveBeenCalled();
+      expect(setTimeoutMockRestore).toHaveBeenCalled();
+      expect(clearIntervalMockRestore).toHaveBeenCalled();
+      expect(setIntervalMockRestore).toHaveBeenCalled();
+      expect(processNextTickMockRestore).toHaveBeenCalled();
+    });
   });
 
   describe('useFakeTimers', () => {
