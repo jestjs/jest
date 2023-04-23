@@ -2,11 +2,60 @@
 
 ### Features
 
+- `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
+- `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
+
 ### Fixes
+
+- `[jest-config]` Handle frozen config object ([#14054](https://github.com/facebook/jest/pull/14054))
+- `[jest-core]` Always use workers in watch mode to avoid crashes ([#14059](https://github.com/facebook/jest/pull/14059)).
+- `[jest-environment-jsdom, jest-environment-node]` Fix assignment of `customExportConditions` via `testEnvironmentOptions` when custom env subclass defines a default value ([#13989](https://github.com/facebook/jest/pull/13989))
+- `[jest-matcher-utils]` Fix copying value of inherited getters ([#14007](https://github.com/facebook/jest/pull/14007))
+- `[jest-mock]` Tweak typings to allow `jest.replaceProperty()` replace methods ([#14008](https://github.com/facebook/jest/pull/14008))
+- `[jest-mock]` Improve user input validation and error messages of `spyOn` and `replaceProperty` methods ([#14087](https://github.com/facebook/jest/pull/14087))
+- `[jest-runtime]` Bind `jest.isolateModulesAsync` to `this` ([#14083](https://github.com/facebook/jest/pull/14083))
+- `[jest-snapshot]` Fix a potential bug when not using prettier and improve performance ([#14036](https://github.com/facebook/jest/pull/14036))
+- `[@jest/transform]` Do not instrument `.json` modules ([#14048](https://github.com/facebook/jest/pull/14048))
 
 ### Chore & Maintenance
 
+- `[docs]` Updated documentation for the `--runTestsByPath` CLI command ([#14004](https://github.com/facebook/jest/pull/14004))
+- `[docs]` Updated documentation regarding the synchronous fallback when asynchronous code transforms are unavailable ([#14056](https://github.com/facebook/jest/pull/14056))
+
 ### Performance
+
+## 29.5.0
+
+### Features
+
+- `[jest-changed-files]` Support Sapling ([#13941](https://github.com/facebook/jest/pull/13941))
+- `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
+- `[jest-cli, jest-config, @jest/core, jest-haste-map, @jest/reporters, jest-runner, jest-runtime, @jest/types]` Add `workerThreads` configuration option to allow using [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization ([#13939](https://github.com/facebook/jest/pull/13939))
+- `[jest-cli]` Export `yargsOptions` ([#13970](https://github.com/facebook/jest/pull/13970))
+- `[jest-config]` Add `openHandlesTimeout` option to configure possible open handles warning. ([#13875](https://github.com/facebook/jest/pull/13875))
+- `[@jest/create-cache-key-function]` Allow passing `length` argument to `createCacheKey()` function and set its default value to `16` on Windows ([#13827](https://github.com/facebook/jest/pull/13827))
+- `[jest-message-util]` Add support for [AggregateError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) ([#13946](https://github.com/facebook/jest/pull/13946) & [#13947](https://github.com/facebook/jest/pull/13947))
+- `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it` ([#13935](https://github.com/facebook/jest/pull/13935) & [#13966](https://github.com/facebook/jest/pull/13966))
+- `[jest-reporters]` Add `summaryThreshold` option to summary reporter to allow overriding the internal threshold that is used to print the summary of all failed tests when the number of test suites surpasses it ([#13895](https://github.com/facebook/jest/pull/13895))
+- `[jest-runtime]` Expose `@sinonjs/fake-timers` async APIs functions `advanceTimersByTimeAsync(msToRun)` (`tickAsync(msToRun)`), `advanceTimersToNextTimerAsync(steps)` (`nextAsync`), `runAllTimersAsync` (`runAllAsync`), and `runOnlyPendingTimersAsync` (`runToLastAsync`) ([#13981](https://github.com/facebook/jest/pull/13981))
+- `[jest-runtime, @jest/transform]` Allow V8 coverage provider to collect coverage from files which were not loaded explicitly ([#13974](https://github.com/facebook/jest/pull/13974))
+- `[jest-snapshot]` Add support to `cts` and `mts` TypeScript files to inline snapshots ([#13975](https://github.com/facebook/jest/pull/13975))
+- `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
+- `[jest-worker]` Support passing a URL as path to worker ([#13982](https://github.com/facebook/jest/pull/13982))
+
+### Fixes
+
+- `[babel-plugin-jest-hoist]` Fix unwanted hoisting of nested `jest` usages ([#13952](https://github.com/facebook/jest/pull/13952))
+- `[jest-circus]` Send test case results for `todo` tests ([#13915](https://github.com/facebook/jest/pull/13915))
+- `[jest-circus]` Update message printed on test timeout ([#13830](https://github.com/facebook/jest/pull/13830))
+- `[jest-circus]` Avoid creating the word "testfalse" when `takesDoneCallback` is `false` in the message printed on test timeout AND updated timeouts test ([#13954](https://github.com/facebook/jest/pull/13954))
+- `[jest-environment-jsdom]` Stop setting `document` to `null` on teardown ([#13972](https://github.com/facebook/jest/pull/13972))
+- `[@jest/expect-utils]` Update `toStrictEqual()` to be able to check `jest.fn().mock.calls` ([#13960](https://github.com/facebook/jest/pull/13960))
+- `[@jest/test-result]` Allow `TestResultsProcessor` type to return a Promise ([#13950](https://github.com/facebook/jest/pull/13950))
+
+### Chore & Maintenance
+
+- `[jest-snapshot]` Remove dependency on `jest-haste-map` ([#13977](https://github.com/facebook/jest/pull/13977))
 
 ## 29.4.3
 

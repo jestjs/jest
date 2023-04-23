@@ -39,4 +39,19 @@ describe('Custom Reporters Integration on jest-circus', () => {
 
     expect(stdout).toMatchSnapshot();
   });
+
+  test('push test case results for todo tests', () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: [
+          'default',
+          '<rootDir>/reporters/AssertionCountsReporter.js',
+        ],
+      }),
+      'todo.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
 });

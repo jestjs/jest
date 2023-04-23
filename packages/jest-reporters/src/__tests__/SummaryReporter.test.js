@@ -160,3 +160,78 @@ test('snapshots all have results (after update)', () => {
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
 });
+
+describe('summaryThreshold option', () => {
+  const aggregatedResults = {
+    numFailedTestSuites: 1,
+    numFailedTests: 1,
+    numPassedTestSuites: 2,
+    numRuntimeErrorTestSuites: 0,
+    numTotalTestSuites: 3,
+    numTotalTests: 3,
+    snapshot: {
+      filesRemovedList: [],
+      filesUnmatched: 0,
+      total: 0,
+      uncheckedKeysByFile: [],
+      unmatched: 0,
+    },
+    startTime: 0,
+    testResults: [
+      {
+        failureMessage: 'FailureMessage1',
+        numFailingTests: 1,
+        testFilePath: 'path1',
+      },
+      {
+        failureMessage: 'FailureMessage2',
+        numFailingTests: 1,
+        testFilePath: 'path2',
+      },
+    ],
+  };
+
+  it('Should print failure messages when number of test suites is over the threshold', () => {
+    const options = {
+      summaryThreshold: aggregatedResults.numTotalTestSuites - 1,
+    };
+
+    requireReporter();
+    const testReporter = new SummaryReporter(globalConfig, options);
+    testReporter.onRunComplete(new Set(), aggregatedResults);
+    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+  });
+
+  it('Should not print failure messages when number of test suites is under the threshold', () => {
+    const options = {
+      summaryThreshold: aggregatedResults.numTotalTestSuites + 1,
+    };
+
+    requireReporter();
+    const testReporter = new SummaryReporter(globalConfig, options);
+    testReporter.onRunComplete(new Set(), aggregatedResults);
+    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+  });
+
+  it('Should not print failure messages when number of test suites is equal to the threshold', () => {
+    const options = {
+      summaryThreshold: aggregatedResults.numTotalTestSuites,
+    };
+
+    requireReporter();
+    const testReporter = new SummaryReporter(globalConfig, options);
+    testReporter.onRunComplete(new Set(), aggregatedResults);
+    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+  });
+
+  it('Should throw error if threshold is not a number', () => {
+    const options = {
+      summaryThreshold: 'not a number',
+    };
+
+    requireReporter();
+    expect(() => new SummaryReporter(globalConfig, options)).toThrow(
+      'The option summaryThreshold should be a number',
+    );
+  });
+});

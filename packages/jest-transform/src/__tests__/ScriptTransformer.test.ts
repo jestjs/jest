@@ -1266,11 +1266,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap: FixedRawSourceMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1315,11 +1315,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1364,11 +1364,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1405,11 +1405,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1445,11 +1445,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1485,11 +1485,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 

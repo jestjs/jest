@@ -60,6 +60,7 @@ const defaultOptions: Config.DefaultOptions = {
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
+  openHandlesTimeout: 1000,
   passWithNoTests: false,
   prettierPath: 'prettier',
   resetMocks: false,
@@ -88,6 +89,7 @@ const defaultOptions: Config.DefaultOptions = {
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
+  workerThreads: false,
 };
 
 export default defaultOptions;

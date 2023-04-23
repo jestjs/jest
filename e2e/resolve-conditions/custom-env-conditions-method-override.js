@@ -9,7 +9,7 @@
 
 const NodeEnv = require('jest-environment-node').TestEnvironment;
 
-module.exports = class DenoEnvWithConditions extends NodeEnv {
+module.exports = class CustomEnvWithConditions extends NodeEnv {
   exportConditions() {
     return ['deno'];
   }

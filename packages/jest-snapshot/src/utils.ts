@@ -194,7 +194,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: string): void => {
   try {
-    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
+    fs.mkdirSync(path.dirname(filePath), {recursive: true});
   } catch {}
 };
 
@@ -220,15 +220,20 @@ export const saveSnapshotFile = (
   );
 };
 
+const isAnyOrAnything = (input: object) =>
+  '$$typeof' in input &&
+  input.$$typeof === Symbol.for('jest.asymmetricMatcher') &&
+  ['Any', 'Anything'].includes(input.constructor.name);
+
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   const mergedOutput = Array.from(target);
 
   source.forEach((sourceElement, index) => {
     const targetElement = mergedOutput[index];
 
-    if (Array.isArray(target[index])) {
+    if (Array.isArray(target[index]) && Array.isArray(sourceElement)) {
       mergedOutput[index] = deepMergeArray(target[index], sourceElement);
-    } else if (isObject(targetElement)) {
+    } else if (isObject(targetElement) && !isAnyOrAnything(sourceElement)) {
       mergedOutput[index] = deepMerge(target[index], sourceElement);
     } else {
       // Source does not exist in target or target is primitive and cannot be deep merged

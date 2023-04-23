@@ -79,6 +79,7 @@ type HasteMapOptions = {
   resetCache: boolean;
   watch?: boolean;
   watchman: boolean;
+  workerThreads?: boolean;
 };
 
 interface InternalModuleOptions extends Required<CallerTransformOptions> {
@@ -370,6 +371,7 @@ export default class Runtime {
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options?.watchman,
       watch: options?.watch,
+      workerThreads: options?.workerThreads,
     });
   }
 
@@ -1265,8 +1267,12 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          this._v8CoverageSources!.has(res.url) &&
-          shouldInstrument(res.url, this._coverageOptions, this._config),
+          shouldInstrument(
+            res.url,
+            this._coverageOptions,
+            this._config,
+            /* loadedFilenames */ Array.from(this._v8CoverageSources!.keys()),
+          ),
       )
       .map(result => {
         const transformedFile = this._v8CoverageSources!.get(result.url);
@@ -1338,7 +1344,6 @@ export default class Runtime {
 
   teardown(): void {
     this.restoreAllMocks();
-    this.resetAllMocks();
     this.resetModules();
 
     this._internalModuleRegistry.clear();
@@ -2192,6 +2197,9 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
+    const isolateModulesAsync = (fn: () => Promise<void>): Promise<void> => {
+      return this.isolateModulesAsync(fn);
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =
@@ -2210,7 +2218,7 @@ export default class Runtime {
             );
           };
 
-    const setTimeout = (timeout: number) => {
+    const setTimeout: Jest['setTimeout'] = timeout => {
       this._environment.global[testTimeoutSymbol] = timeout;
       return jestObject;
     };
@@ -2224,24 +2232,56 @@ export default class Runtime {
     };
 
     const jestObject: Jest = {
-      advanceTimersByTime: (msToRun: number) =>
+      advanceTimersByTime: msToRun =>
         _getFakeTimers().advanceTimersByTime(msToRun),
-      advanceTimersToNextTimer: (steps?: number) =>
+      advanceTimersByTimeAsync: async msToRun => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          // TODO: remove this check in Jest 30
+          if (typeof fakeTimers.advanceTimersByTimeAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
+          await fakeTimers.advanceTimersByTimeAsync(msToRun);
+        } else {
+          throw new TypeError(
+            '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
+      advanceTimersToNextTimer: steps =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
+      advanceTimersToNextTimerAsync: async steps => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          // TODO: remove this check in Jest 30
+          if (typeof fakeTimers.advanceTimersToNextTimerAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
+          await fakeTimers.advanceTimersToNextTimerAsync(steps);
+        } else {
+          throw new TypeError(
+            '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
       clearAllTimers: () => _getFakeTimers().clearAllTimers(),
-      createMockFromModule: (moduleName: string) =>
-        this._generateMock(from, moduleName),
+      createMockFromModule: moduleName => this._generateMock(from, moduleName),
       deepUnmock,
       disableAutomock,
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFromModule: (moduleName: string) =>
-        this._generateMock(from, moduleName),
+      genMockFromModule: moduleName => this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
@@ -2266,7 +2306,7 @@ export default class Runtime {
       isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
-      isolateModulesAsync: this.isolateModulesAsync,
+      isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
@@ -2290,10 +2330,43 @@ export default class Runtime {
       },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
+      runAllTimersAsync: async () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          // TODO: remove this check in Jest 30
+          if (typeof fakeTimers.runAllTimersAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
+          await fakeTimers.runAllTimersAsync();
+        } else {
+          throw new TypeError(
+            '`jest.runAllTimersAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      setMock: (moduleName: string, mock: unknown) =>
-        setMockFactory(moduleName, () => mock),
-      setSystemTime: (now?: number | Date) => {
+      runOnlyPendingTimersAsync: async () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          // TODO: remove this check in Jest 30
+          if (typeof fakeTimers.runOnlyPendingTimersAsync !== 'function') {
+            throw new TypeError(
+              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
+            );
+          }
+          await fakeTimers.runOnlyPendingTimersAsync();
+        } else {
+          throw new TypeError(
+            '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',
+          );
+        }
+      },
+      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
+      setSystemTime: now => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {

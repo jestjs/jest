@@ -49,11 +49,9 @@ jest --watchAll #runs all tests
 
 Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
-<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+## Using with package manager
 
-## Using with yarn
-
-If you run Jest via `yarn test`, you can pass the command line arguments directly as Jest arguments.
+If you run Jest via your package manager, you can still pass the command line arguments directly as Jest arguments.
 
 Instead of:
 
@@ -63,23 +61,7 @@ jest -u -t="ColorPicker"
 
 you can use:
 
-```bash
-yarn test -u -t="ColorPicker"
-```
-
-## Using with npm scripts
-
-If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments.
-
-Instead of:
-
-```bash
-jest -u -t="ColorPicker"
-```
-
-you can use:
-
-```bash
+```bash npm2yarn
 npm test -- -u -t="ColorPicker"
 ```
 
@@ -491,15 +473,19 @@ Alias: `-v`. Print the version and exit.
 
 Watch files for changes and rerun tests related to changed files. If you want to re-run all tests when a file has changed, use the `--watchAll` option instead.
 
+:::tip
+
+Use `--no-watch` (or `--watch=false`) to explicitly disable the watch mode if it was enabled using `--watch`. In most CI environments, this is automatically handled for you.
+
+:::
+
 ### `--watchAll`
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode.
-
 :::tip
 
-In most CI environments, this is automatically handled for you.
+Use `--no-watchAll` (or `--watchAll=false`) to explicitly disable the watch mode if it was enabled using `--watchAll`. In most CI environments, this is automatically handled for you.
 
 :::
 

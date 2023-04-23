@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {pathToFileURL} from 'url';
 import type {JestWorkerFarm, Worker, WorkerFarmOptions} from '../';
 import type FarmClass from '../Farm';
 import type WorkerPoolClass from '../WorkerPool';
@@ -71,6 +72,19 @@ it('makes a non-existing relative worker throw', () => {
   }).toThrow("'workerPath' must be absolute");
 });
 
+it('supports URLs', () => {
+  const workerPathUrl = pathToFileURL(__filename);
+
+  // eslint-disable-next-line no-new
+  new WorkerFarm(workerPathUrl, {exposedMethods: ['foo', 'bar']});
+  // eslint-disable-next-line no-new
+  new WorkerFarm(workerPathUrl.href, {exposedMethods: ['foo', 'bar']});
+
+  expect(WorkerPool).toHaveBeenCalledTimes(2);
+  expect(WorkerPool).toHaveBeenNthCalledWith(1, __filename, expect.anything());
+  expect(WorkerPool).toHaveBeenNthCalledWith(2, __filename, expect.anything());
+});
+
 it('exposes the right API using default working', () => {
   const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
@@ -89,6 +103,7 @@ it('exposes the right API using passed worker', () => {
     getStdout: jest.fn(),
     getWorkers: jest.fn(),
     send: jest.fn(),
+    start: jest.fn(),
   }));
 
   const farm = new WorkerFarm('/tmp/baz.js', {

@@ -20,7 +20,7 @@ jest.mock('path', () => ({
   sep: '/',
 }));
 jest.mock('graceful-fs', () => ({
-  ...jest.requireActual<typeof import('fs')>('fs'),
+  ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
   writeFileSync: jest.fn(),
 }));
 
@@ -46,8 +46,13 @@ describe('init', () => {
 
         await init(resolveFromFixture('only-package-json'));
 
+        const writtenJestConfigFilename =
+          jest.mocked(writeFileSync).mock.calls[0][0];
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
+        expect(path.basename(writtenJestConfigFilename as string)).toBe(
+          'jest.config.js',
+        );
         expect(
           (writtenJestConfig as string).replace(
             /\/\/ cacheDirectory: .*,/,
@@ -75,11 +80,12 @@ describe('init', () => {
         expect(path.basename(writtenJestConfigFilename as string)).toBe(
           'jest.config.mjs',
         );
-
-        expect(typeof writtenJestConfig).toBe('string');
-        expect((writtenJestConfig as string).split('\n')[5]).toBe(
-          'export default {',
-        );
+        expect(
+          (writtenJestConfig as string).replace(
+            /\/\/ cacheDirectory: .*,/,
+            '// cacheDirectory: "/tmp/jest",',
+          ),
+        ).toMatchSnapshot();
       });
     });
 
@@ -247,9 +253,12 @@ describe('init', () => {
         expect(path.basename(jestConfigFileName as string)).toBe(
           'jest.config.ts',
         );
-        expect((writtenJestConfig as string).split('\n')[5]).toBe(
-          'export default {',
-        );
+        expect(
+          (writtenJestConfig as string).replace(
+            /\/\/ cacheDirectory: .*,/,
+            '// cacheDirectory: "/tmp/jest",',
+          ),
+        ).toMatchSnapshot();
       });
 
       it('user answered with "No"', async () => {

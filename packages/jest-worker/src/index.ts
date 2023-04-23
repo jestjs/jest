@@ -11,6 +11,7 @@ import {
   cpus,
 } from 'os';
 import {isAbsolute} from 'path';
+import {fileURLToPath} from 'url';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -95,11 +96,17 @@ export class Worker {
   private readonly _options: WorkerFarmOptions;
   private readonly _workerPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: WorkerFarmOptions) {
+  constructor(workerPath: string | URL, options?: WorkerFarmOptions) {
     this._options = {...options};
     this._ending = false;
 
-    if (!isAbsolute(workerPath)) {
+    if (typeof workerPath !== 'string') {
+      workerPath = workerPath.href;
+    }
+
+    if (workerPath.startsWith('file:')) {
+      workerPath = fileURLToPath(workerPath);
+    } else if (!isAbsolute(workerPath)) {
       throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
     }
 
@@ -172,6 +179,10 @@ export class Worker {
 
   getStdout(): NodeJS.ReadableStream {
     return this._workerPool.getStdout();
+  }
+
+  async start(): Promise<void> {
+    await this._workerPool.start();
   }
 
   async end(): Promise<PoolExitResult> {

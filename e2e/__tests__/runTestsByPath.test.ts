@@ -28,7 +28,7 @@ test('runs tests by exact path', () => {
   expect(run1.stderr).toMatch('PASS __tests__/t1.test.js');
   expect(run1.stderr).not.toMatch('PASS __tests__/t2.test.js');
 
-  // When running with thte flag and a pattern, no test is found.
+  // When running with the flag and a pattern, no test is found.
   const run2 = runJest(DIR, ['--runTestsByPath', '__tests__/t']);
   expect(run2.stdout).toMatch(/no tests found/i);
 

@@ -49,9 +49,9 @@ To use `worker_threads` instead of default `child_process` you have to pass `ena
 
 The `Worker` export is a constructor that is initialized by passing the worker path, plus an options object.
 
-### `workerPath: string` (required)
+### `workerPath: string | URL` (required)
 
-Node module name or absolute path of the file to be loaded in the child processes. Use `require.resolve` to transform a relative path into an absolute one.
+Node module name or absolute path or file URL of the file to be loaded in the child processes. You can use `require.resolve` to transform a relative path into an absolute one.
 
 ### `options: Object` (optional)
 
@@ -140,11 +140,17 @@ Returns a `ReadableStream` where the standard output of all workers is piped. No
 
 Returns a `ReadableStream` where the standard error of all workers is piped. Note that the `silent` option of the child workers must be set to `true` to make it work. This is the default set by `jest-worker`, but keep it in mind when overriding options through `forkOptions`.
 
+#### `start()`
+
+Starts up every worker and calls their `setup` function, if it exists. Returns a `Promise` which resolves when all workers are running and have completed their `setup`.
+
+This is useful if you want to start up all your workers eagerly before they are used to call any other functions.
+
 #### `end()`
 
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
-Returns a Promise that resolves with `{ forceExited: boolean }` once all workers are dead. If `forceExited` is `true`, at least one of the workers did not exit gracefully, which likely happened because it executed a leaky task that left handles open. This should be avoided, force exiting workers is a last resort to prevent creating lots of orphans.
+Returns a `Promise` that resolves with `{ forceExited: boolean }` once all workers are dead. If `forceExited` is `true`, at least one of the workers did not exit gracefully, which likely happened because it executed a leaky task that left handles open. This should be avoided, force exiting workers is a last resort to prevent creating lots of orphans.
 
 **Note:**
 
