@@ -128,7 +128,7 @@ const utils = jest.genMockFromModule('../utils');
 
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
-test('implementation created by jest.createMockFromModule', () => {
+test('implementation created by jest.genMockFromModule', () => {
   expect(jest.isMockFunction(utils.authorize)).toBe(true);
   expect(utils.isAuthorized('not wizard')).toBe(true);
 });
