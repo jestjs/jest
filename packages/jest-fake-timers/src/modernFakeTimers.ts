@@ -119,6 +119,32 @@ export default class FakeTimers {
 
   useRealTimers(): void {
     if (this._fakingTime) {
+      // If user installs a spy on any of fake APIs, the fake implementation gets captured as the original.
+      // This means that after `jest.useRealTimers()` is called, `.mockRestore()` would be restoring wrong implementation.
+      // Therefore all fake APIs which are spied should be restored here.
+      for (const fakeApiKey of this._clock.methods) {
+        let fakeMethod: object;
+
+        switch (fakeApiKey) {
+          case 'hrtime':
+          case 'nextTick':
+            fakeMethod = this._global.process[fakeApiKey];
+            break;
+
+          default:
+            fakeMethod = this._global[fakeApiKey];
+        }
+
+        if (
+          '_isMockFunction' in fakeMethod &&
+          fakeMethod._isMockFunction === true &&
+          'mockRestore' in fakeMethod &&
+          typeof fakeMethod.mockRestore === 'function'
+        ) {
+          fakeMethod.mockRestore();
+        }
+      }
+
       this._clock.uninstall();
       this._fakingTime = false;
     }
