@@ -40,6 +40,12 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
+:::note
+
+The spied `setTimeout()` in the example above would be restored after calling `jest.useRealTimers()`. This is because the real and fake versions of a method are treated as two different functions.
+
+:::
+
 ## Run All Timers
 
 Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
