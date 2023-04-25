@@ -6,10 +6,13 @@
  */
 
 import * as path from 'path';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSortedSummary} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../promise-async-handling');
+
+skipSuiteOnJasmine();
 
 test('fails because of unhandled promise rejection in test', () => {
   const {stderr, exitCode} = runJest(dir, ['unhandledRejectionTest.test.js']);
