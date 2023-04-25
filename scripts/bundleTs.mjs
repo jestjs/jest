@@ -20,7 +20,7 @@ import prettier from 'prettier';
 import rimraf from 'rimraf';
 import {getPackages} from './buildUtils.mjs';
 
-const prettierConfig = prettier.resolveConfig.sync(
+const prettierConfig = await prettier.resolveConfig(
   fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
 );
 
@@ -194,7 +194,7 @@ await Promise.all(
       ...definitionFile.split(copyrightSnippet),
     ].join('\n');
 
-    const formattedContent = prettier.format(definitionFile, {
+    const formattedContent = await prettier.format(definitionFile, {
       ...prettierConfig,
       filepath,
     });

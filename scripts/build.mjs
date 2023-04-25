@@ -42,7 +42,7 @@ const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const INLINE_REQUIRE_EXCLUDE_LIST =
   /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const prettierConfig = prettier.resolveConfig.sync(
+const prettierConfig = await prettier.resolveConfig(
   fileURLToPath(import.meta.url),
 );
 prettierConfig.trailingComma = 'none';
@@ -76,7 +76,7 @@ function buildNodePackage({packageDir, pkg}) {
   process.stdout.write(`${OK}\n`);
 }
 
-function buildFile(file, silent) {
+async function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
@@ -131,7 +131,7 @@ function buildFile(file, silent) {
     }
 
     const transformed = babel.transformFileSync(file, options).code;
-    const prettyCode = prettier.format(transformed, prettierConfig);
+    const prettyCode = await prettier.format(transformed, prettierConfig);
 
     fs.writeFileSync(destPath, prettyCode);
 
@@ -150,7 +150,9 @@ function buildFile(file, silent) {
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(file => buildFile(file));
+  for (const file of files) {
+    await buildFile(file);
+  }
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));

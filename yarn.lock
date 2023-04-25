@@ -2886,7 +2886,7 @@ __metadata:
     node-notifier: ^10.0.0
     p-limit: ^3.1.0
     pkg-dir: ^5.0.0
-    prettier: ^2.1.1
+    prettier: 3.0.0-alpha.11
     promise: ^8.0.2
     read-pkg: ^5.2.0
     resolve: ^1.20.0
@@ -6317,9 +6317,8 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
-    "@types/prettier": ^2.1.5
     babel-plugin-tester: ^11.0.2
-    prettier: ^2.1.1
+    prettier: 3.0.0-alpha.11
   languageName: unknown
   linkType: soft
 
@@ -13201,7 +13200,7 @@ __metadata:
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
     natural-compare: ^1.4.0
-    prettier: ^2.1.1
+    prettier: 3.0.0-alpha.11
     pretty-format: "workspace:^"
     semver: ^7.3.5
     tsd-lite: ^0.7.0
@@ -17194,7 +17193,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.1.1, prettier@npm:^2.8.3":
+"prettier@npm:3.0.0-alpha.11":
+  version: 3.0.0-alpha.11
+  resolution: "prettier@npm:3.0.0-alpha.11"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: ce0a252201cc3758825a0e03d895bd88c876daf6cc9aab1365ef3164075807535146ad3d338582f652337d23914480fac309d84b3558f9576b6d2bd8bdbed57b
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.8.3":
   version: 2.8.7
   resolution: "prettier@npm:2.8.7"
   bin:
