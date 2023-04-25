@@ -70,9 +70,9 @@ Ran all test suites matching /unhandledRejectionAfterEach.test.js/i.",
 exports[`fails because of unhandled promise rejection in beforeAll hook 1`] = `
 Object {
   "rest": "FAIL __tests__/unhandledRejectionBeforeAll.test.js
+  ✕ foo
 
-
-  ● Test suite failed to run
+  ● foo
 
     REJECTED
 
@@ -86,7 +86,7 @@ Object {
 
       at Object.<anonymous> (__tests__/unhandledRejectionBeforeAll.test.js:13:18)",
   "summary": "Test Suites: 1 failed, 1 total
-Tests:       1 passed, 1 total
+Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /unhandledRejectionBeforeAll.test.js/i.",
@@ -137,12 +137,12 @@ Ran all test suites matching /unhandledRejectionBeforeEach.test.js/i.",
 exports[`fails because of unhandled promise rejection in test 1`] = `
 Object {
   "rest": "FAIL __tests__/unhandledRejectionTest.test.js
-  ✓ w/o event loop turn after rejection
+  ✕ w/o event loop turn after rejection
   ✕ w/ event loop turn after rejection in async function
   ✕ w/ event loop turn after rejection in sync function
   ✕ combined w/ another failure _after_ promise rejection
 
-  ● w/ event loop turn after rejection in async function
+  ● w/o event loop turn after rejection
 
     REJECTED
 
@@ -186,20 +186,6 @@ Object {
 
   ● combined w/ another failure _after_ promise rejection
 
-    REJECTED
-
-      27 |
-      28 | test('combined w/ another failure _after_ promise rejection', async () => {
-    > 29 |   Promise.reject(new Error('REJECTED'));
-         |                  ^
-      30 |
-      31 |   await promisify(setTimeout)(0);
-      32 |
-
-      at Object.<anonymous> (__tests__/unhandledRejectionTest.test.js:29:18)
-
-  ● combined w/ another failure _after_ promise rejection
-
     expect(received).toBe(expected) // Object.is equality
 
     Expected: false
@@ -212,11 +198,39 @@ Object {
       34 | });
       35 |
 
-      at Object.toBe (__tests__/unhandledRejectionTest.test.js:33:16)",
+      at Object.toBe (__tests__/unhandledRejectionTest.test.js:33:16)
+
+  ● combined w/ another failure _after_ promise rejection
+
+    REJECTED
+
+      27 |
+      28 | test('combined w/ another failure _after_ promise rejection', async () => {
+    > 29 |   Promise.reject(new Error('REJECTED'));
+         |                  ^
+      30 |
+      31 |   await promisify(setTimeout)(0);
+      32 |
+
+      at Object.<anonymous> (__tests__/unhandledRejectionTest.test.js:29:18)",
   "summary": "Test Suites: 1 failed, 1 total
-Tests:       3 failed, 1 passed, 4 total
+Tests:       4 failed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /unhandledRejectionTest.test.js/i.",
+}
+`;
+
+exports[`succeeds for async handled promise rejections 1`] = `
+Object {
+  "rest": "PASS __tests__/rejectionHandled.test.js
+  ✓ async function succeeds because the promise is eventually awaited by assertion
+  ✓ async function succeeds because the promise is eventually directly awaited
+  ✓ sync function succeeds because the promise is eventually handled by \`.catch\` handler",
+  "summary": "Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /rejectionHandled.test.js/i.",
 }
 `;

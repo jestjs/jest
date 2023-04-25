@@ -9,10 +9,12 @@ import type {Circus} from '@jest/types';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 import {STATE_SYM} from './types';
+import unhandledRejectionHandler from './unhandledRejectionHandler';
 import {makeDescribe} from './utils';
 
 const eventHandlers: Array<Circus.EventHandler> = [
   eventHandler,
+  unhandledRejectionHandler,
   formatNodeAssertErrors,
 ];
 
@@ -34,6 +36,7 @@ const createState = (): Circus.State => {
     testNamePattern: null,
     testTimeout: 5000,
     unhandledErrors: [],
+    unhandledRejectionErrorByPromise: new Map(),
   };
 };
 
