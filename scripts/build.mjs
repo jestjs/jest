@@ -60,13 +60,15 @@ function getBuildPath(file, buildFolder) {
   return path.resolve(pkgBuildPath, relativeToSrcPath).replace(/\.ts$/, '.js');
 }
 
-function buildNodePackage({packageDir, pkg}) {
+async function buildNodePackage({packageDir, pkg}) {
   const srcDir = path.resolve(packageDir, SRC_DIR);
   const files = glob.sync('**/*', {absolute: true, cwd: srcDir, nodir: true});
 
   process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
-  files.forEach(file => buildFile(file, true));
+  for (const file of files) {
+    await buildFile(file);
+  }
 
   assert.ok(
     fs.existsSync(path.resolve(packageDir, pkg.main)),
@@ -156,5 +158,7 @@ if (files.length) {
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
-  packages.forEach(buildNodePackage);
+  for (const pkg of packages) {
+    await buildNodePackage(pkg);
+  }
 }
