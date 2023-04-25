@@ -24,7 +24,7 @@ import chalk from 'chalk';
 import glob from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
-import prettier from 'prettier';
+import * as prettier from 'prettier';
 import transformOptions from '../babel.config.js';
 import {
   OK,
