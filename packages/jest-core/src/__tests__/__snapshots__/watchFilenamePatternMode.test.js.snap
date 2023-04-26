@@ -92,6 +92,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 9`] = `
 Object {
   "onlyChanged": false,
   "passWithNoTests": true,
+  "rootDir": "",
   "testPathPatterns": Array [
     "p.*3",
   ],

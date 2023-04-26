@@ -140,7 +140,11 @@ describe('Watch mode flows', () => {
       testRegex: [],
     };
     pipe = {write: jest.fn()};
-    globalConfig = {watch: true};
+    globalConfig = {
+      rootDir: '',
+      testPathPatterns: [],
+      watch: true,
+    };
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config}];
     stdin = new MockStdin();
