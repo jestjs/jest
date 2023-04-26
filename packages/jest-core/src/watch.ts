@@ -15,6 +15,7 @@ import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
+  TestPathPatterns,
   isInteractive,
   preRunMessage,
   requireOrImportModule,
@@ -229,9 +230,12 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
+      const testPathPatterns = new TestPathPatterns([]);
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
-        testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
+        testPaths: searchSource
+          .findMatchingTests(testPathPatterns)
+          .tests.map(t => t.path),
       }));
       hooks.getEmitter().onFileChange({projects});
     }

@@ -5,14 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
+
+type PatternsFullConfig = Pick<Config.GlobalConfig, 'testPathPatterns'>;
 
 export default class TestPathPatterns {
   readonly patterns: Array<string>;
 
   private _regexString: string | null = null;
 
-  constructor(patterns: Array<string>) {
+  constructor(patterns: Array<string>);
+  constructor(config: PatternsFullConfig);
+  constructor(patternsOrConfig: Array<string> | PatternsFullConfig) {
+    let patterns;
+    if (Array.isArray(patternsOrConfig)) {
+      patterns = patternsOrConfig;
+    } else {
+      patterns = patternsOrConfig.testPathPatterns;
+    }
+
     this.patterns = patterns;
   }
 
