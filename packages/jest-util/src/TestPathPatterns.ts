@@ -6,7 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
-import {replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
 type PatternsConfig = Pick<Config.GlobalConfig, 'rootDir'>;
 type PatternsFullConfig = PatternsConfig &
@@ -14,27 +14,49 @@ type PatternsFullConfig = PatternsConfig &
 
 export default class TestPathPatterns {
   readonly patterns: Array<string>;
+  private readonly rootDir: string;
 
   private _regexString: string | null = null;
 
-  constructor(patterns: Array<string>, config?: PatternsConfig);
+  constructor(patterns: Array<string>, config: PatternsConfig);
   constructor(config: PatternsFullConfig);
-  constructor(patternsOrConfig: Array<string> | PatternsFullConfig) {
-    let patterns;
+  constructor(
+    patternsOrConfig: Array<string> | PatternsFullConfig,
+    configArg?: PatternsConfig,
+  ) {
+    let patterns, config;
     if (Array.isArray(patternsOrConfig)) {
       patterns = patternsOrConfig;
+      config = configArg!;
     } else {
       patterns = patternsOrConfig.testPathPatterns;
+      config = patternsOrConfig;
     }
 
     this.patterns = patterns;
+    this.rootDir = config.rootDir.replace(/\/*$/, '/');
   }
 
   private get regexString(): string {
     if (this._regexString !== null) {
       return this._regexString;
     }
+    const rootDirRegex = escapePathForRegex(this.rootDir);
     const regexString = this.patterns
+      .map(p => {
+        // absolute paths passed on command line should stay same
+        if (p.match(/^\//)) {
+          return p;
+        }
+
+        // explicit relative paths should resolve against rootDir
+        if (p.match(/^\.\//)) {
+          return p.replace(/^\.\//, rootDirRegex);
+        }
+
+        // all other patterns should only match the relative part of the test
+        return `${rootDirRegex}(.*)?${p}`;
+      })
       .map(replacePathSepForRegex)
       .join('|');
     this._regexString = regexString;

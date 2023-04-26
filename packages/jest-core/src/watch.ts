@@ -228,7 +228,7 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
-      const testPathPatterns = new TestPathPatterns([]);
+      const testPathPatterns = new TestPathPatterns([], globalConfig);
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource

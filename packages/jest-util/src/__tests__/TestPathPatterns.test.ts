@@ -21,81 +21,88 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
+const config = {rootDir: ''};
+
 describe('TestPathPatterns', () => {
   describe('isSet', () => {
     it('returns false if no patterns specified', () => {
-      const testPathPatterns = new TestPathPatterns([]);
+      const testPathPatterns = new TestPathPatterns([], config);
       expect(testPathPatterns.isSet()).toBe(false);
     });
 
     it('returns true if patterns specified', () => {
-      const testPathPatterns = new TestPathPatterns(['a']);
+      const testPathPatterns = new TestPathPatterns(['a'], config);
       expect(testPathPatterns.isSet()).toBe(true);
     });
   });
 
   describe('isValid', () => {
     it('returns true for empty patterns', () => {
-      const testPathPatterns = new TestPathPatterns([]);
+      const testPathPatterns = new TestPathPatterns([], config);
       expect(testPathPatterns.isValid()).toBe(true);
     });
 
     it('returns true for valid patterns', () => {
-      const testPathPatterns = new TestPathPatterns(['abc+', 'z.*']);
+      const testPathPatterns = new TestPathPatterns(['abc+', 'z.*'], config);
       expect(testPathPatterns.isValid()).toBe(true);
     });
 
     it('returns false for at least one invalid pattern', () => {
-      const testPathPatterns = new TestPathPatterns(['abc+', '(', 'z.*']);
+      const testPathPatterns = new TestPathPatterns(
+        ['abc+', '(', 'z.*'],
+        config,
+      );
       expect(testPathPatterns.isValid()).toBe(false);
     });
   });
 
   describe('isMatch', () => {
     it('returns true with no patterns', () => {
-      const testPathPatterns = new TestPathPatterns([]);
+      const testPathPatterns = new TestPathPatterns([], config);
       expect(testPathPatterns.isMatch('/a/b')).toBe(true);
     });
 
     it('returns true for same path', () => {
-      const testPathPatterns = new TestPathPatterns(['/a/b']);
+      const testPathPatterns = new TestPathPatterns(['/a/b'], config);
       expect(testPathPatterns.isMatch('/a/b')).toBe(true);
     });
 
     it('returns true for same path with case insensitive', () => {
-      const testPathPatternsUpper = new TestPathPatterns(['/A/B']);
+      const testPathPatternsUpper = new TestPathPatterns(['/A/B'], config);
       expect(testPathPatternsUpper.isMatch('/a/b')).toBe(true);
       expect(testPathPatternsUpper.isMatch('/A/B')).toBe(true);
 
-      const testPathPatternsLower = new TestPathPatterns(['/a/b']);
+      const testPathPatternsLower = new TestPathPatterns(['/a/b'], config);
       expect(testPathPatternsLower.isMatch('/A/B')).toBe(true);
       expect(testPathPatternsLower.isMatch('/a/b')).toBe(true);
     });
 
     it('returns true for contained path', () => {
-      const testPathPatterns = new TestPathPatterns(['b/c']);
+      const testPathPatterns = new TestPathPatterns(['b/c'], config);
       expect(testPathPatterns.isMatch('/a/b/c/d')).toBe(true);
     });
 
     it('returns true for explicit relative path', () => {
-      const testPathPatterns = new TestPathPatterns(['./b/c']);
+      const testPathPatterns = new TestPathPatterns(['./b/c'], {
+        rootDir: '/a',
+      });
       expect(testPathPatterns.isMatch('/a/b/c')).toBe(true);
     });
 
     it('returns true for partial file match', () => {
-      const testPathPatterns = new TestPathPatterns(['aaa']);
+      const testPathPatterns = new TestPathPatterns(['aaa'], config);
       expect(testPathPatterns.isMatch('/foo/..aaa..')).toBe(true);
       expect(testPathPatterns.isMatch('/foo/..aaa')).toBe(true);
       expect(testPathPatterns.isMatch('/foo/aaa..')).toBe(true);
     });
 
     it('returns true for path suffix', () => {
-      const testPathPatterns = new TestPathPatterns(['c/d']);
+      const testPathPatterns = new TestPathPatterns(['c/d'], config);
       expect(testPathPatterns.isMatch('/a/b/c/d')).toBe(true);
     });
 
     it('returns true if regex matches', () => {
-      const testPathPatterns = new TestPathPatterns(['ab*c?']);
+      const testPathPatterns = new TestPathPatterns(['ab*c?'], config);
 
       expect(testPathPatterns.isMatch('/foo/a')).toBe(true);
       expect(testPathPatterns.isMatch('/foo/ab')).toBe(true);
@@ -123,7 +130,7 @@ describe('TestPathPatterns', () => {
     });
 
     it('returns true if match any paths', () => {
-      const testPathPatterns = new TestPathPatterns(['a/b', 'c/d']);
+      const testPathPatterns = new TestPathPatterns(['a/b', 'c/d'], config);
 
       expect(testPathPatterns.isMatch('/foo/a/b')).toBe(true);
       expect(testPathPatterns.isMatch('/foo/c/d')).toBe(true);
@@ -134,20 +141,20 @@ describe('TestPathPatterns', () => {
 
     it('does not normalize Windows paths on POSIX', () => {
       mockSep.mockReturnValue('/');
-      const testPathPatterns = new TestPathPatterns(['a\\z', 'a\\\\z']);
+      const testPathPatterns = new TestPathPatterns(['a\\z', 'a\\\\z'], config);
       expect(testPathPatterns.isMatch('/foo/a/z')).toBe(false);
     });
 
     it('normalizes paths for Windows', () => {
       mockSep.mockReturnValue('\\');
-      const testPathPatterns = new TestPathPatterns(['a/b']);
+      const testPathPatterns = new TestPathPatterns(['a/b'], config);
       expect(testPathPatterns.isMatch('\\foo\\a\\b')).toBe(true);
     });
   });
 
   describe('toPretty', () => {
     it('renders a human-readable string', () => {
-      const testPathPatterns = new TestPathPatterns(['a/b', 'c/d']);
+      const testPathPatterns = new TestPathPatterns(['a/b', 'c/d'], config);
       expect(testPathPatterns.toPretty()).toMatchSnapshot();
     });
   });
