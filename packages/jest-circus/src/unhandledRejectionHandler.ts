@@ -8,9 +8,14 @@
 import type {Circus} from '@jest/types';
 import {addErrorToEachTestUnderDescribe, invariant} from './utils';
 
+/**
+ * Let's keep the original setTimeout for the usage below so we do not need to care about usage of fake timers in tests.
+ */
+const originalSetTimeout = globalThis.setTimeout;
+
 const untilNextEventLoopTurn = async () => {
   return new Promise(resolve => {
-    setTimeout(resolve, 0);
+    originalSetTimeout(resolve, 0);
   });
 };
 
@@ -19,60 +24,49 @@ const unhandledRejectionHandler: Circus.EventHandler = async (
   state,
 ): Promise<void> => {
   if (event.name === 'hook_success' || event.name === 'hook_failure') {
+    // We need to give event loop the time to actually execute `rejectionHandled` event
+    await untilNextEventLoopTurn();
+
     const {test, describeBlock, hook} = event;
     const {asyncError, type} = hook;
 
     if (type === 'beforeAll') {
       invariant(describeBlock, 'always present for `*All` hooks');
-      if (state.unhandledRejectionErrorByPromise.size > 0) {
-        // We need to give event loop the time to actually execute `rejectionHandled` event
-        await untilNextEventLoopTurn();
-        for (const error of state.unhandledRejectionErrorByPromise.values()) {
-          addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
-        }
+      for (const error of state.unhandledRejectionErrorByPromise.values()) {
+        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
       }
     } else if (type === 'afterAll') {
-      if (state.unhandledRejectionErrorByPromise.size > 0) {
-        // We need to give event loop the time to actually execute `rejectionHandled` event
-        await untilNextEventLoopTurn();
-        // Attaching `afterAll` errors to each test makes execution flow
-        // too complicated, so we'll consider them to be global.
-        for (const error of state.unhandledRejectionErrorByPromise.values()) {
-          state.unhandledErrors.push([error, asyncError]);
-        }
+      // Attaching `afterAll` errors to each test makes execution flow
+      // too complicated, so we'll consider them to be global.
+      for (const error of state.unhandledRejectionErrorByPromise.values()) {
+        state.unhandledErrors.push([error, asyncError]);
       }
     } else {
       invariant(test, 'always present for `*Each` hooks');
-      if (test.unhandledRejectionErrorByPromise.size > 0) {
-        // We need to give event loop the time to actually execute `rejectionHandled` event
-        await untilNextEventLoopTurn();
-        for (const error of test.unhandledRejectionErrorByPromise.values()) {
-          test.errors.push([error, asyncError]);
-        }
+      for (const error of test.unhandledRejectionErrorByPromise.values()) {
+        test.errors.push([error, asyncError]);
       }
     }
   } else if (
     event.name === 'test_fn_success' ||
     event.name === 'test_fn_failure'
   ) {
+    // We need to give event loop the time to actually execute `rejectionHandled` event
+    await untilNextEventLoopTurn();
+
     const {test} = event;
     invariant(test, 'always present for `*Each` hooks');
 
-    if (test.unhandledRejectionErrorByPromise.size > 0) {
-      // We need to give event loop the time to actually execute `rejectionHandled` event
-      await untilNextEventLoopTurn();
-      for (const error of test.unhandledRejectionErrorByPromise.values()) {
-        test.errors.push([error, event.test.asyncError]);
-      }
+    for (const error of test.unhandledRejectionErrorByPromise.values()) {
+      test.errors.push([error, event.test.asyncError]);
     }
   } else if (event.name === 'teardown') {
-    if (state.unhandledRejectionErrorByPromise.size > 0) {
-      // We need to give event loop the time to actually execute `rejectionHandled` event
-      await untilNextEventLoopTurn();
-      state.unhandledErrors.push(
-        ...state.unhandledRejectionErrorByPromise.values(),
-      );
-    }
+    // We need to give event loop the time to actually execute `rejectionHandled` event
+    await untilNextEventLoopTurn();
+
+    state.unhandledErrors.push(
+      ...state.unhandledRejectionErrorByPromise.values(),
+    );
   }
 };
 
