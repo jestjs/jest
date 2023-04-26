@@ -42,7 +42,7 @@ describe('setImmediate', () => {
     const result = runJest('fake-timers-legacy/set-immediate');
 
     expect(result.stderr).toMatch('setImmediate test');
-    expect(result.exitCode).toBe(0);
+    expect(result.exitCode).toBe(1);
   });
 });
 
