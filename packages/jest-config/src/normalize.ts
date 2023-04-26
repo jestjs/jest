@@ -999,7 +999,6 @@ export default async function normalize(
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   const testPathPatterns = buildTestPathPatterns(argv);
   newOptions.testPathPatterns = testPathPatterns.patterns;
-  newOptions.testPathPattern = testPathPatterns.regexString;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(

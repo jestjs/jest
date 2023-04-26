@@ -412,7 +412,6 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPattern: string;
   testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;

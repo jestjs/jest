@@ -28,7 +28,7 @@ export default class TestPathPatterns {
     this.patterns = patterns;
   }
 
-  get regexString(): string {
+  private get regexString(): string {
     if (this._regexString !== null) {
       return this._regexString;
     }

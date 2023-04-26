@@ -121,7 +121,6 @@ export default async function watch(
     onlyFailures,
     reporters,
     testNamePattern,
-    testPathPattern,
     testPathPatterns,
     updateSnapshot,
     verbose,
@@ -142,7 +141,6 @@ export default async function watch(
       onlyFailures,
       reporters,
       testNamePattern,
-      testPathPattern,
       testPathPatterns,
       updateSnapshot,
       verbose,
@@ -410,7 +408,6 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
           testNamePattern: '',
-          testPathPattern: '',
           testPathPatterns: [],
         });
         startRun(globalConfig);
@@ -419,7 +416,6 @@ export default async function watch(
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
           testPathPatterns: [],
         });
         break;
@@ -433,7 +429,6 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
           testPathPatterns: [],
         });
         startRun(globalConfig);

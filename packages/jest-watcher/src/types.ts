@@ -62,7 +62,6 @@ export type AllowedConfigOptions = Partial<
     | 'onlyFailures'
     | 'reporters'
     | 'testNamePattern'
-    | 'testPathPattern'
     | 'testPathPatterns'
     | 'updateSnapshot'
     | 'verbose'
