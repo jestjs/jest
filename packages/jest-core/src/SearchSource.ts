@@ -131,9 +131,9 @@ export default class SearchSource {
     if (testPathPatterns.isSet()) {
       testCases.push({
         isMatch: (path: string) => testPathPatterns.isMatch(path),
-        stat: 'testPathPattern',
+        stat: 'testPathPatterns',
       });
-      data.stats.testPathPattern = 0;
+      data.stats.testPathPatterns = 0;
     }
 
     data.tests = allPaths.filter(test => {

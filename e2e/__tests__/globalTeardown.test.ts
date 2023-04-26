@@ -40,7 +40,7 @@ test('globalTeardown is triggered once after all test suites', () => {
   const teardownPath = path.resolve(e2eDir, 'teardown.js');
   const result = runWithJson('global-teardown', [
     `--globalTeardown=${teardownPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -54,7 +54,7 @@ test('jest throws an error when globalTeardown does not export a function', () =
   const teardownPath = path.resolve(e2eDir, 'invalidTeardown.js');
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
@@ -69,7 +69,7 @@ test('globalSetup function gets global config object and project config as param
 
   const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    '--testPathPattern=pass',
+    '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
@@ -93,7 +93,7 @@ test('should not call a globalTeardown of a project if there are no tests to run
 
   const result = runWithJson('global-teardown', [
     `--config=${configPath}`,
-    '--testPathPattern=project-1',
+    '--testPathPatterns=project-1',
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -106,11 +106,9 @@ test('should not call a globalTeardown of a project if there are no tests to run
 test('globalTeardown works with default export', () => {
   const teardownPath = path.resolve(e2eDir, 'teardownWithDefaultExport.js');
 
-  const testPathPattern = 'pass';
-
   const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    '--testPathPattern=pass',
+    '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
@@ -125,7 +123,7 @@ test('globalTeardown throws with named export', () => {
 
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);

@@ -400,8 +400,8 @@ const buildTestPathPatterns = (
   if (argv._) {
     patterns.push(...argv._.map(x => x.toString()));
   }
-  if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+  if (argv.testPathPatterns) {
+    patterns.push(...argv.testPathPatterns);
   }
 
   const config = {rootDir};

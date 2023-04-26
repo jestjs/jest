@@ -569,7 +569,7 @@ export type Argv = Arguments<
     testMatch: Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
-    testPathPattern: Array<string>;
+    testPathPatterns: Array<string>;
     testRegex: string | Array<string>;
     testResultsProcessor: string;
     testRunner: string;

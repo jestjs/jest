@@ -1604,7 +1604,7 @@ describe('testPathPatterns', () => {
   });
 
   const cliOptions = [
-    {name: '--testPathPattern', property: 'testPathPattern'},
+    {name: '--testPathPatterns', property: 'testPathPatterns'},
     {name: '<regexForTestFiles>', property: '_'},
   ];
   for (const opt of cliOptions) {
@@ -1643,7 +1643,7 @@ describe('testPathPatterns', () => {
   it('joins multiple --testPathPatterns and <regexForTestFiles>', async () => {
     const {options} = await normalize(initialOptions, {
       _: ['a', 'b'],
-      testPathPattern: ['c', 'd'],
+      testPathPatterns: ['c', 'd'],
     } as Config.Argv);
     expect(options.testPathPatterns).toEqual(['a', 'b', 'c', 'd']);
   });
