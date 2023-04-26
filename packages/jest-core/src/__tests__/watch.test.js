@@ -152,7 +152,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Correctly passing test path pattern', async () => {
-    globalConfig.testPathPattern = 'test-*';
+    globalConfig.testPathPatterns = ['test-*'];
 
     await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 

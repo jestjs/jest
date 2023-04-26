@@ -787,7 +787,7 @@ While code transformation is applied to the linked setup-file, Jest will **not**
 
 ```js title="setup.js"
 module.exports = async function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPattern);
+  console.log(globalConfig.testPathPatterns);
   console.log(projectConfig.cache);
 
   // Set reference to mongod in order to close the server during teardown.
@@ -797,7 +797,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 ```js title="teardown.js"
 module.exports = async function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPattern);
+  console.log(globalConfig.testPathPatterns);
   console.log(projectConfig.cache);
 
   await globalThis.__MONGOD__.stop();

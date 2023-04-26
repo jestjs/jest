@@ -83,15 +83,13 @@ test('jest throws an error when globalSetup does not export a function', () => {
 test('globalSetup function gets global config object and project config as parameters', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithConfig.js');
 
-  const testPathPattern = 'pass';
-
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    `--testPathPattern=${testPathPattern}`,
+    '--testPathPattern=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
+  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
 });
 
 test('should call globalSetup function of multiple projects', () => {
@@ -140,15 +138,13 @@ test('should not call any globalSetup if there are no tests to run', () => {
 test('globalSetup works with default export', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithDefaultExport.js');
 
-  const testPathPattern = 'pass';
-
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    `--testPathPattern=${testPathPattern}`,
+    '--testPathPattern=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
+  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
 });
 
 test('globalSetup throws with named export', () => {
