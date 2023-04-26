@@ -77,6 +77,11 @@ describe('TestPathPatterns', () => {
       expect(testPathPatterns.isMatch('/a/b/c/d')).toBe(true);
     });
 
+    it('returns true for explicit relative path', () => {
+      const testPathPatterns = new TestPathPatterns(['./b/c']);
+      expect(testPathPatterns.isMatch('/a/b/c')).toBe(true);
+    });
+
     it('returns true for partial file match', () => {
       const testPathPatterns = new TestPathPatterns(['aaa']);
       expect(testPathPatterns.isMatch('/foo/..aaa..')).toBe(true);
@@ -100,6 +105,21 @@ describe('TestPathPatterns', () => {
       expect(testPathPatterns.isMatch('/foo/abbc')).toBe(true);
 
       expect(testPathPatterns.isMatch('/foo/bc')).toBe(false);
+    });
+
+    it('returns true only if matches relative path', () => {
+      const testPathPatterns = new TestPathPatterns(['home'], {
+        rootDir: '/home/myuser/',
+      });
+      expect(testPathPatterns.isMatch('/home/myuser/LoginPage.js')).toBe(false);
+      expect(testPathPatterns.isMatch('/home/myuser/HomePage.js')).toBe(true);
+    });
+
+    it('matches absolute paths regardless of rootDir', () => {
+      const testPathPatterns = new TestPathPatterns(['/a/b'], {
+        rootDir: '/foo/bar',
+      });
+      expect(testPathPatterns.isMatch('/a/b')).toBe(true);
     });
 
     it('returns true if match any paths', () => {
