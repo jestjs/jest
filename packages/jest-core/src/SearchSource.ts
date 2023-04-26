@@ -287,8 +287,6 @@ export default class SearchSource {
         paths,
         globalConfig.collectCoverage,
       );
-    } else if (globalConfig.testPathPattern == null) {
-      return {tests: []};
     } else {
       return this.findMatchingTests(globalConfig.testPathPattern);
     }
