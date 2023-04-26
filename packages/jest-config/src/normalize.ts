@@ -391,7 +391,7 @@ const normalizeReporters = ({
   });
 };
 
-const buildTestPathPattern = (argv: Config.Argv): string => {
+const buildTestPathPatterns = (argv: Config.Argv): TestPathPatterns => {
   const patterns = [];
 
   if (argv._) {
@@ -402,21 +402,20 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
   }
 
   const testPathPatterns = new TestPathPatterns(patterns);
-  if (testPathPatterns.isValid()) {
-    return testPathPatterns.regexString;
-  } else {
-    showTestPathPatternError(testPathPatterns.regexString);
-    return '';
+  if (!testPathPatterns.isValid()) {
+    showTestPathPatternsError(testPathPatterns);
+    return new TestPathPatterns([]);
   }
+  return testPathPatterns;
 };
 
-const showTestPathPatternError = (testPathPattern: string) => {
+const showTestPathPatternsError = (testPathPatterns: TestPathPatterns) => {
   clearLine(process.stdout);
 
   // eslint-disable-next-line no-console
   console.log(
     chalk.red(
-      `  Invalid testPattern ${testPathPattern} supplied. ` +
+      `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
         'Running all tests instead.',
     ),
   );
@@ -998,7 +997,8 @@ export default async function normalize(
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
-  newOptions.testPathPattern = buildTestPathPattern(argv);
+  const testPathPatterns = buildTestPathPatterns(argv);
+  newOptions.testPathPattern = testPathPatterns.regexString;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
@@ -1017,7 +1017,7 @@ export default async function normalize(
   if (argv.all) {
     newOptions.onlyChanged = false;
     newOptions.onlyFailures = false;
-  } else if (newOptions.testPathPattern) {
+  } else if (testPathPatterns.isSet()) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
