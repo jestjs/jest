@@ -1630,60 +1630,6 @@ describe('testPathPattern', () => {
 
         expect(options.testPathPattern).toBe('a/b|c/d');
       });
-
-      describe('posix', () => {
-        it('should not escape the pattern', async () => {
-          const argv = {
-            [opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b'],
-          } as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\/b|a/b|a\\b|a\\\\b');
-        });
-      });
-
-      describe('win32', () => {
-        beforeEach(() => {
-          jest.mock(
-            'path',
-            () => jest.requireActual<typeof import('path')>('path').win32,
-          );
-          (
-            require('jest-resolve') as typeof import('jest-resolve')
-          ).default.findNodeModule = findNodeModule;
-        });
-
-        afterEach(() => {
-          jest.resetModules();
-        });
-
-        it('preserves any use of "\\"', async () => {
-          const argv = {[opt.property]: ['a\\b', 'c\\\\d']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\b|c\\\\d');
-        });
-
-        it('replaces POSIX path separators', async () => {
-          const argv = {[opt.property]: ['a/b']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\\\b');
-        });
-
-        it('replaces POSIX paths in multiple args', async () => {
-          const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
-        });
-      });
     });
   }
 

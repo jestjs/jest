@@ -22,6 +22,7 @@ import Resolver, {
   resolveWatchPlugin,
 } from 'jest-resolve';
 import {
+  TestPathPatterns,
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,
@@ -49,7 +50,6 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import validatePattern from './validatePattern';
 
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
@@ -401,14 +401,11 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string) =>
-    path.sep === '/' ? pattern : pattern.replace(/\//g, '\\\\');
-
-  const testPathPattern = patterns.map(replacePosixSep).join('|');
-  if (validatePattern(testPathPattern)) {
-    return testPathPattern;
+  const testPathPatterns = new TestPathPatterns(patterns);
+  if (testPathPatterns.isValid()) {
+    return testPathPatterns.regexString;
   } else {
-    showTestPathPatternError(testPathPattern);
+    showTestPathPatternError(testPathPatterns.regexString);
     return '';
   }
 };
