@@ -9,5 +9,5 @@ exports[`prints useful error for requires after test is done 1`] = `
          |                    ^
       12 |
       13 |     expect(double(5)).toBe(10);
-      14 |   }, 0);"
+      14 |   }, 10);"
 `;
