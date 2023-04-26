@@ -395,20 +395,14 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push(...argv._.map(x => x.toString()));
   }
   if (argv.testPathPattern) {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string | number) => {
-    // yargs coerces positional args into numbers
-    const patternAsString = pattern.toString();
-    if (path.sep === '/') {
-      return patternAsString;
-    }
-    return patternAsString.replace(/\//g, '\\\\');
-  };
+  const replacePosixSep = (pattern: string) =>
+    path.sep === '/' ? pattern : pattern.replace(/\//g, '\\\\');
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
   if (validatePattern(testPathPattern)) {
