@@ -672,6 +672,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'testFailureExitCode'}
     ${'✔︎'} | ${'testNamePattern'}
     ${'✔︎'} | ${'testPathPattern'}
+    ${'✔︎'} | ${'testPathPatterns'}
     ${'✖︎'} | ${'testResultsProcessor'}
     ${'✔︎'} | ${'updateSnapshot'}
     ${'✖︎'} | ${'useStderr'}
@@ -899,6 +900,7 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });
@@ -923,6 +925,7 @@ describe('Watch mode flows', () => {
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
       testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });

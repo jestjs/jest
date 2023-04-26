@@ -59,6 +59,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
           mode: 'watch',
           testNamePattern: failure ? `^${failure.fullName}$` : '',
           testPathPattern: failure?.path || '',
+          testPathPatterns: failure ? [failure.path] : [],
         });
 
         if (!this._manager.isActive()) {

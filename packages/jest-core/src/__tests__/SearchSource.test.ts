@@ -110,6 +110,7 @@ describe('SearchSource', () => {
       const {tests: paths} = await searchSource.getTestPaths({
         ...config,
         testPathPattern: '',
+        testPathPatterns: [],
       });
       return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
     };

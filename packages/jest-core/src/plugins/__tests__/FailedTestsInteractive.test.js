@@ -41,6 +41,7 @@ describe('FailedTestsInteractive', () => {
       mode: 'watch',
       testNamePattern: `^${testAggregate.testResults[0].testResults[0].fullName}$`,
       testPathPattern: testAggregate.testResults[0].testFilePath,
+      testPathPatterns: [testAggregate.testResults[0].testFilePath],
     });
   });
 });

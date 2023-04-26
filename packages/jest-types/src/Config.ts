@@ -413,6 +413,7 @@ export type GlobalConfig = {
   testFailureExitCode: number;
   testNamePattern?: string;
   testPathPattern: string;
+  testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;

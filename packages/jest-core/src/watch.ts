@@ -121,6 +121,7 @@ export default async function watch(
     reporters,
     testNamePattern,
     testPathPattern,
+    testPathPatterns,
     updateSnapshot,
     verbose,
   }: AllowedConfigOptions = {}) => {
@@ -141,6 +142,7 @@ export default async function watch(
       reporters,
       testNamePattern,
       testPathPattern,
+      testPathPatterns,
       updateSnapshot,
       verbose,
     });
@@ -405,6 +407,7 @@ export default async function watch(
           mode: 'watchAll',
           testNamePattern: '',
           testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;
@@ -413,6 +416,7 @@ export default async function watch(
           mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
+          testPathPatterns: [],
         });
         break;
       case 'f':
@@ -426,6 +430,7 @@ export default async function watch(
           mode: 'watch',
           testNamePattern: '',
           testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;

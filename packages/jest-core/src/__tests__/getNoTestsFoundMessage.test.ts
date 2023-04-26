@@ -19,6 +19,7 @@ describe('getNoTestsFoundMessage', () => {
     return makeGlobalConfig({
       rootDir: '/root/dir',
       testPathPattern: '/path/pattern',
+      testPathPatterns: ['/path/pattern'],
       ...options,
     });
   }

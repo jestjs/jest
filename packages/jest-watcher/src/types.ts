@@ -63,6 +63,7 @@ export type AllowedConfigOptions = Partial<
     | 'reporters'
     | 'testNamePattern'
     | 'testPathPattern'
+    | 'testPathPatterns'
     | 'updateSnapshot'
     | 'verbose'
   > & {mode: 'watch' | 'watchAll'}

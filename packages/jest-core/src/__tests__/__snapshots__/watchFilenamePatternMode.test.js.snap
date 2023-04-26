@@ -93,6 +93,9 @@ Object {
   "onlyChanged": false,
   "passWithNoTests": true,
   "testPathPattern": "p.*3",
+  "testPathPatterns": Array [
+    "p.*3",
+  ],
   "watch": true,
   "watchAll": false,
 }
