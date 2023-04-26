@@ -9,5 +9,5 @@
 test('access environment methods after done', () => {
   setTimeout(() => {
     jest.clearAllTimers();
-  }, 10);
+  }, 100);
 });

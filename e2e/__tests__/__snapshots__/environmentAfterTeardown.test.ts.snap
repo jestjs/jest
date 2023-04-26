@@ -7,7 +7,7 @@ exports[`prints useful error for environment methods after test is done 1`] = `
       10 |   setTimeout(() => {
     > 11 |     jest.clearAllTimers();
          |          ^
-      12 |   }, 10);
+      12 |   }, 100);
       13 | });
       14 |"
 `;
