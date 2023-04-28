@@ -16,6 +16,7 @@
 - `[jest-runtime]` Bind `jest.isolateModulesAsync` to `this` ([#14083](https://github.com/facebook/jest/pull/14083))
 - `[jest-snapshot]` Fix a potential bug when not using prettier and improve performance ([#14036](https://github.com/facebook/jest/pull/14036))
 - `[@jest/transform]` Do not instrument `.json` modules ([#14048](https://github.com/facebook/jest/pull/14048))
+- `[jest-core]` When running global setup and teardown, do not try to change the `message` property of the thrown error object when the `message` property is unwritable
 
 ### Chore & Maintenance
 
