@@ -584,9 +584,9 @@ class Index extends React.Component {
                 <MarkdownBlock>
                   <Translate>
                     A lot of people! With
-                    [50m](https://www.npmjs.com/package/jest) downloads in the
+                    [93m](https://www.npmjs.com/package/jest) downloads in the
                     last month, and used on over
-                    [3,898,000](https://github.com/facebook/jest/network/dependents)
+                    [8,756,000](https://github.com/facebook/jest/network/dependents)
                     public repos on GitHub. Jest is used extensively at these
                     companies:
                   </Translate>
