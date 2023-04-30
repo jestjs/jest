@@ -24,8 +24,8 @@ const getTestsMock = () => [getTestMock(), getTestMock()];
 
 test.each`
   tests              | timings        | detectOpenHandles | maxWorkers   | watch    | workerIdleMemoryLimit | expectedResult
-  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${undefined}          | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${undefined}          | ${true}
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${undefined}          | ${false}
   ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${2}         | ${true}  | ${undefined}          | ${false}
   ${[getTestMock()]} | ${[2000, 500]} | ${false}          | ${undefined} | ${true}  | ${undefined}          | ${false}
   ${getTestMock()}   | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${undefined}          | ${false}
@@ -36,8 +36,8 @@ test.each`
   ${new Array(45)}   | ${[500]}       | ${false}          | ${undefined} | ${false} | ${undefined}          | ${false}
   ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${undefined} | ${false} | ${undefined}          | ${false}
   ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${undefined} | ${false} | ${undefined}          | ${true}
-  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${'500MB'}            | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${'500MB'}            | ${true}
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${'500MB'}            | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${'500MB'}            | ${false}
   ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${false} | ${'500MB'}            | ${false}
   ${[getTestMock()]} | ${[2000]}      | ${false}          | ${undefined} | ${false} | ${'500MB'}            | ${false}
   ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${undefined} | ${false} | ${'500MB'}            | ${false}
