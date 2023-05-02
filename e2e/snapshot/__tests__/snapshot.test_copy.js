@@ -14,7 +14,7 @@ describe('snapshot', () => {
       b: '2',
       c: 'three`',
     };
-    expect(test).not.toBe(undefined);
+    expect(test).toBeDefined();
     test.d = '4';
     expect(test).toMatchSnapshot();
   });
