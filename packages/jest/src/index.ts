@@ -11,8 +11,6 @@ export {
   SearchSource,
   createTestScheduler,
   getVersion,
-  readConfigs,
-  readInitialOptions,
   runCLI,
   Jest,
   createJest,
