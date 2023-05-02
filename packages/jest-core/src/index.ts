@@ -8,6 +8,6 @@
 export {default as SearchSource} from './SearchSource';
 export {createTestScheduler} from './TestScheduler';
 export {runCLI} from './cli';
-export {runCore} from './runCore';
+export {Jest, createJest} from './jest';
 export {default as getVersion} from './version';
 export {readConfigs, readInitialOptions} from 'jest-config';

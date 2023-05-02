@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`runCLI programmatically with multiple projects: summary 1`] = `
+exports[`run jest programmatically with multiple projects: summary 1`] = `
 "Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
@@ -8,7 +8,7 @@ Time:        <<REPLACED>>
 Ran all test suites in 2 projects."
 `;
 
-exports[`runCore programmatically with multiple projects: summary 1`] = `
+exports[`runCLI programmatically with multiple projects: summary 1`] = `
 "Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handles property matchers with hint: descriptive hint 1`] = `
+{
+  "createdAt": Any<Date>,
+}
+`;

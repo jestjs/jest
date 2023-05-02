@@ -11,6 +11,7 @@ import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
+import {readConfigs} from 'jest-config';
 import type {IHasteMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
@@ -19,33 +20,60 @@ import getChangedFilesPromise from './getChangedFilesPromise';
 import createContext from './lib/createContext';
 import handleDeprecationWarnings from './lib/handleDeprecationWarnings';
 import runJest from './runJest';
-import type {Filter, OnCompleteCallback, RunCoreResult} from './types';
+import type {Filter, JestRunResult, OnCompleteCallback} from './types';
 import watch from './watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
 /**
- * Runs Jest either in watch mode or as a one-off. This is a lower-level API than `runCLI` and is intended for internal use by `runCLI` or externally.
- * Note that `process.exit` might be called when using `globalConfig.watch`, `globalConfig.watchAll` or `globalConfig.bail` are set.
- *
- * @param globalConfig The global configuration to use for this run.
- * @param projectConfigs The project configurations to run.
- * @returns A Promise that resolves to the result, or never resolves when `globalConfig.watch` or `globalConfig.watchAll` are set.
- * @example
- * import {runCore, readConfigs} from 'jest';
- *
- * const {globalConfig, configs} = await readConfigs(process.argv, [process.cwd()]);
- * const {results} = await runCore(globalConfig, configs);
- * console.log(results);
+ * `Jest` class as a convenient API for programmatic use.
  */
-export async function runCore(
-  globalConfig: Config.GlobalConfig,
-  projectConfigs: Array<Config.ProjectConfig>,
-): Promise<RunCoreResult> {
-  const outputStream = globalConfig.useStderr ? process.stderr : process.stdout;
-  const results = await _run(globalConfig, projectConfigs, false, outputStream);
-  return {results};
+export class Jest {
+  private constructor(
+    public globalConfig: Readonly<Config.GlobalConfig>,
+    public projectConfigs: Array<Readonly<Config.ProjectConfig>>,
+  ) {}
+
+  public static async createJest(
+    args: Partial<Config.Argv> = {},
+    projectPaths = ['.'],
+  ): Promise<Jest> {
+    const {globalConfig, configs} = await readConfigs(
+      {$0: 'programmatic', _: [], ...args},
+      projectPaths,
+    );
+    return new Jest(globalConfig, configs);
+  }
+
+  /**
+   * Runs Jest either in watch mode or as a one-off. This is a lower-level API than `runCLI` and is intended for internal use by `runCLI` or externally.
+   * Note that `process.exit` might be called when using `globalConfig.watch`, `globalConfig.watchAll` or `globalConfig.bail` are set.
+   *
+   * @param globalConfig The global configuration to use for this run.
+   * @param projectConfigs The project configurations to run.
+   * @returns A Promise that resolves to the result, or never resolves when `globalConfig.watch` or `globalConfig.watchAll` are set.
+   * @example
+   * import {createJest} from 'jest';
+   *
+   * const jest = await createJest();
+   * const {results} = await jest.run();
+   * console.log(results);
+   */
+  async run(): Promise<JestRunResult> {
+    const outputStream = this.globalConfig.useStderr
+      ? process.stderr
+      : process.stdout;
+    const results = await _run(
+      this.globalConfig,
+      this.projectConfigs,
+      false,
+      outputStream,
+    );
+    return {results};
+  }
 }
+
+export const createJest = Jest.createJest;
 
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,

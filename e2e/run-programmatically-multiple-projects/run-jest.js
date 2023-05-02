@@ -5,19 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {runCore, readConfigs} = require('jest');
+const {createJest} = require('jest');
 
 async function main() {
-  const {globalConfig, configs} = await readConfigs(process.argv, ['.']);
-
-  await runCore(
-    {
-      ...globalConfig,
-      collectCoverage: false,
-      watch: false,
-    },
-    configs,
-  );
+  const jest = await createJest();
+  jest.globalConfig = {
+    collectCoverage: false,
+    watch: false,
+    ...jest.globalConfig,
+  };
+  await jest.run();
   console.log('run-programmatically-core-multiple-projects completed');
 }
 

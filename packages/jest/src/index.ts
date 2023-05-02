@@ -14,7 +14,8 @@ export {
   readConfigs,
   readInitialOptions,
   runCLI,
-  runCore,
+  Jest,
+  createJest,
 } from '@jest/core';
 
 export {run} from 'jest-cli';

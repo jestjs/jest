@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`runCore Jest programmatically: stdout 1`] = `"runCore success, 1 passed tests."`;
+exports[`createJest run programmatically: stdout 1`] = `"runCore success, 1 passed tests."`;
 
-exports[`runCore Jest programmatically: summary 1`] = `
+exports[`createJest run programmatically: summary 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total

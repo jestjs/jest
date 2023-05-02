@@ -16,9 +16,9 @@ import {formatHandleErrors} from '../collectHandles';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
 import getSelectProjectsMessage from '../getSelectProjectsMessage';
+import {_run} from '../jest';
 import logDebugMessages from '../lib/logDebugMessages';
 import pluralize from '../pluralize';
-import {_run} from '../runCore';
 
 export async function runCLI(
   argv: Config.Argv,

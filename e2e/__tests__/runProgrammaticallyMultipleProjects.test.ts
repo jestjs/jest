@@ -18,8 +18,8 @@ test('runCLI programmatically with multiple projects', () => {
   expect(summary).toMatchSnapshot('summary');
 });
 
-test('runCore programmatically with multiple projects', () => {
-  const {stderr, exitCode} = run('node run-core.js', dir);
+test('run jest programmatically with multiple projects', () => {
+  const {stderr, exitCode} = run('node run-jest.js', dir);
   const {summary} = extractSummary(stripAnsi(stderr));
   expect(exitCode).toBe(0);
   expect(summary).toMatchSnapshot('summary');

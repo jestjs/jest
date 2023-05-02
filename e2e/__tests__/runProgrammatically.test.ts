@@ -21,8 +21,8 @@ test('run Jest programmatically esm', () => {
   expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[-\S]*-dev$/);
 });
 
-test('runCore Jest programmatically', () => {
-  const {stderr, stdout} = run('node core.mjs', dir);
+test('createJest run programmatically', () => {
+  const {stderr, stdout} = run('node jest.mjs', dir);
   const {summary} = extractSummary(stripAnsi(stderr));
 
   expect(summary).toMatchSnapshot('summary');

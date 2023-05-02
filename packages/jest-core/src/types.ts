@@ -50,6 +50,6 @@ export type OnCompleteCallback = (
 /**
  * The result of running runCore.
  */
-export type RunCoreResult = {
+export type JestRunResult = {
   results: AggregatedResult;
 };
