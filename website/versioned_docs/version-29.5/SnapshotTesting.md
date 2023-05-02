@@ -106,7 +106,7 @@ Once you're finished, Jest will give you a summary before returning back to watc
 
 Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
 
-**Example:**
+Example:
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 

@@ -360,7 +360,11 @@ You can see an example of using Jest with TypeScript in our [GitHub repository](
 
 ### `jest.MockedFunction`
 
-> `jest.MockedFunction` is available in the `@types/jest` module from version `24.9.0`.
+:::tip
+
+`jest.MockedFunction` is available in the `@types/jest` module from version `24.9.0`.
+
+:::
 
 The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](MockFunctions.md).
 
@@ -424,7 +428,11 @@ test('calculate calls add', () => {
 
 ### `jest.MockedClass`
 
-> `jest.MockedClass` is available in the `@types/jest` module from version `24.9.0`.
+:::tip
+
+`jest.MockedClass` is available in the `@types/jest` module from version `24.9.0`.
+
+:::
 
 The following examples will assume you have an understanding of how [Jest mock classes work with JavaScript](Es6ClassMocks.md).
 
