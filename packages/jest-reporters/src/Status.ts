@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -73,7 +73,7 @@ type Cache = {
 export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
-  private _currentTests: CurrentTestList;
+  private readonly _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
     testCaseResult: TestCaseResult;
@@ -85,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor() {
+  constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
@@ -160,7 +160,7 @@ export default class Status {
       return {clear: '', content: ''};
     }
 
-    const width: number = process.stdout.columns!;
+    const width = process.stdout.columns;
     let content = '\n';
     this._currentTests.get().forEach(record => {
       if (record) {
@@ -184,6 +184,8 @@ export default class Status {
         currentTestCases: this._currentTestCases,
         estimatedTime: this._estimatedTime,
         roundTime: true,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
         width,
       })}`;
     }

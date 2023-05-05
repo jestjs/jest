@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -248,7 +248,7 @@ describe('node-notifier is an optional dependency', () => {
     const mockNodeNotifier = {notify: jest.fn()};
     jest.doMock('node-notifier', () => mockNodeNotifier);
     const result = ctor();
-    expect(result['_notifier']).toBe(mockNodeNotifier);
+    expect(result._notifier).toBe(mockNodeNotifier);
   });
 });
 

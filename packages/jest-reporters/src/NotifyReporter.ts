@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,8 +19,8 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
-  private _notifier = loadNotifier();
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _notifier = loadNotifier();
+  private readonly _globalConfig: Config.GlobalConfig;
   private _context: ReporterContext;
 
   static readonly filename = __filename;

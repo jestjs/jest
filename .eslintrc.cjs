@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -162,11 +162,33 @@ module.exports = {
       ],
       env: {'jest/globals': true},
       excludedFiles: ['**/__typetests__/**'],
+      extends: ['plugin:jest/style'],
       plugins: ['jest'],
       rules: {
+        'jest/no-alias-methods': 'error',
         'jest/no-focused-tests': 'error',
         'jest/no-identical-title': 'error',
+        'jest/require-to-throw-message': 'error',
         'jest/valid-expect': 'error',
+      },
+    },
+
+    {
+      files: ['e2e/__tests__/*'],
+      rules: {
+        'jest/no-restricted-jest-methods': [
+          'error',
+          {
+            fn: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            mock: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            doMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            setMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            spyOn:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+          },
+        ],
       },
     },
 
@@ -178,17 +200,48 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'off',
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
-        'arrow-body-style': 'off',
         'consistent-return': 'off',
         'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': 'off',
         'jest/no-focused-tests': 'off',
+        'jest/require-to-throw-message': 'off',
         'no-console': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
-        'prettier/prettier': 'off',
         'sort-keys': 'off',
+      },
+    },
+    // demonstration of matchers usage
+    {
+      files: ['**/UsingMatchers.md/**'],
+      rules: {
+        'jest/prefer-to-be': 'off',
+      },
+    },
+    // demonstration of 'jest/valid-expect' rule
+    {
+      files: [
+        '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
+      ],
+      rules: {
+        'jest/valid-expect': 'off',
+      },
+    },
+    // Jest 11 did not had `toHaveLength` matcher
+    {
+      files: ['**/2016-04-12-jest-11.md/**'],
+      rules: {
+        'jest/prefer-to-have-length': 'off',
+      },
+    },
+    // snapshot in an example needs to keep escapes
+    {
+      files: [
+        '**/2017-02-21-jest-19-immersive-watch-mode-test-platform-improvements.md/**',
+      ],
+      rules: {
+        'no-useless-escape': 'off',
       },
     },
 
@@ -216,8 +269,7 @@ module.exports = {
     {
       files: ['examples/**/*'],
       rules: {
-        'import/no-unresolved': ['error', {ignore: ['^react-native$']}],
-        'import/order': 'off',
+        'no-restricted-imports': 'off',
       },
     },
     {
@@ -333,7 +385,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -390,6 +442,7 @@ module.exports = {
       },
     ],
     'init-declarations': 'off',
+    'jsdoc/check-alignment': 'error',
     'lines-around-comment': 'off',
     'max-depth': 'off',
     'max-nested-callbacks': 'off',

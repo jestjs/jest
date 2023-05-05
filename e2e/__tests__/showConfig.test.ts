@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -37,7 +37,8 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>')
+    .replace(/"seed": (-?\d+)/g, '"seed": <<RANDOM_SEED>>');
 
   expect(stdout).toMatchSnapshot();
 });

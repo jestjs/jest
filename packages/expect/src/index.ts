@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -28,6 +28,8 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {
   INTERNAL_MATCHER_FLAG,
+  addCustomEqualityTesters,
+  getCustomEqualityTesters,
   getMatchers,
   getState,
   setMatchers,
@@ -39,7 +41,6 @@ import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
 import type {
-  AsyncExpectationResult,
   Expect,
   ExpectationResult,
   MatcherContext,
@@ -52,8 +53,10 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
+export type {Tester, TesterContext} from '@jest/expect-utils';
 export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
+  AsyncExpectationResult,
   AsymmetricMatchers,
   BaseExpect,
   Expect,
@@ -64,6 +67,7 @@ export type {
   MatcherState,
   MatcherUtils,
   Matchers,
+  SyncExpectationResult,
 } from './types';
 
 export class JestAssertionError extends Error {
@@ -276,6 +280,7 @@ const makeThrowingMatcher = (
     };
 
     const matcherUtilsThing: MatcherUtils = {
+      customTesters: getCustomEqualityTesters(),
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -332,6 +337,8 @@ const makeThrowingMatcher = (
         } else {
           getState().suppressedErrors.push(error);
         }
+      } else {
+        getState().numPassingAsserts++;
       }
     };
 
@@ -363,19 +370,16 @@ const makeThrowingMatcher = (
             })();
 
       if (isPromise(potentialResult)) {
-        const asyncResult = potentialResult as AsyncExpectationResult;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
         }
 
-        return asyncResult
+        return potentialResult
           .then(aResult => processResult(aResult, asyncError))
           .catch(handleError);
       } else {
-        const syncResult = potentialResult as SyncExpectationResult;
-
-        return processResult(syncResult);
+        return processResult(potentialResult);
       }
     } catch (error: any) {
       return handleError(error);
@@ -384,6 +388,9 @@ const makeThrowingMatcher = (
 
 expect.extend = (matchers: MatchersObject) =>
   setMatchers(matchers, false, expect);
+
+expect.addEqualityTesters = customTesters =>
+  addCustomEqualityTesters(customTesters);
 
 expect.anything = anything;
 expect.any = any;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -48,7 +48,7 @@ export const resolve = (
     );
   }
   /// can cast as string since nulls will be thrown
-  return module as string;
+  return module!;
 };
 
 export const escapeGlobCharacters = (path: string): string =>
@@ -106,10 +106,7 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
         return config;
       }
 
-      return _replaceRootDirInObject(
-        rootDir,
-        config as ReplaceRootDirConfigObj,
-      ) as T;
+      return _replaceRootDirInObject(rootDir, config) as T;
     case 'string':
       return replaceRootDirInPath(rootDir, config) as T;
   }

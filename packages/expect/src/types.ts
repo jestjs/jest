@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,6 +46,7 @@ export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
 export interface MatcherUtils {
+  customTesters: Array<Tester>;
   dontThrow(): void;
   equals: EqualsFunction;
   utils: typeof jestMatcherUtils & {
@@ -64,6 +65,7 @@ export interface MatcherState {
   isExpectingAssertions: boolean;
   isExpectingAssertionsError?: Error;
   isNot?: boolean;
+  numPassingAsserts: number;
   promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;
@@ -86,6 +88,7 @@ export type ExpectedAssertionsErrors = Array<{
 
 export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
+  addEqualityTesters(testers: Array<Tester>): void;
   extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;
@@ -123,33 +126,39 @@ type PromiseMatchers<T = unknown> = {
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  rejects: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  resolves: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
 };
-
-type EnsureFunctionLike<T> = T extends (...args: any) => any ? T : never;
 
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
+   * T is a type param for the benefit of users who extend Matchers. It's
+   * intentionally unused and needs to be named T, not _T, for those users.
+   * This makes sure TypeScript agrees.
+   *
+   * @internal
+   */
+  _unusedT(expected: T): R;
+  /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  lastCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  lastReturnedWith(expected?: unknown): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: Parameters<EnsureFunctionLike<T>>): R;
+  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(nth: number, expected: ReturnType<EnsureFunctionLike<T>>): R;
+  nthReturnedWith(nth: number, expected?: unknown): R;
   /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
@@ -166,7 +175,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toBeCalledWith(...expected: Array<unknown>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -249,25 +258,22 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toHaveBeenCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(
-    nth: number,
-    ...expected: Parameters<EnsureFunctionLike<T>>
-  ): R;
+  toHaveBeenNthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toHaveBeenLastCalledWith(...expected: Array<unknown>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toHaveLastReturnedWith(expected?: unknown): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -278,10 +284,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(
-    nth: number,
-    expected: ReturnType<EnsureFunctionLike<T>>,
-  ): R;
+  toHaveNthReturnedWith(nth: number, expected?: unknown): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -311,7 +314,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toHaveReturnedWith(expected?: unknown): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -333,7 +336,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toReturnWith(expected?: unknown): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */

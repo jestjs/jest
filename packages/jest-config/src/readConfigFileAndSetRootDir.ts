@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -64,14 +64,17 @@ export default async function readConfigFileAndSetRootDir(
     // We don't touch it if it has an absolute path specified
     if (!path.isAbsolute(configObject.rootDir)) {
       // otherwise, we'll resolve it relative to the file's __dirname
-      configObject.rootDir = path.resolve(
-        path.dirname(configPath),
-        configObject.rootDir,
-      );
+      configObject = {
+        ...configObject,
+        rootDir: path.resolve(path.dirname(configPath), configObject.rootDir),
+      };
     }
   } else {
     // If rootDir is not there, we'll set it to this file's __dirname
-    configObject.rootDir = path.dirname(configPath);
+    configObject = {
+      ...configObject,
+      rootDir: path.dirname(configPath),
+    };
   }
 
   return configObject;

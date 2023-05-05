@@ -200,7 +200,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](https://enzymejs.github.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/testing-library/react-testing-library), [Enzyme](https://enzymejs.github.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
@@ -268,15 +268,13 @@ test('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
 
-  expect(checkbox.text()).toEqual('Off');
+  expect(checkbox.text()).toBe('Off');
 
   checkbox.find('input').simulate('change');
 
-  expect(checkbox.text()).toEqual('On');
+  expect(checkbox.text()).toBe('On');
 });
 ```
-
-The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/main/examples/enzyme).
 
 ### Custom transformers
 

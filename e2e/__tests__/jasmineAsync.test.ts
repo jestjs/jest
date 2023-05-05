@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -47,7 +47,7 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(0);
     expect(json.testResults[0].message).toBe('');
 
-    expect((result.stderr.match(/unset flag/g) || []).length).toBe(1);
+    expect(result.stderr.match(/unset flag/g) || []).toHaveLength(1);
   });
 
   it('works with afterEach', () => {

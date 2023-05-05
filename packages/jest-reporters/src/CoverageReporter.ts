@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -37,11 +37,11 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
-  private _context: ReporterContext;
-  private _coverageMap: istanbulCoverage.CoverageMap;
-  private _globalConfig: Config.GlobalConfig;
-  private _sourceMapStore: libSourceMaps.MapStore;
-  private _v8CoverageResults: Array<V8CoverageResult>;
+  private readonly _context: ReporterContext;
+  private readonly _coverageMap: istanbulCoverage.CoverageMap;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _sourceMapStore: libSourceMaps.MapStore;
+  private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
 
@@ -147,6 +147,7 @@ export default class CoverageReporter extends BaseReporter {
       worker = require('./CoverageWorker');
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
+        enableWorkerThreads: this._globalConfig.workerThreads,
         exposedMethods: ['worker'],
         forkOptions: {serialization: 'json'},
         maxRetries: 2,

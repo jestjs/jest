@@ -1,45 +1,53 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import * as path from 'path';
+import * as util from 'util';
 import dedent = require('dedent');
-import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import {
+  ExecaSyncError,
+  SyncOptions as ExecaSyncOptions,
+  ExecaSyncReturnValue,
+  sync as spawnSync,
+} from 'execa';
 import * as fs from 'graceful-fs';
 import which = require('which');
 import type {Config} from '@jest/types';
 
-interface RunResult extends ExecaReturnValue {
-  status: number;
-  error: Error;
-}
 export const run = (
   cmd: string,
   cwd?: string,
   env?: Record<string, string>,
-): RunResult => {
+): ExecaSyncReturnValue => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
-  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
+  const spawnOptions: ExecaSyncOptions = {
+    cwd,
+    env,
+    preferLocal: false,
+    reject: false,
+  };
+  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
 
-  // For compat with cross-spawn
-  result.status = result.exitCode;
+  if (result.exitCode !== 0) {
+    const errorResult = result as ExecaSyncError;
 
-  if (result.status !== 0) {
-    throw new Error(dedent`
-      ORIGINAL CMD: ${cmd}
-      STDOUT: ${result.stdout}
-      STDERR: ${result.stderr}
-      STATUS: ${result.status}
-      ERROR: ${result.error}
-    `);
+    // have to extract message for the `util.inspect` to be useful for some reason
+    const {message, ...rest} = errorResult;
+
+    errorResult.message += `\n\n${util.inspect(rest)}`;
+
+    throw errorResult;
   }
 
   return result;
 };
+
+const yarnInstallImmutable = 'yarn install --immutable';
+const yarnInstallNoImmutable = 'yarn install --no-immutable';
 
 export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
@@ -51,11 +59,26 @@ export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(
-    exists ? 'yarn install --immutable' : 'yarn install --no-immutable',
-    cwd,
-    env,
-  );
+  try {
+    return run(
+      exists ? yarnInstallImmutable : yarnInstallNoImmutable,
+      cwd,
+      env,
+    );
+  } catch (error) {
+    try {
+      // retry once in case of e.g. permission errors
+      return run(
+        fs.readFileSync(lockfilePath, 'utf8').trim().length > 0
+          ? yarnInstallImmutable
+          : yarnInstallNoImmutable,
+        cwd,
+        env,
+      );
+    } catch {
+      throw error;
+    }
+  }
 };
 
 export const linkJestPackage = (packageName: string, cwd: string) => {
@@ -77,8 +100,18 @@ export const makeTemplate =
       return values[number - 1];
     });
 
-export const cleanup = (directory: string) =>
-  fs.rmSync(directory, {force: true, recursive: true});
+export const cleanup = (directory: string) => {
+  try {
+    fs.rmSync(directory, {force: true, recursive: true});
+  } catch (error) {
+    try {
+      // retry once in case of e.g. permission errors
+      fs.rmSync(directory, {force: true, recursive: true});
+    } catch {
+      throw error;
+    }
+  }
+};
 
 /**
  * Creates a nested directory with files and their contents
@@ -157,6 +190,9 @@ export const copyDir = (src: string, dest: string) => {
   }
 };
 
+export const replaceSeed = (str: string) =>
+  str.replace(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
+
 export const replaceTime = (str: string) =>
   str
     .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
@@ -201,7 +237,7 @@ export const extractSummary = (stdout: string) => {
   const match = stdout
     .replace(/(?:\\[rn])+/g, '\n')
     .match(
-      /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
+      /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
   if (!match) {
     throw new Error(dedent`
@@ -254,7 +290,7 @@ export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
   const regex =
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+    /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];
@@ -297,6 +333,39 @@ export const testIfHg = (...args: Parameters<typeof test>) => {
     test(...args);
   } else {
     console.warn('Mercurial (hg) is not installed - skipping some tests');
+    test.skip(...args);
+  }
+};
+
+// Certain environments (like CITGM and GH Actions) do not come with sapling installed
+let slIsInstalled: boolean | null = null;
+export const testIfSl = (...args: Parameters<typeof test>) => {
+  if (slIsInstalled === null) {
+    slIsInstalled = which.sync('sl', {nothrow: true}) !== null;
+  }
+
+  if (slIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Sapling (sl) is not installed - skipping some tests');
+    test.skip(...args);
+  }
+};
+
+export const testIfSlAndHg = (...args: Parameters<typeof test>) => {
+  if (slIsInstalled === null) {
+    slIsInstalled = which.sync('sl', {nothrow: true}) !== null;
+  }
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (slIsInstalled && hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn(
+      'Sapling (sl) or Mercurial (hg) is not installed - skipping some tests',
+    );
     test.skip(...args);
   }
 };

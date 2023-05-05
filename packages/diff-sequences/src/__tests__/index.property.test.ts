@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import fc from 'fast-check';
+import {fc, it} from '@fast-check/jest';
 import diff from '../';
 
 const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
@@ -27,7 +27,7 @@ const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
 const extractCount = (data: Array<string>): Map<string, number> => {
   const countPerChar = new Map<string, number>();
   for (const item of data) {
-    const currentCount = countPerChar.get(item) || 0;
+    const currentCount = countPerChar.get(item) ?? 0;
     countPerChar.set(item, currentCount + 1);
   }
   return countPerChar;
@@ -55,81 +55,71 @@ const isSubsequenceOf = (
   return iSub === subsequence.length;
 };
 
-it('should be reflexive', () => {
-  fc.assert(
-    fc.property(fc.array(fc.char()), a => {
-      expect(findCommonItems(a, a)).toEqual(a);
-    }),
-  );
+it.prop([fc.array(fc.char())])('should be reflexive', a => {
+  expect(findCommonItems(a, a)).toEqual(a);
 });
 
-it('should find the same number of common items when switching the inputs', () => {
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+  'should find the same number of common items when switching the inputs',
   // findCommonItems is not symmetric as:
   // > findCommonItems(["Z"," "], [" ","Z"]) = [" "]
   // > findCommonItems([" ","Z"], ["Z"," "]) = ["Z"]
-  fc.assert(
-    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
-      const commonItems = findCommonItems(a, b);
-      const symmetricCommonItems = findCommonItems(b, a);
-      expect(symmetricCommonItems).toHaveLength(commonItems.length);
-    }),
-  );
-});
+  (a, b) => {
+    const commonItems = findCommonItems(a, b);
+    const symmetricCommonItems = findCommonItems(b, a);
+    expect(symmetricCommonItems).toHaveLength(commonItems.length);
+  },
+);
 
-it('should have at most the length of its inputs', () => {
-  fc.assert(
-    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
-      const commonItems = findCommonItems(a, b);
-      expect(commonItems.length).toBeLessThanOrEqual(a.length);
-      expect(commonItems.length).toBeLessThanOrEqual(b.length);
-    }),
-  );
-});
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+  'should have at most the length of its inputs',
+  (a, b) => {
+    const commonItems = findCommonItems(a, b);
+    expect(commonItems.length).toBeLessThanOrEqual(a.length);
+    expect(commonItems.length).toBeLessThanOrEqual(b.length);
+  },
+);
 
-it('should have at most the same number of each character as its inputs', () => {
-  fc.assert(
-    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
-      const commonItems = findCommonItems(a, b);
-      const commonCount = extractCount(commonItems);
-      const aCount = extractCount(a);
-      for (const [item, count] of commonCount) {
-        const countOfItemInA = aCount.get(item) || 0;
-        expect(countOfItemInA).toBeGreaterThanOrEqual(count);
-      }
-    }),
-  );
-});
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+  'should have at most the same number of each character as its inputs',
+  (a, b) => {
+    const commonItems = findCommonItems(a, b);
+    const commonCount = extractCount(commonItems);
+    const aCount = extractCount(a);
+    for (const [item, count] of commonCount) {
+      const countOfItemInA = aCount.get(item) ?? 0;
+      expect(countOfItemInA).toBeGreaterThanOrEqual(count);
+    }
+  },
+);
 
-it('should be a subsequence of its inputs', () => {
-  fc.assert(
-    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
-      const commonItems = findCommonItems(a, b);
-      expect(isSubsequenceOf(commonItems, a)).toBe(true);
-      expect(isSubsequenceOf(commonItems, b)).toBe(true);
-    }),
-  );
-});
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+  'should be a subsequence of its inputs',
+  (a, b) => {
+    const commonItems = findCommonItems(a, b);
+    expect(isSubsequenceOf(commonItems, a)).toBe(true);
+    expect(isSubsequenceOf(commonItems, b)).toBe(true);
+  },
+);
 
-it('should be no-op when passing common items', () => {
-  fc.assert(
-    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
-      const commonItems = findCommonItems(a, b);
-      expect(findCommonItems(a, commonItems)).toEqual(commonItems);
-      expect(findCommonItems(commonItems, a)).toEqual(commonItems);
-    }),
-  );
-});
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+  'should be no-op when passing common items',
+  (a, b) => {
+    const commonItems = findCommonItems(a, b);
+    expect(findCommonItems(a, commonItems)).toEqual(commonItems);
+    expect(findCommonItems(commonItems, a)).toEqual(commonItems);
+  },
+);
 
-it('should find the exact common items when one array is subarray of the other', () => {
-  fc.assert(
-    fc.property(fc.array(fc.array(fc.char())), data => {
-      const allData = flatten(data); // [...data[0], ...data[1], ...data[2], ...data[3], ...]
-      const partialData = flatten(data.filter((_, i) => i % 2 === 1)); // [...data[1], ...data[3], ...]
-      const commonItems = findCommonItems(allData, partialData);
-      // We have:
-      // 1. commonItems contains at least all the items of partialData as they are in allData too
-      // 2. commonItems cannot contain more items than its inputs (partialData for instance)
-      expect(commonItems.length).toBeGreaterThanOrEqual(partialData.length);
-    }),
-  );
-});
+it.prop([fc.array(fc.array(fc.char()))])(
+  'should find the exact common items when one array is subarray of the other',
+  data => {
+    const allData = flatten(data); // [...data[0], ...data[1], ...data[2], ...data[3], ...]
+    const partialData = flatten(data.filter((_, i) => i % 2 === 1)); // [...data[1], ...data[3], ...]
+    const commonItems = findCommonItems(allData, partialData);
+    // We have:
+    // 1. commonItems contains at least all the items of partialData as they are in allData too
+    // 2. commonItems cannot contain more items than its inputs (partialData for instance)
+    expect(commonItems.length).toBeGreaterThanOrEqual(partialData.length);
+  },
+);

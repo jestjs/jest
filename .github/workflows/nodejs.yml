@@ -36,6 +36,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -50,6 +52,30 @@ jobs:
         run: yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
+      - name: run ESLint with type info
+        run: yarn lint-ts-files
+
+  typecheck:
+    name: Typecheck Examples and Tests
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:ts
+      - name: typecheck examples
+        run: yarn typecheck:examples
+      - name: typecheck tests
+        run: yarn typecheck:tests
 
   lint:
     name: Lint
@@ -58,6 +84,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -72,6 +100,8 @@ jobs:
         run: yarn lint
       - name: run prettier
         run: yarn lint:prettier:ci
+      - name: check changelog
+        run: yarn check-changelog
       - name: check copyright headers
         run: yarn check-copyright-headers
 
@@ -81,6 +111,8 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -106,6 +138,27 @@ jobs:
     with:
       os: windows-latest
 
+  test-leak:
+    name: Node LTS on Ubuntu with leak detection
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:js
+      - name: run tests with leak detection
+        run: yarn test-leak
+
   test-coverage:
     name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
     strategy:
@@ -117,6 +170,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
@@ -130,9 +185,7 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests with coverage
-        run: |
-          yarn jest-coverage --color --config jest.config.ci.mjs --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
-          yarn test-leak
+        run: yarn jest-coverage --color --config jest.config.ci.mjs --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()

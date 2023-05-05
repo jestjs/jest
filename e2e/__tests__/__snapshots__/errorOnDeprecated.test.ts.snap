@@ -11,12 +11,12 @@ exports[`defaultTimeoutInterval.test.js errors in errorOnDeprecated mode 1`] = `
        8 |
        9 | test('Default Timeout Interval', () => {
     > 10 |   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
-         |   ^
+         |                                   ^
       11 |   expect(true).toBe(true);
       12 | });
       13 |
 
-      at Object.<anonymous> (__tests__/defaultTimeoutInterval.test.js:10:3)"
+      at Object.<anonymous> (__tests__/defaultTimeoutInterval.test.js:10:35)"
 `;
 
 exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `

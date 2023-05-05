@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,8 +22,9 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
+import {getCustomEqualityTesters} from './jestMatchersObject';
 import type {
-  MatcherState,
+  MatcherFunction,
   MatchersObject,
   SyncExpectationResult,
 } from './types';
@@ -59,7 +60,7 @@ const printReceivedArgs = (
 const printCommon = (val: unknown) => DIM_COLOR(stringify(val));
 
 const isEqualValue = (expected: unknown, received: unknown): boolean =>
-  equals(expected, received, [iterableEquality]);
+  equals(expected, received, [...getCustomEqualityTesters(), iterableEquality]);
 
 const isEqualCall = (
   expected: Array<unknown>,
@@ -353,12 +354,10 @@ const printReceivedResults = (
   );
 };
 
-const createToBeCalledMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: unknown,
-  ): SyncExpectationResult {
+const createToBeCalledMatcher = (
+  matcherName: string,
+): MatcherFunction<[unknown]> =>
+  function (received: any, expected: unknown): SyncExpectationResult {
     const expectedArgument = '';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -402,12 +401,10 @@ const createToBeCalledMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createToReturnMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: unknown,
-  ): SyncExpectationResult {
+const createToReturnMatcher = (
+  matcherName: string,
+): MatcherFunction<[unknown]> =>
+  function (received: any, expected): SyncExpectationResult {
     const expectedArgument = '';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -462,12 +459,10 @@ const createToReturnMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createToBeCalledTimesMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: number,
-  ): SyncExpectationResult {
+const createToBeCalledTimesMatcher = (
+  matcherName: string,
+): MatcherFunction<[number]> =>
+  function (received: any, expected): SyncExpectationResult {
     const expectedArgument = 'expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -500,12 +495,10 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createToReturnTimesMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: number,
-  ): SyncExpectationResult {
+const createToReturnTimesMatcher = (
+  matcherName: string,
+): MatcherFunction<[number]> =>
+  function (received: any, expected): SyncExpectationResult {
     const expectedArgument = 'expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -550,12 +543,10 @@ const createToReturnTimesMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createToBeCalledWithMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    ...expected: Array<unknown>
-  ): SyncExpectationResult {
+const createToBeCalledWithMatcher = (
+  matcherName: string,
+): MatcherFunction<Array<unknown>> =>
+  function (received: any, ...expected): SyncExpectationResult {
     const expectedArgument = '...expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -625,12 +616,10 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createToReturnWithMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: unknown,
-  ): SyncExpectationResult {
+const createToReturnWithMatcher = (
+  matcherName: string,
+): MatcherFunction<[unknown]> =>
+  function (received: any, expected): SyncExpectationResult {
     const expectedArgument = 'expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -700,12 +689,10 @@ const createToReturnWithMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createLastCalledWithMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    ...expected: Array<unknown>
-  ): SyncExpectationResult {
+const createLastCalledWithMatcher = (
+  matcherName: string,
+): MatcherFunction<Array<unknown>> =>
+  function (received: any, ...expected): SyncExpectationResult {
     const expectedArgument = '...expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -785,12 +772,10 @@ const createLastCalledWithMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createLastReturnedMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    expected: unknown,
-  ): SyncExpectationResult {
+const createLastReturnedMatcher = (
+  matcherName: string,
+): MatcherFunction<[unknown]> =>
+  function (received: any, expected): SyncExpectationResult {
     const expectedArgument = 'expected';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -871,13 +856,10 @@ const createLastReturnedMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createNthCalledWithMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    nth: number,
-    ...expected: Array<unknown>
-  ): SyncExpectationResult {
+const createNthCalledWithMatcher = (
+  matcherName: string,
+): MatcherFunction<[number, ...Array<unknown>]> =>
+  function (received: any, nth, ...expected): SyncExpectationResult {
     const expectedArgument = 'n';
     const options: MatcherHintOptions = {
       expectedColor: (arg: string) => arg,
@@ -1003,13 +985,10 @@ const createNthCalledWithMatcher = (matcherName: string) =>
     return {message, pass};
   };
 
-const createNthReturnedWithMatcher = (matcherName: string) =>
-  function (
-    this: MatcherState,
-    received: any,
-    nth: number,
-    expected: unknown,
-  ): SyncExpectationResult {
+const createNthReturnedWithMatcher = (
+  matcherName: string,
+): MatcherFunction<[number, unknown]> =>
+  function (received: any, nth, expected): SyncExpectationResult {
     const expectedArgument = 'n';
     const options: MatcherHintOptions = {
       expectedColor: (arg: string) => arg,

@@ -19,7 +19,7 @@ import TOCInline from '@theme/TOCInline';
 
 Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 This is often useful if you want to clean up some global setup state that is shared across tests.
 
@@ -59,7 +59,7 @@ If you want to run some cleanup after every test instead of after all tests, use
 
 Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 This is often useful if you want to clean up some temporary state that is created by each test.
 
@@ -99,7 +99,7 @@ If you want to run some cleanup just once, after all of the tests run, use `afte
 
 Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 This is often useful if you want to set up some global state that will be used by many tests.
 
@@ -135,7 +135,7 @@ If you want to run something before every test instead of before any test runs, 
 
 Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 This is often useful if you want to reset some global state that will be used by many tests.
 
@@ -208,11 +208,11 @@ const binaryStringToNumber = binString => {
 describe('binaryStringToNumber', () => {
   describe('given an invalid binary string', () => {
     test('composed of non-numbers throws CustomError', () => {
-      expect(() => binaryStringToNumber('abc')).toThrowError(CustomError);
+      expect(() => binaryStringToNumber('abc')).toThrow(CustomError);
     });
 
     test('with extra whitespace throws CustomError', () => {
-      expect(() => binaryStringToNumber('  100')).toThrowError(CustomError);
+      expect(() => binaryStringToNumber('  100')).toThrow(CustomError);
     });
   });
 
@@ -232,8 +232,8 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 
 #### 1. `describe.each(table)(name, fn, timeout)`
 
-- `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+- `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row. If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`.
+
 - `name`: `String` the title of the test suite.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -249,8 +249,8 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the suite of tests to be run, this is the function that will receive the parameters in each row as function arguments.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -301,8 +301,8 @@ describe.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions, and `$#` for the index of the row.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the suite of tests to be run, this is the function that will receive the test data object.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -331,7 +331,7 @@ describe.each`
 
 Also under the alias: `fdescribe(name, fn)`
 
-You can use `describe.skip` if you do not want to run the tests of a particular `describe` block:
+You can use `describe.only` if you want to run only one describe block:
 
 ```js
 describe.only('my beverage', () => {
@@ -370,7 +370,7 @@ describe.only.each([
   });
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -383,13 +383,13 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -398,7 +398,7 @@ test('will not be ran', () => {
 
 Also under the alias: `xdescribe(name, fn)`
 
-You can use `describe.skip` if you do not want to run a particular describe block:
+You can use `describe.skip` if you do not want to run the tests of a particular `describe` block:
 
 ```js
 describe('my beverage', () => {
@@ -435,11 +435,11 @@ describe.skip.each([
   [2, 1, 3],
 ])('.add(%i, %i)', (a, b, expected) => {
   test(`returns ${expected}`, () => {
-    expect(a + b).toBe(expected); // will not be ran
+    expect(a + b).toBe(expected); // will not be run
   });
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -452,13 +452,13 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
-  test('will not be ran', () => {
-    expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
+  test('will not be run', () => {
+    expect(a + b).toBe(expected); // will not be run
   });
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -475,11 +475,9 @@ test('did not rain', () => {
 });
 ```
 
-The first argument is the test name; the second argument is a function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+The first argument is the test name; the second argument is a function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
-> Note: If a **promise is returned** from `test`, Jest will wait for the promise to resolve before letting the test complete. Jest will also wait if you **provide an argument to the test function**, usually called `done`. This could be handy when you want to test callbacks. See how to test async code [here](TestingAsyncCode.md#callbacks).
-
-For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
+If a **promise is returned** from `test`, Jest will wait for the promise to resolve before letting the test complete. For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
 
 ```js
 test('has lemon in it', () => {
@@ -489,19 +487,29 @@ test('has lemon in it', () => {
 });
 ```
 
-Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well.
+Even though the call to `test` will return right away, the test doesn't complete until the promise resolves. For more details, see [Testing Asynchronous Code](TestingAsyncCode.md) page.
+
+:::tip
+
+Jest will also wait if you **provide an argument to the test function**, usually called `done`. This could be handy when you want to test [callbacks](TestingAsyncCode.md#callbacks).
+
+:::
 
 ### `test.concurrent(name, fn, timeout)`
 
 Also under the alias: `it.concurrent(name, fn, timeout)`
 
+:::caution
+
+`test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
+
+:::
+
 Use `test.concurrent` if you want the test to run concurrently.
 
-> Note: `test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues
+The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
-The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
-
-```
+```js
 test.concurrent('addition of 2 numbers', async () => {
   expect(5 + 3).toBe(8);
 });
@@ -511,7 +519,11 @@ test.concurrent('subtraction 2 numbers', async () => {
 });
 ```
 
-> Note: Use `maxConcurrency` in configuration to prevents Jest from executing more than the specified amount of tests at the same time
+:::tip
+
+Use the [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
+
+:::
 
 ### `test.concurrent.each(table)(name, fn, timeout)`
 
@@ -523,8 +535,7 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
 
 #### 1. `test.concurrent.each(table)(name, fn, timeout)`
 
-- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row. If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -536,8 +547,8 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
     - `%o` - Object.
     - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
-- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -558,8 +569,8 @@ test.concurrent.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the test to be ran, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the test to be run, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -569,7 +580,7 @@ test.concurrent.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -593,7 +604,7 @@ test.concurrent.only.each([
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -606,11 +617,11 @@ test.concurrent.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -631,10 +642,10 @@ test.concurrent.skip.each([
   [1, 2, 3],
   [2, 1, 3],
 ])('.add(%i, %i)', async (a, b, expected) => {
-  expect(a + b).toBe(expected); // will not be ran
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -647,11 +658,11 @@ test.concurrent.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
-  expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -666,8 +677,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 
 #### 1. `test.each(table)(name, fn, timeout)`
 
-- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row. If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -683,8 +693,8 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -715,8 +725,8 @@ test.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
-- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+- `fn`: `Function` the test to be run, this is the function that will receive the test data object.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
 Example:
 
@@ -726,7 +736,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -737,7 +747,7 @@ Also under the aliases: `it.only(name, fn, timeout)`, and `fit(name, fn, timeout
 
 When you are debugging a large test file, you will often only want to run a subset of tests. You can use `.only` to specify which tests are the only ones you want to run in that test file.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 For example, let's say you had these tests:
 
@@ -774,7 +784,7 @@ test.only.each([
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -787,11 +797,11 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -834,10 +844,10 @@ test.skip.each([
   [1, 2, 3],
   [2, 1, 3],
 ])('.add(%i, %i)', (a, b, expected) => {
-  expect(a + b).toBe(expected); // will not be ran
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -850,11 +860,11 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
-  expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -865,16 +875,14 @@ Also under the alias: `it.todo(name)`
 
 Use `test.todo` when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.
 
-_Note_: If you supply a test callback function then the `test.todo` will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use `test.skip` instead.
-
-#### API
-
-- `name`: `String` the title of the test plan.
-
-Example:
-
 ```js
 const add = (a, b) => a + b;
 
 test.todo('add should be associative');
 ```
+
+:::tip
+
+`test.todo` will throw an error if you pass it a test callback function. Use [`test.skip`](#testskipname-fn) instead, if you already implemented the test, but do not want it to run.
+
+:::

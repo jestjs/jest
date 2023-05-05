@@ -87,7 +87,7 @@ module.exports = {
 };
 ```
 
-_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
@@ -158,11 +158,19 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 npm install --save-dev ts-jest
 ```
 
+In order for Jest to transpile TypeScript with `ts-jest`, you may also need to create a [configuration](https://kulshekhar.github.io/ts-jest/docs/getting-started/installation#jest-config-file) file.
+
 #### Type definitions
 
 There are two ways to have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.
 
-You can use type definitions which ships with Jest and will update each time you update Jest. Simply import the APIs from `@jest/globals` package:
+You can use type definitions which ships with Jest and will update each time you update Jest. Install the `@jest/globals` package:
+
+```bash npm2yarn
+npm install --save-dev @jest/globals
+```
+
+And import the APIs from it:
 
 ```ts title="sum.test.ts"
 import {describe, expect, test} from '@jest/globals';

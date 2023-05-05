@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,20 +13,26 @@ import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
 
 jest.mock('prettier', () => {
-  const realPrettier: typeof import('prettier') =
-    jest.requireActual('prettier');
-  const mockPrettier: typeof import('prettier') = {
+  const realPrettier =
+    jest.requireActual<typeof import('prettier')>('prettier');
+  const mockPrettier = {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
-          require('path').dirname(require.resolve('prettier')),
+          (require('path') as typeof import('path')).dirname(
+            require.resolve('prettier'),
+          ),
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({inferredParser: 'babel'})},
-    resolveConfig: {sync: jest.fn()},
+    getFileInfo: {
+      sync: () => ({ignored: false, inferredParser: 'babel'}),
+    } as unknown as typeof prettier.getFileInfo,
+    resolveConfig: {
+      sync: jest.fn(),
+    } as unknown as typeof prettier.resolveConfig,
     version: realPrettier.version,
-  };
+  } as typeof prettier;
   return mockPrettier;
 });
 
@@ -126,40 +132,43 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   );
 });
 
-test('saveInlineSnapshots() can handle typescript without prettier', () => {
-  const filename = path.join(dir, 'my.test.ts');
-  fs.writeFileSync(
-    filename,
-    `${`
+test.each([['ts'], ['cts'], ['mts']])(
+  'saveInlineSnapshots() can handle typescript without prettier - %s extension',
+  extension => {
+    const filename = path.join(dir, `my.test.${extension}`);
+    fs.writeFileSync(
+      filename,
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
 `.trim()}\n`,
-  );
+    );
 
-  saveInlineSnapshots(
-    [
-      {
-        frame: {column: 11, file: filename, line: 5} as Frame,
-        snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
-      },
-    ],
-    dir,
-    null,
-  );
+    saveInlineSnapshots(
+      [
+        {
+          frame: {column: 11, file: filename, line: 5} as Frame,
+          snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
+        },
+      ],
+      dir,
+      null,
+    );
 
-  expect(fs.readFileSync(filename, 'utf8')).toBe(
-    `${`
+    expect(fs.readFileSync(filename, 'utf8')).toBe(
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 `.trim()}\n`,
-  );
-});
+    );
+  },
+);
 
 test('saveInlineSnapshots() can handle tsx without prettier', () => {
   const filename = path.join(dir, 'my.test.tsx');
@@ -359,7 +368,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
       'prettier',
     );
 
-  expect(save).toThrowError(/Couldn't locate all inline snapshots./);
+  expect(save).toThrow(/Couldn't locate all inline snapshots./);
 });
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
@@ -377,7 +386,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
       'prettier',
     );
 
-  expect(save).toThrowError(
+  expect(save).toThrow(
     /Multiple inline snapshots for the same call are not supported./,
   );
 });
@@ -719,7 +728,7 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
     'prettier',
   );
 
-  expect(prettierSpy).not.toBeCalled();
+  expect(prettierSpy).not.toHaveBeenCalled();
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'const foo = {\n' +
       '  "1": "Some value",\n' +

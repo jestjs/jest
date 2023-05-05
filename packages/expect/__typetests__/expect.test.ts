@@ -1,27 +1,59 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
-import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {EqualsFunction} from '@jest/expect-utils';
 import {
   MatcherContext,
   MatcherFunction,
   MatcherFunctionWithContext,
   Matchers,
+  Tester,
+  TesterContext,
   expect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
-type M = Matchers<void, unknown>;
-type N = Matchers<void>;
+type M = Matchers<void>;
+type N = Matchers<void, string>;
 
 expectError(() => {
   type E = Matchers;
 });
+
+const tester1: Tester = function (a, b, customTesters) {
+  expectType<any>(a);
+  expectType<any>(b);
+  expectType<Array<Tester>>(customTesters);
+  expectType<TesterContext>(this);
+  expectType<EqualsFunction>(this.equals);
+  return undefined;
+};
+
+expectType<void>(
+  expect.addEqualityTesters([
+    tester1,
+    (a, b, customTesters) => {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      expectType<undefined>(this);
+      return true;
+    },
+    function anotherTester(a, b, customTesters) {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      expectType<TesterContext>(this);
+      expectType<EqualsFunction>(this.equals);
+      return undefined;
+    },
+  ]),
+);
 
 // extend
 
@@ -36,6 +68,7 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
+      expectType<Array<Tester>>(this.customTesters);
       expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
@@ -45,6 +78,7 @@ expectType<void>(
       expectType<boolean>(this.isExpectingAssertions);
       expectType<Error | undefined>(this.isExpectingAssertionsError);
       expectType<boolean | undefined>(this.isNot);
+      expectType<number>(this.numPassingAsserts);
       expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);

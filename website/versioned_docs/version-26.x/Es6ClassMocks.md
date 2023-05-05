@@ -81,7 +81,7 @@ it('We can check if the consumer called a method on the class instance', () => {
   // mock.instances is available with automatic mocks:
   const mockSoundPlayerInstance = SoundPlayer.mock.instances[0];
   const mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
-  expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
+  expect(mockPlaySoundFile.mock.calls[0][0]).toBe(coolSoundFileName);
   // Equivalent to above check:
   expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
   expect(mockPlaySoundFile).toHaveBeenCalledTimes(1);
@@ -263,7 +263,7 @@ This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, un
 
 ## Mocking a specific method of a class
 
-Lets say that you want to mock or spy the method `playSoundFile` within the class `SoundPlayer`. A simple example:
+Lets say that you want to mock or spy on the method `playSoundFile` within the class `SoundPlayer`. A simple example:
 
 ```javascript
 // your jest test file below
@@ -306,7 +306,7 @@ export default class SoundPlayer {
 }
 ```
 
-You can mock/spy them easily, here is an example:
+You can mock/spy on them easily, here is an example:
 
 ```javascript
 // your jest test file below
@@ -349,7 +349,7 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
+This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toBeGreaterThan(0);`
 
 ### Mocking non-default class exports
 
@@ -444,6 +444,6 @@ it('We can check if the consumer called a method on the class instance', () => {
   const soundPlayerConsumer = new SoundPlayerConsumer();
   const coolSoundFileName = 'song.mp3';
   soundPlayerConsumer.playSomethingCool();
-  expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
+  expect(mockPlaySoundFile.mock.calls[0][0]).toBe(coolSoundFileName);
 });
 ```

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -45,12 +45,12 @@ it('adds correct location info when provided with flag', () => {
   });
 
   expect(assertions[3].location).toEqual({
-    column: isJestJasmineRun() ? 22 : 1,
+    column: 22,
     line: 23,
   });
 
   expect(assertions[4].location).toEqual({
-    column: isJestJasmineRun() ? 22 : 1,
+    column: 22,
     line: 23,
   });
 
@@ -72,12 +72,12 @@ it('adds correct location info when provided with flag', () => {
   });
 
   expect(assertions[8].location).toEqual({
-    column: isJestJasmineRun() ? 24 : 3,
+    column: 24,
     line: 41,
   });
 
   expect(assertions[9].location).toEqual({
-    column: isJestJasmineRun() ? 24 : 3,
+    column: 24,
     line: 41,
   });
 });

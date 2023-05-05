@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,12 +8,9 @@
 import prettyFormat from '../';
 import type {OptionsReceived, Plugins} from '../types';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toPrettyPrintTo(expected: unknown, options?: OptionsReceived): R;
-    }
+declare module 'expect' {
+  interface Matchers<R> {
+    toPrettyPrintTo(expected: unknown, options?: OptionsReceived): R;
   }
 }
 
@@ -27,29 +24,31 @@ const setPrettyPrint = (plugins: Plugins) => {
       const prettyFormatted = prettyFormat(received, {plugins, ...options});
       const pass = prettyFormatted === expected;
 
-      const message = pass
-        ? () =>
-            `${this.utils.matcherHint('.not.toBe')}\n\n` +
-            'Expected value to not be:\n' +
-            `  ${this.utils.printExpected(expected)}\n` +
-            'Received:\n' +
-            `  ${this.utils.printReceived(prettyFormatted)}`
-        : () => {
-            const diffString = this.utils.diff(expected, prettyFormatted, {
-              expand: this.expand,
-            });
-            return (
-              `${this.utils.matcherHint('.toBe')}\n\n` +
-              'Expected value to be:\n' +
+      return {
+        actual: prettyFormatted,
+        message: pass
+          ? () =>
+              `${this.utils.matcherHint('.not.toBe')}\n\n` +
+              'Expected value to not be:\n' +
               `  ${this.utils.printExpected(expected)}\n` +
               'Received:\n' +
-              `  ${this.utils.printReceived(prettyFormatted)}${
-                diffString ? `\n\nDifference:\n\n${diffString}` : ''
-              }`
-            );
-          };
-
-      return {actual: prettyFormatted, message, pass};
+              `  ${this.utils.printReceived(prettyFormatted)}`
+          : () => {
+              const diffString = this.utils.diff(expected, prettyFormatted, {
+                expand: this.expand,
+              });
+              return (
+                `${this.utils.matcherHint('.toBe')}\n\n` +
+                'Expected value to be:\n' +
+                `  ${this.utils.printExpected(expected)}\n` +
+                'Received:\n' +
+                `  ${this.utils.printReceived(prettyFormatted)}${
+                  diffString != null ? `\n\nDifference:\n\n${diffString}` : ''
+                }`
+              );
+            },
+        pass,
+      };
     },
   });
 };

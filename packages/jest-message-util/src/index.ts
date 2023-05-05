@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {fileURLToPath} from 'url';
+import {types} from 'util';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
@@ -122,11 +123,12 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | TestResult.SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | number | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: string,
   reuseMessage?: boolean,
+  noTitle?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
@@ -134,6 +136,8 @@ export const formatExecError = (
   }
 
   let message, stack;
+  let cause = '';
+  const subErrors = [];
 
   if (typeof error === 'string' || !error) {
     error || (error = 'EMPTY ERROR');
@@ -145,6 +149,47 @@ export const formatExecError = (
       typeof error.stack === 'string'
         ? error.stack
         : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    if ('cause' in error) {
+      const prefix = '\n\nCause:\n';
+      if (typeof error.cause === 'string' || typeof error.cause === 'number') {
+        cause += `${prefix}${error.cause}`;
+      } else if (
+        types.isNativeError(error.cause) ||
+        error.cause instanceof Error
+      ) {
+        /* `isNativeError` is used, because the error might come from another realm.
+         `instanceof Error` is used because `isNativeError` does return `false` for some
+         things that are `instanceof Error` like the errors provided in
+         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
+        */
+        const formatted = formatExecError(
+          error.cause,
+          config,
+          options,
+          testPath,
+          reuseMessage,
+          true,
+        );
+        cause += `${prefix}${formatted}`;
+      }
+    }
+    if ('errors' in error && Array.isArray(error.errors)) {
+      for (const subError of error.errors) {
+        subErrors.push(
+          formatExecError(
+            subError,
+            config,
+            options,
+            testPath,
+            reuseMessage,
+            true,
+          ),
+        );
+      }
+    }
+  }
+  if (cause !== '') {
+    cause = indentAllLines(cause);
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -174,13 +219,20 @@ export const formatExecError = (
 
   let messageToUse;
 
-  if (reuseMessage) {
+  if (reuseMessage || noTitle) {
     messageToUse = ` ${message.trim()}`;
   } else {
     messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
   }
+  const title = noTitle ? '' : `${TITLE_INDENT + TITLE_BULLET}`;
+  const subErrorStr =
+    subErrors.length > 0
+      ? indentAllLines(
+          `\n\nErrors contained in AggregateError:\n${subErrors.join('\n')}`,
+        )
+      : '';
 
-  return `${TITLE_INDENT + TITLE_BULLET + messageToUse + stack}\n`;
+  return `${title + messageToUse + stack + cause + subErrorStr}\n`;
 };
 
 const removeInternalStackEntries = (
@@ -327,9 +379,80 @@ export const formatStackTrace = (
 };
 
 type FailedResults = Array<{
+  /** Stringified version of the error */
   content: string;
+  /** Details related to the failure */
+  failureDetails: unknown;
+  /** Execution result */
   result: TestResult.AssertionResult;
 }>;
+
+function isErrorOrStackWithCause(
+  errorOrStack: Error | string,
+): errorOrStack is Error & {cause: Error | string} {
+  return (
+    typeof errorOrStack !== 'string' &&
+    'cause' in errorOrStack &&
+    (typeof errorOrStack.cause === 'string' ||
+      types.isNativeError(errorOrStack.cause) ||
+      errorOrStack.cause instanceof Error)
+  );
+}
+
+function formatErrorStack(
+  errorOrStack: Error | string,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: string,
+): string {
+  // The stack of new Error('message') contains both the message and the stack,
+  // thus we need to sanitize and clean it for proper display using separateMessageFromStack.
+  const sourceStack =
+    typeof errorOrStack === 'string' ? errorOrStack : errorOrStack.stack || '';
+  let {message, stack} = separateMessageFromStack(sourceStack);
+  stack = options.noStackTrace
+    ? ''
+    : `${STACK_TRACE_COLOR(
+        formatStackTrace(stack, config, options, testPath),
+      )}\n`;
+
+  message = checkForCommonEnvironmentErrors(message);
+  message = indentAllLines(message);
+
+  let cause = '';
+  if (isErrorOrStackWithCause(errorOrStack)) {
+    const nestedCause = formatErrorStack(
+      errorOrStack.cause,
+      config,
+      options,
+      testPath,
+    );
+    cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
+  }
+
+  return `${message}\n${stack}${cause}`;
+}
+
+function failureDetailsToErrorOrStack(
+  failureDetails: unknown,
+  content: string,
+): Error | string {
+  if (!failureDetails) {
+    return content;
+  }
+  if (types.isNativeError(failureDetails) || failureDetails instanceof Error) {
+    return failureDetails; // receiving raw errors for jest-circus
+  }
+  if (
+    typeof failureDetails === 'object' &&
+    'error' in failureDetails &&
+    (types.isNativeError(failureDetails.error) ||
+      failureDetails.error instanceof Error)
+  ) {
+    return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
+  }
+  return content;
+}
 
 export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
@@ -339,8 +462,12 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach(item => {
-        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      result.failureMessages.forEach((item, index) => {
+        errors.push({
+          content: item,
+          failureDetails: result.failureDetails[index],
+          result,
+        });
       });
       return errors;
     },
@@ -352,15 +479,11 @@ export const formatResultsErrors = (
   }
 
   return failedResults
-    .map(({result, content}) => {
-      let {message, stack} = separateMessageFromStack(content);
-      stack = options.noStackTrace
-        ? ''
-        : `${STACK_TRACE_COLOR(
-            formatStackTrace(stack, config, options, testPath),
-          )}\n`;
-
-      message = indentAllLines(message);
+    .map(({result, content, failureDetails}) => {
+      const rootErrorOrStack = failureDetailsToErrorOrStack(
+        failureDetails,
+        content,
+      );
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +
@@ -370,7 +493,12 @@ export const formatResultsErrors = (
           result.title,
       )}\n`;
 
-      return `${title}\n${message}\n${stack}`;
+      return `${title}\n${formatErrorStack(
+        rootErrorOrStack,
+        config,
+        options,
+        testPath,
+      )}`;
     })
     .join('\n');
 };

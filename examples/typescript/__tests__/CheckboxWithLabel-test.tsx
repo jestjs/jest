@@ -1,9 +1,9 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import * as React from 'react';
 import * as TestUtils from 'react-dom/test-utils';
-
-const CheckboxWithLabel = require('../CheckboxWithLabel').default;
+import {expect, it} from '@jest/globals';
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   const checkboxLabelRef: React.RefObject<HTMLLabelElement> = React.createRef();
@@ -22,9 +22,9 @@ it('CheckboxWithLabel changes the text after click', () => {
   const inputNode = checkboxInputRef.current;
 
   // Verify that it's Off by default
-  expect(labelNode.textContent).toEqual('Off');
+  expect(labelNode.textContent).toBe('Off');
 
   // Simulate a click and verify that it is now On
   TestUtils.Simulate.change(inputNode);
-  expect(labelNode.textContent).toEqual('On');
+  expect(labelNode.textContent).toBe('On');
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ describe('replacePathSepForRegex()', () => {
   describe('posix', () => {
     beforeAll(() => {
       jest.mock('path', () => ({
-        ...jest.createMockFromModule('path'),
+        ...jest.createMockFromModule<typeof import('path')>('path'),
         sep: '/',
       }));
       jest.isolateModules(() => {
@@ -21,14 +21,14 @@ describe('replacePathSepForRegex()', () => {
 
     it('should return the path', () => {
       const expected = {};
-      expect(replacePathSepForRegex(expected as any)).toBe(expected);
+      expect(replacePathSepForRegex(expected as string)).toBe(expected);
     });
   });
 
   describe('win32', () => {
     beforeAll(() => {
       jest.mock('path', () => ({
-        ...jest.createMockFromModule('path'),
+        ...jest.createMockFromModule<typeof import('path')>('path'),
         sep: '\\',
       }));
       jest.isolateModules(() => {

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["es2020", "dom"],
+    "lib": ["es2020", "es2021.promise", "es2022.error", "dom"],
     "rootDir": "src",
     "outDir": "build"
   },
@@ -12,7 +12,6 @@
     {"path": "../jest-get-type"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
-    {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-util"}
   ]
 }

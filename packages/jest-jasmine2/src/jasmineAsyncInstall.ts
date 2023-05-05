@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -69,8 +69,8 @@ function promisifyLifeCycleFunction(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
-    // eslint-disable-next-line no-self-assign
-    extraError.stack = extraError.stack;
+    const originalExtraErrorStack = extraError.stack;
+    extraError.stack = originalExtraErrorStack;
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
@@ -85,6 +85,9 @@ function promisifyLifeCycleFunction(
 
           if (message) {
             extraError.message = message;
+            extraError.stack =
+              originalExtraErrorStack &&
+              originalExtraErrorStack.replace('Error: ', `Error: ${message}`);
           }
           done.fail(checkIsError ? error : extraError);
         });
@@ -146,8 +149,8 @@ function promisifyIt(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
-    // eslint-disable-next-line no-self-assign
-    extraError.stack = extraError.stack;
+    const originalExtraErrorStack = extraError.stack;
+    extraError.stack = originalExtraErrorStack;
 
     const asyncJestTest = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
@@ -159,6 +162,9 @@ function promisifyIt(
 
           if (message) {
             extraError.message = message;
+            extraError.stack =
+              originalExtraErrorStack &&
+              originalExtraErrorStack.replace('Error: ', `Error: ${message}`);
           }
 
           if (jasmine.Spec.isPendingSpecException(error)) {

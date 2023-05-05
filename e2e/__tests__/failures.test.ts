@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -64,7 +64,10 @@ test('works with async failures', () => {
   // Remove replacements when jasmine is gone
   const result = normalizeDots(rest)
     .replace(/.*thrown:.*\n/, '')
-    .replace(/.*Use jest\.setTimeout\(newTimeout\).*/, '<REPLACED>')
+    .replace(
+      /.*Add a timeout value to this test to increase the timeout, if this is a long-running test. See https:\/\/jestjs.io\/docs\/api#testname-fn-timeout..*/,
+      '<REPLACED>',
+    )
     .replace(/.*Timeout - Async callback was not.*/, '<REPLACED>');
 
   expect(result).toMatchSnapshot();
@@ -87,6 +90,30 @@ test('works with snapshot failures with hint', () => {
 
   expect(
     result.substring(0, result.indexOf('Snapshot Summary')),
+  ).toMatchSnapshot();
+});
+
+test('works with error with cause', () => {
+  const {stderr} = runJest(dir, ['errorWithCause.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
+test('works with error with cause thrown outside tests', () => {
+  const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  const sanitizedSummary = summary
+    .replace(/ Suite\.f /g, ' f ') // added by jasmine runner
+    .split('\n')
+    .map(line => line.trim()) // jasmine runner does not come with the same indentation
+    .join('\n');
+
+  expect(
+    // jasmine runner differ from circus one in this case, we just start
+    // the comparison when the stack starts to be reported
+    sanitizedSummary.substring(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
 });
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,7 +17,7 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold(
 const UPGRADE_NOTE = `  ${chalk.bold(
   'This error may be caused by a breaking change in Jest 28:',
 )}
-  https://jestjs.io/docs/upgrading-to-jest28#transformer
+  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer
 `;
 
 export const makeInvalidReturnValueError = (transformPath: string): string =>

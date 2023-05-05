@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,7 +17,7 @@ jest.mock('../__test_modules__/b');
 
 describe('babel-plugin-jest-hoist', () => {
   it('hoists disableAutomock call before imports', () => {
-    expect(a._isMockFunction).toBe(undefined);
+    expect(a._isMockFunction).toBeUndefined();
   });
 
   it('hoists mock call before imports', () => {

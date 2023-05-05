@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
@@ -139,6 +139,7 @@ function typeTests() {
     execa.sync('yarn', ['test-types'], {cwd, stdio: 'inherit'});
   } finally {
     execa.sync('git', ['checkout', 'yarn.lock'], {cwd});
+    execa.sync('yarn', ['install'], {cwd});
   }
 
   function verifyInstalledTsdTypescript() {

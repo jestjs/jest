@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "29.1.1",
+  "version": "29.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -24,7 +24,7 @@
     "@jest/types": "workspace:^",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "emittery": "^0.10.2",
+    "emittery": "^0.13.1",
     "graceful-fs": "^4.2.9",
     "jest-docblock": "workspace:^",
     "jest-environment-node": "workspace:^",
@@ -40,12 +40,13 @@
     "source-map-support": "0.5.13"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@jest/test-utils": "workspace:^",
+    "@tsd/typescript": "^4.9.0",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.3",
     "@types/source-map-support": "^0.5.0",
     "jest-jasmine2": "workspace:^",
-    "tsd-lite": "^0.6.0"
+    "tsd-lite": "^0.7.0"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

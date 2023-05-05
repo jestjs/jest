@@ -1,4 +1,6 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+
+import {expect, it} from '@jest/globals';
 
 it('adds 1 + 2 to equal 3 in TScript', () => {
   // Generally, `import` should be used for TypeScript

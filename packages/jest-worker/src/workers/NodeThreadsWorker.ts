@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -32,7 +32,7 @@ export default class ExperimentalWorker
   implements WorkerInterface
 {
   private _worker!: Worker;
-  private _options: WorkerOptions;
+  private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
   private _retries!: number;
@@ -45,10 +45,10 @@ export default class ExperimentalWorker
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
-  private _childWorkerPath: string;
+  private readonly _childWorkerPath: string;
 
   private _childIdleMemoryUsage: number | null;
-  private _childIdleMemoryUsageLimit: number | null;
+  private readonly _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {
@@ -170,6 +170,9 @@ export default class ExperimentalWorker
   }
 
   private _onMessage(response: ParentMessage) {
+    // Ignore messages not intended for us
+    if (!Array.isArray(response)) return;
+
     let error;
 
     switch (response[0]) {
@@ -227,7 +230,8 @@ export default class ExperimentalWorker
         break;
 
       default:
-        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
+        // Ignore messages not intended for us
+        break;
     }
   }
 
@@ -254,6 +258,18 @@ export default class ExperimentalWorker
         this._worker.postMessage(this._request);
       }
     } else {
+      // If the worker thread exits while a request is still pending, throw an
+      // error. This is unexpected and tests may not have run to completion.
+      const isRequestStillPending = !!this._request;
+      if (isRequestStillPending) {
+        this._onProcessEnd(
+          new Error(
+            'A Jest worker thread exited unexpectedly before finishing tests for an unknown reason. One of the ways this can happen is if process.exit() was called in testing code.',
+          ),
+          null,
+        );
+      }
+
       this._shutdown();
     }
   }

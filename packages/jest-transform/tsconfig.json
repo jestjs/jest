@@ -10,7 +10,6 @@
     {"path": "../jest-haste-map"},
     {"path": "../jest-regex-util"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-util"}
   ]
 }

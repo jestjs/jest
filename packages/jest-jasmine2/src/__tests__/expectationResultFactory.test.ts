@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,7 +26,7 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('thrown: undefined');
+    expect(result.message).toBe('thrown: undefined');
   });
 
   it('returns the result if failed (with `message`).', () => {
@@ -52,7 +52,7 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('Error: Expected `Pass`, received `Fail`.');
+    expect(result.message).toBe('Error: Expected `Pass`, received `Fail`.');
   });
 
   it('returns the error name if the error message is empty', () => {
@@ -64,7 +64,7 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('Error');
+    expect(result.message).toBe('Error');
   });
 
   it('returns the result if failed (with `error` as a string).', () => {
@@ -76,7 +76,7 @@ describe('expectationResultFactory', () => {
       passed: false,
     };
     const result = expectationResultFactory(options);
-    expect(result.message).toEqual('Expected `Pass`, received `Fail`.');
+    expect(result.message).toBe('Expected `Pass`, received `Fail`.');
   });
 
   it('returns the result if failed (with `error.stack` not as a string).', () => {

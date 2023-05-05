@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -93,7 +93,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('p');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -111,7 +111,7 @@ describe('Watch mode flows', () => {
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();

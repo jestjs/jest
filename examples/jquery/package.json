@@ -6,7 +6,8 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.1.0",
     "babel-jest": "workspace:^",
-    "jest": "workspace:^"
+    "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^"
   },
   "dependencies": {
     "jquery": "^3.2.1"

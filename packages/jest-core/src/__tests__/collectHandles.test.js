@@ -1,15 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
+import {TLSSocket} from 'tls';
 import zlib from 'zlib';
 import collectHandles from '../collectHandles';
 
@@ -133,5 +134,16 @@ describe('collectHandles', () => {
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),
     );
+  });
+
+  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+    const handleCollector = collectHandles();
+
+    const socket = new TLSSocket();
+    socket.destroy();
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).toHaveLength(0);
   });
 });

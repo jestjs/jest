@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,13 @@
 
 import * as path from 'path';
 import type {ParseResult, PluginItem} from '@babel/core';
-import {Expression, File, Program, isAwaitExpression} from '@babel/types';
+import type {
+  Expression,
+  File,
+  Node,
+  Program,
+  TraversalAncestors,
+} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -18,19 +24,19 @@ import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
 // prettier-ignore
-const babelTraverse = (
-  // @ts-expect-error requireOutside Babel transform
-  requireOutside('@babel/traverse') as typeof import('@babel/traverse')
-).default;
-// prettier-ignore
 const generate = (
   // @ts-expect-error requireOutside Babel transform
   requireOutside('@babel/generator') as typeof import('@babel/generator')
 ).default;
-// @ts-expect-error requireOutside Babel transform
-const {file, templateElement, templateLiteral} = requireOutside(
-  '@babel/types',
-) as typeof import('@babel/types');
+const {
+  isAwaitExpression,
+  templateElement,
+  templateLiteral,
+  traverse,
+  traverseFast,
+} =
+  // @ts-expect-error requireOutside Babel transform
+  requireOutside('@babel/types') as typeof import('@babel/types');
 // @ts-expect-error requireOutside Babel transform
 const {parseSync} = requireOutside(
   '@babel/core',
@@ -82,7 +88,7 @@ const saveSnapshotsForFile = (
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
   const presets = [require.resolve('babel-preset-current-node-syntax')];
   const plugins: Array<PluginItem> = [];
-  if (/\.tsx?$/.test(sourceFilePath)) {
+  if (/\.([cm]?ts|tsx)$/.test(sourceFilePath)) {
     plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
       {isTSX: sourceFilePath.endsWith('x')},
@@ -136,17 +142,22 @@ const saveSnapshotsForFile = (
   // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
   const sourceFileWithSnapshots = snapshots.reduceRight(
     (sourceSoFar, nextSnapshot) => {
+      const {node} = nextSnapshot;
       if (
-        !nextSnapshot.node ||
-        typeof nextSnapshot.node.start !== 'number' ||
-        typeof nextSnapshot.node.end !== 'number'
+        !node ||
+        typeof node.start !== 'number' ||
+        typeof node.end !== 'number'
       ) {
         throw new Error('Jest: no snapshot insert location found');
       }
+
+      // A hack to prevent unexpected line breaks in the generated code
+      node.loc!.end.line = node.loc!.start.line;
+
       return (
-        sourceSoFar.slice(0, nextSnapshot.node.start) +
-        generate(nextSnapshot.node, {retainLines: true}).code.trim() +
-        sourceSoFar.slice(nextSnapshot.node.end)
+        sourceSoFar.slice(0, node.start) +
+        generate(node, {retainLines: true}).code.trim() +
+        sourceSoFar.slice(node.end)
       );
     },
     sourceFile,
@@ -215,69 +226,56 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
     .join('\n');
 };
 
-const resolveAst = (fileOrProgram: any): File => {
-  // Flow uses a 'Program' parent node, babel expects a 'File'.
-  let ast = fileOrProgram;
-  if (ast.type !== 'File') {
-    ast = file(ast, ast.comments, ast.tokens);
-    delete ast.program.comments;
-  }
-  return ast;
-};
-
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
-  fileOrProgram: File | Program,
+  ast: File | Program,
   snapshotMatcherNames: Array<string>,
 ) => {
-  const ast = resolveAst(fileOrProgram);
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
-  babelTraverse(ast, {
-    CallExpression({node}) {
-      const {arguments: args, callee} = node;
-      if (
-        callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier' ||
-        callee.property.loc == null
-      ) {
-        return;
-      }
-      const {line, column} = callee.property.loc.start;
-      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-      if (!snapshotsForFrame) {
-        return;
-      }
-      if (snapshotsForFrame.length > 1) {
-        throw new Error(
-          'Jest: Multiple inline snapshots for the same call are not supported.',
-        );
-      }
+  traverseFast(ast, (node: Node) => {
+    if (node.type !== 'CallExpression') return;
 
-      snapshotMatcherNames.push(callee.property.name);
-
-      const snapshotIndex = args.findIndex(
-        ({type}) => type === 'TemplateLiteral',
+    const {arguments: args, callee} = node;
+    if (
+      callee.type !== 'MemberExpression' ||
+      callee.property.type !== 'Identifier' ||
+      callee.property.loc == null
+    ) {
+      return;
+    }
+    const {line, column} = callee.property.loc.start;
+    const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
+    if (!snapshotsForFrame) {
+      return;
+    }
+    if (snapshotsForFrame.length > 1) {
+      throw new Error(
+        'Jest: Multiple inline snapshots for the same call are not supported.',
       );
-      const values = snapshotsForFrame.map(inlineSnapshot => {
-        inlineSnapshot.node = node;
-        const {snapshot} = inlineSnapshot;
-        remainingSnapshots.delete(snapshot);
+    }
+    const inlineSnapshot = snapshotsForFrame[0];
+    inlineSnapshot.node = node;
 
-        return templateLiteral(
-          [templateElement({raw: escapeBacktickString(snapshot)})],
-          [],
-        );
-      });
-      const replacementNode = values[0];
+    snapshotMatcherNames.push(callee.property.name);
 
-      if (snapshotIndex > -1) {
-        args[snapshotIndex] = replacementNode;
-      } else {
-        args.push(replacementNode);
-      }
-    },
+    const snapshotIndex = args.findIndex(
+      ({type}) => type === 'TemplateLiteral',
+    );
+
+    const {snapshot} = inlineSnapshot;
+    remainingSnapshots.delete(snapshot);
+    const replacementNode = templateLiteral(
+      [templateElement({raw: escapeBacktickString(snapshot)})],
+      [],
+    );
+
+    if (snapshotIndex > -1) {
+      args[snapshotIndex] = replacementNode;
+    } else {
+      args.push(replacementNode);
+    }
   });
 
   if (remainingSnapshots.size) {
@@ -341,59 +339,61 @@ const createFormattingParser =
     // Workaround for https://github.com/prettier/prettier/issues/3150
     options.parser = inferredParser;
 
-    const ast = resolveAst(parsers[inferredParser](text, options));
-    babelTraverse(ast, {
-      CallExpression({node: {arguments: args, callee}, parent}) {
-        if (
-          callee.type !== 'MemberExpression' ||
-          callee.property.type !== 'Identifier' ||
-          !snapshotMatcherNames.includes(callee.property.name) ||
-          !callee.loc ||
-          callee.computed
-        ) {
-          return;
+    const ast = parsers[inferredParser](text, options);
+    traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
+      if (node.type !== 'CallExpression') return;
+
+      const {arguments: args, callee} = node;
+      if (
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier' ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
+        !callee.loc ||
+        callee.computed
+      ) {
+        return;
+      }
+
+      let snapshotIndex: number | undefined;
+      let snapshot: string | undefined;
+      for (let i = 0; i < args.length; i++) {
+        const node = args[i];
+        if (node.type === 'TemplateLiteral') {
+          snapshotIndex = i;
+          snapshot = node.quasis[0].value.raw;
         }
+      }
+      if (snapshot === undefined) {
+        return;
+      }
 
-        let snapshotIndex: number | undefined;
-        let snapshot: string | undefined;
-        for (let i = 0; i < args.length; i++) {
-          const node = args[i];
-          if (node.type === 'TemplateLiteral') {
-            snapshotIndex = i;
-            snapshot = node.quasis[0].value.raw;
-          }
-        }
-        if (snapshot === undefined || snapshotIndex === undefined) {
-          return;
-        }
+      const parent = ancestors[ancestors.length - 1].node;
+      const startColumn =
+        isAwaitExpression(parent) && parent.loc
+          ? parent.loc.start.column
+          : callee.loc.start.column;
 
-        const startColumn =
-          isAwaitExpression(parent) && parent.loc
-            ? parent.loc.start.column
-            : callee.loc.start.column;
+      const useSpaces = !options.useTabs;
+      snapshot = indent(
+        snapshot,
+        Math.ceil(
+          useSpaces
+            ? startColumn / (options.tabWidth ?? 1)
+            : // Each tab is 2 characters.
+              startColumn / 2,
+        ),
+        useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
+      );
 
-        const useSpaces = !options.useTabs;
-        snapshot = indent(
-          snapshot,
-          Math.ceil(
-            useSpaces
-              ? startColumn / (options.tabWidth ?? 1)
-              : // Each tab is 2 characters.
-                startColumn / 2,
-          ),
-          useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
-        );
-
-        const replacementNode = templateLiteral(
-          [
-            templateElement({
-              raw: snapshot,
-            }),
-          ],
-          [],
-        );
-        args[snapshotIndex] = replacementNode;
-      },
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex!] = replacementNode;
     });
 
     return ast;

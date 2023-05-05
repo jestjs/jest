@@ -1,0 +1,50 @@
+{
+  "docs": {
+    "Introduction": [
+      "getting-started",
+      "using-matchers",
+      "asynchronous",
+      "setup-teardown",
+      "mock-functions",
+      "jest-platform",
+      "jest-community",
+      "more-resources"
+    ],
+    "Guides": [
+      "snapshot-testing",
+      "tutorial-async",
+      "timer-mocks",
+      "manual-mocks",
+      "es6-class-mocks",
+      "bypassing-module-mocks",
+      "ecmascript-modules",
+      "webpack",
+      "puppeteer",
+      "mongodb",
+      "dynamodb",
+      "tutorial-jquery",
+      "watch-plugins",
+      "migration-guide",
+      "troubleshooting",
+      "architecture"
+    ],
+    "Framework Guides": [
+      "tutorial-react",
+      "tutorial-react-native",
+      "testing-frameworks"
+    ],
+    "Upgrade Guides": [
+      "upgrading-to-jest29"
+    ]
+  },
+  "api": [
+    "api",
+    "expect",
+    "mock-function-api",
+    "jest-object",
+    "configuration",
+    "cli",
+    "environment-variables",
+    "code-transformation"
+  ]
+}

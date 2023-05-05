@@ -1,12 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import type {ForkOptions} from 'child_process';
-import type {EventEmitter} from 'events';
 import type {ResourceLimits} from 'worker_threads';
 
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
@@ -37,6 +36,7 @@ export const CHILD_MESSAGE_INITIALIZE = 0;
 export const CHILD_MESSAGE_CALL = 1;
 export const CHILD_MESSAGE_END = 2;
 export const CHILD_MESSAGE_MEM_USAGE = 3;
+export const CHILD_MESSAGE_CALL_SETUP = 4;
 
 export const PARENT_MESSAGE_OK = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR = 1;
@@ -62,6 +62,7 @@ export interface WorkerPoolInterface {
   getWorkers(): Array<WorkerInterface>;
   createWorker(options: WorkerOptions): WorkerInterface;
   send: WorkerCallback;
+  start(): Promise<void>;
   end(): Promise<PoolExitResult>;
 }
 
@@ -202,68 +203,57 @@ export type OnStateChangeHandler = (
 
 // Messages passed from the parent to the children.
 
-export type MessagePort = typeof EventEmitter & {
-  postMessage(message: unknown): void;
-};
-
-export type MessageChannel = {
-  port1: MessagePort;
-  port2: MessagePort;
-};
-
 export type ChildMessageInitialize = [
-  typeof CHILD_MESSAGE_INITIALIZE, // type
-  boolean, // processed
-  string, // file
-  Array<unknown> | undefined, // setupArgs
-  MessagePort | undefined, // MessagePort
+  type: typeof CHILD_MESSAGE_INITIALIZE,
+  isProcessed: boolean,
+  fileName: string,
+  setupArgs: Array<unknown>,
+  workerId: string | undefined,
 ];
 
 export type ChildMessageCall = [
-  typeof CHILD_MESSAGE_CALL, // type
-  boolean, // processed
-  string, // method
-  Array<unknown>, // args
+  type: typeof CHILD_MESSAGE_CALL,
+  isProcessed: boolean,
+  methodName: string,
+  args: Array<unknown>,
 ];
 
 export type ChildMessageEnd = [
-  typeof CHILD_MESSAGE_END, // type
-  boolean, // processed
+  type: typeof CHILD_MESSAGE_END,
+  isProcessed: boolean,
 ];
 
-export type ChildMessageMemUsage = [
-  typeof CHILD_MESSAGE_MEM_USAGE, // type
-];
+export type ChildMessageMemUsage = [type: typeof CHILD_MESSAGE_MEM_USAGE];
+
+export type ChildMessageCallSetup = [type: typeof CHILD_MESSAGE_CALL_SETUP];
 
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
   | ChildMessageEnd
-  | ChildMessageMemUsage;
+  | ChildMessageMemUsage
+  | ChildMessageCallSetup;
 
 // Messages passed from the children to the parent.
 
 export type ParentMessageCustom = [
-  typeof PARENT_MESSAGE_CUSTOM, // type
-  unknown, // result
+  type: typeof PARENT_MESSAGE_CUSTOM,
+  result: unknown,
 ];
 
-export type ParentMessageOk = [
-  typeof PARENT_MESSAGE_OK, // type
-  unknown, // result
-];
+export type ParentMessageOk = [type: typeof PARENT_MESSAGE_OK, result: unknown];
 
 export type ParentMessageMemUsage = [
-  typeof PARENT_MESSAGE_MEM_USAGE, // type
-  number, // used memory in bytes
+  type: typeof PARENT_MESSAGE_MEM_USAGE,
+  usedMemory: number,
 ];
 
 export type ParentMessageError = [
-  PARENT_MESSAGE_ERROR, // type
-  string, // constructor
-  string, // message
-  string, // stack
-  unknown, // extra
+  type: PARENT_MESSAGE_ERROR,
+  constructorName: string,
+  message: string,
+  stack: string,
+  extra: unknown,
 ];
 
 export type ParentMessage =
