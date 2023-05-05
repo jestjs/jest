@@ -178,6 +178,17 @@ export type MatcherResults = {
 };
 
 export type TestStatus = 'skip' | 'done' | 'todo';
+
+export type TestNamesPath = Array<TestName | BlockName>;
+
+export type TestCaseStartInfo = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  mode: TestMode;
+  title: string;
+  startedAt?: number | null;
+};
+
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
@@ -187,7 +198,7 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
-  testPath: Array<TestName | BlockName>;
+  testPath: TestNamesPath;
 };
 
 export type RunResult = {

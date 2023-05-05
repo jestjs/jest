@@ -14,3 +14,25 @@ exports[`Custom Reporters Integration on jest-circus push test case results for 
 "onTestCaseResult: sample, status: todo, numExpectations: 0
 onTestFileResult testCaseResult 0: sample, status: todo, numExpectations: 0"
 `;
+
+exports[`Custom Reporters Integration on jest-circus push test case results for skip tests 1`] = `
+"onTestCaseResult: sample, status: pending, numExpectations: 0
+onTestFileResult testCaseResult 0: sample, status: pending, numExpectations: 0"
+`;
+
+exports[`Custom Reporters Integration on jest-circus push test case start 1`] = `
+"onTestCaseStart: test 1, mode: undefined, ancestorTitles: Custom Reporters
+onTestCaseResult: test 1, status: passed
+onTestCaseStart: test 2, mode: undefined, ancestorTitles: Custom Reporters
+onTestCaseResult: test 2, status: passed"
+`;
+
+exports[`Custom Reporters Integration on jest-circus push test case start for todo tests 1`] = `
+"onTestCaseStart: sample, mode: todo, ancestorTitles: Custom Reporters
+onTestCaseResult: sample, status: todo"
+`;
+
+exports[`Custom Reporters Integration on jest-circus push test case start for skip tests 1`] = `
+"onTestCaseStart: sample, mode: skip, ancestorTitles: Custom Reporters
+onTestCaseResult: sample, status: pending"
+`;

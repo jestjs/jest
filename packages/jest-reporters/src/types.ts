@@ -12,7 +12,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
+import type {Circus, Config} from '@jest/types';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
@@ -29,6 +29,10 @@ export interface Reporter {
     test: Test,
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
+  ) => Promise<void> | void;
+  readonly onTestCaseStart?: (
+    test: Test,
+    testCaseStartInfo: Circus.TestCaseStartInfo,
   ) => Promise<void> | void;
   readonly onTestCaseResult?: (
     test: Test,
