@@ -55,21 +55,6 @@ describe('Custom Reporters Integration on jest-circus', () => {
     expect(stdout).toMatchSnapshot();
   });
 
-  test('push test case results for skip tests', () => {
-    const {stdout} = runJest('custom-reporters', [
-      '--config',
-      JSON.stringify({
-        reporters: [
-          'default',
-          '<rootDir>/reporters/AssertionCountsReporter.js',
-        ],
-      }),
-      'skip.test.js',
-    ]);
-
-    expect(stdout).toMatchSnapshot();
-  });
-
   test('push test case start', () => {
     const {stdout} = runJest('custom-reporters', [
       '--config',
@@ -82,7 +67,7 @@ describe('Custom Reporters Integration on jest-circus', () => {
     expect(stdout).toMatchSnapshot();
   });
 
-  test('push test case start for todo tests', () => {
+  test("doesn't push test case start for todo tests", () => {
     const {stdout} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
@@ -94,7 +79,7 @@ describe('Custom Reporters Integration on jest-circus', () => {
     expect(stdout).toMatchSnapshot();
   });
 
-  test('push test case start for skip tests', () => {
+  test("doesn't push test case start for skip tests", () => {
     const {stdout} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({

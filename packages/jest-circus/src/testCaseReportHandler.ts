@@ -17,12 +17,11 @@ const testCaseReportHandler =
   (testPath: string, sendMessageToJest: TestFileEvent) =>
   (event: Circus.Event): void => {
     switch (event.name) {
-      case 'test_start': {
+      case 'test_started': {
         const testCaseStartInfo = createTestCaseStartInfo(event.test);
         sendMessageToJest('test-case-start', [testPath, testCaseStartInfo]);
         break;
       }
-      case 'test_skip':
       case 'test_todo':
       case 'test_done': {
         const testResult = makeSingleTestResult(event.test);

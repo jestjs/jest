@@ -21,12 +21,6 @@ class TestCaseStartReporter {
         `ancestorTitles: ${testCaseStartInfo.ancestorTitles.join('.')}`,
     );
   }
-  onTestCaseResult(test, testCaseResult) {
-    console.log(
-      `onTestCaseResult: ${testCaseResult.title}, ` +
-        `status: ${testCaseResult.status}`,
-    );
-  }
 }
 
 module.exports = TestCaseStartReporter;
