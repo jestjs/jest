@@ -928,6 +928,42 @@ Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test rep
 
 :::
 
+### `jest.retryTimes(numRetries, options?)`
+
+Runs failed tests n-times until they pass or until the max number of retries is exhausted.
+
+```js
+jest.retryTimes(3);
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+If `logErrorsBeforeRetry` option is enabled, error(s) that caused the test to fail will be logged to the console.
+
+```js
+jest.retryTimes(3, {logErrorsBeforeRetry: true});
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+Returns the `jest` object for chaining.
+
+:::caution
+
+`jest.retryTimes()` must be declared at the top level of a test file or in a `describe` block.
+
+:::
+
+:::info
+
+This function is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
 ### `jest.setTimeout(timeout)`
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
@@ -945,27 +981,3 @@ To set timeout intervals on different tests in the same file, use the [`timeout`
 If you want to set the timeout for all test files, use [`testTimeout`](Configuration.md#testtimeout-number) configuration option.
 
 :::
-
-### `jest.retryTimes(numRetries, options)`
-
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. `options` are optional. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner! This must live at the top-level of a test file or in a describe block. Retries _will not_ work if `jest.retryTimes()` is called in a `beforeEach` or a `test` block.
-
-Example in a test:
-
-```js
-jest.retryTimes(3);
-test('will fail', () => {
-  expect(true).toBe(false);
-});
-```
-
-If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused the test to fail to the console, providing visibility on why a retry occurred.
-
-```js
-jest.retryTimes(3, {logErrorsBeforeRetry: true});
-test('will fail', () => {
-  expect(true).toBe(false);
-});
-```
-
-Returns the `jest` object for chaining.
