@@ -50,6 +50,24 @@ describe('whenCalledWith', () => {
     expect(fn('special input')).toBe('special output');
   });
 
+  it('supports withImplementation', () => {
+    const fn = moduleMocker.fn();
+    fn.mockReturnValue('generic output');
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('generic output');
+
+    fn.whenCalledWith('special input').withImplementation(
+      () => 'special output',
+      () => {
+        expect(fn('special input')).toBe('special output');
+        expect(fn('arbitrary')).toBe('generic output');
+      },
+    );
+
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('generic output');
+  });
+
   it('supports matchers', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('hello');
@@ -107,6 +125,19 @@ describe('whenCalledWith', () => {
     expect(fn('special input')).toBe('special output');
 
     fn.mockReset();
+    expect(fn('arbitrary')).toBeUndefined();
+    expect(fn('special input')).toBeUndefined();
+  });
+
+  it('gets removed by resetAllMocks', () => {
+    const fn = moduleMocker.fn();
+    fn.mockReturnValue('generic output');
+    fn.whenCalledWith('special input').mockReturnValue('special output');
+
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('special output');
+
+    moduleMocker.resetAllMocks();
     expect(fn('arbitrary')).toBeUndefined();
     expect(fn('special input')).toBeUndefined();
   });
