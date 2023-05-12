@@ -10,11 +10,11 @@ import {addErrorToEachTestUnderDescribe, invariant} from './utils';
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setImmediate} = globalThis;
+const {setTimeout} = globalThis;
 
 const untilNextEventLoopTurn = async () => {
   return new Promise(resolve => {
-    setImmediate(resolve);
+    setTimeout(resolve, 0);
   });
 };
 
