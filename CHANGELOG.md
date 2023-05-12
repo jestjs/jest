@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus, jest-snapshot]` Add support for snapshot matchers in concurrent tests
 - `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
 - `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
 
