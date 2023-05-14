@@ -273,6 +273,10 @@ class Satisfies<T> extends AsymmetricMatcher<void> {
   toString(): string {
     return `${this.inverse ? 'Not' : ''}Satisfies`;
   }
+
+  override toAsymmetricMatcher(): string {
+    return this.toString();
+  }
 }
 
 class StringContaining extends AsymmetricMatcher<string> {

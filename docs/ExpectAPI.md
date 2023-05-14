@@ -1037,6 +1037,32 @@ describe('not.objectContaining', () => {
 });
 ```
 
+### `expect.satisfies(predicate)`
+
+`expect.satisfies(predicate)` matches the received value if an abitrary predicate returns a truthy value when passed the received value as an argument.
+
+```js
+describe('satisfies', () => {
+  it('matches if the received value satisfies a predicate', () => {
+    const isEven = (n) => n % 2 === 0;
+    expect(42).toEqual(expect.satisfies(isEven));
+  })
+})
+```
+
+### `expect.not.satisfies(predicate)`
+
+`expect.not.satisfies(predicate)` matches the received value if an abitrary predicate returns a falsy value when passed the received value as an argument.
+
+```js
+describe('not.satisfies', () => {
+  it('matches if the received value does not satisfy a predicate', () => {
+    const isEven = n => n % 2 === 0;
+    expect(41).toEqual(expect.not.satisfies(isEven));
+  })
+})
+```
+
 ### `expect.stringContaining(string)`
 
 `expect.stringContaining(string)` matches the received value if it is a string that contains the exact expected string.

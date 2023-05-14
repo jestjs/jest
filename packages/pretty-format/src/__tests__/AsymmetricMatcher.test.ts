@@ -105,7 +105,7 @@ test('satisfies(predicate)', () => {
 
 test('not.satisfies(predicate)', () => {
   const result = prettyFormat(
-    expect.satisfies(_sample => true),
+    expect.not.satisfies(_sample => true),
     options,
   );
   expect(result).toBe('NotSatisfies');
