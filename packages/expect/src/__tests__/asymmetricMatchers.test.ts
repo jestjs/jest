@@ -6,6 +6,7 @@
  *
  */
 
+import {satisfies} from 'semver';
 import jestExpect from '../';
 import {
   any,
@@ -13,7 +14,9 @@ import {
   arrayContaining,
   arrayNotContaining,
   closeTo,
+  satisfies as expectSatisfies,
   notCloseTo,
+  notSatisfies,
   objectContaining,
   objectNotContaining,
   stringContaining,
@@ -322,6 +325,58 @@ test('ObjectNotContaining throws for non-objects', () => {
   }).toThrow(
     "You must provide an object to ObjectNotContaining, not 'number'.",
   );
+});
+
+test('Satisfies matches when predicate returns a truthy value', () => {
+  jestExpect(expectSatisfies(() => true).asymmetricMatch(null)).toBe(true);
+  jestExpect(expectSatisfies(() => 'a').asymmetricMatch(null)).toBe(true);
+  jestExpect(expectSatisfies(() => 1).asymmetricMatch(null)).toBe(true);
+  jestExpect(expectSatisfies(() => false).asymmetricMatch(null)).toBe(false);
+  jestExpect(expectSatisfies(() => null).asymmetricMatch(null)).toBe(false);
+  jestExpect(expectSatisfies(() => undefined).asymmetricMatch(null)).toBe(
+    false,
+  );
+  jestExpect(expectSatisfies(() => 0).asymmetricMatch(null)).toBe(false);
+  jestExpect(expectSatisfies(() => '').asymmetricMatch(null)).toBe(false);
+});
+
+test('NotSatisfies matches when predicate returns a falsy value', () => {
+  jestExpect(notSatisfies(() => true).asymmetricMatch(null)).toBe(false);
+  jestExpect(notSatisfies(() => 'a').asymmetricMatch(null)).toBe(false);
+  jestExpect(notSatisfies(() => 1).asymmetricMatch(null)).toBe(false);
+  jestExpect(notSatisfies(() => false).asymmetricMatch(null)).toBe(true);
+  jestExpect(notSatisfies(() => null).asymmetricMatch(null)).toBe(true);
+  jestExpect(notSatisfies(() => undefined).asymmetricMatch(null)).toBe(true);
+  jestExpect(notSatisfies(() => 0).asymmetricMatch(null)).toBe(true);
+  jestExpect(notSatisfies(() => '').asymmetricMatch(null)).toBe(true);
+});
+
+test('Satisfies and NotSatisfies pass the tested value to the predicate', () => {
+  const sentinel = ['a unique value'];
+  const assertIsSentinel = (sample: Array<string>) => {
+    if (sample !== sentinel) {
+      throw new Error('expected sentinel');
+    }
+  };
+  jestExpect(() =>
+    expectSatisfies(assertIsSentinel).asymmetricMatch(sentinel),
+  ).not.toThrow();
+  jestExpect(() =>
+    notSatisfies(assertIsSentinel).asymmetricMatch(sentinel),
+  ).not.toThrow();
+  jestExpect(() =>
+    expectSatisfies(assertIsSentinel).asymmetricMatch(null),
+  ).toThrow();
+  jestExpect(() =>
+    notSatisfies(assertIsSentinel).asymmetricMatch(null),
+  ).toThrow();
+});
+
+test('Satisfies throws if the predicate is not a function', () => {
+  jestExpect(() => {
+    // @ts-expect-error: Testing runtime error
+    expectSatisfies(42);
+  }).toThrow('Predicate is not a function');
 });
 
 test('StringContaining matches string against string', () => {

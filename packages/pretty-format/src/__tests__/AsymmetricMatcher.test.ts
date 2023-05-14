@@ -100,15 +100,15 @@ test('satisfies(predicate)', () => {
     expect.satisfies(_sample => true),
     options,
   );
-  expect(result).toBe('Satisfies a value satisfying the predicate');
+  expect(result).toBe('Satisfies');
 });
 
-test('satisfies(string, predicate)', () => {
+test('not.satisfies(predicate)', () => {
   const result = prettyFormat(
-    expect.satisfies('a description', _sample => true),
+    expect.satisfies(_sample => true),
     options,
   );
-  expect(result).toBe('Satisfies a description');
+  expect(result).toBe('NotSatisfies');
 });
 
 test('stringContaining(string)', () => {
@@ -196,6 +196,7 @@ test('supports multiple nested asymmetric matchers', () => {
           d: expect.stringContaining('jest'),
           e: expect.stringMatching('jest'),
           f: expect.objectContaining({test: 'case'}),
+          g: expect.satisfies(() => true),
         }),
       },
     },
@@ -214,6 +215,7 @@ test('supports multiple nested asymmetric matchers', () => {
       "f": ObjectContaining {
         "test": "case",
       },
+      "g": Satisfies
     },
   },
 }`);
