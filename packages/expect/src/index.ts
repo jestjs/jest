@@ -18,8 +18,10 @@ import {
   arrayNotContaining,
   closeTo,
   notCloseTo,
+  notSatisfies,
   objectContaining,
   objectNotContaining,
+  satisfies,
   stringContaining,
   stringMatching,
   stringNotContaining,
@@ -399,6 +401,7 @@ expect.not = {
   arrayContaining: arrayNotContaining,
   closeTo: notCloseTo,
   objectContaining: objectNotContaining,
+  satisfies: notSatisfies,
   stringContaining: stringNotContaining,
   stringMatching: stringNotMatching,
 };
@@ -406,6 +409,7 @@ expect.not = {
 expect.arrayContaining = arrayContaining;
 expect.closeTo = closeTo;
 expect.objectContaining = objectContaining;
+expect.satisfies = satisfies;
 expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 

@@ -45,6 +45,12 @@ expectType<void>(expect({b: 2}).toEqual(expect.not.objectContaining({a: 1})));
 expectError(expect({a: 1}).toEqual(expect.not.objectContaining(1)));
 expectError(expect({a: 1}).toEqual(expect.not.objectContaining()));
 
+const predicate = (s: string) => s.length === 1;
+expectType<void>(expect('x').toEqual(expect.satisfies(predicate)));
+expectError(expect('xx').toEqual(expect.satisfies(predicate)));
+expectType<void>(expect('xx').toEqual(expect.not.satisfies(predicate)));
+expectError(expect('x').toEqual(expect.not.satisfies(predicate)));
+
 expectType<void>(expect('one').toEqual(expect.stringContaining('n')));
 expectError(expect('two').toEqual(expect.stringContaining(2)));
 expectError(expect('three').toEqual(expect.stringContaining()));

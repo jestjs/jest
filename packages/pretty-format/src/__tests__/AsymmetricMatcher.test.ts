@@ -95,6 +95,22 @@ test('objectNotContaining()', () => {
 }`);
 });
 
+test('satisfies(predicate)', () => {
+  const result = prettyFormat(
+    expect.satisfies(_sample => true),
+    options,
+  );
+  expect(result).toBe('Satisfies a value satisfying the predicate');
+});
+
+test('satisfies(string, predicate)', () => {
+  const result = prettyFormat(
+    expect.satisfies('a description', _sample => true),
+    options,
+  );
+  expect(result).toBe('Satisfies a description');
+});
+
 test('stringContaining(string)', () => {
   const result = prettyFormat(expect.stringContaining('jest'), options);
   expect(result).toBe('StringContaining "jest"');

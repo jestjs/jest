@@ -117,6 +117,11 @@ export interface AsymmetricMatchers {
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
   closeTo(sample: number, precision?: number): AsymmetricMatcher;
   objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
+  satisfies<T>(predicate: (sample: T) => boolean): AsymmetricMatcher;
+  satisfies<T>(
+    description: string,
+    predicate: (sample: T) => boolean,
+  ): AsymmetricMatcher;
   stringContaining(sample: string): AsymmetricMatcher;
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }

@@ -258,6 +258,40 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
   }
 }
 
+class Satisfies<T> extends AsymmetricMatcher<void> {
+  private description: string;
+  private predicate: (sample: T) => unknown;
+
+  constructor(
+    descriptionOrPredicate: ((sample: T) => unknown) | string,
+    predicate: ((sample: T) => unknown) | undefined,
+    inverse: boolean = false
+  ) {
+    super(void 0, inverse);
+    if (typeof descriptionOrPredicate === 'function') {
+      this.description = 'a value satisfying the predicate';
+      this.predicate = descriptionOrPredicate;
+    } else if (typeof predicate === 'function') {
+      this.description = descriptionOrPredicate;
+      this.predicate = predicate;
+    } else {
+      throw new Error('Predicate is not a function');
+    }
+  }
+
+  asymmetricMatch(other: unknown): boolean {
+    return !this.predicate(other as T) !== !this.inverse;
+  }
+
+  toString(): string {
+    return `${this.inverse ? 'Not' : ''}Satisfies`;
+  }
+
+  override getExpectedType(): string {
+    return this.description;
+  }
+}
+
 class StringContaining extends AsymmetricMatcher<string> {
   constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
@@ -360,12 +394,36 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
+export function notSatisfies<T>(
+  predicate: (sample: unknown) => unknown,
+): Satisfies<T>;
+export function notSatisfies<T>(
+  description: string,
+  predicate: (sample: T) => unknown,
+): Satisfies<T>;
+export function notSatisfies<T>(
+  descriptionOrPredicate: string | ((sample: T) => unknown),
+  predicate?: (sample: T) => unknown,
+): Satisfies<T> {
+  return new Satisfies<T>(descriptionOrPredicate, predicate, true);
+}
 export const objectContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);
 export const objectNotContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample, true);
+export function satisfies<T>(predicate: (sample: T) => unknown): Satisfies<T>;
+export function satisfies<T>(
+  description: string,
+  predicate: (sample: T) => unknown,
+): Satisfies<T>;
+export function satisfies<T>(
+  descriptionOrPredicate: string | ((sample: T) => unknown),
+  predicate?: (sample: T) => unknown,
+): Satisfies<T> {
+  return new Satisfies<T>(descriptionOrPredicate, predicate);
+}
 export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);
 export const stringNotContaining = (expected: string): StringContaining =>
