@@ -12,6 +12,10 @@ exports[`A c 1`] = `"Ac1"`;
 
 exports[`A c 2`] = `"Ac2"`;
 
+exports[`A d 1`] = `"Ad1"`;
+
+exports[`A d 2`] = `"Ad2"`;
+
 exports[`B 1`] = `"B1"`;
 
 exports[`B 2`] = `"B2"`;
@@ -19,3 +23,7 @@ exports[`B 2`] = `"B2"`;
 exports[`C 1`] = `"C1"`;
 
 exports[`C 2`] = `"C2"`;
+
+exports[`D 1`] = `"D1"`;
+
+exports[`D 2`] = `"D2"`;

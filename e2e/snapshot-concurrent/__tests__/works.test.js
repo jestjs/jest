@@ -26,6 +26,11 @@ describe('A', () => {
     expect('Ac1').toMatchSnapshot();
     expect('Ac2').toMatchSnapshot();
   });
+
+  it('d', () => {
+    expect('Ad1').toMatchSnapshot();
+    expect('Ad2').toMatchSnapshot();
+  });
 });
 
 it.concurrent('B', async () => {
@@ -34,7 +39,12 @@ it.concurrent('B', async () => {
   expect('B2').toMatchSnapshot();
 });
 
-it.concurrent('C', async () => {
+it('C', () => {
   expect('C1').toMatchSnapshot();
   expect('C2').toMatchSnapshot();
+});
+
+it.concurrent('D', async () => {
+  expect('D1').toMatchSnapshot();
+  expect('D2').toMatchSnapshot();
 });
