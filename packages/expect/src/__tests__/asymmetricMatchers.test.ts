@@ -332,12 +332,18 @@ test('Satisfies matches when predicate returns a truthy value', () => {
     jestExpect(expectSatisfies(() => value).asymmetricMatch(null)).toBe(
       Boolean(value),
     );
+    jestExpect(
+      expectSatisfies('description', () => value).asymmetricMatch(null),
+    ).toBe(Boolean(value));
   });
 });
 
 test('NotSatisfies matches when predicate returns a falsy value', () => {
   [true, 'a', 1, false, null, undefined, '', 0].forEach(value => {
     jestExpect(notSatisfies(() => value).asymmetricMatch(null)).toBe(!value);
+    jestExpect(
+      notSatisfies('description', () => value).asymmetricMatch(null),
+    ).toBe(!value);
   });
 });
 
@@ -352,7 +358,13 @@ test('Satisfies and NotSatisfies pass the received value to the predicate', () =
     jestExpect(() =>
       matcher(assertIsSentinel).asymmetricMatch(sentinel),
     ).not.toThrow();
+    jestExpect(() =>
+      matcher('description', assertIsSentinel).asymmetricMatch(sentinel),
+    ).not.toThrow();
     jestExpect(() => matcher(assertIsSentinel).asymmetricMatch(null)).toThrow();
+    jestExpect(() =>
+      matcher('description', assertIsSentinel).asymmetricMatch(null),
+    ).toThrow();
   });
 });
 
@@ -361,6 +373,17 @@ test('Satisfies throws if the predicate is not a function', () => {
     // @ts-expect-error: Testing runtime error
     expectSatisfies(42);
   }).toThrow('Predicate is not a function');
+  jestExpect(() => {
+    // @ts-expect-error: Testing runtime error
+    expectSatisfies('description', 42);
+  }).toThrow('Predicate is not a function');
+});
+
+test('Satisfies throws if the description is not a string', () => {
+  jestExpect(() => {
+    // @ts-expect-error: Testing runtime error
+    expectSatisfies(42, () => 1);
+  }).toThrow('Description is not a string');
 });
 
 test('StringContaining matches string against string', () => {

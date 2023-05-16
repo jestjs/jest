@@ -1037,31 +1037,36 @@ describe('not.objectContaining', () => {
 });
 ```
 
-### `expect.satisfies(predicate)`
+### `expect.satisfies([description,] predicate)`
 
 `expect.satisfies(predicate)` matches the received value if an abitrary predicate returns a truthy value when passed the received value as an argument.
 
 ```js
 describe('satisfies', () => {
-  it('matches if the received value satisfies a predicate', () => {
+  it('matches if the received value is even', () => {
     const isEven = (n) => n % 2 === 0;
+    // Expected value is printed as 'Satisfies isEven'
     expect(42).toEqual(expect.satisfies(isEven));
   })
 })
 ```
 
-### `expect.not.satisfies(predicate)`
-
-`expect.not.satisfies(predicate)` matches the received value if an abitrary predicate returns a falsy value when passed the received value as an argument.
+If a description is given, it is used to format test failure messages (otherwise Jest attempts to find a name for the predicate).
 
 ```js
-describe('not.satisfies', () => {
-  it('matches if the received value does not satisfy a predicate', () => {
-    const isEven = n => n % 2 === 0;
-    expect(41).toEqual(expect.not.satisfies(isEven));
+describe('satisfies', () => {
+  it('matches if the received value is even', () => {
+    // Expected value is printed as 'Satisfies "number is even"'
+    expect(42).toEqual(expect.satisfies('number is even', n => n % 2 === 0));
   })
 })
 ```
+
+### `expect.not.satisfies([description,] predicate)`
+
+`expect.not.satisfies(predicate)` matches the received value if an abitrary predicate returns a falsy value when passed the received value as an argument.
+
+It is the inverse of `expect.satisfies`.
 
 ### `expect.stringContaining(string)`
 

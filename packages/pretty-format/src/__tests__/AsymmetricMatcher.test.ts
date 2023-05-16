@@ -95,20 +95,60 @@ test('objectNotContaining()', () => {
 }`);
 });
 
-test('satisfies(predicate)', () => {
+test('satisfies(description, predicate)', () => {
   const result = prettyFormat(
-    expect.satisfies(_sample => true),
+    expect.satisfies('xyzzy', () => true),
+    options,
+  );
+  expect(result).toBe('Satisfies "xyzzy"');
+});
+
+test('satisfies(anonymous predicate)', () => {
+  const result = prettyFormat(
+    expect.satisfies(() => true),
     options,
   );
   expect(result).toBe('Satisfies');
 });
 
-test('not.satisfies(predicate)', () => {
+test('satisfies(named predicate)', () => {
+  function myPredicate() {}
+  const result = prettyFormat(expect.satisfies(myPredicate), options);
+  expect(result).toBe('Satisfies myPredicate');
+});
+
+test('satisfies(named const predicate)', () => {
+  const myPredicate = () => true;
+  const result = prettyFormat(expect.satisfies(myPredicate), options);
+  expect(result).toBe('Satisfies myPredicate');
+});
+
+test('not.satisfies(description, predicate)', () => {
   const result = prettyFormat(
-    expect.not.satisfies(_sample => true),
+    expect.not.satisfies('xyzzy', () => true),
+    options,
+  );
+  expect(result).toBe('NotSatisfies "xyzzy"');
+});
+
+test('not.satisfies(anonymous predicate)', () => {
+  const result = prettyFormat(
+    expect.not.satisfies(() => true),
     options,
   );
   expect(result).toBe('NotSatisfies');
+});
+
+test('not.satisfies(named predicate)', () => {
+  function myPredicate() {}
+  const result = prettyFormat(expect.not.satisfies(myPredicate), options);
+  expect(result).toBe('NotSatisfies myPredicate');
+});
+
+test('not.satisfies(named const predicate)', () => {
+  const myPredicate = () => true;
+  const result = prettyFormat(expect.not.satisfies(myPredicate), options);
+  expect(result).toBe('NotSatisfies myPredicate');
 });
 
 test('stringContaining(string)', () => {
@@ -215,7 +255,7 @@ test('supports multiple nested asymmetric matchers', () => {
       "f": ObjectContaining {
         "test": "case",
       },
-      "g": Satisfies
+      "g": Satisfies,
     },
   },
 }`);

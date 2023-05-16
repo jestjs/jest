@@ -48,12 +48,44 @@ expectError(expect({a: 1}).toEqual(expect.not.objectContaining()));
 expectType<void>(
   expect('x').toEqual(expect.satisfies((_sample: string): unknown => 1)),
 );
+expectType<void>(
+  expect('x').toEqual(
+    expect.satisfies('description', (_sample: string): unknown => 1),
+  ),
+);
 expectError(expect('x').toEqual(expect.satisfies('not a function')));
+expectError(
+  expect('x').toEqual(expect.satisfies('description', 'not a function')),
+);
+expectError(
+  expect('x').toEqual(
+    expect.satisfies(
+      () => 42,
+      () => 1,
+    ),
+  ),
+);
 expectError(expect('x').toEqual(expect.satisfies()));
 expectType<void>(
   expect('x').toEqual(expect.not.satisfies((_sample: string): unknown => 1)),
 );
+expectType<void>(
+  expect('x').toEqual(
+    expect.not.satisfies('description', (_sample: string): unknown => 1),
+  ),
+);
 expectError(expect('x').toEqual(expect.not.satisfies('not a function')));
+expectError(
+  expect('x').toEqual(expect.not.satisfies('description', 'not a function')),
+);
+expectError(
+  expect('x').toEqual(
+    expect.not.satisfies(
+      () => 42,
+      () => 1,
+    ),
+  ),
+);
 expectError(expect('x').toEqual(expect.not.satisfies()));
 
 expectType<void>(expect('one').toEqual(expect.stringContaining('n')));

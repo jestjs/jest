@@ -23,7 +23,9 @@ import type {
 
 const functionToString = Function.prototype.toString;
 
-function fnNameFor(func: () => unknown) {
+function maybeFnNameFor<A extends Array<unknown>>(
+  func: (...args: A) => unknown,
+): string | undefined {
   if (func.name) {
     return func.name;
   }
@@ -31,7 +33,13 @@ function fnNameFor(func: () => unknown) {
   const matches = functionToString
     .call(func)
     .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
-  return matches ? matches[1] : '<anonymous>';
+  return matches?.[1];
+}
+
+function fnNameFor<A extends Array<unknown>>(
+  func: (...args: A) => unknown,
+): string {
+  return maybeFnNameFor(func) ?? '<anonymous>';
 }
 
 const utils = Object.freeze({
@@ -259,9 +267,28 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 }
 
 class Satisfies<T> extends AsymmetricMatcher<void> {
-  constructor(private predicate: (sample: T) => unknown, inverse = false) {
+  private predicate: (sample: T) => unknown;
+  private description: string | undefined;
+
+  constructor(
+    predicateOrDescription: string | ((sample: T) => unknown),
+    maybePredicate: undefined | ((sample: T) => unknown),
+    inverse = false,
+  ) {
     super(void 0, inverse);
-    if (typeof predicate !== 'function') {
+    if (typeof maybePredicate === 'function') {
+      if (typeof predicateOrDescription !== 'string') {
+        throw new Error('Description is not a string');
+      }
+      this.predicate = maybePredicate;
+      this.description = predicateOrDescription;
+    } else if (
+      typeof predicateOrDescription === 'function' &&
+      maybePredicate === undefined
+    ) {
+      this.predicate = predicateOrDescription;
+      this.description = undefined;
+    } else {
       throw new Error('Predicate is not a function');
     }
   }
@@ -275,7 +302,10 @@ class Satisfies<T> extends AsymmetricMatcher<void> {
   }
 
   override toAsymmetricMatcher(): string {
-    return this.toString();
+    const fnName = this.description
+      ? `"${this.description}"`
+      : maybeFnNameFor(this.predicate);
+    return fnName ? `${this.toString()} ${fnName}` : this.toString();
   }
 }
 
@@ -381,17 +411,36 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
-export const notSatisfies = <T>(
+export function notSatisfies<T>(
   predicate: (sample: T) => unknown,
-): Satisfies<T> => new Satisfies<T>(predicate, true);
+): Satisfies<T>;
+export function notSatisfies<T>(
+  description: string,
+  predicate: (sample: T) => unknown,
+): Satisfies<T>;
+export function notSatisfies<T>(
+  predicateOrDescription: string | ((sample: T) => unknown),
+  maybePredicate?: (sample: T) => unknown,
+): Satisfies<T> {
+  return new Satisfies<T>(predicateOrDescription, maybePredicate, true);
+}
 export const objectContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);
 export const objectNotContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample, true);
-export const satisfies = <T>(predicate: (sample: T) => unknown): Satisfies<T> =>
-  new Satisfies<T>(predicate);
+export function satisfies<T>(predicate: (sample: T) => unknown): Satisfies<T>;
+export function satisfies<T>(
+  description: string,
+  predicate: (sample: T) => unknown,
+): Satisfies<T>;
+export function satisfies<T>(
+  predicateOrDescription: string | ((sample: T) => unknown),
+  maybePredicate?: (sample: T) => unknown,
+): Satisfies<T> {
+  return new Satisfies<T>(predicateOrDescription, maybePredicate);
+}
 export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);
 export const stringNotContaining = (expected: string): StringContaining =>
