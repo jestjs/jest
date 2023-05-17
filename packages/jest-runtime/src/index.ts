@@ -1653,6 +1653,7 @@ export default class Runtime {
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
         displayErrors: true,
         filename: scriptFilename,
+        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
         // @ts-expect-error: Experimental ESM API
         importModuleDynamically: async (specifier: string) => {
           invariant(
