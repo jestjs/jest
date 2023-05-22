@@ -23,7 +23,7 @@ const unhandledRejectionHandler: Circus.EventHandler = async (
   state,
 ): Promise<void> => {
   if (event.name === 'hook_success' || event.name === 'hook_failure') {
-    // We need to give event loop the time to actually execute `rejectionHandled` event
+    // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
     await untilNextEventLoopTurn();
 
     const {test, describeBlock, hook} = event;
@@ -50,7 +50,7 @@ const unhandledRejectionHandler: Circus.EventHandler = async (
     event.name === 'test_fn_success' ||
     event.name === 'test_fn_failure'
   ) {
-    // We need to give event loop the time to actually execute `rejectionHandled` event
+    // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
     await untilNextEventLoopTurn();
 
     const {test} = event;
@@ -60,7 +60,7 @@ const unhandledRejectionHandler: Circus.EventHandler = async (
       test.errors.push([error, event.test.asyncError]);
     }
   } else if (event.name === 'teardown') {
-    // We need to give event loop the time to actually execute `rejectionHandled` event
+    // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
     await untilNextEventLoopTurn();
 
     state.unhandledErrors.push(
