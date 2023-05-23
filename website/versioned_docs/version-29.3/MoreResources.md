@@ -21,4 +21,4 @@ You will find a number of example test cases in the [`examples`](https://github.
 
 Ask questions and find answers from other Jest users like you. [Reactiflux](https://discord.gg/j6FKKQQrW9) is a Discord chat where a lot of Jest discussion happens. Check out the `#testing` channel.
 
-Follow the [Jest Twitter account](https://twitter.com/fbjest) and [blog](/blog/) to find out what's happening in the world of Jest.
+Follow the [Jest Twitter account](https://twitter.com/jestjs_) and [blog](/blog/) to find out what's happening in the world of Jest.
