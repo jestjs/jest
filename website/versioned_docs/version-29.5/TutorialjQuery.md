@@ -68,5 +68,18 @@ To get started with the JSDOM [test environment](Configuration.md#testenvironmen
 ```bash npm2yarn
 npm install --save-dev jest-environment-jsdom
 ```
+After installing, update your Jest configuration in `package.json`:
+```json
+"jest": {
+  "testEnvironment": "jsdom"
+}
+```
+or in `jest.config.[js|ts]`:
+```javascript
+module.exports = {
+    "testEnvironment": "jsdom"
+}
+```
+
 
 The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/main/examples/jquery).
