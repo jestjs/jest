@@ -30,6 +30,10 @@ export interface Reporter {
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
   ) => Promise<void> | void;
+  /**
+   * Called before running a spec (prior to `before` hooks)
+   * Not called for `skipped` and `todo` specs
+   */
   readonly onTestCaseStart?: (
     test: Test,
     testCaseStartInfo: Circus.TestCaseStartInfo,
