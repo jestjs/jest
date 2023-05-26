@@ -11,5 +11,5 @@ test('require after done', () => {
     const double = require('../');
 
     expect(double(5)).toBe(10);
-  }, 100);
+  }, 0);
 });

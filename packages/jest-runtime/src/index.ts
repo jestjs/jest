@@ -208,6 +208,7 @@ export default class Runtime {
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
+  private isInsideTestCode: boolean | undefined;
 
   constructor(
     config: Config.ProjectConfig,
@@ -562,6 +563,11 @@ export default class Runtime {
       // @ts-expect-error - exiting
       return;
     }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
 
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
@@ -705,6 +711,11 @@ export default class Runtime {
       );
       process.exitCode = 1;
       return;
+    }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
     }
 
     if (module.status === 'unlinked') {
@@ -1342,6 +1353,14 @@ export default class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
+  enterTestCode(): void {
+    this.isInsideTestCode = true;
+  }
+
+  leaveTestCode(): void {
+    this.isInsideTestCode = false;
+  }
+
   teardown(): void {
     this.restoreAllMocks();
     this.resetModules();
@@ -1484,6 +1503,11 @@ export default class Runtime {
       );
       process.exitCode = 1;
       return;
+    }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
     }
 
     // If the environment was disposed, prevent this module from being executed.
@@ -2168,6 +2192,11 @@ export default class Runtime {
           'You are trying to access a property or method of the Jest environment after it has been torn down.',
         );
         process.exitCode = 1;
+      }
+      if (this.isInsideTestCode === false) {
+        throw new ReferenceError(
+          'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
+        );
       }
 
       return this._fakeTimersImplementation!;
