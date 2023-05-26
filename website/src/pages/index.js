@@ -29,12 +29,12 @@ import GitHubButton from 'react-github-btn';
 function TwitterButton() {
   return (
     <a
-      href="https://twitter.com/intent/follow?screen_name=fbjest&region=follow_link"
+      href="https://twitter.com/intent/follow?screen_name=jestjs_&region=follow_link"
       target="_blank"
       className={styles['twitter-follow-button']}
     >
       <div className={styles['twitter-follow-button--icon']} />
-      Follow @fbjest
+      Follow @jestjs_
     </a>
   );
 }

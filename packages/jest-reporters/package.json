@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",

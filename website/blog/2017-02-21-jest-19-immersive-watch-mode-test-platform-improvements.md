@@ -129,7 +129,7 @@ The homepage was completely redesigned to be more descriptive of what Jest is ab
 ## Community Updates
 
 - We really loved this talk: “[Introduction to Jest](https://www.youtube.com/watch?v=tvy0bSgwtTo)“ by Vas Boroviak.
-- Follow [@fbjest on Twitter](http://twitter.com/fbjest).
+- Follow [@jestjs\_ on Twitter](http://twitter.com/jestjs_).
 - The Jest Core team syncs once a week to discuss current and future issues. If you'd like to work on Jest, let us know, submit a few pull requests and join our weekly team meetings.
 - The awesome engineers at Artsy wrote [about Jest as part of their 2017 frontend stack](http://artsy.github.io/blog/2017/02/05/Front-end-JavaScript-at-Artsy-2017/).
 - Stephen Scott wrote a detailed article about [testing React components](https://medium.freecodecamp.com/the-right-way-to-test-react-components-548a4736ab22) in which he weighs the pros and cons of different approaches.
