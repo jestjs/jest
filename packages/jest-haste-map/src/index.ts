@@ -128,7 +128,7 @@ const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
-  .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
+  .map(vcs => escapePathForRegex(`/${vcs}/`))
   .join('|');
 
 /**

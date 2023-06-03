@@ -279,7 +279,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     const relativePath = path.join(path.relative(this.root, dir), file);
 
     fs.lstat(fullPath, (error, stat) => {
-      if (error && error.code !== 'ENOENT') {
+      if (error && !isIgnorableFileError(error)) {
         this.emit('error', error);
       } else if (!error && stat.isDirectory()) {
         // win32 emits usless change events on dirs.
@@ -298,7 +298,7 @@ module.exports = class NodeWatcher extends EventEmitter {
         }
       } else {
         const registered = this.registered(fullPath);
-        if (error && error.code === 'ENOENT') {
+        if (error && isIgnorableFileError(error)) {
           this.unregister(fullPath);
           this.stopWatching(fullPath);
           this.unregisterDir(fullPath);
