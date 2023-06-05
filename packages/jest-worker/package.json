@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",

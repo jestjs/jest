@@ -22,6 +22,9 @@
     "esModuleInterop": false,
     "isolatedModules": true,
     "skipLibCheck": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    // TODO: remove for Jest 30
+    "ignoreDeprecations": "5.0"
   }
 }

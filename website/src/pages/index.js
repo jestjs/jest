@@ -29,12 +29,12 @@ import GitHubButton from 'react-github-btn';
 function TwitterButton() {
   return (
     <a
-      href="https://twitter.com/intent/follow?screen_name=fbjest&region=follow_link"
+      href="https://twitter.com/intent/follow?screen_name=jestjs_&region=follow_link"
       target="_blank"
       className={styles['twitter-follow-button']}
     >
       <div className={styles['twitter-follow-button--icon']} />
-      Follow @fbjest
+      Follow @jestjs_
     </a>
   );
 }
@@ -527,32 +527,6 @@ class Index extends React.Component {
                     jsconf.eu 2017 and our talk about [Jest as a
                     Platform](https://www.youtube.com/watch?v=NtjyeojAOBs) at
                     ReactiveConf 2017.
-                  </Translate>
-                </MarkdownBlock>
-              </div>
-            </div>
-          </Container>
-          <Container
-            padding={['bottom', 'top']}
-            className="section-container bottom-margin docs"
-          >
-            <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent">
-                <div className="video">
-                  <LiteYouTubeEmbed id="SyHzgcFefBk" />
-                </div>
-              </div>
-            </div>
-            <div className="blockElement red bottom-margin">
-              <div className="blockContent">
-                <MarkdownBlock>
-                  <Translate>
-                    The Meta Open Source team has put together a short overview
-                    of Jest, where they explained the project in beginner's
-                    terms. You can also find other content about [Meta Open
-                    Source projects](https://opensource.fb.com/) on their
-                    [YouTube
-                    Channel](https://www.youtube.com/channel/UCCQY962PmHabTjaHv2wJzfQ).
                   </Translate>
                 </MarkdownBlock>
               </div>
