@@ -140,6 +140,7 @@ function findNative(
   const args = Array.from(roots);
   if (enableSymlinks) {
     args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
+    args.unshift('-L');
   } else {
     args.push('-type', 'f');
   }
