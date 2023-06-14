@@ -36,7 +36,12 @@ import type {
   MatchSnapshotConfig,
   SnapshotNameConfig,
 } from './types';
-import {deepMerge, escapeBacktickString, serialize} from './utils';
+import {
+  deepMerge,
+  escapeBacktickString,
+  serialize,
+  testNameToKey,
+} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
 export {
@@ -439,7 +444,14 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     received,
     testName: fullTestName,
   });
-  const {actual, count, expected, pass} = result;
+  const {actual, count, expected, key, pass} = result;
+
+  if (snapshotName && key == testNameToKey(fullTestName, 1)) {
+    throw new Error(
+      'The specific snapshot name was duplicate with the other snapshot.\n\n' +
+        `Snapshot name: ${snapshotName}`,
+    );
+  }
 
   if (pass) {
     return {message: () => '', pass: true};

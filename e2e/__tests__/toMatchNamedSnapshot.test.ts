@@ -308,6 +308,28 @@ test('handles property matchers with deep properties', () => {
   }
 });
 
+test('error duplicate snapshot name', () => {
+  const filename = 'duplicate-match-named-snapshot.test.js';
+  const template = makeTemplate(
+    `test('duplicate named snapshots', () => {
+          expect($1).toMatchNamedSnapshot('basic-support');
+          expect($1).toMatchNamedSnapshot('basic-support');
+        });
+    `,
+  );
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['test'])});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    console.log(stderr);
+
+    expect(stderr).toMatch(
+      'The specific snapshot name was duplicate with the other snapshot.',
+    );
+    expect(stderr).toMatch('Snapshot name: basic-support');
+    expect(exitCode).toBe(1);
+  }
+});
+
 test('support concurrent testing', () => {
   const filename = 'match-snapshot-when-test-concurrent.test.js';
   const template = makeTemplate(`describe('group 1', () => {
