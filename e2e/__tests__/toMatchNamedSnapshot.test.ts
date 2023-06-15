@@ -94,7 +94,7 @@ test('first snapshot fails, second passes', () => {
   const filename = 'first-snapshot-fails-second-passes.test.js';
   const template = makeTemplate(`test('named snapshots', () => {
         expect($1).toMatchNamedSnapshot('test-snapshot');
-        expect($2).toMatchNamedSnapshot('test-snapshot');
+        expect($2).toMatchNamedSnapshot('test-snapshot-2');
       });`);
 
   {

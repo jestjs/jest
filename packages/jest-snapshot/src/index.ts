@@ -446,10 +446,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   });
   const {actual, count, expected, key, pass} = result;
 
-  if (snapshotName && key == testNameToKey(fullTestName, 1)) {
+  if (snapshotName && key != testNameToKey(fullTestName, 1)) {
     throw new Error(
       'The specific snapshot name was duplicate with the other snapshot.\n\n' +
-        `Snapshot name: ${snapshotName}`,
+        `Snapshot name: ${fullTestName}\n` +
+        `Snapshot Key: ${key}`,
     );
   }
 

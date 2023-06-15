@@ -745,6 +745,7 @@ describe('pass false', () => {
                 actual: format(received),
                 count: 1,
                 expected: undefined,
+                key: 'specific-not-written-multi-line 1',
                 pass: false,
               };
             },
@@ -773,6 +774,7 @@ describe('pass false', () => {
                 actual: format(received),
                 count: 2,
                 expected: undefined,
+                key: 'specific-not-written-single-line 1',
                 pass: false,
               };
             },
@@ -860,6 +862,7 @@ describe('pass false', () => {
                   text: 'snapshot',
                   type,
                 }),
+                key: 'change text value 1',
                 pass: false,
               };
             },
