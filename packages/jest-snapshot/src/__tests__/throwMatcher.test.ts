@@ -92,16 +92,26 @@ describe('throw matcher from promise', () => {
   });
 
   describe('toThrowErrorMatchingNamedSnapshot', () => {
+    const mockedNamedMatch = jest.fn(() => ({
+      actual: 'coconut',
+      expected: 'coconut',
+      key: 'snapshot name 1',
+    }));
+
+    const mockedNamedContext = {
+      snapshotState: {match: mockedNamedMatch},
+    } as unknown as Context;
+
     it('can take error', () => {
       toThrowErrorMatchingNamedSnapshot.call(
-        mockedContext,
+        mockedNamedContext,
         new Error('coco'),
         'snapshot name',
         true,
       );
 
-      expect(mockedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedMatch).toHaveBeenCalledWith(
+      expect(mockedNamedMatch).toHaveBeenCalledTimes(1);
+      expect(mockedNamedMatch).toHaveBeenCalledWith(
         expect.objectContaining({received: 'coco', testName: 'snapshot name'}),
       );
     });
@@ -110,14 +120,14 @@ describe('throw matcher from promise', () => {
       class CustomError extends Error {}
 
       toThrowErrorMatchingNamedSnapshot.call(
-        mockedContext,
+        mockedNamedContext,
         new CustomError('nut'),
         'snapshot name',
         true,
       );
 
-      expect(mockedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedMatch).toHaveBeenCalledWith(
+      expect(mockedNamedMatch).toHaveBeenCalledTimes(1);
+      expect(mockedNamedMatch).toHaveBeenCalledWith(
         expect.objectContaining({received: 'nut', testName: 'snapshot name'}),
       );
     });
