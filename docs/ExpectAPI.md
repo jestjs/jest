@@ -1531,13 +1531,13 @@ expect.extend({
     if (pass) {
       return {
         message: () =>
-          `expected ${received} not to be divisible by ${externalValue}`,
+          `expected ${received} to be divisible by ${externalValue}`,
         pass: true,
       };
     } else {
       return {
         message: () =>
-          `expected ${received} to be divisible by ${externalValue}`,
+          `expected ${received} not to be divisible by ${externalValue}`,
         pass: false,
       };
     }
