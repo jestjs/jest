@@ -67,6 +67,7 @@ exports[`prints the config object 1`] = `
     "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "collectCoverageFromTestedOnly": false,
     "coverageDirectory": "coverage",
     "coverageProvider": "babel",
     "coverageReporters": [],

@@ -721,6 +721,9 @@ export default async function normalize(
       case 'reporters':
         value = normalizeReporters(oldOptions);
         break;
+      case 'collectCoverageFromTestedOnly':
+        value = oldOptions[key] === true;
+        break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':

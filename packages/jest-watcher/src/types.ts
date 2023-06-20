@@ -53,6 +53,7 @@ export type AllowedConfigOptions = Partial<
     | 'changedSince'
     | 'collectCoverage'
     | 'collectCoverageFrom'
+    | 'collectCoverageFromTestedOnly'
     | 'coverageDirectory'
     | 'coverageReporters'
     | 'findRelatedTests'
