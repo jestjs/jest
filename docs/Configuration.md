@@ -259,6 +259,12 @@ Most likely your glob patterns are not matching any files. Refer to the [microma
 
 </details>
 
+### `collectCoverageFromTestedOnly` \[boolean]
+
+Default: `false`
+
+Indicates whether the coverage information should be collected on files that are not covered by your tests.
+
 ### `coverageDirectory` \[string]
 
 Default: `undefined`

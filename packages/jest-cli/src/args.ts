@@ -174,6 +174,10 @@ export const options: {[key: string]: Options} = {
       'info needs to be collected from.',
     type: 'string',
   },
+  collectCoverageFromTestedOnly: {
+    description: 'Collect coverage only from tested files.',
+    type: 'boolean',
+  },
   color: {
     description:
       'Forces test results output color highlighting (even if ' +

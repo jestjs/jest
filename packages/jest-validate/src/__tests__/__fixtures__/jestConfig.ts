@@ -63,6 +63,7 @@ export const validConfig = {
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
+  collectCoverageFromTestedOnly: false,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],

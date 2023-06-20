@@ -87,6 +87,7 @@ const groupOptions = (
     ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
+    collectCoverageFromTestedOnly: options.collectCoverageFromTestedOnly,
     coverageDirectory: options.coverageDirectory,
     coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,

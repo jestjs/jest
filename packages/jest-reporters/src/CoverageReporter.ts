@@ -129,6 +129,17 @@ export default class CoverageReporter extends BaseReporter {
       }
     });
 
+    if (this._globalConfig.collectCoverageFromTestedOnly) {
+      if (isInteractive) {
+        process.stderr.write(
+          RUNNING_TEST_COLOR(
+            'Skipping running coverage on untested files as collectCoverageFromTestedOnly is set to true.',
+          ),
+        );
+      }
+      return;
+    }
+
     if (!files.length) {
       return;
     }
