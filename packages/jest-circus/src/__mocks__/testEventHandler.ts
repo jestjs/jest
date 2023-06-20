@@ -20,6 +20,7 @@ const testEventHandler: Circus.EventHandler = (event, state) => {
       break;
     }
     case 'test_start':
+    case 'test_started':
     case 'test_retry':
     case 'test_done': {
       console.log(`${event.name}:`, event.test.name);
