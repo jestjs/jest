@@ -259,7 +259,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/fbjest',
+                href: 'https://twitter.com/jestjs_',
               },
             ],
           },
@@ -276,7 +276,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/fbjest',
+                href: 'https://twitter.com/jestjs_',
               },
             ],
           },

@@ -5,8 +5,8 @@
   <a href="https://github.com/facebook/jest/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
   </a>
-  <a href="https://twitter.com/intent/follow?screen_name=fbjest">
-    <img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter" />
+  <a href="https://twitter.com/intent/follow?screen_name=jestjs_">
+    <img src="https://img.shields.io/twitter/follow/jestjs_.svg?style=social&label=Follow%20@jestjs_" alt="Follow on Twitter" />
   </a>
 </p>
 <p align="center">

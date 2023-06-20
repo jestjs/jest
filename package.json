@@ -13,9 +13,9 @@
     "@jest/globals": "workspace:^",
     "@jest/test-utils": "workspace:^",
     "@lerna-lite/cli": "^1.11.3",
-    "@microsoft/api-extractor": "^7.33.4",
+    "@microsoft/api-extractor": "^7.35.0",
     "@tsconfig/node14": "^1.0.3",
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
@@ -80,7 +80,7 @@
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
     "ts-node": "^10.5.0",
-    "typescript": "^4.8.2",
+    "typescript": "^5.0.4",
     "which": "^3.0.0"
   },
   "scripts": {
@@ -176,10 +176,9 @@
     "@types/node": "~14.14.45",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",
-    "enzyme/cheerio": "=1.0.0-rc.3",
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.1"
 }
