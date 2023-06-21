@@ -9,8 +9,10 @@ import {expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
+  toMatchNamedSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingNamedSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 import type {JestExpect} from './types';
@@ -29,8 +31,10 @@ export type {JestExpect} from './types';
 function createJestExpect(): JestExpect {
   expect.extend({
     toMatchInlineSnapshot,
+    toMatchNamedSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
+    toThrowErrorMatchingNamedSnapshot,
     toThrowErrorMatchingSnapshot,
   });
 
