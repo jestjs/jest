@@ -2830,7 +2830,7 @@ __metadata:
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:^"
     "@jest/test-utils": "workspace:^"
-    "@lerna-lite/cli": ^1.11.3
+    "@lerna-lite/cli": 1.13.0
     "@microsoft/api-extractor": ^7.35.0
     "@tsconfig/node14": ^1.0.3
     "@tsd/typescript": ^5.0.4
@@ -3171,7 +3171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lerna-lite/cli@npm:^1.11.3":
+"@lerna-lite/cli@npm:1.13.0":
   version: 1.13.0
   resolution: "@lerna-lite/cli@npm:1.13.0"
   dependencies:
