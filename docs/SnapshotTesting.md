@@ -166,7 +166,7 @@ it('will fail every time', () => {
 
 // Snapshot
 exports[`will fail every time 1`] = `
-Object {
+{
   "createdAt": 2018-05-19T23:36:09.816Z,
   "id": 3,
   "name": "LeBron James",
@@ -192,7 +192,7 @@ it('will check the matchers and pass', () => {
 
 // Snapshot
 exports[`will check the matchers and pass 1`] = `
-Object {
+{
   "createdAt": Any<Date>,
   "id": Any<Number>,
   "name": "LeBron James",
@@ -217,7 +217,7 @@ it('will check the values and pass', () => {
 
 // Snapshot
 exports[`will check the values and pass 1`] = `
-Object {
+{
   "createdAt": Any<Date>,
   "name": 'Bond... James Bond',
 }

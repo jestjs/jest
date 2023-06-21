@@ -166,6 +166,8 @@ const _runTest = async (
     return;
   }
 
+  await dispatch({name: 'test_started', test});
+
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {

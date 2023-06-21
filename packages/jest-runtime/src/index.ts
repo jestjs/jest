@@ -1651,6 +1651,7 @@ export default class Runtime {
         ? `jest-nodejs-core-${filename}`
         : filename;
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
