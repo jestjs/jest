@@ -2,5 +2,11 @@
   "extends": ["config:base"],
   "lockFileMaintenance": { "enabled": true, "automerge": false },
   "rangeStrategy": "replace",
-  "postUpdateOptions": ["yarnDedupeHighest"]
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@tsd/typescript", "typescript"],
+      "groupName": "typescript"
+    }
+  ]
 }
