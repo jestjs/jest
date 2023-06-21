@@ -20,7 +20,7 @@
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
     "@types/dedent": "^0.7.0",
-    "@types/node": "~14.14.45",
+    "@types/node": "~18.16.0",
     "@types/which": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
@@ -173,7 +173,7 @@
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "resolutions": {
-    "@types/node": "~14.14.45",
+    "@types/node": "~18.16.0",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",
     "jest": "workspace:^",

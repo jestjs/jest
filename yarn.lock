@@ -2838,7 +2838,7 @@ __metadata:
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
     "@types/dedent": ^0.7.0
-    "@types/node": ~14.14.45
+    "@types/node": ~18.16.0
     "@types/which": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
@@ -4871,10 +4871,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~14.14.45":
-  version: 14.14.45
-  resolution: "@types/node@npm:14.14.45"
-  checksum: 3870a0128011b01c6fb6655e0f682b1b660e141f84d76c70fe503f5c7cf38bd06fc7b9a7d3c760601bce0598421f552695de40f095863ede29a6e22a13213b3e
+"@types/node@npm:~18.16.0":
+  version: 18.16.18
+  resolution: "@types/node@npm:18.16.18"
+  checksum: d32d8a0a04cd3f5ecb361bcb42f3a07623881ac90d680e06bf626defb3c663a94860d11690babe607cfe67265eceeb8a59ba5fe40c0e49f5a1b01e0088640469
   languageName: node
   linkType: hard
 
