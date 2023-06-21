@@ -744,6 +744,16 @@ You can provide an optional `propertyMatchers` object argument, which has asymme
 
 You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
 
+### `.toMatchNamedSnapshot(snapshotName, propertyMatchers?)`
+
+This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
+
+You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
+
+By setting the `snapshotName` explicitly (as opposed to letting Jest infer the name from context) it can be guaranteed to be consistent across test runs, whatever the context at the time of evaluation. Jest always appends a number at the end of a snapshot name.
+
+Jest sorts snapshots by name in the corresponding `.snap` file.
+
 ### `.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)`
 
 Ensures that a value matches the most recent snapshot.
@@ -875,6 +885,12 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
 Check out [React Tree Snapshot Testing](/blog/2016/07/27/jest-14) for more information on snapshot testing.
+
+### `.toThrowErrorMatchingNamedSnapshot(snapshotName)`
+
+Use `.toThrowErrorMatchingNamedSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
+
+By setting the `snapshotName` explicitly (as opposed to letting Jest infer the name from context) it can be guaranteed to be consistent across test runs, whatever the context at the time of evaluation. Jest always appends a number at the end of a snapshot name.
 
 ### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 

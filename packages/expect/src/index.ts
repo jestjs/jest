@@ -91,7 +91,8 @@ const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
     return createThrowMatcher(name, true);
   } else if (
     name === 'toThrowErrorMatchingSnapshot' ||
-    name === 'toThrowErrorMatchingInlineSnapshot'
+    name === 'toThrowErrorMatchingInlineSnapshot' ||
+    name === 'toThrowErrorMatchingNamedSnapshot'
   ) {
     return createToThrowErrorMatchingSnapshotMatcher(matcher);
   }

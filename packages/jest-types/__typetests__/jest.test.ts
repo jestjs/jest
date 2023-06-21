@@ -414,7 +414,7 @@ expectType<[]>(mockObjectB.methodA.mock.calls[0]);
 expectType<[b: string]>(mockObjectB.methodB.mock.calls[0]);
 expectType<[c: number]>(mockObjectB.methodC.mock.calls[0]);
 
-expectError<[t: number]>(mockObjectB.one.more.time.mock.calls[0]);
+expectError(mockObjectB.one.more.time.mock.calls[0]);
 
 expectType<[one: string, two?: boolean]>(mockObjectB.SomeClass.mock.calls[0]);
 expectType<[]>(mockObjectB.SomeClass.prototype.methodA.mock.calls[0]);
@@ -422,10 +422,8 @@ expectType<[a: string, b?: number]>(
   mockObjectB.SomeClass.prototype.methodB.mock.calls[0],
 );
 
-expectError<[]>(mockObjectB.someClassInstance.methodA.mock.calls[0]);
-expectError<[a: string, b?: number]>(
-  mockObjectB.someClassInstance.methodB.mock.calls[0],
-);
+expectError(mockObjectB.someClassInstance.methodA.mock.calls[0]);
+expectError(mockObjectB.someClassInstance.methodB.mock.calls[0]);
 
 expectError(mockObjectB.methodA.mockReturnValue(123));
 expectError(mockObjectB.methodA.mockImplementation((a: number) => 123));

@@ -11,6 +11,7 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 test_start: one
+test_started: one
 hook_start: beforeEach
 hook_success: beforeEach
 test_fn_start: one
@@ -19,6 +20,7 @@ hook_start: afterEach
 hook_failure: afterEach
 test_done: one
 test_start: two
+test_started: two
 hook_start: beforeEach
 hook_success: beforeEach
 test_fn_start: two
@@ -41,6 +43,7 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describer
 test_start: One
+test_started: One
 test_fn_start: One
 test_fn_success: One
 test_done: One
@@ -62,6 +65,7 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 test_start: one
+test_started: one
 hook_start: beforeEach
 hook_success: beforeEach
 test_fn_start: one
@@ -70,6 +74,7 @@ hook_start: afterEach
 hook_success: afterEach
 test_done: one
 test_start: two
+test_started: two
 hook_start: beforeEach
 hook_success: beforeEach
 test_fn_start: two

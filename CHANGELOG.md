@@ -3,7 +3,9 @@
 ### Features
 
 - `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
+- `[jest-core, jest-circus, jest-reporter, jest-runner]` Added support for reporting about start individual test cases using jest-circus ([#14174](https://github.com/jestjs/jest/pull/14174))
 - `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
+- `[jest-snapshot]` Add `toMatchNamedSnapshot` to bring snapshot support to concurrent mode ([#14045](https://github.com/facebook/jest/pull/14045))
 
 ### Fixes
 
@@ -14,6 +16,7 @@
 - `[jest-mock]` Tweak typings to allow `jest.replaceProperty()` replace methods ([#14008](https://github.com/facebook/jest/pull/14008))
 - `[jest-mock]` Improve user input validation and error messages of `spyOn` and `replaceProperty` methods ([#14087](https://github.com/facebook/jest/pull/14087))
 - `[jest-runtime]` Bind `jest.isolateModulesAsync` to `this` ([#14083](https://github.com/facebook/jest/pull/14083))
+- `[jest-runtime]` Forward `wrapperLength` to the `Script` constructor as `columnOffset` for accurate debugging ([#14148](https://github.com/facebook/jest/pull/14148))
 - `[jest-snapshot]` Fix a potential bug when not using prettier and improve performance ([#14036](https://github.com/facebook/jest/pull/14036))
 - `[@jest/transform]` Do not instrument `.json` modules ([#14048](https://github.com/facebook/jest/pull/14048))
 

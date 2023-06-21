@@ -54,4 +54,40 @@ describe('Custom Reporters Integration on jest-circus', () => {
 
     expect(stdout).toMatchSnapshot();
   });
+
+  test('push test case start', () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: ['default', '<rootDir>/reporters/TestCaseStartReporter.js'],
+      }),
+      'just2Tests.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test("doesn't push test case start for todo tests", () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: ['default', '<rootDir>/reporters/TestCaseStartReporter.js'],
+      }),
+      'todo.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test("doesn't push test case start for skip tests", () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: ['default', '<rootDir>/reporters/TestCaseStartReporter.js'],
+      }),
+      'skip.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
 });
