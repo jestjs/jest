@@ -26,7 +26,7 @@ describe('Runtime', () => {
           },
         },
       );
-      runtime.resetModules();
+      expect(() => runtime.resetModules()).not.toThrow();
     });
   });
 });
