@@ -311,7 +311,6 @@ You can mock/spy on them easily, here is an example:
 ```javascript
 // your jest test file below
 import SoundPlayer from './sound-player';
-import SoundPlayerConsumer from './sound-player-consumer';
 
 const staticMethodMock = jest
   .spyOn(SoundPlayer, 'brand')
