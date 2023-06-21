@@ -12,16 +12,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord.js@npm:11.5.1":
-  version: 11.5.1
-  resolution: "discord.js@npm:11.5.1"
+"discord.js@npm:11.6.4":
+  version: 11.6.4
+  resolution: "discord.js@npm:11.6.4"
   dependencies:
     long: ^4.0.0
-    prism-media: ^0.0.3
+    prism-media: ^0.0.4
     snekfetch: ^3.6.4
     tweetnacl: ^1.0.0
     ws: ^6.0.0
   peerDependencies:
+    "@discordjs/opus": ^0.1.0
     "@discordjs/uws": ^10.149.0
     bufferutil: ^4.0.0
     erlpack: "*"
@@ -30,6 +31,8 @@ __metadata:
     opusscript: ^0.0.6
     sodium: ^2.0.3
   peerDependenciesMeta:
+    "@discordjs/opus":
+      optional: true
     bufferutil:
       optional: true
     erlpack:
@@ -44,7 +47,7 @@ __metadata:
       optional: true
     uws:
       optional: true
-  checksum: fdd210b1a63bff6d39eae8c79beb2f1035d16b029a361142f9148e3ba6819e685872af2435e8cfef0b71b4871f14d4bcb7a4ce9f4c957c7a4aca1a347b3229f0
+  checksum: 0baddd15f3c7eba6de9a88dad244206c94999ba583f972dd0b8f8ef9ffbd97a1b90cfea8a2efe22f7e1474d9bbf8fb381a939cc3ea3cf8e52844d3a9bfe702a7
   languageName: node
   linkType: hard
 
@@ -55,10 +58,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-media@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "prism-media@npm:0.0.3"
-  checksum: 45d56138bd48616d78ec2f09b77e3700c88a4e08fb159949ee0b47fe5ce9db2d68ceac4729faebada4a23b640a9f984e7dd9b4bc72b2f52666307ca9d559fcfb
+"prism-media@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "prism-media@npm:0.0.4"
+  checksum: 9bed6145190a2542a11dfb2173dd35ee42016545fadab703b45be04509fc50db36e66cb92a3218d072321e2984667ab40f05d2ff5e6b4de7ed4c2deddc49bd59
   languageName: node
   linkType: hard
 
@@ -66,7 +69,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    discord.js: 11.5.1
+    discord.js: 11.6.4
   languageName: unknown
   linkType: soft
 
