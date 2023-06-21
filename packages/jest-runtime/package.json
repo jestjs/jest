@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
-    "@types/glob": "^7.1.1",
+    "@types/glob": "^8.0.0",
     "@types/graceful-fs": "^4.1.3",
     "jest-environment-node": "workspace:^"
   },
