@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "handlebars": "^4.7.3",
-    "source-map": "^0.6.1"
+    "source-map": "^0.7.0"
   }
 }
