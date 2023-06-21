@@ -1218,6 +1218,7 @@ export default class Runtime {
             if (
               ((typeof globalMock === 'object' && globalMock !== null) ||
                 typeof globalMock === 'function') &&
+              '_isMockFunction' in globalMock &&
               globalMock._isMockFunction === true
             ) {
               globalMock.mockClear();
