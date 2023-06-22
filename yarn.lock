@@ -4960,12 +4960,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-is@npm:^17.0.0":
-  version: 17.0.3
-  resolution: "@types/react-is@npm:17.0.3"
+"@types/react-is@npm:^18.0.0":
+  version: 18.2.1
+  resolution: "@types/react-is@npm:18.2.1"
   dependencies:
     "@types/react": "*"
-  checksum: 6abb7c47d54f012272650df8a962a28bd82f219291e5ef8b4dfa7fe0bb98ae243b060bf9fbe8ceff6213141794855a006db194b490b00ffd15842ae19d0ce1f0
+  checksum: b44c3262efa2c68fa6fe2beb9ef86170b18305469461a3f97aa14943cc033cb21a26944f718bdb6434eea6e8f7fcba251c4f45b65b897a3fcf751b5a6003cf82
   languageName: node
   linkType: hard
 
@@ -16894,7 +16894,7 @@ __metadata:
   dependencies:
     "@jest/schemas": "workspace:^"
     "@types/react": ^17.0.3
-    "@types/react-is": ^17.0.0
+    "@types/react-is": ^18.0.0
     "@types/react-test-renderer": 17.0.2
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
