@@ -67,7 +67,7 @@
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.0",
     "p-limit": "^3.1.0",
-    "pkg-dir": "^5.0.0",
+    "pkg-dir": "^7.0.0",
     "prettier": "^2.1.1",
     "promise": "^8.0.2",
     "read-pkg": "^5.2.0",
