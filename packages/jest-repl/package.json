@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/yargs": "^17.0.8",
-    "execa": "^5.0.0"
+    "execa": "^7.0.0"
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js",

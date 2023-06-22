@@ -46,7 +46,7 @@
     "@types/dedent": "^0.7.0",
     "@types/graceful-fs": "^4.1.3",
     "@types/stack-utils": "^2.0.0",
-    "execa": "^5.0.0",
+    "execa": "^7.0.0",
     "graceful-fs": "^4.2.9"
   },
   "engines": {

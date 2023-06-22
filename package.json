@@ -42,7 +42,7 @@
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "execa": "^5.0.0",
+    "execa": "^7.0.0",
     "find-process": "^1.4.1",
     "glob": "^8.0.0",
     "graceful-fs": "^4.2.9",
