@@ -2842,7 +2842,7 @@ __metadata:
     "@types/which": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.0
     ansi-styles: ^5.0.0
     babel-jest: "workspace:^"
     camelcase: ^6.2.0
@@ -3018,7 +3018,7 @@ __metadata:
     "@jest/types": "workspace:^"
     "@types/node": "*"
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.0
     ansi-styles: ^5.0.0
     pretty-format: "workspace:^"
     semver: ^7.3.5
@@ -5834,7 +5834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-regex@npm:^6.0.1":
+"ansi-regex@npm:^6.0.0, ansi-regex@npm:^6.0.1":
   version: 6.0.1
   resolution: "ansi-regex@npm:6.0.1"
   checksum: 1ff8b7667cded1de4fa2c9ae283e979fc87036864317da86a2e546725f96406746411d0d85e87a2d12fa5abd715d90006de7fa4fa0477c92321ad3b4c7d4e169
@@ -12920,7 +12920,7 @@ __metadata:
     "@types/natural-compare": ^1.4.0
     "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.0
     ansi-styles: ^5.0.0
     babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0

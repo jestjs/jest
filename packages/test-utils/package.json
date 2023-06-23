@@ -15,7 +15,7 @@
     "@jest/globals": "workspace:^",
     "@jest/types": "workspace:^",
     "@types/node": "*",
-    "ansi-regex": "^5.0.1",
+    "ansi-regex": "^6.0.0",
     "ansi-styles": "^5.0.0",
     "pretty-format": "workspace:^",
     "semver": "^7.3.5"

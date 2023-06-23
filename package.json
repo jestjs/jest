@@ -24,7 +24,7 @@
     "@types/which": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
-    "ansi-regex": "^5.0.1",
+    "ansi-regex": "^6.0.0",
     "ansi-styles": "^5.0.0",
     "babel-jest": "workspace:^",
     "camelcase": "^6.2.0",
