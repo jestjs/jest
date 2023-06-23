@@ -26,7 +26,7 @@
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "dedent": "^0.7.0",
-    "is-generator-fn": "^2.0.0",
+    "is-generator-fn": "^3.0.0",
     "jest-each": "workspace:^",
     "jest-matcher-utils": "workspace:^",
     "jest-message-util": "workspace:^",

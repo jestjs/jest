@@ -11941,10 +11941,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-generator-fn@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "is-generator-fn@npm:2.1.0"
-  checksum: a6ad5492cf9d1746f73b6744e0c43c0020510b59d56ddcb78a91cbc173f09b5e6beff53d75c9c5a29feb618bfef2bf458e025ecf3a57ad2268e2fb2569f56215
+"is-generator-fn@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "is-generator-fn@npm:3.0.0"
+  checksum: a9edb8d2bd03ed0da05468b2a98f211ad7af72dab0b3d9a74a22d846870d52f588d7f481a543b69694f0e8bb1ec56c44bf19fd3468962013fc7c27f6396792ea
   languageName: node
   linkType: hard
 
@@ -12466,7 +12466,7 @@ __metadata:
     dedent: ^0.7.0
     execa: ^5.0.0
     graceful-fs: ^4.2.9
-    is-generator-fn: ^2.0.0
+    is-generator-fn: ^3.0.0
     jest-each: "workspace:^"
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
@@ -12677,7 +12677,7 @@ __metadata:
     "@types/node": "*"
     chalk: ^4.0.0
     co: ^4.6.0
-    is-generator-fn: ^2.0.0
+    is-generator-fn: ^3.0.0
     jest-each: "workspace:^"
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
