@@ -8522,10 +8522,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-newline@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "detect-newline@npm:3.1.0"
-  checksum: ae6cd429c41ad01b164c59ea36f264a2c479598e61cba7c99da24175a7ab80ddf066420f2bec9a1c57a6bead411b4655ff15ad7d281c000a89791f48cbe939e7
+"detect-newline@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "detect-newline@npm:4.0.0"
+  checksum: 52767347c70f485b2d1db6493dde57b8c3c1f249e24bad7eb7424cc1129200aa7e671902ede18bc94a8b69e10dec91456aab4c7e2478559d9eedb31ef3847f36
   languageName: node
   linkType: hard
 
@@ -12575,7 +12575,7 @@ __metadata:
   resolution: "jest-docblock@workspace:packages/jest-docblock"
   dependencies:
     "@types/node": "*"
-    detect-newline: ^3.0.0
+    detect-newline: ^4.0.0
   languageName: unknown
   linkType: soft
 

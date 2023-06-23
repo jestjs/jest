@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "detect-newline": "^3.0.0"
+    "detect-newline": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "*"
