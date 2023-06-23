@@ -296,9 +296,9 @@ const config = {
         ],
         logo: {
           //         src: 'img/jest-outline.svg',
-          alt: 'Facebook Open Source Logo',
-          src: 'img/oss_logo.svg',
-          href: 'https://opensource.facebook.com',
+          alt: 'OpenJs Open Source Logo',
+          src: 'img/openjsf-logo.svg',
+          href: 'https://openjsf.org',
         },
         copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc. and affiliates. Built with Docusaurus.`,
       },
