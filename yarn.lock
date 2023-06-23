@@ -2859,7 +2859,7 @@ __metadata:
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     babel-jest: "workspace:^"
-    camelcase: ^6.2.0
+    camelcase: ^7.0.0
     chalk: ^4.0.0
     chokidar: ^3.3.0
     debug: ^4.0.1
@@ -6919,6 +6919,13 @@ __metadata:
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "camelcase@npm:7.0.1"
+  checksum: 86ab8f3ebf08bcdbe605a211a242f00ed30d8bfb77dab4ebb744dd36efbc84432d1c4adb28975ba87a1b8be40a80fbd1e60e2f06565315918fa7350011a26d3d
   languageName: node
   linkType: hard
 
@@ -13061,7 +13068,7 @@ __metadata:
   dependencies:
     "@jest/types": "workspace:^"
     "@types/yargs": ^17.0.8
-    camelcase: ^6.2.0
+    camelcase: ^7.0.0
     chalk: ^4.0.0
     jest-get-type: "workspace:^"
     leven: ^3.1.0
