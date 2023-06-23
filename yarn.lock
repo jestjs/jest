@@ -2843,7 +2843,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
     ansi-regex: ^5.0.1
-    ansi-styles: ^5.0.0
+    ansi-styles: ^6.0.0
     babel-jest: "workspace:^"
     camelcase: ^6.2.0
     chalk: ^4.0.0
@@ -3019,7 +3019,7 @@ __metadata:
     "@types/node": "*"
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.1
-    ansi-styles: ^5.0.0
+    ansi-styles: ^6.0.0
     pretty-format: "workspace:^"
     semver: ^7.3.5
   languageName: unknown
@@ -5866,7 +5866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-styles@npm:^6.1.0":
+"ansi-styles@npm:^6.0.0, ansi-styles@npm:^6.1.0":
   version: 6.2.1
   resolution: "ansi-styles@npm:6.2.1"
   checksum: ef940f2f0ced1a6347398da88a91da7930c33ecac3c77b72c5905f8b8fe402c52e6fde304ff5347f616e27a742da3f1dc76de98f6866c69251ad0b07a66776d9
@@ -12921,7 +12921,7 @@ __metadata:
     "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.1
-    ansi-styles: ^5.0.0
+    ansi-styles: ^6.0.0
     babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
     expect: "workspace:^"
@@ -16896,7 +16896,7 @@ __metadata:
     "@types/react": ^17.0.3
     "@types/react-is": ^18.0.0
     "@types/react-test-renderer": 17.0.2
-    ansi-styles: ^5.0.0
+    ansi-styles: ^6.0.0
     immutable: ^4.0.0
     jest-util: "workspace:^"
     react: 17.0.2
