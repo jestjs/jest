@@ -2909,7 +2909,7 @@ __metadata:
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
-    strip-json-comments: ^3.1.1
+    strip-json-comments: ^5.0.0
     tempy: ^1.0.0
     ts-node: ^10.5.0
     typescript: ^5.0.4
@@ -12543,7 +12543,7 @@ __metadata:
     pretty-format: "workspace:^"
     semver: ^7.5.3
     slash: ^3.0.0
-    strip-json-comments: ^3.1.1
+    strip-json-comments: ^5.0.0
     ts-node: ^10.5.0
     typescript: ^5.0.4
   peerDependencies:
@@ -19492,6 +19492,13 @@ __metadata:
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: 492f73e27268f9b1c122733f28ecb0e7e8d8a531a6662efbd08e22cccb3f9475e90a1b82cab06a392f6afae6d2de636f977e231296400d0ec5304ba70f166443
+  languageName: node
+  linkType: hard
+
+"strip-json-comments@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "strip-json-comments@npm:5.0.0"
+  checksum: 99cad07ccc3b86cc7bb8a9274a801b0660cbd595189ad291f6e206b8d7b23d90eed3119cdae44e126d9563796024b3ef0e7de2eeee4634b3b9019bafb62803e7
   languageName: node
   linkType: hard
 
