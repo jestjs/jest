@@ -2907,7 +2907,7 @@ __metadata:
     rimraf: ^5.0.0
     semver: ^7.5.3
     slash: ^3.0.0
-    string-length: ^4.0.1
+    string-length: ^6.0.0
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
@@ -2956,7 +2956,7 @@ __metadata:
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
     slash: ^3.0.0
-    string-length: ^4.0.1
+    string-length: ^6.0.0
     strip-ansi: ^6.0.0
     tsd-lite: ^0.7.0
     v8-to-istanbul: ^9.0.1
@@ -6973,13 +6973,6 @@ __metadata:
   version: 5.2.0
   resolution: "chalk@npm:5.2.0"
   checksum: 03d8060277de6cf2fd567dc25fcf770593eb5bb85f460ce443e49255a30ff1242edd0c90a06a03803b0466ff0687a939b41db1757bec987113e83de89a003caa
-  languageName: node
-  linkType: hard
-
-"char-regex@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "char-regex@npm:1.0.2"
-  checksum: b563e4b6039b15213114626621e7a3d12f31008bdce20f9c741d69987f62aeaace7ec30f6018890ad77b2e9b4d95324c9f5acfca58a9441e3b1dcdd1e2525d17
   languageName: node
   linkType: hard
 
@@ -13097,7 +13090,7 @@ __metadata:
     chalk: ^4.0.0
     emittery: ^0.13.1
     jest-util: "workspace:^"
-    string-length: ^4.0.1
+    string-length: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -19290,16 +19283,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-length@npm:^4.0.1":
-  version: 4.0.2
-  resolution: "string-length@npm:4.0.2"
-  dependencies:
-    char-regex: ^1.0.2
-    strip-ansi: ^6.0.0
-  checksum: ce85533ef5113fcb7e522bcf9e62cb33871aa99b3729cec5595f4447f660b0cefd542ca6df4150c97a677d58b0cb727a3fe09ac1de94071d05526c73579bf505
-  languageName: node
-  linkType: hard
-
 "string-length@npm:^5.0.1":
   version: 5.0.1
   resolution: "string-length@npm:5.0.1"
@@ -19307,6 +19290,15 @@ __metadata:
     char-regex: ^2.0.0
     strip-ansi: ^7.0.1
   checksum: 71f73b8c8a743e01dcd001bcf1b197db78d5e5e53b12bd898cddaf0961be09f947dfd8c429783db3694b55b05cb5a51de6406c5085ff1aaa10c4771440c8396d
+  languageName: node
+  linkType: hard
+
+"string-length@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "string-length@npm:6.0.0"
+  dependencies:
+    strip-ansi: ^7.1.0
+  checksum: b171e9e193ec292ad71f8b2a36e20478bf1bac8cd5beec062fb126942d627dfd9311959e271e9ab7b0a383d16b85b9e25a183d15786e30f22104d152e7627f99
   languageName: node
   linkType: hard
 
@@ -19428,12 +19420,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "strip-ansi@npm:7.0.1"
+"strip-ansi@npm:^7.0.1, strip-ansi@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "strip-ansi@npm:7.1.0"
   dependencies:
     ansi-regex: ^6.0.1
-  checksum: 257f78fa433520e7f9897722731d78599cb3fce29ff26a20a5e12ba4957463b50a01136f37c43707f4951817a75e90820174853d6ccc240997adc5df8f966039
+  checksum: 859c73fcf27869c22a4e4d8c6acfe690064659e84bef9458aa6d13719d09ca88dcfd40cbf31fd0be63518ea1a643fe070b4827d353e09533a5b0b9fd4553d64d
   languageName: node
   linkType: hard
 

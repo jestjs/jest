@@ -19,7 +19,7 @@
     "chalk": "^4.0.0",
     "emittery": "^0.13.1",
     "jest-util": "workspace:^",
-    "string-length": "^4.0.1"
+    "string-length": "^6.0.0"
   },
   "repository": {
     "type": "git",
