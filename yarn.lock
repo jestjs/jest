@@ -2752,7 +2752,7 @@ __metadata:
     micromatch: ^4.0.4
     pretty-format: "workspace:^"
     slash: ^3.0.0
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -2908,7 +2908,7 @@ __metadata:
     semver: ^7.5.3
     slash: ^3.0.0
     string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.0
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
@@ -2957,7 +2957,7 @@ __metadata:
     node-notifier: ^10.0.0
     slash: ^3.0.0
     string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.0
     tsd-lite: ^0.7.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
@@ -12566,7 +12566,7 @@ __metadata:
     diff-sequences: "workspace:^"
     jest-get-type: "workspace:^"
     pretty-format: "workspace:^"
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.0
   languageName: unknown
   linkType: soft
 
@@ -19428,12 +19428,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "strip-ansi@npm:7.0.1"
+"strip-ansi@npm:^7.0.0, strip-ansi@npm:^7.0.1":
+  version: 7.1.0
+  resolution: "strip-ansi@npm:7.1.0"
   dependencies:
     ansi-regex: ^6.0.1
-  checksum: 257f78fa433520e7f9897722731d78599cb3fce29ff26a20a5e12ba4957463b50a01136f37c43707f4951817a75e90820174853d6ccc240997adc5df8f966039
+  checksum: 859c73fcf27869c22a4e4d8c6acfe690064659e84bef9458aa6d13719d09ca88dcfd40cbf31fd0be63518ea1a643fe070b4827d353e09533a5b0b9fd4553d64d
   languageName: node
   linkType: hard
 
