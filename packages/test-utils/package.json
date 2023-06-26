@@ -18,7 +18,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "pretty-format": "workspace:^",
-    "semver": "^7.3.5"
+    "semver": "^7.5.3"
   },
   "devDependencies": {
     "@types/semver": "^7.1.0"

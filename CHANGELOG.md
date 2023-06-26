@@ -25,6 +25,7 @@
 
 ### Chore & Maintenance
 
+- `[*]` Update `semver` dependency to get vulnerability fix ([#14262](https://github.com/jestjs/jest/pull/14262))
 - `[docs]` Updated documentation for the `--runTestsByPath` CLI command ([#14004](https://github.com/facebook/jest/pull/14004))
 - `[docs]` Updated documentation regarding the synchronous fallback when asynchronous code transforms are unavailable ([#14056](https://github.com/facebook/jest/pull/14056))
 - `[docs]` Update jest statistics of use and downloads in website Index.

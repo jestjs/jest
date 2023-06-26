@@ -37,7 +37,7 @@
     "jest-util": "workspace:^",
     "natural-compare": "^1.4.0",
     "pretty-format": "workspace:^",
-    "semver": "^7.3.5"
+    "semver": "^7.5.3"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.7.2",
