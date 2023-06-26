@@ -54,7 +54,10 @@ type TestRunnerConstructor = new (
   testRunnerContext: TestRunnerContext,
 ) => JestTestRunner;
 
-export type TestSchedulerContext = ReporterContext & TestRunnerContext;
+export type TestSchedulerContext = ReporterContext &
+  TestRunnerContext & {
+    runGlobalTeardown: () => Promise<void>;
+  };
 
 export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
@@ -418,8 +421,12 @@ class TestScheduler {
       try {
         await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
       } finally {
-        const exitCode = this._globalConfig.testFailureExitCode;
-        exit(exitCode);
+        try {
+          await this._context.runGlobalTeardown();
+        } finally {
+          const exitCode = this._globalConfig.testFailureExitCode;
+          exit(exitCode);
+        }
       }
     }
   }

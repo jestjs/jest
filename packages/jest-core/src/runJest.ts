@@ -124,7 +124,7 @@ const processResults = async (
   onComplete?.(runResults);
 };
 
-const testSchedulerContext: TestSchedulerContext = {
+const testSchedulerContext: Omit<TestSchedulerContext, 'runGlobalTeardown'> = {
   firstRun: true,
   previousSuccess: true,
 };
@@ -262,11 +262,15 @@ export default async function runJest({
     collectHandles = collectNodeHandles();
   }
 
-  if (hasTests) {
-    performance.mark('jest/globalSetup:start');
-    await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
-    performance.mark('jest/globalSetup:end');
+  async function runGlobalSetup() {
+    if (hasTests) {
+      performance.mark('jest/globalSetup:start');
+      await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+      performance.mark('jest/globalSetup:end');
+    }
   }
+
+  await runGlobalSetup();
 
   if (changedFilesPromise) {
     const changedFilesInfo = await changedFilesPromise;
@@ -292,6 +296,7 @@ export default async function runJest({
   const scheduler = await createTestScheduler(globalConfig, {
     startRun,
     ...testSchedulerContext,
+    runGlobalTeardown,
   });
 
   // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
@@ -305,11 +310,19 @@ export default async function runJest({
   sequencer.cacheResults(allTests, results);
   performance.mark('jest/cacheResults:end');
 
-  if (hasTests) {
-    performance.mark('jest/globalTeardown:start');
-    await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
-    performance.mark('jest/globalTeardown:end');
+  async function runGlobalTeardown() {
+    if (hasTests) {
+      performance.mark('jest/globalTeardown:start');
+      await runGlobalHook({
+        allTests,
+        globalConfig,
+        moduleName: 'globalTeardown',
+      });
+      performance.mark('jest/globalTeardown:end');
+    }
   }
+
+  await runGlobalTeardown();
 
   performance.mark('jest/processResults:start');
   await processResults(results, {
