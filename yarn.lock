@@ -2905,7 +2905,7 @@ __metadata:
     read-pkg: ^5.2.0
     resolve: ^1.20.0
     rimraf: ^5.0.0
-    semver: ^7.5.2
+    semver: ^7.5.3
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -3035,7 +3035,7 @@ __metadata:
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     pretty-format: "workspace:^"
-    semver: ^7.5.2
+    semver: ^7.5.3
   languageName: unknown
   linkType: soft
 
@@ -12541,7 +12541,7 @@ __metadata:
     micromatch: ^4.0.4
     parse-json: ^5.2.0
     pretty-format: "workspace:^"
-    semver: ^7.5.2
+    semver: ^7.5.3
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
@@ -12993,7 +12993,7 @@ __metadata:
     natural-compare: ^1.4.0
     prettier: ^2.1.1
     pretty-format: "workspace:^"
-    semver: ^7.5.2
+    semver: ^7.5.3
     tsd-lite: ^0.7.0
   languageName: unknown
   linkType: soft
@@ -18565,7 +18565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.1, semver@npm:^7.5.2":
+"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.1, semver@npm:^7.5.3":
   version: 7.5.3
   resolution: "semver@npm:7.5.3"
   dependencies:
