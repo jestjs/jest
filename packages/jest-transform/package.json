@@ -30,7 +30,7 @@
     "jest-util": "workspace:^",
     "micromatch": "^4.0.4",
     "pirates": "^4.0.4",
-    "slash": "^3.0.0",
+    "slash": "^5.0.0",
     "write-file-atomic": "^4.0.2"
   },
   "devDependencies": {

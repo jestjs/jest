@@ -25,7 +25,7 @@
     "jest-validate": "workspace:^",
     "resolve": "^1.20.0",
     "resolve.exports": "^2.0.0",
-    "slash": "^3.0.0"
+    "slash": "^5.0.0"
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",

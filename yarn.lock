@@ -2712,7 +2712,7 @@ __metadata:
     chalk: ^4.0.0
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
-    slash: ^3.0.0
+    slash: ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -2751,7 +2751,7 @@ __metadata:
     jest-watcher: "workspace:^"
     micromatch: ^4.0.4
     pretty-format: "workspace:^"
-    slash: ^3.0.0
+    slash: ^5.0.0
     strip-ansi: ^6.0.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -2906,7 +2906,7 @@ __metadata:
     resolve: ^1.20.0
     rimraf: ^5.0.0
     semver: ^7.5.3
-    slash: ^3.0.0
+    slash: ^5.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
@@ -2955,7 +2955,7 @@ __metadata:
     jest-worker: "workspace:^"
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
-    slash: ^3.0.0
+    slash: ^5.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     tsd-lite: ^0.7.0
@@ -3020,7 +3020,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     graceful-fs: ^4.2.9
     jest-haste-map: "workspace:^"
-    slash: ^3.0.0
+    slash: ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -3063,7 +3063,7 @@ __metadata:
     jest-util: "workspace:^"
     micromatch: ^4.0.4
     pirates: ^4.0.4
-    slash: ^3.0.0
+    slash: ^5.0.0
     write-file-atomic: ^4.0.2
   languageName: unknown
   linkType: soft
@@ -6217,7 +6217,7 @@ __metadata:
     babel-preset-jest: "workspace:^"
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
-    slash: ^3.0.0
+    slash: ^5.0.0
   peerDependencies:
     "@babel/core": ^7.8.0
   languageName: unknown
@@ -12476,7 +12476,7 @@ __metadata:
     p-limit: ^3.1.0
     pretty-format: "workspace:^"
     pure-rand: ^6.0.0
-    slash: ^3.0.0
+    slash: ^5.0.0
     stack-utils: ^2.0.3
   languageName: unknown
   linkType: soft
@@ -12542,7 +12542,7 @@ __metadata:
     parse-json: ^5.2.0
     pretty-format: "workspace:^"
     semver: ^7.5.3
-    slash: ^3.0.0
+    slash: ^5.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
     typescript: ^5.0.4
@@ -12656,7 +12656,7 @@ __metadata:
     jest-util: "workspace:^"
     jest-worker: "workspace:^"
     micromatch: ^4.0.4
-    slash: ^3.0.0
+    slash: ^5.0.0
     walker: ^1.0.8
   dependenciesMeta:
     fsevents:
@@ -12738,7 +12738,7 @@ __metadata:
     graceful-fs: ^4.2.9
     micromatch: ^4.0.4
     pretty-format: "workspace:^"
-    slash: ^3.0.0
+    slash: ^5.0.0
     stack-utils: ^2.0.3
     tempy: ^1.0.0
   languageName: unknown
@@ -12844,7 +12844,7 @@ __metadata:
     jest-validate: "workspace:^"
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
-    slash: ^3.0.0
+    slash: ^5.0.0
     tsd-lite: ^0.7.0
   languageName: unknown
   linkType: soft
@@ -12926,7 +12926,7 @@ __metadata:
     jest-resolve: "workspace:^"
     jest-snapshot: "workspace:^"
     jest-util: "workspace:^"
-    slash: ^3.0.0
+    slash: ^5.0.0
     strip-bom: ^4.0.0
   languageName: unknown
   linkType: soft

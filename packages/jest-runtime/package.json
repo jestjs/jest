@@ -37,7 +37,7 @@
     "jest-resolve": "workspace:^",
     "jest-snapshot": "workspace:^",
     "jest-util": "workspace:^",
-    "slash": "^3.0.0",
+    "slash": "^5.0.0",
     "strip-bom": "^4.0.0"
   },
   "devDependencies": {
