@@ -4,9 +4,9 @@
 
 - `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
 - `[jest-core, jest-circus, jest-reporter, jest-runner]` Added support for reporting about start individual test cases using jest-circus ([#14174](https://github.com/jestjs/jest/pull/14174))
+- `[jest-haste-map]` Add support for crawling the file referenced by symbolic link ([#14279](https://github.com/jestjs/jest/pull/14279))
 - `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
 - `[jest-snapshot]` Add `toMatchNamedSnapshot` to bring snapshot support to concurrent mode ([#14045](https://github.com/facebook/jest/pull/14045))
-- `[jest-haste-map]` Add support for crawling the file referenced by symbolic link ([#14279](https://github.com/jestjs/jest/pull/14279))
 
 ### Fixes
 
