@@ -4,6 +4,7 @@
 
 - `[jest-cli]` Include type definitions to generated config files ([#14078](https://github.com/facebook/jest/pull/14078))
 - `[jest-snapshot]` Support arrays as property matchers ([#14025](https://github.com/facebook/jest/pull/14025))
+- `[jest-haste-map]` Add support for crawling the file referenced by symbolic link
 
 ### Fixes
 
