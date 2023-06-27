@@ -13,8 +13,10 @@ import format from 'pretty-format';
 import {
   Context,
   toMatchInlineSnapshot,
+  toMatchNamedSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingNamedSnapshot,
   toThrowErrorMatchingSnapshot,
 } from '../';
 import type SnapshotState from '../State';
@@ -274,6 +276,85 @@ describe('matcher error', () => {
     });
   });
 
+  describe('toMatchNamedSnapshot', () => {
+    const received = {
+      id: 'abcdef',
+      text: 'Throw matcher error',
+      type: 'ADD_ITEM',
+    };
+
+    test('Expected properties must be an object (non-null)', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      } as Context;
+      const properties = () => {};
+      const snapshotName =
+        'toMatchNamedSnapshot Expected properties must be an object (non-null)';
+
+      expect(() => {
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('Expected properties must be an object (null) with snapshot name', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      } as Context;
+      const properties = null;
+      const snapshotName = 'obj-snapshot';
+
+      expect(() => {
+        // @ts-expect-error: Testing runtime error
+        toMatchNamedSnapshot.call(context, received, snapshotName, properties);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    describe('received value must be an object', () => {
+      const context = {
+        currentTestName: '',
+        isNot: false,
+        promise: '',
+        snapshotState: {},
+      } as Context;
+      const properties = {};
+      const snapshotName =
+        'toMatchNamedSnapshot received value must be an object';
+
+      test('(non-null)', () => {
+        expect(() => {
+          toMatchNamedSnapshot.call(
+            context,
+            'string',
+            snapshotName,
+            properties,
+          );
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('(null)', () => {
+        const snapshotName = 'toMatchNamedSnapshot (null)';
+
+        expect(() => {
+          toMatchNamedSnapshot.call(context, null, snapshotName, properties);
+        }).toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    test('Snapshot state must be initialized', () => {
+      const context = {
+        isNot: false,
+        promise: 'resolves',
+      } as Context;
+      const snapshotName = 'initialize me';
+
+      expect(() => {
+        toMatchNamedSnapshot.call(context, received, snapshotName);
+      }).toThrowErrorMatchingSnapshot();
+    });
+  });
+
   describe('toMatchSnapshot', () => {
     const received = {
       id: 'abcdef',
@@ -435,6 +516,45 @@ describe('matcher error', () => {
 
     // Future test: Snapshot hint must be a string
   });
+
+  describe('toThrowErrorMatchingNamedSnapshot', () => {
+    test('Received value must be a function', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      } as Context;
+      const received = 13;
+      const fromPromise = false;
+
+      expect(() => {
+        toThrowErrorMatchingNamedSnapshot.call(
+          context,
+          received,
+          '',
+          fromPromise,
+        );
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('Snapshot matchers cannot be used with not', () => {
+      const snapshotName = 'to-throw-snapshot';
+      const context = {
+        isNot: true,
+        promise: '',
+      } as Context;
+      const received = new Error('received');
+      const fromPromise = true;
+
+      expect(() => {
+        toThrowErrorMatchingNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+          fromPromise,
+        );
+      }).toThrowErrorMatchingSnapshot();
+    });
+  });
 });
 
 describe('other error', () => {
@@ -550,6 +670,223 @@ describe('pass false', () => {
         ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
+      });
+    });
+  });
+
+  describe('toMatchNamedSnapshot', () => {
+    describe('empty snapshot name', () => {
+      test('New snapshot was not written (multi line)', () => {
+        const context = {
+          currentTestName: 'New snapshot was not written',
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            match({received}) {
+              return {
+                actual: format(received),
+                count: 1,
+                expected: undefined,
+                pass: false,
+              };
+            },
+          },
+        } as Context;
+        const received = 'To write or not to write,\nthat is the question.';
+        const snapshotName = '';
+
+        const {message, pass} = toMatchNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+        ) as SyncExpectationResult;
+        expect(pass).toBe(false);
+        expect(message()).toMatchNamedSnapshot(snapshotName);
+      });
+
+      test('New snapshot was not written (single line)', () => {
+        const context = {
+          currentTestName: 'New snapshot was not written',
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            match({received}) {
+              return {
+                actual: format(received),
+                count: 2,
+                expected: undefined,
+                pass: false,
+              };
+            },
+          },
+        } as Context;
+        const received = 'Write me if you can!';
+        const snapshotName = '';
+
+        const {message, pass} = toMatchNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+        ) as SyncExpectationResult;
+        expect(pass).toBe(false);
+        expect(message()).toMatchNamedSnapshot(snapshotName);
+      });
+    });
+
+    describe('specific snapshot name', () => {
+      test('New snapshot was not written (multi line)', () => {
+        const context = {
+          currentTestName: 'New snapshot was not written',
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            match({received}) {
+              return {
+                actual: format(received),
+                count: 1,
+                expected: undefined,
+                key: 'specific-not-written-multi-line 1',
+                pass: false,
+              };
+            },
+          },
+        } as Context;
+        const received = 'To write or not to write,\nthat is the question.';
+        const snapshotName = 'specific-not-written-multi-line';
+
+        const {message, pass} = toMatchNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+        ) as SyncExpectationResult;
+        expect(pass).toBe(false);
+        expect(message()).toMatchNamedSnapshot(snapshotName);
+      });
+
+      test('New snapshot was not written (single line)', () => {
+        const context = {
+          currentTestName: 'New snapshot was not written',
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            match({received}) {
+              return {
+                actual: format(received),
+                count: 2,
+                expected: undefined,
+                key: 'specific-not-written-single-line 1',
+                pass: false,
+              };
+            },
+          },
+        } as Context;
+        const received = 'Write me if you can!';
+        const snapshotName = 'specific-not-written-single-line';
+
+        const {message, pass} = toMatchNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+        ) as SyncExpectationResult;
+        expect(pass).toBe(false);
+        expect(message()).toMatchNamedSnapshot(snapshotName);
+      });
+    });
+
+    describe('with properties', () => {
+      const id = 'abcdef';
+      const properties = {id};
+      const type = 'ADD_ITEM';
+
+      describe('equals false', () => {
+        const context = {
+          currentTestName: 'with properties',
+          equals: () => false,
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            fail: (fullTestName: string) => `${fullTestName} 1`,
+          },
+          utils: {
+            iterableEquality: () => {},
+            subsetEquality: () => {},
+          },
+        } as unknown as Context;
+
+        test('isLineDiffable false', () => {
+          const snapshotName = 'specific-line-diff-false';
+
+          const {message, pass} = toMatchNamedSnapshot.call(
+            context,
+            new RangeError('Invalid array length'),
+            snapshotName,
+            {name: 'Error'},
+          ) as SyncExpectationResult;
+          expect(pass).toBe(false);
+          expect(message()).toMatchNamedSnapshot(snapshotName);
+        });
+
+        test('isLineDiffable true', () => {
+          const snapshotName = 'specific-line-diff-true';
+          const received = {
+            id: 'abcdefg',
+            text: 'Increase code coverage',
+            type,
+          };
+
+          const {message, pass} = toMatchNamedSnapshot.call(
+            context,
+            received,
+            snapshotName,
+            properties,
+          ) as SyncExpectationResult;
+          expect(pass).toBe(false);
+          expect(message()).toMatchNamedSnapshot(snapshotName);
+        });
+      });
+
+      test('equals true', () => {
+        const context = {
+          currentTestName: 'with properties',
+          equals: () => true,
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            expand: false,
+            match({received}) {
+              return {
+                actual: format(received),
+                count: 1,
+                expected: format({
+                  id,
+                  text: 'snapshot',
+                  type,
+                }),
+                key: 'change text value 1',
+                pass: false,
+              };
+            },
+          } as SnapshotState,
+          utils: {
+            iterableEquality: () => {},
+            subsetEquality: () => {},
+          },
+        } as unknown as Context;
+        const received = {
+          id,
+          text: 'received',
+          type,
+        };
+        const snapshotName = 'change text value';
+
+        const {message, pass} = toMatchNamedSnapshot.call(
+          context,
+          received,
+          snapshotName,
+          properties,
+        ) as SyncExpectationResult;
+        expect(pass).toBe(false);
+        expect(message()).toMatchNamedSnapshot(snapshotName);
       });
     });
   });

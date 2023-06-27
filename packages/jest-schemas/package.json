@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.25.16"
+    "@sinclair/typebox": "^0.27.8"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

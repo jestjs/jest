@@ -49,11 +49,11 @@ test("throws the error if tested function didn't throw error", () => {
   }
 });
 
-test('accepts custom snapshot name', () => {
+test('accepts custom snapshot hint', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
   const template = makeTemplate(`test('accepts custom snapshot name', () => {
       expect(() => { throw new Error('apple'); })
-        .toThrowErrorMatchingSnapshot('custom-name');
+        .toThrowErrorMatchingSnapshot('custom-hint');
     });
     `);
 
