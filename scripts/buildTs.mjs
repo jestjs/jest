@@ -10,7 +10,7 @@ import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
-import glob from 'glob';
+import {sync as globSync} from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
@@ -107,7 +107,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     '@jest/test-utils',
   );
 
-  const tsConfigPaths = glob.sync('**/__tests__/tsconfig.json', {
+  const tsConfigPaths = globSync('**/__tests__/tsconfig.json', {
     absolute: true,
     cwd: packageDir,
   });
@@ -185,7 +185,7 @@ try {
   await Promise.all(
     packagesWithTs.map(({packageDir, pkg}) =>
       mutex(async () => {
-        const matched = glob.sync('build/**/*.d.ts', {
+        const matched = globSync('build/**/*.d.ts', {
           absolute: true,
           cwd: packageDir,
         });

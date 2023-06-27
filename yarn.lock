@@ -2876,7 +2876,7 @@ __metadata:
     eslint-plugin-prettier: ^4.0.0
     execa: ^5.0.0
     find-process: ^1.4.1
-    glob: ^8.0.0
+    glob: ^10.0.0
     graceful-fs: ^4.2.9
     isbinaryfile: ^5.0.0
     istanbul-lib-coverage: ^3.0.0
@@ -10621,7 +10621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.5":
+"glob@npm:^10.0.0, glob@npm:^10.2.5":
   version: 10.3.0
   resolution: "glob@npm:10.3.0"
   dependencies:
@@ -10650,7 +10650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.0, glob@npm:^8.0.1":
+"glob@npm:^8.0.1":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
   dependencies:

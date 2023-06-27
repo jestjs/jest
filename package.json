@@ -44,7 +44,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
-    "glob": "^8.0.0",
+    "glob": "^10.0.0",
     "graceful-fs": "^4.2.9",
     "isbinaryfile": "^5.0.0",
     "istanbul-lib-coverage": "^3.0.0",

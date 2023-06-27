@@ -21,7 +21,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';
-import glob from 'glob';
+import {sync as globSync} from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
@@ -62,7 +62,7 @@ function getBuildPath(file, buildFolder) {
 
 function buildNodePackage({packageDir, pkg}) {
   const srcDir = path.resolve(packageDir, SRC_DIR);
-  const files = glob.sync('**/*', {absolute: true, cwd: srcDir, nodir: true});
+  const files = globSync('**/*', {absolute: true, cwd: srcDir, nodir: true});
 
   process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
