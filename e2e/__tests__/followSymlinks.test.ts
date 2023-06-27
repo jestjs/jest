@@ -36,7 +36,7 @@ afterEach(() => {
   cleanup(DIR);
 });
 
-test('Node crawler picks up symlinked files when option is set as flag', () => {
+test('Node crawler picks up the file referenced by the link when option is set as flag', () => {
   // Symlinks are only enabled on windows with developer mode.
   // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
   if (process.platform === 'win32') {
