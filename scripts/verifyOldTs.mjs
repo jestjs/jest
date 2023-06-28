@@ -25,6 +25,7 @@ const baseTsConfig = JSON.parse(
 const tsConfig = {
   extends: baseTsConfig.extends,
   compilerOptions: {
+    module: 'commonjs',
     esModuleInterop: false,
     moduleResolution: 'node',
     noEmit: true,
