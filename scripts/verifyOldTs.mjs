@@ -51,7 +51,7 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      // TODO: do not set version after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
+      // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
       ['add', `typescript@~${tsVersion}`, '@tsconfig/node14@1'],
       {cwd, stdio: 'inherit'},
     );
@@ -99,6 +99,9 @@ function typeTests() {
       );
     }
 
+    // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
+    execa.sync('yarn', ['add', '@tsconfig/node14@1'], {cwd});
+
     execa.sync(
       'yarn',
       [
@@ -140,7 +143,7 @@ function typeTests() {
 
     execa.sync('yarn', ['test-types'], {cwd, stdio: 'inherit'});
   } finally {
-    execa.sync('git', ['checkout', 'yarn.lock'], {cwd});
+    execa.sync('git', ['checkout', 'package.json', 'yarn.lock'], {cwd});
     execa.sync('yarn', ['install'], {cwd});
   }
 
