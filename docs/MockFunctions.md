@@ -105,6 +105,11 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
+Looking at the code above when we log `myMock()` we get undefined because we have no undefined values at this point.
+Now when we log the other outputs for `mockReturnValueOnce`,we only get the values passed in once for each call 10 and 
+x,however on the third and fourth calls we get `true` on both occasions this occurs because the `mockReturnValue` is repetitive.
+
+
 Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate the behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
 
 ```javascript
