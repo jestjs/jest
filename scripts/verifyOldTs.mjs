@@ -25,8 +25,8 @@ const baseTsConfig = JSON.parse(
 const tsConfig = {
   extends: baseTsConfig.extends,
   compilerOptions: {
-    module: 'commonjs',
     esModuleInterop: false,
+    module: 'commonjs',
     moduleResolution: 'node',
     noEmit: true,
   },
@@ -51,7 +51,8 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14'],
+      // TODO: do not set version after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
+      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14@1'],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(
