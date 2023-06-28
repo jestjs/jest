@@ -2846,7 +2846,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@lerna-lite/cli": 1.13.0
     "@microsoft/api-extractor": ^7.35.0
-    "@tsconfig/node14": ^1.0.3
+    "@tsconfig/node14": ^14.0.0
     "@tsd/typescript": ^5.0.4
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
@@ -4435,10 +4435,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node14@npm:^1.0.0, @tsconfig/node14@npm:^1.0.3":
+"@tsconfig/node14@npm:^1.0.0":
   version: 1.0.3
   resolution: "@tsconfig/node14@npm:1.0.3"
   checksum: 19275fe80c4c8d0ad0abed6a96dbf00642e88b220b090418609c4376e1cef81bf16237bf170ad1b341452feddb8115d8dd2e5acdfdea1b27422071163dc9ba9d
+  languageName: node
+  linkType: hard
+
+"@tsconfig/node14@npm:^14.0.0":
+  version: 14.1.0
+  resolution: "@tsconfig/node14@npm:14.1.0"
+  checksum: 8342dc30edbfaed11d1659b1a9819779bb69df210974a9e8a337b0624b1d9f5026f37e2dcc1d555adb3e4246a0ec35896b3ae5fe3fc69f3382d3bc11069cecc1
   languageName: node
   linkType: hard
 
