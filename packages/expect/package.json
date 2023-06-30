@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@jest/expect-utils": "workspace:^",
+    "@types/node": "*",
     "jest-get-type": "workspace:^",
     "jest-matcher-utils": "workspace:^",
     "jest-message-util": "workspace:^",

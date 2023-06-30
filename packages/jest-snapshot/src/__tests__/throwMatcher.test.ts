@@ -5,11 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Context,
-  toThrowErrorMatchingNamedSnapshot,
-  toThrowErrorMatchingSnapshot,
-} from '../';
+import {type Context, toThrowErrorMatchingSnapshot} from '../';
 
 const mockedMatch = jest.fn(() => ({
   actual: 'coconut',
@@ -24,112 +20,50 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('throw matcher can take func', () => {
-  it('toThrowErrorMatchingSnapshot', () => {
-    toThrowErrorMatchingSnapshot.call(
-      mockedContext,
-      () => {
-        throw new Error('coconut');
-      },
-      undefined,
-      false,
-    );
+it('throw matcher can take func', () => {
+  toThrowErrorMatchingSnapshot.call(
+    mockedContext,
+    () => {
+      throw new Error('coconut');
+    },
+    undefined,
+    false,
+  );
 
-    expect(mockedMatch).toHaveBeenCalledTimes(1);
-    expect(mockedMatch).toHaveBeenCalledWith(
-      expect.objectContaining({received: 'coconut', testName: ''}),
-    );
-  });
-
-  it('toThrowErrorMatchingNamedSnapshot', () => {
-    toThrowErrorMatchingNamedSnapshot.call(
-      mockedContext,
-      () => {
-        throw new Error('coconut');
-      },
-      '',
-      false,
-    );
-
-    expect(mockedMatch).toHaveBeenCalledTimes(1);
-    expect(mockedMatch).toHaveBeenCalledWith(
-      expect.objectContaining({received: 'coconut', testName: ''}),
-    );
-  });
+  expect(mockedMatch).toHaveBeenCalledTimes(1);
+  expect(mockedMatch).toHaveBeenCalledWith(
+    expect.objectContaining({received: 'coconut', testName: ''}),
+  );
 });
 
 describe('throw matcher from promise', () => {
-  describe('toThrowErrorMatchingSnapshot', () => {
-    it('can take error', () => {
-      toThrowErrorMatchingSnapshot.call(
-        mockedContext,
-        new Error('coco'),
-        'testName',
-        true,
-      );
+  it('can take error', () => {
+    toThrowErrorMatchingSnapshot.call(
+      mockedContext,
+      new Error('coco'),
+      'testName',
+      true,
+    );
 
-      expect(mockedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedMatch).toHaveBeenCalledWith(
-        expect.objectContaining({received: 'coco', testName: ''}),
-      );
-    });
-
-    it('can take custom error', () => {
-      class CustomError extends Error {}
-
-      toThrowErrorMatchingSnapshot.call(
-        mockedContext,
-        new CustomError('nut'),
-        'testName',
-        true,
-      );
-
-      expect(mockedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedMatch).toHaveBeenCalledWith(
-        expect.objectContaining({received: 'nut', testName: ''}),
-      );
-    });
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledWith(
+      expect.objectContaining({received: 'coco', testName: ''}),
+    );
   });
 
-  describe('toThrowErrorMatchingNamedSnapshot', () => {
-    const mockedNamedMatch = jest.fn(() => ({
-      actual: 'coconut',
-      expected: 'coconut',
-      key: 'snapshot name 1',
-    }));
+  it('can take custom error', () => {
+    class CustomError extends Error {}
 
-    const mockedNamedContext = {
-      snapshotState: {match: mockedNamedMatch},
-    } as unknown as Context;
+    toThrowErrorMatchingSnapshot.call(
+      mockedContext,
+      new CustomError('nut'),
+      'testName',
+      true,
+    );
 
-    it('can take error', () => {
-      toThrowErrorMatchingNamedSnapshot.call(
-        mockedNamedContext,
-        new Error('coco'),
-        'snapshot name',
-        true,
-      );
-
-      expect(mockedNamedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedNamedMatch).toHaveBeenCalledWith(
-        expect.objectContaining({received: 'coco', testName: 'snapshot name'}),
-      );
-    });
-
-    it('can take custom error', () => {
-      class CustomError extends Error {}
-
-      toThrowErrorMatchingNamedSnapshot.call(
-        mockedNamedContext,
-        new CustomError('nut'),
-        'snapshot name',
-        true,
-      );
-
-      expect(mockedNamedMatch).toHaveBeenCalledTimes(1);
-      expect(mockedNamedMatch).toHaveBeenCalledWith(
-        expect.objectContaining({received: 'nut', testName: 'snapshot name'}),
-      );
-    });
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledWith(
+      expect.objectContaining({received: 'nut', testName: ''}),
+    );
   });
 });

@@ -9697,6 +9697,7 @@ __metadata:
     "@jest/expect-utils": "workspace:^"
     "@jest/test-utils": "workspace:^"
     "@tsd/typescript": ^5.0.4
+    "@types/node": "*"
     chalk: ^4.0.0
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
