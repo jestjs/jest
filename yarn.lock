@@ -12486,6 +12486,7 @@ __metadata:
     pure-rand: ^6.0.0
     slash: ^3.0.0
     stack-utils: ^2.0.3
+    tempy: ^1.0.0
   languageName: unknown
   linkType: soft
 
