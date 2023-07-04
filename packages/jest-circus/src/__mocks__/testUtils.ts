@@ -62,9 +62,6 @@ export const runTest = (
     throw new Error(message);
   }
 
-  result.stdout = String(result.stdout);
-  result.stderr = String(result.stderr);
-
   fs.rmSync(tmpFilename, {force: true});
 
   if (result.stderr) {
