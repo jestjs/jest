@@ -72,6 +72,8 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   cache: false,
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
+  collectCoverageFrom: ['src', '!public'],
+  coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [],
   cwd: '/test_root_dir/',
   detectLeaks: false,

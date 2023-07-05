@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x, 19.x]
+        node-version: [14.x, 16.x, 18.x, 19.x, 20.x]
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}

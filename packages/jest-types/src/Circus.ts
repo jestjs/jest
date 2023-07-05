@@ -81,6 +81,11 @@ export type SyncEvent =
       // an `afterAll` hook)
       name: 'error';
       error: Exception;
+      promise?: Promise<unknown>;
+    }
+  | {
+      name: 'error_handled';
+      promise: Promise<unknown>;
     };
 
 export type AsyncEvent =
@@ -143,6 +148,10 @@ export type AsyncEvent =
       test: TestEntry;
     }
   | {
+      name: 'test_started';
+      test: TestEntry;
+    }
+  | {
       // test failure is defined by presence of errors in `test.errors`,
       // `test_done` indicates that the test and all its hooks were run,
       // and nothing else will change it's state in the future. (except third
@@ -178,6 +187,17 @@ export type MatcherResults = {
 };
 
 export type TestStatus = 'skip' | 'done' | 'todo';
+
+export type TestNamesPath = Array<TestName | BlockName>;
+
+export type TestCaseStartInfo = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  mode: TestMode;
+  title: string;
+  startedAt?: number | null;
+};
+
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
@@ -187,7 +207,7 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
-  testPath: Array<TestName | BlockName>;
+  testPath: TestNamesPath;
 };
 
 export type RunResult = {
@@ -198,6 +218,7 @@ export type RunResult = {
 export type TestResults = Array<TestResult>;
 
 export type GlobalErrorHandlers = {
+  rejectionHandled: Array<(promise: Promise<unknown>) => void>;
   uncaughtException: Array<(exception: Exception) => void>;
   unhandledRejection: Array<
     (exception: Exception, promise: Promise<unknown>) => void
@@ -223,6 +244,7 @@ export type State = {
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
+  unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
 };
 
 export type DescribeBlock = {
@@ -256,4 +278,5 @@ export type TestEntry = {
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
   failing: boolean;
+  unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
 };

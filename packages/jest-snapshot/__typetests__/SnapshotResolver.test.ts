@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expectNotAssignable, expectType} from 'tsd-lite';
 import type {SnapshotResolver} from 'jest-snapshot';
 
 // SnapshotResolver
@@ -28,65 +28,65 @@ const snapshotResolver: SnapshotResolver = {
 
 // resolveSnapshotPath
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: (testPath: string, snapshotExtension: boolean) =>
     'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: (testPath: boolean) => 'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => true,
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
 // resolveTestPath
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: (snapshotPath: string, snapshotExtension: boolean) =>
     'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: (snapshotPath: boolean) => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => true,
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
 // testPathForConsistencyCheck
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: true,
 });
 
-expectError<SnapshotResolver>({
+expectNotAssignable<SnapshotResolver>({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => 'test/path',
 });
