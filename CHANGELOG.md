@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Revert [#14110](https://github.com/jestjs/jest/pull/14110) as it was a breaking change
+
 ### Chore & Maintenance
 
 ### Performance

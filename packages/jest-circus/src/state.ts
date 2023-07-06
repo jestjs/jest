@@ -34,7 +34,6 @@ const createState = (): Circus.State => {
     testNamePattern: null,
     testTimeout: 5000,
     unhandledErrors: [],
-    unhandledRejectionErrorByPromise: new Map(),
   };
 };
 
