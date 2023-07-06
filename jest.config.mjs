@@ -30,6 +30,7 @@ export default {
     'packages/jest-runtime/src/__tests__/test_root.*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
+    'e2e/node-url-manual-mocks/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   snapshotFormat: {
