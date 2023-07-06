@@ -105,7 +105,7 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Looking at the code above when we log `myMock()` we get undefined because we have no undefined values at this point.
+Looking at the code above when we log `myMock()` we get undefined because we have no defined values at this point.
 Now when we log the other outputs for `mockReturnValueOnce`,we only get the values passed in once for each call 10 and 
 x,however on the third and fourth calls we get `true` on both occasions this occurs because the `mockReturnValue` is repetitive.
 
