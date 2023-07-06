@@ -4,11 +4,15 @@
 
 ### Fixes
 
-- `[jest-circus]` Revert [#14110](https://github.com/jestjs/jest/pull/14110) as it was a breaking change
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.6.1
+
+### Fixes
+
+- `[jest-circus]` Revert [#14110](https://github.com/jestjs/jest/pull/14110) as it was a breaking change
 
 ## 29.6.0
 
