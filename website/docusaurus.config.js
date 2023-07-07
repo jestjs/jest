@@ -296,7 +296,7 @@ const config = {
         ],
         logo: {
           //         src: 'img/jest-outline.svg',
-          alt: 'OpenJs Open Source Logo',
+          alt: 'OpenJS Foundation Logo',
           src: 'img/openjsf-logo.svg',
           href: 'https://openjsf.org',
         },
