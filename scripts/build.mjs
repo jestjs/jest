@@ -66,9 +66,7 @@ async function buildNodePackage({packageDir, pkg}) {
 
   process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
-  for (const file of files) {
-    await buildFile(file);
-  }
+  await Promise.all(files.map(file => buildFile(file)));
 
   assert.ok(
     fs.existsSync(path.resolve(packageDir, pkg.main)),
