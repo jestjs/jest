@@ -85,7 +85,6 @@ export const makeTest = (
   startedAt: null,
   status: null,
   timeout,
-  unhandledRejectionErrorByPromise: new Map(),
 });
 
 // Traverse the tree of describe blocks and return true if at least one describe

@@ -269,35 +269,9 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       // execution, which will result in one test's error failing another test.
       // In any way, it should be possible to track where the error was thrown
       // from.
-      if (state.currentlyRunningTest) {
-        if (event.promise) {
-          state.currentlyRunningTest.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
-          );
-        } else {
-          state.currentlyRunningTest.errors.push(event.error);
-        }
-      } else {
-        if (event.promise) {
-          state.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
-          );
-        } else {
-          state.unhandledErrors.push(event.error);
-        }
-      }
-      break;
-    }
-    case 'error_handled': {
-      if (state.currentlyRunningTest) {
-        state.currentlyRunningTest.unhandledRejectionErrorByPromise.delete(
-          event.promise,
-        );
-      } else {
-        state.unhandledRejectionErrorByPromise.delete(event.promise);
-      }
+      state.currentlyRunningTest
+        ? state.currentlyRunningTest.errors.push(event.error)
+        : state.unhandledErrors.push(event.error);
       break;
     }
   }
