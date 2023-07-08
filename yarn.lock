@@ -2873,7 +2873,7 @@ __metadata:
     eslint-plugin-jsdoc: ^46.0.0
     eslint-plugin-local: "link:./.eslintplugin"
     eslint-plugin-markdown: ^3.0.0
-    eslint-plugin-prettier: ^4.0.0
+    eslint-plugin-prettier: ^5.0.0-alpha.2
     execa: ^5.0.0
     find-process: ^1.4.1
     glob: ^8.0.0
@@ -9259,18 +9259,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.0.0":
-  version: 4.2.1
-  resolution: "eslint-plugin-prettier@npm:4.2.1"
+"eslint-plugin-prettier@npm:^5.0.0-alpha.2":
+  version: 5.0.0-alpha.2
+  resolution: "eslint-plugin-prettier@npm:5.0.0-alpha.2"
   dependencies:
     prettier-linter-helpers: ^1.0.0
+    synckit: ^0.8.5
   peerDependencies:
-    eslint: ">=7.28.0"
-    prettier: ">=2.0.0"
+    "@types/eslint": ">=8.0.0"
+    eslint: ">=8.0.0"
+    prettier: ">=3.0.0"
   peerDependenciesMeta:
+    "@types/eslint":
+      optional: true
     eslint-config-prettier:
       optional: true
-  checksum: b9e839d2334ad8ec7a5589c5cb0f219bded260839a857d7a486997f9870e95106aa59b8756ff3f37202085ebab658de382b0267cae44c3a7f0eb0bcc03a4f6d6
+  checksum: 612798739d498244e16031b1c8cf4617db9c0526b134afea2e8b6960fcab6bcde403e2e60e3647854ebefc2374ce5ce6453cba89649a5bdf66ab9045beb4d666
   languageName: node
   linkType: hard
 
