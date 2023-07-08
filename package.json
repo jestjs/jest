@@ -128,6 +128,7 @@
     "bracketSpacing": false,
     "proseWrap": "never",
     "singleQuote": true,
+    "trailingComma": "all",
     "arrowParens": "avoid",
     "overrides": [
       {
