@@ -1,12 +1,12 @@
 //parent component
-import { useRef } from "react";
-import CheckboxWithLabel from "./CheckboxWithLabel";
+import {useRef} from 'react';
+import CheckboxWithLabel from './CheckboxWithLabel';
 
 export default function Check() {
   const labelRef = useRef(null);
   const inputRef = useRef(null);
-  const labelOn = "on";
-  const labelOff = "off";
+  const labelOn = 'on';
+  const labelOff = 'off';
 
   return (
     <div>
@@ -19,4 +19,3 @@ export default function Check() {
     </div>
   );
 }
-

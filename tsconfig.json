@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
     "composite": true,
     "declaration": true,
     "emitDeclarationOnly": true,
