@@ -630,7 +630,7 @@ describe('Watch mode flows', () => {
   });
 
   it.each`
-    ok      | option
+    ok       | option
     ${'✔︎'} | ${'bail'}
     ${'✖︎'} | ${'changedFilesWithAncestor'}
     ${'✔︎'} | ${'changedSince'}

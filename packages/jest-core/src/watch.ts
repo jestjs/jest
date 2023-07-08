@@ -496,8 +496,8 @@ const checkForConflicts = (
       .join(' and ');
     error = `
   Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
-      `<${key}>`,
-    )}.
+    `<${key}>`,
+  )}.
   Please change the key configuration for one of the conflicting plugins to avoid overlap.`.trim();
   }
 

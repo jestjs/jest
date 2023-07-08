@@ -743,8 +743,7 @@ export class ModuleMocker {
         }
 
         return finalReturnValue;
-      },
-      metadata.length || 0);
+      }, metadata.length || 0);
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
