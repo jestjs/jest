@@ -2900,7 +2900,7 @@ __metadata:
     node-notifier: ^10.0.0
     p-limit: ^3.1.0
     pkg-dir: ^5.0.0
-    prettier: ^3.0.0
+    prettier: "patch:prettier@npm:^3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch"
     promise: ^8.0.2
     read-pkg: ^5.2.0
     resolve: ^1.20.0
@@ -16935,6 +16935,15 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: 6a832876a1552dc58330d2467874e5a0b46b9ccbfc5d3531eb69d15684743e7f83dc9fbd202db6270446deba9c82b79d24383d09924c462b457136a759425e33
+  languageName: node
+  linkType: hard
+
+"prettier@patch:prettier@npm:^3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 3.0.0
+  resolution: "prettier@patch:prettier@npm%3A3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch::version=3.0.0&hash=fad750&locator=%40jest%2Fmonorepo%40workspace%3A."
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: a13645a0b420fe8824ef521ea9ca55bc394e0c90654a101450fbe95053c9addc5f6b89c03d3fd3f7da0c1ba578556536a9a880061f1d1923a17b91cdb3b4bb52
   languageName: node
   linkType: hard
 
