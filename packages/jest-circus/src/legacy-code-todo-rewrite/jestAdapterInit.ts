@@ -174,6 +174,7 @@ export const runAndTransformResultsToJestFormat = async ({
       return {
         ancestorTitles,
         duration: testResult.duration,
+        failing: testResult.failing,
         failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
@@ -237,7 +238,10 @@ const handleSnapshotStateAfterRetry =
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
-      jestExpect.setState({currentTestName: getTestID(event.test)});
+      jestExpect.setState({
+        currentTestName: getTestID(event.test),
+        testFailing: event.test.failing,
+      });
       break;
     }
     case 'test_done': {

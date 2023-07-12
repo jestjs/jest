@@ -277,7 +277,23 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     config;
   let {received} = config;
 
-  context.dontThrow && context.dontThrow();
+  /** If a test was ran with `test.failing`. Passed by Jest Circus. */
+  const {testFailing = false} = context;
+
+  /**
+   * Run the snapshot matcher as a normal throwing matcher with
+   * no side effects and no error supression.
+   *
+   * Skipped side effects occur in {@link snapshotState.match}
+   * and include updating the snapshot and recording passed/failed
+   * snapshots in the snapshot state.
+   */
+  const pure = testFailing;
+
+  if (!pure && context.dontThrow) {
+    // Supress errors while running tests
+    context.dontThrow();
+  }
 
   const {currentConcurrentTestName, isNot, snapshotState} = context;
   const currentTestName =
@@ -358,6 +374,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     error: context.error,
     inlineSnapshot,
     isInline,
+    pure,
     received,
     testName: fullTestName,
   });

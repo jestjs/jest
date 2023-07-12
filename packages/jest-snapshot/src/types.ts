@@ -11,6 +11,7 @@ import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
   snapshotState: SnapshotState;
+  testFailing?: boolean;
 }
 
 // This is typically implemented by `jest-haste-map`'s `HasteFS`, but we
