@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Move `@types/prettier` from `dependencies` to `devDependencies` ([#14328](https://github.com/jestjs/jest/pull/14328))
+
 ### Chore & Maintenance
 
 ### Performance
