@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
+
 ### Performance
 
 ## 29.6.1
