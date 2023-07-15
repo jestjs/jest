@@ -4,7 +4,11 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Move `@types/prettier` from `dependencies` to `devDependencies` ([#14328](https://github.com/jestjs/jest/pull/14328))
+
 ### Chore & Maintenance
+
+- `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
 
 ### Performance
 
@@ -12,7 +16,7 @@
 
 ### Fixes
 
-- `[jest-circus]` Revert [#14110](https://github.com/jestjs/jest/pull/14110) as it was a breaking change
+- `[jest-circus]` Revert [#14110](https://github.com/jestjs/jest/pull/14110) as it was a breaking change ([#14304](https://github.com/jestjs/jest/pull/14304))
 
 ## 29.6.0
 
@@ -38,6 +42,7 @@
 - `[jest-runtime]` Guard `_isMockFunction` access with `in` ([#14188](https://github.com/facebook/jest/pull/14188))
 - `[jest-snapshot]` Fix a potential bug when not using prettier and improve performance ([#14036](https://github.com/facebook/jest/pull/14036))
 - `[@jest/transform]` Do not instrument `.json` modules ([#14048](https://github.com/facebook/jest/pull/14048))
+- `[jest-worker]` Restart a shut down worker before sending it a task ([#14015](https://github.com/facebook/jest/pull/14015))
 
 ### Chore & Maintenance
 
