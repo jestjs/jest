@@ -8,6 +8,7 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import * as path from 'path';
+import {fileURLToPath} from 'url';
 import chalk = require('chalk');
 import slash = require('slash');
 import type {IModuleMap} from 'jest-haste-map';
@@ -188,9 +189,11 @@ export default class Resolver {
 
   resolveModuleFromDirIfExists(
     dirname: string,
-    moduleName: string,
+    moduleName: string | URL,
     options?: ResolveModuleConfig,
   ): string | null {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const {extensions, key, moduleDirectory, paths, skipResolution} =
       this._prepareForResolution(dirname, moduleName, options);
 
@@ -263,9 +266,11 @@ export default class Resolver {
 
   async resolveModuleFromDirIfExistsAsync(
     dirname: string,
-    moduleName: string,
+    moduleName: string | URL,
     options?: ResolveModuleConfig,
   ): Promise<string | null> {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const {extensions, key, moduleDirectory, paths, skipResolution} =
       this._prepareForResolution(dirname, moduleName, options);
 
@@ -342,9 +347,11 @@ export default class Resolver {
 
   resolveModule(
     from: string,
-    moduleName: string,
+    moduleName: string | URL,
     options?: ResolveModuleConfig,
   ): string {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const dirname = path.dirname(from);
     const module =
       this.resolveStubModuleName(from, moduleName) ||
@@ -359,9 +366,11 @@ export default class Resolver {
 
   async resolveModuleAsync(
     from: string,
-    moduleName: string,
+    moduleName: string | URL,
     options?: ResolveModuleConfig,
   ): Promise<string> {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const dirname = path.dirname(from);
     const module =
       (await this.resolveStubModuleNameAsync(from, moduleName)) ||
@@ -453,7 +462,11 @@ export default class Resolver {
     return moduleNameMapper.some(({regex}) => regex.test(moduleName));
   }
 
-  isCoreModule(moduleName: string): boolean {
+  isCoreModule(moduleName: string | URL): boolean {
+    if (typeof moduleName !== 'string') {
+      moduleName = moduleName.href;
+    }
+
     return (
       this._options.hasCoreModules &&
       (isBuiltinModule(moduleName) || moduleName.startsWith('node:')) &&
@@ -461,7 +474,25 @@ export default class Resolver {
     );
   }
 
-  getModule(name: string): string | null {
+  normalizeModuleSpecifier(specifier: string | URL): string {
+    if (typeof specifier !== 'string') {
+      specifier = specifier.href;
+    }
+
+    if (specifier.startsWith('file:')) {
+      specifier = fileURLToPath(specifier);
+    }
+
+    if (specifier.startsWith('node:')) {
+      specifier = specifier.slice('node:'.length);
+    }
+
+    return specifier;
+  }
+
+  getModule(name: string | URL): string | null {
+    name = this.normalizeModuleSpecifier(name);
+
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
@@ -469,7 +500,9 @@ export default class Resolver {
     );
   }
 
-  getModulePath(from: string, moduleName: string): string {
+  getModulePath(from: string, moduleName: string | URL): string {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
@@ -484,7 +517,9 @@ export default class Resolver {
     );
   }
 
-  getMockModule(from: string, name: string): string | null {
+  getMockModule(from: string, name: string | URL): string | null {
+    name = this.normalizeModuleSpecifier(name);
+
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
@@ -497,7 +532,12 @@ export default class Resolver {
     return null;
   }
 
-  async getMockModuleAsync(from: string, name: string): Promise<string | null> {
+  async getMockModuleAsync(
+    from: string,
+    name: string | URL,
+  ): Promise<string | null> {
+    name = this.normalizeModuleSpecifier(name);
+
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
@@ -526,7 +566,11 @@ export default class Resolver {
     return paths;
   }
 
-  getGlobalPaths(moduleName?: string): Array<string> {
+  getGlobalPaths(moduleName?: string | URL): Array<string> {
+    if (moduleName) {
+      moduleName = this.normalizeModuleSpecifier(moduleName);
+    }
+
     if (!moduleName || moduleName[0] === '.' || this.isCoreModule(moduleName)) {
       return [];
     }
@@ -537,9 +581,11 @@ export default class Resolver {
   getModuleID(
     virtualMocks: Map<string, boolean>,
     from: string,
-    moduleName = '',
+    moduleName: string | URL = '',
     options?: ResolveModuleConfig,
   ): string {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const stringifiedOptions = options ? JSON.stringify(options) : '';
     const key = from + path.delimiter + moduleName + stringifiedOptions;
     const cachedModuleID = this._moduleIDCache.get(key);
@@ -571,9 +617,11 @@ export default class Resolver {
   async getModuleIDAsync(
     virtualMocks: Map<string, boolean>,
     from: string,
-    moduleName = '',
+    moduleName: string | URL = '',
     options?: ResolveModuleConfig,
   ): Promise<string> {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const stringifiedOptions = options ? JSON.stringify(options) : '';
     const key = from + path.delimiter + moduleName + stringifiedOptions;
     const cachedModuleID = this._moduleIDCache.get(key);
@@ -706,7 +754,9 @@ export default class Resolver {
     );
   }
 
-  resolveStubModuleName(from: string, moduleName: string): string | null {
+  resolveStubModuleName(from: string, moduleName: string | URL): string | null {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
@@ -764,8 +814,10 @@ export default class Resolver {
 
   async resolveStubModuleNameAsync(
     from: string,
-    moduleName: string,
+    moduleName: string | URL,
   ): Promise<string | null> {
+    moduleName = this.normalizeModuleSpecifier(moduleName);
+
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(

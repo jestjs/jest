@@ -108,12 +108,12 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  createMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
+  createMockFromModule<T = unknown>(moduleName: string | URL): Mocked<T>;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module and its dependencies.
    */
-  deepUnmock(moduleName: string): Jest;
+  deepUnmock(moduleName: string | URL): Jest;
   /**
    * Disables automatic mocking in the module loader.
    *
@@ -127,7 +127,7 @@ export interface Jest {
    * avoid this behavior.
    */
   doMock<T = unknown>(
-    moduleName: string,
+    moduleName: string | URL,
     moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
@@ -136,7 +136,7 @@ export interface Jest {
    * to the top of the code block. Use this method if you want to explicitly
    * avoid this behavior.
    */
-  dontMock(moduleName: string): Jest;
+  dontMock(moduleName: string | URL): Jest;
   /**
    * Enables automatic mocking in the module loader.
    */
@@ -155,7 +155,7 @@ export interface Jest {
    *
    * @deprecated Use `jest.createMockFromModule()` instead
    */
-  genMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
+  genMockFromModule<T = unknown>(moduleName: string | URL): Mocked<T>;
   /**
    * When mocking time, `Date.now()` will also be mocked. If you for some reason
    * need access to the real current time, you can invoke this function.
@@ -206,7 +206,7 @@ export interface Jest {
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock<T = unknown>(
-    moduleName: string,
+    moduleName: string | URL,
     moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
@@ -214,7 +214,7 @@ export interface Jest {
    * Mocks a module with the provided module factory when it is being imported.
    */
   unstable_mockModule<T = unknown>(
-    moduleName: string,
+    moduleName: string | URL,
     moduleFactory: () => T | Promise<T>,
     options?: {virtual?: boolean},
   ): Jest;
@@ -257,12 +257,12 @@ export interface Jest {
    * getRandom(); // Always returns 10
    * ```
    */
-  requireActual<T = unknown>(moduleName: string): T;
+  requireActual<T = unknown>(moduleName: string | URL): T;
   /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
-  requireMock<T = unknown>(moduleName: string): T;
+  requireMock<T = unknown>(moduleName: string | URL): T;
   /**
    * Resets the state of all mocks. Equivalent to calling `.mockReset()` on
    * every mocked function.
@@ -349,7 +349,7 @@ export interface Jest {
    * It is recommended to use `jest.mock()` instead. The `jest.mock()` API's second
    * argument is a module factory instead of the expected exported module object.
    */
-  setMock(moduleName: string, moduleExports: unknown): Jest;
+  setMock(moduleName: string | URL, moduleExports: unknown): Jest;
   /**
    * Set the current system time used by fake timers. Simulates a user changing
    * the system clock while your program is running. It affects the current time,
@@ -385,7 +385,7 @@ export interface Jest {
    * the specified module from `require()` (e.g. that it should always return the
    * real module).
    */
-  unmock(moduleName: string): Jest;
+  unmock(moduleName: string | URL): Jest;
   /**
    * Instructs Jest to use fake versions of the global date, performance,
    * time and timer APIs. Fake timers implementation is backed by

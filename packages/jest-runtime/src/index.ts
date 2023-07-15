@@ -856,7 +856,7 @@ export default class Runtime {
 
   requireModule<T = unknown>(
     from: string,
-    moduleName?: string,
+    moduleName?: string | URL,
     options?: InternalModuleOptions,
     isRequireActual = false,
   ): T {
@@ -975,11 +975,11 @@ export default class Runtime {
     });
   }
 
-  requireActual<T = unknown>(from: string, moduleName: string): T {
+  requireActual<T = unknown>(from: string, moduleName: string | URL): T {
     return this.requireModule<T>(from, moduleName, undefined, true);
   }
 
-  requireMock<T = unknown>(from: string, moduleName: string): T {
+  requireMock<T = unknown>(from: string, moduleName: string | URL): T {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -1067,7 +1067,7 @@ export default class Runtime {
   private _loadModule(
     localModule: InitialModule,
     from: string,
-    moduleName: string | undefined,
+    moduleName: string | URL | undefined,
     modulePath: string,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
@@ -1291,7 +1291,7 @@ export default class Runtime {
 
   setMock(
     from: string,
-    moduleName: string,
+    moduleName: string | URL,
     mockFactory: () => unknown,
     options?: {virtual?: boolean},
   ): void {
@@ -1312,7 +1312,7 @@ export default class Runtime {
 
   private setModuleMock(
     from: string,
-    moduleName: string,
+    moduleName: string | URL,
     mockFactory: () => Promise<unknown> | unknown,
     options?: {virtual?: boolean},
   ): void {
@@ -1375,7 +1375,7 @@ export default class Runtime {
     this.isTornDown = true;
   }
 
-  private _resolveCjsModule(from: string, to: string | undefined) {
+  private _resolveCjsModule(from: string, to: string | URL | undefined) {
     return to
       ? this._resolver.resolveModule(from, to, {
           conditions: this.cjsConditions,
@@ -1383,7 +1383,7 @@ export default class Runtime {
       : from;
   }
 
-  private _resolveModule(from: string, to: string | undefined) {
+  private _resolveModule(from: string, to: string | URL | undefined) {
     return to
       ? this._resolver.resolveModuleAsync(from, to, {
           conditions: this.esmConditions,
@@ -1477,7 +1477,7 @@ export default class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: string | null,
-    moduleName?: string,
+    moduleName?: string | URL,
   ) {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -1680,7 +1680,11 @@ export default class Runtime {
     }
   }
 
-  private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
+  private _requireCoreModule(moduleName: string | URL, supportPrefix: boolean) {
+    if (typeof moduleName !== 'string') {
+      moduleName = moduleName.href;
+    }
+
     const moduleWithoutNodePrefix =
       supportPrefix && moduleName.startsWith('node:')
         ? moduleName.slice('node:'.length)
@@ -1697,7 +1701,7 @@ export default class Runtime {
     return require(moduleName);
   }
 
-  private _importCoreModule(moduleName: string, context: VMContext) {
+  private _importCoreModule(moduleName: string | URL, context: VMContext) {
     const required = this._requireCoreModule(moduleName, true);
 
     const module = new SyntheticModule(
@@ -1839,7 +1843,7 @@ export default class Runtime {
     return Module;
   }
 
-  private _generateMock<T>(from: string, moduleName: string) {
+  private _generateMock<T>(from: string, moduleName: string | URL) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveCjsModule(from, moduleName);
@@ -2094,7 +2098,7 @@ export default class Runtime {
       this._shouldAutoMock = true;
       return jestObject;
     };
-    const unmock = (moduleName: string) => {
+    const unmock = (moduleName: string | URL) => {
       const moduleID = this._resolver.getModuleID(
         this._virtualMocks,
         from,
@@ -2104,7 +2108,7 @@ export default class Runtime {
       this._explicitShouldMock.set(moduleID, false);
       return jestObject;
     };
-    const deepUnmock = (moduleName: string) => {
+    const deepUnmock = (moduleName: string | URL) => {
       const moduleID = this._resolver.getModuleID(
         this._virtualMocks,
         from,
@@ -2130,7 +2134,7 @@ export default class Runtime {
       return jestObject;
     };
     const setMockFactory = (
-      moduleName: string,
+      moduleName: string | URL,
       mockFactory: () => unknown,
       options?: {virtual?: boolean},
     ) => {
