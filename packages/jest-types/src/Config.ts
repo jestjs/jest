@@ -239,6 +239,7 @@ export type InitialOptions = Partial<{
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   coverageThreshold: CoverageThreshold;
+  customMockPath?: string;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
