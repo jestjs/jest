@@ -12449,6 +12449,7 @@ __metadata:
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
     execa: ^5.0.0
+    jest-util: "workspace:^"
     p-limit: ^3.1.0
   languageName: unknown
   linkType: soft

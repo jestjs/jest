@@ -53,7 +53,7 @@ import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy} from 'jest-util';
+import {createDirectory, deepCyclicCopy, invariant, notEmpty} from 'jest-util';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -2537,16 +2537,6 @@ export default class Runtime {
   setGlobalsForRuntime(globals: JestGlobals): void {
     this.jestGlobals = globals;
   }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined;
 }
 
 async function evaluateSyntheticModule(module: SyntheticModule) {
