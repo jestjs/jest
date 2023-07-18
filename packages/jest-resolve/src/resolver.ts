@@ -39,6 +39,7 @@ export type ResolveModuleConfig = {
   conditions?: Array<string>;
   skipNodeResolution?: boolean;
   paths?: Array<string>;
+  customMockPath?: string;
 };
 
 const NATIVE_PLATFORM = 'native';

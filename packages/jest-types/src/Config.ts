@@ -438,6 +438,7 @@ export type ProjectConfig = {
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  customMockPath?: string;
   cwd: string;
   dependencyExtractor?: string;
   detectLeaks: boolean;
