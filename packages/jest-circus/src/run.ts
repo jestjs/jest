@@ -9,6 +9,7 @@ import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
 import {jestExpect} from '@jest/expect';
 import type {Circus} from '@jest/types';
+import {invariant} from 'jest-util';
 import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
@@ -17,7 +18,6 @@ import {
   getAllHooksForDescribe,
   getEachHooksForTest,
   getTestID,
-  invariant,
   makeRunResult,
 } from './utils';
 
