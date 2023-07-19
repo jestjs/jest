@@ -10,6 +10,8 @@
 
 - `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
 
+- `[@jest/core, @jest/console, @jest/transform, jest-runtime, jest-changed-files, jest-circus, jest-haste-map]` Use `invariant` and `notEmpty` from `jest-util` rather than own internal ([#14339](https://github.com/jestjs/jest/pull/14339))
+
 ### Performance
 
 ## 29.6.1
