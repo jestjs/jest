@@ -2851,7 +2851,6 @@ __metadata:
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
-    "@types/dedent": ^0.7.0
     "@types/node": ~14.14.45
     "@types/which": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
@@ -2862,7 +2861,7 @@ __metadata:
     camelcase: ^6.2.0
     chalk: ^4.0.0
     chokidar: ^3.3.0
-    dedent: ^0.7.0
+    dedent: ^1.0.0
     eslint: ^8.8.0
     eslint-config-prettier: ^8.1.0
     eslint-import-resolver-typescript: ^3.2.5
@@ -3054,7 +3053,7 @@ __metadata:
     babel-plugin-istanbul: ^6.1.1
     chalk: ^4.0.0
     convert-source-map: ^2.0.0
-    dedent: ^0.7.0
+    dedent: ^1.0.0
     fast-json-stable-stringify: ^2.1.0
     graceful-fs: ^4.2.9
     jest-haste-map: "workspace:^"
@@ -4613,13 +4612,6 @@ __metadata:
   dependencies:
     "@types/ms": "*"
   checksum: 0a7b89d8ed72526858f0b61c6fd81f477853e8c4415bb97f48b1b5545248d2ae389931680b94b393b993a7cfe893537a200647d93defe6d87159b96812305adc
-  languageName: node
-  linkType: hard
-
-"@types/dedent@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@types/dedent@npm:0.7.0"
-  checksum: b9b7f0c42d99da764be75dd00b2f2be162f5a0ca43aafe0c740efa76b5f37f8a4f4e2ccc84883054e06e05c1169733aa8ee7750da0334c9cba26d9e10ae844f1
   languageName: node
   linkType: hard
 
@@ -6306,6 +6298,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"babel-plugin-macros@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "babel-plugin-macros@npm:3.1.0"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    cosmiconfig: ^7.0.0
+    resolve: ^1.19.0
+  checksum: 765de4abebd3e4688ebdfbff8571ddc8cd8061f839bb6c3e550b0344a4027b04c60491f843296ce3f3379fb356cc873d57a9ee6694262547eb822c14a25be9a6
+  languageName: node
+  linkType: hard
+
 "babel-plugin-polyfill-corejs2@npm:^0.3.3":
   version: 0.3.3
   resolution: "babel-plugin-polyfill-corejs2@npm:0.3.3"
@@ -7864,7 +7867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cosmiconfig@npm:^7.0.1":
+"cosmiconfig@npm:^7.0.0, cosmiconfig@npm:^7.0.1":
   version: 7.1.0
   resolution: "cosmiconfig@npm:7.1.0"
   dependencies:
@@ -8296,6 +8299,15 @@ __metadata:
   version: 0.7.0
   resolution: "dedent@npm:0.7.0"
   checksum: 87de191050d9a40dd70cad01159a0bcf05ecb59750951242070b6abf9569088684880d00ba92a955b4058804f16eeaf91d604f283929b4f614d181cd7ae633d2
+  languageName: node
+  linkType: hard
+
+"dedent@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "dedent@npm:1.0.2"
+  dependencies:
+    babel-plugin-macros: ^3.1.0
+  checksum: fa51be386f9ddc37d05a30dc5433c683873425c1e445ba4c35c310bbf2c17dcaae7174e65a11cdbde344a56f6c9e19c0410f2f3a8d2b5bf2c7b88525498d9637
   languageName: node
   linkType: hard
 
@@ -12464,13 +12476,12 @@ __metadata:
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/co": ^4.6.2
-    "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/stack-utils": ^2.0.0
     chalk: ^4.0.0
     co: ^4.6.0
-    dedent: ^0.7.0
+    dedent: ^1.0.0
     execa: ^5.0.0
     graceful-fs: ^4.2.9
     is-generator-fn: ^2.0.0

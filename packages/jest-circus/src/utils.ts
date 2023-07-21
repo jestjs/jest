@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import co from 'co';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
