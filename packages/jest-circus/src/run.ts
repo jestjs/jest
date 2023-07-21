@@ -140,9 +140,8 @@ function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
   jestExpect.setState({currentConcurrentTestName: testNameStorage});
   for (const test of concurrentTests) {
     try {
-      const promise = testNameStorage.run(getTestID(test), () =>
-        mutex(test.fn),
-      );
+      const testFn = test.fn;
+      const promise = mutex(() => testNameStorage.run(getTestID(test), testFn));
       // Avoid triggering the uncaught promise rejection handler in case the
       // test fails before being awaited on.
       // eslint-disable-next-line @typescript-eslint/no-empty-function
