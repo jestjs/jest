@@ -62,7 +62,7 @@ To achieve that goal, we will use the funds to:
 - Print and distribute swag
 - Develop and fund a bug bounty program (TBD)
 
-This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/fbjest)!
+This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/jestjs_)!
 
 ## Thank You
 

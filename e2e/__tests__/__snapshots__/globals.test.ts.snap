@@ -24,9 +24,9 @@ exports[`cannot have describe with no implementation 1`] = `
     Missing second argument. It must be a callback function.
 
     > 1 | describe('describe, no implementation');
-        |          ^
+        |                                        ^
 
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)"
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:40)"
 `;
 
 exports[`cannot have describe with no implementation 2`] = `

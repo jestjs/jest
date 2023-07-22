@@ -106,7 +106,7 @@ Once you're finished, Jest will give you a summary before returning back to watc
 
 Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
 
-**Example:**
+Example:
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 
@@ -160,7 +160,7 @@ it('will fail every time', () => {
 
 // Snapshot
 exports[`will fail every time 1`] = `
-Object {
+{
   "createdAt": 2018-05-19T23:36:09.816Z,
   "id": 3,
   "name": "LeBron James",
@@ -186,7 +186,7 @@ it('will check the matchers and pass', () => {
 
 // Snapshot
 exports[`will check the matchers and pass 1`] = `
-Object {
+{
   "createdAt": Any<Date>,
   "id": Any<Number>,
   "name": "LeBron James",
@@ -211,7 +211,7 @@ it('will check the values and pass', () => {
 
 // Snapshot
 exports[`will check the values and pass 1`] = `
-Object {
+{
   "createdAt": Any<Date>,
   "name": 'Bond... James Bond',
 }

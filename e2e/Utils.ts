@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import {
   ExecaSyncError,
   SyncOptions as ExecaSyncOptions,
@@ -91,7 +91,7 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
 };
 
 export const makeTemplate =
-  (str: string): ((values?: Array<unknown>) => string) =>
+  (str: string): ((values?: Array<string>) => string) =>
   (values = []) =>
     str.replace(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {

@@ -19,9 +19,11 @@ import TOCInline from '@theme/TOCInline';
 
 Disables automatic mocking in the module loader.
 
-> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+:::info
 
-After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
+Automatic mocking should be enabled via [`automock`](Configuration.md#automock-boolean) configuration option for this method to have any effect. Also see documentation of the configuration option for more details.
+
+:::
 
 Jest configuration:
 
@@ -55,19 +57,25 @@ test('original implementation', () => {
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lodash, array utilities, etc) and entire libraries like React.js.
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. `Array.prototype` methods) to highly common utility methods (e.g. `underscore`, `lodash`, array utilities, etc) and entire libraries like `React.js`.
 
 Returns the `jest` object for chaining.
 
-_Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior._
+:::tip
+
+When using `babel-jest`, calls to `disableAutomock()` will automatically be hoisted to the top of the code block. Use `autoMockOff()` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.enableAutomock()`
 
 Enables automatic mocking in the module loader.
 
-Returns the `jest` object for chaining.
+:::info
 
-> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+For more details on automatic mocking see documentation of [`automock`](Configuration.md#automock-boolean) configuration option.
+
+:::
 
 Example:
 
@@ -92,7 +100,13 @@ test('original implementation', () => {
 });
 ```
 
-_Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
+Returns the `jest` object for chaining.
+
+:::tip
+
+When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.genMockFromModule(moduleName)`
 
@@ -103,7 +117,7 @@ This is useful when you want to create a [manual mock](ManualMocks.md) that exte
 Example:
 
 ```js title="utils.js"
-export default {
+module.exports = {
   authorize: () => {
     return 'token';
   },
@@ -112,11 +126,12 @@ export default {
 ```
 
 ```js title="__tests__/genMockFromModule.test.js"
-const utils = jest.genMockFromModule('../utils').default;
+const utils = jest.genMockFromModule('../utils');
+
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.genMockFromModule', () => {
-  expect(utils.authorize.mock).toBeTruthy();
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
   expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
@@ -176,7 +191,7 @@ module.exports = {
 ```
 
 ```js title="__tests__/example.test.js"
-const example = jest.genMockFromModule('./example');
+const example = jest.genMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
@@ -272,7 +287,11 @@ jest.mock(
 );
 ```
 
-> **Warning:** Importing a module in a setup file (as specified by `setupFilesAfterEnv`) will prevent mocking for the module in question, as well as all the modules that it imports.
+:::caution
+
+Importing a module in a setup file (as specified by [`setupFilesAfterEnv`](Configuration.md#setupfilesafterenv-array)) will prevent mocking for the module in question, as well as all the modules that it imports.
+
+:::
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
@@ -378,7 +397,11 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
+:::info
+
+It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
+
+:::
 
 ### `jest.requireActual(moduleName)`
 
@@ -455,7 +478,7 @@ const otherCopyOfMyModule = require('myModule');
 
 ## Mock Functions
 
-### `jest.fn(implementation)`
+### `jest.fn(implementation?)`
 
 Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
@@ -628,10 +651,6 @@ Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.advanceTimersByTime(msToRun)`
 
-##### renamed in Jest **22.0.0+**
-
-Also under the alias: `.runTimersToTime()`
-
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
@@ -688,16 +707,18 @@ This function is only available with the default [jest-circus](https://github.co
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
-
-To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
-
-_Note: The default timeout interval is 5 seconds if this method is not called._
-
-_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
 
 Example:
 
 ```js
 jest.setTimeout(1000); // 1 second
 ```
+
+:::tip
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
+
+If you want to set the timeout for all test files, use [`testTimeout`](Configuration.md#testtimeout-number) configuration option.
+
+:::
