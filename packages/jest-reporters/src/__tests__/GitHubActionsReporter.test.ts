@@ -13,8 +13,8 @@ import type {
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
+import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import {normalizeIcons} from '../../../../e2e/Utils';
 import BaseGitHubActionsReporter from '../GitHubActionsReporter';
 
 afterEach(() => {
