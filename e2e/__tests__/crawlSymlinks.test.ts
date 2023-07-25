@@ -75,8 +75,6 @@ test('Should throw if watchman used with haste.enableSymlinks', () => {
   expect(stderr).toMatchInlineSnapshot(`
     "Validation Error:
 
-    haste.enableSymlinks is incompatible with watchman
-
     Either set haste.enableSymlinks to false or do not use watchman"
   `);
   expect(exitCode).toBe(1);

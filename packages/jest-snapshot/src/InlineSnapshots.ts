@@ -14,6 +14,7 @@ import type {
   Program,
   TraversalAncestors,
 } from '@babel/types';
+import {createSynchronizedPrettier} from '@prettier/sync';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -60,6 +61,10 @@ export function saveInlineSnapshots(
     try {
       // @ts-expect-error requireOutside Babel transform
       prettier = requireOutside(prettierPath) as Prettier;
+
+      if (semver.gte(prettier.version, '3.0.0')) {
+        prettier = createSynchronizedPrettier({prettierEntry: prettierPath});
+      }
     } catch {
       // Continue even if prettier is not installed.
     }
@@ -292,7 +297,7 @@ const runPrettier = (
   // Resolve project configuration.
   // For older versions of Prettier, do not load configuration.
   const config = prettier.resolveConfig
-    ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
+    ? prettier.resolveConfig(sourceFilePath, {editorconfig: true})
     : null;
 
   // Prioritize parser found in the project config.
@@ -302,7 +307,7 @@ const runPrettier = (
   const inferredParser: PrettierParserName | null | undefined =
     (config && typeof config.parser === 'string' && config.parser) ||
     (prettier.getFileInfo
-      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+      ? prettier.getFileInfo(sourceFilePath).inferredParser
       : simpleDetectParser(sourceFilePath));
 
   if (!inferredParser) {

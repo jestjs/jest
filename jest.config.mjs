@@ -8,10 +8,6 @@
 import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
 
-const jestSnapshotIndex = require.resolve('jest-snapshot');
-const requireFromSnapshot = createRequire(jestSnapshotIndex);
-const prettierPath = requireFromSnapshot.resolve('prettier');
-
 /** @type {import('jest').Config} */
 export default {
   collectCoverageFrom: [
@@ -35,7 +31,6 @@ export default {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
-  prettierPath,
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   snapshotFormat: {
     printBasicPrototype: true,

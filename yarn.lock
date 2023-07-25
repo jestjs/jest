@@ -2913,7 +2913,7 @@ __metadata:
     node-notifier: ^10.0.0
     p-limit: ^3.1.0
     pkg-dir: ^5.0.0
-    prettier: "patch:prettier@npm:^3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch"
+    prettier: ^3.0.0
     promise: ^8.0.2
     read-pkg: ^5.2.0
     resolve: ^1.20.0
@@ -3821,6 +3821,15 @@ __metadata:
   version: 1.0.0-next.21
   resolution: "@polka/url@npm:1.0.0-next.21"
   checksum: c7654046d38984257dd639eab3dc770d1b0340916097b2fac03ce5d23506ada684e05574a69b255c32ea6a144a957c8cd84264159b545fca031c772289d88788
+  languageName: node
+  linkType: hard
+
+"@prettier/sync@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@prettier/sync@npm:0.3.0"
+  peerDependencies:
+    prettier: ^3.0.0
+  checksum: a663ceca292629c66c2c983662293b047b48435942c25b7ea76f0eab899e434f2bc17ae3dce56ee66b29929f7853118073f716fd4c7dabc3cccf78458a168dd4
   languageName: node
   linkType: hard
 
@@ -4978,13 +4987,6 @@ __metadata:
   version: 0.0.2
   resolution: "@types/pnpapi@npm:0.0.2"
   checksum: b58ec37cfaebe99ca7d1fa3200c57d8f8d51da58f6152c1b8ef6d03e00fa8595a937ae36234a0ff6f52306740bf4ddfd2633d62d5693eb9af41edb6181ef3d02
-  languageName: node
-  linkType: hard
-
-"@types/prettier@npm:^2.1.5":
-  version: 2.7.3
-  resolution: "@types/prettier@npm:2.7.3"
-  checksum: 705384209cea6d1433ff6c187c80dcc0b95d99d5c5ce21a46a9a58060c527973506822e428789d842761e0280d25e3359300f017fbe77b9755bc772ab3dc2f83
   languageName: node
   linkType: hard
 
@@ -6366,9 +6368,8 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
-    "@types/prettier": ^2.1.5
     babel-plugin-tester: ^11.0.2
-    prettier: ^2.1.1
+    prettier: ^3.0.0
   languageName: unknown
   linkType: soft
 
@@ -13104,11 +13105,11 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
+    "@prettier/sync": ^0.3.0
     "@tsd/typescript": ^5.0.4
     "@types/babel__core": ^7.1.14
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
-    "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
@@ -13122,7 +13123,7 @@ __metadata:
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
     natural-compare: ^1.4.0
-    prettier: ^2.1.1
+    prettier: ^3.0.0
     pretty-format: "workspace:^"
     semver: ^7.5.3
     tsd-lite: ^0.7.0
@@ -16995,7 +16996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.1.1, prettier@npm:^2.8.3":
+"prettier@npm:^2.8.3":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -17010,15 +17011,6 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: 6a832876a1552dc58330d2467874e5a0b46b9ccbfc5d3531eb69d15684743e7f83dc9fbd202db6270446deba9c82b79d24383d09924c462b457136a759425e33
-  languageName: node
-  linkType: hard
-
-"prettier@patch:prettier@npm:^3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 3.0.0
-  resolution: "prettier@patch:prettier@npm%3A3.0.0#./.yarn/patches/prettier-npm-3.0.0-7ffbcce680.patch::version=3.0.0&hash=fad750&locator=%40jest%2Fmonorepo%40workspace%3A."
-  bin:
-    prettier: bin/prettier.cjs
-  checksum: a13645a0b420fe8824ef521ea9ca55bc394e0c90654a101450fbe95053c9addc5f6b89c03d3fd3f7da0c1ba578556536a9a880061f1d1923a17b91cdb3b4bb52
   languageName: node
   linkType: hard
 

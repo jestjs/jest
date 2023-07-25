@@ -25,6 +25,7 @@
     "@jest/expect-utils": "workspace:^",
     "@jest/transform": "workspace:^",
     "@jest/types": "workspace:^",
+    "@prettier/sync": "^0.3.0",
     "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
     "expect": "workspace:^",
@@ -46,11 +47,10 @@
     "@types/babel__core": "^7.1.14",
     "@types/graceful-fs": "^4.1.3",
     "@types/natural-compare": "^1.4.0",
-    "@types/prettier": "^2.1.5",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "prettier": "^2.1.1",
+    "prettier": "^3.0.0",
     "tsd-lite": "^0.7.0"
   },
   "engines": {
