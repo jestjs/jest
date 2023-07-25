@@ -172,7 +172,7 @@
   },
   "resolutions": {
     "@types/node": "~14.14.45",
-    "ansi-escapes/type-fest": "^2.0.0",
+    "ansi-escapes/type-fest": "^4.0.0",
     "babel-jest": "workspace:^",
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
