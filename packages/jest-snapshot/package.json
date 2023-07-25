@@ -50,7 +50,7 @@
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "prettier": "^2.1.1",
+    "prettier": "^3.0.0",
     "tsd-lite": "^0.7.0"
   },
   "engines": {

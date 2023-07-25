@@ -33,7 +33,7 @@
     "@types/node": "*",
     "@types/prettier": "^2.1.5",
     "babel-plugin-tester": "^11.0.2",
-    "prettier": "^2.1.1"
+    "prettier": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
