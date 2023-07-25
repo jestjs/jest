@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import {
   ExecaSyncError,
   SyncOptions as ExecaSyncOptions,
@@ -308,17 +308,6 @@ export const extractSummaries = (
       return {end, start};
     })
     .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
-};
-
-export const normalizeIcons = (str: string) => {
-  if (!str) {
-    return str;
-  }
-
-  // Make sure to keep in sync with `jest-util/src/specialChars`
-  return str
-    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
-    .replace(new RegExp('\u221A', 'gu'), '\u2713');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

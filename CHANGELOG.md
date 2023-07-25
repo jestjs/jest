@@ -4,7 +4,13 @@
 
 ### Fixes
 
+- `[jest-circus]` Fix snapshot matchers in concurrent tests when nr of tests exceeds `maxConcurrency` ([#14335](https://github.com/jestjs/jest/pull/14335))
+- `[jest-snapshot]` Move `@types/prettier` from `dependencies` to `devDependencies` ([#14328](https://github.com/jestjs/jest/pull/14328))
+- `[jest-reporters]` Add "skipped" and "todo" symbols to Github Actions Reporter ([#14309](https://github.com/jestjs/jest/pull/14309))
+
 ### Chore & Maintenance
+
+- `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
 
 ### Performance
 
