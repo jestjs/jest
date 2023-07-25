@@ -767,7 +767,9 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // preload `resolve` as it uses `path` to create a string passed to
     // `require`, and backslashes doesn't work on macOS or linux.
     // https://github.com/browserify/resolve/blob/775fd8ef64b543435c2290728fab2e5e83437ce9/lib/core.js#L6
-    require('resolve');
+    if (process.platform !== 'win32') {
+      require('resolve');
+    }
     jest.doMock('path', () => _path.win32);
     const path = require('path');
     const Resolver = require('../').default;
