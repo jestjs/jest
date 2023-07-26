@@ -6,6 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
+import {notEmpty} from 'jest-util';
 import type {UsageData, WatchPlugin} from 'jest-watcher';
 
 export const filterInteractivePlugins = (
@@ -26,10 +27,6 @@ export const filterInteractivePlugins = (
     return false;
   });
 };
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
 
 export const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,

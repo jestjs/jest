@@ -20,6 +20,7 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
+  invariant,
   isPromise,
   requireOrImportModule,
   tryRealpath,
@@ -1033,12 +1034,6 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (condition == null || condition === false || condition === '') {
-    throw new Error(message);
-  }
-}
 
 function assertSyncTransformer(
   transformer: Transformer,

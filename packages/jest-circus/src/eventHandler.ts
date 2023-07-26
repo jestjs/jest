@@ -6,6 +6,7 @@
  */
 
 import type {Circus} from '@jest/types';
+import {invariant} from 'jest-util';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -15,7 +16,6 @@ import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
   getTestDuration,
-  invariant,
   makeDescribe,
   makeTest,
 } from './utils';

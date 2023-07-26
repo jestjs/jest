@@ -9,7 +9,7 @@ import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
-import {ErrorWithStack, formatTime} from 'jest-util';
+import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -178,11 +178,5 @@ export default class BufferedConsole extends Console {
 
   getBuffer(): ConsoleBuffer | undefined {
     return this._buffer.length ? this._buffer : undefined;
-  }
-}
-
-function invariant(condition: boolean, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }

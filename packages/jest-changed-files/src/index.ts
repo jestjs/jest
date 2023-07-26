@@ -7,6 +7,7 @@
  */
 
 import pLimit = require('p-limit');
+import {notEmpty} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
@@ -15,10 +16,6 @@ import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
 
 export type {ChangedFiles, ChangedFilesPromise} from './types';
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.

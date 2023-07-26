@@ -13,7 +13,7 @@ import {deserialize, serialize} from 'v8';
 import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {requireOrImportModule} from 'jest-util';
+import {invariant, requireOrImportModule} from 'jest-util';
 import {JestWorkerFarm, Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -130,12 +130,6 @@ const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
