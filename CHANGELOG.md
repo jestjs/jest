@@ -10,6 +10,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-changed-files, jest-circus, jest-console, @jest/core, @jest/runtime, @jest/transform]` Use `invariant` and `notEmpty` from `jest-util` rather than own internal ([#14366](https://github.com/jestjs/jest/pull/14366))
 - `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
 
 ### Performance
