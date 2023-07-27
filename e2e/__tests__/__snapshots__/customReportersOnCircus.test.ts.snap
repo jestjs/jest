@@ -14,3 +14,12 @@ exports[`Custom Reporters Integration on jest-circus push test case results for 
 "onTestCaseResult: sample, status: todo, numExpectations: 0
 onTestFileResult testCaseResult 0: sample, status: todo, numExpectations: 0"
 `;
+
+exports[`Custom Reporters Integration on jest-circus push test case start 1`] = `
+"onTestCaseStart: test 1, mode: undefined, ancestorTitles: Custom Reporters
+onTestCaseStart: test 2, mode: undefined, ancestorTitles: Custom Reporters"
+`;
+
+exports[`Custom Reporters Integration on jest-circus doesn't push test case start for skip tests 1`] = `""`;
+
+exports[`Custom Reporters Integration on jest-circus doesn't push test case start for todo tests 1`] = `""`;

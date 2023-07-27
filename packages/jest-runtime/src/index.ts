@@ -1218,6 +1218,7 @@ export default class Runtime {
             if (
               ((typeof globalMock === 'object' && globalMock !== null) ||
                 typeof globalMock === 'function') &&
+              '_isMockFunction' in globalMock &&
               globalMock._isMockFunction === true
             ) {
               globalMock.mockClear();
@@ -1651,6 +1652,7 @@ export default class Runtime {
         ? `jest-nodejs-core-${filename}`
         : filename;
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
