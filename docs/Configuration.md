@@ -1144,7 +1144,10 @@ Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
-Note that Prettier version 3 is not supported. You can either pass `prettierPath: null` in your config to disable using prettier if you don't need it, or use v2 of Prettier solely for Jest.
+<details>
+<summary>Prettier version 3 is not supported!</summary>
+
+You can either pass `prettierPath: null` in your config to disable using prettier if you don't need it, or use v2 of Prettier solely for Jest.
 
 ```json title="package.json"
 {
@@ -1174,6 +1177,8 @@ export default config;
 ```
 
 We hope to support Prettier v3 seamlessly out of the box in a future version of Jest. See [this](https://github.com/jestjs/jest/issues/14305) tracking issue.
+
+</details>
 
 ### `projects` \[array&lt;string | ProjectConfig&gt;]
 
