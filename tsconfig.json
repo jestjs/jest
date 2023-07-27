@@ -1,6 +1,9 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
     "composite": true,
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -16,12 +19,13 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Module Resolution Options */
-    "moduleResolution": "node",
     /* This needs to be false so our types are possible to consume without setting this */
     "esModuleInterop": false,
     "isolatedModules": true,
     "skipLibCheck": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    // TODO: remove for Jest 30
+    "ignoreDeprecations": "5.0"
   }
 }

@@ -12,7 +12,7 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@5.0.3
+  node: circleci/node@5.1.0
 
 jobs:
   test-node:
@@ -58,5 +58,6 @@ workflows:
           name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
+              # For some reason, v20 fails to run yarn install…
               node-version: ['14', '16', '18', '19']
       - test-jest-jasmine

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "lockFileMaintenance": {"enabled": true, "automerge": true},
+  "rangeStrategy": "replace",
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@tsd/typescript", "typescript"],
+      "groupName": "typescript"
+    }
+  ]
+}

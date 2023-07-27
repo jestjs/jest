@@ -5,10 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function pluralize(
-  word: string,
-  count: number,
-  ending: string,
-): string {
-  return `${count} ${word}${count === 1 ? '' : ending}`;
-}
+test('basic test', async () => {
+  await new Promise(resolve => setTimeout(resolve, 100));
+});

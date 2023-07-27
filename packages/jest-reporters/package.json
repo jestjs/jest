@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "29.5.0",
+  "version": "29.6.2",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",

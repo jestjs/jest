@@ -8,7 +8,7 @@
 import type {V8Coverage} from 'collect-v8-coverage';
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
-import type {Config, TestResult, TransformTypes} from '@jest/types';
+import type {Circus, Config, TestResult, TransformTypes} from '@jest/types';
 import type {IHasteFS, IModuleMap} from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
@@ -197,6 +197,7 @@ export type TestEvents = {
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];
+  'test-case-start': [string, Circus.TestCaseStartInfo];
   'test-case-result': [string, AssertionResult];
 };
 

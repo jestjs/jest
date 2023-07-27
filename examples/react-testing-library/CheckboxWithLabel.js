@@ -6,7 +6,7 @@ export default function CheckboxWithLabel({labelOn, labelOff}) {
   const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
-    setIsChecked(!isChecked);
+    setIsChecked(draft => !draft);
   };
 
   return (
