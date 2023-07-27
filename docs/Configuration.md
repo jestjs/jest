@@ -1177,7 +1177,6 @@ export default config;
 ```
 
 We hope to support Prettier v3 seamlessly out of the box in a future version of Jest. See [this](https://github.com/jestjs/jest/issues/14305) tracking issue.
-
 </details>
 
 ### `projects` \[array&lt;string | ProjectConfig&gt;]
