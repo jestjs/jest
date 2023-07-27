@@ -4,6 +4,14 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 29.6.2
+
+### Fixes
+
 - `[jest-circus]` Fix snapshot matchers in concurrent tests when nr of tests exceeds `maxConcurrency` ([#14335](https://github.com/jestjs/jest/pull/14335))
 - `[@jest/core]` When running global setup and teardown, do not try to change the `message` property of the thrown error object when the `message` property is unwritable ([#14113](https://github.com/jestjs/jest/pull/14113))
 - `[jest-snapshot]` Move `@types/prettier` from `dependencies` to `devDependencies` ([#14328](https://github.com/jestjs/jest/pull/14328))
@@ -13,8 +21,6 @@
 ### Chore & Maintenance
 
 - `[@jest/core]` Use `pluralize` from `jest-util` rather than own internal ([#14322](https://github.com/jestjs/jest/pull/14322))
-
-### Performance
 
 ## 29.6.1
 
