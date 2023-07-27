@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {types} from 'util';
 import type {ParseResult, PluginItem} from '@babel/core';
 import type {
   Expression,
@@ -60,8 +61,20 @@ export function saveInlineSnapshots(
     try {
       // @ts-expect-error requireOutside Babel transform
       prettier = requireOutside(prettierPath) as Prettier;
-    } catch {
-      // Continue even if prettier is not installed.
+
+      if (semver.gte(prettier.version, '3.0.0')) {
+        throw new Error(
+          'Jest: Inline Snapshots are not supported when using Prettier 3.0.0 or above.\nSee https://jestjs.io/docs/configuration/#prettierpath-string for alternatives.',
+        );
+      }
+    } catch (error) {
+      if (!types.isNativeError(error)) {
+        throw error;
+      }
+
+      if ((error as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND') {
+        throw error;
+      }
     }
   }
 
