@@ -7,6 +7,12 @@ Mock functions allow you to test the links between code by erasing the actual im
 
 There are two ways to mock functions: Either by creating a mock function to use in test code, or writing a [`manual mock`](ManualMocks.md) to override a module dependency.
 
+:::tip
+
+When using `babel-jest`, calls to `disableAutomock()`, `enableAutomock()`, `unmock()` and `mock()` will automatically be hoisted to the top of the code block.
+
+:::
+
 ## Using a mock function
 
 Let's imagine we're testing an implementation of a function `forEach`, which invokes a callback for each item in a supplied array.
