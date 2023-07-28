@@ -92,7 +92,7 @@ const {defaults} = require('jest-config');
 
 /** @type {import('jest').Config} */
 const config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 module.exports = config;
@@ -103,7 +103,7 @@ import type {Config} from 'jest';
 import {defaults} from 'jest-config';
 
 const config: Config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 export default config;
