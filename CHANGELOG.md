@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/facebook/jest/pull/14369))
+
 ### Chore & Maintenance
 
 ### Performance
