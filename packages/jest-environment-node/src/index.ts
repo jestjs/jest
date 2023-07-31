@@ -43,7 +43,10 @@ const nodeGlobals = new Map(
         nodeGlobalsKey,
       );
 
-      invariant(descriptor, `No property descriptor for ${nodeGlobalsKey}.`);
+      invariant(
+        descriptor,
+        `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
+      );
 
       return [nodeGlobalsKey, descriptor];
     }),

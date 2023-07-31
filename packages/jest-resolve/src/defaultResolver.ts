@@ -160,7 +160,10 @@ function getPathInModule(
           defaultResolver(target, options);
     }
 
-    invariant(!pkg.imports, '`imports` exists, but no results.');
+    invariant(
+      !pkg.imports,
+      '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
+    );
   }
 
   const segments = path.split('/');
@@ -188,7 +191,10 @@ function getPathInModule(
           return pathResolve(dirname(closestPackageJson), resolved[0]);
         }
 
-        invariant(!pkg.exports, '`exports` exists, but no results.');
+        invariant(
+          !pkg.exports,
+          '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+        );
       }
     }
 
@@ -213,7 +219,10 @@ function getPathInModule(
         return pathResolve(dirname(packageJsonPath), resolved[0]);
       }
 
-      invariant(!pkg.exports, '`exports` exists, but no results.');
+      invariant(
+        !pkg.exports,
+        '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+      );
     }
   }
 
