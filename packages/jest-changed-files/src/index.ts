@@ -7,7 +7,7 @@
  */
 
 import pLimit = require('p-limit');
-import {notEmpty} from 'jest-util';
+import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
@@ -75,8 +75,8 @@ export const findRepos = async (roots: Array<string>): Promise<Repos> => {
   const slRepos = await Promise.all(roots.map(findSlRoot));
 
   return {
-    git: new Set(gitRepos.filter(notEmpty)),
-    hg: new Set(hgRepos.filter(notEmpty)),
-    sl: new Set(slRepos.filter(notEmpty)),
+    git: new Set(gitRepos.filter(isNonNullable)),
+    hg: new Set(hgRepos.filter(isNonNullable)),
+    sl: new Set(slRepos.filter(isNonNullable)),
   };
 };

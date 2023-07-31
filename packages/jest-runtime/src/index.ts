@@ -53,7 +53,12 @@ import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy, invariant, notEmpty} from 'jest-util';
+import {
+  createDirectory,
+  deepCyclicCopy,
+  invariant,
+  isNonNullable,
+} from 'jest-util';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -527,7 +532,7 @@ export default class Runtime {
 
         invariant(
           !this._esmoduleRegistry.has(cacheKey),
-          `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
+          `Module cache already has entry ${cacheKey}.`,
         );
 
         this._esmoduleRegistry.set(cacheKey, module);
@@ -541,10 +546,7 @@ export default class Runtime {
 
     const module = this._esmoduleRegistry.get(cacheKey);
 
-    invariant(
-      module,
-      'Module cache does not contain module. This is a bug in Jest, please open up an issue',
-    );
+    invariant(module, 'Module cache does not contain module.');
 
     return module;
   }
@@ -1580,7 +1582,7 @@ export default class Runtime {
         module.path, // __dirname
         module.filename, // __filename
         lastArgs[0],
-        ...lastArgs.slice(1).filter(notEmpty),
+        ...lastArgs.slice(1).filter(isNonNullable),
       );
     } catch (error: any) {
       this.handleExecutionError(error, module);
@@ -2427,7 +2429,7 @@ export default class Runtime {
       '__filename',
       this._config.injectGlobals ? 'jest' : undefined,
       ...this._config.sandboxInjectedGlobals,
-    ].filter(notEmpty);
+    ].filter(isNonNullable);
   }
 
   private handleExecutionError(e: Error, module: Module): never {

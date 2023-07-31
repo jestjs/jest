@@ -6,7 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
-import {notEmpty} from 'jest-util';
+import {isNonNullable} from 'jest-util';
 import type {UsageData, WatchPlugin} from 'jest-watcher';
 
 export const filterInteractivePlugins = (
@@ -53,4 +53,4 @@ export const getSortedUsageRows = (
       return 0;
     })
     .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
-    .filter(notEmpty);
+    .filter(isNonNullable);

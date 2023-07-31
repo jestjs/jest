@@ -7,9 +7,13 @@
 
 export default function invariant(
   condition: unknown,
-  message?: string,
+  message = '',
 ): asserts condition {
   if (!condition) {
-    throw new Error(message);
+    throw new Error(
+      `${
+        message ? `${message} ` : ''
+      }This is a bug in Jest, please report an issue!`,
+    );
   }
 }
