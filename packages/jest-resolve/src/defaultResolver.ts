@@ -9,7 +9,6 @@ import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import * as resolve from 'resolve.exports';
-import {invariant} from 'jest-util';
 import {
   findClosestPackageJson,
   isDirectory,
@@ -160,10 +159,11 @@ function getPathInModule(
           defaultResolver(target, options);
     }
 
-    invariant(
-      !pkg.imports,
-      '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
-    );
+    if (pkg.imports) {
+      throw new Error(
+        '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
+      );
+    }
   }
 
   const segments = path.split('/');
@@ -191,10 +191,11 @@ function getPathInModule(
           return pathResolve(dirname(closestPackageJson), resolved[0]);
         }
 
-        invariant(
-          !pkg.exports,
-          '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
-        );
+        if (pkg.exports) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
+        }
       }
     }
 
@@ -219,10 +220,11 @@ function getPathInModule(
         return pathResolve(dirname(packageJsonPath), resolved[0]);
       }
 
-      invariant(
-        !pkg.exports,
-        '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
-      );
+      if (pkg.exports) {
+        throw new Error(
+          '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+        );
+      }
     }
   }
 

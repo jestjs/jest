@@ -14,7 +14,7 @@ import type {
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
-import {installCommonGlobals, invariant} from 'jest-util';
+import {installCommonGlobals} from 'jest-util';
 
 type Timer = {
   id: number;
@@ -43,10 +43,11 @@ const nodeGlobals = new Map(
         nodeGlobalsKey,
       );
 
-      invariant(
-        descriptor,
-        `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
-      );
+      if (!descriptor) {
+        throw new Error(
+          `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
+        );
+      }
 
       return [nodeGlobalsKey, descriptor];
     }),

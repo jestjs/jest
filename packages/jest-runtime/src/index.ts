@@ -532,7 +532,7 @@ export default class Runtime {
 
         invariant(
           !this._esmoduleRegistry.has(cacheKey),
-          `Module cache already has entry ${cacheKey}.`,
+          `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
         );
 
         this._esmoduleRegistry.set(cacheKey, module);
@@ -546,7 +546,10 @@ export default class Runtime {
 
     const module = this._esmoduleRegistry.get(cacheKey);
 
-    invariant(module, 'Module cache does not contain module.');
+    invariant(
+      module,
+      'Module cache does not contain module. This is a bug in Jest, please open up an issue',
+    );
 
     return module;
   }
