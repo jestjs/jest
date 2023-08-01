@@ -15,7 +15,7 @@ import {
   format as prettyFormat,
 } from 'pretty-format';
 import {getSerializers} from './plugins';
-import type {SnapshotData} from './types';
+import type {FilePersistedSnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -99,10 +99,10 @@ export const getSnapshotData = (
   snapshotPath: string,
   update: Config.SnapshotUpdateState,
 ): {
-  data: SnapshotData;
+  data: FilePersistedSnapshotData;
   dirty: boolean;
 } => {
-  const data = Object.create(null);
+  const grouped = Object.create(null);
   let snapshotContents = '';
   let dirty = false;
 
@@ -111,7 +111,7 @@ export const getSnapshotData = (
       snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
-      populate(data);
+      populate(grouped);
     } catch {}
   }
 
@@ -126,7 +126,7 @@ export const getSnapshotData = (
     dirty = true;
   }
 
-  return {data, dirty};
+  return {data: {grouped}, dirty};
 };
 
 // Add extra line breaks at beginning and end of multiline snapshot
@@ -201,15 +201,15 @@ export const ensureDirectoryExists = (filePath: string): void => {
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
-  snapshotData: SnapshotData,
+  snapshotData: FilePersistedSnapshotData,
   snapshotPath: string,
 ): void => {
-  const snapshots = Object.keys(snapshotData)
+  const snapshots = Object.keys(snapshotData.grouped)
     .sort(naturalCompare)
     .map(
       key =>
         `exports[${printBacktickString(key)}] = ${printBacktickString(
-          normalizeNewlines(snapshotData[key]),
+          normalizeNewlines(snapshotData.grouped[key]),
         )};`,
     );
 
