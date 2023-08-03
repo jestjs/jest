@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[expect]` Remove `@types/node` from dependencies
+- `[expect]` Remove `@types/node` from dependencies ([#14385](https://github.com/jestjs/jest/pull/14385))
 
 ### Chore & Maintenance
 
