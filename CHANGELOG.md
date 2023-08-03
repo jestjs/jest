@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Remove `@types/node` from dependencies
+
 ### Chore & Maintenance
 
 ### Performance
