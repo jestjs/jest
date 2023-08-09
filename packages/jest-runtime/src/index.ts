@@ -1218,6 +1218,7 @@ export default class Runtime {
             if (
               ((typeof globalMock === 'object' && globalMock !== null) ||
                 typeof globalMock === 'function') &&
+              '_isMockFunction' in globalMock &&
               globalMock._isMockFunction === true
             ) {
               globalMock.mockClear();
@@ -1651,6 +1652,7 @@ export default class Runtime {
         ? `jest-nodejs-core-${filename}`
         : filename;
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
@@ -2197,6 +2199,9 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
+    const isolateModulesAsync = (fn: () => Promise<void>): Promise<void> => {
+      return this.isolateModulesAsync(fn);
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =
@@ -2303,7 +2308,7 @@ export default class Runtime {
       isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
-      isolateModulesAsync: this.isolateModulesAsync,
+      isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),

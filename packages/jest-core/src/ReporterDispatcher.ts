@@ -13,6 +13,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
+import type {Circus} from '@jest/types';
 import type {ReporterConstructor} from './TestScheduler';
 
 export default class ReporterDispatcher {
@@ -66,6 +67,17 @@ export default class ReporterDispatcher {
   ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onRunStart && (await reporter.onRunStart(results, options));
+    }
+  }
+
+  async onTestCaseStart(
+    test: Test,
+    testCaseStartInfo: Circus.TestCaseStartInfo,
+  ): Promise<void> {
+    for (const reporter of this._reporters) {
+      if (reporter.onTestCaseStart) {
+        await reporter.onTestCaseStart(test, testCaseStartInfo);
+      }
     }
   }
 

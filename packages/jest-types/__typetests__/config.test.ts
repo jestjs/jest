@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError} from 'tsd-lite';
+import {expectAssignable, expectNotAssignable} from 'tsd-lite';
 import type {Config} from '@jest/types';
 
 expectAssignable<Config.InitialOptions>({});
@@ -77,7 +77,7 @@ expectAssignable<Config.InitialOptions>({
   },
 });
 
-expectError<Config.InitialOptions>({
+expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
     now: new Date(),
   },
@@ -86,34 +86,34 @@ expectError<Config.InitialOptions>({
 expectAssignable<Config.InitialOptions>({
   fakeTimers: {
     enableGlobally: true,
-    legacyFakeTimers: true,
+    legacyFakeTimers: true as const,
   },
 });
 
-expectError<Config.InitialOptions>({
+expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
     advanceTimers: true,
-    legacyFakeTimers: true,
+    legacyFakeTimers: true as const,
   },
 });
 
-expectError<Config.InitialOptions>({
+expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
     doNotFake,
-    legacyFakeTimers: true,
+    legacyFakeTimers: true as const,
   },
 });
 
-expectError<Config.InitialOptions>({
+expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
-    legacyFakeTimers: true,
+    legacyFakeTimers: true as const,
     now: 1483228800000,
   },
 });
 
-expectError<Config.InitialOptions>({
+expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
-    legacyFakeTimers: true,
+    legacyFakeTimers: true as const,
     timerLimit: 1000,
   },
 });

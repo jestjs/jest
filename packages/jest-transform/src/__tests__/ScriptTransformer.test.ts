@@ -81,7 +81,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -105,7 +105,7 @@ jest.mock(
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
-          code: (require('dedent') as typeof import('dedent'))`
+          code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -178,7 +178,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
       process: (content, filename) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},

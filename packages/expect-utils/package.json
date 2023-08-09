@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect-utils",
-  "version": "29.5.0",
+  "version": "29.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
     "jest-get-type": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "immutable": "^4.0.0",
     "jest-matcher-utils": "workspace:^",
     "tsd-lite": "^0.7.0"

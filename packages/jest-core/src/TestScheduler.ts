@@ -258,6 +258,13 @@ class TestScheduler {
                   onFailure(test, error),
                 ),
                 testRunner.on(
+                  'test-case-start',
+                  ([testPath, testCaseStartInfo]) => {
+                    const test: Test = {context, path: testPath};
+                    this._dispatcher.onTestCaseStart(test, testCaseStartInfo);
+                  },
+                ),
+                testRunner.on(
                   'test-case-result',
                   ([testPath, testCaseResult]) => {
                     const test: Test = {context, path: testPath};
