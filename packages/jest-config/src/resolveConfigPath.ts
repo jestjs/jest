@@ -115,16 +115,16 @@ const findPackageJson = (pathToResolve: string) => {
 const resolveJestKey = (packagePath: string) => {
   try {
     const content = fs.readFileSync(packagePath, 'utf8');
-    const parsedPackageJson  = JSON.parse(content);
+    const parsedPackageJson = JSON.parse(content);
 
-    if(hasPackageJsonJestKey(parsedPackageJson)){
-      const { jest } = parsedPackageJson;
+    if (hasPackageJsonJestKey(parsedPackageJson)) {
+      const {jest} = parsedPackageJson;
 
       if (typeof jest === 'string' && isFile(jest)) {
         return path.resolve(jest);
       }
     }
-    
+
     return packagePath;
   } catch {
     return undefined;
