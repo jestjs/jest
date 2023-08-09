@@ -179,6 +179,7 @@ export default class Runtime {
   private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
+  private _isolatedESMModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private readonly _esmoduleRegistry: Map<string, VMModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
@@ -242,6 +243,7 @@ export default class Runtime {
     this._moduleMocker = this._environment.moduleMocker;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
+    this._isolatedESMModuleRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
@@ -416,12 +418,15 @@ export default class Runtime {
     query = '',
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
+    const registry = this._isolatedESMModuleRegistry
+      ? this._isolatedESMModuleRegistry
+      : this._esmoduleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
       await this._fileTransformsMutex.get(cacheKey);
     }
 
-    if (!this._esmoduleRegistry.has(cacheKey)) {
+    if (!registry.has(cacheKey)) {
       invariant(
         typeof this._environment.getVmContext === 'function',
         'ES Modules are only supported if your test environment has the `getVmContext` function',
@@ -454,7 +459,7 @@ export default class Runtime {
           context,
         );
 
-        this._esmoduleRegistry.set(cacheKey, wasm);
+        registry.set(cacheKey, wasm);
 
         transformResolve();
         return wasm;
@@ -462,7 +467,7 @@ export default class Runtime {
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, core);
+        registry.set(cacheKey, core);
 
         transformResolve();
 
@@ -526,11 +531,11 @@ export default class Runtime {
         }
 
         invariant(
-          !this._esmoduleRegistry.has(cacheKey),
+          !registry.has(cacheKey),
           `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
         );
 
-        this._esmoduleRegistry.set(cacheKey, module);
+        registry.set(cacheKey, module);
 
         transformResolve();
       } catch (error) {
@@ -539,7 +544,7 @@ export default class Runtime {
       }
     }
 
-    const module = this._esmoduleRegistry.get(cacheKey);
+    const module = registry.get(cacheKey);
 
     invariant(
       module,
@@ -563,14 +568,18 @@ export default class Runtime {
       return;
     }
 
+    const registry = this._isolatedESMModuleRegistry
+      ? this._isolatedESMModuleRegistry
+      : this._esmoduleRegistry;
+
     if (specifier === '@jest/globals') {
-      const fromCache = this._esmoduleRegistry.get('@jest/globals');
+      const fromCache = registry.get('@jest/globals');
 
       if (fromCache) {
         return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', globals);
+      registry.set('@jest/globals', globals);
 
       return globals;
     }
@@ -586,7 +595,7 @@ export default class Runtime {
         return this.importMock(referencingIdentifier, specifier, context);
       }
 
-      const fromCache = this._esmoduleRegistry.get(specifier);
+      const fromCache = registry.get(specifier);
 
       if (fromCache) {
         return fromCache;
@@ -662,7 +671,7 @@ export default class Runtime {
         }
       }
 
-      this._esmoduleRegistry.set(specifier, module);
+      registry.set(specifier, module);
       return module;
     }
 
@@ -1164,21 +1173,28 @@ export default class Runtime {
   }
 
   async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
-    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+    if (
+      this._isolatedModuleRegistry ||
+      this._isolatedMockRegistry ||
+      this._isolatedESMModuleRegistry
+    ) {
       throw new Error(
         'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
       );
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
+    this._isolatedESMModuleRegistry = new Map();
     try {
       await fn();
     } finally {
       // might be cleared within the callback
       this._isolatedModuleRegistry?.clear();
       this._isolatedMockRegistry?.clear();
+      this._isolatedESMModuleRegistry?.clear();
       this._isolatedModuleRegistry = null;
       this._isolatedMockRegistry = null;
+      this._isolatedESMModuleRegistry = null;
     }
   }
 
