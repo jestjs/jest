@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Fix dynamic esm import module bug when loaded module through `jest.isolateModulesAsync`  ([14397](https://github.com/jestjs/jest/pull/14397))
+
 ### Chore & Maintenance
 
 ### Performance
