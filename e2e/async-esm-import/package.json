@@ -1,0 +1,7 @@
+{
+  "name": "async-esm-import",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
