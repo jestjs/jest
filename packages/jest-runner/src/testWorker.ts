@@ -6,6 +6,7 @@
  *
  */
 
+import chalk = require('chalk');
 import exit = require('exit');
 import type {
   SerializableError,
@@ -20,6 +21,9 @@ import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
 import runTest from './runTest';
 import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
+
+chalk.level = Number(process.env.JEST_WORKER_COLOR) as typeof chalk.level;
+delete process.env.JEST_WORKER_COLOR;
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;

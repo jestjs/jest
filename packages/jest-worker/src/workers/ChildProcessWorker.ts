@@ -113,7 +113,9 @@ export default class ChildProcessWorker
 
     this.state = WorkerStates.STARTING;
 
-    const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
+    const JEST_WORKER_COLOR = stdoutSupportsColor
+      ? String(stdoutSupportsColor.level)
+      : '0';
     const silent = this._options.silent ?? true;
 
     if (!silent) {
@@ -131,8 +133,8 @@ export default class ChildProcessWorker
       cwd: process.cwd(),
       env: {
         ...process.env,
+        JEST_WORKER_COLOR,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-        ...forceColor,
       },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),

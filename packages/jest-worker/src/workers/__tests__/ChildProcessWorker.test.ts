@@ -84,7 +84,12 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   expect(jest.mocked(childProcess.fork).mock.calls[0][0]).toBe(child);
   expect(jest.mocked(childProcess.fork).mock.calls[0][2]).toEqual({
     cwd: '/tmp', // Overridden default option.
-    env: {...process.env, FORCE_COLOR: supportsColor.stdout ? '1' : undefined}, // Default option.
+    env: {
+      ...process.env,
+      JEST_WORKER_COLOR: supportsColor.stdout
+        ? String(supportsColor.stdout.level)
+        : '0',
+    }, // Default option.
     execArgv: ['-p'], // Filtered option.
     execPath: 'hello', // Added option.
     serialization: 'advanced', // Default option.
