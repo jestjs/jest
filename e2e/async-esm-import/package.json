@@ -1,6 +1,13 @@
 {
   "name": "async-esm-import",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?|mjs?|mts?)$",
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "mjs",
+      "mts"
+    ]
   }
 }
