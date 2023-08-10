@@ -3,7 +3,6 @@
   "type": "module",
   "jest": {
     "transform": {},
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?|mjs?|mts?)$"
+    "testEnvironment": "node"
   }
 }
