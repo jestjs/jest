@@ -12998,7 +12998,6 @@ __metadata:
     jest-leak-detector: "workspace:^"
     jest-util: "workspace:^"
     merge-stream: ^2.0.0
-    supports-color: ^8.0.0
     tsd-lite: ^0.7.0
     worker-farm: ^1.6.0
   languageName: unknown

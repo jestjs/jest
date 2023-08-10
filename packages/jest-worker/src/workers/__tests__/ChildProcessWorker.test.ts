@@ -8,7 +8,7 @@
 import {EventEmitter} from 'events';
 import {PassThrough} from 'stream';
 import getStream = require('get-stream');
-import * as supportsColor from 'supports-color';
+import {colorLevel} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -86,9 +86,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     cwd: '/tmp', // Overridden default option.
     env: {
       ...process.env,
-      JEST_WORKER_COLOR: supportsColor.stdout
-        ? String(supportsColor.stdout.level)
-        : '0',
+      JEST_WORKER_COLOR: String(colorLevel.stdout),
     }, // Default option.
     execArgv: ['-p'], // Filtered option.
     execPath: 'hello', // Added option.
