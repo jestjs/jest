@@ -1201,8 +1201,10 @@ export default class Runtime {
   resetModules(): void {
     this._isolatedModuleRegistry?.clear();
     this._isolatedMockRegistry?.clear();
+    this._isolatedESMModuleRegistry?.clear();
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
+    this._isolatedESMModuleRegistry = null;
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
