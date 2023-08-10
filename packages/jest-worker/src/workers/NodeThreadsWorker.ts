@@ -32,7 +32,6 @@ export default class ExperimentalWorker
   implements WorkerInterface
 {
   private _worker!: Worker;
-  private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
   private _retries!: number;
@@ -54,18 +53,16 @@ export default class ExperimentalWorker
   constructor(options: WorkerOptions) {
     super(options);
 
-    this._options = options;
-
     this._request = null;
 
     this._stdout = null;
     this._stderr = null;
 
     this._childWorkerPath =
-      options.childWorkerPath || require.resolve('./threadChild');
+      this._options.childWorkerPath || require.resolve('./threadChild');
 
     this._childIdleMemoryUsage = null;
-    this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
+    this._childIdleMemoryUsageLimit = this._options.idleMemoryLimit || null;
 
     this.initialize();
   }

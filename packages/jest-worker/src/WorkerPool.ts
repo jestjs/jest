@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {colorLevel} from 'jest-util';
 import BaseWorkerPool from './base/BaseWorkerPool';
 import type {
   ChildMessage,
@@ -30,15 +29,6 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   }
 
   override createWorker(workerOptions: WorkerOptions): WorkerInterface {
-    workerOptions = {...workerOptions};
-    workerOptions.forkOptions = {...workerOptions.forkOptions};
-    workerOptions.forkOptions.env ??= process.env;
-    workerOptions.forkOptions.env = {
-      ...workerOptions.forkOptions.env,
-      JEST_WORKER_COLOR: String(colorLevel.stdout),
-      JEST_WORKER_ID: String(workerOptions.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-    };
-
     let Worker;
     if (this._options.enableWorkerThreads) {
       Worker = require('./workers/NodeThreadsWorker').default;

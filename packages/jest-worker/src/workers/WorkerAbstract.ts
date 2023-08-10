@@ -6,6 +6,7 @@
  */
 
 import {EventEmitter, PassThrough} from 'stream';
+import {colorLevel} from 'jest-util';
 import {
   WorkerEvents,
   WorkerInterface,
@@ -22,6 +23,8 @@ export default abstract class WorkerAbstract
    * Use this.state getter/setters so events are emitted correctly.
    */
   #state = WorkerStates.STARTING;
+
+  protected readonly _options: WorkerOptions;
 
   protected _fakeStream: PassThrough | null = null;
 
@@ -45,6 +48,14 @@ export default abstract class WorkerAbstract
 
   constructor(options: WorkerOptions) {
     super();
+
+    this._options = {...options};
+    this._options.forkOptions = {...this._options.forkOptions};
+    this._options.forkOptions.env = {
+      ...(this._options.forkOptions.env ?? process.env),
+      JEST_WORKER_COLOR: String(colorLevel.stdout),
+      JEST_WORKER_ID: String(options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
+    };
 
     if (typeof options.on === 'object') {
       for (const [event, handlers] of Object.entries(options.on)) {
