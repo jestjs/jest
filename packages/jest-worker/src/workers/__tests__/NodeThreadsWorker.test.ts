@@ -8,6 +8,7 @@
 import {EventEmitter} from 'events';
 import {PassThrough} from 'stream';
 import getStream = require('get-stream');
+import {colorLevel} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -69,6 +70,10 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
 
   expect(jest.mocked(workerThreads).mock.calls[0][0]).toBe(thread);
   expect(jest.mocked(workerThreads).mock.calls[0][1]).toEqual({
+    env: {
+      ...process.env,
+      JEST_WORKER_COLOR: String(colorLevel.stdout),
+    },
     eval: false,
     execArgv: ['--inspect', '-p'],
     execPath: 'hello', // Added option.
