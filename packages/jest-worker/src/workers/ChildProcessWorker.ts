@@ -8,7 +8,6 @@
 import {ChildProcess, ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
 import mergeStream = require('merge-stream');
-import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
@@ -113,9 +112,6 @@ export default class ChildProcessWorker
 
     this.state = WorkerStates.STARTING;
 
-    const JEST_WORKER_COLOR = stdoutSupportsColor
-      ? String(stdoutSupportsColor.level)
-      : '0';
     const silent = this._options.silent ?? true;
 
     if (!silent) {
@@ -131,11 +127,6 @@ export default class ChildProcessWorker
 
     const options: ForkOptions = {
       cwd: process.cwd(),
-      env: {
-        ...process.env,
-        JEST_WORKER_COLOR,
-        JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
