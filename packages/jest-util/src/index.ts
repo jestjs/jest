@@ -28,3 +28,4 @@ export {default as pluralize} from './pluralize';
 export {default as formatTime} from './formatTime';
 export {default as tryRealpath} from './tryRealpath';
 export {default as requireOrImportModule} from './requireOrImportModule';
+export {default as colorLevel} from './colorLevel';

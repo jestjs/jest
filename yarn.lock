@@ -12907,6 +12907,7 @@ __metadata:
     ci-info: ^3.2.0
     graceful-fs: ^4.2.9
     picomatch: ^2.2.3
+    supports-color: ^8.1.1
   languageName: unknown
   linkType: soft
 
@@ -19083,7 +19084,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^8.0.0":
+"supports-color@npm:^8.0.0, supports-color@npm:^8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
