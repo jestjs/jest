@@ -93,7 +93,7 @@
     "clean-e2e": "node ./scripts/cleanE2e.mjs",
     "crowdin:upload": "echo 'Uploading sources to Crowdin' && crowdin upload sources --config ./crowdin.yaml",
     "crowdin:download": "echo 'Downloading translations from Crowdin' && crowdin download --config ./crowdin.yaml",
-    "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest": "FORCE_COLOR=1 node ./packages/jest-cli/bin/jest.js",
     "jest-jasmine": "JEST_JASMINE=1 yarn jest",
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.mjs",
     "jest-coverage": "yarn jest --coverage",
