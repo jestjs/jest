@@ -11,7 +11,13 @@ const extractColorLevel = (info: supportsColor.SupportsColor) => {
   return info ? info.level : 0;
 };
 
-const colorLevel = {
+type ColorLevel = ReturnType<typeof extractColorLevel>;
+export interface ColorLevels {
+  stderr: ColorLevel;
+  stdout: ColorLevel;
+}
+
+const colorLevel: ColorLevels = {
   stderr: extractColorLevel(stderr),
   stdout: extractColorLevel(stdout),
 };
