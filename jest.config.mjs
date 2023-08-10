@@ -32,6 +32,7 @@ export default {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
+  setupFiles: ['<rootDir>/setup.js'],
   snapshotFormat: {
     printBasicPrototype: true,
   },
