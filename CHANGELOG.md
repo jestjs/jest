@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Updating istanbul-lib-instrument dependency. istanbul-lib-instrument 6.0.0 has dropped support for node 10 and updated semver addressing CVE-2022-25883
+
 ### Chore & Maintenance
 
 ### Performance
