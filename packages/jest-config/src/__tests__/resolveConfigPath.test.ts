@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup, writeFiles} from '../../../../e2e/Utils';
 import {JEST_CONFIG_EXT_ORDER} from '../constants';
 import resolveConfigPath from '../resolveConfigPath';
