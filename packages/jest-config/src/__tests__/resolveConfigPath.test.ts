@@ -45,6 +45,25 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       );
     });
 
+    test('file path from "jest" key', () => {
+      const anyFileName = `anyJestConfigfile.name${extension}`;
+      const packageJsonPath = 'a/b/c/package.json';
+      const anyFilePath = `a/b/c/conf/${anyFileName}`;
+
+      const absolutePackageJsonPath = path.resolve(DIR, packageJsonPath);
+
+      jest
+        .mocked(fs.readFileSync)
+        .mockReturnValueOnce(`{ "jest": "conf/${anyFileName}" }`);
+
+      writeFiles(DIR, {[packageJsonPath]: ''});
+      writeFiles(DIR, {[anyFilePath]: ''});
+
+      expect(() =>
+        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
+      ).toBe(anyFilePath);
+    });
+
     test(`directory path with "${extension}"`, () => {
       const relativePackageJsonPath = 'a/b/c/package.json';
       const absolutePackageJsonPath = path.resolve(
