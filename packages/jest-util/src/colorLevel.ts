@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {stderr, stdout, supportsColor} from 'supports-color';
+import supportsColor = require('supports-color');
+delete require.cache[require.resolve('supports-color')];
 
-const extractColorLevel = (info: supportsColor.SupportsColor) => {
+type SupportsColor = supportsColor.supportsColor.SupportsColor;
+
+const extractColorLevel = (info: SupportsColor) => {
   return info ? info.level : 0;
 };
 
@@ -17,6 +20,7 @@ export interface ColorLevels {
   stdout: ColorLevel;
 }
 
+const {stderr, stdout} = supportsColor;
 const colorLevel: ColorLevels = {
   stderr: extractColorLevel(stderr),
   stdout: extractColorLevel(stdout),
