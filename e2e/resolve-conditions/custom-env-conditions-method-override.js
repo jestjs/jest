@@ -7,9 +7,9 @@
 
 'use strict';
 
-const NodeEnv = require('jest-environment-node').TestEnvironment;
+const JsdomEnv = require('jest-environment-jsdom').TestEnvironment;
 
-module.exports = class CustomEnvWithConditions extends NodeEnv {
+module.exports = class CustomEnvWithConditions extends JsdomEnv {
   exportConditions() {
     return ['deno'];
   }

@@ -1,7 +1,8 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates.
-
 /**
- * Sample React Native Snapshot Test
+ * @file Sample React Native Snapshot Test
+ * @copyright Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * @jest-environment jsdom
  */
 
 import React from 'react';
