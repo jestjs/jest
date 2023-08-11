@@ -78,10 +78,9 @@ const resolveConfigPathByTraversing = (
 
   if (packageJson) {
     const packageContent = fs.readFileSync(packageJson, 'utf8');
-    const parsedPackageJson = JSON.parse(packageContent);
 
-    if (hasPackageJsonJestKey(parsedPackageJson)) {
-      configFiles.push(resolveJestKey(parsedPackageJson) || packageJson);
+    if (hasPackageJsonJestKey(packageContent)) {
+      configFiles.push(resolveJestKey(packageContent) || packageJson);
     }
   }
 
@@ -117,9 +116,9 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (parsedPackageJson: any) => {
-  if (hasPackageJsonJestKey(parsedPackageJson)) {
-    const {jest} = parsedPackageJson;
+const resolveJestKey = (packageContent: any) => {
+  if (hasPackageJsonJestKey(packageContent)) {
+    const {jest} = JSON.parse(packageContent);
 
     if (jest && typeof jest === 'string' && isFile(jest)) {
       return path.resolve(jest);
@@ -129,9 +128,9 @@ const resolveJestKey = (parsedPackageJson: any) => {
   return undefined;
 };
 
-const hasPackageJsonJestKey = (parsedPackageJson: any) => {
+const hasPackageJsonJestKey = (packageContent: any) => {
   try {
-    return 'jest' in parsedPackageJson;
+    return 'jest' in JSON.parse(packageContent);
   } catch {
     // If package is not a valid JSON
     return false;
