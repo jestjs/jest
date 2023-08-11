@@ -77,7 +77,16 @@ const resolveConfigPathByTraversing = (
   const packageJson = findPackageJson(pathToResolve);
 
   if (packageJson) {
-    configFiles.push(resolveJestKey(packageJson) || packageJson);
+    try {
+      const packageContent = fs.readFileSync(packageJson, 'utf8');
+      const parsedPackageJson = JSON.parse(packageContent);
+
+      if (hasPackageJsonJestKey(parsedPackageJson)) {
+        configFiles.push(resolveJestKey(parsedPackageJson) || packageJson);
+      }
+    } catch (err) {
+      throw new Error(makeLoadFileErrorMessage(initialPath, cwd, err));
+    }
   }
 
   if (!skipMultipleConfigError && configFiles.length > 1) {
@@ -112,23 +121,16 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (packagePath: string) => {
-  try {
-    const content = fs.readFileSync(packagePath, 'utf8');
-    const parsedPackageJson = JSON.parse(content);
+const resolveJestKey = (parsedPackageJson: any) => {
+  if (hasPackageJsonJestKey(parsedPackageJson)) {
+    const {jest} = parsedPackageJson;
 
-    if (hasPackageJsonJestKey(parsedPackageJson)) {
-      const {jest} = parsedPackageJson;
-
-      if (typeof jest === 'string' && isFile(jest)) {
-        return path.resolve(jest);
-      }
+    if (jest && typeof jest === 'string' && isFile(jest)) {
+      return path.resolve(jest);
     }
-
-    return packagePath;
-  } catch {
-    return undefined;
   }
+
+  return undefined;
 };
 
 const hasPackageJsonJestKey = (parsedPackageJson: any) => {
@@ -139,6 +141,19 @@ const hasPackageJsonJestKey = (parsedPackageJson: any) => {
     return false;
   }
 };
+
+const makeLoadFileErrorMessage = (
+  initialPath: string,
+  cwd: string,
+  error: any,
+) =>
+  'Trying to load a config file based on provided values:\n' +
+  `path: "${initialPath}"\n` +
+  `cwd: "${cwd}"\n` +
+  'resulted in an error:\n' +
+  `${error}\n` +
+  'Make sure your package.json "jest" key are an valid\n' +
+  'object or points to a valid config file\n';
 
 const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>
   'Could not find a config file based on provided values:\n' +
