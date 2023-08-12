@@ -8,8 +8,8 @@
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
-test('runs test with async ESM import', () => {
-  const {exitCode, stderr} = runJest('async-esm-import', [], {
+test('runs test with isolate modules async import', () => {
+  const {exitCode, stderr} = runJest('isolate-modules-async', [], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
 

@@ -1,5 +1,5 @@
 {
-  "name": "async-esm-import",
+  "name": "isolate-modules-async",
   "type": "module",
   "jest": {
     "transform": {},
