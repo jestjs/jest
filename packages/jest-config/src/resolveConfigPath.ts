@@ -78,9 +78,11 @@ const resolveConfigPathByTraversing = (
 
   if (packageJson) {
     const packageContent = fs.readFileSync(packageJson, 'utf8');
+    const packagePath = path.dirname(packageJson);
+    const resolvedKey = resolveJestKey(packageContent, packagePath);
 
     if (hasPackageJsonJestKey(packageContent)) {
-      configFiles.push(resolveJestKey(packageContent) || packageJson);
+      configFiles.push(resolvedKey || packageJson);
     }
   }
 
@@ -116,12 +118,14 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (packageContent: any) => {
+const resolveJestKey = (packageContent: any, packagePath: string) => {
   if (hasPackageJsonJestKey(packageContent)) {
     const {jest} = JSON.parse(packageContent);
 
-    if (jest && typeof jest === 'string' && isFile(jest)) {
-      return path.resolve(jest);
+    if (jest && typeof jest === 'string') {
+      const resolvedConfigFile = path.resolve(packagePath, jest);
+
+      return isFile(resolvedConfigFile) ? resolvedConfigFile : undefined;
     }
   }
 

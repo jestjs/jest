@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import * as fs from 'graceful-fs';
 import {cleanup, writeFiles} from '../../../../e2e/Utils';
 import {JEST_CONFIG_EXT_ORDER} from '../constants';
 import resolveConfigPath from '../resolveConfigPath';
@@ -47,22 +46,54 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
     });
 
     test('file path from "jest" key', () => {
-      const anyFileName = `anyJestConfigfile.name${extension}`;
-      const packageJsonPath = 'a/b/c/package.json';
-      const anyFilePath = `a/b/c/conf/${anyFileName}`;
+      // Arrange
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+      const absoluteAnyFilePath = path.resolve(DIR, relativeAnyFilePath);
 
-      const absolutePackageJsonPath = path.resolve(DIR, packageJsonPath);
+      writeFiles(DIR, {
+        'a/b/c/package.json': `{ "jest": "conf/${anyFileName}" }`,
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
 
-      jest
-        .mocked(fs.readFileSync)
-        .mockReturnValueOnce(`{ "jest": "conf/${anyFileName}" }`);
+      // Act
+      const result = resolveConfigPath(
+        path.dirname(absolutePackageJsonPath),
+        DIR,
+      );
 
-      writeFiles(DIR, {[packageJsonPath]: ''});
-      writeFiles(DIR, {[anyFilePath]: ''});
+      // Assert
+      expect(result).toBe(absoluteAnyFilePath);
+    });
 
-      expect(() =>
-        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toBe(anyFilePath);
+    test('not a file path from "jest" key', () => {
+      // Arrange
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        'a/b/c/package.json': '{ "jest": {"verbose": true} }',
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
+
+      // Act
+      const result = resolveConfigPath(
+        path.dirname(absolutePackageJsonPath),
+        DIR,
+      );
+
+      // Assert
+      expect(result).toBe(absolutePackageJsonPath);
     });
 
     test(`directory path with "${extension}"`, () => {
