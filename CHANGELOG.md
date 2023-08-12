@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-runtime]` Fix dynamic esm import module bug when loaded module through `jest.isolateModulesAsync` ([14397](https://github.com/jestjs/jest/pull/14397))
+- `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
 
 ### Chore & Maintenance
 
