@@ -179,7 +179,6 @@ export default class Runtime {
   private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
-  private _isolatedESMModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private readonly _esmoduleRegistry: Map<string, VMModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
@@ -243,7 +242,6 @@ export default class Runtime {
     this._moduleMocker = this._environment.moduleMocker;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
-    this._isolatedESMModuleRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
@@ -418,8 +416,8 @@ export default class Runtime {
     query = '',
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
-    const registry = this._isolatedESMModuleRegistry
-      ? this._isolatedESMModuleRegistry
+    const registry = this._isolatedModuleRegistry
+      ? this._isolatedModuleRegistry
       : this._esmoduleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
@@ -568,8 +566,8 @@ export default class Runtime {
       return;
     }
 
-    const registry = this._isolatedESMModuleRegistry
-      ? this._isolatedESMModuleRegistry
+    const registry = this._isolatedModuleRegistry
+      ? this._isolatedModuleRegistry
       : this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
@@ -1173,38 +1171,29 @@ export default class Runtime {
   }
 
   async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
-    if (
-      this._isolatedModuleRegistry ||
-      this._isolatedMockRegistry ||
-      this._isolatedESMModuleRegistry
-    ) {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
         'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
       );
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
-    this._isolatedESMModuleRegistry = new Map();
     try {
       await fn();
     } finally {
       // might be cleared within the callback
       this._isolatedModuleRegistry?.clear();
       this._isolatedMockRegistry?.clear();
-      this._isolatedESMModuleRegistry?.clear();
       this._isolatedModuleRegistry = null;
       this._isolatedMockRegistry = null;
-      this._isolatedESMModuleRegistry = null;
     }
   }
 
   resetModules(): void {
     this._isolatedModuleRegistry?.clear();
     this._isolatedMockRegistry?.clear();
-    this._isolatedESMModuleRegistry?.clear();
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
-    this._isolatedESMModuleRegistry = null;
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
