@@ -86,7 +86,7 @@ Also Jest's configuration json file can be referenced through the `"jest"` key i
 ```json title="package.json"
 {
   "name": "my-project",
-  "jest": "<path_to_config_file.json>"
+  "jest": "./path/to/config.json"
 }
 ```
 
