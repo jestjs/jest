@@ -398,23 +398,23 @@ export const arrayBufferEquality = (
     dataViewB = new DataView(b);
   }
 
-  if (dataViewA instanceof DataView && dataViewB instanceof DataView) {
-    // Buffers are not equal when they do not have the same byte length
-    if (dataViewA.byteLength !== dataViewB.byteLength) {
-      return false;
-    }
-
-    // Check if every byte value is equal to each other
-    for (let i = 0; i < dataViewA.byteLength; i++) {
-      if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
-        return false;
-      }
-    }
-
-    return true;
+  if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
+    return undefined;
   }
 
-  return undefined;
+  // Buffers are not equal when they do not have the same byte length
+  if (dataViewA.byteLength !== dataViewB.byteLength) {
+    return false;
+  }
+
+  // Check if every byte value is equal to each other
+  for (let i = 0; i < dataViewA.byteLength; i++) {
+    if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const sparseArrayEquality = (
