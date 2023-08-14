@@ -336,6 +336,7 @@ async function runTestInternal(
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
     result.displayName = projectConfig.displayName;
+    result.workerProcessId = process.pid;
 
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {

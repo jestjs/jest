@@ -94,6 +94,7 @@ export type TestResult = {
   failureMessage?: string | null;
   leaks: boolean;
   memoryUsage?: number;
+  workerProcessId?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
