@@ -82,7 +82,7 @@ test('respects noStackTrace in config', () => {
   expect(summary).toMatchSnapshot();
 });
 
-// issue: https://github.com/facebook/jest/issues/5223
+// issue: https://github.com/jestjs/jest/issues/5223
 test('the jsdom console is the same as the test console', () => {
   const {stderr, stdout, exitCode} = runJest('console-jsdom');
   const {summary, rest} = extractSummary(stderr);
