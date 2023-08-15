@@ -7,8 +7,8 @@
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
-test('run test with symbol key', () => {
-  const {exitCode, stderr} = runJest('symbol-key', [], {
+test('objectContaining matches', () => {
+  const {exitCode, stderr} = runJest('object-containing-matches', [], {
     nodeOptions: '--no-warnings',
   });
 

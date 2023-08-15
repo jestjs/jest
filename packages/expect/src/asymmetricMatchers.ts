@@ -8,6 +8,7 @@
 
 import {
   equals,
+  getObjectKeys,
   isA,
   iterableEquality,
   subsetEquality,
@@ -237,36 +238,15 @@ class ObjectContaining extends AsymmetricMatcher<
     let result = true;
 
     const matcherContext = this.getMatcherContext();
-    const objectSymbolKeys = Object.getOwnPropertySymbols(this.sample);
+    const objectKeys = getObjectKeys(this.sample);
 
-    for (const property in this.sample) {
+    for (const key of objectKeys) {
       if (
-        !hasProperty(other, property) ||
-        !equals(
-          this.sample[property],
-          other[property],
-          matcherContext.customTesters,
-        )
+        !hasProperty(other, key) ||
+        !equals(this.sample[key], other[key], matcherContext.customTesters)
       ) {
         result = false;
         break;
-      }
-    }
-
-    if (objectSymbolKeys.length > 0) {
-      for (let i = 0; i < objectSymbolKeys.length; i++) {
-        const property = objectSymbolKeys[i];
-        if (
-          !hasProperty(other, property) ||
-          !equals(
-            this.sample[property],
-            !other[property],
-            matcherContext.customTesters,
-          )
-        ) {
-          result = false;
-          break;
-        }
       }
     }
 
