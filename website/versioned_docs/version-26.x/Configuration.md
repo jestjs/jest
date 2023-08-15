@@ -260,7 +260,7 @@ Additional options can be passed using the tuple form. For example, you may hide
 }
 ```
 
-For more information about the options object shape refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Config.ts).
+For more information about the options object shape refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/jestjs/jest/tree/main/packages/jest-types/src/Config.ts).
 
 ### `coverageThreshold` \[object]
 
@@ -463,7 +463,7 @@ If you specify a global reference value (like an object or array) here, and some
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
 
 :::info
 
@@ -494,7 +494,7 @@ module.exports = async function () {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's [`globalConfig`](https://github.com/jestjs/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
 
 :::info
 
@@ -769,7 +769,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 }
 ```
 
-Custom reporter modules must define a class that takes a [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) and reporter options as constructor arguments:
+Custom reporter modules must define a class that takes a [`globalConfig`](https://github.com/jestjs/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) and reporter options as constructor arguments:
 
 Example reporter:
 
@@ -804,7 +804,7 @@ class MyCustomReporter {
 }
 ```
 
-For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)
+For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/jestjs/jest/blob/main/packages/jest-reporters/src/types.ts)
 
 ### `resetMocks` \[boolean]
 
@@ -944,7 +944,7 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/jestjs/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1083,7 +1083,7 @@ Pretty foo: Object {
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
-More about serializers API can be found [here](https://github.com/facebook/jest/tree/main/packages/pretty-format/README.md#serialize).
+More about serializers API can be found [here](https://github.com/jestjs/jest/tree/main/packages/pretty-format/README.md#serialize).
 
 :::
 
@@ -1108,7 +1108,7 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
-The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
+The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/jestjs/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/jestjs/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
 
@@ -1333,7 +1333,7 @@ function testRunner(
 ): Promise<TestResult>;
 ```
 
-An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/main/packages/jest-jasmine2/src/index.ts).
+An example of such function can be found in our default [jasmine2 test runner package](https://github.com/jestjs/jest/blob/main/packages/jest-jasmine2/src/index.ts).
 
 ### `testSequencer` \[string]
 
@@ -1351,7 +1351,7 @@ const Sequencer = require('@jest/test-sequencer').default;
 class CustomSequencer extends Sequencer {
   sort(tests) {
     // Test structure information
-    // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
+    // https://github.com/jestjs/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
     const copyTests = Array.from(tests);
     return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
@@ -1392,7 +1392,7 @@ If the value is `modern`, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fa
 
 Default: `{"\\.[jt]sx?$": "babel-jest"}`
 
-A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/main/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
+A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/jestjs/jest/blob/main/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
 
 Examples of such compilers include:
 
@@ -1411,7 +1411,7 @@ A transformer is only run once per file unless the file has changed. During the 
 
 :::note
 
-When adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup).
+When adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/jestjs/jest/tree/main/packages/babel-jest#setup).
 
 :::
 

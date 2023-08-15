@@ -161,9 +161,9 @@ Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/tro
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
-While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395) [discovered](https://github.com/facebook/jest/issues/1524#issuecomment-260246008).
+While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/jestjs/jest/issues/1395) [discovered](https://github.com/jestjs/jest/issues/1524#issuecomment-260246008).
 
-Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
+Based on the [findings](https://github.com/jestjs/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 

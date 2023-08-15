@@ -30,7 +30,7 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   // Verbose mode is for debugging. Buffering of output is undesirable.
-  // See https://github.com/facebook/jest/issues/8208
+  // See https://github.com/jestjs/jest/issues/8208
   protected override __wrapStdio(
     stream: NodeJS.WritableStream | NodeJS.WriteStream,
   ): void {

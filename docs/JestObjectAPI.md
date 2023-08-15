@@ -1071,7 +1071,7 @@ Returns the `jest` object for chaining.
 
 :::info
 
-This function is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This function is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 

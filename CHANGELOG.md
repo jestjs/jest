@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
+
 ### Chore & Maintenance
 
 ### Performance

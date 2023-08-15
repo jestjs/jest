@@ -36,7 +36,7 @@ export default function VersionsPage() {
                     <Link to="/docs/getting-started">Documentation</Link>
                   </td>
                   <td>
-                    <a href="https://github.com/facebook/jest/blob/main/CHANGELOG.md">
+                    <a href="https://github.com/jestjs/jest/blob/main/CHANGELOG.md">
                       Release Notes
                     </a>
                   </td>
@@ -55,7 +55,7 @@ export default function VersionsPage() {
                     <Link to="/docs/next/getting-started">Documentation</Link>
                   </td>
                   <td>
-                    <a href="https://github.com/facebook/jest">Source Code</a>
+                    <a href="https://github.com/jestjs/jest">Source Code</a>
                   </td>
                 </tr>
               </tbody>
