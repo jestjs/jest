@@ -52,7 +52,10 @@ function getPrototype(obj: object) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: object | null, property: string): boolean {
+export function hasProperty(
+  obj: object | null,
+  property: string | symbol,
+): boolean {
   if (!obj) {
     return false;
   }
@@ -216,8 +219,10 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse = false) {
+class ObjectContaining extends AsymmetricMatcher<
+  Record<string | symbol, unknown>
+> {
+  constructor(sample: Record<string | symbol, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -232,6 +237,8 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     let result = true;
 
     const matcherContext = this.getMatcherContext();
+    const objectSymbolKeys = Object.getOwnPropertySymbols(this.sample);
+
     for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
@@ -243,6 +250,23 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
       ) {
         result = false;
         break;
+      }
+    }
+
+    if (objectSymbolKeys.length > 0) {
+      for (let i = 0; i < objectSymbolKeys.length; i++) {
+        const property = objectSymbolKeys[i];
+        if (
+          !hasProperty(other, property) ||
+          !equals(
+            this.sample[property],
+            !other[property],
+            matcherContext.customTesters,
+          )
+        ) {
+          result = false;
+          break;
+        }
       }
     }
 
