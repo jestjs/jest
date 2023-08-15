@@ -244,7 +244,7 @@ export default class FakeTimers<TimerRef = unknown> {
   runOnlyPendingTimers(): void {
     // We need to hold the current shape of `this._timers` because existing
     // timers can add new ones to the map and hence would run more than necessary.
-    // See https://github.com/facebook/jest/pull/4608 for details
+    // See https://github.com/jestjs/jest/pull/4608 for details
     const timerEntries = Array.from(this._timers.entries());
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);

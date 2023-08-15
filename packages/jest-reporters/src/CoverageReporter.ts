@@ -274,7 +274,7 @@ export default class CoverageReporter extends BaseReporter {
           Array<[string, string]>
         >((agg, thresholdGroup) => {
           // Preserve trailing slash, but not required if root dir
-          // See https://github.com/facebook/jest/issues/12703
+          // See https://github.com/jestjs/jest/issues/12703
           const resolvedThresholdGroup = path.resolve(thresholdGroup);
           const suffix =
             (thresholdGroup.endsWith(path.sep) ||

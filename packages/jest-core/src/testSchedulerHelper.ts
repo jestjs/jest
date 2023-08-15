@@ -41,7 +41,7 @@ export function shouldRunInBand(
    * quickly we also run in band to reduce the overhead of spawning workers.
    * Finally, the user can provide the runInBand argument in the CLI to
    * force running in band, which sets maxWorkers to 1 here:
-   * https://github.com/facebook/jest/blob/d106643a8ee0ffa9c2f11c6bb2d12094e99135aa/packages/jest-config/src/getMaxWorkers.ts#L27-L28
+   * https://github.com/jestjs/jest/blob/d106643a8ee0ffa9c2f11c6bb2d12094e99135aa/packages/jest-config/src/getMaxWorkers.ts#L27-L28
    */
   const areFastTests = timings.every(timing => timing < SLOW_TEST_TIME);
   const oneWorkerOrLess = maxWorkers <= 1;

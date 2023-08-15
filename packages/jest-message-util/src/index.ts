@@ -355,7 +355,7 @@ export const formatStackTrace = (
         let fileContent;
         try {
           // TODO: check & read HasteFS instead of reading the filesystem:
-          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          // see: https://github.com/jestjs/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
         } catch {

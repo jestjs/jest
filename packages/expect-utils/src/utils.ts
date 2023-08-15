@@ -377,7 +377,7 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
     // Since Jest globals are different from Node globals,
     // constructors are different even between arrays when comparing properties of mock objects.
     // Both of them should be able to compare correctly when they are array-to-array.
-    // https://github.com/facebook/jest/issues/2549
+    // https://github.com/jestjs/jest/issues/2549
     (Array.isArray(a) && Array.isArray(b))
   ) {
     return undefined;

@@ -413,7 +413,7 @@ describe.each([
       });
     });
 
-    // Regression test for https://github.com/facebook/jest/issues/13183
+    // Regression test for https://github.com/jestjs/jest/issues/13183
     test('onEnd callback is called', async () => {
       let onEndPromiseResolve: () => void;
       let onEndPromiseReject: (err: Error) => void;
