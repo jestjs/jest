@@ -504,7 +504,6 @@ export class ModuleMocker {
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   private _spyState: Set<() => void>;
   private _invocationCallCounter: number;
-  private _originalFn: WeakMap<Mock, Function>;
 
   /**
    * @see README.md
@@ -517,7 +516,6 @@ export class ModuleMocker {
     this._mockConfigRegistry = new WeakMap();
     this._spyState = new Set();
     this._invocationCallCounter = 1;
-    this._originalFn = new WeakMap();
   }
 
   private _getSlots(object?: Record<string, any>): Array<string> {
@@ -771,12 +769,7 @@ export class ModuleMocker {
 
       f.mockReset = () => {
         f.mockClear();
-        const originalFn = this._originalFn.get(f);
-        const originalMockImpl = {
-          ...this._defaultMockConfig(),
-          mockImpl: originalFn,
-        };
-        this._mockConfigRegistry.set(f, originalMockImpl);
+        this._mockConfigRegistry.delete(f);
         return f;
       };
 
@@ -1225,7 +1218,7 @@ export class ModuleMocker {
         return original.apply(this, arguments);
       });
     }
-    this._originalFn.set(object[methodKey] as Mock, original);
+
     return object[methodKey] as Mock;
   }
 
@@ -1418,7 +1411,6 @@ export class ModuleMocker {
   }
 
   resetAllMocks(): void {
-    this._spyState.forEach(reset => reset());
     this._mockConfigRegistry = new WeakMap();
     this._mockState = new WeakMap();
   }
