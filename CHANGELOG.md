@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[@jest/reporters, jest-runner, @jest/test-result]` Add logging of process id when --logHeapUsage flag is given ([#14410](https://github.com/facebook/jest/pull/14410))
+
 ### Fixes
 
 - `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
