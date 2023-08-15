@@ -46,9 +46,9 @@ import type {
   WorkerMetadata,
 } from './types';
 import {FSEventsWatcher} from './watchers/FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
 import NodeWatcher from './watchers/NodeWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
 import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't

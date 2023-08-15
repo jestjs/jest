@@ -446,7 +446,7 @@ describe('Watch mode flows', () => {
     );
 
     // The jury's still out on 'a', 'c', 'f', 'o', 'w' and '?'…
-    // See https://github.com/facebook/jest/issues/6693
+    // See https://github.com/jestjs/jest/issues/6693
     it.each`
       key    | plugin
       ${'t'} | ${'TestNamePattern'}

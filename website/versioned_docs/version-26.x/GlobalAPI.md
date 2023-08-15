@@ -477,7 +477,7 @@ Also under the alias: `it.concurrent(name, fn, timeout)`
 
 :::caution
 
-`test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
+`test.concurrent` is considered experimental - see [here](https://github.com/jestjs/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
 
 :::
 
