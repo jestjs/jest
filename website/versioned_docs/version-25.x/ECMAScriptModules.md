@@ -7,7 +7,7 @@ title: ECMAScript Modules
 
 Jest ships with **experimental** support for ECMAScript Modules (ESM).
 
-The implementation may have bugs and lack features. For the latest status check out the [issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker.
+The implementation may have bugs and lack features. For the latest status check out the [issue](https://github.com/jestjs/jest/issues/9430) and the [label](https://github.com/jestjs/jest/labels/ES%20Modules) on the issue tracker.
 
 Also note that the APIs Jest uses to implement ESM support are still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `18.8.0`).
 
@@ -72,4 +72,4 @@ const exported = await import('./main.cjs');
 // etc.
 ```
 
-Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
+Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/jestjs/jest/issues/10025) for updates.

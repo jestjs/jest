@@ -128,7 +128,7 @@ type TransformedSource =
   | {code: string; map?: RawSourceMap | string | null}
   | string;
 
-// Config.ProjectConfig can be seen in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
+// Config.ProjectConfig can be seen in code [here](https://github.com/jestjs/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
 // RawSourceMap comes from [`source-map`](https://github.com/mozilla/source-map/blob/0.6.1/source-map.d.ts#L6-L12)
 ```
 

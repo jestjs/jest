@@ -3,7 +3,7 @@
   "version": "29.4.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-regex-util"
   },
   "devDependencies": {
