@@ -90,6 +90,28 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       expect(result).toBe(absolutePackageJsonPath);
     });
 
+    test('not a valid file when "jest" key is a path', () => {
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        'a/b/c/package.json': '{ "jest": "conf/nonExistentConfigfile.json" }',
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
+
+      const result = resolveConfigPath(
+        path.dirname(absolutePackageJsonPath),
+        DIR,
+      );
+
+      expect(result).toBe(absolutePackageJsonPath);
+    });
+
     test(`directory path with "${extension}"`, () => {
       const relativePackageJsonPath = 'a/b/c/package.json';
       const absolutePackageJsonPath = path.resolve(
