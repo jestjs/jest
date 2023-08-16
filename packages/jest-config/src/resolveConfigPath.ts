@@ -132,7 +132,7 @@ const resolveJestKey = (packageContent: string, packagePath: string) => {
   return undefined;
 };
 
-const hasPackageJsonJestKey = (packageContent: any) => {
+const hasPackageJsonJestKey = (packageContent: string) => {
   try {
     return 'jest' in JSON.parse(packageContent);
   } catch {
