@@ -118,7 +118,7 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (packageContent: any, packagePath: string) => {
+const resolveJestKey = (packageContent: string, packagePath: string) => {
   if (hasPackageJsonJestKey(packageContent)) {
     const {jest} = JSON.parse(packageContent);
 
