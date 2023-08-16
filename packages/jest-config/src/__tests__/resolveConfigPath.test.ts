@@ -46,7 +46,6 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
     });
 
     test('file path from "jest" key', () => {
-      // Arrange
       const anyFileName = `anyJestConfigfile${extension}`;
       const relativePackageJsonPath = 'a/b/c/package.json';
       const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
@@ -61,18 +60,15 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       });
       writeFiles(DIR, {[relativeAnyFilePath]: ''});
 
-      // Act
       const result = resolveConfigPath(
         path.dirname(absolutePackageJsonPath),
         DIR,
       );
 
-      // Assert
       expect(result).toBe(absoluteAnyFilePath);
     });
 
     test('not a file path from "jest" key', () => {
-      // Arrange
       const anyFileName = `anyJestConfigfile${extension}`;
       const relativePackageJsonPath = 'a/b/c/package.json';
       const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
@@ -86,13 +82,11 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       });
       writeFiles(DIR, {[relativeAnyFilePath]: ''});
 
-      // Act
       const result = resolveConfigPath(
         path.dirname(absolutePackageJsonPath),
         DIR,
       );
 
-      // Assert
       expect(result).toBe(absolutePackageJsonPath);
     });
 
