@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect, @jest/expect-utils]` Fix `ObjectContaining` could not be worked when key is symbol. ([#14414](https://github.com/jestjs/jest/pull/14414))
+- `[expect]` Remove `@types/node` from dependencies ([#14385](https://github.com/jestjs/jest/pull/14385))
 - `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
 
 ### Chore & Maintenance

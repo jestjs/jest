@@ -137,7 +137,9 @@ function collectConcurrentTests(
 function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
   const mutex = pLimit(getState().maxConcurrency);
   const testNameStorage = new AsyncLocalStorage<string>();
-  jestExpect.setState({currentConcurrentTestName: testNameStorage});
+  jestExpect.setState({
+    currentConcurrentTestName: () => testNameStorage.getStore(),
+  });
   for (const test of concurrentTests) {
     try {
       const testFn = test.fn;

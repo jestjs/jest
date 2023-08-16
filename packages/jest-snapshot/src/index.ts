@@ -281,7 +281,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   const {currentConcurrentTestName, isNot, snapshotState} = context;
   const currentTestName =
-    currentConcurrentTestName?.getStore() ?? context.currentTestName;
+    currentConcurrentTestName?.() ?? context.currentTestName;
 
   if (isNot) {
     throw new Error(
