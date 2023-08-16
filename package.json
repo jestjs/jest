@@ -31,7 +31,7 @@
     "chokidar": "^3.3.0",
     "dedent": "^1.0.0",
     "eslint": "^8.8.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.2.5",
     "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
