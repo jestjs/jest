@@ -13,7 +13,7 @@ Jest will cache the result of a transformation and attempt to invalidate that re
 
 ## Defaults
 
-Jest ships with one transformer out of the box &ndash; [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup). It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+Jest ships with one transformer out of the box &ndash; [`babel-jest`](https://github.com/jestjs/jest/tree/main/packages/babel-jest#setup). It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
 :::tip
 
@@ -134,7 +134,7 @@ type TransformerFactory<X extends Transformer> = {
 
 :::note
 
-The definitions above were trimmed down for brevity. Full code can be found in [Jest repo on GitHub](https://github.com/facebook/jest/blob/main/packages/jest-transform/src/types.ts) (remember to choose the right tag/commit for your version of Jest).
+The definitions above were trimmed down for brevity. Full code can be found in [Jest repo on GitHub](https://github.com/jestjs/jest/blob/main/packages/jest-transform/src/types.ts) (remember to choose the right tag/commit for your version of Jest).
 
 :::
 

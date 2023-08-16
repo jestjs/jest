@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "29.6.1",
+  "version": "29.6.2",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -25,7 +25,7 @@
     "glob": "^7.1.3",
     "graceful-fs": "^4.2.9",
     "istanbul-lib-coverage": "^3.0.0",
-    "istanbul-lib-instrument": "^5.1.0",
+    "istanbul-lib-instrument": "^6.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-lib-source-maps": "^4.0.0",
     "istanbul-reports": "^3.1.3",
@@ -67,11 +67,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-reporters"
   },
   "bugs": {
-    "url": "https://github.com/facebook/jest/issues"
+    "url": "https://github.com/jestjs/jest/issues"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

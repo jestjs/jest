@@ -6,7 +6,6 @@
  *
  */
 
-import type {AsyncLocalStorage} from 'async_hooks';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
@@ -58,7 +57,7 @@ export interface MatcherUtils {
 
 export interface MatcherState {
   assertionCalls: number;
-  currentConcurrentTestName?: AsyncLocalStorage<string>;
+  currentConcurrentTestName?: () => string | undefined;
   currentTestName?: string;
   error?: Error;
   expand?: boolean;

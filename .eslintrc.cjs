@@ -128,7 +128,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-types': [
           'error',
-          // TODO: remove these overrides: https://github.com/facebook/jest/issues/10177
+          // TODO: remove these overrides: https://github.com/jestjs/jest/issues/10177
           {types: {Function: false, object: false, '{}': false}},
         ],
         'local/ban-types-eventually': [
