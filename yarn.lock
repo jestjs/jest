@@ -5258,7 +5258,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17, @types/react@npm:^17.0.3":
+"@types/react@npm:*, @types/react@npm:^18.0.0":
+  version: 18.2.20
+  resolution: "@types/react@npm:18.2.20"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 30f699c60e5e4bfef273ce64d320651cdd60f5c6a08361c6c7eca8cebcccda1ac953d2ee57c9f321b5ae87f8a62c72b6d35ca42df0e261d337849952daab2141
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^17":
   version: 17.0.62
   resolution: "@types/react@npm:17.0.62"
   dependencies:
@@ -12988,14 +12999,14 @@ __metadata:
     "@docusaurus/preset-classic": ^2.0.0
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0
     "@tsconfig/docusaurus": ^1.0.5
-    "@types/react": ^17.0.3
+    "@types/react": ^18.0.0
     clsx: ^2.0.0
     docusaurus-remark-plugin-tab-blocks: ^1.2.0
     graphql: ^16.3.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0
-    react: ^17.0.2
-    react-dom: ^17.0.2
+    react: ^18.0.0
+    react-dom: ^18.0.0
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
     react-markdown: ^8.0.0
@@ -16636,16 +16647,16 @@ __metadata:
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
     "@jest/schemas": "workspace:^"
-    "@types/react": ^17.0.3
+    "@types/react": ^18.0.0
     "@types/react-is": ^18.0.0
     "@types/react-test-renderer": 17.0.2
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
     jest-util: "workspace:^"
-    react: 17.0.2
-    react-dom: ^17.0.1
+    react: 18.2.0
+    react-dom: ^18.0.0
     react-is: ^18.0.0
-    react-test-renderer: 17.0.2
+    react-test-renderer: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -17013,20 +17024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^17.0.1, react-dom@npm:^17.0.2":
-  version: 17.0.2
-  resolution: "react-dom@npm:17.0.2"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    scheduler: ^0.20.2
-  peerDependencies:
-    react: 17.0.2
-  checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^18.2.0":
+"react-dom@npm:^18.0.0, react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
@@ -17325,7 +17323,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.2, react@npm:^17.0.2":
+"react@npm:17.0.2":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
@@ -17335,7 +17333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:18.2.0":
+"react@npm:18.2.0, react@npm:^18.0.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
