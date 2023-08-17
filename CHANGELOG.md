@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Update `github-actions-cpu-cores` recommendation as unnecessary with Node 18 or newer ([#14421](https://github.com/jestjs/jest/pull/14421))
+
 ### Performance
 
 ## 29.6.2

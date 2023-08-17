@@ -185,17 +185,15 @@ jest --maxWorkers=4
 npm test -- --maxWorkers=4
 ```
 
-If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to detect number of CPUs, and pass that to Jest.
-
-```yaml
-- name: Get number of CPU cores
-  id: cpu-cores
-  uses: SimenB/github-actions-cpu-cores@v1
-- name: run tests
-  run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
-```
-
 Another thing you can do is use the [`shard`](CLI.md#--shard) flag to parallelize the test run across multiple machines.
+
+:::info
+
+If your project uses Node 14 or 16, you can use you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to accurately detect the number of CPUs to use.
+
+Refer to [`github-actions-cpu-cores` README](https://github.com/SimenB/github-actions-cpu-cores#readme) for more information.
+
+:::
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
