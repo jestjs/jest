@@ -29,7 +29,7 @@ Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/us
 
 :::caution
 
-If we want to mock Node's build-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because build-in modules are not mocked by default.
+If we want to mock Node's built-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because built-in modules are not mocked by default.
 
 :::
 
@@ -110,7 +110,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s build-in module:
+Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s built-in module:
 
 ```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
