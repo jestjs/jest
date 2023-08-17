@@ -181,6 +181,7 @@ test('ArrayNotContaining throws for non-arrays', () => {
 });
 
 test('ObjectContaining matches', () => {
+  const foo = Symbol('foo');
   [
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
@@ -192,12 +193,15 @@ test('ObjectContaining matches', () => {
       foo: Buffer.from('foo'),
       jest: 'jest',
     }),
+    objectContaining({[foo]: 'foo'}).asymmetricMatch({[foo]: 'foo'}),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
   });
 });
 
 test('ObjectContaining does not match', () => {
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
   [
     objectContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
@@ -206,6 +210,7 @@ test('ObjectContaining does not match', () => {
       answer: 42,
       foo: {bar: 'baz', foobar: 'qux'},
     }).asymmetricMatch({foo: {bar: 'baz'}}),
+    objectContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
   ].forEach(test => {
     jestExpect(test).toEqual(false);
   });
@@ -250,9 +255,12 @@ test('ObjectContaining does not mutate the sample', () => {
 });
 
 test('ObjectNotContaining matches', () => {
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
   [
     objectContaining({}).asymmetricMatch(null),
     objectContaining({}).asymmetricMatch(undefined),
+    objectNotContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectNotContaining({foo: undefined}).asymmetricMatch({}),
