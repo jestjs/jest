@@ -77,11 +77,12 @@ const resolveConfigPathByTraversing = (
   const packageJson = findPackageJson(pathToResolve);
 
   if (packageJson) {
-    const packageContent = fs.readFileSync(packageJson, 'utf8');
     const packagePath = path.dirname(packageJson);
-    const resolvedKey = resolveJestKey(packageContent, packagePath);
+    const jestKey = getPackageJsonJestKey(packageJson);
 
-    if (hasPackageJsonJestKey(packageContent)) {
+    if (jestKey) {
+      const resolvedKey = resolveJestKey(jestKey, packagePath);
+
       configFiles.push(resolvedKey || packageJson);
     }
   }
@@ -118,23 +119,22 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (packageContent: string, packagePath: string) => {
-  if (hasPackageJsonJestKey(packageContent)) {
-    const {jest} = JSON.parse(packageContent);
+const resolveJestKey = (jestKeyContent: any, packagePath: string) => {
+  if (jestKeyContent && typeof jestKeyContent === 'string') {
+    const resolvedConfigFile = path.resolve(packagePath, jestKeyContent);
 
-    if (jest && typeof jest === 'string') {
-      const resolvedConfigFile = path.resolve(packagePath, jest);
-
-      return isFile(resolvedConfigFile) ? resolvedConfigFile : undefined;
-    }
+    return isFile(resolvedConfigFile) ? resolvedConfigFile : undefined;
   }
 
   return undefined;
 };
 
-const hasPackageJsonJestKey = (packageContent: string) => {
+const getPackageJsonJestKey = (packageJsonPath: string) => {
   try {
-    return 'jest' in JSON.parse(packageContent);
+    const packageContent = fs.readFileSync(packageJsonPath, 'utf8');
+    const parsed = JSON.parse(packageContent);
+
+    if ('jest' in parsed) return parsed.jest ?? false;
   } catch {
     // If package is not a valid JSON
     return false;
