@@ -598,6 +598,26 @@ describe('moduleMocker', () => {
         expect(fn2()).not.toBe('abcd');
       });
 
+      it('is not affected by restoreAllMocks', () => {
+        const fn1 = moduleMocker.fn();
+        fn1.mockImplementation(() => 'abcd');
+        fn1(1, 2, 3);
+        expect(fn1.mock.calls).toEqual([[1, 2, 3]]);
+        moduleMocker.restoreAllMocks();
+        expect(fn1(1)).toBe('abcd');
+        expect(fn1.mock.calls).toEqual([[1, 2, 3], [1]]);
+      });
+
+      it('is cleared and stubbed when restored explicitly', () => {
+        const fn1 = moduleMocker.fn();
+        fn1.mockImplementation(() => 'abcd');
+        fn1(1, 2, 3);
+        expect(fn1.mock.calls).toEqual([[1, 2, 3]]);
+        fn1.mockRestore();
+        expect(fn1(1)).toBeUndefined();
+        expect(fn1.mock.calls).toEqual([[1]]);
+      });
+
       it('maintains function arity', () => {
         const mockFunctionArity1 = moduleMocker.fn(x => x);
         const mockFunctionArity2 = moduleMocker.fn((x, y) => y);
