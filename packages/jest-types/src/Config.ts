@@ -400,6 +400,7 @@ export type GlobalConfig = {
   randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
+  runInBand: boolean;
   runTestsByPath: boolean;
   rootDir: string;
   seed: number;
