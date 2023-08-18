@@ -37,7 +37,7 @@
     "@docusaurus/plugin-pwa": "^2.0.0",
     "@docusaurus/preset-classic": "^2.0.0",
     "@docusaurus/remark-plugin-npm2yarn": "^2.0.0",
-    "clsx": "^1.1.1",
+    "clsx": "^2.0.0",
     "docusaurus-remark-plugin-tab-blocks": "^1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -23,11 +23,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-watcher"
   },
   "bugs": {
-    "url": "https://github.com/facebook/jest/issues"
+    "url": "https://github.com/jestjs/jest/issues"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

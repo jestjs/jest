@@ -2,7 +2,7 @@
 
 Jest is one of Facebook's open-source projects that is both under very active development and is also being used to ship code to everybody on [Facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully, this document makes the process for contributing clear and answers some questions that you may have.
 
-If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
+If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/jestjs/jest)!
 
 ## [Code of Conduct](https://code.facebook.com/codeofconduct)
 
@@ -131,7 +131,7 @@ Ran all test suites.
 
 ## Checking Constraints
 
-We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/facebook/jest/blob/main/constraints.pro) and their purposes are documented with comments.
+We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/jestjs/jest/blob/main/constraints.pro) and their purposes are documented with comments.
 
 Constraints can be checked with `yarn constraints`, and fixed with `yarn constraints --fix`. Generally speaking:
 

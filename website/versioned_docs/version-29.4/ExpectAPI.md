@@ -1591,7 +1591,7 @@ A boolean to let you know this matcher was called with an `expand` option. When 
 
 #### `this.utils`
 
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/main/packages/jest-matcher-utils).
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/jestjs/jest/tree/main/packages/jest-matcher-utils).
 
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 

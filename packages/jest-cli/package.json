@@ -50,11 +50,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-cli"
   },
   "bugs": {
-    "url": "https://github.com/facebook/jest/issues"
+    "url": "https://github.com/jestjs/jest/issues"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

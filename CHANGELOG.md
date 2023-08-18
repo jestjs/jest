@@ -5,6 +5,9 @@
 ### Fixes
 
 - `[jest-runtime]` Fix dynamic esm import module bug when loaded module through `jest.isolateModulesAsync` ([14397](https://github.com/jestjs/jest/pull/14397))
+- `[expect, @jest/expect-utils]` `ObjectContaining` support `sumbol` as key ([#14414](https://github.com/jestjs/jest/pull/14414))
+- `[expect]` Remove `@types/node` from dependencies ([#14385](https://github.com/jestjs/jest/pull/14385))
+- `[jest-core]` Use workers in watch mode by default to avoid crashes ([#14059](https://github.com/facebook/jest/pull/14059) & [#14085](https://github.com/facebook/jest/pull/14085)).
 - `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
 
 ### Chore & Maintenance
