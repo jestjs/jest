@@ -8,6 +8,7 @@
 
 import {
   equals,
+  getObjectKeys,
   isA,
   iterableEquality,
   subsetEquality,
@@ -52,7 +53,10 @@ function getPrototype(obj: object) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: object | null, property: string): boolean {
+export function hasProperty(
+  obj: object | null,
+  property: string | symbol,
+): boolean {
   if (!obj) {
     return false;
   }
@@ -216,8 +220,10 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse = false) {
+class ObjectContaining extends AsymmetricMatcher<
+  Record<string | symbol, unknown>
+> {
+  constructor(sample: Record<string | symbol, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -232,14 +238,12 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     let result = true;
 
     const matcherContext = this.getMatcherContext();
-    for (const property in this.sample) {
+    const objectKeys = getObjectKeys(this.sample);
+
+    for (const key of objectKeys) {
       if (
-        !hasProperty(other, property) ||
-        !equals(
-          this.sample[property],
-          other[property],
-          matcherContext.customTesters,
-        )
+        !hasProperty(other, key) ||
+        !equals(this.sample[key], other[key], matcherContext.customTesters)
       ) {
         result = false;
         break;

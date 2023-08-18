@@ -121,6 +121,7 @@ const groupOptions = (
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
     runTestsByPath: options.runTestsByPath,
     seed: options.seed,
     shard: options.shard,

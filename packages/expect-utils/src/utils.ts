@@ -47,7 +47,7 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 // the prototype chain for string keys but not for symbols.  (Otherwise, it
 // could find values such as a Set or Map's Symbol.toStringTag, with unexpected
 // results.)
-const getObjectKeys = (object: object) => [
+export const getObjectKeys = (object: object): Array<string | symbol> => [
   ...Object.keys(object),
   ...Object.getOwnPropertySymbols(object),
 ];
