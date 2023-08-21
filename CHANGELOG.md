@@ -12,6 +12,7 @@
 - `[jest-mock]` Revert [#13866](https://github.com/jestjs/jest/pull/13866) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[jest-mock]` Revert [#13867](https://github.com/jestjs/jest/pull/13867) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[@jest/reporters]` Marks Reporter's hooks as optional ([#14433](https://github.com/jestjs/jest/pull/14433))
+- `[jest-runtime]` Fix dynamic ESM import module bug when loaded module through `jest.isolateModulesAsync` ([14397](https://github.com/jestjs/jest/pull/14397))
 
 ### Chore & Maintenance
 
