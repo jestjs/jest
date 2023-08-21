@@ -128,9 +128,7 @@ Beware that `mockFn.mockClear()` will replace `mockFn.mock`, not just reset the 
 
 ### `mockFn.mockReset()`
 
-Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
-
-This is useful when you want to completely reset a _mock_ back to its initial state.
+Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also replaces the mock implementation with an empty function, returning `undefined`.
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
