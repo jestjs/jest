@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "execa": "^5.0.0",
+    "jest-util": "workspace:^",
     "p-limit": "^3.1.0"
   },
   "engines": {
