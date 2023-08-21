@@ -17,6 +17,7 @@ import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
+  invariant,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -455,15 +456,6 @@ export const addErrorToEachTestUnderDescribe = (
     }
   }
 };
-
-export function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 type TestDescription = {
   ancestorTitles: Array<string>;
