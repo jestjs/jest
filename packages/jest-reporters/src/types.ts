@@ -48,7 +48,7 @@ export interface Reporter {
   ) => Promise<void> | void;
   readonly onTestStart?: (test: Test) => Promise<void> | void;
   readonly onTestFileStart?: (test: Test) => Promise<void> | void;
-  readonly onRunComplete: (
+  readonly onRunComplete?: (
     testContexts: Set<TestContext>,
     results: AggregatedResult,
   ) => Promise<void> | void;
