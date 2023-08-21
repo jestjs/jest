@@ -299,7 +299,7 @@ export default async function runJest({
     detail: {numTests: allTests.length},
   });
   const results = await scheduler.scheduleTests(allTests, testWatcher);
-  performance.mark('jest/scheduleAndRun:start');
+  performance.mark('jest/scheduleAndRun:end');
 
   performance.mark('jest/cacheResults:start');
   sequencer.cacheResults(allTests, results);

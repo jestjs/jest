@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-core]` Fix typo in `scheduleAndRun` performance marker ([#14434](https://github.com/jestjs/jest/pull/14434))
+
 ### Chore & Maintenance
 
 ## 29.6.3
