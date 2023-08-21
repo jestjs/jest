@@ -4,7 +4,6 @@
 
 ### Fixes
 
-- `[jest-runtime]` Fix dynamic esm import module bug when loaded module through `jest.isolateModulesAsync` ([14397](https://github.com/jestjs/jest/pull/14397))
 - `[expect, @jest/expect-utils]` `ObjectContaining` support `sumbol` as key ([#14414](https://github.com/jestjs/jest/pull/14414))
 - `[expect]` Remove `@types/node` from dependencies ([#14385](https://github.com/jestjs/jest/pull/14385))
 - `[jest-core]` Use workers in watch mode by default to avoid crashes ([#14059](https://github.com/facebook/jest/pull/14059) & [#14085](https://github.com/facebook/jest/pull/14085)).
@@ -12,6 +11,7 @@
 - `[jest-mock]` Revert [#13692](https://github.com/jestjs/jest/pull/13692) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[jest-mock]` Revert [#13866](https://github.com/jestjs/jest/pull/13866) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[jest-mock]` Revert [#13867](https://github.com/jestjs/jest/pull/13867) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
+- `[jest-runtime]` Fix dynamic esm import module bug when loaded module through `jest.isolateModulesAsync` ([14397](https://github.com/jestjs/jest/pull/14397))
 
 ### Chore & Maintenance
 
