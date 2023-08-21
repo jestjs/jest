@@ -183,7 +183,7 @@ const config = {
             dropdownItemsAfter: [
               ...Object.entries(ArchivedVersions).map(
                 ([versionName, versionUrl]) => ({
-                  to: versionUrl,
+                  href: versionUrl,
                   label: versionName,
                 })
               ),

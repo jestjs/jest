@@ -83,7 +83,8 @@ export default function VersionsPage() {
             </table>
             <h3 id="archive">Archived Versions</h3>
             <p>
-              Here you can find documentation for archived versions of Jest.
+              Here you can find archived documentation for older versions of
+              Jest.
             </p>
             <table>
               <tbody>
