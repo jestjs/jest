@@ -11,6 +11,7 @@
 - `[jest-mock]` Revert [#13692](https://github.com/jestjs/jest/pull/13692) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[jest-mock]` Revert [#13866](https://github.com/jestjs/jest/pull/13866) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
 - `[jest-mock]` Revert [#13867](https://github.com/jestjs/jest/pull/13867) as it was a breaking change ([#14429](https://github.com/jestjs/jest/pull/14429))
+- `[@jest/reporters]` Marks Reporter's hooks as optional ([#14433](https://github.com/jestjs/jest/pull/14433))
 
 ### Chore & Maintenance
 
