@@ -38,7 +38,7 @@ import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
-import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -422,12 +422,6 @@ class TestScheduler {
         exit(exitCode);
       }
     }
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }
 

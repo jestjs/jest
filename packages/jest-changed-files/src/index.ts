@@ -7,6 +7,7 @@
  */
 
 import pLimit = require('p-limit');
+import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
@@ -15,10 +16,6 @@ import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
 
 export type {ChangedFiles, ChangedFilesPromise} from './types';
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
@@ -78,8 +75,8 @@ export const findRepos = async (roots: Array<string>): Promise<Repos> => {
   const slRepos = await Promise.all(roots.map(findSlRoot));
 
   return {
-    git: new Set(gitRepos.filter(notEmpty)),
-    hg: new Set(hgRepos.filter(notEmpty)),
-    sl: new Set(slRepos.filter(notEmpty)),
+    git: new Set(gitRepos.filter(isNonNullable)),
+    hg: new Set(hgRepos.filter(isNonNullable)),
+    sl: new Set(slRepos.filter(isNonNullable)),
   };
 };
