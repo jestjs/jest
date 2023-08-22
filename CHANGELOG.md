@@ -8,6 +8,7 @@
 - `[expect]` Remove `@types/node` from dependencies ([#14385](https://github.com/jestjs/jest/pull/14385))
 - `[jest-core]` Use workers in watch mode by default to avoid crashes ([#14059](https://github.com/facebook/jest/pull/14059) & [#14085](https://github.com/facebook/jest/pull/14085)).
 - `[jest-reporters]` Update `istanbul-lib-instrument` dependency to v6. ([#14401](https://github.com/jestjs/jest/pull/14401))
+- `[jest-worker]` Additional error wrapper for `parentPort.postMessage` to fix unhandled `DataCloneError`. ([#14437](https://github.com/jestjs/jest/pull/14437))
 
 ### Chore & Maintenance
 
