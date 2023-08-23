@@ -8,7 +8,7 @@ body:
       value: |
         ### Thank you for helping us improve our documentation!
 
-        Please be sure you are looking at [the latest version of the documentation](https://jestjs.io/docs/expect) before opening an issue here.
+        Please be sure you are looking at [the latest version of the documentation](https://jestjs.io/docs) before opening an issue here.
   - type: textarea
     id: links
     attributes:
