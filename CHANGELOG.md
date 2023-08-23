@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-core]` Fix typo in `scheduleAndRun` performance marker ([#14434](https://github.com/jestjs/jest/pull/14434))
+- `[jest-worker]` Additional error wrapper for `parentPort.postMessage` to fix unhandled `DataCloneError`. ([#14437](https://github.com/jestjs/jest/pull/14437))
 
 ### Chore & Maintenance
 

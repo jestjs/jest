@@ -112,7 +112,14 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  try {
+    parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  } catch (err: any) {
+    // Handling it here to avoid unhandled `DataCloneError` rejection
+    // which is hard to distinguish on the parent side
+    // (such error doesn't have any message or stack trace)
+    reportClientError(err);
+  }
 }
 
 function reportClientError(error: Error) {
