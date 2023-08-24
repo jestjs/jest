@@ -27,16 +27,20 @@ const denyList = new Set([
   'GLOBAL',
   'root',
   'global',
+  'globalThis',
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
+  'crypto',
   // if env is loaded within a jest test
   'jest-symbol-do-not-touch',
 ]);
 
+type GlobalProperties = Array<keyof typeof globalThis>;
+
 const nodeGlobals = new Map(
-  Object.getOwnPropertyNames(globalThis)
-    .filter(global => !denyList.has(global))
+  (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
+    .filter(global => !denyList.has(global as string))
     .map(nodeGlobalsKey => {
       const descriptor = Object.getOwnPropertyDescriptor(
         globalThis,
@@ -76,7 +80,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     ) as Global.Global;
     this.global = global;
 
-    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    const contextGlobals = new Set(
+      Object.getOwnPropertyNames(global) as GlobalProperties,
+    );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (descriptor.configurable) {
@@ -84,20 +90,34 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             configurable: true,
             enumerable: descriptor.enumerable,
             get() {
-              // @ts-expect-error: no index signature
-              const val = globalThis[nodeGlobalsKey] as unknown;
+              const attributes: PropertyDescriptor = {
+                configurable: true,
+              };
+
+              if ('value' in descriptor) {
+                attributes.value = descriptor.value;
+              }
+
+              if ('writable' in descriptor) {
+                attributes.writable = descriptor.writable;
+              }
+
+              if ('enumerable' in descriptor) {
+                attributes.enumerable = descriptor.enumerable;
+              }
+
+              if ('get' in descriptor) {
+                attributes.get = descriptor.get;
+              }
+
+              if ('set' in descriptor) {
+                attributes.set = descriptor.set;
+              }
 
               // override lazy getter
-              Object.defineProperty(global, nodeGlobalsKey, {
-                configurable: true,
-                enumerable: descriptor.enumerable,
-                value: val,
-                writable:
-                  descriptor.writable === true ||
-                  // Node 19 makes performance non-readable. This is probably not the correct solution.
-                  nodeGlobalsKey === 'performance',
-              });
-              return val;
+              Object.defineProperty(global, nodeGlobalsKey, attributes);
+
+              return globalThis[nodeGlobalsKey];
             },
             set(val: unknown) {
               // override lazy getter
@@ -135,6 +155,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     // different than the global one used by users in tests. This makes sure the
     // same constructor is referenced by both.
     global.Uint8Array = Uint8Array;
+    // for some reason, this cannot be assigned from its descriptor - ends up with some `null` error
+    global.crypto = crypto;
 
     installCommonGlobals(global, projectConfig.globals);
 
