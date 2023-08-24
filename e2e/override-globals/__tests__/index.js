@@ -27,4 +27,11 @@ describe('parent', () => {
       }, 10);
     });
   });
+
+  it('can override atob and btoa', () => {
+    global.atob = () => 'hello';
+    global.btoa = () => 'there';
+
+    expect(`${atob()} ${btoa()}`).toBe('hello there');
+  });
 });

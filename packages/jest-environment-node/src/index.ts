@@ -90,41 +90,24 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             configurable: true,
             enumerable: descriptor.enumerable,
             get() {
-              const attributes: PropertyDescriptor = {
-                configurable: true,
-              };
+              const value = globalThis[nodeGlobalsKey];
 
-              if ('value' in descriptor) {
-                attributes.value = descriptor.value;
-              }
-
-              if ('writable' in descriptor) {
-                attributes.writable = descriptor.writable;
-              }
-
-              if ('enumerable' in descriptor) {
-                attributes.enumerable = descriptor.enumerable;
-              }
-
-              if ('get' in descriptor) {
-                attributes.get = descriptor.get;
-              }
-
-              if ('set' in descriptor) {
-                attributes.set = descriptor.set;
-              }
-
-              // override lazy getter
-              Object.defineProperty(global, nodeGlobalsKey, attributes);
-
-              return globalThis[nodeGlobalsKey];
-            },
-            set(val: unknown) {
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
                 configurable: true,
                 enumerable: descriptor.enumerable,
-                value: val,
+                value,
+                writable: true,
+              });
+
+              return value;
+            },
+            set(value: unknown) {
+              // override lazy getter
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value,
                 writable: true,
               });
             },
