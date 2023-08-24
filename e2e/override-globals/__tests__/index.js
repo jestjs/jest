@@ -29,7 +29,9 @@ describe('parent', () => {
   });
 
   it('can override atob and btoa', () => {
+    // eslint-disable-next-line no-restricted-globals
     global.atob = () => 'hello';
+    // eslint-disable-next-line no-restricted-globals
     global.btoa = () => 'there';
 
     expect(`${atob()} ${btoa()}`).toBe('hello there');
