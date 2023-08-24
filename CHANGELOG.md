@@ -5,7 +5,7 @@
 ### Fixes
 
 - `[jest-core]` Fix typo in `scheduleAndRun` performance marker ([#14434](https://github.com/jestjs/jest/pull/14434))
-- `[jest-environment-node]` Make sure `atob` and `btoa` are writeable in Node 20
+- `[jest-environment-node]` Make sure `atob` and `btoa` are writeable in Node 20 ([#14446](https://github.com/jestjs/jest/pull/14446))
 - `[jest-worker]` Additional error wrapper for `parentPort.postMessage` to fix unhandled `DataCloneError`. ([#14437](https://github.com/jestjs/jest/pull/14437))
 
 ### Chore & Maintenance
