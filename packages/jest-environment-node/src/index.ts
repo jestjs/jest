@@ -31,7 +31,6 @@ const denyList = new Set([
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
-  'crypto',
   // if env is loaded within a jest test
   'jest-symbol-do-not-touch',
 ]);
@@ -138,10 +137,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     // different than the global one used by users in tests. This makes sure the
     // same constructor is referenced by both.
     global.Uint8Array = Uint8Array;
-    if (typeof crypto !== 'undefined') {
-      // for some reason, this cannot be assigned from its descriptor - ends up with some `null` error
-      global.crypto = crypto;
-    }
 
     installCommonGlobals(global, projectConfig.globals);
 
