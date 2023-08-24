@@ -53,7 +53,12 @@ import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy} from 'jest-util';
+import {
+  createDirectory,
+  deepCyclicCopy,
+  invariant,
+  isNonNullable,
+} from 'jest-util';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -208,7 +213,6 @@ export default class Runtime {
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
-  private isInsideTestCode: boolean | undefined;
 
   constructor(
     config: Config.ProjectConfig,
@@ -417,12 +421,15 @@ export default class Runtime {
     query = '',
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
+    const registry = this._isolatedModuleRegistry
+      ? this._isolatedModuleRegistry
+      : this._esmoduleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
       await this._fileTransformsMutex.get(cacheKey);
     }
 
-    if (!this._esmoduleRegistry.has(cacheKey)) {
+    if (!registry.has(cacheKey)) {
       invariant(
         typeof this._environment.getVmContext === 'function',
         'ES Modules are only supported if your test environment has the `getVmContext` function',
@@ -455,7 +462,7 @@ export default class Runtime {
           context,
         );
 
-        this._esmoduleRegistry.set(cacheKey, wasm);
+        registry.set(cacheKey, wasm);
 
         transformResolve();
         return wasm;
@@ -463,7 +470,7 @@ export default class Runtime {
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, core);
+        registry.set(cacheKey, core);
 
         transformResolve();
 
@@ -527,11 +534,11 @@ export default class Runtime {
         }
 
         invariant(
-          !this._esmoduleRegistry.has(cacheKey),
+          !registry.has(cacheKey),
           `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
         );
 
-        this._esmoduleRegistry.set(cacheKey, module);
+        registry.set(cacheKey, module);
 
         transformResolve();
       } catch (error) {
@@ -540,7 +547,7 @@ export default class Runtime {
       }
     }
 
-    const module = this._esmoduleRegistry.get(cacheKey);
+    const module = registry.get(cacheKey);
 
     invariant(
       module,
@@ -563,20 +570,19 @@ export default class Runtime {
       // @ts-expect-error - exiting
       return;
     }
-    if (this.isInsideTestCode === false) {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
-    }
+
+    const registry = this._isolatedModuleRegistry
+      ? this._isolatedModuleRegistry
+      : this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
-      const fromCache = this._esmoduleRegistry.get('@jest/globals');
+      const fromCache = registry.get('@jest/globals');
 
       if (fromCache) {
         return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', globals);
+      registry.set('@jest/globals', globals);
 
       return globals;
     }
@@ -592,7 +598,7 @@ export default class Runtime {
         return this.importMock(referencingIdentifier, specifier, context);
       }
 
-      const fromCache = this._esmoduleRegistry.get(specifier);
+      const fromCache = registry.get(specifier);
 
       if (fromCache) {
         return fromCache;
@@ -668,7 +674,7 @@ export default class Runtime {
         }
       }
 
-      this._esmoduleRegistry.set(specifier, module);
+      registry.set(specifier, module);
       return module;
     }
 
@@ -711,11 +717,6 @@ export default class Runtime {
       );
       process.exitCode = 1;
       return;
-    }
-    if (this.isInsideTestCode === false) {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
     }
 
     if (module.status === 'unlinked') {
@@ -1354,14 +1355,6 @@ export default class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
-  enterTestCode(): void {
-    this.isInsideTestCode = true;
-  }
-
-  leaveTestCode(): void {
-    this.isInsideTestCode = false;
-  }
-
   teardown(): void {
     this.restoreAllMocks();
     this.resetModules();
@@ -1505,11 +1498,6 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
-    if (this.isInsideTestCode === false) {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
-    }
 
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -1604,7 +1592,7 @@ export default class Runtime {
         module.path, // __dirname
         module.filename, // __filename
         lastArgs[0],
-        ...lastArgs.slice(1).filter(notEmpty),
+        ...lastArgs.slice(1).filter(isNonNullable),
       );
     } catch (error: any) {
       this.handleExecutionError(error, module);
@@ -2195,11 +2183,6 @@ export default class Runtime {
         );
         process.exitCode = 1;
       }
-      if (this.isInsideTestCode === false) {
-        throw new ReferenceError(
-          'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
-        );
-      }
 
       return this._fakeTimersImplementation!;
     };
@@ -2456,7 +2439,7 @@ export default class Runtime {
       '__filename',
       this._config.injectGlobals ? 'jest' : undefined,
       ...this._config.sandboxInjectedGlobals,
-    ].filter(notEmpty);
+    ].filter(isNonNullable);
   }
 
   private handleExecutionError(e: Error, module: Module): never {
@@ -2566,16 +2549,6 @@ export default class Runtime {
   setGlobalsForRuntime(globals: JestGlobals): void {
     this.jestGlobals = globals;
   }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined;
 }
 
 async function evaluateSyntheticModule(module: SyntheticModule) {

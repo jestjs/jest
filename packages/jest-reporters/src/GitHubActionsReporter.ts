@@ -10,6 +10,7 @@ import stripAnsi = require('strip-ansi');
 import type {
   AggregatedResult,
   AssertionResult,
+  Status,
   Test,
   TestContext,
   TestResult,
@@ -21,6 +22,7 @@ import {
   getTopFrame,
   separateMessageFromStack,
 } from 'jest-message-util';
+import {specialChars} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
 type AnnotationOptions = {
@@ -32,6 +34,7 @@ type AnnotationOptions = {
 };
 
 const titleSeparator = ' \u203A ';
+const ICONS = specialChars.ICONS;
 
 type PerformanceInfo = {
   end: number;
@@ -42,7 +45,7 @@ type PerformanceInfo = {
 
 type ResultTreeLeaf = {
   name: string;
-  passed: boolean;
+  status: Status;
   duration: number;
   children: Array<never>;
 };
@@ -158,7 +161,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       return true;
     } else {
       throw new Error(
-        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/facebook/jest/issues`,
+        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/jestjs/jest/issues`,
       );
     }
   }
@@ -215,17 +218,15 @@ export default class GitHubActionsReporter extends BaseReporter {
     const branches: Array<Array<string>> = [];
     suiteResult.forEach(element => {
       if (element.ancestorTitles.length === 0) {
-        let passed = true;
-        if (element.status !== 'passed') {
+        if (element.status === 'failed') {
           root.passed = false;
-          passed = false;
         }
         const duration = element.duration || 1;
         root.children.push({
           children: [],
           duration,
           name: element.title,
-          passed,
+          status: element.status,
         });
       } else {
         let alreadyInserted = false;
@@ -263,21 +264,19 @@ export default class GitHubActionsReporter extends BaseReporter {
     };
     const branches: Array<Array<string>> = [];
     suiteResult.forEach(element => {
-      let passed = true;
       let duration = element.duration;
       if (!duration || isNaN(duration)) {
         duration = 1;
       }
       if (this.arrayEqual(element.ancestorTitles, ancestors)) {
-        if (element.status !== 'passed') {
+        if (element.status === 'failed') {
           node.passed = false;
-          passed = false;
         }
         node.children.push({
           children: [],
           duration,
           name: element.title,
-          passed,
+          status: element.status,
         });
       } else if (
         this.arrayChild(
@@ -354,10 +353,20 @@ export default class GitHubActionsReporter extends BaseReporter {
       }
       const spaces = '  '.repeat(numberSpaces);
       let resultSymbol;
-      if (resultTree.passed) {
-        resultSymbol = chalk.green('\u2713');
-      } else {
-        resultSymbol = chalk.red('\u00D7');
+      switch (resultTree.status) {
+        case 'passed':
+          resultSymbol = chalk.green(ICONS.success);
+          break;
+        case 'failed':
+          resultSymbol = chalk.red(ICONS.failed);
+          break;
+        case 'todo':
+          resultSymbol = chalk.magenta(ICONS.todo);
+          break;
+        case 'pending':
+        case 'skipped':
+          resultSymbol = chalk.yellow(ICONS.pending);
+          break;
       }
       this.log(
         `${spaces + resultSymbol} ${resultTree.name} (${
@@ -365,6 +374,9 @@ export default class GitHubActionsReporter extends BaseReporter {
         } ms)`,
       );
     } else {
+      if (!('passed' in resultTree)) {
+        throw new Error('Expected a node. Got a leaf');
+      }
       if (resultTree.passed) {
         if (alreadyGrouped) {
           this.log('  '.repeat(depth) + resultTree.name);

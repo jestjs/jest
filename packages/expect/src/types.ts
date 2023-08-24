@@ -57,6 +57,7 @@ export interface MatcherUtils {
 
 export interface MatcherState {
   assertionCalls: number;
+  currentConcurrentTestName?: () => string | undefined;
   currentTestName?: string;
   error?: Error;
   expand?: boolean;

@@ -16,7 +16,6 @@ import {
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
-import type Runtime from 'jest-runtime';
 import {
   SnapshotState,
   addSerializer,
@@ -31,7 +30,6 @@ import {
   getState as getRunnerState,
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
-import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID} from '../utils';
 
 interface RuntimeGlobals extends Global.TestFrameworkGlobals {
@@ -41,7 +39,6 @@ interface RuntimeGlobals extends Global.TestFrameworkGlobals {
 export const initialize = async ({
   config,
   environment,
-  runtime,
   globalConfig,
   localRequire,
   parentProcess,
@@ -51,7 +48,6 @@ export const initialize = async ({
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  runtime: Runtime;
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: string) => T;
   testPath: string;
@@ -132,8 +128,6 @@ export const initialize = async ({
   if (sendMessageToJest) {
     addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
   }
-
-  addEventHandler(unhandledRejectionHandler(runtime));
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals: globalsObject, snapshotState};
