@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Allow `mockImplementation`, `mockImplementationOnce`, `mockReturnValue`, `mockReturnValueOnce`, `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` methods to be called without argument ([#14035](https://github.com/facebook/jest/pull/14035))
+
 ### Chore & Maintenance
 
 ## 29.6.4
