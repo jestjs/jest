@@ -9,7 +9,16 @@
   },
   "license": "MIT",
   "bin": "./bin/create-jest.js",
-  "main": "./bin/create-jest.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/create-jest": "./bin/create-jest.js"
+  },
   "dependencies": {
     "jest-cli": "workspace:^"
   },
