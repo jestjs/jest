@@ -8,9 +8,7 @@
     "directory": "packages/create-jest"
   },
   "license": "MIT",
-  "bin": {
-    "create-jest": "./bin/create-jest.js"
-  },
+  "bin": "./bin/create-jest.js",
   "main": "./bin/create-jest.js",
   "dependencies": {
     "jest-cli": "workspace:^"

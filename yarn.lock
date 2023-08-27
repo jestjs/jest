@@ -8021,6 +8021,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"create-jest@workspace:packages/create-jest":
+  version: 0.0.0-use.local
+  resolution: "create-jest@workspace:packages/create-jest"
+  dependencies:
+    jest-cli: "workspace:^"
+  bin:
+    create-jest: ./bin/create-jest.js
+  languageName: unknown
+  linkType: soft
+
 "create-require@npm:^1.1.0":
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
