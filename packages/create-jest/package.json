@@ -1,0 +1,24 @@
+{
+  "name": "create-jest",
+  "description": "Create a new Jest project",
+  "version": "29.6.4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/create-jest"
+  },
+  "license": "MIT",
+  "bin": {
+    "create-jest": "./bin/create-jest.js"
+  },
+  "main": "./bin/create-jest.js",
+  "dependencies": {
+    "jest-cli": "workspace:^"
+  },
+  "engines": {
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
