@@ -810,10 +810,7 @@ export class ModuleMocker {
 
       f.whenCalledWith = (...args: Parameters<T>): Mock<T> => {
         const makeImpl = () =>
-          mocker._makeComponent(
-            metadata as MockMetadata<T, 'function'>,
-            spyState,
-          );
+          mocker._makeComponent(metadata as MockMetadata<T, 'function'>);
         const mockConfig = this._ensureMockConfig(f);
         const previousImplementation = mockConfig.mockImpl ?? makeImpl();
         const thisImplementation = makeImpl();
