@@ -282,7 +282,7 @@ For example:
 ```js tab
 const mockFn = jest
   .fn()
-  .mockReturnValue("Hello, world!");
+  .mockReturnValue("Hello, world!")
   .whenCalledWith("jest").mockReturnValue("Testing is great!");
 
 mockFn("world"); // "Hello, world!"
@@ -294,7 +294,7 @@ import {jest} from '@jest/globals';
 
 const mockFn = jest
   .fn<(arg: string) => string>()
-  .mockReturnValue("Hello, world!");
+  .mockReturnValue("Hello, world!")
   .whenCalledWith("jest").mockReturnValue("Testing is great!");
 
 mockFn("world"); // "Hello, world!"
@@ -306,7 +306,7 @@ The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
 ```js tab
 const mockFn = jest
   .fn()
-  .mockReturnValue("called");
+  .mockReturnValue("called")
   .whenCalledWith(expect.any(String)).mockReturnValue("called with a string");
 
 mockFn(3); // "called"
@@ -318,7 +318,7 @@ import {jest, expect} from '@jest/globals';
 
 const mockFn = jest
   .fn<(arg: unknown) => string>()
-  .mockReturnValue("called");
+  .mockReturnValue("called")
   .whenCalledWith(expect.any(String)).mockReturnValue("called with a string");
 
 mockFn(3); // "called"

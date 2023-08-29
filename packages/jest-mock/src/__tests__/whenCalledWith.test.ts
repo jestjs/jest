@@ -91,6 +91,26 @@ describe('whenCalledWith', () => {
     expect(fn('special input')).toBeUndefined();
   });
 
+  it('supports withImplementation stacked with a regular mock', () => {
+    const fn = moduleMocker.fn();
+    fn.mockReturnValue('generic output');
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('generic output');
+
+    fn.whenCalledWith('special input')
+      .mockReturnValue('special output')
+      .withImplementation(
+        () => 'extra special output',
+        () => {
+          expect(fn('special input')).toBe('extra special output');
+          expect(fn('arbitrary')).toBe('generic output');
+        },
+      );
+
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('special output');
+  });
+
   it('interacts correctly with mock*Once', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('generic output');
@@ -120,6 +140,21 @@ describe('whenCalledWith', () => {
     // which means you get a default mock that returns undefined,
     // rather than falling back to the generic output.
     expect(fn('special input')).toBeUndefined();
+  });
+
+  it('supports mock*Once stacked with a regular mock', () => {
+    const fn = moduleMocker.fn();
+    fn.mockReturnValue('generic output');
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('generic output');
+
+    fn.whenCalledWith('special input')
+      .mockReturnValue('special output')
+      .mockReturnValueOnce('extra special output');
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('extra special output');
+    expect(fn('arbitrary')).toBe('generic output');
+    expect(fn('special input')).toBe('special output');
   });
 
   it('supports mock*Once with fallback', () => {
