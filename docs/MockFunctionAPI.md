@@ -325,7 +325,6 @@ mockFn(3); // "called"
 mockFn("jest"); // "called with a string"
 ```
 
-
 ### `mockFn.mockName(name)`
 
 Accepts a string to use in test result output in place of `'jest.fn()'` to indicate which mock function is being referenced.
