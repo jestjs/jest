@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import co from 'co';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
@@ -17,6 +17,7 @@ import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
+  invariant,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -328,19 +329,25 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
 
+const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
+  const titles = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+  do {
+    titles.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  return titles;
+};
+
 export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
   const {includeTestLocationInResult} = getState();
-  const testPath = [];
-  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
 
   const {status} = test;
   invariant(status, 'Status should be present after tests are run.');
 
-  do {
-    testPath.unshift(parent.name);
-  } while ((parent = parent.parent));
+  const testPath = getTestNamesPath(test);
 
   let location = null;
   if (includeTestLocationInResult) {
@@ -402,14 +409,9 @@ const makeTestResults = (
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
 export const getTestID = (test: Circus.TestEntry): string => {
-  const titles = [];
-  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
-  do {
-    titles.unshift(parent.name);
-  } while ((parent = parent.parent));
-
-  titles.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
-  return titles.join(' ');
+  const testNamesPath = getTestNamesPath(test);
+  testNamesPath.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
+  return testNamesPath.join(' ');
 };
 
 const _getError = (
@@ -455,14 +457,28 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-export function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
+type TestDescription = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  title: string;
+};
+
+const resolveTestCaseStartInfo = (
+  testNamesPath: Circus.TestNamesPath,
+): TestDescription => {
+  const ancestorTitles = testNamesPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const fullName = ancestorTitles.join(' ');
+  const title = testNamesPath[testNamesPath.length - 1];
+  // remove title
+  ancestorTitles.pop();
+  return {
+    ancestorTitles,
+    fullName,
+    title,
+  };
+};
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,
@@ -478,24 +494,36 @@ export const parseSingleTestResult = (
     status = 'passed';
   }
 
-  const ancestorTitles = testResult.testPath.filter(
-    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  const {ancestorTitles, fullName, title} = resolveTestCaseStartInfo(
+    testResult.testPath,
   );
-  const title = ancestorTitles.pop();
 
   return {
     ancestorTitles,
     duration: testResult.duration,
     failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
-    fullName: title
-      ? ancestorTitles.concat(title).join(' ')
-      : ancestorTitles.join(' '),
+    fullName,
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: Array.from(testResult.retryReasons),
     status,
-    title: testResult.testPath[testResult.testPath.length - 1],
+    title,
+  };
+};
+
+export const createTestCaseStartInfo = (
+  test: Circus.TestEntry,
+): Circus.TestCaseStartInfo => {
+  const testPath = getTestNamesPath(test);
+  const {ancestorTitles, fullName, title} = resolveTestCaseStartInfo(testPath);
+
+  return {
+    ancestorTitles,
+    fullName,
+    mode: test.mode,
+    startedAt: test.startedAt,
+    title,
   };
 };

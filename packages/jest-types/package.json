@@ -1,9 +1,9 @@
 {
   "name": "@jest/types",
-  "version": "29.5.0",
+  "version": "29.6.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-types"
   },
   "engines": {
@@ -28,7 +28,7 @@
     "chalk": "^4.0.0"
   },
   "devDependencies": {
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "tsd-lite": "^0.7.0"
   },
   "publishConfig": {

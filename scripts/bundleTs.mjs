@@ -17,7 +17,7 @@ import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as pkgDir} from 'pkg-dir';
 import prettier from 'prettier';
-import rimraf from 'rimraf';
+import {rimraf} from 'rimraf';
 import {getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
@@ -165,7 +165,7 @@ await Promise.all(
 
     let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
-    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
+    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'), {glob: true});
     fs.rmSync(path.resolve(packageDir, 'dist/'), {
       force: true,
       recursive: true,

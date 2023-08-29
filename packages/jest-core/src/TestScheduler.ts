@@ -38,7 +38,7 @@ import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
-import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -258,6 +258,13 @@ class TestScheduler {
                   onFailure(test, error),
                 ),
                 testRunner.on(
+                  'test-case-start',
+                  ([testPath, testCaseStartInfo]) => {
+                    const test: Test = {context, path: testPath};
+                    this._dispatcher.onTestCaseStart(test, testCaseStartInfo);
+                  },
+                ),
+                testRunner.on(
                   'test-case-result',
                   ([testPath, testCaseResult]) => {
                     const test: Test = {context, path: testPath};
@@ -415,12 +422,6 @@ class TestScheduler {
         exit(exitCode);
       }
     }
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }
 

@@ -1,9 +1,9 @@
 {
   "name": "@jest/schemas",
-  "version": "29.4.3",
+  "version": "29.6.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-schemas"
   },
   "license": "MIT",
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.25.16"
+    "@sinclair/typebox": "^0.27.8"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

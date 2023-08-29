@@ -47,7 +47,7 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 // the prototype chain for string keys but not for symbols.  (Otherwise, it
 // could find values such as a Set or Map's Symbol.toStringTag, with unexpected
 // results.)
-const getObjectKeys = (object: object) => [
+export const getObjectKeys = (object: object): Array<string | symbol> => [
   ...Object.keys(object),
   ...Object.getOwnPropertySymbols(object),
 ];
@@ -377,7 +377,7 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
     // Since Jest globals are different from Node globals,
     // constructors are different even between arrays when comparing properties of mock objects.
     // Both of them should be able to compare correctly when they are array-to-array.
-    // https://github.com/facebook/jest/issues/2549
+    // https://github.com/jestjs/jest/issues/2549
     (Array.isArray(a) && Array.isArray(b))
   ) {
     return undefined;

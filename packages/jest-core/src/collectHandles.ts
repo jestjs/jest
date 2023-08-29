@@ -145,7 +145,7 @@ export default function collectHandles(): HandleCollectionResult {
 
     if (activeHandles.size > 0) {
       // For some special objects such as `TLSWRAP`.
-      // Ref: https://github.com/facebook/jest/issues/11665
+      // Ref: https://github.com/jestjs/jest/issues/11665
       runGC();
 
       await asyncSleep(0);

@@ -279,7 +279,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   context.dontThrow && context.dontThrow();
 
-  const {currentTestName, isNot, snapshotState} = context;
+  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const currentTestName =
+    currentConcurrentTestName?.() ?? context.currentTestName;
 
   if (isNot) {
     throw new Error(

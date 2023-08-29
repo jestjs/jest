@@ -1,9 +1,9 @@
 {
   "name": "jest-mock",
-  "version": "29.5.0",
+  "version": "29.6.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-mock"
   },
   "license": "MIT",
@@ -23,7 +23,7 @@
     "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "tsd-lite": "^0.7.0"
   },
   "engines": {

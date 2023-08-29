@@ -132,7 +132,7 @@ export class FSEventsWatcher extends EventEmitter {
     await this.fsEventsWatchStopper();
     this.removeAllListeners();
     if (typeof callback === 'function') {
-      process.nextTick(callback.bind(null, null, true));
+      process.nextTick(() => callback());
     }
   }
 

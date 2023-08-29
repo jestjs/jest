@@ -37,7 +37,7 @@
     "@docusaurus/plugin-pwa": "^2.0.0",
     "@docusaurus/preset-classic": "^2.0.0",
     "@docusaurus/remark-plugin-npm2yarn": "^2.0.0",
-    "clsx": "^1.1.1",
+    "clsx": "^2.0.0",
     "docusaurus-remark-plugin-tab-blocks": "^1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -54,6 +54,6 @@
     "graphql": "^16.3.0",
     "graphql-request": "^6.0.0",
     "js-yaml": "^4.1.0",
-    "typescript": "^4.8.2"
+    "typescript": "^5.0.4"
   }
 }

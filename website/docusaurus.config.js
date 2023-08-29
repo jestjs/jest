@@ -56,7 +56,7 @@ const config = {
             if (translation !== 'en') {
               return `https://crowdin.com/project/jest-v2/${translation}`;
             }
-            return `https://github.com/facebook/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/jestjs/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
@@ -67,7 +67,7 @@ const config = {
         },
         blog: {
           showReadingTime: true,
-          editUrl: 'https://github.com/facebook/jest/tree/main/website/',
+          editUrl: 'https://github.com/jestjs/jest/tree/main/website/',
         },
         theme: {
           customCss: [
@@ -183,7 +183,7 @@ const config = {
             dropdownItemsAfter: [
               ...Object.entries(ArchivedVersions).map(
                 ([versionName, versionUrl]) => ({
-                  to: versionUrl,
+                  href: versionUrl,
                   label: versionName,
                 })
               ),
@@ -214,7 +214,7 @@ const config = {
           {to: 'blog', label: 'Blog', position: 'right'},
           {type: 'localeDropdown', position: 'right'},
           {
-            href: 'https://github.com/facebook/jest',
+            href: 'https://github.com/jestjs/jest',
             position: 'right',
             className: 'header-github-link',
             'aria-label': 'GitHub repository',
@@ -259,7 +259,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/fbjest',
+                href: 'https://twitter.com/jestjs_',
               },
             ],
           },
@@ -272,11 +272,11 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/jest',
+                href: 'https://github.com/jestjs/jest',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/fbjest',
+                href: 'https://twitter.com/jestjs_',
               },
             ],
           },
