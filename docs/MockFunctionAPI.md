@@ -284,8 +284,8 @@ const mockFn = jest.fn();
 mockFn.mockReturnValue('Hello, world!');
 mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
 
-mockFn('world'); // "Hello, world!"
-mockFn('jest'); // "Testing is great!"
+mockFn('world'); // 'Hello, world!'
+mockFn('jest'); // 'Testing is great!'
 ```
 
 ```ts tab
@@ -295,11 +295,11 @@ const mockFn = jest.fn<(arg: string) => string>();
 mockFn.mockReturnValue('Hello, world!');
 mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
 
-mockFn('world'); // "Hello, world!"
-mockFn('jest'); // "Testing is great!"
+mockFn('world'); // 'Hello, world!'
+mockFn('jest'); // 'Testing is great!'
 ```
 
-The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
+The arguments may also be [`expect` asymmetric matchers](ExpectAPI.md#asymmetric-matchers):
 
 ```js tab
 const mockFn = jest.fn();
