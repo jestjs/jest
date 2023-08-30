@@ -5,6 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {run as runCLI} from 'jest-cli';
-
-export const run = (): Promise<void> => runCLI(['--init']);
+export {runCreate} from './runCreate';

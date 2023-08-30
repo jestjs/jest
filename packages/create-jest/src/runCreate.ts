@@ -28,7 +28,7 @@ const {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default async function init(
+export async function runCreate(
   rootDir: string = tryRealpath(process.cwd()),
 ): Promise<void> {
   // prerequisite checks
