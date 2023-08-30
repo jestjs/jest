@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { sync: readPkg } = require('read-pkg');
+const {sync: readPkg} = require('read-pkg');
 
 function getPackages() {
   const PACKAGES_DIR = path.resolve(__dirname, 'packages');
@@ -19,7 +19,7 @@ function getPackages() {
     .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
     .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   return packages.map(packageDir => {
-    const pkg = readPkg({ cwd: packageDir });
+    const pkg = readPkg({cwd: packageDir});
     return pkg.name;
   });
 }
@@ -48,12 +48,12 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
-        '@typescript-eslint/array-type': ['error', { default: 'generic' }],
+        '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
         '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
-          { argsIgnorePattern: '^_' },
+          {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         '@typescript-eslint/no-var-requires': 'off',
@@ -129,7 +129,7 @@ module.exports = {
         '@typescript-eslint/ban-types': [
           'error',
           // TODO: remove these overrides: https://github.com/jestjs/jest/issues/10177
-          { types: { Function: false, object: false, '{}': false } },
+          {types: {Function: false, object: false, '{}': false}},
         ],
         'local/ban-types-eventually': [
           'warn',
@@ -160,7 +160,7 @@ module.exports = {
         'e2e/test-match/test-suites/*',
         'packages/test-utils/src/ConditionalTest.ts',
       ],
-      env: { 'jest/globals': true },
+      env: {'jest/globals': true},
       excludedFiles: ['**/__typetests__/**'],
       extends: ['plugin:jest/style'],
       plugins: ['jest'],
@@ -252,7 +252,7 @@ module.exports = {
         quotes: [
           'error',
           'single',
-          { allowTemplateLiterals: true, avoidEscape: true },
+          {allowTemplateLiterals: true, avoidEscape: true},
         ],
       },
     },
@@ -350,7 +350,7 @@ module.exports = {
       },
     },
     {
-      env: { node: true },
+      env: {node: true},
       files: ['*.js', '*.jsx', '*.mjs', '*.cjs'],
     },
     {
@@ -387,10 +387,10 @@ module.exports = {
   },
   plugins: ['import', 'jsdoc'],
   rules: {
-    'accessor-pairs': ['warn', { setWithoutGet: true }],
+    'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
     'callback-return': 'off',
-    camelcase: ['off', { properties: 'always' }],
+    camelcase: ['off', {properties: 'always'}],
     complexity: 'off',
     'consistent-return': 'warn',
     'consistent-this': ['off', 'self'],
@@ -398,7 +398,7 @@ module.exports = {
     'default-case': 'off',
     'dot-notation': 'off',
     eqeqeq: ['off', 'allow-null'],
-    'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
+    'eslint-comments/disable-enable-pair': ['error', {allowWholeFile: true}],
     'eslint-comments/no-unused-disable': 'error',
     'func-names': 'off',
     'func-style': ['off', 'declaration'],
@@ -422,7 +422,7 @@ module.exports = {
         ],
       },
     ],
-    'import/no-unresolved': ['error', { ignore: ['fsevents'] }],
+    'import/no-unresolved': ['error', {ignore: ['fsevents']}],
     'import/order': [
       'error',
       {
@@ -461,7 +461,7 @@ module.exports = {
     'no-confusing-arrow': 'off',
     'no-console': [
       'warn',
-      { allow: ['warn', 'error', 'time', 'timeEnd', 'timeStamp'] },
+      {allow: ['warn', 'error', 'time', 'timeEnd', 'timeStamp']},
     ],
     'no-const-assign': 'error',
     'no-constant-condition': 'off',
@@ -497,7 +497,7 @@ module.exports = {
     'no-irregular-whitespace': 'error',
     'no-iterator': 'off',
     'no-label-var': 'warn',
-    'no-labels': ['error', { allowLoop: true, allowSwitch: true }],
+    'no-labels': ['error', {allowLoop: true, allowSwitch: true}],
     'no-lonely-if': 'off',
     'no-loop-func': 'off',
     'no-magic-numbers': 'off',
@@ -505,7 +505,7 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 'error',
     'no-multi-str': 'error',
     'no-multiple-empty-lines': 'off',
-    'no-native-reassign': ['error', { exceptions: ['Map', 'Set'] }],
+    'no-native-reassign': ['error', {exceptions: ['Map', 'Set']}],
     'no-negated-condition': 'off',
     'no-negated-in-lhs': 'error',
     'no-nested-ternary': 'off',
@@ -527,11 +527,11 @@ module.exports = {
     'no-regex-spaces': 'warn',
     'no-restricted-globals': [
       'error',
-      { message: 'Use `globalThis` instead.', name: 'global' },
+      {message: 'Use `globalThis` instead.', name: 'global'},
     ],
     'no-restricted-imports': [
       'error',
-      { message: 'Please use graceful-fs instead.', name: 'fs' },
+      {message: 'Please use graceful-fs instead.', name: 'fs'},
     ],
     'no-restricted-modules': 'off',
     'no-restricted-syntax': 'off',
@@ -553,7 +553,7 @@ module.exports = {
     'no-unneeded-ternary': 'warn',
     'no-unreachable': 'error',
     'no-unused-expressions': 'off',
-    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': ['error', {argsIgnorePattern: '^_'}],
     'no-use-before-define': 'off',
     'no-useless-call': 'error',
     'no-useless-computed-key': 'error',
@@ -563,25 +563,25 @@ module.exports = {
     'no-warn-comments': 'off',
     'no-with': 'off',
     'object-shorthand': 'error',
-    'one-var': ['warn', { initialized: 'never' }],
+    'one-var': ['warn', {initialized: 'never'}],
     'operator-assignment': ['warn', 'always'],
     'operator-linebreak': 'off',
     'padded-blocks': 'off',
-    'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
+    'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'error',
     quotes: [
       'error',
       'single',
-      { allowTemplateLiterals: false, avoidEscape: true },
+      {allowTemplateLiterals: false, avoidEscape: true},
     ],
     radix: 'warn',
     'require-jsdoc': 'off',
     'require-yield': 'off',
-    'sort-imports': ['error', { ignoreDeclarationSort: true }],
+    'sort-imports': ['error', {ignoreDeclarationSort: true}],
     'sort-keys': 'error',
     'sort-vars': 'off',
-    'spaced-comment': ['off', 'always', { exceptions: ['eslint', 'global'] }],
+    'spaced-comment': ['off', 'always', {exceptions: ['eslint', 'global']}],
     strict: 'off',
     'use-isnan': 'error',
     'valid-jsdoc': 'off',
