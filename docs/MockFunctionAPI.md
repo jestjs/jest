@@ -283,7 +283,8 @@ For example:
 const mockFn = jest
   .fn()
   .mockReturnValue('Hello, world!')
-  .whenCalledWith('jest').mockReturnValue('Testing is great!');
+  .whenCalledWith('jest')
+  .mockReturnValue('Testing is great!');
 
 mockFn('world'); // "Hello, world!"
 mockFn('jest'); // "Testing is great!"
@@ -295,7 +296,8 @@ import {jest} from '@jest/globals';
 const mockFn = jest
   .fn<(arg: string) => string>()
   .mockReturnValue('Hello, world!')
-  .whenCalledWith('jest').mockReturnValue('Testing is great!');
+  .whenCalledWith('jest')
+  .mockReturnValue('Testing is great!');
 
 mockFn('world'); // "Hello, world!"
 mockFn('jest'); // "Testing is great!"
@@ -307,7 +309,8 @@ The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
 const mockFn = jest
   .fn()
   .mockReturnValue('called')
-  .whenCalledWith(expect.any(String)).mockReturnValue('called with a string');
+  .whenCalledWith(expect.any(String))
+  .mockReturnValue('called with a string');
 
 mockFn(3); // "called"
 mockFn('jest'); // "called with a string"
@@ -319,7 +322,8 @@ import {expect, jest} from '@jest/globals';
 const mockFn = jest
   .fn<(arg: unknown) => string>()
   .mockReturnValue('called')
-  .whenCalledWith(expect.any(String)).mockReturnValue('called with a string');
+  .whenCalledWith(expect.any(String))
+  .mockReturnValue('called with a string');
 
 mockFn(3); // "called"
 mockFn('jest'); // "called with a string"
