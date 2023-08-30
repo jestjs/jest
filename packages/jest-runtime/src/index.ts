@@ -397,14 +397,6 @@ export default class Runtime {
     });
   }
 
-  static async runCLI(): Promise<never> {
-    throw new Error('The jest-runtime CLI has been moved into jest-repl');
-  }
-
-  static getCLIOptions(): never {
-    throw new Error('The jest-runtime CLI has been moved into jest-repl');
-  }
-
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
   unstable_shouldLoadAsEsm(modulePath: string): boolean {
     return (

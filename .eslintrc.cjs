@@ -358,7 +358,6 @@ module.exports = {
         'scripts/*',
         'packages/*/__benchmarks__/test.js',
         'packages/jest-cli/src/init/index.ts',
-        'packages/jest-repl/src/cli/runtime-cli.ts',
       ],
       rules: {
         'no-console': 'off',
