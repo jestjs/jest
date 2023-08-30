@@ -17,7 +17,7 @@ export type PromptsResults = {
   useTypescript: boolean;
   clearMocks: boolean;
   coverage: boolean;
-  coverageProvider: boolean;
-  environment: boolean;
+  coverageProvider: string;
+  environment: string;
   scripts: boolean;
 };

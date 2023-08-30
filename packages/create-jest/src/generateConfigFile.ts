@@ -7,13 +7,14 @@
 
 import type {Config} from '@jest/types';
 import {defaults, descriptions} from 'jest-config';
+import type {PromptsResults} from './types';
 
 const stringifyOption = (
   option: keyof Config.InitialOptions,
   map: Partial<Config.InitialOptions>,
   linePrefix = '',
 ): string => {
-  const optionDescription = `  // ${descriptions[option]}`;
+  const optionDescription = `  // ${descriptions[option] ?? ''}`;
   const stringifiedObject = `${option}: ${JSON.stringify(
     map[option],
     null,
@@ -27,7 +28,7 @@ const stringifyOption = (
 };
 
 const generateConfigFile = (
-  results: Record<string, unknown>,
+  results: PromptsResults,
   generateEsm = false,
 ): string => {
   const {useTypescript, coverage, coverageProvider, clearMocks, environment} =

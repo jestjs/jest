@@ -43,10 +43,10 @@ export async function runCLI(): Promise<void> {
       typeof argv._[0] !== 'undefined' ? String(argv._[0]) : undefined;
 
     await runCreate(rootDir);
-  } catch (error: any) {
+  } catch (error: unknown) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    if (error?.stack) {
+    if (error instanceof Error && Boolean(error?.stack)) {
       console.error(chalk.red(error.stack));
     } else {
       console.error(chalk.red(error));
@@ -75,7 +75,7 @@ export async function runCreate(
   try {
     projectPackageJson = JSON.parse(
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
-    );
+    ) as ProjectPackageJson;
   } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
@@ -88,7 +88,7 @@ export async function runCreate(
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
 
-  if (hasJestProperty || existingJestConfigExt) {
+  if (hasJestProperty || Boolean(existingJestConfigExt)) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -142,9 +142,10 @@ export async function runCreate(
     : JEST_CONFIG_EXT_JS;
 
   // Determine Jest config path
-  const jestConfigPath = existingJestConfigExt
-    ? getConfigFilename(existingJestConfigExt)
-    : path.join(rootDir, getConfigFilename(jestConfigFileExt));
+  const jestConfigPath =
+    typeof existingJestConfigExt !== 'undefined'
+      ? getConfigFilename(existingJestConfigExt)
+      : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
   const shouldModifyScripts = results.scripts;
 
