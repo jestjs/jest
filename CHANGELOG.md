@@ -4,6 +4,10 @@
 
 ### Fixes
 
+### Performance
+
+- `[@jest/create-cache-key-function]` Cache access of `NODE_ENV` and `BABEL_ENV` ([#14455](https://github.com/jestjs/jest/pull/14455))
+
 ### Chore & Maintenance
 
 ## 29.6.4
