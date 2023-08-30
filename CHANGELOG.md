@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[jest]` Upgrade jest support node version ([#14460](https://github.com/jestjs/jest/pull/14460))
+
 ## 29.6.4
 
 ### Fixes
