@@ -9,5 +9,5 @@
 const importLocal = require('import-local');
 
 if (!importLocal(__filename)) {
-    require('..').runCreate();
+    require('..').runCLI();
 }

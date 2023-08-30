@@ -7,10 +7,13 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
+import exit = require('exit');
 import * as fs from 'graceful-fs';
 import prompts = require('prompts');
+import yargs = require('yargs');
+import {getVersion} from '@jest/core';
 import {constants} from 'jest-config';
-import {tryRealpath} from 'jest-util';
+import {clearLine, tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generateConfigFile';
 import modifyPackageJson from './modifyPackageJson';
@@ -28,9 +31,36 @@ const {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
+export async function runCLI(): Promise<void> {
+  try {
+    const argv = await yargs(process.argv.slice(2))
+      .usage('Usage: $0 [rootDir]')
+      .version(getVersion())
+      .alias('help', 'h')
+      .epilogue('Documentation: https://jestjs.io/').argv;
+
+    const rootDir =
+      typeof argv._[0] !== 'undefined' ? String(argv._[0]) : undefined;
+
+    await runCreate(rootDir);
+  } catch (error: any) {
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    if (error?.stack) {
+      console.error(chalk.red(error.stack));
+    } else {
+      console.error(chalk.red(error));
+    }
+
+    exit(1);
+    throw error;
+  }
+}
+
 export async function runCreate(
-  rootDir: string = tryRealpath(process.cwd()),
+  rootDir: string = process.cwd(),
 ): Promise<void> {
+  rootDir = tryRealpath(rootDir);
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
 
