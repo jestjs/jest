@@ -308,8 +308,8 @@ mockFn
   .whenCalledWith(expect.any(String))
   .mockReturnValue('called with a string');
 
-mockFn(3); // "called"
-mockFn('jest'); // "called with a string"
+mockFn(3); // 'called'
+mockFn('jest'); // 'called with a string'
 ```
 
 ```ts tab
@@ -321,8 +321,8 @@ mockFn
   .whenCalledWith(expect.any(String))
   .mockReturnValue('called with a string');
 
-mockFn(3); // "called"
-mockFn('jest'); // "called with a string"
+mockFn(3); // 'called'
+mockFn('jest'); // 'called with a string'
 ```
 
 ### `mockFn.mockName(name)`
