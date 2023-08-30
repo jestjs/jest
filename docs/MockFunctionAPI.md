@@ -282,11 +282,11 @@ For example:
 ```js tab
 const mockFn = jest
   .fn()
-  .mockReturnValue("Hello, world!")
-  .whenCalledWith("jest").mockReturnValue("Testing is great!");
+  .mockReturnValue('Hello, world!')
+  .whenCalledWith('jest').mockReturnValue('Testing is great!');
 
-mockFn("world"); // "Hello, world!"
-mockFn("jest"); // "Testing is great!"
+mockFn('world'); // "Hello, world!"
+mockFn('jest'); // "Testing is great!"
 ```
 
 ```ts tab
@@ -294,11 +294,11 @@ import {jest} from '@jest/globals';
 
 const mockFn = jest
   .fn<(arg: string) => string>()
-  .mockReturnValue("Hello, world!")
-  .whenCalledWith("jest").mockReturnValue("Testing is great!");
+  .mockReturnValue('Hello, world!')
+  .whenCalledWith('jest').mockReturnValue('Testing is great!');
 
-mockFn("world"); // "Hello, world!"
-mockFn("jest"); // "Testing is great!"
+mockFn('world'); // "Hello, world!"
+mockFn('jest'); // "Testing is great!"
 ```
 
 The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
@@ -306,23 +306,23 @@ The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
 ```js tab
 const mockFn = jest
   .fn()
-  .mockReturnValue("called")
-  .whenCalledWith(expect.any(String)).mockReturnValue("called with a string");
+  .mockReturnValue('called')
+  .whenCalledWith(expect.any(String)).mockReturnValue('called with a string');
 
 mockFn(3); // "called"
-mockFn("jest"); // "called with a string"
+mockFn('jest'); // "called with a string"
 ```
 
 ```ts tab
-import {jest, expect} from '@jest/globals';
+import {expect, jest} from '@jest/globals';
 
 const mockFn = jest
   .fn<(arg: unknown) => string>()
-  .mockReturnValue("called")
-  .whenCalledWith(expect.any(String)).mockReturnValue("called with a string");
+  .mockReturnValue('called')
+  .whenCalledWith(expect.any(String)).mockReturnValue('called with a string');
 
 mockFn(3); // "called"
-mockFn("jest"); // "called with a string"
+mockFn('jest'); // "called with a string"
 ```
 
 ### `mockFn.mockName(name)`
