@@ -280,11 +280,9 @@ Accepts arguments to the function; returns a new mock to be used only when the m
 For example:
 
 ```js tab
-const mockFn = jest
-  .fn()
-  .mockReturnValue('Hello, world!')
-  .whenCalledWith('jest')
-  .mockReturnValue('Testing is great!');
+const mockFn = jest.fn();
+mockFn.mockReturnValue('Hello, world!');
+mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
 
 mockFn('world'); // "Hello, world!"
 mockFn('jest'); // "Testing is great!"
@@ -293,11 +291,9 @@ mockFn('jest'); // "Testing is great!"
 ```ts tab
 import {jest} from '@jest/globals';
 
-const mockFn = jest
-  .fn<(arg: string) => string>()
-  .mockReturnValue('Hello, world!')
-  .whenCalledWith('jest')
-  .mockReturnValue('Testing is great!');
+const mockFn = jest.fn<(arg: string) => string>();
+mockFn.mockReturnValue('Hello, world!');
+mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
 
 mockFn('world'); // "Hello, world!"
 mockFn('jest'); // "Testing is great!"
@@ -306,9 +302,9 @@ mockFn('jest'); // "Testing is great!"
 The arguments may also be [`expect` matchers](ExpectAPI.md#matchers):
 
 ```js tab
-const mockFn = jest
-  .fn()
-  .mockReturnValue('called')
+const mockFn = jest.fn();
+mockFn.mockReturnValue('called');
+mockFn
   .whenCalledWith(expect.any(String))
   .mockReturnValue('called with a string');
 
@@ -319,9 +315,9 @@ mockFn('jest'); // "called with a string"
 ```ts tab
 import {expect, jest} from '@jest/globals';
 
-const mockFn = jest
-  .fn<(arg: unknown) => string>()
-  .mockReturnValue('called')
+const mockFn = jest.fn<(arg: unknown) => string>();
+mockFn.mockReturnValue('called');
+mockFn
   .whenCalledWith(expect.any(String))
   .mockReturnValue('called with a string');
 
