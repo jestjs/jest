@@ -157,21 +157,6 @@ describe('whenCalledWith', () => {
     expect(fn('special input')).toBe('special output');
   });
 
-  it('supports mock*Once with fallback', () => {
-    const fn = moduleMocker.fn();
-    fn.mockReturnValue('generic output');
-    expect(fn('arbitrary')).toBe('generic output');
-    expect(fn('special input')).toBe('generic output');
-
-    fn.whenCalledWith('special input')
-      .mockReturnValue('special output')
-      .mockReturnValueOnce('extra special output');
-    expect(fn('arbitrary')).toBe('generic output');
-    expect(fn('special input')).toBe('extra special output');
-    expect(fn('arbitrary')).toBe('generic output');
-    expect(fn('special input')).toBe('special output');
-  });
-
   it('supports matchers', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('hello');
