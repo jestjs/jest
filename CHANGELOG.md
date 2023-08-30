@@ -10,7 +10,7 @@
 
 ### Chore & Maintenance
 
-- `[jest-repl]` Deprecate package `jest-repk` ([14459](https://github.com/jestjs/jest/pull/14459))
+- `[jest-repl]` Deprecate package `jest-repl` ([14459](https://github.com/jestjs/jest/pull/14459))
 
 ## 29.6.4
 
