@@ -57,9 +57,7 @@ export async function runCLI(): Promise<void> {
   }
 }
 
-export async function runCreate(
-  rootDir: string = process.cwd(),
-): Promise<void> {
+export async function runCreate(rootDir = process.cwd()): Promise<void> {
   rootDir = tryRealpath(rootDir);
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
@@ -88,7 +86,7 @@ export async function runCreate(
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
 
-  if (hasJestProperty || Boolean(existingJestConfigExt)) {
+  if (hasJestProperty || existingJestConfigExt != null) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -143,7 +141,7 @@ export async function runCreate(
 
   // Determine Jest config path
   const jestConfigPath =
-    typeof existingJestConfigExt !== 'undefined'
+    existingJestConfigExt != null
       ? getConfigFilename(existingJestConfigExt)
       : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
