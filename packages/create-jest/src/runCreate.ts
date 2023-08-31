@@ -57,9 +57,7 @@ export async function runCLI(): Promise<void> {
   }
 }
 
-export async function runCreate(
-  rootDir: string = process.cwd(),
-): Promise<void> {
+export async function runCreate(rootDir = process.cwd()): Promise<void> {
   rootDir = tryRealpath(rootDir);
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
