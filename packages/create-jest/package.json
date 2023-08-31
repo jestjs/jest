@@ -16,8 +16,7 @@
       "types": "./build/index.d.ts",
       "default": "./build/index.js"
     },
-    "./package.json": "./package.json",
-    "./bin/create-jest": "./bin/create-jest.js"
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "@jest/core": "workspace:^",
