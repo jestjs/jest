@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots
+- `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots ([#14465](https://github.com/jestjs/jest/pull/14465))
 
 ### Performance
 
