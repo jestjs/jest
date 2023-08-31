@@ -32,11 +32,11 @@
     ]
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0",
-    "@docusaurus/plugin-client-redirects": "^2.0.0",
-    "@docusaurus/plugin-pwa": "^2.0.0",
-    "@docusaurus/preset-classic": "^2.0.0",
-    "@docusaurus/remark-plugin-npm2yarn": "^2.0.0",
+    "@docusaurus/core": "^2.4.1",
+    "@docusaurus/plugin-client-redirects": "^2.4.1",
+    "@docusaurus/plugin-pwa": "^2.4.1",
+    "@docusaurus/preset-classic": "^2.4.1",
+    "@docusaurus/remark-plugin-npm2yarn": "^2.4.1",
     "clsx": "^2.0.0",
     "docusaurus-remark-plugin-tab-blocks": "^1.2.0",
     "react": "^17.0.2",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@crowdin/cli": "^3.5.2",
-    "@docusaurus/module-type-aliases": "^2.0.0",
+    "@docusaurus/module-type-aliases": "^2.4.1",
     "@tsconfig/docusaurus": "^1.0.5",
     "@types/react": "^17.0.3",
     "graphql": "^16.3.0",
