@@ -10,8 +10,6 @@ import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import prompts = require('prompts');
-import yargs = require('yargs');
-import {getVersion} from '@jest/core';
 import {constants} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
@@ -33,15 +31,7 @@ const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
 export async function runCLI(): Promise<void> {
   try {
-    const argv = await yargs(process.argv.slice(2))
-      .usage('Usage: $0 [rootDir]')
-      .version(getVersion())
-      .alias('help', 'h')
-      .epilogue('Documentation: https://jestjs.io/').argv;
-
-    const rootDir =
-      typeof argv._[0] !== 'undefined' ? String(argv._[0]) : undefined;
-
+    const rootDir = process.argv[2];
     await runCreate(rootDir);
   } catch (error: unknown) {
     clearLine(process.stderr);
