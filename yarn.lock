@@ -9311,13 +9311,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docusaurus-remark-plugin-tab-blocks@npm:^1.2.0":
-  version: 1.3.0
-  resolution: "docusaurus-remark-plugin-tab-blocks@npm:1.3.0"
+"docusaurus-remark-plugin-tab-blocks@npm:^2.0.0-beta":
+  version: 2.0.0-beta
+  resolution: "docusaurus-remark-plugin-tab-blocks@npm:2.0.0-beta"
   dependencies:
     unist-util-is: ^4.0.0
     unist-util-visit: ^2.0.0
-  checksum: 39dfa690962ec5b5d7d3b4856edb1b47d48823f8d364f6460967556030c3205cf62990d09e6d508f5ec88e12dc33b797d33ae538874a4d1eed384a4751ac3936
+  checksum: 1a7ba4868a1c492bf3616c3763e4c66b4f42badca3bf73b14d1d2d42cd6afeac538cfaa646fcbf955e84f38c716346f15431ccc9323393b839768a5f3ffa03e7
   languageName: node
   linkType: hard
 
@@ -13718,7 +13718,7 @@ __metadata:
     "@tsconfig/docusaurus": ^1.0.5
     "@types/react": ^18.2.21
     clsx: ^2.0.0
-    docusaurus-remark-plugin-tab-blocks: ^1.2.0
+    docusaurus-remark-plugin-tab-blocks: ^2.0.0-beta
     graphql: ^16.3.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0

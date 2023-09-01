@@ -38,7 +38,7 @@
     "@docusaurus/preset-classic": "0.0.0-5658",
     "@docusaurus/remark-plugin-npm2yarn": "0.0.0-5658",
     "clsx": "^2.0.0",
-    "docusaurus-remark-plugin-tab-blocks": "^1.2.0",
+    "docusaurus-remark-plugin-tab-blocks": "^2.0.0-beta",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-github-btn": "^1.3.0",
