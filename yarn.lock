@@ -3467,7 +3467,10 @@ __metadata:
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
     "@types/node": ~14.14.45
+    "@types/react": 17.0.62
+    "@types/react-dom": ^17.0.20
     "@types/which": ^3.0.0
+    "@types/ws": 8.5.1
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
     ansi-regex: ^5.0.1
@@ -5738,6 +5741,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:^17.0.20":
+  version: 17.0.20
+  resolution: "@types/react-dom@npm:17.0.20"
+  dependencies:
+    "@types/react": ^17
+  checksum: 525439fb14a033fc5dbe74711ecc50ec82273a528df9656594066a6219401e975101dafffd15d9a1a57a9442d52ea0c92eaacae09554dde27cd792e773f67467
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18.0.0":
   version: 18.2.7
   resolution: "@types/react-dom@npm:18.2.7"
@@ -5797,7 +5809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17, @types/react@npm:^17.0.3":
+"@types/react@npm:*, @types/react@npm:17.0.62, @types/react@npm:^17, @types/react@npm:^17.0.3":
   version: 17.0.62
   resolution: "@types/react@npm:17.0.62"
   dependencies:
@@ -5968,6 +5980,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 8abd0f24442414cdd6eabe1a1c9c31f4a5d283150f33163b24d8c3bb4affb47de745a1aa0581237a2bc566e847793b4b5d626fada1aba4e2ec8d3c1c61e2c1cd
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:8.5.1":
+  version: 8.5.1
+  resolution: "@types/ws@npm:8.5.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 4f06ff8b9e61201b28e7f4bbd0b30c5eeb32ed4d2c091554efc3b3b63ab56b4630c316a394be6bd6cc36bab87d0e5225ba55d0f7b170767175c26f7c14086bf9
   languageName: node
   linkType: hard
 
