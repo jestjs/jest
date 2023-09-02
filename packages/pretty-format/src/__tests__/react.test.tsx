@@ -773,7 +773,7 @@ test('supports context Consumer with a child', () => {
         children: () => React.createElement('div', null, 'child'),
       }),
     ),
-  ).toBe('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+  ).toBe('<Context.Consumer>\n  [Function children]\n</Context.Consumer>');
 });
 
 test('ReactElement removes undefined props', () => {
