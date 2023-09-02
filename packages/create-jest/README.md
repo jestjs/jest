@@ -7,5 +7,5 @@ npm init jest@latest
 # Or for Yarn
 yarn create jest
 # Or for pnpm
-pnpm dlx create-jest
+pnpm create jest
 ```
