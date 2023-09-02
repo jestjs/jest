@@ -308,6 +308,9 @@ const config = {
         apiKey: 'e5e670fd16f8f17caada79d6b0931682',
         contextualSearch: true,
       },
+      customFields: {
+        mendableAnonKey: '1847552e-ba54-4317-aba1-259103dd9968',
+      },
     }),
 };
 
