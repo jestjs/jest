@@ -41,6 +41,9 @@ const config = {
   favicon: 'img/favicon/favicon.ico',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
+  customFields: {
+    mendableAnonKey: '1847552e-ba54-4317-aba1-259103dd9968',
+  },
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -307,9 +310,6 @@ const config = {
         appId: 'HP439UUSOL',
         apiKey: 'e5e670fd16f8f17caada79d6b0931682',
         contextualSearch: true,
-      },
-      customFields: {
-        mendableAnonKey: '1847552e-ba54-4317-aba1-259103dd9968',
       },
     }),
 };
