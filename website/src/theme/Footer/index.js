@@ -11,12 +11,20 @@ export default function FooterWrapper(props) {
   return (
     <>
       <MendableFloatingButton
+        style={{
+          darkMode: true,
+          accentColor: '#15C213',
+        }}
         icon={
-          <img src="img/jest.png" alt="Mendable Robot Icon" width={'40px'} />
+          <img
+            src="/img/jest-white.png"
+            alt="Mendable Robot Icon"
+            width={'40px'}
+          />
         }
         floatingButtonStyle={{
           color: '#ffffff',
-          backgroundColor: '#99424F',
+          backgroundColor: '#15C213',
         }}
         dialogCustomStyle={{
           dialogTopMargin: '64px',
