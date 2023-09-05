@@ -21,7 +21,7 @@ const getChildren = (arg: unknown, children: Array<unknown> = []) => {
     arg.forEach(item => {
       getChildren(item, children);
     });
-  } else if (arg != null && arg !== false) {
+  } else if (arg != null && arg !== false && arg !== '') {
     children.push(arg);
   }
   return children;
