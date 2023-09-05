@@ -17,7 +17,7 @@ export default function FooterWrapper(props) {
         }}
         icon={
           <img
-            src="/img/jest-white.png"
+            src="/img/jest-white.svg"
             alt="Mendable Robot Icon"
             width={'40px'}
           />
