@@ -1,4 +1,4 @@
-# [@jest/utils](https://github.com/jestjs/jest/blob/v29.6.4/packages/jest-util/src/index.ts)
+# `@jest/utils`
 
 This packages is a collection of utilities and helper functions
 
@@ -54,7 +54,7 @@ This function is used to easily generate grammatically correct phrases in text o
 This function is useful for formatting time values with appropriate SI unit prefixes for readability. It expresses time in various units (e.g., milliseconds, microseconds, nanoseconds) while ensuring the formatting is consistent and human-readable.
 
 ## `tryRealpath`
-- Used to resolve the real path of a given path, but if the path doesn't exist or is a directory, it doesn't throw an error and returns the original path string. This can be useful for gracefully handling path resolution in scenarios where some paths might not exist or might be directories.
+Used to resolve the real path of a given path, but if the path doesn't exist or is a directory, it doesn't throw an error and returns the original path string. This can be useful for gracefully handling path resolution in scenarios where some paths might not exist or might be directories.
 
 ## `requireOrImportModule`
 This function provides a unified way to load modules regardless of whether they use CommonJS or ESM syntax. It ensures that the default export is applied consistently when needed, allowing users to work with modules that might use different module systems.
