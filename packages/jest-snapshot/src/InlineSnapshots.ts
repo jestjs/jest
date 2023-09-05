@@ -274,7 +274,7 @@ const traverseAst = (
     snapshotMatcherNames.push(callee.property.name);
 
     const snapshotIndex = args.findIndex(
-      ({type}) => type === 'TemplateLiteral',
+      ({type}) => type === 'TemplateLiteral' || type === 'StringLiteral',
     );
 
     const {snapshot} = inlineSnapshot;
