@@ -177,10 +177,5 @@
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
-  },
-  "packageManager": "yarn@3.6.1",
-  "dependencies": {
-    "@mendable/search": "^0.0.156",
-    "swizzle": "^1.1.0"
   }
 }

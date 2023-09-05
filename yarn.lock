@@ -2998,7 +2998,6 @@ __metadata:
     "@jest/globals": "workspace:^"
     "@jest/test-utils": "workspace:^"
     "@lerna-lite/cli": 1.13.0
-    "@mendable/search": ^0.0.156
     "@microsoft/api-extractor": ^7.35.0
     "@tsconfig/node14": ^14.1.0
     "@tsd/typescript": ^5.0.4
@@ -3062,7 +3061,6 @@ __metadata:
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
-    swizzle: ^1.1.0
     tempy: ^1.0.0
     ts-node: ^10.5.0
     typescript: ^5.0.4
@@ -13046,6 +13044,7 @@ __metadata:
     "@docusaurus/plugin-pwa": ^2.0.0
     "@docusaurus/preset-classic": ^2.0.0
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0
+    "@mendable/search": ^0.0.156
     "@tsconfig/docusaurus": ^1.0.5
     "@types/react": ^17.0.3
     clsx: ^2.0.0
@@ -19232,13 +19231,6 @@ __metadata:
   bin:
     svgo: bin/svgo
   checksum: b92f71a8541468ffd0b81b8cdb36b1e242eea320bf3c1a9b2c8809945853e9d8c80c19744267eb91cabf06ae9d5fff3592d677df85a31be4ed59ff78534fa420
-  languageName: node
-  linkType: hard
-
-"swizzle@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "swizzle@npm:1.1.0"
-  checksum: 5bca926cc5585ac467db22ff643edd1bbb235e5ee345b1c3a318ea4f8ff1dc04a46e159b62e62163acc2fe250700b7f46ede03c70de5f088343179999bfe34f1
   languageName: node
   linkType: hard
 
