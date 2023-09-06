@@ -26,7 +26,7 @@
   "devDependencies": {
     "@types/react": "^17.0.3",
     "@types/react-is": "^18.0.0",
-    "@types/react-test-renderer": "17.0.2",
+    "@types/react-test-renderer": "17.0.3",
     "immutable": "^4.0.0",
     "jest-util": "workspace:^",
     "react": "17.0.2",
