@@ -50,7 +50,7 @@
     "istanbul-reports": "^3.1.3",
     "jest": "workspace:^",
     "jest-changed-files": "workspace:^",
-    "jest-junit": "^15.0.0",
+    "jest-junit": "^16.0.0",
     "jest-mock": "workspace:^",
     "jest-runner-tsd": "^5.0.0",
     "jest-serializer-ansi-escapes": "^2.0.1",
