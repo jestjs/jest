@@ -69,15 +69,15 @@ try {
           fix,
           fixTypes: ['problem', 'suggestion', 'layout'],
           overrideConfig: {
-            extends: [
-              'plugin:@typescript-eslint/recommended-requiring-type-checking',
-            ],
+            extends: ['plugin:@typescript-eslint/recommended-type-checked'],
             overrides: [
               {
                 files: ['**/__tests__/**'],
                 plugins: ['jest'],
                 rules: {
                   '@typescript-eslint/unbound-method': 'off',
+                  '@typescript-eslint/no-empty-function': 'off',
+                  '@typescript-eslint/no-non-null-assertion': 'off',
                   'jest/unbound-method': 'error',
                 },
               },
@@ -101,6 +101,11 @@ try {
               '@typescript-eslint/return-await': 'error',
               '@typescript-eslint/strict-boolean-expressions': 'error',
               '@typescript-eslint/switch-exhaustiveness-check': 'error',
+
+              // disable the ones we disable in main config
+              '@typescript-eslint/no-invalid-void-type': 'off',
+              '@typescript-eslint/no-dynamic-delete': 'off',
+              '@typescript-eslint/no-var-requires': 'off',
             },
           },
         });

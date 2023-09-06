@@ -64,6 +64,10 @@ module.exports = {
         // TODO: enable at some point
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+
+        // TODO: part of "stylistic" rules, remove explicit activation when that lands
+        '@typescript-eslint/no-empty-function': 'error',
+        '@typescript-eslint/no-empty-interface': 'error',
       },
     },
     {
