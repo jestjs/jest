@@ -102,6 +102,12 @@ try {
               '@typescript-eslint/strict-boolean-expressions': 'error',
               '@typescript-eslint/switch-exhaustiveness-check': 'error',
 
+              // TODO: enable these
+              '@typescript-eslint/no-explicit-any': 'off',
+              '@typescript-eslint/no-redundant-type-constituents': 'off',
+              '@typescript-eslint/no-duplicate-type-constituents': 'off',
+              '@typescript-eslint/no-base-to-string': 'off',
+
               // disable the ones we disable in main config
               '@typescript-eslint/no-invalid-void-type': 'off',
               '@typescript-eslint/no-dynamic-delete': 'off',

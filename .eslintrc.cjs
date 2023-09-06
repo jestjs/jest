@@ -42,7 +42,6 @@ module.exports = {
     {
       extends: [
         'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
         'plugin:import/typescript',
       ],
       files: ['*.ts', '*.tsx'],
