@@ -35,7 +35,7 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-node@v3
@@ -61,7 +61,7 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-node@v3
@@ -83,7 +83,7 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-node@v3
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache-ubuntu
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-node@v3
@@ -144,7 +144,7 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Use Node.js LTS
@@ -169,7 +169,7 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Use Node.js LTS
