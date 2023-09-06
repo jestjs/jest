@@ -151,7 +151,8 @@ test('writes the cache based on results without existing cache', async () => {
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, runtime: 3, start: 1},
+        // this is missing `runtime` to test that it is calculated
+        perfStats: {end: 4, start: 1},
         testFilePath: '/test-c.js',
       },
       {
