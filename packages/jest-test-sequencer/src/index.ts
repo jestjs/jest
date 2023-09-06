@@ -206,11 +206,7 @@ export default class TestSequencer {
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
