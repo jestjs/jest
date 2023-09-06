@@ -10547,6 +10547,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-stream@npm:^8.0.0":
+  version: 8.0.1
+  resolution: "get-stream@npm:8.0.1"
+  checksum: 01e3d3cf29e1393f05f44d2f00445c5f9ec3d1c49e8179b31795484b9c117f4c695e5e07b88b50785d5c8248a788c85d9913a79266fc77e3ef11f78f10f1b974
+  languageName: node
+  linkType: hard
+
 "get-symbol-description@npm:^1.0.0":
   version: 1.0.0
   resolution: "get-symbol-description@npm:1.0.0"
@@ -13013,7 +13020,7 @@ __metadata:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
-    get-stream: ^6.0.0
+    get-stream: ^8.0.0
     jest-leak-detector: "workspace:^"
     jest-util: "workspace:^"
     merge-stream: ^2.0.0
