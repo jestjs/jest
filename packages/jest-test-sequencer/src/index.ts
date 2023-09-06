@@ -224,7 +224,7 @@ export default class TestSequencer {
         const testRuntime =
           perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
+          testResult.numFailingTests > 0 ? FAIL : SUCCESS,
           testRuntime || 0,
         ];
       }
