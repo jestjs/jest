@@ -8,6 +8,10 @@
     {
       "matchPackageNames": ["@tsd/typescript", "typescript"],
       "groupName": "typescript"
+    },
+    {
+      "matchPackageNames": ["jest-runner-tsd", "tsd-lite"],
+      "groupName": "tsd"
     }
   ]
 }
