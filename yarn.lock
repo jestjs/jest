@@ -2539,6 +2539,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@docusaurus/tsconfig@npm:0.0.0-5658":
+  version: 0.0.0-5658
+  resolution: "@docusaurus/tsconfig@npm:0.0.0-5658"
+  checksum: 86c598e5933ce6b6cc08d5176ea54eb25c8e996a6a7013c2faacc166720632fc65ffc7ed6db9764ed03ce88e4be825abdcd638a14018f4e2e79c7f9d367f4fd7
+  languageName: node
+  linkType: hard
+
 "@docusaurus/types@npm:0.0.0-5658":
   version: 0.0.0-5658
   resolution: "@docusaurus/types@npm:0.0.0-5658"
@@ -4599,13 +4606,6 @@ __metadata:
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
   checksum: 11226c39b52b391719a2a92e10183e4260d9651f86edced166da1d95f39a0a1eaa470e44d14ac685ccd6d3df7e2002433782872c0feeb260d61e80f21250e65c
-  languageName: node
-  linkType: hard
-
-"@tsconfig/docusaurus@npm:^1.0.5":
-  version: 1.0.7
-  resolution: "@tsconfig/docusaurus@npm:1.0.7"
-  checksum: 8f5b14005d90b2008f10daf03a5edec86d2a7603e5641c579ea936a5c2d165a8c3007a72254fc4c2adb0554d73062f52bb97b30ff818f01c9215957822f3c4db
   languageName: node
   linkType: hard
 
@@ -13143,7 +13143,7 @@ __metadata:
     "@docusaurus/plugin-pwa": 0.0.0-5658
     "@docusaurus/preset-classic": 0.0.0-5658
     "@docusaurus/remark-plugin-npm2yarn": 0.0.0-5658
-    "@tsconfig/docusaurus": ^1.0.5
+    "@docusaurus/tsconfig": 0.0.0-5658
     "@types/react": ^18.2.21
     clsx: ^2.0.0
     docusaurus-remark-plugin-tab-blocks: ^2.0.0-beta
