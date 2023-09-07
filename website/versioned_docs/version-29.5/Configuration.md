@@ -1718,7 +1718,7 @@ test('does not show prototypes for object and array inline', () => {
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
+The path to a module that can resolve test\<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 ```js title="custom-resolver.js"
 module.exports = {
