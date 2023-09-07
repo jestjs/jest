@@ -243,7 +243,8 @@ This option requires `collectCoverage` to be set to `true` or Jest to be invoked
 
 <details>
   <summary>Help:</summary>
-  If you are seeing coverage output such as...
+
+If you are seeing coverage output such as...
 
 ```
 =============================== Coverage summary ===============================
