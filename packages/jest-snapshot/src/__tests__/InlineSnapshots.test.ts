@@ -738,3 +738,23 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
       '});\n',
   );
 });
+
+test('saveInlineSnapshots() replaces string literal, not just template literal', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(filename, 'expect("a").toMatchInlineSnapshot("b");\n');
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 13, file: filename, line: 1} as Frame,
+        snapshot: 'a',
+      },
+    ],
+    dir,
+    'prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    'expect("a").toMatchInlineSnapshot(`a`);\n',
+  );
+});

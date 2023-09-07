@@ -3016,7 +3016,7 @@ __metadata:
     chokidar: ^3.3.0
     dedent: ^1.0.0
     eslint: ^8.8.0
-    eslint-config-prettier: ^8.1.0
+    eslint-config-prettier: ^9.0.0
     eslint-import-resolver-typescript: ^3.2.5
     eslint-plugin-eslint-comments: ^3.1.2
     eslint-plugin-import: ^2.6.0
@@ -3035,7 +3035,7 @@ __metadata:
     istanbul-reports: ^3.1.3
     jest: "workspace:^"
     jest-changed-files: "workspace:^"
-    jest-junit: ^15.0.0
+    jest-junit: ^16.0.0
     jest-mock: "workspace:^"
     jest-runner-tsd: ^5.0.0
     jest-serializer-ansi-escapes: ^2.0.1
@@ -4669,9 +4669,9 @@ __metadata:
   linkType: hard
 
 "@tsd/typescript@npm:^5.0.4":
-  version: 5.1.6
-  resolution: "@tsd/typescript@npm:5.1.6"
-  checksum: df68e8e1edfde0cb84da3bdeb539069a24aa641c5af720923bd813a1d9ea4b21fa9e32a498fe1c9111c0a30cf9d384d43c80f131585a3620c6ebec0859b196c3
+  version: 5.2.2
+  resolution: "@tsd/typescript@npm:5.2.2"
+  checksum: b72d6311356a1fabcd78ffeb878a6ba3d51804d02fefdc6cf36ae8957d97b13823b9e396f550e37c2d1b405b6ad0fa190f4ec791bc6d730b02b22e39b33a4c76
   languageName: node
   linkType: hard
 
@@ -9236,14 +9236,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.1.0":
-  version: 8.8.0
-  resolution: "eslint-config-prettier@npm:8.8.0"
+"eslint-config-prettier@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "eslint-config-prettier@npm:9.0.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 1e94c3882c4d5e41e1dcfa2c368dbccbfe3134f6ac7d40101644d3bfbe3eb2f2ffac757f3145910b5eacf20c0e85e02b91293d3126d770cbf3dc390b3564681c
+  checksum: 362e991b6cb343f79362bada2d97c202e5303e6865888918a7445c555fb75e4c078b01278e90be98aa98ae22f8597d8e93d48314bec6824f540f7efcab3ce451
   languageName: node
   linkType: hard
 
@@ -12604,15 +12604,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-junit@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "jest-junit@npm:15.0.0"
+"jest-junit@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "jest-junit@npm:16.0.0"
   dependencies:
     mkdirp: ^1.0.4
     strip-ansi: ^6.0.1
     uuid: ^8.3.2
     xml: ^1.0.1
-  checksum: e8fe4d2f2ab843383ac41820a6fe495739d154ec435cd44ba590b44ec7fd62095676f3eef13f98392f81d4a3727ea58b4f4fad231fe367ac31243952b9ad716f
+  checksum: 412aa4bfeec4254a9b34f417fda79107c7cbd295e56ffeb299ac9c977545910fbabe57c91c6cd1f12b700d4a1f60f79872b0075003f02da87d463e30fc2d9d78
   languageName: node
   linkType: hard
 
@@ -19807,12 +19807,12 @@ __metadata:
   linkType: hard
 
 "typescript@npm:^5.0.4":
-  version: 5.1.6
-  resolution: "typescript@npm:5.1.6"
+  version: 5.2.2
+  resolution: "typescript@npm:5.2.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: b2f2c35096035fe1f5facd1e38922ccb8558996331405eb00a5111cc948b2e733163cc22fab5db46992aba7dd520fff637f2c1df4996ff0e134e77d3249a7350
+  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
   languageName: node
   linkType: hard
 
@@ -19827,12 +19827,12 @@ __metadata:
   linkType: hard
 
 "typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>":
-  version: 5.1.6
-  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
+  version: 5.2.2
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
+  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
   languageName: node
   linkType: hard
 
