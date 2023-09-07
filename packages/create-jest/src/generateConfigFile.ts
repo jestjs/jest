@@ -14,7 +14,7 @@ const stringifyOption = (
   map: Partial<Config.InitialOptions>,
   linePrefix = '',
 ): string => {
-  const optionDescription = `  // ${descriptions[option] ?? ''}`;
+  const optionDescription = descriptions[option] ? `  // ${descriptions[option]}` : '';
   const stringifiedObject = `${option}: ${JSON.stringify(
     map[option],
     null,
