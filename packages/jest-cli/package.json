@@ -17,7 +17,6 @@
     "@jest/test-result": "workspace:^",
     "@jest/types": "workspace:^",
     "chalk": "^4.0.0",
-    "create-jest": "workspace:^",
     "exit": "^0.1.2",
     "import-local": "^3.0.2",
     "jest-config": "workspace:^",
