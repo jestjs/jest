@@ -2943,7 +2943,7 @@ __metadata:
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -2954,7 +2954,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     expect: "workspace:^"
     jest-snapshot: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -3037,7 +3037,7 @@ __metadata:
     jest-changed-files: "workspace:^"
     jest-junit: ^16.0.0
     jest-mock: "workspace:^"
-    jest-runner-tsd: ^5.0.0
+    jest-runner-tsd: ^6.0.0
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:^"
@@ -3109,7 +3109,7 @@ __metadata:
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -3256,7 +3256,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -9808,7 +9808,7 @@ __metadata:
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12423,7 +12423,7 @@ __metadata:
     jest-config: "workspace:^"
     jest-util: "workspace:^"
     jest-validate: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -12667,7 +12667,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     "@types/node": "*"
     jest-util: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12760,21 +12760,21 @@ __metadata:
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
     slash: ^3.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "jest-runner-tsd@npm:5.0.0"
+"jest-runner-tsd@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "jest-runner-tsd@npm:6.0.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
     create-jest-runner: ^0.12.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 697db424f8588218eeac9f82ae4c34f79dbbdc2453e19a866a00062f1ea571e24225203cad7e09bdc0c343084997947af3be638a0dc7ce38d866569f5234cf0a
+  checksum: fb2cf2bfc3ea8b00ffba80aaa3e9c4d1e0ee3597ecadc135ec220e5576d28e610eade3e62d4134584a7e72fea1308e292f7ae2a9e2ebdf70666e4fa64c19ce39
   languageName: node
   linkType: hard
 
@@ -12809,7 +12809,7 @@ __metadata:
     jest-worker: "workspace:^"
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12899,7 +12899,7 @@ __metadata:
     prettier: ^2.1.1
     pretty-format: "workspace:^"
     semver: ^7.5.3
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -13034,7 +13034,7 @@ __metadata:
     jest-util: "workspace:^"
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
@@ -13079,7 +13079,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     import-local: ^3.0.2
     jest-cli: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -19616,12 +19616,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsd-lite@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "tsd-lite@npm:0.7.0"
+"tsd-lite@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "tsd-lite@npm:0.8.0"
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 97e304de0bdc906377b213c662b48543fea7e8393f884bc1136d1b9cd731b304bdfefd513d5874b4b9c961fb6462ee40320297c38ec16b7921d0504616dd4c7f
+  checksum: 7d6b5bdb47d8dc779c66b9a6eac97ca81474b4e9d5acb52692da9e045455b731b36f9925babd98c87ad38685b3170fefef016a0cdf7c46876358c1a0421fffe3
   languageName: node
   linkType: hard
 
