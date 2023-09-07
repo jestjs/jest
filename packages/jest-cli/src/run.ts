@@ -12,11 +12,11 @@ import yargs = require('yargs');
 import {getVersion, runCLI} from '@jest/core';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
+import {runCreate} from 'create-jest';
 import {deprecationEntries} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
-import init from './init';
 
 export async function run(
   maybeArgv?: Array<string>,
@@ -26,7 +26,7 @@ export async function run(
     const argv = await buildArgv(maybeArgv);
 
     if (argv.init) {
-      await init();
+      await runCreate();
       return;
     }
 

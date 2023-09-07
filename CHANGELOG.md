@@ -2,13 +2,20 @@
 
 ### Features
 
+- `[create-jest]` Add `npm init` / `yarn create` initialiser for Jest projects ([#14465](https://github.com/jestjs/jest/pull/14453))
+
 ### Fixes
+
+- `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots ([#14465](https://github.com/jestjs/jest/pull/14465))
+- `[@jest/test-sequencer]` Calculate test runtime if `perStats.duration` is missing ([#14473](https://github.com/jestjs/jest/pull/14473))
 
 ### Performance
 
 - `[@jest/create-cache-key-function]` Cache access of `NODE_ENV` and `BABEL_ENV` ([#14455](https://github.com/jestjs/jest/pull/14455))
 
 ### Chore & Maintenance
+
+- `[jest-cli]` Move internal config initialisation logic to the `create-jest` package ([#14465](https://github.com/jestjs/jest/pull/14453))
 
 ## 29.6.4
 

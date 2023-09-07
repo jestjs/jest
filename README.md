@@ -131,7 +131,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
 
 ```bash
-jest --init
+yarn create jest
 ```
 
 ### Using Babel

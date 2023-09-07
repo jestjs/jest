@@ -7,10 +7,11 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
+import exit = require('exit');
 import * as fs from 'graceful-fs';
 import prompts = require('prompts');
 import {constants} from 'jest-config';
-import {tryRealpath} from 'jest-util';
+import {clearLine, tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generateConfigFile';
 import modifyPackageJson from './modifyPackageJson';
@@ -28,11 +29,28 @@ const {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default async function init(
-  rootDir: string = tryRealpath(process.cwd()),
-): Promise<void> {
+export async function runCLI(): Promise<void> {
+  try {
+    const rootDir = process.argv[2];
+    await runCreate(rootDir);
+  } catch (error: unknown) {
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    if (error instanceof Error && Boolean(error?.stack)) {
+      console.error(chalk.red(error.stack));
+    } else {
+      console.error(chalk.red(error));
+    }
+
+    exit(1);
+    throw error;
+  }
+}
+
+export async function runCreate(rootDir = process.cwd()): Promise<void> {
+  rootDir = tryRealpath(rootDir);
   // prerequisite checks
-  const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
+  const projectPackageJsonPath = path.join(rootDir, PACKAGE_JSON);
 
   if (!fs.existsSync(projectPackageJsonPath)) {
     throw new NotFoundPackageJsonError(rootDir);
@@ -45,7 +63,7 @@ export default async function init(
   try {
     projectPackageJson = JSON.parse(
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
-    );
+    ) as ProjectPackageJson;
   } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
@@ -58,7 +76,7 @@ export default async function init(
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
 
-  if (hasJestProperty || existingJestConfigExt) {
+  if (hasJestProperty || existingJestConfigExt != null) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -112,9 +130,10 @@ export default async function init(
     : JEST_CONFIG_EXT_JS;
 
   // Determine Jest config path
-  const jestConfigPath = existingJestConfigExt
-    ? getConfigFilename(existingJestConfigExt)
-    : path.join(rootDir, getConfigFilename(jestConfigFileExt));
+  const jestConfigPath =
+    existingJestConfigExt != null
+      ? getConfigFilename(existingJestConfigExt)
+      : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
   const shouldModifyScripts = results.scripts;
 

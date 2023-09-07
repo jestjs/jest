@@ -16,7 +16,9 @@ const FAIL = 0;
 const SUCCESS = 1;
 
 type Cache = {
-  [key: string]: [0 | 1, number] | undefined;
+  [key: string]:
+    | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
+    | undefined;
 };
 
 export type ShardOptions = {
@@ -42,7 +44,7 @@ type ShardPositionOptions = ShardOptions & {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private readonly _cache: Map<TestContext, Cache> = new Map();
+  private readonly _cache = new Map<TestContext, Cache>();
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
@@ -191,7 +193,7 @@ export default class TestSequencer {
       const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
-        return failedA === true ? -1 : 1;
+        return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
@@ -204,11 +206,7 @@ export default class TestSequencer {
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
@@ -219,9 +217,11 @@ export default class TestSequencer {
       if (test != null && !testResult.skipped) {
         const cache = this._getCache(test);
         const perf = testResult.perfStats;
+        const testRuntime =
+          perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.runtime || 0,
+          testResult.numFailingTests > 0 ? FAIL : SUCCESS,
+          testRuntime || 0,
         ];
       }
     });
