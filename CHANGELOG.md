@@ -16,6 +16,8 @@
 ### Chore & Maintenance
 
 - `[jest-cli]` Move internal config initialisation logic to the `create-jest` package ([#14465](https://github.com/jestjs/jest/pull/14453))
+- `[jest-cli]` [**BREAKING**] Remove deprecated `--init` argument ([#9968](https://github.com/jestjs/jest/pull/14490))
+- `[jest-types]` [**BREAKING**] Remove deprecated `init` option ([#9968](https://github.com/jestjs/jest/pull/14490))
 
 ## 29.6.4
 
