@@ -10,7 +10,7 @@ import * as path from 'path';
 import {writeFileSync} from 'graceful-fs';
 import * as prompts from 'prompts';
 import {constants} from 'jest-config';
-import init from '../';
+import {runCreate} from '../runCreate';
 
 const {JEST_CONFIG_EXT_ORDER} = constants;
 
@@ -44,7 +44,7 @@ describe('init', () => {
       it('should return the default configuration (an empty config)', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfigFilename =
           jest.mocked(writeFileSync).mock.calls[0][0];
@@ -71,7 +71,7 @@ describe('init', () => {
       it('should generate empty config with mjs extension', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({});
 
-        await init(resolveFromFixture('type-module'));
+        await runCreate(resolveFromFixture('type-module'));
 
         const writtenJestConfigFilename =
           jest.mocked(writeFileSync).mock.calls[0][0];
@@ -93,7 +93,7 @@ describe('init', () => {
       it('should create configuration for {clearMocks: true}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({clearMocks: true});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -107,7 +107,7 @@ describe('init', () => {
       it('should create configuration for {coverage: true}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({coverage: true});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -124,7 +124,7 @@ describe('init', () => {
       it('should create configuration for {coverageProvider: "babel"}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'babel'});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -138,7 +138,7 @@ describe('init', () => {
       it('should create configuration for {coverageProvider: "v8"}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'v8'});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -152,7 +152,7 @@ describe('init', () => {
       it('should create configuration for {environment: "jsdom"}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({environment: 'jsdom'});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -165,7 +165,7 @@ describe('init', () => {
       it('should create configuration for {environment: "node"}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({environment: 'node'});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
@@ -178,7 +178,7 @@ describe('init', () => {
       it('should create package.json with configured test command when {scripts: true}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({scripts: true});
 
-        await init(resolveFromFixture('only-package-json'));
+        await runCreate(resolveFromFixture('only-package-json'));
 
         const writtenPackageJson = jest.mocked(writeFileSync).mock.calls[0][1];
         const parsedPackageJson = JSON.parse(writtenPackageJson as string) as {
@@ -196,7 +196,7 @@ describe('init', () => {
       expect.assertions(1);
 
       try {
-        await init(resolveFromFixture('no-package-json'));
+        await runCreate(resolveFromFixture('no-package-json'));
       } catch (error) {
         expect((error as Error).message).toMatch(
           'Could not find a "package.json" file in',
@@ -215,7 +215,9 @@ describe('init', () => {
             .mockResolvedValueOnce({continue: true})
             .mockResolvedValueOnce({});
 
-          await init(resolveFromFixture(`has-jest-config-file-${extension}`));
+          await runCreate(
+            resolveFromFixture(`has-jest-config-file-${extension}`),
+          );
 
           expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
@@ -230,7 +232,9 @@ describe('init', () => {
         it('user answered with "No"', async () => {
           jest.mocked(prompts).mockResolvedValueOnce({continue: false});
 
-          await init(resolveFromFixture(`has-jest-config-file-${extension}`));
+          await runCreate(
+            resolveFromFixture(`has-jest-config-file-${extension}`),
+          );
           // return after first prompt
           expect(prompts).toHaveBeenCalledTimes(1);
         });
@@ -243,7 +247,7 @@ describe('init', () => {
       it('user answered with "Yes"', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({useTypescript: true});
 
-        await init(resolveFromFixture('test-generated-jest-config-ts'));
+        await runCreate(resolveFromFixture('test-generated-jest-config-ts'));
 
         expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
@@ -264,7 +268,7 @@ describe('init', () => {
       it('user answered with "No"', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({useTypescript: false});
 
-        await init(resolveFromFixture('test-generated-jest-config-ts'));
+        await runCreate(resolveFromFixture('test-generated-jest-config-ts'));
 
         const jestConfigFileName = jest.mocked(writeFileSync).mock.calls[0][0];
 
@@ -282,7 +286,7 @@ describe('init', () => {
         .mockResolvedValueOnce({continue: true})
         .mockResolvedValueOnce({});
 
-      await init(resolveFromFixture('has-jest-config-in-package-json'));
+      await runCreate(resolveFromFixture('has-jest-config-in-package-json'));
 
       expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
@@ -296,7 +300,7 @@ describe('init', () => {
     it('should not ask "test script question"', async () => {
       jest.mocked(prompts).mockResolvedValueOnce({});
 
-      await init(resolveFromFixture('test-script-configured'));
+      await runCreate(resolveFromFixture('test-script-configured'));
 
       const questions = jest.mocked(prompts).mock.calls[0][0] as Array<
         prompts.PromptObject<string>
