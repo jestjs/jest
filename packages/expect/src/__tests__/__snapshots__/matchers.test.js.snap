@@ -317,7 +317,7 @@ Expected: [48;2;0;0;255m"<i>delightful</i> JavaScript testing"</>
 Received: [35m"<i>painless</i> JavaScript testing"</>
 `;
 
-exports[`.toBe() fails for: "with
+exports[`.toBe() fails for: "with 
 trailing space" and "without trailing space" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
@@ -4140,13 +4140,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "c", Symbol(jest): Any<String>}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 2</>
+[48;2;0;0;255m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
 [48;2;0;0;255m-   "a": "c",</>
-[48;2;0;0;255m-   Symbol(jest): Any<String>,</>
 [35m+   "a": "b",</>
+    Symbol(jest): Any<String>,
   }
 `;
 
