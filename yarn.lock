@@ -17426,10 +17426,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.33":
+"psl@github:lupomontero/psl#punycode.js":
   version: 1.9.0
-  resolution: "psl@npm:1.9.0"
-  checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
+  resolution: "psl@https://github.com/lupomontero/psl.git#commit=5eadae91361d8289d582700f90582b0d0cb73155"
+  dependencies:
+    punycode: ^2.1.1
+  checksum: 6b2f8b851a1050bf4f00b7fa46ac2dc80e18c049f61f145b5f67ad3a0b8d8d0b3c10892ea76f4070a9dd3fc4d8532fc096fef4b304769258b59b86fda7cd979e
   languageName: node
   linkType: hard
 

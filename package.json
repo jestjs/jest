@@ -178,6 +178,7 @@
     "babel-jest": "workspace:^",
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
+    "psl": "github:lupomontero/psl#punycode.js",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
   "packageManager": "yarn@3.6.3"
