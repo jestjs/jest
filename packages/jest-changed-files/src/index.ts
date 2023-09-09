@@ -11,9 +11,7 @@ import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
-import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
-
-type RootPromise = ReturnType<SCMAdapter['getRoot']>;
+import type {ChangedFilesPromise, Options, Repos} from './types';
 
 export type {ChangedFiles, ChangedFilesPromise} from './types';
 
