@@ -59,19 +59,8 @@ export const getChangedFilesForRoots = async (
 };
 
 export const findRepos = async (roots: Array<string>): Promise<Repos> => {
-  const gitRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findGitRoot(root)),
-      [],
-    ),
-  );
-  const hgRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findHgRoot(root)),
-      [],
-    ),
-  );
-
+  const gitRepos = await Promise.all(roots.map(findGitRoot));
+  const hgRepos = await Promise.all(roots.map(findHgRoot));
   const slRepos = await Promise.all(roots.map(findSlRoot));
 
   return {
