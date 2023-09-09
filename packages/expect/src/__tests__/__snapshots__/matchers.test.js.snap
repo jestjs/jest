@@ -227,10 +227,10 @@ Received has value: <r>undefined</>
 exports[`.toBe() does not crash on circular references 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 3</>
 
-[48;2;0;0;255m- Object {}</>
+[48;5;21m- Object {}</>
 [35m+ Object {</>
 [35m+   "circular": [Circular],</>
 [35m+ }</>
@@ -239,56 +239,56 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 exports[`.toBe() fails for '"a"' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255m"a"</>
+Expected: not [48;5;21m"a"</>
 `;
 
 exports[`.toBe() fails for '[]' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255m[]</>
+Expected: not [48;5;21m[]</>
 `;
 
 exports[`.toBe() fails for '{}' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255m{}</>
+Expected: not [48;5;21m{}</>
 `;
 
 exports[`.toBe() fails for '1' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255m1</>
+Expected: not [48;5;21m1</>
 `;
 
 exports[`.toBe() fails for 'false' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255mfalse</>
+Expected: not [48;5;21mfalse</>
 `;
 
 exports[`.toBe() fails for 'null' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255mnull</>
+Expected: not [48;5;21mnull</>
 `;
 
 exports[`.toBe() fails for 'undefined' with '.not' 1`] = `
 expect([35mreceived</>).not.toBe(<y>expected</>) // Object.is equality
 
-Expected: not [48;2;0;0;255mundefined</>
+Expected: not [48;5;21mundefined</>
 `;
 
 exports[`.toBe() fails for: "" and "compare one-line string to empty string" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m"compare one-line string to empty string"</>
+Expected: [48;5;21m"compare one-line string to empty string"</>
 Received: [35m""</>
 `;
 
 exports[`.toBe() fails for: "abc" and "cde" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m"cde"</>
+Expected: [48;5;21m"cde"</>
 Received: [35m"abc"</>
 `;
 
@@ -300,10 +300,10 @@ line
 string" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 2</>
 
-[48;2;0;0;255m- 3</>
+[48;5;21m- 3</>
 [35m+ four</>
 [35m+ 4</>
   line
@@ -313,18 +313,18 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 exports[`.toBe() fails for: "painless JavaScript testing" and "delightful JavaScript testing" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m"<i>delightful</i> JavaScript testing"</>
+Expected: [48;5;21m"<i>delightful</i> JavaScript testing"</>
 Received: [35m"<i>painless</i> JavaScript testing"</>
 `;
 
-exports[`.toBe() fails for: "with 
+exports[`.toBe() fails for: "with
 trailing space" and "without trailing space" 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 2</>
 
-[48;2;0;0;255m- with<i>out</i> trailing space</>
+[48;5;21m- with<i>out</i> trailing space</>
 [35m+ with<Y> </></>
 [35m+ trailing space</>
 `;
@@ -332,7 +332,7 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 exports[`.toBe() fails for: /received/ and /expected/ 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m/expected/</>
+Expected: [48;5;21m/expected/</>
 Received: [35m/received/</>
 `;
 
@@ -341,21 +341,21 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
-Expected: [48;2;0;0;255m[]</>
+Expected: [48;5;21m[]</>
 Received: serializes to the same string
 `;
 
 exports[`.toBe() fails for: [Error: received] and [Error: expected] 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m[Error: expected]</>
+Expected: [48;5;21m[Error: expected]</>
 Received: [35m[Error: received]</>
 `;
 
 exports[`.toBe() fails for: [Function anonymous] and [Function anonymous] 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m[Function anonymous]</>
+Expected: [48;5;21m[Function anonymous]</>
 Received: serializes to the same string
 `;
 
@@ -364,7 +364,7 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
-Expected: [48;2;0;0;255m{"a": Any<Function>, "b": 2}</>
+Expected: [48;5;21m{"a": Any<Function>, "b": 2}</>
 Received: [35m{"a": [Function a], "b": 2}</>
 `;
 
@@ -373,18 +373,18 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
-Expected: [48;2;0;0;255m{"a": 1}</>
+Expected: [48;5;21m{"a": 1}</>
 Received: serializes to the same string
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": 5,</>
+[48;5;21m-   "a": 5,</>
 [35m+   "a": 1,</>
   }
 `;
@@ -394,7 +394,7 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toEqual"
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 1</>
 
   Object {
@@ -408,21 +408,21 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
-Expected: [48;2;0;0;255m{}</>
+Expected: [48;5;21m{}</>
 Received: serializes to the same string
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m0</>
+Expected: [48;5;21m0</>
 Received: [35m-0</>
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m2</>
+Expected: [48;5;21m2</>
 Received: [35m1</>
 `;
 
@@ -431,243 +431,243 @@ expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
 If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
-Expected: [48;2;0;0;255m2020-02-20T00:00:00.000Z</>
+Expected: [48;5;21m2020-02-20T00:00:00.000Z</>
 Received: serializes to the same string
 `;
 
 exports[`.toBe() fails for: 2020-02-21T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255m2020-02-20T00:00:00.000Z</>
+Expected: [48;5;21m2020-02-20T00:00:00.000Z</>
 Received: [35m2020-02-21T00:00:00.000Z</>
 `;
 
 exports[`.toBe() fails for: Symbol(received) and Symbol(expected) 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255mSymbol(expected)</>
+Expected: [48;5;21mSymbol(expected)</>
 Received: [35mSymbol(received)</>
 `;
 
 exports[`.toBe() fails for: null and undefined 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255mundefined</>
+Expected: [48;5;21mundefined</>
 Received: [35mnull</>
 `;
 
 exports[`.toBe() fails for: true and false 1`] = `
 expect([35mreceived</>).toBe(<y>expected</>) // Object.is equality
 
-Expected: [48;2;0;0;255mfalse</>
+Expected: [48;5;21mfalse</>
 Received: [35mtrue</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(-Infinity).toBeCloseTo(-1.23) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m-1.23</>
+Expected: [48;5;21m-1.23</>
 Received: [35m-Infinity</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35mInfinity</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(0).toBeCloseTo(0.01) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m0.01</>
+Expected: [48;5;21m0.01</>
 Received: [35m0</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35m0.01</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(1).toBeCloseTo(1.23) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m1.23</>
+Expected: [48;5;21m1.23</>
 Received: [35m1</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35m0.22999999999999998</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(1.23).toBeCloseTo(1.2249999) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m1.2249999</>
+Expected: [48;5;21m1.2249999</>
 Received: [35m1.23</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35m0.005000099999999952</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(3.141592e-7).toBeCloseTo(3e-7, 8) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>, precision)
 
-Expected: [48;2;0;0;255m3e-7</>
+Expected: [48;5;21m3e-7</>
 Received: [35m3.141592e-7</>
 
 Expected precision:    8
-Expected difference: < [48;2;0;0;255m5e-9</>
+Expected difference: < [48;5;21m5e-9</>
 Received difference:   [35m1.4159200000000025e-8</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(56789).toBeCloseTo(51234, -4) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>, precision)
 
-Expected: [48;2;0;0;255m51234</>
+Expected: [48;5;21m51234</>
 Received: [35m56789</>
 
 Expected precision:    -4
-Expected difference: < [48;2;0;0;255m5000</>
+Expected difference: < [48;5;21m5000</>
 Received difference:   [35m5555</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(Infinity).toBeCloseTo(-Infinity) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m-Infinity</>
+Expected: [48;5;21m-Infinity</>
 Received: [35mInfinity</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35mInfinity</>
 `;
 
 exports[`.toBeCloseTo {pass: false} expect(Infinity).toBeCloseTo(1.23) 1`] = `
 expect([35mreceived</>).toBeCloseTo(<y>expected</>)
 
-Expected: [48;2;0;0;255m1.23</>
+Expected: [48;5;21m1.23</>
 Received: [35mInfinity</>
 
 Expected precision:    2
-Expected difference: < [48;2;0;0;255m0.005</>
+Expected difference: < [48;5;21m0.005</>
 Received difference:   [35mInfinity</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(-Infinity).toBeCloseTo(-Infinity) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m-Infinity</>
+Expected: not [48;5;21m-Infinity</>
 
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m0</>
+Expected: not [48;5;21m0</>
 
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.000004, 5) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>, precision)
 
-Expected: not [48;2;0;0;255m0.000004</>
+Expected: not [48;5;21m0.000004</>
 Received:     [35m0</>
 
 Expected precision:        5
-Expected difference: not < [48;2;0;0;255m0.000005</>
+Expected difference: not < [48;5;21m0.000005</>
 Received difference:       [35m0.000004</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.0001, 3) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>, precision)
 
-Expected: not [48;2;0;0;255m0.0001</>
+Expected: not [48;5;21m0.0001</>
 Received:     [35m0</>
 
 Expected precision:        3
-Expected difference: not < [48;2;0;0;255m0.0005</>
+Expected difference: not < [48;5;21m0.0005</>
 Received difference:       [35m0.0001</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.001) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m0.001</>
+Expected: not [48;5;21m0.001</>
 Received:     [35m0</>
 
 Expected precision:        2
-Expected difference: not < [48;2;0;0;255m0.005</>
+Expected difference: not < [48;5;21m0.005</>
 Received difference:       [35m0.001</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.1, 0) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>, precision)
 
-Expected: not [48;2;0;0;255m0.1</>
+Expected: not [48;5;21m0.1</>
 Received:     [35m0</>
 
 Expected precision:        0
-Expected difference: not < [48;2;0;0;255m0.5</>
+Expected difference: not < [48;5;21m0.5</>
 Received difference:       [35m0.1</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.225) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m1.225</>
+Expected: not [48;5;21m1.225</>
 Received:     [35m1.23</>
 
 Expected precision:        2
-Expected difference: not < [48;2;0;0;255m0.005</>
+Expected difference: not < [48;5;21m0.005</>
 Received difference:       [35m0.004999999999999893</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.226) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m1.226</>
+Expected: not [48;5;21m1.226</>
 Received:     [35m1.23</>
 
 Expected precision:        2
-Expected difference: not < [48;2;0;0;255m0.005</>
+Expected difference: not < [48;5;21m0.005</>
 Received difference:       [35m0.0040000000000000036</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.229) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m1.229</>
+Expected: not [48;5;21m1.229</>
 Received:     [35m1.23</>
 
 Expected precision:        2
-Expected difference: not < [48;2;0;0;255m0.005</>
+Expected difference: not < [48;5;21m0.005</>
 Received difference:       [35m0.0009999999999998899</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.234) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255m1.234</>
+Expected: not [48;5;21m1.234</>
 Received:     [35m1.23</>
 
 Expected precision:        2
-Expected difference: not < [48;2;0;0;255m0.005</>
+Expected difference: not < [48;5;21m0.005</>
 Received difference:       [35m0.0040000000000000036</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(2.0000002).toBeCloseTo(2, 5) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>, precision)
 
-Expected: not [48;2;0;0;255m2</>
+Expected: not [48;5;21m2</>
 Received:     [35m2.0000002</>
 
 Expected precision:        5
-Expected difference: not < [48;2;0;0;255m5e-6</>
+Expected difference: not < [48;5;21m5e-6</>
 Received difference:       [35m2.0000000011677344e-7</>
 `;
 
 exports[`.toBeCloseTo {pass: true} expect(Infinity).toBeCloseTo(Infinity) 1`] = `
 expect([35mreceived</>).not.toBeCloseTo(<y>expected</>)
 
-Expected: not [48;2;0;0;255mInfinity</>
+Expected: not [48;5;21mInfinity</>
 
 `;
 
@@ -846,469 +846,469 @@ Received: [35mundefined</>
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 1`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m-Infinity</>
+Expected: not >= [48;5;21m-Infinity</>
 Received:        [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 2`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m-Infinity</>
+Expected: not <= [48;5;21m-Infinity</>
 Received:        [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 1`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m1</>
+Expected: not >= [48;5;21m1</>
 Received:        [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 2`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m1</>
+Expected: not <= [48;5;21m1</>
 Received:        [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 1`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: not >= [48;5;21m1.7976931348623157e+308</>
 Received:        [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 2`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: not <= [48;5;21m1.7976931348623157e+308</>
 Received:        [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 1`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m5e-324</>
+Expected: not >= [48;5;21m5e-324</>
 Received:        [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 2`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m5e-324</>
+Expected: not <= [48;5;21m5e-324</>
 Received:        [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 1`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255mInfinity</>
+Expected: not >= [48;5;21mInfinity</>
 Received:        [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 2`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255mInfinity</>
+Expected: not <= [48;5;21mInfinity</>
 Received:        [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255mInfinity</>
+Expected: > [48;5;21mInfinity</>
 Received:   [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255mInfinity</>
+Expected: not < [48;5;21mInfinity</>
 Received:       [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m-Infinity</>
+Expected: not > [48;5;21m-Infinity</>
 Received:       [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m-Infinity</>
+Expected: < [48;5;21m-Infinity</>
 Received:   [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255mInfinity</>
+Expected: >= [48;5;21mInfinity</>
 Received:    [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255mInfinity</>
+Expected: not <= [48;5;21mInfinity</>
 Received:        [35m-Infinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m-Infinity</>
+Expected: not >= [48;5;21m-Infinity</>
 Received:        [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m-Infinity</>
+Expected: <= [48;5;21m-Infinity</>
 Received:    [35mInfinity</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m0.2</>
+Expected: > [48;5;21m0.2</>
 Received:   [35m0.1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m0.2</>
+Expected: not < [48;5;21m0.2</>
 Received:       [35m0.1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m0.1</>
+Expected: not > [48;5;21m0.1</>
 Received:       [35m0.2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m0.1</>
+Expected: < [48;5;21m0.1</>
 Received:   [35m0.2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m0.2</>
+Expected: >= [48;5;21m0.2</>
 Received:    [35m0.1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m0.2</>
+Expected: not <= [48;5;21m0.2</>
 Received:        [35m0.1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m0.1</>
+Expected: not >= [48;5;21m0.1</>
 Received:        [35m0.2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m0.1</>
+Expected: <= [48;5;21m0.1</>
 Received:    [35m0.2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m2</>
+Expected: > [48;5;21m2</>
 Received:   [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m2</>
+Expected: not < [48;5;21m2</>
 Received:       [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m1</>
+Expected: not > [48;5;21m1</>
 Received:       [35m2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m1</>
+Expected: < [48;5;21m1</>
 Received:   [35m2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m2</>
+Expected: >= [48;5;21m2</>
 Received:    [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m2</>
+Expected: not <= [48;5;21m2</>
 Received:        [35m1</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m1</>
+Expected: not >= [48;5;21m1</>
 Received:        [35m2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m1</>
+Expected: <= [48;5;21m1</>
 Received:    [35m2</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m7</>
+Expected: > [48;5;21m7</>
 Received:   [35m3</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m7</>
+Expected: not < [48;5;21m7</>
 Received:       [35m3</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m3</>
+Expected: not > [48;5;21m3</>
 Received:       [35m7</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m3</>
+Expected: < [48;5;21m3</>
 Received:   [35m7</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m7</>
+Expected: >= [48;5;21m7</>
 Received:    [35m3</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m7</>
+Expected: not <= [48;5;21m7</>
 Received:        [35m3</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m3</>
+Expected: not >= [48;5;21m3</>
 Received:        [35m7</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m3</>
+Expected: <= [48;5;21m3</>
 Received:    [35m7</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: > [48;5;21m1.7976931348623157e+308</>
 Received:   [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: not < [48;5;21m1.7976931348623157e+308</>
 Received:       [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m5e-324</>
+Expected: not > [48;5;21m5e-324</>
 Received:       [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m5e-324</>
+Expected: < [48;5;21m5e-324</>
 Received:   [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: >= [48;5;21m1.7976931348623157e+308</>
 Received:    [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m1.7976931348623157e+308</>
+Expected: not <= [48;5;21m1.7976931348623157e+308</>
 Received:        [35m5e-324</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m5e-324</>
+Expected: not >= [48;5;21m5e-324</>
 Received:        [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m5e-324</>
+Expected: <= [48;5;21m5e-324</>
 Received:    [35m1.7976931348623157e+308</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m18</>
+Expected: > [48;5;21m18</>
 Received:   [35m9</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m18</>
+Expected: not < [48;5;21m18</>
 Received:       [35m9</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m9</>
+Expected: not > [48;5;21m9</>
 Received:       [35m18</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m9</>
+Expected: < [48;5;21m9</>
 Received:   [35m18</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m18</>
+Expected: >= [48;5;21m18</>
 Received:    [35m9</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m18</>
+Expected: not <= [48;5;21m18</>
 Received:        [35m9</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m9</>
+Expected: not >= [48;5;21m9</>
 Received:        [35m18</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m9</>
+Expected: <= [48;5;21m9</>
 Received:    [35m18</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 1`] = `
 expect([35mreceived</>).toBeGreaterThan(<y>expected</>)
 
-Expected: > [48;2;0;0;255m34</>
+Expected: > [48;5;21m34</>
 Received:   [35m17</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 2`] = `
 expect([35mreceived</>).not.toBeLessThan(<y>expected</>)
 
-Expected: not < [48;2;0;0;255m34</>
+Expected: not < [48;5;21m34</>
 Received:       [35m17</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 3`] = `
 expect([35mreceived</>).not.toBeGreaterThan(<y>expected</>)
 
-Expected: not > [48;2;0;0;255m17</>
+Expected: not > [48;5;21m17</>
 Received:       [35m34</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 4`] = `
 expect([35mreceived</>).toBeLessThan(<y>expected</>)
 
-Expected: < [48;2;0;0;255m17</>
+Expected: < [48;5;21m17</>
 Received:   [35m34</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 5`] = `
 expect([35mreceived</>).toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: >= [48;2;0;0;255m34</>
+Expected: >= [48;5;21m34</>
 Received:    [35m17</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 6`] = `
 expect([35mreceived</>).not.toBeLessThanOrEqual(<y>expected</>)
 
-Expected: not <= [48;2;0;0;255m34</>
+Expected: not <= [48;5;21m34</>
 Received:        [35m17</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 7`] = `
 expect([35mreceived</>).not.toBeGreaterThanOrEqual(<y>expected</>)
 
-Expected: not >= [48;2;0;0;255m17</>
+Expected: not >= [48;5;21m17</>
 Received:        [35m34</>
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 8`] = `
 expect([35mreceived</>).toBeLessThanOrEqual(<y>expected</>)
 
-Expected: <= [48;2;0;0;255m17</>
+Expected: <= [48;5;21m17</>
 Received:    [35m34</>
 `;
 
 exports[`.toBeInstanceOf() failing "a" and [Function String] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mString</>
+Expected constructor: [48;5;21mString</>
 
 Received value has no prototype
 Received value: [35m"a"</>
@@ -1325,7 +1325,7 @@ Received constructor: [35mRegExp</>
 exports[`.toBeInstanceOf() failing {} and [Function A] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mA</>
+Expected constructor: [48;5;21mA</>
 
 Received value has no prototype
 Received value: [35m{}</>
@@ -1334,7 +1334,7 @@ Received value: [35m{}</>
 exports[`.toBeInstanceOf() failing {} and [Function B] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mB</>
+Expected constructor: [48;5;21mB</>
 Received constructor: [35mA</>
 
 `;
@@ -1342,7 +1342,7 @@ Received constructor: [35mA</>
 exports[`.toBeInstanceOf() failing {} and [Function RegExp] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mRegExp</>
+Expected constructor: [48;5;21mRegExp</>
 Received constructor name is an empty string
 
 `;
@@ -1350,7 +1350,7 @@ Received constructor name is an empty string
 exports[`.toBeInstanceOf() failing 1 and [Function Number] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mNumber</>
+Expected constructor: [48;5;21mNumber</>
 
 Received value has no prototype
 Received value: [35m1</>
@@ -1359,7 +1359,7 @@ Received value: [35m1</>
 exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mString</>
+Expected constructor: [48;5;21mString</>
 
 Received value has no prototype
 Received value: [35mnull</>
@@ -1368,7 +1368,7 @@ Received value: [35mnull</>
 exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mBoolean</>
+Expected constructor: [48;5;21mBoolean</>
 
 Received value has no prototype
 Received value: [35mtrue</>
@@ -1377,7 +1377,7 @@ Received value: [35mtrue</>
 exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
 expect([35mreceived</>).toBeInstanceOf(<y>expected</>)
 
-Expected constructor: [48;2;0;0;255mString</>
+Expected constructor: [48;5;21mString</>
 
 Received value has no prototype
 Received value: [35mundefined</>
@@ -1386,37 +1386,37 @@ Received value: [35mundefined</>
 exports[`.toBeInstanceOf() passing [] and [Function Array] 1`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mArray</>
+Expected constructor: not [48;5;21mArray</>
 
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function A] 1`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mA</>
+Expected constructor: not [48;5;21mA</>
 
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function B] 1`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mB</>
-Received constructor:     [35mC</> extends [48;2;0;0;255mB</>
+Expected constructor: not [48;5;21mB</>
+Received constructor:     [35mC</> extends [48;5;21mB</>
 
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function B] 2`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mB</>
-Received constructor:     [35mE</> extends … extends [48;2;0;0;255mB</>
+Expected constructor: not [48;5;21mB</>
+Received constructor:     [35mE</> extends … extends [48;5;21mB</>
 
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function B] 3`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mB</>
+Expected constructor: not [48;5;21mB</>
 Received constructor name is not a string
 
 `;
@@ -1439,7 +1439,7 @@ Expected constructor name is not a string
 exports[`.toBeInstanceOf() passing Map {} and [Function Map] 1`] = `
 expect([35mreceived</>).not.toBeInstanceOf(<y>expected</>)
 
-Expected constructor: not [48;2;0;0;255mMap</>
+Expected constructor: not [48;5;21mMap</>
 
 `;
 
@@ -1795,49 +1795,49 @@ Expected has value: <g>null</>
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected substring: not [48;2;0;0;255m"2"</>
+Expected substring: not [48;5;21m"2"</>
 Received string:        [35m"1111<i>2</i>111"</>
 `;
 
 exports[`.toContain(), .toContainEqual() '"abcdef"' contains '"abc"' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected substring: not [48;2;0;0;255m"abc"</>
+Expected substring: not [48;5;21m"abc"</>
 Received string:        [35m"<i>abc</i>def"</>
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains '"a"' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255m"a"</>
+Expected value: not [48;5;21m"a"</>
 Received array:     [35m[<i>"a"</i>, "b", "c", "d"]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains a value equal to '"a"' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255m"a"</>
+Expected value: not [48;5;21m"a"</>
 Received array:     [35m[<i>"a"</i>, "b", "c", "d"]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' contains a value equal to '{"a": "b"}' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255m{"a": "b"}</>
+Expected value: not [48;5;21m{"a": "b"}</>
 Received array:     [35m[<i>{"a": "b"}</i>, {"a": "c"}]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' does not contain a value equal to'{"a": "d"}' 1`] = `
 expect([35mreceived</>).toContainEqual(<y>expected</>) // deep equality
 
-Expected value: [48;2;0;0;255m{"a": "d"}</>
+Expected value: [48;5;21m{"a": "d"}</>
 Received array: [35m[{"a": "b"}, {"a": "c"}]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '[]' 1`] = `
 expect([35mreceived</>).toContain(<y>expected</>) // indexOf
 
-Expected value: [48;2;0;0;255m[]</>
+Expected value: [48;5;21m[]</>
 Received array: [35m[{}, []]</>
 
 <d>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>
@@ -1846,7 +1846,7 @@ Received array: [35m[{}, []]</>
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = `
 expect([35mreceived</>).toContain(<y>expected</>) // indexOf
 
-Expected value: [48;2;0;0;255m{}</>
+Expected value: [48;5;21m{}</>
 Received array: [35m[{}, []]</>
 
 <d>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>
@@ -1855,98 +1855,98 @@ Received array: [35m[{}, []]</>
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value:  not [48;2;0;0;255m1</>
+Expected value:  not [48;5;21m1</>
 Received object:     [35m[0, 1]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value:  not [48;2;0;0;255m1</>
+Expected value:  not [48;5;21m1</>
 Received object:     [35m[0, 1]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains '1' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 Received array:     [35m[<i>1</i>, 2, 3, 4]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains a value equal to '1' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 Received array:     [35m[<i>1</i>, 2, 3, 4]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3]' does not contain '4' 1`] = `
 expect([35mreceived</>).toContain(<y>expected</>) // indexOf
 
-Expected value: [48;2;0;0;255m4</>
+Expected value: [48;5;21m4</>
 Received array: [35m[1, 2, 3]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains 'Symbol(a)' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255mSymbol(a)</>
+Expected value: not [48;5;21mSymbol(a)</>
 Received array:     [35m[<i>Symbol(a)</i>]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains a value equal to 'Symbol(a)' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255mSymbol(a)</>
+Expected value: not [48;5;21mSymbol(a)</>
 Received array:     [35m[<i>Symbol(a)</i>]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[null, undefined]' does not contain '1' 1`] = `
 expect([35mreceived</>).toContain(<y>expected</>) // indexOf
 
-Expected value: [48;2;0;0;255m1</>
+Expected value: [48;5;21m1</>
 Received array: [35m[null, undefined]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'null' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255mnull</>
+Expected value: not [48;5;21mnull</>
 Received array:     [35m[undefined, <i>null</i>]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'undefined' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 Received array:     [35m[<i>undefined</i>, null]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'null' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255mnull</>
+Expected value: not [48;5;21mnull</>
 Received array:     [35m[undefined, <i>null</i>]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'undefined' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 Received array:     [35m[<i>undefined</i>, null]</>
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
 expect([35mreceived</>).not.toContain(<y>expected</>) // indexOf
 
-Expected value: not [48;2;0;0;255m"abc"</>
+Expected value: not [48;5;21m"abc"</>
 Received set:       [35mSet {"abc", "def"}</>
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
 expect([35mreceived</>).not.toContainEqual(<y>expected</>) // deep equality
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 Received set:       [35mSet {1, 2, 3, 4}</>
 `;
 
@@ -2011,42 +2011,42 @@ Received has value: <r>null</>
 exports[`.toEqual() {pass: false} expect("1 234,57 $").toEqual("1 234,57 $") 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m"1<i> </i>234,57<i> </i>$"</>
+Expected: [48;5;21m"1<i> </i>234,57<i> </i>$"</>
 Received: [35m"1<i> </i>234,57<i> </i>$"</>
 `;
 
 exports[`.toEqual() {pass: false} expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m{"asymmetricMatch": [Function asymmetricMatch]}</>
+Expected: [48;5;21m{"asymmetricMatch": [Function asymmetricMatch]}</>
 Received: [35m"Eve"</>
 `;
 
 exports[`.toEqual() {pass: false} expect("abc").toEqual({"0": "a", "1": "b", "2": "c"}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m{"0": "a", "1": "b", "2": "c"}</>
+Expected: [48;5;21m{"0": "a", "1": "b", "2": "c"}</>
 Received: [35m"abc"</>
 `;
 
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mStringContaining "bc"</>
+Expected: [48;5;21mStringContaining "bc"</>
 Received: [35m"abd"</>
 `;
 
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringMatching /bc/i) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mStringMatching /bc/i</>
+Expected: [48;5;21mStringMatching /bc/i</>
 Received: [35m"abd"</>
 `;
 
 exports[`.toEqual() {pass: false} expect("banana").toEqual("apple") 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m"apple"</>
+Expected: [48;5;21m"apple"</>
 Received: [35m"banana"</>
 `;
 
@@ -2055,32 +2055,32 @@ exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function 
 : \\"object\\";") 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
-[48;2;0;0;255m- type TypeName<T> = T extends Function</>
-[48;2;0;0;255m- ? "function"</>
-[48;2;0;0;255m- : "object";</>
+[48;5;21m- type TypeName<T> = T extends Function</>
+[48;5;21m- ? "function"</>
+[48;5;21m- : "object";</>
 [35m+ type TypeName<T> = T extends Function<i> </i>? "function"<i> </i>: "object";</>
 `;
 
 exports[`.toEqual() {pass: false} expect(/abc/gsy).toEqual(/abc/g) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m/abc/g</>
+Expected: [48;5;21m/abc/g</>
 Received: [35m/abc/gsy</>
 `;
 
 exports[`.toEqual() {pass: false} expect([, , 1, ]).toEqual([, , 2, ]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
     undefined,
     undefined,
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
 [35m+   1,</>
     undefined,
   ]
@@ -2089,44 +2089,44 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect([]).toEqual([]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m[]</>
+Expected: [48;5;21m[]</>
 Received: serializes to the same string
 `;
 
 exports[`.toEqual() {pass: false} expect([]).toEqual([]) 2`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m[]</>
+Expected: [48;5;21m[]</>
 Received: serializes to the same string
 `;
 
 exports[`.toEqual() {pass: false} expect([]).toEqual([]) 3`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m[]</>
+Expected: [48;5;21m[]</>
 Received: serializes to the same string
 `;
 
 exports[`.toEqual() {pass: false} expect([]).toEqual([1]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
-[48;2;0;0;255m- Array [</>
-[48;2;0;0;255m-   1,</>
-[48;2;0;0;255m- ]</>
+[48;5;21m- Array [</>
+[48;5;21m-   1,</>
+[48;5;21m- ]</>
 [35m+ Array []</>
 `;
 
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
     1,
 [35m+   2,</>
   ]
@@ -2135,18 +2135,18 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect([1, 3]).toEqual(ArrayContaining [1, 2]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mArrayContaining [1, 2]</>
+Expected: [48;5;21mArrayContaining [1, 2]</>
 Received: [35m[1, 3]</>
 `;
 
 exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
 [35m+   1,</>
   ]
 `;
@@ -2154,13 +2154,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect([97, 98, 99]).toEqual([97, 98, 100]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Uint8Array [
     97,
     98,
-[48;2;0;0;255m-   100,</>
+[48;5;21m-   100,</>
 [35m+   99,</>
   ]
 `;
@@ -2168,18 +2168,18 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"0": "a", "1": "b", "2": "c"}).toEqual("abc") 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m"abc"</>
+Expected: [48;5;21m"abc"</>
 Received: [35m{"0": "a", "1": "b", "2": "c"}</>
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 2</>
+[48;5;21m- Expected  - 2</>
 [35m+ Received  + 3</>
 
-[48;2;0;0;255m- ObjectContaining {</>
-[48;2;0;0;255m-   "a": 2,</>
+[48;5;21m- ObjectContaining {</>
+[48;5;21m-   "a": 2,</>
 [35m+ Object {</>
 [35m+   "a": 1,</>
 [35m+   "b": 2,</>
@@ -2189,11 +2189,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": 2,</>
+[48;5;21m-   "a": 2,</>
 [35m+   "a": 1,</>
   }
 `;
@@ -2201,11 +2201,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "b": 6,</>
+[48;5;21m-   "b": 6,</>
 [35m+   "a": 5,</>
   }
 `;
@@ -2213,11 +2213,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 3</>
 
   Object {
-[48;2;0;0;255m-   "foo": Object {},</>
+[48;5;21m-   "foo": Object {},</>
 [35m+   "foo": Object {</>
 [35m+     "bar": 1,</>
 [35m+   },</>
@@ -2227,13 +2227,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"frozenGetter": {}}).toEqual({"frozenGetter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "frozenGetter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "frozenGetter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "frozenGetter": Object {},</>
   }
 `;
@@ -2241,13 +2241,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"frozenGetterAndSetter": {}}).toEqual({"frozenGetterAndSetter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "frozenGetterAndSetter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "frozenGetterAndSetter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "frozenGetterAndSetter": Object {},</>
   }
 `;
@@ -2255,13 +2255,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"frozenSetter": undefined}).toEqual({"frozenSetter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "frozenSetter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "frozenSetter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "frozenSetter": undefined,</>
   }
 `;
@@ -2269,13 +2269,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"getter": {}}).toEqual({"getter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "getter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "getter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "getter": Object {},</>
   }
 `;
@@ -2283,13 +2283,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"getterAndSetter": {}}).toEqual({"getterAndSetter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "getterAndSetter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "getterAndSetter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "getterAndSetter": Object {},</>
   }
 `;
@@ -2297,11 +2297,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "nodeName": "p",</>
+[48;5;21m-   "nodeName": "p",</>
 [35m+   "nodeName": "div",</>
     "nodeType": 1,
   }
@@ -2310,13 +2310,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"setter": undefined}).toEqual({"setter": {"foo": "bar"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "setter": Object {</>
-[48;2;0;0;255m-     "foo": "bar",</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "setter": Object {</>
+[48;5;21m-     "foo": "bar",</>
+[48;5;21m-   },</>
 [35m+   "setter": undefined,</>
   }
 `;
@@ -2324,13 +2324,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"}}).toEqual({"target": {"nodeType": 1, "value": "b"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
     "target": Object {
       "nodeType": 1,
-[48;2;0;0;255m-     "value": "b",</>
+[48;5;21m-     "value": "b",</>
 [35m+     "value": "a",</>
     },
   }
@@ -2339,26 +2339,26 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect({}).toEqual({}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m{}</>
+Expected: [48;5;21m{}</>
 Received: serializes to the same string
 `;
 
 exports[`.toEqual() {pass: false} expect({}).toEqual(0) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m0</>
+Expected: [48;5;21m0</>
 Received: [35m{}</>
 `;
 
 exports[`.toEqual() {pass: false} expect({Symbol(foo): 1, Symbol(bar): 2}).toEqual({Symbol(foo): Any<Number>, Symbol(bar): 1}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
     Symbol(foo): Any<Number>,
-[48;2;0;0;255m-   Symbol(bar): 1,</>
+[48;5;21m-   Symbol(bar): 1,</>
 [35m+   Symbol(bar): 2,</>
   }
 `;
@@ -2366,53 +2366,53 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(0).toEqual({}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m{}</>
+Expected: [48;5;21m{}</>
 Received: [35m0</>
 `;
 
 exports[`.toEqual() {pass: false} expect(0).toEqual(-0) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m-0</>
+Expected: [48;5;21m-0</>
 Received: [35m0</>
 `;
 
 exports[`.toEqual() {pass: false} expect(0).toEqual(5e-324) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m5e-324</>
+Expected: [48;5;21m5e-324</>
 Received: [35m0</>
 `;
 
 exports[`.toEqual() {pass: false} expect(1).toEqual(2) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m2</>
+Expected: [48;5;21m2</>
 Received: [35m1</>
 `;
 
 exports[`.toEqual() {pass: false} expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mArrayContaining [1, 2]</>
+Expected: [48;5;21mArrayContaining [1, 2]</>
 Received: [35m1</>
 `;
 
 exports[`.toEqual() {pass: false} expect(5e-324).toEqual(0) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m0</>
+Expected: [48;5;21m0</>
 Received: [35m5e-324</>
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutable.List [2, 1]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.List [
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
     1,
 [35m+   2,</>
   ]
@@ -2421,11 +2421,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.List [2]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.List [
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
 [35m+   1,</>
   ]
 `;
@@ -2433,13 +2433,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 11}}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.Map {
     "1": Immutable.Map {
       "2": Object {
-[48;2;0;0;255m-       "a": 11,</>
+[48;5;21m-       "a": 11,</>
 [35m+       "a": 99,</>
       },
     },
@@ -2449,11 +2449,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutable.Map {"b": 0}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.Map {
-[48;2;0;0;255m-   "b": 0,</>
+[48;5;21m-   "b": 0,</>
 [35m+   "a": 0,</>
   }
 `;
@@ -2461,11 +2461,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutable.Map {"v": 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.Map {
-[48;2;0;0;255m-   "v": 2,</>
+[48;5;21m-   "v": 2,</>
 [35m+   "v": 1,</>
   }
 `;
@@ -2473,11 +2473,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).toEqual(Immutable.OrderedMap {2: "two", 1: "one"}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.OrderedMap {
-[48;2;0;0;255m-   2: "two",</>
+[48;5;21m-   2: "two",</>
     1: "one",
 [35m+   2: "two",</>
   }
@@ -2486,11 +2486,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Immutable.OrderedSet [2, 1]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Immutable.OrderedSet [
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
     1,
 [35m+   2,</>
   ]
@@ -2499,10 +2499,10 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set []) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 4</>
 
-[48;2;0;0;255m- Immutable.Set []</>
+[48;5;21m- Immutable.Set []</>
 [35m+ Immutable.Set [</>
 [35m+   1,</>
 [35m+   2,</>
@@ -2512,24 +2512,24 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set [1, 2, 3]) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 0</>
 
   Immutable.Set [
     1,
     2,
-[48;2;0;0;255m-   3,</>
+[48;5;21m-   3,</>
   ]
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Map {
-[48;2;0;0;255m-   "b" => 0,</>
+[48;5;21m-   "b" => 0,</>
 [35m+   "a" => 0,</>
   }
 `;
@@ -2537,11 +2537,11 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Map {"v" => 1}).toEqual(Map {"v" => 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Map {
-[48;2;0;0;255m-   "v" => 2,</>
+[48;5;21m-   "v" => 2,</>
 [35m+   "v" => 1,</>
   }
 `;
@@ -2549,13 +2549,13 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Map {["v"] => 1}).toEqual(Map {["v"] => 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Map {
     Array [
       "v",
-[48;2;0;0;255m-   ] => 2,</>
+[48;5;21m-   ] => 2,</>
 [35m+   ] => 1,</>
   }
 `;
@@ -2563,7 +2563,7 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Map {[1] => Map {[1] => "one"}}).toEqual(Map {[1] => Map {[1] => "two"}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
 <y>@@ -2,8 +2,8 @@</>
@@ -2572,7 +2572,7 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
     ] => Map {
       Array [
         1,
-[48;2;0;0;255m-     ] => "two",</>
+[48;5;21m-     ] => "two",</>
 [35m+     ] => "one",</>
     },
   }
@@ -2581,14 +2581,14 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Map {}).toEqual(Set {}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mSet {}</>
+Expected: [48;5;21mSet {}</>
 Received: [35mMap {}</>
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).toEqual(Map {1 => "one"}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 1</>
 
   Map {
@@ -2600,7 +2600,7 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [2]}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 0</>
 
 <y>@@ -3,9 +3,6 @@</>
@@ -2609,16 +2609,16 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
     Array [
       2,
     ],
-[48;2;0;0;255m-   Array [</>
-[48;2;0;0;255m-     2,</>
-[48;2;0;0;255m-   ],</>
+[48;5;21m-   Array [</>
+[48;5;21m-     2,</>
+[48;5;21m-   ],</>
   }
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [3]}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 0</>
 
 <y>@@ -3,9 +3,6 @@</>
@@ -2627,19 +2627,19 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
     Array [
       2,
     ],
-[48;2;0;0;255m-   Array [</>
-[48;2;0;0;255m-     3,</>
-[48;2;0;0;255m-   ],</>
+[48;5;21m-   Array [</>
+[48;5;21m-     3,</>
+[48;5;21m-   ],</>
   }
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 4</>
 
-[48;2;0;0;255m- Set {}</>
+[48;5;21m- Set {}</>
 [35m+ Set {</>
 [35m+   1,</>
 [35m+   2,</>
@@ -2649,20 +2649,20 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 0</>
 
   Set {
     1,
     2,
-[48;2;0;0;255m-   3,</>
+[48;5;21m-   3,</>
   }
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {Set {1}, Set {2}}).toEqual(Set {Set {1}, Set {3}}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Set {
@@ -2670,7 +2670,7 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
       1,
     },
     Set {
-[48;2;0;0;255m-     3,</>
+[48;5;21m-     3,</>
 [35m+     2,</>
     },
   }
@@ -2679,497 +2679,497 @@ expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 exports[`.toEqual() {pass: false} expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mObjectContaining {"a": 2}</>
+Expected: [48;5;21mObjectContaining {"a": 2}</>
 Received: [35mfalse</>
 `;
 
 exports[`.toEqual() {pass: false} expect(null).toEqual(undefined) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mundefined</>
+Expected: [48;5;21mundefined</>
 Received: [35mnull</>
 `;
 
 exports[`.toEqual() {pass: false} expect(true).toEqual(false) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mfalse</>
+Expected: [48;5;21mfalse</>
 Received: [35mtrue</>
 `;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Any<Function>) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mAny<Function></>
+Expected: [48;5;21mAny<Function></>
 Received: [35mundefined</>
 `;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Anything) 1`] = `
 expect([35mreceived</>).toEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255mAnything</>
+Expected: [48;5;21mAnything</>
 Received: [35mundefined</>
 `;
 
 exports[`.toEqual() {pass: true} expect("Alice").not.toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"asymmetricMatch": [Function asymmetricMatch]}</>
+Expected: not [48;5;21m{"asymmetricMatch": [Function asymmetricMatch]}</>
 Received:     [35m"Alice"</>
 `;
 
 exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m"abc"</>
+Expected: not [48;5;21m"abc"</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 2`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m"abc"</>
+Expected: not [48;5;21m"abc"</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 3`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m"abc"</>
+Expected: not [48;5;21m"abc"</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringContaining "bc") 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mStringContaining "bc"</>
+Expected: not [48;5;21mStringContaining "bc"</>
 Received:     [35m"abcd"</>
 `;
 
 exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringMatching /bc/) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mStringMatching /bc/</>
+Expected: not [48;5;21mStringMatching /bc/</>
 Received:     [35m"abcd"</>
 `;
 
 exports[`.toEqual() {pass: true} expect([, , 1, , ]).not.toEqual([, , 1, undefined, ]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[, , 1, undefined, ]</>
+Expected: not [48;5;21m[, , 1, undefined, ]</>
 Received:     [35m[, , 1, , ]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([, , 1, ]).not.toEqual([, , 1, ]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[, , 1, ]</>
+Expected: not [48;5;21m[, , 1, ]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect([1, [Function anonymous]]).not.toEqual([1, optionalFn<>]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, optionalFn<>]</>
+Expected: not [48;5;21m[1, optionalFn<>]</>
 Received:     [35m[1, [Function anonymous]]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mArrayContaining [2, 3]</>
+Expected: not [48;5;21mArrayContaining [2, 3]</>
 Received:     [35m[1, 2, 3]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2]).not.toEqual([1, 2]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, 2]</>
+Expected: not [48;5;21m[1, 2]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1, [Function anonymous]]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, [Function anonymous]]</>
+Expected: not [48;5;21m[1, [Function anonymous]]</>
 Received:     [35m[1, optionalFn<>]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1, undefined]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, undefined]</>
+Expected: not [48;5;21m[1, undefined]</>
 Received:     [35m[1, optionalFn<>]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1]</>
+Expected: not [48;5;21m[1]</>
 Received:     [35m[1, optionalFn<>]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1, undefined]).not.toEqual([1, optionalFn<>]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, optionalFn<>]</>
+Expected: not [48;5;21m[1, optionalFn<>]</>
 Received:     [35m[1, undefined]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1, optionalFn<>]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1, optionalFn<>]</>
+Expected: not [48;5;21m[1, optionalFn<>]</>
 Received:     [35m[1]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[1]</>
+Expected: not [48;5;21m[1]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect([97, 98, 99]).not.toEqual([97, 98, 99]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m[97, 98, 99]</>
+Expected: not [48;5;21m[97, 98, 99]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect([Function anonymous]).not.toEqual(Any<Function>) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mAny<Function></>
+Expected: not [48;5;21mAny<Function></>
 Received:     [35m[Function anonymous]</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": Any<Function>, "c": Anything}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": Any<Function>, "c": Anything}</>
+Expected: not [48;5;21m{"a": 1, "b": Any<Function>, "c": Anything}</>
 Received:     [35m{"a": 1, "b": [Function b], "c": true}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b]}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": optionalFn<>}</>
+Expected: not [48;5;21m{"a": 1, "b": optionalFn<>}</>
 Received:     [35m{"a": 1, "b": [Function b]}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": 2}).not.toEqual(ObjectContaining {"a": 1}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mObjectContaining {"a": 1}</>
+Expected: not [48;5;21mObjectContaining {"a": 1}</>
 Received:     [35m{"a": 1, "b": 2}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1, "b": [Function b]}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": [Function b]}</>
+Expected: not [48;5;21m{"a": 1, "b": [Function b]}</>
 Received:     [35m{"a": 1, "b": optionalFn<>}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1, "b": undefined}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": undefined}</>
+Expected: not [48;5;21m{"a": 1, "b": undefined}</>
 Received:     [35m{"a": 1, "b": optionalFn<>}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1}</>
+Expected: not [48;5;21m{"a": 1}</>
 Received:     [35m{"a": 1, "b": optionalFn<>}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": undefined}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": optionalFn<>}</>
+Expected: not [48;5;21m{"a": 1, "b": optionalFn<>}</>
 Received:     [35m{"a": 1, "b": undefined}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 1, "b": optionalFn<>}</>
+Expected: not [48;5;21m{"a": 1, "b": optionalFn<>}</>
 Received:     [35m{"a": 1}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 99}).not.toEqual({"a": 99}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"a": 99}</>
+Expected: not [48;5;21m{"a": 99}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect({"nodeName": "div", "nodeType": 1}).not.toEqual({"nodeName": "div", "nodeType": 1}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"nodeName": "div", "nodeType": 1}</>
+Expected: not [48;5;21m{"nodeName": "div", "nodeType": 1}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{}</>
+Expected: not [48;5;21m{}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{}</>
+Expected: not [48;5;21m{}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect({Symbol(foo): 1, Symbol(bar): 2}).not.toEqual({Symbol(foo): Any<Number>, Symbol(bar): 2}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{Symbol(foo): Any<Number>, Symbol(bar): 2}</>
+Expected: not [48;5;21m{Symbol(foo): Any<Number>, Symbol(bar): 2}</>
 Received:     [35m{Symbol(foo): 1, Symbol(bar): 2}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m0</>
+Expected: not [48;5;21m0</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 2`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m0</>
+Expected: not [48;5;21m0</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(1).not.toEqual(1) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m1</>
+Expected: not [48;5;21m1</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.List [1, 2]</>
+Expected: not [48;5;21mImmutable.List [1, 2]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.List [1]).not.toEqual(Immutable.List [1]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.List [1]</>
+Expected: not [48;5;21mImmutable.List [1]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).not.toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Map {"1": Immutable.Map {"2": {"a": 99}}}</>
+Expected: not [48;5;21mImmutable.Map {"1": Immutable.Map {"2": {"a": 99}}}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {}).not.toEqual(Immutable.Map {}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Map {}</>
+Expected: not [48;5;21mImmutable.Map {}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {1: "one", 2: "two"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Map {1: "one", 2: "two"}</>
+Expected: not [48;5;21mImmutable.Map {1: "one", 2: "two"}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {2: "two", 1: "one"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Map {2: "two", 1: "one"}</>
+Expected: not [48;5;21mImmutable.Map {2: "two", 1: "one"}</>
 Received:     [35mImmutable.Map {1: "one", 2: "two"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedMap {1: "one", 2: "two"}).not.toEqual(Immutable.OrderedMap {1: "one", 2: "two"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.OrderedMap {1: "one", 2: "two"}</>
+Expected: not [48;5;21mImmutable.OrderedMap {1: "one", 2: "two"}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedSet []).not.toEqual(Immutable.OrderedSet []) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.OrderedSet []</>
+Expected: not [48;5;21mImmutable.OrderedSet []</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedSet [1, 2]).not.toEqual(Immutable.OrderedSet [1, 2]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.OrderedSet [1, 2]</>
+Expected: not [48;5;21mImmutable.OrderedSet [1, 2]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set []).not.toEqual(Immutable.Set []) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Set []</>
+Expected: not [48;5;21mImmutable.Set []</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [1, 2]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Set [1, 2]</>
+Expected: not [48;5;21mImmutable.Set [1, 2]</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [2, 1]) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mImmutable.Set [2, 1]</>
+Expected: not [48;5;21mImmutable.Set [2, 1]</>
 Received:     [35mImmutable.Set [1, 2]</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => "one", [2] => "two", [3] => "three", [3] => "four"}).not.toEqual(Map {[3] => "three", [3] => "four", [2] => "two", [1] => "one"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {[3] => "three", [3] => "four", [2] => "two", [1] => "one"}</>
+Expected: not [48;5;21mMap {[3] => "three", [3] => "four", [2] => "two", [1] => "one"}</>
 Received:     [35mMap {[1] => "one", [2] => "two", [3] => "three", [3] => "four"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => "one", [2] => "two"}).not.toEqual(Map {[2] => "two", [1] => "one"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {[2] => "two", [1] => "one"}</>
+Expected: not [48;5;21mMap {[2] => "two", [1] => "one"}</>
 Received:     [35mMap {[1] => "one", [2] => "two"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => Map {[1] => "one"}, [2] => Map {[2] => "two"}}).not.toEqual(Map {[2] => Map {[2] => "two"}, [1] => Map {[1] => "one"}}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {[2] => Map {[2] => "two"}, [1] => Map {[1] => "one"}}</>
+Expected: not [48;5;21mMap {[2] => Map {[2] => "two"}, [1] => Map {[1] => "one"}}</>
 Received:     [35mMap {[1] => Map {[1] => "one"}, [2] => Map {[2] => "two"}}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {{"a": 1} => "one", {"b": 2} => "two"}).not.toEqual(Map {{"b": 2} => "two", {"a": 1} => "one"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {{"b": 2} => "two", {"a": 1} => "one"}</>
+Expected: not [48;5;21mMap {{"b": 2} => "two", {"a": 1} => "one"}</>
 Received:     [35mMap {{"a": 1} => "one", {"b": 2} => "two"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {}).not.toEqual(Map {}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {}</>
+Expected: not [48;5;21mMap {}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {1 => "one", 2 => "two"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {1 => "one", 2 => "two"}</>
+Expected: not [48;5;21mMap {1 => "one", 2 => "two"}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {2 => "two", 1 => "one"}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {2 => "two", 1 => "one"}</>
+Expected: not [48;5;21mMap {2 => "two", 1 => "one"}</>
 Received:     [35mMap {1 => "one", 2 => "two"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => ["one"], 2 => ["two"]}).not.toEqual(Map {2 => ["two"], 1 => ["one"]}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mMap {2 => ["two"], 1 => ["one"]}</>
+Expected: not [48;5;21mMap {2 => ["two"], 1 => ["one"]}</>
 Received:     [35mMap {1 => ["one"], 2 => ["two"]}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(NaN).not.toEqual(NaN) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mNaN</>
+Expected: not [48;5;21mNaN</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {[1], [2], [3], [3]}).not.toEqual(Set {[3], [3], [2], [1]}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {[3], [3], [2], [1]}</>
+Expected: not [48;5;21mSet {[3], [3], [2], [1]}</>
 Received:     [35mSet {[1], [2], [3], [3]}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {[1], [2]}).not.toEqual(Set {[2], [1]}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {[2], [1]}</>
+Expected: not [48;5;21mSet {[2], [1]}</>
 Received:     [35mSet {[1], [2]}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {{"a": 1}, {"b": 2}}).not.toEqual(Set {{"b": 2}, {"a": 1}}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {{"b": 2}, {"a": 1}}</>
+Expected: not [48;5;21mSet {{"b": 2}, {"a": 1}}</>
 Received:     [35mSet {{"a": 1}, {"b": 2}}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {}).not.toEqual(Set {}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {}</>
+Expected: not [48;5;21mSet {}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {1, 2}</>
+Expected: not [48;5;21mSet {1, 2}</>
 
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {1, 2}).not.toEqual(Set {2, 1}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {2, 1}</>
+Expected: not [48;5;21mSet {2, 1}</>
 Received:     [35mSet {1, 2}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {Set {[1]}, Set {[2]}}).not.toEqual(Set {Set {[2]}, Set {[1]}}) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mSet {Set {[2]}, Set {[1]}}</>
+Expected: not [48;5;21mSet {Set {[2]}, Set {[1]}}</>
 Received:     [35mSet {Set {[1]}, Set {[2]}}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(true).not.toEqual(Anything) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mAnything</>
+Expected: not [48;5;21mAnything</>
 Received:     [35mtrue</>
 `;
 
 exports[`.toEqual() {pass: true} expect(true).not.toEqual(true) 1`] = `
 expect([35mreceived</>).not.toEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255mtrue</>
+Expected: not [48;5;21mtrue</>
 
 `;
 
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 expect([35mreceived</>).toHaveLength(<y>expected</>)
 
-Expected length: [48;2;0;0;255m1</>
+Expected length: [48;5;21m1</>
 Received length: [35m0</>
 Received string: [35m""</>
 `;
@@ -3177,7 +3177,7 @@ Received string: [35m""</>
 exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
 expect([35mreceived</>).toHaveLength(<y>expected</>)
 
-Expected length: [48;2;0;0;255m66</>
+Expected length: [48;5;21m66</>
 Received length: [35m3</>
 Received string: [35m"abc"</>
 `;
@@ -3185,7 +3185,7 @@ Received string: [35m"abc"</>
 exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
 expect([35mreceived</>).toHaveLength(<y>expected</>)
 
-Expected length: [48;2;0;0;255m99</>
+Expected length: [48;5;21m99</>
 Received length: [35m2</>
 Received array:  [35m["a", "b"]</>
 `;
@@ -3193,7 +3193,7 @@ Received array:  [35m["a", "b"]</>
 exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
 expect([35mreceived</>).toHaveLength(<y>expected</>)
 
-Expected length: [48;2;0;0;255m1</>
+Expected length: [48;5;21m1</>
 Received length: [35m0</>
 Received array:  [35m[]</>
 `;
@@ -3201,7 +3201,7 @@ Received array:  [35m[]</>
 exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
 expect([35mreceived</>).toHaveLength(<y>expected</>)
 
-Expected length: [48;2;0;0;255m3</>
+Expected length: [48;5;21m3</>
 Received length: [35m2</>
 Received array:  [35m[1, 2]</>
 `;
@@ -3209,42 +3209,42 @@ Received array:  [35m[1, 2]</>
 exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length: not [48;2;0;0;255m0</>
+Expected length: not [48;5;21m0</>
 Received string:     [35m""</>
 `;
 
 exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length: not [48;2;0;0;255m3</>
+Expected length: not [48;5;21m3</>
 Received string:     [35m"abc"</>
 `;
 
 exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length: not [48;2;0;0;255m2</>
+Expected length: not [48;5;21m2</>
 Received array:      [35m["a", "b"]</>
 `;
 
 exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length: not [48;2;0;0;255m0</>
+Expected length: not [48;5;21m0</>
 Received array:      [35m[]</>
 `;
 
 exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length: not [48;2;0;0;255m2</>
+Expected length: not [48;5;21m2</>
 Received array:      [35m[1, 2]</>
 `;
 
 exports[`.toHaveLength {pass: true} expect([Function anonymous]).toHaveLength(0) 1`] = `
 expect([35mreceived</>).not.toHaveLength(<y>expected</>)
 
-Expected length:   not [48;2;0;0;255m0</>
+Expected length:   not [48;5;21m0</>
 Received function:     [35m[Function anonymous]</>
 `;
 
@@ -3393,7 +3393,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.c"</>
 Received path: [35m[]</>
 
-Expected value: [48;2;0;0;255m{"a": 5}</>
+Expected value: [48;5;21m{"a": 5}</>
 Received value: [35m"abc"</>
 `;
 
@@ -3402,7 +3402,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>["a", "b", "c", "d"]</>
 
-Expected value: [48;2;0;0;255m2</>
+Expected value: [48;5;21m2</>
 Received value: [35m1</>
 `;
 
@@ -3411,7 +3411,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>"a.b.c.d"</>
 
-Expected value: [48;2;0;0;255m2</>
+Expected value: [48;5;21m2</>
 Received value: [35m1</>
 `;
 
@@ -3421,7 +3421,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.ttt.d"</>
 Received path: [35m"a.b"</>
 
-Expected value: [48;2;0;0;255m1</>
+Expected value: [48;5;21m1</>
 Received value: [35m{"c": {"d": 1}}</>
 `;
 
@@ -3449,7 +3449,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.c.d"</>
 Received path: [35m"a.b.c"</>
 
-Expected value: [48;2;0;0;255m1</>
+Expected value: [48;5;21m1</>
 Received value: [35m{}</>
 `;
 
@@ -3458,11 +3458,11 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>"a.b"</>
 
-[48;2;0;0;255m- Expected value  - 1</>
+[48;5;21m- Expected value  - 1</>
 [35m+ Received value  + 1</>
 
   Object {
-[48;2;0;0;255m-   "c": 4,</>
+[48;5;21m-   "c": 4,</>
 [35m+   "c": 5,</>
   }
 `;
@@ -3472,7 +3472,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>"a.b"</>
 
-Expected value: [48;2;0;0;255mundefined</>
+Expected value: [48;5;21mundefined</>
 Received value: [35m3</>
 `;
 
@@ -3482,7 +3482,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b"</>
 Received path: [35m"a"</>
 
-Expected value: [48;2;0;0;255mundefined</>
+Expected value: [48;5;21mundefined</>
 Received value: [35m{}</>
 `;
 
@@ -3501,7 +3501,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.c.d"</>
 Received path: [35m"a"</>
 
-Expected value: [48;2;0;0;255m5</>
+Expected value: [48;5;21m5</>
 Received value: [35m1</>
 `;
 
@@ -3511,7 +3511,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.c.d"</>
 Received path: [35m[]</>
 
-Expected value: [48;2;0;0;255m2</>
+Expected value: [48;5;21m2</>
 Received value: [35m{"a.b.c.d": 1}</>
 `;
 
@@ -3520,7 +3520,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>["a.b.c.d"]</>
 
-Expected value: [48;2;0;0;255m2</>
+Expected value: [48;5;21m2</>
 Received value: [35m1</>
 `;
 
@@ -3529,7 +3529,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>["children", 0]</>
 
-Expected value: [48;2;0;0;255m"\\"That <i>cat </i>cartoon\\""</>
+Expected value: [48;5;21m"\\"That <i>cat </i>cartoon\\""</>
 Received value: [35m"\\"That cartoon\\""</>
 `;
 
@@ -3542,14 +3542,14 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>["children", 0]</>
 
-[48;2;0;0;255m- Expected value  - 3</>
+[48;5;21m- Expected value  - 3</>
 [35m+ Received value  + 3</>
 
-[48;2;0;0;255m- Roses are red<i>, v</i>iolets are blue.</>
+[48;5;21m- Roses are red<i>, v</i>iolets are blue.</>
 [35m+ Roses are red<i>.</i></>
 [35m+ <i>V</i>iolets are blue.</>
-[48;2;0;0;255m- Testing with Jest</>
-[48;2;0;0;255m- <i>I</i>s good for you.</>
+[48;5;21m- Testing with Jest</>
+[48;5;21m- <i>I</i>s good for you.</>
 [35m+ Testing with Jest<i> i</i>s good for you.</>
 `;
 
@@ -3576,7 +3576,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>"a"</>
 
-Expected value: [48;2;0;0;255m"a"</>
+Expected value: [48;5;21m"a"</>
 Received value: [35mundefined</>
 `;
 
@@ -3586,7 +3586,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a"</>
 Received path: [35m[]</>
 
-Expected value: [48;2;0;0;255m"test"</>
+Expected value: [48;5;21m"test"</>
 Received value: [35m{}</>
 `;
 
@@ -3595,7 +3595,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 
 Expected path: <g>"b"</>
 
-Expected value: [48;2;0;0;255mundefined</>
+Expected value: [48;5;21mundefined</>
 Received value: [35m"b"</>
 `;
 
@@ -3623,7 +3623,7 @@ expect([35mreceived</>).toHaveProperty(<y>path</>, <y>value</>)
 Expected path: <g>"a.b.c"</>
 Received path: [35m[]</>
 
-Expected value: [48;2;0;0;255m"test"</>
+Expected value: [48;5;21m"test"</>
 Received value: [35m1</>
 `;
 
@@ -3648,55 +3648,55 @@ Received value: [35mfalse</>
 exports[`.toHaveProperty() {pass: true} expect("").toHaveProperty('length', 0) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"length"</>
+Expected path: [48;5;21m"length"</>
 
-Expected value: not [48;2;0;0;255m0</>
+Expected value: not [48;5;21m0</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect([Function memoized]).toHaveProperty('memo', []) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"memo"</>
+Expected path: [48;5;21m"memo"</>
 
-Expected value: not [48;2;0;0;255m[]</>
+Expected value: not [48;5;21m[]</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"": 1}).toHaveProperty('', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m""</>
+Expected path: [48;5;21m""</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [[{"c": [{"d": 1}]}]]}}).toHaveProperty('a.b[0][0].c[0].d', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b[0][0].c[0].d"</>
+Expected path: [48;5;21m"a.b[0][0].c[0].d"</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": [{"d": 1}]}]}}).toHaveProperty('a.b[0].c[0].d', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b[0].c[0].d"</>
+Expected path: [48;5;21m"a.b[0].c[0].d"</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": {"d": [{"e": 1}, {"f": 2}]}}]}}).toHaveProperty('a.b[0].c.d[1].f', 2) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b[0].c.d[1].f"</>
+Expected path: [48;5;21m"a.b[0].c.d[1].f"</>
 
-Expected value: not [48;2;0;0;255m2</>
+Expected value: not [48;5;21m2</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m["a", "b", 1]</>
+Expected path: not [48;5;21m["a", "b", 1]</>
 
 Received value: [35m2</>
 `;
@@ -3704,24 +3704,24 @@ Received value: [35m2</>
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1', 2) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m["a", "b", 1]</>
+Expected path: [48;5;21m["a", "b", 1]</>
 
-Expected value: not [48;2;0;0;255m2</>
+Expected value: not [48;5;21m2</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1', Any<Number>) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m["a", "b", 1]</>
+Expected path: [48;5;21m["a", "b", 1]</>
 
-Expected value: not [48;2;0;0;255mAny<Number></>
+Expected value: not [48;5;21mAny<Number></>
 Received value:     [35m2</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m["a", "b", "c", "d"]</>
+Expected path: not [48;5;21m["a", "b", "c", "d"]</>
 
 Received value: [35m1</>
 `;
@@ -3729,15 +3729,15 @@ Received value: [35m1</>
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m["a", "b", "c", "d"]</>
+Expected path: [48;5;21m["a", "b", "c", "d"]</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m"a.b.c.d"</>
+Expected path: not [48;5;21m"a.b.c.d"</>
 
 Received value: [35m1</>
 `;
@@ -3745,23 +3745,23 @@ Received value: [35m1</>
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b.c.d"</>
+Expected path: [48;5;21m"a.b.c.d"</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": 5}}}).toHaveProperty('a.b', {"c": 5}) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b"</>
+Expected path: [48;5;21m"a.b"</>
 
-Expected value: not [48;2;0;0;255m{"c": 5}</>
+Expected value: not [48;5;21m{"c": 5}</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m"a.b"</>
+Expected path: not [48;5;21m"a.b"</>
 
 Received value: [35mundefined</>
 `;
@@ -3769,15 +3769,15 @@ Received value: [35mundefined</>
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b', undefined) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a.b"</>
+Expected path: [48;5;21m"a.b"</>
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m"a"</>
+Expected path: not [48;5;21m"a"</>
 
 Received value: [35m0</>
 `;
@@ -3785,15 +3785,15 @@ Received value: [35m0</>
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a', 0) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a"</>
+Expected path: [48;5;21m"a"</>
 
-Expected value: not [48;2;0;0;255m0</>
+Expected value: not [48;5;21m0</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d') 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>)
 
-Expected path: not [48;2;0;0;255m["a.b.c.d"]</>
+Expected path: not [48;5;21m["a.b.c.d"]</>
 
 Received value: [35m1</>
 `;
@@ -3801,86 +3801,86 @@ Received value: [35m1</>
 exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m["a.b.c.d"]</>
+Expected path: [48;5;21m["a.b.c.d"]</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"nodeName": "DIV"}).toHaveProperty('nodeType', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"nodeType"</>
+Expected path: [48;5;21m"nodeType"</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"property": 1}).toHaveProperty('property', 1) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"property"</>
+Expected path: [48;5;21m"property"</>
 
-Expected value: not [48;2;0;0;255m1</>
+Expected value: not [48;5;21m1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('a', undefined) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a"</>
+Expected path: [48;5;21m"a"</>
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('c', "c") 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"c"</>
+Expected path: [48;5;21m"c"</>
 
-Expected value: not [48;2;0;0;255m"c"</>
+Expected value: not [48;5;21m"c"</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('val', true) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"val"</>
+Expected path: [48;5;21m"val"</>
 
-Expected value: not [48;2;0;0;255mtrue</>
+Expected value: not [48;5;21mtrue</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('a', undefined) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"a"</>
+Expected path: [48;5;21m"a"</>
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('b', "b") 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"b"</>
+Expected path: [48;5;21m"b"</>
 
-Expected value: not [48;2;0;0;255m"b"</>
+Expected value: not [48;5;21m"b"</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('setter', undefined) 1`] = `
 expect([35mreceived</>).not.toHaveProperty(<y>path</>, <y>value</>)
 
-Expected path: [48;2;0;0;255m"setter"</>
+Expected path: [48;5;21m"setter"</>
 
-Expected value: not [48;2;0;0;255mundefined</>
+Expected value: not [48;5;21mundefined</>
 `;
 
 exports[`.toMatch() {pass: true} expect(Foo bar).toMatch(/^foo/i) 1`] = `
 expect([35mreceived</>).not.toMatch(<y>expected</>)
 
-Expected pattern: not [48;2;0;0;255m/^foo/i</>
+Expected pattern: not [48;5;21m/^foo/i</>
 Received string:      [35m"<i>Foo</i> bar"</>
 `;
 
 exports[`.toMatch() {pass: true} expect(foo).toMatch(foo) 1`] = `
 expect([35mreceived</>).not.toMatch(<y>expected</>)
 
-Expected substring: not [48;2;0;0;255m"foo"</>
+Expected substring: not [48;5;21m"foo"</>
 Received string:        [35m"<i>foo</i>"</>
 `;
 
@@ -4002,58 +4002,58 @@ Expected has value: <g>undefined</>
 exports[`.toMatch() throws: [bar, /foo/] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-Expected pattern: [48;2;0;0;255m/foo/</>
+Expected pattern: [48;5;21m/foo/</>
 Received string:  [35m"bar"</>
 `;
 
 exports[`.toMatch() throws: [bar, foo] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-Expected substring: [48;2;0;0;255m"foo"</>
+Expected substring: [48;5;21m"foo"</>
 Received string:    [35m"bar"</>
 `;
 
 exports[`.toStrictEqual() displays substring diff 1`] = `
 expect([35mreceived</>).toStrictEqual(<y>expected</>) // deep equality
 
-Expected: [48;2;0;0;255m"<i>Another caveat is that</i> Jest will not typecheck your tests."</>
+Expected: [48;5;21m"<i>Another caveat is that</i> Jest will not typecheck your tests."</>
 Received: [35m"<i>Because TypeScript support in Babel is just transpilation,</i> Jest will not type<i>-</i>check your tests<i> as they run</i>."</>
 `;
 
 exports[`.toStrictEqual() displays substring diff for multiple lines 1`] = `
 expect([35mreceived</>).toStrictEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 7</>
+[48;5;21m- Expected  - 7</>
 [35m+ Received  + 7</>
 
-[48;2;0;0;255m-     6<i>9</i> |<Y> </>[48;2;0;0;255m</>
+[48;5;21m-     6<i>9</i> |<Y> </>[48;5;21m</>
 [35m+     6<i>8</i> |<Y> </></>
-[48;2;0;0;255m-     <i>70</i> | test('assert.doesNotThrow', () => {</>
+[48;5;21m-     <i>70</i> | test('assert.doesNotThrow', () => {</>
 [35m+     <i>69</i> | test('assert.doesNotThrow', () => {</>
-[48;2;0;0;255m-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
+[48;5;21m-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
 [35m+   > 7<i>0</i> |   assert.doesNotThrow(() => {</>
          |          ^
-[48;2;0;0;255m-     7<i>2</i> |     throw Error('err!');</>
+[48;5;21m-     7<i>2</i> |     throw Error('err!');</>
 [35m+     7<i>1</i> |     throw Error('err!');</>
-[48;2;0;0;255m-     7<i>3</i> |   });</>
+[48;5;21m-     7<i>3</i> |   });</>
 [35m+     7<i>2</i> |   });</>
-[48;2;0;0;255m-     7<i>4</i> | });</>
+[48;5;21m-     7<i>4</i> | });</>
 [35m+     7<i>3</i> | });</>
-[48;2;0;0;255m-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>1</i>:10)</>
+[48;5;21m-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>1</i>:10)</>
 [35m+     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>0</i>:10)</>
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
 expect([35mreceived</>).toStrictEqual(<y>expected</>) // deep equality
 
-[48;2;0;0;255m- Expected  - 4</>
+[48;5;21m- Expected  - 4</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "test": TestClassA {</>
-[48;2;0;0;255m-     "a": 1,</>
-[48;2;0;0;255m-     "b": 2,</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "test": TestClassA {</>
+[48;5;21m-     "a": 1,</>
+[48;5;21m-     "b": 2,</>
+[48;5;21m-   },</>
 [35m+   "test": 2,</>
   }
 `;
@@ -4061,18 +4061,18 @@ expect([35mreceived</>).toStrictEqual(<y>expected</>) // deep equality
 exports[`.toStrictEqual() matches the expected snapshot when it fails 2`] = `
 expect([35mreceived</>).not.toStrictEqual(<y>expected</>) // deep equality
 
-Expected: not [48;2;0;0;255m{"test": {"a": 1, "b": 2}}</>
+Expected: not [48;5;21m{"test": {"a": 1, "b": 2}}</>
 
 `;
 
 exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
-[48;2;0;0;255m-   -0,</>
+[48;5;21m-   -0,</>
 [35m+   0,</>
   ]
 `;
@@ -4080,13 +4080,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
     1,
     2,
-[48;2;0;0;255m-   2,</>
+[48;5;21m-   2,</>
 [35m+   3,</>
   ]
 `;
@@ -4094,26 +4094,26 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([2, 3, 1]) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
 [35m+   1,</>
     2,
     3,
-[48;2;0;0;255m-   1,</>
+[48;5;21m-   1,</>
   ]
 `;
 
 exports[`toMatchObject() {pass: false} expect([1, 2]).toMatchObject([1, 3]) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Array [
     1,
-[48;2;0;0;255m-   3,</>
+[48;5;21m-   3,</>
 [35m+   2,</>
   ]
 `;
@@ -4121,18 +4121,18 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect([Error: foo]).toMatchObject([Error: bar]) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-Expected: [48;2;0;0;255m[Error: bar]</>
+Expected: [48;5;21m[Error: bar]</>
 Received: [35m[Error: foo]</>
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": Any<Number>,</>
+[48;5;21m-   "a": Any<Number>,</>
 [35m+   "a": "a",</>
   }
 `;
@@ -4140,11 +4140,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "c", Symbol(jest): Any<String>}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "c",</>
+[48;5;21m-   "a": "c",</>
 [35m+   "a": "b",</>
     Symbol(jest): Any<String>,
   }
@@ -4153,11 +4153,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "b!",</>
+[48;5;21m-   "a": "b!",</>
 [35m+   "a": "b",</>
     "c": "d",
   }
@@ -4166,11 +4166,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"e": "b"}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 2</>
 
   Object {
-[48;2;0;0;255m-   "e": "b",</>
+[48;5;21m-   "e": "b",</>
 [35m+   "a": "b",</>
 [35m+   "c": "d",</>
   }
@@ -4179,15 +4179,15 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"a": "b", "t": {"z": [3]}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
   Object {
     "a": "b",
     "t": Object {
-[48;2;0;0;255m-     "z": Array [</>
-[48;2;0;0;255m-       3,</>
-[48;2;0;0;255m-     ],</>
+[48;5;21m-     "z": Array [</>
+[48;5;21m-       3,</>
+[48;5;21m-     ],</>
 [35m+     "z": "z",</>
     },
   }
@@ -4196,12 +4196,12 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"t": {"l": {"r": "r"}}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 2</>
 
   Object {
     "t": Object {
-[48;2;0;0;255m-     "l": Object {</>
+[48;5;21m-     "l": Object {</>
 [35m+     "x": Object {</>
         "r": "r",
       },
@@ -4213,11 +4213,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d"}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "c": "d",</>
+[48;5;21m-   "c": "d",</>
 [35m+   "a": "b",</>
   }
 `;
@@ -4225,7 +4225,7 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"toString": Any<Function>}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 1</>
 
   Object {
@@ -4237,13 +4237,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "c"}]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
     "a": Array [
       Object {
-[48;2;0;0;255m-       "a": "c",</>
+[48;5;21m-       "a": "c",</>
 [35m+       "a": "a",</>
       },
     ],
@@ -4253,7 +4253,7 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, "v"], "b": "b"}).toMatchObject({"a": ["v"]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 2</>
 
   Object {
@@ -4268,7 +4268,7 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4, 5, 6]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 0</>
 
   Object {
@@ -4276,7 +4276,7 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
       3,
       4,
       5,
-[48;2;0;0;255m-     6,</>
+[48;5;21m-     6,</>
     ],
   }
 `;
@@ -4284,7 +4284,7 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 1</>
 
   Object {
@@ -4299,13 +4299,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": 4}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 5</>
 
   Object {
-[48;2;0;0;255m-   "a": Object {</>
-[48;2;0;0;255m-     "b": 4,</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "a": Object {</>
+[48;5;21m-     "b": 4,</>
+[48;5;21m-   },</>
 [35m+   "a": Array [</>
 [35m+     3,</>
 [35m+     4,</>
@@ -4317,13 +4317,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": Any<String>}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 5</>
 
   Object {
-[48;2;0;0;255m-   "a": Object {</>
-[48;2;0;0;255m-     "b": Any<String>,</>
-[48;2;0;0;255m-   },</>
+[48;5;21m-   "a": Object {</>
+[48;5;21m-     "b": Any<String>,</>
+[48;5;21m-   },</>
 [35m+   "a": Array [</>
 [35m+     3,</>
 [35m+     4,</>
@@ -4335,13 +4335,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": 1, "b": 1, "c": 1, "d": {"e": {"f": 555}}}).toMatchObject({"d": {"e": {"f": 222}}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
     "d": Object {
       "e": Object {
-[48;2;0;0;255m-       "f": 222,</>
+[48;5;21m-       "f": 222,</>
 [35m+       "f": 555,</>
       },
     },
@@ -4351,11 +4351,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-10-10T00:00:00.000Z}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": 2015-10-10T00:00:00.000Z,</>
+[48;5;21m-   "a": 2015-10-10T00:00:00.000Z,</>
 [35m+   "a": 2015-11-30T00:00:00.000Z,</>
   }
 `;
@@ -4363,11 +4363,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": "4"}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "4",</>
+[48;5;21m-   "a": "4",</>
 [35m+   "a": null,</>
   }
 `;
@@ -4375,11 +4375,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": undefined}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": undefined,</>
+[48;5;21m-   "a": undefined,</>
 [35m+   "a": null,</>
   }
 `;
@@ -4387,11 +4387,11 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({"a": undefined}).toMatchObject({"a": null}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": null,</>
+[48;5;21m-   "a": null,</>
 [35m+   "a": undefined,</>
   }
 `;
@@ -4399,26 +4399,26 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: false} expect({}).toMatchObject({"a": undefined}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 3</>
+[48;5;21m- Expected  - 3</>
 [35m+ Received  + 1</>
 
-[48;2;0;0;255m- Object {</>
-[48;2;0;0;255m-   "a": undefined,</>
-[48;2;0;0;255m- }</>
+[48;5;21m- Object {</>
+[48;5;21m-   "a": undefined,</>
+[48;5;21m- }</>
 [35m+ Object {}</>
 `;
 
 exports[`toMatchObject() {pass: false} expect(2015-11-30T00:00:00.000Z).toMatchObject(2015-10-10T00:00:00.000Z) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-Expected: [48;2;0;0;255m2015-10-10T00:00:00.000Z</>
+Expected: [48;5;21m2015-10-10T00:00:00.000Z</>
 Received: [35m2015-11-30T00:00:00.000Z</>
 `;
 
 exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 0</>
+[48;5;21m- Expected  - 0</>
 [35m+ Received  + 1</>
 
   Set {
@@ -4430,191 +4430,191 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() {pass: true} expect([]).toMatchObject([]) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m[]</>
+Expected: not [48;5;21m[]</>
 `;
 
 exports[`toMatchObject() {pass: true} expect([1, 2]).toMatchObject([1, 2]) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m[1, 2]</>
+Expected: not [48;5;21m[1, 2]</>
 `;
 
 exports[`toMatchObject() {pass: true} expect([Error: bar]).toMatchObject({"message": "bar"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"message": "bar"}</>
+Expected: not [48;5;21m{"message": "bar"}</>
 Received:     [35m[Error: bar]</>
 `;
 
 exports[`toMatchObject() {pass: true} expect([Error: foo]).toMatchObject([Error: foo]) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m[Error: foo]</>
+Expected: not [48;5;21m[Error: foo]</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", "c": "d", Symbol(jest): "jest"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b", "c": "d", Symbol(jest): "jest"}</>
+Expected: not [48;5;21m{"a": "b", "c": "d", Symbol(jest): "jest"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", Symbol(jest): "jest"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b", Symbol(jest): "jest"}</>
+Expected: not [48;5;21m{"a": "b", Symbol(jest): "jest"}</>
 Received:     [35m{"a": "b", "c": "d", Symbol(jest): "jest"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b", "c": "d"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b", "c": "d"}</>
+Expected: not [48;5;21m{"a": "b", "c": "d"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b"}</>
+Expected: not [48;5;21m{"a": "b"}</>
 Received:     [35m{"a": "b", "c": "d"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"a": "b", "t": {"z": "z"}}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b", "t": {"z": "z"}}</>
+Expected: not [48;5;21m{"a": "b", "t": {"z": "z"}}</>
 Received:     [35m{"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"t": {"x": {"r": "r"}}}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"t": {"x": {"r": "r"}}}</>
+Expected: not [48;5;21m{"t": {"x": {"r": "r"}}}</>
 Received:     [35m{"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "toString": [Function toString]}).toMatchObject({"toString": Any<Function>}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"toString": Any<Function>}</>
+Expected: not [48;5;21m{"toString": Any<Function>}</>
 Received:     [35m{"a": "b", "toString": [Function toString]}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b"}).toMatchObject({"a": "b"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "b"}</>
+Expected: not [48;5;21m{"a": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "a"}]}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": [{"a": "a"}]}</>
+Expected: not [48;5;21m{"a": [{"a": "a"}]}</>
 Received:     [35m{"a": [{"a": "a", "b": "b"}]}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": [3, 4, 5, "v"], "b": "b"}).toMatchObject({"a": [3, 4, 5, "v"]}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": [3, 4, 5, "v"]}</>
+Expected: not [48;5;21m{"a": [3, 4, 5, "v"]}</>
 Received:     [35m{"a": [3, 4, 5, "v"], "b": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4, 5]}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": [3, 4, 5]}</>
+Expected: not [48;5;21m{"a": [3, 4, 5]}</>
 Received:     [35m{"a": [3, 4, 5], "b": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": {"x": "x", "y": "y"}}).toMatchObject({"a": {"x": Any<String>}}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": {"x": Any<String>}}</>
+Expected: not [48;5;21m{"a": {"x": Any<String>}}</>
 Received:     [35m{"a": {"x": "x", "y": "y"}}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": 1, "c": 2}).toMatchObject({"a": Any<Number>}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": Any<Number>}</>
+Expected: not [48;5;21m{"a": Any<Number>}</>
 Received:     [35m{"a": 1, "c": 2}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-11-30T00:00:00.000Z}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": 2015-11-30T00:00:00.000Z}</>
+Expected: not [48;5;21m{"a": 2015-11-30T00:00:00.000Z}</>
 Received:     [35m{"a": 2015-11-30T00:00:00.000Z, "b": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": null, "b": "b"}).toMatchObject({"a": null}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": null}</>
+Expected: not [48;5;21m{"a": null}</>
 Received:     [35m{"a": null, "b": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": undefined, "b": "b"}).toMatchObject({"a": undefined}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": undefined}</>
+Expected: not [48;5;21m{"a": undefined}</>
 Received:     [35m{"a": undefined, "b": "b"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": undefined}).toMatchObject({"a": undefined}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": undefined}</>
+Expected: not [48;5;21m{"a": undefined}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b", "c": "c"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": undefined, "b": "b", "c": "c"}</>
+Expected: not [48;5;21m{"a": undefined, "b": "b", "c": "c"}</>
 Received:     [35m{}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b"}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": undefined, "b": "b"}</>
+Expected: not [48;5;21m{"a": undefined, "b": "b"}</>
 Received:     [35m{}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"d": 4}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"d": 4}</>
+Expected: not [48;5;21m{"d": 4}</>
 Received:     [35m{}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect(2015-11-30T00:00:00.000Z).toMatchObject(2015-11-30T00:00:00.000Z) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m2015-11-30T00:00:00.000Z</>
+Expected: not [48;5;21m2015-11-30T00:00:00.000Z</>
 `;
 
 exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {1, 2}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255mSet {1, 2}</>
+Expected: not [48;5;21mSet {1, 2}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {2, 1}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255mSet {2, 1}</>
+Expected: not [48;5;21mSet {2, 1}</>
 Received:     [35mSet {1, 2}</>
 `;
 
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "world",</>
+[48;5;21m-   "a": "world",</>
 [35m+   "a": "hello",</>
     "ref": [Circular],
   }
@@ -4623,12 +4623,12 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"ref": "not a ref"}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 2</>
+[48;5;21m- Expected  - 2</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "hello",</>
-[48;2;0;0;255m-   "ref": [Circular],</>
+[48;5;21m-   "a": "hello",</>
+[48;5;21m-   "ref": [Circular],</>
 [35m+   "ref": "not a ref",</>
   }
 `;
@@ -4636,37 +4636,37 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 4</>
+[48;5;21m- Expected  - 4</>
 [35m+ Received  + 1</>
 
-[48;2;0;0;255m- Object {</>
-[48;2;0;0;255m-   "a": "hello",</>
-[48;2;0;0;255m-   "ref": [Circular],</>
-[48;2;0;0;255m- }</>
+[48;5;21m- Object {</>
+[48;5;21m-   "a": "hello",</>
+[48;5;21m-   "ref": [Circular],</>
+[48;5;21m- }</>
 [35m+ Object {}</>
 `;
 
 exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "hello", "ref": [Circular]}</>
+Expected: not [48;5;21m{"a": "hello", "ref": [Circular]}</>
 `;
 
 exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{}</>
+Expected: not [48;5;21m{}</>
 Received:     [35m{"a": "hello", "ref": [Circular]}</>
 `;
 
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "hello",</>
+[48;5;21m-   "a": "hello",</>
 [35m+   "a": "world",</>
     "nestedObj": Object {
       "parentObj": [Circular],
@@ -4677,13 +4677,13 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"nestedObj": {"parentObj": "not the parent ref"}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 2</>
+[48;5;21m- Expected  - 2</>
 [35m+ Received  + 1</>
 
   Object {
-[48;2;0;0;255m-   "a": "hello",</>
+[48;5;21m-   "a": "hello",</>
     "nestedObj": Object {
-[48;2;0;0;255m-     "parentObj": [Circular],</>
+[48;5;21m-     "parentObj": [Circular],</>
 [35m+     "parentObj": "not the parent ref",</>
     },
   }
@@ -4692,40 +4692,40 @@ expect([35mreceived</>).toMatchObject(<y>expected</>)
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 6</>
+[48;5;21m- Expected  - 6</>
 [35m+ Received  + 1</>
 
-[48;2;0;0;255m- Object {</>
-[48;2;0;0;255m-   "a": "hello",</>
-[48;2;0;0;255m-   "nestedObj": Object {</>
-[48;2;0;0;255m-     "parentObj": [Circular],</>
-[48;2;0;0;255m-   },</>
-[48;2;0;0;255m- }</>
+[48;5;21m- Object {</>
+[48;5;21m-   "a": "hello",</>
+[48;5;21m-   "nestedObj": Object {</>
+[48;5;21m-     "parentObj": [Circular],</>
+[48;5;21m-   },</>
+[48;5;21m- }</>
 [35m+ Object {}</>
 `;
 
 exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{"a": "hello", "nestedObj": {"parentObj": [Circular]}}</>
+Expected: not [48;5;21m{"a": "hello", "nestedObj": {"parentObj": [Circular]}}</>
 `;
 
 exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({}) 1`] = `
 expect([35mreceived</>).not.toMatchObject(<y>expected</>)
 
-Expected: not [48;2;0;0;255m{}</>
+Expected: not [48;5;21m{}</>
 Received:     [35m{"a": "hello", "nestedObj": {"parentObj": [Circular]}}</>
 `;
 
 exports[`toMatchObject() does not match properties up in the prototype chain 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-[48;2;0;0;255m- Expected  - 1</>
+[48;5;21m- Expected  - 1</>
 [35m+ Received  + 0</>
 
   Object {
     "other": "child",
-[48;2;0;0;255m-   "ref": [Circular],</>
+[48;5;21m-   "ref": [Circular],</>
   }
 `;
 
