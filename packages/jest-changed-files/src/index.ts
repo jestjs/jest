@@ -11,9 +11,7 @@ import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
-import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
-
-type RootPromise = ReturnType<SCMAdapter['getRoot']>;
+import type {ChangedFilesPromise, Options, Repos} from './types';
 
 export type {ChangedFiles, ChangedFilesPromise} from './types';
 
@@ -59,20 +57,11 @@ export const getChangedFilesForRoots = async (
 };
 
 export const findRepos = async (roots: Array<string>): Promise<Repos> => {
-  const gitRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findGitRoot(root)),
-      [],
-    ),
-  );
-  const hgRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findHgRoot(root)),
-      [],
-    ),
-  );
-
-  const slRepos = await Promise.all(roots.map(findSlRoot));
+  const [gitRepos, hgRepos, slRepos] = await Promise.all([
+    Promise.all(roots.map(findGitRoot)),
+    Promise.all(roots.map(findHgRoot)),
+    Promise.all(roots.map(findSlRoot)),
+  ]);
 
   return {
     git: new Set(gitRepos.filter(isNonNullable)),
