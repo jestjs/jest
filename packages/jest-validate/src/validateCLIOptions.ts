@@ -9,10 +9,17 @@ import camelcase = require('camelcase');
 import chalk = require('chalk');
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
-import defaultConfig from './defaultConfig';
-import {deprecationWarning} from './deprecated';
-import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';
-import {ValidationError, createDidYouMeanMessage, format} from './utils';
+import type {
+  DeprecatedOptionFunc,
+  DeprecatedOptions,
+  DeprecationItem,
+} from './types';
+import {
+  ValidationError,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+} from './utils';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
@@ -48,16 +55,21 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const logDeprecatedOptions = (
-  deprecatedOptions: Array<string>,
+const validateDeprecatedOptions = (
+  deprecatedOptions: Array<DeprecationItem>,
   deprecationEntries: DeprecatedOptions,
   argv: Config.Argv,
 ) => {
   deprecatedOptions.forEach(opt => {
-    deprecationWarning(argv, opt, deprecationEntries, {
-      ...defaultConfig,
-      comment: DOCUMENTATION_NOTE,
-    });
+    const name = opt.name;
+    const message = deprecationEntries[name](argv);
+    const comment = DOCUMENTATION_NOTE;
+
+    if (opt.fatal) {
+      throw new ValidationError(name, message, comment);
+    } else {
+      logValidationWarning(name, message, comment);
+    }
   });
 };
 
@@ -84,12 +96,12 @@ export default function validateCLIOptions(
     return acc;
   }, {});
   const deprecations = new Set(Object.keys(CLIDeprecations));
-  const deprecatedOptions = Object.keys(argv).filter(
-    arg => deprecations.has(arg) && argv[arg] != null,
-  );
+  const deprecatedOptions = Object.keys(argv)
+    .filter(arg => deprecations.has(arg) && argv[arg] != null)
+    .map(arg => ({fatal: false, name: arg}));
 
   if (deprecatedOptions.length) {
-    logDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
+    validateDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
   }
 
   const allowedOptions = Object.keys(options).reduce(

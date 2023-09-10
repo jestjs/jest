@@ -15,6 +15,8 @@ export type DeprecatedOptionFunc = (arg: Record<string, unknown>) => string;
 
 export type DeprecatedOptions = Record<string, DeprecatedOptionFunc>;
 
+export type DeprecationItem = {fatal: boolean; name: string};
+
 export type ValidationOptions = {
   comment?: string;
   condition?: (option: unknown, validOption: unknown) => boolean;
