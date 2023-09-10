@@ -82,6 +82,12 @@ export default function validateCLIOptions(
 ): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
 
+  const allowedOptions = Object.keys(options).reduce(
+    (acc, option) =>
+      acc.add(option).add((options[option].alias as string) || option),
+    new Set(yargsSpecialOptions),
+  );
+
   const deprecationEntries = options.deprecationEntries ?? {};
   const CLIDeprecations = Object.keys(deprecationEntries).reduce<
     Record<string, DeprecatedOptionFunc>
@@ -98,17 +104,12 @@ export default function validateCLIOptions(
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv)
     .filter(arg => deprecations.has(arg) && argv[arg] != null)
-    .map(arg => ({fatal: false, name: arg}));
+    .map(arg => ({fatal: !allowedOptions.has(arg), name: arg}));
 
   if (deprecatedOptions.length) {
     validateDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
   }
 
-  const allowedOptions = Object.keys(options).reduce(
-    (acc, option) =>
-      acc.add(option).add((options[option].alias as string) || option),
-    new Set(yargsSpecialOptions),
-  );
   const unrecognizedOptions = Object.keys(argv).filter(
     arg =>
       !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
