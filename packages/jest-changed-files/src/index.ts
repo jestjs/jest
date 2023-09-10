@@ -31,15 +31,15 @@ export const getChangedFilesForRoots = async (
 
   const changedFilesOptions = {includePaths: roots, ...options};
 
-  const gitPromises = Array.from(repos.git).map(repo =>
+  const gitPromises = Array.from(repos.git, repo =>
     git.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const hgPromises = Array.from(repos.hg).map(repo =>
+  const hgPromises = Array.from(repos.hg, repo =>
     hg.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const slPromises = Array.from(repos.sl).map(repo =>
+  const slPromises = Array.from(repos.sl, repo =>
     sl.findChangedFiles(repo, changedFilesOptions),
   );
 
