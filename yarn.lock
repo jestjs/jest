@@ -17426,10 +17426,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.33":
+"psl@npm:^1.9.0":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
   checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
+  languageName: node
+  linkType: hard
+
+"psl@patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 1.9.0
+  resolution: "psl@patch:psl@npm%3A1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch::version=1.9.0&hash=b8389b&locator=%40jest%2Fmonorepo%40workspace%3A."
+  checksum: 8588b58db028e8d98cceb8cabcc07b1a03dca79a1a57fae4a7dbc16aa6872cdc7653405656b9659f4142f04965836453b5fe1ad79b6e1ce3d625253b055a0177
   languageName: node
   linkType: hard
 
