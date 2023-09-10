@@ -439,7 +439,7 @@ export default class Resolver {
       ? (moduleName: string) =>
           moduleName.replace(
             /\$([0-9]+)/g,
-            (_, index) => matches[parseInt(index, 10)],
+            (_, index) => matches[parseInt(index, 10)] || '',
           )
       : (moduleName: string) => moduleName;
   }
