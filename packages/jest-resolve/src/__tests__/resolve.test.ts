@@ -561,6 +561,25 @@ describe('resolveModule', () => {
     expect(mockUserResolver).toHaveBeenCalled();
     expect(mockUserResolver.mock.calls[0][0]).toBe('fs');
   });
+
+  it('handles unmatched capture groups correctly', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+      moduleNameMapper: [
+        {
+          moduleName: './__mocks__/foo$1',
+          regex: /^@Foo(\/.*)?$/,
+        },
+      ],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    expect(resolver.resolveModule(src, '@Foo')).toBe(
+      require.resolve('../__mocks__/foo.js'),
+    );
+    expect(resolver.resolveModule(src, '@Foo/bar')).toBe(
+      require.resolve('../__mocks__/foo/bar/index.js'),
+    );
+  });
 });
 
 describe('resolveModuleAsync', () => {

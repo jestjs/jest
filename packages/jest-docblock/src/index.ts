@@ -91,8 +91,7 @@ export function print({
   const keys = Object.keys(pragmas);
 
   const printedObject = keys
-    .map(key => printKeyValues(key, pragmas[key]))
-    .reduce((arr, next) => arr.concat(next), [])
+    .flatMap(key => printKeyValues(key, pragmas[key]))
     .map(keyValue => `${start} ${keyValue}${line}`)
     .join('');
 
