@@ -21,7 +21,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';
-import glob from 'glob';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
