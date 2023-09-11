@@ -243,7 +243,8 @@ This option requires `collectCoverage` to be set to `true` or Jest to be invoked
 
 <details>
   <summary>Help:</summary>
-  If you are seeing coverage output such as...
+
+If you are seeing coverage output such as...
 
 ```
 =============================== Coverage summary ===============================
@@ -1753,7 +1754,7 @@ test('does not show prototypes for object and array inline', () => {
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
+The path to a module that can resolve test\<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 ```js title="custom-resolver.js"
 module.exports = {

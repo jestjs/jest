@@ -2,7 +2,13 @@
 
 ### Features
 
+- `[create-jest]` Add `npm init` / `yarn create` initialiser for Jest projects ([#14465](https://github.com/jestjs/jest/pull/14453))
+
 ### Fixes
+
+- `[jest-resolver]` Replace unmatched capture groups in `moduleNameMapper` with empty string instead of `undefined` ([#14507](https://github.com/jestjs/jest/pull/14507))
+- `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots ([#14465](https://github.com/jestjs/jest/pull/14465))
+- `[@jest/test-sequencer]` Calculate test runtime if `perStats.duration` is missing ([#14473](https://github.com/jestjs/jest/pull/14473))
 
 ### Performance
 
@@ -11,6 +17,7 @@
 ### Chore & Maintenance
 
 - `[jest]` Upgrade jest support node version ([#14460](https://github.com/jestjs/jest/pull/14460))
+- `[jest-cli]` Move internal config initialisation logic to the `create-jest` package ([#14465](https://github.com/jestjs/jest/pull/14453))
 
 ## 29.6.4
 
