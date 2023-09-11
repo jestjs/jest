@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-resolver]` Replace unmatched capture group with empty string instead of `undefined` ([#14507](https://github.com/jestjs/jest/pull/14507))
 - `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots ([#14465](https://github.com/jestjs/jest/pull/14465))
 - `[@jest/test-sequencer]` Calculate test runtime if `perStats.duration` is missing ([#14473](https://github.com/jestjs/jest/pull/14473))
 
