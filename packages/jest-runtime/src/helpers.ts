@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import glob = require('glob');
+import {glob} from 'glob';
 import slash = require('slash');
 import type {Config} from '@jest/types';
 

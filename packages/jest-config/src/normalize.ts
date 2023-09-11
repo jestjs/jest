@@ -10,7 +10,7 @@ import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
-import {sync as glob} from 'glob';
+import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
@@ -757,7 +757,7 @@ export default async function normalize(
               // We expand it to these paths. If not, we keep the original path
               // for the future resolution.
               const globMatches =
-                typeof project === 'string' ? glob(project) : [];
+                typeof project === 'string' ? glob.sync(project) : [];
               return projects.concat(
                 globMatches.length ? globMatches : project,
               );
