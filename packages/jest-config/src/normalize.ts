@@ -329,7 +329,7 @@ const normalizeRootDir = (
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
-  options.rootDir = path.normalize(options.rootDir);
+  options.rootDir = path.posix.normalize(options.rootDir);
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)

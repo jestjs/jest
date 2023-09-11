@@ -64,7 +64,7 @@ export const replaceRootDirInPath = (
 
   return path.resolve(
     rootDir,
-    path.normalize(`./${filePath.substring('<rootDir>'.length)}`),
+    path.posix.normalize(`./${filePath.substring('<rootDir>'.length)}`),
   );
 };
 
