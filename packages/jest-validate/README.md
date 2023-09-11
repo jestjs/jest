@@ -200,10 +200,7 @@ Custom Deprecation:
 ```js
 import {validate} from 'jest-validate';
 
-validateCLIOptions(
-    argv,
-    { ...allowedOptions, deprecatedOptions },
-);
+validateCLIOptions(argv, {...allowedOptions, deprecatedOptions});
 ```
 
 If `argv` contains a deprecated option that is not specifid in `allowedOptions`, `validateCLIOptions` will throw an error with the message specified in the `deprecatedOptions` config:
