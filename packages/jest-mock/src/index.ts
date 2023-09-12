@@ -31,6 +31,7 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   type?: MetadataType;
   value?: T;
   length?: number;
+  customPromisifyMeta?: MockMetadata<unknown>;
 };
 
 // TODO remove re-export in Jest 30
@@ -149,6 +150,8 @@ type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
   ? unknown
   : never;
 
+const nodeCustomPromiseSymbol = Symbol.for('nodejs.util.promisify.custom');
+
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
   _protoImpl: Function;
@@ -170,6 +173,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
+  [nodeCustomPromiseSymbol]?: MockedFunction<any>
 }
 
 export interface Replaced<T = unknown> {
@@ -875,6 +879,10 @@ export class ModuleMocker {
         f.mockImplementation(metadata.mockImpl);
       }
 
+      if (metadata.customPromisifyMeta) {
+        f[nodeCustomPromiseSymbol] = this.generateFromMetadata(metadata.customPromisifyMeta);
+      }
+
       return f;
     } else {
       const unknownType = metadata.type || 'undefined type';
@@ -1047,6 +1055,12 @@ export class ModuleMocker {
       }
       if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation() as T;
+      }
+      if (typeof component === 'function' && nodeCustomPromiseSymbol in component) {
+        const meta = this.getMetadata(component[nodeCustomPromiseSymbol]);
+        if (meta) {
+          metadata.customPromisifyMeta = meta;
+        }
       }
     }
 
