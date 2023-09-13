@@ -114,7 +114,7 @@ beforeEach(() => {
   );
 
   messagePort = (require('worker_threads') as typeof import('worker_threads'))
-    .parentPort as MessagePort;
+    .parentPort!;
 
   // Require the child!
   require('../threadChild');

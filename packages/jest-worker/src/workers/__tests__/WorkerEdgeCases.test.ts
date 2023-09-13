@@ -52,7 +52,7 @@ afterAll(async () => {
 test.each(filesToBuild)('%s.js should exist', file => {
   const path = join(writeDestination, `${file}.js`);
 
-  expect(async () => await access(path)).not.toThrow();
+  expect(async () => access(path)).not.toThrow();
 });
 
 async function closeWorkerAfter(
@@ -310,9 +310,9 @@ describe.each([
     });
 
     test('worker stays dead', async () => {
-      await expect(
-        async () => await worker.waitForWorkerReady(),
-      ).rejects.toThrow('Worker state means it will never be ready: shut-down');
+      await expect(async () => worker.waitForWorkerReady()).rejects.toThrow(
+        'Worker state means it will never be ready: shut-down',
+      );
       expect(worker.isWorkerRunning()).toBeFalsy();
     });
 

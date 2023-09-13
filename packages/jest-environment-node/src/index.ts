@@ -67,7 +67,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
-  private _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
