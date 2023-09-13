@@ -215,7 +215,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
-  private _options: InternalOptions;
+  private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
 

@@ -690,7 +690,7 @@ export default function jasmineEnv(j$: Jasmine) {
           checkIsError = check.isError;
           message = check.message;
         }
-        const errorAsErrorObject = checkIsError ? error : new Error(message!);
+        const errorAsErrorObject = checkIsError ? error : new Error(message);
         const runnable = currentRunnable();
 
         if (!runnable) {

@@ -70,7 +70,7 @@ export default class FakeTimers<TimerRef = unknown> {
   private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
-  private _global: typeof globalThis;
+  private readonly _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private readonly _maxLoops: number;
   private readonly _moduleMocker: ModuleMocker;
