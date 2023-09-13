@@ -7,6 +7,7 @@
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
   "references": [
+    {"path": "../create-jest"},
     {"path": "../jest-config"},
     {"path": "../jest-core"},
     {"path": "../jest-test-result"},

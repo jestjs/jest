@@ -16,10 +16,7 @@ export class NotFoundPackageJsonError extends Error {
 
 export class MalformedPackageJsonError extends Error {
   constructor(packageJsonPath: string) {
-    super(
-      `There is malformed json in ${packageJsonPath}\n` +
-        'Fix it, and then run "jest --init"',
-    );
+    super(`There is malformed json in ${packageJsonPath}`);
     this.name = '';
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});

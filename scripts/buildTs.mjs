@@ -10,7 +10,7 @@ import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
-import glob from 'glob';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
