@@ -107,10 +107,8 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers
-    .concat()
-    .reverse()
-    .forEach(path => addSerializer(localRequire(path)));
+  for (const path of config.snapshotSerializers.concat().reverse())
+    addSerializer(localRequire(path));
 
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);

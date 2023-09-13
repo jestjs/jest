@@ -216,7 +216,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    [customJSPattern, customTSPattern].forEach(pattern => {
+    for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
         if (Array.isArray(customTransformer)) {
@@ -235,7 +235,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
           }
         }
       }
-    });
+    }
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -981,9 +981,9 @@ export default async function normalize(
     );
   }
 
-  newOptions.roots.forEach((root, i) => {
+  for (const [i, root] of newOptions.roots.entries()) {
     verifyDirectoryExists(root, `roots[${i}]`);
-  });
+  }
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)

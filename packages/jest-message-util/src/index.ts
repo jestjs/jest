@@ -462,13 +462,13 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach((item, index) => {
+      for (const [index, item] of result.failureMessages.entries()) {
         errors.push({
           content: item,
           failureDetails: result.failureDetails[index],
           result,
         });
-      });
+      }
       return errors;
     },
     [],

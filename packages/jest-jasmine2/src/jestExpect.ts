@@ -25,7 +25,7 @@ export default function jestExpectAdapter(config: {expand: boolean}): void {
 
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
-    Object.keys(jasmineMatchersObject).forEach(name => {
+    for (const name of Object.keys(jasmineMatchersObject)) {
       jestMatchersObject[name] = function (...args: Array<unknown>) {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
@@ -36,7 +36,7 @@ export default function jestExpectAdapter(config: {expand: boolean}): void {
           ? negativeCompare.apply(null, args)
           : result.compare.apply(null, args);
       };
-    });
+    }
 
     jestExpect.extend(jestMatchersObject);
   };

@@ -289,7 +289,7 @@ export default class Runtime {
     );
 
     if (config.automock) {
-      config.setupFiles.forEach(filePath => {
+      for (const filePath of config.setupFiles) {
         if (filePath.includes(NODE_MODULES)) {
           const moduleID = this._resolver.getModuleID(
             this._virtualMocks,
@@ -304,7 +304,7 @@ export default class Runtime {
           );
           this._transitiveShouldMock.set(moduleID, false);
         }
-      });
+      }
     }
 
     this.resetModules();
@@ -778,10 +778,10 @@ export default class Runtime {
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
       function () {
-        cjsExports.forEach(exportName => {
+        for (const exportName of cjsExports) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
-        });
+        }
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
@@ -816,10 +816,10 @@ export default class Runtime {
       const module = new SyntheticModule(
         Object.keys(invokedFactory),
         function () {
-          Object.entries(invokedFactory).forEach(([key, value]) => {
+          for (const [key, value] of Object.entries(invokedFactory)) {
             // @ts-expect-error: TS doesn't know what `this` is
             this.setExport(key, value);
-          });
+          }
         },
         {context, identifier: moduleName},
       );
@@ -846,20 +846,20 @@ export default class Runtime {
 
     const namedExports = new Set(exports);
 
-    reexports.forEach(reexport => {
+    for (const reexport of reexports) {
       if (this._resolver.isCoreModule(reexport)) {
         const exports = this.requireModule(modulePath, reexport);
         if (exports !== null && typeof exports === 'object') {
-          Object.keys(exports).forEach(namedExports.add, namedExports);
+          for (const e of Object.keys(exports)) namedExports.add(e);
         }
       } else {
         const resolved = this._resolveCjsModule(modulePath, reexport);
 
         const exports = this.getExportsOfCjs(resolved);
 
-        exports.forEach(namedExports.add, namedExports);
+        for (const e of exports) namedExports.add(e);
       }
-    });
+    }
 
     this._cjsNamedExports.set(modulePath, namedExports);
 
@@ -1224,19 +1224,19 @@ export default class Runtime {
     if (this._environment) {
       if (this._environment.global) {
         const envGlobal = this._environment.global;
-        (Object.keys(envGlobal) as Array<keyof typeof globalThis>).forEach(
-          key => {
-            const globalMock = envGlobal[key];
-            if (
-              ((typeof globalMock === 'object' && globalMock !== null) ||
-                typeof globalMock === 'function') &&
-              '_isMockFunction' in globalMock &&
-              globalMock._isMockFunction === true
-            ) {
-              globalMock.mockClear();
-            }
-          },
-        );
+        for (const key of Object.keys(envGlobal) as Array<
+          keyof typeof globalThis
+        >) {
+          const globalMock = envGlobal[key];
+          if (
+            ((typeof globalMock === 'object' && globalMock !== null) ||
+              typeof globalMock === 'function') &&
+            '_isMockFunction' in globalMock &&
+            globalMock._isMockFunction === true
+          ) {
+            globalMock.mockClear();
+          }
+        }
       }
 
       if (this._environment.fakeTimers) {
@@ -1717,10 +1717,10 @@ export default class Runtime {
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
-        Object.entries(required).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(required)) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
-        });
+        }
       },
       // should identifier be `node://${moduleName}`?
       {context, identifier: moduleName},
@@ -1811,10 +1811,10 @@ export default class Runtime {
     // should we implement the class ourselves?
     class Module extends nativeModule.Module {}
 
-    Object.entries(nativeModule.Module).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(nativeModule.Module)) {
       // @ts-expect-error: no index signature
       Module[key] = value;
-    });
+    }
 
     Module.Module = Module;
 
@@ -2488,10 +2488,10 @@ export default class Runtime {
     const module = new SyntheticModule(
       Object.keys(globals),
       function () {
-        Object.entries(globals).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(globals)) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
-        });
+        }
       },
       {context, identifier: '@jest/globals'},
     );

@@ -140,18 +140,18 @@ export const getObjectSubset = (
     const trimmed: any = {};
     seenReferences.set(object, trimmed);
 
-    getObjectKeys(object)
-      .filter(key => hasPropertyInObject(subset, key))
-      .forEach(key => {
-        trimmed[key] = seenReferences.has(object[key])
-          ? seenReferences.get(object[key])
-          : getObjectSubset(
-              object[key],
-              subset[key],
-              customTesters,
-              seenReferences,
-            );
-      });
+    for (const key of getObjectKeys(object).filter(key =>
+      hasPropertyInObject(subset, key),
+    )) {
+      trimmed[key] = seenReferences.has(object[key])
+        ? seenReferences.get(object[key])
+        : getObjectSubset(
+            object[key],
+            subset[key],
+            customTesters,
+            seenReferences,
+          );
+    }
 
     if (getObjectKeys(trimmed).length > 0) {
       return trimmed;
@@ -440,7 +440,7 @@ export const partition = <T>(
 ): [Array<T>, Array<T>] => {
   const result: [Array<T>, Array<T>] = [[], []];
 
-  items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
+  for (const item of items) result[predicate(item) ? 0 : 1].push(item);
 
   return result;
 };

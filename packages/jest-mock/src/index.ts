@@ -688,7 +688,7 @@ export class ModuleMocker {
           finalReturnValue = (() => {
             if (this instanceof f) {
               // This is probably being called as a constructor
-              prototypeSlots.forEach(slot => {
+              for (const slot of prototypeSlots) {
                 // Copy prototype methods to the instance to make
                 // it easier to interact with mock instance call and
                 // return values
@@ -700,7 +700,7 @@ export class ModuleMocker {
                   // @ts-expect-error no index signature
                   this[slot]._protoImpl = protoImpl;
                 }
-              });
+              }
 
               // Run the mock constructor implementation
               const mockImpl = mockConfig.specificMockImpls.length
@@ -951,7 +951,7 @@ export class ModuleMocker {
       refs[metadata.refID] = mock;
     }
 
-    this._getSlots(metadata.members).forEach(slot => {
+    for (const slot of this._getSlots(metadata.members)) {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(
@@ -962,7 +962,7 @@ export class ModuleMocker {
       } else {
         mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }
-    });
+    }
 
     if (
       metadata.type !== 'undefined' &&
@@ -1006,7 +1006,7 @@ export class ModuleMocker {
     const callbacks: Array<Function> = [];
     const refs = {};
     const mock = this._generateMock<T>(metadata, callbacks, refs);
-    callbacks.forEach(setter => setter());
+    for (const setter of callbacks) setter();
     return mock;
   }
 
@@ -1057,13 +1057,13 @@ export class ModuleMocker {
     // Leave arrays alone
     if (type !== 'array') {
       // @ts-expect-error component is object
-      this._getSlots(component).forEach(slot => {
+      for (const slot of this._getSlots(component)) {
         if (
           type === 'function' &&
           this.isMockFunction(component) &&
           slot.match(/^mock/)
         ) {
-          return;
+          continue;
         }
         // @ts-expect-error no index signature
         const slotMetadata = this.getMetadata<T>(component[slot], refs);
@@ -1073,7 +1073,7 @@ export class ModuleMocker {
           }
           members[slot] = slotMetadata;
         }
-      });
+      }
     }
 
     if (members) {
@@ -1416,7 +1416,7 @@ export class ModuleMocker {
   }
 
   restoreAllMocks(): void {
-    this._spyState.forEach(restore => restore());
+    for (const restore of this._spyState) restore();
     this._spyState = new Set();
   }
 

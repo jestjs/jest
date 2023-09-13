@@ -53,10 +53,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
-        currentDescribeBlock.hooks.forEach(hook => {
+        for (const hook of currentDescribeBlock.hooks) {
           hook.asyncError.message = `Invalid: ${hook.type}() may not be used in a describe block containing no tests.`;
           state.unhandledErrors.push(hook.asyncError);
-        });
+        }
       }
 
       // pass mode of currentDescribeBlock to tests
@@ -68,11 +68,11 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         )
       );
       if (shouldPassMode) {
-        currentDescribeBlock.children.forEach(child => {
+        for (const child of currentDescribeBlock.children) {
           if (child.type === 'test' && !child.mode) {
             child.mode = currentDescribeBlock.mode;
           }
-        });
+        }
       }
       if (
         !state.hasFocusedTests &&

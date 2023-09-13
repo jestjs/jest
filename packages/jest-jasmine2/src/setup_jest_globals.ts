@@ -95,12 +95,9 @@ export default async function setupJestGlobals({
 }: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers
-    .concat()
-    .reverse()
-    .forEach(path => {
-      addSerializer(localRequire(path));
-    });
+  for (const path of config.snapshotSerializers.concat().reverse()) {
+    addSerializer(localRequire(path));
+  }
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;

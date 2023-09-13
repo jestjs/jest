@@ -444,6 +444,7 @@ function _replaceMatchedToAsymmetricMatcher(
   const expectedReplaceable = new Replaceable(replacedExpected);
   const receivedReplaceable = new Replaceable(replacedReceived);
 
+  // eslint-disable-next-line unicorn/no-array-for-each
   expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
     const receivedValue = receivedReplaceable.get(key);
     if (isAsymmetricMatcher(expectedValue)) {

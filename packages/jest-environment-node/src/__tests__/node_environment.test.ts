@@ -65,11 +65,11 @@ describe('NodeEnvironment', () => {
     const timer1 = env1.global.setTimeout(() => {}, 0);
     const timer2 = env1.global.setInterval(() => {}, 0);
 
-    [timer1, timer2].forEach(timer => {
+    for (const timer of [timer1, timer2]) {
       expect(timer.id).toBeDefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
-    });
+    }
   });
 
   it('has modern fake timers implementation', () => {

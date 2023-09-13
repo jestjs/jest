@@ -196,14 +196,14 @@ export default class SearchSource {
 
     const collectCoverageFrom = new Set<string>();
 
-    testModulesMap.forEach(testModule => {
+    for (const testModule of testModulesMap) {
       if (!testModule.dependencies) {
-        return;
+        continue;
       }
 
-      testModule.dependencies.forEach(p => {
+      for (const p of testModule.dependencies) {
         if (!allPathsAbsolute.includes(p)) {
-          return;
+          continue;
         }
 
         const filename = replaceRootDirInPath(this._context.config.rootDir, p);
@@ -212,8 +212,8 @@ export default class SearchSource {
             ? path.relative(this._context.config.rootDir, filename)
             : filename,
         );
-      });
-    });
+      }
+    }
 
     return {
       collectCoverageFrom,
@@ -362,14 +362,14 @@ export default class SearchSource {
     const {changedFiles} = changedFilesInfo;
     const dependencyResolver = await this._getOrBuildDependencyResolver();
     const relatedSourcesSet = new Set<string>();
-    changedFiles.forEach(filePath => {
+    for (const filePath of changedFiles) {
       if (this.isTestFilePath(filePath)) {
         const sourcePaths = dependencyResolver.resolve(filePath, {
           skipNodeResolution: this._context.config.skipNodeResolution,
         });
-        sourcePaths.forEach(sourcePath => relatedSourcesSet.add(sourcePath));
+        for (const sourcePath of sourcePaths) relatedSourcesSet.add(sourcePath);
       }
-    });
+    }
     return Array.from(relatedSourcesSet);
   }
 }

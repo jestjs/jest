@@ -66,7 +66,7 @@ function buildNodePackage({packageDir, pkg}) {
 
   process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
-  files.forEach(file => buildFile(file, true));
+  for (const file of files) buildFile(file, true);
 
   assert.ok(
     fs.existsSync(path.resolve(packageDir, pkg.main)),
@@ -150,9 +150,9 @@ function buildFile(file, silent) {
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(file => buildFile(file));
+  for (const file of files) buildFile(file);
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
-  packages.forEach(buildNodePackage);
+  for (const pkg of packages) buildNodePackage(pkg);
 }
