@@ -190,7 +190,7 @@ If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://gith
 ```yaml
 - name: Get number of CPU cores
   id: cpu-cores
-  uses: SimenB/github-actions-cpu-cores@v1
+  uses: SimenB/github-actions-cpu-cores@v2
 - name: run tests
   run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
 ```

@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "29.6.4",
+  "version": "29.7.0",
   "private": true,
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
