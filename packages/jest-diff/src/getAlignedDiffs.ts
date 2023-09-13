@@ -31,8 +31,8 @@ const concatenateRelevantDiffs = (
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
   private readonly op: number;
-  private line: Array<Diff>; // incomplete line
-  private lines: Array<Diff>; // complete lines
+  private readonly line: Array<Diff>; // incomplete line
+  private readonly lines: Array<Diff>; // complete lines
   private readonly changeColor: DiffOptionsColor;
 
   constructor(op: number, changeColor: DiffOptionsColor) {
