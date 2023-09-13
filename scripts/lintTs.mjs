@@ -86,6 +86,7 @@ try {
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {
+              EXPERIMENTAL_useProjectService: true,
               project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
               tsconfigRootDir: monorepoRoot,
             },
