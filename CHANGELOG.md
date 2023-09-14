@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
+
 ### Performance
 
 ### Chore & Maintenance
