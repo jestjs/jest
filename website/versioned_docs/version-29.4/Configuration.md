@@ -1668,14 +1668,14 @@ test('does not show prototypes for object and array inline', () => {
     array: [{hello: 'Danger'}],
   };
   expect(object).toMatchInlineSnapshot(`
-{
-  "array": [
     {
-      "hello": "Danger",
-    },
-  ],
-}
-    `);
+      "array": [
+        {
+          "hello": "Danger",
+        },
+      ],
+    }
+  `);
 });
 ```
 
