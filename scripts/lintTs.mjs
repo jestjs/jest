@@ -23,7 +23,7 @@ const cpus = Math.max(
 
 const mutex = pLimit(cpus);
 
-const fix = process.argv.slice(2).some(arg => arg === '--fix');
+const fix = process.argv.slice(2).includes('--fix');
 
 const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 

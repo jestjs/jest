@@ -303,7 +303,7 @@ export default class CoverageReporter extends BaseReporter {
               .map(filePath => path.resolve(filePath));
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+          if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
             return agg.concat([[file, thresholdGroup]]);
@@ -317,7 +317,7 @@ export default class CoverageReporter extends BaseReporter {
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+        if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
           return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
