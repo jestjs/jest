@@ -43,8 +43,11 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
 
   const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
     .concat(Object.keys(pkg.devDependencies || {}))
-    .filter(dep => workspacesWithTs.has(dep))
     .filter(dep => {
+      if (!workspacesWithTs.has(dep)) {
+        return false;
+      }
+
       // nothing should depend on these
       if (dep === 'jest-circus' || dep === 'jest-jasmine2') {
         return false;
