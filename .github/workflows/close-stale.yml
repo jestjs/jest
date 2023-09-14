@@ -1,0 +1,48 @@
+name: 'Close stale issues and PRs'
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  issues: write # to close stale issues (actions/stale)
+  pull-requests: write # to close stale PRs (actions/stale)
+
+jobs:
+  stale:
+    name: 'Close month old issues and PRs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          start-date: '2022-01-01T00:00:00Z'
+          stale-issue-message: 'This issue is stale because it has been open 30 days with no activity. Remove stale label or comment or this will be closed in 30 days.'
+          stale-pr-message: 'This PR is stale because it has been open 90 days with no activity. Remove stale label or comment or this will be closed in 30 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 30 days with no activity. Please open a new issue if the issue is still relevant, linking to this one.'
+          close-pr-message: 'This PR was closed because it has been stalled for 30 days with no activity. Please open a new PR if the issue is still relevant, linking to this one.'
+          days-before-issue-stale: 30
+          days-before-pr-stale: 90
+          days-before-issue-close: 30
+          days-before-pr-close: 30
+          exempt-all-milestones: true
+          exempt-issue-labels: Pinned
+          exempt-pr-labels: Pinned
+          exempt-draft-pr: true
+          operations-per-run: 1750
+  stale-legacy:
+    name: 'Close year old issues and PRs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-issue-message: 'This issue is stale because it has been open for 1 year with no activity. Remove stale label or comment or this will be closed in 30 days.'
+          stale-pr-message: 'This PR is stale because it has been open 1 year with no activity. Remove stale label or comment or this will be closed in 30 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 30 days with no activity. Please open a new issue if the issue is still relevant, linking to this one.'
+          close-pr-message: 'This PR was closed because it has been stalled for 30 days with no activity. Please open a new PR if the issue is still relevant, linking to this one.'
+          days-before-issue-stale: 365
+          days-before-pr-stale: 365
+          days-before-issue-close: 30
+          days-before-pr-close: 30
+          exempt-all-milestones: true
+          exempt-issue-labels: Pinned
+          exempt-pr-labels: Pinned
+          operations-per-run: 1750
