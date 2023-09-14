@@ -42,13 +42,13 @@ test('testNameToKey', () => {
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
 });
 
-test('saveSnapshotFile() works with \r\n', () => {
+test('saveSnapshotFile() works with \\r\\n', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
-  const data = {
+  const grouped = {
     myKey: '<div>\r\n</div>',
   };
 
-  saveSnapshotFile(data, filename);
+  saveSnapshotFile({grouped}, filename);
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
@@ -56,13 +56,13 @@ test('saveSnapshotFile() works with \r\n', () => {
   );
 });
 
-test('saveSnapshotFile() works with \r', () => {
+test('saveSnapshotFile() works with \\r', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
-  const data = {
+  const grouped = {
     myKey: '<div>\r</div>',
   };
 
-  saveSnapshotFile(data, filename);
+  saveSnapshotFile({grouped}, filename);
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
@@ -170,7 +170,7 @@ test('escaping', () => {
   const writeFileSync = jest.mocked(fs.writeFileSync);
 
   writeFileSync.mockReset();
-  saveSnapshotFile({key: data}, filename);
+  saveSnapshotFile({grouped: {key: data}}, filename);
   const writtenData = writeFileSync.mock.calls[0][1];
   expect(writtenData).toBe(
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +

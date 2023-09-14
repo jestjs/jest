@@ -7,6 +7,7 @@
 
 import type {MatcherContext} from 'expect';
 import type {PrettyFormatOptions} from 'pretty-format';
+import type {InlineSnapshot} from './InlineSnapshots';
 import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
@@ -21,17 +22,32 @@ export interface FileSystem {
   matchFiles(pattern: RegExp | string): Array<string>;
 }
 
-export type MatchSnapshotConfig = {
+export type SnapshotKind = GroupedSnapshotKind | InlineSnapshotKind;
+
+export interface GroupedSnapshotKind {
+  kind: 'grouped';
+}
+
+export interface InlineSnapshotKind {
+  kind: 'inline';
+  value: string | undefined;
+}
+
+export interface MatchSnapshotConfig {
   context: Context;
   hint?: string;
-  inlineSnapshot?: string;
-  isInline: boolean;
+  kind: SnapshotKind;
   matcherName: string;
   properties?: object;
   received: any;
-};
+}
 
-export type SnapshotData = Record<string, string>;
+export interface SnapshotData {
+  grouped: Record<string, string>;
+  inline: Array<InlineSnapshot>;
+}
+
+export type FilePersistedSnapshotData = Omit<SnapshotData, 'inline'>;
 
 export interface SnapshotMatchers<R extends void | Promise<void>, T> {
   /**

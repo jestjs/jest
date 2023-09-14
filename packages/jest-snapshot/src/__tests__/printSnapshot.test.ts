@@ -35,6 +35,7 @@ import {
   printPropertiesAndReceived,
   printSnapshotAndReceived,
 } from '../printSnapshot';
+import type {InlineSnapshotKind} from '../types';
 import {serialize} from '../utils';
 
 const aOpenForeground1 = styles.magenta.open;
@@ -517,11 +518,11 @@ describe('pass false', () => {
           promise: '',
           snapshotState: {
             expand: false,
-            match({inlineSnapshot, received}) {
+            match({kind, received}) {
               return {
                 actual: format(received),
                 count: 1,
-                expected: inlineSnapshot,
+                expected: (kind as InlineSnapshotKind).value,
                 pass: false,
               };
             },
@@ -711,11 +712,11 @@ describe('pass false', () => {
         promise: '',
         snapshotState: {
           expand: false,
-          match({inlineSnapshot, received}) {
+          match({kind, received}) {
             return {
               actual: format(received),
               count: 1,
-              expected: inlineSnapshot,
+              expected: (kind as InlineSnapshotKind).value,
               pass: false,
             };
           },

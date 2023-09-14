@@ -8,8 +8,13 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
-import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {SnapshotData, SnapshotFormat} from './types';
+import {saveInlineSnapshots} from './InlineSnapshots';
+import type {
+  FilePersistedSnapshotData,
+  SnapshotData,
+  SnapshotFormat,
+  SnapshotKind,
+} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,
@@ -33,8 +38,7 @@ export type SnapshotMatchOptions = {
   readonly testName: string;
   readonly received: unknown;
   readonly key?: string;
-  readonly inlineSnapshot?: string;
-  readonly isInline: boolean;
+  readonly kind: SnapshotKind;
   readonly error?: Error;
 };
 
@@ -58,9 +62,8 @@ export default class SnapshotState {
   private _index: number;
   private readonly _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
-  private readonly _initialData: SnapshotData;
+  private readonly _initialData: FilePersistedSnapshotData;
   private readonly _snapshotPath: string;
-  private _inlineSnapshots: Array<InlineSnapshot>;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -80,11 +83,10 @@ export default class SnapshotState {
       options.updateSnapshot,
     );
     this._initialData = data;
-    this._snapshotData = data;
+    this._snapshotData = {...data, inline: []};
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
-    this._inlineSnapshots = [];
-    this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
+    this._uncheckedKeys = new Set(Object.keys(this._snapshotData.grouped));
     this._counters = new Map();
     this._index = 0;
     this.expand = options.expand || false;
@@ -108,11 +110,12 @@ export default class SnapshotState {
   private _addSnapshot(
     key: string,
     receivedSerialized: string,
-    options: {isInline: boolean; error?: Error},
+    kind: SnapshotKind,
+    error: Error | undefined,
   ): void {
     this._dirty = true;
-    if (options.isInline) {
-      const error = options.error || new Error();
+    if (kind.kind === 'inline') {
+      error ||= new Error();
       const lines = getStackTraceLines(
         removeLinesBeforeExternalMatcherTrap(error.stack || ''),
       );
@@ -122,18 +125,17 @@ export default class SnapshotState {
           "Jest: Couldn't infer stack frame for inline snapshot.",
         );
       }
-      this._inlineSnapshots.push({
+      this._snapshotData.inline.push({
         frame,
         snapshot: receivedSerialized,
       });
     } else {
-      this._snapshotData[key] = receivedSerialized;
+      this._snapshotData.grouped[key] = receivedSerialized;
     }
   }
 
   clear(): void {
-    this._snapshotData = this._initialData;
-    this._inlineSnapshots = [];
+    this._snapshotData = {...this._initialData, inline: []};
     this._counters = new Map();
     this._index = 0;
     this.added = 0;
@@ -143,8 +145,8 @@ export default class SnapshotState {
   }
 
   save(): SaveStatus {
-    const hasExternalSnapshots = Object.keys(this._snapshotData).length;
-    const hasInlineSnapshots = this._inlineSnapshots.length;
+    const hasExternalSnapshots = Object.keys(this._snapshotData.grouped).length;
+    const hasInlineSnapshots = this._snapshotData.inline.length;
     const isEmpty = !hasExternalSnapshots && !hasInlineSnapshots;
 
     const status: SaveStatus = {
@@ -158,7 +160,7 @@ export default class SnapshotState {
       }
       if (hasInlineSnapshots) {
         saveInlineSnapshots(
-          this._inlineSnapshots,
+          this._snapshotData.inline,
           this._rootDir,
           this._prettierPath,
         );
@@ -185,7 +187,9 @@ export default class SnapshotState {
   removeUncheckedKeys(): void {
     if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
       this._dirty = true;
-      this._uncheckedKeys.forEach(key => delete this._snapshotData[key]);
+      this._uncheckedKeys.forEach(
+        key => delete this._snapshotData.grouped[key],
+      );
       this._uncheckedKeys.clear();
     }
   }
@@ -194,8 +198,7 @@ export default class SnapshotState {
     testName,
     received,
     key,
-    inlineSnapshot,
-    isInline,
+    kind,
     error,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
@@ -208,26 +211,31 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key] !== undefined)) {
+    if (
+      kind.kind === 'grouped' ||
+      this._snapshotData.grouped[key] === undefined
+    ) {
       this._uncheckedKeys.delete(key);
     }
 
     const receivedSerialized = addExtraLineBreaks(
       serialize(received, undefined, this.snapshotFormat),
     );
-    const expected = isInline ? inlineSnapshot : this._snapshotData[key];
+    const expected =
+      kind.kind === 'inline' ? kind.value : this._snapshotData.grouped[key];
     const pass = expected === receivedSerialized;
     const hasSnapshot = expected !== undefined;
-    const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
+    const snapshotIsPersisted =
+      kind.kind === 'inline' || fs.existsSync(this._snapshotPath);
 
-    if (pass && !isInline) {
+    if (pass && kind.kind === 'grouped') {
       // Executing a snapshot file as JavaScript and writing the strings back
       // when other snapshots have changed loses the proper escaping for some
       // characters. Since we check every snapshot in every test, use the newly
       // generated formatted string.
       // Note that this is only relevant when a snapshot is added and the dirty
       // flag is set.
-      this._snapshotData[key] = receivedSerialized;
+      this._snapshotData.grouped[key] = receivedSerialized;
     }
 
     // These are the conditions on when to write snapshots:
@@ -249,12 +257,12 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized, {error, isInline});
+          this._addSnapshot(key, receivedSerialized, kind, error);
         } else {
           this.matched++;
         }
       } else {
-        this._addSnapshot(key, receivedSerialized, {error, isInline});
+        this._addSnapshot(key, receivedSerialized, kind, error);
         this.added++;
       }
 

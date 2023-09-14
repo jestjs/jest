@@ -202,7 +202,7 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
   return _toMatchSnapshot({
     context: this,
     hint,
-    isInline: false,
+    kind: {kind: 'grouped'},
     matcherName,
     properties,
     received,
@@ -261,11 +261,13 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
 
   return _toMatchSnapshot({
     context: this,
-    inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
-    isInline: true,
+    kind: {
+      kind: 'inline',
+      value:
+        inlineSnapshot !== undefined
+          ? stripAddedIndentation(inlineSnapshot)
+          : undefined,
+    },
     matcherName,
     properties,
     received,
@@ -273,8 +275,7 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
 };
 
 const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
-  const {context, hint, inlineSnapshot, isInline, matcherName, properties} =
-    config;
+  const {context, hint, kind, matcherName, properties} = config;
   let {received} = config;
 
   context.dontThrow && context.dontThrow();
@@ -356,8 +357,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   const result = snapshotState.match({
     error: context.error,
-    inlineSnapshot,
-    isInline,
+    kind,
     received,
     testName: fullTestName,
   });
@@ -420,7 +420,7 @@ export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<
     {
       context: this,
       hint,
-      isInline: false,
+      kind: {kind: 'grouped'},
       matcherName,
       received,
     },
@@ -453,11 +453,13 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
   return _toThrowErrorMatchingSnapshot(
     {
       context: this,
-      inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
-      isInline: true,
+      kind: {
+        kind: 'inline',
+        value:
+          inlineSnapshot !== undefined
+            ? stripAddedIndentation(inlineSnapshot)
+            : undefined,
+      },
       matcherName,
       received,
     },
@@ -469,8 +471,7 @@ const _toThrowErrorMatchingSnapshot = (
   config: MatchSnapshotConfig,
   fromPromise?: boolean,
 ) => {
-  const {context, hint, inlineSnapshot, isInline, matcherName, received} =
-    config;
+  const {context, hint, kind, matcherName, received} = config;
 
   context.dontThrow && context.dontThrow();
 
@@ -521,8 +522,7 @@ const _toThrowErrorMatchingSnapshot = (
   return _toMatchSnapshot({
     context,
     hint,
-    inlineSnapshot,
-    isInline,
+    kind,
     matcherName,
     received: error.message,
   });

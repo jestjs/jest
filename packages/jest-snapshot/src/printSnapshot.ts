@@ -95,7 +95,7 @@ export const matcherHintFromConfig = (
   {
     context: {isNot, promise},
     hint,
-    inlineSnapshot,
+    kind,
     matcherName,
     properties,
   }: MatchSnapshotConfig,
@@ -117,7 +117,7 @@ export const matcherHintFromConfig = (
     if (typeof hint === 'string' && hint.length !== 0) {
       options.secondArgument = HINT_ARG;
       options.secondArgumentColor = BOLD_WEIGHT;
-    } else if (typeof inlineSnapshot === 'string') {
+    } else if (kind.kind === 'inline' && kind.value !== undefined) {
       options.secondArgument = SNAPSHOT_ARG;
       if (isUpdatable) {
         options.secondArgumentColor = aSnapshotColor;
@@ -129,7 +129,7 @@ export const matcherHintFromConfig = (
     if (typeof hint === 'string' && hint.length !== 0) {
       expectedArgument = HINT_ARG;
       options.expectedColor = BOLD_WEIGHT;
-    } else if (typeof inlineSnapshot === 'string') {
+    } else if (kind.kind === 'inline' && kind.value !== undefined) {
       expectedArgument = SNAPSHOT_ARG;
       if (isUpdatable) {
         options.expectedColor = aSnapshotColor;
