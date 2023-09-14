@@ -13,11 +13,11 @@ export default function Container(props) {
     darkBackground: props.background === 'dark',
     highlightBackground: props.background === 'highlight',
     lightBackground: props.background === 'light',
-    paddingAll: props.padding.indexOf('all') >= 0,
-    paddingBottom: props.padding.indexOf('bottom') >= 0,
-    paddingLeft: props.padding.indexOf('left') >= 0,
-    paddingRight: props.padding.indexOf('right') >= 0,
-    paddingTop: props.padding.indexOf('top') >= 0,
+    paddingAll: props.padding.includes('all'),
+    paddingBottom: props.padding.includes('bottom'),
+    paddingLeft: props.padding.includes('left'),
+    paddingRight: props.padding.includes('right'),
+    paddingTop: props.padding.includes('top'),
   });
   let wrappedChildren;
 

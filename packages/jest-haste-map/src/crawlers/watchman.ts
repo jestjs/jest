@@ -135,7 +135,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
       'list-capabilities',
     );
 
-    if (capabilities.indexOf('field-content.sha1hex') !== -1) {
+    if (capabilities.includes('field-content.sha1hex')) {
       fields.push('content.sha1hex');
     }
   }
