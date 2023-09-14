@@ -1,0 +1,43 @@
+name: Node CI
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  prepare-yarn-cache-ubuntu:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: ubuntu-latest
+  prepare-yarn-cache-macos:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: macos-latest
+  prepare-yarn-cache-windows:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: windows-latest
+
+  test-ubuntu:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-ubuntu
+    with:
+      os: ubuntu-latest
+  test-macos:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-macos
+    with:
+      os: macos-latest
+  test-windows:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-windows
+    with:
+      os: windows-latest
