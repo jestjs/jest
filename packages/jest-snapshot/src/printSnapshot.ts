@@ -155,11 +155,11 @@ const joinDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] !== op
-        ? ''
-        : hasCommon
-        ? INVERTED_COLOR(diff[1])
-        : diff[1]),
+        : diff[0] === op
+        ? hasCommon
+          ? INVERTED_COLOR(diff[1])
+          : diff[1]
+        : ''),
     '',
   );
 

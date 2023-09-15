@@ -243,15 +243,15 @@ export default class SnapshotState {
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
-        if (!pass) {
+        if (pass) {
+          this.matched++;
+        } else {
           if (hasSnapshot) {
             this.updated++;
           } else {
             this.added++;
           }
           this._addSnapshot(key, receivedSerialized, {error, isInline});
-        } else {
-          this.matched++;
         }
       } else {
         this._addSnapshot(key, receivedSerialized, {error, isInline});
@@ -266,19 +266,7 @@ export default class SnapshotState {
         pass: true,
       };
     } else {
-      if (!pass) {
-        this.unmatched++;
-        return {
-          actual: removeExtraLineBreaks(receivedSerialized),
-          count,
-          expected:
-            expected !== undefined
-              ? removeExtraLineBreaks(expected)
-              : undefined,
-          key,
-          pass: false,
-        };
-      } else {
+      if (pass) {
         this.matched++;
         return {
           actual: '',
@@ -286,6 +274,18 @@ export default class SnapshotState {
           expected: '',
           key,
           pass: true,
+        };
+      } else {
+        this.unmatched++;
+        return {
+          actual: removeExtraLineBreaks(receivedSerialized),
+          count,
+          expected:
+            expected === undefined
+              ? undefined
+              : removeExtraLineBreaks(expected),
+          key,
+          pass: false,
         };
       }
     }

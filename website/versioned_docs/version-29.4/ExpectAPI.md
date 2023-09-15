@@ -1186,10 +1186,10 @@ function areVolumesEqual(a, b) {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1243,10 +1243,10 @@ function areVolumesEqual(a: unknown, b: unknown): boolean | undefined {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1297,10 +1297,10 @@ function areAuthorEqual(a, b) {
   if (isAAuthor && isBAuthor) {
     // Authors are equal if they have the same name
     return a.name === b.name;
-  } else if (isAAuthor !== isBAuthor) {
-    return false;
-  } else {
+  } else if (isAAuthor === isBAuthor) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1315,10 +1315,10 @@ function areBooksEqual(a, b, customTesters) {
     return (
       a.name === b.name && this.equals(a.authors, b.authors, customTesters)
     );
-  } else if (isABook !== isBBook) {
-    return false;
-  } else {
+  } else if (isABook === isBBook) {
     return undefined;
+  } else {
+    return false;
   }
 }
 

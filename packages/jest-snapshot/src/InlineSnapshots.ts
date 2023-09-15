@@ -223,7 +223,10 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
       if (index === 0) {
         // First line is either a 1-line snapshot or a blank line.
         return line;
-      } else if (index !== lines.length - 1) {
+      } else if (index === lines.length - 1) {
+        // The last line should be placed on the same level as the expect call.
+        return indentation.repeat(numIndents) + line;
+      } else {
         // Do not indent empty lines.
         if (line === '') {
           return line;
@@ -231,9 +234,6 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 
         // Not last line, indent one level deeper than expect call.
         return indentation.repeat(numIndents + 1) + line;
-      } else {
-        // The last line should be placed on the same level as the expect call.
-        return indentation.repeat(numIndents) + line;
       }
     })
     .join('\n');

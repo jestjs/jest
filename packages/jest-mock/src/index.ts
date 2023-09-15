@@ -953,14 +953,14 @@ export class ModuleMocker {
 
     this._getSlots(metadata.members).forEach(slot => {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
-      if (slotMetadata.ref != null) {
+      if (slotMetadata.ref == null) {
+        mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
+      } else {
         callbacks.push(
           (function (ref) {
             return () => (mock[slot] = refs[ref]);
           })(slotMetadata.ref),
         );
-      } else {
-        mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }
     });
 
@@ -1170,11 +1170,11 @@ export class ModuleMocker {
           )}\` property because it is not a function; ${this._typeOf(
             original,
           )} given instead.${
-            typeof original !== 'object'
-              ? ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
+            typeof original === 'object'
+              ? ''
+              : ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
                   methodKey,
                 )}', value)\` instead.`
-              : ''
           }`,
         );
       }
@@ -1267,11 +1267,11 @@ export class ModuleMocker {
           )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead.${
-            typeof original !== 'object'
-              ? ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
+            typeof original === 'object'
+              ? ''
+              : ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
                   propertyKey,
                 )}', value)\` instead.`
-              : ''
           }`,
         );
       }

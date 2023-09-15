@@ -262,9 +262,9 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
   return _toMatchSnapshot({
     context: this,
     inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
+      inlineSnapshot === undefined
+        ? undefined
+        : stripAddedIndentation(inlineSnapshot),
     isInline: true,
     matcherName,
     properties,
@@ -328,7 +328,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       context.utils.subsetEquality,
     ]);
 
-    if (!propertyPass) {
+    if (propertyPass) {
+      received = deepMerge(received, properties);
+    } else {
       const key = snapshotState.fail(fullTestName, received);
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
@@ -349,8 +351,6 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         name: matcherName,
         pass: false,
       };
-    } else {
-      received = deepMerge(received, properties);
     }
   }
 
@@ -454,9 +454,9 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
     {
       context: this,
       inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
+        inlineSnapshot === undefined
+          ? undefined
+          : stripAddedIndentation(inlineSnapshot),
       isInline: true,
       matcherName,
       received,

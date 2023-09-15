@@ -648,18 +648,18 @@ export default class Resolver {
   }
 
   private _getMockPath(from: string, moduleName: string): string | null {
-    return !this.isCoreModule(moduleName)
-      ? this.getMockModule(from, moduleName)
-      : null;
+    return this.isCoreModule(moduleName)
+      ? null
+      : this.getMockModule(from, moduleName);
   }
 
   private async _getMockPathAsync(
     from: string,
     moduleName: string,
   ): Promise<string | null> {
-    return !this.isCoreModule(moduleName)
-      ? this.getMockModuleAsync(from, moduleName)
-      : null;
+    return this.isCoreModule(moduleName)
+      ? null
+      : this.getMockModuleAsync(from, moduleName);
   }
 
   private _getVirtualMockPath(

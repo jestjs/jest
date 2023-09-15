@@ -14,7 +14,7 @@ const getKeysOfEnumerableProperties = (
 ) => {
   const rawKeys = Object.keys(object);
   const keys: Array<string | symbol> =
-    compareKeys !== null ? rawKeys.sort(compareKeys) : rawKeys;
+    compareKeys === null ? rawKeys : rawKeys.sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {

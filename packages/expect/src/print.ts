@@ -125,12 +125,12 @@ const printConstructorName = (
   isNot: boolean,
   isExpected: boolean,
 ): string =>
-  typeof constructor.name !== 'string'
-    ? `${label} name is not a string`
-    : constructor.name.length === 0
-    ? `${label} name is an empty string`
-    : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
-        isExpected
-          ? EXPECTED_COLOR(constructor.name)
-          : RECEIVED_COLOR(constructor.name)
-      }`;
+  typeof constructor.name === 'string'
+    ? constructor.name.length === 0
+      ? `${label} name is an empty string`
+      : `${label}: ${isNot ? (isExpected ? 'not ' : '    ') : ''}${
+          isExpected
+            ? EXPECTED_COLOR(constructor.name)
+            : RECEIVED_COLOR(constructor.name)
+        }`
+    : `${label} name is not a string`;
