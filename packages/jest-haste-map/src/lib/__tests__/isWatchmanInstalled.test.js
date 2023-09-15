@@ -6,6 +6,7 @@
  */
 
 import {execFile} from 'child_process';
+import {promisify} from 'util';
 import isWatchmanInstalled from '../isWatchmanInstalled';
 
 jest.mock('child_process');
@@ -13,25 +14,21 @@ jest.mock('child_process');
 describe('isWatchmanInstalled', () => {
   beforeEach(() => jest.clearAllMocks());
 
+  const promisifiedExec = jest.mocked(promisify(execFile));
+
   it('executes watchman --version and returns true on success', async () => {
-    execFile.mockImplementation((file, args, cb) => {
+    promisifiedExec.mockImplementation((file, args) => {
       expect(file).toBe('watchman');
       expect(args).toStrictEqual(['--version']);
-      cb(null, {stdout: 'v123'});
+      return {stdout: 'v123'};
     });
     expect(await isWatchmanInstalled()).toBe(true);
-    expect(execFile).toHaveBeenCalledWith(
-      'watchman',
-      ['--version'],
-      expect.any(Function),
-    );
+    expect(promisifiedExec).toHaveBeenCalledWith('watchman', ['--version']);
   });
 
   it('returns false when execFile fails', async () => {
-    execFile.mockImplementation((file, args, cb) => {
-      cb(new Error());
-    });
+    promisifiedExec.mockRejectedValue(new Error());
     expect(await isWatchmanInstalled()).toBe(false);
-    expect(execFile).toHaveBeenCalled();
+    expect(promisifiedExec).toHaveBeenCalled();
   });
 });
