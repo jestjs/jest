@@ -7,7 +7,7 @@
 
 'use strict';
 
-const vm = require('vm');
+const vm = require('node:vm');
 
 it('correctly expects RegExp inside a new VM context', () => {
   const fn = vm.runInNewContext(

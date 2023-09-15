@@ -8,7 +8,7 @@
 
 'use strict';
 
-const assert = require('assert');
+const assert = require('node:assert');
 
 test('assert', () => {
   assert(false);

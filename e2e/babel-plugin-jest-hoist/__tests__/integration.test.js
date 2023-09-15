@@ -43,7 +43,7 @@ jest.mock('../__test_modules__/f', () => {
     _isMock: true,
     fn: () => {
       // The `jest.mock` transform will allow require, built-ins and globals.
-      const path = require('path');
+      const path = require('node:path');
       const array = new Array(3);
       array[0] = path.sep;
       return jest.fn(() => array);
@@ -105,7 +105,7 @@ describe('babel-plugin-jest-hoist', () => {
   });
 
   it('hoists mock call with 2 arguments', () => {
-    const path = require('path');
+    const path = require('node:path');
 
     expect(f._isMock).toBe(true);
 

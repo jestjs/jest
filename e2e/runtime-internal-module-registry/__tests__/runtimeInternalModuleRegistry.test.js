@@ -7,11 +7,11 @@
 
 'use strict';
 
-jest.mock('fs');
+jest.mock('node:fs');
 
 describe('Runtime internal module registry', () => {
   it('behaves correctly when requiring a module that is used by jest internals', () => {
-    const fs = require('fs');
+    const fs = require('node:fs');
 
     // We require from this crazy path so that we can mimick Jest (and its
     // transitive deps) being installed alongside a projects deps (e.g. with an

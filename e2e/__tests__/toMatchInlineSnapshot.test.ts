@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import {cleanup, extractSummary, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -253,8 +253,8 @@ test('writes snapshots with non-literals in expect(...)', () => {
 test('handles mocking native modules prettier relies on', () => {
   const filename = 'mockFail.test.js';
   const test = `
-    jest.mock('path', () => ({}));
-    jest.mock('fs', () => ({}));
+    jest.mock('node:path', () => ({}));
+    jest.mock('node:fs', () => ({}));
     jest.mock('graceful-fs', () => ({}));
     test('inline snapshots', () => {
       expect({}).toMatchInlineSnapshot();

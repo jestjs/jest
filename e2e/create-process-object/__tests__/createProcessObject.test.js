@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const domain = require('domain');
+const domain = require('node:domain');
 
 test('allows retrieving the current domain', () => {
   domain.create().run(() => {

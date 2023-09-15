@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-node-protocol */
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *

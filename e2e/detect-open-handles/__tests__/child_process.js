@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {spawn} = require('child_process');
+const {spawn} = require('node:child_process');
 
 test('something', () => {
   const subprocess = spawn(

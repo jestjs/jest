@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {Worker} = require('worker_threads');
+const {Worker} = require('node:worker_threads');
 
 test('something', () => {
   const worker = new Worker(require.resolve('../interval-code'), {

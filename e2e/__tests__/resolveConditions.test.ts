@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {resolve} from 'node:path';
 import runJest from '../runJest';
 
 const dir = resolve(__dirname, '..', 'resolve-conditions');

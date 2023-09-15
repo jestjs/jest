@@ -7,7 +7,7 @@
 
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 
 beforeAll(() => {
   process.chdir(path.resolve(__dirname, '../some-dir'));

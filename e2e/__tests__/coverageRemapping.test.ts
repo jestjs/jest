@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {readFileSync} from 'graceful-fs';
 import {cleanup, runYarnInstall} from '../Utils';
 import runJest from '../runJest';

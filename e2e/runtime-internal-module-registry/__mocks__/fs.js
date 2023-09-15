@@ -7,7 +7,7 @@
 
 'use strict';
 
-const fs = jest.createMockFromModule('fs');
+const fs = jest.createMockFromModule('node:fs');
 
 let mkdirWasCalled = false;
 

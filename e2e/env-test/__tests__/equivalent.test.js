@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const {isArrayBuffer} = require('util').types;
+const {isArrayBuffer} = require('node:util').types;
 const isJSDOM =
   typeof window !== 'undefined' && typeof document !== 'undefined';
 

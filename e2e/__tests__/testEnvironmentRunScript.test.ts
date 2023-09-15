@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve, sep} from 'path';
+import {resolve, sep} from 'node:path';
 import runJest from '../runJest';
 
 it('throw error if test env does not have getVmContext', () => {

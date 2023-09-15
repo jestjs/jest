@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {resolve} from 'node:path';
 import {onNodeVersions} from '@jest/test-utils';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest, {getConfig} from '../runJest';

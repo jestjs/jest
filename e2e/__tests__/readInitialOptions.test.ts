@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import path = require('path');
+import path = require('node:path');
 import execa = require('execa');
 import type {ReadJestConfigOptions, readInitialOptions} from 'jest-config';
 
