@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-node-protocol */
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -6,8 +7,8 @@
  *
  */
 
-import * as path from 'node:path';
-import {Writable} from 'node:stream';
+import * as path from 'path';
+import {Writable} from 'stream';
 import dedent from 'dedent';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
