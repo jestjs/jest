@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {fileURLToPath} from 'url';
+import {fileURLToPath} from 'node:url';
 import {createTransformer} from 'babel-jest';
 
 export default {

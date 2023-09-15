@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
 const filePath = path.resolve(__dirname, '../package/vmscript.js');
 
 test('extract coverage', () => {

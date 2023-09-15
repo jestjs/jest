@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import {resolve} from 'path';
+import {tmpdir} from 'node:os';
+import {resolve} from 'node:path';
 import findProcess = require('find-process');
 import {
   cleanup,
@@ -39,7 +39,7 @@ test('prints a warning if a worker is force exited', () => {
     ...testFiles,
     '__tests__/simple.test.js': `
       test('t', () => {
-        require('http').createServer().listen(0);
+        require('node:http').createServer().listen(0);
       });
     `,
   });
@@ -55,7 +55,7 @@ test('force exits a worker that fails to exit gracefully', async () => {
     ...testFiles,
     '__tests__/timeoutKilled.test.js': `
       test('t', () => {
-        require('http').createServer().listen(0);
+        require('node:http').createServer().listen(0);
         console.error('pid: ' + process.pid);
       });
     `,

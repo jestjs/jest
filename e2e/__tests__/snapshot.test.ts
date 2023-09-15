@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';

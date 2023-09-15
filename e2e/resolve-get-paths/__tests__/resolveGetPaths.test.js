@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {resolve} from 'node:path';
 
 test('returns the resolve path for a relative path', () => {
   expect(require.resolve.paths('./mod.js')).toEqual([resolve(__dirname)]);

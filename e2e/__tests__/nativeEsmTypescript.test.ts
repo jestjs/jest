@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {resolve} from 'node:path';
 import {json as runJest} from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-typescript');

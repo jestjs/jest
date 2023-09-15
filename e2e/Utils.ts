@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import * as util from 'util';
+import * as path from 'node:path';
+import * as util from 'node:util';
 import dedent from 'dedent';
 import {
   ExecaSyncError,

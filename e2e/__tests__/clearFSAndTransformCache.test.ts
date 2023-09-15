@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import * as path from 'path';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -14,8 +14,8 @@ const dir = path.resolve(tmpdir(), 'clear_FS_and_transform_cache');
 const testFileContent = `
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const absoluteTestHelperFile = path.resolve(__dirname, './testHelper.js');
 

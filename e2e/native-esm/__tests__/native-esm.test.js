@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import dns from 'dns';
+import dns from 'node:dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
-import {readFileSync} from 'fs';
-import {createRequire} from 'module';
+import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
 import prefixDns from 'node:dns';
-import {dirname, resolve} from 'path';
-import {fileURLToPath} from 'url';
+import {dirname, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
@@ -59,7 +59,7 @@ test('should support importing node core modules', () => {
 
 test('should support importing node core modules dynamically', async () => {
   // it's important that this module has _not_ been imported at the top level
-  const assert = await import('assert');
+  const assert = await import('node:assert');
 
   expect(typeof assert.strictEqual).toBe('function');
 });

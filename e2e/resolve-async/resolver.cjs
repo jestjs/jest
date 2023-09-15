@@ -7,7 +7,7 @@
 
 'use strict';
 
-const {promisify} = require('util');
+const {promisify} = require('node:util');
 
 const wait = promisify(setTimeout);
 

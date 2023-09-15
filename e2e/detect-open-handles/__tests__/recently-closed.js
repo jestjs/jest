@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createServer} from 'http';
+import {createServer} from 'node:http';
 
 test('a recently closed server should not be detected by --detectOpenHandles', done => {
   const server = createServer((_, response) => response.end('ok'));

@@ -6,8 +6,8 @@
  *
  */
 
-import * as path from 'path';
-import {Writable} from 'stream';
+import * as path from 'node:path';
+import {Writable} from 'node:stream';
 import dedent from 'dedent';
 import execa = require('execa');
 import * as fs from 'graceful-fs';

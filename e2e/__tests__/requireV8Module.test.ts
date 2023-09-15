@@ -6,7 +6,7 @@
  */
 
 test('v8 module', () => {
-  expect(() => require('v8')).not.toThrow();
+  expect(() => require('node:v8')).not.toThrow();
 
-  expect(require('v8').getHeapStatistics().total_heap_size).toBeDefined();
+  expect(require('node:v8').getHeapStatistics().total_heap_size).toBeDefined();
 });

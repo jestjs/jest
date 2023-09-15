@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import runJest from '../runJest';
 
 describe('Custom Haste Integration', () => {

@@ -7,8 +7,8 @@
 
 'use strict';
 
-const fs = require('fs');
-const os = require('os');
+const fs = require('node:fs');
+const os = require('node:os');
 const JSDOMEnvironment = require('jest-environment-jsdom').TestEnvironment;
 const {createDirectory} = require('jest-util');
 

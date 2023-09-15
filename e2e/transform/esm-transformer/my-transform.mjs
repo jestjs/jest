@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
+import {createRequire} from 'node:module';
 
 const require = createRequire(import.meta.url);
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {randomFillSync} = require('crypto');
+const {randomFillSync} = require('node:crypto');
 
 test('randomFillSync()', () => {
   const buf = Buffer.alloc(10);

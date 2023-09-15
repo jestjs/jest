@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import * as path from 'path';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
@@ -44,7 +44,7 @@ test('can pass projects or global config', () => {
       };
     `,
     'hasteImpl.js': `
-      const path = require('path');
+      const path = require('node:path');
       module.exports = {
         getHasteName(filename) {
           return filename

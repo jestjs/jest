@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {Server} from 'http';
+import {Server} from 'node:http';
 
 const app = new Server();
 

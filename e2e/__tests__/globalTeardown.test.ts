@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {tmpdir} from 'os';
-import * as path from 'path';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import {createDirectory} from 'jest-util';
 import {cleanup, runYarnInstall} from '../Utils';
