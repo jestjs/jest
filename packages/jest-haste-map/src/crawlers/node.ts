@@ -175,9 +175,7 @@ function findNative(
       .filter(x => !ignore(x));
     const result: Result = [];
     let count = lines.length;
-    if (!count) {
-      callback([]);
-    } else {
+    if (count) {
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
@@ -189,6 +187,8 @@ function findNative(
           }
         });
       });
+    } else {
+      callback([]);
     }
   });
 }

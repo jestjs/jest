@@ -591,6 +591,7 @@ module.exports = {
     'wrap-regex': 'off',
     yoda: 'off',
 
+    'unicorn/no-negated-condition': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/template-indent': 'error',
   },

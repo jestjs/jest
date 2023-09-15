@@ -43,7 +43,7 @@ export default class BufferedConsole extends Console {
     message: LogMessage,
     level?: number | null,
   ): ConsoleBuffer {
-    const stackLevel = level != null ? level : 2;
+    const stackLevel = level == null ? 2 : level;
     const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
     invariant(rawStack != null, 'always have a stack trace');
