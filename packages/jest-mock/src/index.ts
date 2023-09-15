@@ -1062,9 +1062,14 @@ export class ModuleMocker {
         typeof component === 'function' &&
         nodeCustomPromiseSymbol in component
       ) {
-        const meta = this.getMetadata(component[nodeCustomPromiseSymbol]);
-        if (meta) {
-          metadata.customPromisifyMeta = meta;
+        if (!this.isMockFunction(component)) {
+          const meta = this.getMetadata(
+            component[nodeCustomPromiseSymbol],
+            refs,
+          );
+          if (meta) {
+            metadata.customPromisifyMeta = meta;
+          }
         }
       }
     }
