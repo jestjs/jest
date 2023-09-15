@@ -173,7 +173,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
-  [nodeCustomPromiseSymbol]?: MockedFunction<any>
+  [nodeCustomPromiseSymbol]?: MockedFunction<any>;
 }
 
 export interface Replaced<T = unknown> {
@@ -880,7 +880,9 @@ export class ModuleMocker {
       }
 
       if (metadata.customPromisifyMeta) {
-        f[nodeCustomPromiseSymbol] = this.generateFromMetadata(metadata.customPromisifyMeta);
+        f[nodeCustomPromiseSymbol] = this.generateFromMetadata(
+          metadata.customPromisifyMeta,
+        );
       }
 
       return f;
@@ -1056,7 +1058,10 @@ export class ModuleMocker {
       if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation() as T;
       }
-      if (typeof component === 'function' && nodeCustomPromiseSymbol in component) {
+      if (
+        typeof component === 'function' &&
+        nodeCustomPromiseSymbol in component
+      ) {
         const meta = this.getMetadata(component[nodeCustomPromiseSymbol]);
         if (meta) {
           metadata.customPromisifyMeta = meta;
