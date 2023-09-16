@@ -16,6 +16,11 @@ import HasteMap from 'jest-haste-map';
 const FAIL = 0;
 const SUCCESS = 1;
 
+export type TestSequencerOptions = {
+  contexts: Array<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
+
 type Cache = {
   [key: string]:
     | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
@@ -47,7 +52,13 @@ type ShardPositionOptions = ShardOptions & {
 export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
 
-  constructor(protected readonly globalConfig: Config.GlobalConfig) {}
+  protected readonly globalConfig: Config.GlobalConfig;
+  protected readonly contexts: Array<TestContext>;
+
+  constructor({contexts, globalConfig}: TestSequencerOptions) {
+    this.globalConfig = globalConfig;
+    this.contexts = contexts;
+  }
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
