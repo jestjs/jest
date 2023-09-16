@@ -117,7 +117,9 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
       stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
     );
 
-    return tsConfig.references.some(({path}) => path && path.endsWith('test-utils'));
+    return tsConfig.references.some(
+      ({path}) => path && path.endsWith('test-utils'),
+    );
   });
 
   if (hasJestTestUtils && testUtilsReferences.length === 0) {
