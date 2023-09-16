@@ -159,7 +159,7 @@ export default async function runJest({
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
-  const sequencer = new Sequencer();
+  const sequencer = new Sequencer(globalConfig);
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {

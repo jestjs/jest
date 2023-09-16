@@ -10,6 +10,7 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
@@ -45,6 +46,8 @@ type ShardPositionOptions = ShardOptions & {
  */
 export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
+
+  constructor(protected readonly globalConfig: Config.GlobalConfig) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
