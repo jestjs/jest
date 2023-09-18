@@ -294,7 +294,6 @@ export default async function runJest({
     ...testSchedulerContext,
   });
 
-  // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
   performance.mark('jest/scheduleAndRun:start', {
     detail: {numTests: allTests.length},
   });
