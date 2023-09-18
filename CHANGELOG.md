@@ -2,7 +2,20 @@
 
 ### Features
 
+### Fixes
+
+- `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
+
+### Performance
+
+### Chore & Maintenance
+
+## 29.7.0
+
+### Features
+
 - `[create-jest]` Add `npm init` / `yarn create` initialiser for Jest projects ([#14465](https://github.com/jestjs/jest/pull/14453))
+- `[jest-validate]` Allow deprecation warnings for unknown options ([#14499](https://github.com/jestjs/jest/pull/14499))
 
 ### Fixes
 

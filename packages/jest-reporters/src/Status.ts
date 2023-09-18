@@ -41,10 +41,10 @@ class CurrentTestList {
   add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
-    if (index !== -1) {
-      this._array[index] = record;
-    } else {
+    if (index === -1) {
       this._array.push(record);
+    } else {
+      this._array[index] = record;
     }
   }
 
@@ -118,19 +118,19 @@ export default class Status {
 
   addTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
     this._currentTestCases.push({test, testCaseResult});
-    if (!this._showStatus) {
-      this._emit();
-    } else {
+    if (this._showStatus) {
       this._debouncedEmit();
+    } else {
+      this._emit();
     }
   }
 
   testStarted(testPath: string, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
-    if (!this._showStatus) {
-      this._emit();
-    } else {
+    if (this._showStatus) {
       this._debouncedEmit();
+    } else {
+      this._emit();
     }
   }
 

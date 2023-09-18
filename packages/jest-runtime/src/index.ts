@@ -129,7 +129,7 @@ const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const getModuleNameMapper = (config: Config.ProjectConfig) => {
   if (
     Array.isArray(config.moduleNameMapper) &&
-    config.moduleNameMapper.length
+    config.moduleNameMapper.length > 0
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => ({
       moduleName,
@@ -1467,7 +1467,7 @@ export default class Runtime {
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
       );
     }
-    if (!moduleName.length) {
+    if (moduleName.length === 0) {
       throw new Error(
         'The first argument to require.resolve.paths must not be the empty string.',
       );
@@ -2408,7 +2408,7 @@ export default class Runtime {
     const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => line.indexOf(__filename) === -1)
+      .filter(line => !line.includes(__filename))
       .join('\n');
 
     const {message, stack} = separateMessageFromStack(originalStack);

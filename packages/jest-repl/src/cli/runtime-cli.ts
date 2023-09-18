@@ -52,7 +52,7 @@ export async function run(
     return;
   }
 
-  if (!argv._.length) {
+  if (argv._.length === 0) {
     console.log('Please provide a path to a script. (See --help for details)');
     process.on('exit', () => (process.exitCode = 1));
     return;

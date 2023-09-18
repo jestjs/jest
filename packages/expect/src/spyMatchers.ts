@@ -82,9 +82,9 @@ const printNumberOfReturns = (
   countCalls: number,
 ): string =>
   `\nNumber of returns: ${printReceived(countReturns)}${
-    countCalls !== countReturns
-      ? `\nNumber of calls:   ${printReceived(countCalls)}`
-      : ''
+    countCalls === countReturns
+      ? ''
+      : `\nNumber of calls:   ${printReceived(countCalls)}`
   }`;
 
 type PrintLabel = (string: string, isExpectedCall: boolean) => string;
@@ -439,22 +439,22 @@ const createToReturnMatcher = (
               return lines;
             }, [])
             .join('\n') +
-          (received.mock.calls.length !== count
-            ? `\n\nReceived number of calls:   ${printReceived(
+          (received.mock.calls.length === count
+            ? ''
+            : `\n\nReceived number of calls:   ${printReceived(
                 received.mock.calls.length,
-              )}`
-            : '')
+              )}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: >= ${printExpected(1)}\n` +
           `Received number of returns:    ${printReceived(count)}` +
-          (received.mock.calls.length !== count
-            ? `\nReceived number of calls:      ${printReceived(
+          (received.mock.calls.length === count
+            ? ''
+            : `\nReceived number of calls:      ${printReceived(
                 received.mock.calls.length,
-              )}`
-            : '');
+              )}`);
 
     return {message, pass};
   };
@@ -523,22 +523,22 @@ const createToReturnTimesMatcher = (
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: not ${printExpected(expected)}` +
-          (received.mock.calls.length !== count
-            ? `\n\nReceived number of calls:       ${printReceived(
+          (received.mock.calls.length === count
+            ? ''
+            : `\n\nReceived number of calls:       ${printReceived(
                 received.mock.calls.length,
-              )}`
-            : '')
+              )}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: ${printExpected(expected)}\n` +
           `Received number of returns: ${printReceived(count)}` +
-          (received.mock.calls.length !== count
-            ? `\nReceived number of calls:   ${printReceived(
+          (received.mock.calls.length === count
+            ? ''
+            : `\nReceived number of calls:   ${printReceived(
                 received.mock.calls.length,
-              )}`
-            : '');
+              )}`);
 
     return {message, pass};
   };

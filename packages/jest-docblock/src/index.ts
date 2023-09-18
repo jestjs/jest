@@ -115,7 +115,7 @@ export function print({
     head +
     line +
     (comments ? printedComments : '') +
-    (comments && keys.length ? start + line : '') +
+    (comments && keys.length > 0 ? start + line : '') +
     printedObject +
     tail
   );

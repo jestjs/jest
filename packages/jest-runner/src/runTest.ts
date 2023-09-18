@@ -340,7 +340,7 @@ async function runTestInternal(
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
-      if (coverageKeys.length) {
+      if (coverageKeys.length > 0) {
         result.coverage = coverage;
       }
     }

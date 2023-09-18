@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "29.6.4",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",

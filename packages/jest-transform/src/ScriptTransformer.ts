@@ -459,15 +459,15 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (map != null) {
+    if (map == null) {
+      sourceMapPath = null;
+    } else {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
 
       invariant(sourceMapPath, 'We should always have default sourceMapPath');
 
       writeCacheFile(sourceMapPath, sourceMapContent);
-    } else {
-      sourceMapPath = null;
     }
 
     writeCodeCacheFile(cacheFilePath, code);
@@ -840,7 +840,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return this._config.transform.length !== 0 && !isIgnored;
+    return this._config.transform.length > 0 && !isIgnored;
   }
 }
 
@@ -1019,7 +1019,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (!config.transform.length) {
+  if (config.transform.length === 0) {
     return undefined;
   }
 

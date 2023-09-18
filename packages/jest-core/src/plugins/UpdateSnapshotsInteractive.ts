@@ -62,7 +62,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
-    if (this._failedSnapshotTestAssertions.length) {
+    if (this._failedSnapshotTestAssertions.length > 0) {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,
