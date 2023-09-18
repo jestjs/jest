@@ -592,6 +592,7 @@ module.exports = {
     yoda: 'off',
 
     'unicorn/no-negated-condition': 'error',
+    'unicorn/prefer-default-parameters': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/template-indent': 'error',
   },
