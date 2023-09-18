@@ -114,7 +114,7 @@ export const matcherHintFromConfig = (
       options.expectedColor = noColor;
     }
 
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       options.secondArgument = HINT_ARG;
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -126,7 +126,7 @@ export const matcherHintFromConfig = (
       }
     }
   } else {
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       expectedArgument = HINT_ARG;
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {

@@ -186,7 +186,7 @@ const _runTest = async (
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -239,7 +239,7 @@ const _callCircusTest = async (
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
-  if (test.errors.length) {
+  if (test.errors.length > 0) {
     return; // We don't run the test if there's already an error in before hooks.
   }
 

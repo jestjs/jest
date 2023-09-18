@@ -759,7 +759,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],

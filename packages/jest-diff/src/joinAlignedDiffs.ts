@@ -23,7 +23,7 @@ const printDiffLine = (
 ): string =>
   line.length === 0
     ? indicator === ' '
-      ? isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
+      ? isFirstOrLast && emptyFirstOrLastLinePlaceholder.length > 0
         ? color(`${indicator} ${emptyFirstOrLastLinePlaceholder}`)
         : ''
       : color(indicator)

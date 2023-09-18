@@ -840,7 +840,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return this._config.transform.length !== 0 && !isIgnored;
+    return this._config.transform.length > 0 && !isIgnored;
   }
 }
 
@@ -1019,7 +1019,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (!config.transform.length) {
+  if (config.transform.length === 0) {
     return undefined;
   }
 

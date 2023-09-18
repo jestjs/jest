@@ -31,7 +31,7 @@ export const diffStringsUnified = (
   b: string,
   options?: DiffOptions,
 ): string => {
-  if (a !== b && a.length !== 0 && b.length !== 0) {
+  if (a !== b && a.length > 0 && b.length > 0) {
     const isMultiline = a.includes('\n') || b.includes('\n');
 
     // getAlignedDiffs assumes that a newline was appended to the strings.
