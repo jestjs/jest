@@ -116,9 +116,10 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     const tsConfig = JSON.parse(
       stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
     );
-    const references = tsConfig.references.map(({path}) => path);
 
-    return references.some(reference => /test-utils$/.test(reference));
+    return tsConfig.references.some(
+      ({path}) => path && path.endsWith('test-utils'),
+    );
   });
 
   if (hasJestTestUtils && testUtilsReferences.length === 0) {
