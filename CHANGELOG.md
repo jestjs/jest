@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
+
 ## 29.7.0
 
 ### Features
@@ -30,7 +32,6 @@
 ### Chore & Maintenance
 
 - `[jest-cli]` Move internal config initialisation logic to the `create-jest` package ([#14465](https://github.com/jestjs/jest/pull/14453))
-- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 
 ## 29.6.4
 
