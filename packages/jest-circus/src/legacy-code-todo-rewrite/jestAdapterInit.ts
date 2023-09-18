@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
 import {JestExpect, jestExpect} from '@jest/expect';
 import {
@@ -51,7 +52,7 @@ export const initialize = async ({
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: string) => T;
   testPath: string;
-  parentProcess: NodeJS.Process;
+  parentProcess: typeof Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
 }): Promise<{
