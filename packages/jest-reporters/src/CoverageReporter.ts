@@ -75,7 +75,7 @@ export default class CoverageReporter extends BaseReporter {
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
-      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+      if (!this._globalConfig.useStderr && coverageReporters.length === 0) {
         coverageReporters.push('text-summary');
       }
       coverageReporters.forEach(reporter => {
@@ -113,7 +113,7 @@ export default class CoverageReporter extends BaseReporter {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom.length > 0
       ) {
         context.hasteFS
           .matchFilesWithGlob(
@@ -129,7 +129,7 @@ export default class CoverageReporter extends BaseReporter {
       }
     });
 
-    if (!files.length) {
+    if (files.length === 0) {
       return;
     }
 

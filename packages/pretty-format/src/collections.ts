@@ -155,7 +155,7 @@ export function printListItems(
 ): string {
   let result = '';
 
-  if (list.length) {
+  if (list.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
@@ -201,7 +201,7 @@ export function printObjectProperties(
   let result = '';
   const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
-  if (keys.length) {
+  if (keys.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;

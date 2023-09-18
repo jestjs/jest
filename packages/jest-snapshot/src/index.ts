@@ -57,8 +57,8 @@ const printSnapshotName = (
   hint = '',
   count: number,
 ): string => {
-  const hasNames = concatenatedBlockNames.length !== 0;
-  const hasHint = hint.length !== 0;
+  const hasNames = concatenatedBlockNames.length > 0;
+  const hasHint = hint.length > 0;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''

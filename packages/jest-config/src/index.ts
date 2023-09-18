@@ -357,7 +357,7 @@ export async function readConfigs(
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
     configs = [parsedConfig.projectConfig];
-    if (globalConfig.projects && globalConfig.projects.length) {
+    if (globalConfig.projects && globalConfig.projects.length > 0) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
       // In other words, if this was a single project,
@@ -418,7 +418,7 @@ export async function readConfigs(
     }
   }
 
-  if (!globalConfig || !configs.length) {
+  if (!globalConfig || configs.length === 0) {
     throw new Error('jest: No configuration found for any project.');
   }
 

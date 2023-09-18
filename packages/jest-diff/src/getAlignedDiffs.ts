@@ -22,7 +22,7 @@ const concatenateRelevantDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] === op && diff[1].length !== 0 // empty if change is newline
+        : diff[0] === op && diff[1].length > 0 // empty if change is newline
         ? changeColor(diff[1])
         : ''),
     '',
@@ -88,7 +88,7 @@ class ChangeBuffer {
           // A middle substring is a change line.
           this.pushSubstring(substring);
           this.pushLine();
-        } else if (substring.length !== 0) {
+        } else if (substring.length > 0) {
           // The last substring starts a change line, if it is not empty.
           // Important: This non-empty condition also automatically omits
           // the newline appended to the end of expected and received strings.
@@ -173,7 +173,7 @@ class CommonBuffer {
         } else if (i < iLast) {
           // A middle substring is a common line.
           this.pushDiffCommonLine(new Diff(op, substring));
-        } else if (substring.length !== 0) {
+        } else if (substring.length > 0) {
           // The last substring starts a change line, if it is not empty.
           // Important: This non-empty condition also automatically omits
           // the newline appended to the end of expected and received strings.

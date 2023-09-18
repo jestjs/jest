@@ -86,7 +86,7 @@ export default function getSnapshotSummary(
       );
     }
   }
-  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length) {
+  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length > 0) {
     const [head, ...tail] = snapshots.filesRemovedList;
     summary.push(`  ${DOWN_ARROW} ${DOT}${formatTestPath(globalConfig, head)}`);
 

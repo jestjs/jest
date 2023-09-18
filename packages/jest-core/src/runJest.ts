@@ -43,7 +43,7 @@ const getTestPaths = async (
 ) => {
   const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
-  if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
+  if (data.tests.length === 0 && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
       'Jest can only find uncommitted changed files in a git or hg ' +
         'repository. If you make your project a git or hg ' +
