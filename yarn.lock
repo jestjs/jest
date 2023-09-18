@@ -5241,12 +5241,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:17.0.2":
-  version: 17.0.2
-  resolution: "@types/react-test-renderer@npm:17.0.2"
+"@types/react-test-renderer@npm:17.0.4":
+  version: 17.0.4
+  resolution: "@types/react-test-renderer@npm:17.0.4"
   dependencies:
     "@types/react": ^17
-  checksum: 0be325798b6b38cc31fbb11f2f1e1a5578cc3b23eddf1ddd1ab58ccf50966e8f779383084d8bc3a7db3108ad815af8fbae5c0f54329a88d52200e01547d85c33
+  checksum: 3b7546d2151382495b27a9702a19fd8ee3cdb1ee5422c4aebec1b2529d07a8156ccb599c79aeed91b8c5f3022a353403d49256ff01441bc1e697205fcb9a4a34
   languageName: node
   linkType: hard
 
@@ -17169,7 +17169,7 @@ __metadata:
     "@jest/schemas": "workspace:^"
     "@types/react": ^17.0.3
     "@types/react-is": ^18.0.0
-    "@types/react-test-renderer": 17.0.2
+    "@types/react-test-renderer": 17.0.4
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
     jest-util: "workspace:^"
