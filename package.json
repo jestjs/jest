@@ -173,7 +173,7 @@
     "node": "^16.10.0 || ^18.0.0 || >=20.0.0"
   },
   "resolutions": {
-    "@types/node": "~16.10.0",
+    "@types/node": "~16.18.0",
     "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",

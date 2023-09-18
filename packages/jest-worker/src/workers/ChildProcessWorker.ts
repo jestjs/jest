@@ -486,7 +486,7 @@ export default class ChildProcessWorker
    * @returns Process id.
    */
   getWorkerSystemId(): number {
-    return this._child.pid;
+    return this._child.pid!;
   }
 
   getStdout(): NodeJS.ReadableStream | null {

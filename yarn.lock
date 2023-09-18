@@ -5111,10 +5111,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~16.10.0":
-  version: 16.10.9
-  resolution: "@types/node@npm:16.10.9"
-  checksum: b47c3e3896ce243d3bc9e356578d4d607357d9ea0c1445a15cb564341580ac4db4f95677bf15fd354e46343edbd171ac19701740a53637234411da5b66c883a4
+"@types/node@npm:~16.18.0":
+  version: 16.18.52
+  resolution: "@types/node@npm:16.18.52"
+  checksum: 6b1f27a848a69a70039cb27c2583317b5d051990933955c42bc2a2f299266ffa360f7cc3c7089d04fdf39144c476d475931900f00dabbc4f933eeb2d664f9778
   languageName: node
   linkType: hard
 
