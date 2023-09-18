@@ -170,7 +170,7 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^16.10.0 || ^18.0.0 || >=20.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "resolutions": {
     "@types/node": "~16.18.0",
