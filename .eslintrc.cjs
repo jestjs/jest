@@ -593,6 +593,7 @@ module.exports = {
 
     'unicorn/explicit-length-check': 'error',
     'unicorn/no-negated-condition': 'error',
+    'unicorn/prefer-default-parameters': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/template-indent': 'error',
   },
