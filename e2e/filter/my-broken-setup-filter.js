@@ -9,7 +9,7 @@
 
 module.exports = function (tests) {
   return {
-    filtered: tests.filter(t => t.indexOf('foo') !== -1).map(test => ({test})),
+    filtered: tests.filter(t => t.includes('foo')).map(test => ({test})),
   };
 };
 

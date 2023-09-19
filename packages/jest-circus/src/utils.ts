@@ -236,9 +236,9 @@ export const callAsyncCircusFn = (
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
             asyncError.message = dedent`
-      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `;
+              Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+              Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+            `;
             return reject(asyncError);
           }
 
@@ -289,9 +289,9 @@ export const callAsyncCircusFn = (
       reject(
         new Error(
           dedent`
-      test functions can only return Promise or undefined.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `,
+            test functions can only return Promise or undefined.
+            Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+          `,
         ),
       );
       return;

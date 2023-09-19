@@ -8,7 +8,7 @@
 import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
 import {jestExpect} from '@jest/expect';
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
@@ -61,8 +61,9 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
-  // eslint-disable-next-line no-restricted-globals
-  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const retryTimes =
+    // eslint-disable-next-line no-restricted-globals
+    parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
   const deferredRetryTests = [];
 
   if (rng) {
@@ -186,7 +187,7 @@ const _runTest = async (
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -239,7 +240,7 @@ const _callCircusTest = async (
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
-  if (test.errors.length) {
+  if (test.errors.length > 0) {
     return; // We don't run the test if there's already an error in before hooks.
   }
 

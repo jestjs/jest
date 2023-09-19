@@ -19,7 +19,7 @@
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
-    "@types/node": "~14.14.45",
+    "@types/node": "^16.10.0",
     "@types/which": "^3.0.0",
     "@types/ws": "8.5.1",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
@@ -41,9 +41,10 @@
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-unicorn": "^46.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
-    "glob": "^8.0.0",
+    "glob": "^10.0.0",
     "graceful-fs": "^4.2.9",
     "isbinaryfile": "^5.0.0",
     "istanbul-lib-coverage": "^3.0.0",
@@ -169,15 +170,16 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "resolutions": {
-    "@types/node": "~14.14.45",
+    "@types/node": "~16.18.0",
     "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
+    "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
   "packageManager": "yarn@3.6.3"

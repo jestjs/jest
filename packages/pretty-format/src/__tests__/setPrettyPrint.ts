@@ -43,7 +43,7 @@ const setPrettyPrint = (plugins: Plugins) => {
                 `  ${this.utils.printExpected(expected)}\n` +
                 'Received:\n' +
                 `  ${this.utils.printReceived(prettyFormatted)}${
-                  diffString != null ? `\n\nDifference:\n\n${diffString}` : ''
+                  diffString == null ? '' : `\n\nDifference:\n\n${diffString}`
                 }`
               );
             },

@@ -10,10 +10,16 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
+
+export type TestSequencerOptions = {
+  contexts: ReadonlyArray<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
 
 type Cache = {
   [key: string]:
@@ -45,6 +51,9 @@ type ShardPositionOptions = ShardOptions & {
  */
 export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  constructor(_options?: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;

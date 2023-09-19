@@ -235,7 +235,7 @@ export default class SnapshotInteractiveMode {
       shouldUpdateSnapshot: boolean,
     ) => unknown,
   ): void {
-    if (!failedSnapshotTestAssertions.length) {
+    if (failedSnapshotTestAssertions.length === 0) {
       return;
     }
 

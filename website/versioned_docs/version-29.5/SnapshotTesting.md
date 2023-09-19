@@ -127,15 +127,15 @@ it('renders correctly', () => {
     .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot(`
-<a
-  className="normal"
-  href="https://example.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  Example Site
-</a>
-`);
+    <a
+      className="normal"
+      href="https://example.com"
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+    >
+      Example Site
+    </a>
+  `);
 });
 ```
 

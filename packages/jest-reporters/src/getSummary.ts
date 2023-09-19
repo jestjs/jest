@@ -131,7 +131,7 @@ export default function getSummary(
       ? `${chalk.bold.yellow(`${suitesPending} skipped`)}, `
       : '') +
     (suitesPassed ? `${chalk.bold.green(`${suitesPassed} passed`)}, ` : '') +
-    (suitesRun !== suitesTotal ? `${suitesRun} of ${suitesTotal}` : suitesTotal)
+    (suitesRun === suitesTotal ? suitesTotal : `${suitesRun} of ${suitesTotal}`)
   } total`;
 
   const updatedTestsFailed =

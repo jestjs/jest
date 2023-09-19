@@ -7,6 +7,11 @@
 
 import LeakDetector from '../index';
 
+jest.mock('v8', () => ({
+  ...(jest.requireActual('v8') as Record<string, unknown>),
+  getHeapSnapshot: jest.fn(),
+}));
+
 const gc = globalThis.gc;
 
 // Some tests override the "gc" value. Let's make sure we roll it back to its
