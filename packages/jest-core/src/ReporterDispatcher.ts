@@ -112,6 +112,6 @@ export default class ReporterDispatcher {
   }
 
   hasErrors(): boolean {
-    return this.getErrors().length !== 0;
+    return this.getErrors().length > 0;
   }
 }

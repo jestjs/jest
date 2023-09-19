@@ -45,10 +45,10 @@ const areAuthorsEqual: Tester = (a: unknown, b: unknown) => {
 
   if (isAAuthor && isBAuthor) {
     return a.name === b.name;
-  } else if (isAAuthor !== isBAuthor) {
-    return false;
-  } else {
+  } else if (isAAuthor === isBAuthor) {
     return undefined;
+  } else {
+    return false;
   }
 };
 
@@ -64,10 +64,10 @@ const areBooksEqual: Tester = function (
     return (
       a.name === b.name && this.equals(a.authors, b.authors, customTesters)
     );
-  } else if (isABook !== isBBook) {
-    return false;
-  } else {
+  } else if (isABook === isBBook) {
     return undefined;
+  } else {
+    return false;
   }
 };
 

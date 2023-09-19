@@ -129,7 +129,7 @@ const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const getModuleNameMapper = (config: Config.ProjectConfig) => {
   if (
     Array.isArray(config.moduleNameMapper) &&
-    config.moduleNameMapper.length
+    config.moduleNameMapper.length > 0
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => ({
       moduleName,
@@ -942,6 +942,7 @@ export default class Runtime {
       exports: {},
       filename: modulePath,
       id: modulePath,
+      isPreloading: false,
       loaded: false,
       path: path.dirname(modulePath),
     };
@@ -966,9 +967,7 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
     if (to) {
-      const require = (
-        nativeModule.createRequire ?? nativeModule.createRequireFromPath
-      )(from);
+      const require = nativeModule.createRequire(from);
       if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
         return require(to);
       }
@@ -1054,6 +1053,7 @@ export default class Runtime {
         exports: {},
         filename: modulePath,
         id: modulePath,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(modulePath),
       };
@@ -1467,7 +1467,7 @@ export default class Runtime {
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
       );
     }
-    if (!moduleName.length) {
+    if (moduleName.length === 0) {
       throw new Error(
         'The first argument to require.resolve.paths must not be the empty string.',
       );
@@ -1803,6 +1803,7 @@ export default class Runtime {
         exports: {},
         filename,
         id: filename,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(filename),
       });
@@ -1820,24 +1821,6 @@ export default class Runtime {
 
     if ('createRequire' in nativeModule) {
       Module.createRequire = createRequire;
-    }
-    if ('createRequireFromPath' in nativeModule) {
-      Module.createRequireFromPath = function createRequireFromPath(
-        filename: string | URL,
-      ) {
-        if (typeof filename !== 'string') {
-          const error: NodeJS.ErrnoException = new TypeError(
-            `The argument 'filename' must be string. Received '${filename}'.${
-              filename instanceof URL
-                ? ' Use createRequire for URL filename.'
-                : ''
-            }`,
-          );
-          error.code = 'ERR_INVALID_ARG_TYPE';
-          throw error;
-        }
-        return createRequire(filename);
-      };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
       // cast since TS seems very confused about whether it exists or not
@@ -2408,7 +2391,7 @@ export default class Runtime {
     const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => line.indexOf(__filename) === -1)
+      .filter(line => !line.includes(__filename))
       .join('\n');
 
     const {message, stack} = separateMessageFromStack(originalStack);

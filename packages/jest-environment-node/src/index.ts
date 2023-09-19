@@ -129,7 +129,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       }
     }
 
-    // @ts-expect-error - Buffer and gc is "missing"
     global.global = global;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;

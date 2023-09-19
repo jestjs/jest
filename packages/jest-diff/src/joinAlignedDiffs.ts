@@ -21,15 +21,15 @@ const printDiffLine = (
   trailingSpaceFormatter: DiffOptionsColor,
   emptyFirstOrLastLinePlaceholder: string,
 ): string =>
-  line.length !== 0
-    ? color(
+  line.length === 0
+    ? indicator === ' '
+      ? isFirstOrLast && emptyFirstOrLastLinePlaceholder.length > 0
+        ? color(`${indicator} ${emptyFirstOrLastLinePlaceholder}`)
+        : ''
+      : color(indicator)
+    : color(
         `${indicator} ${formatTrailingSpaces(line, trailingSpaceFormatter)}`,
-      )
-    : indicator !== ' '
-    ? color(indicator)
-    : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
-    ? color(`${indicator} ${emptyFirstOrLastLinePlaceholder}`)
-    : '';
+      );
 
 const printDeleteLine = (
   line: string,

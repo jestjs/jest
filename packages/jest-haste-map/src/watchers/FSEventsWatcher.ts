@@ -140,7 +140,7 @@ export class FSEventsWatcher extends EventEmitter {
     if (this.doIgnore(relativePath)) {
       return false;
     }
-    return this.glob.length
+    return this.glob.length > 0
       ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
       : this.dot || micromatch([relativePath], '**/*').length > 0;
   }

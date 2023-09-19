@@ -408,9 +408,9 @@ export default class ChildProcessWorker
         // was killed externally. Log this fact so it's more clear to users that
         // something went wrong externally, rather than a bug in Jest itself.
         const error = new Error(
-          signal != null
-            ? `A jest worker process (pid=${this._child.pid}) was terminated by another process: signal=${signal}, exitCode=${exitCode}. Operating system logs may contain more information on why this occurred.`
-            : `A jest worker process (pid=${this._child.pid}) crashed for an unknown reason: exitCode=${exitCode}`,
+          signal == null
+            ? `A jest worker process (pid=${this._child.pid}) crashed for an unknown reason: exitCode=${exitCode}`
+            : `A jest worker process (pid=${this._child.pid}) was terminated by another process: signal=${signal}, exitCode=${exitCode}. Operating system logs may contain more information on why this occurred.`,
         );
 
         this._onProcessEnd(error, null);
@@ -486,7 +486,7 @@ export default class ChildProcessWorker
    * @returns Process id.
    */
   getWorkerSystemId(): number {
-    return this._child.pid;
+    return this._child.pid!;
   }
 
   getStdout(): NodeJS.ReadableStream | null {
