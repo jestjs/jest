@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM to v22 ([#13825](https://github.com/jestjs/jest/pull/13825))
 - `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
 
 ### Fixes
