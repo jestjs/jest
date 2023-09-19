@@ -355,7 +355,7 @@ export const makeSingleTestResult = (
     const stackLine = stackLines[1];
     let parsedLine = stackUtils.parseLine(stackLine);
     if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
-      const stackLine = stackLines[4];
+      const stackLine = stackLines[2];
       parsedLine = stackUtils.parseLine(stackLine);
     }
     if (

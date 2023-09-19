@@ -228,7 +228,7 @@ const isAnyOrAnything = (input: object) =>
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   const mergedOutput = Array.from(target);
 
-  source.forEach((sourceElement, index) => {
+  for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];
 
     if (Array.isArray(target[index]) && Array.isArray(sourceElement)) {
@@ -239,7 +239,7 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
       // Source does not exist in target or target is primitive and cannot be deep merged
       mergedOutput[index] = sourceElement;
     }
-  });
+  }
 
   return mergedOutput;
 };
@@ -249,7 +249,7 @@ export const deepMerge = (target: any, source: any): any => {
   if (isObject(target) && isObject(source)) {
     const mergedOutput = {...target};
 
-    Object.keys(source).forEach(key => {
+    for (const key of Object.keys(source)) {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (key in target) {
           mergedOutput[key] = deepMerge(target[key], source[key]);
@@ -261,7 +261,7 @@ export const deepMerge = (target: any, source: any): any => {
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
-    });
+    }
 
     return mergedOutput;
   } else if (Array.isArray(target) && Array.isArray(source)) {

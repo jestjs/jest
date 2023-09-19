@@ -77,10 +77,10 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
 
   const winner = results[0];
 
-  results.forEach((item, index) => {
+  for (const [index, item] of results.entries()) {
     item.isWinner = index === 0;
     item.isLoser = index === results.length - 1;
-  });
+  }
 
   function log(current) {
     let message = current.name;
@@ -124,7 +124,7 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
   }
 
   console.log(`${name}: `);
-  results.forEach(log);
+  for (const r of results) log(r);
   console.log();
 }
 

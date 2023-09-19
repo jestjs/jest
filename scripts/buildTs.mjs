@@ -32,7 +32,7 @@ const workspacesWithTs = new Map(
     .map(({location, name}) => [name, location]),
 );
 
-packagesWithTs.forEach(({packageDir, pkg}) => {
+for (const {packageDir, pkg} of packagesWithTs) {
   assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
   assert.strictEqual(
@@ -148,7 +148,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
       ),
     );
   }
-});
+}
 
 const args = [
   'tsc',

@@ -83,7 +83,7 @@ const testModes = ({
   const globalConfig = makeGlobalConfig({notify: true, notifyMode, rootDir});
 
   let previousContext = initialContext;
-  arl.forEach((ar, i) => {
+  for (const [i, ar] of arl.entries()) {
     const newContext: ReporterContext = Object.assign(previousContext, {
       firstRun: i === 0,
       previousSuccess: previousContext.previousSuccess,
@@ -111,7 +111,7 @@ const testModes = ({
     if (ar.numTotalTests === 0) {
       expect(notify.notify).not.toHaveBeenCalled();
     }
-  });
+  }
 
   const calls: Array<any> = notify.notify.mock.calls;
   expect(
