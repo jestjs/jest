@@ -53,7 +53,7 @@ export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  constructor(_options?: TestSequencerOptions) {}
+  constructor(_options: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
