@@ -175,7 +175,6 @@ export default class SnapshotState {
   }
 
   getUncheckedCount(): number {
-    // eslint-disable-next-line unicorn/explicit-length-check
     return this._uncheckedKeys.size || 0;
   }
 
