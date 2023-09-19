@@ -13,6 +13,7 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
+- `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
 
 ## 29.7.0
 
@@ -34,9 +35,6 @@
 ### Chore & Maintenance
 
 - `[jest-cli]` Move internal config initialisation logic to the `create-jest` package ([#14465](https://github.com/jestjs/jest/pull/14453))
-- `[jest-cli]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
-- `[jest-types]` [**BREAKING**] Remove deprecated `init` option ([#14490](https://github.com/jestjs/jest/pull/14490))
-- `[jest-config]` Add deprecation notice for the `init` option ([#14490](https://github.com/jestjs/jest/pull/14490))
 
 ## 29.6.4
 
