@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x, 20.x]
-    name: Node v${{ matrix.node-version }} on ${{ inputs.os }}
+    name: Node v${{ matrix.node-version }}
     runs-on: ${{ inputs.os }}
 
     steps:
@@ -39,7 +39,7 @@ jobs:
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
 
   test-jasmine:
-    name: Node LTS on ${{ inputs.os }} using jest-jasmine2
+    name: Node LTS using jest-jasmine2
     runs-on: ${{ inputs.os }}
 
     steps:
