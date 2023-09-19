@@ -52,7 +52,7 @@ type ShardPositionOptions = ShardOptions & {
 export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-useless-constructor
   constructor(_options: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
