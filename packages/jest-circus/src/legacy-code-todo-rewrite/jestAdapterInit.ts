@@ -158,7 +158,7 @@ export const runAndTransformResultsToJestFormat = async ({
       } else if (testResult.status === 'todo') {
         status = 'todo';
         numTodoTests += 1;
-      } else if (testResult.errors.length) {
+      } else if (testResult.errors.length > 0) {
         status = 'failed';
         numFailingTests += 1;
       } else {
@@ -197,7 +197,7 @@ export const runAndTransformResultsToJestFormat = async ({
   );
   let testExecError;
 
-  if (runResult.unhandledErrors.length) {
+  if (runResult.unhandledErrors.length > 0) {
     testExecError = {
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
@@ -261,7 +261,7 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
+  if (suppressedErrors.length > 0) {
     test.errors = test.errors.concat(suppressedErrors);
   }
 };

@@ -109,9 +109,9 @@ export const printReceivedConstructorNameNot = (
   expected: Function,
 ): string =>
   typeof expected.name === 'string' &&
-  expected.name.length !== 0 &&
+  expected.name.length > 0 &&
   typeof received.name === 'string' &&
-  received.name.length !== 0
+  received.name.length > 0
     ? `${printConstructorName(label, received, true, false)} ${
         Object.getPrototypeOf(received) === expected
           ? 'extends'

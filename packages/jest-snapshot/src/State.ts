@@ -152,7 +152,7 @@ export default class SnapshotState {
       saved: false,
     };
 
-    if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
+    if ((this._dirty || this._uncheckedKeys.size > 0) && !isEmpty) {
       if (hasExternalSnapshots) {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
@@ -175,6 +175,7 @@ export default class SnapshotState {
   }
 
   getUncheckedCount(): number {
+    // eslint-disable-next-line unicorn/explicit-length-check
     return this._uncheckedKeys.size || 0;
   }
 
@@ -183,7 +184,7 @@ export default class SnapshotState {
   }
 
   removeUncheckedKeys(): void {
-    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
+    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size > 0) {
       this._dirty = true;
       this._uncheckedKeys.forEach(key => delete this._snapshotData[key]);
       this._uncheckedKeys.clear();

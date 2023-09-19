@@ -144,7 +144,7 @@ function findNative(
     args.push('-type', 'f');
   }
 
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push('(');
   }
   extensions.forEach((ext, index) => {
@@ -154,7 +154,7 @@ function findNative(
     args.push('-iname');
     args.push(`*.${ext}`);
   });
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push(')');
   }
 
