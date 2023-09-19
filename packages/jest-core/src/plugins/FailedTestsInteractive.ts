@@ -84,16 +84,16 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
       return failedTestPaths;
     }
 
-    results.testResults.forEach(testResult => {
-      testResult.testResults.forEach(result => {
+    for (const testResult of results.testResults) {
+      for (const result of testResult.testResults) {
         if (result.status === 'failed') {
           failedTestPaths.push({
             fullName: result.fullName,
             path: testResult.testFilePath,
           });
         }
-      });
-    });
+      }
+    }
 
     return failedTestPaths;
   }

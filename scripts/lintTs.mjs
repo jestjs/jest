@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable sort-keys */
+
 import * as os from 'os';
 import * as path from 'path';
 import * as url from 'url';
@@ -83,21 +85,22 @@ try {
           fix,
           fixTypes: ['problem', 'suggestion', 'layout'],
           overrideConfig: {
-            extends: [
-              'plugin:@typescript-eslint/recommended-requiring-type-checking',
-            ],
+            extends: ['plugin:@typescript-eslint/recommended-type-checked'],
             overrides: [
               {
                 files: ['**/__tests__/**'],
                 plugins: ['jest'],
                 rules: {
                   '@typescript-eslint/unbound-method': 'off',
+                  '@typescript-eslint/no-empty-function': 'off',
+                  '@typescript-eslint/no-non-null-assertion': 'off',
                   'jest/unbound-method': 'error',
                 },
               },
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {
+              EXPERIMENTAL_useProjectService: true,
               project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
               tsconfigRootDir: monorepoRoot,
             },
@@ -115,6 +118,17 @@ try {
               '@typescript-eslint/return-await': 'error',
               '@typescript-eslint/strict-boolean-expressions': 'error',
               '@typescript-eslint/switch-exhaustiveness-check': 'error',
+
+              // TODO: enable these
+              '@typescript-eslint/no-explicit-any': 'off',
+              '@typescript-eslint/no-redundant-type-constituents': 'off',
+              '@typescript-eslint/no-duplicate-type-constituents': 'off',
+              '@typescript-eslint/no-base-to-string': 'off',
+
+              // disable the ones we disable in main config
+              '@typescript-eslint/no-invalid-void-type': 'off',
+              '@typescript-eslint/no-dynamic-delete': 'off',
+              '@typescript-eslint/no-var-requires': 'off',
             },
           },
         });

@@ -318,11 +318,11 @@ Testing.`;
       'Internet Explorer',
     ];
 
-    browsers.forEach(browser => {
+    for (const browser of browsers) {
       const li = document.createElement('li');
       li.textContent = browser;
       fragment.appendChild(li);
-    });
+    }
 
     expect(fragment).toPrettyPrintTo(
       [

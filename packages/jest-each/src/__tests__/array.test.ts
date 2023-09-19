@@ -39,7 +39,7 @@ const getGlobalTestMocks = () => {
 };
 
 describe('jest-each', () => {
-  [
+  for (const keyPath of [
     ['test'],
     ['test', 'concurrent'],
     ['test', 'concurrent', 'only'],
@@ -51,7 +51,7 @@ describe('jest-each', () => {
     ['describe'],
     ['fdescribe'],
     ['describe', 'only'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('throws an error when not called with an array', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -415,7 +415,7 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 
   describe('done callback', () => {
     test.each([
@@ -459,7 +459,7 @@ describe('jest-each', () => {
     );
   });
 
-  [
+  for (const keyPath of [
     ['xtest'],
     ['test', 'skip'],
     ['test', 'concurrent', 'skip'],
@@ -467,7 +467,7 @@ describe('jest-each', () => {
     ['it', 'skip'],
     ['xdescribe'],
     ['describe', 'skip'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -551,5 +551,5 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 });
