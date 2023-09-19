@@ -8,7 +8,7 @@
 import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
 import {jestExpect} from '@jest/expect';
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
@@ -61,8 +61,9 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
-  // eslint-disable-next-line no-restricted-globals
-  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const retryTimes =
+    // eslint-disable-next-line no-restricted-globals
+    parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
   const deferredRetryTests = [];
 
   if (rng) {

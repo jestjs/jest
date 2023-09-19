@@ -63,7 +63,6 @@ export default class LeakDetector {
   }
 
   private _runGarbageCollector() {
-    // @ts-expect-error: not a function on `globalThis`
     const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.

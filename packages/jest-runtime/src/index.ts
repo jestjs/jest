@@ -942,6 +942,7 @@ export default class Runtime {
       exports: {},
       filename: modulePath,
       id: modulePath,
+      isPreloading: false,
       loaded: false,
       path: path.dirname(modulePath),
     };
@@ -966,9 +967,7 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
     if (to) {
-      const require = (
-        nativeModule.createRequire ?? nativeModule.createRequireFromPath
-      )(from);
+      const require = nativeModule.createRequire(from);
       if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
         return require(to);
       }
@@ -1054,6 +1053,7 @@ export default class Runtime {
         exports: {},
         filename: modulePath,
         id: modulePath,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(modulePath),
       };
@@ -1803,6 +1803,7 @@ export default class Runtime {
         exports: {},
         filename,
         id: filename,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(filename),
       });
@@ -1820,24 +1821,6 @@ export default class Runtime {
 
     if ('createRequire' in nativeModule) {
       Module.createRequire = createRequire;
-    }
-    if ('createRequireFromPath' in nativeModule) {
-      Module.createRequireFromPath = function createRequireFromPath(
-        filename: string | URL,
-      ) {
-        if (typeof filename !== 'string') {
-          const error: NodeJS.ErrnoException = new TypeError(
-            `The argument 'filename' must be string. Received '${filename}'.${
-              filename instanceof URL
-                ? ' Use createRequire for URL filename.'
-                : ''
-            }`,
-          );
-          error.code = 'ERR_INVALID_ARG_TYPE';
-          throw error;
-        }
-        return createRequire(filename);
-      };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
       // cast since TS seems very confused about whether it exists or not

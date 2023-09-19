@@ -12,6 +12,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
+
 ## 29.7.0
 
 ### Features
