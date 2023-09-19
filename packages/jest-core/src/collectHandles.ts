@@ -164,7 +164,7 @@ export function formatHandleErrors(
 ): Array<string> {
   const stacks = new Map<string, {stack: string; names: Set<string>}>();
 
-  errors.forEach(err => {
+  for (const err of errors) {
     const formatted = formatExecError(
       err,
       config,
@@ -179,14 +179,14 @@ export function formatHandleErrors(
     const ansiFree: string = stripAnsi(formatted);
     const match = ansiFree.match(/\s+at(.*)/);
     if (!match || match.length < 2) {
-      return;
+      continue;
     }
 
     const stackText = ansiFree.slice(ansiFree.indexOf(match[1])).trim();
 
     const name = ansiFree.match(/(?<=● {2}).*$/m);
     if (name == null || name.length === 0) {
-      return;
+      continue;
     }
 
     const stack = stacks.get(stackText) || {
@@ -197,7 +197,7 @@ export function formatHandleErrors(
     stack.names.add(name[0]);
 
     stacks.set(stackText, stack);
-  });
+  }
 
   return Array.from(stacks.values()).map(({stack, names}) =>
     stack.replace('%%OBJECT_NAME%%', Array.from(names).join(',')),
