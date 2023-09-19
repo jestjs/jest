@@ -62,7 +62,7 @@ export default async function jasmine2(
         const it = original(testName, fn, timeout);
 
         if (stack.getFileName()?.startsWith(jestEachBuildDir)) {
-          stack = getCallsite(4, sourcemaps);
+          stack = getCallsite(2, sourcemaps);
         }
         // @ts-expect-error: `it` is `void` for some reason
         it.result.__callsite = stack;
