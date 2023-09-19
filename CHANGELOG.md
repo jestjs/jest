@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[@jest/schemas]` Upgrade `@sinclair/typebox` to v0.31 ([#14219](https://github.com/jestjs/jest/pull/14219))
 - `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
 
 ### Fixes
