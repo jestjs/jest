@@ -14,6 +14,9 @@ jobs:
       matrix:
         node-version: [16.x, 18.x, 20.x]
         shard: ['1/4', '2/4', '3/4', '4/4']
+        include:
+          - os: ${{ inputs.os == 'macos-latest' }}
+            shard: ['1/3', '2/3', '3/3']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
 
