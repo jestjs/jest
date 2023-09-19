@@ -77,7 +77,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/build/runner.js",
       "transform": [
         [
           "\\\\.[jt]sx?$",

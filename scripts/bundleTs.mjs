@@ -18,7 +18,7 @@ import fs from 'graceful-fs';
 import {sync as pkgDir} from 'pkg-dir';
 import prettier from 'prettier';
 import {rimraf} from 'rimraf';
-import {getPackages} from './buildUtils.mjs';
+import {copyrightSnippet, getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
   fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
@@ -26,15 +26,6 @@ const prettierConfig = prettier.resolveConfig.sync(
 
 const require = createRequire(import.meta.url);
 const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
-
-const copyrightSnippet = `
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-`.trim();
 
 const typesNodeReferenceDirective = '/// <reference types="node" />';
 

@@ -6,5 +6,6 @@
  */
 
 // Allow people to use `jest-circus/runner` as a runner.
-const runner = require('./build/legacy-code-todo-rewrite/jestAdapter').default;
-module.exports = runner;
+import runner from './legacy-code-todo-rewrite/jestAdapter';
+
+export default runner;

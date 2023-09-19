@@ -60,6 +60,9 @@ export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
+// we wanna avoid webpack trying to be clever
+const requireResolve = (module: string) => require.resolve(module);
+
 function verifyDirectoryExists(path: string, key: string) {
   try {
     const rootStat = statSync(path);
@@ -525,7 +528,7 @@ export default async function normalize(
   }
 
   options.testEnvironment = resolveTestEnvironment({
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
     testEnvironment:
       options.testEnvironment ||
@@ -667,7 +670,7 @@ export default async function normalize(
             option &&
             resolveRunner(newOptions.resolver, {
               filePath: option,
-              requireResolveFunction: require.resolve,
+              requireResolveFunction: requireResolve,
               rootDir: options.rootDir,
             });
         }
@@ -951,7 +954,7 @@ export default async function normalize(
               config: {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -960,7 +963,7 @@ export default async function normalize(
               config: watchPlugin[1] || {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -995,7 +998,7 @@ export default async function normalize(
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath:
       options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
   });
 

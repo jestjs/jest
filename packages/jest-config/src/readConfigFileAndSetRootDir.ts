@@ -112,7 +112,7 @@ function getRegisteredCompiler() {
 async function registerTsNode(): Promise<Service> {
   try {
     // Register TypeScript compiler instance
-    const tsNode = await import('ts-node');
+    const tsNode = await import(/* webpackIgnore: true */ 'ts-node');
     return tsNode.register({
       compilerOptions: {
         module: 'CommonJS',
