@@ -651,101 +651,99 @@ export class ModuleMocker {
       const prototypeSlots = this._getSlots(prototype);
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
-      const mockConstructor = matchArity(
-        function (this: ReturnType<T>, ...args: Parameters<T>) {
-          const mockState = mocker._ensureMockState(f);
-          const mockConfig = mocker._ensureMockConfig(f);
-          mockState.instances.push(this);
-          mockState.contexts.push(this);
-          mockState.calls.push(args);
-          // Create and record an "incomplete" mock result immediately upon
-          // calling rather than waiting for the mock to return. This avoids
-          // issues caused by recursion where results can be recorded in the
-          // wrong order.
-          const mockResult: MockFunctionResult = {
-            type: 'incomplete',
-            value: undefined,
-          };
-          mockState.results.push(mockResult);
-          mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
+      const mockConstructor = matchArity(function (
+        this: ReturnType<T>,
+        ...args: Parameters<T>
+      ) {
+        const mockState = mocker._ensureMockState(f);
+        const mockConfig = mocker._ensureMockConfig(f);
+        mockState.instances.push(this);
+        mockState.contexts.push(this);
+        mockState.calls.push(args);
+        // Create and record an "incomplete" mock result immediately upon
+        // calling rather than waiting for the mock to return. This avoids
+        // issues caused by recursion where results can be recorded in the
+        // wrong order.
+        const mockResult: MockFunctionResult = {
+          type: 'incomplete',
+          value: undefined,
+        };
+        mockState.results.push(mockResult);
+        mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
-          // Will be set to the return value of the mock if an error is not thrown
-          let finalReturnValue;
-          // Will be set to the error that is thrown by the mock (if it throws)
-          let thrownError;
-          // Will be set to true if the mock throws an error. The presence of a
-          // value in `thrownError` is not a 100% reliable indicator because a
-          // function could throw a value of undefined.
-          let callDidThrowError = false;
+        // Will be set to the return value of the mock if an error is not thrown
+        let finalReturnValue;
+        // Will be set to the error that is thrown by the mock (if it throws)
+        let thrownError;
+        // Will be set to true if the mock throws an error. The presence of a
+        // value in `thrownError` is not a 100% reliable indicator because a
+        // function could throw a value of undefined.
+        let callDidThrowError = false;
 
-          try {
-            // The bulk of the implementation is wrapped in an immediately
-            // executed arrow function so the return value of the mock function
-            // can be easily captured and recorded, despite the many separate
-            // return points within the logic.
-            finalReturnValue = (() => {
-              if (this instanceof f) {
-                // This is probably being called as a constructor
-                for (const slot of prototypeSlots) {
-                  // Copy prototype methods to the instance to make
-                  // it easier to interact with mock instance call and
-                  // return values
-                  if (prototype[slot].type === 'function') {
-                    // @ts-expect-error no index signature
-                    const protoImpl = this[slot];
-                    // @ts-expect-error no index signature
-                    this[slot] = mocker.generateFromMetadata(prototype[slot]);
-                    // @ts-expect-error no index signature
-                    this[slot]._protoImpl = protoImpl;
-                  }
+        try {
+          // The bulk of the implementation is wrapped in an immediately
+          // executed arrow function so the return value of the mock function
+          // can be easily captured and recorded, despite the many separate
+          // return points within the logic.
+          finalReturnValue = (() => {
+            if (this instanceof f) {
+              // This is probably being called as a constructor
+              for (const slot of prototypeSlots) {
+                // Copy prototype methods to the instance to make
+                // it easier to interact with mock instance call and
+                // return values
+                if (prototype[slot].type === 'function') {
+                  // @ts-expect-error no index signature
+                  const protoImpl = this[slot];
+                  // @ts-expect-error no index signature
+                  this[slot] = mocker.generateFromMetadata(prototype[slot]);
+                  // @ts-expect-error no index signature
+                  this[slot]._protoImpl = protoImpl;
                 }
-
-                // Run the mock constructor implementation
-                const mockImpl =
-                  mockConfig.specificMockImpls.length > 0
-                    ? mockConfig.specificMockImpls.shift()
-                    : mockConfig.mockImpl;
-                return mockImpl && mockImpl.apply(this, arguments);
               }
 
-              // If mockImplementationOnce()/mockImplementation() is last set,
-              // implementation use the mock
-              let specificMockImpl = mockConfig.specificMockImpls.shift();
-              if (specificMockImpl === undefined) {
-                specificMockImpl = mockConfig.mockImpl;
-              }
-              if (specificMockImpl) {
-                return specificMockImpl.apply(this, arguments);
-              }
-              // Otherwise use prototype implementation
-              if (f._protoImpl) {
-                return f._protoImpl.apply(this, arguments);
-              }
+              // Run the mock constructor implementation
+              const mockImpl =
+                mockConfig.specificMockImpls.length > 0
+                  ? mockConfig.specificMockImpls.shift()
+                  : mockConfig.mockImpl;
+              return mockImpl && mockImpl.apply(this, arguments);
+            }
 
-              return undefined;
-            })();
-          } catch (error) {
-            // Store the thrown error so we can record it, then re-throw it.
-            thrownError = error;
-            callDidThrowError = true;
-            throw error;
-          } finally {
-            // Record the result of the function.
-            // NOTE: Intentionally NOT pushing/indexing into the array of mock
-            //       results here to avoid corrupting results data if mockClear()
-            //       is called during the execution of the mock.
-            // @ts-expect-error reassigning 'incomplete'
-            mockResult.type = callDidThrowError ? 'throw' : 'return';
-            mockResult.value = callDidThrowError
-              ? thrownError
-              : finalReturnValue;
-          }
+            // If mockImplementationOnce()/mockImplementation() is last set,
+            // implementation use the mock
+            let specificMockImpl = mockConfig.specificMockImpls.shift();
+            if (specificMockImpl === undefined) {
+              specificMockImpl = mockConfig.mockImpl;
+            }
+            if (specificMockImpl) {
+              return specificMockImpl.apply(this, arguments);
+            }
+            // Otherwise use prototype implementation
+            if (f._protoImpl) {
+              return f._protoImpl.apply(this, arguments);
+            }
 
-          return finalReturnValue;
-        },
-        // eslint-disable-next-line unicorn/explicit-length-check
-        metadata.length || 0,
-      );
+            return undefined;
+          })();
+        } catch (error) {
+          // Store the thrown error so we can record it, then re-throw it.
+          thrownError = error;
+          callDidThrowError = true;
+          throw error;
+        } finally {
+          // Record the result of the function.
+          // NOTE: Intentionally NOT pushing/indexing into the array of mock
+          //       results here to avoid corrupting results data if mockClear()
+          //       is called during the execution of the mock.
+          // @ts-expect-error reassigning 'incomplete'
+          mockResult.type = callDidThrowError ? 'throw' : 'return';
+          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
+        }
+
+        return finalReturnValue;
+      },
+      metadata.length || 0);
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
