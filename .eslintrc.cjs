@@ -40,10 +40,7 @@ module.exports = {
   },
   overrides: [
     {
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'plugin:import/typescript',
-      ],
+      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
@@ -60,9 +57,11 @@ module.exports = {
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        '@typescript-eslint/no-dynamic-delete': 'off',
         // TODO: enable at some point
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
 
         // TODO: part of "stylistic" rules, remove explicit activation when that lands
         '@typescript-eslint/no-empty-function': 'error',
@@ -350,6 +349,8 @@ module.exports = {
       files: ['**/__typetests__/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
       },
     },
     {
@@ -377,6 +378,7 @@ module.exports = {
         '**/__typetests__/**',
       ],
       rules: {
+        '@typescript-eslint/no-extraneous-class': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
