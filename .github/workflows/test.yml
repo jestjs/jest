@@ -48,11 +48,22 @@ jobs:
       matrix:
         include:
           - os: ${{ inputs.os == 'ubuntu-latest' }}
-            shard: ['1/4', '2/4', '3/4', '4/4']
+            shard:
+              - '1/4'
+              - '2/4'
+              - '3/4'
+              - '4/4'
           - os: ${{ inputs.os == 'windows-latest' }}
-            shard: ['1/4', '2/4', '3/4', '4/4']
+            shard:
+              - '1/4'
+              - '2/4'
+              - '3/4'
+              - '4/4'
           - os: ${{ inputs.os == 'macos-latest' }}
-            shard: ['1/3', '2/3', '3/3']
+            shard:
+              - '1/3'
+              - '2/3'
+              - '3/3'
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
 
