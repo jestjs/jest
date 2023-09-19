@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x, 20.x]
-    name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ github.event.inputs.shard }})
+    name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ inputs.shard }})
     runs-on: ${{ inputs.os }}
 
     steps:
@@ -36,10 +36,10 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ github.event.inputs.shard }}
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
 
   test-jasmine:
-    name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ github.event.inputs.shard }})
+    name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ inputs.shard }})
     runs-on: ${{ inputs.os }}
 
     steps:
@@ -59,4 +59,4 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ github.event.inputs.shard }}
+        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
