@@ -9,7 +9,6 @@ import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
 import {makeProjectConfig} from '@jest/test-utils';
-import type {Config} from '@jest/types';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
