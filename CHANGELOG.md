@@ -17,7 +17,7 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
-- `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542), [#12648](https://github.com/facebook/jest/pull/12648))
+- `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
 
 ## 29.7.0
