@@ -76,19 +76,19 @@ function find(
         }
         return;
       }
-      entries.forEach(entry => {
+      for (const entry of entries) {
         const file = path.join(directory, entry.name);
 
         if (ignore(file)) {
-          return;
+          continue;
         }
 
         if (entry.isSymbolicLink()) {
-          return;
+          continue;
         }
         if (entry.isDirectory()) {
           search(file);
-          return;
+          continue;
         }
 
         activeCalls++;
@@ -115,7 +115,7 @@ function find(
             callback(result);
           }
         });
-      });
+      }
 
       if (activeCalls === 0) {
         callback(result);
@@ -124,7 +124,7 @@ function find(
   }
 
   if (roots.length > 0) {
-    roots.forEach(search);
+    for (const root of roots) search(root);
   } else {
     callback(result);
   }
@@ -147,13 +147,13 @@ function findNative(
   if (extensions.length > 0) {
     args.push('(');
   }
-  extensions.forEach((ext, index) => {
+  for (const [index, ext] of extensions.entries()) {
     if (index) {
       args.push('-o');
     }
     args.push('-iname');
     args.push(`*.${ext}`);
-  });
+  }
   if (extensions.length > 0) {
     args.push(')');
   }
@@ -176,7 +176,7 @@ function findNative(
     const result: Result = [];
     let count = lines.length;
     if (count) {
-      lines.forEach(path => {
+      for (const path of lines) {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
           if (!err && stat && !stat.isDirectory()) {
@@ -186,7 +186,7 @@ function findNative(
             callback(result);
           }
         });
-      });
+      }
     } else {
       callback([]);
     }
@@ -213,7 +213,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     const callback = (list: Result) => {
       const files = new Map();
       const removedFiles = new Map(data.files);
-      list.forEach(fileData => {
+      for (const fileData of list) {
         const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
         const existingFile = data.files.get(relativeFilePath);
@@ -224,7 +224,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
           files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
         }
         removedFiles.delete(relativeFilePath);
-      });
+      }
       data.files = files;
 
       resolve({

@@ -17,11 +17,11 @@ const getKeysOfEnumerableProperties = (
     compareKeys === null ? rawKeys : rawKeys.sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
-    Object.getOwnPropertySymbols(object).forEach(symbol => {
+    for (const symbol of Object.getOwnPropertySymbols(object)) {
       if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
-    });
+    }
   }
 
   return keys as Array<string>;

@@ -26,10 +26,10 @@ export function setupLandingAnimation() {
 
   function positionCards() {
     const handWidth = hand.offsetWidth;
-    cards.forEach(card => {
+    for (const card of cards) {
       const offset = parseInt(card.dataset.index, 10) - 2;
       card.parentElement.style.transform = cardTransform(offset, handWidth);
-    });
+    }
   }
 
   const results = [];
@@ -43,15 +43,15 @@ export function setupLandingAnimation() {
       } else if (results[index]) {
         card.classList.remove('jest-card-fail');
         card.classList.add('jest-card-pass');
-        card.querySelectorAll('.jest-card-label').forEach(el => {
+        for (const el of card.querySelectorAll('.jest-card-label')) {
           el.innerHTML = 'PASS';
-        });
+        }
       } else {
         card.classList.remove('jest-card-pass');
         card.classList.add('jest-card-fail');
-        card.querySelectorAll('.jest-card-label').forEach(el => {
+        for (const el of card.querySelectorAll('.jest-card-label')) {
           el.innerHTML = 'FAIL';
-        });
+        }
       }
     }, minTime);
 
@@ -76,7 +76,7 @@ export function setupLandingAnimation() {
 
   function forceRun(minTime) {
     let fails = 0;
-    cards.forEach((card, index) => {
+    for (const [index, card] of cards.entries()) {
       card.classList.add('jest-card-running');
       const result = index === 2 || fails > 1 || Math.random() > 0.25;
       if (!result) {
@@ -84,7 +84,7 @@ export function setupLandingAnimation() {
       }
       results[index] = result;
       resolveRun(card, index, minTime);
-    });
+    }
   }
 
   function runTest(card, index) {
@@ -162,12 +162,8 @@ export function setupLandingAnimation() {
       clickButton.text = button.title;
       clickButton.className = 'button button--primary button--outline landing';
       clickButton.onclick = () => {
-        document
-          .querySelectorAll('.matchers .button.landing')
-          .forEach(
-            b =>
-              (b.className = 'button button--primary button--outline landing')
-          );
+        for (const b of document.querySelectorAll('.matchers .button.landing'))
+          b.className = 'button button--primary button--outline landing';
         clickButton.className =
           'button button--primary button--outline landing button--active';
         screenshotImg.style.opacity = 0.5;
@@ -188,12 +184,12 @@ export function setupLandingAnimation() {
   // we can't make the screenshots clickable. This fixes that with client-side
   // JS. Let's call it progressive enhancement, sure.
   function makeScreenshotsClickable() {
-    document.querySelectorAll('.blockImage img').forEach(img => {
+    for (const img of document.querySelectorAll('.blockImage img')) {
       img.style.cursor = 'pointer';
       img.onclick = () => {
         document.location = img.src;
       };
-    });
+    }
   }
 
   let resizeTimeout;

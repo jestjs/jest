@@ -20,7 +20,7 @@ function getValuesCurrentTestCases(
   let numPendingTests = 0;
   let numTodoTests = 0;
   let numTotalTests = 0;
-  currentTestCases.forEach(testCase => {
+  for (const testCase of currentTestCases) {
     switch (testCase.testCaseResult.status) {
       case 'failed': {
         numFailingTests++;
@@ -40,7 +40,7 @@ function getValuesCurrentTestCases(
       }
     }
     numTotalTests++;
-  });
+  }
 
   return {
     numFailingTests,
