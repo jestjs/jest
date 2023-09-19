@@ -12,7 +12,6 @@ import yargs = require('yargs');
 import {getVersion, runCLI} from '@jest/core';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {runCreate} from 'create-jest';
 import {deprecationEntries} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
@@ -24,12 +23,6 @@ export async function run(
 ): Promise<void> {
   try {
     const argv = await buildArgv(maybeArgv);
-
-    if (argv.init) {
-      await runCreate();
-      return;
-    }
-
     const projects = getProjectListFromCLIArgs(argv, project);
 
     const {results, globalConfig} = await runCLI(argv, projects);

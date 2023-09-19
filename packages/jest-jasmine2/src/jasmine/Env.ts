@@ -284,13 +284,13 @@ export default function jasmineEnv(j$: Jasmine) {
         j$.process.removeListener('unhandledRejection', uncaught);
 
         // restore previous exception handlers
-        oldListenersException.forEach(listener => {
+        for (const listener of oldListenersException) {
           j$.process.on('uncaughtException', listener);
-        });
+        }
 
-        oldListenersRejection.forEach(listener => {
+        for (const listener of oldListenersRejection) {
           j$.process.on('unhandledRejection', listener);
-        });
+        }
       };
 
       this.execute = async function (runnablesToRun, suiteTree = topSuite) {

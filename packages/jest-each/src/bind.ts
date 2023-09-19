@@ -51,7 +51,7 @@ export default function bind<EachCallback extends Global.TestCallback>(
           ? buildArrayTests(title, table)
           : buildTemplateTests(title, table, taggedTemplateData);
 
-        return tests.forEach(row =>
+        for (const row of tests) {
           needsEachError
             ? cb(
                 row.title,
@@ -63,8 +63,10 @@ export default function bind<EachCallback extends Global.TestCallback>(
                 row.title,
                 applyArguments(supportsDone, row.arguments, test),
                 timeout,
-              ),
-        );
+              );
+        }
+
+        return;
       } catch (e: any) {
         const err = new Error(e.message);
         err.stack = error.stack?.replace(/^Error: /s, `Error: ${e.message}`);

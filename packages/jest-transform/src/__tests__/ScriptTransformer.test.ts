@@ -438,7 +438,7 @@ describe('ScriptTransformer', () => {
       [[], '/fruits/grapefruit.js'],
     ];
 
-    incorrectReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of incorrectReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -448,11 +448,11 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
 
     const correctReturnValues = [[{code: 'code'}, '/fruits/kiwi.js']];
 
-    correctReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of correctReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -462,7 +462,7 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
-    });
+    }
   });
 
   it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {
