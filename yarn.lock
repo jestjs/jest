@@ -2877,7 +2877,7 @@ __metadata:
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -2888,7 +2888,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     expect: "workspace:^"
     jest-snapshot: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -2898,7 +2898,7 @@ __metadata:
   dependencies:
     "@jest/test-utils": "workspace:^"
     "@jest/types": "workspace:^"
-    "@sinonjs/fake-timers": ^10.0.2
+    "@sinonjs/fake-timers": ^11.1.0
     "@types/node": "*"
     "@types/sinonjs__fake-timers": ^8.1.2
     jest-message-util: "workspace:^"
@@ -2973,7 +2973,7 @@ __metadata:
     jest-changed-files: "workspace:^"
     jest-junit: ^16.0.0
     jest-mock: "workspace:^"
-    jest-runner-tsd: ^5.0.0
+    jest-runner-tsd: ^6.0.0
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:^"
@@ -3045,7 +3045,7 @@ __metadata:
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -3192,7 +3192,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -4343,12 +4343,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^10.0.2":
-  version: 10.3.0
-  resolution: "@sinonjs/fake-timers@npm:10.3.0"
+"@sinonjs/fake-timers@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@sinonjs/fake-timers@npm:11.1.0"
   dependencies:
     "@sinonjs/commons": ^3.0.0
-  checksum: 614d30cb4d5201550c940945d44c9e0b6d64a888ff2cd5b357f95ad6721070d6b8839cd10e15b76bf5e14af0bcc1d8f9ec00d49a46318f1f669a4bec1d7f3148
+  checksum: 9f7690720e640f3abb19e0538b3feab176dc26759397da100e8e1532e617667934693aadfcdd4c42b553963adec4ca6cd70531a5a4853e738d971ad8828a0178
   languageName: node
   linkType: hard
 
@@ -5241,12 +5241,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:17.0.2":
-  version: 17.0.2
-  resolution: "@types/react-test-renderer@npm:17.0.2"
+"@types/react-test-renderer@npm:^18.0.1":
+  version: 18.0.2
+  resolution: "@types/react-test-renderer@npm:18.0.2"
   dependencies:
-    "@types/react": ^17
-  checksum: 0be325798b6b38cc31fbb11f2f1e1a5578cc3b23eddf1ddd1ab58ccf50966e8f779383084d8bc3a7db3108ad815af8fbae5c0f54329a88d52200e01547d85c33
+    "@types/react": "*"
+  checksum: 2845b05adcb28180e530b63c47495b2c0beb1a669a0ce962dcfa6ed5b88d37c8438de1f29cb2e599b5f229307a4479e424677407111a571bbcab06bd538ea1df
   languageName: node
   linkType: hard
 
@@ -8055,7 +8055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest@workspace:^, create-jest@workspace:packages/create-jest":
+"create-jest@workspace:packages/create-jest":
   version: 0.0.0-use.local
   resolution: "create-jest@workspace:packages/create-jest"
   dependencies:
@@ -9758,7 +9758,7 @@ __metadata:
     jest: "workspace:^"
     jest-environment-jsdom: "workspace:^"
     react: 18.2.0
-    react-dom: ^18.2.0
+    react-dom: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9773,7 +9773,7 @@ __metadata:
     jest: "workspace:^"
     jest-environment-jsdom: "workspace:^"
     react: 18.2.0
-    react-dom: ^18.2.0
+    react-dom: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9786,8 +9786,8 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 17.0.2
-    react-test-renderer: 17.0.2
+    react: 18.2.0
+    react-test-renderer: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9815,7 +9815,7 @@ __metadata:
     jest: "workspace:^"
     jest-environment-jsdom: "workspace:^"
     react: 18.2.0
-    react-dom: ^18.2.0
+    react-dom: 18.2.0
     typescript: ^5.0.4
   languageName: unknown
   linkType: soft
@@ -9858,7 +9858,7 @@ __metadata:
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12496,13 +12496,12 @@ __metadata:
     "@types/exit": ^0.1.30
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    create-jest: "workspace:^"
     exit: ^0.1.2
     import-local: ^3.0.2
     jest-config: "workspace:^"
     jest-util: "workspace:^"
     jest-validate: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -12746,7 +12745,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     "@types/node": "*"
     jest-util: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12839,21 +12838,21 @@ __metadata:
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
     slash: ^3.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "jest-runner-tsd@npm:5.0.0"
+"jest-runner-tsd@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "jest-runner-tsd@npm:6.0.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
     create-jest-runner: ^0.12.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 697db424f8588218eeac9f82ae4c34f79dbbdc2453e19a866a00062f1ea571e24225203cad7e09bdc0c343084997947af3be638a0dc7ce38d866569f5234cf0a
+  checksum: fb2cf2bfc3ea8b00ffba80aaa3e9c4d1e0ee3597ecadc135ec220e5576d28e610eade3e62d4134584a7e72fea1308e292f7ae2a9e2ebdf70666e4fa64c19ce39
   languageName: node
   linkType: hard
 
@@ -12888,7 +12887,7 @@ __metadata:
     jest-worker: "workspace:^"
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12978,7 +12977,7 @@ __metadata:
     prettier: ^2.1.1
     pretty-format: "workspace:^"
     semver: ^7.5.3
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -13084,14 +13083,14 @@ __metadata:
     "@docusaurus/preset-classic": 3.0.0-beta.0
     "@docusaurus/remark-plugin-npm2yarn": 3.0.0-beta.0
     "@docusaurus/tsconfig": 3.0.0-beta.0
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.0
     clsx: ^2.0.0
     docusaurus-remark-plugin-tab-blocks: ^2.0.0-beta
     graphql: ^16.3.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    react: 18.2.0
+    react-dom: 18.2.0
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
     react-markdown: ^8.0.0
@@ -13113,7 +13112,7 @@ __metadata:
     jest-util: "workspace:^"
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
@@ -13158,7 +13157,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     import-local: ^3.0.2
     jest-cli: "workspace:^"
-    tsd-lite: ^0.7.0
+    tsd-lite: ^0.8.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -17179,16 +17178,16 @@ __metadata:
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
     "@jest/schemas": "workspace:^"
-    "@types/react": ^17.0.3
+    "@types/react": ^18.2.0
     "@types/react-is": ^18.0.0
-    "@types/react-test-renderer": 17.0.2
+    "@types/react-test-renderer": ^18.0.1
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
     jest-util: "workspace:^"
-    react: 17.0.2
-    react-dom: ^17.0.1
+    react: 18.2.0
+    react-dom: 18.2.0
     react-is: ^18.0.0
-    react-test-renderer: 17.0.2
+    react-test-renderer: 18.2.0
   languageName: unknown
   linkType: soft
 
@@ -17551,20 +17550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^17.0.1":
-  version: 17.0.2
-  resolution: "react-dom@npm:17.0.2"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    scheduler: ^0.20.2
-  peerDependencies:
-    react: 17.0.2
-  checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^18.2.0":
+"react-dom@npm:18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
@@ -17631,7 +17617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.1, react-is@npm:^17.0.2":
+"react-is@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
@@ -17796,7 +17782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-shallow-renderer@npm:^16.13.1, react-shallow-renderer@npm:^16.15.0":
+"react-shallow-renderer@npm:^16.15.0":
   version: 16.15.0
   resolution: "react-shallow-renderer@npm:16.15.0"
   dependencies:
@@ -17805,20 +17791,6 @@ __metadata:
   peerDependencies:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: 6052c7e3e9627485120ebd8257f128aad8f56386fe8d42374b7743eac1be457c33506d153c7886b4e32923c0c352d402ab805ef9ca02dbcd8393b2bdeb6e5af8
-  languageName: node
-  linkType: hard
-
-"react-test-renderer@npm:17.0.2":
-  version: 17.0.2
-  resolution: "react-test-renderer@npm:17.0.2"
-  dependencies:
-    object-assign: ^4.1.1
-    react-is: ^17.0.2
-    react-shallow-renderer: ^16.13.1
-    scheduler: ^0.20.2
-  peerDependencies:
-    react: 17.0.2
-  checksum: e6b5c6ed2a0bde2c34f1ab9523ff9bc4c141a271daf730d6b852374e83acc0155d58ab71a318251e953ebfa65b8bebb9c5dce3eba1ccfcbef7cc4e1e8261c401
   languageName: node
   linkType: hard
 
@@ -17848,17 +17820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.2":
-  version: 17.0.2
-  resolution: "react@npm:17.0.2"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
-  languageName: node
-  linkType: hard
-
-"react@npm:18.2.0, react@npm:^18.2.0":
+"react@npm:18.2.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
@@ -18627,16 +18589,6 @@ __metadata:
   dependencies:
     loose-envify: ^1.1.0
   checksum: 232149125c10f10193b1340ec4bbf14a8e6a845152790d6fd6f58207642db801abdb5a21227561a0a93871b98ba47539a6233b4e6155aae72d6db6db9f9f09b3
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.20.2":
-  version: 0.20.2
-  resolution: "scheduler@npm:0.20.2"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: c4b35cf967c8f0d3e65753252d0f260271f81a81e427241295c5a7b783abf4ea9e905f22f815ab66676f5313be0a25f47be582254db8f9241b259213e999b8fc
   languageName: node
   linkType: hard
 
@@ -20074,12 +20026,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsd-lite@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "tsd-lite@npm:0.7.0"
+"tsd-lite@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "tsd-lite@npm:0.8.0"
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 97e304de0bdc906377b213c662b48543fea7e8393f884bc1136d1b9cd731b304bdfefd513d5874b4b9c961fb6462ee40320297c38ec16b7921d0504616dd4c7f
+  checksum: 7d6b5bdb47d8dc779c66b9a6eac97ca81474b4e9d5acb52692da9e045455b731b36f9925babd98c87ad38685b3170fefef016a0cdf7c46876358c1a0421fffe3
   languageName: node
   linkType: hard
 

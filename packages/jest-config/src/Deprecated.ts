@@ -28,6 +28,11 @@ const deprecatedOptions: DeprecatedOptions = {
 
   Please update your configuration.`,
 
+  init: () =>
+    `  Option ${chalk.bold(
+      '"init"',
+    )} has been deprecated. Please use "create-jest" package as shown in the documentation: https://jestjs.io/docs/getting-started#generate-a-basic-configuration-file`,
+
   moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
     '"moduleLoader"',
   )} was replaced by ${chalk.bold('"runtime"')}.
