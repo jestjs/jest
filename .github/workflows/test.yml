@@ -44,6 +44,9 @@ jobs:
       fail-fast: false
       matrix:
         shard: ['1/4', '2/4', '3/4', '4/4']
+        include:
+          - os: ${{ inputs.os == 'macos-latest' }}
+            shard: ['1/3', '2/3', '3/3']
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
 
