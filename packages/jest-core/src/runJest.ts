@@ -159,7 +159,7 @@ export default async function runJest({
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
-  const sequencer = new Sequencer();
+  const sequencer = new Sequencer({contexts, globalConfig});
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {
@@ -294,7 +294,6 @@ export default async function runJest({
     ...testSchedulerContext,
   });
 
-  // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
   performance.mark('jest/scheduleAndRun:start', {
     detail: {numTests: allTests.length},
   });

@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
+
 ### Fixes
 
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
@@ -10,6 +12,7 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `4.5` ([#14542](https://github.com/facebook/jest/pull/14542), [#12648](https://github.com/facebook/jest/pull/12648))
 
 ## 29.7.0

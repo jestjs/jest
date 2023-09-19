@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import {
   injectGlobalErrorHandlers,
@@ -217,7 +217,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'test_retry': {
       const logErrorsBeforeRetry: boolean =
         // eslint-disable-next-line no-restricted-globals
-        global[LOG_ERRORS_BEFORE_RETRY] || false;
+        ((global as Global.Global)[LOG_ERRORS_BEFORE_RETRY] as any) || false;
       if (logErrorsBeforeRetry) {
         event.test.retryReasons.push(...event.test.errors);
       }
@@ -227,8 +227,11 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'run_start': {
       state.hasStarted = true;
       /* eslint-disable no-restricted-globals */
-      global[TEST_TIMEOUT_SYMBOL] &&
-        (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      if ((global as Global.Global)[TEST_TIMEOUT_SYMBOL]) {
+        state.testTimeout = (global as Global.Global)[
+          TEST_TIMEOUT_SYMBOL
+        ] as number;
+      }
       /* eslint-enable */
       break;
     }

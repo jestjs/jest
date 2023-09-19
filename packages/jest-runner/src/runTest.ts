@@ -353,7 +353,6 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      // @ts-expect-error - doesn't exist on globalThis
       globalThis.gc?.();
 
       result.memoryUsage = process.memoryUsage().heapUsed;
