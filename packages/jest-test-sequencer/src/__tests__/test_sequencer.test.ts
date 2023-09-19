@@ -57,10 +57,7 @@ const toTests = (paths: Array<string>) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  sequencer = new TestSequencer({
-    contexts: [],
-    globalConfig: {} as Config.GlobalConfig,
-  });
+  sequencer = new TestSequencer();
 });
 
 test('sorts by file size if there is no timing information', () => {

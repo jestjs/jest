@@ -8,6 +8,11 @@
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
+  constructor(_options) {
+    super(_options);
+    this.globalConfig = _options.globalConfig;
+  }
+
   sort(tests) {
     const copyTests = Array.from(tests);
     const seed = this.globalConfig.seed;

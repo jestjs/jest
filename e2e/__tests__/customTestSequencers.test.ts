@@ -93,7 +93,6 @@ test('run tests based on even seed', () => {
     ],
     {},
   );
-  console.log({result});
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
     .rest.replace(/PASS /g, '')

@@ -17,7 +17,7 @@ const FAIL = 0;
 const SUCCESS = 1;
 
 export type TestSequencerOptions = {
-  contexts: Array<TestContext>;
+  contexts: ReadonlyArray<TestContext>;
   globalConfig: Config.GlobalConfig;
 };
 
@@ -52,13 +52,7 @@ type ShardPositionOptions = ShardOptions & {
 export default class TestSequencer {
   private readonly _cache = new Map<TestContext, Cache>();
 
-  protected readonly globalConfig: Config.GlobalConfig;
-  protected readonly contexts: Array<TestContext>;
-
-  constructor({contexts, globalConfig}: TestSequencerOptions) {
-    this.globalConfig = globalConfig;
-    this.contexts = contexts;
-  }
+  constructor(_options?: TestSequencerOptions);
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
