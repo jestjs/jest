@@ -182,10 +182,10 @@ export function formatHandleErrors(
       return;
     }
 
-    const stackText = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+    const stackText = ansiFree.slice(ansiFree.indexOf(match[1])).trim();
 
     const name = ansiFree.match(/(?<=● {2}).*$/m);
-    if (!name?.length) {
+    if (name == null || name.length === 0) {
       return;
     }
 
