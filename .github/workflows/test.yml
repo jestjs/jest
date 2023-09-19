@@ -6,9 +6,8 @@ on:
       os:
         required: true
         type: string
-      shards:
+      shard:
         required: true
-        default: "['1/4', '2/4', '3/4', '4/4']"
         type: string
 
 jobs:
@@ -17,8 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x, 20.x]
-        shard: ${{ JSON.parse(github.event.inputs.shards) }}
-    name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
+    name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ github.event.inputs.shard }})
     runs-on: ${{ inputs.os }}
 
     steps:
@@ -38,14 +36,10 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ github.event.inputs.shard }}
 
   test-jasmine:
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: ${{ JSON.parse(github.event.inputs.shards) }}
-    name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
+    name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ github.event.inputs.shard }})
     runs-on: ${{ inputs.os }}
 
     steps:
@@ -65,4 +59,4 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ github.event.inputs.shard }}

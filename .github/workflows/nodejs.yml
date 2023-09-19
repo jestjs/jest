@@ -17,6 +17,9 @@ permissions:
 jobs:
   test-macos:
     uses: ./.github/workflows/test.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/3', '2/3', '3/3']
     with:
       os: macos-latest
-      shards: "['1/3', '2/3', '3/3']"
