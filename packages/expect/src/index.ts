@@ -100,7 +100,7 @@ const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
 };
 
 export const expect: Expect = (actual: any, ...rest: Array<any>) => {
-  if (rest.length !== 0) {
+  if (rest.length > 0) {
     throw new Error('Expect takes at most one argument.');
   }
 

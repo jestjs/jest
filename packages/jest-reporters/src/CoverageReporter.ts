@@ -75,7 +75,7 @@ export default class CoverageReporter extends BaseReporter {
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
-      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+      if (!this._globalConfig.useStderr && coverageReporters.length === 0) {
         coverageReporters.push('text-summary');
       }
       for (let reporter of coverageReporters) {
@@ -113,7 +113,7 @@ export default class CoverageReporter extends BaseReporter {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom.length > 0
       ) {
         for (const filePath of context.hasteFS.matchFilesWithGlob(
           this._globalConfig.collectCoverageFrom,
@@ -126,7 +126,7 @@ export default class CoverageReporter extends BaseReporter {
       }
     }
 
-    if (!files.length) {
+    if (files.length === 0) {
       return;
     }
 
@@ -300,7 +300,7 @@ export default class CoverageReporter extends BaseReporter {
               .map(filePath => path.resolve(filePath));
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+          if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
             return agg.concat([[file, thresholdGroup]]);
@@ -314,7 +314,7 @@ export default class CoverageReporter extends BaseReporter {
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+        if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
           return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);

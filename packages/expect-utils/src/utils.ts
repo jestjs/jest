@@ -60,7 +60,7 @@ export const getPath = (
     propertyPath = pathAsArray(propertyPath);
   }
 
-  if (propertyPath.length) {
+  if (propertyPath.length > 0) {
     const lastProp = propertyPath.length === 1;
     const prop = propertyPath[0];
     const newObject = object[prop];
@@ -482,7 +482,7 @@ export const isError = (value: unknown): value is Error => {
 };
 
 export function emptyObject(obj: unknown): boolean {
-  return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
+  return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
 }
 
 const MULTILINE_REGEXP = /[\r\n]/;

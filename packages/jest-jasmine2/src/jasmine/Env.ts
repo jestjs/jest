@@ -295,7 +295,7 @@ export default function jasmineEnv(j$: Jasmine) {
 
       this.execute = async function (runnablesToRun, suiteTree = topSuite) {
         if (!runnablesToRun) {
-          if (focusedRunnables.length) {
+          if (focusedRunnables.length > 0) {
             runnablesToRun = focusedRunnables;
           } else {
             runnablesToRun = [suiteTree.id];

@@ -301,7 +301,7 @@ export const formatPath = (
   // highlight paths from the current test file
   if (
     (config.testMatch &&
-      config.testMatch.length &&
+      config.testMatch.length > 0 &&
       micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
@@ -474,7 +474,7 @@ export const formatResultsErrors = (
     [],
   );
 
-  if (!failedResults.length) {
+  if (failedResults.length === 0) {
     return null;
   }
 
@@ -489,7 +489,7 @@ export const formatResultsErrors = (
         TITLE_INDENT +
           TITLE_BULLET +
           result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
           result.title,
       )}\n`;
 

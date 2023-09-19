@@ -670,7 +670,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     let map: ModuleMapData;
     let mocks: MockData;
     let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size) {
+    if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
       filesToProcess = hasteMap.files;
@@ -852,7 +852,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     const emitChange = () => {
-      if (eventsQueue.length) {
+      if (eventsQueue.length > 0) {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
@@ -1077,7 +1077,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       clearInterval(this._changeInterval);
     }
 
-    if (!this._watchers.length) {
+    if (this._watchers.length === 0) {
       return;
     }
 

@@ -8,15 +8,16 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import {jestExpect} from '@jest/expect';
+import type {Global} from '@jest/types';
 import type {JasmineMatchersObject} from './types';
 
 export default function jestExpectAdapter(config: {expand: boolean}): void {
   // eslint-disable-next-line no-restricted-globals
-  global.expect = jestExpect;
+  (global as Global.Global).expect = jestExpect;
   jestExpect.setState({expand: config.expand});
 
   // eslint-disable-next-line no-restricted-globals
-  const jasmine = global.jasmine;
+  const jasmine = (global as Global.Global).jasmine;
   jasmine.anything = jestExpect.anything;
   jasmine.any = jestExpect.any;
   jasmine.objectContaining = jestExpect.objectContaining;

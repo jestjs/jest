@@ -152,7 +152,7 @@ export default class SnapshotState {
       saved: false,
     };
 
-    if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
+    if ((this._dirty || this._uncheckedKeys.size > 0) && !isEmpty) {
       if (hasExternalSnapshots) {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
@@ -175,6 +175,7 @@ export default class SnapshotState {
   }
 
   getUncheckedCount(): number {
+    // eslint-disable-next-line unicorn/explicit-length-check
     return this._uncheckedKeys.size || 0;
   }
 
@@ -183,7 +184,7 @@ export default class SnapshotState {
   }
 
   removeUncheckedKeys(): void {
-    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
+    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size > 0) {
       this._dirty = true;
       for (const key of this._uncheckedKeys) delete this._snapshotData[key];
       this._uncheckedKeys.clear();
@@ -243,15 +244,15 @@ export default class SnapshotState {
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
-        if (!pass) {
+        if (pass) {
+          this.matched++;
+        } else {
           if (hasSnapshot) {
             this.updated++;
           } else {
             this.added++;
           }
           this._addSnapshot(key, receivedSerialized, {error, isInline});
-        } else {
-          this.matched++;
         }
       } else {
         this._addSnapshot(key, receivedSerialized, {error, isInline});
@@ -266,19 +267,7 @@ export default class SnapshotState {
         pass: true,
       };
     } else {
-      if (!pass) {
-        this.unmatched++;
-        return {
-          actual: removeExtraLineBreaks(receivedSerialized),
-          count,
-          expected:
-            expected !== undefined
-              ? removeExtraLineBreaks(expected)
-              : undefined,
-          key,
-          pass: false,
-        };
-      } else {
+      if (pass) {
         this.matched++;
         return {
           actual: '',
@@ -286,6 +275,18 @@ export default class SnapshotState {
           expected: '',
           key,
           pass: true,
+        };
+      } else {
+        this.unmatched++;
+        return {
+          actual: removeExtraLineBreaks(receivedSerialized),
+          count,
+          expected:
+            expected === undefined
+              ? undefined
+              : removeExtraLineBreaks(expected),
+          key,
+          pass: false,
         };
       }
     }

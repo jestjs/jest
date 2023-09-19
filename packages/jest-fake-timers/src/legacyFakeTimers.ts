@@ -224,11 +224,11 @@ export default class FakeTimers<TimerRef = unknown> {
       // Some of the immediate calls could be enqueued
       // during the previous handling of the timers, we should
       // run them as well.
-      if (this._immediates.length) {
+      if (this._immediates.length > 0) {
         this.runAllImmediates();
       }
 
-      if (this._ticks.length) {
+      if (this._ticks.length > 0) {
         this.runAllTicks();
       }
     }

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
@@ -79,7 +80,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function createProcessObject(): NodeJS.Process {
+export default function createProcessObject(): typeof Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,

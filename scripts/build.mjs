@@ -149,7 +149,7 @@ function buildFile(file, silent) {
 
 const files = process.argv.slice(2);
 
-if (files.length) {
+if (files.length > 0) {
   for (const file of files) buildFile(file);
 } else {
   const packages = getPackages();

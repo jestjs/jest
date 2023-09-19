@@ -33,7 +33,7 @@ export default function treeProcessor(options: Options): void {
     options;
 
   function isEnabled(node: TreeNode, parentEnabled: boolean) {
-    return parentEnabled || runnableIds.indexOf(node.id) !== -1;
+    return parentEnabled || runnableIds.includes(node.id);
   }
 
   function getNodeHandler(node: TreeNode, parentEnabled: boolean) {

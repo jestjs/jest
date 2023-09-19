@@ -35,8 +35,7 @@ export function setupLandingAnimation() {
   const results = [];
   const timeouts = [];
 
-  function resolveRun(card, index, minTime) {
-    minTime = minTime || 500;
+  function resolveRun(card, index, minTime = 500) {
     setTimeout(() => {
       if (index === 2) {
         results[index] = null;
