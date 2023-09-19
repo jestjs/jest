@@ -41,9 +41,9 @@ test('can press "f" to run only failed tests', () => {
   const results = extractSummaries(stderr);
 
   expect(results).toHaveLength(2);
-  results.forEach(({rest, summary}) => {
+  for (const {rest, summary} of results) {
     expect(rest).toMatchSnapshot('test results');
     expect(summary).toMatchSnapshot('test summary');
-  });
+  }
   expect(exitCode).toBe(0);
 });

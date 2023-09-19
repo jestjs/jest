@@ -60,7 +60,7 @@ const validateDeprecatedOptions = (
   deprecationEntries: DeprecatedOptions,
   argv: Config.Argv,
 ) => {
-  deprecatedOptions.forEach(opt => {
+  for (const opt of deprecatedOptions) {
     const name = opt.name;
     const message = deprecationEntries[name](argv);
     const comment = DOCUMENTATION_NOTE;
@@ -70,7 +70,7 @@ const validateDeprecatedOptions = (
     } else {
       logValidationWarning(name, message, comment);
     }
-  });
+  }
 };
 
 export default function validateCLIOptions(

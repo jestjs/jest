@@ -195,7 +195,7 @@ WatchmanWatcher.prototype.handleChangeEvent = function (resp) {
     this.emit('fresh_instance');
   }
   if (Array.isArray(resp.files)) {
-    resp.files.forEach(this.handleFileChange, this);
+    for (const file of resp.files) this.handleFileChange(file);
   }
 };
 
