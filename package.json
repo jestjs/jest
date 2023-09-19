@@ -21,7 +21,7 @@
     "@types/babel__template": "^7.0.2",
     "@types/node": "^16.10.0",
     "@types/which": "^3.0.0",
-    "@types/ws": "8.5.1",
+    "@types/ws": "8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "ansi-regex": "^5.0.1",

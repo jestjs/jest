@@ -2940,7 +2940,7 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/node": ^16.10.0
     "@types/which": ^3.0.0
-    "@types/ws": 8.5.1
+    "@types/ws": 8.5.5
     "@typescript-eslint/eslint-plugin": ^6.6.0
     "@typescript-eslint/parser": ^6.6.0
     ansi-regex: ^5.0.1
@@ -5413,16 +5413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.1":
-  version: 8.5.1
-  resolution: "@types/ws@npm:8.5.1"
-  dependencies:
-    "@types/node": "*"
-  checksum: 4f06ff8b9e61201b28e7f4bbd0b30c5eeb32ed4d2c091554efc3b3b63ab56b4630c316a394be6bd6cc36bab87d0e5225ba55d0f7b170767175c26f7c14086bf9
-  languageName: node
-  linkType: hard
-
-"@types/ws@npm:^8.5.5":
+"@types/ws@npm:8.5.5, @types/ws@npm:^8.5.5":
   version: 8.5.5
   resolution: "@types/ws@npm:8.5.5"
   dependencies:
