@@ -13,8 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x, 20.x]
-        shard: ['1/4', '2/4', '3/4', '4/4']
         include:
+          - os: ${{ inputs.os == 'ubuntu-latest' }}
+            shard: ['1/4', '2/4', '3/4', '4/4']
+          - os: ${{ inputs.os == 'windows-latest' }}
+            shard: ['1/4', '2/4', '3/4', '4/4']
           - os: ${{ inputs.os == 'macos-latest' }}
             shard: ['1/3', '2/3', '3/3']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
@@ -43,8 +46,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ['1/4', '2/4', '3/4', '4/4']
         include:
+          - os: ${{ inputs.os == 'ubuntu-latest' }}
+            shard: ['1/4', '2/4', '3/4', '4/4']
+          - os: ${{ inputs.os == 'windows-latest' }}
+            shard: ['1/4', '2/4', '3/4', '4/4']
           - os: ${{ inputs.os == 'macos-latest' }}
             shard: ['1/3', '2/3', '3/3']
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
