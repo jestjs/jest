@@ -96,7 +96,7 @@ export function getPackages() {
     }
 
     if (pkg.bin) {
-      Object.entries(pkg.bin).forEach(([binName, binPath]) => {
+      for (const [binName, binPath] of Object.entries(pkg.bin)) {
         const fullBinPath = path.resolve(packageDir, binPath);
 
         if (!fs.existsSync(fullBinPath)) {
@@ -104,7 +104,7 @@ export function getPackages() {
             `Binary in package "${pkg.name}" with name "${binName}" at ${binPath} does not exist`,
           );
         }
-      });
+      }
     }
 
     return {packageDir, pkg};

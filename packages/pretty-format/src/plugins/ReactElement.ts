@@ -18,10 +18,10 @@ import {
 // return flattened array of children.
 const getChildren = (arg: unknown, children: Array<unknown> = []) => {
   if (Array.isArray(arg)) {
-    arg.forEach(item => {
+    for (const item of arg) {
       getChildren(item, children);
-    });
-  } else if (arg != null && arg !== false) {
+    }
+  } else if (arg != null && arg !== false && arg !== '') {
     children.push(arg);
   }
   return children;

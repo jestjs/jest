@@ -48,10 +48,7 @@ test('supports a single element with non-empty string child', () => {
 });
 
 test('supports a single element with empty string child', () => {
-  assertPrintedJSX(
-    React.createElement('Mouse', null, ''),
-    '<Mouse>\n  \n</Mouse>',
-  );
+  assertPrintedJSX(React.createElement('Mouse', null, ''), '<Mouse />');
 });
 
 test('supports a single element with non-zero number child', () => {

@@ -162,7 +162,7 @@ export default class Status {
 
     const width = process.stdout.columns;
     let content = '\n';
-    this._currentTests.get().forEach(record => {
+    for (const record of this._currentTests.get()) {
       if (record) {
         const {config, testPath} = record;
 
@@ -177,7 +177,7 @@ export default class Status {
           width,
         )}\n`;
       }
-    });
+    }
 
     if (this._showStatus && this._aggregatedResults) {
       content += `\n${getSummary(this._aggregatedResults, {

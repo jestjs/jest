@@ -65,12 +65,13 @@ export async function runCLI(
 
   if (argv.clearCache) {
     // stick in a Set to dedupe the deletions
-    new Set(configs.map(config => config.cacheDirectory)).forEach(
-      cacheDirectory => {
-        fs.rmSync(cacheDirectory, {force: true, recursive: true});
-        process.stdout.write(`Cleared ${cacheDirectory}\n`);
-      },
+    const uniqueConfigDirectories = new Set(
+      configs.map(config => config.cacheDirectory),
     );
+    for (const cacheDirectory of uniqueConfigDirectories) {
+      fs.rmSync(cacheDirectory, {force: true, recursive: true});
+      process.stdout.write(`Cleared ${cacheDirectory}\n`);
+    }
 
     exit(0);
   }

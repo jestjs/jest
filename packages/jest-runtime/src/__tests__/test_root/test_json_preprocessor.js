@@ -9,6 +9,6 @@
 
 module.exports.process = source => {
   const json = JSON.parse(source);
-  Object.keys(json).forEach(k => (json[k] = k));
+  for (const k of Object.keys(json)) json[k] = k;
   return {code: JSON.stringify(json)};
 };
