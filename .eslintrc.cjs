@@ -592,11 +592,11 @@ module.exports = {
     yoda: 'off',
 
     'unicorn/explicit-length-check': 'error',
+    'unicorn/no-array-for-each': 'error',
     'unicorn/no-negated-condition': 'error',
     'unicorn/prefer-default-parameters': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/template-indent': 'error',
-    'unicorn/no-array-for-each': 'error',
   },
   settings: {
     'import/ignore': ['react-native'],
