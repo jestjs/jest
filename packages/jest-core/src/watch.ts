@@ -243,7 +243,7 @@ export default async function watch(
         isValidPath(globalConfig, filePath),
       );
 
-      if (validPaths.length) {
+      if (validPaths.length > 0) {
         const context = (contexts[index] = createContext(
           contexts[index].config,
           {hasteFS, moduleMap},

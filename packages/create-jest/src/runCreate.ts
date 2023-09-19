@@ -131,9 +131,9 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
 
   // Determine Jest config path
   const jestConfigPath =
-    existingJestConfigExt != null
-      ? getConfigFilename(existingJestConfigExt)
-      : path.join(rootDir, getConfigFilename(jestConfigFileExt));
+    existingJestConfigExt == null
+      ? path.join(rootDir, getConfigFilename(jestConfigFileExt))
+      : getConfigFilename(existingJestConfigExt);
 
   const shouldModifyScripts = results.scripts;
 

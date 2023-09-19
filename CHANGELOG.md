@@ -2,10 +2,28 @@
 
 ### Features
 
-- `[create-jest]` Add `npm init` / `yarn create` initialiser for Jest projects ([#14465](https://github.com/jestjs/jest/pull/14453))
+- `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
 
 ### Fixes
 
+- `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
+
+### Performance
+
+### Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
+
+## 29.7.0
+
+### Features
+
+- `[create-jest]` Add `npm init` / `yarn create` initialiser for Jest projects ([#14465](https://github.com/jestjs/jest/pull/14453))
+- `[jest-validate]` Allow deprecation warnings for unknown options ([#14499](https://github.com/jestjs/jest/pull/14499))
+
+### Fixes
+
+- `[jest-resolver]` Replace unmatched capture groups in `moduleNameMapper` with empty string instead of `undefined` ([#14507](https://github.com/jestjs/jest/pull/14507))
 - `[jest-snapshot]` Allow for strings as well as template literals in inline snapshots ([#14465](https://github.com/jestjs/jest/pull/14465))
 - `[@jest/test-sequencer]` Calculate test runtime if `perStats.duration` is missing ([#14473](https://github.com/jestjs/jest/pull/14473))
 

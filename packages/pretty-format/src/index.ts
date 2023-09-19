@@ -207,7 +207,7 @@ function printComplexValue(
   refs: Refs,
   hasCalledToJSON?: boolean,
 ): string {
-  if (refs.indexOf(val) !== -1) {
+  if (refs.includes(val)) {
     return '[Circular]';
   }
   refs = refs.slice();
