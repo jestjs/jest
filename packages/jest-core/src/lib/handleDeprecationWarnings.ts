@@ -30,7 +30,7 @@ export default function handleDeprecationWarnings(
         if (key === KEYS.ENTER) {
           resolve();
         } else if (
-          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].indexOf(key) !== -1
+          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].includes(key)
         ) {
           reject();
         }

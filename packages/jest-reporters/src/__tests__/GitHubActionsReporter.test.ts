@@ -90,7 +90,7 @@ describe('annotations', () => {
 
   describe('logs error annotation', () => {
     test('when an expectation fails to pass', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -104,7 +104,7 @@ describe('annotations', () => {
     });
 
     test('when a test has reference error', () => {
-      reporter['generateAnnotations'](
+      reporter.generateAnnotations(
         {...testMeta, path: '/user/project/__tests__/example.test.js:25:12'},
         {
           testResults: [
@@ -121,7 +121,7 @@ describe('annotations', () => {
     });
 
     test('when test is wrapped in describe block', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -137,7 +137,7 @@ describe('annotations', () => {
 
   describe('logs warning annotation before logging errors', () => {
     test('when test result includes retry reasons', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -198,7 +198,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -241,7 +241,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -290,7 +290,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -339,7 +339,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -400,7 +400,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -431,7 +431,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -459,7 +459,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -493,7 +493,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -527,7 +527,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -561,7 +561,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -595,7 +595,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -633,7 +633,7 @@ describe('logs', () => {
       const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
         silent: false,
       });
-      gha['generateAnnotations'] = jest.fn();
+      gha.generateAnnotations = jest.fn();
 
       gha.onTestResult(
         mockTest as Test,
@@ -677,7 +677,7 @@ describe('logs', () => {
       const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
         silent: false,
       });
-      gha['generateAnnotations'] = jest.fn();
+      gha.generateAnnotations = jest.fn();
 
       gha.onTestResult(
         mockTest as Test,

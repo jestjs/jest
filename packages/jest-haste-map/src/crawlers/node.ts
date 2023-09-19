@@ -105,7 +105,7 @@ function find(
               search(file);
             } else {
               const ext = path.extname(file).substr(1);
-              if (extensions.indexOf(ext) !== -1) {
+              if (extensions.includes(ext)) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
               }
             }
@@ -144,7 +144,7 @@ function findNative(
     args.push('-type', 'f');
   }
 
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push('(');
   }
   extensions.forEach((ext, index) => {
@@ -154,7 +154,7 @@ function findNative(
     args.push('-iname');
     args.push(`*.${ext}`);
   });
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push(')');
   }
 
@@ -175,9 +175,7 @@ function findNative(
       .filter(x => !ignore(x));
     const result: Result = [];
     let count = lines.length;
-    if (!count) {
-      callback([]);
-    } else {
+    if (count) {
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
@@ -189,6 +187,8 @@ function findNative(
           }
         });
       });
+    } else {
+      callback([]);
     }
   });
 }

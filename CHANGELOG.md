@@ -2,11 +2,17 @@
 
 ### Features
 
+- `[@jest/test-sequencer, jest-core]` [**BREAKING**] Exposes `globalConfig` & `contexts` to `TestSequencer` ([#14535](https://github.com/jestjs/jest/pull/14535), & [#14543](https://github.com/jestjs/jest/pull/14543))
+
 ### Fixes
+
+- `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 
 ### Performance
 
 ### Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 
 ## 29.7.0
 

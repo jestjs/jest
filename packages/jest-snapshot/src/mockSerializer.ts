@@ -20,7 +20,7 @@ export const serialize: NewPlugin['serialize'] = (
   const nameString = name === 'jest.fn()' ? '' : ` ${name}`;
 
   let callsString = '';
-  if (val.mock.calls.length !== 0) {
+  if (val.mock.calls.length > 0) {
     const indentationNext = indentation + config.indent;
     callsString = ` {${config.spacingOuter}${indentationNext}"calls": ${printer(
       val.mock.calls,
