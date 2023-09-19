@@ -8055,7 +8055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest@workspace:^, create-jest@workspace:packages/create-jest":
+"create-jest@workspace:packages/create-jest":
   version: 0.0.0-use.local
   resolution: "create-jest@workspace:packages/create-jest"
   dependencies:
@@ -12496,7 +12496,6 @@ __metadata:
     "@types/exit": ^0.1.30
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    create-jest: "workspace:^"
     exit: ^0.1.2
     import-local: ^3.0.2
     jest-config: "workspace:^"
