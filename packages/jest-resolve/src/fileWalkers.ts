@@ -28,7 +28,14 @@ function statSyncCached(path: string): IPathType {
     return result;
   }
 
-  const stat = fs.statSync(path, {throwIfNoEntry: false});
+  let stat;
+  try {
+    stat = fs.statSync(path, {throwIfNoEntry: false});
+  } catch (e: any) {
+    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
+      throw e;
+    }
+  }
 
   if (stat) {
     if (stat.isFile() || stat.isFIFO()) {
