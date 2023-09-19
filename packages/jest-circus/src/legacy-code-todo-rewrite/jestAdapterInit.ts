@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
 import {JestExpect, jestExpect} from '@jest/expect';
 import {
@@ -51,7 +52,7 @@ export const initialize = async ({
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: string) => T;
   testPath: string;
-  parentProcess: NodeJS.Process;
+  parentProcess: typeof Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
 }): Promise<{
@@ -62,6 +63,9 @@ export const initialize = async ({
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
+
+  getRunnerState().randomize = globalConfig.randomize;
+  getRunnerState().seed = globalConfig.seed;
 
   // @ts-expect-error: missing `concurrent` which is added later
   const globalsObject: Global.TestFrameworkGlobals = {
@@ -155,7 +159,7 @@ export const runAndTransformResultsToJestFormat = async ({
       } else if (testResult.status === 'todo') {
         status = 'todo';
         numTodoTests += 1;
-      } else if (testResult.errors.length) {
+      } else if (testResult.errors.length > 0) {
         status = 'failed';
         numFailingTests += 1;
       } else {
@@ -178,7 +182,7 @@ export const runAndTransformResultsToJestFormat = async ({
           : ancestorTitles.join(' '),
         invocations: testResult.invocations,
         location: testResult.location,
-        numPassingAsserts: 0,
+        numPassingAsserts: testResult.numPassingAsserts,
         retryReasons: testResult.retryReasons,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
@@ -194,7 +198,7 @@ export const runAndTransformResultsToJestFormat = async ({
   );
   let testExecError;
 
-  if (runResult.unhandledErrors.length) {
+  if (runResult.unhandledErrors.length > 0) {
     testExecError = {
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
@@ -238,6 +242,7 @@ const eventHandler = async (event: Circus.Event) => {
       break;
     }
     case 'test_done': {
+      event.test.numPassingAsserts = jestExpect.getState().numPassingAsserts;
       _addSuppressedErrors(event.test);
       _addExpectedAssertionErrors(event.test);
       break;
@@ -257,7 +262,7 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
+  if (suppressedErrors.length > 0) {
     test.errors = test.errors.concat(suppressedErrors);
   }
 };

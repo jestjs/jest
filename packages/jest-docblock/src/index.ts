@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -91,8 +91,7 @@ export function print({
   const keys = Object.keys(pragmas);
 
   const printedObject = keys
-    .map(key => printKeyValues(key, pragmas[key]))
-    .reduce((arr, next) => arr.concat(next), [])
+    .flatMap(key => printKeyValues(key, pragmas[key]))
     .map(keyValue => `${start} ${keyValue}${line}`)
     .join('');
 
@@ -116,7 +115,7 @@ export function print({
     head +
     line +
     (comments ? printedComments : '') +
-    (comments && keys.length ? start + line : '') +
+    (comments && keys.length > 0 ? start + line : '') +
     printedObject +
     tail
   );

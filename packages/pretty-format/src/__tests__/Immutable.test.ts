@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -929,7 +929,7 @@ describe('Immutable.Seq', () => {
 describe('Immutable.Seq lazy entries', () => {
   const expected = 'Immutable.Seq {…}';
   const object = {key0: '', key1: '1'};
-  const filterer = (value: string) => value.length !== 0;
+  const filterer = (value: string) => value.length > 0;
 
   // undefined size confirms correct criteria for lazy Seq
   test('from object properties', () => {
@@ -947,7 +947,7 @@ describe('Immutable.Seq lazy entries', () => {
 describe('Immutable.Seq lazy values', () => {
   const expected = 'Immutable.Seq […]';
   const array = ['', '1', '22'];
-  const filterer = (item: string) => item.length !== 0;
+  const filterer = (item: string) => item.length > 0;
 
   test('from Immutable.Range', () => {
     const val = Immutable.Range(1, Infinity);

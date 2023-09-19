@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -41,6 +41,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -60,6 +61,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -132,8 +134,13 @@ describe('Runtime requireModule', () => {
       'RegularModule',
     );
     expect(exports.paths.length).toBeGreaterThan(0);
-    exports.paths.forEach(path => {
-      expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
+    const root = path.parse(process.cwd()).root;
+    const globalPath = path.join(root, 'node_modules');
+    const rootIndex = exports.paths.findIndex(path => path === globalPath);
+    exports.paths.forEach((path, index) => {
+      if (index <= rootIndex) {
+        expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
+      }
     });
   });
 

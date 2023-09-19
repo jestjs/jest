@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -34,13 +34,14 @@ export default function shouldInstrument(
   filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
+  loadedFilenames?: Array<string>,
 ): boolean {
   if (!options.collectCoverage) {
     return false;
   }
 
   if (
-    config.forceCoverageMatch.length &&
+    config.forceCoverageMatch.length > 0 &&
     micromatch.any(filename, config.forceCoverageMatch)
   ) {
     return true;
@@ -61,8 +62,16 @@ export default function shouldInstrument(
   }
 
   if (
+    options.collectCoverageFrom.length === 0 &&
+    loadedFilenames != null &&
+    !loadedFilenames.includes(filename)
+  ) {
+    return false;
+  }
+
+  if (
     // still cover if `only` is specified
-    options.collectCoverageFrom.length &&
+    options.collectCoverageFrom.length > 0 &&
     !globsToMatcher(options.collectCoverageFrom)(
       replacePathSepForGlob(path.relative(config.rootDir, filename)),
     )
@@ -103,6 +112,10 @@ export default function shouldInstrument(
     if (!options.sourcesRelatedToTestsInChangedFiles.has(filename)) {
       return false;
     }
+  }
+
+  if (filename.endsWith('.json')) {
+    return false;
   }
 
   return true;

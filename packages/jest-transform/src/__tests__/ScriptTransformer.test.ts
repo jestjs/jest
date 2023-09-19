@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -81,7 +81,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -105,7 +105,7 @@ jest.mock(
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
-          code: (require('dedent') as typeof import('dedent'))`
+          code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -178,7 +178,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
       process: (content, filename) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -229,6 +229,18 @@ jest.mock(
   () => ({
     createTransformer() {
       return {process: jest.fn().mockReturnValue({code: 'code'})};
+    },
+  }),
+  {virtual: true},
+);
+
+jest.mock(
+  'async-factory',
+  () => ({
+    createTransformer() {
+      return Promise.resolve({
+        process: jest.fn().mockReturnValue({code: 'code'}),
+      });
     },
   }),
   {virtual: true},
@@ -540,6 +552,21 @@ describe('ScriptTransformer', () => {
       transform: [
         ['\\.js$', 'skipped-required-props-preprocessor-only-sync', {}],
       ],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+    expect(
+      await scriptTransformer.transformSourceAsync(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
+    ).toBeDefined();
+  });
+
+  it('handle async createTransformer', async () => {
+    config = {
+      ...config,
+      transform: [['\\.js$', 'async-factory', {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(
@@ -1239,11 +1266,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap: FixedRawSourceMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1288,11 +1315,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1337,11 +1364,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1378,11 +1405,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1418,11 +1445,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1458,11 +1485,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1556,6 +1583,45 @@ describe('ScriptTransformer', () => {
         require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
       ).createTransformer,
     ).toHaveBeenCalledWith(transformerConfig);
+  });
+
+  it('passes correct config to a preprocessor used multiple times', async () => {
+    const transformerConfig1 = {};
+    const transformerConfig2 = {};
+
+    config = Object.assign(config, {
+      transform: [
+        // same preprocessor
+        [
+          // *only* /fruits/banana.js
+          '/fruits/banana\\.js$',
+          'configureable-preprocessor',
+          transformerConfig1,
+        ],
+        [
+          // *not* /fruits/banana.js
+          '/fruits/(?!banana)\\w+\\.js$',
+          'configureable-preprocessor',
+          transformerConfig2,
+        ],
+      ],
+    });
+
+    const scriptTransformer = await createScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    expect(
+      (
+        require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
+      ).createTransformer,
+    ).toHaveBeenLastCalledWith(transformerConfig1);
+
+    scriptTransformer.transform('/fruits/kiwi.js', getCoverageOptions());
+    expect(
+      (
+        require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
+      ).createTransformer,
+    ).toHaveBeenLastCalledWith(transformerConfig2);
   });
 
   it('reads values from the cache', async () => {
@@ -2001,7 +2067,7 @@ describe('ScriptTransformer', () => {
 
     // @ts-expect-error - private property
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
-      ['test_preprocessor', expect.any(Object)],
+      ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });
 });

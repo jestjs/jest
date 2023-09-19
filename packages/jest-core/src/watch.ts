@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -243,7 +243,7 @@ export default async function watch(
         isValidPath(globalConfig, filePath),
       );
 
-      if (validPaths.length) {
+      if (validPaths.length > 0) {
         const context = (contexts[index] = createContext(
           contexts[index].config,
           {hasteFS, moduleMap},

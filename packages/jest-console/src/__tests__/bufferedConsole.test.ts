@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,7 +40,9 @@ describe('CustomConsole', () => {
       _console.assert(false);
 
       expect(stdout()).toMatch('AssertionError');
-      expect(stdout()).toMatch('false == true');
+      expect(stdout()).toMatch(
+        /false == true|The expression evaluated to a falsy value/,
+      );
     });
 
     test('log the assertion error when the assertion is falsy with another message argument', () => {

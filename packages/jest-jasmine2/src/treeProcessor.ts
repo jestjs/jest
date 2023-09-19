@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -33,7 +33,7 @@ export default function treeProcessor(options: Options): void {
     options;
 
   function isEnabled(node: TreeNode, parentEnabled: boolean) {
-    return parentEnabled || runnableIds.indexOf(node.id) !== -1;
+    return parentEnabled || runnableIds.includes(node.id);
   }
 
   function getNodeHandler(node: TreeNode, parentEnabled: boolean) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ const OBJECT_NAMES = ['DOMStringMap', 'NamedNodeMap'];
 const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 
 const testName = (name: any) =>
-  OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
+  OBJECT_NAMES.includes(name) || ARRAY_REGEXP.test(name);
 
 export const test: NewPlugin['test'] = (val: object) =>
   val &&
@@ -40,7 +40,7 @@ export const serialize: NewPlugin['serialize'] = (
 
   return (
     (config.min ? '' : name + SPACE) +
-    (OBJECT_NAMES.indexOf(name) !== -1
+    (OBJECT_NAMES.includes(name)
       ? `{${printObjectProperties(
           isNamedNodeMap(collection)
             ? Array.from(collection).reduce<Record<string, string>>(

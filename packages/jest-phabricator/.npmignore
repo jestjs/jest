@@ -1,8 +1,8 @@
 **/__mocks__/**
 **/__tests__/**
-example
 __typetests__
 src
 tsconfig.json
 tsconfig.tsbuildinfo
 api-extractor.json
+.eslintcache

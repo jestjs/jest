@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import type {Circus} from '@jest/types';
 import {dispatchSync} from './state';
 
@@ -14,7 +15,7 @@ const uncaught: NodeJS.UncaughtExceptionListener &
 };
 
 export const injectGlobalErrorHandlers = (
-  parentProcess: NodeJS.Process,
+  parentProcess: typeof Process,
 ): Circus.GlobalErrorHandlers => {
   const uncaughtException = process.listeners('uncaughtException').slice();
   const unhandledRejection = process.listeners('unhandledRejection').slice();
@@ -26,7 +27,7 @@ export const injectGlobalErrorHandlers = (
 };
 
 export const restoreGlobalErrorHandlers = (
-  parentProcess: NodeJS.Process,
+  parentProcess: typeof Process,
   originalErrorHandlers: Circus.GlobalErrorHandlers,
 ): void => {
   parentProcess.removeListener('uncaughtException', uncaught);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -147,8 +147,19 @@ const test: Global.It = (() => {
       testName: Circus.TestNameLike,
       fn?: Circus.TestFn,
       timeout?: number,
-    ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
-    failing.each = bindEach(failing, false);
+      eachError?: Error,
+    ): void =>
+      _addTest(
+        testName,
+        mode,
+        concurrent,
+        fn,
+        failing,
+        timeout,
+        true,
+        eachError,
+      );
+    failing.each = bindEach(failing, false, true);
     return failing;
   };
 
@@ -175,9 +186,8 @@ const test: Global.It = (() => {
     ) => void,
     timeout?: number,
     failing?: boolean,
+    asyncError: Error = new ErrorWithStack(undefined, testFn),
   ) => {
-    const asyncError = new ErrorWithStack(undefined, testFn);
-
     try {
       testName = convertDescriptorToString(testName);
     } catch (error) {

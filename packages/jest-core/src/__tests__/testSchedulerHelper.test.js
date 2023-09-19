@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,24 +23,46 @@ const getTestMock = () => ({
 const getTestsMock = () => [getTestMock(), getTestMock()];
 
 test.each`
-  tests              | timings        | detectOpenHandles | maxWorkers   | watch    | expectedResult
-  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${2}         | ${true}  | ${false}
-  ${[getTestMock()]} | ${[2000, 500]} | ${false}          | ${undefined} | ${true}  | ${false}
-  ${getTestMock()}   | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${false} | ${true}
-  ${getTestMock()}   | ${[2000, 500]} | ${false}          | ${2}         | ${false} | ${false}
-  ${[getTestMock()]} | ${[2000]}      | ${false}          | ${undefined} | ${false} | ${true}
-  ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${undefined} | ${false} | ${true}
-  ${new Array(45)}   | ${[500]}       | ${false}          | ${undefined} | ${false} | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${undefined} | ${false} | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${undefined} | ${false} | ${true}
+  tests              | timings        | detectOpenHandles | runInBand | maxWorkers   | watch    | workerIdleMemoryLimit | expectedResult
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${false}  | ${undefined} | ${true}  | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${1}         | ${true}  | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${2}         | ${true}  | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${true}   | ${1}         | ${true}  | ${undefined}          | ${true}
+  ${[getTestMock()]} | ${[2000, 500]} | ${false}          | ${false}  | ${undefined} | ${true}  | ${undefined}          | ${false}
+  ${getTestMock()}   | ${[500, 500]}  | ${false}          | ${false}  | ${undefined} | ${true}  | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${1}         | ${false} | ${undefined}          | ${true}
+  ${getTestMock()}   | ${[2000, 500]} | ${false}          | ${false}  | ${2}         | ${false} | ${undefined}          | ${false}
+  ${[getTestMock()]} | ${[2000]}      | ${false}          | ${false}  | ${undefined} | ${false} | ${undefined}          | ${true}
+  ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${false}  | ${undefined} | ${false} | ${undefined}          | ${true}
+  ${new Array(45)}   | ${[500]}       | ${false}          | ${false}  | ${undefined} | ${false} | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${undefined} | ${false} | ${undefined}          | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${false}  | ${undefined} | ${false} | ${undefined}          | ${true}
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${false}  | ${undefined} | ${true}  | ${'500MB'}            | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${1}         | ${true}  | ${'500MB'}            | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${false}  | ${1}         | ${false} | ${'500MB'}            | ${false}
+  ${[getTestMock()]} | ${[2000]}      | ${false}          | ${false}  | ${undefined} | ${false} | ${'500MB'}            | ${false}
+  ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${false}  | ${undefined} | ${false} | ${'500MB'}            | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${false}  | ${undefined} | ${false} | ${'500MB'}            | ${true}
 `(
   'shouldRunInBand() - should return $expectedResult for runInBand mode',
-  ({tests, timings, detectOpenHandles, maxWorkers, watch, expectedResult}) => {
+  ({
+    tests,
+    timings,
+    detectOpenHandles,
+    maxWorkers,
+    runInBand,
+    watch,
+    workerIdleMemoryLimit,
+    expectedResult,
+  }) => {
     expect(
-      shouldRunInBand(tests, timings, {detectOpenHandles, maxWorkers, watch}),
+      shouldRunInBand(tests, timings, {
+        detectOpenHandles,
+        maxWorkers,
+        runInBand,
+        watch,
+        workerIdleMemoryLimit,
+      }),
     ).toBe(expectedResult);
   },
 );

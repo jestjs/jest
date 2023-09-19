@@ -11,13 +11,11 @@
     {"path": "../expect-utils"},
     {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
-    {"path": "../jest-haste-map"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../pretty-format"},
-    {"path": "../test-utils"}
+    {"path": "../pretty-format"}
   ]
 }

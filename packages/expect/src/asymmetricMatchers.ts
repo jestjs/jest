@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,13 +8,14 @@
 
 import {
   equals,
+  getObjectKeys,
   isA,
   iterableEquality,
   subsetEquality,
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
-import {getState} from './jestMatchersObject';
+import {getCustomEqualityTesters, getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherContext,
@@ -52,7 +53,10 @@ function getPrototype(obj: object) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: object | null, property: string): boolean {
+export function hasProperty(
+  obj: object | null,
+  property: string | symbol,
+): boolean {
   if (!obj) {
     return false;
   }
@@ -73,6 +77,7 @@ export abstract class AsymmetricMatcher<T>
 
   protected getMatcherContext(): MatcherContext {
     return {
+      customTesters: getCustomEqualityTesters(),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       dontThrow: () => {},
       ...getState<MatcherState>(),
@@ -193,11 +198,14 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       );
     }
 
+    const matcherContext = this.getMatcherContext();
     const result =
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
-          other.some(another => equals(item, another)),
+          other.some(another =>
+            equals(item, another, matcherContext.customTesters),
+          ),
         ));
 
     return this.inverse ? !result : result;
@@ -212,8 +220,10 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse = false) {
+class ObjectContaining extends AsymmetricMatcher<
+  Record<string | symbol, unknown>
+> {
+  constructor(sample: Record<string | symbol, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -227,10 +237,13 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 
     let result = true;
 
-    for (const property in this.sample) {
+    const matcherContext = this.getMatcherContext();
+    const objectKeys = getObjectKeys(this.sample);
+
+    for (const key of objectKeys) {
       if (
-        !hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])
+        !hasProperty(other, key) ||
+        !equals(this.sample[key], other[key], matcherContext.customTesters)
       ) {
         result = false;
         break;

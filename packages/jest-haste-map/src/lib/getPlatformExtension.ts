@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,7 +20,7 @@ export default function getPlatformExtension(
   const platform = file.substring(secondToLast + 1, last);
   // If an overriding platform array is passed, check that first
 
-  if (platforms && platforms.indexOf(platform) !== -1) {
+  if (platforms && platforms.includes(platform)) {
     return platform;
   }
   return SUPPORTED_PLATFORM_EXTS.has(platform) ? platform : null;

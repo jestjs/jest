@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -128,7 +128,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-types': [
           'error',
-          // TODO: remove these overrides: https://github.com/facebook/jest/issues/10177
+          // TODO: remove these overrides: https://github.com/jestjs/jest/issues/10177
           {types: {Function: false, object: false, '{}': false}},
         ],
         'local/ban-types-eventually': [
@@ -233,6 +233,15 @@ module.exports = {
       files: ['**/2016-04-12-jest-11.md/**'],
       rules: {
         'jest/prefer-to-have-length': 'off',
+      },
+    },
+    // snapshot in an example needs to keep escapes
+    {
+      files: [
+        '**/2017-02-21-jest-19-immersive-watch-mode-test-platform-improvements.md/**',
+      ],
+      rules: {
+        'no-useless-escape': 'off',
       },
     },
 
@@ -348,7 +357,7 @@ module.exports = {
       files: [
         'scripts/*',
         'packages/*/__benchmarks__/test.js',
-        'packages/jest-cli/src/init/index.ts',
+        'packages/create-jest/src/runCreate.ts',
         'packages/jest-repl/src/cli/runtime-cli.ts',
       ],
       rules: {
@@ -376,7 +385,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jsdoc'],
+  plugins: ['import', 'jsdoc', 'unicorn'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -581,6 +590,12 @@ module.exports = {
     'wrap-iife': 'off',
     'wrap-regex': 'off',
     yoda: 'off',
+
+    'unicorn/explicit-length-check': 'error',
+    'unicorn/no-negated-condition': 'error',
+    'unicorn/prefer-default-parameters': 'error',
+    'unicorn/prefer-includes': 'error',
+    'unicorn/template-indent': 'error',
   },
   settings: {
     'import/ignore': ['react-native'],

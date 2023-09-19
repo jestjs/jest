@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,6 +15,7 @@ import {
   getPath,
   iterableEquality,
   subsetEquality,
+  typeEquality,
 } from '../utils';
 
 describe('getPath()', () => {
@@ -543,6 +544,12 @@ describe('iterableEquality', () => {
     const a = new TestRecord().merge({dummy: 'data'});
     const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
+  });
+});
+
+describe('typeEquality', () => {
+  test('returns undefined if given mock.calls and []', () => {
+    expect(typeEquality(jest.fn().mock.calls, [])).toBeUndefined();
   });
 });
 

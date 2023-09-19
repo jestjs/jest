@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -43,7 +43,7 @@ const setPrettyPrint = (plugins: Plugins) => {
                 `  ${this.utils.printExpected(expected)}\n` +
                 'Received:\n' +
                 `  ${this.utils.printReceived(prettyFormatted)}${
-                  diffString != null ? `\n\nDifference:\n\n${diffString}` : ''
+                  diffString == null ? '' : `\n\nDifference:\n\n${diffString}`
                 }`
               );
             },

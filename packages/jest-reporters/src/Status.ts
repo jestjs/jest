@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -41,10 +41,10 @@ class CurrentTestList {
   add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
-    if (index !== -1) {
-      this._array[index] = record;
-    } else {
+    if (index === -1) {
       this._array.push(record);
+    } else {
+      this._array[index] = record;
     }
   }
 
@@ -85,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor(private _globalConfig: Config.GlobalConfig) {
+  constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
@@ -118,19 +118,19 @@ export default class Status {
 
   addTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
     this._currentTestCases.push({test, testCaseResult});
-    if (!this._showStatus) {
-      this._emit();
-    } else {
+    if (this._showStatus) {
       this._debouncedEmit();
+    } else {
+      this._emit();
     }
   }
 
   testStarted(testPath: string, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
-    if (!this._showStatus) {
-      this._emit();
-    } else {
+    if (this._showStatus) {
       this._debouncedEmit();
+    } else {
+      this._emit();
     }
   }
 

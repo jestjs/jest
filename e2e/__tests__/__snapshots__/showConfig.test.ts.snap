@@ -8,6 +8,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
+      "collectCoverageFrom": [],
+      "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
       "coveragePathIgnorePatterns": [
         "/node_modules/"
       ],
@@ -44,6 +46,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleNameMapper": [],
       "modulePathIgnorePatterns": [],
+      "openHandlesTimeout": 1000,
       "prettierPath": "prettier",
       "resetMocks": false,
       "resetModules": false,
@@ -121,6 +124,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "notifyMode": "failure-change",
     "onlyChanged": false,
     "onlyFailures": false,
+    "openHandlesTimeout": 1000,
     "passWithNoTests": false,
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
@@ -138,7 +142,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "useStderr": false,
     "watch": false,
     "watchAll": false,
-    "watchman": true
+    "watchman": true,
+    "workerThreads": false
   },
   "version": "[version]"
 }"

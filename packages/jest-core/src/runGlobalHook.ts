@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -59,7 +59,14 @@ export default async function runGlobalHook({
           },
         );
       } catch (error) {
-        if (util.types.isNativeError(error)) {
+        if (
+          util.types.isNativeError(error) &&
+          (Object.getOwnPropertyDescriptor(error, 'message')?.writable ||
+            Object.getOwnPropertyDescriptor(
+              Object.getPrototypeOf(error),
+              'message',
+            )?.writable)
+        ) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 
           throw error;

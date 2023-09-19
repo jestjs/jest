@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+Copyright (c) 2008-2016 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -295,7 +295,7 @@ export default function jasmineEnv(j$: Jasmine) {
 
       this.execute = async function (runnablesToRun, suiteTree = topSuite) {
         if (!runnablesToRun) {
-          if (focusedRunnables.length) {
+          if (focusedRunnables.length > 0) {
             runnablesToRun = focusedRunnables;
           } else {
             runnablesToRun = [suiteTree.id];
@@ -688,9 +688,9 @@ export default function jasmineEnv(j$: Jasmine) {
           const check = isError(error);
 
           checkIsError = check.isError;
-          message = check.message;
+          message = check.message || undefined;
         }
-        const errorAsErrorObject = checkIsError ? error : new Error(message!);
+        const errorAsErrorObject = checkIsError ? error : new Error(message);
         const runnable = currentRunnable();
 
         if (!runnable) {

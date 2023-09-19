@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`does not show suggestion when unrecognized cli param length <= 1 1`] = `
+"<red><bold><bold>●</intensity><bold> Unrecognized CLI Parameter</intensity>:</color>
+<red></color>
+<red>  Unrecognized option <bold>"l"</intensity>.</color>
+<red></color>
+<red>  <bold>CLI Options Documentation</intensity>:</color>
+<red>  https://jestjs.io/docs/cli</color>
+<red></color>"
+`;
+
+exports[`fails for multiple unknown options 1`] = `
+"<red><bold><bold>●</intensity><bold> Unrecognized CLI Parameters</intensity>:</color>
+<red></color>
+<red>  Following options were not recognized:</color>
+<red>  <bold>["jest", "test"]</intensity></color>
+<red></color>
+<red>  <bold>CLI Options Documentation</intensity>:</color>
+<red>  https://jestjs.io/docs/cli</color>
+<red></color>"
+`;
+
+exports[`fails for unknown option 1`] = `
+"<red><bold><bold>●</intensity><bold> Unrecognized CLI Parameter</intensity>:</color>
+<red></color>
+<red>  Unrecognized option <bold>"unknown"</intensity>.</color>
+<red></color>
+<red>  <bold>CLI Options Documentation</intensity>:</color>
+<red>  https://jestjs.io/docs/cli</color>
+<red></color>"
+`;
+
+exports[`handles deprecated CLI options print warning for deprecated options that are listed in config 1`] = `
+"<yellow><bold>foo</intensity>:</color>
+<yellow></color>
+<yellow>Deprecation message</color>
+<yellow></color>
+<yellow>  <bold>CLI Options Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/cli</color>
+<yellow></color>"
+`;
+
+exports[`handles deprecated CLI options throw an error for deprecated options that are not listed in config 1`] = `
+"<red><bold>foo</intensity>:</color>
+<red></color>
+<red>Deprecation message</color>
+<red></color>
+<red>  <bold>CLI Options Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/cli</color>
+<red></color>"
+`;
+
+exports[`shows suggestion when unrecognized cli param length > 1 1`] = `
+"<red><bold><bold>●</intensity><bold> Unrecognized CLI Parameter</intensity>:</color>
+<red></color>
+<red>  Unrecognized option <bold>"hell"</intensity>. Did you mean <bold>"help"</intensity>?</color>
+<red></color>
+<red>  <bold>CLI Options Documentation</intensity>:</color>
+<red>  https://jestjs.io/docs/cli</color>
+<red></color>"
+`;

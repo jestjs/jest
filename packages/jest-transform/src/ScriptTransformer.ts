@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,6 +20,7 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
+  invariant,
   isPromise,
   requireOrImportModule,
   tryRealpath,
@@ -117,14 +118,14 @@ class ScriptTransformer {
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey != null) {
-      return createHash('sha256')
+      return createHash('sha1')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
         .digest('hex')
         .substring(0, 32);
     }
 
-    return createHash('sha256')
+    return createHash('sha1')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
@@ -132,6 +133,10 @@ class ScriptTransformer {
       .update(CACHE_VERSION)
       .digest('hex')
       .substring(0, 32);
+  }
+
+  private _buildTransformCacheKey(pattern: string, filepath: string) {
+    return pattern + filepath;
   }
 
   private _getCacheKey(
@@ -207,10 +212,7 @@ class ScriptTransformer {
     );
   }
 
-  private _createFolderFromCacheKey(
-    filename: string,
-    cacheKey: string,
-  ): string {
+  private _createCachedFilename(filename: string, cacheKey: string): string {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
@@ -223,12 +225,7 @@ class ScriptTransformer {
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
       .replace(/\W/g, '');
-    const cachePath = slash(
-      path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`),
-    );
-    createDirectory(cacheDir);
-
-    return cachePath;
+    return slash(path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`));
   }
 
   private _getFileCachePath(
@@ -238,7 +235,7 @@ class ScriptTransformer {
   ): string {
     const cacheKey = this._getCacheKey(content, filename, options);
 
-    return this._createFolderFromCacheKey(filename, cacheKey);
+    return this._createCachedFilename(filename, cacheKey);
   }
 
   private async _getFileCachePathAsync(
@@ -248,28 +245,38 @@ class ScriptTransformer {
   ): Promise<string> {
     const cacheKey = await this._getCacheKeyAsync(content, filename, options);
 
-    return this._createFolderFromCacheKey(filename, cacheKey);
+    return this._createCachedFilename(filename, cacheKey);
   }
 
-  private _getTransformPath(filename: string) {
-    const transformRegExp = this._cache.transformRegExp;
-    if (!transformRegExp) {
+  private _getTransformPatternAndPath(filename: string) {
+    const transformEntry = this._cache.transformRegExp;
+    if (transformEntry == null) {
       return undefined;
     }
 
-    for (let i = 0; i < transformRegExp.length; i++) {
-      if (transformRegExp[i][0].test(filename)) {
-        return transformRegExp[i][1];
+    for (let i = 0; i < transformEntry.length; i++) {
+      const [transformRegExp, transformPath] = transformEntry[i];
+      if (transformRegExp.test(filename)) {
+        return [transformRegExp.source, transformPath];
       }
     }
 
     return undefined;
   }
 
+  private _getTransformPath(filename: string) {
+    const transformInfo = this._getTransformPatternAndPath(filename);
+    if (!Array.isArray(transformInfo)) {
+      return undefined;
+    }
+
+    return transformInfo[1];
+  }
+
   async loadTransformers(): Promise<void> {
     await Promise.all(
       this._config.transform.map(
-        async ([, transformPath, transformerConfig]) => {
+        async ([transformPattern, transformPath, transformerConfig], i) => {
           let transformer: Transformer | TransformerFactory<Transformer> =
             await requireOrImportModule(transformPath);
 
@@ -277,7 +284,9 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
-            transformer = transformer.createTransformer(transformerConfig);
+            transformer = await transformer.createTransformer(
+              transformerConfig,
+            );
           }
           if (
             typeof transformer.process !== 'function' &&
@@ -286,7 +295,12 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
-          this._transformCache.set(transformPath, res);
+          const transformCacheKey = this._buildTransformCacheKey(
+            this._cache.transformRegExp?.[i]?.[0].source ??
+              new RegExp(transformPattern).source,
+            transformPath,
+          );
+          this._transformCache.set(transformCacheKey, res);
         },
       ),
     );
@@ -305,15 +319,19 @@ class ScriptTransformer {
       return null;
     }
 
-    const transformPath = this._getTransformPath(filename);
-
-    if (transformPath == null) {
+    const transformPatternAndPath = this._getTransformPatternAndPath(filename);
+    if (!Array.isArray(transformPatternAndPath)) {
       return null;
     }
 
-    const cached = this._transformCache.get(transformPath);
-    if (cached != null) {
-      return cached;
+    const [transformPattern, transformPath] = transformPatternAndPath;
+    const transformCacheKey = this._buildTransformCacheKey(
+      transformPattern,
+      transformPath,
+    );
+    const transformer = this._transformCache.get(transformCacheKey);
+    if (transformer !== undefined) {
+      return transformer;
     }
 
     throw new Error(
@@ -394,7 +412,7 @@ class ScriptTransformer {
     if (transformed.map == null || transformed.map === '') {
       try {
         //Could be a potential freeze here.
-        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        //See: https://github.com/jestjs/jest/pull/5177#discussion_r158883570
         const inlineSourceMap = sourcemapFromSource(transformed.code);
         if (inlineSourceMap) {
           transformed.map = inlineSourceMap.toObject() as FixedRawSourceMap;
@@ -441,15 +459,15 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (map != null) {
+    if (map == null) {
+      sourceMapPath = null;
+    } else {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
 
       invariant(sourceMapPath, 'We should always have default sourceMapPath');
 
       writeCacheFile(sourceMapPath, sourceMapContent);
-    } else {
-      sourceMapPath = null;
     }
 
     writeCodeCacheFile(cacheFilePath, code);
@@ -504,6 +522,7 @@ class ScriptTransformer {
       });
     }
 
+    createDirectory(path.dirname(cacheFilePath));
     return this._buildTransformResult(
       filename,
       cacheFilePath,
@@ -568,6 +587,7 @@ class ScriptTransformer {
       });
     }
 
+    createDirectory(path.dirname(cacheFilePath));
     return this._buildTransformResult(
       filename,
       cacheFilePath,
@@ -820,7 +840,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return this._config.transform.length !== 0 && !isIgnored;
+    return this._config.transform.length > 0 && !isIgnored;
   }
 }
 
@@ -882,7 +902,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('sha256')
+  const checksum = createHash('sha1')
     .update(code)
     .digest('hex')
     .substring(0, 32);
@@ -901,7 +921,7 @@ function readCodeCacheFile(cachePath: string): string | null {
     return null;
   }
   const code = content.substring(33);
-  const checksum = createHash('sha256')
+  const checksum = createHash('sha1')
     .update(code)
     .digest('hex')
     .substring(0, 32);
@@ -999,7 +1019,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (!config.transform.length) {
+  if (config.transform.length === 0) {
     return undefined;
   }
 
@@ -1014,12 +1034,6 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (condition == null || condition === false || condition === '') {
-    throw new Error(message);
-  }
-}
 
 function assertSyncTransformer(
   transformer: Transformer,

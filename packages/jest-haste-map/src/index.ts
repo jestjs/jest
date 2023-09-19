@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ import {deserialize, serialize} from 'v8';
 import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {requireOrImportModule} from 'jest-util';
+import {invariant, requireOrImportModule} from 'jest-util';
 import {JestWorkerFarm, Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -46,9 +46,9 @@ import type {
   WorkerMetadata,
 } from './types';
 import {FSEventsWatcher} from './watchers/FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
 import NodeWatcher from './watchers/NodeWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
 import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
@@ -79,6 +79,7 @@ type Options = {
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
+  workerThreads?: boolean;
 };
 
 type InternalOptions = {
@@ -103,6 +104,7 @@ type InternalOptions = {
   throwOnModuleCollision: boolean;
   useWatchman: boolean;
   watch: boolean;
+  workerThreads?: boolean;
 };
 
 type Watcher = {
@@ -125,15 +127,9 @@ const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
-const VCS_DIRECTORIES = ['.git', '.hg']
+const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -219,7 +215,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
-  private _options: InternalOptions;
+  private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
 
@@ -267,6 +263,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
       watch: !!options.watch,
+      workerThreads: options.workerThreads,
     };
     this._console = options.console || globalThis.console;
 
@@ -295,7 +292,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   private async setupCachePath(options: Options): Promise<void> {
-    const rootDirHash = createHash('sha256')
+    const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
       .substring(0, 32);
@@ -344,7 +341,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('sha256').update(extra.join(''));
+    const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
       `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
@@ -673,7 +670,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     let map: ModuleMapData;
     let mocks: MockData;
     let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size) {
+    if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
       filesToProcess = hasteMap.files;
@@ -748,6 +745,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
+          enableWorkerThreads: this._options.workerThreads,
           exposedMethods: ['getSha1', 'worker'],
           forkOptions: {serialization: 'json'},
           maxRetries: 3,
@@ -854,7 +852,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     const emitChange = () => {
-      if (eventsQueue.length) {
+      if (eventsQueue.length > 0) {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
@@ -1079,7 +1077,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       clearInterval(this._changeInterval);
     }
 
-    if (!this._watchers.length) {
+    if (this._watchers.length === 0) {
       return;
     }
 

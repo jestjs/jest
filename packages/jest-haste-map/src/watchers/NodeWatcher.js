@@ -254,14 +254,14 @@ module.exports = class NodeWatcher extends EventEmitter {
    */
 
   normalizeChange(dir, event, file) {
-    if (!file) {
+    if (file) {
+      this.processChange(dir, event, path.normalize(file));
+    } else {
       this.detectChangedFile(dir, event, actualFile => {
         if (actualFile) {
           this.processChange(dir, event, actualFile);
         }
       });
-    } else {
-      this.processChange(dir, event, path.normalize(file));
     }
   }
 

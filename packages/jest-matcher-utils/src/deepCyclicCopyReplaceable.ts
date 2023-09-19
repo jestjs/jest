@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -57,9 +57,18 @@ export default function deepCyclicCopyReplaceable<T>(
 
 function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
   const newObject = Object.create(Object.getPrototypeOf(object));
-  const descriptors: {
-    [x: string]: PropertyDescriptor;
-  } = Object.getOwnPropertyDescriptors(object);
+  let descriptors: Record<string, PropertyDescriptor> = {};
+  let obj = object;
+  do {
+    descriptors = Object.assign(
+      {},
+      Object.getOwnPropertyDescriptors(obj),
+      descriptors,
+    );
+  } while (
+    (obj = Object.getPrototypeOf(obj)) &&
+    obj !== Object.getPrototypeOf({})
+  );
 
   cycles.set(object, newObject);
 

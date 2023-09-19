@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,7 +17,7 @@ import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as pkgDir} from 'pkg-dir';
 import prettier from 'prettier';
-import rimraf from 'rimraf';
+import {rimraf} from 'rimraf';
 import {getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
@@ -29,7 +29,7 @@ const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
 
 const copyrightSnippet = `
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -165,7 +165,7 @@ await Promise.all(
 
     let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
-    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
+    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'), {glob: true});
     fs.rmSync(path.resolve(packageDir, 'dist/'), {
       force: true,
       recursive: true,

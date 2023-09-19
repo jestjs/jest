@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -75,7 +75,7 @@ export default class CoverageReporter extends BaseReporter {
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
-      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+      if (!this._globalConfig.useStderr && coverageReporters.length === 0) {
         coverageReporters.push('text-summary');
       }
       coverageReporters.forEach(reporter => {
@@ -113,7 +113,7 @@ export default class CoverageReporter extends BaseReporter {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom.length > 0
       ) {
         context.hasteFS
           .matchFilesWithGlob(
@@ -129,7 +129,7 @@ export default class CoverageReporter extends BaseReporter {
       }
     });
 
-    if (!files.length) {
+    if (files.length === 0) {
       return;
     }
 
@@ -147,6 +147,7 @@ export default class CoverageReporter extends BaseReporter {
       worker = require('./CoverageWorker');
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
+        enableWorkerThreads: this._globalConfig.workerThreads,
         exposedMethods: ['worker'],
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
@@ -273,7 +274,7 @@ export default class CoverageReporter extends BaseReporter {
           Array<[string, string]>
         >((agg, thresholdGroup) => {
           // Preserve trailing slash, but not required if root dir
-          // See https://github.com/facebook/jest/issues/12703
+          // See https://github.com/jestjs/jest/issues/12703
           const resolvedThresholdGroup = path.resolve(thresholdGroup);
           const suffix =
             (thresholdGroup.endsWith(path.sep) ||
@@ -302,7 +303,7 @@ export default class CoverageReporter extends BaseReporter {
               .map(filePath => path.resolve(filePath));
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+          if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
             return agg.concat([[file, thresholdGroup]]);
@@ -316,7 +317,7 @@ export default class CoverageReporter extends BaseReporter {
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+        if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
           return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);

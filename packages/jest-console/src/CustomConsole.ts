@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -56,7 +56,8 @@ export default class CustomConsole extends Console {
       if (!(error instanceof AssertionError)) {
         throw error;
       }
-      this._logError('assert', error.toString());
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 

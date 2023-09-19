@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -114,10 +114,10 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
       message = chalk.bgRed.black(message);
     } else if (diff > winner.time * 0.65) {
       message = chalk.bgYellow.black(message);
-    } else if (!current.error) {
-      message = chalk.bgGreen.black(message);
-    } else {
+    } else if (current.error) {
       message = chalk.dim(message);
+    } else {
+      message = chalk.bgGreen.black(message);
     }
 
     console.log(`  ${message}`);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ const setupData = {
 module.exports = function (tests) {
   return {
     filtered: tests
-      .filter(t => t.indexOf(setupData.filterText) !== -1)
+      .filter(t => t.includes(setupData.filterText))
       .map(test => ({test})),
   };
 };

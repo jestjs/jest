@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -63,7 +63,6 @@ export default {
     '/packages/jest-runtime/src/__tests__/NODE_PATH_dir',
     '/packages/jest-snapshot/src/__tests__/plugins',
     '/packages/jest-snapshot/src/__tests__/fixtures/',
-    '/packages/jest-validate/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
   ],

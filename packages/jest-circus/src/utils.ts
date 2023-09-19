@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import co from 'co';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
@@ -17,6 +17,7 @@ import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
+  invariant,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -78,6 +79,7 @@ export const makeTest = (
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
+  numPassingAsserts: 0,
   parent,
   retryReasons: [],
   seenDone: false,
@@ -170,10 +172,16 @@ export const describeBlockHasTests = (
     child => child.type === 'test' || describeBlockHasTests(child),
   );
 
-const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
+const _makeTimeoutMessage = (
+  timeout: number,
+  isHook: boolean,
+  takesDoneCallback: boolean,
+) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
-  }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
+  }${
+    takesDoneCallback ? ' while waiting for `done()` to be called' : ''
+  }.\nAdd a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
@@ -192,16 +200,17 @@ export const callAsyncCircusFn = (
   let completed = false;
 
   const {fn, asyncError} = testOrHook;
+  const doneCallback = takesDoneCallback(fn);
 
   return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (takesDoneCallback(fn)) {
+    if (doneCallback) {
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {
@@ -227,9 +236,9 @@ export const callAsyncCircusFn = (
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
             asyncError.message = dedent`
-      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `;
+              Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+              Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+            `;
             return reject(asyncError);
           }
 
@@ -280,9 +289,9 @@ export const callAsyncCircusFn = (
       reject(
         new Error(
           dedent`
-      test functions can only return Promise or undefined.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `,
+            test functions can only return Promise or undefined.
+            Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+          `,
         ),
       );
       return;
@@ -320,19 +329,25 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
 
+const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
+  const titles = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+  do {
+    titles.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  return titles;
+};
+
 export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
   const {includeTestLocationInResult} = getState();
-  const testPath = [];
-  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
 
   const {status} = test;
   invariant(status, 'Status should be present after tests are run.');
 
-  do {
-    testPath.unshift(parent.name);
-  } while ((parent = parent.parent));
+  const testPath = getTestNamesPath(test);
 
   let location = null;
   if (includeTestLocationInResult) {
@@ -363,6 +378,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
+    numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     status,
     testPath: Array.from(testPath),
@@ -393,14 +409,9 @@ const makeTestResults = (
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
 export const getTestID = (test: Circus.TestEntry): string => {
-  const titles = [];
-  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
-  do {
-    titles.unshift(parent.name);
-  } while ((parent = parent.parent));
-
-  titles.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
-  return titles.join(' ');
+  const testNamesPath = getTestNamesPath(test);
+  testNamesPath.shift(); // remove TOP_DESCRIBE_BLOCK_NAME
+  return testNamesPath.join(' ');
 };
 
 const _getError = (
@@ -446,14 +457,28 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-export function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
+type TestDescription = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  title: string;
+};
+
+const resolveTestCaseStartInfo = (
+  testNamesPath: Circus.TestNamesPath,
+): TestDescription => {
+  const ancestorTitles = testNamesPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const fullName = ancestorTitles.join(' ');
+  const title = testNamesPath[testNamesPath.length - 1];
+  // remove title
+  ancestorTitles.pop();
+  return {
+    ancestorTitles,
+    fullName,
+    title,
+  };
+};
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,
@@ -469,24 +494,36 @@ export const parseSingleTestResult = (
     status = 'passed';
   }
 
-  const ancestorTitles = testResult.testPath.filter(
-    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  const {ancestorTitles, fullName, title} = resolveTestCaseStartInfo(
+    testResult.testPath,
   );
-  const title = ancestorTitles.pop();
 
   return {
     ancestorTitles,
     duration: testResult.duration,
     failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
-    fullName: title
-      ? ancestorTitles.concat(title).join(' ')
-      : ancestorTitles.join(' '),
+    fullName,
     invocations: testResult.invocations,
     location: testResult.location,
-    numPassingAsserts: 0,
+    numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: Array.from(testResult.retryReasons),
     status,
-    title: testResult.testPath[testResult.testPath.length - 1],
+    title,
+  };
+};
+
+export const createTestCaseStartInfo = (
+  test: Circus.TestEntry,
+): Circus.TestCaseStartInfo => {
+  const testPath = getTestNamesPath(test);
+  const {ancestorTitles, fullName, title} = resolveTestCaseStartInfo(testPath);
+
+  return {
+    ancestorTitles,
+    fullName,
+    mode: test.mode,
+    startedAt: test.startedAt,
+    title,
   };
 };

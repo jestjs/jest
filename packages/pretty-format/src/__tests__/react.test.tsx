@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -769,11 +769,11 @@ test('supports context Consumer with a child', () => {
 
   expect(
     formatElement(
-      React.createElement(Consumer, null, () =>
-        React.createElement('div', null, 'child'),
-      ),
+      React.createElement(Consumer, {
+        children: () => React.createElement('div', null, 'child'),
+      }),
     ),
-  ).toBe('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+  ).toBe('<Context.Consumer>\n  [Function children]\n</Context.Consumer>');
 });
 
 test('ReactElement removes undefined props', () => {

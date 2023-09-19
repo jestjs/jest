@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,18 +8,19 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
+import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
+  keepTrailingNewline?: boolean; // keep final newline in output from stdout and stderr
   nodeOptions?: string;
   nodePath?: string;
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
@@ -97,6 +98,7 @@ function spawnJest(
     cwd: dir,
     env,
     reject: false,
+    stripFinalNewline: !options.keepTrailingNewline,
     timeout: options.timeout || 0,
   };
 

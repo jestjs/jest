@@ -10,14 +10,15 @@ $ npm install --save-dev @jest/create-cache-key-function
 
 ## API
 
-### `createCacheKey(files?: Array<string>, values?: Array<String>): GetCacheKeyFunction`
+### `createCacheKey(files?: Array<string>, values?: Array<String>, length?: number): GetCacheKeyFunction`
 
-Get a function that can generate cache keys using source code, provided files and provided values.
+Returns a function that can be used to generate cache keys based on source code of provided files and provided values.
 
 #### Parameters
 
 - `files`: [Optional] Array of absolute paths to files whose code should be accounted for when generating cache key
 - `values`: [Optional] Array of string values that should be accounted for when generating cache key
+- `length`: [Optional] Length of the resulting key. The default is `32`, or `16` on Windows.
 
 **Note:**
 

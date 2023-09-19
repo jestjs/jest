@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -144,7 +144,7 @@ export default async function jasmine2(
 
   runtime
     .requireInternalModule<typeof import('./jestExpect')>(
-      path.resolve(__dirname, './jestExpect.js'),
+      require.resolve('./jestExpect.js'),
     )
     .default({expand: globalConfig.expand});
 
@@ -165,7 +165,7 @@ export default async function jasmine2(
 
   const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
-      path.resolve(__dirname, './setup_jest_globals.js'),
+      require.resolve('./setup_jest_globals.js'),
     )
     .default({
       config,
@@ -225,7 +225,7 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.matched = snapshotState.matched;
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
-  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -249,7 +249,7 @@ test('writes snapshots with non-literals in expect(...)', () => {
   expect(fileAfter).toMatchSnapshot();
 });
 
-// issue: https://github.com/facebook/jest/issues/6702
+// issue: https://github.com/jestjs/jest/issues/6702
 test('handles mocking native modules prettier relies on', () => {
   const filename = 'mockFail.test.js';
   const test = `

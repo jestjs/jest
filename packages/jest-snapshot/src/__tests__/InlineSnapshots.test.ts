@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -132,40 +132,43 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   );
 });
 
-test('saveInlineSnapshots() can handle typescript without prettier', () => {
-  const filename = path.join(dir, 'my.test.ts');
-  fs.writeFileSync(
-    filename,
-    `${`
+test.each([['ts'], ['cts'], ['mts']])(
+  'saveInlineSnapshots() can handle typescript without prettier - %s extension',
+  extension => {
+    const filename = path.join(dir, `my.test.${extension}`);
+    fs.writeFileSync(
+      filename,
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
 `.trim()}\n`,
-  );
+    );
 
-  saveInlineSnapshots(
-    [
-      {
-        frame: {column: 11, file: filename, line: 5} as Frame,
-        snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
-      },
-    ],
-    dir,
-    null,
-  );
+    saveInlineSnapshots(
+      [
+        {
+          frame: {column: 11, file: filename, line: 5} as Frame,
+          snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
+        },
+      ],
+      dir,
+      null,
+    );
 
-  expect(fs.readFileSync(filename, 'utf8')).toBe(
-    `${`
+    expect(fs.readFileSync(filename, 'utf8')).toBe(
+      `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 `.trim()}\n`,
-  );
-});
+    );
+  },
+);
 
 test('saveInlineSnapshots() can handle tsx without prettier', () => {
   const filename = path.join(dir, 'my.test.tsx');
@@ -733,5 +736,25 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
       'test("something", () => {\n' +
       '  expect("a").toMatchInlineSnapshot(`a`);\n' +
       '});\n',
+  );
+});
+
+test('saveInlineSnapshots() replaces string literal, not just template literal', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(filename, 'expect("a").toMatchInlineSnapshot("b");\n');
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 13, file: filename, line: 1} as Frame,
+        snapshot: 'a',
+      },
+    ],
+    dir,
+    'prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    'expect("a").toMatchInlineSnapshot(`a`);\n',
   );
 });

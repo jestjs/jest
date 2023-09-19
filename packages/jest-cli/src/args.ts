@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,8 +15,7 @@ export function check(argv: Config.Argv): true {
     Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
   ) {
     throw new Error(
-      'Both --runInBand and --maxWorkers were specified, but these two ' +
-        'options do not make sense together. Which is it?',
+      'Both --runInBand and --maxWorkers were specified, only one is allowed.',
     );
   }
 
@@ -28,17 +27,16 @@ export function check(argv: Config.Argv): true {
   ]) {
     if (argv[key] && argv.watchAll) {
       throw new Error(
-        `Both --${key} and --watchAll were specified, but these two ` +
-          'options do not make sense together. Try the --watch option which ' +
-          'reruns only tests related to changed files.',
+        `Both --${key} and --watchAll were specified, but cannot be used ` +
+          'together. Try the --watch option which reruns only tests ' +
+          'related to changed files.',
       );
     }
   }
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      'Both --onlyFailures and --watchAll were specified, but these two ' +
-        'options do not make sense together.',
+      'Both --onlyFailures and --watchAll were specified, only one is allowed.',
     );
   }
 
@@ -423,6 +421,12 @@ export const options: {[key: string]: Options} = {
     description: 'Run tests that failed in the previous execution.',
     type: 'boolean',
   },
+  openHandlesTimeout: {
+    description:
+      'Print a warning about probable open handles if Jest does not exit ' +
+      'cleanly after this number of milliseconds. `0` to disable.',
+    type: 'number',
+  },
   outputFile: {
     description:
       'Write test results to a file when the --json option is ' +
@@ -448,6 +452,11 @@ export const options: {[key: string]: Options} = {
       'projects in a single instance of Jest.',
     string: true,
     type: 'array',
+  },
+  randomize: {
+    description:
+      'Shuffle the order of the tests within a file. In order to choose the seed refer to the `--seed` CLI option.',
+    type: 'boolean',
   },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
@@ -707,6 +716,12 @@ export const options: {[key: string]: Options} = {
     description:
       'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
+    type: 'boolean',
+  },
+  workerThreads: {
+    description:
+      'Whether to use worker threads for parallelization. Child processes ' +
+      'are used by default.',
     type: 'boolean',
   },
 };

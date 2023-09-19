@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -62,7 +62,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
-    if (this._failedSnapshotTestAssertions.length) {
+    if (this._failedSnapshotTestAssertions.length > 0) {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,

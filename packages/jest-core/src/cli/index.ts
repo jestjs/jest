@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {performance} from 'perf_hooks';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -15,7 +16,7 @@ import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import type {IHasteMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
-import {createDirectory, preRunMessage} from 'jest-util';
+import {createDirectory, pluralize, preRunMessage} from 'jest-util';
 import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';
@@ -25,7 +26,6 @@ import getSelectProjectsMessage from '../getSelectProjectsMessage';
 import createContext from '../lib/createContext';
 import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
 import logDebugMessages from '../lib/logDebugMessages';
-import pluralize from '../pluralize';
 import runJest from '../runJest';
 import type {Filter} from '../types';
 import watch from '../watch';
@@ -41,6 +41,7 @@ export async function runCLI(
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> {
+  performance.mark('jest/runCLI:start');
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -120,7 +121,7 @@ export async function runCLI(
 
   const {openHandles} = results;
 
-  if (openHandles && openHandles.length) {
+  if (openHandles && openHandles.length > 0) {
     const formatted = formatHandleErrors(openHandles, configs[0]);
 
     const openHandlesString = pluralize('open handle', formatted.length, 's');
@@ -133,6 +134,7 @@ export async function runCLI(
     console.error(message);
   }
 
+  performance.mark('jest/runCLI:end');
   return {globalConfig, results};
 }
 
@@ -154,6 +156,7 @@ const buildContextsAndHasteMaps = async (
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,
+        workerThreads: globalConfig.workerThreads,
       });
       hasteMapInstances[index] = hasteMapInstance;
       return createContext(config, await hasteMapInstance.build());
@@ -173,6 +176,12 @@ const _run10000 = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+  if (changedFilesPromise) {
+    performance.mark('jest/getChangedFiles:start');
+    changedFilesPromise.finally(() => {
+      performance.mark('jest/getChangedFiles:end');
+    });
+  }
 
   // Filter may need to do an HTTP call or something similar to setup.
   // We will wait on an async response from this before using the filter.
@@ -204,11 +213,13 @@ const _run10000 = async (
     };
   }
 
+  performance.mark('jest/buildContextsAndHasteMaps:start');
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
     outputStream,
   );
+  performance.mark('jest/buildContextsAndHasteMaps:end');
 
   globalConfig.watch || globalConfig.watchAll
     ? await runWatch(

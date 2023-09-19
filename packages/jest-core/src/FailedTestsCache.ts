@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,17 +22,26 @@ export default class FailedTestsCache {
   }
 
   setTestResults(testResults: Array<TestResult>): void {
-    this._enabledTestsMap = (testResults || [])
-      .filter(testResult => testResult.numFailingTests)
-      .reduce<TestMap>((suiteMap, testResult) => {
-        suiteMap[testResult.testFilePath] = testResult.testResults
-          .filter(test => test.status === 'failed')
-          .reduce<{[name: string]: true}>((testMap, test) => {
-            testMap[test.fullName] = true;
+    this._enabledTestsMap = (testResults || []).reduce<TestMap>(
+      (suiteMap, testResult) => {
+        if (!testResult.numFailingTests) {
+          return suiteMap;
+        }
+
+        suiteMap[testResult.testFilePath] = testResult.testResults.reduce<{
+          [name: string]: true;
+        }>((testMap, test) => {
+          if (test.status !== 'failed') {
             return testMap;
-          }, {});
+          }
+
+          testMap[test.fullName] = true;
+          return testMap;
+        }, {});
         return suiteMap;
-      }, {});
+      },
+      {},
+    );
 
     this._enabledTestsMap = Object.freeze(this._enabledTestsMap);
   }

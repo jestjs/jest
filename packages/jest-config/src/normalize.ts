@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,7 +31,10 @@ import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
-import VALID_CONFIG from './ValidConfig';
+import {
+  initialOptions as VALID_CONFIG,
+  initialProjectOptions as VALID_PROJECT_CONFIG,
+} from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
@@ -252,7 +255,9 @@ const normalizeCollectCoverageFrom = (
     value = [];
   }
 
-  if (!Array.isArray(initialCollectCoverageFrom)) {
+  if (Array.isArray(initialCollectCoverageFrom)) {
+    value = initialCollectCoverageFrom;
+  } else {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
     } catch {}
@@ -260,8 +265,6 @@ const normalizeCollectCoverageFrom = (
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
-  } else {
-    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -301,7 +304,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -487,6 +490,7 @@ export default async function normalize(
   argv: Config.Argv,
   configPath?: string | null,
   projectIndex = Infinity,
+  isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
@@ -494,7 +498,7 @@ export default async function normalize(
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
-    exampleConfig: VALID_CONFIG,
+    exampleConfig: isProjectOptions ? VALID_PROJECT_CONFIG : VALID_CONFIG,
     recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
@@ -755,7 +759,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],
@@ -908,8 +912,10 @@ export default async function normalize(
       case 'notifyMode':
       case 'onlyChanged':
       case 'onlyFailures':
+      case 'openHandlesTimeout':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'randomize':
       case 'replname':
       case 'resetMocks':
       case 'resetModules':
@@ -932,6 +938,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerThreads':
         value = oldOptions[key];
         break;
       case 'workerIdleMemoryLimit':
@@ -1022,11 +1029,14 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
-  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
+  newOptions.randomize = newOptions.randomize || argv.randomize;
+
+  newOptions.showSeed =
+    newOptions.randomize || newOptions.showSeed || argv.showSeed;
 
   const upperBoundSeedValue = 2 ** 31;
 
-  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  // bounds are determined by xoroshiro128plus which is used in v8 and is used here (at time of writing)
   newOptions.seed =
     argv.seed ??
     Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
@@ -1036,7 +1046,7 @@ export default async function normalize(
   ) {
     throw new ValidationError(
       'Validation Error',
-      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - instead it is ${newOptions.seed}`,
     );
   }
 

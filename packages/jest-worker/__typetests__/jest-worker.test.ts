@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expectError, expectNotAssignable, expectType} from 'tsd-lite';
 import type {JestWorkerFarm} from 'jest-worker';
 import type * as testWorker from './testWorker';
 
@@ -62,13 +62,13 @@ expectError(detectedWorkerFarm.isResult);
 expectError(detectedWorkerFarm.setup());
 expectError(detectedWorkerFarm.teardown());
 
-expectError<Promise<void>>(detectedWorkerFarm.end());
+expectNotAssignable<Promise<void>>(detectedWorkerFarm.end());
 expectType<Promise<{forceExited: boolean}>>(detectedWorkerFarm.end());
 
-expectError<Promise<string>>(detectedWorkerFarm.getStderr());
+expectNotAssignable<Promise<string>>(detectedWorkerFarm.getStderr());
 expectType<NodeJS.ReadableStream>(detectedWorkerFarm.getStderr());
 
-expectError<Promise<string>>(detectedWorkerFarm.getStdout());
+expectNotAssignable<Promise<string>>(detectedWorkerFarm.getStdout());
 expectType<NodeJS.ReadableStream>(detectedWorkerFarm.getStdout());
 
 // typed JestWorkerFarm
@@ -88,11 +88,13 @@ expectError(typedWorkerFarm.runTestAsync());
 expectError(typedWorkerFarm.setup());
 expectError(typedWorkerFarm.teardown());
 
-expectError<Promise<void>>(typedWorkerFarm.end());
+expectType<Promise<void>>(typedWorkerFarm.start());
+
+expectNotAssignable<Promise<void>>(typedWorkerFarm.end());
 expectType<Promise<{forceExited: boolean}>>(typedWorkerFarm.end());
 
-expectError<Promise<string>>(typedWorkerFarm.getStderr());
+expectNotAssignable<Promise<string>>(typedWorkerFarm.getStderr());
 expectType<NodeJS.ReadableStream>(typedWorkerFarm.getStderr());
 
-expectError<Promise<string>>(typedWorkerFarm.getStdout());
+expectNotAssignable<Promise<string>>(typedWorkerFarm.getStdout());
 expectType<NodeJS.ReadableStream>(typedWorkerFarm.getStdout());

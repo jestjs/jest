@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,18 +10,30 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
 
+export type TestSequencerOptions = {
+  contexts: ReadonlyArray<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
+
 type Cache = {
-  [key: string]: [0 | 1, number] | undefined;
+  [key: string]:
+    | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
+    | undefined;
 };
 
 export type ShardOptions = {
   shardIndex: number;
   shardCount: number;
+};
+
+type ShardPositionOptions = ShardOptions & {
+  suiteLength: number;
 };
 
 /**
@@ -38,7 +50,10 @@ export type ShardOptions = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private readonly _cache: Map<TestContext, Cache> = new Map();
+  private readonly _cache = new Map<TestContext, Cache>();
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  constructor(_options: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
@@ -72,6 +87,19 @@ export default class TestSequencer {
     return cache;
   }
 
+  private _shardPosition(options: ShardPositionOptions): number {
+    const shardRest = options.suiteLength % options.shardCount;
+    const ratio = options.suiteLength / options.shardCount;
+
+    return new Array(options.shardIndex)
+      .fill(true)
+      .reduce<number>((acc, _, shardIndex) => {
+        const dangles = shardIndex < shardRest;
+        const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
+        return acc + shardSize;
+      }, 0);
+  }
+
   /**
    * Select tests for shard requested via --shard=shardIndex/shardCount
    * Sharding is applied before sorting
@@ -97,9 +125,17 @@ export default class TestSequencer {
     tests: Array<Test>,
     options: ShardOptions,
   ): Array<Test> | Promise<Array<Test>> {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardStart = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex - 1,
+      suiteLength: tests.length,
+    });
+
+    const shardEnd = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex,
+      suiteLength: tests.length,
+    });
 
     return tests
       .map(test => {
@@ -166,7 +202,7 @@ export default class TestSequencer {
       const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
-        return failedA === true ? -1 : 1;
+        return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
@@ -179,11 +215,7 @@ export default class TestSequencer {
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
@@ -194,9 +226,11 @@ export default class TestSequencer {
       if (test != null && !testResult.skipped) {
         const cache = this._getCache(test);
         const perf = testResult.perfStats;
+        const testRuntime =
+          perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.runtime || 0,
+          testResult.numFailingTests > 0 ? FAIL : SUCCESS,
+          testRuntime || 0,
         ];
       }
     });

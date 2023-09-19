@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -52,9 +52,21 @@ export default class FakeTimers {
     }
   }
 
+  async runAllTimersAsync(): Promise<void> {
+    if (this._checkFakeTimers()) {
+      await this._clock.runAllAsync();
+    }
+  }
+
   runOnlyPendingTimers(): void {
     if (this._checkFakeTimers()) {
       this._clock.runToLast();
+    }
+  }
+
+  async runOnlyPendingTimersAsync(): Promise<void> {
+    if (this._checkFakeTimers()) {
+      await this._clock.runToLastAsync();
     }
   }
 
@@ -72,9 +84,29 @@ export default class FakeTimers {
     }
   }
 
+  async advanceTimersToNextTimerAsync(steps = 1): Promise<void> {
+    if (this._checkFakeTimers()) {
+      for (let i = steps; i > 0; i--) {
+        await this._clock.nextAsync();
+        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
+        await this._clock.tickAsync(0);
+
+        if (this._clock.countTimers() === 0) {
+          break;
+        }
+      }
+    }
+  }
+
   advanceTimersByTime(msToRun: number): void {
     if (this._checkFakeTimers()) {
       this._clock.tick(msToRun);
+    }
+  }
+
+  async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
+    if (this._checkFakeTimers()) {
+      await this._clock.tickAsync(msToRun);
     }
   }
 

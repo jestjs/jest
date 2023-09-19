@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError, expectType} from 'tsd-lite';
+import {expectAssignable, expectNotAssignable, expectType} from 'tsd-lite';
 import type {
   AsyncResolver,
   JestResolver,
@@ -26,7 +26,7 @@ expectAssignable<PackageJSON>({
   values: [0, 10, 20, {x: 1, y: 2}, true, 'test', ['a', 'b']],
 });
 
-expectError<PackageJSON>({
+expectNotAssignable<PackageJSON>({
   filter: () => {},
 });
 
@@ -77,7 +77,7 @@ const asyncResolver: AsyncResolver = async (path, options) => {
 };
 
 const notReturningAsyncResolver = async () => {};
-expectError<AsyncResolver>(notReturningAsyncResolver());
+expectNotAssignable<AsyncResolver>(notReturningAsyncResolver());
 
 // SyncResolver
 
@@ -98,11 +98,11 @@ const syncResolver: SyncResolver = (path, options) => {
 };
 
 const notReturningSyncResolver = () => {};
-expectError<SyncResolver>(notReturningSyncResolver());
+expectNotAssignable<SyncResolver>(notReturningSyncResolver());
 
 // JestResolver
 
 expectAssignable<JestResolver>({async: asyncResolver});
 expectAssignable<JestResolver>({sync: syncResolver});
 expectAssignable<JestResolver>({async: asyncResolver, sync: syncResolver});
-expectError<JestResolver>({});
+expectNotAssignable<JestResolver>({});

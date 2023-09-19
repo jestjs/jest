@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -70,7 +70,7 @@ export default class FakeTimers<TimerRef = unknown> {
   private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
-  private _global: typeof globalThis;
+  private readonly _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private readonly _maxLoops: number;
   private readonly _moduleMocker: ModuleMocker;
@@ -224,11 +224,11 @@ export default class FakeTimers<TimerRef = unknown> {
       // Some of the immediate calls could be enqueued
       // during the previous handling of the timers, we should
       // run them as well.
-      if (this._immediates.length) {
+      if (this._immediates.length > 0) {
         this.runAllImmediates();
       }
 
-      if (this._ticks.length) {
+      if (this._ticks.length > 0) {
         this.runAllTicks();
       }
     }
@@ -244,7 +244,7 @@ export default class FakeTimers<TimerRef = unknown> {
   runOnlyPendingTimers(): void {
     // We need to hold the current shape of `this._timers` because existing
     // timers can add new ones to the map and hence would run more than necessary.
-    // See https://github.com/facebook/jest/pull/4608 for details
+    // See https://github.com/jestjs/jest/pull/4608 for details
     const timerEntries = Array.from(this._timers.entries());
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);

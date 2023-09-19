@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,38 +14,60 @@ import pLimit from 'p-limit';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(1, os.cpus().length - 1);
+const cpus = Math.max(
+  1,
+  (typeof os.availableParallelism === 'function'
+    ? os.availableParallelism()
+    : os.cpus().length) - 1,
+);
+
 const mutex = pLimit(cpus);
 
-const fix = process.argv.slice(2).some(arg => arg === '--fix');
+const fix = process.argv.slice(2).includes('--fix');
 
 const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 
 // TODO: remove this list at some point and run against all packages
-const packagesToTest = [
-  'babel-jest',
-  'babel-plugin-jest-hoist',
-  'diff-sequences',
-  'jest-changed-files',
-  'jest-console',
-  'jest-docblock',
-  'jest-environment',
-  'jest-globals',
-  'jest-resolve-dependencies',
-  'jest-schemas',
-  'jest-source-map',
-  'jest-test-result',
-  'jest-test-sequencer',
-  'jest-transform',
-  'jest-types',
-  'test-globals',
-  'test-utils',
+const packagesNotToTest = [
+  'expect',
+  'expect-utils',
+  'jest-circus',
+  'jest-cli',
+  'jest-config',
+  'jest-core',
+  'jest-create-cache-key-function',
+  'jest-diff',
+  'jest-each',
+  'jest-environment-jsdom',
+  'jest-environment-node',
+  'jest-fake-timers',
+  'jest-get-type',
+  'jest-haste-map',
+  'jest-jasmine2',
+  'jest-leak-detector',
+  'jest-matcher-utils',
+  'jest-message-util',
+  'jest-mock',
+  'jest-phabricator',
+  'jest-regex-util',
+  'jest-repl',
+  'jest-reporters',
+  'jest-resolve',
+  'jest-runner',
+  'jest-runtime',
+  'jest-snapshot',
+  'jest-util',
+  'jest-validate',
+  'jest-worker',
+  'pretty-format',
 ];
 
 const packagesWithTs = getPackagesWithTsConfig()
   .map(({packageDir}) => packageDir)
-  .concat(path.resolve(monorepoRoot, 'e2e'))
-  .filter(packageDir => packagesToTest.some(pkg => packageDir.endsWith(pkg)));
+  .filter(
+    packageDir => !packagesNotToTest.some(pkg => packageDir.endsWith(pkg)),
+  );
+// .concat(path.resolve(monorepoRoot, 'e2e'));
 
 const allLintResults = [];
 
@@ -63,6 +85,16 @@ try {
           overrideConfig: {
             extends: [
               'plugin:@typescript-eslint/recommended-requiring-type-checking',
+            ],
+            overrides: [
+              {
+                files: ['**/__tests__/**'],
+                plugins: ['jest'],
+                rules: {
+                  '@typescript-eslint/unbound-method': 'off',
+                  'jest/unbound-method': 'error',
+                },
+              },
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {

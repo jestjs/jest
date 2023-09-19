@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,6 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
-import type {IHasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -31,7 +30,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, MatchSnapshotConfig} from './types';
+import type {Context, FileSystem, MatchSnapshotConfig} from './types';
 import {deepMerge, escapeBacktickString, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
@@ -58,8 +57,8 @@ const printSnapshotName = (
   hint = '',
   count: number,
 ): string => {
-  const hasNames = concatenatedBlockNames.length !== 0;
-  const hasHint = hint.length !== 0;
+  const hasNames = concatenatedBlockNames.length > 0;
+  const hasHint = hint.length > 0;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
@@ -110,11 +109,11 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: string, hasteFS: IHasteFS): boolean =>
-  hasteFS.exists(filePath) || fs.existsSync(filePath);
+const fileExists = (filePath: string, fileSystem: FileSystem): boolean =>
+  fileSystem.exists(filePath) || fs.existsSync(filePath);
 
 export const cleanup = (
-  hasteFS: IHasteFS,
+  fileSystem: FileSystem,
   update: Config.SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
   testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
@@ -123,7 +122,7 @@ export const cleanup = (
   filesRemovedList: Array<string>;
 } => {
   const pattern = `\\.${EXTENSION}$`;
-  const files = hasteFS.matchFiles(pattern);
+  const files = fileSystem.matchFiles(pattern);
   let testIgnorePatternsRegex: RegExp | null = null;
   if (testPathIgnorePatterns && testPathIgnorePatterns.length > 0) {
     testIgnorePatternsRegex = new RegExp(testPathIgnorePatterns.join('|'));
@@ -137,7 +136,7 @@ export const cleanup = (
       return false;
     }
 
-    if (!fileExists(testPath, hasteFS)) {
+    if (!fileExists(testPath, fileSystem)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
@@ -164,11 +163,7 @@ export const toMatchSnapshot: MatcherFunctionWithContext<
   if (length === 2 && typeof propertiesOrHint === 'string') {
     hint = propertiesOrHint;
   } else if (length >= 2) {
-    if (
-      Array.isArray(propertiesOrHint) ||
-      typeof propertiesOrHint !== 'object' ||
-      propertiesOrHint === null
-    ) {
+    if (typeof propertiesOrHint !== 'object' || propertiesOrHint === null) {
       const options: MatcherHintOptions = {
         isNot: this.isNot,
         promise: this.promise,
@@ -235,7 +230,6 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
     }
 
     if (
-      Array.isArray(propertiesOrSnapshot) ||
       typeof propertiesOrSnapshot !== 'object' ||
       propertiesOrSnapshot === null
     ) {
@@ -268,9 +262,9 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
   return _toMatchSnapshot({
     context: this,
     inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
+      inlineSnapshot === undefined
+        ? undefined
+        : stripAddedIndentation(inlineSnapshot),
     isInline: true,
     matcherName,
     properties,
@@ -285,7 +279,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   context.dontThrow && context.dontThrow();
 
-  const {currentTestName, isNot, snapshotState} = context;
+  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const currentTestName =
+    currentConcurrentTestName?.() ?? context.currentTestName;
 
   if (isNot) {
     throw new Error(
@@ -332,7 +328,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       context.utils.subsetEquality,
     ]);
 
-    if (!propertyPass) {
+    if (propertyPass) {
+      received = deepMerge(received, properties);
+    } else {
       const key = snapshotState.fail(fullTestName, received);
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
@@ -353,8 +351,6 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         name: matcherName,
         pass: false,
       };
-    } else {
-      received = deepMerge(received, properties);
     }
   }
 
@@ -458,9 +454,9 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
     {
       context: this,
       inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
+        inlineSnapshot === undefined
+          ? undefined
+          : stripAddedIndentation(inlineSnapshot),
       isInline: true,
       matcherName,
       received,

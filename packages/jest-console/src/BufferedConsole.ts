@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@ import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
-import {ErrorWithStack, formatTime} from 'jest-util';
+import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -43,7 +43,7 @@ export default class BufferedConsole extends Console {
     message: LogMessage,
     level?: number | null,
   ): ConsoleBuffer {
-    const stackLevel = level != null ? level : 2;
+    const stackLevel = level == null ? 2 : level;
     const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
     invariant(rawStack != null, 'always have a stack trace');
@@ -79,7 +79,8 @@ export default class BufferedConsole extends Console {
       if (!(error instanceof AssertionError)) {
         throw error;
       }
-      this._log('assert', error.toString());
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._log('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 
@@ -176,12 +177,6 @@ export default class BufferedConsole extends Console {
   }
 
   getBuffer(): ConsoleBuffer | undefined {
-    return this._buffer.length ? this._buffer : undefined;
-  }
-}
-
-function invariant(condition: boolean, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
+    return this._buffer.length > 0 ? this._buffer : undefined;
   }
 }

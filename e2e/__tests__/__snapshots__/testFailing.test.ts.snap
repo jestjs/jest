@@ -41,14 +41,12 @@ exports[`works with all statuses 1`] = `
       28 | });
       29 |
     > 30 | test.failing.each([
-         | ^
+         |              ^
       31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.each (__tests__/statuses.test.js:30:14)
 
   ● .add(1, 2)
 
@@ -57,14 +55,12 @@ exports[`works with all statuses 1`] = `
       28 | });
       29 |
     > 30 | test.failing.each([
-         | ^
+         |              ^
       31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.each (__tests__/statuses.test.js:30:14)
 
   ● .add(2, 1)
 
@@ -73,14 +69,12 @@ exports[`works with all statuses 1`] = `
       28 | });
       29 |
     > 30 | test.failing.each([
-         | ^
+         |              ^
       31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.each (__tests__/statuses.test.js:30:14)
 
   ● failing passes = fails
 
@@ -130,14 +124,12 @@ exports[`works with concurrent and only mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.only.failing.each([
-         |   ^
+         |                                ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentOnlyMode.test.js:17:32)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 2)
@@ -147,14 +139,12 @@ exports[`works with concurrent and only mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.only.failing.each([
-         |   ^
+         |                                ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentOnlyMode.test.js:17:32)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
   ● block with concurrent › .add(2, 1)
@@ -164,14 +154,12 @@ exports[`works with concurrent and only mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.only.failing.each([
-         |   ^
+         |                                ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentOnlyMode.test.js:17:32)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
 `;
 
@@ -225,14 +213,12 @@ exports[`works with concurrent mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.failing.each([
-         |   ^
+         |                           ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentMode.test.js:17:27)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 2)
@@ -242,14 +228,12 @@ exports[`works with concurrent mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.failing.each([
-         |   ^
+         |                           ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentMode.test.js:17:27)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
   ● block with concurrent › .add(2, 1)
@@ -259,14 +243,12 @@ exports[`works with concurrent mode 1`] = `
       15 |   });
       16 |
     > 17 |   test.concurrent.failing.each([
-         |   ^
+         |                           ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at each (__tests__/worksWithConcurrentMode.test.js:17:27)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
 `;
 
@@ -300,14 +282,12 @@ exports[`works with only mode 1`] = `
       13 |   });
       14 |
     > 15 |   it.only.failing.each([
-         |   ^
+         |                   ^
       16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
+      at each (__tests__/worksWithOnlyMode.test.js:15:19)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should pass › .add(1, 2)
@@ -317,14 +297,12 @@ exports[`works with only mode 1`] = `
       13 |   });
       14 |
     > 15 |   it.only.failing.each([
-         |   ^
+         |                   ^
       16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
+      at each (__tests__/worksWithOnlyMode.test.js:15:19)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should pass › .add(2, 1)
@@ -334,14 +312,12 @@ exports[`works with only mode 1`] = `
       13 |   });
       14 |
     > 15 |   it.only.failing.each([
-         |   ^
+         |                   ^
       16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
+      at each (__tests__/worksWithOnlyMode.test.js:15:19)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should fail › failing passes = fails, should fail

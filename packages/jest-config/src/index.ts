@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -53,11 +53,16 @@ export async function readConfig(
     },
   );
 
+  const packageRoot =
+    typeof packageRootOrConfig === 'string'
+      ? path.resolve(packageRootOrConfig)
+      : undefined;
   const {options, hasDeprecationWarnings} = await normalize(
     initialOptions,
     argv,
     configPath,
     projectIndex,
+    skipArgvConfigOption && !(packageRoot === parentConfigDirname),
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
@@ -108,12 +113,15 @@ const groupOptions = (
     notifyMode: options.notifyMode,
     onlyChanged: options.onlyChanged,
     onlyFailures: options.onlyFailures,
+    openHandlesTimeout: options.openHandlesTimeout,
     outputFile: options.outputFile,
     passWithNoTests: options.passWithNoTests,
     projects: options.projects,
+    randomize: options.randomize,
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
     runTestsByPath: options.runTestsByPath,
     seed: options.seed,
     shard: options.shard,
@@ -135,12 +143,15 @@ const groupOptions = (
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
     workerIdleMemoryLimit: options.workerIdleMemoryLimit,
+    workerThreads: options.workerThreads,
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
+    collectCoverageFrom: options.collectCoverageFrom,
+    coverageDirectory: options.coverageDirectory,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
     cwd: options.cwd,
     dependencyExtractor: options.dependencyExtractor,
@@ -163,6 +174,7 @@ const groupOptions = (
     moduleNameMapper: options.moduleNameMapper,
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
+    openHandlesTimeout: options.openHandlesTimeout,
     prettierPath: options.prettierPath,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
@@ -345,7 +357,7 @@ export async function readConfigs(
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
     configs = [parsedConfig.projectConfig];
-    if (globalConfig.projects && globalConfig.projects.length) {
+    if (globalConfig.projects && globalConfig.projects.length > 0) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
       // In other words, if this was a single project,
@@ -406,7 +418,7 @@ export async function readConfigs(
     }
   }
 
-  if (!globalConfig || !configs.length) {
+  if (!globalConfig || configs.length === 0) {
     throw new Error('jest: No configuration found for any project.');
   }
 

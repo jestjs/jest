@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -32,6 +32,7 @@ const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
 
 const hoistedVariables = new WeakSet<VariableDeclarator>();
+const hoistedJestGetters = new WeakSet<CallExpression>();
 const hoistedJestExpressions = new WeakSet<Expression>();
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
@@ -255,9 +256,12 @@ const isJestObject = (
   return false;
 };
 
-const extractJestObjExprIfHoistable = (
-  expr: NodePath,
-): NodePath<Expression> | null => {
+type JestObjInfo = {
+  hoist: boolean;
+  path: NodePath<Expression>;
+};
+
+const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
   if (!expr.isCallExpression()) {
     return null;
   }
@@ -276,7 +280,7 @@ const extractJestObjExprIfHoistable = (
   const jestObjExpr = isJestObject(object)
     ? object
     : // The Jest object could be returned from another call since the functions are all chainable.
-      extractJestObjExprIfHoistable(object);
+      extractJestObjExprIfHoistable(object)?.path;
   if (!jestObjExpr) {
     return null;
   }
@@ -284,23 +288,26 @@ const extractJestObjExprIfHoistable = (
   // Important: Call the function check last
   // It might throw an error to display to the user,
   // which should only happen if we're already sure it's a call on the Jest object.
-  let functionLooksHoistableOrInHoistable = FUNCTIONS[propertyName]?.(args);
-
+  const functionIsHoistable = FUNCTIONS[propertyName]?.(args) ?? false;
+  let functionHasHoistableScope = functionIsHoistable;
   for (
     let path: NodePath<Node> | null = expr;
-    path && !functionLooksHoistableOrInHoistable;
+    path && !functionHasHoistableScope;
     path = path.parentPath
   ) {
-    functionLooksHoistableOrInHoistable = hoistedJestExpressions.has(
+    functionHasHoistableScope = hoistedJestExpressions.has(
       // @ts-expect-error: it's ok if path.node is not an Expression, .has will
       // just return false.
       path.node,
     );
   }
 
-  if (functionLooksHoistableOrInHoistable) {
+  if (functionHasHoistableScope) {
     hoistedJestExpressions.add(expr.node);
-    return jestObjExpr;
+    return {
+      hoist: functionIsHoistable,
+      path: jestObjExpr,
+    };
   }
 
   return null;
@@ -334,21 +341,23 @@ export default function jestHoist(): PluginObj<{
     },
     visitor: {
       ExpressionStatement(exprStmt) {
-        const jestObjExpr = extractJestObjExprIfHoistable(
+        const jestObjInfo = extractJestObjExprIfHoistable(
           exprStmt.get('expression'),
         );
-        if (jestObjExpr) {
-          jestObjExpr.replaceWith(
-            callExpression(this.declareJestObjGetterIdentifier(), []),
+        if (jestObjInfo) {
+          const jestCallExpr = callExpression(
+            this.declareJestObjGetterIdentifier(),
+            [],
           );
+          jestObjInfo.path.replaceWith(jestCallExpr);
+          if (jestObjInfo.hoist) {
+            hoistedJestGetters.add(jestCallExpr);
+          }
         }
       },
     },
     // in `post` to make sure we come after an import transform and can unshift above the `require`s
     post({path: program}) {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const self = this;
-
       visitBlock(program);
       program.traverse({BlockStatement: visitBlock});
 
@@ -368,13 +377,7 @@ export default function jestHoist(): PluginObj<{
         varsHoistPoint.remove();
 
         function visitCallExpr(callExpr: NodePath<CallExpression>) {
-          const {
-            node: {callee},
-          } = callExpr;
-          if (
-            isIdentifier(callee) &&
-            callee.name === self.jestObjGetterIdentifier?.name
-          ) {
+          if (hoistedJestGetters.has(callExpr.node)) {
             const mockStmt = callExpr.getStatementParent();
 
             if (mockStmt) {

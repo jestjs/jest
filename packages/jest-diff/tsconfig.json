@@ -9,7 +9,6 @@
   "references": [
     {"path": "../diff-sequences"},
     {"path": "../jest-get-type"},
-    {"path": "../pretty-format"},
-    {"path": "../test-utils"}
+    {"path": "../pretty-format"}
   ]
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -139,7 +139,7 @@ export default function collectHandles(): HandleCollectionResult {
 
       if (activeHandles.size > 0) {
         // For some special objects such as `TLSWRAP`.
-        // Ref: https://github.com/facebook/jest/issues/11665
+        // Ref: https://github.com/jestjs/jest/issues/11665
         runGC();
 
         await asyncSleep(0);

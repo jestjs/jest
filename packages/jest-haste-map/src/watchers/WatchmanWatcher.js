@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -230,9 +230,7 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
     return;
   }
 
-  if (!changeDescriptor.exists) {
-    self.emitEvent(DELETE_EVENT, relativePath, self.root);
-  } else {
+  if (changeDescriptor.exists) {
     fs.lstat(absPath, (error, stat) => {
       // Files can be deleted between the event and the lstat call
       // the most reliable thing to do here is to ignore the event.
@@ -251,6 +249,8 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
         self.emitEvent(eventType, relativePath, self.root, stat);
       }
     });
+  } else {
+    self.emitEvent(DELETE_EVENT, relativePath, self.root);
   }
 };
 
@@ -294,11 +294,11 @@ WatchmanWatcher.prototype.close = function () {
  */
 
 function handleError(self, error) {
-  if (error != null) {
+  if (error == null) {
+    return false;
+  } else {
     self.emit('error', error);
     return true;
-  } else {
-    return false;
   }
 }
 

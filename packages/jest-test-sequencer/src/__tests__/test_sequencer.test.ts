@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
-import {makeProjectConfig} from '@jest/test-utils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
@@ -56,7 +56,10 @@ const toTests = (paths: Array<string>) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  sequencer = new TestSequencer();
+  sequencer = new TestSequencer({
+    contexts: [],
+    globalConfig: makeGlobalConfig(),
+  });
 });
 
 test('sorts by file size if there is no timing information', () => {
@@ -151,7 +154,8 @@ test('writes the cache based on results without existing cache', async () => {
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, runtime: 3, start: 1},
+        // this is missing `runtime` to test that it is calculated
+        perfStats: {end: 4, start: 1},
         testFilePath: '/test-c.js',
       },
       {
@@ -368,6 +372,23 @@ test('returns expected 100/8 shards', async () => {
   );
 
   expect(shards.map(shard => shard.length)).toEqual([
-    13, 13, 13, 13, 13, 13, 13, 9,
+    13, 13, 13, 13, 12, 12, 12, 12,
+  ]);
+});
+
+test('returns expected 55/12 shards', async () => {
+  const allTests = toTests(new Array(55).fill(true).map((_, i) => `/${i}.js`));
+
+  const shards = await Promise.all(
+    new Array(12).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 12,
+        shardIndex: i + 1,
+      }),
+    ),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4,
   ]);
 });

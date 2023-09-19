@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -105,7 +105,7 @@ function find(
               search(file);
             } else {
               const ext = path.extname(file).substr(1);
-              if (extensions.indexOf(ext) !== -1) {
+              if (extensions.includes(ext)) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
               }
             }
@@ -144,7 +144,7 @@ function findNative(
     args.push('-type', 'f');
   }
 
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push('(');
   }
   extensions.forEach((ext, index) => {
@@ -154,7 +154,7 @@ function findNative(
     args.push('-iname');
     args.push(`*.${ext}`);
   });
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push(')');
   }
 
@@ -162,7 +162,7 @@ function findNative(
   let stdout = '';
   if (child.stdout === null) {
     throw new Error(
-      'stdout is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+      'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
   child.stdout.setEncoding('utf-8');
@@ -175,9 +175,7 @@ function findNative(
       .filter(x => !ignore(x));
     const result: Result = [];
     let count = lines.length;
-    if (!count) {
-      callback([]);
-    } else {
+    if (count) {
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
@@ -189,6 +187,8 @@ function findNative(
           }
         });
       });
+    } else {
+      callback([]);
     }
   });
 }

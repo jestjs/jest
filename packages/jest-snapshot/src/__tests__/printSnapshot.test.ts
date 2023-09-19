@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -246,19 +246,6 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Expected properties must be an object (array) with snapshot', () => {
-      const context = {
-        isNot: false,
-        promise: '',
-      } as Context;
-      const properties: Array<unknown> = [];
-      const snapshot = '';
-
-      expect(() => {
-        toMatchInlineSnapshot.call(context, received, properties, snapshot);
-      }).toThrowErrorMatchingSnapshot();
-    });
-
     test('Inline snapshot must be a string', () => {
       const context = {
         isNot: false,
@@ -329,18 +316,6 @@ describe('matcher error', () => {
 
       expect(() => {
         // @ts-expect-error: Testing runtime error
-        toMatchSnapshot.call(context, received, properties);
-      }).toThrowErrorMatchingSnapshot();
-    });
-
-    test('Expected properties must be an object (array)', () => {
-      const context = {
-        isNot: false,
-        promise: '',
-      } as Context;
-      const properties: Array<unknown> = [];
-
-      expect(() => {
         toMatchSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -785,6 +760,66 @@ describe('pass true', () => {
       ) as SyncExpectationResult;
       expect(pass).toBe(true);
     });
+
+    test('array', () => {
+      const context = {
+        equals: () => true,
+        isNot: false,
+        promise: '',
+        snapshotState: {
+          match() {
+            return {
+              expected: [],
+              pass: true,
+            };
+          },
+        },
+        utils: {
+          iterableEquality: () => [],
+          subsetEquality: () => [],
+        },
+      } as unknown as Context;
+      const received: Array<unknown> = [];
+      const properties: Array<unknown> = [];
+
+      const {pass} = toMatchSnapshot.call(
+        context,
+        received,
+        properties,
+      ) as SyncExpectationResult;
+      expect(pass).toBe(true);
+    });
+  });
+
+  describe('toMatchInlineSnapshot', () => {
+    test('array', () => {
+      const context = {
+        equals: () => true,
+        isNot: false,
+        promise: '',
+        snapshotState: {
+          match() {
+            return {
+              expected: [],
+              pass: true,
+            };
+          },
+        },
+        utils: {
+          iterableEquality: () => [],
+          subsetEquality: () => [],
+        },
+      } as unknown as Context;
+      const received: Array<unknown> = [];
+      const properties: Array<unknown> = [];
+
+      const {pass} = toMatchInlineSnapshot.call(
+        context,
+        received,
+        properties,
+      ) as SyncExpectationResult;
+      expect(pass).toBe(true);
+    });
   });
 });
 
@@ -805,6 +840,21 @@ describe('printPropertiesAndReceived', () => {
       path: expect.any(String),
     };
 
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
+  });
+
+  test('only highlight non passing properties', () => {
+    const received = {
+      a: 1,
+      b: 'some string',
+      c: 'another string',
+    };
+    const properties = {
+      a: expect.any(Number),
+      b: expect.any(Number),
+    };
     expect(
       printPropertiesAndReceived(properties, received, false),
     ).toMatchSnapshot();

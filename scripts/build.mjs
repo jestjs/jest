@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';
-import glob from 'glob';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
@@ -149,7 +149,7 @@ function buildFile(file, silent) {
 
 const files = process.argv.slice(2);
 
-if (files.length) {
+if (files.length > 0) {
   files.forEach(file => buildFile(file));
 } else {
   const packages = getPackages();

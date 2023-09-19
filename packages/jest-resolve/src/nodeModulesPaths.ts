@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -52,21 +52,37 @@ export default function nodeModulesPaths(
     parsed = path.parse(parsed.dir);
   }
 
-  const dirs = paths
-    .reduce<Array<string>>(
-      (dirs, aPath) =>
-        dirs.concat(
-          modules.map(moduleDir =>
-            path.isAbsolute(moduleDir)
-              ? aPath === basedirAbs
-                ? moduleDir
-                : ''
-              : path.join(prefix, aPath, moduleDir),
-          ),
-        ),
-      [],
-    )
-    .filter(dir => dir !== '');
+  const dirs = paths.reduce<Array<string>>((dirs, aPath) => {
+    for (const moduleDir of modules) {
+      if (path.isAbsolute(moduleDir)) {
+        if (aPath === basedirAbs && moduleDir) {
+          dirs.push(moduleDir);
+        }
+      } else {
+        dirs.push(path.join(prefix, aPath, moduleDir));
+      }
+    }
 
-  return options.paths ? dirs.concat(options.paths) : dirs;
+    return dirs;
+  }, []);
+
+  if (options.paths) {
+    dirs.push(...options.paths);
+  }
+
+  return dirs;
 }
+
+function findGlobalPaths(): Array<string> {
+  const {root} = path.parse(process.cwd());
+  const globalPath = path.join(root, 'node_modules');
+  const resolvePaths = require.resolve.paths('/');
+
+  if (resolvePaths) {
+    // the global paths start one after the root node_modules
+    const rootIndex = resolvePaths.indexOf(globalPath);
+    return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
+  }
+  return [];
+}
+export const GlobalPaths = findGlobalPaths();

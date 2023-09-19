@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,7 +20,7 @@ const optionsCounts: DiffOptions = {
 };
 
 // Use only in toBe assertions for edge case messages.
-const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
+const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) ?? '');
 
 // Use in toBe assertions for comparison lines.
 const optionsBe: DiffOptions = {
@@ -62,7 +62,7 @@ describe('different types', () => {
     test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(stripped(a, b)).toBe(
         '  Comparing two different types of values. ' +
-          `Expected ${typeA} but received ${typeB}.`,
+          `Expected ${String(typeA)} but received ${String(typeB)}.`,
       );
     });
   });
