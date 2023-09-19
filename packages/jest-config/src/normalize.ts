@@ -255,7 +255,9 @@ const normalizeCollectCoverageFrom = (
     value = [];
   }
 
-  if (!Array.isArray(initialCollectCoverageFrom)) {
+  if (Array.isArray(initialCollectCoverageFrom)) {
+    value = initialCollectCoverageFrom;
+  } else {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
     } catch {}
@@ -263,8 +265,6 @@ const normalizeCollectCoverageFrom = (
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
-  } else {
-    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -759,7 +759,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],

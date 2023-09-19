@@ -43,8 +43,11 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
 
   const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
     .concat(Object.keys(pkg.devDependencies || {}))
-    .filter(dep => workspacesWithTs.has(dep))
     .filter(dep => {
+      if (!workspacesWithTs.has(dep)) {
+        return false;
+      }
+
       // nothing should depend on these
       if (dep === 'jest-circus' || dep === 'jest-jasmine2') {
         return false;
@@ -116,9 +119,10 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     const tsConfig = JSON.parse(
       stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
     );
-    const references = tsConfig.references.map(({path}) => path);
 
-    return references.some(reference => /test-utils$/.test(reference));
+    return tsConfig.references.some(
+      ({path}) => path && path.endsWith('test-utils'),
+    );
   });
 
   if (hasJestTestUtils && testUtilsReferences.length === 0) {

@@ -92,7 +92,7 @@ const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
     projects.push(project);
   }
 
-  if (!projects.length && process.platform === 'win32') {
+  if (projects.length === 0 && process.platform === 'win32') {
     try {
       projects.push(tryRealpath(process.cwd()));
     } catch {
@@ -101,7 +101,7 @@ const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
     }
   }
 
-  if (!projects.length) {
+  if (projects.length === 0) {
     projects.push(process.cwd());
   }
 

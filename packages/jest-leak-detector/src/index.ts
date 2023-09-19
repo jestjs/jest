@@ -7,7 +7,7 @@
 /// <reference lib="es2021.WeakRef" />
 
 import {promisify} from 'util';
-import {setFlagsFromString} from 'v8';
+import {getHeapSnapshot, setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
 import {isPrimitive} from 'jest-get-type';
 import {format as prettyFormat} from 'pretty-format';
@@ -48,11 +48,21 @@ export default class LeakDetector {
       await tick();
     }
 
+    if (this._isReferenceBeingHeld) {
+      // triggering a heap snapshot is more aggressive than just `global.gc()`,
+      // but it's also quite slow, so only do it if we still think we're leaking.
+      // https://github.com/nodejs/node/pull/48510#issuecomment-1719289759
+      getHeapSnapshot();
+
+      for (let i = 0; i < 10; i++) {
+        await tick();
+      }
+    }
+
     return this._isReferenceBeingHeld;
   }
 
   private _runGarbageCollector() {
-    // @ts-expect-error: not a function on `globalThis`
     const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.

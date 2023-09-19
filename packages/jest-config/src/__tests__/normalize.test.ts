@@ -828,9 +828,9 @@ describe('babel-jest', () => {
     Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
       .default;
     Resolver.findNodeModule = jest.fn((name: string) =>
-      name.indexOf('babel-jest') === -1
-        ? `${path.sep}node_modules${path.sep}${name}`
-        : name,
+      name.includes('babel-jest')
+        ? name
+        : `${path.sep}node_modules${path.sep}${name}`,
     );
   });
 

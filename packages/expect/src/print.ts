@@ -109,9 +109,9 @@ export const printReceivedConstructorNameNot = (
   expected: Function,
 ): string =>
   typeof expected.name === 'string' &&
-  expected.name.length !== 0 &&
+  expected.name.length > 0 &&
   typeof received.name === 'string' &&
-  received.name.length !== 0
+  received.name.length > 0
     ? `${printConstructorName(label, received, true, false)} ${
         Object.getPrototypeOf(received) === expected
           ? 'extends'
@@ -125,12 +125,12 @@ const printConstructorName = (
   isNot: boolean,
   isExpected: boolean,
 ): string =>
-  typeof constructor.name !== 'string'
-    ? `${label} name is not a string`
-    : constructor.name.length === 0
-    ? `${label} name is an empty string`
-    : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
-        isExpected
-          ? EXPECTED_COLOR(constructor.name)
-          : RECEIVED_COLOR(constructor.name)
-      }`;
+  typeof constructor.name === 'string'
+    ? constructor.name.length === 0
+      ? `${label} name is an empty string`
+      : `${label}: ${isNot ? (isExpected ? 'not ' : '    ') : ''}${
+          isExpected
+            ? EXPECTED_COLOR(constructor.name)
+            : RECEIVED_COLOR(constructor.name)
+        }`
+    : `${label} name is not a string`;

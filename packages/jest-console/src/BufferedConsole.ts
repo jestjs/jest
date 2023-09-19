@@ -177,6 +177,6 @@ export default class BufferedConsole extends Console {
   }
 
   getBuffer(): ConsoleBuffer | undefined {
-    return this._buffer.length ? this._buffer : undefined;
+    return this._buffer.length > 0 ? this._buffer : undefined;
   }
 }
