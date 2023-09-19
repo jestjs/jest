@@ -29,7 +29,7 @@ export default class BufferedConsole extends Console {
   constructor() {
     super({
       write: (message: string) => {
-        BufferedConsole.write(this._buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message);
 
         return true;
       },
@@ -41,9 +41,8 @@ export default class BufferedConsole extends Console {
     buffer: ConsoleBuffer,
     type: LogType,
     message: LogMessage,
-    level?: number | null,
+    stackLevel = 2,
   ): ConsoleBuffer {
-    const stackLevel = level ?? 2;
     const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
     invariant(rawStack != null, 'always have a stack trace');
