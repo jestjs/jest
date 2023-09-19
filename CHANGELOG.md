@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `4.5` ([#14542](https://github.com/facebook/jest/pull/14542), [#12648](https://github.com/facebook/jest/pull/12648))
+
 ## 29.7.0
 
 ### Features
