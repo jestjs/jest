@@ -2,10 +2,11 @@
 
 ### Features
 
+- `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
+
 ### Fixes
 
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
-- `[jest-test-sequencer, jest-core]` Exposes globalConfig & contexts to TestSequencer ([#14535](https://github.com/jestjs/jest/pull/14535))
 
 ### Performance
 
