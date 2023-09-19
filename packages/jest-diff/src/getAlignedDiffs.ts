@@ -82,7 +82,7 @@ class ChangeBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      substrings.forEach((substring, i) => {
+      for (const [i, substring] of substrings.entries()) {
         if (i < iLast) {
           // The first substring completes the current change line.
           // A middle substring is a change line.
@@ -94,7 +94,7 @@ class ChangeBuffer {
           // the newline appended to the end of expected and received strings.
           this.pushSubstring(substring);
         }
-      });
+      }
     } else {
       // Append non-multiline string to current change line.
       this.pushDiff(diff);
@@ -153,7 +153,7 @@ class CommonBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      substrings.forEach((substring, i) => {
+      for (const [i, substring] of substrings.entries()) {
         if (i === 0) {
           const subdiff = new Diff(op, substring);
           if (
@@ -179,7 +179,7 @@ class CommonBuffer {
           // the newline appended to the end of expected and received strings.
           this.pushDiffChangeLines(new Diff(op, substring));
         }
-      });
+      }
     } else {
       // Append non-multiline string to current change lines.
       // Important: It cannot be at the end following empty change lines,
@@ -213,7 +213,7 @@ const getAlignedDiffs = (
   const insertBuffer = new ChangeBuffer(DIFF_INSERT, changeColor);
   const commonBuffer = new CommonBuffer(deleteBuffer, insertBuffer);
 
-  diffs.forEach(diff => {
+  for (const diff of diffs) {
     switch (diff[0]) {
       case DIFF_DELETE:
         deleteBuffer.align(diff);
@@ -226,7 +226,7 @@ const getAlignedDiffs = (
       default:
         commonBuffer.align(diff);
     }
-  });
+  }
 
   return commonBuffer.getLines();
 };

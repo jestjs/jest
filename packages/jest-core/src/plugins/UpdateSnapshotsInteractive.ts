@@ -26,18 +26,18 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       return failedTestPaths;
     }
 
-    testResults.testResults.forEach(testResult => {
+    for (const testResult of testResults.testResults) {
       if (testResult.snapshot && testResult.snapshot.unmatched) {
-        testResult.testResults.forEach(result => {
+        for (const result of testResult.testResults) {
           if (result.status === 'failed') {
             failedTestPaths.push({
               fullName: result.fullName,
               path: testResult.testFilePath,
             });
           }
-        });
+        }
       }
-    });
+    }
 
     return failedTestPaths;
   }

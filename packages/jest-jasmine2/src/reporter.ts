@@ -70,7 +70,7 @@ export default class Jasmine2Reporter implements Reporter {
     let numPendingTests = 0;
     let numTodoTests = 0;
     const testResults = this._testResults;
-    testResults.forEach(testResult => {
+    for (const testResult of testResults) {
       if (testResult.status === 'failed') {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
@@ -80,7 +80,7 @@ export default class Jasmine2Reporter implements Reporter {
       } else {
         numPassingTests++;
       }
-    });
+    }
 
     const testResult = {
       ...createEmptyTestResult(),
@@ -154,14 +154,14 @@ export default class Jasmine2Reporter implements Reporter {
       title: specResult.description,
     };
 
-    specResult.failedExpectations.forEach(failed => {
+    for (const failed of specResult.failedExpectations) {
       const message =
         !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
       results.failureDetails.push(failed);
-    });
+    }
 
     return results;
   }

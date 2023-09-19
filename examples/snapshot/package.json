@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "example-snapshot",
   "dependencies": {
-    "react": "17.0.2"
+    "react": "18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -11,7 +11,7 @@
     "@babel/preset-react": "^7.12.1",
     "babel-jest": "workspace:^",
     "jest": "workspace:^",
-    "react-test-renderer": "17.0.2"
+    "react-test-renderer": "18.2.0"
   },
   "scripts": {
     "test": "jest"

@@ -27,12 +27,12 @@ it('creates a process object that looks like the original one', () => {
   // They look the same, but they are NOT the same (deep copied object).
   // The `_events` property is checked to ensure event emitter properties are
   // properly copied.
-  (['argv', 'env', '_events'] as const).forEach(key => {
+  for (const key of ['argv', 'env', '_events'] as const) {
     // @ts-expect-error: Testing internal `_events` property
     expect(fakeProcess[key]).toEqual(process[key]);
     // @ts-expect-error: Testing internal `_events` property
     expect(fakeProcess[key]).not.toBe(process[key]);
-  });
+  }
 
   // Check that process.stdout/stderr are the same.
   expect(process.stdout).toBe(fakeProcess.stdout);
