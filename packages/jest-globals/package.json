@@ -20,10 +20,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/expect": "workspace:^",
-    "@jest/types": "workspace:^",
-    "jest-mock": "workspace:^"
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/types": "workspace:*",
+    "jest-mock": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

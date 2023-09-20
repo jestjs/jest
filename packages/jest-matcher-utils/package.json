@@ -22,12 +22,12 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "jest-diff": "workspace:^",
-    "jest-get-type": "workspace:^",
-    "pretty-format": "workspace:^"
+    "jest-diff": "workspace:*",
+    "jest-get-type": "workspace:*",
+    "pretty-format": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@types/node": "*"
   },
   "publishConfig": {

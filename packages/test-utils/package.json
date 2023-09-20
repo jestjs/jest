@@ -12,12 +12,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/globals": "workspace:^",
-    "@jest/types": "workspace:^",
+    "@jest/globals": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "workspace:^",
+    "pretty-format": "workspace:*",
     "semver": "^7.5.3"
   },
   "devDependencies": {

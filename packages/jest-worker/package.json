@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@types/node": "*",
-    "jest-util": "workspace:^",
+    "jest-util": "workspace:*",
     "merge-stream": "^2.0.0",
     "supports-color": "^8.0.0"
   },
@@ -28,7 +28,7 @@
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",
-    "jest-leak-detector": "workspace:^",
+    "jest-leak-detector": "workspace:*",
     "tsd-lite": "^0.8.0",
     "worker-farm": "^1.6.0"
   },

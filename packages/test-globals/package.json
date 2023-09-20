@@ -12,10 +12,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/expect": "workspace:^",
-    "@jest/types": "workspace:^",
-    "jest-mock": "workspace:^"
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/types": "workspace:*",
+    "jest-mock": "workspace:*"
   },
   "engines": {
     "node": "^16.10.0 || ^18.12.0 || >=20.0.0"

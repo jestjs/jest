@@ -17,23 +17,23 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/expect": "workspace:^",
-    "@jest/source-map": "workspace:^",
-    "@jest/test-result": "workspace:^",
-    "@jest/types": "workspace:^",
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/source-map": "workspace:*",
+    "@jest/test-result": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "workspace:^",
-    "jest-matcher-utils": "workspace:^",
-    "jest-message-util": "workspace:^",
-    "jest-runtime": "workspace:^",
-    "jest-snapshot": "workspace:^",
-    "jest-util": "workspace:^",
+    "jest-each": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-runtime": "workspace:*",
+    "jest-snapshot": "workspace:*",
+    "jest-util": "workspace:*",
     "p-limit": "^3.1.0",
-    "pretty-format": "workspace:^"
+    "pretty-format": "workspace:*"
   },
   "devDependencies": {
     "@types/co": "^4.6.2"

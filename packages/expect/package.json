@@ -19,15 +19,15 @@
     "./build/toThrowMatchers": "./build/toThrowMatchers.js"
   },
   "dependencies": {
-    "@jest/expect-utils": "workspace:^",
-    "jest-get-type": "workspace:^",
-    "jest-matcher-utils": "workspace:^",
-    "jest-message-util": "workspace:^",
-    "jest-util": "workspace:^"
+    "@jest/expect-utils": "workspace:*",
+    "jest-get-type": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
     "@fast-check/jest": "^1.3.0",
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@tsd/typescript": "^5.0.4",
     "chalk": "^4.0.0",
     "immutable": "^4.0.0",
