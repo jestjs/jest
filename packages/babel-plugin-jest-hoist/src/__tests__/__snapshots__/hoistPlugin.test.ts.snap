@@ -230,3 +230,59 @@ function _getJestObj() {
 }
 
 `;
+
+exports[`babel-plugin-jest-hoist 11. jest.spyOn call on the imported module: 11. jest.spyOn call on the imported module 1`] = `
+
+jest.mock('some-module', () => {
+  const module = jest.requireActual('some-module');
+  jest.spyOn(module, 'add');
+  return module;
+});
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  const module = jest.requireActual('some-module');
+  _getJestObj().spyOn(module, 'add');
+  return module;
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;
+
+exports[`babel-plugin-jest-hoist 12. jest.spyOn call in class constructor: 12. jest.spyOn call in class constructor 1`] = `
+
+jest.mock('some-module', () => {
+  const Actual = jest.requireActual('some-module');
+  return class Mocked extends Actual {
+    constructor() {
+      super();
+      jest.spyOn(this, 'add');
+    }
+  };
+});
+
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  const Actual = jest.requireActual('some-module');
+  return class Mocked extends Actual {
+    constructor() {
+      super();
+      _getJestObj().spyOn(this, 'add');
+    }
+  };
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+`;

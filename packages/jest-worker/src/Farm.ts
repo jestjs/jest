@@ -55,7 +55,7 @@ export default class Farm {
     };
 
     const onCustomMessage: OnCustomMessage = message => {
-      customMessageListeners.forEach(listener => listener(message));
+      for (const listener of customMessageListeners) listener(message);
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(

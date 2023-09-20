@@ -38,6 +38,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
+  private readonly _configuredExportConditions?: Array<string>;
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -72,7 +73,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // @ts-expect-error - for "universal" code (code should use `globalThis`)
+    // TODO: remove at some point - for "universal" code (code should use `globalThis`)
     global.global = global;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
@@ -119,7 +120,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         Array.isArray(customExportConditions) &&
         customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -160,13 +161,6 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       this.global.close();
-
-      // Dispose "document" to prevent "load" event from triggering.
-
-      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
-      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
-      // document should be accessible within disconnectedCallback.
-      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error: this.global not allowed to be `null`
@@ -177,7 +171,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {

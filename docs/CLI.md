@@ -49,11 +49,9 @@ jest --watchAll #runs all tests
 
 Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
-<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+## Using with package manager
 
-## Using with yarn
-
-If you run Jest via `yarn test`, you can pass the command line arguments directly as Jest arguments.
+If you run Jest via your package manager, you can still pass the command line arguments directly as Jest arguments.
 
 Instead of:
 
@@ -63,23 +61,7 @@ jest -u -t="ColorPicker"
 
 you can use:
 
-```bash
-yarn test -u -t="ColorPicker"
-```
-
-## Using with npm scripts
-
-If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments.
-
-Instead of:
-
-```bash
-jest -u -t="ColorPicker"
-```
-
-you can use:
-
-```bash
+```bash npm2yarn
 npm test -- -u -t="ColorPicker"
 ```
 
@@ -248,10 +230,6 @@ Show the help information, similar to this page.
 
 Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
-### `--init`
-
-Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
-
 ### `--injectGlobals`
 
 Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
@@ -372,7 +350,39 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 ### `--runTestsByPath`
 
-Run only the tests that were specified with their exact paths.
+Run only the tests that were specified with their exact paths. This avoids converting them into a regular expression and matching it against every single file.
+
+For example, given the following file structure:
+
+```bash
+__tests__
+└── t1.test.js # test
+└── t2.test.js # test
+```
+
+When ran with a pattern, no test is found:
+
+```bash
+jest --runTestsByPath __tests__/t
+```
+
+Output:
+
+```bash
+No tests found
+```
+
+However, passing an exact path will execute only the given test:
+
+```bash
+jest --runTestsByPath __tests__/t1.test.js
+```
+
+Output:
+
+```bash
+PASS __tests__/t1.test.js
+```
 
 :::tip
 

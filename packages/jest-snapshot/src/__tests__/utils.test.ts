@@ -303,7 +303,12 @@ describe('removeLinesBeforeExternalMatcherTrap', () => {
 });
 
 describe('DeepMerge with property matchers', () => {
-  const matcher = expect.any(String);
+  const matcherString = expect.any(String);
+  const matcherNumber = expect.any(Number);
+  const matcherObject = expect.any(Object);
+  const matcherArray = expect.any(Array);
+  const matcherBoolean = expect.any(Boolean);
+  const matcherAnything = expect.anything();
 
   it.each(
     /* eslint-disable sort-keys */
@@ -321,14 +326,14 @@ describe('DeepMerge with property matchers', () => {
         // Matchers
         {
           data: {
-            two: matcher,
+            two: matcherString,
           },
         },
         // Expected
         {
           data: {
             one: 'one',
-            two: matcher,
+            two: matcherString,
           },
         },
       ],
@@ -358,15 +363,15 @@ describe('DeepMerge with property matchers', () => {
           data: {
             one: [
               {
-                two: matcher,
+                two: matcherString,
               },
             ],
             six: [
-              {seven: matcher},
+              {seven: matcherString},
               // Include an array element not present in the target
-              {eight: matcher},
+              {eight: matcherString},
             ],
-            nine: [[{ten: matcher}]],
+            nine: [[{ten: matcherString}]],
           },
         },
         // Expected
@@ -374,7 +379,7 @@ describe('DeepMerge with property matchers', () => {
           data: {
             one: [
               {
-                two: matcher,
+                two: matcherString,
                 three: 'three',
               },
               {
@@ -382,8 +387,8 @@ describe('DeepMerge with property matchers', () => {
                 five: 'five',
               },
             ],
-            six: [{seven: matcher}, {eight: matcher}],
-            nine: [[{ten: matcher}]],
+            six: [{seven: matcherString}, {eight: matcherString}],
+            nine: [[{ten: matcherString}]],
           },
         },
       ],
@@ -402,18 +407,18 @@ describe('DeepMerge with property matchers', () => {
         // Matchers
         {
           data: {
-            one: [matcher],
+            one: [matcherString],
             two: ['two'],
-            three: [matcher],
+            three: [matcherString],
             five: 'five',
           },
         },
         // Expected
         {
           data: {
-            one: [matcher],
+            one: [matcherString],
             two: ['two'],
-            three: [matcher, 'four'],
+            three: [matcherString, 'four'],
             five: 'five',
           },
         },
@@ -424,9 +429,58 @@ describe('DeepMerge with property matchers', () => {
         // Target
         [{name: 'one'}, {name: 'two'}, {name: 'three'}],
         // Matchers
-        [{name: 'one'}, {name: matcher}, {name: matcher}],
+        [{name: 'one'}, {name: matcherString}, {name: matcherString}],
         // Expected
-        [{name: 'one'}, {name: matcher}, {name: matcher}],
+        [{name: 'one'}, {name: matcherString}, {name: matcherString}],
+      ],
+
+      [
+        'an array of different types',
+        // Target
+        [
+          5,
+          'some words',
+          [],
+          {},
+          true,
+          false,
+          5,
+          'some words',
+          [],
+          {},
+          true,
+          false,
+        ],
+        // Matchers
+        [
+          matcherNumber,
+          matcherString,
+          matcherArray,
+          matcherObject,
+          matcherBoolean,
+          matcherBoolean,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+        ],
+        // Expected
+        [
+          matcherNumber,
+          matcherString,
+          matcherArray,
+          matcherObject,
+          matcherBoolean,
+          matcherBoolean,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+          matcherAnything,
+        ],
       ],
 
       [
@@ -434,9 +488,9 @@ describe('DeepMerge with property matchers', () => {
         // Target
         [['one'], ['two'], ['three']],
         // Matchers
-        [['one'], [matcher], [matcher]],
+        [['one'], [matcherString], [matcherString]],
         // Expected
-        [['one'], [matcher], [matcher]],
+        [['one'], [matcherString], [matcherString]],
       ],
     ],
     /* eslint-enable sort-keys */

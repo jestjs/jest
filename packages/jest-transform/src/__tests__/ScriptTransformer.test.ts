@@ -81,7 +81,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -105,7 +105,7 @@ jest.mock(
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
-          code: (require('dedent') as typeof import('dedent'))`
+          code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -178,7 +178,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
       process: (content, filename) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -438,7 +438,7 @@ describe('ScriptTransformer', () => {
       [[], '/fruits/grapefruit.js'],
     ];
 
-    incorrectReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of incorrectReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -448,11 +448,11 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
 
     const correctReturnValues = [[{code: 'code'}, '/fruits/kiwi.js']];
 
-    correctReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of correctReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -462,7 +462,7 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
-    });
+    }
   });
 
   it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {
@@ -1266,11 +1266,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap: FixedRawSourceMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1315,11 +1315,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1364,11 +1364,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['content'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'content'],
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
     };
     /* eslint-enable */
 
@@ -1405,11 +1405,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1445,11 +1445,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1485,11 +1485,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      names: ['module', 'exports'],
+      names: ['cov_25u22311x4', 'actualCoverage', 's', 'module', 'exports'],
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 

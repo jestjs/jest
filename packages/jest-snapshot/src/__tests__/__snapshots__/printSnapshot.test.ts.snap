@@ -1,14 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (array) with snapshot 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </>snapshot<d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has type:  array
-Expected properties has value: <g>[]</>
-`;
-
 exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) without snapshot 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
 
@@ -39,15 +30,6 @@ exports[`matcher error toMatchInlineSnapshot Snapshot matchers cannot be used wi
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
 
 <b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
-`;
-
-exports[`matcher error toMatchSnapshot Expected properties must be an object (array) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has type:  array
-Expected properties has value: <g>[]</>
 `;
 
 exports[`matcher error toMatchSnapshot Expected properties must be an object (non-null) 1`] = `

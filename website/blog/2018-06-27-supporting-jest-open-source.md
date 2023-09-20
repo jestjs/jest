@@ -45,7 +45,7 @@ There are two levels of support for the collective: Backer and Sponsor.
 
 #### Backers
 
-Backers of the collective are individuals contributing at least \$2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
+Backers of the collective are individuals contributing at least $2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
 #### Sponsors
 
@@ -62,7 +62,7 @@ To achieve that goal, we will use the funds to:
 - Print and distribute swag
 - Develop and fund a bug bounty program (TBD)
 
-This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/fbjest)!
+This is just the beginning and we're committed to getting this right. If you have ideas on how else we can support the community, or feedback on the structure of the collective, please reach out to us on [twitter](https://twitter.com/jestjs_)!
 
 ## Thank You
 

@@ -12,7 +12,7 @@ const path = require('path');
 module.exports = {
   getHasteName(filePath) {
     const name = path.parse(filePath).name;
-    const isMock = filePath.indexOf('__mocks__') !== -1;
+    const isMock = filePath.includes('__mocks__');
 
     // Mocks are automatically parsed by Jest already.
     return name.startsWith('Test') && !isMock ? name : null;

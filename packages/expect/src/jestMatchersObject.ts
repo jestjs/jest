@@ -58,7 +58,7 @@ export const setMatchers = (
   isInternal: boolean,
   expect: Expect,
 ): void => {
-  Object.keys(matchers).forEach(key => {
+  for (const key of Object.keys(matchers)) {
     const matcher = matchers[key];
 
     if (typeof matcher !== 'function') {
@@ -121,7 +121,7 @@ export const setMatchers = (
         writable: true,
       });
     }
-  });
+  }
 
   Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
 };

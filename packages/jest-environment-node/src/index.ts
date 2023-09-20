@@ -27,6 +27,7 @@ const denyList = new Set([
   'GLOBAL',
   'root',
   'global',
+  'globalThis',
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
@@ -34,9 +35,11 @@ const denyList = new Set([
   'jest-symbol-do-not-touch',
 ]);
 
+type GlobalProperties = Array<keyof typeof globalThis>;
+
 const nodeGlobals = new Map(
-  Object.getOwnPropertyNames(globalThis)
-    .filter(global => !denyList.has(global))
+  (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
+    .filter(global => !denyList.has(global as string))
     .map(nodeGlobalsKey => {
       const descriptor = Object.getOwnPropertyDescriptor(
         globalThis,
@@ -64,6 +67,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
+  private readonly _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -75,7 +79,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     ) as Global.Global;
     this.global = global;
 
-    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    const contextGlobals = new Set(
+      Object.getOwnPropertyNames(global) as GlobalProperties,
+    );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (descriptor.configurable) {
@@ -83,27 +89,24 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             configurable: true,
             enumerable: descriptor.enumerable,
             get() {
-              // @ts-expect-error: no index signature
-              const val = globalThis[nodeGlobalsKey] as unknown;
+              const value = globalThis[nodeGlobalsKey];
 
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
                 configurable: true,
                 enumerable: descriptor.enumerable,
-                value: val,
-                writable:
-                  descriptor.writable === true ||
-                  // Node 19 makes performance non-readable. This is probably not the correct solution.
-                  nodeGlobalsKey === 'performance',
+                value,
+                writable: true,
               });
-              return val;
+
+              return value;
             },
-            set(val: unknown) {
+            set(value: unknown) {
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
                 configurable: true,
                 enumerable: descriptor.enumerable,
-                value: val,
+                value,
                 writable: true,
               });
             },
@@ -126,7 +129,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       }
     }
 
-    // @ts-expect-error - Buffer and gc is "missing"
     global.global = global;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
@@ -147,7 +149,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
         Array.isArray(customExportConditions) &&
         customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -201,7 +203,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {

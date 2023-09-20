@@ -13,6 +13,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
+import type {Circus} from '@jest/types';
 import type {ReporterConstructor} from './TestScheduler';
 
 export default class ReporterDispatcher {
@@ -69,6 +70,17 @@ export default class ReporterDispatcher {
     }
   }
 
+  async onTestCaseStart(
+    test: Test,
+    testCaseStartInfo: Circus.TestCaseStartInfo,
+  ): Promise<void> {
+    for (const reporter of this._reporters) {
+      if (reporter.onTestCaseStart) {
+        await reporter.onTestCaseStart(test, testCaseStartInfo);
+      }
+    }
+  }
+
   async onTestCaseResult(
     test: Test,
     testCaseResult: TestCaseResult,
@@ -100,6 +112,6 @@ export default class ReporterDispatcher {
   }
 
   hasErrors(): boolean {
-    return this.getErrors().length !== 0;
+    return this.getErrors().length > 0;
   }
 }

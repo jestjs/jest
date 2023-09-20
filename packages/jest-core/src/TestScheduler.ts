@@ -17,6 +17,7 @@ import {
   Reporter,
   ReporterContext,
   SummaryReporter,
+  SummaryReporterOptions,
   VerboseReporter,
 } from '@jest/reporters';
 import {
@@ -37,7 +38,7 @@ import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
-import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -97,12 +98,12 @@ class TestScheduler {
     );
     const timings: Array<number> = [];
     const testContexts = new Set<TestContext>();
-    tests.forEach(test => {
+    for (const test of tests) {
       testContexts.add(test.context);
       if (test.duration) {
         timings.push(test.duration);
       }
-    });
+    }
 
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
@@ -179,7 +180,7 @@ class TestScheduler {
         ),
       );
 
-      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
+      for (const [context, snapshotResolver] of contextsWithSnapshotResolvers) {
         const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
@@ -191,7 +192,7 @@ class TestScheduler {
         aggregatedResults.snapshot.filesRemovedList = (
           aggregatedResults.snapshot.filesRemovedList || []
         ).concat(status.filesRemovedList);
-      });
+      }
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
       aggregatedResults.snapshot.failure = !!(
@@ -257,6 +258,13 @@ class TestScheduler {
                   onFailure(test, error),
                 ),
                 testRunner.on(
+                  'test-case-start',
+                  ([testPath, testCaseStartInfo]) => {
+                    const test: Test = {context, path: testPath};
+                    this._dispatcher.onTestCaseStart(test, testCaseStartInfo);
+                  },
+                ),
+                testRunner.on(
                   'test-case-result',
                   ([testPath, testCaseResult]) => {
                     const test: Test = {context, path: testPath};
@@ -267,7 +275,7 @@ class TestScheduler {
 
               await testRunner.runTests(tests, watcher, testRunnerOptions);
 
-              unsubscribes.forEach(sub => sub());
+              for (const sub of unsubscribes) sub();
             } else {
               await testRunner.runTests(
                 tests,
@@ -336,12 +344,12 @@ class TestScheduler {
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
     const reporters = this._globalConfig.reporters || [['default', {}]];
-    let summary = false;
+    let summaryOptions: SummaryReporterOptions | null = null;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {
         case 'default':
-          summary = true;
+          summaryOptions = options;
           verbose
             ? this.addReporter(new VerboseReporter(this._globalConfig))
             : this.addReporter(new DefaultReporter(this._globalConfig));
@@ -353,7 +361,7 @@ class TestScheduler {
             );
           break;
         case 'summary':
-          summary = true;
+          summaryOptions = options;
           break;
         default:
           await this._addCustomReporter(reporter, options);
@@ -368,8 +376,8 @@ class TestScheduler {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    if (summary) {
-      this.addReporter(new SummaryReporter(this._globalConfig));
+    if (summaryOptions != null) {
+      this.addReporter(new SummaryReporter(this._globalConfig, summaryOptions));
     }
   }
 
@@ -414,12 +422,6 @@ class TestScheduler {
         exit(exitCode);
       }
     }
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }
 

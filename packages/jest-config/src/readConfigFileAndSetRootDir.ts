@@ -64,14 +64,17 @@ export default async function readConfigFileAndSetRootDir(
     // We don't touch it if it has an absolute path specified
     if (!path.isAbsolute(configObject.rootDir)) {
       // otherwise, we'll resolve it relative to the file's __dirname
-      configObject.rootDir = path.resolve(
-        path.dirname(configPath),
-        configObject.rootDir,
-      );
+      configObject = {
+        ...configObject,
+        rootDir: path.resolve(path.dirname(configPath), configObject.rootDir),
+      };
     }
   } else {
     // If rootDir is not there, we'll set it to this file's __dirname
-    configObject.rootDir = path.dirname(configPath);
+    configObject = {
+      ...configObject,
+      rootDir: path.dirname(configPath),
+    };
   }
 
   return configObject;
@@ -109,7 +112,7 @@ function getRegisteredCompiler() {
 async function registerTsNode(): Promise<Service> {
   try {
     // Register TypeScript compiler instance
-    const tsNode = await import('ts-node');
+    const tsNode = await import(/* webpackIgnore: true */ 'ts-node');
     return tsNode.register({
       compilerOptions: {
         module: 'CommonJS',

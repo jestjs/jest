@@ -1,9 +1,9 @@
 {
   "name": "jest-resolve",
-  "version": "29.4.3",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-resolve"
   },
   "license": "MIT",
@@ -28,14 +28,14 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@tsd/typescript": "^4.9.0",
+    "@tsd/typescript": "^5.0.4",
     "@types/graceful-fs": "^4.1.3",
     "@types/pnpapi": "^0.0.2",
     "@types/resolve": "^1.20.2",
-    "tsd-lite": "^0.6.0"
+    "tsd-lite": "^0.8.0"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

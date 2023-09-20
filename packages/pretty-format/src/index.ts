@@ -207,7 +207,7 @@ function printComplexValue(
   refs: Refs,
   hasCalledToJSON?: boolean,
 ): string {
-  if (refs.indexOf(val) !== -1) {
+  if (refs.includes(val)) {
     return '[Circular]';
   }
   refs = refs.slice();
@@ -420,11 +420,11 @@ export const DEFAULT_OPTIONS = toOptionsSubtype({
 });
 
 function validateOptions(options: OptionsReceived) {
-  Object.keys(options).forEach(key => {
+  for (const key of Object.keys(options)) {
     if (!Object.prototype.hasOwnProperty.call(DEFAULT_OPTIONS, key)) {
       throw new Error(`pretty-format: Unknown option "${key}".`);
     }
-  });
+  }
 
   if (options.min && options.indent !== undefined && options.indent !== 0) {
     throw new Error(

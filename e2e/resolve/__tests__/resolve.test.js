@@ -112,7 +112,7 @@ test('should throw module not found error if the module has dependencies that ca
           requiresUnexistingModule.js
           Test7.js
           __tests__/resolve.test.js\n
-        `,
+      `,
     }),
   );
 });

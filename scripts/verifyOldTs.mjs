@@ -12,8 +12,21 @@ import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import stripJsonComments from 'strip-json-comments';
+/* eslint-disable import/order */
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);
+
+const rootPackageJson = require('../package.json');
+
+const currentTsdTypescriptVersion =
+  rootPackageJson.devDependencies['@tsd/typescript'];
+const currentTypescriptVersion = rootPackageJson.devDependencies['typescript'];
+const tsconfigBasePackage = Object.keys(rootPackageJson.devDependencies).find(
+  packageName => packageName.startsWith('@tsconfig'),
+);
+const apiExtractorTypescriptVersion =
+  require('@microsoft/api-extractor/package.json').dependencies['typescript'];
+/* eslint-enable import/order */
 
 const baseTsConfig = JSON.parse(
   stripJsonComments(
@@ -26,13 +39,14 @@ const tsConfig = {
   extends: baseTsConfig.extends,
   compilerOptions: {
     esModuleInterop: false,
+    module: 'commonjs',
     moduleResolution: 'node',
     noEmit: true,
   },
 };
-/* eslint-enable */
+/* eslint-enable sort-keys */
 
-const tsVersion = '4.3';
+const tsVersion = '5.0';
 
 function smoketest() {
   const jestDirectory = path.resolve(
@@ -50,7 +64,7 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14'],
+      ['add', `typescript@~${tsVersion}`, tsconfigBasePackage],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(
@@ -75,14 +89,6 @@ function smoketest() {
 
 function typeTests() {
   const cwd = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../');
-  const rootPackageJson = require('../package.json');
-
-  const currentTsdTypescriptVersion =
-    rootPackageJson.devDependencies['@tsd/typescript'];
-  const currentTypescriptVersion =
-    rootPackageJson.devDependencies['typescript'];
-  const apiExtractorTypescriptVersion =
-    require('@microsoft/api-extractor/package.json').dependencies['typescript'];
 
   try {
     const {stdout: statusStdout} = execa.sync(
@@ -96,6 +102,8 @@ function typeTests() {
         'Repo is not clean - cannot run type tests with old typescript version',
       );
     }
+
+    execa.sync('yarn', ['add', tsconfigBasePackage], {cwd});
 
     execa.sync(
       'yarn',
@@ -138,7 +146,8 @@ function typeTests() {
 
     execa.sync('yarn', ['test-types'], {cwd, stdio: 'inherit'});
   } finally {
-    execa.sync('git', ['checkout', 'yarn.lock'], {cwd});
+    execa.sync('git', ['checkout', 'package.json', 'yarn.lock'], {cwd});
+    execa.sync('yarn', ['install'], {cwd});
   }
 
   function verifyInstalledTsdTypescript() {

@@ -1,4 +1,4 @@
-[type-definitions]: https://github.com/facebook/jest/blob/main/packages/jest-types/src/Circus.ts
+[type-definitions]: https://github.com/jestjs/jest/blob/main/packages/jest-types/src/Circus.ts
 
 <h1 align="center">
   <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>

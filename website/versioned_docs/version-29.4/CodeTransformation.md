@@ -13,7 +13,7 @@ Jest will cache the result of a transformation and attempt to invalidate that re
 
 ## Defaults
 
-Jest ships with one transformer out of the box &ndash; [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup). It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+Jest ships with one transformer out of the box &ndash; [`babel-jest`](https://github.com/jestjs/jest/tree/main/packages/babel-jest#setup). It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
 :::tip
 
@@ -134,13 +134,15 @@ type TransformerFactory<X extends Transformer> = {
 
 :::note
 
-The definitions above were trimmed down for brevity. Full code can be found in [Jest repo on GitHub](https://github.com/facebook/jest/blob/main/packages/jest-transform/src/types.ts) (remember to choose the right tag/commit for your version of Jest).
+The definitions above were trimmed down for brevity. Full code can be found in [Jest repo on GitHub](https://github.com/jestjs/jest/blob/main/packages/jest-transform/src/types.ts) (remember to choose the right tag/commit for your version of Jest).
 
 :::
 
-There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
+There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all.
 
-So if your code base is ESM only implementing the async variants is sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous variant. Be aware that `node_modules` is not transpiled with default config.
+Asynchronous transpilation can fall back to the synchronous `process` call if `processAsync` is unimplemented, but synchronous transpilation cannot use the asynchronous `processAsync` call. If your codebase is ESM only, implementing the async variants are sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous `process` variant.
+
+Be aware that `node_modules` is not transpiled with default config, the `transformIgnorePatterns` setting must be modified in order to do so.
 
 Semi-related to this are the supports flags we pass (see `CallerTransformOptions` above), but those should be used within the transform to figure out if it should return ESM or CJS, and has no direct bearing on sync vs async
 

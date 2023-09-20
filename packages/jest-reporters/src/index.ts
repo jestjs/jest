@@ -30,6 +30,7 @@ export {default as GitHubActionsReporter} from './GitHubActionsReporter';
 export {default as NotifyReporter} from './NotifyReporter';
 export {default as SummaryReporter} from './SummaryReporter';
 export {default as VerboseReporter} from './VerboseReporter';
+export type {SummaryReporterOptions} from './SummaryReporter';
 export type {
   Reporter,
   ReporterOnStartOptions,

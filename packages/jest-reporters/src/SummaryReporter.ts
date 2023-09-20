@@ -19,8 +19,6 @@ import getSnapshotSummary from './getSnapshotSummary';
 import getSummary from './getSummary';
 import type {ReporterOnStartOptions} from './types';
 
-const TEST_SUMMARY_THRESHOLD = 20;
-
 const NPM_EVENTS = new Set([
   'prepublish',
   'publish',
@@ -51,16 +49,35 @@ const NPM_EVENTS = new Set([
 const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
   process.env;
 
+export type SummaryReporterOptions = {
+  summaryThreshold?: number;
+};
+
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
   private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _summaryThreshold: number;
 
   static readonly filename = __filename;
 
-  constructor(globalConfig: Config.GlobalConfig) {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    options?: SummaryReporterOptions,
+  ) {
     super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
+    this._validateOptions(options);
+    this._summaryThreshold = options?.summaryThreshold ?? 20;
+  }
+
+  private _validateOptions(options?: SummaryReporterOptions) {
+    if (
+      options?.summaryThreshold &&
+      typeof options.summaryThreshold !== 'number'
+    ) {
+      throw new TypeError('The option summaryThreshold should be a number');
+    }
   }
 
   // If we write more than one character at a time it is possible that
@@ -160,7 +177,7 @@ export default class SummaryReporter extends BaseReporter {
         globalConfig,
         updateCommand,
       );
-      snapshotSummary.forEach(this.log);
+      for (const summary of snapshotSummary) this.log(summary);
 
       this.log(''); // print empty line
     }
@@ -176,17 +193,17 @@ export default class SummaryReporter extends BaseReporter {
     const runtimeErrors = aggregatedResults.numRuntimeErrorTestSuites;
     if (
       failedTests + runtimeErrors > 0 &&
-      aggregatedResults.numTotalTestSuites > TEST_SUMMARY_THRESHOLD
+      aggregatedResults.numTotalTestSuites > this._summaryThreshold
     ) {
       this.log(chalk.bold('Summary of all failing tests'));
-      aggregatedResults.testResults.forEach(testResult => {
+      for (const testResult of aggregatedResults.testResults) {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
             `${getResultHeader(testResult, globalConfig)}\n${failureMessage}\n`,
           );
         }
-      });
+      }
       this.log(''); // print empty line
     }
   }

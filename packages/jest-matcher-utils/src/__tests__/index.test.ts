@@ -23,7 +23,7 @@ import {
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('stringify()', () => {
-  [
+  for (const [v, s] of [
     [[], '[]'],
     [{}, '{}'],
     [1, '1'],
@@ -39,11 +39,11 @@ describe('stringify()', () => {
     [/ab\.c/gi, '/ab\\.c/gi'],
     [BigInt(1), '1n'],
     [BigInt(0), '0n'],
-  ].forEach(([v, s]) => {
+  ]) {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
     });
-  });
+  }
 
   test('circular references', () => {
     const a: any = {};
@@ -231,7 +231,7 @@ jest.mock('jest-diff', () => ({
 }));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
-    [
+    for (const [actual, expected] of [
       ['a', 'b'],
       ['a', {}],
       ['a', null],
@@ -240,9 +240,8 @@ describe('diff', () => {
       ['a', true],
       [1, true],
       [BigInt(1), true],
-    ].forEach(([actual, expected]) =>
-      expect(diff(actual, expected)).toBe('diff output'),
-    );
+    ])
+      expect(diff(actual, expected)).toBe('diff output');
   });
 
   test('two booleans', () => {

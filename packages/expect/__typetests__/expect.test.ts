@@ -174,7 +174,7 @@ const allowOmittingExpected: MatcherFunction = (
   actual: unknown,
   ...expect: Array<unknown>
 ) => {
-  if (expect.length !== 0) {
+  if (expect.length > 0) {
     throw new Error('This matcher does not take any expected argument.');
   }
 
@@ -194,7 +194,7 @@ const toHaveContext: MatcherFunction = function (
 ) {
   expectType<MatcherContext>(this);
 
-  if (expect.length !== 0) {
+  if (expect.length > 0) {
     throw new Error('This matcher does not take any expected argument.');
   }
 
@@ -215,7 +215,7 @@ const customContext: MatcherFunctionWithContext<CustomContext> = function (
   expectType<CustomContext>(this);
   expectType<void>(this.customMethod());
 
-  if (expect.length !== 0) {
+  if (expect.length > 0) {
     throw new Error('This matcher does not take any expected argument.');
   }
 

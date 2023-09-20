@@ -5,7 +5,7 @@
 
 <hr />
 
-[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each) [![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21) [![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/facebook/jest/blob/main/LICENSE)
+[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each) [![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21) [![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/jestjs/jest/blob/main/LICENSE)
 
 A parameterised testing library for [Jest](https://jestjs.io/) inspired by [mocha-each](https://github.com/ryym/mocha-each).
 

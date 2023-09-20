@@ -47,6 +47,6 @@ As highlighted [last month](/blog/2016/12/15/2016-in-jest), it is now possible t
 
 ## Get involved
 
-This is just the start. Go ahead and take a look at the docs, and don't hesitate to send any feedback our way. If you find a mistake in the docs or you just want to let us know what needs to be documented better, please tweet at us at [@fbjest](https://twitter.com/fbjest), [open an issue on GitHub](https://github.com/facebook/jest/issues), or send us a PR by clicking "Edit on GitHub" at the top of the doc.
+This is just the start. Go ahead and take a look at the docs, and don't hesitate to send any feedback our way. If you find a mistake in the docs or you just want to let us know what needs to be documented better, please tweet at us at [@jestjs\_](https://twitter.com/jestjs_), [open an issue on GitHub](https://github.com/jestjs/jest/issues), or send us a PR by clicking "Edit on GitHub" at the top of the doc.
 
 We're really excited for the year ahead and can't wait to hear from you!

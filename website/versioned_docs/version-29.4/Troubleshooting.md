@@ -161,30 +161,28 @@ Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/tro
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
-While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395) [discovered](https://github.com/facebook/jest/issues/1524#issuecomment-260246008).
+While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/jestjs/jest/issues/1395) [discovered](https://github.com/jestjs/jest/issues/1524#issuecomment-260246008).
 
-Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
+Based on the [findings](https://github.com/jestjs/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
-<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
-
-```bash
+```bash npm2yarn
 # Using Jest CLI
 jest --runInBand
 
-# Using yarn test (e.g. with create-react-app)
-yarn test --runInBand
+# Using your package manager's `test` script (e.g. with create-react-app)
+npm test -- --runInBand
 ```
 
 Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
 
-```bash
+```bash npm2yarn
 # Using Jest CLI
 jest --maxWorkers=4
 
-# Using yarn test (e.g. with create-react-app)
-yarn test --maxWorkers=4
+# Using your package manager's `test` script (e.g. with create-react-app)
+npm test -- --maxWorkers=4
 ```
 
 If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to detect number of CPUs, and pass that to Jest.
@@ -192,7 +190,7 @@ If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://gith
 ```yaml
 - name: Get number of CPU cores
   id: cpu-cores
-  uses: SimenB/github-actions-cpu-cores@v1
+  uses: SimenB/github-actions-cpu-cores@v2
 - name: run tests
   run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
 ```

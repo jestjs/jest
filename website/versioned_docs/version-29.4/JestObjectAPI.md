@@ -174,7 +174,7 @@ This is how `createMockFromModule` will mock the following data types:
 
 #### `Function`
 
-Creates a new [mock function](mock-functions). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
+Creates a new [mock function](MockFunctionAPI.md). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
 
 #### `Class`
 
@@ -669,7 +669,7 @@ Creates a mock function similar to `jest.fn` but also tracks calls to `object[me
 
 :::note
 
-By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `jest.replaceProperty(object, methodName, jest.fn(() => customImplementation));`
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation)`.
 
 :::
 
@@ -999,29 +999,41 @@ Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test rep
 
 Returns `true` if test environment has been torn down.
 
-### `jest.retryTimes(numRetries, options)`
+### `jest.retryTimes(numRetries, options?)`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. `options` are optional. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner! This must live at the top-level of a test file or in a describe block. Retries _will not_ work if `jest.retryTimes()` is called in a `beforeEach` or a `test` block.
-
-Example in a test:
+Runs failed tests n-times until they pass or until the max number of retries is exhausted.
 
 ```js
 jest.retryTimes(3);
+
 test('will fail', () => {
   expect(true).toBe(false);
 });
 ```
 
-If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused the test to fail to the console, providing visibility on why a retry occurred.
+If `logErrorsBeforeRetry` option is enabled, error(s) that caused the test to fail will be logged to the console.
 
 ```js
 jest.retryTimes(3, {logErrorsBeforeRetry: true});
+
 test('will fail', () => {
   expect(true).toBe(false);
 });
 ```
 
 Returns the `jest` object for chaining.
+
+:::caution
+
+`jest.retryTimes()` must be declared at the top level of a test file or in a `describe` block.
+
+:::
+
+:::info
+
+This function is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
+
+:::
 
 ### `jest.setTimeout(timeout)`
 

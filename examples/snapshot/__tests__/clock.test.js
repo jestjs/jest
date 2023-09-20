@@ -5,10 +5,14 @@
 import renderer from 'react-test-renderer';
 import Clock from '../Clock';
 
-jest.useFakeTimers();
-Date.now = jest.fn(() => 1482363367071);
+jest.useFakeTimers().setSystemTime(1482363367071);
 
 it('renders correctly', () => {
-  const tree = renderer.create(<Clock />).toJSON();
-  expect(tree).toMatchSnapshot();
+  const testRenderer = renderer.create(<Clock />);
+
+  try {
+    expect(testRenderer.toJSON()).toMatchSnapshot();
+  } finally {
+    testRenderer.unmount();
+  }
 });

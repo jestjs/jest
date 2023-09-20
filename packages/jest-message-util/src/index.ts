@@ -301,7 +301,7 @@ export const formatPath = (
   // highlight paths from the current test file
   if (
     (config.testMatch &&
-      config.testMatch.length &&
+      config.testMatch.length > 0 &&
       micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
@@ -355,7 +355,7 @@ export const formatStackTrace = (
         let fileContent;
         try {
           // TODO: check & read HasteFS instead of reading the filesystem:
-          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          // see: https://github.com/jestjs/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
         } catch {
@@ -433,6 +433,27 @@ function formatErrorStack(
   return `${message}\n${stack}${cause}`;
 }
 
+function failureDetailsToErrorOrStack(
+  failureDetails: unknown,
+  content: string,
+): Error | string {
+  if (!failureDetails) {
+    return content;
+  }
+  if (types.isNativeError(failureDetails) || failureDetails instanceof Error) {
+    return failureDetails; // receiving raw errors for jest-circus
+  }
+  if (
+    typeof failureDetails === 'object' &&
+    'error' in failureDetails &&
+    (types.isNativeError(failureDetails.error) ||
+      failureDetails.error instanceof Error)
+  ) {
+    return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
+  }
+  return content;
+}
+
 export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
@@ -441,35 +462,34 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach((item, index) => {
+      for (const [index, item] of result.failureMessages.entries()) {
         errors.push({
           content: item,
           failureDetails: result.failureDetails[index],
           result,
         });
-      });
+      }
       return errors;
     },
     [],
   );
 
-  if (!failedResults.length) {
+  if (failedResults.length === 0) {
     return null;
   }
 
   return failedResults
     .map(({result, content, failureDetails}) => {
-      const rootErrorOrStack: Error | string =
-        failureDetails &&
-        (types.isNativeError(failureDetails) || failureDetails instanceof Error)
-          ? failureDetails
-          : content;
+      const rootErrorOrStack = failureDetailsToErrorOrStack(
+        failureDetails,
+        content,
+      );
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +
           TITLE_BULLET +
           result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
           result.title,
       )}\n`;
 

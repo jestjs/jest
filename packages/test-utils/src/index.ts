@@ -15,3 +15,5 @@ export {
 } from './ConditionalTest';
 
 export {makeGlobalConfig, makeProjectConfig} from './config';
+
+export {normalizeIcons} from './normalizeIcons';

@@ -15,6 +15,7 @@ import {
   getPath,
   iterableEquality,
   subsetEquality,
+  typeEquality,
 } from '../utils';
 
 describe('getPath()', () => {
@@ -117,7 +118,7 @@ describe('getPath()', () => {
 });
 
 describe('getObjectSubset', () => {
-  [
+  for (const [object, subset, expected] of [
     [{a: 'b', c: 'd'}, {a: 'd'}, {a: 'b'}],
     [{a: [1, 2], b: 'b'}, {a: [3, 4]}, {a: [1, 2]}],
     [[{a: 'b', c: 'd'}], [{a: 'z'}], [{a: 'b'}]],
@@ -128,7 +129,7 @@ describe('getObjectSubset', () => {
     ],
     [{a: [1]}, {a: [1, 2]}, {a: [1]}],
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
-  ].forEach(([object, subset, expected]) => {
+  ]) {
     test(
       `expect(getObjectSubset(${stringify(object)}, ${stringify(subset)}))` +
         `.toEqual(${stringify(expected)})`,
@@ -136,7 +137,7 @@ describe('getObjectSubset', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
-  });
+  }
 
   describe('returns the object instance if the subset has no extra properties', () => {
     test('Date', () => {
@@ -543,6 +544,12 @@ describe('iterableEquality', () => {
     const a = new TestRecord().merge({dummy: 'data'});
     const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
+  });
+});
+
+describe('typeEquality', () => {
+  test('returns undefined if given mock.calls and []', () => {
+    expect(typeEquality(jest.fn().mock.calls, [])).toBeUndefined();
   });
 });
 
