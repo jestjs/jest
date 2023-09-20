@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "prettier-2": "npm:prettier@^2"
+  }
+}

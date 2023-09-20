@@ -44,4 +44,4 @@ An older Docusaurus v1 site exist for versions <= 25.x:
 
 - Netlify site: https://app.netlify.com/sites/jest-archive
 - Url: https://archive.jestjs.io
-- GitHub branch: https://github.com/facebook/jest/tree/jest-website-v1
+- GitHub branch: https://github.com/jestjs/jest/tree/jest-website-v1

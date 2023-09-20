@@ -75,10 +75,10 @@ export default class CoverageReporter extends BaseReporter {
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
-      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+      if (!this._globalConfig.useStderr && coverageReporters.length === 0) {
         coverageReporters.push('text-summary');
       }
-      coverageReporters.forEach(reporter => {
+      for (let reporter of coverageReporters) {
         let additionalOptions = {};
         if (Array.isArray(reporter)) {
           [reporter, additionalOptions] = reporter;
@@ -89,7 +89,7 @@ export default class CoverageReporter extends BaseReporter {
             ...additionalOptions,
           })
           .execute(reportContext);
-      });
+      }
       aggregatedResults.coverageMap = map;
     } catch (e: any) {
       console.error(
@@ -109,27 +109,24 @@ export default class CoverageReporter extends BaseReporter {
   ): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
-    testContexts.forEach(context => {
+    for (const context of testContexts) {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom.length > 0
       ) {
-        context.hasteFS
-          .matchFilesWithGlob(
-            this._globalConfig.collectCoverageFrom,
-            config.rootDir,
-          )
-          .forEach(filePath =>
-            files.push({
-              config,
-              path: filePath,
-            }),
-          );
+        for (const filePath of context.hasteFS.matchFilesWithGlob(
+          this._globalConfig.collectCoverageFrom,
+          config.rootDir,
+        ))
+          files.push({
+            config,
+            path: filePath,
+          });
       }
-    });
+    }
 
-    if (!files.length) {
+    if (files.length === 0) {
       return;
     }
 
@@ -274,7 +271,7 @@ export default class CoverageReporter extends BaseReporter {
           Array<[string, string]>
         >((agg, thresholdGroup) => {
           // Preserve trailing slash, but not required if root dir
-          // See https://github.com/facebook/jest/issues/12703
+          // See https://github.com/jestjs/jest/issues/12703
           const resolvedThresholdGroup = path.resolve(thresholdGroup);
           const suffix =
             (thresholdGroup.endsWith(path.sep) ||
@@ -303,7 +300,7 @@ export default class CoverageReporter extends BaseReporter {
               .map(filePath => path.resolve(filePath));
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+          if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
             return agg.concat([[file, thresholdGroup]]);
@@ -317,7 +314,7 @@ export default class CoverageReporter extends BaseReporter {
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+        if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
           return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
@@ -354,7 +351,7 @@ export default class CoverageReporter extends BaseReporter {
 
       let errors: Array<string> = [];
 
-      thresholdGroups.forEach(thresholdGroup => {
+      for (const thresholdGroup of thresholdGroups) {
         switch (groupTypeByThresholdGroup[thresholdGroup]) {
           case THRESHOLD_GROUP_TYPES.GLOBAL: {
             const coverage = combineCoverage(
@@ -387,17 +384,18 @@ export default class CoverageReporter extends BaseReporter {
             break;
           }
           case THRESHOLD_GROUP_TYPES.GLOB:
-            getFilesInThresholdGroup(thresholdGroup).forEach(
-              fileMatchingGlob => {
-                errors = errors.concat(
-                  check(
-                    fileMatchingGlob,
-                    coverageThreshold[thresholdGroup],
-                    map.fileCoverageFor(fileMatchingGlob).toSummary(),
-                  ),
-                );
-              },
-            );
+            for (const fileMatchingGlob of getFilesInThresholdGroup(
+              thresholdGroup,
+            )) {
+              errors = errors.concat(
+                check(
+                  fileMatchingGlob,
+                  coverageThreshold[thresholdGroup],
+                  map.fileCoverageFor(fileMatchingGlob).toSummary(),
+                ),
+              );
+            }
+
             break;
           default:
             // If the file specified by path is not found, error is returned.
@@ -410,7 +408,7 @@ export default class CoverageReporter extends BaseReporter {
           // PATH and GLOB threshold groups in which case, don't error when
           // the global threshold group doesn't match any files.
         }
-      });
+      }
 
       errors = errors.filter(
         err => err !== undefined && err !== null && err.length > 0,
@@ -434,13 +432,12 @@ export default class CoverageReporter extends BaseReporter {
 
       const fileTransforms = new Map<string, RuntimeTransformResult>();
 
-      this._v8CoverageResults.forEach(res =>
-        res.forEach(r => {
+      for (const res of this._v8CoverageResults)
+        for (const r of res) {
           if (r.codeTransformResult && !fileTransforms.has(r.result.url)) {
             fileTransforms.set(r.result.url, r.codeTransformResult);
           }
-        }),
-      );
+        }
 
       const transformedCoverage = await Promise.all(
         mergedCoverages.result.map(async res => {
@@ -483,7 +480,7 @@ export default class CoverageReporter extends BaseReporter {
 
       const map = istanbulCoverage.createCoverageMap({});
 
-      transformedCoverage.forEach(res => map.merge(res));
+      for (const res of transformedCoverage) map.merge(res);
 
       const reportContext = istanbulReport.createContext({
         coverageMap: map,

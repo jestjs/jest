@@ -10,7 +10,7 @@ import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
-import glob from 'glob';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
@@ -32,7 +32,7 @@ const workspacesWithTs = new Map(
     .map(({location, name}) => [name, location]),
 );
 
-packagesWithTs.forEach(({packageDir, pkg}) => {
+for (const {packageDir, pkg} of packagesWithTs) {
   assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
   assert.strictEqual(
@@ -43,8 +43,11 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
 
   const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
     .concat(Object.keys(pkg.devDependencies || {}))
-    .filter(dep => workspacesWithTs.has(dep))
     .filter(dep => {
+      if (!workspacesWithTs.has(dep)) {
+        return false;
+      }
+
       // nothing should depend on these
       if (dep === 'jest-circus' || dep === 'jest-jasmine2') {
         return false;
@@ -116,9 +119,10 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     const tsConfig = JSON.parse(
       stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
     );
-    const references = tsConfig.references.map(({path}) => path);
 
-    return references.some(reference => /test-utils$/.test(reference));
+    return tsConfig.references.some(
+      ({path}) => path && path.endsWith('test-utils'),
+    );
   });
 
   if (hasJestTestUtils && testUtilsReferences.length === 0) {
@@ -144,7 +148,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
       ),
     );
   }
-});
+}
 
 const args = [
   'tsc',

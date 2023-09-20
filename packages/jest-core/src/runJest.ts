@@ -43,7 +43,7 @@ const getTestPaths = async (
 ) => {
   const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
-  if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
+  if (data.tests.length === 0 && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
       'Jest can only find uncommitted changed files in a git or hg ' +
         'repository. If you make your project a git or hg ' +
@@ -159,7 +159,7 @@ export default async function runJest({
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
-  const sequencer = new Sequencer();
+  const sequencer = new Sequencer({contexts, globalConfig});
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {
@@ -294,12 +294,11 @@ export default async function runJest({
     ...testSchedulerContext,
   });
 
-  // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
   performance.mark('jest/scheduleAndRun:start', {
     detail: {numTests: allTests.length},
   });
   const results = await scheduler.scheduleTests(allTests, testWatcher);
-  performance.mark('jest/scheduleAndRun:start');
+  performance.mark('jest/scheduleAndRun:end');
 
   performance.mark('jest/cacheResults:start');
   sequencer.cacheResults(allTests, results);

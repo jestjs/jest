@@ -400,6 +400,7 @@ export type GlobalConfig = {
   randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
+  runInBand: boolean;
   runTestsByPath: boolean;
   rootDir: string;
   seed: number;
@@ -435,6 +436,8 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  collectCoverageFrom: Array<string>;
+  coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   cwd: string;
   dependencyExtractor?: string;
@@ -523,7 +526,6 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     ignoreProjects: Array<string>;
-    init: boolean;
     injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;

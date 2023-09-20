@@ -51,6 +51,8 @@ const defaultOptions: Config.DefaultOptions = {
     'cjs',
     'jsx',
     'ts',
+    'mts',
+    'cts',
     'tsx',
     'json',
     'node',

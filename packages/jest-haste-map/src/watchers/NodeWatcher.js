@@ -193,7 +193,7 @@ module.exports = class NodeWatcher extends EventEmitter {
    */
 
   close() {
-    Object.keys(this.watched).forEach(this.stopWatching, this);
+    for (const key of Object.keys(this.watched)) this.stopWatching(key);
     this.removeAllListeners();
 
     return Promise.resolve();
@@ -218,6 +218,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     let found = false;
     let closest = {mtime: 0};
     let c = 0;
+    // eslint-disable-next-line unicorn/no-array-for-each
     Object.keys(this.dirRegistery[dir]).forEach(function (file, i, arr) {
       fs.lstat(path.join(dir, file), (error, stat) => {
         if (found) {
@@ -254,14 +255,14 @@ module.exports = class NodeWatcher extends EventEmitter {
    */
 
   normalizeChange(dir, event, file) {
-    if (!file) {
+    if (file) {
+      this.processChange(dir, event, path.normalize(file));
+    } else {
       this.detectChangedFile(dir, event, actualFile => {
         if (actualFile) {
           this.processChange(dir, event, actualFile);
         }
       });
-    } else {
-      this.processChange(dir, event, path.normalize(file));
     }
   }
 

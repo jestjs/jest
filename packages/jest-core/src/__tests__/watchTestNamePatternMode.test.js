@@ -116,11 +116,13 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2'].forEach(assertPattern);
+    for (const pattern of ['c', 'o', 'n', ' ', '1', '2'])
+      assertPattern(pattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
+    for (const pattern of [KEYS.BACKSPACE, KEYS.BACKSPACE])
+      assertPattern(pattern);
 
-    ['*'].forEach(assertPattern);
+    for (const pattern of ['*']) assertPattern(pattern);
 
     // Runs Jest again
     runJestMock.mockReset();
@@ -153,6 +155,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

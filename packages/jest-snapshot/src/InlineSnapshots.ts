@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {types} from 'util';
 import type {ParseResult, PluginItem} from '@babel/core';
 import type {
   Expression,
@@ -60,8 +61,20 @@ export function saveInlineSnapshots(
     try {
       // @ts-expect-error requireOutside Babel transform
       prettier = requireOutside(prettierPath) as Prettier;
-    } catch {
-      // Continue even if prettier is not installed.
+
+      if (semver.gte(prettier.version, '3.0.0')) {
+        throw new Error(
+          'Jest: Inline Snapshots are not supported when using Prettier 3.0.0 or above.\nSee https://jestjs.io/docs/configuration/#prettierpath-string for alternatives.',
+        );
+      }
+    } catch (error) {
+      if (!types.isNativeError(error)) {
+        throw error;
+      }
+
+      if ((error as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND') {
+        throw error;
+      }
     }
   }
 
@@ -210,7 +223,10 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
       if (index === 0) {
         // First line is either a 1-line snapshot or a blank line.
         return line;
-      } else if (index !== lines.length - 1) {
+      } else if (index === lines.length - 1) {
+        // The last line should be placed on the same level as the expect call.
+        return indentation.repeat(numIndents) + line;
+      } else {
         // Do not indent empty lines.
         if (line === '') {
           return line;
@@ -218,9 +234,6 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 
         // Not last line, indent one level deeper than expect call.
         return indentation.repeat(numIndents + 1) + line;
-      } else {
-        // The last line should be placed on the same level as the expect call.
-        return indentation.repeat(numIndents) + line;
       }
     })
     .join('\n');
@@ -261,7 +274,7 @@ const traverseAst = (
     snapshotMatcherNames.push(callee.property.name);
 
     const snapshotIndex = args.findIndex(
-      ({type}) => type === 'TemplateLiteral',
+      ({type}) => type === 'TemplateLiteral' || type === 'StringLiteral',
     );
 
     const {snapshot} = inlineSnapshot;
@@ -278,7 +291,7 @@ const traverseAst = (
     }
   });
 
-  if (remainingSnapshots.size) {
+  if (remainingSnapshots.size > 0) {
     throw new Error("Jest: Couldn't locate all inline snapshots.");
   }
 };

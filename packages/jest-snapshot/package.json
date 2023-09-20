@@ -1,9 +1,9 @@
 {
   "name": "jest-snapshot",
-  "version": "29.5.0",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-snapshot"
   },
   "license": "MIT",
@@ -22,39 +22,39 @@
     "@babel/plugin-syntax-jsx": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/types": "^7.3.3",
-    "@jest/expect-utils": "workspace:^",
-    "@jest/transform": "workspace:^",
-    "@jest/types": "workspace:^",
-    "@types/prettier": "^2.1.5",
+    "@jest/expect-utils": "workspace:*",
+    "@jest/transform": "workspace:*",
+    "@jest/types": "workspace:*",
     "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
-    "expect": "workspace:^",
+    "expect": "workspace:*",
     "graceful-fs": "^4.2.9",
-    "jest-diff": "workspace:^",
-    "jest-get-type": "workspace:^",
-    "jest-matcher-utils": "workspace:^",
-    "jest-message-util": "workspace:^",
-    "jest-util": "workspace:^",
+    "jest-diff": "workspace:*",
+    "jest-get-type": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-util": "workspace:*",
     "natural-compare": "^1.4.0",
-    "pretty-format": "workspace:^",
-    "semver": "^7.3.5"
+    "pretty-format": "workspace:*",
+    "semver": "^7.5.3"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.7.2",
     "@babel/preset-react": "^7.12.1",
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@tsd/typescript": "^5.0.4",
     "@types/babel__core": "^7.1.14",
     "@types/graceful-fs": "^4.1.3",
     "@types/natural-compare": "^1.4.0",
+    "@types/prettier": "^2.1.5",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "prettier": "^2.1.1",
-    "tsd-lite": "^0.7.0"
+    "tsd-lite": "^0.8.0"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"
