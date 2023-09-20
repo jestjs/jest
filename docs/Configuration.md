@@ -92,7 +92,7 @@ const {defaults} = require('jest-config');
 
 /** @type {import('jest').Config} */
 const config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 module.exports = config;
@@ -103,7 +103,7 @@ import type {Config} from 'jest';
 import {defaults} from 'jest-config';
 
 const config: Config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 export default config;
@@ -931,7 +931,7 @@ export default config;
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
-Default: `["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"]`
+Default: `["js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 

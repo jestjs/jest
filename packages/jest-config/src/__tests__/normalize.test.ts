@@ -1722,6 +1722,8 @@ describe('moduleFileExtensions', () => {
       'cjs',
       'jsx',
       'ts',
+      'mts',
+      'cts',
       'tsx',
       'json',
       'node',

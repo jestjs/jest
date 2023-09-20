@@ -40,6 +40,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "cjs",
         "jsx",
         "ts",
+        "mts",
+        "cts",
         "tsx",
         "json",
         "node"
