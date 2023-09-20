@@ -17,12 +17,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "jest-get-type": "workspace:^"
+    "jest-get-type": "workspace:*"
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",
     "immutable": "^4.0.0",
-    "jest-matcher-utils": "workspace:^",
+    "jest-matcher-utils": "workspace:*",
     "tsd-lite": "^0.8.0"
   },
   "engines": {

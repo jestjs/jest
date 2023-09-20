@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "@sinonjs/fake-timers": "^11.1.0",
     "@types/node": "*",
-    "jest-message-util": "workspace:^",
-    "jest-mock": "workspace:^",
-    "jest-util": "workspace:^"
+    "jest-message-util": "workspace:*",
+    "jest-mock": "workspace:*",
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@types/sinonjs__fake-timers": "^8.1.2"
   },
   "engines": {

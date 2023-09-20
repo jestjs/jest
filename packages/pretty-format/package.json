@@ -19,7 +19,7 @@
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/schemas": "workspace:^",
+    "@jest/schemas": "workspace:*",
     "ansi-styles": "^5.0.0",
     "react-is": "^18.0.0"
   },
@@ -28,7 +28,7 @@
     "@types/react-is": "^18.0.0",
     "@types/react-test-renderer": "^18.0.1",
     "immutable": "^4.0.0",
-    "jest-util": "workspace:^",
+    "jest-util": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-test-renderer": "18.2.0"

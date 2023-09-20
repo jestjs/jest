@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "@types/graceful-fs": "^4.1.3",
     "@types/node": "*",
     "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.2.9",
-    "jest-regex-util": "workspace:^",
-    "jest-util": "workspace:^",
-    "jest-worker": "workspace:^",
+    "jest-regex-util": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-worker": "workspace:*",
     "micromatch": "^4.0.4",
     "walker": "^1.0.8"
   },

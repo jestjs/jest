@@ -17,10 +17,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/fake-timers": "workspace:^",
-    "@jest/types": "workspace:^",
+    "@jest/fake-timers": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
-    "jest-mock": "workspace:^"
+    "jest-mock": "workspace:*"
   },
   "engines": {
     "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
