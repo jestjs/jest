@@ -23,11 +23,11 @@
     "@babel/plugin-proposal-decorators": "*",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.0.0",
-    "@jest/globals": "workspace:^",
-    "babel-jest": "workspace:^",
+    "@jest/globals": "workspace:*",
+    "babel-jest": "workspace:*",
     "babel-plugin-transform-typescript-metadata": "*",
-    "jest": "workspace:^",
-    "jest-environment-jsdom": "workspace:^",
+    "jest": "workspace:*",
+    "jest-environment-jsdom": "workspace:*",
     "jest-zone-patch": "*"
   }
 }

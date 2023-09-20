@@ -20,12 +20,12 @@
     "./bin/create-jest": "./bin/create-jest.js"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
-    "jest-config": "workspace:^",
-    "jest-util": "workspace:^",
+    "jest-config": "workspace:*",
+    "jest-util": "workspace:*",
     "prompts": "^2.0.1"
   },
   "engines": {

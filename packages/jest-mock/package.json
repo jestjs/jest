@@ -17,9 +17,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
-    "jest-util": "workspace:^"
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",

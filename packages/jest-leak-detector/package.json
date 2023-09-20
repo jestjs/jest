@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "jest-get-type": "workspace:^",
-    "pretty-format": "workspace:^"
+    "jest-get-type": "workspace:*",
+    "pretty-format": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "*"

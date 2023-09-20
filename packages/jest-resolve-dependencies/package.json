@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "jest-regex-util": "workspace:^",
-    "jest-snapshot": "workspace:^"
+    "jest-regex-util": "workspace:*",
+    "jest-snapshot": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
-    "@jest/types": "workspace:^",
-    "jest-haste-map": "workspace:^",
-    "jest-resolve": "workspace:^",
-    "jest-runtime": "workspace:^"
+    "@jest/test-utils": "workspace:*",
+    "@jest/types": "workspace:*",
+    "jest-haste-map": "workspace:*",
+    "jest-resolve": "workspace:*",
+    "jest-runtime": "workspace:*"
   },
   "engines": {
     "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
