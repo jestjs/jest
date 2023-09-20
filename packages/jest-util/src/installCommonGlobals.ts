@@ -54,13 +54,13 @@ export default function installCommonGlobals(
   });
 
   // Forward some APIs.
-  DTRACE.forEach(dtrace => {
+  for (const dtrace of DTRACE) {
     // @ts-expect-error: no index
     globalObject[dtrace] = function (...args: Array<any>) {
       // @ts-expect-error: no index
       return globalThis[dtrace].apply(this, args);
     };
-  });
+  }
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }

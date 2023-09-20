@@ -77,7 +77,7 @@ Allow customizing all options passed to `child_process.fork`. By default, some v
 
 #### `idleMemoryLimit: number` (optional)
 
-Specifies the memory limit for workers before they are recycled and is primarily a work-around for [this issue](https://github.com/facebook/jest/issues/11956);
+Specifies the memory limit for workers before they are recycled and is primarily a work-around for [this issue](https://github.com/jestjs/jest/issues/11956);
 
 After the worker has executed a task the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. If no limit is set this process does not occur. The limit can be specified in 2 ways:
 

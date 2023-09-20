@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import co from 'co';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
@@ -17,6 +17,7 @@ import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
+  invariant,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -85,7 +86,6 @@ export const makeTest = (
   startedAt: null,
   status: null,
   timeout,
-  unhandledRejectionErrorByPromise: new Map(),
 });
 
 // Traverse the tree of describe blocks and return true if at least one describe
@@ -236,9 +236,9 @@ export const callAsyncCircusFn = (
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
             asyncError.message = dedent`
-      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `;
+              Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+              Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+            `;
             return reject(asyncError);
           }
 
@@ -289,9 +289,9 @@ export const callAsyncCircusFn = (
       reject(
         new Error(
           dedent`
-      test functions can only return Promise or undefined.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `,
+            test functions can only return Promise or undefined.
+            Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+          `,
         ),
       );
       return;
@@ -355,7 +355,7 @@ export const makeSingleTestResult = (
     const stackLine = stackLines[1];
     let parsedLine = stackUtils.parseLine(stackLine);
     if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
-      const stackLine = stackLines[4];
+      const stackLine = stackLines[2];
       parsedLine = stackUtils.parseLine(stackLine);
     }
     if (
@@ -456,15 +456,6 @@ export const addErrorToEachTestUnderDescribe = (
     }
   }
 };
-
-export function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 type TestDescription = {
   ancestorTitles: Array<string>;

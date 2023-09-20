@@ -120,7 +120,7 @@ Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`
 
 The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
 
-:::warning
+:::caution
 
 Beware that `mockFn.mockClear()` will replace `mockFn.mock`, not just reset the values of its properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
@@ -128,9 +128,7 @@ Beware that `mockFn.mockClear()` will replace `mockFn.mock`, not just reset the 
 
 ### `mockFn.mockReset()`
 
-Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
-
-This is useful when you want to completely reset a _mock_ back to its initial state.
+Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also replaces the mock implementation with an empty function, returning `undefined`.
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 

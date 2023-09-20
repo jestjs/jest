@@ -81,7 +81,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -105,7 +105,7 @@ jest.mock(
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
-          code: (require('dedent') as typeof import('dedent'))`
+          code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -178,7 +178,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
       process: (content, filename) => ({
-        code: (require('dedent') as typeof import('dedent'))`
+        code: (require('dedent') as typeof import('dedent').default)`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -438,7 +438,7 @@ describe('ScriptTransformer', () => {
       [[], '/fruits/grapefruit.js'],
     ];
 
-    incorrectReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of incorrectReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -448,11 +448,11 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
 
     const correctReturnValues = [[{code: 'code'}, '/fruits/kiwi.js']];
 
-    correctReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of correctReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -462,7 +462,7 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
-    });
+    }
   });
 
   it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {

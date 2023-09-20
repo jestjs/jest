@@ -43,7 +43,7 @@ function GitHubStarButton() {
   return (
     <div className="github-button">
       <GitHubButton
-        href="https://github.com/facebook/jest"
+        href="https://github.com/jestjs/jest"
         data-icon="octicon-star"
         data-size="large"
         aria-label="Star facebook/jest on GitHub"
@@ -560,7 +560,7 @@ class Index extends React.Component {
                     A lot of people! With
                     [93m](https://www.npmjs.com/package/jest) downloads in the
                     last month, and used on over
-                    [8,756,000](https://github.com/facebook/jest/network/dependents)
+                    [8,756,000](https://github.com/jestjs/jest/network/dependents)
                     public repos on GitHub. Jest is used extensively at these
                     companies:
                   </Translate>

@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "29.5.0",
+  "version": "29.7.0",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -23,14 +23,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-watcher"
   },
   "bugs": {
-    "url": "https://github.com/facebook/jest/issues"
+    "url": "https://github.com/jestjs/jest/issues"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

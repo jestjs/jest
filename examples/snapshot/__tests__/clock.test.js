@@ -8,6 +8,11 @@ import Clock from '../Clock';
 jest.useFakeTimers().setSystemTime(1482363367071);
 
 it('renders correctly', () => {
-  const tree = renderer.create(<Clock />).toJSON();
-  expect(tree).toMatchSnapshot();
+  const testRenderer = renderer.create(<Clock />);
+
+  try {
+    expect(testRenderer.toJSON()).toMatchSnapshot();
+  } finally {
+    testRenderer.unmount();
+  }
 });

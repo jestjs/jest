@@ -101,6 +101,7 @@ exports[`prints the config object 1`] = `
     "projects": [],
     "reporters": [],
     "rootDir": "/test_root_dir/",
+    "runInBand": false,
     "runTestsByPath": false,
     "seed": 1234,
     "silent": false,

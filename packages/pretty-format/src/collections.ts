@@ -14,14 +14,14 @@ const getKeysOfEnumerableProperties = (
 ) => {
   const rawKeys = Object.keys(object);
   const keys: Array<string | symbol> =
-    compareKeys !== null ? rawKeys.sort(compareKeys) : rawKeys;
+    compareKeys === null ? rawKeys : rawKeys.sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
-    Object.getOwnPropertySymbols(object).forEach(symbol => {
+    for (const symbol of Object.getOwnPropertySymbols(object)) {
       if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
-    });
+    }
   }
 
   return keys as Array<string>;
@@ -158,7 +158,7 @@ export function printListItems(
   const isDataView = (l: unknown): l is DataView => l instanceof DataView;
   const length = isDataView(list) ? list.byteLength : list.length;
 
-  if (length) {
+  if (length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
@@ -210,7 +210,7 @@ export function printObjectProperties(
   let result = '';
   const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
-  if (keys.length) {
+  if (keys.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;

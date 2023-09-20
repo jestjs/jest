@@ -40,14 +40,16 @@ type NewGetCacheKeyFunction = (
 
 type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
+const {NODE_ENV, BABEL_ENV} = process.env;
+
 function getGlobalCacheKey(
   files: Array<string>,
   values: Array<string>,
   length: number,
 ) {
   return [
-    process.env.NODE_ENV,
-    process.env.BABEL_ENV,
+    NODE_ENV,
+    BABEL_ENV,
     ...values,
     ...files.map((file: string) => readFileSync(file)),
   ]

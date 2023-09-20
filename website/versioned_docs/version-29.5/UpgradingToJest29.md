@@ -7,7 +7,7 @@ Upgrading Jest from v28 to v29? This guide aims to help refactoring your configu
 
 :::info
 
-See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2900) for the full list of changes.
+See [changelog](https://github.com/jestjs/jest/blob/main/CHANGELOG.md#2900) for the full list of changes.
 
 :::
 

@@ -147,9 +147,9 @@ export class Worker {
     workerPath: string,
     options: WorkerFarmOptions,
   ): void {
-    getExposedMethods(workerPath, options).forEach(name => {
+    for (const name of getExposedMethods(workerPath, options)) {
       if (name.startsWith('_')) {
-        return;
+        continue;
       }
 
       // eslint-disable-next-line no-prototype-builtins
@@ -159,7 +159,7 @@ export class Worker {
 
       // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
-    });
+    }
   }
 
   private _callFunctionWithArgs(

@@ -41,6 +41,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -60,6 +61,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -135,23 +137,23 @@ describe('Runtime requireModule', () => {
     const root = path.parse(process.cwd()).root;
     const globalPath = path.join(root, 'node_modules');
     const rootIndex = exports.paths.findIndex(path => path === globalPath);
-    exports.paths.forEach((path, index) => {
+    for (const [index, path] of exports.paths.entries()) {
       if (index <= rootIndex) {
         expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
       }
-    });
+    }
   });
 
   it('provides `require.main` to modules', async () => {
     const runtime = await createRuntime(__filename);
     runtime._mainModule = module;
-    [
+    for (const modulePath of [
       './test_root/modules_with_main/export_main.js',
       './test_root/modules_with_main/re_export_main.js',
-    ].forEach(modulePath => {
+    ]) {
       const mainModule = runtime.requireModule(__filename, modulePath);
       expect(mainModule).toBe(module);
-    });
+    }
   });
 
   it('throws on non-existent haste modules', async () => {

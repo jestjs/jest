@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isJestJasmineRun} from '@jest/test-utils';
 import runJest from '../runJest';
 
 describe('enableGlobally', () => {
@@ -40,13 +39,10 @@ describe('requestAnimationFrame', () => {
 
 describe('setImmediate', () => {
   test('fakes setImmediate', () => {
-    // Jasmine runner does not handle unhandled promise rejections that are causing the test to fail in Jest circus
-    const expectedExitCode = isJestJasmineRun() ? 0 : 1;
-
     const result = runJest('fake-timers-legacy/set-immediate');
 
     expect(result.stderr).toMatch('setImmediate test');
-    expect(result.exitCode).toBe(expectedExitCode);
+    expect(result.exitCode).toBe(0);
   });
 });
 
