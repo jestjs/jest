@@ -390,12 +390,17 @@ export const arrayBufferEquality = (
   a: unknown,
   b: unknown,
 ): boolean | undefined => {
-  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
-    return undefined;
+  let dataViewA = a;
+  let dataViewB = b;
+
+  if (a instanceof ArrayBuffer && b instanceof ArrayBuffer) {
+    dataViewA = new DataView(a);
+    dataViewB = new DataView(b);
   }
 
-  const dataViewA = new DataView(a);
-  const dataViewB = new DataView(b);
+  if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
+    return undefined;
+  }
 
   // Buffers are not equal when they do not have the same byte length
   if (dataViewA.byteLength !== dataViewB.byteLength) {
