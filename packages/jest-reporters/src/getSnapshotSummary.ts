@@ -86,13 +86,13 @@ export default function getSnapshotSummary(
       );
     }
   }
-  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length) {
+  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length > 0) {
     const [head, ...tail] = snapshots.filesRemovedList;
     summary.push(`  ${DOWN_ARROW} ${DOT}${formatTestPath(globalConfig, head)}`);
 
-    tail.forEach(key => {
+    for (const key of tail) {
       summary.push(`      ${DOT}${formatTestPath(globalConfig, key)}`);
-    });
+    }
   }
 
   if (snapshots.unchecked) {
@@ -120,7 +120,7 @@ export default function getSnapshotSummary(
       );
     }
 
-    snapshots.uncheckedKeysByFile.forEach(uncheckedFile => {
+    for (const uncheckedFile of snapshots.uncheckedKeysByFile) {
       summary.push(
         `  ${DOWN_ARROW}${formatTestPath(
           globalConfig,
@@ -128,10 +128,10 @@ export default function getSnapshotSummary(
         )}`,
       );
 
-      uncheckedFile.keys.forEach(key => {
+      for (const key of uncheckedFile.keys) {
         summary.push(`      ${DOT}${key}`);
-      });
-    });
+      }
+    }
   }
 
   return summary;

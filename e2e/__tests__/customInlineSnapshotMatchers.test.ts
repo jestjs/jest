@@ -19,7 +19,7 @@ test('works with custom inline snapshot matchers', () => {
 
   rest = rest
     .split('\n')
-    .filter(line => line.indexOf('at Error (native)') < 0)
+    .filter(line => !line.includes('at Error (native)'))
     .join('\n');
 
   expect(rest).toMatchSnapshot();
@@ -36,7 +36,7 @@ test('can bail with a custom inline snapshot matcher', () => {
 
   rest = rest
     .split('\n')
-    .filter(line => line.indexOf('at Error (native)') < 0)
+    .filter(line => !line.includes('at Error (native)'))
     .join('\n');
 
   expect(rest).toMatchSnapshot();

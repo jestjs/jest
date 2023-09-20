@@ -439,7 +439,7 @@ export default class Resolver {
       ? (moduleName: string) =>
           moduleName.replace(
             /\$([0-9]+)/g,
-            (_, index) => matches[parseInt(index, 10)],
+            (_, index) => matches[parseInt(index, 10)] || '',
           )
       : (moduleName: string) => moduleName;
   }
@@ -648,18 +648,18 @@ export default class Resolver {
   }
 
   private _getMockPath(from: string, moduleName: string): string | null {
-    return !this.isCoreModule(moduleName)
-      ? this.getMockModule(from, moduleName)
-      : null;
+    return this.isCoreModule(moduleName)
+      ? null
+      : this.getMockModule(from, moduleName);
   }
 
   private async _getMockPathAsync(
     from: string,
     moduleName: string,
   ): Promise<string | null> {
-    return !this.isCoreModule(moduleName)
-      ? this.getMockModuleAsync(from, moduleName)
-      : null;
+    return this.isCoreModule(moduleName)
+      ? null
+      : this.getMockModuleAsync(from, moduleName);
   }
 
   private _getVirtualMockPath(

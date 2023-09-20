@@ -31,22 +31,27 @@ describe('collectHandles', () => {
 
   it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
-    const obs = new PerformanceObserver((list, observer) => {});
+
+    let obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
+    obs.disconnect();
+    obs = null;
 
     const openHandles = await handleCollector();
 
     expect(openHandles).not.toContainEqual(
       expect.objectContaining({message: 'PerformanceObserver'}),
     );
-    obs.disconnect();
   });
 
   it('should not collect the DNSCHANNEL open handle', async () => {
     const handleCollector = collectHandles();
 
-    const resolver = new dns.Resolver();
+    let resolver = new dns.Resolver();
     resolver.getServers();
+
+    // We must drop references to it
+    resolver = null;
 
     const openHandles = await handleCollector();
 

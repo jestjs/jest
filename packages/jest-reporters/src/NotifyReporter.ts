@@ -21,7 +21,7 @@ const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 export default class NotifyReporter extends BaseReporter {
   private readonly _notifier = loadNotifier();
   private readonly _globalConfig: Config.GlobalConfig;
-  private _context: ReporterContext;
+  private readonly _context: ReporterContext;
 
   static readonly filename = __filename;
 
@@ -44,19 +44,19 @@ export default class NotifyReporter extends BaseReporter {
       firstContext && firstContext.value && firstContext.value.hasteFS;
 
     let packageName;
-    if (hasteFS != null) {
+    if (hasteFS == null) {
+      packageName = this._globalConfig.rootDir;
+    } else {
       // assuming root package.json is the first one
       const [filePath] = hasteFS.matchFiles('package.json');
 
       packageName =
-        filePath != null
-          ? hasteFS.getModuleName(filePath)
-          : this._globalConfig.rootDir;
-    } else {
-      packageName = this._globalConfig.rootDir;
+        filePath == null
+          ? this._globalConfig.rootDir
+          : hasteFS.getModuleName(filePath);
     }
 
-    packageName = packageName != null ? `${packageName} - ` : '';
+    packageName = packageName == null ? '' : `${packageName} - `;
 
     const notifyMode = this._globalConfig.notifyMode;
     const statusChanged =
@@ -111,15 +111,7 @@ export default class NotifyReporter extends BaseReporter {
       const restartAnswer = 'Run again';
       const quitAnswer = 'Exit tests';
 
-      if (!watchMode) {
-        this._notifier.notify({
-          hint: 'int:transient:1',
-          icon,
-          message,
-          timeout: false,
-          title,
-        });
-      } else {
+      if (watchMode) {
         this._notifier.notify(
           {
             // @ts-expect-error - not all options are supported by all systems (specifically `actions` and `hint`)
@@ -147,6 +139,14 @@ export default class NotifyReporter extends BaseReporter {
             }
           },
         );
+      } else {
+        this._notifier.notify({
+          hint: 'int:transient:1',
+          icon,
+          message,
+          timeout: false,
+          title,
+        });
       }
     }
 

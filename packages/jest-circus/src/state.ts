@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 import {STATE_SYM} from './types';
@@ -39,14 +39,15 @@ const createState = (): Circus.State => {
 
 /* eslint-disable no-restricted-globals */
 export const resetState = (): void => {
-  global[STATE_SYM] = createState();
+  (global as Global.Global)[STATE_SYM] = createState();
 };
 
 resetState();
 
-export const getState = (): Circus.State => global[STATE_SYM];
+export const getState = (): Circus.State =>
+  (global as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State =>
-  (global[STATE_SYM] = state);
+  ((global as Global.Global)[STATE_SYM] = state);
 /* eslint-enable */
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {

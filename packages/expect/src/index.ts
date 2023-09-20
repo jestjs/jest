@@ -100,7 +100,7 @@ const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
 };
 
 export const expect: Expect = (actual: any, ...rest: Array<any>) => {
-  if (rest.length !== 0) {
+  if (rest.length > 0) {
     throw new Error('Expect takes at most one argument.');
   }
 
@@ -113,7 +113,7 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
 
   const err = new JestAssertionError();
 
-  Object.keys(allMatchers).forEach(name => {
+  for (const name of Object.keys(allMatchers)) {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
     expectation[name] = makeThrowingMatcher(matcher, false, '', actual);
@@ -148,7 +148,7 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
       actual,
       err,
     );
-  });
+  }
 
   return expectation;
 };

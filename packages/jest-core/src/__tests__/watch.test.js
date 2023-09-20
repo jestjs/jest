@@ -446,7 +446,7 @@ describe('Watch mode flows', () => {
     );
 
     // The jury's still out on 'a', 'c', 'f', 'o', 'w' and '?'…
-    // See https://github.com/facebook/jest/issues/6693
+    // See https://github.com/jestjs/jest/issues/6693
     it.each`
       key    | plugin
       ${'t'} | ${'TestNamePattern'}
@@ -875,7 +875,7 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('t');
-    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
+    for (const key of ['t', 'e', 's', 't']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -893,7 +893,7 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('p');
-    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
+    for (const key of ['f', 'i', 'l', 'e']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -911,12 +911,12 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('p');
-    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
+    for (const key of ['f', 'i', 'l', 'e']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     stdin.emit('t');
-    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
+    for (const key of ['t', 'e', 's', 't']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -1012,6 +1012,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {tmpdir} from 'os';
-import * as path from 'path';
-import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import {sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
+import tempy = require('tempy');
 
 const CIRCUS_PATH = require.resolve('../').replace(/\\/g, '\\\\');
 const CIRCUS_RUN_PATH = require.resolve('../run').replace(/\\/g, '\\\\');
@@ -21,20 +19,11 @@ const BABEL_REGISTER_PATH = require
   .resolve('@babel/register')
   .replace(/\\/g, '\\\\');
 
-interface Result extends ExecaSyncReturnValue {
-  status: number;
-  error: string;
-}
-
 export const runTest = (
   source: string,
   opts?: {seed?: number; randomize?: boolean},
 ) => {
-  const filename = createHash('sha1')
-    .update(source)
-    .digest('hex')
-    .substring(0, 32);
-  const tmpFilename = path.join(tmpdir(), filename);
+  const tmpFilename = tempy.file();
 
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});
@@ -62,25 +51,18 @@ export const runTest = (
   fs.writeFileSync(tmpFilename, content);
   const result = spawnSync('node', [tmpFilename], {
     cwd: process.cwd(),
-  }) as Result;
+  });
 
-  // For compat with cross-spawn
-  result.status = result.exitCode;
-
-  if (result.status !== 0) {
+  if (result.exitCode !== 0) {
     const message = `
       STDOUT: ${result.stdout && result.stdout.toString()}
       STDERR: ${result.stderr && result.stderr.toString()}
-      STATUS: ${result.status}
-      ERROR: ${String(result.error)}
+      STATUS: ${result.exitCode}
     `;
     throw new Error(message);
   }
 
-  result.stdout = String(result.stdout);
-  result.stderr = String(result.stderr);
-
-  fs.unlinkSync(tmpFilename);
+  fs.rmSync(tmpFilename, {force: true});
 
   if (result.stderr) {
     throw new Error(

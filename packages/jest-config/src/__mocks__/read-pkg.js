@@ -10,9 +10,9 @@
 const mockFiles = new Map();
 function __setMockFiles(newMockFiles) {
   mockFiles.clear();
-  Object.keys(newMockFiles).forEach(fileName => {
+  for (const fileName of Object.keys(newMockFiles)) {
     mockFiles.set(fileName, newMockFiles[fileName]);
-  });
+  }
 }
 
 function readPkg(file) {

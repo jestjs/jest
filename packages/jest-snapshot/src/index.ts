@@ -57,8 +57,8 @@ const printSnapshotName = (
   hint = '',
   count: number,
 ): string => {
-  const hasNames = concatenatedBlockNames.length !== 0;
-  const hasHint = hint.length !== 0;
+  const hasNames = concatenatedBlockNames.length > 0;
+  const hasHint = hint.length > 0;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
@@ -262,9 +262,9 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
   return _toMatchSnapshot({
     context: this,
     inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
+      inlineSnapshot === undefined
+        ? undefined
+        : stripAddedIndentation(inlineSnapshot),
     isInline: true,
     matcherName,
     properties,
@@ -279,7 +279,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   context.dontThrow && context.dontThrow();
 
-  const {currentTestName, isNot, snapshotState} = context;
+  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const currentTestName =
+    currentConcurrentTestName?.() ?? context.currentTestName;
 
   if (isNot) {
     throw new Error(
@@ -326,7 +328,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       context.utils.subsetEquality,
     ]);
 
-    if (!propertyPass) {
+    if (propertyPass) {
+      received = deepMerge(received, properties);
+    } else {
       const key = snapshotState.fail(fullTestName, received);
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
@@ -347,8 +351,6 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         name: matcherName,
         pass: false,
       };
-    } else {
-      received = deepMerge(received, properties);
     }
   }
 
@@ -452,9 +454,9 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
     {
       context: this,
       inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
+        inlineSnapshot === undefined
+          ? undefined
+          : stripAddedIndentation(inlineSnapshot),
       isInline: true,
       matcherName,
       received,
