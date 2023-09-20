@@ -98,7 +98,8 @@ async function runTestInternal(
     }
     testEnvironment = resolveTestEnvironment({
       ...projectConfig,
-      requireResolveFunction: require.resolve,
+      // we wanna avoid webpack trying to be clever
+      requireResolveFunction: module => require.resolve(module),
       testEnvironment: customEnvironment,
     });
   }
