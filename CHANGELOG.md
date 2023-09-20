@@ -7,10 +7,12 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM to v22 ([#13825](https://github.com/jestjs/jest/pull/13825))
 - `[@jest/fake-timers]` [**BREAKING**] Upgrade `@sinonjs/fake-timers` to v11 ([#14544](https://github.com/jestjs/jest/pull/14544))
 - `[@jest/schemas]` Upgrade `@sinclair/typebox` to v0.31 ([#14072](https://github.com/jestjs/jest/pull/14072))
+- `[jest-snapshot]` [**BREAKING**] Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/facebook/jest/pull/13965))
 - `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/facebook/jest/pull/14470))
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 - `[jest-util]` Make sure `isInteractive` works in a browser ([#14552](https://github.com/jestjs/jest/pull/14552))
 
@@ -22,6 +24,7 @@
 
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542))
+- `[babel-jest, babel-preset-jest]` [**BREAKING**] Increase peer dependency of `@babel/core` to `^7.11` ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
 
 ## 29.7.0

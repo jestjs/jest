@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'util';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
@@ -518,12 +519,25 @@ const _toThrowErrorMatchingSnapshot = (
     );
   }
 
+  let message = error.message;
+  while ('cause' in error) {
+    error = error.cause;
+    if (types.isNativeError(error) || error instanceof Error) {
+      message += `\nCause: ${error.message}`;
+    } else {
+      if (typeof error === 'string') {
+        message += `\nCause: ${error}`;
+      }
+      break;
+    }
+  }
+
   return _toMatchSnapshot({
     context,
     hint,
     inlineSnapshot,
     isInline,
     matcherName,
-    received: error.message,
+    received: message,
   });
 };
