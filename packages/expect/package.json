@@ -1,9 +1,9 @@
 {
   "name": "expect",
-  "version": "29.6.2",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/expect"
   },
   "license": "MIT",
@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@jest/expect-utils": "workspace:^",
-    "@types/node": "*",
     "jest-get-type": "workspace:^",
     "jest-matcher-utils": "workspace:^",
     "jest-message-util": "workspace:^",
@@ -32,10 +31,10 @@
     "@tsd/typescript": "^5.0.4",
     "chalk": "^4.0.0",
     "immutable": "^4.0.0",
-    "tsd-lite": "^0.7.0"
+    "tsd-lite": "^0.8.0"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -7,7 +7,7 @@
 
 import {dirname, normalize, resolve} from 'path';
 import {fileURLToPath} from 'url';
-import glob from 'glob';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 
 const excludedModules = [
@@ -29,6 +29,6 @@ const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', {
   ignore: excludedModules,
 });
 
-e2eNodeModules.forEach(dir => {
+for (const dir of e2eNodeModules) {
   fs.rmSync(dir, {force: true, recursive: true});
-});
+}

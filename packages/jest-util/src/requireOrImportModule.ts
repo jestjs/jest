@@ -30,7 +30,9 @@ export default async function requireOrImportModule<T>(
         const moduleUrl = pathToFileURL(filePath);
 
         // node `import()` supports URL, but TypeScript doesn't know that
-        const importedModule = await import(moduleUrl.href);
+        const importedModule = await import(
+          /* webpackIgnore: true */ moduleUrl.href
+        );
 
         if (!applyInteropRequireDefault) {
           return importedModule;

@@ -309,10 +309,6 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
-  init: {
-    description: 'Generate a basic configuration file',
-    type: 'boolean',
-  },
   injectGlobals: {
     description: 'Should Jest inject global variables or not',
     type: 'boolean',

@@ -114,7 +114,7 @@ beforeEach(() => {
   );
 
   messagePort = (require('worker_threads') as typeof import('worker_threads'))
-    .parentPort as MessagePort;
+    .parentPort!;
 
   // Require the child!
   require('../threadChild');
@@ -364,4 +364,25 @@ it('throws if child is not forked', () => {
   expect(() => {
     messagePort.emit('message', [CHILD_MESSAGE_CALL, true, 'fooThrows', []]);
   }).toThrow('_worker_threads.parentPort.postMessage is not a function');
+});
+
+it('handle error if `postMessage` throws an error', () => {
+  messagePort.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true,
+    './my-fancy-worker',
+  ]);
+
+  jest.mocked(messagePort.postMessage).mockImplementationOnce(() => {
+    throw mockError;
+  });
+
+  messagePort.emit('message', [CHILD_MESSAGE_CALL, true, 'fooWorks', []]);
+  expect(jest.mocked(messagePort.postMessage).mock.calls[1][0]).toEqual([
+    PARENT_MESSAGE_CLIENT_ERROR,
+    'TypeError',
+    'Boo',
+    mockError.stack,
+    {},
+  ]);
 });

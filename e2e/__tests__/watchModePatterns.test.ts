@@ -47,10 +47,10 @@ test('can press "p" to filter by file name', () => {
 
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
-  results.forEach(({rest, summary}) => {
+  for (const {rest, summary} of results) {
     expect(rest).toMatchSnapshot('test results');
     expect(summary).toMatchSnapshot('test summary');
-  });
+  }
   expect(exitCode).toBe(0);
 });
 
@@ -66,9 +66,9 @@ test('can press "t" to filter by test name', () => {
 
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
-  results.forEach(({rest, summary}) => {
+  for (const {rest, summary} of results) {
     expect(rest).toMatchSnapshot('test results');
     expect(summary).toMatchSnapshot('test summary');
-  });
+  }
   expect(exitCode).toBe(0);
 });

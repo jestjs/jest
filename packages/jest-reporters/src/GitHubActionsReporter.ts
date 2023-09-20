@@ -98,27 +98,28 @@ export default class GitHubActionsReporter extends BaseReporter {
     {context}: Test,
     {testResults}: TestResult,
   ): void {
-    testResults.forEach(result => {
+    for (const result of testResults) {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
       );
 
-      result.retryReasons?.forEach((retryReason, index) => {
-        this.#createAnnotation({
-          ...this.#getMessageDetails(retryReason, context.config),
-          title: `RETRY ${index + 1}: ${title}`,
-          type: 'warning',
-        });
-      });
+      if (result.retryReasons)
+        for (const [index, retryReason] of result.retryReasons.entries()) {
+          this.#createAnnotation({
+            ...this.#getMessageDetails(retryReason, context.config),
+            title: `RETRY ${index + 1}: ${title}`,
+            type: 'warning',
+          });
+        }
 
-      result.failureMessages.forEach(failureMessage => {
+      for (const failureMessage of result.failureMessages) {
         this.#createAnnotation({
           ...this.#getMessageDetails(failureMessage, context.config),
           title,
           type: 'error',
         });
-      });
-    });
+      }
+    }
   }
 
   #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
@@ -161,7 +162,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       return true;
     } else {
       throw new Error(
-        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/facebook/jest/issues`,
+        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/jestjs/jest/issues`,
       );
     }
   }
@@ -216,7 +217,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       performanceInfo: suitePerf,
     };
     const branches: Array<Array<string>> = [];
-    suiteResult.forEach(element => {
+    for (const element of suiteResult) {
       if (element.ancestorTitles.length === 0) {
         if (element.status === 'failed') {
           root.passed = false;
@@ -242,14 +243,14 @@ export default class GitHubActionsReporter extends BaseReporter {
           branches.push(element.ancestorTitles.slice(0, 1));
         }
       }
-    });
-    branches.forEach(element => {
+    }
+    for (const element of branches) {
       const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         root.passed = false;
       }
       root.children.push(newChild);
-    });
+    }
     return root;
   }
 
@@ -263,7 +264,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       passed: true,
     };
     const branches: Array<Array<string>> = [];
-    suiteResult.forEach(element => {
+    for (const element of suiteResult) {
       let duration = element.duration;
       if (!duration || isNaN(duration)) {
         duration = 1;
@@ -300,14 +301,14 @@ export default class GitHubActionsReporter extends BaseReporter {
           branches.push(element.ancestorTitles.slice(0, ancestors.length + 1));
         }
       }
-    });
-    branches.forEach(element => {
+    }
+    for (const element of branches) {
       const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         node.passed = false;
       }
       node.children.push(newChild);
-    });
+    }
     return node;
   }
 
@@ -324,17 +325,17 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.startGroup(
         `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
       );
-      resultTree.children.forEach(child => {
+      for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, true, 1);
-      });
+      }
       this.endGroup();
     } else {
       this.log(
         `  ${chalk.bold.red.inverse('FAIL')} ${resultTree.name}${perfMs}`,
       );
-      resultTree.children.forEach(child => {
+      for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, false, 1);
-      });
+      }
     }
   }
 
@@ -380,21 +381,21 @@ export default class GitHubActionsReporter extends BaseReporter {
       if (resultTree.passed) {
         if (alreadyGrouped) {
           this.log('  '.repeat(depth) + resultTree.name);
-          resultTree.children.forEach(child => {
+          for (const child of resultTree.children) {
             this.recursivePrintResultTree(child, true, depth + 1);
-          });
+          }
         } else {
           this.startGroup('  '.repeat(depth) + resultTree.name);
-          resultTree.children.forEach(child => {
+          for (const child of resultTree.children) {
             this.recursivePrintResultTree(child, true, depth + 1);
-          });
+          }
           this.endGroup();
         }
       } else {
         this.log('  '.repeat(depth + 1) + resultTree.name);
-        resultTree.children.forEach(child => {
+        for (const child of resultTree.children) {
           this.recursivePrintResultTree(child, false, depth + 1);
-        });
+        }
       }
     }
   }
@@ -406,7 +407,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     const rootDir = context.context.config.rootDir;
     const results = testResults.testResults;
     let written = false;
-    results.forEach(result => {
+    for (const result of results) {
       let testDir = result.testFilePath;
       testDir = testDir.replace(rootDir, '');
       testDir = testDir.slice(1, testDir.length);
@@ -419,7 +420,7 @@ export default class GitHubActionsReporter extends BaseReporter {
         this.log(result.failureMessage);
         this.endGroup();
       }
-    });
+    }
     return written;
   }
 

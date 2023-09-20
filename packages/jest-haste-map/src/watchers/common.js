@@ -60,7 +60,7 @@ exports.isFileIncluded = function (globs, dot, doIgnore, relativePath) {
   if (doIgnore(relativePath)) {
     return false;
   }
-  return globs.length
+  return globs.length > 0
     ? micromatch.some(relativePath, globs, {dot})
     : dot || micromatch.some(relativePath, '**/*');
 };

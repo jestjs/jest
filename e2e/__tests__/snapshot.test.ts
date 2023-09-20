@@ -70,7 +70,7 @@ const getSnapshotOfCopy = () => {
 
 describe('Snapshot', () => {
   const cleanup = () => {
-    [
+    for (const file of [
       snapshotFile,
       secondSnapshotFile,
       snapshotOfCopy,
@@ -78,11 +78,11 @@ describe('Snapshot', () => {
       snapshotEscapeFile,
       snapshotEscapeRegexFile,
       snapshotEscapeSubstitutionFile,
-    ].forEach(file => {
+    ]) {
       if (fileExists(file)) {
         fs.unlinkSync(file);
       }
-    });
+    }
     if (fileExists(snapshotDir)) {
       fs.rmdirSync(snapshotDir);
     }

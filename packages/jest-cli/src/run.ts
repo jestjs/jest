@@ -16,7 +16,6 @@ import {deprecationEntries} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
-import init from './init';
 
 export async function run(
   maybeArgv?: Array<string>,
@@ -24,12 +23,6 @@ export async function run(
 ): Promise<void> {
   try {
     const argv = await buildArgv(maybeArgv);
-
-    if (argv.init) {
-      await init();
-      return;
-    }
-
     const projects = getProjectListFromCLIArgs(argv, project);
 
     const {results, globalConfig} = await runCLI(argv, projects);
@@ -92,7 +85,7 @@ const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
     projects.push(project);
   }
 
-  if (!projects.length && process.platform === 'win32') {
+  if (projects.length === 0 && process.platform === 'win32') {
     try {
       projects.push(tryRealpath(process.cwd()));
     } catch {
@@ -101,7 +94,7 @@ const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
     }
   }
 
-  if (!projects.length) {
+  if (projects.length === 0) {
     projects.push(process.cwd());
   }
 
