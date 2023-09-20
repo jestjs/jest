@@ -19,14 +19,14 @@
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
-    "@types/node": "~14.14.45",
+    "@types/node": "^16.10.0",
     "@types/which": "^3.0.0",
-    "@types/ws": "8.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.14.0",
-    "@typescript-eslint/parser": "^5.14.0",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "babel-jest": "workspace:^",
+    "babel-loader": "^8.2.3",
     "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
@@ -41,6 +41,7 @@
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-unicorn": "^48.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
     "glob": "^10.0.0",
@@ -53,7 +54,7 @@
     "jest-changed-files": "workspace:^",
     "jest-junit": "^16.0.0",
     "jest-mock": "workspace:^",
-    "jest-runner-tsd": "^5.0.0",
+    "jest-runner-tsd": "^6.0.0",
     "jest-serializer-ansi-escapes": "^2.0.1",
     "jest-silent-reporter": "^0.5.0",
     "jest-snapshot": "workspace:^",
@@ -80,7 +81,9 @@
     "tempy": "^1.0.0",
     "ts-node": "^10.5.0",
     "typescript": "^5.0.4",
-    "which": "^3.0.0"
+    "webpack": "^5.68.0",
+    "webpack-node-externals": "^3.0.0",
+    "which": "^4.0.0"
   },
   "scripts": {
     "build-clean": "rimraf --glob './packages/*/build' './packages/*/dist' './packages/*/tsconfig.tsbuildinfo' './packages/*/api-extractor.json' './api-extractor.json'",
@@ -169,10 +172,10 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "resolutions": {
-    "@types/node": "~14.14.45",
+    "@types/node": "~16.18.0",
     "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",

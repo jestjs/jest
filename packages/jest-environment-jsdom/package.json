@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "29.6.4",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -20,11 +20,11 @@
     "@jest/environment": "workspace:^",
     "@jest/fake-timers": "workspace:^",
     "@jest/types": "workspace:^",
-    "@types/jsdom": "^20.0.0",
+    "@types/jsdom": "^21.1.1",
     "@types/node": "*",
     "jest-mock": "workspace:^",
     "jest-util": "workspace:^",
-    "jsdom": "^20.0.0"
+    "jsdom": "^22.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^"
@@ -38,7 +38,7 @@
     }
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

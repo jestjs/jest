@@ -106,24 +106,24 @@ describe.each(['toBeCalledTimes', 'toHaveBeenCalledTimes'] as const)(
       fn();
       jestExpect(fn)[calledTimes](1);
 
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
         expect(() =>
           // @ts-expect-error: Testing runtime error
           jestExpect(fn)[calledTimes](value),
         ).toThrowErrorMatchingSnapshot();
-      });
+      }
     });
 
     test('.not only accepts a number argument', () => {
       const fn = jest.fn();
       jestExpect(fn).not[calledTimes](1);
 
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
         expect(() =>
           // @ts-expect-error: Testing runtime error
           jestExpect(fn).not[calledTimes](value),
         ).toThrowErrorMatchingSnapshot();
-      });
+      }
     });
 
     test('passes if function called equal to expected times', () => {
@@ -824,24 +824,24 @@ describe.each(['toReturnTimes', 'toHaveReturnedTimes'] as const)(
       fn();
       jestExpect(fn)[returnedTimes](1);
 
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
         expect(() =>
           // @ts-expect-error: Testing runtime error
           jestExpect(fn)[returnedTimes](value),
         ).toThrowErrorMatchingSnapshot();
-      });
+      }
     });
 
     test('.not only accepts a number argument', () => {
       const fn = jest.fn(() => 42);
       jestExpect(fn).not[returnedTimes](2);
 
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
+      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
         expect(() =>
           // @ts-expect-error: Testing runtime error
           jestExpect(fn).not[returnedTimes](value),
         ).toThrowErrorMatchingSnapshot();
-      });
+      }
     });
 
     test('passes if function returned equal to expected times', () => {

@@ -38,7 +38,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
-  private _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<string>;
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -73,7 +73,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // @ts-expect-error - for "universal" code (code should use `globalThis`)
+    // TODO: remove at some point - for "universal" code (code should use `globalThis`)
     global.global = global;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful

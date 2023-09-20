@@ -1495,7 +1495,7 @@ describe('moduleMocker', () => {
       });
 
       const spy = moduleMocker.spyOn(obj, 'method');
-      obj['method'].call(null);
+      obj.method.call(null);
 
       expect(haveBeenCalled).toBe(true);
       expect(spy).toHaveBeenCalled();
@@ -2326,7 +2326,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.replaceProperty(obj, 'property', 'def');
 
-      expect(obj['property']).toBe('def');
+      expect(obj.property).toBe('def');
     });
 
     it('should work for property from prototype chain', () => {

@@ -70,7 +70,7 @@ export default class FakeTimers<TimerRef = unknown> {
   private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
-  private _global: typeof globalThis;
+  private readonly _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private readonly _maxLoops: number;
   private readonly _moduleMocker: ModuleMocker;
@@ -224,11 +224,11 @@ export default class FakeTimers<TimerRef = unknown> {
       // Some of the immediate calls could be enqueued
       // during the previous handling of the timers, we should
       // run them as well.
-      if (this._immediates.length) {
+      if (this._immediates.length > 0) {
         this.runAllImmediates();
       }
 
-      if (this._ticks.length) {
+      if (this._ticks.length > 0) {
         this.runAllTicks();
       }
     }
@@ -247,14 +247,14 @@ export default class FakeTimers<TimerRef = unknown> {
     // See https://github.com/jestjs/jest/pull/4608 for details
     const timerEntries = Array.from(this._timers.entries());
     this._checkFakeTimers();
-    this._immediates.forEach(this._runImmediate, this);
+    for (const _immediate of this._immediates) this._runImmediate(_immediate);
 
-    timerEntries
-      .sort(([, left], [, right]) => left.expiry - right.expiry)
-      .forEach(([timerHandle, timer]) => {
-        this._now = timer.expiry;
-        this._runTimerHandle(timerHandle);
-      });
+    for (const [timerHandle, timer] of timerEntries.sort(
+      ([, left], [, right]) => left.expiry - right.expiry,
+    )) {
+      this._now = timer.expiry;
+      this._runTimerHandle(timerHandle);
+    }
   }
 
   advanceTimersToNextTimer(steps = 1): void {
@@ -579,12 +579,12 @@ export default class FakeTimers<TimerRef = unknown> {
     let nextTimerHandle = null;
     let soonestTime = MS_IN_A_YEAR;
 
-    this._timers.forEach((timer, uuid) => {
+    for (const [uuid, timer] of this._timers.entries()) {
       if (timer.expiry < soonestTime) {
         soonestTime = timer.expiry;
         nextTimerHandle = uuid;
       }
-    });
+    }
 
     if (nextTimerHandle === null) {
       return null;

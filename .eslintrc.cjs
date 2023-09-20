@@ -40,11 +40,7 @@ module.exports = {
   },
   overrides: [
     {
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:import/typescript',
-      ],
+      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
@@ -61,9 +57,15 @@ module.exports = {
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        '@typescript-eslint/no-dynamic-delete': 'off',
         // TODO: enable at some point
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
+
+        // TODO: part of "stylistic" rules, remove explicit activation when that lands
+        '@typescript-eslint/no-empty-function': 'error',
+        '@typescript-eslint/no-empty-interface': 'error',
       },
     },
     {
@@ -347,6 +349,8 @@ module.exports = {
       files: ['**/__typetests__/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
       },
     },
     {
@@ -374,6 +378,7 @@ module.exports = {
         '**/__typetests__/**',
       ],
       rules: {
+        '@typescript-eslint/no-extraneous-class': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
@@ -385,7 +390,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jsdoc'],
+  plugins: ['import', 'jsdoc', 'unicorn'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -590,6 +595,13 @@ module.exports = {
     'wrap-iife': 'off',
     'wrap-regex': 'off',
     yoda: 'off',
+
+    'unicorn/explicit-length-check': 'error',
+    'unicorn/no-array-for-each': 'error',
+    'unicorn/no-negated-condition': 'error',
+    'unicorn/prefer-default-parameters': 'error',
+    'unicorn/prefer-includes': 'error',
+    'unicorn/template-indent': 'error',
   },
   settings: {
     'import/ignore': ['react-native'],

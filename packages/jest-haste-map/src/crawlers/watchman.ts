@@ -135,7 +135,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
       'list-capabilities',
     );
 
-    if (capabilities.indexOf('field-content.sha1hex') !== -1) {
+    if (capabilities.includes('field-content.sha1hex')) {
       fields.push('content.sha1hex');
     }
   }
@@ -210,11 +210,11 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
           const since = clocks.get(fastPath.relative(rootDir, root));
 
           const query =
-            since !== undefined
+            since === undefined
               ? // Use the `since` generator if we have a clock available
-                {expression, fields, since}
+                {expression, fields, glob, glob_includedotfiles: true}
               : // Otherwise use the `glob` filter
-                {expression, fields, glob, glob_includedotfiles: true};
+                {expression, fields, since};
 
           const response = await cmd<WatchmanQueryResponse>(
             'query',

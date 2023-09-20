@@ -526,7 +526,6 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     ignoreProjects: Array<string>;
-    init: boolean;
     injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
