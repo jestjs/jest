@@ -230,7 +230,7 @@ const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
 expect(stringWithConstantData).toMatchSnapshot();
 ```
 
-Another way is to [mock](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
+Other ways this can be done is using the [snapshot serializer](Configuration.md#snapshotserializers-arraystring) or [mocking](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
 
 :::
 
