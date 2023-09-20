@@ -1,23 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {tmpdir} from 'os';
-import * as path from 'path';
-import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import {sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
+import tempy = require('tempy');
 
-const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
-const CIRCUS_RUN_PATH = require
-  .resolve('../../build/run')
-  .replace(/\\/g, '\\\\');
-const CIRCUS_STATE_PATH = require
-  .resolve('../../build/state')
-  .replace(/\\/g, '\\\\');
+const CIRCUS_PATH = require.resolve('../').replace(/\\/g, '\\\\');
+const CIRCUS_RUN_PATH = require.resolve('../run').replace(/\\/g, '\\\\');
+const CIRCUS_STATE_PATH = require.resolve('../state').replace(/\\/g, '\\\\');
 const TEST_EVENT_HANDLER_PATH = require
   .resolve('./testEventHandler')
   .replace(/\\/g, '\\\\');
@@ -25,17 +19,11 @@ const BABEL_REGISTER_PATH = require
   .resolve('@babel/register')
   .replace(/\\/g, '\\\\');
 
-interface Result extends ExecaSyncReturnValue {
-  status: number;
-  error: string;
-}
-
-export const runTest = (source: string) => {
-  const filename = createHash('sha256')
-    .update(source)
-    .digest('hex')
-    .substring(0, 32);
-  const tmpFilename = path.join(tmpdir(), filename);
+export const runTest = (
+  source: string,
+  opts?: {seed?: number; randomize?: boolean},
+) => {
+  const tmpFilename = tempy.file();
 
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});
@@ -48,7 +36,9 @@ export const runTest = (source: string) => {
     global.afterAll = circus.afterAll;
 
     const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}').default;
-    const addEventHandler = require('${CIRCUS_STATE_PATH}').addEventHandler;
+    const {addEventHandler, getState} = require('${CIRCUS_STATE_PATH}');
+    getState().randomize = ${opts?.randomize};
+    getState().seed = ${opts?.seed ?? 0};
     addEventHandler(testEventHandler);
 
     ${source};
@@ -61,25 +51,18 @@ export const runTest = (source: string) => {
   fs.writeFileSync(tmpFilename, content);
   const result = spawnSync('node', [tmpFilename], {
     cwd: process.cwd(),
-  }) as Result;
+  });
 
-  // For compat with cross-spawn
-  result.status = result.exitCode;
-
-  if (result.status !== 0) {
+  if (result.exitCode !== 0) {
     const message = `
       STDOUT: ${result.stdout && result.stdout.toString()}
       STDERR: ${result.stderr && result.stderr.toString()}
-      STATUS: ${result.status}
-      ERROR: ${String(result.error)}
+      STATUS: ${result.exitCode}
     `;
     throw new Error(message);
   }
 
-  result.stdout = String(result.stdout);
-  result.stderr = String(result.stderr);
-
-  fs.unlinkSync(tmpFilename);
+  fs.rmSync(tmpFilename, {force: true});
 
   if (result.stderr) {
     throw new Error(

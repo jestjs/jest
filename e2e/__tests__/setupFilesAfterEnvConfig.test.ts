@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,7 +40,7 @@ describe('setupFilesAfterEnv', () => {
 
     expect(result.json.numTotalTests).toBe(2);
     expect(result.json.numPassedTests).toBe(2);
-    expect(result.json.testResults.length).toBe(2);
+    expect(result.json.testResults).toHaveLength(2);
     expect(result.exitCode).toBe(0);
   });
 
@@ -61,7 +61,7 @@ describe('setupFilesAfterEnv', () => {
 
     expect(result.json.numTotalTests).toBe(1);
     expect(result.json.numPassedTests).toBe(1);
-    expect(result.json.testResults.length).toBe(1);
+    expect(result.json.testResults).toHaveLength(1);
     expect(result.exitCode).toBe(0);
   });
 });

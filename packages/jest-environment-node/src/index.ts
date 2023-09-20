@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,6 +27,7 @@ const denyList = new Set([
   'GLOBAL',
   'root',
   'global',
+  'globalThis',
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
@@ -34,9 +35,11 @@ const denyList = new Set([
   'jest-symbol-do-not-touch',
 ]);
 
+type GlobalProperties = Array<keyof typeof globalThis>;
+
 const nodeGlobals = new Map(
-  Object.getOwnPropertyNames(globalThis)
-    .filter(global => !denyList.has(global))
+  (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
+    .filter(global => !denyList.has(global as string))
     .map(nodeGlobalsKey => {
       const descriptor = Object.getOwnPropertyDescriptor(
         globalThis,
@@ -53,6 +56,10 @@ const nodeGlobals = new Map(
     }),
 );
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
@@ -60,45 +67,65 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
+  private readonly _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
-    const global = (this.global = runInContext(
+    const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
-    ));
+    ) as Global.Global;
+    this.global = global;
 
-    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    const contextGlobals = new Set(
+      Object.getOwnPropertyNames(global) as GlobalProperties,
+    );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        Object.defineProperty(global, nodeGlobalsKey, {
-          configurable: descriptor.configurable,
-          enumerable: descriptor.enumerable,
-          get() {
-            // @ts-expect-error: no index signature
-            const val = globalThis[nodeGlobalsKey];
+        if (descriptor.configurable) {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: true,
+            enumerable: descriptor.enumerable,
+            get() {
+              const value = globalThis[nodeGlobalsKey];
 
-            // override lazy getter
-            Object.defineProperty(global, nodeGlobalsKey, {
-              configurable: descriptor.configurable,
-              enumerable: descriptor.enumerable,
-              value: val,
-              writable: descriptor.writable,
-            });
-            return val;
-          },
-          set(val) {
-            // override lazy getter
-            Object.defineProperty(global, nodeGlobalsKey, {
-              configurable: descriptor.configurable,
-              enumerable: descriptor.enumerable,
-              value: val,
-              writable: true,
-            });
-          },
-        });
+              // override lazy getter
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value,
+                writable: true,
+              });
+
+              return value;
+            },
+            set(value: unknown) {
+              // override lazy getter
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value,
+                writable: true,
+              });
+            },
+          });
+        } else if ('value' in descriptor) {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: false,
+            enumerable: descriptor.enumerable,
+            value: descriptor.value,
+            writable: descriptor.writable,
+          });
+        } else {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: false,
+            enumerable: descriptor.enumerable,
+            get: descriptor.get,
+            set: descriptor.set,
+          });
+        }
       }
     }
 
@@ -120,9 +147,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(item => typeof item === 'string')
+        customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -142,8 +169,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       },
     });
 
-    const timerRefToId = (timer: Timer): number | undefined =>
-      (timer && timer.id) || undefined;
+    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
@@ -177,7 +203,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -93,7 +93,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('p');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -102,16 +102,17 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['p', '.', '*', '1', '0'].forEach(assertPattern);
+    for (const pattern of ['p', '.', '*', '1', '0']) assertPattern(pattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
+    for (const pattern of [KEYS.BACKSPACE, KEYS.BACKSPACE])
+      assertPattern(pattern);
 
-    ['3'].forEach(assertPattern);
+    for (const pattern of ['3']) assertPattern(pattern);
 
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();
@@ -124,15 +125,13 @@ describe('Watch mode flows', () => {
     stdin.emit('p');
     await nextTick();
 
-    ['p', '.', '*', '1', '0']
-
-      .concat(KEYS.ENTER)
-      .forEach(key => stdin.emit(key));
+    for (const key of ['p', '.', '*', '1', '0'].concat(KEYS.ENTER))
+      stdin.emit(key);
 
     stdin.emit('t');
     await nextTick();
 
-    ['t', 'e', 's', 't'].concat(KEYS.ENTER).forEach(key => stdin.emit(key));
+    for (const key of ['t', 'e', 's', 't'].concat(KEYS.ENTER)) stdin.emit(key);
 
     await nextTick();
 
@@ -163,6 +162,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

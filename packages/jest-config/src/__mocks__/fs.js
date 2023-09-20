@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,9 +12,9 @@ const fs = jest.createMockFromModule('fs');
 const mockFiles = new Map();
 function __setMockFiles(newMockFiles) {
   mockFiles.clear();
-  Object.keys(newMockFiles).forEach(fileName => {
+  for (const fileName of Object.keys(newMockFiles)) {
     mockFiles.set(fileName, newMockFiles[fileName]);
-  });
+  }
 }
 
 fs.__setMockFiles = __setMockFiles;

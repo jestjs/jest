@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,14 +14,14 @@ const getKeysOfEnumerableProperties = (
 ) => {
   const rawKeys = Object.keys(object);
   const keys: Array<string | symbol> =
-    compareKeys !== null ? rawKeys.sort(compareKeys) : rawKeys;
+    compareKeys === null ? rawKeys : rawKeys.sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
-    Object.getOwnPropertySymbols(object).forEach(symbol => {
+    for (const symbol of Object.getOwnPropertySymbols(object)) {
       if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
-    });
+    }
   }
 
   return keys as Array<string>;
@@ -155,7 +155,7 @@ export function printListItems(
 ): string {
   let result = '';
 
-  if (list.length) {
+  if (list.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
@@ -201,7 +201,7 @@ export function printObjectProperties(
   let result = '';
   const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
-  if (keys.length) {
+  if (keys.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;

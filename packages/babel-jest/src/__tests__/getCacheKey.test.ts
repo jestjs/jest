@@ -1,15 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import type {TransformOptions as BabelTransformOptions} from '@babel/core';
-import type {TransformOptions as JestTransformOptions} from '@jest/transform';
+import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest from '../index';
 
-const {getCacheKey} = babelJest.createTransformer();
+const {getCacheKey} =
+  babelJest.createTransformer() as SyncTransformer<BabelTransformOptions>;
 
 const processVersion = process.version;
 const nodeEnv = process.env.NODE_ENV;
@@ -19,6 +20,7 @@ afterEach(() => {
   jest.resetModules();
 
   if (process.version === 'new-node-version') {
+    // @ts-expect-error: Testing purpose
     process.version = processVersion;
   }
 
@@ -39,22 +41,23 @@ describe('getCacheKey', () => {
     config: {rootDir: 'mock-root-dir'},
     configString: 'mock-config-string',
     instrument: true,
-  } as JestTransformOptions;
+  } as TransformOptions<BabelTransformOptions>;
 
-  const oldCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+  const oldCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
   test('returns cache key hash', () => {
-    expect(oldCacheKey.length).toEqual(32);
+    expect(oldCacheKey).toHaveLength(32);
   });
 
-  test('if `THIS_FILE` value is changing', () => {
+  test('if `THIS_FILE` value is changing', async () => {
     jest.doMock('graceful-fs', () => ({
       readFileSync: () => 'new this file',
     }));
 
-    const {createTransformer}: typeof import('../index') = require('../index');
+    const {createTransformer} =
+      require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -63,9 +66,9 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.options` value is changing', () => {
+  test('if `babelOptions.options` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
-      const babel: typeof import('@babel/core') = require('@babel/core');
+      const babel = require('@babel/core') as typeof import('@babel/core');
 
       return {
         loadPartialConfig: (options: BabelTransformOptions) => ({
@@ -75,9 +78,10 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {createTransformer}: typeof import('../index') = require('../index');
+    const {createTransformer} =
+      require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -87,7 +91,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourceText` value is changing', () => {
-    const newCacheKey = getCacheKey(
+    const newCacheKey = getCacheKey!(
       'new source text',
       sourcePath,
       transformOptions,
@@ -97,7 +101,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourcePath` value is changing', () => {
-    const newCacheKey = getCacheKey(
+    const newCacheKey = getCacheKey!(
       sourceText,
       'new-source-path.js',
       transformOptions,
@@ -107,7 +111,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `configString` value is changing', () => {
-    const newCacheKey = getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, {
       ...transformOptions,
       configString: 'new-config-string',
     });
@@ -115,9 +119,9 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.config` value is changing', () => {
+  test('if `babelOptions.config` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
-      const babel: typeof import('@babel/core') = require('@babel/core');
+      const babel = require('@babel/core') as typeof import('@babel/core');
 
       return {
         loadPartialConfig: (options: BabelTransformOptions) => ({
@@ -127,9 +131,10 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {createTransformer}: typeof import('../index') = require('../index');
+    const {createTransformer} =
+      require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -138,9 +143,9 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.babelrc` value is changing', () => {
+  test('if `babelOptions.babelrc` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
-      const babel: typeof import('@babel/core') = require('@babel/core');
+      const babel = require('@babel/core') as typeof import('@babel/core');
 
       return {
         loadPartialConfig: (options: BabelTransformOptions) => ({
@@ -150,9 +155,10 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {createTransformer}: typeof import('../index') = require('../index');
+    const {createTransformer} =
+      require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -162,7 +168,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `instrument` value is changing', () => {
-    const newCacheKey = getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, {
       ...transformOptions,
       instrument: false,
     });
@@ -173,7 +179,7 @@ describe('getCacheKey', () => {
   test('if `process.env.NODE_ENV` value is changing', () => {
     process.env.NODE_ENV = 'NEW_NODE_ENV';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -181,16 +187,18 @@ describe('getCacheKey', () => {
   test('if `process.env.BABEL_ENV` value is changing', () => {
     process.env.BABEL_ENV = 'NEW_BABEL_ENV';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
   test('if node version is changing', () => {
+    // @ts-expect-error: Testing purpose
     delete process.version;
+    // @ts-expect-error: Testing purpose
     process.version = 'new-node-version';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });

@@ -1,16 +1,21 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
+
+import {expect} from '@jest/globals';
 
 describe('toEqual', () => {
   describe('duck type', () => {
-    // https://github.com/facebook/jest/issues/7786
+    // https://github.com/jestjs/jest/issues/7786
 
     const createElement = (name: string, ...childNodes: Array<unknown>) => ({
       childNodes,

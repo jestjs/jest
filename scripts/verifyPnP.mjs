@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import dedent from 'dedent';
@@ -52,21 +52,21 @@ try {
   fs.writeFileSync(
     path.join(cwd, 'jsdom.test.js'),
     dedent`
-     /*
-      * @jest-environment jsdom
-      */
+      /*
+       * @jest-environment jsdom
+       */
 
-     test('dummy', () => {
-       expect(window).toBeDefined();
-     });
+      test('dummy', () => {
+        expect(window).toBeDefined();
+      });
     `,
   );
   fs.writeFileSync(
     path.join(cwd, 'node.test.js'),
     dedent`
-     test('dummy', () => {
-       expect(typeof window).toBe('undefined');
-     });
+      test('dummy', () => {
+        expect(typeof window).toBe('undefined');
+      });
     `,
   );
   execa.sync('yarn', ['link', '--private', '--all', rootDirectory], {

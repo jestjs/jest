@@ -1,9 +1,9 @@
 {
   "name": "jest-haste-map",
-  "version": "29.0.3",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-haste-map"
   },
   "license": "MIT",
@@ -30,7 +30,6 @@
     "walker": "^1.0.8"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
     "@types/fb-watchman": "^2.0.0",
     "@types/micromatch": "^4.0.1",
     "slash": "^3.0.0"
@@ -39,7 +38,7 @@
     "fsevents": "^2.3.2"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

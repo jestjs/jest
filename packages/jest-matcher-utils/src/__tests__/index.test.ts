@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ import {
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('stringify()', () => {
-  [
+  for (const [v, s] of [
     [[], '[]'],
     [{}, '{}'],
     [1, '1'],
@@ -39,11 +39,11 @@ describe('stringify()', () => {
     [/ab\.c/gi, '/ab\\.c/gi'],
     [BigInt(1), '1n'],
     [BigInt(0), '0n'],
-  ].forEach(([v, s]) => {
+  ]) {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
     });
-  });
+  }
 
   test('circular references', () => {
     const a: any = {};
@@ -231,7 +231,7 @@ jest.mock('jest-diff', () => ({
 }));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
-    [
+    for (const [actual, expected] of [
       ['a', 'b'],
       ['a', {}],
       ['a', null],
@@ -240,28 +240,27 @@ describe('diff', () => {
       ['a', true],
       [1, true],
       [BigInt(1), true],
-    ].forEach(([actual, expected]) =>
-      expect(diff(actual, expected)).toBe('diff output'),
-    );
+    ])
+      expect(diff(actual, expected)).toBe('diff output');
   });
 
   test('two booleans', () => {
-    expect(diff(false, true)).toBe(null);
+    expect(diff(false, true)).toBeNull();
   });
 
   test('two numbers', () => {
-    expect(diff(1, 2)).toBe(null);
+    expect(diff(1, 2)).toBeNull();
   });
 
   test('two bigints', () => {
-    expect(diff(BigInt(1), BigInt(2))).toBe(null);
+    expect(diff(BigInt(1), BigInt(2))).toBeNull();
   });
 });
 
 describe('pluralize()', () => {
-  test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
-  test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
-  test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));
+  test('one', () => expect(pluralize('apple', 1)).toBe('one apple'));
+  test('two', () => expect(pluralize('apple', 2)).toBe('two apples'));
+  test('20', () => expect(pluralize('apple', 20)).toBe('20 apples'));
 });
 
 describe('getLabelPrinter', () => {
@@ -310,7 +309,7 @@ describe('getLabelPrinter', () => {
     expect(printLabel(stringConsistent)).toBe('Expected:       ');
     expect(() => {
       printLabel(stringInconsistentLonger);
-    }).toThrow();
+    }).toThrow('Invalid count value');
   });
 });
 

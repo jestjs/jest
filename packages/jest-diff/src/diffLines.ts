@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,7 +26,7 @@ const countChanges = (diffs: Array<Diff>): ChangeCounts => {
   let a = 0;
   let b = 0;
 
-  diffs.forEach(diff => {
+  for (const diff of diffs) {
     switch (diff[0]) {
       case DIFF_DELETE:
         a += 1;
@@ -36,7 +36,7 @@ const countChanges = (diffs: Array<Diff>): ChangeCounts => {
         b += 1;
         break;
     }
-  });
+  }
 
   return {a, b};
 };
@@ -139,7 +139,7 @@ export const diffLinesUnified2 = (
   // Replace comparison lines with displayable lines.
   let aIndex = 0;
   let bIndex = 0;
-  diffs.forEach((diff: Diff) => {
+  for (const diff of diffs) {
     switch (diff[0]) {
       case DIFF_DELETE:
         diff[1] = aLinesDisplay[aIndex];
@@ -156,7 +156,7 @@ export const diffLinesUnified2 = (
         aIndex += 1;
         bIndex += 1;
     }
-  });
+  }
 
   return printDiffLines(diffs, normalizeDiffOptions(options));
 };

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,7 +46,7 @@ export class FSEventsWatcher extends EventEmitter {
   readonly hasIgnore: boolean;
   readonly doIgnore: (path: string) => boolean;
   readonly fsEventsWatchStopper: () => Promise<void>;
-  private _tracked: Set<string>;
+  private readonly _tracked: Set<string>;
 
   static isSupported(): boolean {
     return fsevents !== null;
@@ -132,7 +132,7 @@ export class FSEventsWatcher extends EventEmitter {
     await this.fsEventsWatchStopper();
     this.removeAllListeners();
     if (typeof callback === 'function') {
-      process.nextTick(callback.bind(null, null, true));
+      process.nextTick(() => callback());
     }
   }
 
@@ -140,7 +140,7 @@ export class FSEventsWatcher extends EventEmitter {
     if (this.doIgnore(relativePath)) {
       return false;
     }
-    return this.glob.length
+    return this.glob.length > 0
       ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
       : this.dot || micromatch([relativePath], '**/*').length > 0;
   }

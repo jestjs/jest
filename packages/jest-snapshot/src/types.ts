@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,6 +11,14 @@ import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
   snapshotState: SnapshotState;
+}
+
+// This is typically implemented by `jest-haste-map`'s `HasteFS`, but we
+// partially reproduce the interface here to avoid a dependency.
+
+export interface FileSystem {
+  exists(path: string): boolean;
+  matchFiles(pattern: RegExp | string): Array<string>;
 }
 
 export type MatchSnapshotConfig = {

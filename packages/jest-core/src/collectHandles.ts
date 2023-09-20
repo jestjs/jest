@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,6 +9,8 @@
 
 import * as asyncHooks from 'async_hooks';
 import {promisify} from 'util';
+import * as v8 from 'v8';
+import * as vm from 'vm';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -45,6 +47,22 @@ const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
 
+let gcFunc: (() => void) | undefined = (globalThis as any).gc;
+function runGC() {
+  if (!gcFunc) {
+    v8.setFlagsFromString('--expose-gc');
+    gcFunc = vm.runInNewContext('gc');
+    v8.setFlagsFromString('--no-expose-gc');
+    if (!gcFunc) {
+      throw new Error(
+        'Cannot find `global.gc` function. Please run node with `--expose-gc` and report this issue in jest repo.',
+      );
+    }
+  }
+
+  gcFunc();
+}
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
 export default function collectHandles(): HandleCollectionResult {
@@ -65,16 +83,7 @@ export default function collectHandles(): HandleCollectionResult {
       // Skip resources that should not generally prevent the process from
       // exiting, not last a meaningfully long time, or otherwise shouldn't be
       // tracked.
-      if (
-        type === 'PROMISE' ||
-        type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM' ||
-        type === 'PerformanceObserver' ||
-        type === 'RANDOMBYTESREQUEST' ||
-        type === 'DNSCHANNEL' ||
-        type === 'ZLIB' ||
-        type === 'SIGNREQUEST'
-      ) {
+      if (type === 'PROMISE') {
         return;
       }
       const error = new ErrorWithStack(type, initHook, 100);
@@ -123,7 +132,19 @@ export default function collectHandles(): HandleCollectionResult {
     // For example, Node.js TCP Servers are not destroyed until *after* their
     // `close` callback runs. If someone finishes a test from the `close`
     // callback, we will not yet have seen the resource be destroyed here.
-    await asyncSleep(100);
+    await asyncSleep(0);
+
+    if (activeHandles.size > 0) {
+      await asyncSleep(30);
+
+      if (activeHandles.size > 0) {
+        // For some special objects such as `TLSWRAP`.
+        // Ref: https://github.com/jestjs/jest/issues/11665
+        runGC();
+
+        await asyncSleep(0);
+      }
+    }
 
     hook.disable();
 
@@ -141,33 +162,44 @@ export function formatHandleErrors(
   errors: Array<Error>,
   config: Config.ProjectConfig,
 ): Array<string> {
-  const stacks = new Set();
+  const stacks = new Map<string, {stack: string; names: Set<string>}>();
 
-  return (
-    errors
-      .map(err =>
-        formatExecError(err, config, {noStackTrace: false}, undefined, true),
-      )
-      // E.g. timeouts might give multiple traces to the same line of code
-      // This hairy filtering tries to remove entries with duplicate stack traces
-      .filter(handle => {
-        const ansiFree: string = stripAnsi(handle);
+  for (const err of errors) {
+    const formatted = formatExecError(
+      err,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
 
-        const match = ansiFree.match(/\s+at(.*)/);
+    // E.g. timeouts might give multiple traces to the same line of code
+    // This hairy filtering tries to remove entries with duplicate stack traces
 
-        if (!match || match.length < 2) {
-          return true;
-        }
+    const ansiFree: string = stripAnsi(formatted);
+    const match = ansiFree.match(/\s+at(.*)/);
+    if (!match || match.length < 2) {
+      continue;
+    }
 
-        const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+    const stackText = ansiFree.slice(ansiFree.indexOf(match[1])).trim();
 
-        if (stacks.has(stack)) {
-          return false;
-        }
+    const name = ansiFree.match(/(?<=● {2}).*$/m);
+    if (name == null || name.length === 0) {
+      continue;
+    }
 
-        stacks.add(stack);
+    const stack = stacks.get(stackText) || {
+      names: new Set(),
+      stack: formatted.replace(name[0], '%%OBJECT_NAME%%'),
+    };
 
-        return true;
-      })
+    stack.names.add(name[0]);
+
+    stacks.set(stackText, stack);
+  }
+
+  return Array.from(stacks.values()).map(({stack, names}) =>
+    stack.replace('%%OBJECT_NAME%%', Array.from(names).join(',')),
   );
 }

@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
@@ -26,13 +26,14 @@ const tsConfig = {
   extends: baseTsConfig.extends,
   compilerOptions: {
     esModuleInterop: false,
+    module: 'commonjs',
     moduleResolution: 'node',
     noEmit: true,
   },
 };
 /* eslint-enable */
 
-const tsVersion = '4.3';
+const tsVersion = '5.0';
 
 function smoketest() {
   const jestDirectory = path.resolve(
@@ -50,7 +51,8 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14'],
+      // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
+      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14@1'],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(
@@ -97,6 +99,9 @@ function typeTests() {
       );
     }
 
+    // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
+    execa.sync('yarn', ['add', '@tsconfig/node14@1'], {cwd});
+
     execa.sync(
       'yarn',
       [
@@ -138,7 +143,8 @@ function typeTests() {
 
     execa.sync('yarn', ['test-types'], {cwd, stdio: 'inherit'});
   } finally {
-    execa.sync('git', ['checkout', 'yarn.lock'], {cwd});
+    execa.sync('git', ['checkout', 'package.json', 'yarn.lock'], {cwd});
+    execa.sync('yarn', ['install'], {cwd});
   }
 
   function verifyInstalledTsdTypescript() {

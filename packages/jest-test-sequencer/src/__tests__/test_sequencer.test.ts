@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,12 +7,12 @@
 
 import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
-import type {Test, TestContext} from '@jest/test-result';
-import {makeProjectConfig} from '@jest/test-utils';
+import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
-  ...jest.createMockFromModule('fs'),
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn(() => true),
   readFileSync: jest.fn(() => '{}'),
 }));
@@ -56,7 +56,10 @@ const toTests = (paths: Array<string>) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  sequencer = new TestSequencer();
+  sequencer = new TestSequencer({
+    contexts: [],
+    globalConfig: makeGlobalConfig(),
+  });
 });
 
 test('sorts by file size if there is no timing information', () => {
@@ -151,7 +154,8 @@ test('writes the cache based on results without existing cache', async () => {
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, runtime: 3, start: 1},
+        // this is missing `runtime` to test that it is calculated
+        perfStats: {end: 4, start: 1},
         testFilePath: '/test-c.js',
       },
       {
@@ -161,7 +165,9 @@ test('writes the cache based on results without existing cache', async () => {
       },
     ],
   });
-  const fileData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileData = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileData).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-c.js': [FAIL, 3],
@@ -219,7 +225,9 @@ test('writes the cache based on the results', async () => {
       },
     ],
   });
-  const fileData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileData = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileData).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-b.js': [FAIL, 1],
@@ -228,16 +236,20 @@ test('writes the cache based on the results', async () => {
 });
 
 test('works with multiple contexts', async () => {
-  fs.readFileSync.mockImplementationOnce(cacheName =>
-    cacheName.startsWith(`${path.sep}cache${path.sep}`)
+  fs.readFileSync.mockImplementationOnce(cacheName => {
+    if (typeof cacheName !== 'string') {
+      throw new Error('Must be called with a string');
+    }
+
+    return cacheName.startsWith(`${path.sep}cache${path.sep}`)
       ? JSON.stringify({
           '/test-a.js': [SUCCESS, 5],
           '/test-b.js': [FAIL, 1],
         })
       : JSON.stringify({
           '/test-c.js': [FAIL],
-        }),
-  );
+        });
+  });
 
   const testPaths = [
     {context, duration: null, path: '/test-a.js'},
@@ -270,12 +282,16 @@ test('works with multiple contexts', async () => {
       },
     ],
   });
-  const fileDataA = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileDataA = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileDataA).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-b.js': [FAIL, 1],
   });
-  const fileDataB = JSON.parse(fs.writeFileSync.mock.calls[1][1]);
+  const fileDataB = JSON.parse(
+    fs.writeFileSync.mock.calls[1][1],
+  ) as AggregatedResult;
   expect(fileDataB).toEqual({
     '/test-c.js': [SUCCESS, 3],
   });
@@ -356,6 +372,23 @@ test('returns expected 100/8 shards', async () => {
   );
 
   expect(shards.map(shard => shard.length)).toEqual([
-    13, 13, 13, 13, 13, 13, 13, 9,
+    13, 13, 13, 13, 12, 12, 12, 12,
+  ]);
+});
+
+test('returns expected 55/12 shards', async () => {
+  const allTests = toTests(new Array(55).fill(true).map((_, i) => `/${i}.js`));
+
+  const shards = await Promise.all(
+    new Array(12).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 12,
+        shardIndex: i + 1,
+      }),
+    ),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4,
   ]);
 });

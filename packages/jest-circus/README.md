@@ -1,4 +1,4 @@
-[type-definitions]: https://github.com/facebook/jest/blob/main/packages/jest-types/src/Circus.ts
+[type-definitions]: https://github.com/jestjs/jest/blob/main/packages/jest-types/src/Circus.ts
 
 <h1 align="center">
   <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
@@ -15,7 +15,7 @@ Circus allows you to bind to events via an optional event handler on any [custom
 
 ```js
 import {Event, State} from 'jest-circus';
-import NodeEnvironment from 'jest-environment-node';
+import {TestEnvironment as NodeEnvironment} from 'jest-environment-node';
 
 class MyCustomEnvironment extends NodeEnvironment {
   //...

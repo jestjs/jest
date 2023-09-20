@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -39,7 +39,8 @@ describe('Replaceable', () => {
 
     test('init with other type should throw error', () => {
       expect(() => {
-        const replaceable = new Replaceable(new Date());
+        // eslint-disable-next-line no-new
+        new Replaceable(new Date());
       }).toThrow('Type date is not support in Replaceable!');
     });
   });
@@ -102,6 +103,7 @@ describe('Replaceable', () => {
       const object = {a: 1, b: 2, [symbolKey]: 3};
       const replaceable = new Replaceable(object);
       const cb = jest.fn();
+      // eslint-disable-next-line unicorn/no-array-for-each
       replaceable.forEach(cb);
       expect(cb).toHaveBeenCalledTimes(3);
       expect(cb.mock.calls[0]).toEqual([1, 'a', object]);
@@ -112,6 +114,7 @@ describe('Replaceable', () => {
     test('array forEach', () => {
       const replaceable = new Replaceable([1, 2, 3]);
       const cb = jest.fn();
+      // eslint-disable-next-line unicorn/no-array-for-each
       replaceable.forEach(cb);
       expect(cb).toHaveBeenCalledTimes(3);
       expect(cb.mock.calls[0]).toEqual([1, 0, [1, 2, 3]]);
@@ -126,6 +129,7 @@ describe('Replaceable', () => {
       ]);
       const replaceable = new Replaceable(map);
       const cb = jest.fn();
+      // eslint-disable-next-line unicorn/no-array-for-each
       replaceable.forEach(cb);
       expect(cb).toHaveBeenCalledTimes(2);
       expect(cb.mock.calls[0]).toEqual([1, 'a', map]);
@@ -150,6 +154,7 @@ describe('Replaceable', () => {
       });
       const replaceable = new Replaceable(object);
       const cb = jest.fn();
+      // eslint-disable-next-line unicorn/no-array-for-each
       replaceable.forEach(cb);
       expect(cb).toHaveBeenCalledTimes(2);
       expect(cb.mock.calls[0]).toEqual([1, 'a', object]);

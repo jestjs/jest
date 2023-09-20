@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -42,12 +42,10 @@ const mapFileCoverage = fileCoverage => {
   return fileCoverage;
 };
 
-Object.keys(coverage).forEach(filename =>
-  map.addFileCoverage(mapFileCoverage(coverage[filename])),
-);
+for (const filename of Object.keys(coverage))
+  map.addFileCoverage(mapFileCoverage(coverage[filename]));
 
 const context = istanbulReport.createContext({coverageMap: map});
 
-['json', 'lcov', 'text'].forEach(reporter =>
-  istanbulReports.create(reporter, {}).execute(context),
-);
+for (const reporter of ['json', 'lcov', 'text'])
+  istanbulReports.create(reporter, {}).execute(context);

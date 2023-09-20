@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -170,7 +170,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
     expect(fileAfter).toMatchSnapshot('initial write');
-    expect(fs.existsSync(snapshotPath)).toEqual(true);
+    expect(fs.existsSync(snapshotPath)).toBe(true);
   }
 
   {
@@ -180,7 +180,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
     expect(exitCode).toBe(1);
     expect(fileAfter).toMatchSnapshot('inline snapshot written');
-    expect(fs.existsSync(snapshotPath)).toEqual(true);
+    expect(fs.existsSync(snapshotPath)).toBe(true);
   }
 
   {
@@ -194,7 +194,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
     expect(exitCode).toBe(0);
     expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
-    expect(fs.existsSync(snapshotPath)).toEqual(false);
+    expect(fs.existsSync(snapshotPath)).toBe(false);
   }
 });
 
@@ -249,7 +249,7 @@ test('writes snapshots with non-literals in expect(...)', () => {
   expect(fileAfter).toMatchSnapshot();
 });
 
-// issue: https://github.com/facebook/jest/issues/6702
+// issue: https://github.com/jestjs/jest/issues/6702
 test('handles mocking native modules prettier relies on', () => {
   const filename = 'mockFail.test.js';
   const test = `

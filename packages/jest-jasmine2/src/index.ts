@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 import * as path from 'path';
 import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
-import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
@@ -62,7 +62,7 @@ export default async function jasmine2(
         const it = original(testName, fn, timeout);
 
         if (stack.getFileName()?.startsWith(jestEachBuildDir)) {
-          stack = getCallsite(4, sourcemaps);
+          stack = getCallsite(2, sourcemaps);
         }
         // @ts-expect-error: `it` is `void` for some reason
         it.result.__callsite = stack;
@@ -144,7 +144,7 @@ export default async function jasmine2(
 
   runtime
     .requireInternalModule<typeof import('./jestExpect')>(
-      path.resolve(__dirname, './jestExpect.js'),
+      require.resolve('./jestExpect.js'),
     )
     .default({expand: globalConfig.expand});
 
@@ -165,7 +165,7 @@ export default async function jasmine2(
 
   const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
-      path.resolve(__dirname, './setup_jest_globals.js'),
+      require.resolve('./setup_jest_globals.js'),
     )
     .default({
       config,
@@ -204,13 +204,13 @@ export default async function jasmine2(
 }
 
 const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
-  results.testResults.forEach(({fullName, status}: AssertionResult) => {
+  for (const {fullName, status} of results.testResults) {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
       // its snapshots as obsolete.
       snapshotState.markSnapshotsAsCheckedForTest(fullName);
     }
-  });
+  }
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
@@ -225,7 +225,7 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.matched = snapshotState.matched;
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
-  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 

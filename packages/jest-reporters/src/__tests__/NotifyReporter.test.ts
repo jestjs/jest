@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -83,7 +83,7 @@ const testModes = ({
   const globalConfig = makeGlobalConfig({notify: true, notifyMode, rootDir});
 
   let previousContext = initialContext;
-  arl.forEach((ar, i) => {
+  for (const [i, ar] of arl.entries()) {
     const newContext: ReporterContext = Object.assign(previousContext, {
       firstRun: i === 0,
       previousSuccess: previousContext.previousSuccess,
@@ -111,7 +111,7 @@ const testModes = ({
     if (ar.numTotalTests === 0) {
       expect(notify.notify).not.toHaveBeenCalled();
     }
-  });
+  }
 
   const calls: Array<any> = notify.notify.mock.calls;
   expect(
@@ -248,7 +248,7 @@ describe('node-notifier is an optional dependency', () => {
     const mockNodeNotifier = {notify: jest.fn()};
     jest.doMock('node-notifier', () => mockNodeNotifier);
     const result = ctor();
-    expect(result['_notifier']).toBe(mockNodeNotifier);
+    expect(result._notifier).toBe(mockNodeNotifier);
   });
 });
 

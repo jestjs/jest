@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import renderer from 'react-test-renderer';
-import prettyFormat, {plugins} from '..';
+import * as React from 'react';
+import * as renderer from 'react-test-renderer';
+import prettyFormat, {plugins} from '../';
 import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
@@ -26,7 +26,7 @@ const formatTestObject = (object: unknown, options?: OptionsReceived) =>
   });
 
 function assertPrintedJSX(
-  val: unknown,
+  val: React.ReactElement,
   expected: string,
   options?: OptionsReceived,
 ) {
@@ -48,10 +48,7 @@ test('supports a single element with non-empty string child', () => {
 });
 
 test('supports a single element with empty string child', () => {
-  assertPrintedJSX(
-    React.createElement('Mouse', null, ''),
-    '<Mouse>\n  \n</Mouse>',
-  );
+  assertPrintedJSX(React.createElement('Mouse', null, ''), '<Mouse />');
 });
 
 test('supports a single element with non-zero number child', () => {
@@ -265,7 +262,7 @@ test('supports a single element with custom React elements with props (using ano
 });
 
 test('supports a single element with custom React elements with a child', () => {
-  function Cat(props: unknown) {
+  function Cat(props: Record<string, unknown>) {
     return React.createElement('div', props);
   }
   assertPrintedJSX(
@@ -277,7 +274,7 @@ test('supports a single element with custom React elements with a child', () => 
 });
 
 test('supports undefined element type', () => {
-  expect(formatElement({$$typeof: elementSymbol, props: {}})).toEqual(
+  expect(formatElement({$$typeof: elementSymbol, props: {}})).toBe(
     '<UNDEFINED />',
   );
 });
@@ -285,7 +282,7 @@ test('supports undefined element type', () => {
 test('supports a fragment with no children', () => {
   expect(
     formatElement({$$typeof: elementSymbol, props: {}, type: fragmentSymbol}),
-  ).toEqual('<React.Fragment />');
+  ).toBe('<React.Fragment />');
 });
 
 test('supports a fragment with string child', () => {
@@ -295,7 +292,7 @@ test('supports a fragment with string child', () => {
       props: {children: 'test'},
       type: fragmentSymbol,
     }),
-  ).toEqual('<React.Fragment>\n  test\n</React.Fragment>');
+  ).toBe('<React.Fragment>\n  test\n</React.Fragment>');
 });
 
 test('supports a fragment with element child', () => {
@@ -305,7 +302,7 @@ test('supports a fragment with element child', () => {
       props: {children: React.createElement('div', null, 'test')},
       type: fragmentSymbol,
     }),
-  ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
+  ).toBe('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
 test('supports suspense', () => {
@@ -317,7 +314,7 @@ test('supports suspense', () => {
       },
       type: suspenseSymbol,
     }),
-  ).toEqual('<React.Suspense>\n  <div>\n    test\n  </div>\n</React.Suspense>');
+  ).toBe('<React.Suspense>\n  <div>\n    test\n  </div>\n</React.Suspense>');
 });
 
 test('supports a single element with React elements with a child', () => {
@@ -399,7 +396,7 @@ describe('test object for subset match', () => {
       children: ['undefined props'],
       type: 'span',
     };
-    expect(formatTestObject(val)).toEqual('<span>\n  undefined props\n</span>');
+    expect(formatTestObject(val)).toBe('<span>\n  undefined props\n</span>');
   });
   test('undefined children', () => {
     const val = {
@@ -409,7 +406,7 @@ describe('test object for subset match', () => {
       },
       type: 'span',
     };
-    expect(formatTestObject(val)).toEqual(
+    expect(formatTestObject(val)).toBe(
       '<span\n  className="undefined children"\n/>',
     );
   });
@@ -712,7 +709,7 @@ test('supports forwardRef with a child', () => {
 
   expect(
     formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
-  ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
+  ).toBe('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });
 
 describe('React.memo', () => {
@@ -724,7 +721,7 @@ describe('React.memo', () => {
 
       expect(
         formatElement(React.createElement(React.memo(Dog), null, 'cat')),
-      ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+      ).toBe('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
     });
   });
 
@@ -734,7 +731,7 @@ describe('React.memo', () => {
       Foo.displayName = 'DisplayNameBeforeMemoizing(Foo)';
       const MemoFoo = React.memo(Foo);
 
-      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toBe(
         '<Memo(DisplayNameBeforeMemoizing(Foo))>\n  cat\n</Memo(DisplayNameBeforeMemoizing(Foo))>',
       );
     });
@@ -745,7 +742,7 @@ describe('React.memo', () => {
       const MemoFoo = React.memo(Foo);
       MemoFoo.displayName = 'DisplayNameForMemoized(Foo)';
 
-      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toBe(
         '<Memo(DisplayNameForMemoized(Foo))>\n  cat\n</Memo(DisplayNameForMemoized(Foo))>',
       );
     });
@@ -759,7 +756,7 @@ test('supports context Provider with a child', () => {
     formatElement(
       React.createElement(Provider, {value: 'test-value'}, 'child'),
     ),
-  ).toEqual(
+  ).toBe(
     '<Context.Provider\n  value="test-value"\n>\n  child\n</Context.Provider>',
   );
 });
@@ -769,11 +766,11 @@ test('supports context Consumer with a child', () => {
 
   expect(
     formatElement(
-      React.createElement(Consumer, null, () =>
-        React.createElement('div', null, 'child'),
-      ),
+      React.createElement(Consumer, {
+        children: () => React.createElement('div', null, 'child'),
+      }),
     ),
-  ).toEqual('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+  ).toBe('<Context.Consumer>\n  [Function children]\n</Context.Consumer>');
 });
 
 test('ReactElement removes undefined props', () => {

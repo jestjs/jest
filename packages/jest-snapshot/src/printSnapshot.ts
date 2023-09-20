@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,6 +27,7 @@ import {
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
+  replaceMatchedToAsymmetricMatcher,
 } from 'jest-matcher-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
@@ -113,7 +114,7 @@ export const matcherHintFromConfig = (
       options.expectedColor = noColor;
     }
 
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       options.secondArgument = HINT_ARG;
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -125,7 +126,7 @@ export const matcherHintFromConfig = (
       }
     }
   } else {
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       expectedArgument = HINT_ARG;
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -154,11 +155,11 @@ const joinDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] !== op
-        ? ''
-        : hasCommon
-        ? INVERTED_COLOR(diff[1])
-        : diff[1]),
+        : diff[0] === op
+        ? hasCommon
+          ? INVERTED_COLOR(diff[1])
+          : diff[1]
+        : ''),
     '',
   );
 
@@ -205,9 +206,13 @@ export const printPropertiesAndReceived = (
   const bAnnotation = 'Received value';
 
   if (isLineDiffable(properties) && isLineDiffable(received)) {
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(properties, received, [], []);
     return diffLinesUnified(
-      serialize(properties).split('\n'),
-      serialize(getObjectSubset(received, properties)).split('\n'),
+      serialize(replacedExpected).split('\n'),
+      serialize(getObjectSubset(replacedReceived, replacedExpected)).split(
+        '\n',
+      ),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,
@@ -235,7 +240,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
-  snapshotFormat: SnapshotFormat,
+  snapshotFormat?: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';

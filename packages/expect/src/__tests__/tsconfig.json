@@ -1,0 +1,8 @@
+{
+  "extends": "../../../../tsconfig.test.json",
+  "compilerOptions": {
+    "lib": ["es2022.error"]
+  },
+  "include": ["./**/*"],
+  "references": [{"path": "../../"}, {"path": "../../../test-utils"}]
+}

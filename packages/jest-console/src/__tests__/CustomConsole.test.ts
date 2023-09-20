@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,18 +19,18 @@ describe('CustomConsole', () => {
     _stderr = '';
 
     const stdout = new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk: string, _encoding, callback) {
         _stdout += chunk.toString();
         callback();
       },
-    });
+    }) as NodeJS.WriteStream;
 
     const stderr = new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk: string, _encoding, callback) {
         _stderr += chunk.toString();
         callback();
       },
-    });
+    }) as NodeJS.WriteStream;
 
     _console = new CustomConsole(stdout, stderr);
   });
@@ -96,7 +96,7 @@ describe('CustomConsole', () => {
       _console.count();
       _console.count();
 
-      expect(_stdout).toEqual('default: 1\ndefault: 2\ndefault: 3\n');
+      expect(_stdout).toBe('default: 1\ndefault: 2\ndefault: 3\n');
     });
 
     test('count using the a labeled counter', () => {
@@ -104,7 +104,7 @@ describe('CustomConsole', () => {
       _console.count('custom');
       _console.count('custom');
 
-      expect(_stdout).toEqual('custom: 1\ncustom: 2\ncustom: 3\n');
+      expect(_stdout).toBe('custom: 1\ncustom: 2\ncustom: 3\n');
     });
 
     test('countReset restarts default counter', () => {
@@ -112,7 +112,7 @@ describe('CustomConsole', () => {
       _console.count();
       _console.countReset();
       _console.count();
-      expect(_stdout).toEqual('default: 1\ndefault: 2\ndefault: 1\n');
+      expect(_stdout).toBe('default: 1\ndefault: 2\ndefault: 1\n');
     });
 
     test('countReset restarts custom counter', () => {
@@ -121,7 +121,7 @@ describe('CustomConsole', () => {
       _console.countReset('custom');
       _console.count('custom');
 
-      expect(_stdout).toEqual('custom: 1\ncustom: 2\ncustom: 1\n');
+      expect(_stdout).toBe('custom: 1\ncustom: 2\ncustom: 1\n');
     });
   });
 
@@ -132,7 +132,7 @@ describe('CustomConsole', () => {
       _console.group();
       _console.log('there');
 
-      expect(_stdout).toEqual('  hey\n    there\n');
+      expect(_stdout).toBe('  hey\n    there\n');
     });
 
     test('group with label', () => {
@@ -141,7 +141,7 @@ describe('CustomConsole', () => {
       _console.group('second');
       _console.log('there');
 
-      expect(_stdout).toEqual(`  ${chalk.bold('first')}
+      expect(_stdout).toBe(`  ${chalk.bold('first')}
   hey
     ${chalk.bold('second')}
     there
@@ -154,7 +154,7 @@ describe('CustomConsole', () => {
       _console.groupEnd();
       _console.log('there');
 
-      expect(_stdout).toEqual('  hey\nthere\n');
+      expect(_stdout).toBe('  hey\nthere\n');
     });
 
     test('groupEnd can not remove the indentation below the starting point', () => {
@@ -165,7 +165,7 @@ describe('CustomConsole', () => {
       _console.groupEnd();
       _console.log('there');
 
-      expect(_stdout).toEqual('  hey\nthere\n');
+      expect(_stdout).toBe('  hey\nthere\n');
     });
   });
 

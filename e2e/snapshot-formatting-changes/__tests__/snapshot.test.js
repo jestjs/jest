@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,14 +13,14 @@ describe('snapshot serializer', () => {
       array: [{hello: 'Danger'}],
     };
     expect(object).toMatchInlineSnapshot(`
-{
-        "array": [
-                {
-                        "hello": "Danger",
-                },
-        ],
-}
-`);
+      {
+              "array": [
+                      {
+                              "hello": "Danger",
+                      },
+              ],
+      }
+    `);
   });
 
   it('uses 8 chars for indent, and shows no prototypes for object and array in a snapshot', () => {

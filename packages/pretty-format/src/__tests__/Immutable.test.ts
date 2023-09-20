@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,9 +7,9 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import Immutable from 'immutable';
-import React from 'react';
-import {plugins} from '..';
+import * as Immutable from 'immutable';
+import * as React from 'react';
+import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
 const {Immutable: ImmutablePlugin, ReactElement} = plugins;
@@ -17,7 +17,7 @@ const {Immutable: ImmutablePlugin, ReactElement} = plugins;
 setPrettyPrint([ReactElement, ImmutablePlugin]);
 
 it('does not incorrectly match identity-obj-proxy as Immutable object', () => {
-  // SENTINEL constant is from https://github.com/facebook/immutable-js
+  // SENTINEL constant is from https://github.com/immutable-js/immutable-js
   const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
   const val: any = {};
   val[IS_ITERABLE_SENTINEL] = IS_ITERABLE_SENTINEL; // mock the mock object :)
@@ -929,7 +929,7 @@ describe('Immutable.Seq', () => {
 describe('Immutable.Seq lazy entries', () => {
   const expected = 'Immutable.Seq {…}';
   const object = {key0: '', key1: '1'};
-  const filterer = (value: string) => value.length !== 0;
+  const filterer = (value: string) => value.length > 0;
 
   // undefined size confirms correct criteria for lazy Seq
   test('from object properties', () => {
@@ -947,7 +947,7 @@ describe('Immutable.Seq lazy entries', () => {
 describe('Immutable.Seq lazy values', () => {
   const expected = 'Immutable.Seq […]';
   const array = ['', '1', '22'];
-  const filterer = (item: string) => item.length !== 0;
+  const filterer = (item: string) => item.length > 0;
 
   test('from Immutable.Range', () => {
     const val = Immutable.Range(1, Infinity);
@@ -957,13 +957,13 @@ describe('Immutable.Seq lazy values', () => {
 
   // undefined size confirms correct criteria for lazy Seq
   test('from iterator', () => {
-    function returnIterator(values: Array<string>) {
+    function returnIterator<T>(values: Array<T>): IterableIterator<T> {
       let i = 0;
       return {
         next() {
           return i < values.length
             ? {done: false, value: values[i++]}
-            : {done: true};
+            : {done: true, value: undefined};
         },
         [Symbol.iterator]() {
           return this;

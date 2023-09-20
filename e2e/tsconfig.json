@@ -1,22 +1,8 @@
 {
+  "extends": "../tsconfig.test.json",
   "compilerOptions": {
-    "noEmit": true,
-
-    "target": "es2017",
-    "module": "commonjs",
-    "lib": ["dom", "es2017"],
-    "strict": true,
-
-    /* Additional Checks */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-
-    /* Module Resolution Options */
-    "moduleResolution": "node",
-    "isolatedModules": true,
-    "importsNotUsedAsValues": "error",
-    "resolveJsonModule": true
-  }
+    "rootDir": "./"
+  },
+  "include": ["./**/*"],
+  "references": [{"path": "../packages/test-utils"}]
 }

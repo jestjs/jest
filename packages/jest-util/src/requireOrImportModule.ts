@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -30,7 +30,9 @@ export default async function requireOrImportModule<T>(
         const moduleUrl = pathToFileURL(filePath);
 
         // node `import()` supports URL, but TypeScript doesn't know that
-        const importedModule = await import(moduleUrl.href);
+        const importedModule = await import(
+          /* webpackIgnore: true */ moduleUrl.href
+        );
 
         if (!applyInteropRequireDefault) {
           return importedModule;

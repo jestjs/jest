@@ -1,0 +1,8 @@
+{
+  "name": "isolate-modules-async",
+  "type": "module",
+  "jest": {
+    "transform": {},
+    "testEnvironment": "node"
+  }
+}

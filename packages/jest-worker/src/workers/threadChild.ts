@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,6 +9,7 @@ import {isMainThread, parentPort} from 'worker_threads';
 import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
@@ -46,8 +47,8 @@ const messageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
-      process.env.JEST_WORKER_ID = request[4];
+      setupArgs = init[3];
+      process.env.JEST_WORKER_ID = init[4];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -61,6 +62,28 @@ const messageListener = (request: any) => {
 
     case CHILD_MESSAGE_MEM_USAGE:
       reportMemoryUsage();
+      break;
+
+    case CHILD_MESSAGE_CALL_SETUP:
+      if (initialized) {
+        reportSuccess(void 0);
+      } else {
+        const main = require(file!);
+
+        initialized = true;
+
+        if (main.setup) {
+          execFunction(
+            main.setup,
+            main,
+            setupArgs,
+            reportSuccess,
+            reportInitializeError,
+          );
+        } else {
+          reportSuccess(void 0);
+        }
+      }
       break;
 
     default:
@@ -89,7 +112,14 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  try {
+    parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  } catch (err: any) {
+    // Handling it here to avoid unhandled `DataCloneError` rejection
+    // which is hard to distinguish on the parent side
+    // (such error doesn't have any message or stack trace)
+    reportClientError(err);
+  }
 }
 
 function reportClientError(error: Error) {
@@ -141,7 +171,7 @@ function execMethod(method: string, args: Array<unknown>): void {
   let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }

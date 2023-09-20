@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -41,10 +41,10 @@ function deepCyclicCopyObject<T>(
 
   cycles.set(object, newObject);
 
-  Object.keys(descriptors).forEach(key => {
+  for (const key of Object.keys(descriptors)) {
     if (options.blacklist && options.blacklist.has(key)) {
       delete descriptors[key];
-      return;
+      continue;
     }
 
     const descriptor = descriptors[key];
@@ -57,7 +57,7 @@ function deepCyclicCopyObject<T>(
     }
 
     descriptor.configurable = true;
-  });
+  }
 
   return Object.defineProperties(newObject, descriptors);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -112,7 +112,7 @@ test('should throw module not found error if the module has dependencies that ca
           requiresUnexistingModule.js
           Test7.js
           __tests__/resolve.test.js\n
-        `,
+      `,
     }),
   );
 });

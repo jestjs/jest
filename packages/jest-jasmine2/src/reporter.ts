@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,14 +19,14 @@ import type {Reporter, RunDetails} from './types';
 type Microseconds = number;
 
 export default class Jasmine2Reporter implements Reporter {
-  private _testResults: Array<AssertionResult>;
-  private _globalConfig: Config.GlobalConfig;
-  private _config: Config.ProjectConfig;
-  private _currentSuites: Array<string>;
+  private readonly _testResults: Array<AssertionResult>;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _currentSuites: Array<string>;
   private _resolve: any;
-  private _resultsPromise: Promise<TestResult>;
-  private _startTimes: Map<string, Microseconds>;
-  private _testPath: string;
+  private readonly _resultsPromise: Promise<TestResult>;
+  private readonly _startTimes: Map<string, Microseconds>;
+  private readonly _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -70,7 +70,7 @@ export default class Jasmine2Reporter implements Reporter {
     let numPendingTests = 0;
     let numTodoTests = 0;
     const testResults = this._testResults;
-    testResults.forEach(testResult => {
+    for (const testResult of testResults) {
       if (testResult.status === 'failed') {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
@@ -80,7 +80,7 @@ export default class Jasmine2Reporter implements Reporter {
       } else {
         numPassingTests++;
       }
-    });
+    }
 
     const testResult = {
       ...createEmptyTestResult(),
@@ -154,14 +154,14 @@ export default class Jasmine2Reporter implements Reporter {
       title: specResult.description,
     };
 
-    specResult.failedExpectations.forEach(failed => {
+    for (const failed of specResult.failedExpectations) {
       const message =
         !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
       results.failureDetails.push(failed);
-    });
+    }
 
     return results;
   }

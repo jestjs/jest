@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 'use strict';
 
 import {builtinModules, createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {pathToFileURL} from 'url';
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';
@@ -41,6 +41,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -60,6 +61,7 @@ describe('Runtime requireModule', () => {
       'exports',
       'filename',
       'id',
+      'isPreloading',
       'loaded',
       'path',
       'parent',
@@ -83,7 +85,7 @@ describe('Runtime requireModule', () => {
       runtime.__mockRootPath,
       'inner_parent_module',
     );
-    expect(exports.outputString).toEqual('This should happen');
+    expect(exports.outputString).toBe('This should happen');
   });
 
   it('resolve module.parent.filename correctly', async () => {
@@ -93,7 +95,7 @@ describe('Runtime requireModule', () => {
       'inner_parent_module',
     );
 
-    expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
+    expect(slash(exports.parentFileName.replace(__dirname, ''))).toBe(
       '/test_root/inner_parent_module.js',
     );
   });
@@ -106,9 +108,9 @@ describe('Runtime requireModule', () => {
     );
 
     // `exports.loaded` is set while the module is loaded, so should be `false`
-    expect(exports.loaded).toEqual(false);
+    expect(exports.loaded).toBe(false);
     // After the module is loaded we can query `module.loaded` again, at which point it should be `true`
-    expect(exports.isLoaded()).toEqual(true);
+    expect(exports.isLoaded()).toBe(true);
   });
 
   it('provides `module.filename` to modules', async () => {
@@ -132,21 +134,26 @@ describe('Runtime requireModule', () => {
       'RegularModule',
     );
     expect(exports.paths.length).toBeGreaterThan(0);
-    exports.paths.forEach(path => {
-      expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
-    });
+    const root = path.parse(process.cwd()).root;
+    const globalPath = path.join(root, 'node_modules');
+    const rootIndex = exports.paths.findIndex(path => path === globalPath);
+    for (const [index, path] of exports.paths.entries()) {
+      if (index <= rootIndex) {
+        expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
+      }
+    }
   });
 
   it('provides `require.main` to modules', async () => {
     const runtime = await createRuntime(__filename);
     runtime._mainModule = module;
-    [
+    for (const modulePath of [
       './test_root/modules_with_main/export_main.js',
       './test_root/modules_with_main/re_export_main.js',
-    ].forEach(modulePath => {
+    ]) {
       const mainModule = runtime.requireModule(__filename, modulePath);
       expect(mainModule).toBe(module);
-    });
+    }
   });
 
   it('throws on non-existent haste modules', async () => {
@@ -366,10 +373,10 @@ describe('Runtime requireModule', () => {
     const runtime = await createRuntime(__filename);
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
   });
 
   it('overrides module.createRequire', async () => {

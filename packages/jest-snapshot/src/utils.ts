@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -194,7 +194,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: string): void => {
   try {
-    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
+    fs.mkdirSync(path.dirname(filePath), {recursive: true});
   } catch {}
 };
 
@@ -220,21 +220,26 @@ export const saveSnapshotFile = (
   );
 };
 
+const isAnyOrAnything = (input: object) =>
+  '$$typeof' in input &&
+  input.$$typeof === Symbol.for('jest.asymmetricMatcher') &&
+  ['Any', 'Anything'].includes(input.constructor.name);
+
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   const mergedOutput = Array.from(target);
 
-  source.forEach((sourceElement, index) => {
+  for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];
 
-    if (Array.isArray(target[index])) {
+    if (Array.isArray(target[index]) && Array.isArray(sourceElement)) {
       mergedOutput[index] = deepMergeArray(target[index], sourceElement);
-    } else if (isObject(targetElement)) {
+    } else if (isObject(targetElement) && !isAnyOrAnything(sourceElement)) {
       mergedOutput[index] = deepMerge(target[index], sourceElement);
     } else {
       // Source does not exist in target or target is primitive and cannot be deep merged
       mergedOutput[index] = sourceElement;
     }
-  });
+  }
 
   return mergedOutput;
 };
@@ -244,16 +249,19 @@ export const deepMerge = (target: any, source: any): any => {
   if (isObject(target) && isObject(source)) {
     const mergedOutput = {...target};
 
-    Object.keys(source).forEach(key => {
+    for (const key of Object.keys(source)) {
       if (isObject(source[key]) && !source[key].$$typeof) {
-        if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
-        else mergedOutput[key] = deepMerge(target[key], source[key]);
+        if (key in target) {
+          mergedOutput[key] = deepMerge(target[key], source[key]);
+        } else {
+          Object.assign(mergedOutput, {[key]: source[key]});
+        }
       } else if (Array.isArray(source[key])) {
         mergedOutput[key] = deepMergeArray(target[key], source[key]);
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
-    });
+    }
 
     return mergedOutput;
   } else if (Array.isArray(target) && Array.isArray(source)) {

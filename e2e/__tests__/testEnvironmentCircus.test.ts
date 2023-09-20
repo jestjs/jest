@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@ skipSuiteOnJasmine();
 
 it('calls testEnvironment handleTestEvent', () => {
   const result = runJest('test-environment-circus');
-  expect(result.failed).toEqual(false);
+  expect(result.failed).toBe(false);
   expect(result.stdout.split('\n')).toMatchInlineSnapshot(`
     Array [
       "setup",
@@ -23,6 +23,7 @@ it('calls testEnvironment handleTestEvent', () => {
       "run_start",
       "run_describe_start",
       "test_start: test name here",
+      "test_started: test name here",
       "hook_start",
       "hook_success: test name here",
       "hook_start",
@@ -31,6 +32,7 @@ it('calls testEnvironment handleTestEvent', () => {
       "test_fn_success: test name here",
       "test_done: test name here",
       "test_start: second test name here",
+      "test_started: second test name here",
       "hook_start",
       "hook_success: second test name here",
       "hook_start",

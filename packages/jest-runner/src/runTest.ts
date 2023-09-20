@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -98,7 +98,8 @@ async function runTestInternal(
     }
     testEnvironment = resolveTestEnvironment({
       ...projectConfig,
-      requireResolveFunction: require.resolve,
+      // we wanna avoid webpack trying to be clever
+      requireResolveFunction: module => require.resolve(module),
       testEnvironment: customEnvironment,
     });
   }
@@ -196,7 +197,18 @@ async function runTestInternal(
         context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
+    globalConfig,
   );
+
+  let isTornDown = false;
+
+  const tearDownEnv = async () => {
+    if (!isTornDown) {
+      runtime.teardown();
+      await environment.teardown();
+      isTornDown = true;
+    }
+  };
 
   const start = Date.now();
 
@@ -270,6 +282,7 @@ async function runTestInternal(
 
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
+    globalConfig.collectCoverage &&
     globalConfig.coverageProvider === 'v8' &&
     typeof environment.getVmContext === 'function';
 
@@ -328,7 +341,7 @@ async function runTestInternal(
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
-      if (coverageKeys.length) {
+      if (coverageKeys.length > 0) {
         result.coverage = coverage;
       }
     }
@@ -341,19 +354,19 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      // @ts-expect-error - doesn't exist on globalThis
       globalThis.gc?.();
 
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
+    await tearDownEnv();
+
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    runtime.teardown();
-    await environment.teardown();
+    await tearDownEnv();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

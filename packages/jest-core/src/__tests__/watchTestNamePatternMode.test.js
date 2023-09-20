@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -107,7 +107,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('t');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -116,16 +116,18 @@ describe('Watch mode flows', () => {
     };
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2'].forEach(assertPattern);
+    for (const pattern of ['c', 'o', 'n', ' ', '1', '2'])
+      assertPattern(pattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
+    for (const pattern of [KEYS.BACKSPACE, KEYS.BACKSPACE])
+      assertPattern(pattern);
 
-    ['*'].forEach(assertPattern);
+    for (const pattern of ['*']) assertPattern(pattern);
 
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -153,6 +155,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

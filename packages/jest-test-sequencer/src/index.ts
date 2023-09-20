@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,18 +10,30 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
 
+export type TestSequencerOptions = {
+  contexts: ReadonlyArray<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
+
 type Cache = {
-  [key: string]: [0 | 1, number];
+  [key: string]:
+    | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
+    | undefined;
 };
 
 export type ShardOptions = {
   shardIndex: number;
   shardCount: number;
+};
+
+type ShardPositionOptions = ShardOptions & {
+  suiteLength: number;
 };
 
 /**
@@ -38,7 +50,10 @@ export type ShardOptions = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<TestContext, Cache> = new Map();
+  private readonly _cache = new Map<TestContext, Cache>();
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-useless-constructor
+  constructor(_options: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
@@ -57,7 +72,7 @@ export default class TestSequencer {
         try {
           this._cache.set(
             context,
-            JSON.parse(fs.readFileSync(cachePath, 'utf8')),
+            JSON.parse(fs.readFileSync(cachePath, 'utf8')) as Cache,
           );
         } catch {}
       }
@@ -70,6 +85,19 @@ export default class TestSequencer {
     }
 
     return cache;
+  }
+
+  private _shardPosition(options: ShardPositionOptions): number {
+    const shardRest = options.suiteLength % options.shardCount;
+    const ratio = options.suiteLength / options.shardCount;
+
+    return new Array(options.shardIndex)
+      .fill(true)
+      .reduce<number>((acc, _, shardIndex) => {
+        const dangles = shardIndex < shardRest;
+        const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
+        return acc + shardSize;
+      }, 0);
   }
 
   /**
@@ -97,9 +125,17 @@ export default class TestSequencer {
     tests: Array<Test>,
     options: ShardOptions,
   ): Array<Test> | Promise<Array<Test>> {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardStart = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex - 1,
+      suiteLength: tests.length,
+    });
+
+    const shardEnd = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex,
+      suiteLength: tests.length,
+    });
 
     return tests
       .map(test => {
@@ -156,18 +192,14 @@ export default class TestSequencer {
      */
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
-      stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][0] === FAIL;
-    const time = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][1];
+      stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
 
-    tests.forEach(test => (test.duration = time(this._getCache(test), test)));
+    for (const test of tests) {
+      test.duration = this.time(test);
+    }
     return tests.sort((testA, testB) => {
-      const cacheA = this._getCache(testA);
-      const cacheB = this._getCache(testB);
-      const failedA = hasFailed(cacheA, testA);
-      const failedB = hasFailed(cacheB, testB);
+      const failedA = this.hasFailed(testA);
+      const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
@@ -183,29 +215,37 @@ export default class TestSequencer {
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
-    const map = Object.create(null);
-    tests.forEach(test => (map[test.path] = test));
-    results.testResults.forEach(testResult => {
-      if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
-        const cache = this._getCache(map[testResult.testFilePath]);
+    const map = Object.create(null) as Record<string, Test | undefined>;
+    for (const test of tests) map[test.path] = test;
+    for (const testResult of results.testResults) {
+      const test = map[testResult.testFilePath];
+      if (test != null && !testResult.skipped) {
+        const cache = this._getCache(test);
         const perf = testResult.perfStats;
+        const testRuntime =
+          perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.runtime || 0,
+          testResult.numFailingTests > 0 ? FAIL : SUCCESS,
+          testRuntime || 0,
         ];
       }
-    });
+    }
 
-    this._cache.forEach((cache, context) =>
-      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)),
-    );
+    for (const [context, cache] of this._cache.entries())
+      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache));
+  }
+
+  private hasFailed(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[0] === FAIL;
+  }
+
+  private time(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[1];
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,7 +16,7 @@ interface ErrorWithCodeFrame extends Error {
 export default function handlePotentialSyntaxError(
   e: ErrorWithCodeFrame,
 ): ErrorWithCodeFrame {
-  if (e.codeFrame) {
+  if (e.codeFrame != null) {
     e.stack = `${e.message}\n${e.codeFrame}`;
   }
 
@@ -64,7 +64,7 @@ ${chalk.cyan('https://jestjs.io/docs/code-transformation')}
 
 ${chalk.bold.red('Details:')}
 
-${e.stack}`;
+${e.stack ?? ''}`.trimRight();
 
   return e;
 }

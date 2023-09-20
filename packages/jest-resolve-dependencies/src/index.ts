@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,9 +20,9 @@ export type ResolvedModule = {
  * to retrieve a list of all transitive inverse dependencies.
  */
 export class DependencyResolver {
-  private _hasteFS: IHasteFS;
-  private _resolver: Resolver;
-  private _snapshotResolver: SnapshotResolver;
+  private readonly _hasteFS: IHasteFS;
+  private readonly _resolver: Resolver;
+  private readonly _snapshotResolver: SnapshotResolver;
 
   constructor(
     resolver: Resolver,
@@ -61,7 +61,7 @@ export class DependencyResolver {
         }
       }
 
-      if (!resolvedDependency) {
+      if (resolvedDependency == null) {
         return acc;
       }
 
@@ -78,7 +78,7 @@ export class DependencyResolver {
         // leave resolvedMockDependency as undefined if nothing can be found
       }
 
-      if (resolvedMockDependency) {
+      if (resolvedMockDependency != null) {
         const dependencyMockDir = path.resolve(
           path.dirname(resolvedDependency),
           '__mocks__',
@@ -101,7 +101,7 @@ export class DependencyResolver {
     filter: (file: string) => boolean,
     options?: ResolveModuleConfig,
   ): Array<ResolvedModule> {
-    if (!paths.size) {
+    if (paths.size === 0) {
       return [];
     }
 
@@ -112,7 +112,7 @@ export class DependencyResolver {
     ) => {
       const visitedModules = new Set();
       const result: Array<ResolvedModule> = [];
-      while (changed.size) {
+      while (changed.size > 0) {
         changed = new Set(
           moduleMap.reduce<Array<string>>((acc, module) => {
             if (

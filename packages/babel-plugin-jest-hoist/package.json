@@ -1,13 +1,13 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "29.0.2",
+  "version": "29.6.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/babel-plugin-jest-hoist"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -28,10 +28,11 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-react": "^7.12.1",
+    "@babel/preset-typescript": "^7.0.0",
     "@types/babel__template": "^7.0.2",
     "@types/node": "*",
     "@types/prettier": "^2.1.5",
-    "babel-plugin-tester": "^10.0.0",
+    "babel-plugin-tester": "^11.0.2",
     "prettier": "^2.1.1"
   },
   "publishConfig": {

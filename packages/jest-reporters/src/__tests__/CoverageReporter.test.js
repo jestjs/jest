@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,7 +22,7 @@ let libSourceMaps;
 let CoverageReporter;
 let istanbulReports;
 
-import path from 'path';
+import * as path from 'path';
 import mock from 'mock-fs';
 
 beforeEach(() => {
@@ -159,16 +159,15 @@ describe('onRunComplete', () => {
 
   test('getLastError() returns an error when threshold is not met for file', () => {
     const covThreshold = {};
-    [
+    const paths = [
       'global',
       path.resolve(`${process.cwd()}/path-test-files/full_path_file.js`),
       './path-test-files/relative_path_file.js',
       'path-test-files/glob-*/*.js',
-    ].forEach(path => {
-      covThreshold[path] = {
-        statements: 100,
-      };
-    });
+    ];
+    for (const path of paths) {
+      covThreshold[path] = {statements: 100};
+    }
 
     const testReporter = new CoverageReporter(
       {
@@ -189,16 +188,15 @@ describe('onRunComplete', () => {
 
   test('getLastError() returns `undefined` when threshold is met', () => {
     const covThreshold = {};
-    [
+    const paths = [
       'global',
       path.resolve(`${process.cwd()}/path-test-files/full_path_file.js`),
       './path-test-files/relative_path_file.js',
       'path-test-files/glob-*/*.js',
-    ].forEach(path => {
-      covThreshold[path] = {
-        statements: 50,
-      };
-    });
+    ];
+    for (const path of paths) {
+      covThreshold[path] = {statements: 50};
+    }
 
     const testReporter = new CoverageReporter(
       {
@@ -338,7 +336,7 @@ describe('onRunComplete', () => {
   test(`getLastError() returns 'undefined' when file and directory path
   threshold groups overlap`, () => {
     const covThreshold = {};
-    [
+    for (const path of [
       './path-test-files/',
       './path-test-files/covered_file_without_threshold.js',
       './path-test-files/full_path_file.js',
@@ -346,11 +344,11 @@ describe('onRunComplete', () => {
       './path-test-files/glob-path/file1.js',
       './path-test-files/glob-path/file2.js',
       './path-test-files/*.js',
-    ].forEach(path => {
+    ]) {
       covThreshold[path] = {
         statements: 0,
       };
-    });
+    }
 
     const testReporter = new CoverageReporter(
       {

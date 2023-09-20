@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,6 +22,20 @@ it('prints message about flag on slow tests', async () => {
     stderr.includes(
       'Jest did not exit one second after the test run has completed.',
     ),
+  );
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toMatchSnapshot();
+});
+
+it('prints message about flag on slow tests with a custom timeout', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'outside',
+    '--openHandlesTimeout=500',
+  ]);
+  await run.waitUntil(({stderr}) =>
+    stderr.includes('Jest did not exit 0.5 seconds'),
   );
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);

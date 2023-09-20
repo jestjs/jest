@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
-  private _snapshotInteractiveMode: SnapshotInteractiveMode =
+  private readonly _snapshotInteractiveMode: SnapshotInteractiveMode =
     new SnapshotInteractiveMode(this._stdout);
   private _failedSnapshotTestAssertions: Array<AssertionLocation> = [];
   isInternal = true as const;
@@ -26,18 +26,18 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       return failedTestPaths;
     }
 
-    testResults.testResults.forEach(testResult => {
+    for (const testResult of testResults.testResults) {
       if (testResult.snapshot && testResult.snapshot.unmatched) {
-        testResult.testResults.forEach(result => {
+        for (const result of testResult.testResults) {
           if (result.status === 'failed') {
             failedTestPaths.push({
               fullName: result.fullName,
               path: testResult.testFilePath,
             });
           }
-        });
+        }
       }
-    });
+    }
 
     return failedTestPaths;
   }
@@ -62,7 +62,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
-    if (this._failedSnapshotTestAssertions.length) {
+    if (this._failedSnapshotTestAssertions.length > 0) {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,

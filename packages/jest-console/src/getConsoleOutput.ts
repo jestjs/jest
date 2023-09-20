@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,7 +19,8 @@ export default function getConsoleOutput(
   config: StackTraceConfig,
   globalConfig: Config.GlobalConfig,
 ): string {
-  const TITLE_INDENT = globalConfig.verbose ? ' '.repeat(2) : ' '.repeat(4);
+  const TITLE_INDENT =
+    globalConfig.verbose === true ? ' '.repeat(2) : ' '.repeat(4);
   const CONSOLE_INDENT = TITLE_INDENT + ' '.repeat(2);
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {

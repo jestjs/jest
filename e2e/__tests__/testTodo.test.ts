@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -43,4 +43,11 @@ test('shows todo messages when in verbose mode', () => {
   expect(result.exitCode).toBe(0);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
+});
+
+test('counts todo tests when inside of a `describe.only`', () => {
+  const result = runJest(dir, ['only-todo.test.js']);
+  expect(result.exitCode).toBe(0);
+  const {rest, summary} = extractSummary(result.stderr);
+  expect(`${rest}\n\n${summary}`).toMatchSnapshot();
 });

@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {tmpdir} from 'os';
-import path from 'path';
+import * as path from 'path';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createScriptTransformer} from '@jest/transform';
 import NodeEnvironment from 'jest-environment-node';
@@ -55,6 +55,8 @@ module.exports = async function createRuntime(filename, projectConfig) {
   const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
   const transform = setupTransform(projectConfig, rootDir, cwd);
 
+  const globalConfig = makeGlobalConfig();
+
   projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
     cwd,
@@ -72,12 +74,12 @@ module.exports = async function createRuntime(filename, projectConfig) {
     transform,
   });
 
-  if (!projectConfig.roots.length) {
+  if (projectConfig.roots.length === 0) {
     projectConfig.roots = [projectConfig.rootDir];
   }
 
   const environment = new NodeEnvironment({
-    globalConfig: makeGlobalConfig(),
+    globalConfig,
     projectConfig,
   });
   environment.global.console = console;
@@ -109,6 +111,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
       sourcesRelatedToTestsInChangedFiles: undefined,
     },
     filename,
+    globalConfig,
   );
 
   for (const path of projectConfig.setupFiles) {

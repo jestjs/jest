@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -66,20 +66,20 @@ const MS_IN_A_YEAR = 31536000000;
 
 export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
-  private _config: StackTraceConfig;
-  private _disposed?: boolean;
+  private readonly _config: StackTraceConfig;
+  private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
-  private _global: typeof globalThis;
+  private readonly _global: typeof globalThis;
   private _immediates!: Array<Tick>;
-  private _maxLoops: number;
-  private _moduleMocker: ModuleMocker;
+  private readonly _maxLoops: number;
+  private readonly _moduleMocker: ModuleMocker;
   private _now!: number;
   private _ticks!: Array<Tick>;
-  private _timerAPIs: TimerAPI;
+  private readonly _timerAPIs: TimerAPI;
   private _timers!: Map<string, Timer>;
   private _uuidCounter: number;
-  private _timerConfig: TimerConfig<TimerRef>;
+  private readonly _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
     global,
@@ -113,6 +113,8 @@ export default class FakeTimers<TimerRef = unknown> {
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
+
+    this._disposed = false;
 
     this.reset();
   }
@@ -222,11 +224,11 @@ export default class FakeTimers<TimerRef = unknown> {
       // Some of the immediate calls could be enqueued
       // during the previous handling of the timers, we should
       // run them as well.
-      if (this._immediates.length) {
+      if (this._immediates.length > 0) {
         this.runAllImmediates();
       }
 
-      if (this._ticks.length) {
+      if (this._ticks.length > 0) {
         this.runAllTicks();
       }
     }
@@ -242,17 +244,17 @@ export default class FakeTimers<TimerRef = unknown> {
   runOnlyPendingTimers(): void {
     // We need to hold the current shape of `this._timers` because existing
     // timers can add new ones to the map and hence would run more than necessary.
-    // See https://github.com/facebook/jest/pull/4608 for details
+    // See https://github.com/jestjs/jest/pull/4608 for details
     const timerEntries = Array.from(this._timers.entries());
     this._checkFakeTimers();
-    this._immediates.forEach(this._runImmediate, this);
+    for (const _immediate of this._immediates) this._runImmediate(_immediate);
 
-    timerEntries
-      .sort(([, left], [, right]) => left.expiry - right.expiry)
-      .forEach(([timerHandle, timer]) => {
-        this._now = timer.expiry;
-        this._runTimerHandle(timerHandle);
-      });
+    for (const [timerHandle, timer] of timerEntries.sort(
+      ([, left], [, right]) => left.expiry - right.expiry,
+    )) {
+      this._now = timer.expiry;
+      this._runTimerHandle(timerHandle);
+    }
   }
 
   advanceTimersToNextTimer(steps = 1): void {
@@ -510,11 +512,13 @@ export default class FakeTimers<TimerRef = unknown> {
     });
 
     this._timerAPIs.setImmediate(() => {
-      if (this._immediates.find(x => x.uuid === uuid)) {
-        try {
-          callback.apply(null, args);
-        } finally {
-          this._fakeClearImmediate(uuid);
+      if (!this._disposed) {
+        if (this._immediates.find(x => x.uuid === uuid)) {
+          try {
+            callback.apply(null, args);
+          } finally {
+            this._fakeClearImmediate(uuid);
+          }
         }
       }
     });
@@ -575,12 +579,12 @@ export default class FakeTimers<TimerRef = unknown> {
     let nextTimerHandle = null;
     let soonestTime = MS_IN_A_YEAR;
 
-    this._timers.forEach((timer, uuid) => {
+    for (const [uuid, timer] of this._timers.entries()) {
       if (timer.expiry < soonestTime) {
         soonestTime = timer.expiry;
         nextTimerHandle = uuid;
       }
-    });
+    }
 
     if (nextTimerHandle === null) {
       return null;

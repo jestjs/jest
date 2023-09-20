@@ -15,7 +15,7 @@
     "core-js": "^3.2.1",
     "rxjs": "^7.5.5",
     "tslib": "^2.0.0",
-    "typescript": "^4.8.2",
+    "typescript": "^5.0.4",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
@@ -23,10 +23,11 @@
     "@babel/plugin-proposal-decorators": "*",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.0.0",
-    "@types/jest": "^27.4.0",
+    "@jest/globals": "workspace:^",
     "babel-jest": "workspace:^",
     "babel-plugin-transform-typescript-metadata": "*",
     "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^",
     "jest-zone-patch": "*"
   }
 }

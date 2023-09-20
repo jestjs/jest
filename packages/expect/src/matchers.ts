@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -97,9 +97,21 @@ const matchers: MatchersObject = {
           if (expectedType !== 'map' && expectedType !== 'set') {
             // If deep equality passes when referential identity fails,
             // but exclude map and set until review of their equality logic.
-            if (equals(received, expected, toStrictEqualTesters, true)) {
+            if (
+              equals(
+                received,
+                expected,
+                [...this.customTesters, ...toStrictEqualTesters],
+                true,
+              )
+            ) {
               deepEqualityName = 'toStrictEqual';
-            } else if (equals(received, expected, [iterableEquality])) {
+            } else if (
+              equals(received, expected, [
+                ...this.customTesters,
+                iterableEquality,
+              ])
+            ) {
               deepEqualityName = 'toEqual';
             }
           }
@@ -108,11 +120,11 @@ const matchers: MatchersObject = {
             // eslint-disable-next-line prefer-template
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
-            (deepEqualityName !== null
-              ? `${DIM_COLOR(
+            (deepEqualityName === null
+              ? ''
+              : `${DIM_COLOR(
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
-                )}\n\n`
-              : '') +
+                )}\n\n`) +
             printDiffOrStringify(
               expected,
               received,
@@ -318,12 +330,12 @@ const matchers: MatchersObject = {
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`
-            : typeof received.constructor !== 'function'
-            ? `\nReceived value: ${printReceived(received)}`
-            : printReceivedConstructorName(
+            : typeof received.constructor === 'function'
+            ? printReceivedConstructorName(
                 'Received constructor',
                 received.constructor,
-              ));
+              )
+            : `\nReceived value: ${printReceived(received)}`);
 
     return {message, pass};
   },
@@ -540,7 +552,7 @@ const matchers: MatchersObject = {
         }` +
         (!isNot &&
         indexable.findIndex(item =>
-          equals(item, expected, [iterableEquality]),
+          equals(item, expected, [...this.customTesters, iterableEquality]),
         ) !== -1
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
           : '')
@@ -570,7 +582,7 @@ const matchers: MatchersObject = {
     }
 
     const index = Array.from(received).findIndex(item =>
-      equals(item, expected, [iterableEquality]),
+      equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;
 
@@ -605,7 +617,10 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, [iterableEquality]);
+    const pass = equals(received, expected, [
+      ...this.customTesters,
+      iterableEquality,
+    ]);
 
     const message = pass
       ? () =>
@@ -613,9 +628,9 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `Received:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
@@ -748,7 +763,10 @@ const matchers: MatchersObject = {
 
     const pass =
       hasValue && endPropIsDefined
-        ? equals(value, expectedValue, [iterableEquality])
+        ? equals(value, expectedValue, [
+            ...this.customTesters,
+            iterableEquality,
+          ])
         : Boolean(hasEndProp);
 
     const message = pass
@@ -759,9 +777,9 @@ const matchers: MatchersObject = {
           (hasValue
             ? `Expected path: ${printExpected(expectedPath)}\n\n` +
               `Expected value: not ${printExpected(expectedValue)}${
-                stringify(expectedValue) !== stringify(receivedValue)
-                  ? `\nReceived value:     ${printReceived(receivedValue)}`
-                  : ''
+                stringify(expectedValue) === stringify(receivedValue)
+                  ? ''
+                  : `\nReceived value:     ${printReceived(receivedValue)}`
               }`
             : `Expected path: not ${printExpected(expectedPath)}\n\n` +
               `Received value: ${printReceived(receivedValue)}`)
@@ -896,7 +914,11 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = equals(received, expected, [iterableEquality, subsetEquality]);
+    const pass = equals(received, expected, [
+      ...this.customTesters,
+      iterableEquality,
+      subsetEquality,
+    ]);
 
     const message = pass
       ? () =>
@@ -904,16 +926,16 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}` +
-          (stringify(expected) !== stringify(received)
-            ? `\nReceived:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `\nReceived:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printDiffOrStringify(
             expected,
-            getObjectSubset(received, expected),
+            getObjectSubset(received, expected, this.customTesters),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
@@ -930,7 +952,12 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, toStrictEqualTesters, true);
+    const pass = equals(
+      received,
+      expected,
+      [...this.customTesters, ...toStrictEqualTesters],
+      true,
+    );
 
     const message = pass
       ? () =>
@@ -938,9 +965,9 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `Received:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +

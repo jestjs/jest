@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -50,14 +50,14 @@ const formatNodeAssertErrors = (
 
         if (originalError == null) {
           error = asyncError;
-        } else if (!originalError.stack) {
+        } else if (originalError.stack) {
+          error = originalError;
+        } else {
           error = asyncError;
 
           error.message = originalError.message
             ? originalError.message
             : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
-        } else {
-          error = originalError;
         }
       } else {
         error = errors;
@@ -150,6 +150,14 @@ function assertionErrorMessage(
   }
 
   if (operatorName === 'throws') {
+    if (error.generatedMessage) {
+      return (
+        buildHintString(assertThrowingMatcherHint(operatorName)) +
+        chalk.reset(error.message) +
+        chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        trimmedStack
+      );
+    }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset('Expected the function to throw an error.\n') +

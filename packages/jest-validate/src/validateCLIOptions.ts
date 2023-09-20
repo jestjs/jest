@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,10 +9,17 @@ import camelcase = require('camelcase');
 import chalk = require('chalk');
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
-import defaultConfig from './defaultConfig';
-import {deprecationWarning} from './deprecated';
-import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';
-import {ValidationError, createDidYouMeanMessage, format} from './utils';
+import type {
+  DeprecatedOptionFunc,
+  DeprecatedOptions,
+  DeprecationItem,
+} from './types';
+import {
+  ValidationError,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+} from './utils';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
@@ -48,51 +55,45 @@ const createCLIValidationError = (
   return new ValidationError(title, message, comment);
 };
 
-const logDeprecatedOptions = (
-  deprecatedOptions: Array<string>,
+const validateDeprecatedOptions = (
+  deprecatedOptions: Array<DeprecationItem>,
   deprecationEntries: DeprecatedOptions,
   argv: Config.Argv,
 ) => {
-  deprecatedOptions.forEach(opt => {
-    deprecationWarning(argv, opt, deprecationEntries, {
-      ...defaultConfig,
-      comment: DOCUMENTATION_NOTE,
-    });
-  });
+  for (const opt of deprecatedOptions) {
+    const name = opt.name;
+    const message = deprecationEntries[name](argv);
+    const comment = DOCUMENTATION_NOTE;
+
+    if (opt.fatal) {
+      throw new ValidationError(name, message, comment);
+    } else {
+      logValidationWarning(name, message, comment);
+    }
+  }
 };
 
 export default function validateCLIOptions(
   argv: Config.Argv,
-  options: {
-    deprecationEntries: DeprecatedOptions;
-    [s: string]: Options;
-  },
+  options: Record<string, Options> & {
+    deprecationEntries?: DeprecatedOptions;
+  } = {},
   rawArgv: Array<string> = [],
 ): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const deprecationEntries = options.deprecationEntries || {};
+
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) =>
       acc.add(option).add((options[option].alias as string) || option),
     new Set(yargsSpecialOptions),
   );
-  const unrecognizedOptions = Object.keys(argv).filter(
-    arg =>
-      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
-      !allowedOptions.has(arg) &&
-      (!rawArgv.length || rawArgv.includes(arg)),
-    [],
-  );
 
-  if (unrecognizedOptions.length) {
-    throw createCLIValidationError(unrecognizedOptions, allowedOptions);
-  }
-
+  const deprecationEntries = options.deprecationEntries ?? {};
   const CLIDeprecations = Object.keys(deprecationEntries).reduce<
     Record<string, DeprecatedOptionFunc>
   >((acc, entry) => {
+    acc[entry] = deprecationEntries[entry];
     if (options[entry]) {
-      acc[entry] = deprecationEntries[entry];
       const alias = options[entry].alias as string;
       if (alias) {
         acc[alias] = deprecationEntries[entry];
@@ -101,12 +102,24 @@ export default function validateCLIOptions(
     return acc;
   }, {});
   const deprecations = new Set(Object.keys(CLIDeprecations));
-  const deprecatedOptions = Object.keys(argv).filter(
-    arg => deprecations.has(arg) && argv[arg] != null,
+  const deprecatedOptions = Object.keys(argv)
+    .filter(arg => deprecations.has(arg) && argv[arg] != null)
+    .map(arg => ({fatal: !allowedOptions.has(arg), name: arg}));
+
+  if (deprecatedOptions.length > 0) {
+    validateDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
+  }
+
+  const unrecognizedOptions = Object.keys(argv).filter(
+    arg =>
+      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
+      !allowedOptions.has(arg) &&
+      (rawArgv.length === 0 || rawArgv.includes(arg)),
+    [],
   );
 
-  if (deprecatedOptions.length) {
-    logDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
+  if (unrecognizedOptions.length > 0) {
+    throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 
   return true;

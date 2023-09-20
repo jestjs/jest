@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
  * Sample React Native App
@@ -6,9 +6,9 @@
  * @flow
  */
 
-import Intro from './Intro';
 import React, {Component} from 'react';
 import {AppRegistry} from 'react-native';
+import Intro from './Intro';
 
 class App extends Component<{}> {
   render() {

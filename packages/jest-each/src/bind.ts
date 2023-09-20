@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,17 +26,21 @@ type GlobalCallback = (
   testName: string,
   fn: Global.ConcurrentTestFn,
   timeout?: number,
+  eachError?: Error,
 ) => void;
 
 export default function bind<EachCallback extends Global.TestCallback>(
   cb: GlobalCallback,
   supportsDone = true,
-) {
-  return (
+  needsEachError = false,
+): Global.EachTestFn<any> {
+  const bindWrap = (
     table: Global.EachTable,
     ...taggedTemplateData: Global.TemplateData
-  ) =>
-    function eachBind(
+  ) => {
+    const error = new ErrorWithStack(undefined, bindWrap);
+
+    return function eachBind(
       title: Global.BlockNameLike,
       test: Global.EachTestFn<EachCallback>,
       timeout?: number,
@@ -47,20 +51,33 @@ export default function bind<EachCallback extends Global.TestCallback>(
           ? buildArrayTests(title, table)
           : buildTemplateTests(title, table, taggedTemplateData);
 
-        return tests.forEach(row =>
-          cb(
-            row.title,
-            applyArguments(supportsDone, row.arguments, test),
-            timeout,
-          ),
-        );
+        for (const row of tests) {
+          needsEachError
+            ? cb(
+                row.title,
+                applyArguments(supportsDone, row.arguments, test),
+                timeout,
+                error,
+              )
+            : cb(
+                row.title,
+                applyArguments(supportsDone, row.arguments, test),
+                timeout,
+              );
+        }
+
+        return;
       } catch (e: any) {
-        const error = new ErrorWithStack(e.message, eachBind);
+        const err = new Error(e.message);
+        err.stack = error.stack?.replace(/^Error: /s, `Error: ${e.message}`);
+
         return cb(title, () => {
-          throw error;
+          throw err;
         });
       }
     };
+  };
+  return bindWrap;
 }
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;

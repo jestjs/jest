@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,7 +20,7 @@ export const serialize: NewPlugin['serialize'] = (
   const nameString = name === 'jest.fn()' ? '' : ` ${name}`;
 
   let callsString = '';
-  if (val.mock.calls.length !== 0) {
+  if (val.mock.calls.length > 0) {
     const indentationNext = indentation + config.indent;
     callsString = ` {${config.spacingOuter}${indentationNext}"calls": ${printer(
       val.mock.calls,

@@ -1,15 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
+import {TLSSocket} from 'tls';
 import zlib from 'zlib';
 import collectHandles from '../collectHandles';
 
@@ -30,22 +31,27 @@ describe('collectHandles', () => {
 
   it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
-    const obs = new PerformanceObserver((list, observer) => {});
+
+    let obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
+    obs.disconnect();
+    obs = null;
 
     const openHandles = await handleCollector();
 
     expect(openHandles).not.toContainEqual(
       expect.objectContaining({message: 'PerformanceObserver'}),
     );
-    obs.disconnect();
   });
 
   it('should not collect the DNSCHANNEL open handle', async () => {
     const handleCollector = collectHandles();
 
-    const resolver = new dns.Resolver();
+    let resolver = new dns.Resolver();
     resolver.getServers();
+
+    // We must drop references to it
+    resolver = null;
 
     const openHandles = await handleCollector();
 
@@ -133,5 +139,16 @@ describe('collectHandles', () => {
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),
     );
+  });
+
+  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+    const handleCollector = collectHandles();
+
+    const socket = new TLSSocket();
+    socket.destroy();
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).toHaveLength(0);
   });
 });

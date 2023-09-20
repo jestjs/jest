@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -142,13 +142,13 @@ const testLength = n => {
 
   writeHeading3(n);
 
-  [2, 4, 8].forEach(tenth => {
+  for (const tenth of [2, 4, 8]) {
     testDeleteInsert(
       tenth,
       all,
       getItems(n, i => i % 10 >= tenth && `${i}`),
     );
-  });
+  }
   testChange(
     1,
     all,

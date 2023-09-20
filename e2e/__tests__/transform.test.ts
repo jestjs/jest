@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,7 @@ import runJest, {json as runWithJson} from '../runJest';
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
-  beforeEach(() => {
+  beforeAll(() => {
     runYarnInstall(dir);
   });
 
@@ -199,9 +199,9 @@ describe('transformer caching', () => {
     const loggedFiles = stdout.split('\n');
 
     // Verify any lines logged are _just_ the file we care about
-    loggedFiles.forEach(line => {
+    for (const line of loggedFiles) {
       expect(line).toBe(transformedFile);
-    });
+    }
 
     // We run with 2 workers, so the file should be transformed twice
     expect(loggedFiles).toHaveLength(2);
@@ -270,6 +270,7 @@ describe('transform-testrunner', () => {
   const dir = path.resolve(__dirname, '../transform/transform-testrunner');
 
   it('should transform testRunner', () => {
+    runYarnInstall(dir);
     const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/PASS/);
     expect(json.success).toBe(true);
@@ -333,6 +334,7 @@ describe('transform-esm-runner', () => {
 
 describe('transform-esm-testrunner', () => {
   const dir = path.resolve(__dirname, '../transform/transform-esm-testrunner');
+  runYarnInstall(dir);
   test('runs test with native ESM', () => {
     const {json, stderr} = runWithJson(dir, ['--no-cache'], {
       nodeOptions: '--experimental-vm-modules --no-warnings',

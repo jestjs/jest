@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,7 +31,10 @@ import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
-import VALID_CONFIG from './ValidConfig';
+import {
+  initialOptions as VALID_CONFIG,
+  initialProjectOptions as VALID_PROJECT_CONFIG,
+} from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
@@ -52,10 +55,13 @@ const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
-type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+
+// we wanna avoid webpack trying to be clever
+const requireResolve = (module: string) => require.resolve(module);
 
 function verifyDirectoryExists(path: string, key: string) {
   try {
@@ -108,8 +114,8 @@ const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
 ) => {
-  if (options['globals'] && preset['globals']) {
-    options['globals'] = merge(preset['globals'], options['globals']);
+  if (options.globals && preset.globals) {
+    options.globals = merge(preset.globals, options.globals);
   }
 };
 
@@ -213,7 +219,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    [customJSPattern, customTSPattern].forEach(pattern => {
+    for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
         if (Array.isArray(customTransformer)) {
@@ -232,7 +238,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
           }
         }
       }
-    });
+    }
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -252,7 +258,9 @@ const normalizeCollectCoverageFrom = (
     value = [];
   }
 
-  if (!Array.isArray(initialCollectCoverageFrom)) {
+  if (Array.isArray(initialCollectCoverageFrom)) {
+    value = initialCollectCoverageFrom;
+  } else {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
     } catch {}
@@ -260,8 +268,6 @@ const normalizeCollectCoverageFrom = (
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
-  } else {
-    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -301,7 +307,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -487,6 +493,7 @@ export default async function normalize(
   argv: Config.Argv,
   configPath?: string | null,
   projectIndex = Infinity,
+  isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
@@ -494,7 +501,7 @@ export default async function normalize(
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
-    exampleConfig: VALID_CONFIG,
+    exampleConfig: isProjectOptions ? VALID_PROJECT_CONFIG : VALID_CONFIG,
     recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
@@ -521,7 +528,7 @@ export default async function normalize(
   }
 
   options.testEnvironment = resolveTestEnvironment({
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
     testEnvironment:
       options.testEnvironment ||
@@ -663,7 +670,7 @@ export default async function normalize(
             option &&
             resolveRunner(newOptions.resolver, {
               filePath: option,
-              requireResolveFunction: require.resolve,
+              requireResolveFunction: requireResolve,
               rootDir: options.rootDir,
             });
         }
@@ -755,7 +762,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],
@@ -908,8 +915,10 @@ export default async function normalize(
       case 'notifyMode':
       case 'onlyChanged':
       case 'onlyFailures':
+      case 'openHandlesTimeout':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'randomize':
       case 'replname':
       case 'resetMocks':
       case 'resetModules':
@@ -918,6 +927,7 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
+      case 'showSeed':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
@@ -931,6 +941,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerThreads':
         value = oldOptions[key];
         break;
       case 'workerIdleMemoryLimit':
@@ -943,7 +954,7 @@ export default async function normalize(
               config: {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -952,7 +963,7 @@ export default async function normalize(
               config: watchPlugin[1] || {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -973,9 +984,9 @@ export default async function normalize(
     );
   }
 
-  newOptions.roots.forEach((root, i) => {
+  for (const [i, root] of newOptions.roots.entries()) {
     verifyDirectoryExists(root, `roots[${i}]`);
-  });
+  }
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
@@ -987,7 +998,7 @@ export default async function normalize(
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath:
       options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
   });
 
@@ -1019,6 +1030,27 @@ export default async function normalize(
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+  }
+
+  newOptions.randomize = newOptions.randomize || argv.randomize;
+
+  newOptions.showSeed =
+    newOptions.randomize || newOptions.showSeed || argv.showSeed;
+
+  const upperBoundSeedValue = 2 ** 31;
+
+  // bounds are determined by xoroshiro128plus which is used in v8 and is used here (at time of writing)
+  newOptions.seed =
+    argv.seed ??
+    Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
+  if (
+    newOptions.seed < -upperBoundSeedValue ||
+    newOptions.seed > upperBoundSeedValue - 1
+  ) {
+    throw new ValidationError(
+      'Validation Error',
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - instead it is ${newOptions.seed}`,
+    );
   }
 
   if (!newOptions.onlyChanged) {
@@ -1061,14 +1093,14 @@ export default async function normalize(
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
 
-  if (newOptions.testRegex!.length && options.testMatch) {
+  if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex!.length && !options.testMatch) {
+  if (newOptions.testRegex.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1101,7 +1133,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom!,
+            newOptions.collectCoverageFrom,
           ).length === 0
         ) {
           return patterns;

@@ -1,9 +1,9 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 'use strict';
 
-import Link from '../Link';
 import renderer from 'react-test-renderer';
+import Link from '../Link';
 
 it('renders correctly', () => {
   const tree = renderer

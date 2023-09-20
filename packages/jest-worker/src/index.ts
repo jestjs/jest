@@ -1,12 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {cpus} from 'os';
+import {
+  // @ts-expect-error - added in Node 19.4.0
+  availableParallelism,
+  cpus,
+} from 'os';
 import {isAbsolute} from 'path';
+import {fileURLToPath} from 'url';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -54,6 +59,12 @@ function getExposedMethods(
   return exposedMethods;
 }
 
+function getNumberOfCpus(): number {
+  return typeof availableParallelism === 'function'
+    ? availableParallelism()
+    : cpus().length;
+}
+
 /**
  * The Jest farm (publicly called "Worker") is a class that allows you to queue
  * methods across multiple child processes, in order to parallelize work. This
@@ -81,15 +92,21 @@ function getExposedMethods(
  */
 export class Worker {
   private _ending: boolean;
-  private _farm: Farm;
-  private _options: WorkerFarmOptions;
-  private _workerPool: WorkerPoolInterface;
+  private readonly _farm: Farm;
+  private readonly _options: WorkerFarmOptions;
+  private readonly _workerPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: WorkerFarmOptions) {
+  constructor(workerPath: string | URL, options?: WorkerFarmOptions) {
     this._options = {...options};
     this._ending = false;
 
-    if (!isAbsolute(workerPath)) {
+    if (typeof workerPath !== 'string') {
+      workerPath = workerPath.href;
+    }
+
+    if (workerPath.startsWith('file:')) {
+      workerPath = fileURLToPath(workerPath);
+    } else if (!isAbsolute(workerPath)) {
       throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
     }
 
@@ -98,7 +115,8 @@ export class Worker {
       forkOptions: this._options.forkOptions ?? {},
       idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
-      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      numWorkers:
+        this._options.numWorkers ?? Math.max(getNumberOfCpus() - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
     };
@@ -129,9 +147,9 @@ export class Worker {
     workerPath: string,
     options: WorkerFarmOptions,
   ): void {
-    getExposedMethods(workerPath, options).forEach(name => {
+    for (const name of getExposedMethods(workerPath, options)) {
       if (name.startsWith('_')) {
-        return;
+        continue;
       }
 
       // eslint-disable-next-line no-prototype-builtins
@@ -141,7 +159,7 @@ export class Worker {
 
       // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
-    });
+    }
   }
 
   private _callFunctionWithArgs(
@@ -161,6 +179,10 @@ export class Worker {
 
   getStdout(): NodeJS.ReadableStream {
     return this._workerPool.getStdout();
+  }
+
+  async start(): Promise<void> {
+    await this._workerPool.start();
   }
 
   async end(): Promise<PoolExitResult> {

@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // needed for WebAssembly, see https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/826
+    "lib": ["dom"],
     "rootDir": "src",
     "outDir": "build"
   },
@@ -21,7 +23,6 @@
     {"path": "../jest-test-result"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-util"}
   ]
 }

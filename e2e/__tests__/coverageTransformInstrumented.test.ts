@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,11 +27,11 @@ it('code coverage for transform instrumented code', () => {
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
 
   // reduce absolute paths embedded in the coverage map to just filenames
-  Object.keys(coverageMap).forEach(filename => {
+  for (const filename of Object.keys(coverageMap)) {
     coverageMap[filename].path = path.basename(coverageMap[filename].path);
     delete coverageMap[filename].hash;
     coverageMap[path.basename(filename)] = coverageMap[filename];
     delete coverageMap[filename];
-  });
+  }
   expect(coverageMap).toMatchSnapshot();
 });

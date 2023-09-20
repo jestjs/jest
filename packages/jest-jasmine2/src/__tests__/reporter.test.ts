@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import {SpecResult} from '../jasmine/Spec';
-import {SuiteResult} from '../jasmine/Suite';
+import type {SpecResult} from '../jasmine/Spec';
+import type {SuiteResult} from '../jasmine/Suite';
 import JasmineReporter from '../reporter';
 
 describe('Jasmine2Reporter', () => {
@@ -24,7 +24,7 @@ describe('Jasmine2Reporter', () => {
         description: 'description',
         failedExpectations: [],
         fullName: name,
-      } as SpecResult);
+      } as any as SpecResult);
     reporter.suiteStarted({description: 'parent'} as SuiteResult);
     reporter.suiteStarted({description: 'child'} as SuiteResult);
     reporter.specDone(makeSpec('spec 1'));

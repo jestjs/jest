@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,7 +10,7 @@
  */
 
 import {execSync} from 'child_process';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import chokidar from 'chokidar';
@@ -72,7 +72,7 @@ chokidar
 
 setInterval(() => {
   const files = Array.from(filesToBuild.keys());
-  if (files.length) {
+  if (files.length > 0) {
     filesToBuild = new Map();
     try {
       execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});

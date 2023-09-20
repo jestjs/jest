@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,6 +26,10 @@ type Win = Window &
     };
   };
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
 export default class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
@@ -34,6 +38,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
+  private readonly _configuredExportConditions?: Array<string>;
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -62,27 +67,26 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         ...projectConfig.testEnvironmentOptions,
       },
     );
-    const global = (this.global = this.dom.window.document
-      .defaultView as unknown as Win);
+    const global = (this.global = this.dom.window as unknown as Win);
 
-    if (!global) {
+    if (global == null) {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // for "universal" code (code should use `globalThis`)
-    global.global = global as any;
+    // TODO: remove at some point - for "universal" code (code should use `globalThis`)
+    global.global = global;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global as any, projectConfig.globals);
+    installCommonGlobals(global, projectConfig.globals);
 
     // TODO: remove this ASAP, but it currently causes tests to run really slow
     global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
-      if (userErrorListenerCount === 0 && event.error) {
+      if (userErrorListenerCount === 0 && event.error != null) {
         process.emit('uncaughtException', event.error);
       }
     };
@@ -90,8 +94,8 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     // However, don't report them as uncaught if the user listens to 'error' event.
     // In that case, we assume the might have custom error handling logic.
-    const originalAddListener = global.addEventListener;
-    const originalRemoveListener = global.removeEventListener;
+    const originalAddListener = global.addEventListener.bind(global);
+    const originalRemoveListener = global.removeEventListener.bind(global);
     let userErrorListenerCount = 0;
     global.addEventListener = function (
       ...args: Parameters<typeof originalAddListener>
@@ -114,9 +118,9 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(item => typeof item === 'string')
+        customExportConditions.every(isString)
       ) {
-        this.customExportConditions = customExportConditions;
+        this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
           'Custom export conditions specified but they are not an array of strings',
@@ -124,7 +128,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       }
     }
 
-    this.moduleMocker = new ModuleMocker(global as any);
+    this.moduleMocker = new ModuleMocker(global);
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
@@ -152,18 +156,11 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     if (this.fakeTimersModern) {
       this.fakeTimersModern.dispose();
     }
-    if (this.global) {
+    if (this.global != null) {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       this.global.close();
-
-      // Dispose "document" to prevent "load" event from triggering.
-
-      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
-      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
-      // document should be accessible within disconnectedCallback.
-      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error: this.global not allowed to be `null`
@@ -174,7 +171,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   }
 
   exportConditions(): Array<string> {
-    return this.customExportConditions;
+    return this._configuredExportConditions ?? this.customExportConditions;
   }
 
   getVmContext(): Context | null {

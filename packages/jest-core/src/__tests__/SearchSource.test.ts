@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,9 +17,9 @@ import type {Filter} from '../types';
 jest.setTimeout(15000);
 
 jest.mock('graceful-fs', () => {
-  const realFs = jest.requireActual('fs');
+  const realFs = jest.requireActual<typeof import('fs')>('fs');
 
-  return {
+  const mockedFs: typeof import('fs') = {
     ...realFs,
     statSync: path => {
       if (path === '/foo/bar/prefix') {
@@ -29,6 +29,8 @@ jest.mock('graceful-fs', () => {
       return realFs.statSync(path);
     },
   };
+
+  return mockedFs;
 });
 
 const rootDir = path.resolve(__dirname, 'test_root');
@@ -54,7 +56,7 @@ const initSearchSource = async (
       .spyOn(context.hasteFS, 'getAllFiles')
       .mockReturnValue(options.contextFiles);
   }
-  return new SearchSource(context);
+  return {config, searchSource: new SearchSource(context)};
 };
 
 describe('SearchSource', () => {
@@ -63,11 +65,11 @@ describe('SearchSource', () => {
 
   describe('isTestFilePath', () => {
     beforeEach(async () => {
-      searchSource = await initSearchSource({
+      ({searchSource} = await initSearchSource({
         id,
         rootDir: '.',
         roots: [],
-      });
+      }));
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
@@ -76,7 +78,7 @@ describe('SearchSource', () => {
       if (process.platform === 'win32') {
         return;
       }
-      const searchSource = await initSearchSource({
+      const {searchSource} = await initSearchSource({
         id,
         rootDir: '.',
         roots: [],
@@ -85,20 +87,20 @@ describe('SearchSource', () => {
       });
 
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      expect(searchSource.isTestFilePath(path)).toEqual(true);
+      expect(searchSource.isTestFilePath(path)).toBe(true);
     });
 
     it('supports unix separators', () => {
       if (process.platform !== 'win32') {
         const path = '/path/to/__tests__/test.js';
-        expect(searchSource.isTestFilePath(path)).toEqual(true);
+        expect(searchSource.isTestFilePath(path)).toBe(true);
       }
     });
 
     it('supports win32 separators', () => {
       if (process.platform === 'win32') {
         const path = '\\path\\to\\__tests__\\test.js';
-        expect(searchSource.isTestFilePath(path)).toEqual(true);
+        expect(searchSource.isTestFilePath(path)).toBe(true);
       }
     });
   });
@@ -108,9 +110,10 @@ describe('SearchSource', () => {
       initialOptions: Config.InitialOptions,
       filter?: Filter,
     ) => {
-      const searchSource = await initSearchSource(initialOptions);
+      const {searchSource, config} = await initSearchSource(initialOptions);
       const {tests: paths} = await searchSource.getTestPaths(
         {
+        ...config,
           testPathPattern: '',
         },
         null,
@@ -317,7 +320,7 @@ describe('SearchSource', () => {
 
   describe('filterPathsWin32', () => {
     beforeEach(async () => {
-      searchSource = await initSearchSource(
+      ({searchSource} = await initSearchSource(
         {
           id,
           rootDir: '.',
@@ -332,7 +335,7 @@ describe('SearchSource', () => {
             path.resolve('packages/programs (x86)/my-program.ts'),
           ],
         },
-      );
+      ));
     });
 
     it('should allow a simple match', async () => {
@@ -397,7 +400,7 @@ describe('SearchSource', () => {
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(async () => {
-      searchSource = await initSearchSource({
+      ({searchSource} = await initSearchSource({
         haste: {
           hasteImplModulePath: path.join(
             __dirname,
@@ -412,7 +415,7 @@ describe('SearchSource', () => {
         },
         id: 'SearchSource-findRelatedTests-tests',
         rootDir,
-      });
+      }));
     });
 
     it('makes sure a file is related to itself', async () => {
@@ -456,12 +459,12 @@ describe('SearchSource', () => {
 
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(async () => {
-      searchSource = await initSearchSource({
+      ({searchSource} = await initSearchSource({
         id,
         moduleFileExtensions: ['js', 'jsx', 'foobar'],
         rootDir,
         testMatch,
-      });
+      }));
     });
 
     it('returns empty search result for empty input', async () => {
@@ -508,11 +511,11 @@ describe('SearchSource', () => {
       if (process.platform === 'win32') {
         return;
       }
-      searchSource = await initSearchSource({
+      ({searchSource} = await initSearchSource({
         id,
         rootDir: '.',
         roots: ['/foo/bar/prefix'],
-      });
+      }));
 
       const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
       const data = searchSource.findTestsByPaths(input);
@@ -527,7 +530,7 @@ describe('SearchSource', () => {
     );
 
     beforeEach(async () => {
-      searchSource = await initSearchSource({
+      ({searchSource} = await initSearchSource({
         haste: {
           hasteImplModulePath: path.resolve(
             __dirname,
@@ -536,7 +539,7 @@ describe('SearchSource', () => {
         },
         id: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
         rootDir,
-      });
+      }));
     });
 
     it('return empty set if no SCM', async () => {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,14 +19,14 @@ type AvailableHooks =
   | 'shouldRunTestSuite';
 
 class JestHooks {
-  private _listeners: {
+  private readonly _listeners: {
     onFileChange: Array<FileChange>;
     onTestRunComplete: Array<TestRunComplete>;
     shouldRunTestSuite: Array<ShouldRunTestSuite>;
   };
 
-  private _subscriber: JestHookSubscriber;
-  private _emitter: JestHookEmitter;
+  private readonly _subscriber: JestHookSubscriber;
+  private readonly _emitter: JestHookEmitter;
 
   constructor() {
     this._listeners = {
@@ -48,12 +48,13 @@ class JestHooks {
     };
 
     this._emitter = {
-      onFileChange: fs =>
-        this._listeners.onFileChange.forEach(listener => listener(fs)),
-      onTestRunComplete: results =>
-        this._listeners.onTestRunComplete.forEach(listener =>
-          listener(results),
-        ),
+      onFileChange: fs => {
+        for (const listener of this._listeners.onFileChange) listener(fs);
+      },
+      onTestRunComplete: results => {
+        for (const listener of this._listeners.onTestRunComplete)
+          listener(results);
+      },
       shouldRunTestSuite: async testSuiteInfo => {
         const result = await Promise.all(
           this._listeners.shouldRunTestSuite.map(listener =>

@@ -1,15 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
+import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
-import {ErrorWithStack, formatTime} from 'jest-util';
+import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -19,7 +19,7 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer = [];
+  private readonly _buffer: ConsoleBuffer = [];
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
@@ -29,7 +29,7 @@ export default class BufferedConsole extends Console {
   constructor() {
     super({
       write: (message: string) => {
-        BufferedConsole.write(this._buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message);
 
         return true;
       },
@@ -37,15 +37,15 @@ export default class BufferedConsole extends Console {
   }
 
   static write(
+    this: void,
     buffer: ConsoleBuffer,
     type: LogType,
     message: LogMessage,
-    level?: number | null,
+    stackLevel = 2,
   ): ConsoleBuffer {
-    const stackLevel = level != null ? level : 2;
     const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
-    invariant(rawStack, 'always have a stack trace');
+    invariant(rawStack != null, 'always have a stack trace');
 
     const origin = rawStack
       .split('\n')
@@ -74,8 +74,12 @@ export default class BufferedConsole extends Console {
   override assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
-    } catch (error: any) {
-      this._log('assert', error.toString());
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._log('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 
@@ -111,7 +115,7 @@ export default class BufferedConsole extends Console {
   override group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('group', chalk.bold(format(title, ...rest)));
     }
   }
@@ -119,7 +123,7 @@ export default class BufferedConsole extends Console {
   override groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...rest)));
     }
   }
@@ -139,7 +143,7 @@ export default class BufferedConsole extends Console {
   }
 
   override time(label = 'default'): void {
-    if (this._timers[label]) {
+    if (this._timers[label] != null) {
       return;
     }
 
@@ -149,7 +153,7 @@ export default class BufferedConsole extends Console {
   override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
@@ -160,7 +164,7 @@ export default class BufferedConsole extends Console {
   override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
@@ -172,12 +176,6 @@ export default class BufferedConsole extends Console {
   }
 
   getBuffer(): ConsoleBuffer | undefined {
-    return this._buffer.length ? this._buffer : undefined;
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
+    return this._buffer.length > 0 ? this._buffer : undefined;
   }
 }
