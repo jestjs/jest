@@ -6482,7 +6482,7 @@ __metadata:
     graceful-fs: ^4.2.9
     slash: ^3.0.0
   peerDependencies:
-    "@babel/core": ^7.8.0
+    "@babel/core": ^7.11.0
   languageName: unknown
   linkType: soft
 
@@ -6697,7 +6697,7 @@ __metadata:
     babel-plugin-jest-hoist: "workspace:^"
     babel-preset-current-node-syntax: ^1.0.0
   peerDependencies:
-    "@babel/core": ^7.0.0
+    "@babel/core": ^7.11.0
   languageName: unknown
   linkType: soft
 
