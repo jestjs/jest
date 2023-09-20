@@ -12,6 +12,7 @@
 ### Fixes
 
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
+- `[pretty-format]` [**BREAKING**] Print `ArrayBuffer` and `DataView` correctly ([#14290](https://github.com/facebook/jest/pull/14290))
 
 ### Performance
 
