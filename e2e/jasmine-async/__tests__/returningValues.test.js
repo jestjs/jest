@@ -8,7 +8,7 @@
 'use strict';
 
 describe('returning values', () => {
-  [
+  for (const val of [
     1,
     'string',
     0.1,
@@ -20,7 +20,7 @@ describe('returning values', () => {
     [1],
     {},
     () => {},
-  ].forEach(val => {
+  ]) {
     it(`throws if '${val}:${typeof val}' is returned`, () => val);
-  });
+  }
 });

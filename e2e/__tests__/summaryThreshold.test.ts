@@ -7,7 +7,7 @@
 
 import runJest from '../runJest';
 
-['default', 'summary'].forEach(reporter => {
+for (const reporter of ['default', 'summary']) {
   describe(`${reporter} reporter`, () => {
     test('prints failure messages when total number of test suites is over summaryThreshold', () => {
       const {exitCode, stderr} = runJest('summary-threshold', [
@@ -26,4 +26,4 @@ import runJest from '../runJest';
       );
     });
   });
-});
+}

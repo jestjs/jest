@@ -61,9 +61,9 @@ export default function getSnapshotStatus(
       );
     }
 
-    snapshot.uncheckedKeys.forEach(key => {
+    for (const key of snapshot.uncheckedKeys) {
       statuses.push(`  ${DOT}${key}`);
-    });
+    }
   }
 
   if (snapshot.fileDeleted) {

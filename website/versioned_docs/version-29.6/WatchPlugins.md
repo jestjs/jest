@@ -140,7 +140,7 @@ If the key for your plugin already exists as a default key, your plugin will ove
 
 To handle key press events from the key returned by `getUsageInfo`, you can implement the `run` method. This method returns a `Promise<boolean>` that can be resolved when the plugin wants to return control to Jest. The `boolean` specifies if Jest should rerun the tests after it gets the control back.
 
-- [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422): A representation of Jest's current global configuration
+- [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422): A representation of Jest's current global configuration
 - `updateConfigAndRun`: Allows you to trigger a test run while the interactive plugin is running.
 
 ```javascript

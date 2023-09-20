@@ -27,11 +27,11 @@ it('maps code coverage against original source', () => {
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
 
   // reduce absolute paths embedded in the coverage map to just filenames
-  Object.keys(coverageMap).forEach(filename => {
+  for (const filename of Object.keys(coverageMap)) {
     coverageMap[filename].path = path.basename(coverageMap[filename].path);
     delete coverageMap[filename].hash;
     coverageMap[path.basename(filename)] = coverageMap[filename];
     delete coverageMap[filename];
-  });
+  }
   expect(coverageMap).toMatchSnapshot();
 });

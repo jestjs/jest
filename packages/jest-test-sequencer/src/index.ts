@@ -10,13 +10,21 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
 
+export type TestSequencerOptions = {
+  contexts: ReadonlyArray<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
+
 type Cache = {
-  [key: string]: [0 | 1, number] | undefined;
+  [key: string]:
+    | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
+    | undefined;
 };
 
 export type ShardOptions = {
@@ -42,7 +50,10 @@ type ShardPositionOptions = ShardOptions & {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private readonly _cache: Map<TestContext, Cache> = new Map();
+  private readonly _cache = new Map<TestContext, Cache>();
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-useless-constructor
+  constructor(_options: TestSequencerOptions) {}
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;
@@ -183,15 +194,15 @@ export default class TestSequencer {
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
 
-    tests.forEach(test => {
+    for (const test of tests) {
       test.duration = this.time(test);
-    });
+    }
     return tests.sort((testA, testB) => {
       const failedA = this.hasFailed(testA);
       const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
-        return failedA === true ? -1 : 1;
+        return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
@@ -204,31 +215,28 @@ export default class TestSequencer {
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
     const map = Object.create(null) as Record<string, Test | undefined>;
-    tests.forEach(test => (map[test.path] = test));
-    results.testResults.forEach(testResult => {
+    for (const test of tests) map[test.path] = test;
+    for (const testResult of results.testResults) {
       const test = map[testResult.testFilePath];
       if (test != null && !testResult.skipped) {
         const cache = this._getCache(test);
         const perf = testResult.perfStats;
+        const testRuntime =
+          perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.runtime || 0,
+          testResult.numFailingTests > 0 ? FAIL : SUCCESS,
+          testRuntime || 0,
         ];
       }
-    });
+    }
 
-    this._cache.forEach((cache, context) =>
-      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)),
-    );
+    for (const [context, cache] of this._cache.entries())
+      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache));
   }
 
   private hasFailed(test: Test) {

@@ -18,10 +18,10 @@ import {
 // return flattened array of children.
 const getChildren = (arg: unknown, children: Array<unknown> = []) => {
   if (Array.isArray(arg)) {
-    arg.forEach(item => {
+    for (const item of arg) {
       getChildren(item, children);
-    });
-  } else if (arg != null && arg !== false) {
+    }
+  } else if (arg != null && arg !== false && arg !== '') {
     children.push(arg);
   }
   return children;
@@ -58,14 +58,14 @@ const getType = (element: any) => {
 
       const functionName = type.render.displayName || type.render.name || '';
 
-      return functionName !== '' ? `ForwardRef(${functionName})` : 'ForwardRef';
+      return functionName === '' ? 'ForwardRef' : `ForwardRef(${functionName})`;
     }
 
     if (ReactIs.isMemo(element)) {
       const functionName =
         type.displayName || type.type.displayName || type.type.name || '';
 
-      return functionName !== '' ? `Memo(${functionName})` : 'Memo';
+      return functionName === '' ? 'Memo' : `Memo(${functionName})`;
     }
   }
   return 'UNDEFINED';
