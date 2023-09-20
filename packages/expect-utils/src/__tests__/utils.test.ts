@@ -571,4 +571,16 @@ describe('arrayBufferEquality', () => {
     const b = Uint8Array.from([1, 2]).buffer;
     expect(arrayBufferEquality(a, b)).toBeTruthy();
   });
+
+  test('returns true when given matching DataView', () => {
+    const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    const b = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    expect(arrayBufferEquality(a, b)).toBeTruthy();
+  });
+
+  test('returns false when given matching DataView', () => {
+    const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    const b = new DataView(Uint8Array.from([3, 2, 1]).buffer);
+    expect(arrayBufferEquality(a, b)).toBeFalsy();
+  });
 });
