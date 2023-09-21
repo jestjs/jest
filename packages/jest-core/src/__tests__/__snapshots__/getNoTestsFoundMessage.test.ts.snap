@@ -23,7 +23,7 @@ Object {
 Run with \`--passWithNoTests\` to exit with code 0
 In <bold>/root/dir</intensity>
   0 files checked across 0 projects. Run with \`--verbose\` for more details.
-Pattern: <yellow>/path/pattern</color> - 0 matches",
+Pattern: <yellow>/\\/path\\/pattern/i</color> - 0 matches",
 }
 `;
 
@@ -47,7 +47,7 @@ Object {
   "message": "<bold>No tests found, exiting with code 1</intensity>
 Run with \`--passWithNoTests\` to exit with code 0
 
-Pattern: <yellow>/path/pattern</color> - 0 matches",
+Pattern: <yellow>/\\/path\\/pattern/i</color> - 0 matches",
 }
 `;
 
@@ -58,6 +58,6 @@ Object {
 Run with \`--passWithNoTests\` to exit with code 0
 In <bold>/root/dir</intensity>
   0 files checked across 0 projects. Run with \`--verbose\` for more details.
-Pattern: <yellow>/path/pattern</color> - 0 matches",
+Pattern: <yellow>/\\/path\\/pattern/i</color> - 0 matches",
 }
 `;

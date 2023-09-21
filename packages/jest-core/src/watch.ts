@@ -537,10 +537,11 @@ const usage = (
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {
+  const testPathPatterns = new TestPathPatterns(globalConfig);
   const messages = [
     activeFilters(globalConfig),
 
-    globalConfig.testPathPattern || globalConfig.testNamePattern
+    testPathPatterns.isSet() || globalConfig.testNamePattern
       ? `${chalk.dim(' \u203A Press ')}c${chalk.dim(' to clear filters.')}`
       : null,
     `\n${chalk.bold('Watch Usage')}`,
@@ -558,7 +559,7 @@ const usage = (
         )}`,
 
     (globalConfig.watchAll ||
-      globalConfig.testPathPattern ||
+      testPathPatterns.isSet() ||
       globalConfig.testNamePattern) &&
     !globalConfig.noSCM
       ? `${chalk.dim(' \u203A Press ')}o${chalk.dim(

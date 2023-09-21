@@ -155,7 +155,7 @@ test('"No tests found" message for projects', () => {
     'project1',
     'project2',
   ]);
-  expect(verboseOutput).toContain('Pattern: xyz321 - 0 matches');
+  expect(verboseOutput).toContain('Pattern: /xyz321/i - 0 matches');
   const {stdout} = runJest(DIR, [
     '--no-watchman',
     'xyz321',
