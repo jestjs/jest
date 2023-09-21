@@ -113,7 +113,7 @@ describe('SearchSource', () => {
       const {searchSource, config} = await initSearchSource(initialOptions);
       const {tests: paths} = await searchSource.getTestPaths(
         {
-        ...config,
+          ...config,
           testPathPattern: '',
         },
         null,
