@@ -198,7 +198,7 @@ Path to a module exporting a filtering function. This asynchronous function rece
 
 ```js title="my-filter.js"
 // This filter when applied will only run tests ending in .spec.js (not the best way to do it, but it's just an example):
-const filteringFunction = (testPath) => testPath.endsWith('.spec.js');
+const filteringFunction = testPath => testPath.endsWith('.spec.js');
 
 module.exports = testPaths => {
   const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
