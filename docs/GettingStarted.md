@@ -133,7 +133,7 @@ Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to
 
 ### Using ESLint
 
-Jest can be used with ESLint without any further configuration as long as you import the [Jest global helpers](https://jestjs.io/docs/api) (`describe`, `it`, etc.) from `@jest/globals`. This is necessary to avoid `no-undef` errors from ESLint, which doesn't know about the Jest globals. 
+Jest can be used with ESLint without any further configuration as long as you import the [Jest global helpers](https://jestjs.io/docs/api) (`describe`, `it`, etc.) from `@jest/globals` before using them. This is necessary to avoid `no-undef` errors from ESLint, which doesn't know about the Jest globals. 
 
 If you'd like to avoid these imports, you can configure your [ESLint environment](https://eslint.org/docs/latest/use/configure/language-options#specifying-environments) to support these globals by adding the `jest` environment:
 ```json5
