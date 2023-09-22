@@ -525,7 +525,7 @@ test.concurrent('subtraction 2 numbers', async () => {
 
 :::tip
 
-Use the [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
+Use the [`maxConcurrency`](Configuration.md#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
 
 :::
 
