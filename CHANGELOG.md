@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
+- `[jest-haste-map]` Ignore EPERM while watching on windows ([#14533](https://github.com/jestjs/jest/pull/14533))
 
 ### Performance
 
