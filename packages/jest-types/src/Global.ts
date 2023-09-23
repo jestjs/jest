@@ -66,7 +66,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is an array of tuples
   <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
     name: string | NameLike,
-    fn: (...args: T) => ReturnType<EachFn>,
+    fn: (...args: [...T]) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
