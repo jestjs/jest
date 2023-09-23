@@ -82,7 +82,9 @@ class ChangeBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      for (const [i, substring] of substrings.entries()) {
+      for (let i = 0; i < substrings.length; i++) {
+        const substring = substrings[i];
+
         if (i < iLast) {
           // The first substring completes the current change line.
           // A middle substring is a change line.
@@ -153,7 +155,9 @@ class CommonBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      for (const [i, substring] of substrings.entries()) {
+      for (let i = 0; i < substrings.length; i++) {
+        const substring = substrings[i];
+
         if (i === 0) {
           const subdiff = new Diff(op, substring);
           if (
