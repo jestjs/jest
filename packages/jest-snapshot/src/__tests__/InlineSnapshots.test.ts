@@ -17,15 +17,7 @@ jest.mock('prettier', () => {
   const realPrettier =
     jest.requireActual<typeof import('prettier-v2')>('prettier-v2');
   const mockPrettier = {
-    format: (text, opts) =>
-      realPrettier.format(text, {
-        pluginSearchDirs: [
-          (require('path') as typeof import('path')).dirname(
-            require.resolve('prettier-v2'),
-          ),
-        ],
-        ...opts,
-      }),
+    format: (text, opts) => realPrettier.format(text, opts),
     getFileInfo: {
       sync: () => ({ignored: false, inferredParser: 'babel'}),
     } as unknown as typeof prettier.getFileInfo,

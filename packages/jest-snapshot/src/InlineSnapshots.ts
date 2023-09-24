@@ -50,7 +50,9 @@ export function saveInlineSnapshots(
       cachedPrettier.set(`module|${prettierPath}`, prettier);
 
       if (semver.gte(prettier.version, '3.0.0')) {
-        workerFn = createSyncFn(require.resolve('./worker'));
+        workerFn = createSyncFn(
+          require.resolve(/*webpackIgnore: true*/ './worker'),
+        );
         cachedPrettier.set(`worker|${prettierPath}`, workerFn);
       }
     } catch (error) {

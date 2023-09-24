@@ -7,7 +7,13 @@
 
 import * as path from 'path';
 import type {ParseResult, PluginItem} from '@babel/core';
-import type {File, Node, Program, TraversalAncestors} from '@babel/types';
+import type {
+  File,
+  Node,
+  Program,
+  TemplateLiteral,
+  TraversalAncestors,
+} from '@babel/types';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
@@ -422,6 +428,7 @@ export const processPrettierAst = (
   ast: File,
   options: Record<string, any>,
   snapshotMatcherNames: Array<string>,
+  keepNode?: boolean,
 ): void => {
   traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
     if (node.type !== 'CallExpression') return;
@@ -468,15 +475,19 @@ export const processPrettierAst = (
       useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
     );
 
-    const replacementNode = templateLiteral(
-      [
-        templateElement({
-          raw: snapshot,
-        }),
-      ],
-      [],
-    );
-    args[snapshotIndex!] = replacementNode;
+    if (keepNode) {
+      (args[snapshotIndex!] as TemplateLiteral).quasis[0].value.raw = snapshot;
+    } else {
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex!] = replacementNode;
+    }
   });
 };
 
