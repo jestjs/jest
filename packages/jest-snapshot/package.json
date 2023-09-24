@@ -35,7 +35,7 @@
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
     "natural-compare": "^1.4.0",
-    "pretty-format": "workspace:^",
+    "pretty-format": "workspace:*",
     "semver": "^7.5.3",
     "synckit": "^0.8.5"
   },

@@ -426,7 +426,7 @@ export const processInlineSnapshotsWithBabel = (
 
 export const processPrettierAst = (
   ast: File,
-  options: Record<string, any>,
+  options: Record<string, any> | null,
   snapshotMatcherNames: Array<string>,
   keepNode?: boolean,
 ): void => {
@@ -463,16 +463,16 @@ export const processPrettierAst = (
         ? parent.loc.start.column
         : callee.loc.start.column;
 
-    const useSpaces = !options.useTabs;
+    const useSpaces = !options?.useTabs;
     snapshot = indent(
       snapshot,
       Math.ceil(
         useSpaces
-          ? startColumn / (options.tabWidth ?? 1)
+          ? startColumn / (options?.tabWidth ?? 1)
           : // Each tab is 2 characters.
             startColumn / 2,
       ),
-      useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
+      useSpaces ? ' '.repeat(options?.tabWidth ?? 1) : '\t',
     );
 
     if (keepNode) {

@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import {runAsWorker} from 'synckit';
 import {processPrettierAst} from './utils';
 
@@ -38,7 +45,7 @@ runAsWorker(
       originalText: sourceFileWithSnapshots,
       parser: inferredParser,
     });
-    processPrettierAst(ast, config!, snapshotMatcherNames, true);
+    processPrettierAst(ast, config, snapshotMatcherNames, true);
     // Snapshots have now been inserted. Run prettier to make sure that the code is
     // formatted, except snapshot indentation. Snapshots cannot be formatted until
     // after the initial format because we don't know where the call expression

@@ -13094,7 +13094,7 @@ __metadata:
     natural-compare: ^1.4.0
     prettier: ^3.0.3
     prettier-v2: "npm:prettier@^2.1.5"
-    pretty-format: "workspace:^"
+    pretty-format: "workspace:*"
     semver: ^7.5.3
     synckit: ^0.8.5
     tsd-lite: ^0.8.0
@@ -17346,7 +17346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@workspace:*, pretty-format@workspace:^, pretty-format@workspace:packages/pretty-format":
+"pretty-format@workspace:*, pretty-format@workspace:packages/pretty-format":
   version: 0.0.0-use.local
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
