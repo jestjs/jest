@@ -8,8 +8,8 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
-import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {SnapshotData, SnapshotFormat} from './types';
+import {saveInlineSnapshots} from './InlineSnapshots';
+import type {InlineSnapshot, SnapshotData, SnapshotFormat} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,

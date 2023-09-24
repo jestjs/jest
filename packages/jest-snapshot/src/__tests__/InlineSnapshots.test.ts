@@ -8,19 +8,20 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import prettier = require('prettier');
 import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
 
+const prettier = require('prettier') as typeof import('prettier-v2');
+
 jest.mock('prettier', () => {
   const realPrettier =
-    jest.requireActual<typeof import('prettier')>('prettier');
+    jest.requireActual<typeof import('prettier-v2')>('prettier-v2');
   const mockPrettier = {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
           (require('path') as typeof import('path')).dirname(
-            require.resolve('prettier'),
+            require.resolve('prettier-v2'),
           ),
         ],
         ...opts,
