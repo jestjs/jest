@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type {ParseResult, PluginItem} from '@babel/core';
-import type {File, Node, Program} from '@babel/types';
+import type {File, Node, Program, TraversalAncestors} from '@babel/types';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
@@ -273,7 +273,7 @@ export const deepMerge = (target: any, source: any): any => {
   return target;
 };
 
-export const indent = (
+const indent = (
   snapshot: string,
   numIndents: number,
   indentation: string,
@@ -316,7 +316,13 @@ const generate = // @ts-expect-error requireOutside Babel transform
 const {parseSync, types} = requireOutside(
   '@babel/core',
 ) as typeof import('@babel/core');
-const {templateElement, templateLiteral, traverseFast} = types;
+const {
+  isAwaitExpression,
+  templateElement,
+  templateLiteral,
+  traverseFast,
+  traverse,
+} = types;
 
 export const processInlineSnapshotsWithBabel = (
   snapshots: Array<InlineSnapshot>,
@@ -410,6 +416,68 @@ export const processInlineSnapshotsWithBabel = (
       sourceFile,
     ),
   };
+};
+
+export const processPrettierAst = (
+  ast: File,
+  options: Record<string, any>,
+  snapshotMatcherNames: Array<string>,
+): void => {
+  traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
+    if (node.type !== 'CallExpression') return;
+
+    const {arguments: args, callee} = node;
+    if (
+      callee.type !== 'MemberExpression' ||
+      callee.property.type !== 'Identifier' ||
+      !snapshotMatcherNames.includes(callee.property.name) ||
+      !callee.loc ||
+      callee.computed
+    ) {
+      return;
+    }
+
+    let snapshotIndex: number | undefined;
+    let snapshot: string | undefined;
+    for (let i = 0; i < args.length; i++) {
+      const node = args[i];
+      if (node.type === 'TemplateLiteral') {
+        snapshotIndex = i;
+        snapshot = node.quasis[0].value.raw;
+      }
+    }
+    if (snapshot === undefined) {
+      return;
+    }
+
+    const parent = ancestors[ancestors.length - 1].node;
+    const startColumn =
+      isAwaitExpression(parent) && parent.loc
+        ? parent.loc.start.column
+        : callee.loc.start.column;
+
+    const useSpaces = !options.useTabs;
+    snapshot = indent(
+      snapshot,
+      Math.ceil(
+        useSpaces
+          ? startColumn / (options.tabWidth ?? 1)
+          : // Each tab is 2 characters.
+            startColumn / 2,
+      ),
+      useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
+    );
+
+    const replacementNode = templateLiteral(
+      [
+        templateElement({
+          raw: snapshot,
+        }),
+      ],
+      [],
+    );
+    args[snapshotIndex!] = replacementNode;
+  });
 };
 
 const groupSnapshotsBy =

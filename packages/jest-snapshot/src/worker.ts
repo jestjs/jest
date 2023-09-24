@@ -1,10 +1,5 @@
-import type {Node, TraversalAncestors} from '@babel/types';
 import {runAsWorker} from 'synckit';
-import {indent} from './utils';
-
-const {isAwaitExpression, templateElement, templateLiteral, traverse} =
-  // @ts-expect-error requireOutside Babel transform
-  requireOutside('@babel/types') as typeof import('@babel/types');
+import {processPrettierAst} from './utils';
 
 let prettier: typeof import('prettier');
 
@@ -47,61 +42,7 @@ runAsWorker(
             printers: {
               'jest-snapshot-plugin': {
                 preprocess(ast, options) {
-                  traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
-                    if (node.type !== 'CallExpression') return;
-
-                    const {arguments: args, callee} = node;
-                    if (
-                      callee.type !== 'MemberExpression' ||
-                      callee.property.type !== 'Identifier' ||
-                      !snapshotMatcherNames.includes(callee.property.name) ||
-                      !callee.loc ||
-                      callee.computed
-                    ) {
-                      return;
-                    }
-
-                    let snapshotIndex: number | undefined;
-                    let snapshot: string | undefined;
-                    for (let i = 0; i < args.length; i++) {
-                      const node = args[i];
-                      if (node.type === 'TemplateLiteral') {
-                        snapshotIndex = i;
-                        snapshot = node.quasis[0].value.raw;
-                      }
-                    }
-                    if (snapshot === undefined) {
-                      return;
-                    }
-
-                    const parent = ancestors[ancestors.length - 1].node;
-                    const startColumn =
-                      isAwaitExpression(parent) && parent.loc
-                        ? parent.loc.start.column
-                        : callee.loc.start.column;
-
-                    const useSpaces = !options.useTabs;
-                    snapshot = indent(
-                      snapshot,
-                      Math.ceil(
-                        useSpaces
-                          ? startColumn / (options.tabWidth ?? 1)
-                          : // Each tab is 2 characters.
-                            startColumn / 2,
-                      ),
-                      useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
-                    );
-
-                    const replacementNode = templateLiteral(
-                      [
-                        templateElement({
-                          raw: snapshot,
-                        }),
-                      ],
-                      [],
-                    );
-                    args[snapshotIndex!] = replacementNode;
-                  });
+                  processPrettierAst(ast, options, snapshotMatcherNames);
                   return ast;
                 },
                 print(path, options, print) {
