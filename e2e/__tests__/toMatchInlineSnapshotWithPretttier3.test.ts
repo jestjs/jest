@@ -67,7 +67,7 @@ test('supports passing `prettier-2` as `prettierPath`', () => {
 test('supports passing `prettier` as `prettierPath`', () => {
   writeFiles(DIR, {
     'jest.config.js': `
-        module.exports = {prettierPath: require.resolve('prettier')};
+        module.exports = {prettierPath: require.resolve('prettier/index.cjs')};
       `,
   });
   writeFiles(TESTS_DIR, {
