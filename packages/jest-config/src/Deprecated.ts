@@ -8,6 +8,15 @@
 import chalk = require('chalk');
 import type {DeprecatedOptions} from 'jest-validate';
 
+function formatDeprecation(message: string): string {
+  const lines = [
+    message.replace(/\*(.+?)\*/g, (_, s) => chalk.bold(`"${s}"`)),
+    '',
+    'Please update your configuration.',
+  ];
+  return lines.map(s => `  ${s}`).join('\n');
+}
+
 const deprecatedOptions: DeprecatedOptions = {
   browser: () =>
     `  Option ${chalk.bold(
@@ -77,6 +86,11 @@ const deprecatedOptions: DeprecatedOptions = {
 
   Please update your configuration.
   `,
+
+  testPathPattern: () =>
+    formatDeprecation(
+      'Option *testPathPattern* was replaced by *testPathPatterns*.',
+    ),
 
   testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(
     '"testURL"',
