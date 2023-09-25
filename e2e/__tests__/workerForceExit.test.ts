@@ -76,4 +76,4 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(pidNumber).not.toBeNaN();
 
   expect(await findProcess('pid', pidNumber)).toHaveLength(0);
-}, 15000);
+}, 15_000);

@@ -21,8 +21,8 @@ const prettyFormat = require('../').format;
 const {ReactTestComponent} = require('../').plugins;
 const worldGeoJson = require('./world.geo.json');
 
-const NANOSECONDS = 1000000000;
-let TIMES_TO_RUN = 100000;
+const NANOSECONDS = 1_000_000_000;
+let TIMES_TO_RUN = 100_000;
 
 function testCase(name, fn) {
   let result, error, time, total;
