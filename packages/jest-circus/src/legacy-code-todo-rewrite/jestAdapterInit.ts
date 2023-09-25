@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
 import {JestExpect, jestExpect} from '@jest/expect';
 import {
@@ -55,7 +56,7 @@ export const initialize = async ({
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: string) => T;
   testPath: string;
-  parentProcess: NodeJS.Process;
+  parentProcess: typeof Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
 }): Promise<{
@@ -111,10 +112,8 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers
-    .concat()
-    .reverse()
-    .forEach(path => addSerializer(localRequire(path)));
+  for (const path of config.snapshotSerializers.concat().reverse())
+    addSerializer(localRequire(path));
 
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
@@ -164,7 +163,7 @@ export const runAndTransformResultsToJestFormat = async ({
       } else if (testResult.status === 'todo') {
         status = 'todo';
         numTodoTests += 1;
-      } else if (testResult.errors.length) {
+      } else if (testResult.errors.length > 0) {
         status = 'failed';
         numFailingTests += 1;
       } else {
@@ -203,7 +202,7 @@ export const runAndTransformResultsToJestFormat = async ({
   );
   let testExecError;
 
-  if (runResult.unhandledErrors.length) {
+  if (runResult.unhandledErrors.length > 0) {
     testExecError = {
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
@@ -267,7 +266,7 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
+  if (suppressedErrors.length > 0) {
     test.errors = test.errors.concat(suppressedErrors);
   }
 };

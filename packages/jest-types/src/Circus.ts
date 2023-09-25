@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as ProcessModule from 'process';
 import type * as Global from './Global';
 
-type Process = NodeJS.Process;
+type Process = typeof ProcessModule;
 
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
@@ -219,10 +220,8 @@ export type TestResults = Array<TestResult>;
 
 export type GlobalErrorHandlers = {
   rejectionHandled: Array<(promise: Promise<unknown>) => void>;
-  uncaughtException: Array<(exception: Exception) => void>;
-  unhandledRejection: Array<
-    (exception: Exception, promise: Promise<unknown>) => void
-  >;
+  uncaughtException: Array<NodeJS.UncaughtExceptionListener>;
+  unhandledRejection: Array<NodeJS.UnhandledRejectionListener>;
 };
 
 export type State = {

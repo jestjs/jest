@@ -415,39 +415,6 @@ expectError(
   }),
 );
 
-expectType<void>(expect('abc').toMatchNamedSnapshot('snapshot name'));
-expectError<void>(expect('abc').toMatchNamedSnapshot());
-
-expectType<void>(
-  expect({
-    date: new Date(),
-    name: 'John Doe',
-  }).toMatchNamedSnapshot('snapshot name', {
-    date: expect.any(Date),
-    name: expect.any(String),
-  }),
-);
-
-expectType<void>(
-  expect({
-    date: new Date(),
-    name: 'John Doe',
-  }).toMatchNamedSnapshot('snapshot name', {
-    date: expect.any(Date),
-    name: expect.any(String),
-  }),
-);
-
-expectError(
-  expect({
-    date: new Date(),
-    name: 'John Doe',
-  }).toMatchNamedSnapshot('snapshot name', {
-    date: expect.any(Date),
-    time: expect.any(Date),
-  }),
-);
-
 expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot());
 expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot('hint'));
 expectError(expect(jest.fn()).toThrowErrorMatchingSnapshot(true));
@@ -457,11 +424,6 @@ expectType<void>(
   expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('inline snapshot here'),
 );
 expectError(expect(jest.fn()).toThrowErrorMatchingInlineSnapshot(true));
-
-expectType<void>(
-  expect(jest.fn()).toThrowErrorMatchingNamedSnapshot('snapshot-name'),
-);
-expectError<void>(expect(jest.fn()).toThrowErrorMatchingNamedSnapshot());
 
 // extend
 

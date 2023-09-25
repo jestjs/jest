@@ -194,3 +194,23 @@ Custom Deprecation:
 
   Documentation: http://custom-docs.com
 ```
+
+## Example validating CLI arguments
+
+```js
+import {validate} from 'jest-validate';
+
+validateCLIOptions(argv, {...allowedOptions, deprecatedOptions});
+```
+
+If `argv` contains a deprecated option that is not specifid in `allowedOptions`, `validateCLIOptions` will throw an error with the message specified in the `deprecatedOptions` config:
+
+```bash
+● collectCoverageOnlyFrom:
+
+  Option "collectCoverageOnlyFrom" was replaced by "collectCoverageFrom"
+
+  CLI Options Documentation: https://jestjs.io/docs/en/cli.html
+```
+
+If the deprecation option is still listed in the `allowedOptions` config, then `validateCLIOptions` will print the warning wihout throwing an error.

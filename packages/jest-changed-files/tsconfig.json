@@ -4,5 +4,6 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "references": [{"path": "../jest-util"}]
 }

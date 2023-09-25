@@ -88,7 +88,13 @@ export const createMatcher = (
     if (fromPromise && isError(received)) {
       thrown = getThrown(received);
     } else {
-      if (typeof received !== 'function') {
+      if (typeof received === 'function') {
+        try {
+          received();
+        } catch (e) {
+          thrown = getThrown(e);
+        }
+      } else {
         if (!fromPromise) {
           const placeholder = expected === undefined ? '' : 'expected';
           throw new Error(
@@ -98,12 +104,6 @@ export const createMatcher = (
               printWithType('Received', received, printReceived),
             ),
           );
-        }
-      } else {
-        try {
-          received();
-        } catch (e) {
-          thrown = getThrown(e);
         }
       }
     }
@@ -227,7 +227,7 @@ const toThrowExpectedObject = (
 ): SyncExpectationResult => {
   const expectedMessageAndCause = createMessageAndCause(expected);
   const thrownMessageAndCause =
-    thrown !== null ? createMessageAndCause(thrown.value) : null;
+    thrown === null ? null : createMessageAndCause(thrown.value);
   const pass =
     thrown !== null &&
     thrown.message === expected.message &&
