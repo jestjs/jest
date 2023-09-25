@@ -52,7 +52,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "prettier": "^3.0.3",
-    "prettier-v2": "npm:prettier@^2.1.5",
+    "prettier-v2": "npm:prettier@^3.0.0",
     "tsd-lite": "^0.8.0"
   },
   "engines": {
