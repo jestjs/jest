@@ -11,7 +11,7 @@ import {TestPathPatterns, isNonNullable} from 'jest-util';
 
 const activeFilters = (globalConfig: Config.GlobalConfig): string => {
   const {testNamePattern} = globalConfig;
-  const testPathPatterns = new TestPathPatterns(globalConfig);
+  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
   if (testNamePattern || testPathPatterns.isSet()) {
     const filters = [
       testPathPatterns.isSet()

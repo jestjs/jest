@@ -8,40 +8,30 @@
 import type {Config} from '@jest/types';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
-type PatternsConfig = Pick<Config.GlobalConfig, 'rootDir'>;
-type PatternsFullConfig = PatternsConfig &
-  Pick<Config.GlobalConfig, 'testPathPatterns'>;
+type PatternsConfig = {
+  rootDir: string;
+};
 
 export default class TestPathPatterns {
-  readonly patterns: Array<string>;
-  private readonly rootDir: string;
-
   private _regexString: string | null = null;
 
-  constructor(patterns: Array<string>, config: PatternsConfig);
-  constructor(config: PatternsFullConfig);
   constructor(
-    patternsOrConfig: Array<string> | PatternsFullConfig,
-    configArg?: PatternsConfig,
-  ) {
-    let patterns, config;
-    if (Array.isArray(patternsOrConfig)) {
-      patterns = patternsOrConfig;
-      config = configArg!;
-    } else {
-      patterns = patternsOrConfig.testPathPatterns;
-      config = patternsOrConfig;
-    }
+    readonly patterns: Array<string>,
+    private readonly config: PatternsConfig,
+  ) {}
 
-    this.patterns = patterns;
-    this.rootDir = config.rootDir.replace(/\/*$/, '/');
+  static fromGlobalConfig(globalConfig: Config.GlobalConfig): TestPathPatterns {
+    return new TestPathPatterns(globalConfig.testPathPatterns, globalConfig);
   }
 
   private get regexString(): string {
     if (this._regexString !== null) {
       return this._regexString;
     }
-    const rootDirRegex = escapePathForRegex(this.rootDir);
+
+    const rootDir = this.config.rootDir.replace(/\/*$/, '/');
+    const rootDirRegex = escapePathForRegex(rootDir);
+
     const regexString = this.patterns
       .map(p => {
         // absolute paths passed on command line should stay same
@@ -59,6 +49,7 @@ export default class TestPathPatterns {
       })
       .map(replacePathSepForRegex)
       .join('|');
+
     this._regexString = regexString;
     return regexString;
   }

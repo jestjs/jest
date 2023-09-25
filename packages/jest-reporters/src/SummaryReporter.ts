@@ -212,7 +212,7 @@ export default class SummaryReporter extends BaseReporter {
     testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
-    const testPathPatterns = new TestPathPatterns(globalConfig);
+    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
 
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests

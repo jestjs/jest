@@ -26,7 +26,7 @@ export default function getNoTestFound(
       .map(p => `"${p}"`)
       .join(', ')}`;
   } else {
-    const testPathPatterns = new TestPathPatterns(globalConfig);
+    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
     dataMessage = `Pattern: ${chalk.yellow(
       testPathPatterns.toPretty(),
     )} - 0 matches`;

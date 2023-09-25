@@ -38,7 +38,7 @@ export default function updateGlobalConfig(
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&
-    !new TestPathPatterns(newConfig).isSet();
+    !TestPathPatterns.fromGlobalConfig(newConfig).isSet();
 
   if (typeof options.bail === 'boolean') {
     newConfig.bail = options.bail ? 1 : 0;

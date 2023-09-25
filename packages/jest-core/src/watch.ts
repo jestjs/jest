@@ -532,7 +532,7 @@ const usage = (
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {
-  const testPathPatterns = new TestPathPatterns(globalConfig);
+  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
   const messages = [
     activeFilters(globalConfig),
 
