@@ -481,11 +481,11 @@ The regex is matched against the full name, which is a combination of the test n
 
 ### `--testPathIgnorePatterns=<regex>|[array]`
 
-A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
+A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPatterns`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/ /tests/e2e/\)`. Alternatively, you can omit parentheses by combining regexps into a single regexp like `/node_modules/|/tests/e2e/`. These two examples are equivalent.
 
-### `--testPathPattern=<regex>`
+### `--testPathPatterns=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
