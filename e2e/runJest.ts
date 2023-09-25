@@ -172,7 +172,7 @@ export const runContinuous = function (
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
+  const jestPromise = spawnJest(dir, args, {timeout: 30_000, ...options}, true);
 
   let stderr = '';
   let stdout = '';

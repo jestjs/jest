@@ -233,7 +233,7 @@ export const printPropertiesAndReceived = (
   )}${printReceived(received)}`;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printSnapshotAndReceived = (
   a: string, // snapshot without extra line breaks

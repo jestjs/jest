@@ -94,7 +94,7 @@ export const stringify = (
   maxDepth = 10,
   maxWidth = 10,
 ): string => {
-  const MAX_LENGTH = 10000;
+  const MAX_LENGTH = 10_000;
   let result;
 
   try {
@@ -313,7 +313,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printDiffOrStringify = (
   expected: unknown,

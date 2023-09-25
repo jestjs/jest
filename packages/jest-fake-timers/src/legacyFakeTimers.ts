@@ -62,7 +62,7 @@ type TimerConfig<Ref> = {
   refToId: (ref: Ref) => number | void;
 };
 
-const MS_IN_A_YEAR = 31536000000;
+const MS_IN_A_YEAR = 31_536_000_000;
 
 export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
@@ -97,7 +97,7 @@ export default class FakeTimers<TimerRef = unknown> {
     this._global = global;
     this._timerConfig = timerConfig;
     this._config = config;
-    this._maxLoops = maxLoops || 100000;
+    this._maxLoops = maxLoops || 100_000;
     this._uuidCounter = 1;
     this._moduleMocker = moduleMocker;
 

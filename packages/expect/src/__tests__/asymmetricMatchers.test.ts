@@ -430,7 +430,7 @@ describe('closeTo', () => {
   for (const [expected, received] of [
     [0, 0.01],
     [1, 1.23],
-    [1.23, 1.2249999],
+    [1.23, 1.224_999_9],
     [Infinity, -Infinity],
     [Infinity, 1.23],
     [-Infinity, -1.23],
@@ -446,8 +446,8 @@ describe('closeTo', () => {
   for (const [expected, received, precision] of [
     [0, 0.1, 0],
     [0, 0.0001, 3],
-    [0, 0.000004, 5],
-    [2.0000002, 2, 5],
+    [0, 0.000_004, 5],
+    [2.000_000_2, 2, 5],
   ]) {
     test(`${expected} closeTo ${received} with precision ${precision} return true`, () => {
       jestExpect(closeTo(expected, precision).asymmetricMatch(received)).toBe(
@@ -462,8 +462,8 @@ describe('closeTo', () => {
   }
 
   for (const [expected, received, precision] of [
-    [3.141592e-7, 3e-7, 8],
-    [56789, 51234, -4],
+    [3.141_592e-7, 3e-7, 8],
+    [56_789, 51_234, -4],
   ]) {
     test(`${expected} closeTo ${received} with precision ${precision} return false`, () => {
       jestExpect(closeTo(expected, precision).asymmetricMatch(received)).toBe(

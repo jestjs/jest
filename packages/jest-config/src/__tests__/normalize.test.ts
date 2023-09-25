@@ -132,10 +132,10 @@ it('keeps custom ids based on the rootDir', async () => {
 
 it('minimal config is stable across runs', async () => {
   const firstNormalization = await normalize({rootDir: '/root/path/foo'}, {
-    seed: 55555,
+    seed: 55_555,
   } as Config.Argv);
   const secondNormalization = await normalize({rootDir: '/root/path/foo'}, {
-    seed: 55555,
+    seed: 55_555,
   } as Config.Argv);
 
   expect(firstNormalization).toEqual(secondNormalization);
@@ -2130,7 +2130,7 @@ it('parses workerIdleMemoryLimit', async () => {
     {} as Config.Argv,
   );
 
-  expect(options.workerIdleMemoryLimit).toBe(47185920);
+  expect(options.workerIdleMemoryLimit).toBe(47_185_920);
 });
 
 describe('seed', () => {
