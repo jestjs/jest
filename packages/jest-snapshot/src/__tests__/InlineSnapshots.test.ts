@@ -17,7 +17,7 @@ jest.mock('prettier', () => {
   const realPrettier =
     jest.requireActual<typeof import('prettier-v2')>('prettier-v2');
   const mockPrettier = {
-    format: (text, opts) => realPrettier.format(text, opts),
+    format: realPrettier.format,
     getFileInfo: {
       sync: () => ({ignored: false, inferredParser: 'babel'}),
     } as unknown as typeof prettier.getFileInfo,
