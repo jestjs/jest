@@ -406,23 +406,24 @@ const buildTestPathPatterns = (
 
   const config = {rootDir};
   const testPathPatterns = new TestPathPatterns(patterns, config);
-  if (!testPathPatterns.isValid()) {
-    showTestPathPatternsError(testPathPatterns);
+
+  try {
+    testPathPatterns.validate();
+  } catch {
+    clearLine(process.stdout);
+
+    // eslint-disable-next-line no-console
+    console.log(
+      chalk.red(
+        `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
+          'Running all tests instead.',
+      ),
+    );
+
     return new TestPathPatterns([], config);
   }
+
   return testPathPatterns;
-};
-
-const showTestPathPatternsError = (testPathPatterns: TestPathPatterns) => {
-  clearLine(process.stdout);
-
-  // eslint-disable-next-line no-console
-  console.log(
-    chalk.red(
-      `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
-        'Running all tests instead.',
-    ),
-  );
 };
 
 function validateExtensionsToTreatAsEsm(

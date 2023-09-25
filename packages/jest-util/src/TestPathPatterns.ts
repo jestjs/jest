@@ -54,7 +54,7 @@ export default class TestPathPatterns {
     return regexString;
   }
 
-  private get regex(): RegExp {
+  private toRegex(): RegExp {
     return new RegExp(this.regexString, 'i');
   }
 
@@ -66,26 +66,19 @@ export default class TestPathPatterns {
   }
 
   /**
-   * Return true if the patterns form a valid regex.
+   * Throw an error if the patterns don't form a valid regex.
    */
-  isValid(): boolean {
-    try {
-      // @ts-expect-error noUnusedLocals
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const _ = this.regex;
-      return true;
-    } catch {
-      return false;
-    }
+  validate(): void {
+    this.toRegex();
   }
 
   /**
    * Return true if the given ABSOLUTE path matches the patterns.
    *
-   * Throws an error if the patterns form an invalid regex (see `isValid`).
+   * Throws an error if the patterns form an invalid regex (see `validate`).
    */
   isMatch(path: string): boolean {
-    return this.regex.test(path);
+    return this.toRegex().test(path);
   }
 
   /**

@@ -36,23 +36,25 @@ describe('TestPathPatterns', () => {
     });
   });
 
-  describe('isValid', () => {
-    it('returns true for empty patterns', () => {
+  describe('validate', () => {
+    it('succeeds for empty patterns', () => {
       const testPathPatterns = new TestPathPatterns([], config);
-      expect(testPathPatterns.isValid()).toBe(true);
+      expect(() => testPathPatterns.validate()).not.toThrow();
     });
 
-    it('returns true for valid patterns', () => {
+    it('succeeds for valid patterns', () => {
       const testPathPatterns = new TestPathPatterns(['abc+', 'z.*'], config);
-      expect(testPathPatterns.isValid()).toBe(true);
+      expect(() => testPathPatterns.validate()).not.toThrow();
     });
 
-    it('returns false for at least one invalid pattern', () => {
+    it('fails for at least one invalid pattern', () => {
       const testPathPatterns = new TestPathPatterns(
         ['abc+', '(', 'z.*'],
         config,
       );
-      expect(testPathPatterns.isValid()).toBe(false);
+      expect(() => testPathPatterns.validate()).toThrow(
+        'Invalid regular expression',
+      );
     });
   });
 
