@@ -1145,42 +1145,6 @@ Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
-<details>
-<summary>Prettier version 3 is not supported!</summary>
-
-You can either pass `prettierPath: null` in your config to disable using prettier if you don't need it, or use v2 of Prettier solely for Jest.
-
-```json title="package.json"
-{
-  "devDependencies": {
-    "prettier-2": "npm:prettier@^2"
-  }
-}
-```
-
-```js tab
-/** @type {import('jest').Config} */
-const config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-module.exports = config;
-```
-
-```ts tab
-import type {Config} from 'jest';
-
-const config: Config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-export default config;
-```
-
-We hope to support Prettier v3 seamlessly out of the box in a future version of Jest. See [this](https://github.com/jestjs/jest/issues/14305) tracking issue.
-
-</details>
-
 ### `projects` \[array&lt;string | ProjectConfig&gt;]
 
 Default: `undefined`
