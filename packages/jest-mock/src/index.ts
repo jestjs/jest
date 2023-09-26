@@ -716,7 +716,7 @@ export class ModuleMocker {
             // implementation use the mock
             let specificMockImpl: Function | undefined;
 
-            if (mockConfig.specificMockImpls.length) {
+            if (mockConfig.specificMockImpls.length > 0) {
               specificMockImpl = mockConfig.specificMockImpls.shift();
             } else {
               specificMockImpl = mockConfig.mockImpl;
