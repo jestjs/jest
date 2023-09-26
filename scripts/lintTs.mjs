@@ -52,7 +52,6 @@ const packagesNotToTest = [
   'jest-mock',
   'jest-phabricator',
   'jest-regex-util',
-  'jest-repl',
   'jest-reporters',
   'jest-resolve',
   'jest-runner',
