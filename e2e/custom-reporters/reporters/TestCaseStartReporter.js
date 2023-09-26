@@ -14,7 +14,7 @@
 class TestCaseStartReporter {
   onTestCaseStart(test, testCaseStartInfo) {
     const mode =
-      testCaseStartInfo.mode != null ? testCaseStartInfo.mode : 'undefined';
+      testCaseStartInfo.mode == null ? 'undefined' : testCaseStartInfo.mode;
     console.log(
       `onTestCaseStart: ${testCaseStartInfo.title}, ` +
         `mode: ${mode}, ` +

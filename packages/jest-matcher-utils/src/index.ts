@@ -94,7 +94,7 @@ export const stringify = (
   maxDepth = 10,
   maxWidth = 10,
 ): string => {
-  const MAX_LENGTH = 10000;
+  const MAX_LENGTH = 10_000;
   let result;
 
   try {
@@ -262,11 +262,11 @@ const getCommonAndChangedSubstrings = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] !== op
-        ? ''
-        : hasCommonDiff
-        ? INVERTED_COLOR(diff[1])
-        : diff[1]),
+        : diff[0] === op
+        ? hasCommonDiff
+          ? INVERTED_COLOR(diff[1])
+          : diff[1]
+        : ''),
     '',
   );
 
@@ -285,8 +285,8 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
     return (
       typeof expected === 'string' &&
       typeof received === 'string' &&
-      expected.length !== 0 &&
-      received.length !== 0 &&
+      expected.length > 0 &&
+      received.length > 0 &&
       (MULTILINE_REGEXP.test(expected) || MULTILINE_REGEXP.test(received))
     );
   }
@@ -313,7 +313,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printDiffOrStringify = (
   expected: unknown,
@@ -325,8 +325,8 @@ export const printDiffOrStringify = (
   if (
     typeof expected === 'string' &&
     typeof received === 'string' &&
-    expected.length !== 0 &&
-    received.length !== 0 &&
+    expected.length > 0 &&
+    received.length > 0 &&
     expected.length <= MAX_DIFF_STRING_LENGTH &&
     received.length <= MAX_DIFF_STRING_LENGTH &&
     expected !== received
@@ -444,6 +444,7 @@ function _replaceMatchedToAsymmetricMatcher(
   const expectedReplaceable = new Replaceable(replacedExpected);
   const receivedReplaceable = new Replaceable(replacedReceived);
 
+  // eslint-disable-next-line unicorn/no-array-for-each
   expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
     const receivedValue = receivedReplaceable.get(key);
     if (isAsymmetricMatcher(expectedValue)) {

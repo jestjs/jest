@@ -129,7 +129,7 @@ const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const getModuleNameMapper = (config: Config.ProjectConfig) => {
   if (
     Array.isArray(config.moduleNameMapper) &&
-    config.moduleNameMapper.length
+    config.moduleNameMapper.length > 0
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => ({
       moduleName,
@@ -213,6 +213,7 @@ export default class Runtime {
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
+  private isInsideTestCode: boolean | undefined;
 
   constructor(
     config: Config.ProjectConfig,
@@ -289,7 +290,7 @@ export default class Runtime {
     );
 
     if (config.automock) {
-      config.setupFiles.forEach(filePath => {
+      for (const filePath of config.setupFiles) {
         if (filePath.includes(NODE_MODULES)) {
           const moduleID = this._resolver.getModuleID(
             this._virtualMocks,
@@ -304,7 +305,7 @@ export default class Runtime {
           );
           this._transitiveShouldMock.set(moduleID, false);
         }
-      });
+      }
     }
 
     this.resetModules();
@@ -562,6 +563,11 @@ export default class Runtime {
       // @ts-expect-error - exiting
       return;
     }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
 
     const registry = this._isolatedModuleRegistry
       ? this._isolatedModuleRegistry
@@ -710,6 +716,11 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
 
     if (module.status === 'unlinked') {
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
@@ -770,10 +781,10 @@ export default class Runtime {
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
       function () {
-        cjsExports.forEach(exportName => {
+        for (const exportName of cjsExports) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
-        });
+        }
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
@@ -808,10 +819,10 @@ export default class Runtime {
       const module = new SyntheticModule(
         Object.keys(invokedFactory),
         function () {
-          Object.entries(invokedFactory).forEach(([key, value]) => {
+          for (const [key, value] of Object.entries(invokedFactory)) {
             // @ts-expect-error: TS doesn't know what `this` is
             this.setExport(key, value);
-          });
+          }
         },
         {context, identifier: moduleName},
       );
@@ -838,20 +849,20 @@ export default class Runtime {
 
     const namedExports = new Set(exports);
 
-    reexports.forEach(reexport => {
+    for (const reexport of reexports) {
       if (this._resolver.isCoreModule(reexport)) {
         const exports = this.requireModule(modulePath, reexport);
         if (exports !== null && typeof exports === 'object') {
-          Object.keys(exports).forEach(namedExports.add, namedExports);
+          for (const e of Object.keys(exports)) namedExports.add(e);
         }
       } else {
         const resolved = this._resolveCjsModule(modulePath, reexport);
 
         const exports = this.getExportsOfCjs(resolved);
 
-        exports.forEach(namedExports.add, namedExports);
+        for (const e of exports) namedExports.add(e);
       }
-    });
+    }
 
     this._cjsNamedExports.set(modulePath, namedExports);
 
@@ -934,6 +945,7 @@ export default class Runtime {
       exports: {},
       filename: modulePath,
       id: modulePath,
+      isPreloading: false,
       loaded: false,
       path: path.dirname(modulePath),
     };
@@ -958,9 +970,7 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
     if (to) {
-      const require = (
-        nativeModule.createRequire ?? nativeModule.createRequireFromPath
-      )(from);
+      const require = nativeModule.createRequire(from);
       if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
         return require(to);
       }
@@ -1046,6 +1056,7 @@ export default class Runtime {
         exports: {},
         filename: modulePath,
         id: modulePath,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(modulePath),
       };
@@ -1216,19 +1227,19 @@ export default class Runtime {
     if (this._environment) {
       if (this._environment.global) {
         const envGlobal = this._environment.global;
-        (Object.keys(envGlobal) as Array<keyof typeof globalThis>).forEach(
-          key => {
-            const globalMock = envGlobal[key];
-            if (
-              ((typeof globalMock === 'object' && globalMock !== null) ||
-                typeof globalMock === 'function') &&
-              '_isMockFunction' in globalMock &&
-              globalMock._isMockFunction === true
-            ) {
-              globalMock.mockClear();
-            }
-          },
-        );
+        for (const key of Object.keys(envGlobal) as Array<
+          keyof typeof globalThis
+        >) {
+          const globalMock = envGlobal[key];
+          if (
+            ((typeof globalMock === 'object' && globalMock !== null) ||
+              typeof globalMock === 'function') &&
+            '_isMockFunction' in globalMock &&
+            globalMock._isMockFunction === true
+          ) {
+            globalMock.mockClear();
+          }
+        }
       }
 
       if (this._environment.fakeTimers) {
@@ -1347,6 +1358,14 @@ export default class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
+  enterTestCode(): void {
+    this.isInsideTestCode = true;
+  }
+
+  leaveTestCode(): void {
+    this.isInsideTestCode = false;
+  }
+
   teardown(): void {
     this.restoreAllMocks();
     this.resetModules();
@@ -1459,7 +1478,7 @@ export default class Runtime {
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
       );
     }
-    if (!moduleName.length) {
+    if (moduleName.length === 0) {
       throw new Error(
         'The first argument to require.resolve.paths must not be the empty string.',
       );
@@ -1489,6 +1508,11 @@ export default class Runtime {
       );
       process.exitCode = 1;
       return;
+    }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
     }
 
     // If the environment was disposed, prevent this module from being executed.
@@ -1709,10 +1733,10 @@ export default class Runtime {
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
-        Object.entries(required).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(required)) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
-        });
+        }
       },
       // should identifier be `node://${moduleName}`?
       {context, identifier: moduleName},
@@ -1795,6 +1819,7 @@ export default class Runtime {
         exports: {},
         filename,
         id: filename,
+        isPreloading: false,
         loaded: false,
         path: path.dirname(filename),
       });
@@ -1803,33 +1828,15 @@ export default class Runtime {
     // should we implement the class ourselves?
     class Module extends nativeModule.Module {}
 
-    Object.entries(nativeModule.Module).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(nativeModule.Module)) {
       // @ts-expect-error: no index signature
       Module[key] = value;
-    });
+    }
 
     Module.Module = Module;
 
     if ('createRequire' in nativeModule) {
       Module.createRequire = createRequire;
-    }
-    if ('createRequireFromPath' in nativeModule) {
-      Module.createRequireFromPath = function createRequireFromPath(
-        filename: string | URL,
-      ) {
-        if (typeof filename !== 'string') {
-          const error: NodeJS.ErrnoException = new TypeError(
-            `The argument 'filename' must be string. Received '${filename}'.${
-              filename instanceof URL
-                ? ' Use createRequire for URL filename.'
-                : ''
-            }`,
-          );
-          error.code = 'ERR_INVALID_ARG_TYPE';
-          throw error;
-        }
-        return createRequire(filename);
-      };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
       // cast since TS seems very confused about whether it exists or not
@@ -2175,6 +2182,11 @@ export default class Runtime {
         );
         process.exitCode = 1;
       }
+      if (this.isInsideTestCode === false) {
+        throw new ReferenceError(
+          'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
+        );
+      }
 
       return this._fakeTimersImplementation!;
     };
@@ -2400,7 +2412,7 @@ export default class Runtime {
     const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => line.indexOf(__filename) === -1)
+      .filter(line => !line.includes(__filename))
       .join('\n');
 
     const {message, stack} = separateMessageFromStack(originalStack);
@@ -2480,10 +2492,10 @@ export default class Runtime {
     const module = new SyntheticModule(
       Object.keys(globals),
       function () {
-        Object.entries(globals).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(globals)) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
-        });
+        }
       },
       {context, identifier: '@jest/globals'},
     );

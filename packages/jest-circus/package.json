@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "29.6.4",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -15,26 +15,26 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
-    "./runner": "./runner.js"
+    "./runner": "./build/runner.js"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/expect": "workspace:^",
-    "@jest/test-result": "workspace:^",
-    "@jest/types": "workspace:^",
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/test-result": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "dedent": "^1.0.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "workspace:^",
-    "jest-matcher-utils": "workspace:^",
-    "jest-message-util": "workspace:^",
-    "jest-runtime": "workspace:^",
-    "jest-snapshot": "workspace:^",
-    "jest-util": "workspace:^",
+    "jest-each": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-runtime": "workspace:*",
+    "jest-snapshot": "workspace:*",
+    "jest-util": "workspace:*",
     "p-limit": "^3.1.0",
-    "pretty-format": "workspace:^",
+    "pretty-format": "workspace:*",
     "pure-rand": "^6.0.0",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.3"
@@ -50,7 +50,7 @@
     "tempy": "^1.0.0"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

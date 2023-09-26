@@ -22,7 +22,7 @@ describe('getSummary', () => {
   test('does print seed value when showSeed is true', () => {
     const summary = getSummary(makeEmptyAggregatedTestResult(), {
       estimatedTime: 0,
-      seed: 55555,
+      seed: 55_555,
       showSeed: true,
     });
 

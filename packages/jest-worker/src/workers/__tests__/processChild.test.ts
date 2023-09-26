@@ -92,7 +92,7 @@ beforeEach(() => {
 
   jest.mock(
     '../my-fancy-standalone-worker',
-    () => jest.fn().mockImplementation(() => 12345),
+    () => jest.fn().mockImplementation(() => 12_345),
     {virtual: true},
   );
 
@@ -102,7 +102,7 @@ beforeEach(() => {
     '../my-fancy-babel-worker',
     () => ({
       __esModule: true,
-      default: jest.fn().mockImplementation(() => 67890),
+      default: jest.fn().mockImplementation(() => 67_890),
     }),
     {virtual: true},
   );
@@ -360,7 +360,7 @@ it('calls the main module if the method call is "default"', () => {
     null,
   );
 
-  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12_345]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
@@ -385,7 +385,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
     null,
   );
 
-  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67_890]);
 });
 
 it('removes the message listener on END message', () => {

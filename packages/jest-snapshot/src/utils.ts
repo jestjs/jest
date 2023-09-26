@@ -6,6 +6,14 @@
  */
 
 import * as path from 'path';
+import type {ParseResult, PluginItem} from '@babel/core';
+import type {
+  File,
+  Node,
+  Program,
+  TemplateLiteral,
+  TraversalAncestors,
+} from '@babel/types';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
@@ -15,7 +23,7 @@ import {
   format as prettyFormat,
 } from 'pretty-format';
 import {getSerializers} from './plugins';
-import type {SnapshotData} from './types';
+import type {InlineSnapshot, SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -228,7 +236,7 @@ const isAnyOrAnything = (input: object) =>
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   const mergedOutput = Array.from(target);
 
-  source.forEach((sourceElement, index) => {
+  for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];
 
     if (Array.isArray(target[index]) && Array.isArray(sourceElement)) {
@@ -239,7 +247,7 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
       // Source does not exist in target or target is primitive and cannot be deep merged
       mergedOutput[index] = sourceElement;
     }
-  });
+  }
 
   return mergedOutput;
 };
@@ -249,16 +257,19 @@ export const deepMerge = (target: any, source: any): any => {
   if (isObject(target) && isObject(source)) {
     const mergedOutput = {...target};
 
-    Object.keys(source).forEach(key => {
+    for (const key of Object.keys(source)) {
       if (isObject(source[key]) && !source[key].$$typeof) {
-        if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
-        else mergedOutput[key] = deepMerge(target[key], source[key]);
+        if (key in target) {
+          mergedOutput[key] = deepMerge(target[key], source[key]);
+        } else {
+          Object.assign(mergedOutput, {[key]: source[key]});
+        }
       } else if (Array.isArray(source[key])) {
         mergedOutput[key] = deepMergeArray(target[key], source[key]);
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
-    });
+    }
 
     return mergedOutput;
   } else if (Array.isArray(target) && Array.isArray(source)) {
@@ -266,4 +277,291 @@ export const deepMerge = (target: any, source: any): any => {
   }
 
   return target;
+};
+
+const indent = (
+  snapshot: string,
+  numIndents: number,
+  indentation: string,
+): string => {
+  const lines = snapshot.split('\n');
+  // Prevent re-indentation of inline snapshots.
+  if (
+    lines.length >= 2 &&
+    lines[1].startsWith(indentation.repeat(numIndents + 1))
+  ) {
+    return snapshot;
+  }
+
+  return lines
+    .map((line, index) => {
+      if (index === 0) {
+        // First line is either a 1-line snapshot or a blank line.
+        return line;
+      } else if (index === lines.length - 1) {
+        // The last line should be placed on the same level as the expect call.
+        return indentation.repeat(numIndents) + line;
+      } else {
+        // Do not indent empty lines.
+        if (line === '') {
+          return line;
+        }
+
+        // Not last line, indent one level deeper than expect call.
+        return indentation.repeat(numIndents + 1) + line;
+      }
+    })
+    .join('\n');
+};
+
+const generate = // @ts-expect-error requireOutside Babel transform
+  (requireOutside('@babel/generator') as typeof import('@babel/generator'))
+    .default;
+
+// @ts-expect-error requireOutside Babel transform
+const {parseSync, types} = requireOutside(
+  '@babel/core',
+) as typeof import('@babel/core');
+const {
+  isAwaitExpression,
+  templateElement,
+  templateLiteral,
+  traverseFast,
+  traverse,
+} = types;
+
+export const processInlineSnapshotsWithBabel = (
+  snapshots: Array<InlineSnapshot>,
+  sourceFilePath: string,
+  rootDir: string,
+): {
+  snapshotMatcherNames: Array<string>;
+  sourceFile: string;
+  sourceFileWithSnapshots: string;
+} => {
+  const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
+
+  // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
+  const presets = [require.resolve('babel-preset-current-node-syntax')];
+  const plugins: Array<PluginItem> = [];
+  if (/\.([cm]?ts|tsx)$/.test(sourceFilePath)) {
+    plugins.push([
+      require.resolve('@babel/plugin-syntax-typescript'),
+      {isTSX: sourceFilePath.endsWith('x')},
+      // unique name to make sure Babel does not complain about a possible duplicate plugin.
+      'TypeScript syntax plugin added by Jest snapshot',
+    ]);
+  }
+
+  // Record the matcher names seen during traversal and pass them down one
+  // by one to formatting parser.
+  const snapshotMatcherNames: Array<string> = [];
+
+  let ast: ParseResult | null = null;
+
+  try {
+    ast = parseSync(sourceFile, {
+      filename: sourceFilePath,
+      plugins,
+      presets,
+      root: rootDir,
+    });
+  } catch (error: any) {
+    // attempt to recover from missing jsx plugin
+    if (error.message.includes('@babel/plugin-syntax-jsx')) {
+      try {
+        const jsxSyntaxPlugin: PluginItem = [
+          require.resolve('@babel/plugin-syntax-jsx'),
+          {},
+          // unique name to make sure Babel does not complain about a possible duplicate plugin.
+          'JSX syntax plugin added by Jest snapshot',
+        ];
+        ast = parseSync(sourceFile, {
+          filename: sourceFilePath,
+          plugins: [...plugins, jsxSyntaxPlugin],
+          presets,
+          root: rootDir,
+        });
+      } catch {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
+  }
+
+  if (!ast) {
+    throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
+  }
+  traverseAst(snapshots, ast, snapshotMatcherNames);
+
+  return {
+    snapshotMatcherNames,
+    sourceFile,
+    // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
+    sourceFileWithSnapshots: snapshots.reduceRight(
+      (sourceSoFar, nextSnapshot) => {
+        const {node} = nextSnapshot;
+        if (
+          !node ||
+          typeof node.start !== 'number' ||
+          typeof node.end !== 'number'
+        ) {
+          throw new Error('Jest: no snapshot insert location found');
+        }
+
+        // A hack to prevent unexpected line breaks in the generated code
+        node.loc!.end.line = node.loc!.start.line;
+
+        return (
+          sourceSoFar.slice(0, node.start) +
+          generate(node, {retainLines: true}).code.trim() +
+          sourceSoFar.slice(node.end)
+        );
+      },
+      sourceFile,
+    ),
+  };
+};
+
+export const processPrettierAst = (
+  ast: File,
+  options: Record<string, any> | null,
+  snapshotMatcherNames: Array<string>,
+  keepNode?: boolean,
+): void => {
+  traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
+    if (node.type !== 'CallExpression') return;
+
+    const {arguments: args, callee} = node;
+    if (
+      callee.type !== 'MemberExpression' ||
+      callee.property.type !== 'Identifier' ||
+      !snapshotMatcherNames.includes(callee.property.name) ||
+      !callee.loc ||
+      callee.computed
+    ) {
+      return;
+    }
+
+    let snapshotIndex: number | undefined;
+    let snapshot: string | undefined;
+    for (let i = 0; i < args.length; i++) {
+      const node = args[i];
+      if (node.type === 'TemplateLiteral') {
+        snapshotIndex = i;
+        snapshot = node.quasis[0].value.raw;
+      }
+    }
+    if (snapshot === undefined) {
+      return;
+    }
+
+    const parent = ancestors[ancestors.length - 1].node;
+    const startColumn =
+      isAwaitExpression(parent) && parent.loc
+        ? parent.loc.start.column
+        : callee.loc.start.column;
+
+    const useSpaces = !options?.useTabs;
+    snapshot = indent(
+      snapshot,
+      Math.ceil(
+        useSpaces
+          ? startColumn / (options?.tabWidth ?? 1)
+          : // Each tab is 2 characters.
+            startColumn / 2,
+      ),
+      useSpaces ? ' '.repeat(options?.tabWidth ?? 1) : '\t',
+    );
+
+    if (keepNode) {
+      (args[snapshotIndex!] as TemplateLiteral).quasis[0].value.raw = snapshot;
+    } else {
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex!] = replacementNode;
+    }
+  });
+};
+
+const groupSnapshotsBy =
+  (createKey: (inlineSnapshot: InlineSnapshot) => string) =>
+  (snapshots: Array<InlineSnapshot>) =>
+    snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
+      (object, inlineSnapshot) => {
+        const key = createKey(inlineSnapshot);
+        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+      },
+      {},
+    );
+
+const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
+  typeof line === 'number' && typeof column === 'number'
+    ? `${line}:${column - 1}`
+    : '',
+);
+export const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
+
+const traverseAst = (
+  snapshots: Array<InlineSnapshot>,
+  ast: File | Program,
+  snapshotMatcherNames: Array<string>,
+) => {
+  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
+  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
+
+  traverseFast(ast, (node: Node) => {
+    if (node.type !== 'CallExpression') return;
+
+    const {arguments: args, callee} = node;
+    if (
+      callee.type !== 'MemberExpression' ||
+      callee.property.type !== 'Identifier' ||
+      callee.property.loc == null
+    ) {
+      return;
+    }
+    const {line, column} = callee.property.loc.start;
+    const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
+    if (!snapshotsForFrame) {
+      return;
+    }
+    if (snapshotsForFrame.length > 1) {
+      throw new Error(
+        'Jest: Multiple inline snapshots for the same call are not supported.',
+      );
+    }
+    const inlineSnapshot = snapshotsForFrame[0];
+    inlineSnapshot.node = node;
+
+    snapshotMatcherNames.push(callee.property.name);
+
+    const snapshotIndex = args.findIndex(
+      ({type}) => type === 'TemplateLiteral' || type === 'StringLiteral',
+    );
+
+    const {snapshot} = inlineSnapshot;
+    remainingSnapshots.delete(snapshot);
+    const replacementNode = templateLiteral(
+      [templateElement({raw: escapeBacktickString(snapshot)})],
+      [],
+    );
+
+    if (snapshotIndex > -1) {
+      args[snapshotIndex] = replacementNode;
+    } else {
+      args.push(replacementNode);
+    }
+  });
+
+  if (remainingSnapshots.size > 0) {
+    throw new Error("Jest: Couldn't locate all inline snapshots.");
+  }
 };
