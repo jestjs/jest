@@ -6,6 +6,7 @@
  *
  */
 
+import type {DeprecatedOptions} from '../types';
 import validateCLIOptions from '../validateCLIOptions';
 
 test('validates yargs special options', () => {
@@ -58,4 +59,50 @@ test('shows suggestion when unrecognized cli param length > 1', () => {
   };
 
   expect(() => validateCLIOptions(argv)).toThrowErrorMatchingSnapshot();
+});
+
+describe('handles deprecated CLI options', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'warn');
+  });
+
+  afterEach(() => {
+    jest.mocked(console.warn).mockRestore();
+  });
+
+  test('print warning for deprecated options that are listed in config', () => {
+    const optionName = 'foo';
+    const argv = {
+      $0: 'foo',
+      _: ['bar'],
+      [optionName]: true,
+    };
+
+    validateCLIOptions(argv, {
+      deprecationEntries: {
+        [optionName]: () => 'Deprecation message',
+      } as DeprecatedOptions,
+      [optionName]: {},
+    });
+
+    expect(jest.mocked(console.warn).mock.calls[0][0]).toMatchSnapshot();
+  });
+
+  test('throw an error for deprecated options that are not listed in config', () => {
+    const optionName = 'foo';
+
+    const argv = {
+      $0: 'foo',
+      _: ['bar'],
+      [optionName]: true,
+    };
+
+    expect(() =>
+      validateCLIOptions(argv, {
+        deprecationEntries: {
+          [optionName]: () => 'Deprecation message',
+        } as DeprecatedOptions,
+      }),
+    ).toThrowErrorMatchingSnapshot();
+  });
 });

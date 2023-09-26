@@ -10,13 +10,13 @@
 function toCustomMatch(callback, expectation) {
   const actual = callback();
 
-  if (actual !== expectation) {
+  if (actual === expectation) {
+    return {pass: true};
+  } else {
     return {
       message: () => `Expected "${expectation}" but got "${actual}"`,
       pass: false,
     };
-  } else {
-    return {pass: true};
   }
 }
 

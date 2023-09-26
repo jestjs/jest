@@ -66,7 +66,7 @@ export default {
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
   ],
-  testTimeout: 70000,
+  testTimeout: 70_000,
   transform: {
     '\\.[jt]sx?$': require.resolve('babel-jest'),
   },

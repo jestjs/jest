@@ -182,6 +182,6 @@ class MockStdin {
   }
 
   emit(key: string) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

@@ -150,7 +150,7 @@ Most commonly this is being caused by conflicting Promise implementations. Consi
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
 ```js
-jest.setTimeout(10000); // 10 second timeout
+jest.setTimeout(10_000); // 10 second timeout
 ```
 
 ## Watchman Issues
@@ -190,7 +190,7 @@ If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://gith
 ```yaml
 - name: Get number of CPU cores
   id: cpu-cores
-  uses: SimenB/github-actions-cpu-cores@v1
+  uses: SimenB/github-actions-cpu-cores@v2
 - name: run tests
   run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
 ```

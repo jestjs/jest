@@ -50,10 +50,10 @@ const areVolumesEqual: Tester = (
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 };
 

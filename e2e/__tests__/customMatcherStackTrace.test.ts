@@ -15,7 +15,7 @@ test('works with custom matchers', () => {
 
   rest = rest
     .split('\n')
-    .filter(line => line.indexOf('at Error (native)') < 0)
+    .filter(line => !line.includes('at Error (native)'))
     .join('\n');
 
   expect(rest).toMatchSnapshot();

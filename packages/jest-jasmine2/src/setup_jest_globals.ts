@@ -32,7 +32,7 @@ export type SetupOptions = {
 const addSuppressedErrors = (result: SpecResult) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
+  if (suppressedErrors.length > 0) {
     result.status = 'failed';
 
     result.failedExpectations = suppressedErrors.map(error => ({
@@ -50,7 +50,7 @@ const addSuppressedErrors = (result: SpecResult) => {
 
 const addAssertionErrors = (result: SpecResult) => {
   const assertionErrors = jestExpect.extractExpectedAssertionsErrors();
-  if (assertionErrors.length) {
+  if (assertionErrors.length > 0) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
       expected,
@@ -95,12 +95,9 @@ export default async function setupJestGlobals({
 }: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers
-    .concat()
-    .reverse()
-    .forEach(path => {
-      addSerializer(localRequire(path));
-    });
+  for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
+    addSerializer(localRequire(config.snapshotSerializers[i]));
+  }
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
