@@ -229,12 +229,16 @@ const toThrowExpectedObject = (
   const thrownMessageAndCause =
     thrown === null ? null : createMessageAndCause(thrown.value);
   const isCompareErrorInstance = thrown?.isError && expected instanceof Error;
+  const isExpectedCustomErrorInstance =
+    expected.constructor.name !== Error.name;
 
   const pass =
     thrown !== null &&
     thrown.message === expected.message &&
     thrownMessageAndCause === expectedMessageAndCause &&
-    (!isCompareErrorInstance || thrown.value instanceof expected.constructor);
+    (!isCompareErrorInstance ||
+      !isExpectedCustomErrorInstance ||
+      thrown.value instanceof expected.constructor);
 
   const message = pass
     ? () =>
