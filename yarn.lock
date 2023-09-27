@@ -5162,10 +5162,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pnpapi@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@types/pnpapi@npm:0.0.2"
-  checksum: b58ec37cfaebe99ca7d1fa3200c57d8f8d51da58f6152c1b8ef6d03e00fa8595a937ae36234a0ff6f52306740bf4ddfd2633d62d5693eb9af41edb6181ef3d02
+"@types/pnpapi@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@types/pnpapi@npm:0.0.3"
+  checksum: df56e2d46b97ed3df42c7520e2622309a118da8e9c29525f308fa926e25e347311d774cf841d65688ac30e67d566807b052aab5dcf8fcaf98d48d47c8dfbcb4d
   languageName: node
   linkType: hard
 
@@ -12945,7 +12945,7 @@ __metadata:
   dependencies:
     "@tsd/typescript": ^5.0.4
     "@types/graceful-fs": ^4.1.3
-    "@types/pnpapi": ^0.0.2
+    "@types/pnpapi": ^0.0.3
     "@types/resolve": ^1.20.2
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
