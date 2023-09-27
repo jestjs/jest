@@ -215,8 +215,6 @@ export function createWebpackConfigs() {
               './src/setup_jest_globals.ts',
             ),
           }
-        : pkg.name === 'jest-repl'
-        ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
         : pkg.name === 'jest-snapshot'
         ? {worker: path.resolve(packageDir, './src/worker.ts')}
         : {};
