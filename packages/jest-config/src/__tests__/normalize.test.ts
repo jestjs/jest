@@ -2215,3 +2215,17 @@ describe('randomize', () => {
     expect(options.randomize).toBeFalsy();
   });
 });
+
+describe('runInBand', () => {
+  test('always set it', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.runInBand).toBe(false);
+  });
+
+  test('respect argv', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      runInBand: true,
+    } as Config.Argv);
+    expect(options.runInBand).toBe(true);
+  });
+});
