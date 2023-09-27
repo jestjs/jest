@@ -130,6 +130,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "passWithNoTests": false,
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
+    "runInBand": false,
     "runTestsByPath": false,
     "seed": <<RANDOM_SEED>>,
     "skipFilter": false,
