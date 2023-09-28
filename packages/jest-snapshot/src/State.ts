@@ -243,7 +243,7 @@ export default class SnapshotState {
         actual: removeExtraLineBreaks(receivedSerialized),
         count,
         expected:
-          expected !== undefined ? removeExtraLineBreaks(expected) : undefined,
+          expected === undefined ? undefined : removeExtraLineBreaks(expected),
         key,
         pass,
       };
