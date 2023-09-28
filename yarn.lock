@@ -3936,6 +3936,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prettier/sync@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@prettier/sync@npm:0.3.0"
+  peerDependencies:
+    prettier: ^3.0.0
+  checksum: a663ceca292629c66c2c983662293b047b48435942c25b7ea76f0eab899e434f2bc17ae3dce56ee66b29929f7853118073f716fd4c7dabc3cccf78458a168dd4
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:11.3.5":
   version: 11.3.5
   resolution: "@react-native-community/cli-clean@npm:11.3.5"
@@ -6544,6 +6553,7 @@ __metadata:
     "@babel/preset-typescript": ^7.0.0
     "@babel/template": ^7.3.3
     "@babel/types": ^7.3.3
+    "@prettier/sync": ^0.3.0
     "@types/babel__core": ^7.1.14
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6

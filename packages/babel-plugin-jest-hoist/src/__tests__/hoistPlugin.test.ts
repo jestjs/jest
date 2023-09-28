@@ -7,13 +7,15 @@
  */
 
 import * as path from 'path';
+import {format as formatCode, resolveConfig} from '@prettier/sync';
 import pluginTester from 'babel-plugin-tester';
-import {format as formatCode, resolveConfig} from 'prettier';
+import type {Options} from 'prettier';
 import babelPluginJestHoist from '..';
 
-const prettierOptions = {
-  ...resolveConfig.sync(__filename),
+const prettierOptions: Options = {
+  ...resolveConfig(__filename),
   filepath: __filename,
+  parser: 'babel-ts',
 };
 
 const formatResult = (code: string) => formatCode(code, prettierOptions);
