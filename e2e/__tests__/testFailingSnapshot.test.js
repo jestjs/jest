@@ -10,12 +10,6 @@ import * as fs from 'graceful-fs';
 import runJest from '../runJest';
 
 describe('test.failing', () => {
-  // Skip running tests with Jasmine
-  if (process.env.JEST_JASMINE) {
-    test.skip('No Jasmine runner', () => {});
-    return;
-  }
-
   describe('should pass when', () => {
     test.failing('snapshot matchers fails', () => {
       expect('0').toMatchSnapshot();
