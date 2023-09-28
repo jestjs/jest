@@ -73,7 +73,10 @@ export abstract class AsymmetricMatcher<T>
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(protected sample: T, protected inverse = false) {}
+  constructor(
+    protected sample: T,
+    protected inverse = false,
+  ) {}
 
   protected getMatcherContext(): MatcherContext {
     return {

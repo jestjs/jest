@@ -191,7 +191,7 @@ export default class DefaultReporter extends BaseReporter {
     result: TestResult,
   ): void {
     // log retry errors if any exist
-    result.testResults.forEach(testResult => {
+    for (const testResult of result.testResults) {
       const testRetryReasons = testResult.retryReasons;
       if (testRetryReasons && testRetryReasons.length > 0) {
         this.log(
@@ -199,7 +199,7 @@ export default class DefaultReporter extends BaseReporter {
             ' LOGGING RETRY ERRORS ',
           )} ${chalk.bold(testResult.fullName)}`,
         );
-        testRetryReasons.forEach((retryReasons, index) => {
+        for (const [index, retryReasons] of testRetryReasons.entries()) {
           let {message, stack} = separateMessageFromStack(retryReasons);
           stack = this._globalConfig.noStackTrace
             ? ''
@@ -213,9 +213,9 @@ export default class DefaultReporter extends BaseReporter {
             `${chalk.reset.inverse.bold.blueBright(` RETRY ${index + 1} `)}\n`,
           );
           this.log(`${message}\n${stack}\n`);
-        });
+        }
       }
-    });
+    }
 
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
@@ -239,6 +239,6 @@ export default class DefaultReporter extends BaseReporter {
     }
     const didUpdate = this._globalConfig.updateSnapshot === 'all';
     const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
-    snapshotStatuses.forEach(this.log);
+    for (const status of snapshotStatuses) this.log(status);
   }
 }

@@ -177,7 +177,7 @@ export default class SummaryReporter extends BaseReporter {
         globalConfig,
         updateCommand,
       );
-      snapshotSummary.forEach(this.log);
+      for (const summary of snapshotSummary) this.log(summary);
 
       this.log(''); // print empty line
     }
@@ -196,14 +196,14 @@ export default class SummaryReporter extends BaseReporter {
       aggregatedResults.numTotalTestSuites > this._summaryThreshold
     ) {
       this.log(chalk.bold('Summary of all failing tests'));
-      aggregatedResults.testResults.forEach(testResult => {
+      for (const testResult of aggregatedResults.testResults) {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
             `${getResultHeader(testResult, globalConfig)}\n${failureMessage}\n`,
           );
         }
-      });
+      }
       this.log(''); // print empty line
     }
   }

@@ -120,7 +120,7 @@ Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`
 
 The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
 
-:::warning
+:::caution
 
 Beware that `mockFn.mockClear()` will replace `mockFn.mock`, not just reset the values of its properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
@@ -798,7 +798,7 @@ afterEach(() => {
 });
 
 test('renders correctly with a given date', () => {
-  spiedDateNow = setDateNow(1482363367071);
+  spiedDateNow = setDateNow(1_482_363_367_071);
   // ...
 
   expect(spiedDateNow).toHaveBeenCalledTimes(1);

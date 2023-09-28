@@ -92,7 +92,7 @@ const {defaults} = require('jest-config');
 
 /** @type {import('jest').Config} */
 const config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 module.exports = config;
@@ -103,7 +103,7 @@ import type {Config} from 'jest';
 import {defaults} from 'jest-config';
 
 const config: Config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 export default config;
@@ -243,7 +243,8 @@ This option requires `collectCoverage` to be set to `true` or Jest to be invoked
 
 <details>
   <summary>Help:</summary>
-  If you are seeing coverage output such as...
+
+If you are seeing coverage output such as...
 
 ```
 =============================== Coverage summary ===============================
@@ -930,7 +931,7 @@ export default config;
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
-Default: `["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"]`
+Default: `["js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 
@@ -1143,42 +1144,6 @@ If you also have specified [`rootDir`](#rootdir-string), the resolution of this 
 Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
-
-<details>
-<summary>Prettier version 3 is not supported!</summary>
-
-You can either pass `prettierPath: null` in your config to disable using prettier if you don't need it, or use v2 of Prettier solely for Jest.
-
-```json title="package.json"
-{
-  "devDependencies": {
-    "prettier-2": "npm:prettier@^2"
-  }
-}
-```
-
-```js tab
-/** @type {import('jest').Config} */
-const config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-module.exports = config;
-```
-
-```ts tab
-import type {Config} from 'jest';
-
-const config: Config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-export default config;
-```
-
-We hope to support Prettier v3 seamlessly out of the box in a future version of Jest. See [this](https://github.com/jestjs/jest/issues/14305) tracking issue.
-
-</details>
 
 ### `projects` \[array&lt;string | ProjectConfig&gt;]
 
@@ -1738,14 +1703,14 @@ test('does not show prototypes for object and array inline', () => {
     array: [{hello: 'Danger'}],
   };
   expect(object).toMatchInlineSnapshot(`
-{
-  "array": [
     {
-      "hello": "Danger",
-    },
-  ],
-}
-    `);
+      "array": [
+        {
+          "hello": "Danger",
+        },
+      ],
+    }
+  `);
 });
 ```
 
@@ -1753,7 +1718,7 @@ test('does not show prototypes for object and array inline', () => {
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
+The path to a module that can resolve test\<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 ```js title="custom-resolver.js"
 module.exports = {

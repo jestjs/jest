@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as ProcessModule from 'process';
 import type * as Global from './Global';
 
-type Process = NodeJS.Process;
+type Process = typeof ProcessModule;
 
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
@@ -81,6 +82,11 @@ export type SyncEvent =
       // an `afterAll` hook)
       name: 'error';
       error: Exception;
+      promise?: Promise<unknown>;
+    }
+  | {
+      name: 'error_handled';
+      promise: Promise<unknown>;
     };
 
 export type AsyncEvent =
@@ -213,10 +219,9 @@ export type RunResult = {
 export type TestResults = Array<TestResult>;
 
 export type GlobalErrorHandlers = {
-  uncaughtException: Array<(exception: Exception) => void>;
-  unhandledRejection: Array<
-    (exception: Exception, promise: Promise<unknown>) => void
-  >;
+  rejectionHandled: Array<(promise: Promise<unknown>) => void>;
+  uncaughtException: Array<NodeJS.UncaughtExceptionListener>;
+  unhandledRejection: Array<NodeJS.UnhandledRejectionListener>;
 };
 
 export type State = {
@@ -238,6 +243,7 @@ export type State = {
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
+  unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
 };
 
 export type DescribeBlock = {
@@ -271,4 +277,5 @@ export type TestEntry = {
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
   failing: boolean;
+  unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
 };

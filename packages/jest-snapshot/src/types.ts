@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Expression} from '@babel/types';
 import type {MatcherContext} from 'expect';
+import type {Frame} from 'jest-message-util';
 import type {PrettyFormatOptions} from 'pretty-format';
 import type SnapshotState from './State';
 
@@ -74,3 +76,9 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
 }
 
 export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;
+
+export type InlineSnapshot = {
+  snapshot: string;
+  frame: Frame;
+  node?: Expression;
+};

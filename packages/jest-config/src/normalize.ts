@@ -60,6 +60,9 @@ export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
+// we wanna avoid webpack trying to be clever
+const requireResolve = (module: string) => require.resolve(module);
+
 function verifyDirectoryExists(path: string, key: string) {
   try {
     const rootStat = statSync(path);
@@ -216,7 +219,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    [customJSPattern, customTSPattern].forEach(pattern => {
+    for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
         if (Array.isArray(customTransformer)) {
@@ -235,7 +238,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
           }
         }
       }
-    });
+    }
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -255,7 +258,9 @@ const normalizeCollectCoverageFrom = (
     value = [];
   }
 
-  if (!Array.isArray(initialCollectCoverageFrom)) {
+  if (Array.isArray(initialCollectCoverageFrom)) {
+    value = initialCollectCoverageFrom;
+  } else {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
     } catch {}
@@ -263,8 +268,6 @@ const normalizeCollectCoverageFrom = (
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
-  } else {
-    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -525,7 +528,7 @@ export default async function normalize(
   }
 
   options.testEnvironment = resolveTestEnvironment({
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
     testEnvironment:
       options.testEnvironment ||
@@ -667,7 +670,7 @@ export default async function normalize(
             option &&
             resolveRunner(newOptions.resolver, {
               filePath: option,
-              requireResolveFunction: require.resolve,
+              requireResolveFunction: requireResolve,
               rootDir: options.rootDir,
             });
         }
@@ -759,7 +762,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],
@@ -951,7 +954,7 @@ export default async function normalize(
               config: {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -960,7 +963,7 @@ export default async function normalize(
               config: watchPlugin[1] || {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -981,9 +984,9 @@ export default async function normalize(
     );
   }
 
-  newOptions.roots.forEach((root, i) => {
+  for (const [i, root] of newOptions.roots.entries()) {
     verifyDirectoryExists(root, `roots[${i}]`);
-  });
+  }
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
@@ -995,7 +998,7 @@ export default async function normalize(
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath:
       options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
   });
 
@@ -1089,6 +1092,7 @@ export default async function normalize(
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
+  newOptions.runInBand = argv.runInBand || false;
 
   if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(

@@ -22,7 +22,7 @@ const concatenateRelevantDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] === op && diff[1].length !== 0 // empty if change is newline
+        : diff[0] === op && diff[1].length > 0 // empty if change is newline
         ? changeColor(diff[1])
         : ''),
     '',
@@ -31,8 +31,8 @@ const concatenateRelevantDiffs = (
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
   private readonly op: number;
-  private line: Array<Diff>; // incomplete line
-  private lines: Array<Diff>; // complete lines
+  private readonly line: Array<Diff>; // incomplete line
+  private readonly lines: Array<Diff>; // complete lines
   private readonly changeColor: DiffOptionsColor;
 
   constructor(op: number, changeColor: DiffOptionsColor) {
@@ -54,14 +54,14 @@ class ChangeBuffer {
     // therefore change diffs have change color;
     // otherwise then it has line color only.
     this.lines.push(
-      this.line.length !== 1
-        ? new Diff(
+      this.line.length === 1
+        ? this.line[0][0] === this.op
+          ? this.line[0] // can use instance
+          : new Diff(this.op, this.line[0][1])
+        : new Diff(
             this.op,
             concatenateRelevantDiffs(this.op, this.line, this.changeColor),
-          )
-        : this.line[0][0] === this.op
-        ? this.line[0] // can use instance
-        : new Diff(this.op, this.line[0][1]), // was common diff
+          ), // was common diff
     );
     this.line.length = 0;
   }
@@ -82,19 +82,21 @@ class ChangeBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      substrings.forEach((substring, i) => {
+      for (let i = 0; i < substrings.length; i++) {
+        const substring = substrings[i];
+
         if (i < iLast) {
           // The first substring completes the current change line.
           // A middle substring is a change line.
           this.pushSubstring(substring);
           this.pushLine();
-        } else if (substring.length !== 0) {
+        } else if (substring.length > 0) {
           // The last substring starts a change line, if it is not empty.
           // Important: This non-empty condition also automatically omits
           // the newline appended to the end of expected and received strings.
           this.pushSubstring(substring);
         }
-      });
+      }
     } else {
       // Append non-multiline string to current change line.
       this.pushDiff(diff);
@@ -153,7 +155,9 @@ class CommonBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      substrings.forEach((substring, i) => {
+      for (let i = 0; i < substrings.length; i++) {
+        const substring = substrings[i];
+
         if (i === 0) {
           const subdiff = new Diff(op, substring);
           if (
@@ -173,13 +177,13 @@ class CommonBuffer {
         } else if (i < iLast) {
           // A middle substring is a common line.
           this.pushDiffCommonLine(new Diff(op, substring));
-        } else if (substring.length !== 0) {
+        } else if (substring.length > 0) {
           // The last substring starts a change line, if it is not empty.
           // Important: This non-empty condition also automatically omits
           // the newline appended to the end of expected and received strings.
           this.pushDiffChangeLines(new Diff(op, substring));
         }
-      });
+      }
     } else {
       // Append non-multiline string to current change lines.
       // Important: It cannot be at the end following empty change lines,
@@ -213,7 +217,7 @@ const getAlignedDiffs = (
   const insertBuffer = new ChangeBuffer(DIFF_INSERT, changeColor);
   const commonBuffer = new CommonBuffer(deleteBuffer, insertBuffer);
 
-  diffs.forEach(diff => {
+  for (const diff of diffs) {
     switch (diff[0]) {
       case DIFF_DELETE:
         deleteBuffer.align(diff);
@@ -226,7 +230,7 @@ const getAlignedDiffs = (
       default:
         commonBuffer.align(diff);
     }
-  });
+  }
 
   return commonBuffer.getLines();
 };

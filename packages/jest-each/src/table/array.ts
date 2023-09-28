@@ -60,16 +60,19 @@ const formatTitle = (
   rowIndex: number,
 ): string =>
   row
-    .reduce<string>((formattedTitle, value) => {
-      const [placeholder] = getMatchingPlaceholders(formattedTitle);
-      const normalisedValue = normalisePlaceholderValue(value);
-      if (!placeholder) return formattedTitle;
+    .reduce<string>(
+      (formattedTitle, value) => {
+        const [placeholder] = getMatchingPlaceholders(formattedTitle);
+        const normalisedValue = normalisePlaceholderValue(value);
+        if (!placeholder) return formattedTitle;
 
-      if (placeholder === PRETTY_PLACEHOLDER)
-        return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
+        if (placeholder === PRETTY_PLACEHOLDER)
+          return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
-      return util.format(formattedTitle, normalisedValue);
-    }, interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex))
+        return util.format(formattedTitle, normalisedValue);
+      },
+      interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex),
+    )
     .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>

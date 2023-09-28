@@ -170,9 +170,15 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         throw new Err();
       })[toThrow](CustomError);
       jestExpect(() => {
+        throw new SubErr();
+      })[toThrow](new SubErr());
+      jestExpect(() => {
         throw new Err();
       }).not[toThrow](Err2);
       jestExpect(() => {}).not[toThrow](Err);
+      jestExpect(() => {
+        throw new SubErr();
+      }).not[toThrow](new SubSubErr());
     });
 
     test('did not throw at all', () => {

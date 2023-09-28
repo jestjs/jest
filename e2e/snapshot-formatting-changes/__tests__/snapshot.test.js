@@ -13,14 +13,14 @@ describe('snapshot serializer', () => {
       array: [{hello: 'Danger'}],
     };
     expect(object).toMatchInlineSnapshot(`
-{
-        "array": [
-                {
-                        "hello": "Danger",
-                },
-        ],
-}
-`);
+      {
+              "array": [
+                      {
+                              "hello": "Danger",
+                      },
+              ],
+      }
+    `);
   });
 
   it('uses 8 chars for indent, and shows no prototypes for object and array in a snapshot', () => {

@@ -8,7 +8,7 @@
 import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
-import {makeProjectConfig} from '@jest/test-utils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
@@ -56,7 +56,10 @@ const toTests = (paths: Array<string>) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  sequencer = new TestSequencer();
+  sequencer = new TestSequencer({
+    contexts: [],
+    globalConfig: makeGlobalConfig(),
+  });
 });
 
 test('sorts by file size if there is no timing information', () => {
@@ -151,7 +154,8 @@ test('writes the cache based on results without existing cache', async () => {
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, runtime: 3, start: 1},
+        // this is missing `runtime` to test that it is calculated
+        perfStats: {end: 4, start: 1},
         testFilePath: '/test-c.js',
       },
       {

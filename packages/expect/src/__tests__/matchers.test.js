@@ -66,7 +66,7 @@ describe('.rejects', () => {
     }).rejects.toThrow('Test');
   });
 
-  ['a', [1], () => {}, {a: 1}].forEach(value => {
+  for (const value of ['a', [1], () => {}, {a: 1}]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -87,9 +87,9 @@ describe('.rejects', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
+  }
 
-  [4, null, true, undefined].forEach(value => {
+  for (const value of [4, null, true, undefined]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -110,7 +110,7 @@ describe('.rejects', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
+  }
 
   it('fails for promise that resolves', async () => {
     let error;
@@ -143,7 +143,7 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
-  ['a', [1], () => {}, {a: 1}].forEach(value => {
+  for (const value of ['a', [1], () => {}, {a: 1}]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -165,9 +165,9 @@ describe('.resolves', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
+  }
 
-  [4, null, true, undefined].forEach(value => {
+  for (const value of [4, null, true, undefined]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -189,7 +189,7 @@ describe('.resolves', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
+  }
 
   it('fails for promise that rejects', async () => {
     let error;
@@ -218,7 +218,7 @@ describe('.toBe()', () => {
     jestExpect(BigInt(1)).toBe(BigInt(1));
   });
 
-  [
+  for (const [a, b] of [
     [1, 2],
     [true, false],
     [() => {}, () => {}],
@@ -243,32 +243,32 @@ describe('.toBe()', () => {
     [[], []],
     [null, undefined],
     [-0, +0],
-  ].forEach(([a, b]) => {
+  ]) {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() => jestExpect(a).toBe(b)).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [a, b] of [
     [BigInt(1), BigInt(2)],
     [{a: BigInt(1)}, {a: BigInt(1)}],
-  ].forEach(([a, b]) => {
+  ]) {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() => jestExpect(a).toBe(b)).toThrow('toBe');
     });
-  });
+  }
 
-  [false, 1, 'a', undefined, null, {}, []].forEach(v => {
+  for (const v of [false, 1, 'a', undefined, null, {}, []]) {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
       expect(() => jestExpect(v).not.toBe(v)).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [BigInt(1), BigInt('1')].forEach(v => {
+  for (const v of [BigInt(1), BigInt('1')]) {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
       expect(() => jestExpect(v).not.toBe(v)).toThrow('toBe');
     });
-  });
+  }
 
   it('does not crash on circular references', () => {
     const obj = {};
@@ -487,7 +487,7 @@ describe('.toStrictEqual()', () => {
 
 describe('.toEqual()', () => {
   /* eslint-disable no-new-wrappers */
-  [
+  for (const [a, b] of [
     [true, false],
     [1, 2],
     [0, -0],
@@ -666,8 +666,8 @@ describe('.toEqual()', () => {
       [, , 2, ,],
     ],
     [
-      Object.assign([], {4294967295: 1}),
-      Object.assign([], {4294967295: 2}), // issue 11056
+      Object.assign([], {4_294_967_295: 1}),
+      Object.assign([], {4_294_967_295: 2}), // issue 11056
     ],
     [
       // eslint-disable-next-line no-useless-computed-key
@@ -683,28 +683,28 @@ describe('.toEqual()', () => {
       Object.assign([], {[Symbol()]: 1}),
       Object.assign([], {[Symbol()]: 1}), // issue 11056: also check symbols
     ],
-  ].forEach(([a, b]) => {
+  ]) {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
     )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
       jestExpect(a).not.toEqual(b);
     });
-  });
+  }
 
-  [
+  for (const [a, b] of [
     [BigInt(1), BigInt(2)],
     [BigInt(1), 1],
-  ].forEach(([a, b]) => {
+  ]) {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
     )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrow('toEqual');
       jestExpect(a).not.toEqual(b);
     });
-  });
+  }
 
-  [
+  for (const [a, b] of [
     [true, true],
     [1, 1],
     [NaN, NaN],
@@ -928,16 +928,16 @@ describe('.toEqual()', () => {
     [{a: 1, b: jestExpect.optionalFn()}, {a: 1}],
     [[1], [1, jestExpect.optionalFn()]],
     [[1, jestExpect.optionalFn()], [1]],
-  ].forEach(([a, b]) => {
+  ]) {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [a, b] of [
     [BigInt(1), BigInt(1)],
     [BigInt(0), BigInt('0')],
     [[BigInt(1)], [BigInt(1)]],
@@ -948,14 +948,14 @@ describe('.toEqual()', () => {
     [Immutable.List([BigInt(1)]), Immutable.List([BigInt(1)])],
     [{a: BigInt(99)}, {a: BigInt(99)}],
     [new Set([BigInt(1), BigInt(2)]), new Set([BigInt(1), BigInt(2)])],
-  ].forEach(([a, b]) => {
+  ]) {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrow('toEqual');
     });
-  });
+  }
 
   test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
@@ -1092,7 +1092,7 @@ describe('.toBeInstanceOf()', () => {
   });
   class SubHasNameProp extends DefinesNameProp {}
 
-  [
+  for (const [a, b] of [
     [new Map(), Map],
     [[], Array],
     [new A(), A],
@@ -1101,7 +1101,7 @@ describe('.toBeInstanceOf()', () => {
     [new SubHasNameProp(), DefinesNameProp], // omit extends
     [new SubHasStaticNameMethod(), B], // Received
     [new HasStaticNameMethod(), HasStaticNameMethod], // Expected
-  ].forEach(([a, b]) => {
+  ]) {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
         jestExpect(a).not.toBeInstanceOf(b),
@@ -1109,9 +1109,9 @@ describe('.toBeInstanceOf()', () => {
 
       jestExpect(a).toBeInstanceOf(b);
     });
-  });
+  }
 
-  [
+  for (const [a, b] of [
     ['a', String],
     [1, Number],
     [true, Boolean],
@@ -1121,7 +1121,7 @@ describe('.toBeInstanceOf()', () => {
     [null, String],
     [/\w+/, function () {}],
     [new DefinesNameProp(), RegExp],
-  ].forEach(([a, b]) => {
+  ]) {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
         jestExpect(a).toBeInstanceOf(b),
@@ -1129,7 +1129,7 @@ describe('.toBeInstanceOf()', () => {
 
       jestExpect(a).not.toBeInstanceOf(b);
     });
-  });
+  }
 
   it('throws if constructor is not a function', () => {
     expect(() =>
@@ -1147,7 +1147,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+  for (const v of [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity]) {
     test(`'${stringify(v)}' is truthy`, () => {
       jestExpect(v).toBeTruthy();
       jestExpect(v).not.toBeFalsy();
@@ -1158,9 +1158,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
 
       expect(() => jestExpect(v).toBeFalsy()).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [BigInt(1)].forEach(v => {
+  for (const v of [BigInt(1)]) {
     test(`'${stringify(v)}' is truthy`, () => {
       jestExpect(v).toBeTruthy();
       jestExpect(v).not.toBeFalsy();
@@ -1169,9 +1169,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
 
       expect(() => jestExpect(v).toBeFalsy()).toThrow('toBeFalsy');
     });
-  });
+  }
 
-  [false, null, NaN, 0, '', undefined].forEach(v => {
+  for (const v of [false, null, NaN, 0, '', undefined]) {
     test(`'${stringify(v)}' is falsy`, () => {
       jestExpect(v).toBeFalsy();
       jestExpect(v).not.toBeTruthy();
@@ -1182,9 +1182,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
         jestExpect(v).not.toBeFalsy(),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [BigInt(0)].forEach(v => {
+  for (const v of [BigInt(0)]) {
     test(`'${stringify(v)}' is falsy`, () => {
       jestExpect(v).toBeFalsy();
       jestExpect(v).not.toBeTruthy();
@@ -1193,35 +1193,46 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
 
       expect(() => jestExpect(v).not.toBeFalsy()).toThrow('toBeFalsy');
     });
-  });
+  }
 });
 
 describe('.toBeNaN()', () => {
   it('{pass: true} expect(NaN).toBeNaN()', () => {
-    [NaN, Math.sqrt(-1), Infinity - Infinity, 0 / 0].forEach(v => {
+    for (const v of [NaN, Math.sqrt(-1), Infinity - Infinity, 0 / 0]) {
       jestExpect(v).toBeNaN();
 
       expect(() => jestExpect(v).not.toBeNaN()).toThrowErrorMatchingSnapshot();
-    });
+    }
   });
 
   it('throws', () => {
-    [1, '', null, undefined, {}, [], 0.2, 0, Infinity, -Infinity].forEach(v => {
+    for (const v of [
+      1,
+      '',
+      null,
+      undefined,
+      {},
+      [],
+      0.2,
+      0,
+      Infinity,
+      -Infinity,
+    ]) {
       expect(() => jestExpect(v).toBeNaN()).toThrowErrorMatchingSnapshot();
 
       jestExpect(v).not.toBeNaN();
-    });
+    }
   });
 });
 
 describe('.toBeNull()', () => {
-  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+  for (const v of [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity]) {
     test(`fails for '${stringify(v)}'`, () => {
       jestExpect(v).not.toBeNull();
 
       expect(() => jestExpect(v).toBeNull()).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
   it('fails for null with .not', () => {
     expect(() =>
@@ -1235,7 +1246,7 @@ describe('.toBeNull()', () => {
 });
 
 describe('.toBeDefined(), .toBeUndefined()', () => {
-  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+  for (const v of [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity]) {
     test(`'${stringify(v)}' is defined`, () => {
       jestExpect(v).toBeDefined();
       jestExpect(v).not.toBeUndefined();
@@ -1248,9 +1259,9 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
         jestExpect(v).toBeUndefined(),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [BigInt(1)].forEach(v => {
+  for (const v of [BigInt(1)]) {
     test(`'${stringify(v)}' is defined`, () => {
       jestExpect(v).toBeDefined();
       jestExpect(v).not.toBeUndefined();
@@ -1259,7 +1270,7 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
 
       expect(() => jestExpect(v).toBeUndefined()).toThrow('toBeUndefined');
     });
-  });
+  }
 
   test('undefined is undefined', () => {
     jestExpect(undefined).toBeUndefined();
@@ -1279,7 +1290,7 @@ describe(
   '.toBeGreaterThan(), .toBeLessThan(), ' +
     '.toBeGreaterThanOrEqual(), .toBeLessThanOrEqual()',
   () => {
-    [
+    for (const [small, big] of [
       [1, 2],
       [-Infinity, Infinity],
       [Number.MIN_VALUE, Number.MAX_VALUE],
@@ -1287,7 +1298,7 @@ describe(
       [0b11, 0b111],
       [0o11, 0o22],
       [0.1, 0.2],
-    ].forEach(([small, big]) => {
+    ]) {
       it(`{pass: true} expect(${small}).toBeLessThan(${big})`, () => {
         jestExpect(small).toBeLessThan(big);
       });
@@ -1353,7 +1364,7 @@ describe(
           jestExpect(big).toBeLessThanOrEqual(small),
         ).toThrowErrorMatchingSnapshot();
       });
-    });
+    }
 
     test('can compare BigInt to Numbers', () => {
       const a = BigInt(2);
@@ -1363,11 +1374,11 @@ describe(
       jestExpect(a).toBeLessThan(3);
       jestExpect(a).toBeLessThanOrEqual(2);
     });
-    [
+    for (const [small, big] of [
       [BigInt(1), BigInt(2)],
       [BigInt(0x11), BigInt(0x22)],
       [-1, BigInt(2)],
-    ].forEach(([small, big]) => {
+    ]) {
       it(`{pass: true} expect(${stringify(small)}).toBeLessThan(${stringify(
         big,
       )})`, () => {
@@ -1449,15 +1460,15 @@ describe(
           'toBeLessThanOrEqual',
         );
       });
-    });
+    }
 
-    [
+    for (const [n1, n2] of [
       [1, 1],
       [Number.MIN_VALUE, Number.MIN_VALUE],
       [Number.MAX_VALUE, Number.MAX_VALUE],
       [Infinity, Infinity],
       [-Infinity, -Infinity],
-    ].forEach(([n1, n2]) => {
+    ]) {
       test(`equal numbers: [${n1}, ${n2}]`, () => {
         jestExpect(n1).toBeGreaterThanOrEqual(n2);
         jestExpect(n1).toBeLessThanOrEqual(n2);
@@ -1470,12 +1481,12 @@ describe(
           jestExpect(n1).not.toBeLessThanOrEqual(n2),
         ).toThrowErrorMatchingSnapshot();
       });
-    });
+    }
 
-    [
+    for (const [n1, n2] of [
       [BigInt(1), BigInt(1)],
       [BigInt(Number.MAX_SAFE_INTEGER), BigInt(Number.MAX_SAFE_INTEGER)],
-    ].forEach(([n1, n2]) => {
+    ]) {
       test(`equal numbers: [${n1}, ${n2}]`, () => {
         jestExpect(n1).toBeGreaterThanOrEqual(n2);
         jestExpect(n1).toBeLessThanOrEqual(n2);
@@ -1488,7 +1499,7 @@ describe(
           'toBeLessThanOrEqual',
         );
       });
-    });
+    }
   },
 );
 
@@ -1516,7 +1527,7 @@ describe('.toContain(), .toContainEqual()', () => {
     );
   });
 
-  [
+  for (const [list, v] of [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
     [[undefined, null], null],
@@ -1526,7 +1537,7 @@ describe('.toContain(), .toContainEqual()', () => {
     ['11112111', '2'],
     [new Set(['abc', 'def']), 'abc'],
     [typedArray, 1],
-  ].forEach(([list, v]) => {
+  ]) {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
 
@@ -1534,25 +1545,25 @@ describe('.toContain(), .toContainEqual()', () => {
         jestExpect(list).not.toContain(v),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [list, v] of [
     [[BigInt(1), BigInt(2), BigInt(3), BigInt(4)], BigInt(1)],
     [[1, 2, 3, BigInt(3), 4], BigInt(3)],
-  ].forEach(([list, v]) => {
+  ]) {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
 
       expect(() => jestExpect(list).not.toContain(v)).toThrow('toContain');
     });
-  });
+  }
 
-  [
+  for (const [list, v] of [
     [[1, 2, 3], 4],
     [[null, undefined], 1],
     [[{}, []], []],
     [[{}, []], {}],
-  ].forEach(([list, v]) => {
+  ]) {
     it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
       jestExpect(list).not.toContain(v);
 
@@ -1560,15 +1571,15 @@ describe('.toContain(), .toContainEqual()', () => {
         jestExpect(list).toContain(v),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [[[BigInt(1), BigInt(2), BigInt(3)], 3]].forEach(([list, v]) => {
+  for (const [list, v] of [[[BigInt(1), BigInt(2), BigInt(3)], 3]]) {
     it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
       jestExpect(list).not.toContain(v);
 
       expect(() => jestExpect(list).toContain(v)).toThrow('toContain');
     });
-  });
+  }
 
   test('error cases', () => {
     expect(() => jestExpect(null).toContain(1)).toThrowErrorMatchingSnapshot();
@@ -1585,7 +1596,7 @@ describe('.toContain(), .toContainEqual()', () => {
     expect(() => jestExpect('1').toContain(BigInt(1))).toThrow('toContain');
   });
 
-  [
+  for (const [list, v] of [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
     [[undefined, null], null],
@@ -1594,7 +1605,7 @@ describe('.toContain(), .toContainEqual()', () => {
     [[{a: 'b'}, {a: 'c'}], {a: 'b'}],
     [new Set([1, 2, 3, 4]), 1],
     [typedArray, 1],
-  ].forEach(([list, v]) => {
+  ]) {
     it(`'${stringify(list)}' contains a value equal to '${stringify(
       v,
     )}'`, () => {
@@ -1603,9 +1614,9 @@ describe('.toContain(), .toContainEqual()', () => {
         jestExpect(list).not.toContainEqual(v),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [[[{a: 'b'}, {a: 'c'}], {a: 'd'}]].forEach(([list, v]) => {
+  for (const [list, v] of [[[{a: 'b'}, {a: 'c'}], {a: 'd'}]]) {
     it(`'${stringify(list)}' does not contain a value equal to'${stringify(
       v,
     )}'`, () => {
@@ -1615,7 +1626,7 @@ describe('.toContain(), .toContainEqual()', () => {
         jestExpect(list).toContainEqual(v),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
   test('error cases for toContainEqual', () => {
     expect(() =>
@@ -1625,7 +1636,7 @@ describe('.toContain(), .toContainEqual()', () => {
 });
 
 describe('.toBeCloseTo', () => {
-  [
+  for (const [n1, n2] of [
     [0, 0],
     [0, 0.001],
     [1.23, 1.229],
@@ -1634,7 +1645,7 @@ describe('.toBeCloseTo', () => {
     [1.23, 1.234],
     [Infinity, Infinity],
     [-Infinity, -Infinity],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(`{pass: true} expect(${n1}).toBeCloseTo(${n2})`, () => {
       jestExpect(n1).toBeCloseTo(n2);
 
@@ -1642,16 +1653,16 @@ describe('.toBeCloseTo', () => {
         jestExpect(n1).not.toBeCloseTo(n2),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [n1, n2] of [
     [0, 0.01],
     [1, 1.23],
-    [1.23, 1.2249999],
+    [1.23, 1.224_999_9],
     [Infinity, -Infinity],
     [Infinity, 1.23],
     [-Infinity, -1.23],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(`{pass: false} expect(${n1}).toBeCloseTo(${n2})`, () => {
       jestExpect(n1).not.toBeCloseTo(n2);
 
@@ -1659,12 +1670,12 @@ describe('.toBeCloseTo', () => {
         jestExpect(n1).toBeCloseTo(n2),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
-    [3.141592e-7, 3e-7, 8],
-    [56789, 51234, -4],
-  ].forEach(([n1, n2, p]) => {
+  for (const [n1, n2, p] of [
+    [3.141_592e-7, 3e-7, 8],
+    [56_789, 51_234, -4],
+  ]) {
     it(`{pass: false} expect(${n1}).toBeCloseTo(${n2}, ${p})`, () => {
       jestExpect(n1).not.toBeCloseTo(n2, p);
 
@@ -1672,14 +1683,14 @@ describe('.toBeCloseTo', () => {
         jestExpect(n1).toBeCloseTo(n2, p),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [n1, n2, p] of [
     [0, 0.1, 0],
     [0, 0.0001, 3],
-    [0, 0.000004, 5],
-    [2.0000002, 2, 5],
-  ].forEach(([n1, n2, p]) => {
+    [0, 0.000_004, 5],
+    [2.000_000_2, 2, 5],
+  ]) {
     it(`{pass: true} expect(${n1}).toBeCloseTo(${n2}, ${p})`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);
 
@@ -1687,7 +1698,7 @@ describe('.toBeCloseTo', () => {
         jestExpect(n1).not.toBeCloseTo(n2, p),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
   describe('throws: Matcher error', () => {
     test('promise empty isNot false received', () => {
@@ -1744,10 +1755,10 @@ describe('.toBeCloseTo', () => {
 });
 
 describe('.toMatch()', () => {
-  [
+  for (const [n1, n2] of [
     ['foo', 'foo'],
     ['Foo bar', /^foo/i],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(`{pass: true} expect(${n1}).toMatch(${n2})`, () => {
       jestExpect(n1).toMatch(n2);
 
@@ -1755,18 +1766,18 @@ describe('.toMatch()', () => {
         jestExpect(n1).not.toMatch(n2),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [n1, n2] of [
     ['bar', 'foo'],
     ['bar', /foo/],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(`throws: [${n1}, ${n2}]`, () => {
       expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [n1, n2] of [
     [1, 'foo'],
     [{}, 'foo'],
     [[], 'foo'],
@@ -1774,7 +1785,7 @@ describe('.toMatch()', () => {
     [/foo/i, 'foo'],
     [() => {}, 'foo'],
     [undefined, 'foo'],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(
       'throws if non String actual value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
@@ -1782,16 +1793,16 @@ describe('.toMatch()', () => {
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
       },
     );
-  });
+  }
 
-  [
+  for (const [n1, n2] of [
     ['foo', 1],
     ['foo', {}],
     ['foo', []],
     ['foo', true],
     ['foo', () => {}],
     ['foo', undefined],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(
       'throws if non String/RegExp expected value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
@@ -1799,7 +1810,7 @@ describe('.toMatch()', () => {
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
       },
     );
-  });
+  }
 
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
@@ -1814,14 +1825,14 @@ describe('.toMatch()', () => {
 });
 
 describe('.toHaveLength', () => {
-  [
+  for (const [received, length] of [
     [[1, 2], 2],
     [[], 0],
     [['a', 'b'], 2],
     ['abc', 3],
     ['', 0],
     [() => {}, 0],
-  ].forEach(([received, length]) => {
+  ]) {
     test(`{pass: true} expect(${stringify(
       received,
     )}).toHaveLength(${length})`, () => {
@@ -1830,15 +1841,15 @@ describe('.toHaveLength', () => {
         jestExpect(received).not.toHaveLength(length),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [received, length] of [
     [[1, 2], 3],
     [[], 1],
     [['a', 'b'], 99],
     ['abc', 66],
     ['', 1],
-  ].forEach(([received, length]) => {
+  ]) {
     test(`{pass: false} expect(${stringify(
       received,
     )}).toHaveLength(${length})`, () => {
@@ -1847,7 +1858,7 @@ describe('.toHaveLength', () => {
         jestExpect(received).toHaveLength(length),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
   test('error cases', () => {
     expect(() =>
@@ -1951,7 +1962,7 @@ describe('.toHaveProperty()', () => {
   const valueDiffMultiple =
     'Roses are red, violets are blue.\nTesting with Jest\nIs good for you.';
 
-  [
+  for (const [obj, keyPath, value] of [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
@@ -1974,7 +1985,7 @@ describe('.toHaveProperty()', () => {
     ['', 'length', 0],
     [memoized, 'memo', []],
     [{'': 1}, '', 1],
-  ].forEach(([obj, keyPath, value]) => {
+  ]) {
     test(`{pass: true} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
@@ -1983,9 +1994,9 @@ describe('.toHaveProperty()', () => {
         jestExpect(obj).not.toHaveProperty(keyPath, value),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [obj, keyPath, value] of [
     [{a: {b: {c: {d: 1}}}}, 'a.b.ttt.d', 1],
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, 'a.b.c.d', 2],
@@ -2003,7 +2014,7 @@ describe('.toHaveProperty()', () => {
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
     [{a: {}}, 'a.b', undefined],
-  ].forEach(([obj, keyPath, value]) => {
+  ]) {
     test(`{pass: false} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
@@ -2012,16 +2023,16 @@ describe('.toHaveProperty()', () => {
       ).toThrowErrorMatchingSnapshot();
       jestExpect(obj).not.toHaveProperty(keyPath, value);
     });
-  });
+  }
 
-  [
+  for (const [obj, keyPath] of [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d'],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd']],
     [{'a.b.c.d': 1}, ['a.b.c.d']],
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1]],
     [{a: 0}, 'a'],
     [{a: {b: undefined}}, 'a.b'],
-  ].forEach(([obj, keyPath]) => {
+  ]) {
     test(`{pass: true} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}')`, () => {
@@ -2030,9 +2041,9 @@ describe('.toHaveProperty()', () => {
         jestExpect(obj).not.toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
-  [
+  for (const [obj, keyPath] of [
     [{a: {b: {c: {}}}}, 'a.b.c.d'],
     [{a: {b: {c: {}}}}, '.a.b.c'],
     [{a: 1}, 'a.b.c.d'],
@@ -2044,7 +2055,7 @@ describe('.toHaveProperty()', () => {
     ['', 'key'],
     [Symbol(), 'key'],
     [Object.assign(Object.create(null), {key: 1}), 'not'],
-  ].forEach(([obj, keyPath]) => {
+  ]) {
     test(`{pass: false} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}')`, () => {
@@ -2053,16 +2064,16 @@ describe('.toHaveProperty()', () => {
       ).toThrowErrorMatchingSnapshot();
       jestExpect(obj).not.toHaveProperty(keyPath);
     });
-  });
+  }
 
-  [
+  for (const [obj, keyPath] of [
     [null, 'a.b'],
     [undefined, 'a'],
     [{a: {b: {}}}, undefined],
     [{a: {b: {}}}, null],
     [{a: {b: {}}}, 1],
     [{}, []], // Residue: pass must be initialized
-  ].forEach(([obj, keyPath]) => {
+  ]) {
     test(`{error} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}')`, () => {
@@ -2070,7 +2081,7 @@ describe('.toHaveProperty()', () => {
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 });
 
 describe('toMatchObject()', () => {
@@ -2100,7 +2111,7 @@ describe('toMatchObject()', () => {
   };
 
   const testNotToMatchSnapshots = tuples => {
-    tuples.forEach(([n1, n2]) => {
+    for (const [n1, n2] of tuples) {
       it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
       )})`, () => {
@@ -2109,11 +2120,11 @@ describe('toMatchObject()', () => {
           jestExpect(n1).not.toMatchObject(n2),
         ).toThrowErrorMatchingSnapshot();
       });
-    });
+    }
   };
 
   const testToMatchSnapshots = tuples => {
-    tuples.forEach(([n1, n2]) => {
+    for (const [n1, n2] of tuples) {
       it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
       )})`, () => {
@@ -2122,7 +2133,7 @@ describe('toMatchObject()', () => {
           jestExpect(n1).toMatchObject(n2),
         ).toThrowErrorMatchingSnapshot();
       });
-    });
+    }
   };
 
   describe('circular references', () => {
@@ -2279,7 +2290,7 @@ describe('toMatchObject()', () => {
     [{a: 'b'}, {toString: jestExpect.any(Function)}],
   ]);
 
-  [
+  for (const [n1, n2] of [
     [null, {}],
     [4, {}],
     ['44', {}],
@@ -2290,7 +2301,7 @@ describe('toMatchObject()', () => {
     [{}, 'some string'],
     [{}, true],
     [{}, undefined],
-  ].forEach(([n1, n2]) => {
+  ]) {
     it(`throws expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
     )})`, () => {
@@ -2298,7 +2309,7 @@ describe('toMatchObject()', () => {
         jestExpect(n1).toMatchObject(n2),
       ).toThrowErrorMatchingSnapshot();
     });
-  });
+  }
 
   it('does not match properties up in the prototype chain', () => {
     const a = {};

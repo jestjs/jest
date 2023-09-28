@@ -24,7 +24,7 @@ beforeEach(() => {
   options = {plugins: [AsymmetricMatcher]};
 });
 
-[
+for (const type of [
   String,
   Function,
   Array,
@@ -34,7 +34,7 @@ beforeEach(() => {
   Function,
   () => {},
   function namedFunction() {},
-].forEach(type => {
+]) {
   test(`supports any(${fnNameFor(type)})`, () => {
     const result = prettyFormat(expect.any(type), options);
     expect(result).toBe(`Any<${fnNameFor(type)}>`);
@@ -55,7 +55,7 @@ beforeEach(() => {
       )}>,\n  },\n}`,
     );
   });
-});
+}
 
 test('anything()', () => {
   const result = prettyFormat(expect.anything(), options);

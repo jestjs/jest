@@ -6,6 +6,7 @@
  */
 
 import type {AssertionError} from 'assert';
+import type * as Process from 'process';
 import type {AsymmetricMatchers, JestExpect} from '@jest/expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
@@ -69,7 +70,7 @@ export type Jasmine = {
   version: string;
   testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & AsymmetricMatchers & {process: NodeJS.Process};
+} & AsymmetricMatchers & {process: typeof Process};
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

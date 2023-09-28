@@ -159,8 +159,8 @@ it('provides stdout and stderr from the child processes', async () => {
     workerPath: '/tmp/foo',
   } as WorkerOptions);
 
-  const stdout = worker.getStdout() as NodeJS.ReadableStream;
-  const stderr = worker.getStderr() as NodeJS.ReadableStream;
+  const stdout = worker.getStdout()!;
+  const stderr = worker.getStderr()!;
 
   (forkInterface.stdout as PassThrough).end('Hello ', 'utf8');
   (forkInterface.stderr as PassThrough).end('Jest ', 'utf8');
@@ -527,7 +527,7 @@ it('should check for memory limits and not restart if under percentage limit', a
   const memoryConfig = {
     limit: 0.2,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -594,7 +594,7 @@ it('should check for memory limits and not restart if under absolute limit', asy
   const memoryConfig = {
     limit: 2600,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -621,7 +621,7 @@ it('should check for memory limits and restart if above percentage limit', async
   const memoryConfig = {
     limit: 0.01,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -648,7 +648,7 @@ it('should check for memory limits and restart if above absolute limit', async (
   const memoryConfig = {
     limit: 2000,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
