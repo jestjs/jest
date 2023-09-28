@@ -20,6 +20,7 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
+  invariant,
   isPromise,
   requireOrImportModule,
   tryRealpath,
@@ -411,7 +412,7 @@ class ScriptTransformer {
     if (transformed.map == null || transformed.map === '') {
       try {
         //Could be a potential freeze here.
-        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        //See: https://github.com/jestjs/jest/pull/5177#discussion_r158883570
         const inlineSourceMap = sourcemapFromSource(transformed.code);
         if (inlineSourceMap) {
           transformed.map = inlineSourceMap.toObject() as FixedRawSourceMap;
@@ -458,15 +459,15 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (map != null) {
+    if (map == null) {
+      sourceMapPath = null;
+    } else {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
 
       invariant(sourceMapPath, 'We should always have default sourceMapPath');
 
       writeCacheFile(sourceMapPath, sourceMapContent);
-    } else {
-      sourceMapPath = null;
     }
 
     writeCodeCacheFile(cacheFilePath, code);
@@ -839,7 +840,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return this._config.transform.length !== 0 && !isIgnored;
+    return this._config.transform.length > 0 && !isIgnored;
   }
 }
 
@@ -1018,7 +1019,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (!config.transform.length) {
+  if (config.transform.length === 0) {
     return undefined;
   }
 
@@ -1033,12 +1034,6 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (condition == null || condition === false || condition === '') {
-    throw new Error(message);
-  }
-}
 
 function assertSyncTransformer(
   transformer: Transformer,

@@ -33,6 +33,7 @@ const jestAdapter = async (
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
+    runtime,
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
@@ -108,7 +109,7 @@ const _addSnapshotData = (
   results: TestResult,
   snapshotState: SnapshotState,
 ) => {
-  results.testResults.forEach(({fullName, status, failing}) => {
+  for (const {fullName, status, failing} of results.testResults) {
     if (
       status === 'pending' ||
       status === 'failed' ||
@@ -120,7 +121,7 @@ const _addSnapshotData = (
       // so maintain any snapshots after the error.
       snapshotState.markSnapshotsAsCheckedForTest(fullName);
     }
-  });
+  }
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
@@ -134,7 +135,7 @@ const _addSnapshotData = (
   results.snapshot.matched = snapshotState.matched;
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
-  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 };

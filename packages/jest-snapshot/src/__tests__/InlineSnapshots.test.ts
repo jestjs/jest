@@ -8,23 +8,16 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import prettier = require('prettier');
 import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
 
+const prettier = require('prettier') as typeof import('prettier-v2');
+
 jest.mock('prettier', () => {
   const realPrettier =
-    jest.requireActual<typeof import('prettier')>('prettier');
+    jest.requireActual<typeof import('prettier-v2')>('prettier-v2');
   const mockPrettier = {
-    format: (text, opts) =>
-      realPrettier.format(text, {
-        pluginSearchDirs: [
-          (require('path') as typeof import('path')).dirname(
-            require.resolve('prettier'),
-          ),
-        ],
-        ...opts,
-      }),
+    format: realPrettier.format,
     getFileInfo: {
       sync: () => ({ignored: false, inferredParser: 'babel'}),
     } as unknown as typeof prettier.getFileInfo,
@@ -736,5 +729,25 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
       'test("something", () => {\n' +
       '  expect("a").toMatchInlineSnapshot(`a`);\n' +
       '});\n',
+  );
+});
+
+test('saveInlineSnapshots() replaces string literal, not just template literal', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(filename, 'expect("a").toMatchInlineSnapshot("b");\n');
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 13, file: filename, line: 1} as Frame,
+        snapshot: 'a',
+      },
+    ],
+    dir,
+    'prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    'expect("a").toMatchInlineSnapshot(`a`);\n',
   );
 });

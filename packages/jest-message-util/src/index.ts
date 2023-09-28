@@ -301,7 +301,7 @@ export const formatPath = (
   // highlight paths from the current test file
   if (
     (config.testMatch &&
-      config.testMatch.length &&
+      config.testMatch.length > 0 &&
       micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
@@ -355,7 +355,7 @@ export const formatStackTrace = (
         let fileContent;
         try {
           // TODO: check & read HasteFS instead of reading the filesystem:
-          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          // see: https://github.com/jestjs/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
         } catch {
@@ -462,19 +462,19 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach((item, index) => {
+      for (const [index, item] of result.failureMessages.entries()) {
         errors.push({
           content: item,
           failureDetails: result.failureDetails[index],
           result,
         });
-      });
+      }
       return errors;
     },
     [],
   );
 
-  if (!failedResults.length) {
+  if (failedResults.length === 0) {
     return null;
   }
 
@@ -489,7 +489,7 @@ export const formatResultsErrors = (
         TITLE_INDENT +
           TITLE_BULLET +
           result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
           result.title,
       )}\n`;
 

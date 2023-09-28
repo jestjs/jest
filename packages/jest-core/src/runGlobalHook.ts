@@ -59,7 +59,14 @@ export default async function runGlobalHook({
           },
         );
       } catch (error) {
-        if (util.types.isNativeError(error)) {
+        if (
+          util.types.isNativeError(error) &&
+          (Object.getOwnPropertyDescriptor(error, 'message')?.writable ||
+            Object.getOwnPropertyDescriptor(
+              Object.getPrototypeOf(error),
+              'message',
+            )?.writable)
+        ) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 
           throw error;

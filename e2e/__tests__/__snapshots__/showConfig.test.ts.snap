@@ -40,6 +40,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "cjs",
         "jsx",
         "ts",
+        "mts",
+        "cts",
         "tsx",
         "json",
         "node"
@@ -77,7 +79,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/build/runner.js",
       "transform": [
         [
           "\\\\.[jt]sx?$",
@@ -128,6 +130,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "passWithNoTests": false,
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
+    "runInBand": false,
     "runTestsByPath": false,
     "seed": <<RANDOM_SEED>>,
     "skipFilter": false,

@@ -505,7 +505,7 @@ Also under the alias: `it.concurrent(name, fn, timeout)`
 
 :::caution
 
-`test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
+`test.concurrent` is considered experimental - see [here](https://github.com/jestjs/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
 
 :::
 
@@ -525,7 +525,7 @@ test.concurrent('subtraction 2 numbers', async () => {
 
 :::tip
 
-Use the [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
+Use the [`maxConcurrency`](Configuration.md#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
 
 :::
 
@@ -751,7 +751,7 @@ Also under the alias: `it.failing(name, fn, timeout)`
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -783,7 +783,7 @@ Also under the alias: `it.failing.each(table)(name, fn)` and `` it.failing.each`
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -807,7 +807,7 @@ Also under the aliases: `it.only.failing(name, fn, timeout)`, `fit.failing(name,
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -819,7 +819,7 @@ Also under the aliases: `it.skip.failing(name, fn, timeout)`, `xit.failing(name,
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 

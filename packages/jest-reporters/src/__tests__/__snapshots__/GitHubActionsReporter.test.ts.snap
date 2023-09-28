@@ -100,7 +100,7 @@ Array [
 ",
   ],
   Array [
-    "      <red>×</color> test (10 ms)
+    "      <red>✕</color> test (10 ms)
 ",
   ],
 ]
@@ -113,7 +113,7 @@ Array [
 ",
   ],
   Array [
-    "    <red>×</color> test (10 ms)
+    "    <red>✕</color> test (10 ms)
 ",
   ],
 ]
@@ -148,6 +148,48 @@ Array [
   ],
   Array [
     "  <green>✓</color> test (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output skipped single test inside describe 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "  Test describe
+",
+  ],
+  Array [
+    "    <yellow>○</color> test (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output todo single test inside describe 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "  Test describe
+",
+  ],
+  Array [
+    "    <magenta>✎</color> test (10 ms)
 ",
   ],
   Array [

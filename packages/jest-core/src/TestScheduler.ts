@@ -38,7 +38,7 @@ import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
-import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -98,12 +98,12 @@ class TestScheduler {
     );
     const timings: Array<number> = [];
     const testContexts = new Set<TestContext>();
-    tests.forEach(test => {
+    for (const test of tests) {
       testContexts.add(test.context);
       if (test.duration) {
         timings.push(test.duration);
       }
-    });
+    }
 
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
@@ -180,7 +180,7 @@ class TestScheduler {
         ),
       );
 
-      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
+      for (const [context, snapshotResolver] of contextsWithSnapshotResolvers) {
         const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
@@ -192,7 +192,7 @@ class TestScheduler {
         aggregatedResults.snapshot.filesRemovedList = (
           aggregatedResults.snapshot.filesRemovedList || []
         ).concat(status.filesRemovedList);
-      });
+      }
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
       aggregatedResults.snapshot.failure = !!(
@@ -275,7 +275,7 @@ class TestScheduler {
 
               await testRunner.runTests(tests, watcher, testRunnerOptions);
 
-              unsubscribes.forEach(sub => sub());
+              for (const sub of unsubscribes) sub();
             } else {
               await testRunner.runTests(
                 tests,
@@ -422,12 +422,6 @@ class TestScheduler {
         exit(exitCode);
       }
     }
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }
 

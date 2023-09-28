@@ -2,7 +2,7 @@
   <a href="https://badge.fury.io/js/jest">
     <img src="https://badge.fury.io/js/jest.svg" alt="npm version">
   </a>
-  <a href="https://github.com/facebook/jest/blob/main/LICENSE">
+  <a href="https://github.com/jestjs/jest/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
   </a>
   <a href="https://twitter.com/intent/follow?screen_name=jestjs_">
@@ -10,11 +10,11 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/facebook/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/facebook/jest/nodejs.yml?label=CI&logo=GitHub"></a>
+  <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/facebook/jest/nodejs.yml?label=CI&logo=GitHub"></a>
   <a href="https://codecov.io/github/facebook/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/facebook/jest/main.svg?maxAge=43200"></a>
 </p>
 <p align="center">
-  <a href="https://gitpod.io/#https://github.com/facebook/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
+  <a href="https://gitpod.io/#https://github.com/jestjs/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
 </p>
 
 <!-- A spacer -->
@@ -131,7 +131,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
 
 ```bash
-jest --init
+yarn create jest
 ```
 
 ### Using Babel
@@ -153,7 +153,8 @@ module.exports = {
 
 The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
-<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
+<details>
+  <summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
@@ -229,13 +230,13 @@ Learn more about using [Jest on the official site!](https://jestjs.io)
 
 ## Badge
 
-Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/jestjs/jest) [![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/jestjs/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/jestjs/jest)
 
 <!-- prettier-ignore -->
 ```md
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg?logo=jest)](https://github.com/facebook/jest)
-[![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest)
-[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg?logo=jest)](https://github.com/jestjs/jest)
+[![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/jestjs/jest)
+[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/jestjs/jest)
 ```
 
 ## Contributing
@@ -250,15 +251,15 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Jest.
 
-### [Good First Issues](https://github.com/facebook/jest/labels/good%20first%20issue)
+### [Good First Issues](https://github.com/jestjs/jest/labels/good%20first%20issue)
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/jestjs/jest/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ## Credits
 
 This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
 
-<a href="https://github.com/facebook/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/jestjs/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

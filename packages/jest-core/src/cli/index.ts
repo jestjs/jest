@@ -16,7 +16,7 @@ import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import type {IHasteMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
-import {createDirectory, preRunMessage} from 'jest-util';
+import {createDirectory, pluralize, preRunMessage} from 'jest-util';
 import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';
@@ -26,7 +26,6 @@ import getSelectProjectsMessage from '../getSelectProjectsMessage';
 import createContext from '../lib/createContext';
 import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
 import logDebugMessages from '../lib/logDebugMessages';
-import pluralize from '../pluralize';
 import runJest from '../runJest';
 import type {Filter} from '../types';
 import watch from '../watch';
@@ -66,12 +65,13 @@ export async function runCLI(
 
   if (argv.clearCache) {
     // stick in a Set to dedupe the deletions
-    new Set(configs.map(config => config.cacheDirectory)).forEach(
-      cacheDirectory => {
-        fs.rmSync(cacheDirectory, {force: true, recursive: true});
-        process.stdout.write(`Cleared ${cacheDirectory}\n`);
-      },
+    const uniqueConfigDirectories = new Set(
+      configs.map(config => config.cacheDirectory),
     );
+    for (const cacheDirectory of uniqueConfigDirectories) {
+      fs.rmSync(cacheDirectory, {force: true, recursive: true});
+      process.stdout.write(`Cleared ${cacheDirectory}\n`);
+    }
 
     exit(0);
   }
@@ -122,7 +122,7 @@ export async function runCLI(
 
   const {openHandles} = results;
 
-  if (openHandles && openHandles.length) {
+  if (openHandles && openHandles.length > 0) {
     const formatted = formatHandleErrors(openHandles, configs[0]);
 
     const openHandlesString = pluralize('open handle', formatted.length, 's');

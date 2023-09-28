@@ -15,7 +15,7 @@ import {expect} from '@jest/globals';
 
 describe('toEqual', () => {
   describe('duck type', () => {
-    // https://github.com/facebook/jest/issues/7786
+    // https://github.com/jestjs/jest/issues/7786
 
     const createElement = (name: string, ...childNodes: Array<unknown>) => ({
       childNodes,

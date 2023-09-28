@@ -132,10 +132,10 @@ it('keeps custom ids based on the rootDir', async () => {
 
 it('minimal config is stable across runs', async () => {
   const firstNormalization = await normalize({rootDir: '/root/path/foo'}, {
-    seed: 55555,
+    seed: 55_555,
   } as Config.Argv);
   const secondNormalization = await normalize({rootDir: '/root/path/foo'}, {
-    seed: 55555,
+    seed: 55_555,
   } as Config.Argv);
 
   expect(firstNormalization).toEqual(secondNormalization);
@@ -828,9 +828,9 @@ describe('babel-jest', () => {
     Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
       .default;
     Resolver.findNodeModule = jest.fn((name: string) =>
-      name.indexOf('babel-jest') === -1
-        ? `${path.sep}node_modules${path.sep}${name}`
-        : name,
+      name.includes('babel-jest')
+        ? name
+        : `${path.sep}node_modules${path.sep}${name}`,
     );
   });
 
@@ -1722,6 +1722,8 @@ describe('moduleFileExtensions', () => {
       'cjs',
       'jsx',
       'ts',
+      'mts',
+      'cts',
       'tsx',
       'json',
       'node',
@@ -2128,7 +2130,7 @@ it('parses workerIdleMemoryLimit', async () => {
     {} as Config.Argv,
   );
 
-  expect(options.workerIdleMemoryLimit).toBe(47185920);
+  expect(options.workerIdleMemoryLimit).toBe(47_185_920);
 });
 
 describe('seed', () => {
@@ -2211,5 +2213,19 @@ describe('randomize', () => {
   test('randomize is false when neither is set', async () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
     expect(options.randomize).toBeFalsy();
+  });
+});
+
+describe('runInBand', () => {
+  test('always set it', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.runInBand).toBe(false);
+  });
+
+  test('respect argv', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      runInBand: true,
+    } as Config.Argv);
+    expect(options.runInBand).toBe(true);
   });
 });

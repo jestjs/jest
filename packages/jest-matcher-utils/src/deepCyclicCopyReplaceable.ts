@@ -125,9 +125,9 @@ function deepCyclicCopyMap<T>(
 
   cycles.set(map, newMap);
 
-  map.forEach((value, key) => {
+  for (const [key, value] of map.entries()) {
     newMap.set(key, deepCyclicCopyReplaceable(value, cycles));
-  });
+  }
 
   return newMap as any;
 }

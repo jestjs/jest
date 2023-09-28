@@ -107,7 +107,7 @@ const IDVisitor = {
   ) {
     ids.add(path);
   },
-  blacklist: [
+  denylist: [
     'TypeAnnotation',
     'TSTypeAnnotation',
     'TSTypeQuery',
@@ -135,7 +135,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-expect-error: ReferencedIdentifier and blacklist are not known on visitors
+    // @ts-expect-error: ReferencedIdentifier and denylist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -371,7 +371,7 @@ export default function jestHoist(): PluginObj<{
           CallExpression: visitCallExpr,
           VariableDeclarator: visitVariableDeclarator,
           // do not traverse into nested blocks, or we'll hoist calls in there out to this block
-          blacklist: ['BlockStatement'],
+          denylist: ['BlockStatement'],
         });
         callsHoistPoint.remove();
         varsHoistPoint.remove();

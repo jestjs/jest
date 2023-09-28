@@ -156,12 +156,12 @@ export default async function watch(
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
-  watchPlugins.forEach((plugin: WatchPlugin) => {
+  for (const plugin of watchPlugins) {
     const hookSubscriber = hooks.getSubscriber();
     if (plugin.apply) {
       plugin.apply(hookSubscriber);
     }
-  });
+  }
 
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
@@ -237,13 +237,13 @@ export default async function watch(
 
   emitFileChange();
 
-  hasteMapInstances.forEach((hasteMapInstance, index) => {
+  for (const [index, hasteMapInstance] of hasteMapInstances.entries()) {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) =>
         isValidPath(globalConfig, filePath),
       );
 
-      if (validPaths.length) {
+      if (validPaths.length > 0) {
         const context = (contexts[index] = createContext(
           contexts[index].config,
           {hasteFS, moduleMap},
@@ -260,7 +260,7 @@ export default async function watch(
         startRun(globalConfig);
       }
     });
-  });
+  }
 
   if (!hasExitListener) {
     hasExitListener = true;
