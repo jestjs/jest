@@ -21,28 +21,16 @@ import {
 import {getType, isPrimitive} from 'jest-get-type';
 import {
   format as prettyFormat,
-  plugins as prettyFormatPlugins,
 } from 'pretty-format';
 import Replaceable from './Replaceable';
 import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
-const {
-  AsymmetricMatcher,
-  DOMCollection,
-  DOMElement,
-  Immutable,
-  ReactElement,
-  ReactTestComponent,
-} = prettyFormatPlugins;
+import {
+  getSerializer,
+} from 'jest-snapshot';
 
-const PLUGINS = [
-  ReactTestComponent,
-  ReactElement,
-  DOMElement,
-  DOMCollection,
-  Immutable,
-  AsymmetricMatcher,
-];
+
+
 
 type MatcherHintColor = (arg: string) => string; // subset of Chalk type
 
@@ -102,7 +90,7 @@ export const stringify = (
       maxDepth,
       maxWidth,
       min: true,
-      plugins: PLUGINS,
+      plugins: getSerializer(),
     });
   } catch {
     result = prettyFormat(object, {
@@ -110,7 +98,7 @@ export const stringify = (
       maxDepth,
       maxWidth,
       min: true,
-      plugins: PLUGINS,
+      plugins: getSerializer(),
     });
   }
 
