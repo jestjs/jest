@@ -1,0 +1,1 @@
+export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};

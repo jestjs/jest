@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`group 1 concurrent 1 1`] = `"concurrent 1-1"`;
+
+exports[`group 1 concurrent 2 1`] = `"concurrent 1-2"`;
+
+exports[`group 2 concurrent 1 1`] = `"concurrent 2-1"`;
+
+exports[`group 2 concurrent 2 1`] = `"concurrent 2-2"`;

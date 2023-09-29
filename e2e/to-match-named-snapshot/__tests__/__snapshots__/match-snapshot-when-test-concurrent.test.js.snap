@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test1 1`] = `"concurrent 1-1"`;
+
+exports[`test2 1`] = `"concurrent 1-2"`;
+
+exports[`test3 1`] = `"concurrent 2-1"`;
+
+exports[`test4 1`] = `"concurrent 2-2"`;

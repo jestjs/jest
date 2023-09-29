@@ -8,3 +8,4 @@
 
 // prettier-ignore
 test('escape strings', () => expect('one: \\\'').toMatchSnapshot());
+test('escape strings two', () => expect('two: \'"').toMatchSnapshot());
