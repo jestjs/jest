@@ -83,7 +83,7 @@ const defaultOptions: Config.DefaultOptions = {
   testLocationInResults: false,
   testMatch: [
     '**/__tests__/**/*.?([mc])[jt]s?(x)',
-    '**/?(*.)+(spec|test).?([mc])[tj]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
   ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
