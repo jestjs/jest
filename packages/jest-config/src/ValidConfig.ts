@@ -163,8 +163,11 @@ export const initialOptions: Config.InitialOptions = {
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
-    '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
-    ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
+    [
+      '/__tests__/\\.test\\.[mc]?[jt]sx?$',
+      '/__tests__/\\.spec\\.[mc]?[jt]sx?$',
+    ],
   ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'circus',
@@ -305,8 +308,11 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
-    '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
-    ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
+    [
+      '/__tests__/\\.test\\.[mc]?[jt]sx?$',
+      '/__tests__/\\.spec\\.[mc]?[jt]sx?$',
+    ],
   ),
   testRunner: 'circus',
   transform: {

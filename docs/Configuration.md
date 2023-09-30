@@ -2024,7 +2024,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `testRegex` \[string | array&lt;string&gt;]
 
-Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
+Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$`
 
 The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
 
