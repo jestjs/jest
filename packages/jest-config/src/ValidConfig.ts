@@ -156,7 +156,10 @@ export const initialOptions: Config.InitialOptions = {
   },
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.?([mc])[jt]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+  ],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
@@ -296,7 +299,10 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     userAgent: 'Agent/007',
   },
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.?([mc])[jt]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+  ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
     '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
