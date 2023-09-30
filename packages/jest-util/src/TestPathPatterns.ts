@@ -83,12 +83,8 @@ export default class TestPathPatterns {
 
   /**
    * Return a human-friendly version of the pattern regex.
-   *
-   * Does no normalization or anything, just a naive joining of the regex,
-   * for simplicity.
    */
   toPretty(): string {
-    const regex = this.patterns.map(p => p.replace(/\//g, '\\/')).join('|');
-    return `/${regex}/i`;
+    return this.patterns.join('|');
   }
 }
