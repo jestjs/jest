@@ -528,7 +528,7 @@ expectType<Promise<void>>(jest.runOnlyPendingTimersAsync());
 expectError(jest.runOnlyPendingTimersAsync(true));
 
 expectType<void>(jest.setSystemTime());
-expectType<void>(jest.setSystemTime(1483228800000));
+expectType<void>(jest.setSystemTime(1_483_228_800_000));
 expectType<void>(jest.setSystemTime(Date.now()));
 expectType<void>(jest.setSystemTime(new Date(1995, 11, 17)));
 expectError(jest.setSystemTime('1995-12-17T03:24:00'));
@@ -567,10 +567,12 @@ expectType<typeof jest>(jest.useFakeTimers({legacyFakeTimers: true}));
 expectError(jest.useFakeTimers({legacyFakeTimers: 1000}));
 expectError(jest.useFakeTimers({doNotFake: ['Date'], legacyFakeTimers: true}));
 expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({legacyFakeTimers: true, now: 1483228800000}));
+expectError(
+  jest.useFakeTimers({legacyFakeTimers: true, now: 1_483_228_800_000}),
+);
 expectError(jest.useFakeTimers({legacyFakeTimers: true, timerLimit: 1000}));
 
-expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
+expectType<typeof jest>(jest.useFakeTimers({now: 1_483_228_800_000}));
 expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
 expectType<typeof jest>(jest.useFakeTimers({now: new Date(1995, 11, 17)}));
 expectError(jest.useFakeTimers({now: '1995-12-17T03:24:00'}));

@@ -6,6 +6,6 @@
  */
 
 test('something', () => {
-  setTimeout(() => {}, 30000);
+  setTimeout(() => {}, 30_000);
   expect(true).toBe(true);
 });

@@ -40,7 +40,7 @@
     "eslint-plugin-jsdoc": "^46.0.0",
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-unicorn": "^48.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
@@ -68,7 +68,7 @@
     "node-notifier": "^10.0.0",
     "p-limit": "^3.1.0",
     "pkg-dir": "^5.0.0",
-    "prettier": "^2.1.1",
+    "prettier": "^3.0.3",
     "promise": "^8.0.2",
     "read-pkg": "^5.2.0",
     "resolve": "^1.20.0",
@@ -162,6 +162,26 @@
         ],
         "options": {
           "parser": "mdx"
+        }
+      },
+      {
+        "files": [
+          "e2e/babel-plugin-jest-hoist/__tests__/integration.test.js",
+          "e2e/coverage-report/notRequiredInTestSuite.js",
+          "e2e/expect-async-matcher/matchers.js",
+          "e2e/failures/__tests__/*.js",
+          "e2e/failures/macros.js",
+          "e2e/global-setup/*.js",
+          "e2e/global-teardown/*.js",
+          "e2e/multi-project-babel/**/*.js",
+          "e2e/transform/babel-jest-async/only-file-to-transform.js",
+          "e2e/transform/babel-jest-manual/**/*.js",
+          "e2e/transform/babel-jest/**/*.js",
+          "e2e/transform/no-babel-jest/__tests__/failsWithSyntaxError.test.js",
+          "e2e/transform/transformer-config/**/*.js"
+        ],
+        "options": {
+          "parser": "babel-flow"
         }
       }
     ]

@@ -1092,6 +1092,7 @@ export default async function normalize(
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
+  newOptions.runInBand = argv.runInBand || false;
 
   if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(

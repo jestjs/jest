@@ -233,7 +233,7 @@ async function main() {
   console.log(await myWorker.transform('/tmp/foo.js'));
 
   // Wait a bit.
-  await sleep(10000);
+  await sleep(10_000);
 
   // Transform the same file again. Will immediately return because the
   // transformed file is cached in the worker, and `computeWorkerKey` ensures

@@ -208,7 +208,7 @@ await Promise.all(
       ...definitionFile.split(copyrightSnippet),
     ].join('\n');
 
-    const formattedContent = prettier.format(definitionFile, {
+    const formattedContent = await prettier.format(definitionFile, {
       ...prettierConfig,
       filepath,
     });
