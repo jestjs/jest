@@ -55,6 +55,26 @@ expectType<Mock<() => string>>(
     .mockReturnValueOnce('value'),
 );
 
+expectType<Mock<() => Promise<void>>>(
+  fn(async () => {})
+    .mockImplementation()
+    .mockImplementationOnce()
+    .mockReturnValue()
+    .mockReturnValueOnce()
+    .mockResolvedValue()
+    .mockResolvedValueOnce()
+    .mockRejectedValue()
+    .mockRejectedValueOnce(),
+);
+
+expectType<Mock<() => void>>(
+  fn(() => {})
+    .mockImplementation()
+    .mockImplementationOnce()
+    .mockReturnValue()
+    .mockReturnValueOnce(),
+);
+
 expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
 expectError(fn(() => 'value').mockReturnValueOnce(Promise.resolve('value')));
 
@@ -172,7 +192,6 @@ expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
 );
 expectError(mockFn.mockImplementation((a: number) => false));
 expectError(mockFn.mockImplementation(a => 'false'));
-expectError(mockFn.mockImplementation());
 
 expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockImplementation(async a => {
@@ -191,7 +210,6 @@ expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
 );
 expectError(mockFn.mockImplementationOnce((a: number) => false));
 expectError(mockFn.mockImplementationOnce(a => 'false'));
-expectError(mockFn.mockImplementationOnce());
 
 expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockImplementationOnce(async a => {
@@ -216,7 +234,6 @@ expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnValue(false),
 );
 expectError(mockFn.mockReturnValue('true'));
-expectError(mockFn.mockReturnValue());
 
 expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockReturnValue(Promise.resolve('mock value')),
@@ -227,7 +244,6 @@ expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnValueOnce(false),
 );
 expectError(mockFn.mockReturnValueOnce('true'));
-expectError(mockFn.mockReturnValueOnce());
 
 expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockReturnValueOnce(Promise.resolve('mock value')),
@@ -238,13 +254,11 @@ expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockResolvedValue('Mock value'),
 );
 expectError(fn(() => Promise.resolve('')).mockResolvedValue(123));
-expectError(fn(() => Promise.resolve('')).mockResolvedValue());
 
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockResolvedValueOnce('Mock value'),
 );
 expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce(123));
-expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce());
 
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValue(new Error('Mock error')),
@@ -252,7 +266,6 @@ expectType<Mock<() => Promise<string>>>(
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValue('Mock error'),
 );
-expectError(fn(() => Promise.resolve('')).mockRejectedValue());
 
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValueOnce(new Error('Mock error')),
@@ -260,7 +273,6 @@ expectType<Mock<() => Promise<string>>>(
 expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValueOnce('Mock error'),
 );
-expectError(fn(() => Promise.resolve('')).mockRejectedValueOnce());
 
 expectType<void>(mockFn.withImplementation(mockFnImpl, () => {}));
 expectType<Promise<void>>(

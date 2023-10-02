@@ -158,18 +158,18 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockClear(): this;
   mockReset(): this;
   mockRestore(): void;
-  mockImplementation(fn: T): this;
-  mockImplementationOnce(fn: T): this;
+  mockImplementation(fn?: T): this;
+  mockImplementationOnce(fn?: T): this;
   withImplementation(fn: T, callback: () => Promise<unknown>): Promise<void>;
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
-  mockReturnValue(value: ReturnType<T>): this;
-  mockReturnValueOnce(value: ReturnType<T>): this;
-  mockResolvedValue(value: ResolveType<T>): this;
-  mockResolvedValueOnce(value: ResolveType<T>): this;
-  mockRejectedValue(value: RejectType<T>): this;
-  mockRejectedValueOnce(value: RejectType<T>): this;
+  mockReturnValue(value?: ReturnType<T>): this;
+  mockReturnValueOnce(value?: ReturnType<T>): this;
+  mockResolvedValue(value?: ResolveType<T>): this;
+  mockResolvedValueOnce(value?: ResolveType<T>): this;
+  mockRejectedValue(value?: RejectType<T>): this;
+  mockRejectedValueOnce(value?: RejectType<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -251,7 +251,7 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
 type MockFunctionConfig = {
   mockImpl: Function | undefined;
   mockName: string;
-  specificMockImpls: Array<Function>;
+  specificMockImpls: Array<Function | undefined>;
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
@@ -714,8 +714,11 @@ export class ModuleMocker {
 
             // If mockImplementationOnce()/mockImplementation() is last set,
             // implementation use the mock
-            let specificMockImpl = mockConfig.specificMockImpls.shift();
-            if (specificMockImpl === undefined) {
+            let specificMockImpl: Function | undefined;
+
+            if (mockConfig.specificMockImpls.length > 0) {
+              specificMockImpl = mockConfig.specificMockImpls.shift();
+            } else {
               specificMockImpl = mockConfig.mockImpl;
             }
             if (specificMockImpl) {
@@ -780,35 +783,35 @@ export class ModuleMocker {
         return restore ? restore() : undefined;
       };
 
-      f.mockReturnValueOnce = (value: ReturnType<T>) =>
+      f.mockReturnValueOnce = (value?: ReturnType<T>) =>
         // next function call will return this value or default return value
         f.mockImplementationOnce(() => value);
 
-      f.mockResolvedValueOnce = (value: ResolveType<T>) =>
+      f.mockResolvedValueOnce = (value?: ResolveType<T>) =>
         f.mockImplementationOnce(() =>
           this._environmentGlobal.Promise.resolve(value),
         );
 
-      f.mockRejectedValueOnce = (value: unknown) =>
+      f.mockRejectedValueOnce = (value?: unknown) =>
         f.mockImplementationOnce(() =>
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockReturnValue = (value: ReturnType<T>) =>
+      f.mockReturnValue = (value?: ReturnType<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
-      f.mockResolvedValue = (value: ResolveType<T>) =>
+      f.mockResolvedValue = (value?: ResolveType<T>) =>
         f.mockImplementation(() =>
           this._environmentGlobal.Promise.resolve(value),
         );
 
-      f.mockRejectedValue = (value: unknown) =>
+      f.mockRejectedValue = (value?: unknown) =>
         f.mockImplementation(() =>
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockImplementationOnce = (fn: T) => {
+      f.mockImplementationOnce = (fn?: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
@@ -848,7 +851,7 @@ export class ModuleMocker {
         }
       }
 
-      f.mockImplementation = (fn: T) => {
+      f.mockImplementation = (fn?: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;

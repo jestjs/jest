@@ -663,6 +663,16 @@ describe('moduleMocker', () => {
       expect(obj.func()).not.toBe('some text');
     });
 
+    it('supports mock value returning undefined when not passing a value', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValue();
+
+      expect(obj.func()).toBeUndefined();
+    });
+
     it('supports mock value once returning undefined', () => {
       const obj = {
         func: () => 'some text',
@@ -671,6 +681,17 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(obj, 'func').mockReturnValueOnce(undefined);
 
       expect(obj.func()).not.toBe('some text');
+    });
+
+    it('supports mock value once returning undefined when not passing a value', () => {
+      const obj = {
+        func: () => 'some text',
+      };
+
+      moduleMocker.spyOn(obj, 'func').mockReturnValueOnce();
+
+      expect(obj.func()).toBeUndefined();
+      expect(obj.func()).toBe('some text');
     });
 
     it('mockReturnValueOnce mocks value just once', () => {
@@ -691,6 +712,17 @@ describe('moduleMocker', () => {
       return expect(promise).resolves.toBe('abcd');
     });
 
+    it('supports mocking resolvable async functions without passing a value', () => {
+      const fn = moduleMocker.fn();
+      fn.mockResolvedValue();
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
+
+      return expect(promise).resolves.toBeUndefined();
+    });
+
     it('supports mocking resolvable async functions only once', () => {
       const fn = moduleMocker.fn();
       fn.mockResolvedValue('abcd');
@@ -698,6 +730,17 @@ describe('moduleMocker', () => {
 
       return Promise.all([
         expect(fn()).resolves.toBe('abcde'),
+        expect(fn()).resolves.toBe('abcd'),
+      ]);
+    });
+
+    it('supports mocking resolvable async functions only once without passing a value', () => {
+      const fn = moduleMocker.fn();
+      fn.mockResolvedValue('abcd');
+      fn.mockResolvedValueOnce();
+
+      return Promise.all([
+        expect(fn()).resolves.toBeUndefined(),
         expect(fn()).resolves.toBe('abcd'),
       ]);
     });
@@ -714,6 +757,17 @@ describe('moduleMocker', () => {
       return expect(promise).rejects.toBe(err);
     });
 
+    it('supports mocking rejectable async functions without passing a value', () => {
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue();
+
+      const promise = fn();
+
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
+
+      return expect(promise).rejects.toBeUndefined();
+    });
+
     it('supports mocking rejectable async functions only once', () => {
       const defaultErr = new Error('default rejected');
       const err = new Error('rejected');
@@ -724,6 +778,18 @@ describe('moduleMocker', () => {
       return Promise.all([
         expect(fn()).rejects.toBe(err),
         expect(fn()).rejects.toBe(defaultErr),
+      ]);
+    });
+
+    it('supports mocking rejectable async functions only once without passing a value', () => {
+      const err = new Error('rejected');
+      const fn = moduleMocker.fn();
+      fn.mockRejectedValue(err);
+      fn.mockRejectedValueOnce();
+
+      return Promise.all([
+        expect(fn()).rejects.toBeUndefined(),
+        expect(fn()).rejects.toBe(err),
       ]);
     });
 
@@ -1063,6 +1129,32 @@ describe('moduleMocker', () => {
     });
   });
 
+  describe('mockImplementation', () => {
+    it('supports mocking functions implementations', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+
+      expect(obj.func()).toBe('Default Text');
+
+      moduleMocker.spyOn(obj, 'func').mockImplementation(() => 'Foo');
+
+      expect(obj.func()).toBe('Foo');
+    });
+
+    it('supports mocking functions implementations without passing a value', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+
+      expect(obj.func()).toBe('Default Text');
+
+      moduleMocker.spyOn(obj, 'func').mockImplementation();
+
+      expect(obj.func()).toBeUndefined();
+    });
+  });
+
   describe('mockImplementationOnce', () => {
     it('should mock constructor', () => {
       const mock1 = jest.fn();
@@ -1106,6 +1198,16 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Bar');
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
+    });
+
+    it('supports mocking functions implementations only once without passing a value', () => {
+      const obj = {
+        func: () => 'Default Text',
+      };
+      moduleMocker.spyOn(obj, 'func').mockImplementationOnce();
+
+      expect(obj.func()).toBeUndefined();
+      expect(obj.func()).toBe('Default Text');
     });
   });
 
