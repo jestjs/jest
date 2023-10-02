@@ -21,12 +21,7 @@ exports[`on node >=16.12.0 supports import assertions 1`] = `
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-<<<<<<< HEAD
-Ran all test suites matching native-esm-import-assertions.test."
-||||||| b4c9587d19
-Ran all test suites matching /native-esm-import-assertions.test/i."
-=======
-Ran all test suites matching /native-esm-import-assertions.test.js/i."
+Ran all test suites matching native-esm-import-assertions.test.js."
 `;
 
 exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
