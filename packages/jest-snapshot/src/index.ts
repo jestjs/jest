@@ -289,9 +289,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
    * and include updating the snapshot and recording passed/failed
    * snapshots in the snapshot state.
    */
-  const pure = testFailing;
+  const matchOnly = testFailing;
 
-  if (!pure && context.dontThrow) {
+  if (!matchOnly && context.dontThrow) {
     // Supress errors while running tests
     context.dontThrow();
   }
@@ -375,7 +375,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     error: context.error,
     inlineSnapshot,
     isInline,
-    pure,
+    matchOnly,
     received,
     testName: fullTestName,
   });
