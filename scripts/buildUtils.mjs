@@ -249,7 +249,7 @@ export function createBuildConfigs() {
       pkg,
       webpackConfig: {
         context: packageDir,
-        devtool: false,
+        devtool: 'source-map',
         entry: {
           index: input,
           ...separateChunks,
@@ -260,7 +260,7 @@ export function createBuildConfigs() {
         module: {
           rules: [
             {
-              test: /.ts$/,
+              test: /\.ts$/,
               use: {
                 loader: 'babel-loader',
                 options,
