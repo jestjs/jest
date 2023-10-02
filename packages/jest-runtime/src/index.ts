@@ -850,6 +850,18 @@ export default class Runtime {
       return cachedNamedExports;
     }
 
+    if (path.extname(modulePath) === '.node') {
+      const nativeModule = this.requireModuleOrMock('', modulePath);
+
+      const namedExports = new Set(
+        Object.keys(nativeModule as Record<string, unknown>),
+      );
+
+      this._cjsNamedExports.set(modulePath, namedExports);
+
+      return namedExports;
+    }
+
     const transformedCode =
       this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
 
