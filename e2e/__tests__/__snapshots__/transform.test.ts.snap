@@ -6,7 +6,7 @@ exports[`babel-jest ignored tells user to match ignored files 1`] = `
 
     babel-jest: Babel ignores __tests__/ignoredFile.test.js - make sure to include the file in Jest's transformIgnorePatterns as well.
 
-      at assertLoadedBabelConfig (../../../packages/babel-jest/build/index.js:138:11)"
+      at assertLoadedBabelConfig (../../../packages/babel-jest/src/index.ts:36:11)"
 `;
 
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `

@@ -26,7 +26,7 @@ exports[`shows a proper error from deep requires 1`] = `
       12 | test('dummy', () => {
       13 |   expect(1).toBe(1);
 
-      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:930:11)
+      at Resolver._throwModNotFoundError (../../packages/jest-resolve/src/resolver.ts:431:11)
       at Object.<anonymous> (node_modules/discord.js/src/index.js:21:12)
       at Object.require (__tests__/test.js:10:1)"
 `;

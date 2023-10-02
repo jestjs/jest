@@ -80,9 +80,7 @@ describe('Stack Trace', () => {
       /Cannot find module 'this-module-does-not-exist' from '__tests__\/testError\.test\.js'/,
     );
 
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/,
-    );
+    expect(stderr).toMatch(/\s+at\s.+?\s\(.+?jest-resolve\/src\/resolver\.ts/);
   });
 
   it('prints a stack trace for errors without message in stack trace', () => {
