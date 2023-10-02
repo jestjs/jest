@@ -7,7 +7,10 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
+
+skipSuiteOnJasmine();
 
 describe('test.failing', () => {
   describe('should pass when', () => {

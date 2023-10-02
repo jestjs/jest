@@ -65,9 +65,6 @@ export default {
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
-    ...(process.env.JEST_JASMINE
-      ? ['/e2e/__tests__/testFailingSnapshot.test.js']
-      : []),
   ],
   testTimeout: 70_000,
   transform: {
