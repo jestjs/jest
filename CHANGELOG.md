@@ -329,7 +329,8 @@
 
 ### Chore & Maintenance
 
-- `[*]` Update `@babel/*` deps, resulting in slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
+- `[*]` Update `@babel/*` deps, resulting on slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
+- `[*]` Added Dockerfile for Jest Development ([#9109](https://github.com/facebook/jest/pull/9109), [#13009](https://github.com/facebook/jest/pull/13009))
 
 ### Performance
 

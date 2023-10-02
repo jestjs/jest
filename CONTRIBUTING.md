@@ -92,6 +92,26 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
 
+#### Usage with Docker
+
+Run Jest with [Docker](https://docs.docker.com/engine/docker-overview/):
+
+1. If you haven't already, [Install Docker](https://docs.docker.com/install/).
+
+2. Build the Jest image in the root project folder (may take a few minutes):
+
+```sh
+docker build -t jest .
+```
+
+3. Run the Jest image:
+
+```sh
+docker run --volume="YOUR_PATH_TO_JEST:/usr/src/app" --rm jest:latest
+```
+
+4. The `yarn run watch:polling` command will watch the `/packages` directory for file changes. See `package.json` for a full list of commands. [Learn how to run commands in a container](https://docs.docker.com/engine/reference/commandline/exec/) or visit the [official Docker docs](https://docs.docker.com/) for other Docker related questions.
+
 #### Changelog entries
 
 All changes that add a feature to or fix a bug in any of Jest's packages require a changelog entry containing the names of the packages affected, a description of the change, and the number of and link to the pull request. Try to match the structure of the existing entries.
