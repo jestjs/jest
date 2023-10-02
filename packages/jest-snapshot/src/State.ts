@@ -36,7 +36,7 @@ export type SnapshotMatchOptions = {
   readonly inlineSnapshot?: string;
   readonly isInline: boolean;
   readonly error?: Error;
-  readonly matchOnly?: boolean;
+  readonly testFailing?: boolean;
 };
 
 type SnapshotReturnOptions = {
@@ -198,7 +198,7 @@ export default class SnapshotState {
     inlineSnapshot,
     isInline,
     error,
-    matchOnly = false,
+    testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
@@ -234,7 +234,7 @@ export default class SnapshotState {
 
     // In pure matching only runs, return the match result while skipping any updates
     // reports.
-    if (matchOnly) {
+    if (testFailing) {
       if (hasSnapshot && !isInline) {
         // Retain current snapshot values.
         this._addSnapshot(key, expected, {error, isInline});
