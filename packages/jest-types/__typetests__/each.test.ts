@@ -144,6 +144,31 @@ expectType<void>(
 );
 
 expectType<void>(
+  test.each([
+    [1, 2, 'three'],
+    [3, 4, 'seven'],
+  ] as const)('some test', (a, b, expected) => {
+    expectType<1 | 3>(a);
+    expectType<2 | 4>(b);
+    expectType<'three' | 'seven'>(expected);
+  }),
+);
+expectType<void>(
+  test.each([
+    [1, 2, 'three'],
+    [3, 4, 'seven'],
+  ] as const)(
+    'some test',
+    (a, b, expected) => {
+      expectType<1 | 3>(a);
+      expectType<2 | 4>(b);
+      expectType<'three' | 'seven'>(expected);
+    },
+    1000,
+  ),
+);
+
+expectType<void>(
   test.each(objectTable)('some test', ({a, b, expected, extra}, done) => {
     expectType<number>(a);
     expectType<number>(b);
@@ -542,6 +567,31 @@ expectType<void>(
       expectType<number>(a);
       expectType<number>(b);
       expectType<string>(expected);
+    },
+    1000,
+  ),
+);
+
+expectType<void>(
+  describe.each([
+    [1, 2, 'three'],
+    [3, 4, 'seven'],
+  ] as const)('describe each', (a, b, expected) => {
+    expectType<1 | 3>(a);
+    expectType<2 | 4>(b);
+    expectType<'three' | 'seven'>(expected);
+  }),
+);
+expectType<void>(
+  describe.each([
+    [1, 2, 'three'],
+    [3, 4, 'seven'],
+  ] as const)(
+    'describe each',
+    (a, b, expected) => {
+      expectType<1 | 3>(a);
+      expectType<2 | 4>(b);
+      expectType<'three' | 'seven'>(expected);
     },
     1000,
   ),

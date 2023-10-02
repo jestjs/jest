@@ -70,7 +70,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
     table: ReadonlyArray<T>,
   ): (
     name: string | NameLike,
-    fn: (...args: T) => ReturnType<EachFn>,
+    fn: (...args: [...T]) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
