@@ -10,18 +10,12 @@ import * as path from 'path';
 import util from 'util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
-import webpack from 'webpack';
-import {ERROR, OK, createWebpackConfigs} from './buildUtils.mjs';
+import {ERROR, OK, createWebpackCompiler} from './buildUtils.mjs';
 
 async function buildNodePackages() {
   process.stdout.write(chalk.inverse(' Bundling packages \n'));
 
-  const webpackConfigs = createWebpackConfigs();
-  const compiler = webpack(
-    webpackConfigs
-      .map(({webpackConfig}) => webpackConfig)
-      .filter(config => config != null),
-  );
+  const compiler = createWebpackCompiler();
 
   let stats;
   try {
