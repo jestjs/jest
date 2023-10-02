@@ -244,6 +244,8 @@ export function createBuildConfigs() {
               };
             }, {});
 
+    const buildDirectory = path.resolve(packageDir, 'build');
+
     return {
       packageDir,
       pkg,
@@ -273,11 +275,21 @@ export function createBuildConfigs() {
           moduleIds: 'named',
         },
         output: {
+          devtoolModuleFilenameTemplate(info) {
+            const {absoluteResourcePath, namespace, resourcePath} = info;
+
+            if (path.isAbsolute(absoluteResourcePath)) {
+              return path.relative(buildDirectory, absoluteResourcePath);
+            }
+
+            // Mimic Webpack's default behavior:
+            return `webpack://${namespace}/${resourcePath}`;
+          },
           filename: '[name].js',
           library: {
             type: 'commonjs2',
           },
-          path: path.resolve(packageDir, 'build'),
+          path: buildDirectory,
         },
         plugins: [
           new webpack.BannerPlugin(copyrightSnippet),
