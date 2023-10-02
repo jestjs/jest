@@ -13,7 +13,7 @@ import {normalize} from 'jest-config';
 import Runtime from 'jest-runtime';
 import SearchSource from '../SearchSource';
 
-jest.setTimeout(15000);
+jest.setTimeout(15_000);
 
 jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual<typeof import('fs')>('fs');

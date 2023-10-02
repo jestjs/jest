@@ -465,12 +465,12 @@ describe('jest-each', () => {
         `;
 
         const testFunction = get(eachObject, keyPath);
-        testFunction('some test', noop, 10000);
+        testFunction('some test', noop, 10_000);
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledWith(
           'some test',
           expect.any(Function),
-          10000,
+          10_000,
         );
       });
 

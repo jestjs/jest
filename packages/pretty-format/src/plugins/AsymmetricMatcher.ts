@@ -11,7 +11,7 @@ import type {Config, NewPlugin, Printer, Refs} from '../types';
 const asymmetricMatcher =
   typeof Symbol === 'function' && Symbol.for
     ? Symbol.for('jest.asymmetricMatcher')
-    : 0x1357a5;
+    : 0x13_57_a5;
 const SPACE = ' ';
 
 export const serialize: NewPlugin['serialize'] = (

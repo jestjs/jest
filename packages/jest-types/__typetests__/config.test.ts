@@ -65,7 +65,7 @@ expectAssignable<Config.InitialOptions>({
     advanceTimers: true,
     doNotFake,
     enableGlobally: true,
-    now: 1483228800000,
+    now: 1_483_228_800_000,
     timerLimit: 1000,
   },
 });
@@ -107,7 +107,7 @@ expectNotAssignable<Config.InitialOptions>({
 expectNotAssignable<Config.InitialOptions>({
   fakeTimers: {
     legacyFakeTimers: true as const,
-    now: 1483228800000,
+    now: 1_483_228_800_000,
   },
 });
 
