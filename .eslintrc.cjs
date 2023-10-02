@@ -160,6 +160,7 @@ module.exports = {
         'e2e/failures/macros.js',
         'e2e/test-in-root/*.js',
         'e2e/test-match/test-suites/*',
+        'e2e/test-match-default/dot-spec-tests/*',
         'packages/test-utils/src/ConditionalTest.ts',
       ],
       env: {'jest/globals': true},

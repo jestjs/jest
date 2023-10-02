@@ -11,6 +11,7 @@ concurrency:
 
 permissions:
   contents: read # to fetch code (actions/checkout)
+  issues: write # to create an issue and comment in it
 
 jobs:
   prepare-yarn-cache-ubuntu:

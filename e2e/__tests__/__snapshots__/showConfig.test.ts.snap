@@ -72,8 +72,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
-        "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[tj]s?(x)"
+        "**/__tests__/**/*.?([mc])[jt]s?(x)",
+        "**/?(*.)+(spec|test).?([mc])[jt]s?(x)"
       ],
       "testPathIgnorePatterns": [
         "/node_modules/"

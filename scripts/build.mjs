@@ -11,17 +11,19 @@ import util from 'util';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import webpack from 'webpack';
-import {ERROR, OK, createWebpackConfigs} from './buildUtils.mjs';
+import {
+  ERROR,
+  OK,
+  createBuildConfigs,
+  createWebpackConfigs,
+} from './buildUtils.mjs';
 
 async function buildNodePackages() {
   process.stdout.write(chalk.inverse(' Bundling packages \n'));
 
-  const webpackConfigs = createWebpackConfigs();
-  const compiler = webpack(
-    webpackConfigs
-      .map(({webpackConfig}) => webpackConfig)
-      .filter(config => config != null),
-  );
+  const buildConfigs = createBuildConfigs();
+
+  const compiler = webpack(createWebpackConfigs(buildConfigs));
 
   let stats;
   try {
@@ -35,15 +37,18 @@ async function buildNodePackages() {
     if (stats) {
       const info = stats.toJson();
 
-      if (stats.hasErrors()) {
-        console.error('errors', info.errors);
+      for (const error of info.errors) {
+        console.error('error', error.message);
+      }
+      for (const warning of info.warnings) {
+        console.warn('warning', warning.message);
       }
     }
 
     throw error;
   }
 
-  for (const {packageDir, pkg} of webpackConfigs) {
+  for (const {packageDir, pkg} of buildConfigs) {
     assert.ok(
       fs.existsSync(path.resolve(packageDir, pkg.main)),
       `Main file "${pkg.main}" in "${pkg.name}" should exist`,

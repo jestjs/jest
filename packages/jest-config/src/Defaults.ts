@@ -81,7 +81,10 @@ const defaultOptions: Config.DefaultOptions = {
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.?([mc])[jt]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+  ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
   testRunner: 'jest-circus/runner',

@@ -146,7 +146,7 @@ export const copyrightSnippet = `
  */
 `.trim();
 
-export function createWebpackConfigs() {
+export function createBuildConfigs() {
   const packages = getPackages();
 
   return packages.map(({packageDir, pkg}) => {
@@ -290,6 +290,12 @@ export function createWebpackConfigs() {
       },
     };
   });
+}
+
+export function createWebpackConfigs(webpackConfigs = createBuildConfigs()) {
+  return webpackConfigs
+    .map(({webpackConfig}) => webpackConfig)
+    .filter(config => config != null);
 }
 
 // inspired by https://framagit.org/Glandos/webpack-ignore-dynamic-require
