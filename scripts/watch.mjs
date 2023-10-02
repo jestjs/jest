@@ -10,13 +10,14 @@
  */
 
 import chalk from 'chalk';
-import {createWebpackCompiler} from './buildUtils.mjs';
+import webpack from 'webpack';
+import {createWebpackConfigs} from './buildUtils.mjs';
 
-const compiler = createWebpackCompiler();
+const compiler = webpack(createWebpackConfigs());
 
 let hasBuilt = false;
 
-console.log(chalk.cyan('Building packages…'));
+console.log(chalk.inverse(' Bundling packages '));
 
 compiler.watch({}, (error, stats) => {
   if (!hasBuilt) {
