@@ -156,12 +156,18 @@ export const initialOptions: Config.InitialOptions = {
   },
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.?([mc])[jt]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+  ],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
-    '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
-    ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
+    [
+      '/__tests__/\\.test\\.[mc]?[jt]sx?$',
+      '/__tests__/\\.spec\\.[mc]?[jt]sx?$',
+    ],
   ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'circus',
@@ -296,11 +302,17 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     userAgent: 'Agent/007',
   },
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.?([mc])[jt]s?(x)',
+    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+  ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(
-    '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
-    ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
+    [
+      '/__tests__/\\.test\\.[mc]?[jt]sx?$',
+      '/__tests__/\\.spec\\.[mc]?[jt]sx?$',
+    ],
   ),
   testRunner: 'circus',
   transform: {
