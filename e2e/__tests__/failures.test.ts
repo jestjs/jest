@@ -58,7 +58,7 @@ test('works with async failures', () => {
 
   const rest = cleanStderr(stderr)
     .split('\n')
-    .filter(line => !line.includes('packages/expect/build/index.js'))
+    .filter(line => !line.includes('packages/expect/src/index.ts'))
     .join('\n');
 
   // Remove replacements when jasmine is gone
