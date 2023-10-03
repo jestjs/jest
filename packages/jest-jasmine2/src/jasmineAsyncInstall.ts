@@ -14,7 +14,7 @@ import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import pLimit = require('p-limit');
 import type {Config, Global} from '@jest/types';
-import {isPromise} from 'jest-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
@@ -231,14 +231,16 @@ function makeConcurrent(
   };
 
   const failing = () => {
-    throw new Error(
+    throw new ErrorWithStack(
       'Jest: `failing` tests are only supported in `jest-circus`.',
+      failing,
     );
   };
 
   failing.each = () => {
-    throw new Error(
+    throw new ErrorWithStack(
       'Jest: `failing` tests are only supported in `jest-circus`.',
+      failing.each,
     );
   };
   // each is bound after the function is made concurrent, so for now it is made noop
