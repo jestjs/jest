@@ -117,6 +117,12 @@ export default class FakeTimers {
     }
   }
 
+  runToFrame(): void {
+    if (this._checkFakeTimers()) {
+      this._clock.runToFrame();
+    }
+  }
+
   useRealTimers(): void {
     if (this._fakingTime) {
       this._clock.uninstall();
