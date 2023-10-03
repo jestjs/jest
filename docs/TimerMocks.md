@@ -167,9 +167,9 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
 Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
 
-## Advance Timers by frame
+## Advance Timers by Frame
 
-In applications, often you want to schedule work inside of an animation frame (via `requestAnimationFrame`). We expose a convenance method `jest.runToFrame()` to advance all timers enough to execute all actively scheduled animation frames.
+In applications, often you want to schedule work inside of an animation frame (via `requestAnimationFrame`). We expose a convenance method `jest.runToFrame()` to advance all timers enough milliseconds to execute all actively scheduled animation frames.
 
 ```javascript
 jest.useFakeTimers();
