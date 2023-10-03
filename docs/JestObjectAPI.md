@@ -989,6 +989,16 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
+### `jest.runToFrame()`
+
+Advances all timers by the needed milliseconds to execute the next animation frame. This function is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.clearAllTimers()`
 
 Removes any pending timers from the timer system.

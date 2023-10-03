@@ -167,6 +167,28 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
 Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
 
+## Advance Timers by frame
+
+In applications, often you want to schedule work inside of an animation frame (via `requestAnimationFrame`). We expose a convenance method `jest.runToFrame()` to advance all timers enough to execute all actively scheduled animation frames.
+
+```javascript
+jest.useFakeTimers();
+it('calls the animation frame callback after runToFrame()', () => {
+  const callback = jest.fn();
+
+  requestAnimationFrame(callback);
+
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
+
+  jest.runToFrame();
+
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+```
+
 ## Selective Faking
 
 Sometimes your code may require to avoid overwriting the original implementation of one or another API. If that is the case, you can use `doNotFake` option. For example, here is how you could provide a custom mock function for `performance.mark()` in jsdom environment:
