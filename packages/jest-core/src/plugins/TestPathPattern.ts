@@ -48,7 +48,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
       testPathPatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({mode: 'watch', testPathPattern: value});
+          updateConfigAndRun({mode: 'watch', testPathPatterns: [value]});
           res();
         },
         rej,

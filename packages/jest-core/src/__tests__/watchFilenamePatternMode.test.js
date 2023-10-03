@@ -70,7 +70,11 @@ const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
 
-const globalConfig = {watch: true};
+const globalConfig = {
+  rootDir: '',
+  testPathPatterns: [],
+  watch: true,
+};
 
 afterEach(runJestMock.mockReset);
 

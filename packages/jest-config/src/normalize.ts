@@ -22,6 +22,7 @@ import Resolver, {
   resolveWatchPlugin,
 } from 'jest-resolve';
 import {
+  TestPathPatterns,
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,
@@ -49,7 +50,6 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import validatePattern from './validatePattern';
 
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
@@ -391,44 +391,39 @@ const normalizeReporters = ({
   });
 };
 
-const buildTestPathPattern = (argv: Config.Argv): string => {
+const buildTestPathPatterns = (
+  argv: Config.Argv,
+  rootDir: string,
+): TestPathPatterns => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push(...argv._.map(x => x.toString()));
   }
-  if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+  if (argv.testPathPatterns) {
+    patterns.push(...argv.testPathPatterns);
   }
 
-  const replacePosixSep = (pattern: string | number) => {
-    // yargs coerces positional args into numbers
-    const patternAsString = pattern.toString();
-    if (path.sep === '/') {
-      return patternAsString;
-    }
-    return patternAsString.replace(/\//g, '\\\\');
-  };
+  const config = {rootDir};
+  const testPathPatterns = new TestPathPatterns(patterns, config);
 
-  const testPathPattern = patterns.map(replacePosixSep).join('|');
-  if (validatePattern(testPathPattern)) {
-    return testPathPattern;
-  } else {
-    showTestPathPatternError(testPathPattern);
-    return '';
+  try {
+    testPathPatterns.validate();
+  } catch {
+    clearLine(process.stdout);
+
+    // eslint-disable-next-line no-console
+    console.log(
+      chalk.red(
+        `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
+          'Running all tests instead.',
+      ),
+    );
+
+    return new TestPathPatterns([], config);
   }
-};
 
-const showTestPathPatternError = (testPathPattern: string) => {
-  clearLine(process.stdout);
-
-  // eslint-disable-next-line no-console
-  console.log(
-    chalk.red(
-      `  Invalid testPattern ${testPathPattern} supplied. ` +
-        'Running all tests instead.',
-    ),
-  );
+  return testPathPatterns;
 };
 
 function validateExtensionsToTreatAsEsm(
@@ -1007,7 +1002,8 @@ export default async function normalize(
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
-  newOptions.testPathPattern = buildTestPathPattern(argv);
+  const testPathPatterns = buildTestPathPatterns(argv, options.rootDir);
+  newOptions.testPathPatterns = testPathPatterns.patterns;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
@@ -1026,7 +1022,7 @@ export default async function normalize(
   if (argv.all) {
     newOptions.onlyChanged = false;
     newOptions.onlyFailures = false;
-  } else if (newOptions.testPathPattern) {
+  } else if (testPathPatterns.isSet()) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;

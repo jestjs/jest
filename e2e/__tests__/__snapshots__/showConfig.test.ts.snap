@@ -139,7 +139,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "printBasicPrototype": false
     },
     "testFailureExitCode": 1,
-    "testPathPattern": "",
+    "testPathPatterns": [],
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "none",
     "useStderr": false,

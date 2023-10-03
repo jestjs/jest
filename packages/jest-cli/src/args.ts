@@ -97,7 +97,7 @@ export function check(argv: Config.Argv): true {
 }
 
 export const usage =
-  'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
+  'Usage: $0 [--config=<pathToConfigFile>] [TestPathPatterns]';
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
@@ -431,7 +431,7 @@ export const options: {[key: string]: Options} = {
   },
   passWithNoTests: {
     description:
-      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+      'Will not fail if no tests are found (for example while using `--testPathPatterns`.)',
     type: 'boolean',
   },
   preset: {
@@ -609,7 +609,7 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
-  testPathPattern: {
+  testPathPatterns: {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',

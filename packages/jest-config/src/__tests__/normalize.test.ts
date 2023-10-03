@@ -1585,7 +1585,7 @@ describe('watchPlugins', () => {
   });
 });
 
-describe('testPathPattern', () => {
+describe('testPathPatterns', () => {
   const initialOptions = {rootDir: '/root'};
   const consoleLog = console.log;
 
@@ -1600,11 +1600,11 @@ describe('testPathPattern', () => {
   it('defaults to empty', async () => {
     const {options} = await normalize(initialOptions, {} as Config.Argv);
 
-    expect(options.testPathPattern).toBe('');
+    expect(options.testPathPatterns).toEqual([]);
   });
 
   const cliOptions = [
-    {name: '--testPathPattern', property: 'testPathPattern'},
+    {name: '--testPathPatterns', property: 'testPathPatterns'},
     {name: '<regexForTestFiles>', property: '_'},
   ];
   for (const opt of cliOptions) {
@@ -1613,14 +1613,14 @@ describe('testPathPattern', () => {
         const argv = {[opt.property]: ['a/b']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('a/b');
+        expect(options.testPathPatterns).toEqual(['a/b']);
       });
 
       it('ignores invalid regular expressions and logs a warning', async () => {
         const argv = {[opt.property]: ['a(']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('');
+        expect(options.testPathPatterns).toEqual([]);
         expect(jest.mocked(console.log).mock.calls[0][0]).toMatchSnapshot();
       });
 
@@ -1628,78 +1628,24 @@ describe('testPathPattern', () => {
         const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('a/b|c/d');
-      });
-
-      it('coerces all patterns to strings', async () => {
-        const argv = {[opt.property]: [1]} as Config.Argv;
-        const {options} = await normalize(initialOptions, argv);
-
-        expect(options.testPathPattern).toBe('1');
-      });
-
-      describe('posix', () => {
-        it('should not escape the pattern', async () => {
-          const argv = {
-            [opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b'],
-          } as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\/b|a/b|a\\b|a\\\\b');
-        });
-      });
-
-      describe('win32', () => {
-        beforeEach(() => {
-          jest.mock(
-            'path',
-            () => jest.requireActual<typeof import('path')>('path').win32,
-          );
-          (
-            require('jest-resolve') as typeof import('jest-resolve')
-          ).default.findNodeModule = findNodeModule;
-        });
-
-        afterEach(() => {
-          jest.resetModules();
-        });
-
-        it('preserves any use of "\\"', async () => {
-          const argv = {[opt.property]: ['a\\b', 'c\\\\d']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\b|c\\\\d');
-        });
-
-        it('replaces POSIX path separators', async () => {
-          const argv = {[opt.property]: ['a/b']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\\\b');
-        });
-
-        it('replaces POSIX paths in multiple args', async () => {
-          const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
-          const {options} = await (
-            require('../normalize') as typeof import('../normalize')
-          ).default(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
-        });
+        expect(options.testPathPatterns).toEqual(['a/b', 'c/d']);
       });
     });
   }
 
+  it('coerces <regexForTestFiles> patterns to strings', async () => {
+    const argv = {_: [1]} as Config.Argv;
+    const {options} = await normalize(initialOptions, argv);
+
+    expect(options.testPathPatterns).toEqual(['1']);
+  });
+
   it('joins multiple --testPathPatterns and <regexForTestFiles>', async () => {
     const {options} = await normalize(initialOptions, {
       _: ['a', 'b'],
-      testPathPattern: ['c', 'd'],
+      testPathPatterns: ['c', 'd'],
     } as Config.Argv);
-    expect(options.testPathPattern).toBe('a|b|c|d');
+    expect(options.testPathPatterns).toEqual(['a', 'b', 'c', 'd']);
   });
 
   it('gives precedence to --all', async () => {
