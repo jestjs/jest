@@ -278,7 +278,13 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     config;
   let {received} = config;
 
-  context.dontThrow && context.dontThrow();
+  /** If a test was ran with `test.failing`. Passed by Jest Circus. */
+  const {testFailing = false} = context;
+
+  if (!testFailing && context.dontThrow) {
+    // Supress errors while running tests
+    context.dontThrow();
+  }
 
   const {currentConcurrentTestName, isNot, snapshotState} = context;
   const currentTestName =
@@ -360,6 +366,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     inlineSnapshot,
     isInline,
     received,
+    testFailing,
     testName: fullTestName,
   });
   const {actual, count, expected, pass} = result;

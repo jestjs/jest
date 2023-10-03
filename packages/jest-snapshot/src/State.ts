@@ -36,6 +36,7 @@ export type SnapshotMatchOptions = {
   readonly inlineSnapshot?: string;
   readonly isInline: boolean;
   readonly error?: Error;
+  readonly testFailing?: boolean;
 };
 
 type SnapshotReturnOptions = {
@@ -197,6 +198,7 @@ export default class SnapshotState {
     inlineSnapshot,
     isInline,
     error,
+    testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
@@ -228,6 +230,23 @@ export default class SnapshotState {
       // Note that this is only relevant when a snapshot is added and the dirty
       // flag is set.
       this._snapshotData[key] = receivedSerialized;
+    }
+
+    // In pure matching only runs, return the match result while skipping any updates
+    // reports.
+    if (testFailing) {
+      if (hasSnapshot && !isInline) {
+        // Retain current snapshot values.
+        this._addSnapshot(key, expected, {error, isInline});
+      }
+      return {
+        actual: removeExtraLineBreaks(receivedSerialized),
+        count,
+        expected:
+          expected === undefined ? undefined : removeExtraLineBreaks(expected),
+        key,
+        pass,
+      };
     }
 
     // These are the conditions on when to write snapshots:
