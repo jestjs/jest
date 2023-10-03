@@ -43,7 +43,7 @@ const getGlobalTestMocks =
   };
 
 describe('jest-each', () => {
-  [
+  for (const keyPath of [
     ['test'],
     ['test', 'concurrent'],
     ['test', 'concurrent', 'only'],
@@ -55,7 +55,7 @@ describe('jest-each', () => {
     ['describe'],
     ['fdescribe'],
     ['describe', 'only'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('throws error when there are additional words in first column heading', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -465,12 +465,12 @@ describe('jest-each', () => {
         `;
 
         const testFunction = get(eachObject, keyPath);
-        testFunction('some test', noop, 10000);
+        testFunction('some test', noop, 10_000);
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledWith(
           'some test',
           expect.any(Function),
-          10000,
+          10_000,
         );
       });
 
@@ -500,7 +500,7 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 
   describe('done callback', () => {
     test.each([
@@ -551,7 +551,7 @@ describe('jest-each', () => {
     );
   });
 
-  [
+  for (const keyPath of [
     ['xtest'],
     ['test', 'skip'],
     ['test', 'concurrent'],
@@ -560,7 +560,7 @@ describe('jest-each', () => {
     ['it', 'skip'],
     ['xdescribe'],
     ['describe', 'skip'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -658,5 +658,5 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 });

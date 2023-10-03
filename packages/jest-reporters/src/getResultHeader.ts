@@ -56,5 +56,5 @@ export default function getResultHeader(
   return `${status} ${projectDisplayName}${formatTestPath(
     projectConfig ?? globalConfig,
     testPath,
-  )}${testDetail.length ? ` (${testDetail.join(', ')})` : ''}`;
+  )}${testDetail.length > 0 ? ` (${testDetail.join(', ')})` : ''}`;
 }

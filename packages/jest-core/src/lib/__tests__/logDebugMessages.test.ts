@@ -18,7 +18,7 @@ const getOutputStream = (resolve: (message: string) => void) =>
     write(message: string) {
       resolve(message);
     },
-  } as NodeJS.WriteStream);
+  }) as NodeJS.WriteStream;
 
 it('prints the jest version', async () => {
   expect.assertions(1);

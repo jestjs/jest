@@ -54,7 +54,7 @@ class CallTracker {
     };
 
     this.any = function () {
-      return !!calls.length;
+      return calls.length > 0;
     };
 
     this.count = function () {

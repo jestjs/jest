@@ -12,13 +12,13 @@ import * as fs from 'graceful-fs';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {readConfigs} from 'jest-config';
+import {pluralize} from 'jest-util';
 import {formatHandleErrors} from '../collectHandles';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
 import getSelectProjectsMessage from '../getSelectProjectsMessage';
 import {_run} from '../jest';
 import logDebugMessages from '../lib/logDebugMessages';
-import pluralize from '../pluralize';
 
 export async function runCLI(
   argv: Config.Argv,
@@ -50,12 +50,13 @@ export async function runCLI(
 
   if (argv.clearCache) {
     // stick in a Set to dedupe the deletions
-    new Set(configs.map(config => config.cacheDirectory)).forEach(
-      cacheDirectory => {
-        fs.rmSync(cacheDirectory, {force: true, recursive: true});
-        process.stdout.write(`Cleared ${cacheDirectory}\n`);
-      },
+    const uniqueConfigDirectories = new Set(
+      configs.map(config => config.cacheDirectory),
     );
+    for (const cacheDirectory of uniqueConfigDirectories) {
+      fs.rmSync(cacheDirectory, {force: true, recursive: true});
+      process.stdout.write(`Cleared ${cacheDirectory}\n`);
+    }
 
     exit(0);
   }
@@ -95,7 +96,7 @@ export async function runCLI(
 
   const {openHandles} = results;
 
-  if (openHandles && openHandles.length) {
+  if (openHandles && openHandles.length > 0) {
     const formatted = formatHandleErrors(openHandles, configs[0]);
 
     const openHandlesString = pluralize('open handle', formatted.length, 's');

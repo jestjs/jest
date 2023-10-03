@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
+import {invariant} from 'jest-util';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -15,7 +16,6 @@ import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
   getTestDuration,
-  invariant,
   makeDescribe,
   makeTest,
 } from './utils';
@@ -53,10 +53,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
-        currentDescribeBlock.hooks.forEach(hook => {
+        for (const hook of currentDescribeBlock.hooks) {
           hook.asyncError.message = `Invalid: ${hook.type}() may not be used in a describe block containing no tests.`;
           state.unhandledErrors.push(hook.asyncError);
-        });
+        }
       }
 
       // pass mode of currentDescribeBlock to tests
@@ -68,11 +68,11 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         )
       );
       if (shouldPassMode) {
-        currentDescribeBlock.children.forEach(child => {
+        for (const child of currentDescribeBlock.children) {
           if (child.type === 'test' && !child.mode) {
             child.mode = currentDescribeBlock.mode;
           }
-        });
+        }
       }
       if (
         !state.hasFocusedTests &&
@@ -217,7 +217,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'test_retry': {
       const logErrorsBeforeRetry: boolean =
         // eslint-disable-next-line no-restricted-globals
-        global[LOG_ERRORS_BEFORE_RETRY] || false;
+        ((global as Global.Global)[LOG_ERRORS_BEFORE_RETRY] as any) || false;
       if (logErrorsBeforeRetry) {
         event.test.retryReasons.push(...event.test.errors);
       }
@@ -227,8 +227,11 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'run_start': {
       state.hasStarted = true;
       /* eslint-disable no-restricted-globals */
-      global[TEST_TIMEOUT_SYMBOL] &&
-        (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      if ((global as Global.Global)[TEST_TIMEOUT_SYMBOL]) {
+        state.testTimeout = (global as Global.Global)[
+          TEST_TIMEOUT_SYMBOL
+        ] as number;
+      }
       /* eslint-enable */
       break;
     }
@@ -269,9 +272,35 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       // execution, which will result in one test's error failing another test.
       // In any way, it should be possible to track where the error was thrown
       // from.
-      state.currentlyRunningTest
-        ? state.currentlyRunningTest.errors.push(event.error)
-        : state.unhandledErrors.push(event.error);
+      if (state.currentlyRunningTest) {
+        if (event.promise) {
+          state.currentlyRunningTest.unhandledRejectionErrorByPromise.set(
+            event.promise,
+            event.error,
+          );
+        } else {
+          state.currentlyRunningTest.errors.push(event.error);
+        }
+      } else {
+        if (event.promise) {
+          state.unhandledRejectionErrorByPromise.set(
+            event.promise,
+            event.error,
+          );
+        } else {
+          state.unhandledErrors.push(event.error);
+        }
+      }
+      break;
+    }
+    case 'error_handled': {
+      if (state.currentlyRunningTest) {
+        state.currentlyRunningTest.unhandledRejectionErrorByPromise.delete(
+          event.promise,
+        );
+      } else {
+        state.unhandledRejectionErrorByPromise.delete(event.promise);
+      }
       break;
     }
   }

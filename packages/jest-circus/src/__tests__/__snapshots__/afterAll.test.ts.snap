@@ -54,6 +54,7 @@ hook_start: beforeAll
 hook_success: beforeAll
 run_describe_start: child describe
 test_start: my test
+test_started: my test
 hook_start: beforeEach
 > beforeEach
 hook_success: beforeEach
@@ -132,24 +133,29 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 test_start: one
+test_started: one
 test_fn_start: one
 test_fn_success: one
 test_done: one
 test_start: two
+test_started: two
 test_fn_start: two
 test_fn_success: two
 test_done: two
 run_describe_start: 2nd level describe
 test_start: 2nd level test
+test_started: 2nd level test
 test_fn_start: 2nd level test
 test_fn_success: 2nd level test
 test_done: 2nd level test
 run_describe_start: 3rd level describe
 test_start: 3rd level test
+test_started: 3rd level test
 test_fn_start: 3rd level test
 test_fn_success: 3rd level test
 test_done: 3rd level test
 test_start: 3rd level test#2
+test_started: 3rd level test#2
 test_fn_start: 3rd level test#2
 test_fn_success: 3rd level test#2
 test_done: 3rd level test#2
@@ -162,6 +168,7 @@ hook_success: afterAll
 run_describe_finish: describe
 run_describe_start: 2nd describe
 test_start: 2nd describe test
+test_started: 2nd describe test
 test_fn_start: 2nd describe test
 test_fn_success: 2nd describe test
 test_done: 2nd describe test

@@ -8,7 +8,7 @@
 import {makeGlobalConfig} from '@jest/test-utils';
 import getResultHeader from '../getResultHeader';
 
-const endTime = 1577717671160;
+const endTime = 1_577_717_671_160;
 const testTime = 5500;
 
 const testResult = {

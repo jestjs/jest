@@ -1186,10 +1186,10 @@ function areVolumesEqual(a, b) {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1243,10 +1243,10 @@ function areVolumesEqual(a: unknown, b: unknown): boolean | undefined {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1297,10 +1297,10 @@ function areAuthorEqual(a, b) {
   if (isAAuthor && isBAuthor) {
     // Authors are equal if they have the same name
     return a.name === b.name;
-  } else if (isAAuthor !== isBAuthor) {
-    return false;
-  } else {
+  } else if (isAAuthor === isBAuthor) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1315,10 +1315,10 @@ function areBooksEqual(a, b, customTesters) {
     return (
       a.name === b.name && this.equals(a.authors, b.authors, customTesters)
     );
-  } else if (isABook !== isBBook) {
-    return false;
-  } else {
+  } else if (isABook === isBBook) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1505,7 +1505,7 @@ The type declaration of the matcher can live in a `.d.ts` file or in an imported
 
 :::tip
 
-Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
+Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md#setupfilesafterenv-array) script:
 
 ```js
 import {expect} from '@jest/globals';
@@ -1591,7 +1591,7 @@ A boolean to let you know this matcher was called with an `expand` option. When 
 
 #### `this.utils`
 
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/main/packages/jest-matcher-utils).
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/jestjs/jest/tree/main/packages/jest-matcher-utils).
 
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 

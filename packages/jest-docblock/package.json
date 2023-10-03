@@ -1,9 +1,9 @@
 {
   "name": "jest-docblock",
-  "version": "29.4.3",
+  "version": "29.7.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-docblock"
   },
   "license": "MIT",
@@ -23,7 +23,7 @@
     "@types/node": "*"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

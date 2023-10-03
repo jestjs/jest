@@ -21,7 +21,8 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
-  Expected extends Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
+  Expected extends
+    Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
 > = (
   this: Context,
   actual: unknown,
@@ -57,6 +58,7 @@ export interface MatcherUtils {
 
 export interface MatcherState {
   assertionCalls: number;
+  currentConcurrentTestName?: () => string | undefined;
   currentTestName?: string;
   error?: Error;
   expand?: boolean;
@@ -97,9 +99,9 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void, T> &
-    Inverse<Matchers<void, T>> &
-    PromiseMatchers<T>;
+  <T = unknown>(
+    actual: T,
+  ): Matchers<void, T> & Inverse<Matchers<void, T>> & PromiseMatchers<T>;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;

@@ -74,7 +74,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
     transform,
   });
 
-  if (!projectConfig.roots.length) {
+  if (projectConfig.roots.length === 0) {
     projectConfig.roots = [projectConfig.rootDir];
   }
 

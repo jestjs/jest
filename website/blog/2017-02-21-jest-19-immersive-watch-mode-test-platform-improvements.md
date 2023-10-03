@@ -9,7 +9,7 @@ Today we are pleased to ship version 19 of the Jest testing platform. It's the b
 
 ## Immersive Watch Mode
 
-We [completely rewrote the watch mode](https://github.com/facebook/jest/pull/2362) to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we made it easy to select the right tests.
+We [completely rewrote the watch mode](https://github.com/jestjs/jest/pull/2362) to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we made it easy to select the right tests.
 
 <!--truncate-->
 
@@ -81,19 +81,19 @@ We now also error on invalid CLI arguments instead of ignoring them. But we've g
 - [`expect.stringContaining`](/docs/expect#expectstringcontainingstring)
 - [`jest.spyOn`](/docs/jest-object#jestspyonobject-methodname)
 
-We're close to almost full feature parity with the `expect` npm package. [Michael Jackson](https://twitter.com/mjackson), the author of the package, agreed to [donate](https://github.com/facebook/jest/issues/1679) it to the Jest project, which means that `jest-matchers` will be renamed to `expect`. Since our version of `expect` is not intended to be fully compatible, [Christopher Chedeau](https://twitter.com/Vjeux) is working on a codemod to make the transition painless. Christopher also worked on a number of improvements to `jest-matchers` which enables it to be used outside of Jest and even [works inside browsers](https://github.com/facebook/jest/pull/2795).
+We're close to almost full feature parity with the `expect` npm package. [Michael Jackson](https://twitter.com/mjackson), the author of the package, agreed to [donate](https://github.com/jestjs/jest/issues/1679) it to the Jest project, which means that `jest-matchers` will be renamed to `expect`. Since our version of `expect` is not intended to be fully compatible, [Christopher Chedeau](https://twitter.com/Vjeux) is working on a codemod to make the transition painless. Christopher also worked on a number of improvements to `jest-matchers` which enables it to be used outside of Jest and even [works inside browsers](https://github.com/jestjs/jest/pull/2795).
 
-## [eslint-plugin-jest](https://github.com/facebook/jest/tree/main/packages/eslint-plugin-jest) – our very own ESLint plugin
+## [eslint-plugin-jest](https://github.com/jestjs/jest/tree/main/packages/eslint-plugin-jest) – our very own ESLint plugin
 
 Thanks to [Jonathan Kim](https://twitter.com/jonnykim) Jest finally has its own official ESLint plugin. It exposes three rules:
 
-- [no-disabled-tests](https://github.com/facebook/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md) - this rule prevents you from accidentally committing disabled tests.
-- [no-focused-tests](https://github.com/facebook/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md) - this rule prevents you from committing focused tests which would disable all other tests in the same suite.
-- [no-identical-title](https://github.com/facebook/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) - disallows identical titles in test names.
+- [no-disabled-tests](https://github.com/jestjs/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md) - this rule prevents you from accidentally committing disabled tests.
+- [no-focused-tests](https://github.com/jestjs/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md) - this rule prevents you from committing focused tests which would disable all other tests in the same suite.
+- [no-identical-title](https://github.com/jestjs/jest/blob/main/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) - disallows identical titles in test names.
 
 You can install it using `npm install --save-dev eslint-plugin-jest` or `yarn add --dev eslint eslint-plugin-jest` and it can be enabled by adding `{"plugins": ["jest"]}` to your eslint configuration.
 
-## New public package: [jest-validate](https://github.com/facebook/jest/tree/main/packages/jest-validate)
+## New public package: [jest-validate](https://github.com/jestjs/jest/tree/main/packages/jest-validate)
 
 While we refactored the validation and normalization code for Jest's configuration, we were so happy with the new error messaging that we extracted it to its own module to share it with everyone. With Jest 19 we welcome `jest-validate` to our self-sustained packages family.
 
@@ -129,18 +129,18 @@ The homepage was completely redesigned to be more descriptive of what Jest is ab
 ## Community Updates
 
 - We really loved this talk: “[Introduction to Jest](https://www.youtube.com/watch?v=tvy0bSgwtTo)“ by Vas Boroviak.
-- Follow [@fbjest on Twitter](http://twitter.com/fbjest).
+- Follow [@jestjs\_ on Twitter](http://twitter.com/jestjs_).
 - The Jest Core team syncs once a week to discuss current and future issues. If you'd like to work on Jest, let us know, submit a few pull requests and join our weekly team meetings.
 - The awesome engineers at Artsy wrote [about Jest as part of their 2017 frontend stack](http://artsy.github.io/blog/2017/02/05/Front-end-JavaScript-at-Artsy-2017/).
 - Stephen Scott wrote a detailed article about [testing React components](https://medium.freecodecamp.com/the-right-way-to-test-react-components-548a4736ab22) in which he weighs the pros and cons of different approaches.
 - [Using Jest with vue.js](https://medium.com/@kentaromiura_the_js_guy/jest-for-all-episode-1-vue-js-d616bccbe186#.r8ryxlw98) got a lot easier after reading Cristian Carlesso's blog post.
 - [Michele Bertoli wrote a book about React Design Patterns and Best Practices](https://twitter.com/cpojer/status/825004258219130880) which features an entire section about Jest.
-- Improved `--notify` command that shows an operating system notification which [can now also re-run tests from the notification](https://github.com/facebook/jest/pull/2727). This is actually a Jest feature and we are just checking if you are still reading this blog post.
+- Improved `--notify` command that shows an operating system notification which [can now also re-run tests from the notification](https://github.com/jestjs/jest/pull/2727). This is actually a Jest feature and we are just checking if you are still reading this blog post.
 - Jest is now part of [react-boilerplate](https://twitter.com/mxstbr/status/820326656439177217).
 - Read about the [hidden powers of Jest's matchers](https://medium.com/@boriscoder/the-hidden-power-of-jest-matchers-f3d86d8101b0#.pn10z1pzx).
 
-Finally, we are happy to announce that the [ava](https://github.com/avajs/ava) test runner has adopted parts of the Jest platform and is now shipping with basic [snapshot support](https://github.com/avajs/ava#snapshot-testing) and is using [pretty-format](https://github.com/facebook/jest/tree/main/packages/pretty-format). Consolidating test infrastructure makes it easier to learn how to test applications and enables us to share best practices. We are looking forward to see what we can learn from existing test libraries in the future.
+Finally, we are happy to announce that the [ava](https://github.com/avajs/ava) test runner has adopted parts of the Jest platform and is now shipping with basic [snapshot support](https://github.com/avajs/ava#snapshot-testing) and is using [pretty-format](https://github.com/jestjs/jest/tree/main/packages/pretty-format). Consolidating test infrastructure makes it easier to learn how to test applications and enables us to share best practices. We are looking forward to see what we can learn from existing test libraries in the future.
 
-The full [changelog can be found on GitHub](https://github.com/facebook/jest/blob/main/CHANGELOG.md#jest-1900). Jest 19 was a true JavaScript community effort with [17 people who contributed](https://github.com/facebook/jest/graphs/contributors?from=2016-12-23&to=2017-02-21&type=c) to this release. We thank each and every one of you for your help to make this project great.
+The full [changelog can be found on GitHub](https://github.com/jestjs/jest/blob/main/CHANGELOG.md#jest-1900). Jest 19 was a true JavaScript community effort with [17 people who contributed](https://github.com/jestjs/jest/graphs/contributors?from=2016-12-23&to=2017-02-21&type=c) to this release. We thank each and every one of you for your help to make this project great.
 
 _This blog post was written by [Rogelio Guzman](https://twitter.com/rogeliog) and [Michał Pierzchała](https://twitter.com/thymikee)._

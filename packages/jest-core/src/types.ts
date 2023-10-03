@@ -12,7 +12,7 @@ export type Stats = {
   testMatch: number;
   testPathIgnorePatterns: number;
   testRegex: number;
-  testPathPattern?: number;
+  testPathPatterns?: number;
 };
 
 export type TestRunData = Array<{
@@ -31,7 +31,7 @@ export type TestPathCases = Array<{
 }>;
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
-  testPathPattern: (path: string) => boolean;
+  testPathPatterns: (path: string) => boolean;
 };
 
 export type FilterResult = {

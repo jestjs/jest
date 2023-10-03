@@ -203,9 +203,10 @@ export default class FakeTimers {
       Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
     );
 
-    fakeTimersConfig.doNotFake?.forEach(nameOfFakeableAPI => {
-      toFake.delete(nameOfFakeableAPI);
-    });
+    if (fakeTimersConfig.doNotFake)
+      for (const nameOfFakeableAPI of fakeTimersConfig.doNotFake) {
+        toFake.delete(nameOfFakeableAPI);
+      }
 
     return {
       advanceTimeDelta,

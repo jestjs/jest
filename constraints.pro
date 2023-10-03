@@ -19,14 +19,12 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   DependencyType2 \= 'peerDependencies',
   % A list of exception to same version rule
   \+ member(DependencyIdent, [
-    % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
-    'react', 'react-dom',
-    % Only RN should be bumped to react 18
-    'react-test-renderer',
     % @types/node in the root need to stay on ~14.14.45
     '@types/node',
     % upgrading the entire repository is a breaking change
-    'glob'
+    'glob',
+    % repository and snapshot
+    'prettier'
   ]).
 
 % Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
@@ -43,7 +41,7 @@ gen_enforced_field(WorkspaceCwd, 'license', null) :-
 % Enforces the repository field for all public workspaces while removing it from private workspaces
 gen_enforced_field(WorkspaceCwd, 'repository.type', 'git') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
-gen_enforced_field(WorkspaceCwd, 'repository.url', 'https://github.com/facebook/jest.git') :-
+gen_enforced_field(WorkspaceCwd, 'repository.url', 'https://github.com/jestjs/jest.git') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 gen_enforced_field(WorkspaceCwd, 'repository.directory', WorkspaceCwd) :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
@@ -57,7 +55,7 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.access', null) :-
   workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the engines.node field for public workspace
-gen_enforced_field(WorkspaceCwd, 'engines.node', '^14.15.0 || ^16.10.0 || >=18.0.0') :-
+gen_enforced_field(WorkspaceCwd, 'engines.node', '^16.10.0 || ^18.12.0 || >=20.0.0') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the main and types field to start with ./

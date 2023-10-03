@@ -76,19 +76,19 @@ function find(
         }
         return;
       }
-      entries.forEach(entry => {
+      for (const entry of entries) {
         const file = path.join(directory, entry.name);
 
         if (ignore(file)) {
-          return;
+          continue;
         }
 
         if (entry.isSymbolicLink()) {
-          return;
+          continue;
         }
         if (entry.isDirectory()) {
           search(file);
-          return;
+          continue;
         }
 
         activeCalls++;
@@ -105,7 +105,7 @@ function find(
               search(file);
             } else {
               const ext = path.extname(file).substr(1);
-              if (extensions.indexOf(ext) !== -1) {
+              if (extensions.includes(ext)) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
               }
             }
@@ -115,7 +115,7 @@ function find(
             callback(result);
           }
         });
-      });
+      }
 
       if (activeCalls === 0) {
         callback(result);
@@ -124,7 +124,7 @@ function find(
   }
 
   if (roots.length > 0) {
-    roots.forEach(search);
+    for (const root of roots) search(root);
   } else {
     callback(result);
   }
@@ -144,17 +144,17 @@ function findNative(
     args.push('-type', 'f');
   }
 
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push('(');
   }
-  extensions.forEach((ext, index) => {
+  for (const [index, ext] of extensions.entries()) {
     if (index) {
       args.push('-o');
     }
     args.push('-iname');
     args.push(`*.${ext}`);
-  });
-  if (extensions.length) {
+  }
+  if (extensions.length > 0) {
     args.push(')');
   }
 
@@ -162,7 +162,7 @@ function findNative(
   let stdout = '';
   if (child.stdout === null) {
     throw new Error(
-      'stdout is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+      'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
   child.stdout.setEncoding('utf-8');
@@ -175,10 +175,8 @@ function findNative(
       .filter(x => !ignore(x));
     const result: Result = [];
     let count = lines.length;
-    if (!count) {
-      callback([]);
-    } else {
-      lines.forEach(path => {
+    if (count) {
+      for (const path of lines) {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
           if (!err && stat && !stat.isDirectory()) {
@@ -188,7 +186,9 @@ function findNative(
             callback(result);
           }
         });
-      });
+      }
+    } else {
+      callback([]);
     }
   });
 }
@@ -213,7 +213,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     const callback = (list: Result) => {
       const files = new Map();
       const removedFiles = new Map(data.files);
-      list.forEach(fileData => {
+      for (const fileData of list) {
         const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
         const existingFile = data.files.get(relativeFilePath);
@@ -224,7 +224,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
           files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
         }
         removedFiles.delete(relativeFilePath);
-      });
+      }
       data.files = files;
 
       resolve({

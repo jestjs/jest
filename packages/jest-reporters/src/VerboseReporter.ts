@@ -30,7 +30,7 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   // Verbose mode is for debugging. Buffering of output is undesirable.
-  // See https://github.com/facebook/jest/issues/8208
+  // See https://github.com/jestjs/jest/issues/8208
   protected override __wrapStdio(
     stream: NodeJS.WritableStream | NodeJS.WriteStream,
   ): void {
@@ -52,7 +52,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   static groupTestsBySuites(testResults: Array<AssertionResult>): Suite {
     const root: Suite = {suites: [], tests: [], title: ''};
-    testResults.forEach(testResult => {
+    for (const testResult of testResults) {
       let targetSuite = root;
 
       // Find the target suite for this test,
@@ -67,7 +67,7 @@ export default class VerboseReporter extends DefaultReporter {
       }
 
       targetSuite.tests.push(testResult);
-    });
+    }
     return root;
   }
 
@@ -107,7 +107,9 @@ export default class VerboseReporter extends DefaultReporter {
 
     this._logTests(suite.tests, indentLevel + 1);
 
-    suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
+    for (const innerSuite of suite.suites) {
+      this._logSuite(innerSuite, indentLevel + 1);
+    }
   }
 
   private _getIcon(status: string) {
@@ -132,7 +134,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _logTests(tests: Array<AssertionResult>, indentLevel: number) {
     if (this._globalConfig.expand) {
-      tests.forEach(test => this._logTest(test, indentLevel));
+      for (const test of tests) this._logTest(test, indentLevel);
     } else {
       const summedTests = tests.reduce<{
         pending: Array<AssertionResult>;
@@ -152,12 +154,13 @@ export default class VerboseReporter extends DefaultReporter {
         {pending: [], todo: []},
       );
 
+      const logTodoOrPendingTest = this._logTodoOrPendingTest(indentLevel);
       if (summedTests.pending.length > 0) {
-        summedTests.pending.forEach(this._logTodoOrPendingTest(indentLevel));
+        for (const test of summedTests.pending) logTodoOrPendingTest(test);
       }
 
       if (summedTests.todo.length > 0) {
-        summedTests.todo.forEach(this._logTodoOrPendingTest(indentLevel));
+        for (const test of summedTests.todo) logTodoOrPendingTest(test);
       }
     }
   }
