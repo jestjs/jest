@@ -131,6 +131,26 @@ Jest can be used in projects that use [vite](https://vitejs.dev/) to serve sourc
 
 Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
+### Using ESLint
+
+Jest can be used with ESLint without any further configuration as long as you import the [Jest global helpers](https://jestjs.io/docs/api) (`describe`, `it`, etc.) from `@jest/globals` before using them in your test file. This is necessary to avoid `no-undef` errors from ESLint, which doesn't know about the Jest globals. 
+
+If you'd like to avoid these imports, you can configure your [ESLint environment](https://eslint.org/docs/latest/use/configure/language-options#specifying-environments) to support these globals by adding the `jest` environment:
+
+```json5
+{
+  // Enable jest environment for test files
+  "overrides": [
+    {
+      "files": ["tests/**/*"] 
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
+```
+
 ### Using TypeScript
 
 #### Via `babel`
