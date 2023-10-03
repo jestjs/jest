@@ -14,8 +14,8 @@ const cleanupRunnerStack = (stderr: string) =>
     .split('\n')
     .filter(
       line =>
-        !line.includes('packages/jest-jasmine2/build') &&
-        !line.includes('packages/jest-circus/build'),
+        !line.includes('packages/jest-jasmine2/src') &&
+        !line.includes('packages/jest-circus/src'),
     )
     .join('\n');
 
