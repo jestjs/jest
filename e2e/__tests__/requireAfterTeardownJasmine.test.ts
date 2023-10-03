@@ -16,7 +16,7 @@ test('prints useful error for requires after test is done', () => {
   const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
 
   expect(interestingLines).toMatchSnapshot();
-  expect(stderr.split('\n')[19]).toMatch(
+  expect(stderr.split('\n')[20]).toMatch(
     '(__tests__/lateRequire.test.js:11:20)',
   );
 });
