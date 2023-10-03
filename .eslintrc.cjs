@@ -66,6 +66,9 @@ module.exports = {
         // TODO: part of "stylistic" rules, remove explicit activation when that lands
         '@typescript-eslint/no-empty-function': 'error',
         '@typescript-eslint/no-empty-interface': 'error',
+
+        // not needed to be enforced for TS
+        'import/namespace': 'off',
       },
     },
     {
