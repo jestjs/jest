@@ -27,7 +27,7 @@ test('shows the correct errors in stderr when failing tests', () => {
 
   const rest = extractSummary(result.stderr)
     .rest.split('\n')
-    .filter(line => !line.includes('packages/expect/build/index.js'))
+    .filter(line => !line.includes('packages/expect/src/index.ts'))
     .join('\n');
 
   expect(rest).toMatchSnapshot();
