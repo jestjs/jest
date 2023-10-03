@@ -6,6 +6,7 @@
  *
  */
 
+import type {WriteStream} from 'tty';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import logDebugMessages from '../logDebugMessages';
 
@@ -18,7 +19,7 @@ const getOutputStream = (resolve: (message: string) => void) =>
     write(message: string) {
       resolve(message);
     },
-  }) as NodeJS.WriteStream;
+  }) as WriteStream;
 
 it('prints the jest version', async () => {
   expect.assertions(1);

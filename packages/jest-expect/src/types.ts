@@ -52,6 +52,8 @@ type PromiseMatchers<T = unknown> = {
 declare module 'expect' {
   interface MatcherState {
     snapshotState: SnapshotState;
+    /** Whether the test was called with `test.failing()` */
+    testFailing?: boolean;
   }
   interface BaseExpect {
     addSnapshotSerializer: typeof addSerializer;

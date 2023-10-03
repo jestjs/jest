@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {performance} from 'perf_hooks';
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -36,7 +37,7 @@ import type {Filter, TestRunData} from './types';
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   source: SearchSource,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
@@ -74,7 +75,7 @@ type ProcessResultOptions = Pick<
 > & {
   collectHandles?: HandleCollectionResult;
   onComplete?: (result: AggregatedResult) => void;
-  outputStream: NodeJS.WriteStream;
+  outputStream: WriteStream;
 };
 
 const processResults = async (
@@ -142,7 +143,7 @@ export default async function runJest({
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<TestContext>;
-  outputStream: NodeJS.WriteStream;
+  outputStream: WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;

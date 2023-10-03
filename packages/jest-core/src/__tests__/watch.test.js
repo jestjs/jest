@@ -140,7 +140,11 @@ describe('Watch mode flows', () => {
       testRegex: [],
     };
     pipe = {write: jest.fn()};
-    globalConfig = {watch: true};
+    globalConfig = {
+      rootDir: '',
+      testPathPatterns: [],
+      watch: true,
+    };
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config}];
     stdin = new MockStdin();
@@ -152,7 +156,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Correctly passing test path pattern', async () => {
-    globalConfig.testPathPattern = 'test-*';
+    globalConfig.testPathPatterns = ['test-*'];
 
     await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
@@ -671,7 +675,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'skipFilter'}
     ${'✖︎'} | ${'testFailureExitCode'}
     ${'✔︎'} | ${'testNamePattern'}
-    ${'✔︎'} | ${'testPathPattern'}
+    ${'✔︎'} | ${'testPathPatterns'}
     ${'✖︎'} | ${'testResultsProcessor'}
     ${'✔︎'} | ${'updateSnapshot'}
     ${'✖︎'} | ${'useStderr'}
@@ -898,7 +902,7 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });
@@ -922,7 +926,7 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });

@@ -55,7 +55,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   snapshotFormat: {},
   testFailureExitCode: 1,
   testNamePattern: '',
-  testPathPattern: '',
+  testPathPatterns: [],
   testResultsProcessor: undefined,
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,

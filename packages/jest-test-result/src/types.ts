@@ -91,6 +91,11 @@ export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
   displayName?: Config.DisplayName;
+  /**
+   * Whether [`test.failing()`](https://jestjs.io/docs/api#testfailingname-fn-timeout)
+   * was used.
+   */
+  failing?: boolean;
   failureMessage?: string | null;
   leaks: boolean;
   memoryUsage?: number;

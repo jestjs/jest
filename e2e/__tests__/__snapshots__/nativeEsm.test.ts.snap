@@ -5,7 +5,7 @@ exports[`does not enforce import assertions 1`] = `
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-missing-import-assertions.test.js/i."
+Ran all test suites matching native-esm-missing-import-assertions.test.js."
 `;
 
 exports[`on node >=16.11.0 support re-exports from CJS of dual packages 1`] = `
@@ -13,7 +13,7 @@ exports[`on node >=16.11.0 support re-exports from CJS of dual packages 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-deep-cjs-reexport.test.js/i."
+Ran all test suites matching native-esm-deep-cjs-reexport.test.js."
 `;
 
 exports[`on node >=16.12.0 supports import assertions 1`] = `
@@ -21,7 +21,7 @@ exports[`on node >=16.12.0 supports import assertions 1`] = `
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-import-assertions.test.js/i."
+Ran all test suites matching native-esm-import-assertions.test.js."
 `;
 
 exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
@@ -29,7 +29,7 @@ exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-native-module.test.js/i."
+Ran all test suites matching native-esm-native-module.test.js."
 `;
 
 exports[`runs WebAssembly (Wasm) test with native ESM 1`] = `
@@ -37,7 +37,7 @@ exports[`runs WebAssembly (Wasm) test with native ESM 1`] = `
 Tests:       6 passed, 6 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-wasm.test.js/i."
+Ran all test suites matching native-esm-wasm.test.js."
 `;
 
 exports[`runs test with native ESM 1`] = `
@@ -45,7 +45,7 @@ exports[`runs test with native ESM 1`] = `
 Tests:       33 passed, 33 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm.test.js/i."
+Ran all test suites matching native-esm.test.js."
 `;
 
 exports[`support re-exports from CJS of core module 1`] = `
@@ -53,7 +53,7 @@ exports[`support re-exports from CJS of core module 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm-core-cjs-reexport.test.js/i."
+Ran all test suites matching native-esm-core-cjs-reexport.test.js."
 `;
 
 exports[`supports top-level await 1`] = `
@@ -61,5 +61,5 @@ exports[`supports top-level await 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /native-esm.tla.test.js/i."
+Ran all test suites matching native-esm.tla.test.js."
 `;

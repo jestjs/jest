@@ -15,7 +15,7 @@ import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
+import {TestPathPatterns, globsToMatcher} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
@@ -110,7 +110,7 @@ export default class SearchSource {
 
   private _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPattern: string,
+    testPathPatterns: TestPathPatterns,
   ): SearchResult {
     const data: {
       stats: Stats;
@@ -128,13 +128,12 @@ export default class SearchSource {
     };
 
     const testCases = Array.from(this._testPathCases); // clone
-    if (testPathPattern) {
-      const regex = testPathPatternToRegExp(testPathPattern);
+    if (testPathPatterns.isSet()) {
       testCases.push({
-        isMatch: (path: string) => regex.test(path),
-        stat: 'testPathPattern',
+        isMatch: (path: string) => testPathPatterns.isMatch(path),
+        stat: 'testPathPatterns',
       });
-      data.stats.testPathPattern = 0;
+      data.stats.testPathPatterns = 0;
     }
 
     data.tests = allPaths.filter(test => {
@@ -152,10 +151,10 @@ export default class SearchSource {
     return data;
   }
 
-  private _getAllTestPaths(testPathPattern: string): SearchResult {
+  private _getAllTestPaths(testPathPatterns: TestPathPatterns): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
-      testPathPattern,
+      testPathPatterns,
     );
   }
 
@@ -163,8 +162,8 @@ export default class SearchSource {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
-  findMatchingTests(testPathPattern: string): SearchResult {
-    return this._getAllTestPaths(testPathPattern);
+  findMatchingTests(testPathPatterns: TestPathPatterns): SearchResult {
+    return this._getAllTestPaths(testPathPatterns);
   }
 
   async findRelatedTests(
@@ -287,10 +286,10 @@ export default class SearchSource {
         paths,
         globalConfig.collectCoverage,
       );
-    } else if (globalConfig.testPathPattern == null) {
-      return {tests: []};
     } else {
-      return this.findMatchingTests(globalConfig.testPathPattern);
+      return this.findMatchingTests(
+        TestPathPatterns.fromGlobalConfig(globalConfig),
+      );
     }
   }
 
