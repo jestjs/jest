@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type {WriteStream} from 'tty';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
@@ -90,7 +91,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<TestContext>,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),

@@ -8,6 +8,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import type {WriteStream} from 'tty';
 import * as fs from 'graceful-fs';
 import type {AggregatedResult} from '@jest/test-result';
 import {normalize} from 'jest-config';
@@ -20,7 +21,7 @@ describe('Watch mode flows with changed files', () => {
   jest.resetModules();
 
   let watch: typeof import('../watch').default;
-  let pipe: NodeJS.WriteStream;
+  let pipe: WriteStream;
   let stdin: MockStdin;
   const testDirectory = path.resolve(tmpdir(), 'jest-tmp');
   const fileTargetPath = path.resolve(testDirectory, 'lost-file.js');
