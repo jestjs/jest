@@ -9,75 +9,39 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-import {execSync} from 'child_process';
-import * as path from 'path';
-import {fileURLToPath} from 'url';
 import chalk from 'chalk';
-import chokidar from 'chokidar';
-import fs from 'graceful-fs';
-import {PACKAGES_DIR, getPackages} from './buildUtils.mjs';
+import webpack from 'webpack';
+import {createWebpackConfigs} from './buildUtils.mjs';
 
-const BUILD_CMD = `node ${path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  'build.mjs',
-)}`;
+const compiler = webpack(createWebpackConfigs());
 
-let filesToBuild = new Map();
+let hasBuilt = false;
 
-const exists = filename => {
-  try {
-    return fs.statSync(filename).isFile();
-  } catch {}
-  return false;
-};
-const rebuild = filename => filesToBuild.set(filename, true);
+console.log(chalk.inverse(' Bundling packages '));
 
-chokidar
-  .watch(
-    getPackages().map(p => path.resolve(p.packageDir, 'src')),
-    {
-      ignoreInitial: true,
-      ignored: /(^|[/\\])\../, // ignore dotfiles
-    },
-  )
-  .on('all', (event, filePath) => {
-    if (
-      (event === 'change' || event === 'rename' || event === 'add') &&
-      exists(filePath)
-    ) {
-      console.log(
-        chalk.green('->'),
-        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`,
-      );
-      rebuild(filePath);
-    } else {
-      filePath.split(path.join(path.sep, 'src', path.sep));
-      const buildFile = filePath
-        .replace(
-          path.join(path.sep, 'src', path.sep),
-          path.join(path.sep, 'build', path.sep),
-        )
-        .replace(/\.ts$/, '.js');
-      try {
-        fs.unlinkSync(buildFile);
-        process.stdout.write(
-          `${chalk.red('  \u2022 ')}${path.relative(
-            PACKAGES_DIR,
-            buildFile,
-          )} (deleted)\n`,
-        );
-      } catch {}
-    }
-  });
+compiler.watch({}, (error, stats) => {
+  if (!hasBuilt) {
+    hasBuilt = true;
 
-setInterval(() => {
-  const files = Array.from(filesToBuild.keys());
-  if (files.length > 0) {
-    filesToBuild = new Map();
-    try {
-      execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
-    } catch {}
+    console.log(chalk.red('->'), chalk.cyan('Watching for changes…'));
   }
-}, 100);
 
-console.log(chalk.red('->'), chalk.cyan('Watching for changes...'));
+  if (error) {
+    console.error('Got error from watch mode', error);
+  }
+
+  if (stats) {
+    const info = stats.toJson();
+
+    if (stats.hasErrors() || stats.hasWarnings()) {
+      for (const error of info.errors) {
+        console.error('error', error.message);
+      }
+      for (const warning of info.warnings) {
+        console.warn('warning', warning.message);
+      }
+    } else {
+      console.log(chalk.red('->'), chalk.green('Rebuilt packages'));
+    }
+  }
+});

@@ -6,7 +6,7 @@
  */
 
 test('something', done => {
-  setTimeout(() => {}, 10000);
+  setTimeout(() => {}, 10_000);
   expect(true).toBe(true);
   done();
 });

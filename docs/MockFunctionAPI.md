@@ -746,7 +746,7 @@ afterEach(() => {
 });
 
 test('renders correctly with a given date', () => {
-  spiedDateNow = setDateNow(1482363367071);
+  spiedDateNow = setDateNow(1_482_363_367_071);
   // ...
 
   expect(spiedDateNow).toHaveBeenCalledTimes(1);

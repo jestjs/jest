@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import {BaseWatchPlugin, UsageData} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this.isInternal = true;
   }

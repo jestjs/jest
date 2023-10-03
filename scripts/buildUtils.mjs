@@ -146,7 +146,7 @@ export const copyrightSnippet = `
  */
 `.trim();
 
-export function createWebpackConfigs() {
+export function createBuildConfigs() {
   const packages = getPackages();
 
   return packages.map(({packageDir, pkg}) => {
@@ -217,6 +217,8 @@ export function createWebpackConfigs() {
           }
         : pkg.name === 'jest-repl'
         ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
+        : pkg.name === 'jest-snapshot'
+        ? {worker: path.resolve(packageDir, './src/worker.ts')}
         : {};
 
     const extraEntryPoints =
@@ -288,6 +290,12 @@ export function createWebpackConfigs() {
       },
     };
   });
+}
+
+export function createWebpackConfigs(webpackConfigs = createBuildConfigs()) {
+  return webpackConfigs
+    .map(({webpackConfig}) => webpackConfig)
+    .filter(config => config != null);
 }
 
 // inspired by https://framagit.org/Glandos/webpack-ignore-dynamic-require

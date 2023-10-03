@@ -9,7 +9,7 @@
 import {makeProjectConfig} from '@jest/test-utils';
 import FakeTimers from '../modernFakeTimers';
 
-jest.spyOn(Date, 'now').mockImplementation(() => 123456);
+jest.spyOn(Date, 'now').mockImplementation(() => 123_456);
 
 const mockInstall = jest.fn();
 
@@ -52,7 +52,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: 100_000,
-      now: 123456,
+      now: 123_456,
       shouldAdvanceTime: false,
       shouldClearNativeTimers: true,
       toFake: [
@@ -155,13 +155,13 @@ describe('`@sinonjs/fake-timers` integration', () => {
     timers.useFakeTimers({
       advanceTimers: false,
       doNotFake: ['hrtime'],
-      now: 123456,
+      now: 123_456,
     });
 
     expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: 1000,
-      now: 123456,
+      now: 123_456,
       shouldAdvanceTime: false,
       shouldClearNativeTimers: true,
       toFake: [

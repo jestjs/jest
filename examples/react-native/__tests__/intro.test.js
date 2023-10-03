@@ -9,7 +9,7 @@ import {ActivityIndicator, FlatList, Text, TextInput} from 'react-native';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
 
-jest.setTimeout(15000);
+jest.setTimeout(15_000);
 
 it('renders correctly', () => {
   const tree = renderer.create(<Intro />).toJSON();

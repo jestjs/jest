@@ -131,7 +131,7 @@ const groupOptions = (
     snapshotFormat: options.snapshotFormat,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
-    testPathPattern: options.testPathPattern,
+    testPathPatterns: options.testPathPatterns,
     testResultsProcessor: options.testResultsProcessor,
     testSequencer: options.testSequencer,
     testTimeout: options.testTimeout,

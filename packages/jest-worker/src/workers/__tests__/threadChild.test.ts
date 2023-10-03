@@ -98,7 +98,7 @@ beforeEach(() => {
     {virtual: true},
   );
 
-  jest.mock('../my-fancy-standalone-worker', () => jest.fn(() => 12345), {
+  jest.mock('../my-fancy-standalone-worker', () => jest.fn(() => 12_345), {
     virtual: true,
   });
 
@@ -108,7 +108,7 @@ beforeEach(() => {
     '../my-fancy-babel-worker',
     () => ({
       __esModule: true,
-      default: jest.fn(() => 67890),
+      default: jest.fn(() => 67_890),
     }),
     {virtual: true},
   );
@@ -296,7 +296,7 @@ it('calls the main module if the method call is "default"', () => {
 
   expect(jest.mocked(messagePort.postMessage).mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    12345,
+    12_345,
   ]);
 });
 
@@ -311,7 +311,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   expect(jest.mocked(messagePort.postMessage).mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    67890,
+    67_890,
   ]);
 });
 

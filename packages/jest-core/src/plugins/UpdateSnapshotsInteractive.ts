@@ -70,7 +70,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
             updateConfigAndRun({
               mode: 'watch',
               testNamePattern: assertion ? `^${assertion.fullName}$` : '',
-              testPathPattern: assertion ? assertion.path : '',
+              testPathPatterns: assertion ? [assertion.path] : [],
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
             });

@@ -131,9 +131,8 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
     );
 
   if (options.computeSha1) {
-    const {capabilities} = await cmd<WatchmanListCapabilitiesResponse>(
-      'list-capabilities',
-    );
+    const {capabilities} =
+      await cmd<WatchmanListCapabilitiesResponse>('list-capabilities');
 
     if (capabilities.includes('field-content.sha1hex')) {
       fields.push('content.sha1hex');

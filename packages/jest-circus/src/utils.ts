@@ -377,6 +377,7 @@ export const makeSingleTestResult = (
     duration: test.duration,
     errors: errorsDetailed.map(getErrorStack),
     errorsDetailed,
+    failing: test.failing,
     invocations: test.invocations,
     location,
     numPassingAsserts: test.numPassingAsserts,
@@ -502,6 +503,7 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
+    failing: testResult.failing,
     failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
     fullName,

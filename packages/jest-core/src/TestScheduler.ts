@@ -386,9 +386,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor = await requireOrImportModule(
-        reporter,
-      );
+      const Reporter: ReporterConstructor =
+        await requireOrImportModule(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),
