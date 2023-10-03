@@ -6,6 +6,7 @@
  */
 
 import {performance} from 'perf_hooks';
+import type {WriteStream} from 'tty';
 import exit = require('exit');
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
@@ -78,7 +79,7 @@ export const createJest = Jest.createJest;
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
@@ -107,7 +108,7 @@ export const _run = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
 ): Promise<AggregatedResult> => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
@@ -193,7 +194,7 @@ const runWatch = async (
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   hasteMapInstances: Array<IHasteMap>,
   filter?: Filter,
 ) => {
@@ -228,7 +229,7 @@ const runWatch = async (
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
   contexts: Array<TestContext>,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,
