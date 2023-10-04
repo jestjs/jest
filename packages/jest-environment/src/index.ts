@@ -68,6 +68,14 @@ export interface Jest {
    */
   advanceTimersByTimeAsync(msToRun: number): Promise<void>;
   /**
+   * Advances all timers by the needed milliseconds to execute currently scheduled animation frames.
+   * `advanceTimersToNextFrame()` helpful way to execute code that is scheduled using `requestAnimationFrame`.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  advanceTimersToNextFrame(): void;
+  /**
    * Advances all timers by the needed milliseconds so that only the next
    * timeouts/intervals will run. Optionally, you can provide steps, so it will
    * run steps amount of next timeouts/intervals.
@@ -349,14 +357,6 @@ export interface Jest {
    * It is recommended to use `jest.mock()` instead. The `jest.mock()` API's second
    * argument is a module factory instead of the expected exported module object.
    */
-  /**
-   * Advances all timers by the needed milliseconds to execute the next animation frame.
-   * `runToFrame()` helpful way to execute code that is scheduled using `requestAnimationFrame`.
-   *
-   * @remarks
-   * Not available when using legacy fake timers implementation.
-   */
-  runToFrame(): void;
   setMock(moduleName: string, moduleExports: unknown): Jest;
   /**
    * Set the current system time used by fake timers. Simulates a user changing

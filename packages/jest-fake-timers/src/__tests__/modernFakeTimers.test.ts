@@ -594,7 +594,7 @@ describe('FakeTimers', () => {
     });
   });
 
-  describe('runToFrame', () => {
+  describe('advanceTimersToNextFrame', () => {
     it('runs scheduled animation frames in order', () => {
       const global = {
         Date,
@@ -616,7 +616,7 @@ describe('FakeTimers', () => {
       global.requestAnimationFrame(mock2);
       global.requestAnimationFrame(mock3);
 
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       expect(runOrder).toEqual(['mock1', 'mock2', 'mock3']);
     });
@@ -644,11 +644,11 @@ describe('FakeTimers', () => {
       global.requestAnimationFrame(run);
 
       // only the first frame should be executed
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       expect(runOrder).toEqual(['first-frame']);
 
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       expect(runOrder).toEqual(['first-frame', 'second-frame']);
     });
@@ -673,7 +673,7 @@ describe('FakeTimers', () => {
       global.cancelAnimationFrame(timerId);
 
       // no frames should be executed
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       expect(runOrder).toEqual([]);
     });
@@ -705,7 +705,7 @@ describe('FakeTimers', () => {
       expect(runOrder).toEqual([]);
 
       // move timers forward to execute frame
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       // frame has executed as time has moved forward 10ms to get to the 16ms frame time
       expect(runOrder).toEqual(['frame']);
@@ -733,7 +733,7 @@ describe('FakeTimers', () => {
       global.setTimeout(() => runOrder.push('timeout'), 10);
 
       // move timers forward to execute frame
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       expect(runOrder).toEqual(['timeout', 'frame']);
     });
@@ -759,7 +759,7 @@ describe('FakeTimers', () => {
         global.setTimeout(() => runOrder.push('timeout'), 1);
       });
 
-      timers.runToFrame();
+      timers.advanceTimersToNextFrame();
 
       // timeout not yet executed
       expect(runOrder).toEqual(['frame']);

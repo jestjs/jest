@@ -2289,6 +2289,16 @@ export default class Runtime {
           );
         }
       },
+      advanceTimersToNextFrame: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.advanceTimersToNextFrame();
+        }
+        throw new TypeError(
+          '`jest.advanceTimersToNextFrame()` is not available when using legacy fake timers.',
+        );
+      },
       advanceTimersToNextTimer: steps =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
       advanceTimersToNextTimerAsync: async steps => {
@@ -2402,16 +2412,6 @@ export default class Runtime {
             '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',
           );
         }
-      },
-      runToFrame: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.runToFrame();
-        }
-        throw new TypeError(
-          '`jest.runToFrame()` is not available when using legacy fake timers.',
-        );
       },
       setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
       setSystemTime: now => {
