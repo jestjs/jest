@@ -664,18 +664,15 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({config: makeProjectConfig(), global});
+      const callback = jest.fn();
       timers.useFakeTimers();
-
-      const runOrder: Array<string> = [];
-      const callback = () => runOrder.push('frame');
 
       const timerId = global.requestAnimationFrame(callback);
       global.cancelAnimationFrame(timerId);
 
-      // no frames should be executed
       timers.advanceTimersToNextFrame();
 
-      expect(runOrder).toEqual([]);
+      expect(callback).not.toHaveBeenCalled();
     });
 
     it('should only advance as much time is needed to get to the next frame', () => {
@@ -790,28 +787,6 @@ describe('FakeTimers', () => {
 
       // `requestAnimationFrame` callbacks are called with a `DOMHighResTimeStamp`
       expect(callback).toHaveBeenCalledWith(global.performance.now());
-    });
-
-    it('should allow cancelling of scheduled animation frame callbacks', () => {
-      const global = {
-        Date,
-        cancelAnimationFrame: () => {},
-        clearTimeout,
-        process,
-        requestAnimationFrame: () => -1,
-        setTimeout,
-      } as unknown as typeof globalThis;
-
-      const timers = new FakeTimers({config: makeProjectConfig(), global});
-      const callback = jest.fn();
-      timers.useFakeTimers();
-
-      const timerId = global.requestAnimationFrame(callback);
-      global.cancelAnimationFrame(timerId);
-
-      timers.advanceTimersToNextFrame();
-
-      expect(callback).not.toHaveBeenCalled();
     });
   });
 
