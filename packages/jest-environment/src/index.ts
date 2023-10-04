@@ -68,7 +68,7 @@ export interface Jest {
    */
   advanceTimersByTimeAsync(msToRun: number): Promise<void>;
   /**
-   * Advances all timers by the needed milliseconds to execute currently scheduled animation frames.
+   * Advances all timers by the needed milliseconds to execute callbacks current scheduled with `requestAnimationFrame`.
    * `advanceTimersToNextFrame()` helpful way to execute code that is scheduled using `requestAnimationFrame`.
    *
    * @remarks

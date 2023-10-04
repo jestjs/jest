@@ -768,6 +768,29 @@ describe('FakeTimers', () => {
       timers.advanceTimersByTime(1);
       expect(runOrder).toEqual(['frame', 'timeout']);
     });
+
+    it('should call animation frame callbacks with the latest system time', () => {
+      const global = {
+        Date,
+        clearTimeout,
+        performance,
+        process,
+        requestAnimationFrame: () => -1,
+        setTimeout,
+      } as unknown as typeof globalThis;
+
+      const timers = new FakeTimers({config: makeProjectConfig(), global});
+      timers.useFakeTimers();
+
+      const callback = jest.fn();
+
+      global.requestAnimationFrame(callback);
+
+      timers.advanceTimersToNextFrame();
+
+      // `requestAnimationFrame` callbacks are called with a `DOMHighResTimeStamp`
+      expect(callback).toHaveBeenCalledWith(global.performance.now());
+    });
   });
 
   describe('reset', () => {
