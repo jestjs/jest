@@ -22,9 +22,7 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
     % @types/node in the root need to stay on ~14.14.45
     '@types/node',
     % upgrading the entire repository is a breaking change
-    'glob',
-    % repository and snapshot
-    'prettier'
+    'glob'
   ]).
 
 % Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
