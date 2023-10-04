@@ -2403,6 +2403,16 @@ export default class Runtime {
           );
         }
       },
+      runToFrame: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.runToFrame();
+        }
+        throw new TypeError(
+          '`jest.runToFrame()` is not available when using legacy fake timers.',
+        );
+      },
       setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
       setSystemTime: now => {
         const fakeTimers = _getFakeTimers();

@@ -527,6 +527,10 @@ expectError(jest.runOnlyPendingTimers(true));
 expectType<Promise<void>>(jest.runOnlyPendingTimersAsync());
 expectError(jest.runOnlyPendingTimersAsync(true));
 
+expectType<void>(jest.runToFrame());
+expectError(jest.runToFrame(true));
+expectError(jest.runToFrame(100));
+
 expectType<void>(jest.setSystemTime());
 expectType<void>(jest.setSystemTime(1_483_228_800_000));
 expectType<void>(jest.setSystemTime(Date.now()));
