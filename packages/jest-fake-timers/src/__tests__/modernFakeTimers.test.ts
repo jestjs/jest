@@ -595,7 +595,7 @@ describe('FakeTimers', () => {
   });
 
   describe('advanceTimersToNextFrame', () => {
-    it('runs scheduled animation frames in order', () => {
+    it('runs scheduled animation frame callbacks in order', () => {
       const global = {
         Date,
         clearTimeout,
@@ -621,7 +621,7 @@ describe('FakeTimers', () => {
       expect(runOrder).toEqual(['mock1', 'mock2', 'mock3']);
     });
 
-    it('should only run currently scheduled animation frames', () => {
+    it('should only run currently scheduled animation frame callbacks', () => {
       const global = {
         Date,
         clearTimeout,
@@ -653,7 +653,7 @@ describe('FakeTimers', () => {
       expect(runOrder).toEqual(['first-frame', 'second-frame']);
     });
 
-    it('should allow cancelling of scheduled animation frames', () => {
+    it('should allow cancelling of scheduled animation frame callbacks', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
@@ -738,7 +738,7 @@ describe('FakeTimers', () => {
       expect(runOrder).toEqual(['timeout', 'frame']);
     });
 
-    it('should not execute any timers scheduled inside of a frame', () => {
+    it('should not execute any timers scheduled inside of an animation frame callback', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
@@ -790,6 +790,28 @@ describe('FakeTimers', () => {
 
       // `requestAnimationFrame` callbacks are called with a `DOMHighResTimeStamp`
       expect(callback).toHaveBeenCalledWith(global.performance.now());
+    });
+
+    it('should allow cancelling of scheduled animation frame callbacks', () => {
+      const global = {
+        Date,
+        cancelAnimationFrame: () => {},
+        clearTimeout,
+        process,
+        requestAnimationFrame: () => -1,
+        setTimeout,
+      } as unknown as typeof globalThis;
+
+      const timers = new FakeTimers({config: makeProjectConfig(), global});
+      const callback = jest.fn();
+      timers.useFakeTimers();
+
+      const timerId = global.requestAnimationFrame(callback);
+      global.cancelAnimationFrame(timerId);
+
+      timers.advanceTimersToNextFrame();
+
+      expect(callback).not.toHaveBeenCalled();
     });
   });
 
