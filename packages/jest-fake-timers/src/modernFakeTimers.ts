@@ -110,6 +110,12 @@ export default class FakeTimers {
     }
   }
 
+  advanceTimersToNextFrame(): void {
+    if (this._checkFakeTimers()) {
+      this._clock.runToFrame();
+    }
+  }
+
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
       // @ts-expect-error - doesn't exist?
