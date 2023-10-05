@@ -32,7 +32,7 @@ test('advances timers if a number is passed', done => {
 test('works with `now` option', done => {
   jest.useFakeTimers({advanceTimers: 30, now: new Date('2015-09-25')});
 
-  expect(Date.now()).toBe(1443139200000);
+  expect(Date.now()).toBe(1_443_139_200_000);
 
   const start = Date.now();
 

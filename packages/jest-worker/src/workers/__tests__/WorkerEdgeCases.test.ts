@@ -17,7 +17,7 @@ import {
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
-jest.setTimeout(10000);
+jest.setTimeout(10_000);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
@@ -52,7 +52,7 @@ afterAll(async () => {
 test.each(filesToBuild)('%s.js should exist', file => {
   const path = join(writeDestination, `${file}.js`);
 
-  expect(async () => await access(path)).not.toThrow();
+  expect(async () => access(path)).not.toThrow();
 });
 
 async function closeWorkerAfter(
@@ -99,7 +99,7 @@ describe.each([
           clearInterval(int);
         }
 
-        if (count > 100000) {
+        if (count > 100_000) {
           reject(new Error('Timeout waiting for change'));
         }
 
@@ -310,9 +310,9 @@ describe.each([
     });
 
     test('worker stays dead', async () => {
-      await expect(
-        async () => await worker.waitForWorkerReady(),
-      ).rejects.toThrow('Worker state means it will never be ready: shut-down');
+      await expect(async () => worker.waitForWorkerReady()).rejects.toThrow(
+        'Worker state means it will never be ready: shut-down',
+      );
       expect(worker.isWorkerRunning()).toBeFalsy();
     });
 
@@ -413,7 +413,7 @@ describe.each([
       });
     });
 
-    // Regression test for https://github.com/facebook/jest/issues/13183
+    // Regression test for https://github.com/jestjs/jest/issues/13183
     test('onEnd callback is called', async () => {
       let onEndPromiseResolve: () => void;
       let onEndPromiseReject: (err: Error) => void;

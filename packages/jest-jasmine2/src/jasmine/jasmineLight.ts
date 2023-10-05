@@ -30,6 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
+import type {Global} from '@jest/types';
 import type {Jasmine, SpecDefinitionsFn} from '../types';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
@@ -58,12 +59,16 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
     configurable: true,
     enumerable: true,
     get() {
-      // eslint-disable-next-line no-restricted-globals
-      return global[testTimeoutSymbol] || createOptions.testTimeout || 5000;
+      return (
+        // eslint-disable-next-line no-restricted-globals
+        (global as Global.Global)[testTimeoutSymbol] ||
+        createOptions.testTimeout ||
+        5000
+      );
     },
     set(value) {
       // eslint-disable-next-line no-restricted-globals
-      global[testTimeoutSymbol] = value;
+      (global as Global.Global)[testTimeoutSymbol] = value;
     },
   });
 

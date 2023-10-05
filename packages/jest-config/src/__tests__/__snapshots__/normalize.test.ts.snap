@@ -482,9 +482,9 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 <red></color>"
 `;
 
-exports[`testPathPattern <regexForTestFiles> ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
+exports[`testPathPatterns <regexForTestFiles> ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
 
-exports[`testPathPattern --testPathPattern ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
+exports[`testPathPatterns --testPathPatterns ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
 
 exports[`testTimeout should throw an error if timeout is a negative number 1`] = `
 "<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>

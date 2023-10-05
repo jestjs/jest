@@ -50,7 +50,7 @@ test('handles functions that close over outside variables', async () => {
     tempDir,
     ['--no-watchman', '--watch-all'],
     // timeout in case the `waitUntil` below doesn't fire
-    {stripAnsi: true, timeout: 10000},
+    {stripAnsi: true, timeout: 10_000},
   );
 
   await waitUntil(({stderr}) => stderr.includes('Ran all test suites.'));

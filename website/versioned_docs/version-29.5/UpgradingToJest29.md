@@ -7,7 +7,7 @@ Upgrading Jest from v28 to v29? This guide aims to help refactoring your configu
 
 :::info
 
-See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2900) for the full list of changes.
+See [changelog](https://github.com/jestjs/jest/blob/main/CHANGELOG.md#2900) for the full list of changes.
 
 :::
 
@@ -62,7 +62,7 @@ import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
 ### `jest.mocked()`
 
-The [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method now wraps types of deep members of passed object by default. If you have used the method with `true` as the second argument, remove it to avoid type errors:
+The [`jest.mocked()`](MockFunctionAPI.md#jestmockedsource-options) helper method now wraps types of deep members of passed object by default. If you have used the method with `true` as the second argument, remove it to avoid type errors:
 
 ```diff
 - const mockedObject = jest.mocked(someObject, true);

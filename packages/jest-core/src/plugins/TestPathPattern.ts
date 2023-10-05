@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
@@ -19,7 +20,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   private readonly _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;
@@ -48,7 +49,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
       testPathPatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({mode: 'watch', testPathPattern: value});
+          updateConfigAndRun({mode: 'watch', testPathPatterns: [value]});
           res();
         },
         rej,

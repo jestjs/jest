@@ -103,7 +103,7 @@ export default class Spec {
     return !!(
       e &&
       e.toString &&
-      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+      e.toString().includes(Spec.pendingSpecExceptionMessage)
     );
   }
 

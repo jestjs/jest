@@ -167,6 +167,30 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
 Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
 
+## Advance Timers to the next Frame
+
+In applications, often you want to schedule work inside of an animation frame (with `requestAnimationFrame`). We expose a convenience method `jest.advanceTimersToNextFrame()` to advance all timers enough milliseconds to execute all actively scheduled animation frames.
+
+For mock timing purposes, animation frames are executed every `16ms` (mapping to roughly `60` frames per second) after the clock starts. When you schedule a callback in an animation frame (with `requestAnimationFrame(callback)`), the `callback` will be called when the clock has advanced `16ms`. `jest.advanceTimersToNextFrame()` will advance the clock just enough to get to the next `16ms` increment. If the clock has already advanced `6ms` since a animation frame `callback` was scheduled, then the clock will be advanced by `10ms`.
+
+```javascript
+jest.useFakeTimers();
+it('calls the animation frame callback after advanceTimersToNextFrame()', () => {
+  const callback = jest.fn();
+
+  requestAnimationFrame(callback);
+
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
+
+  jest.advanceTimersToNextFrame();
+
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+```
+
 ## Selective Faking
 
 Sometimes your code may require to avoid overwriting the original implementation of one or another API. If that is the case, you can use `doNotFake` option. For example, here is how you could provide a custom mock function for `performance.mark()` in jsdom environment:

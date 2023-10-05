@@ -41,10 +41,10 @@ function deepCyclicCopyObject<T>(
 
   cycles.set(object, newObject);
 
-  Object.keys(descriptors).forEach(key => {
+  for (const key of Object.keys(descriptors)) {
     if (options.blacklist && options.blacklist.has(key)) {
       delete descriptors[key];
-      return;
+      continue;
     }
 
     const descriptor = descriptors[key];
@@ -57,7 +57,7 @@ function deepCyclicCopyObject<T>(
     }
 
     descriptor.configurable = true;
-  });
+  }
 
   return Object.defineProperties(newObject, descriptors);
 }

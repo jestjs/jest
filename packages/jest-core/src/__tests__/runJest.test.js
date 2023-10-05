@@ -22,6 +22,8 @@ describe('runJest', () => {
       changedFilesPromise: Promise.resolve({repos: {git: {size: 0}}}),
       contexts: [],
       globalConfig: {
+        rootDir: '',
+        testPathPatterns: [],
         testSequencer: require.resolve('@jest/test-sequencer'),
         watch: true,
       },

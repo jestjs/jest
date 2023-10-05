@@ -76,7 +76,6 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      // @ts-expect-error: TS thinks `wrappedFn` is a generator function
       const returnValue = wrappedFn.call({}, doneFnNoop);
 
       if (isPromise(returnValue)) {

@@ -13,7 +13,7 @@ import {deserialize, serialize} from 'v8';
 import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {requireOrImportModule} from 'jest-util';
+import {invariant, requireOrImportModule} from 'jest-util';
 import {JestWorkerFarm, Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -46,9 +46,9 @@ import type {
   WorkerMetadata,
 } from './types';
 import {FSEventsWatcher} from './watchers/FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
 import NodeWatcher from './watchers/NodeWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
 import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
@@ -124,18 +124,12 @@ export type {
 } from './types';
 
 const CHANGE_INTERVAL = 30;
-const MAX_WAIT_TIME = 240000;
+const MAX_WAIT_TIME = 240_000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -221,7 +215,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
-  private _options: InternalOptions;
+  private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
 
@@ -676,7 +670,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     let map: ModuleMapData;
     let mocks: MockData;
     let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size) {
+    if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
       filesToProcess = hasteMap.files;
@@ -858,7 +852,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     const emitChange = () => {
-      if (eventsQueue.length) {
+      if (eventsQueue.length > 0) {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
@@ -1083,7 +1077,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       clearInterval(this._changeInterval);
     }
 
-    if (!this._watchers.length) {
+    if (this._watchers.length === 0) {
       return;
     }
 

@@ -12,7 +12,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
+import type {Circus, Config} from '@jest/types';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
@@ -30,21 +30,29 @@ export interface Reporter {
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
   ) => Promise<void> | void;
+  /**
+   * Called before running a spec (prior to `before` hooks)
+   * Not called for `skipped` and `todo` specs
+   */
+  readonly onTestCaseStart?: (
+    test: Test,
+    testCaseStartInfo: Circus.TestCaseStartInfo,
+  ) => Promise<void> | void;
   readonly onTestCaseResult?: (
     test: Test,
     testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
-  readonly onRunStart: (
+  readonly onRunStart?: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
   readonly onTestStart?: (test: Test) => Promise<void> | void;
   readonly onTestFileStart?: (test: Test) => Promise<void> | void;
-  readonly onRunComplete: (
+  readonly onRunComplete?: (
     testContexts: Set<TestContext>,
     results: AggregatedResult,
   ) => Promise<void> | void;
-  readonly getLastError: () => Error | void;
+  readonly getLastError?: () => Error | void;
 }
 
 export type ReporterContext = {

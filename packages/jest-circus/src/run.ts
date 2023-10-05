@@ -5,8 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
-import type {Circus} from '@jest/types';
+import {jestExpect} from '@jest/expect';
+import type {Circus, Global} from '@jest/types';
+import {invariant} from 'jest-util';
 import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
@@ -15,9 +18,12 @@ import {
   getAllHooksForDescribe,
   getEachHooksForTest,
   getTestID,
-  invariant,
   makeRunResult,
 } from './utils';
+
+type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
+  fn: Circus.ConcurrentTestFn;
+};
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
@@ -49,26 +55,15 @@ const _runTestsForDescribeBlock = async (
 
   if (isRootBlock) {
     const concurrentTests = collectConcurrentTests(describeBlock);
-    const mutex = pLimit(getState().maxConcurrency);
-    for (const test of concurrentTests) {
-      try {
-        const promise = mutex(test.fn);
-        // Avoid triggering the uncaught promise rejection handler in case the
-        // test errors before being awaited on.
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        promise.catch(() => {});
-        test.fn = () => promise;
-      } catch (err) {
-        test.fn = () => {
-          throw err;
-        };
-      }
+    if (concurrentTests.length > 0) {
+      startTestsConcurrently(concurrentTests);
     }
   }
 
   // Tests that fail and are retried we run after other tests
-  // eslint-disable-next-line no-restricted-globals
-  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const retryTimes =
+    // eslint-disable-next-line no-restricted-globals
+    parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
   const deferredRetryTests = [];
 
   if (rng) {
@@ -120,7 +115,7 @@ const _runTestsForDescribeBlock = async (
 
 function collectConcurrentTests(
   describeBlock: Circus.DescribeBlock,
-): Array<Omit<Circus.TestEntry, 'fn'> & {fn: Circus.ConcurrentTestFn}> {
+): Array<ConcurrentTestEntry> {
   if (describeBlock.mode === 'skip') {
     return [];
   }
@@ -135,11 +130,32 @@ function collectConcurrentTests(
           child.mode === 'skip' ||
           (hasFocusedTests && child.mode !== 'only') ||
           (testNamePattern && !testNamePattern.test(getTestID(child)));
-        return skip
-          ? []
-          : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];
+        return skip ? [] : [child as ConcurrentTestEntry];
     }
   });
+}
+
+function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
+  const mutex = pLimit(getState().maxConcurrency);
+  const testNameStorage = new AsyncLocalStorage<string>();
+  jestExpect.setState({
+    currentConcurrentTestName: () => testNameStorage.getStore(),
+  });
+  for (const test of concurrentTests) {
+    try {
+      const testFn = test.fn;
+      const promise = mutex(() => testNameStorage.run(getTestID(test), testFn));
+      // Avoid triggering the uncaught promise rejection handler in case the
+      // test fails before being awaited on.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promise.catch(() => {});
+      test.fn = () => promise;
+    } catch (err) {
+      test.fn = () => {
+        throw err;
+      };
+    }
+  }
 }
 
 const _runTest = async (
@@ -166,10 +182,12 @@ const _runTest = async (
     return;
   }
 
+  await dispatch({name: 'test_started', test});
+
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -222,7 +240,7 @@ const _callCircusTest = async (
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
-  if (test.errors.length) {
+  if (test.errors.length > 0) {
     return; // We don't run the test if there's already an error in before hooks.
   }
 
