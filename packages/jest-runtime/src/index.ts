@@ -2289,6 +2289,16 @@ export default class Runtime {
           );
         }
       },
+      advanceTimersToNextFrame: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.advanceTimersToNextFrame();
+        }
+        throw new TypeError(
+          '`jest.advanceTimersToNextFrame()` is not available when using legacy fake timers.',
+        );
+      },
       advanceTimersToNextTimer: steps =>
         _getFakeTimers().advanceTimersToNextTimer(steps),
       advanceTimersToNextTimerAsync: async steps => {

@@ -68,6 +68,14 @@ export interface Jest {
    */
   advanceTimersByTimeAsync(msToRun: number): Promise<void>;
   /**
+   * Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`.
+   * `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  advanceTimersToNextFrame(): void;
+  /**
    * Advances all timers by the needed milliseconds so that only the next
    * timeouts/intervals will run. Optionally, you can provide steps, so it will
    * run steps amount of next timeouts/intervals.
