@@ -991,7 +991,7 @@ This function is not available when using legacy fake timers implementation.
 
 ### `jest.advanceTimersToNextFrame()`
 
-Advances all timers by the needed milliseconds to execute callbacks current scheduled with `requestAnimationFrame`. `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`. `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
 
 :::info
 
