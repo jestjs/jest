@@ -1149,6 +1149,7 @@ function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
 type IJestHasteMap = HasteMapStatic & {
   create(options: Options): Promise<IHasteMap>;
   getStatic(config: Config.ProjectConfig): HasteMapStatic;
+  default: (new (options: Options) => IHasteMap);
 };
 const JestHasteMap: IJestHasteMap = HasteMap;
 export default JestHasteMap;
