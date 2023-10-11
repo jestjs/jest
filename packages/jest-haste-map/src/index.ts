@@ -1149,7 +1149,9 @@ function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
 type IJestHasteMap = HasteMapStatic & {
   create(options: Options): Promise<IHasteMap>;
   getStatic(config: Config.ProjectConfig): HasteMapStatic;
-  default: (new (options: Options) => IHasteMap);
+  default: new (options: Options) => IHasteMap;
 };
+
+// @ts-expect-error(property `default is missing in  HasteMap class`)
 const JestHasteMap: IJestHasteMap = HasteMap;
 export default JestHasteMap;
