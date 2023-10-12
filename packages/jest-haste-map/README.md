@@ -1,7 +1,6 @@
 # jest-haste-map
 
-`jest-haste-map` is a module used by Jest, a popular JavaScript testing framework, to create a fast lookup of files in a project.
-It helps Jest efficiently locate and track changes in files during testing, making it particularly useful for large projects with many files.
+`jest-haste-map` is a module used by Jest, a popular JavaScript testing framework, to create a fast lookup of files in a project. It helps Jest efficiently locate and track changes in files during testing, making it particularly useful for large projects with many files.
 
 ## why jest-haste-map ?
 
@@ -41,8 +40,8 @@ const map = new HasteMap.default({
 ```javascript
 import HasteMap from 'jest-haste-map';
 import os from 'os';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 
@@ -56,7 +55,7 @@ const map = new HasteMap.default({
   rootDir: root, //The project root.
 });
 
-const { hasteFS } = await map.build();
+const {hasteFS} = await map.build();
 
 const files = hasteFS.getAllFiles();
 
