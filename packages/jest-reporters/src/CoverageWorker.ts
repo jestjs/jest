@@ -33,7 +33,11 @@ export type CoverageWorkerData = {
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
-  console.error(err.stack);
+  if (err.stack) {
+    console.error(err.stack);
+  } else {
+    console.error(err);
+  }
   exit(1);
 });
 
