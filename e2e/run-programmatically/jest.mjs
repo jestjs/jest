@@ -14,4 +14,4 @@ jest.globalConfig = {
   ...jest.globalConfig,
 };
 const {results} = await jest.run();
-console.log(`runCore success, ${results.numPassedTests} passed tests.`);
+console.log(`run success, ${results.numPassedTests} passed tests.`);

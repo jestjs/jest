@@ -18,7 +18,7 @@ import jest from 'jest';
 
 const {globalConfig, configs} = await jest.readConfigs(process.argv, ['.']);
 const {result} = await jest.runCore(globalConfig, configs);
-console.log(`runCore success, ${result.numPassedTests} passed tests.`);
+console.log(`run success, ${result.numPassedTests} passed tests.`);
 ```
 
 This example runs Jest as the normal Jest command line interface (CLI) would.
@@ -84,7 +84,7 @@ It takes in in an array of command line arguments (for example, `process.argv`) 
 import {runCLI} from 'jest';
 
 const {results, globalConfig} = await runCLI(process.argv, ['.']);
-console.log(`runCore success, ${result.numPassedTests} passed tests.`);
+console.log(`run success, ${result.numPassedTests} passed tests.`);
 ```
 
 ### `runCore` \[function]
