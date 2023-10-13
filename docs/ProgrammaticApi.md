@@ -3,9 +3,9 @@ id: programmatic-api
 title: Programmatic API
 ---
 
-:::note
+:::caution
 
-The programmatic API is useful for advanced use cases only. You normally don't need to use it if you just want to run your tests.
+The programmatic API is currently **experimental**. It is useful for advanced use cases only. You normally don't need to use it if you just want to run your tests.
 
 :::
 
