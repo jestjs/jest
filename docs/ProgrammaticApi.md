@@ -68,7 +68,7 @@ jest.projectConfigs = jest.projectConfigs.map(config => ({
 
 ### `jest.run` \[function]
 
-Async function that performs the run. It returns a promise that resolves in a `JestRunResult` object. This object has a `results` property that contains the actual results. 
+Async function that performs the run. It returns a promise that resolves in a `JestRunResult` object. This object has a `results` property that contains the actual results.
 
 ## Advanced use cases
 
