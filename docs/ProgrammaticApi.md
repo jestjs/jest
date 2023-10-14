@@ -14,91 +14,61 @@ This page documents Jest's programmable API that can be used to run jest from `n
 ## Simple example
 
 ```js
-import jest from 'jest';
+import {createJest} from 'jest';
 
-const {globalConfig, configs} = await jest.readConfigs(process.argv, ['.']);
-const {result} = await jest.runCore(globalConfig, configs);
+const jest = await createJest();
+jest.globalConfig = {
+  collectCoverage: false,
+  watch: false,
+  ...jest.globalConfig,
+};
+const {results} = await jest.run();
 console.log(`run success, ${result.numPassedTests} passed tests.`);
 ```
-
-This example runs Jest as the normal Jest command line interface (CLI) would.
 
 ## Programmatic API reference
 
-### `getVersion` \[function]
+### `createJest(args: Partial<Config.Argv> = {}, projectPath = ['.']): Promise<Jest>` \[function]
 
-Get the version number from the imported Jest.
+Create a Jest instance asynchronously. You can provide command line arguments (for example, `process.argv`) as first argument and a list of custom [projects](./Configuration.md#projects-arraystring--projectconfig) as the second argument. If no `projects`, were configured, the current project will be provided as project config.
+
+Examples:
+
+```js
+import {createJest} from 'jest';
+
+const jest = await createJest();
+const jest2 = await createJest({config: 'jest.alternative.config.js'});
+```
+
+### `jest.globalConfig` \[Readonly\<GlobalConfig>]
+
+The global config associated with this jest instance. It is `readonly`, so it cannot be changed in-place. In order to change it, you will need to create a new object.
 
 Example:
 
 ```js
-import {getVersion} from 'jest';
-console.log(`jest version: ${getVersion()}`);
+jest.globalConfig = {
+  ...jest.globalConfig,
+  collectCoverage: false,
+  watch: false,
+};
 ```
 
-### `readConfigs` \[function]
+### `jest.projectConfigs` \[Readonly\<ProjectConfig>\[]]
 
-Async function that reads the config for a given jest project, as well as its [projects](./Configuration.md#projects-arraystring--projectconfig). If no `projects`, were configured, the current project will be provided as project config.
-
-It takes in in an array of command line arguments (for example, `process.argv`) and an array locations to search for config.
-
-The configs that are returned are readonly and cannot be changed in-place. However, they can be used as a base to create new config objects from (see [Advanced use cases](#advanced-use-cases))
-
-Example:
+A list of project configurations associated with this jest instance. They are `readonly`, so it cannot be changed in-place. In order to change it, you will need to create a new object.
 
 ```js
-import {readConfigs} from 'jest';
-const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
-  process.argv,
-  ['.'],
-);
-
-if (hasDeprecationWarnings) {
-  console.warn('Deprecation warnings found!');
-}
-
-console.log(`Global config: ${JSON.stringify(globalConfig, null, 2)}`);
-console.log(`Project specific configs: ${JSON.stringify(configs, null, 2)}`);
+jest.projectConfigs = jest.projectConfigs.map(config => ({
+  ...config,
+  setupFiles: ['custom-setup.js', ...config.setupFiles],
+}));
 ```
 
-### `readInitialOptions` \[function]
+### `jest.run` \[function]
 
-Async function that reads the jest configuration without reading its [projects](./Configuration.md#projects-arraystring--projectconfig), resolving its [preset](./Configuration.md#preset-string), filling in the default values or validating the options.
-
-```js
-import {readInitialOptions} from 'jest';
-const {config, configPath} = await readInitialOptions();
-
-console.log(
-  `Read options from ${configPath}: ${JSON.stringify(config, null, 2)}`,
-);
-```
-
-### `runCLI` \[function]
-
-Async function that mimics the CLI.
-
-It takes in in an array of command line arguments (for example, `process.argv`) and an array locations to search for config.
-
-```js
-import {runCLI} from 'jest';
-
-const {results, globalConfig} = await runCLI(process.argv, ['.']);
-console.log(`run success, ${result.numPassedTests} passed tests.`);
-```
-
-### `runCore` \[function]
-
-Async function that runs Jest either in watch mode or as a one-off. This is a lower-level API than `runCLI`.
-
-```js
-import {readConfigs, runCore} from 'jest';
-const {globalConfig, configs} = await readConfigs(process.argv, [
-  process.cwd(),
-]);
-const {results} = await runCore(globalConfig, configs);
-console.log(results);
-```
+Async function that performs the run. It returns a promise that resolves in a `JestRunResult` object. This object has a `results` property that contains the actual results. 
 
 ## Advanced use cases
 
@@ -109,54 +79,47 @@ These are more advanced use cases that demonstrate the power of the api.
 You can use `readInitialOptions` in combination with `runCLI` to run jest using the local config, while forcing some options. We're also always focussing our tests on the `foo.js` file.
 
 ```js
-import {readInitialOptions, runCLI} from 'jest';
+import {createJest} from 'jest';
+const jest = await createJest();
 
-const {config} = await readInitialOptions();
+// Override global options
+jest.globalConfig = {
+  ...jest.globalConfig,
+  collectCoverage: false,
+  reporters: [],
+  testResultsProcessor: undefined,
+  watch: false,
+  testPathPattern: 'my-test.spec.js',
+};
 
-// Override initial options
-config.collectCoverage = false;
-config.reporters = [];
-config.verbose = false;
-config.testResultsProcessor = undefined;
+// Override project options
+jest.projectConfigs = jest.projectConfigs.map(config => ({
+  ...config,
+  setupFiles: ['custom-setup.js', ...config.setupFiles],
+}));
 
-// Only run tests related to foo.js
-const focussedFile = 'foo.js';
-const {results} = runCLI(
-  {
-    $0: 'my-custom-jest-script',
-    _: [focussedFile],
-
-    // Provide `findRelatedTests`
-    findRelatedTests: true,
-
-    // Pass the initial options
-    config: JSON.stringify(config),
-  },
-  ['.'],
-);
-console.log(JSON.stringify(results));
+// Run
+const {results} = await jest.run();
+console.log(`run success, ${results.numPassedTests} passed tests.`);
 ```
 
 ### Override options based on the configured options
 
 You might want to override options based on other options. For example, you might want to provide your own version of the `jsdom` or `node` test environment.
 
-For that to work, the initial options is not enough, because the configured preset might override the test environment.
-
 ```js
-import {readConfigs, runCore} from 'jest';
+import {createJest} from 'jest';
 
-// Run while overriding _some_ options
-const {globalConfig, configs} = await readConfigs(process.argv, [
-  process.cwd(),
-]);
+const jest = await createJest();
 
-const projectConfig = {
-  ...configs[0],
-  // Change the test environment based on the configured test environment
-  testEnvironment: overrideTestEnvironment(configs[0].testEnvironment),
-};
+jest.projectConfigs = [
+  {
+    ...jest.projectConfigs[0],
+    // Change the test environment based on the configured test environment
+    testEnvironment: overrideTestEnvironment(configs[0].testEnvironment),
+  },
+];
 
-const {results} = await runCore(globalConfig, [projectConfig]);
+const {results} = await jest.run();
 console.log(results);
 ```
