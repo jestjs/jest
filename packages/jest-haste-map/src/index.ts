@@ -1152,6 +1152,5 @@ type IJestHasteMap = HasteMapStatic & {
   default: new (options: Options) => IHasteMap;
 };
 
-// @ts-expect-error(property `default is missing in  HasteMap class`)
-const JestHasteMap: IJestHasteMap = HasteMap;
+const JestHasteMap: IJestHasteMap = HasteMap as unknown as IJestHasteMap;
 export default JestHasteMap;
