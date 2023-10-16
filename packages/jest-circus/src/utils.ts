@@ -382,6 +382,7 @@ export const makeSingleTestResult = (
     location,
     numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    startedAt: test.startedAt,
     status,
     testPath: Array.from(testPath),
   };

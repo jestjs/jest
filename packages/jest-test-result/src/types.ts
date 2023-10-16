@@ -106,7 +106,13 @@ export type TestResult = {
   openHandles: Array<Error>;
   perfStats: {
     end: number;
+    loadTestEnvironmentEnd: number;
+    loadTestEnvironmentStart: number;
     runtime: number;
+    setupAfterEnvEnd: number;
+    setupAfterEnvStart: number;
+    setupFilesEnd: number;
+    setupFilesStart: number;
     slow: boolean;
     start: number;
   };
