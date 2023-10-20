@@ -1115,13 +1115,6 @@ const createNthReturnedWithMatcher = (
   };
 
 const spyMatchers: MatchersObject = {
-  lastCalledWith: createLastCalledWithMatcher('lastCalledWith'),
-  lastReturnedWith: createLastReturnedMatcher('lastReturnedWith'),
-  nthCalledWith: createNthCalledWithMatcher('nthCalledWith'),
-  nthReturnedWith: createNthReturnedWithMatcher('nthReturnedWith'),
-  toBeCalled: createToBeCalledMatcher('toBeCalled'),
-  toBeCalledTimes: createToBeCalledTimesMatcher('toBeCalledTimes'),
-  toBeCalledWith: createToBeCalledWithMatcher('toBeCalledWith'),
   toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),
   toHaveBeenCalledTimes: createToBeCalledTimesMatcher('toHaveBeenCalledTimes'),
   toHaveBeenCalledWith: createToBeCalledWithMatcher('toHaveBeenCalledWith'),
@@ -1136,9 +1129,6 @@ const spyMatchers: MatchersObject = {
   toHaveReturned: createToReturnMatcher('toHaveReturned'),
   toHaveReturnedTimes: createToReturnTimesMatcher('toHaveReturnedTimes'),
   toHaveReturnedWith: createToReturnWithMatcher('toHaveReturnedWith'),
-  toReturn: createToReturnMatcher('toReturn'),
-  toReturnTimes: createToReturnTimesMatcher('toReturnTimes'),
-  toReturnWith: createToReturnWithMatcher('toReturnWith'),
 };
 
 const isMock = (received: any) =>

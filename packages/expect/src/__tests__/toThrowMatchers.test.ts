@@ -22,7 +22,7 @@ class CustomError extends Error {
   }
 }
 
-describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
+describe.each(['toThrow'] as const)('%s', toThrow => {
   class Err extends CustomError {}
   class Err2 extends CustomError {}
 
