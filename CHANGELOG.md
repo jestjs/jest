@@ -44,6 +44,7 @@
 - `[*]` Depend on exact versions of monorepo dependencies instead of `^` range ([#14553](https://github.com/facebook/jest/pull/14553))
 - `[babel-jest, babel-preset-jest]` [**BREAKING**] Increase peer dependency of `@babel/core` to `^7.11` ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
+- `[docs]` Don't use alias matchers in docs ([#14631](https://github.com/facebook/jest/pull/14631))
 
 ## 29.7.0
 
