@@ -831,7 +831,7 @@ Expected: <g>"foo"</>
 Number of returns: <r>0</>
 `;
 
-exports[`toHaveLastReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveLastReturnedWith toHaveLastReturnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>0</>
@@ -843,7 +843,7 @@ Number of returns: <r>0</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveLastReturnedWith lastReturnedWith works with three calls 1`] = `
+exports[`toHaveLastReturnedWith toHaveLastReturnedWith works with three calls 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: not <g>"foo3"</>
@@ -854,7 +854,7 @@ Received
 Number of returns: <r>3</>
 `;
 
-exports[`toHaveLastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveLastReturnedWith toHaveReturnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>undefined</>
@@ -866,7 +866,7 @@ Number of returns: <r>0</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveLastReturnedWith returnedWith works with more calls than the limit 1`] = `
+exports[`toHaveLastReturnedWith toHaveReturnedWith works with more calls than the limit 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>"bar"</>
@@ -1000,7 +1000,7 @@ Expected: <g>"foo"</>
 Number of returns: <r>0</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 1
@@ -1013,7 +1013,7 @@ Number of returns: <r>2</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 2`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith incomplete recursive calls are handled properly 2`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 2
@@ -1027,7 +1027,7 @@ Number of returns: <r>2</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 3`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith incomplete recursive calls are handled properly 3`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 3
@@ -1041,7 +1041,7 @@ Number of returns: <r>2</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 4`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith incomplete recursive calls are handled properly 4`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 4
@@ -1054,7 +1054,7 @@ Number of returns: <r>2</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith negative throw matcher error for n that is not number 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith negative throw matcher error for n that is not number 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 <b>Matcher error</>: n must be a positive integer
@@ -1062,7 +1062,7 @@ exports[`toHaveNthReturnedWith nthReturnedWith negative throw matcher error for 
 n has value: undefined
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not integer 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith positive throw matcher error for n that is not integer 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 <b>Matcher error</>: n must be a positive integer
@@ -1071,7 +1071,7 @@ n has type:  number
 n has value: 0.1
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 <b>Matcher error</>: n must be a positive integer
@@ -1080,7 +1080,7 @@ n has type:  number
 n has value: 0
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith should reject nth value greater than number of calls 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 4
@@ -1091,7 +1091,7 @@ Received
 Number of returns: <r>3</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 1
@@ -1103,7 +1103,7 @@ Received
 Number of returns: <r>3</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 1
@@ -1115,7 +1115,7 @@ Received
 Number of returns: <r>3</>
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith works with three calls 1`] = `
+exports[`toHaveNthReturnedWith toHaveNthReturnedWith works with three calls 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveNthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
 n: 1
@@ -1537,7 +1537,7 @@ Expected: <g>"foo"</>
 Number of returns: <r>0</>
 `;
 
-exports[`toHaveReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveReturnedWith toHaveReturnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>undefined</>
@@ -1550,7 +1550,7 @@ Number of returns: <r>0</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveReturnedWith returnedWith works with more calls than the limit 1`] = `
+exports[`toHaveReturnedWith toHaveReturnedWith works with more calls than the limit 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>"bar"</>
