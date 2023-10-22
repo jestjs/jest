@@ -8864,13 +8864,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docusaurus-remark-plugin-tab-blocks@npm:^2.0.0-beta":
-  version: 2.0.0-beta
-  resolution: "docusaurus-remark-plugin-tab-blocks@npm:2.0.0-beta"
+"docusaurus-remark-plugin-tab-blocks@npm:^2.0.0-rc.0":
+  version: 2.0.0-rc.0
+  resolution: "docusaurus-remark-plugin-tab-blocks@npm:2.0.0-rc.0"
   dependencies:
-    unist-util-is: ^4.0.0
-    unist-util-visit: ^2.0.0
-  checksum: 1a7ba4868a1c492bf3616c3763e4c66b4f42badca3bf73b14d1d2d42cd6afeac538cfaa646fcbf955e84f38c716346f15431ccc9323393b839768a5f3ffa03e7
+    unist-util-is: ^6.0.0
+    unist-util-visit: ^5.0.0
+  checksum: f7c0efa746b9184c7155f159e6507ea8a21c5a08e141731286c3d6caea10dcc6628fb5eab17e353c90aa7f637b2042c725791b9de9bc298a7da04be194584e80
   languageName: node
   linkType: hard
 
@@ -13285,7 +13285,7 @@ __metadata:
     "@docusaurus/tsconfig": 3.0.0-rc.0
     "@types/react": ^18.2.0
     clsx: ^2.0.0
-    docusaurus-remark-plugin-tab-blocks: ^2.0.0-beta
+    docusaurus-remark-plugin-tab-blocks: ^2.0.0-rc.0
     graphql: ^16.3.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0
@@ -21137,7 +21137,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unist-util-visit@npm:^2.0.0, unist-util-visit@npm:^2.0.3":
+"unist-util-visit@npm:^2.0.3":
   version: 2.0.3
   resolution: "unist-util-visit@npm:2.0.3"
   dependencies:
