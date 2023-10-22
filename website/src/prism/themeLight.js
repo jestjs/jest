@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const baseTheme = require('prism-react-renderer/themes/github');
+const {themes} = require('prism-react-renderer');
+const baseTheme = themes.github;
 
 const themeLight = [
   {
