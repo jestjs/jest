@@ -138,7 +138,7 @@ Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to
 Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript`:
 
 ```bash npm2yarn
-npm install --save-dev @babel/preset-typescript
+npm install --save-dev @babel/preset-typescript @babel/preset-env
 ```
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
