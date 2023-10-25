@@ -23,6 +23,7 @@ import {
 
 type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
   fn: Circus.ConcurrentTestFn;
+  done: Promise<void>;
 };
 
 const run = async (): Promise<Circus.RunResult> => {
@@ -56,7 +57,7 @@ const _runTestsForDescribeBlock = async (
   if (isRootBlock) {
     const concurrentTests = collectConcurrentTests(describeBlock);
     if (concurrentTests.length > 0) {
-      startTestsConcurrently(concurrentTests);
+      startTestsConcurrently(concurrentTests, isSkipped);
     }
   }
 
@@ -76,7 +77,11 @@ const _runTestsForDescribeBlock = async (
       }
       case 'test': {
         const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child, isSkipped);
+        if (child.concurrent) {
+          await (child as ConcurrentTestEntry).done;
+        } else {
+          await _runTest(child, isSkipped);
+        }
 
         if (
           hasErrorsBeforeTestRun === false &&
@@ -134,7 +139,10 @@ function collectConcurrentTests(
   });
 }
 
-function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
+function startTestsConcurrently(
+  concurrentTests: Array<ConcurrentTestEntry>,
+  parentSkipped: boolean,
+) {
   const mutex = pLimit(getState().maxConcurrency);
   const testNameStorage = new AsyncLocalStorage<string>();
   jestExpect.setState({
@@ -142,13 +150,16 @@ function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
   });
   for (const test of concurrentTests) {
     try {
-      const testFn = test.fn;
-      const promise = mutex(() => testNameStorage.run(getTestID(test), testFn));
+      const promise = mutex(() =>
+        testNameStorage.run(getTestID(test), () =>
+          _runTest(test, parentSkipped),
+        ),
+      );
       // Avoid triggering the uncaught promise rejection handler in case the
       // test fails before being awaited on.
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.catch(() => {});
-      test.fn = () => promise;
+      test.done = promise;
     } catch (err) {
       test.fn = () => {
         throw err;
