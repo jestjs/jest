@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Correct concurrent event ordering ([#14643](https://github.com/jestjs/jest/pull/14643))
+
 ### Performance
 
 ### Chore & Maintenance
