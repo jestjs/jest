@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {performance} from 'perf_hooks';
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -36,14 +37,14 @@ import type {Filter, TestRunData} from './types';
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   source: SearchSource,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
 ) => {
   const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
-  if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
+  if (data.tests.length === 0 && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
       'Jest can only find uncommitted changed files in a git or hg ' +
         'repository. If you make your project a git or hg ' +
@@ -74,7 +75,7 @@ type ProcessResultOptions = Pick<
 > & {
   collectHandles?: HandleCollectionResult;
   onComplete?: (result: AggregatedResult) => void;
-  outputStream: NodeJS.WriteStream;
+  outputStream: WriteStream;
 };
 
 const processResults = async (
@@ -97,9 +98,8 @@ const processResults = async (
   }
 
   if (testResultsProcessor) {
-    const processor = await requireOrImportModule<TestResultsProcessor>(
-      testResultsProcessor,
-    );
+    const processor =
+      await requireOrImportModule<TestResultsProcessor>(testResultsProcessor);
     runResults = await processor(runResults);
   }
   if (isJSON) {
@@ -143,7 +143,7 @@ export default async function runJest({
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<TestContext>;
-  outputStream: NodeJS.WriteStream;
+  outputStream: WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;
@@ -159,7 +159,7 @@ export default async function runJest({
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
-  const sequencer = new Sequencer();
+  const sequencer = new Sequencer({contexts, globalConfig});
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {
@@ -294,7 +294,6 @@ export default async function runJest({
     ...testSchedulerContext,
   });
 
-  // @ts-expect-error - second arg is unsupported (but harmless) in Node 14
   performance.mark('jest/scheduleAndRun:start', {
     detail: {numTests: allTests.length},
   });

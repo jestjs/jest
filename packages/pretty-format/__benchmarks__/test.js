@@ -21,8 +21,8 @@ const prettyFormat = require('../').format;
 const {ReactTestComponent} = require('../').plugins;
 const worldGeoJson = require('./world.geo.json');
 
-const NANOSECONDS = 1000000000;
-let TIMES_TO_RUN = 100000;
+const NANOSECONDS = 1_000_000_000;
+let TIMES_TO_RUN = 100_000;
 
 function testCase(name, fn) {
   let result, error, time, total;
@@ -77,10 +77,10 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
 
   const winner = results[0];
 
-  results.forEach((item, index) => {
+  for (const [index, item] of results.entries()) {
     item.isWinner = index === 0;
     item.isLoser = index === results.length - 1;
-  });
+  }
 
   function log(current) {
     let message = current.name;
@@ -114,17 +114,17 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
       message = chalk.bgRed.black(message);
     } else if (diff > winner.time * 0.65) {
       message = chalk.bgYellow.black(message);
-    } else if (!current.error) {
-      message = chalk.bgGreen.black(message);
-    } else {
+    } else if (current.error) {
       message = chalk.dim(message);
+    } else {
+      message = chalk.bgGreen.black(message);
     }
 
     console.log(`  ${message}`);
   }
 
   console.log(`${name}: `);
-  results.forEach(log);
+  for (const r of results) log(r);
   console.log();
 }
 

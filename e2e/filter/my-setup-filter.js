@@ -14,7 +14,7 @@ const setupData = {
 module.exports = function (tests) {
   return {
     filtered: tests
-      .filter(t => t.indexOf(setupData.filterText) !== -1)
+      .filter(t => t.includes(setupData.filterText))
       .map(test => ({test})),
   };
 };

@@ -22,6 +22,7 @@ import Resolver, {
   resolveWatchPlugin,
 } from 'jest-resolve';
 import {
+  TestPathPatterns,
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,
@@ -49,7 +50,6 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import validatePattern from './validatePattern';
 
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
@@ -59,6 +59,9 @@ export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+
+// we wanna avoid webpack trying to be clever
+const requireResolve = (module: string) => require.resolve(module);
 
 function verifyDirectoryExists(path: string, key: string) {
   try {
@@ -216,7 +219,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    [customJSPattern, customTSPattern].forEach(pattern => {
+    for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
         if (Array.isArray(customTransformer)) {
@@ -235,7 +238,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
           }
         }
       }
-    });
+    }
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -255,7 +258,9 @@ const normalizeCollectCoverageFrom = (
     value = [];
   }
 
-  if (!Array.isArray(initialCollectCoverageFrom)) {
+  if (Array.isArray(initialCollectCoverageFrom)) {
+    value = initialCollectCoverageFrom;
+  } else {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
     } catch {}
@@ -263,8 +268,6 @@ const normalizeCollectCoverageFrom = (
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
-  } else {
-    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -388,44 +391,39 @@ const normalizeReporters = ({
   });
 };
 
-const buildTestPathPattern = (argv: Config.Argv): string => {
+const buildTestPathPatterns = (
+  argv: Config.Argv,
+  rootDir: string,
+): TestPathPatterns => {
   const patterns = [];
 
   if (argv._) {
-    patterns.push(...argv._);
+    patterns.push(...argv._.map(x => x.toString()));
   }
-  if (argv.testPathPattern) {
-    patterns.push(...argv.testPathPattern);
+  if (argv.testPathPatterns) {
+    patterns.push(...argv.testPathPatterns);
   }
 
-  const replacePosixSep = (pattern: string | number) => {
-    // yargs coerces positional args into numbers
-    const patternAsString = pattern.toString();
-    if (path.sep === '/') {
-      return patternAsString;
-    }
-    return patternAsString.replace(/\//g, '\\\\');
-  };
+  const config = {rootDir};
+  const testPathPatterns = new TestPathPatterns(patterns, config);
 
-  const testPathPattern = patterns.map(replacePosixSep).join('|');
-  if (validatePattern(testPathPattern)) {
-    return testPathPattern;
-  } else {
-    showTestPathPatternError(testPathPattern);
-    return '';
+  try {
+    testPathPatterns.validate();
+  } catch {
+    clearLine(process.stdout);
+
+    // eslint-disable-next-line no-console
+    console.log(
+      chalk.red(
+        `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
+          'Running all tests instead.',
+      ),
+    );
+
+    return new TestPathPatterns([], config);
   }
-};
 
-const showTestPathPatternError = (testPathPattern: string) => {
-  clearLine(process.stdout);
-
-  // eslint-disable-next-line no-console
-  console.log(
-    chalk.red(
-      `  Invalid testPattern ${testPathPattern} supplied. ` +
-        'Running all tests instead.',
-    ),
-  );
+  return testPathPatterns;
 };
 
 function validateExtensionsToTreatAsEsm(
@@ -525,7 +523,7 @@ export default async function normalize(
   }
 
   options.testEnvironment = resolveTestEnvironment({
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
     testEnvironment:
       options.testEnvironment ||
@@ -667,7 +665,7 @@ export default async function normalize(
             option &&
             resolveRunner(newOptions.resolver, {
               filePath: option,
-              requireResolveFunction: require.resolve,
+              requireResolveFunction: requireResolve,
               rootDir: options.rootDir,
             });
         }
@@ -759,7 +757,7 @@ export default async function normalize(
               const globMatches =
                 typeof project === 'string' ? glob(project) : [];
               return projects.concat(
-                globMatches.length ? globMatches : project,
+                globMatches.length > 0 ? globMatches : project,
               );
             },
             [],
@@ -951,7 +949,7 @@ export default async function normalize(
               config: {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -960,7 +958,7 @@ export default async function normalize(
               config: watchPlugin[1] || {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                requireResolveFunction: require.resolve,
+                requireResolveFunction: requireResolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -981,9 +979,9 @@ export default async function normalize(
     );
   }
 
-  newOptions.roots.forEach((root, i) => {
+  for (const [i, root] of newOptions.roots.entries()) {
     verifyDirectoryExists(root, `roots[${i}]`);
-  });
+  }
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
@@ -995,7 +993,7 @@ export default async function normalize(
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath:
       options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
-    requireResolveFunction: require.resolve,
+    requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
   });
 
@@ -1004,7 +1002,8 @@ export default async function normalize(
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
-  newOptions.testPathPattern = buildTestPathPattern(argv);
+  const testPathPatterns = buildTestPathPatterns(argv, options.rootDir);
+  newOptions.testPathPatterns = testPathPatterns.patterns;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
@@ -1023,7 +1022,7 @@ export default async function normalize(
   if (argv.all) {
     newOptions.onlyChanged = false;
     newOptions.onlyFailures = false;
-  } else if (newOptions.testPathPattern) {
+  } else if (testPathPatterns.isSet()) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
@@ -1089,6 +1088,7 @@ export default async function normalize(
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
+  newOptions.runInBand = argv.runInBand || false;
 
   if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(

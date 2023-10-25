@@ -7,14 +7,15 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import {isNonNullable} from 'jest-util';
+import {TestPathPatterns, isNonNullable} from 'jest-util';
 
 const activeFilters = (globalConfig: Config.GlobalConfig): string => {
-  const {testNamePattern, testPathPattern} = globalConfig;
-  if (testNamePattern || testPathPattern) {
+  const {testNamePattern} = globalConfig;
+  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+  if (testNamePattern || testPathPatterns.isSet()) {
     const filters = [
-      testPathPattern
-        ? chalk.dim('filename ') + chalk.yellow(`/${testPathPattern}/`)
+      testPathPatterns.isSet()
+        ? chalk.dim('filename ') + chalk.yellow(testPathPatterns.toPretty())
         : null,
       testNamePattern
         ? chalk.dim('test name ') + chalk.yellow(`/${testNamePattern}/`)

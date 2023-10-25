@@ -25,14 +25,14 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "chalk": "^4.0.0",
-    "jest-get-type": "workspace:^",
-    "jest-util": "workspace:^",
-    "pretty-format": "workspace:^"
+    "jest-get-type": "workspace:*",
+    "jest-util": "workspace:*",
+    "pretty-format": "workspace:*"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -344,17 +344,17 @@ Returns the `jest` object for chaining.
 
 :::tip
 
-Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md#jestmockedsource-options) helper method to have your mocked modules typed.
 
 :::
 
 ### `jest.Mocked<Source>`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource) chapter of Mock Functions page for documentation.
 
 ### `jest.mocked(source, options?)`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource-options) chapter of Mock Functions page for documentation.
 
 ### `jest.unmock(moduleName)`
 
@@ -982,6 +982,16 @@ Optionally, you can provide `steps`, so it will run `steps` amount of next timeo
 ### `jest.advanceTimersToNextTimerAsync(steps)`
 
 Asynchronous equivalent of `jest.advanceTimersToNextTimer(steps)`. It allows any scheduled promise callbacks to execute _before_ running the timers.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
+### `jest.advanceTimersToNextFrame()`
+
+Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`. `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
 
 :::info
 

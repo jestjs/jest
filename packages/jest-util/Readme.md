@@ -78,9 +78,9 @@ Used to set properties with specified values within a global object. It is desig
 
 It defines constants and conditional values for handling platform-specific behaviors in a terminal environment. It determines if the current platform is Windows ('win32') and sets up constants for various symbols and terminal screen clearing escape sequences accordingly, ensuring proper display and behavior on both Windows and non-Windows operating systems.
 
-## `testPathPatternToRegExp`
+## `TestPathPatterns`
 
-This function is used for consistency when serializing/deserializing global configurations and ensures that consistent regular expressions are produced for matching test paths.
+This class takes test patterns and provides the API for deciding if a test matches any of the patterns.
 
 ## `tryRealpath`
 

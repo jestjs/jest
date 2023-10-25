@@ -140,7 +140,11 @@ describe('Watch mode flows', () => {
       testRegex: [],
     };
     pipe = {write: jest.fn()};
-    globalConfig = {watch: true};
+    globalConfig = {
+      rootDir: '',
+      testPathPatterns: [],
+      watch: true,
+    };
     hasteMapInstances = [{on: () => {}}];
     contexts = [{config}];
     stdin = new MockStdin();
@@ -152,7 +156,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Correctly passing test path pattern', async () => {
-    globalConfig.testPathPattern = 'test-*';
+    globalConfig.testPathPatterns = ['test-*'];
 
     await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
@@ -630,7 +634,7 @@ describe('Watch mode flows', () => {
   });
 
   it.each`
-    ok      | option
+    ok       | option
     ${'✔︎'} | ${'bail'}
     ${'✖︎'} | ${'changedFilesWithAncestor'}
     ${'✔︎'} | ${'changedSince'}
@@ -671,7 +675,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'skipFilter'}
     ${'✖︎'} | ${'testFailureExitCode'}
     ${'✔︎'} | ${'testNamePattern'}
-    ${'✔︎'} | ${'testPathPattern'}
+    ${'✔︎'} | ${'testPathPatterns'}
     ${'✖︎'} | ${'testResultsProcessor'}
     ${'✔︎'} | ${'updateSnapshot'}
     ${'✖︎'} | ${'useStderr'}
@@ -875,7 +879,7 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('t');
-    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
+    for (const key of ['t', 'e', 's', 't']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
@@ -893,12 +897,12 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('p');
-    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
+    for (const key of ['f', 'i', 'l', 'e']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });
@@ -911,18 +915,18 @@ describe('Watch mode flows', () => {
     runJestMock.mockReset();
 
     stdin.emit('p');
-    ['f', 'i', 'l', 'e'].forEach(key => stdin.emit(key));
+    for (const key of ['f', 'i', 'l', 'e']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     stdin.emit('t');
-    ['t', 'e', 's', 't'].forEach(key => stdin.emit(key));
+    for (const key of ['t', 'e', 's', 't']) stdin.emit(key);
     stdin.emit(KEYS.ENTER);
     await nextTick();
 
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPattern: 'file',
+      testPathPatterns: ['file'],
       watch: true,
       watchAll: false,
     });
@@ -1012,6 +1016,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

@@ -412,7 +412,7 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPattern: string;
+  testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;
@@ -526,7 +526,6 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     ignoreProjects: Array<string>;
-    init: boolean;
     injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
@@ -570,7 +569,7 @@ export type Argv = Arguments<
     testMatch: Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
-    testPathPattern: Array<string>;
+    testPathPatterns: Array<string>;
     testRegex: string | Array<string>;
     testResultsProcessor: string;
     testRunner: string;

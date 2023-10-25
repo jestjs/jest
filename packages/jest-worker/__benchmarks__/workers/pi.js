@@ -8,7 +8,7 @@
 'use strict';
 
 module.exports = function () {
-  const points = 10000;
+  const points = 10_000;
   let inside = 0;
 
   for (let i = 0; i < points; i++) {

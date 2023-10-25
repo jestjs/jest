@@ -60,7 +60,7 @@ const validateDeprecatedOptions = (
   deprecationEntries: DeprecatedOptions,
   argv: Config.Argv,
 ) => {
-  deprecatedOptions.forEach(opt => {
+  for (const opt of deprecatedOptions) {
     const name = opt.name;
     const message = deprecationEntries[name](argv);
     const comment = DOCUMENTATION_NOTE;
@@ -70,7 +70,7 @@ const validateDeprecatedOptions = (
     } else {
       logValidationWarning(name, message, comment);
     }
-  });
+  }
 };
 
 export default function validateCLIOptions(
@@ -106,7 +106,7 @@ export default function validateCLIOptions(
     .filter(arg => deprecations.has(arg) && argv[arg] != null)
     .map(arg => ({fatal: !allowedOptions.has(arg), name: arg}));
 
-  if (deprecatedOptions.length) {
+  if (deprecatedOptions.length > 0) {
     validateDeprecatedOptions(deprecatedOptions, CLIDeprecations, argv);
   }
 
@@ -114,11 +114,11 @@ export default function validateCLIOptions(
     arg =>
       !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
-      (!rawArgv.length || rawArgv.includes(arg)),
+      (rawArgv.length === 0 || rawArgv.includes(arg)),
     [],
   );
 
-  if (unrecognizedOptions.length) {
+  if (unrecognizedOptions.length > 0) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 

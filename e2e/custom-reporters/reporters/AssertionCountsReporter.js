@@ -9,13 +9,13 @@
 
 class AssertionCountsReporter {
   onTestFileResult(test, testResult, aggregatedResult) {
-    testResult.testResults.forEach((testCaseResult, index) => {
+    for (const [index, testCaseResult] of testResult.testResults.entries()) {
       console.log(
         `onTestFileResult testCaseResult ${index}: ${testCaseResult.title}, ` +
           `status: ${testCaseResult.status}, ` +
           `numExpectations: ${testCaseResult.numPassingAsserts}`,
       );
-    });
+    }
   }
   onTestCaseResult(test, testCaseResult) {
     console.log(

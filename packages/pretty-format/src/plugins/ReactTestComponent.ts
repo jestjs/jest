@@ -26,7 +26,7 @@ type ReactTestChild = ReactTestObject | string | number;
 const testSymbol =
   typeof Symbol === 'function' && Symbol.for
     ? Symbol.for('react.test.json')
-    : 0xea71357;
+    : 0xe_a7_13_57;
 
 const getPropKeys = (object: ReactTestObject) => {
   const {props} = object;

@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import chalk = require('chalk');
 import {KEYS} from 'jest-watcher';
 
 export default function handleDeprecationWarnings(
-  pipe: NodeJS.WriteStream,
-  stdin: NodeJS.ReadStream = process.stdin,
+  pipe: WriteStream,
+  stdin: ReadStream = process.stdin,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
@@ -30,7 +31,7 @@ export default function handleDeprecationWarnings(
         if (key === KEYS.ENTER) {
           resolve();
         } else if (
-          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].indexOf(key) !== -1
+          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].includes(key)
         ) {
           reject();
         }

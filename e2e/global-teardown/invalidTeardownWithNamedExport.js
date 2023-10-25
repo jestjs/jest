@@ -6,7 +6,7 @@
  */
 
 function invalidTeardownWithNamedExport(jestConfig): void {
-  console.log(jestConfig.testPathPattern);
+  console.log(jestConfig.testPathPatterns);
 }
 
 export {invalidTeardownWithNamedExport};

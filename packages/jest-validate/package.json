@@ -17,18 +17,18 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
-    "jest-get-type": "workspace:^",
+    "jest-get-type": "workspace:*",
     "leven": "^3.1.0",
-    "pretty-format": "workspace:^"
+    "pretty-format": "workspace:*"
   },
   "devDependencies": {
     "@types/yargs": "^17.0.8"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

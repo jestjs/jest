@@ -92,11 +92,11 @@ async function createCustomSnapshotResolver(
     ['resolveTestPath', 'function'],
     ['testPathForConsistencyCheck', 'string'],
   ];
-  keys.forEach(([propName, requiredType]) => {
+  for (const [propName, requiredType] of keys) {
     if (typeof custom[propName] !== requiredType) {
       throw new TypeError(mustImplement(propName, requiredType));
     }
-  });
+  }
 
   const customResolver: SnapshotResolver = {
     resolveSnapshotPath: (testPath: string) =>
