@@ -64,3 +64,22 @@ test('concurrent', () => {
 
   expect(stdout).toMatchSnapshot();
 });
+
+test('concurrent.each', () => {
+  const {stdout} = runTest(`
+    describe('describe', () => {
+      beforeEach(() => {});
+      afterEach(() => { throw new Error('banana')});
+      test.concurrent.each([
+        ['one'],
+        ['two'],
+        ['three'],
+      ])('%s', async (name) => {
+        console.log('hello %s', name);
+        await Promise.resolve(); 
+      });
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
