@@ -58,6 +58,5 @@ workflows:
           name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
-              # For some reason, v20 fails to run yarn install…
-              node-version: ['16', '18']
+              node-version: ['16', '18', '20', '21']
       - test-jest-jasmine
