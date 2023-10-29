@@ -20,7 +20,7 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "ci-info": "^3.2.0",
+    "ci-info": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "picomatch": "^2.2.3"
   },
