@@ -22,7 +22,7 @@
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",
     "graceful-fs": "^4.2.9",
-    "picomatch": "^2.2.3"
+    "picomatch": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3",
