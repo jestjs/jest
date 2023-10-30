@@ -65,6 +65,7 @@ async function buildNodePackages() {
       continue;
     }
 
+    // TODO: can we get exports from a file from webpack's `stats`?
     const cjsModule = require(entryPointFile);
     const exportStatements = Object.keys(cjsModule)
       .filter(name => name !== '__esModule' && name !== 'default')
