@@ -1,4 +1,4 @@
-import {type ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {beforeEach, describe, expect, it, jest} from '@jest/globals';
 import {AppComponent} from './app.component';
 import {DataService} from './shared/data.service';

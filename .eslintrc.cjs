@@ -284,6 +284,16 @@ module.exports = {
       },
     },
     {
+      files: ['examples/angular/**/*'],
+      rules: {
+        // Angular DI for some reason doesn't work with type imports
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+        ],
+      },
+    },
+    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
