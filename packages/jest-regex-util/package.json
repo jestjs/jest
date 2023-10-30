@@ -18,6 +18,7 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
       "import": "./build/index.mjs",
       "default": "./build/index.js"
     },

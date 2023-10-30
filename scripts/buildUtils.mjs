@@ -74,6 +74,7 @@ export function getPackages() {
               }
             : {
                 types: pkg.types,
+                require: pkg.main,
                 import: pkg.main.replace(/\.js$/, '.mjs'),
                 default: pkg.main,
               },
