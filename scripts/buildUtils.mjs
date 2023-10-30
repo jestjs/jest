@@ -34,7 +34,7 @@ export const typeOnlyPackages = new Set([
 ]);
 
 // Get absolute paths of all directories under packages/*
-export function getPackages() {
+function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
