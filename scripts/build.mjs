@@ -66,13 +66,13 @@ async function buildNodePackages() {
       continue;
     }
 
-    const entryPoint = require(entryPointFile);
-    const exportStatements = Object.keys(entryPoint)
+    const cjsModule = require(entryPointFile);
+    const exportStatements = Object.keys(cjsModule)
       .filter(name => name !== '__esModule' && name !== 'default')
-      .map(name => `export const ${name} = cjsExports.${name};`);
+      .map(name => `export const ${name} = cjsModule.${name};`);
 
-    if (entryPoint.default) {
-      exportStatements.push('export default cjsExports.default;');
+    if (cjsModule.default) {
+      exportStatements.push('export default cjsModule.default;');
     }
 
     if (exportStatements.length === 0) {
@@ -82,8 +82,7 @@ async function buildNodePackages() {
     const mjsEntryFile = entryPointFile.replace(/\.js$/, '.mjs');
 
     const esSource = dedent`
-      const entryPoint = await import('./index.js');
-      const cjsExports = entryPoint.default;
+      import cjsModule from './index.js';
 
       ${exportStatements.join('\n')}
     `;
