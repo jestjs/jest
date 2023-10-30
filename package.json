@@ -74,7 +74,6 @@
     "rimraf": "^5.0.0",
     "semver": "^7.5.3",
     "slash": "^3.0.0",
-    "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
