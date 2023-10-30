@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-rest-params-eventually */
 
 import type {Spy} from '../types';
-import CallTracker, {Context} from './CallTracker';
+import CallTracker, {type Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
 interface Fn extends Record<string, unknown> {

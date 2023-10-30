@@ -8,8 +8,8 @@
 import PriorityQueue from '../PriorityQueue';
 import {
   CHILD_MESSAGE_CALL,
-  ChildMessageCall,
-  QueueChildMessage,
+  type ChildMessageCall,
+  type QueueChildMessage,
 } from '../types';
 
 it('returns the tasks in order', () => {

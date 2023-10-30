@@ -7,7 +7,8 @@
 
 import type {Circus} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import {addErrorToEachTestUnderDescribe, invariant} from './utils';
+import {invariant} from 'jest-util';
+import {addErrorToEachTestUnderDescribe} from './utils';
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.

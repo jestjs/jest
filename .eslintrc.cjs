@@ -40,16 +40,17 @@ module.exports = {
   },
   overrides: [
     {
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:import/typescript',
-      ],
+      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {fixStyle: 'inline-type-imports', disallowTypeAnnotations: false},
+        ],
+        '@typescript-eslint/no-import-type-side-effects': 'error',
         '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
@@ -61,9 +62,18 @@ module.exports = {
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        '@typescript-eslint/no-dynamic-delete': 'off',
         // TODO: enable at some point
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
+
+        // TODO: part of "stylistic" rules, remove explicit activation when that lands
+        '@typescript-eslint/no-empty-function': 'error',
+        '@typescript-eslint/no-empty-interface': 'error',
+
+        // not needed to be enforced for TS
+        'import/namespace': 'off',
       },
     },
     {
@@ -128,7 +138,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-types': [
           'error',
-          // TODO: remove these overrides: https://github.com/facebook/jest/issues/10177
+          // TODO: remove these overrides: https://github.com/jestjs/jest/issues/10177
           {types: {Function: false, object: false, '{}': false}},
         ],
         'local/ban-types-eventually': [
@@ -158,6 +168,7 @@ module.exports = {
         'e2e/failures/macros.js',
         'e2e/test-in-root/*.js',
         'e2e/test-match/test-suites/*',
+        'e2e/test-match-default/dot-spec-tests/*',
         'packages/test-utils/src/ConditionalTest.ts',
       ],
       env: {'jest/globals': true},
@@ -273,6 +284,16 @@ module.exports = {
       },
     },
     {
+      files: ['examples/angular/**/*'],
+      rules: {
+        // Angular DI for some reason doesn't work with type imports
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+        ],
+      },
+    },
+    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -347,6 +368,8 @@ module.exports = {
       files: ['**/__typetests__/**'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-invalid-void-type': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
       },
     },
     {
@@ -357,7 +380,7 @@ module.exports = {
       files: [
         'scripts/*',
         'packages/*/__benchmarks__/test.js',
-        'packages/jest-cli/src/init/index.ts',
+        'packages/create-jest/src/runCreate.ts',
         'packages/jest-repl/src/cli/runtime-cli.ts',
       ],
       rules: {
@@ -374,6 +397,7 @@ module.exports = {
         '**/__typetests__/**',
       ],
       rules: {
+        '@typescript-eslint/no-extraneous-class': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
@@ -385,7 +409,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jsdoc'],
+  plugins: ['import', 'jsdoc', 'unicorn'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -407,6 +431,7 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
+    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -590,6 +615,14 @@ module.exports = {
     'wrap-iife': 'off',
     'wrap-regex': 'off',
     yoda: 'off',
+
+    'unicorn/explicit-length-check': 'error',
+    'unicorn/no-array-for-each': 'error',
+    'unicorn/no-negated-condition': 'error',
+    'unicorn/numeric-separators-style': 'error',
+    'unicorn/prefer-default-parameters': 'error',
+    'unicorn/prefer-includes': 'error',
+    'unicorn/template-indent': 'error',
   },
   settings: {
     'import/ignore': ['react-native'],

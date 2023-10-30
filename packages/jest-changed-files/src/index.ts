@@ -7,18 +7,13 @@
  */
 
 import pLimit = require('p-limit');
+import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';
-import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
-
-type RootPromise = ReturnType<SCMAdapter['getRoot']>;
+import type {ChangedFilesPromise, Options, Repos} from './types';
 
 export type {ChangedFiles, ChangedFilesPromise} from './types';
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
@@ -36,15 +31,15 @@ export const getChangedFilesForRoots = async (
 
   const changedFilesOptions = {includePaths: roots, ...options};
 
-  const gitPromises = Array.from(repos.git).map(repo =>
+  const gitPromises = Array.from(repos.git, repo =>
     git.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const hgPromises = Array.from(repos.hg).map(repo =>
+  const hgPromises = Array.from(repos.hg, repo =>
     hg.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const slPromises = Array.from(repos.sl).map(repo =>
+  const slPromises = Array.from(repos.sl, repo =>
     sl.findChangedFiles(repo, changedFilesOptions),
   );
 
@@ -62,24 +57,15 @@ export const getChangedFilesForRoots = async (
 };
 
 export const findRepos = async (roots: Array<string>): Promise<Repos> => {
-  const gitRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findGitRoot(root)),
-      [],
-    ),
-  );
-  const hgRepos = await Promise.all(
-    roots.reduce<Array<RootPromise>>(
-      (promises, root) => promises.concat(findHgRoot(root)),
-      [],
-    ),
-  );
-
-  const slRepos = await Promise.all(roots.map(findSlRoot));
+  const [gitRepos, hgRepos, slRepos] = await Promise.all([
+    Promise.all(roots.map(findGitRoot)),
+    Promise.all(roots.map(findHgRoot)),
+    Promise.all(roots.map(findSlRoot)),
+  ]);
 
   return {
-    git: new Set(gitRepos.filter(notEmpty)),
-    hg: new Set(hgRepos.filter(notEmpty)),
-    sl: new Set(slRepos.filter(notEmpty)),
+    git: new Set(gitRepos.filter(isNonNullable)),
+    hg: new Set(hgRepos.filter(isNonNullable)),
+    sl: new Set(slRepos.filter(isNonNullable)),
   };
 };

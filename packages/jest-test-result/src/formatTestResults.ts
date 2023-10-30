@@ -52,9 +52,9 @@ const formatTestResult = (
   return {
     assertionResults: testResult.testResults,
     coverage:
-      codeCoverageFormatter != null
-        ? codeCoverageFormatter(testResult.coverage, reporter)
-        : testResult.coverage,
+      codeCoverageFormatter == null
+        ? testResult.coverage
+        : codeCoverageFormatter(testResult.coverage, reporter),
     endTime: testResult.perfStats.end,
     message: testResult.failureMessage ?? '',
     name: testResult.testFilePath,

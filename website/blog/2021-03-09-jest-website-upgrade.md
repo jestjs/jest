@@ -46,4 +46,4 @@ In localized pages, the edit button now links directly to Crowdin.
 
 Thanks to all the contributors that supported or reviewed this migration: [Simen](https://github.com/SimenB), [Orta](https://github.com/orta), [Joel](https://github.com/JoelMarcey), [Kristoffer](https://github.com/merceyz)...
 
-Please report any problem on the [migration issue](https://github.com/facebook/jest/pull/11021).
+Please report any problem on the [migration issue](https://github.com/jestjs/jest/pull/11021).

@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Expression} from '@babel/types';
 import type {MatcherContext} from 'expect';
+import type {Frame} from 'jest-message-util';
 import type {PrettyFormatOptions} from 'pretty-format';
 import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
   snapshotState: SnapshotState;
+  testFailing?: boolean;
 }
 
 // This is typically implemented by `jest-haste-map`'s `HasteFS`, but we
@@ -29,13 +32,6 @@ export type MatchSnapshotConfig = {
   matcherName: string;
   properties?: object;
   received: any;
-  snapshotName?: string;
-};
-
-export type SnapshotNameConfig = {
-  currentTestName?: string;
-  hint?: string;
-  snapshotName?: string;
 };
 
 export type SnapshotData = Record<string, string>;
@@ -53,14 +49,6 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
   toMatchSnapshot<U extends Record<keyof T, unknown>>(
     propertyMatchers: Partial<U>,
     hint?: string,
-  ): R;
-  /**
-   * This ensures that a value matches the specific snapshot with property matchers.
-   * Instead of use current test name in global state, it will use the specific name to find the snapshot.
-   */
-  toMatchNamedSnapshot<U extends Record<keyof T, unknown>>(
-    snapshotName: string,
-    propertyMatchers?: Partial<U>,
   ): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
@@ -86,11 +74,12 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
    */
   toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
-  /**
-   * Used to test that a function throws a error matching the specific snapshot.
-   * Instead of use current test name in global state, it will use the specific name to find the snapshot.
-   */
-  toThrowErrorMatchingNamedSnapshot(snapshotName: string): R;
 }
 
 export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;
+
+export type InlineSnapshot = {
+  snapshot: string;
+  frame: Frame;
+  node?: Expression;
+};

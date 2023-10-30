@@ -12,8 +12,8 @@ import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
-  LogMessage,
-  LogType,
+  type LogMessage,
+  type LogType,
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
@@ -24,6 +24,7 @@ import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -98,7 +99,8 @@ async function runTestInternal(
     }
     testEnvironment = resolveTestEnvironment({
       ...projectConfig,
-      requireResolveFunction: require.resolve,
+      // we wanna avoid webpack trying to be clever
+      requireResolveFunction: module => require.resolve(module),
       testEnvironment: customEnvironment,
     });
   }
@@ -340,7 +342,7 @@ async function runTestInternal(
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
-      if (coverageKeys.length) {
+      if (coverageKeys.length > 0) {
         result.coverage = coverage;
       }
     }
@@ -353,7 +355,6 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      // @ts-expect-error - doesn't exist on globalThis
       globalThis.gc?.();
 
       result.memoryUsage = process.memoryUsage().heapUsed;

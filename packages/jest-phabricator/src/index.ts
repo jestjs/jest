@@ -16,15 +16,15 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
 
   const summaries = Object.create(null);
 
-  coverageMap.files().forEach(file => {
+  for (const file of coverageMap.files()) {
     const covered = [];
     const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
 
-    Object.keys(lineCoverage).forEach(lineNumber => {
+    for (const lineNumber of Object.keys(lineCoverage)) {
       const number = parseInt(lineNumber, 10);
       // Line numbers start at one
       covered[number - 1] = lineCoverage[number] ? 'C' : 'U';
-    });
+    }
 
     for (let i = 0; i < covered.length; i++) {
       if (!covered[i]) {
@@ -33,7 +33,7 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
     }
 
     summaries[file] = covered.join('');
-  });
+  }
 
   return summaries;
 }

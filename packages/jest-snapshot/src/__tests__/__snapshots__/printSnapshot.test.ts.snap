@@ -1,21 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`change text value 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>(</>properties<d>)</>
-
-Snapshot name: \`with properties 1\`
-
-<m>- Snapshot  - 1</>
-<t>+ Received  + 1</>
-
-<d>  Object {</>
-<d>    "id": "abcdef",</>
-<m>-   "text": "snapshot",</>
-<t>+   "text": "received",</>
-<d>    "type": "ADD_ITEM",</>
-<d>  }</>
-`;
-
 exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) without snapshot 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
 
@@ -46,48 +30,6 @@ exports[`matcher error toMatchInlineSnapshot Snapshot matchers cannot be used wi
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
 
 <b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
-`;
-
-exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (non-null) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has type:  function
-Expected properties has value: <g>[Function]</>
-`;
-
-exports[`matcher error toMatchNamedSnapshot Expected properties must be an object (null) with snapshot name 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has value: <g>null</>
-`;
-
-exports[`matcher error toMatchNamedSnapshot Snapshot state must be initialized 1`] = `
-<d>expect(</><r>received</><d>).</>resolves<d>.</>toMatchNamedSnapshot<d>()</>
-
-Snapshot state must be initialized
-
-Snapshot state has value: undefined
-`;
-
-exports[`matcher error toMatchNamedSnapshot received value must be an object (non-null) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: <r>received</> value must be an object when the matcher has <g>properties</>
-
-Received has type:  string
-Received has value: <r>"string"</>
-`;
-
-exports[`matcher error toMatchNamedSnapshot received value must be an object (null) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: <r>received</> value must be an object when the matcher has <g>properties</>
-
-Received has value: <r>null</>
 `;
 
 exports[`matcher error toMatchSnapshot Expected properties must be an object (non-null) 1`] = `
@@ -159,21 +101,6 @@ Snapshot state must be initialized
 Snapshot state has value: undefined
 `;
 
-exports[`matcher error toThrowErrorMatchingNamedSnapshot Received value must be a function 1`] = `
-<d>expect(</><r>received</><d>).</>toThrowErrorMatchingNamedSnapshot<d>()</>
-
-<b>Matcher error</>: <r>received</> value must be a function
-
-Received has type:  number
-Received has value: <r>13</>
-`;
-
-exports[`matcher error toThrowErrorMatchingNamedSnapshot Snapshot matchers cannot be used with not 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toThrowErrorMatchingNamedSnapshot<d>()</>
-
-<b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
-`;
-
 exports[`matcher error toThrowErrorMatchingSnapshot Received value must be a function 1`] = `
 <d>expect(</><r>received</><d>).</>toThrowErrorMatchingSnapshot<d>()</>
 
@@ -237,32 +164,6 @@ Snapshot name: \`with properties 1\`
 <t>+   "text": "received",</>
 <d>    "type": "ADD_ITEM",</>
 <d>  }</>
-`;
-
-exports[`pass false toMatchNamedSnapshot empty snapshot name New snapshot was not written (multi line) 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>()</>
-
-Snapshot name: \`New snapshot was not written 1\`
-
-New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
-
-This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
-
-Received:
-<t>"To write or not to write,</>
-<t>that is the question."</>
-`;
-
-exports[`pass false toMatchNamedSnapshot empty snapshot name New snapshot was not written (single line) 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>()</>
-
-Snapshot name: \`New snapshot was not written 2\`
-
-New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
-
-This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
-
-Received: <t>"Write me if you can!"</>
 `;
 
 exports[`pass false toMatchSnapshot New snapshot was not written (multi line) 1`] = `
@@ -736,53 +637,4 @@ exports[`printSnapshotAndReceived without serialize prettier/pull/5590 1`] = `
 <t>+ <img src="test.png" alt=<i>'</i>John <i>"</i>ShotGun<i>"</i> Nelson<i>'</i> /></>
 
 <d>  ================================================================================</>
-`;
-
-exports[`specific-line-diff-false 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-Snapshot name: \`with properties 1\`
-
-Expected properties: <g>{"name": "Error"}</>
-Received value:      <r>[RangeError: Invalid array length]</>
-`;
-
-exports[`specific-line-diff-true 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchNamedSnapshot<d>(</><g>properties</><d>)</>
-
-Snapshot name: \`with properties 1\`
-
-<g>- Expected properties  - 1</>
-<r>+ Received value       + 1</>
-
-<d>  Object {</>
-<g>-   "id": "abcdef",</>
-<r>+   "id": "abcdefg",</>
-<d>  }</>
-`;
-
-exports[`specific-not-written-multi-line 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>()</>
-
-Snapshot name: \`New snapshot was not written 1\`
-
-New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
-
-This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
-
-Received:
-<t>"To write or not to write,</>
-<t>that is the question."</>
-`;
-
-exports[`specific-not-written-single-line 1`] = `
-<d>expect(</><t>received</><d>).</>toMatchNamedSnapshot<d>()</>
-
-Snapshot name: \`New snapshot was not written 2\`
-
-New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
-
-This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
-
-Received: <t>"Write me if you can!"</>
 `;

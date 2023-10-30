@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
@@ -26,7 +27,7 @@ import getResultHeader from './getResultHeader';
 import getSnapshotStatus from './getSnapshotStatus';
 import type {ReporterOnStartOptions} from './types';
 
-type write = NodeJS.WriteStream['write'];
+type write = WriteStream['write'];
 type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
@@ -57,9 +58,7 @@ export default class DefaultReporter extends BaseReporter {
     });
   }
 
-  protected __wrapStdio(
-    stream: NodeJS.WritableStream | NodeJS.WriteStream,
-  ): void {
+  protected __wrapStdio(stream: NodeJS.WritableStream | WriteStream): void {
     const write = stream.write.bind(stream);
 
     let buffer: Array<string> = [];
@@ -191,7 +190,7 @@ export default class DefaultReporter extends BaseReporter {
     result: TestResult,
   ): void {
     // log retry errors if any exist
-    result.testResults.forEach(testResult => {
+    for (const testResult of result.testResults) {
       const testRetryReasons = testResult.retryReasons;
       if (testRetryReasons && testRetryReasons.length > 0) {
         this.log(
@@ -199,7 +198,7 @@ export default class DefaultReporter extends BaseReporter {
             ' LOGGING RETRY ERRORS ',
           )} ${chalk.bold(testResult.fullName)}`,
         );
-        testRetryReasons.forEach((retryReasons, index) => {
+        for (const [index, retryReasons] of testRetryReasons.entries()) {
           let {message, stack} = separateMessageFromStack(retryReasons);
           stack = this._globalConfig.noStackTrace
             ? ''
@@ -213,9 +212,9 @@ export default class DefaultReporter extends BaseReporter {
             `${chalk.reset.inverse.bold.blueBright(` RETRY ${index + 1} `)}\n`,
           );
           this.log(`${message}\n${stack}\n`);
-        });
+        }
       }
-    });
+    }
 
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
@@ -239,6 +238,6 @@ export default class DefaultReporter extends BaseReporter {
     }
     const didUpdate = this._globalConfig.updateSnapshot === 'all';
     const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
-    snapshotStatuses.forEach(this.log);
+    for (const status of snapshotStatuses) this.log(status);
   }
 }

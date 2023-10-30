@@ -142,10 +142,10 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
   }
 });
 
-test('accepts snapshot hint', () => {
+test('accepts custom snapshot name', () => {
   const filename = 'accept-custom-snapshot-name.test.js';
-  const template = makeTemplate(`test('accepts snapshot hint', () => {
-      expect(true).toMatchSnapshot('custom-hint');
+  const template = makeTemplate(`test('accepts custom snapshot name', () => {
+      expect(true).toMatchSnapshot('custom-name');
     });
     `);
 
@@ -301,54 +301,6 @@ test('handles property matchers with deep properties', () => {
       'Snapshot name: `handles property matchers with deep properties 1`',
     );
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
-    expect(exitCode).toBe(1);
-  }
-});
-
-test('does not support concurrent testing', () => {
-  const filename = 'match-snapshot-when-test-concurrent.test.js';
-  const template = makeTemplate(`describe('group 1', () => {
-        $1('concurrent 1', async () => {
-          expect('concurrent 1-1').toMatchSnapshot();
-          $2
-        });
-
-        $1('concurrent 2', async () => {
-          expect('concurrent 1-2').toMatchSnapshot();
-          $2
-        });
-      });
-
-      describe('group 2', () => {
-        $1('concurrent 1', async () => {
-          expect('concurrent 2-1').toMatchSnapshot();
-          $2
-        });
-
-        $1('concurrent 2', async () => {
-          expect('concurrent 2-2').toMatchSnapshot();
-          $2
-        });
-      });
-      `);
-  {
-    writeFiles(TESTS_DIR, {[filename]: template(['test'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-
-    expect(stderr).toMatch('4 snapshots written');
-    expect(exitCode).toBe(0);
-  }
-
-  {
-    writeFiles(TESTS_DIR, {
-      [filename]: template([
-        'test.concurrent',
-        'await new Promise(resolve => setTimeout(resolve, 5000));',
-      ]),
-    });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-
-    expect(stderr).toMatch('snapshots obsolete');
     expect(exitCode).toBe(1);
   }
 });

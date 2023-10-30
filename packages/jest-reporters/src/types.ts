@@ -42,17 +42,17 @@ export interface Reporter {
     test: Test,
     testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
-  readonly onRunStart: (
+  readonly onRunStart?: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
   readonly onTestStart?: (test: Test) => Promise<void> | void;
   readonly onTestFileStart?: (test: Test) => Promise<void> | void;
-  readonly onRunComplete: (
+  readonly onRunComplete?: (
     testContexts: Set<TestContext>,
     results: AggregatedResult,
   ) => Promise<void> | void;
-  readonly getLastError: () => Error | void;
+  readonly getLastError?: () => Error | void;
 }
 
 export type ReporterContext = {

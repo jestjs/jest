@@ -1,24 +1,26 @@
 {
   "name": "jest-phabricator",
-  "version": "29.5.0",
+  "version": "30.0.0-alpha.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-phabricator"
   },
   "types": "./build/index.d.ts",
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "workspace:^"
+    "@jest/test-result": "workspace:*"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",

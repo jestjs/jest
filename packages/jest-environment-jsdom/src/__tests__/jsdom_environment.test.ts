@@ -23,9 +23,9 @@ describe('JSDomEnvironment', () => {
     const timer1 = env.global.setTimeout(() => {}, 0);
     const timer2 = env.global.setInterval(() => {}, 0);
 
-    [timer1, timer2].forEach(timer => {
+    for (const timer of [timer1, timer2]) {
       expect(typeof timer).toBe('number');
-    });
+    }
   });
 
   it('has modern fake timers implementation', () => {
