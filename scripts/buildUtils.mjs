@@ -12,7 +12,6 @@ import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
-import stringLength from 'string-length';
 import webpack from 'webpack';
 import nodeExternals from 'webpack-node-externals';
 import babelConfig from '../babel.config.js';
