@@ -35,13 +35,14 @@
 
 ### Performance
 
-- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js`, and export proper ESM wrapper ([#12348](https://github.com/jestjs/jest/pull/12348), [#14550](https://github.com/jestjs/jest/pull/14550) & [#14661](https://github.com/jestjs/jest/pull/14661))
+- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js` ([#12348](https://github.com/jestjs/jest/pull/12348), [#14550](https://github.com/jestjs/jest/pull/14550) & [#14661](https://github.com/jestjs/jest/pull/14661))
 
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542))
 - `[*]` Depend on exact versions of monorepo dependencies instead of `^` range ([#14553](https://github.com/facebook/jest/pull/14553))
+- `[*]` [**BREAKING**] Add ESM wrapper for all of Jest's modules ([#14661](https://github.com/jestjs/jest/pull/14661))
 - `[babel-jest, babel-preset-jest]` [**BREAKING**] Increase peer dependency of `@babel/core` to `^7.11` ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
 - `[docs]` Fix typos in `CHANGELOG.md` and `packages/jest-validate/README.md` ([#14640](https://github.com/jestjs/jest/pull/14640))
