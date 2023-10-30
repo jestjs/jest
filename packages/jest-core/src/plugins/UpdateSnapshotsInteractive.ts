@@ -9,7 +9,11 @@
 
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
+import {
+  BaseWatchPlugin,
+  type JestHookSubscriber,
+  type UsageData,
+} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {

@@ -5,25 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ChildProcess, ForkOptions, fork} from 'child_process';
+import {type ChildProcess, type ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
-  ChildMessage,
-  OnCustomMessage,
-  OnEnd,
-  OnStart,
+  type ChildMessage,
+  type OnCustomMessage,
+  type OnEnd,
+  type OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
-  ParentMessage,
-  WorkerInterface,
-  WorkerOptions,
+  type ParentMessage,
+  type WorkerInterface,
+  type WorkerOptions,
   WorkerStates,
 } from '../types';
 import WorkerAbstract from './WorkerAbstract';

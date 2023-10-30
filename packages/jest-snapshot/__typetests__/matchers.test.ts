@@ -8,8 +8,8 @@
 import {expectError, expectType} from 'tsd-lite';
 import type {ExpectationResult} from 'expect';
 import {
-  Context,
-  SnapshotState,
+  type Context,
+  type SnapshotState,
   toMatchInlineSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,

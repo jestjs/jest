@@ -13,10 +13,10 @@ import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import {
-  AggregatedResult,
-  Test,
-  TestContext,
-  TestResultsProcessor,
+  type AggregatedResult,
+  type Test,
+  type TestContext,
+  type TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
@@ -25,11 +25,13 @@ import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
-import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
+import {JestHook, type JestHookEmitter, type TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
-import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
+import {type TestSchedulerContext, createTestScheduler} from './TestScheduler';
+import collectNodeHandles, {
+  type HandleCollectionResult,
+} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';

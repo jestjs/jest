@@ -11,7 +11,7 @@
 import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,

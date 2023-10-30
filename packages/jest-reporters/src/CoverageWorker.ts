@@ -9,7 +9,7 @@ import exit = require('exit');
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
-  CoverageWorkerResult,
+  type CoverageWorkerResult,
 } from './generateEmptyCoverage';
 import type {ReporterContext} from './types';
 

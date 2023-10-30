@@ -14,12 +14,12 @@ import {
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
-  Context as VMContext,
+  type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
-  Module as VMModule,
+  type Module as VMModule,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
-import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
@@ -39,19 +39,19 @@ import type {
   V8CoverageResult,
 } from '@jest/test-result';
 import {
-  CallerTransformOptions,
-  ScriptTransformer,
-  ShouldInstrumentOptions,
-  TransformationOptions,
+  type CallerTransformOptions,
+  type ScriptTransformer,
+  type ShouldInstrumentOptions,
+  type TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {IHasteMap, IModuleMap} from 'jest-haste-map';
+import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
-import Resolver, {ResolveModuleConfig} from 'jest-resolve';
+import Resolver, {type ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {
   createDirectory,

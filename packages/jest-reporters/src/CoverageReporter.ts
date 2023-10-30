@@ -26,7 +26,7 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import {JestWorkerFarm, Worker} from 'jest-worker';
+import {type JestWorkerFarm, Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
 import type {ReporterContext} from './types';

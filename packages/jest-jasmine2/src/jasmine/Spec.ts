@@ -37,7 +37,7 @@ import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
-  Options as ExpectationResultFactoryOptions,
+  type Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
 import type {QueueableFn, default as queueRunner} from '../queueRunner';
 import type {AssertionErrorWithStack} from '../types';

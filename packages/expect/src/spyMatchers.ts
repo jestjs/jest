@@ -10,7 +10,7 @@ import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   diff,
   ensureExpectedIsNonNegativeInteger,
