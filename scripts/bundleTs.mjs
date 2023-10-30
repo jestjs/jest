@@ -19,7 +19,7 @@ import {glob} from 'glob';
 import fs from 'graceful-fs';
 import pkgDir from 'pkg-dir';
 import {rimraf} from 'rimraf';
-import {copyrightSnippet, getPackages} from './buildUtils.mjs';
+import {copyrightSnippet, getPackagesWithTsConfig} from './buildUtils.mjs';
 
 const require = createRequire(import.meta.url);
 const typescriptCompilerFolder = await pkgDir(require.resolve('typescript'));
@@ -28,13 +28,8 @@ const typesNodeReferenceDirective = '/// <reference types="node" />';
 
 const excludedPackages = new Set(['@jest/globals', '@jest/test-globals']);
 
-const packages = getPackages();
-
-const isTsPackage = p =>
-  fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
-
-const packagesToBundle = packages.filter(
-  p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
+const packagesToBundle = getPackagesWithTsConfig().filter(
+  p => !excludedPackages.has(p.pkg.name),
 );
 
 console.log(chalk.inverse(' Extracting TypeScript definition files '));
