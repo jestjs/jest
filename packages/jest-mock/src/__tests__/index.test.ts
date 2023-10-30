@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import * as util from 'util';
-import {Context, createContext, runInContext, runInNewContext} from 'vm';
+import {type Context, createContext, runInContext, runInNewContext} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {

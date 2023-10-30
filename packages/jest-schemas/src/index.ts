@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Static, Type} from '@sinclair/typebox';
+import {type Static, Type} from '@sinclair/typebox';
 
 const RawSnapshotFormat = Type.Partial(
   Type.Object({

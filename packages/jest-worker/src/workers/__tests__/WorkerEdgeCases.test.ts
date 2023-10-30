@@ -11,7 +11,7 @@ import {transformFileAsync} from '@babel/core';
 import {
   CHILD_MESSAGE_CALL,
   WorkerEvents,
-  WorkerOptions,
+  type WorkerOptions,
   WorkerStates,
 } from '../../types';
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';

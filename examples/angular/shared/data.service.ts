@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {SubService} from './sub.service';
+import type {SubService} from './sub.service';
 
 @Injectable()
 export class DataService {

@@ -8,7 +8,7 @@
 
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
-import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
+import type {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;

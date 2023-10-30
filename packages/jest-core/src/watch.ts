@@ -24,12 +24,12 @@ import {
 } from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
-  AllowedConfigOptions,
+  type AllowedConfigOptions,
   JestHook,
   KEYS,
   TestWatcher,
-  WatchPlugin,
-  WatchPluginClass,
+  type WatchPlugin,
+  type WatchPluginClass,
 } from 'jest-watcher';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
