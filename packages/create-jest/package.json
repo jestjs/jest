@@ -14,6 +14,7 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",

@@ -6,9 +6,11 @@
  */
 
 import {strict as assert} from 'assert';
+import {createRequire} from 'module';
 import * as path from 'path';
 import util from 'util';
 import chalk from 'chalk';
+import dedent from 'dedent';
 import fs from 'graceful-fs';
 import webpack from 'webpack';
 import {
@@ -16,7 +18,10 @@ import {
   OK,
   createBuildConfigs,
   createWebpackConfigs,
+  typeOnlyPackages,
 } from './buildUtils.mjs';
+
+const require = createRequire(import.meta.url);
 
 async function buildNodePackages() {
   process.stdout.write(chalk.inverse(' Bundling packages \n'));
@@ -49,10 +54,44 @@ async function buildNodePackages() {
   }
 
   for (const {packageDir, pkg} of buildConfigs) {
+    const entryPointFile = path.resolve(packageDir, pkg.main);
+
     assert.ok(
-      fs.existsSync(path.resolve(packageDir, pkg.main)),
+      fs.existsSync(entryPointFile),
       `Main file "${pkg.main}" in "${pkg.name}" should exist`,
     );
+
+    // type only packages
+    if (typeOnlyPackages.has(pkg.name)) {
+      continue;
+    }
+
+    const entryPoint = require(entryPointFile);
+    const exportStatements = Object.keys(entryPoint)
+      .filter(name => name !== '__esModule' && name !== 'default')
+      .map(name => `export const ${name} = entryPoint.${name};`);
+
+    if (entryPoint.default) {
+      exportStatements.push('export default entryPoint.default;');
+    }
+
+    if (exportStatements.length === 0) {
+      throw new Error(`No exports found in package ${pkg.name}`);
+    }
+
+    const mjsEntryFile = entryPointFile.replace(/\.js$/, '.mjs');
+
+    const esSource = dedent`
+      import {createRequire} from 'module';
+
+      const require = createRequire(import.meta.url);
+
+      const entryPoint = require('./index.js');
+
+      ${exportStatements.join('\n')}
+    `;
+
+    await fs.promises.writeFile(mjsEntryFile, `${esSource}\n`);
   }
 
   process.stdout.write(`${OK}\n`);
