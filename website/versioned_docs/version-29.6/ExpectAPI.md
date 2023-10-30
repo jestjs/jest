@@ -888,7 +888,7 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `expect.anything()`
 
-`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
+`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
 
 ```js
 test('map calls its argument with a non-null argument', () => {
@@ -900,7 +900,7 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
 class Cat {}
@@ -931,7 +931,7 @@ test('randocall calls its callback with a number', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match a property in `objectContaining` or `toMatchObject`
 
 ```js
@@ -1063,7 +1063,7 @@ describe('not.stringContaining', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match an element in `arrayContaining`
 - to match a property in `objectContaining` or `toMatchObject`
 

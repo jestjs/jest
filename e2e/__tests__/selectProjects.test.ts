@@ -7,8 +7,8 @@
 
 import {resolve} from 'path';
 import run, {
-  RunJestJsonResult,
-  RunJestResult,
+  type RunJestJsonResult,
+  type RunJestResult,
   json as runWithJson,
 } from '../runJest';
 

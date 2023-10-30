@@ -13,7 +13,7 @@ import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
-import normalize, {AllOptions} from '../normalize';
+import normalize, {type AllOptions} from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 

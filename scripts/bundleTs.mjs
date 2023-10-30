@@ -14,16 +14,12 @@ import {
   ExtractorConfig,
 } from '@microsoft/api-extractor';
 import chalk from 'chalk';
+import {ESLint} from 'eslint';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
 import pkgDir from 'pkg-dir';
-import prettier from 'prettier';
 import {rimraf} from 'rimraf';
-import {copyrightSnippet, getPackages} from './buildUtils.mjs';
-
-const prettierConfig = await prettier.resolveConfig(
-  fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
-);
+import {copyrightSnippet, getPackagesWithTsConfig} from './buildUtils.mjs';
 
 const require = createRequire(import.meta.url);
 const typescriptCompilerFolder = await pkgDir(require.resolve('typescript'));
@@ -32,13 +28,8 @@ const typesNodeReferenceDirective = '/// <reference types="node" />';
 
 const excludedPackages = new Set(['@jest/globals', '@jest/test-globals']);
 
-const packages = getPackages();
-
-const isTsPackage = p =>
-  fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
-
-const packagesToBundle = packages.filter(
-  p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
+const packagesToBundle = getPackagesWithTsConfig().filter(
+  p => !excludedPackages.has(p.pkg.name),
 );
 
 console.log(chalk.inverse(' Extracting TypeScript definition files '));
@@ -107,6 +98,20 @@ await fs.promises.writeFile(
   ),
   JSON.stringify(sharedExtractorConfig, null, 2),
 );
+
+const eslint = new ESLint({
+  cwd: process.cwd(),
+  fix: true,
+  overrideConfig: {
+    rules: {
+      // `d.ts` files are by nature `type` only imports, so it's just noise when looking at the file
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {prefer: 'no-type-imports'},
+      ],
+    },
+  },
+});
 
 let compilerState;
 
@@ -205,13 +210,16 @@ await Promise.all(
 
     definitionFile = [
       copyrightSnippet,
+      '',
       ...definitionFile.split(copyrightSnippet),
     ].join('\n');
 
-    const formattedContent = await prettier.format(definitionFile, {
-      ...prettierConfig,
-      filepath,
+    const [lintResult] = await eslint.lintText(definitionFile, {
+      filePath: 'some-file.ts',
     });
+
+    // if the autofixer did anything, the result is in `output`
+    const formattedContent = lintResult.output || definitionFile;
 
     await fs.promises.writeFile(
       filepath.replace(

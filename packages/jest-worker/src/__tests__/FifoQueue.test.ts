@@ -8,8 +8,8 @@
 import FifoQueue from '../FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
-  ChildMessageCall,
-  QueueChildMessage,
+  type ChildMessageCall,
+  type QueueChildMessage,
 } from '../types';
 
 it('returns the shared tasks in FIFO ordering', () => {

@@ -6,8 +6,8 @@
  */
 
 import {
-  AssertionResult,
-  TestResult,
+  type AssertionResult,
+  type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';

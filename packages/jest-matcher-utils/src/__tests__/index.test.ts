@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
-  MatcherHintOptions,
+  type MatcherHintOptions,
   diff,
   ensureNoExpected,
   ensureNumbers,

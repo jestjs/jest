@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {
-  PackageJson,
+  type PackageJson,
   cleanup,
   createEmptyPackage,
   runYarnInstall,

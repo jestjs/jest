@@ -223,6 +223,7 @@ const config = {
       },
       image: 'img/opengraph.png',
       prism: {
+        additionalLanguages: ['bash', 'diff', 'json'],
         theme: require('./src/prism/themeLight'),
         darkTheme: require('./src/prism/themeDark'),
       },

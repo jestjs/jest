@@ -9,9 +9,9 @@
 import type {Global} from '@jest/types';
 import type {EachTests} from '../bind';
 import {
-  Headings,
-  Template,
-  Templates,
+  type Headings,
+  type Template,
+  type Templates,
   interpolateVariables,
 } from './interpolation';
 

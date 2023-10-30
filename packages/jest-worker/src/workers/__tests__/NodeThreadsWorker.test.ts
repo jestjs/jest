@@ -11,11 +11,11 @@ import getStream = require('get-stream');
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
-  ChildMessageCall,
+  type ChildMessageCall,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
-  WorkerOptions,
+  type WorkerOptions,
 } from '../../types';
 
 let Worker: typeof import('../NodeThreadsWorker').default;

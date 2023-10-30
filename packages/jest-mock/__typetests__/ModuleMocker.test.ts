@@ -6,7 +6,7 @@
  */
 
 import {expectType} from 'tsd-lite';
-import {MockMetadata, Mocked, ModuleMocker} from 'jest-mock';
+import {type MockMetadata, type Mocked, ModuleMocker} from 'jest-mock';
 
 class ExampleClass {
   memberA: Array<number>;
