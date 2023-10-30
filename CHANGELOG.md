@@ -35,7 +35,7 @@
 
 ### Performance
 
-- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js` ([#12348](https://github.com/jestjs/jest/pull/12348), [#14550](https://github.com/jestjs/jest/pull/14550) & [#14661](https://github.com/jestjs/jest/pull/14661))
+- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js`, and export proper ESM wrapper ([#12348](https://github.com/jestjs/jest/pull/12348), [#14550](https://github.com/jestjs/jest/pull/14550) & [#14661](https://github.com/jestjs/jest/pull/14661))
 
 ### Chore & Maintenance
 
