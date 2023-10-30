@@ -61,7 +61,6 @@ async function buildNodePackages() {
       `Main file "${pkg.main}" in "${pkg.name}" should exist`,
     );
 
-    // type only packages
     if (typeOnlyPackages.has(pkg.name)) {
       continue;
     }
