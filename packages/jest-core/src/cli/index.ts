@@ -17,7 +17,7 @@ import {formatHandleErrors} from '../collectHandles';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
 import getSelectProjectsMessage from '../getSelectProjectsMessage';
-import {_run} from '../jest';
+import {run} from '../jest';
 import logDebugMessages from '../lib/logDebugMessages';
 
 export async function runCLI(
@@ -81,7 +81,7 @@ export async function runCLI(
     );
   }
 
-  const results = await _run(
+  const results = await run(
     globalConfig,
     configsOfProjectsToRun,
     hasDeprecationWarnings,

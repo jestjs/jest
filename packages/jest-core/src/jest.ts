@@ -64,7 +64,7 @@ export class Jest {
     const outputStream = this.globalConfig.useStderr
       ? process.stderr
       : process.stdout;
-    const results = await _run(
+    const results = await run(
       this.globalConfig,
       this.projectConfigs,
       false,
@@ -104,7 +104,7 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-export const _run = async (
+export const run = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
