@@ -6,10 +6,10 @@
  */
 
 import {
-  FakeTimerWithContext,
-  FakeMethod as FakeableAPI,
-  InstalledClock,
-  FakeTimerInstallOpts as SinonFakeTimersConfig,
+  type FakeTimerWithContext,
+  type FakeMethod as FakeableAPI,
+  type InstalledClock,
+  type FakeTimerInstallOpts as SinonFakeTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -110,6 +110,12 @@ export default class FakeTimers {
     }
   }
 
+  advanceTimersToNextFrame(): void {
+    if (this._checkFakeTimers()) {
+      this._clock.runToFrame();
+    }
+  }
+
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
       // @ts-expect-error - doesn't exist?
@@ -203,9 +209,10 @@ export default class FakeTimers {
       Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
     );
 
-    fakeTimersConfig.doNotFake?.forEach(nameOfFakeableAPI => {
-      toFake.delete(nameOfFakeableAPI);
-    });
+    if (fakeTimersConfig.doNotFake)
+      for (const nameOfFakeableAPI of fakeTimersConfig.doNotFake) {
+        toFake.delete(nameOfFakeableAPI);
+      }
 
     return {
       advanceTimeDelta,

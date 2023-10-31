@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import prettyFormat, {PrettyFormatOptions} from '../';
+import prettyFormat, {type PrettyFormatOptions} from '../';
 
 function returnArguments(..._args: Array<unknown>) {
   return arguments;
@@ -79,7 +79,12 @@ describe('prettyFormat()', () => {
 
   it('prints an array buffer', () => {
     const val = new ArrayBuffer(3);
-    expect(prettyFormat(val)).toBe('ArrayBuffer []');
+    expect(prettyFormat(val)).toBe('ArrayBuffer [\n  0,\n  0,\n  0,\n]');
+  });
+
+  it('prints an data view', () => {
+    const val = new DataView(new ArrayBuffer(3));
+    expect(prettyFormat(val)).toBe('DataView [\n  0,\n  0,\n  0,\n]');
   });
 
   it('prints a nested array', () => {

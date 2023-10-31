@@ -13,7 +13,9 @@ import type {
 } from 'jest-snapshot';
 
 export type JestExpect = {
-  <T = unknown>(actual: T): JestMatchers<void, T> &
+  <T = unknown>(
+    actual: T,
+  ): JestMatchers<void, T> &
     Inverse<JestMatchers<void, T>> &
     PromiseMatchers<T>;
   // Duplicated due to https://github.com/microsoft/rushstack/issues/1709
@@ -50,6 +52,8 @@ type PromiseMatchers<T = unknown> = {
 declare module 'expect' {
   interface MatcherState {
     snapshotState: SnapshotState;
+    /** Whether the test was called with `test.failing()` */
+    testFailing?: boolean;
   }
   interface BaseExpect {
     addSnapshotSerializer: typeof addSerializer;

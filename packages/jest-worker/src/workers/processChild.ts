@@ -12,14 +12,14 @@ import {
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
-  ChildMessageCall,
-  ChildMessageInitialize,
+  type ChildMessageCall,
+  type ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_ERROR,
+  type PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
-  ParentMessageMemUsage,
+  type ParentMessageMemUsage,
 } from '../types';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;

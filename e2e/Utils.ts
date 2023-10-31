@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import {
-  ExecaSyncError,
-  SyncOptions as ExecaSyncOptions,
-  ExecaSyncReturnValue,
+  type ExecaSyncError,
+  type SyncOptions as ExecaSyncOptions,
+  type ExecaSyncReturnValue,
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';
@@ -91,7 +91,7 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
 };
 
 export const makeTemplate =
-  (str: string): ((values?: Array<unknown>) => string) =>
+  (str: string): ((values?: Array<string>) => string) =>
   (values = []) =>
     str.replace(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {
@@ -128,7 +128,7 @@ export const writeFiles = (
   files: {[filename: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(files).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(files)) {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
@@ -138,7 +138,7 @@ export const writeFiles = (
       path.resolve(directory, ...fileOrPath.split('/')),
       dedent(files[fileOrPath]),
     );
-  });
+  }
 };
 
 export const writeSymlinks = (
@@ -146,7 +146,7 @@ export const writeSymlinks = (
   symlinks: {[existingFile: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(symlinks).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(symlinks)) {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
@@ -158,7 +158,7 @@ export const writeSymlinks = (
       path.resolve(directory, ...symLinkPath.split('/')),
       'junction',
     );
-  });
+  }
 };
 
 const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
@@ -308,17 +308,6 @@ export const extractSummaries = (
       return {end, start};
     })
     .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
-};
-
-export const normalizeIcons = (str: string) => {
-  if (!str) {
-    return str;
-  }
-
-  // Make sure to keep in sync with `jest-util/src/specialChars`
-  return str
-    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
-    .replace(new RegExp('\u221A', 'gu'), '\u2713');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

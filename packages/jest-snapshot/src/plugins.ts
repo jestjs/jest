@@ -6,8 +6,8 @@
  */
 
 import {
-  Plugin as PrettyFormatPlugin,
-  Plugins as PrettyFormatPlugins,
+  type Plugin as PrettyFormatPlugin,
+  type Plugins as PrettyFormatPlugins,
   plugins as prettyFormatPlugins,
 } from 'pretty-format';
 import jestMockSerializer from './mockSerializer';

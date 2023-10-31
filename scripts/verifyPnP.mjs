@@ -52,21 +52,21 @@ try {
   fs.writeFileSync(
     path.join(cwd, 'jsdom.test.js'),
     dedent`
-     /*
-      * @jest-environment jsdom
-      */
+      /*
+       * @jest-environment jsdom
+       */
 
-     test('dummy', () => {
-       expect(window).toBeDefined();
-     });
+      test('dummy', () => {
+        expect(window).toBeDefined();
+      });
     `,
   );
   fs.writeFileSync(
     path.join(cwd, 'node.test.js'),
     dedent`
-     test('dummy', () => {
-       expect(typeof window).toBe('undefined');
-     });
+      test('dummy', () => {
+        expect(typeof window).toBe('undefined');
+      });
     `,
   );
   execa.sync('yarn', ['link', '--private', '--all', rootDirectory], {

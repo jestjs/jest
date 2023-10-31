@@ -10,17 +10,17 @@ import type {PluginObj} from '@babel/core';
 import {statement} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
 import {
-  BlockStatement,
-  CallExpression,
-  Expression,
-  Identifier,
-  ImportDeclaration,
-  MemberExpression,
-  Node,
-  Program,
-  Super,
-  VariableDeclaration,
-  VariableDeclarator,
+  type BlockStatement,
+  type CallExpression,
+  type Expression,
+  type Identifier,
+  type ImportDeclaration,
+  type MemberExpression,
+  type Node,
+  type Program,
+  type Super,
+  type VariableDeclaration,
+  type VariableDeclarator,
   callExpression,
   emptyStatement,
   isIdentifier,
@@ -107,7 +107,7 @@ const IDVisitor = {
   ) {
     ids.add(path);
   },
-  blacklist: [
+  denylist: [
     'TypeAnnotation',
     'TSTypeAnnotation',
     'TSTypeQuery',
@@ -135,7 +135,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-expect-error: ReferencedIdentifier and blacklist are not known on visitors
+    // @ts-expect-error: ReferencedIdentifier and denylist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -371,7 +371,7 @@ export default function jestHoist(): PluginObj<{
           CallExpression: visitCallExpr,
           VariableDeclarator: visitVariableDeclarator,
           // do not traverse into nested blocks, or we'll hoist calls in there out to this block
-          blacklist: ['BlockStatement'],
+          denylist: ['BlockStatement'],
         });
         callsHoistPoint.remove();
         varsHoistPoint.remove();

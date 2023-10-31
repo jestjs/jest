@@ -13,7 +13,7 @@ import {normalize} from 'jest-config';
 import Runtime from 'jest-runtime';
 import SearchSource from '../SearchSource';
 
-jest.setTimeout(15000);
+jest.setTimeout(15_000);
 
 jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual<typeof import('fs')>('fs');
@@ -109,7 +109,8 @@ describe('SearchSource', () => {
       const {searchSource, config} = await initSearchSource(initialOptions);
       const {tests: paths} = await searchSource.getTestPaths({
         ...config,
-        testPathPattern: '',
+        ...initialOptions,
+        testPathPatterns: [],
       });
       return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
     };

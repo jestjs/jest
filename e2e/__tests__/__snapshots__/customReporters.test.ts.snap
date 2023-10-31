@@ -82,7 +82,7 @@ exports[`Custom Reporters Integration default reporters enabled 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /add.test.js/i."
+Ran all test suites matching add.test.js."
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 3`] = `

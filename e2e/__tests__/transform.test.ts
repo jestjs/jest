@@ -199,9 +199,9 @@ describe('transformer caching', () => {
     const loggedFiles = stdout.split('\n');
 
     // Verify any lines logged are _just_ the file we care about
-    loggedFiles.forEach(line => {
+    for (const line of loggedFiles) {
       expect(line).toBe(transformedFile);
-    });
+    }
 
     // We run with 2 workers, so the file should be transformed twice
     expect(loggedFiles).toHaveLength(2);

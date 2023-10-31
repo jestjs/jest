@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "lockFileMaintenance": {"enabled": true, "automerge": false},
+  "rangeStrategy": "replace",
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@tsd/typescript", "typescript"],
+      "groupName": "typescript"
+    },
+    {
+      "matchPackageNames": ["jest-runner-tsd", "tsd-lite"],
+      "groupName": "tsd"
+    }
+  ]
+}

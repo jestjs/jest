@@ -9,7 +9,7 @@ import exit = require('exit');
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
-  CoverageWorkerResult,
+  type CoverageWorkerResult,
 } from './generateEmptyCoverage';
 import type {ReporterContext} from './types';
 
@@ -33,7 +33,11 @@ export type CoverageWorkerData = {
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
-  console.error(err.stack);
+  if (err.stack) {
+    console.error(err.stack);
+  } else {
+    console.error(err);
+  }
   exit(1);
 });
 

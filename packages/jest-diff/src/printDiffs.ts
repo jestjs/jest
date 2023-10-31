@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {DIFF_EQUAL, Diff, cleanupSemantic} from './cleanupSemantic';
+import {DIFF_EQUAL, type Diff, cleanupSemantic} from './cleanupSemantic';
 import {diffLinesUnified, printDiffLines} from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
@@ -31,7 +31,7 @@ export const diffStringsUnified = (
   b: string,
   options?: DiffOptions,
 ): string => {
-  if (a !== b && a.length !== 0 && b.length !== 0) {
+  if (a !== b && a.length > 0 && b.length > 0) {
     const isMultiline = a.includes('\n') || b.includes('\n');
 
     // getAlignedDiffs assumes that a newline was appended to the strings.

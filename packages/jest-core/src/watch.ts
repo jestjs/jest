@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type {WriteStream} from 'tty';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
@@ -15,6 +16,7 @@ import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
+  TestPathPatterns,
   isInteractive,
   preRunMessage,
   requireOrImportModule,
@@ -22,12 +24,12 @@ import {
 } from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
-  AllowedConfigOptions,
+  type AllowedConfigOptions,
   JestHook,
   KEYS,
   TestWatcher,
-  WatchPlugin,
-  WatchPluginClass,
+  type WatchPlugin,
+  type WatchPluginClass,
 } from 'jest-watcher';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
@@ -89,7 +91,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<TestContext>,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),
@@ -120,7 +122,7 @@ export default async function watch(
     onlyFailures,
     reporters,
     testNamePattern,
-    testPathPattern,
+    testPathPatterns,
     updateSnapshot,
     verbose,
   }: AllowedConfigOptions = {}) => {
@@ -140,7 +142,7 @@ export default async function watch(
       onlyFailures,
       reporters,
       testNamePattern,
-      testPathPattern,
+      testPathPatterns,
       updateSnapshot,
       verbose,
     });
@@ -156,12 +158,12 @@ export default async function watch(
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
-  watchPlugins.forEach((plugin: WatchPlugin) => {
+  for (const plugin of watchPlugins) {
     const hookSubscriber = hooks.getSubscriber();
     if (plugin.apply) {
       plugin.apply(hookSubscriber);
     }
-  });
+  }
 
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
@@ -227,9 +229,12 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
+      const testPathPatterns = new TestPathPatterns([], globalConfig);
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
-        testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
+        testPaths: searchSource
+          .findMatchingTests(testPathPatterns)
+          .tests.map(t => t.path),
       }));
       hooks.getEmitter().onFileChange({projects});
     }
@@ -237,13 +242,13 @@ export default async function watch(
 
   emitFileChange();
 
-  hasteMapInstances.forEach((hasteMapInstance, index) => {
+  for (const [index, hasteMapInstance] of hasteMapInstances.entries()) {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) =>
         isValidPath(globalConfig, filePath),
       );
 
-      if (validPaths.length) {
+      if (validPaths.length > 0) {
         const context = (contexts[index] = createContext(
           contexts[index].config,
           {hasteFS, moduleMap},
@@ -260,7 +265,7 @@ export default async function watch(
         startRun(globalConfig);
       }
     });
-  });
+  }
 
   if (!hasExitListener) {
     hasExitListener = true;
@@ -404,7 +409,7 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;
@@ -412,7 +417,7 @@ export default async function watch(
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         break;
       case 'f':
@@ -425,7 +430,7 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;
@@ -496,8 +501,8 @@ const checkForConflicts = (
       .join(' and ');
     error = `
   Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
-      `<${key}>`,
-    )}.
+    `<${key}>`,
+  )}.
   Please change the key configuration for one of the conflicting plugins to avoid overlap.`.trim();
   }
 
@@ -528,10 +533,11 @@ const usage = (
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {
+  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
   const messages = [
     activeFilters(globalConfig),
 
-    globalConfig.testPathPattern || globalConfig.testNamePattern
+    testPathPatterns.isSet() || globalConfig.testNamePattern
       ? `${chalk.dim(' \u203A Press ')}c${chalk.dim(' to clear filters.')}`
       : null,
     `\n${chalk.bold('Watch Usage')}`,
@@ -549,7 +555,7 @@ const usage = (
         )}`,
 
     (globalConfig.watchAll ||
-      globalConfig.testPathPattern ||
+      testPathPatterns.isSet() ||
       globalConfig.testNamePattern) &&
     !globalConfig.noSCM
       ? `${chalk.dim(' \u203A Press ')}o${chalk.dim(

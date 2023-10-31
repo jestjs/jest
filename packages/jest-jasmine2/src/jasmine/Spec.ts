@@ -37,7 +37,7 @@ import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
-  Options as ExpectationResultFactoryOptions,
+  type Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
 import type {QueueableFn, default as queueRunner} from '../queueRunner';
 import type {AssertionErrorWithStack} from '../types';
@@ -103,7 +103,7 @@ export default class Spec {
     return !!(
       e &&
       e.toString &&
-      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+      e.toString().includes(Spec.pendingSpecExceptionMessage)
     );
   }
 

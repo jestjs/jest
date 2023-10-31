@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable sort-keys */
+
 import * as os from 'os';
 import * as path from 'path';
 import * as url from 'url';
@@ -23,37 +25,51 @@ const cpus = Math.max(
 
 const mutex = pLimit(cpus);
 
-const fix = process.argv.slice(2).some(arg => arg === '--fix');
+const fix = process.argv.slice(2).includes('--fix');
 
 const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 
 // TODO: remove this list at some point and run against all packages
-const packagesToTest = [
-  'babel-jest',
-  'babel-plugin-jest-hoist',
-  'diff-sequences',
-  'jest',
-  'jest-changed-files',
-  'jest-console',
-  'jest-docblock',
-  'jest-environment',
-  'jest-globals',
-  'jest-resolve-dependencies',
-  'jest-schemas',
-  'jest-source-map',
-  'jest-test-result',
-  'jest-test-sequencer',
-  'jest-transform',
-  'jest-types',
-  'jest-watcher',
-  'test-globals',
-  'test-utils',
+const packagesNotToTest = [
+  'expect',
+  'expect-utils',
+  'jest-circus',
+  'jest-cli',
+  'jest-config',
+  'jest-core',
+  'jest-create-cache-key-function',
+  'jest-diff',
+  'jest-each',
+  'jest-environment-jsdom',
+  'jest-environment-node',
+  'jest-fake-timers',
+  'jest-get-type',
+  'jest-haste-map',
+  'jest-jasmine2',
+  'jest-leak-detector',
+  'jest-matcher-utils',
+  'jest-message-util',
+  'jest-mock',
+  'jest-phabricator',
+  'jest-regex-util',
+  'jest-repl',
+  'jest-reporters',
+  'jest-resolve',
+  'jest-runner',
+  'jest-runtime',
+  'jest-snapshot',
+  'jest-util',
+  'jest-validate',
+  'jest-worker',
+  'pretty-format',
 ];
 
 const packagesWithTs = getPackagesWithTsConfig()
   .map(({packageDir}) => packageDir)
-  .concat(path.resolve(monorepoRoot, 'e2e'))
-  .filter(packageDir => packagesToTest.some(pkg => packageDir.endsWith(pkg)));
+  .filter(
+    packageDir => !packagesNotToTest.some(pkg => packageDir.endsWith(pkg)),
+  );
+// .concat(path.resolve(monorepoRoot, 'e2e'));
 
 const allLintResults = [];
 
@@ -69,21 +85,22 @@ try {
           fix,
           fixTypes: ['problem', 'suggestion', 'layout'],
           overrideConfig: {
-            extends: [
-              'plugin:@typescript-eslint/recommended-requiring-type-checking',
-            ],
+            extends: ['plugin:@typescript-eslint/recommended-type-checked'],
             overrides: [
               {
                 files: ['**/__tests__/**'],
                 plugins: ['jest'],
                 rules: {
                   '@typescript-eslint/unbound-method': 'off',
+                  '@typescript-eslint/no-empty-function': 'off',
+                  '@typescript-eslint/no-non-null-assertion': 'off',
                   'jest/unbound-method': 'error',
                 },
               },
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {
+              EXPERIMENTAL_useProjectService: true,
               project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
               tsconfigRootDir: monorepoRoot,
             },
@@ -101,6 +118,17 @@ try {
               '@typescript-eslint/return-await': 'error',
               '@typescript-eslint/strict-boolean-expressions': 'error',
               '@typescript-eslint/switch-exhaustiveness-check': 'error',
+
+              // TODO: enable these
+              '@typescript-eslint/no-explicit-any': 'off',
+              '@typescript-eslint/no-redundant-type-constituents': 'off',
+              '@typescript-eslint/no-duplicate-type-constituents': 'off',
+              '@typescript-eslint/no-base-to-string': 'off',
+
+              // disable the ones we disable in main config
+              '@typescript-eslint/no-invalid-void-type': 'off',
+              '@typescript-eslint/no-dynamic-delete': 'off',
+              '@typescript-eslint/no-var-requires': 'off',
             },
           },
         });

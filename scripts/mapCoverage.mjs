@@ -42,12 +42,10 @@ const mapFileCoverage = fileCoverage => {
   return fileCoverage;
 };
 
-Object.keys(coverage).forEach(filename =>
-  map.addFileCoverage(mapFileCoverage(coverage[filename])),
-);
+for (const filename of Object.keys(coverage))
+  map.addFileCoverage(mapFileCoverage(coverage[filename]));
 
 const context = istanbulReport.createContext({coverageMap: map});
 
-['json', 'lcov', 'text'].forEach(reporter =>
-  istanbulReports.create(reporter, {}).execute(context),
-);
+for (const reporter of ['json', 'lcov', 'text'])
+  istanbulReports.create(reporter, {}).execute(context);

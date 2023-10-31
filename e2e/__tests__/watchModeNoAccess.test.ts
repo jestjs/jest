@@ -71,7 +71,7 @@ test('does not re-run tests when only access time is modified', async () => {
   await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
 
   // Should NOT re-run the test
-  const fakeATime = 1541723621;
+  const fakeATime = 1_541_723_621;
   fs.utimesSync(
     modulePath,
     getOneSecondAfterMs(fakeATime),

@@ -1,6 +1,6 @@
 # babel-jest
 
-[Babel](https://github.com/babel/babel) [jest](https://github.com/facebook/jest) plugin
+[Babel](https://github.com/babel/babel) [jest](https://github.com/jestjs/jest) plugin
 
 ## Usage
 

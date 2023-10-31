@@ -13,6 +13,7 @@ const now = Date.now;
 const write = process.stderr.write;
 const globalConfig = {
   rootDir: 'root',
+  testPathPatterns: [],
   watch: false,
 };
 

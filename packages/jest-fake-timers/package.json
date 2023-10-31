@@ -1,9 +1,9 @@
 {
   "name": "@jest/fake-timers",
-  "version": "29.5.0",
+  "version": "30.0.0-alpha.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-fake-timers"
   },
   "license": "MIT",
@@ -12,24 +12,26 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "workspace:^",
-    "@sinonjs/fake-timers": "^10.0.2",
+    "@jest/types": "workspace:*",
+    "@sinonjs/fake-timers": "^11.1.0",
     "@types/node": "*",
-    "jest-message-util": "workspace:^",
-    "jest-mock": "workspace:^",
-    "jest-util": "workspace:^"
+    "jest-message-util": "workspace:*",
+    "jest-mock": "workspace:*",
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@types/sinonjs__fake-timers": "^8.1.2"
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

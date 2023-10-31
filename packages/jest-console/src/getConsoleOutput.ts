@@ -8,8 +8,8 @@
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
 import {
-  StackTraceConfig,
-  StackTraceOptions,
+  type StackTraceConfig,
+  type StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
 import type {ConsoleBuffer} from './types';

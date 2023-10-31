@@ -9,10 +9,10 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {IModuleMap, ModuleMap} from 'jest-haste-map';
+import {type IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import defaultResolver, {PackageFilter} from '../defaultResolver';
+import defaultResolver, {type PackageFilter} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
@@ -561,6 +561,25 @@ describe('resolveModule', () => {
     expect(mockUserResolver).toHaveBeenCalled();
     expect(mockUserResolver.mock.calls[0][0]).toBe('fs');
   });
+
+  it('handles unmatched capture groups correctly', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+      moduleNameMapper: [
+        {
+          moduleName: './__mocks__/foo$1',
+          regex: /^@Foo(\/.*)?$/,
+        },
+      ],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    expect(resolver.resolveModule(src, '@Foo')).toBe(
+      require.resolve('../__mocks__/foo.js'),
+    );
+    expect(resolver.resolveModule(src, '@Foo/bar')).toBe(
+      require.resolve('../__mocks__/foo/bar/index.js'),
+    );
+  });
 });
 
 describe('resolveModuleAsync', () => {
@@ -815,9 +834,8 @@ describe('Resolver.getGlobalPaths()', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const globalPaths = resolver.getGlobalPaths('jest');
-    globalPaths.forEach(globalPath =>
-      expect(require.resolve.paths('jest')).toContain(globalPath),
-    );
+    for (const globalPath of globalPaths)
+      expect(require.resolve.paths('jest')).toContain(globalPath);
   });
 
   it('return empty array with builtin module', () => {
@@ -831,9 +849,8 @@ describe('Resolver.getGlobalPaths()', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const globalPaths = resolver.getGlobalPaths('/');
-    globalPaths.forEach(globalPath =>
-      expect(require.resolve.paths('/')).toContain(globalPath),
-    );
+    for (const globalPath of globalPaths)
+      expect(require.resolve.paths('/')).toContain(globalPath);
   });
 
   it('return empty array with relative path', () => {

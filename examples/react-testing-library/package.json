@@ -4,16 +4,16 @@
   "name": "example-react-testing-library",
   "dependencies": {
     "react": "18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.12.1",
     "@testing-library/react": "^14.0.0",
-    "babel-jest": "workspace:^",
-    "jest": "workspace:^",
-    "jest-environment-jsdom": "workspace:^"
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
+    "jest-environment-jsdom": "workspace:*"
   },
   "scripts": {
     "test": "jest"

@@ -9,7 +9,11 @@
 
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
+import {
+  BaseWatchPlugin,
+  type JestHookSubscriber,
+  type UsageData,
+} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
@@ -26,18 +30,18 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
       return failedTestPaths;
     }
 
-    testResults.testResults.forEach(testResult => {
+    for (const testResult of testResults.testResults) {
       if (testResult.snapshot && testResult.snapshot.unmatched) {
-        testResult.testResults.forEach(result => {
+        for (const result of testResult.testResults) {
           if (result.status === 'failed') {
             failedTestPaths.push({
               fullName: result.fullName,
               path: testResult.testFilePath,
             });
           }
-        });
+        }
       }
-    });
+    }
 
     return failedTestPaths;
   }
@@ -62,7 +66,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
-    if (this._failedSnapshotTestAssertions.length) {
+    if (this._failedSnapshotTestAssertions.length > 0) {
       return new Promise(res => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,
@@ -70,7 +74,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
             updateConfigAndRun({
               mode: 'watch',
               testNamePattern: assertion ? `^${assertion.fullName}$` : '',
-              testPathPattern: assertion ? assertion.path : '',
+              testPathPatterns: assertion ? [assertion.path] : [],
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
             });

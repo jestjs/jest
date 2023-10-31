@@ -12,7 +12,7 @@ module.exports = function (tests) {
     setTimeout(() => {
       resolve({
         filtered: tests
-          .filter(t => t.indexOf('foo') !== -1)
+          .filter(t => t.includes('foo'))
           .map(test => ({message: 'some message', test})),
       });
     }, 100);
