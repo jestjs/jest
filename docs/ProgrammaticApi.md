@@ -74,9 +74,9 @@ Async function that performs the run. It returns a promise that resolves in a `J
 
 These are more advanced use cases that demonstrate the power of the api.
 
-### Forcing some config options
+### Overriding config options
 
-You can use `readInitialOptions` in combination with `runCLI` to run jest using the local config, while forcing some options. We're also always focussing our tests on the `foo.js` file.
+You can use `createJest` to create a Jest instance, and alter some of the options using `globalConfig` adn `projectConfigs`.
 
 ```js
 import {createJest} from 'jest';
