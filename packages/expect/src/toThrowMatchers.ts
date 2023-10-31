@@ -138,7 +138,6 @@ export const createMatcher = (
 
 const matchers: MatchersObject = {
   toThrow: createMatcher('toThrow'),
-  toThrowError: createMatcher('toThrowError'),
 };
 
 const toThrowExpectedRegExp = (

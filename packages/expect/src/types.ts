@@ -146,38 +146,10 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    */
   _unusedT(expected: T): R;
   /**
-   * Ensures the last call to a mock function was provided specific args.
-   */
-  lastCalledWith(...expected: Array<unknown>): R;
-  /**
-   * Ensure that the last call to a mock function has returned a specified value.
-   */
-  lastReturnedWith(expected?: unknown): R;
-  /**
-   * Ensure that a mock function is called with specific arguments on an Nth call.
-   */
-  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
-  /**
-   * Ensure that the nth call to a mock function has returned a specified value.
-   */
-  nthReturnedWith(nth: number, expected?: unknown): R;
-  /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
    */
   toBe(expected: unknown): R;
-  /**
-   * Ensures that a mock function is called.
-   */
-  toBeCalled(): R;
-  /**
-   * Ensures that a mock function is called an exact number of times.
-   */
-  toBeCalledTimes(expected: number): R;
-  /**
-   * Ensure that a mock function is called with specific arguments.
-   */
-  toBeCalledWith(...expected: Array<unknown>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -328,18 +300,6 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
     expected: Record<string, unknown> | Array<Record<string, unknown>>,
   ): R;
   /**
-   * Ensure that a mock function has returned (as opposed to thrown) at least once.
-   */
-  toReturn(): R;
-  /**
-   * Ensure that a mock function has returned (as opposed to thrown) a specified number of times.
-   */
-  toReturnTimes(expected: number): R;
-  /**
-   * Ensure that a mock function has returned a specified value at least once.
-   */
-  toReturnWith(expected?: unknown): R;
-  /**
    * Use to test that objects have the same types as well as structure.
    */
   toStrictEqual(expected: unknown): R;
@@ -347,8 +307,4 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * Used to test that a function throws when it is called.
    */
   toThrow(expected?: unknown): R;
-  /**
-   * If you want to test that a specific error is thrown inside a function.
-   */
-  toThrowError(expected?: unknown): R;
 }
