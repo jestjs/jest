@@ -4,8 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import jestModule from 'jest';
-const {createJest} = jestModule;
+import {createJest} from 'jest';
 
 const jest = await createJest();
 jest.globalConfig = {
