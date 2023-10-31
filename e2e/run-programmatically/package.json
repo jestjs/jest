@@ -2,8 +2,5 @@
   "name": "run-programmatically",
   "version": "1.0.0",
   "dependencies": {},
-  "jest": {
-    "testEnvironment": "node",
-    "maxWorkers": 1
-  }
+  "jest": {}
 }
