@@ -14,9 +14,9 @@ import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
-  AsyncResolver,
-  Resolver as ResolverInterface,
-  SyncResolver,
+  type AsyncResolver,
+  type Resolver as ResolverInterface,
+  type SyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';

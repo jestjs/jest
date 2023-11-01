@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, createContext, runInContext} from 'vm';
+import {type Context, createContext, runInContext} from 'vm';
 import type {
   EnvironmentContext,
   JestEnvironment,

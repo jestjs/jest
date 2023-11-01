@@ -8,12 +8,12 @@
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction} from '@jest/expect-utils';
 import {
-  MatcherContext,
-  MatcherFunction,
-  MatcherFunctionWithContext,
-  Matchers,
-  Tester,
-  TesterContext,
+  type MatcherContext,
+  type MatcherFunction,
+  type MatcherFunctionWithContext,
+  type Matchers,
+  type Tester,
+  type TesterContext,
   expect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';

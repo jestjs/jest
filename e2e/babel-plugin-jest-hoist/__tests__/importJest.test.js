@@ -6,7 +6,7 @@
  *
  */
 
-/* eslint-disable no-duplicate-imports */
+/* eslint-disable no-duplicate-imports, import/no-duplicates */
 import {jest} from '@jest/globals';
 import {jest as aliasedJest} from '@jest/globals';
 import * as JestGlobals from '@jest/globals';

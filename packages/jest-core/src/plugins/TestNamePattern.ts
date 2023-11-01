@@ -10,8 +10,8 @@ import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
   Prompt,
-  UpdateConfigCallback,
-  UsageData,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';

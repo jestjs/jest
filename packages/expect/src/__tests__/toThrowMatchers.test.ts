@@ -22,31 +22,31 @@ class CustomError extends Error {
   }
 }
 
-describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
+describe('toThrow', () => {
   class Err extends CustomError {}
   class Err2 extends CustomError {}
 
   test('to throw or not to throw', () => {
     jestExpect(() => {
       throw new CustomError('apple');
-    })[toThrow]();
-    jestExpect(() => {}).not[toThrow]();
+    }).toThrow();
+    jestExpect(() => {}).not.toThrow();
   });
 
   describe('substring', () => {
     it('passes', () => {
       jestExpect(() => {
         throw new CustomError('apple');
-      })[toThrow]('apple');
+      }).toThrow('apple');
       jestExpect(() => {
         throw new CustomError('banana');
-      }).not[toThrow]('apple');
-      jestExpect(() => {}).not[toThrow]('apple');
+      }).not.toThrow('apple');
+      jestExpect(() => {}).not.toThrow('apple');
     });
 
     test('did not throw at all', () => {
       expect(() =>
-        jestExpect(() => {})[toThrow]('apple'),
+        jestExpect(() => {}).toThrow('apple'),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -54,7 +54,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new CustomError('apple');
-        })[toThrow]('banana');
+        }).toThrow('banana');
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -63,21 +63,21 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw '';
-        })[toThrow]('Server Error');
+        }).toThrow('Server Error');
       }).toThrowErrorMatchingSnapshot();
     });
 
     it('properly escapes strings when matching against errors', () => {
       jestExpect(() => {
         throw new TypeError('"this"? throws.');
-      })[toThrow]('"this"? throws.');
+      }).toThrow('"this"? throws.');
     });
 
     test('threw, but message should not match (error)', () => {
       expect(() => {
         jestExpect(() => {
           throw new CustomError('Invalid array length');
-        }).not[toThrow]('array');
+        }).not.toThrow('array');
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -86,7 +86,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw 'Internal Server Error';
-        }).not[toThrow]('Server Error');
+        }).not.toThrow('Server Error');
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -95,16 +95,16 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
     it('passes', () => {
       jestExpect(() => {
         throw new CustomError('apple');
-      })[toThrow](/apple/);
+      }).toThrow(/apple/);
       jestExpect(() => {
         throw new CustomError('banana');
-      }).not[toThrow](/apple/);
-      jestExpect(() => {}).not[toThrow](/apple/);
+      }).not.toThrow(/apple/);
+      jestExpect(() => {}).not.toThrow(/apple/);
     });
 
     test('did not throw at all', () => {
       expect(() =>
-        jestExpect(() => {})[toThrow](/apple/),
+        jestExpect(() => {}).toThrow(/apple/),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -112,7 +112,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new CustomError('apple');
-        })[toThrow](/banana/);
+        }).toThrow(/banana/);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -121,7 +121,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw 0;
-        })[toThrow](/^[123456789]\d*/);
+        }).toThrow(/^[123456789]\d*/);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -129,7 +129,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new CustomError('Invalid array length');
-        }).not[toThrow](/ array /);
+        }).not.toThrow(/ array /);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -138,7 +138,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw 404;
-        }).not[toThrow](/^[123456789]\d*/);
+        }).not.toThrow(/^[123456789]\d*/);
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -165,25 +165,25 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
     it('passes', () => {
       jestExpect(() => {
         throw new Err();
-      })[toThrow](Err);
+      }).toThrow(Err);
       jestExpect(() => {
         throw new Err();
-      })[toThrow](CustomError);
+      }).toThrow(CustomError);
       jestExpect(() => {
         throw new SubErr();
-      })[toThrow](new SubErr());
+      }).toThrow(new SubErr());
       jestExpect(() => {
         throw new Err();
-      }).not[toThrow](Err2);
-      jestExpect(() => {}).not[toThrow](Err);
+      }).not.toThrow(Err2);
+      jestExpect(() => {}).not.toThrow(Err);
       jestExpect(() => {
         throw new SubErr();
-      }).not[toThrow](new SubSubErr());
+      }).not.toThrow(new SubSubErr());
     });
 
     test('did not throw at all', () => {
       expect(() =>
-        expect(() => {})[toThrow](Err),
+        expect(() => {}).toThrow(Err),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -191,7 +191,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new Err('apple');
-        })[toThrow](Err2);
+        }).toThrow(Err2);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -200,7 +200,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw undefined;
-        })[toThrow](Err2);
+        }).toThrow(Err2);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -208,7 +208,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new Err('apple');
-        }).not[toThrow](Err);
+        }).not.toThrow(Err);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -216,7 +216,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new SubErr('apple');
-        }).not[toThrow](Err);
+        }).not.toThrow(Err);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -224,7 +224,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       expect(() => {
         jestExpect(() => {
           throw new SubSubErr('apple');
-        }).not[toThrow](Err);
+        }).not.toThrow(Err);
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -241,13 +241,13 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       test('isNot false', () => {
         jestExpect(() => {
           throw new ErrorMessage('apple');
-        })[toThrow](expected);
+        }).toThrow(expected);
       });
 
       test('isNot true', () => {
         jestExpect(() => {
           throw new ErrorMessage('banana');
-        }).not[toThrow](expected);
+        }).not.toThrow(expected);
       });
     });
 
@@ -256,7 +256,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         expect(() =>
           jestExpect(() => {
             throw new ErrorMessage('banana');
-          })[toThrow](expected),
+          }).toThrow(expected),
         ).toThrowErrorMatchingSnapshot();
       });
 
@@ -265,7 +265,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         expect(() =>
           jestExpect(() => {
             throw new ErrorMessage(message);
-          }).not[toThrow]({message}),
+          }).not.toThrow({message}),
         ).toThrowErrorMatchingSnapshot();
       });
 
@@ -278,7 +278,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         expect(() =>
           jestExpect(() => {
             throw new ErrorMessage(b);
-          })[toThrow]({message: a}),
+          }).toThrow({message: a}),
         ).toThrowErrorMatchingSnapshot();
       });
     });
@@ -293,20 +293,20 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       test('isNot false', () => {
         jestExpect(() => {
           throw new Error('good', {cause: errorB});
-        })[toThrow](expected);
+        }).toThrow(expected);
       });
 
       test('isNot true, incorrect message', () => {
         jestExpect(() => {
           throw new Error('bad', {cause: errorB});
-        }).not[toThrow](expected);
+        }).not.toThrow(expected);
       });
 
       onNodeVersions('>=16.9.0', () => {
         test('isNot true, incorrect cause', () => {
           jestExpect(() => {
             throw new Error('good', {cause: errorA});
-          }).not[toThrow](expected);
+          }).not.toThrow(expected);
         });
       });
     });
@@ -317,7 +317,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new Error('bad', {cause: errorB});
-            })[toThrow](expected),
+            }).toThrow(expected),
           ).toThrow(
             /^(?=.*Expected message and cause: ).*Received message and cause: /s,
           );
@@ -327,7 +327,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new Error('good', {cause: errorA});
-            })[toThrow](expected),
+            }).toThrow(expected),
           ).toThrow(
             /^(?=.*Expected message and cause: ).*Received message and cause: /s,
           );
@@ -342,13 +342,13 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         test('isNot false', () => {
           jestExpect(() => {
             throw new Err('apple');
-          })[toThrow](expect.any(Err));
+          }).toThrow(expect.any(Err));
         });
 
         test('isNot true', () => {
           jestExpect(() => {
             throw new Err('apple');
-          }).not[toThrow](expect.any(Err2));
+          }).not.toThrow(expect.any(Err2));
         });
       });
 
@@ -357,7 +357,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new Err('apple');
-            })[toThrow](expect.any(Err2)),
+            }).toThrow(expect.any(Err2)),
           ).toThrowErrorMatchingSnapshot();
         });
 
@@ -365,7 +365,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new Err('apple');
-            }).not[toThrow](expect.any(Err)),
+            }).not.toThrow(expect.any(Err)),
           ).toThrowErrorMatchingSnapshot();
         });
       });
@@ -376,15 +376,15 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         test('isNot false', () => {
           jestExpect(() => {
             throw new CustomError('apple');
-          })[toThrow](expect.anything());
+          }).toThrow(expect.anything());
         });
 
         test('isNot true', () => {
-          jestExpect(() => {}).not[toThrow](expect.anything());
+          jestExpect(() => {}).not.toThrow(expect.anything());
           jestExpect(() => {
             // eslint-disable-next-line no-throw-literal
             throw null;
-          }).not[toThrow](expect.anything());
+          }).not.toThrow(expect.anything());
         });
       });
 
@@ -394,7 +394,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
             jestExpect(() => {
               // eslint-disable-next-line no-throw-literal
               throw null;
-            })[toThrow](expect.anything()),
+            }).toThrow(expect.anything()),
           ).toThrowErrorMatchingSnapshot();
         });
 
@@ -402,7 +402,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new CustomError('apple');
-            }).not[toThrow](expect.anything()),
+            }).not.toThrow(expect.anything()),
           ).toThrowErrorMatchingSnapshot();
         });
       });
@@ -434,13 +434,13 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         test('isNot false', () => {
           jestExpect(() => {
             throw new CustomError('apple');
-          })[toThrow](matchError);
+          }).toThrow(matchError);
         });
 
         test('isNot true', () => {
           jestExpect(() => {
             throw new CustomError('apple');
-          }).not[toThrow](matchNotError);
+          }).not.toThrow(matchNotError);
         });
       });
 
@@ -449,7 +449,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new CustomError('apple');
-            })[toThrow](matchNotError),
+            }).toThrow(matchNotError),
           ).toThrowErrorMatchingSnapshot();
         });
 
@@ -457,7 +457,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new CustomError('apple');
-            }).not[toThrow](matchError),
+            }).not.toThrow(matchError),
           ).toThrowErrorMatchingSnapshot();
         });
       });
@@ -475,13 +475,13 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         test('isNot false', () => {
           jestExpect(() => {
             throw new CustomError('apple');
-          })[toThrow](matchError);
+          }).toThrow(matchError);
         });
 
         test('isNot true', () => {
           jestExpect(() => {
             throw new CustomError('apple');
-          }).not[toThrow](matchNotError);
+          }).not.toThrow(matchNotError);
         });
       });
 
@@ -490,7 +490,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new CustomError('apple');
-            })[toThrow](matchNotError),
+            }).toThrow(matchNotError),
           ).toThrowErrorMatchingSnapshot();
         });
 
@@ -498,7 +498,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
           expect(() =>
             jestExpect(() => {
               throw new CustomError('apple');
-            }).not[toThrow](matchError),
+            }).not.toThrow(matchError),
           ).toThrowErrorMatchingSnapshot();
         });
       });
@@ -520,58 +520,58 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
 
     test('passes', async () => {
       expect.assertions(24);
-      await jestExpect(Promise.reject(new Error())).rejects[toThrow]();
+      await jestExpect(Promise.reject(new Error())).rejects.toThrow();
 
-      await jestExpect(asyncFn(true)).rejects[toThrow]();
-      await jestExpect(asyncFn(true)).rejects[toThrow](Err);
-      await jestExpect(asyncFn(true)).rejects[toThrow](Error);
-      await jestExpect(asyncFn(true)).rejects[toThrow]('apple');
-      await jestExpect(asyncFn(true)).rejects[toThrow](/app/);
+      await jestExpect(asyncFn(true)).rejects.toThrow();
+      await jestExpect(asyncFn(true)).rejects.toThrow(Err);
+      await jestExpect(asyncFn(true)).rejects.toThrow(Error);
+      await jestExpect(asyncFn(true)).rejects.toThrow('apple');
+      await jestExpect(asyncFn(true)).rejects.toThrow(/app/);
 
-      await jestExpect(asyncFn(true)).rejects.not[toThrow](Err2);
-      await jestExpect(asyncFn(true)).rejects.not[toThrow]('banana');
-      await jestExpect(asyncFn(true)).rejects.not[toThrow](/banana/);
+      await jestExpect(asyncFn(true)).rejects.not.toThrow(Err2);
+      await jestExpect(asyncFn(true)).rejects.not.toThrow('banana');
+      await jestExpect(asyncFn(true)).rejects.not.toThrow(/banana/);
 
-      await jestExpect(asyncFn(true, true)).resolves[toThrow]();
+      await jestExpect(asyncFn(true, true)).resolves.toThrow();
 
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow]();
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow](Error);
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow]('apple');
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow](/apple/);
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow]('banana');
-      await jestExpect(asyncFn(false, true)).resolves.not[toThrow](/banana/);
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow();
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow(Error);
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow('apple');
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow(/apple/);
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow('banana');
+      await jestExpect(asyncFn(false, true)).resolves.not.toThrow(/banana/);
 
-      await jestExpect(asyncFn()).rejects.not[toThrow]();
-      await jestExpect(asyncFn()).rejects.not[toThrow](Error);
-      await jestExpect(asyncFn()).rejects.not[toThrow]('apple');
-      await jestExpect(asyncFn()).rejects.not[toThrow](/apple/);
-      await jestExpect(asyncFn()).rejects.not[toThrow]('banana');
-      await jestExpect(asyncFn()).rejects.not[toThrow](/banana/);
+      await jestExpect(asyncFn()).rejects.not.toThrow();
+      await jestExpect(asyncFn()).rejects.not.toThrow(Error);
+      await jestExpect(asyncFn()).rejects.not.toThrow('apple');
+      await jestExpect(asyncFn()).rejects.not.toThrow(/apple/);
+      await jestExpect(asyncFn()).rejects.not.toThrow('banana');
+      await jestExpect(asyncFn()).rejects.not.toThrow(/banana/);
 
       // Works with nested functions inside promises
       await jestExpect(
         Promise.reject(() => {
           throw new Error();
         }),
-      ).rejects[toThrow]();
-      await jestExpect(Promise.reject(() => {})).rejects.not[toThrow]();
+      ).rejects.toThrow();
+      await jestExpect(Promise.reject(() => {})).rejects.not.toThrow();
     });
 
     test('did not throw at all', async () => {
       await expect(
-        jestExpect(asyncFn()).rejects[toThrow](),
+        jestExpect(asyncFn()).rejects.toThrow(),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
     test('threw, but class did not match', async () => {
       await expect(
-        jestExpect(asyncFn(true)).rejects[toThrow](Err2),
+        jestExpect(asyncFn(true)).rejects.toThrow(Err2),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
     test('threw, but should not have', async () => {
       await expect(
-        jestExpect(asyncFn(true)).rejects.not[toThrow](),
+        jestExpect(asyncFn(true)).rejects.not.toThrow(),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
@@ -582,20 +582,20 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw null;
-        }).not[toThrow]();
+        }).not.toThrow();
       }).toThrowErrorMatchingSnapshot();
     });
   });
 
   test('invalid arguments', () => {
     expect(() =>
-      jestExpect(() => {}).not[toThrow](111),
+      jestExpect(() => {}).not.toThrow(111),
     ).toThrowErrorMatchingSnapshot();
   });
 
   test('invalid actual', () => {
     expect(() =>
-      jestExpect('a string')[toThrow](),
+      jestExpect('a string').toThrow(),
     ).toThrowErrorMatchingSnapshot();
   });
 });

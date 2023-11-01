@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -12,6 +12,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
@@ -31,7 +33,7 @@
     "micromatch": "^4.0.4",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
-    "write-file-atomic": "^4.0.2"
+    "write-file-atomic": "^5.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",

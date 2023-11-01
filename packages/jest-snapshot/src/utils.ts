@@ -19,7 +19,7 @@ import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
 import type {Config} from '@jest/types';
 import {
-  OptionsReceived as PrettyFormatOptions,
+  type OptionsReceived as PrettyFormatOptions,
   format as prettyFormat,
 } from 'pretty-format';
 import {getSerializers} from './plugins';

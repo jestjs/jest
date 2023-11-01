@@ -46,6 +46,11 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {fixStyle: 'inline-type-imports', disallowTypeAnnotations: false},
+        ],
+        '@typescript-eslint/no-import-type-side-effects': 'error',
         '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
@@ -279,6 +284,16 @@ module.exports = {
       },
     },
     {
+      files: ['examples/angular/**/*'],
+      rules: {
+        // Angular DI for some reason doesn't work with type imports
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+        ],
+      },
+    },
+    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -416,6 +431,7 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
+    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {

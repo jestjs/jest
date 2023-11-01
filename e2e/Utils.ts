@@ -9,9 +9,9 @@ import * as path from 'path';
 import * as util from 'util';
 import dedent from 'dedent';
 import {
-  ExecaSyncError,
-  SyncOptions as ExecaSyncOptions,
-  ExecaSyncReturnValue,
+  type ExecaSyncError,
+  type SyncOptions as ExecaSyncOptions,
+  type ExecaSyncReturnValue,
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';

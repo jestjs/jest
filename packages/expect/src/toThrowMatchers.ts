@@ -11,7 +11,7 @@
 import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
@@ -138,7 +138,6 @@ export const createMatcher = (
 
 const matchers: MatchersObject = {
   toThrow: createMatcher('toThrow'),
-  toThrowError: createMatcher('toThrowError'),
 };
 
 const toThrowExpectedRegExp = (
