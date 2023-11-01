@@ -43,13 +43,14 @@
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542))
 - `[*]` Depend on exact versions of monorepo dependencies instead of `^` range ([#14553](https://github.com/facebook/jest/pull/14553))
 - `[*]` [**BREAKING**] Add ESM wrapper for all of Jest's modules ([#14661](https://github.com/jestjs/jest/pull/14661))
+- `[docs]` Fix typos in `CHANGELOG.md` and `packages/jest-validate/README.md` ([#14640](https://github.com/jestjs/jest/pull/14640))
+- `[docs]` Don't use alias matchers in docs ([#14631](https://github.com/facebook/jest/pull/14631))
 - `[babel-jest, babel-preset-jest]` [**BREAKING**] Increase peer dependency of `@babel/core` to `^7.11` ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[expect]` [**BREAKING**] Remove `.toBeCalled()`, `.toBeCalledTimes()`, `.toBeCalledWith()`, `.lastCalledWith()`, `.nthCalledWith()`, `.toReturn()`, `.toReturnTimes()`, `.toReturnWith()`, `.lastReturnedWith()`, `.nthReturnedWith()` and `.toThrowError()` matcher aliases ([#14632](https://github.com/facebook/jest/pull/14632))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
 - `[jest-config, @jest/core, jest-util]` Upgrade `ci-info` ([#14655](https://github.com/jestjs/jest/pull/14655))
+- `[jest-mock]` [**BREAKING**] Remove `MockFunctionMetadataType`, `MockFunctionMetadata` and `SpyInstance` types ([#14621](https://github.com/jestjs/jest/pull/14621))
 - `[jest-transform]` Upgrade `write-file-atomic` ([#14274](https://github.com/jestjs/jest/pull/14274))
-- `[docs]` Fix typos in `CHANGELOG.md` and `packages/jest-validate/README.md` ([#14640](https://github.com/jestjs/jest/pull/14640))
-- `[docs]` Don't use alias matchers in docs ([#14631](https://github.com/facebook/jest/pull/14631))
 
 ## 29.7.0
 
