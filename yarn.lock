@@ -3025,7 +3025,7 @@ __metadata:
     mock-fs: ^5.1.2
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
-    p-limit: ^3.1.0
+    p-limit: ^5.0.0
     pkg-dir: ^5.0.0
     prettier: ^3.0.3
     promise: ^8.0.2
@@ -12816,7 +12816,7 @@ __metadata:
   dependencies:
     execa: ^5.0.0
     jest-util: "workspace:*"
-    p-limit: ^3.1.0
+    p-limit: ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -12846,7 +12846,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: ^3.1.0
+    p-limit: ^5.0.0
     pretty-format: "workspace:*"
     pure-rand: ^6.0.0
     slash: ^3.0.0
@@ -13054,7 +13054,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: ^3.1.0
+    p-limit: ^5.0.0
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13286,7 +13286,7 @@ __metadata:
     jest-util: "workspace:*"
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
-    p-limit: ^3.1.0
+    p-limit: ^5.0.0
     source-map-support: 0.5.13
     tsd-lite: ^0.8.0
   languageName: unknown
@@ -16959,6 +16959,15 @@ __metadata:
   dependencies:
     yocto-queue: ^1.0.0
   checksum: 01d9d70695187788f984226e16c903475ec6a947ee7b21948d6f597bed788e3112cc7ec2e171c1d37125057a5f45f3da21d8653e04a3a793589e12e9e80e756b
+  languageName: node
+  linkType: hard
+
+"p-limit@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "p-limit@npm:5.0.0"
+  dependencies:
+    yocto-queue: ^1.0.0
+  checksum: 87bf5837dee6942f0dbeff318436179931d9a97848d1b07dbd86140a477a5d2e6b90d9701b210b4e21fe7beaea2979dfde366e4f576fa644a59bd4d6a6371da7
   languageName: node
   linkType: hard
 
