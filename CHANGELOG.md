@@ -25,6 +25,7 @@
 - `[jest-circus, jest-expect, jest-snapshot]` Pass `test.failing` tests when containing failing snapshot matchers ([#14313](https://github.com/jestjs/jest/pull/14313))
 - `[jest-config]` Make sure to respect `runInBand` option ([#14578](https://github.com/facebook/jest/pull/14578))
 - `[@jest/expect-utils]` Fix comparison of `DataView` ([#14408](https://github.com/jestjs/jest/pull/14408))
+- `[@jest/expect-utils]` [**BREAKING**] exclude non-enumerable in object matching ([#14670](https://github.com/jestjs/jest/pull/14670))
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 - `[jest-runtime]` Properly handle re-exported native modules in ESM via CJS ([#14589](https://github.com/jestjs/jest/pull/14589))
 - `[jest-util]` Make sure `isInteractive` works in a browser ([#14552](https://github.com/jestjs/jest/pull/14552))
@@ -36,15 +37,22 @@
 
 ### Performance
 
-- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js` ([#12348](https://github.com/jestjs/jest/pull/12348) & [#14550](https://github.com/jestjs/jest/pull/14550))
+- `[*]` [**BREAKING**] Bundle all of Jest's modules into `index.js` ([#12348](https://github.com/jestjs/jest/pull/12348), [#14550](https://github.com/jestjs/jest/pull/14550) & [#14661](https://github.com/jestjs/jest/pull/14661))
 
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14 and 19 ([#14460](https://github.com/jestjs/jest/pull/14460))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/facebook/jest/pull/14542))
 - `[*]` Depend on exact versions of monorepo dependencies instead of `^` range ([#14553](https://github.com/facebook/jest/pull/14553))
+- `[*]` [**BREAKING**] Add ESM wrapper for all of Jest's modules ([#14661](https://github.com/jestjs/jest/pull/14661))
+- `[docs]` Fix typos in `CHANGELOG.md` and `packages/jest-validate/README.md` ([#14640](https://github.com/jestjs/jest/pull/14640))
+- `[docs]` Don't use alias matchers in docs ([#14631](https://github.com/facebook/jest/pull/14631))
 - `[babel-jest, babel-preset-jest]` [**BREAKING**] Increase peer dependency of `@babel/core` to `^7.11` ([#14109](https://github.com/jestjs/jest/pull/14109))
+- `[expect]` [**BREAKING**] Remove `.toBeCalled()`, `.toBeCalledTimes()`, `.toBeCalledWith()`, `.lastCalledWith()`, `.nthCalledWith()`, `.toReturn()`, `.toReturnTimes()`, `.toReturnWith()`, `.lastReturnedWith()`, `.nthReturnedWith()` and `.toThrowError()` matcher aliases ([#14632](https://github.com/facebook/jest/pull/14632))
 - `[jest-cli, jest-config, @jest/types]` [**BREAKING**] Remove deprecated `--init` argument ([#14490](https://github.com/jestjs/jest/pull/14490))
+- `[jest-config, @jest/core, jest-util]` Upgrade `ci-info` ([#14655](https://github.com/jestjs/jest/pull/14655))
+- `[jest-mock]` [**BREAKING**] Remove `MockFunctionMetadataType`, `MockFunctionMetadata` and `SpyInstance` types ([#14621](https://github.com/jestjs/jest/pull/14621))
+- `[jest-transform]` Upgrade `write-file-atomic` ([#14274](https://github.com/jestjs/jest/pull/14274))
 
 ## 29.7.0
 
@@ -634,7 +642,7 @@
 
 ### Fixes
 
-- `[*]` Use `sha256` instead of `md5` as hashing algortihm for compatibility with FIPS systems ([#12722](https://github.com/facebook/jest/pull/12722))
+- `[*]` Use `sha256` instead of `md5` as hashing algorithm for compatibility with FIPS systems ([#12722](https://github.com/facebook/jest/pull/12722))
 - `[babel-jest]` [**BREAKING**] Pass `rootDir` as `root` in Babel's options ([#12689](https://github.com/facebook/jest/pull/12689))
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[expect]` Throw useful error if `expect.extend` is called with invalid matchers ([#12488](https://github.com/facebook/jest/pull/12488))
@@ -1441,7 +1449,7 @@
 - `[*]` Upgrade to chalk@4 ([#9752](https://github.com/facebook/jest/pull/9752))
 - `[*]` Remove usage of `realpath-native` ([#9952](https://github.com/facebook/jest/pull/9952))
 - `[docs]` Fix example reference implementation to use Jest with Phabricator ([#8662](https://github.com/facebook/jest/pull/8662))
-- `[docs]` Added default compiler to tranform ([#8583](https://github.com/facebook/jest/pull/8583))
+- `[docs]` Added default compiler to transform ([#8583](https://github.com/facebook/jest/pull/8583))
 - `[docs]` Updated Testing Frameworks guide with React; make it generic ([#9106](https://github.com/facebook/jest/pull/9106))
 - `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
 - `[@jest/fake-timers, @jest/environment]` [**BREAKING**] Rename `LolexFakeTimers` to `ModernFakeTimers` ([#9960](https://github.com/facebook/jest/pull/9960))
@@ -3481,7 +3489,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 - Added `--watchAll`, made `--watch` interactive and added the ability to update snapshots and select test patterns in watch mode.
 - Jest uses verbose mode when running a single test file.
 - Console messages are now buffered and printed along with the test results.
-- Fix `testEnvironment` resolution to prefer `jest-environment-{name}` instead of `{name}` only. This prevents a module colision when using `jsdom` as test environment.
+- Fix `testEnvironment` resolution to prefer `jest-environment-{name}` instead of `{name}` only. This prevents a module collision when using `jsdom` as test environment.
 - `moduleNameMapper` now uses a resolution algorithm.
 - Improved performance for small test runs.
 - Improved API documentation.
@@ -3620,7 +3628,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 - Clear the terminal window when using `--watch`.
 - By default, `--watch` will now only runs tests related to changed files. `--watch=all` can be used to run all tests on file system changes.
 - Debounce `--watch` re-runs to not trigger test runs during a branch switch in version control.
-- Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
+- Added `jest.fn()` and `jest.fn(implementation)` as convenient shortcuts for `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
 - Added an `automock` option to turn off automocking globally.
 - Added a "no tests found" message if no tests can be found.
 - Jest sets `process.NODE_ENV` to `test` unless otherwise specified.

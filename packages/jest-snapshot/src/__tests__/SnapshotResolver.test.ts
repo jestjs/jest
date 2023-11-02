@@ -7,7 +7,10 @@
 
 import * as path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
-import {SnapshotResolver, buildSnapshotResolver} from '../SnapshotResolver';
+import {
+  type SnapshotResolver,
+  buildSnapshotResolver,
+} from '../SnapshotResolver';
 
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;

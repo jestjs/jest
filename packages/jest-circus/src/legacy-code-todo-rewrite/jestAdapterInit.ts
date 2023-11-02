@@ -7,12 +7,12 @@
 
 import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
-import {JestExpect, jestExpect} from '@jest/expect';
+import {type JestExpect, jestExpect} from '@jest/expect';
 import {
-  AssertionResult,
-  Status,
-  TestFileEvent,
-  TestResult,
+  type AssertionResult,
+  type Status,
+  type TestFileEvent,
+  type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';

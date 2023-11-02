@@ -7,11 +7,11 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import {
-  AggregatedResult,
-  Config,
-  SnapshotSummary,
-  SummaryOptions,
-  TestResult,
+  type AggregatedResult,
+  type Config,
+  type SnapshotSummary,
+  type SummaryOptions,
+  type TestResult,
   utils,
 } from '@jest/reporters';
 

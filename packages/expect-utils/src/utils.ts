@@ -44,13 +44,17 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 };
 
 // Retrieves an object's keys for evaluation by getObjectSubset.  This evaluates
-// the prototype chain for string keys but not for symbols.  (Otherwise, it
-// could find values such as a Set or Map's Symbol.toStringTag, with unexpected
-// results.)
-export const getObjectKeys = (object: object): Array<string | symbol> => [
-  ...Object.keys(object),
-  ...Object.getOwnPropertySymbols(object),
-];
+// the prototype chain for string keys but not for non-enumerable symbols.
+// (Otherwise, it could find values such as a Set or Map's Symbol.toStringTag,
+// with unexpected results.)
+export const getObjectKeys = (object: object): Array<string | symbol> => {
+  return [
+    ...Object.keys(object),
+    ...Object.getOwnPropertySymbols(object).filter(
+      s => Object.getOwnPropertyDescriptor(object, s)?.enumerable,
+    ),
+  ];
+};
 
 export const getPath = (
   object: Record<string, any>,

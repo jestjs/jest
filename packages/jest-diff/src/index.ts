@@ -8,7 +8,7 @@
 import chalk = require('chalk');
 import {getType} from 'jest-get-type';
 import {
-  PrettyFormatOptions,
+  type PrettyFormatOptions,
   format as prettyFormat,
   plugins as prettyFormatPlugins,
 } from 'pretty-format';

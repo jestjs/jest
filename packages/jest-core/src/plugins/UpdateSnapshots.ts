@@ -9,9 +9,9 @@ import type {ReadStream, WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
-  JestHookSubscriber,
-  UpdateConfigCallback,
-  UsageData,
+  type JestHookSubscriber,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {

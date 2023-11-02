@@ -13,13 +13,13 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
-  ChildMessage,
-  ChildMessageCall,
+  type ChildMessage,
+  type ChildMessageCall,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
-  WorkerOptions,
+  type WorkerOptions,
 } from '../../types';
 
 jest.useFakeTimers();

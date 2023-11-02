@@ -9,9 +9,9 @@ import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
-  JestHookSubscriber,
-  UpdateConfigCallback,
-  UsageData,
+  type JestHookSubscriber,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import FailedTestsInteractiveMode from '../FailedTestsInteractiveMode';
 

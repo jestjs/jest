@@ -19,9 +19,6 @@ export type MockMetadataType =
   | 'null'
   | 'undefined';
 
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadataType = MockMetadataType;
-
 export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
   members?: Record<string, MockMetadata<T>>;
@@ -32,12 +29,6 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   value?: T;
   length?: number;
 };
-
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadata<
-  T = unknown,
-  MetadataType = MockMetadataType,
-> = MockMetadata<T, MetadataType>;
 
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
@@ -118,11 +109,6 @@ export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
   : T extends FunctionLike
   ? SpiedFunction<T>
   : never;
-
-// TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SpyInstance<T extends FunctionLike = UnknownFunction>
-  extends MockInstance<T> {}
 
 /**
  * All what the internal typings need is to be sure that we have any-function.

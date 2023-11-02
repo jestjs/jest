@@ -12,8 +12,8 @@ import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
-  LogMessage,
-  LogType,
+  type LogMessage,
+  type LogType,
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
@@ -24,6 +24,7 @@ import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';

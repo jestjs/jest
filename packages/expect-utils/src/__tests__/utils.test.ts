@@ -355,6 +355,51 @@ describe('subsetEquality()', () => {
       ).toBe(false);
     });
   });
+
+  describe('matching subsets with symbols', () => {
+    describe('same symbol', () => {
+      test('objects to not match with value diff', () => {
+        const symbol = Symbol('foo');
+        expect(subsetEquality({[symbol]: 1}, {[symbol]: 2})).toBe(false);
+      });
+
+      test('objects to match with non-enumerable symbols', () => {
+        const symbol = Symbol('foo');
+        const foo = {};
+        Object.defineProperty(foo, symbol, {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, symbol, {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+
+    describe('different symbol', () => {
+      test('objects to not match with same value', () => {
+        expect(subsetEquality({[Symbol('foo')]: 1}, {[Symbol('foo')]: 2})).toBe(
+          false,
+        );
+      });
+      test('objects to match with non-enumerable symbols', () => {
+        const foo = {};
+        Object.defineProperty(foo, Symbol('foo'), {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, Symbol('foo'), {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+  });
 });
 
 describe('iterableEquality', () => {

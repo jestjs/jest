@@ -6,7 +6,7 @@
  */
 
 import type {ReadStream, WriteStream} from 'tty';
-import {BaseWatchPlugin, UsageData} from 'jest-watcher';
+import {BaseWatchPlugin, type UsageData} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
   isInternal: true;

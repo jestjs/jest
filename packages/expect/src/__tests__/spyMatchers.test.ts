@@ -40,36 +40,44 @@ const createSpy = (fn: jest.Mock) => {
   return spy;
 };
 
-describe.each(['toBeCalled', 'toHaveBeenCalled'] as const)('%s', called => {
+describe('toHaveBeenCalled', () => {
   test('works only on spies or jest.fn', () => {
     const fn = function fn() {};
 
-    expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('passes when called', () => {
     const fn = jest.fn();
     fn('arg0', 'arg1', 'arg2');
-    jestExpect(createSpy(fn))[called]();
-    jestExpect(fn)[called]();
-    expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
+    jestExpect(createSpy(fn)).toHaveBeenCalled();
+    jestExpect(fn).toHaveBeenCalled();
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not passes when called', () => {
     const fn = jest.fn();
     const spy = createSpy(fn);
 
-    jestExpect(spy).not[called]();
-    jestExpect(fn).not[called]();
-    expect(() => jestExpect(spy)[called]()).toThrowErrorMatchingSnapshot();
+    jestExpect(spy).not.toHaveBeenCalled();
+    jestExpect(fn).not.toHaveBeenCalled();
+    expect(() =>
+      jestExpect(spy).toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('fails with any argument passed', () => {
     const fn = jest.fn();
 
     fn();
-    // @ts-expect-error: Testing runtime error
-    expect(() => jestExpect(fn)[called](555)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      // @ts-expect-error: Testing runtime error
+      jestExpect(fn).toHaveBeenCalled(555),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not fails with any argument passed', () => {
@@ -77,7 +85,7 @@ describe.each(['toBeCalled', 'toHaveBeenCalled'] as const)('%s', called => {
 
     expect(() =>
       // @ts-expect-error: Testing runtime error
-      jestExpect(fn).not[called](555),
+      jestExpect(fn).not.toHaveBeenCalled(555),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -85,120 +93,114 @@ describe.each(['toBeCalled', 'toHaveBeenCalled'] as const)('%s', called => {
     const fn = jest.fn().mockName('named-mock');
 
     fn();
-    jestExpect(fn)[called]();
-    expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).toHaveBeenCalled();
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 
-describe.each(['toBeCalledTimes', 'toHaveBeenCalledTimes'] as const)(
-  '%s',
-  calledTimes => {
-    test('.not works only on spies or jest.fn', () => {
-      const fn = function fn() {};
+describe('toHaveBeenCalledTimes', () => {
+  test('.not works only on spies or jest.fn', () => {
+    const fn = function fn() {};
 
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('only accepts a number argument', () => {
+    const fn = jest.fn();
+    fn();
+    jestExpect(fn).toHaveBeenCalledTimes(1);
+
+    for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
       expect(() =>
-        jestExpect(fn).not[calledTimes](2),
+        // @ts-expect-error: Testing runtime error
+        jestExpect(fn).toHaveBeenCalledTimes(value),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
+  });
 
-    test('only accepts a number argument', () => {
-      const fn = jest.fn();
-      fn();
-      jestExpect(fn)[calledTimes](1);
+  test('.not only accepts a number argument', () => {
+    const fn = jest.fn();
+    jestExpect(fn).not.toHaveBeenCalledTimes(1);
 
-      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
-        expect(() =>
-          // @ts-expect-error: Testing runtime error
-          jestExpect(fn)[calledTimes](value),
-        ).toThrowErrorMatchingSnapshot();
-      }
-    });
-
-    test('.not only accepts a number argument', () => {
-      const fn = jest.fn();
-      jestExpect(fn).not[calledTimes](1);
-
-      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
-        expect(() =>
-          // @ts-expect-error: Testing runtime error
-          jestExpect(fn).not[calledTimes](value),
-        ).toThrowErrorMatchingSnapshot();
-      }
-    });
-
-    test('passes if function called equal to expected times', () => {
-      const fn = jest.fn();
-      fn();
-      fn();
-
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](2);
-      jestExpect(fn)[calledTimes](2);
-
+    for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
       expect(() =>
-        jestExpect(spy).not[calledTimes](2),
+        // @ts-expect-error: Testing runtime error
+        jestExpect(fn).not.toHaveBeenCalledTimes(value),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
+  });
 
-    test('.not passes if function called more than expected times', () => {
-      const fn = jest.fn();
-      fn();
-      fn();
-      fn();
+  test('passes if function called equal to expected times', () => {
+    const fn = jest.fn();
+    fn();
+    fn();
 
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](3);
-      jestExpect(spy).not[calledTimes](2);
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(2);
+    jestExpect(fn).toHaveBeenCalledTimes(2);
 
-      jestExpect(fn)[calledTimes](3);
-      jestExpect(fn).not[calledTimes](2);
+    expect(() =>
+      jestExpect(spy).not.toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('.not passes if function called more than expected times', () => {
+    const fn = jest.fn();
+    fn();
+    fn();
+    fn();
 
-    test('.not passes if function called less than expected times', () => {
-      const fn = jest.fn();
-      fn();
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(3);
+    jestExpect(spy).not.toHaveBeenCalledTimes(2);
 
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](1);
-      jestExpect(spy).not[calledTimes](2);
+    jestExpect(fn).toHaveBeenCalledTimes(3);
+    jestExpect(fn).not.toHaveBeenCalledTimes(2);
 
-      jestExpect(fn)[calledTimes](1);
-      jestExpect(fn).not[calledTimes](2);
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('.not passes if function called less than expected times', () => {
+    const fn = jest.fn();
+    fn();
 
-    test('includes the custom mock name in the error message', () => {
-      const fn = jest.fn().mockName('named-mock');
-      fn();
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(1);
+    jestExpect(spy).not.toHaveBeenCalledTimes(2);
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  },
-);
+    jestExpect(fn).toHaveBeenCalledTimes(1);
+    jestExpect(fn).not.toHaveBeenCalledTimes(2);
+
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn().mockName('named-mock');
+    fn();
+
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
 
 describe.each([
-  'lastCalledWith',
   'toHaveBeenLastCalledWith',
-  'nthCalledWith',
   'toHaveBeenNthCalledWith',
-  'toBeCalledWith',
   'toHaveBeenCalledWith',
 ] as const)('%s', calledWith => {
   function isToHaveNth(
     calledWith: string,
-  ): calledWith is 'nthCalledWith' | 'toHaveBeenNthCalledWith' {
-    return (
-      calledWith === 'nthCalledWith' || calledWith === 'toHaveBeenNthCalledWith'
-    );
+  ): calledWith is 'toHaveBeenNthCalledWith' {
+    return calledWith === 'toHaveBeenNthCalledWith';
   }
 
   test('works only on spies or jest.fn', () => {
@@ -672,31 +674,39 @@ describe.each([
   });
 });
 
-describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
+describe('toHaveReturned', () => {
   test('.not works only on jest.fn', () => {
     const fn = function fn() {};
 
-    expect(() => jestExpect(fn).not[returned]()).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('throw matcher error if received is spy', () => {
     const spy = createSpy(jest.fn());
 
-    expect(() => jestExpect(spy)[returned]()).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(spy).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('passes when returned', () => {
     const fn = jest.fn(() => 42);
     fn();
-    jestExpect(fn)[returned]();
-    expect(() => jestExpect(fn).not[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('passes when undefined is returned', () => {
     const fn = jest.fn(() => undefined);
     fn();
-    jestExpect(fn)[returned]();
-    expect(() => jestExpect(fn).not[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('passes when at least one call does not throw', () => {
@@ -718,15 +728,19 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
 
     fn(false);
 
-    jestExpect(fn)[returned]();
-    expect(() => jestExpect(fn).not[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not passes when not returned', () => {
     const fn = jest.fn();
 
-    jestExpect(fn).not[returned]();
-    expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not passes when all calls throw', () => {
@@ -746,8 +760,10 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
       // ignore error
     }
 
-    jestExpect(fn).not[returned]();
-    expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not passes when a call throws undefined', () => {
@@ -762,16 +778,20 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
       // ignore error
     }
 
-    jestExpect(fn).not[returned]();
-    expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('fails with any argument passed', () => {
     const fn = jest.fn();
 
     fn();
-    // @ts-expect-error: Testing runtime error
-    expect(() => jestExpect(fn)[returned](555)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      // @ts-expect-error: Testing runtime error
+      jestExpect(fn).toHaveReturned(555),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('.not fails with any argument passed', () => {
@@ -779,15 +799,17 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
 
     expect(() =>
       // @ts-expect-error: Testing runtime error
-      jestExpect(fn).not[returned](555),
+      jestExpect(fn).not.toHaveReturned(555),
     ).toThrowErrorMatchingSnapshot();
   });
 
   test('includes the custom mock name in the error message', () => {
     const fn = jest.fn(() => 42).mockName('named-mock');
     fn();
-    jestExpect(fn)[returned]();
-    expect(() => jestExpect(fn).not[returned]()).toThrowErrorMatchingSnapshot();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('incomplete recursive calls are handled properly', () => {
@@ -796,8 +818,10 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
       if (value === 0) {
         // Before returning from the base case of recursion, none of the
         // calls have returned yet.
-        jestExpect(fn).not[returned]();
-        expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+        jestExpect(fn).not.toHaveReturned();
+        expect(() =>
+          jestExpect(fn).toHaveReturned(),
+        ).toThrowErrorMatchingSnapshot();
         return 0;
       } else {
         return value + fn(value - 1);
@@ -808,206 +832,194 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
   });
 });
 
-describe.each(['toReturnTimes', 'toHaveReturnedTimes'] as const)(
-  '%s',
-  returnedTimes => {
-    test('throw matcher error if received is spy', () => {
-      const spy = createSpy(jest.fn());
+describe('toHaveReturnedTimes', () => {
+  test('throw matcher error if received is spy', () => {
+    const spy = createSpy(jest.fn());
 
+    expect(() =>
+      jestExpect(spy).not.toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('only accepts a number argument', () => {
+    const fn = jest.fn(() => 42);
+    fn();
+    jestExpect(fn).toHaveReturnedTimes(1);
+
+    for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
       expect(() =>
-        jestExpect(spy).not[returnedTimes](2),
+        // @ts-expect-error: Testing runtime error
+        jestExpect(fn).toHaveReturnedTimes(value),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
+  });
 
-    test('only accepts a number argument', () => {
-      const fn = jest.fn(() => 42);
-      fn();
-      jestExpect(fn)[returnedTimes](1);
+  test('.not only accepts a number argument', () => {
+    const fn = jest.fn(() => 42);
+    jestExpect(fn).not.toHaveReturnedTimes(2);
 
-      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
-        expect(() =>
-          // @ts-expect-error: Testing runtime error
-          jestExpect(fn)[returnedTimes](value),
-        ).toThrowErrorMatchingSnapshot();
+    for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
+      expect(() =>
+        // @ts-expect-error: Testing runtime error
+        jestExpect(fn).not.toHaveReturnedTimes(value),
+      ).toThrowErrorMatchingSnapshot();
+    }
+  });
+
+  test('passes if function returned equal to expected times', () => {
+    const fn = jest.fn(() => 42);
+    fn();
+    fn();
+
+    jestExpect(fn).toHaveReturnedTimes(2);
+
+    expect(() =>
+      jestExpect(fn).not.toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('calls that return undefined are counted as returns', () => {
+    const fn = jest.fn(() => undefined);
+    fn();
+    fn();
+
+    jestExpect(fn).toHaveReturnedTimes(2);
+
+    expect(() =>
+      jestExpect(fn).not.toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not passes if function returned more than expected times', () => {
+    const fn = jest.fn(() => 42);
+    fn();
+    fn();
+    fn();
+
+    jestExpect(fn).toHaveReturnedTimes(3);
+    jestExpect(fn).not.toHaveReturnedTimes(2);
+
+    expect(() =>
+      jestExpect(fn).toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not passes if function called less than expected times', () => {
+    const fn = jest.fn(() => 42);
+    fn();
+
+    jestExpect(fn).toHaveReturnedTimes(1);
+    jestExpect(fn).not.toHaveReturnedTimes(2);
+
+    expect(() =>
+      jestExpect(fn).toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('calls that throw are not counted', () => {
+    const fn = jest.fn((causeError: boolean) => {
+      if (causeError) {
+        throw new Error('Error!');
       }
+
+      return 42;
     });
 
-    test('.not only accepts a number argument', () => {
-      const fn = jest.fn(() => 42);
-      jestExpect(fn).not[returnedTimes](2);
+    fn(false);
 
-      for (const value of [{}, [], true, 'a', new Map(), () => {}]) {
-        expect(() =>
-          // @ts-expect-error: Testing runtime error
-          jestExpect(fn).not[returnedTimes](value),
-        ).toThrowErrorMatchingSnapshot();
+    try {
+      fn(true);
+    } catch {
+      // ignore error
+    }
+
+    fn(false);
+
+    jestExpect(fn).not.toHaveReturnedTimes(3);
+
+    expect(() =>
+      jestExpect(fn).toHaveReturnedTimes(3),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('calls that throw undefined are not counted', () => {
+    const fn = jest.fn((causeError: boolean) => {
+      if (causeError) {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
       }
+
+      return 42;
     });
 
-    test('passes if function returned equal to expected times', () => {
-      const fn = jest.fn(() => 42);
-      fn();
-      fn();
+    fn(false);
 
-      jestExpect(fn)[returnedTimes](2);
+    try {
+      fn(true);
+    } catch {
+      // ignore error
+    }
 
-      expect(() =>
-        jestExpect(fn).not[returnedTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    fn(false);
 
-    test('calls that return undefined are counted as returns', () => {
-      const fn = jest.fn(() => undefined);
-      fn();
-      fn();
+    jestExpect(fn).toHaveReturnedTimes(2);
 
-      jestExpect(fn)[returnedTimes](2);
+    expect(() =>
+      jestExpect(fn).not.toHaveReturnedTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn).not[returnedTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn(() => 42).mockName('named-mock');
+    fn();
+    fn();
 
-    test('.not passes if function returned more than expected times', () => {
-      const fn = jest.fn(() => 42);
-      fn();
-      fn();
-      fn();
+    jestExpect(fn).toHaveReturnedTimes(2);
 
-      jestExpect(fn)[returnedTimes](3);
-      jestExpect(fn).not[returnedTimes](2);
+    expect(() =>
+      jestExpect(fn).toHaveReturnedTimes(1),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn)[returnedTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('incomplete recursive calls are handled properly', () => {
+    // sums up all integers from 0 -> value, using recursion
+    const fn: jest.Mock<(value: number) => number> = jest.fn(value => {
+      if (value === 0) {
+        return 0;
+      } else {
+        const recursiveResult = fn(value - 1);
 
-    test('.not passes if function called less than expected times', () => {
-      const fn = jest.fn(() => 42);
-      fn();
-
-      jestExpect(fn)[returnedTimes](1);
-      jestExpect(fn).not[returnedTimes](2);
-
-      expect(() =>
-        jestExpect(fn)[returnedTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test('calls that throw are not counted', () => {
-      const fn = jest.fn((causeError: boolean) => {
-        if (causeError) {
-          throw new Error('Error!');
+        if (value === 2) {
+          // Only 2 of the recursive calls have returned at this point
+          jestExpect(fn).toHaveReturnedTimes(2);
+          expect(() =>
+            jestExpect(fn).not.toHaveReturnedTimes(2),
+          ).toThrowErrorMatchingSnapshot();
         }
 
-        return 42;
-      });
-
-      fn(false);
-
-      try {
-        fn(true);
-      } catch {
-        // ignore error
+        return value + recursiveResult;
       }
-
-      fn(false);
-
-      jestExpect(fn).not[returnedTimes](3);
-
-      expect(() =>
-        jestExpect(fn)[returnedTimes](3),
-      ).toThrowErrorMatchingSnapshot();
     });
 
-    test('calls that throw undefined are not counted', () => {
-      const fn = jest.fn((causeError: boolean) => {
-        if (causeError) {
-          // eslint-disable-next-line no-throw-literal
-          throw undefined;
-        }
-
-        return 42;
-      });
-
-      fn(false);
-
-      try {
-        fn(true);
-      } catch {
-        // ignore error
-      }
-
-      fn(false);
-
-      jestExpect(fn)[returnedTimes](2);
-
-      expect(() =>
-        jestExpect(fn).not[returnedTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test('includes the custom mock name in the error message', () => {
-      const fn = jest.fn(() => 42).mockName('named-mock');
-      fn();
-      fn();
-
-      jestExpect(fn)[returnedTimes](2);
-
-      expect(() =>
-        jestExpect(fn)[returnedTimes](1),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test('incomplete recursive calls are handled properly', () => {
-      // sums up all integers from 0 -> value, using recursion
-      const fn: jest.Mock<(value: number) => number> = jest.fn(value => {
-        if (value === 0) {
-          return 0;
-        } else {
-          const recursiveResult = fn(value - 1);
-
-          if (value === 2) {
-            // Only 2 of the recursive calls have returned at this point
-            jestExpect(fn)[returnedTimes](2);
-            expect(() =>
-              jestExpect(fn).not[returnedTimes](2),
-            ).toThrowErrorMatchingSnapshot();
-          }
-
-          return value + recursiveResult;
-        }
-      });
-
-      fn(3);
-    });
-  },
-);
+    fn(3);
+  });
+});
 
 describe.each([
-  'lastReturnedWith',
   'toHaveLastReturnedWith',
-  'nthReturnedWith',
   'toHaveNthReturnedWith',
-  'toReturnWith',
   'toHaveReturnedWith',
 ] as const)('%s', returnedWith => {
   function isToHaveNth(
     returnedWith: string,
-  ): returnedWith is 'nthReturnedWith' | 'toHaveNthReturnedWith' {
-    return (
-      returnedWith === 'nthReturnedWith' ||
-      returnedWith === 'toHaveNthReturnedWith'
-    );
+  ): returnedWith is 'toHaveNthReturnedWith' {
+    return returnedWith === 'toHaveNthReturnedWith';
   }
 
   function isToHaveLast(
     returnedWith: string,
-  ): returnedWith is 'lastReturnedWith' | 'toHaveLastReturnedWith' {
-    return (
-      returnedWith === 'lastReturnedWith' ||
-      returnedWith === 'toHaveLastReturnedWith'
-    );
+  ): returnedWith is 'toHaveLastReturnedWith' {
+    return returnedWith === 'toHaveLastReturnedWith';
   }
   test('works only on spies or jest.fn', () => {
     const fn = function fn() {};
@@ -1279,7 +1291,7 @@ describe.each([
   });
 
   if (!isToHaveNth(returnedWith)) {
-    describe('returnedWith', () => {
+    describe('toHaveReturnedWith', () => {
       test('works with more calls than the limit', () => {
         const fn = jest.fn<() => string>();
         fn.mockReturnValueOnce('foo1');
@@ -1328,7 +1340,7 @@ describe.each([
   }
 
   if (isToHaveNth(returnedWith)) {
-    describe('nthReturnedWith', () => {
+    describe('toHaveNthReturnedWith', () => {
       test('works with three calls', () => {
         const fn = jest.fn<() => string>();
         fn.mockReturnValueOnce('foo1');
@@ -1449,7 +1461,7 @@ describe.each([
   }
 
   if (isToHaveLast(returnedWith)) {
-    describe('lastReturnedWith', () => {
+    describe('toHaveLastReturnedWith', () => {
       test('works with three calls', () => {
         const fn = jest.fn<() => string>();
         fn.mockReturnValueOnce('foo1');
