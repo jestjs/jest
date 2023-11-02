@@ -32,6 +32,7 @@
   - [**BREAKING**] Changes `testPathPattern` configuration option to `testPathPatterns`, which now takes a list of patterns instead of the regex.
   - [**BREAKING**] `--testPathPattern` is now `--testPathPatterns`
 - `[jest-reporters, jest-runner]` Unhandled errors without stack get correctly logged to console ([#14619](https://github.com/facebook/jest/pull/14619))
+- `[@jest/expect-utils]` [**BREAKING**] exclude non-enumerable in object matching ([#14670](https://github.com/jestjs/jest/pull/14670))
 
 ### Performance
 
