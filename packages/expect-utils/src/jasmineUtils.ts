@@ -125,6 +125,9 @@ function eq(
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source === b.source && a.flags === b.flags;
+    // URLs are compared by their href property which contains the entire url string.
+    case '[object URL]':
+      return a.href === b.href;
   }
   if (typeof a !== 'object' || typeof b !== 'object') {
     return false;
