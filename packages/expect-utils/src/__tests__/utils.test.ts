@@ -8,6 +8,7 @@
 
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
+import {equals} from '../jasmineUtils';
 import {
   arrayBufferEquality,
   emptyObject,
@@ -17,7 +18,6 @@ import {
   subsetEquality,
   typeEquality,
 } from '../utils';
-import { equals } from "../jasmineUtils";
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -586,14 +586,14 @@ describe('arrayBufferEquality', () => {
   });
 
   test('returns true when given matching URL', () => {
-    const a = new URL("https://jestjs.io/");
-    const b = new URL("https://jestjs.io/");
+    const a = new URL('https://jestjs.io/');
+    const b = new URL('https://jestjs.io/');
     expect(equals(a, b)).toBeTruthy();
   });
 
   test('returns false when given non-matching URL', () => {
-    const a = new URL("https://jestjs.io/docs/getting-started");
-    const b = new URL("https://jestjs.io/docs/getting-started#using-babel");
+    const a = new URL('https://jestjs.io/docs/getting-started');
+    const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
     expect(equals(a, b)).toBeFalsy();
   });
 });
