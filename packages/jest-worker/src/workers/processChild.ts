@@ -21,6 +21,7 @@ import {
   PARENT_MESSAGE_SETUP_ERROR,
   type ParentMessageMemUsage,
 } from '../types';
+import {withoutCircularRefs} from './withoutCircularRefs';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
@@ -97,7 +98,15 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  process.send([PARENT_MESSAGE_OK, result]);
+  try {
+    process.send([PARENT_MESSAGE_OK, result]);
+  } catch (e: any) {
+    if (e && /circular structure/.test(e?.message)) {
+      process.send([PARENT_MESSAGE_OK, withoutCircularRefs(result)]);
+    } else {
+      throw e;
+    }
+  }
 }
 
 function reportClientError(error: Error) {
