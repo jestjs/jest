@@ -8,6 +8,7 @@
 
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
+import {equals} from '../jasmineUtils';
 import {
   arrayBufferEquality,
   emptyObject,
@@ -623,9 +624,21 @@ describe('arrayBufferEquality', () => {
     expect(arrayBufferEquality(a, b)).toBeTruthy();
   });
 
-  test('returns false when given matching DataView', () => {
+  test('returns false when given non-matching DataView', () => {
     const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
     const b = new DataView(Uint8Array.from([3, 2, 1]).buffer);
     expect(arrayBufferEquality(a, b)).toBeFalsy();
+  });
+
+  test('returns true when given matching URL', () => {
+    const a = new URL('https://jestjs.io/');
+    const b = new URL('https://jestjs.io/');
+    expect(equals(a, b)).toBeTruthy();
+  });
+
+  test('returns false when given non-matching URL', () => {
+    const a = new URL('https://jestjs.io/docs/getting-started');
+    const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
+    expect(equals(a, b)).toBeFalsy();
   });
 });
