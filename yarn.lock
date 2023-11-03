@@ -13437,7 +13437,7 @@ __metadata:
     chalk: ^4.0.0
     ci-info: ^4.0.0
     graceful-fs: ^4.2.9
-    picomatch: ^2.2.3
+    picomatch: ^3.0.0
   languageName: unknown
   linkType: soft
 
@@ -17400,6 +17400,13 @@ __metadata:
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 050c865ce81119c4822c45d3c84f1ced46f93a0126febae20737bd05ca20589c564d6e9226977df859ed5e03dc73f02584a2b0faad36e896936238238b0446cf
+  languageName: node
+  linkType: hard
+
+"picomatch@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "picomatch@npm:3.0.0"
+  checksum: a55ddf301a3b817463f4fad841573be9c8efc33472359b641dcaef3069db78ed8c4924c499c8b9e06af406f426732458bd1ae90222eb346e9c4547491dcc05ae
   languageName: node
   linkType: hard
 
