@@ -20,6 +20,9 @@ export default function messageParent(
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
     } catch (e: any) {
       if (/circular structure/.test(e?.message)) {
+        // We can safely send a message to the parent process again
+        // because previous sending was halted by "TypeError: Converting circular structure to JSON".
+        // But this time the message will be cleared from circular references.
         parentProcess.send([
           PARENT_MESSAGE_CUSTOM,
           withoutCircularRefs(message),
