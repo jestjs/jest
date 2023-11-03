@@ -1,7 +1,7 @@
 {
   "name": "create-jest",
   "description": "Create a new Jest project",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -14,6 +14,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",

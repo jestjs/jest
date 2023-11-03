@@ -12,7 +12,6 @@ import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
-import stringLength from 'string-length';
 import webpack from 'webpack';
 import nodeExternals from 'webpack-node-externals';
 import babelConfig from '../babel.config.js';
@@ -26,8 +25,16 @@ const require = createRequire(import.meta.url);
 export const OK = chalk.reset.inverse.bold.green(' DONE ');
 export const ERROR = chalk.reset.inverse.bold.red(' BOOM ');
 
+export const typeOnlyPackages = new Set([
+  'babel-preset-jest',
+  '@jest/environment',
+  '@jest/globals',
+  '@jest/types',
+  '@jest/test-globals',
+]);
+
 // Get absolute paths of all directories under packages/*
-export function getPackages() {
+function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
@@ -58,11 +65,19 @@ export function getPackages() {
         '.':
           pkg.types == null
             ? pkg.main
+            : typeOnlyPackages.has(pkg.name)
+            ? /* eslint-disable sort-keys */
+              {
+                types: pkg.types,
+                default: pkg.main,
+              }
             : {
                 types: pkg.types,
-                // eslint-disable-next-line sort-keys
+                require: pkg.main,
+                import: pkg.main.replace(/\.js$/, '.mjs'),
                 default: pkg.main,
               },
+        /* eslint-enable */
         './package.json': './package.json',
         ...Object.values(pkg.bin || {}).reduce(
           (mem, curr) =>
@@ -115,17 +130,6 @@ export function getPackages() {
 
     return {packageDir, pkg};
   });
-}
-
-export function adjustToTerminalWidth(str) {
-  const columns = process.stdout.columns || 80;
-  const WIDTH = columns - stringLength(OK) + 1;
-  const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
-  let lastString = strs[strs.length - 1];
-  if (lastString.length < WIDTH) {
-    lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
-  }
-  return strs.slice(0, -1).concat(lastString).join('\n');
 }
 
 export function getPackagesWithTsConfig() {

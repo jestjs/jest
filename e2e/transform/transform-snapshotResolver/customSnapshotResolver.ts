@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SnapshotResolver} from 'jest-snapshot';
+import type {SnapshotResolver} from 'jest-snapshot';
 
 const snapshotResolver: SnapshotResolver = {
   resolveSnapshotPath: (testPath, snapshotExtension) =>

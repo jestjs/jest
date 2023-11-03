@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import {
-  DiffOptions,
+  type DiffOptions,
   diff,
   printExpected,
   printReceived,

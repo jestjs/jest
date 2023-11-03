@@ -12,14 +12,14 @@ import type {MatcherFunctionWithContext} from 'expect';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {EXTENSION, SnapshotResolver} from './SnapshotResolver';
+import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,

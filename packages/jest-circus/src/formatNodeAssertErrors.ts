@@ -9,7 +9,7 @@ import {AssertionError} from 'assert';
 import chalk = require('chalk');
 import type {Circus} from '@jest/types';
 import {
-  DiffOptions,
+  type DiffOptions,
   diff,
   printExpected,
   printReceived,

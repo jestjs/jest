@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  type Diff,
+} from './cleanupSemantic';
 import type {DiffOptionsColor, DiffOptionsNormalized} from './types';
 
 const formatTrailingSpaces = (

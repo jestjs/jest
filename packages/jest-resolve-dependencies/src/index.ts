@@ -8,7 +8,7 @@
 import * as path from 'path';
 import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
-import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
+import {type SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 export type ResolvedModule = {
   file: string;

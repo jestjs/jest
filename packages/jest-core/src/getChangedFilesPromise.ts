@@ -7,7 +7,10 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
+import {
+  type ChangedFilesPromise,
+  getChangedFilesForRoots,
+} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 
 export default function getChangedFilesPromise(

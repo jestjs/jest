@@ -6,7 +6,11 @@
  */
 
 import pLimit from 'p-limit';
-import {Test, TestResult, createEmptyTestResult} from '@jest/test-result';
+import {
+  type Test,
+  type TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {
   OnTestFailure,
