@@ -93,7 +93,7 @@ const jestAdapter = async (
     runtime.requireModule(testPath);
   }
 
-  const projectConfigPerfStats = {
+  const setupAfterEnvPerfStats = {
     setupAfterEnvEnd,
     setupAfterEnvStart,
   };
@@ -101,7 +101,7 @@ const jestAdapter = async (
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
-    projectConfigPerfStats,
+    setupAfterEnvPerfStats,
     testPath,
   });
 

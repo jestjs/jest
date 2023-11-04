@@ -494,7 +494,7 @@ export type ProjectConfig = {
   workerIdleMemoryLimit?: number;
 };
 
-export type ProjectConfigPerfStats = {
+export type SetupAfterEnvPerfStats = {
   setupAfterEnvStart: number;
   setupAfterEnvEnd: number;
 };

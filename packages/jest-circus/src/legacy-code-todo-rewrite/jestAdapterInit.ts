@@ -141,13 +141,13 @@ export const initialize = async ({
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
-  projectConfigPerfStats,
+  setupAfterEnvPerfStats,
   testPath,
 }: {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   testPath: string;
-  projectConfigPerfStats: Config.ProjectConfigPerfStats;
+  setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
 
@@ -231,7 +231,7 @@ export const runAndTransformResultsToJestFormat = async ({
     numTodoTests,
     perfStats: {
       ...emptyTestResult.perfStats,
-      ...projectConfigPerfStats,
+      ...setupAfterEnvPerfStats,
     },
     testExecError,
     testFilePath: testPath,
