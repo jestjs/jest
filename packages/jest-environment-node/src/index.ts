@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {webcrypto} from 'node:crypto';
 import {type Context, createContext, runInContext} from 'vm';
 import type {
   EnvironmentContext,
@@ -130,6 +131,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     global.global = global;
+    // global Crypto type is consuming lib.dom.d.ts but this is for node environment.
+    global.crypto = webcrypto as Crypto;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
