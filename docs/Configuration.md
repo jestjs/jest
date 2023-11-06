@@ -2080,13 +2080,22 @@ This option allows the use of a custom results processor. This processor must be
         "column": number,
         "line": number
       },
-      "duration": number | null
+      "duration": number | null,
+      "startAt": epoch | null
     },
     ...
     ],
     "perfStats": {
-      "start": epoch,
-      "end": epoch
+      "end": epoch,
+      "loadTestEnvironmentEnd": epoch,
+      "loadTestEnvironmentStart": epoch,
+      "runtime": number,
+      "setupAfterEnvEnd": epoch,
+      "setupAfterEnvStart": epoch,
+      "setupFilesEnd": epoch,
+      "setupFilesStart": epoch,
+      "slow": boolean,
+      "start": epoch
     },
     "testFilePath": absolute path to test file,
     "coverage": {}

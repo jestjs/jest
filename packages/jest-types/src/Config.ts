@@ -498,6 +498,11 @@ export type ProjectConfig = {
   workerIdleMemoryLimit?: number;
 };
 
+export type SetupAfterEnvPerfStats = {
+  setupAfterEnvStart: number;
+  setupAfterEnvEnd: number;
+};
+
 export type Argv = Arguments<
   Partial<{
     all: boolean;
