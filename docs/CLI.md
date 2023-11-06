@@ -517,6 +517,12 @@ Display individual test results with the test suite hierarchy.
 
 Alias: `-v`. Print the version and exit.
 
+### `--waitNextEventLoopTurnForUnhandledRejectionEvents`
+
+Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
+
+Without this flag Jest may report false-positive errors (e.g. actually handled rejection reported) or not report actually unhandled rejection (or report it for different test case).
+
 ### `--watch`
 
 Watch files for changes and rerun tests related to changed files. If you want to re-run all tests when a file has changed, use the `--watchAll` option instead.
