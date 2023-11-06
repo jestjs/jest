@@ -63,7 +63,8 @@ exports[`prints the config object 1`] = `
     "testRunner": "myRunner",
     "transform": [],
     "transformIgnorePatterns": [],
-    "watchPathIgnorePatterns": []
+    "watchPathIgnorePatterns": [],
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false
   },
   "globalConfig": {
     "bail": 0,
@@ -115,6 +116,7 @@ exports[`prints the config object 1`] = `
     "updateSnapshot": "none",
     "useStderr": false,
     "verbose": false,
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
     "watch": true,
     "watchAll": false,
     "watchPlugins": [],
