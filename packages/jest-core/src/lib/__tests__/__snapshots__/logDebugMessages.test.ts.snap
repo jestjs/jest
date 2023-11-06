@@ -63,8 +63,8 @@ exports[`prints the config object 1`] = `
     "testRunner": "myRunner",
     "transform": [],
     "transformIgnorePatterns": [],
-    "watchPathIgnorePatterns": [],
-    "waitNextEventLoopTurnForUnhandledRejectionEvents": false
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+    "watchPathIgnorePatterns": []
   },
   "globalConfig": {
     "bail": 0,
