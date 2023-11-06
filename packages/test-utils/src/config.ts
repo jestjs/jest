@@ -126,8 +126,8 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,
-  watchPathIgnorePatterns: [],
   waitNextEventLoopTurnForUnhandledRejectionEvents: false,
+  watchPathIgnorePatterns: [],
 };
 
 export const makeGlobalConfig = (

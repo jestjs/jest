@@ -138,7 +138,8 @@ const groupOptions = (
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,
-    waitNextEventLoopTurnForUnhandledRejectionEvents: options.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watch: options.watch,
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
@@ -204,7 +205,8 @@ const groupOptions = (
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
-    waitNextEventLoopTurnForUnhandledRejectionEvents: options.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
   }),
 });
