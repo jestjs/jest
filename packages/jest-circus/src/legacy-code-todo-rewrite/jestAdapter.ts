@@ -74,6 +74,7 @@ const jestAdapter = async (
     }
   });
 
+  const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
@@ -83,6 +84,7 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
+  const setupAfterEnvEnd = Date.now();
   const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
@@ -91,9 +93,15 @@ const jestAdapter = async (
     runtime.requireModule(testPath);
   }
 
+  const setupAfterEnvPerfStats = {
+    setupAfterEnvEnd,
+    setupAfterEnvStart,
+  };
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    setupAfterEnvPerfStats,
     testPath,
   });
 
