@@ -181,6 +181,7 @@ export const initialOptions: Config.InitialOptions = {
   updateSnapshot: true,
   useStderr: false,
   verbose: false,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watch: false,
   watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
@@ -320,6 +321,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };

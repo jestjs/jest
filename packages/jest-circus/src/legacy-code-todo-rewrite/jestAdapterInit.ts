@@ -132,7 +132,12 @@ export const initialize = async ({
     addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
   }
 
-  addEventHandler(unhandledRejectionHandler(runtime));
+  addEventHandler(
+    unhandledRejectionHandler(
+      runtime,
+      globalConfig.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    ),
+  );
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals: globalsObject, snapshotState};
