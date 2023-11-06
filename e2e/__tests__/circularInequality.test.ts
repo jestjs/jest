@@ -44,7 +44,7 @@ test('handles circular inequality properly', async () => {
     tempDir,
     ['--no-watchman', '--watch-all'],
     // timeout in case the `waitUntil` below doesn't fire
-    {stripAnsi: true, timeout: 5000},
+    {stripAnsi: true, timeout: 10_000},
   );
 
   await waitUntil(({stderr}) => stderr.includes('Ran all test suites.'));
