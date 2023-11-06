@@ -104,7 +104,7 @@ function reportSuccess(result: unknown) {
     // We can safely send a message to the parent process again
     // because previous sending was halted by "TypeError: Converting circular structure to JSON".
     // But this time the message will be cleared from circular references.
-    if (error instanceof Error && /circular structure/.test(e?.message)) {
+    if (error instanceof Error && /circular structure/.test(error?.message)) {
       process.send([PARENT_MESSAGE_OK, withoutCircularRefs(result)]);
     } else {
       throw error;
