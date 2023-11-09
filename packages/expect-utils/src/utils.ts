@@ -307,8 +307,8 @@ export const iterableEquality = (
     !isImmutableOrderedSet(a) &&
     !isImmutableRecord(a)
   ) {
-    const aEntries = Object.entries(a);
-    const bEntries = Object.entries(b);
+    const aEntries = entries(a);
+    const bEntries = entries(b);
     if (!equals(aEntries, bEntries)) {
       return false;
     }
@@ -319,6 +319,17 @@ export const iterableEquality = (
   bStack.pop();
   return true;
 };
+
+const entries = (obj: any) => {
+  if(!isObject(obj)) return [];
+
+  return Object
+    .getOwnPropertySymbols(obj)
+    .filter(key => key !== Symbol.iterator)
+    .map(key => [key, obj[key]])
+    
+    .concat(Object.entries(obj))
+}
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
 
