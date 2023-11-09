@@ -321,15 +321,13 @@ export const iterableEquality = (
 };
 
 const entries = (obj: any) => {
-  if(!isObject(obj)) return [];
+  if (!isObject(obj)) return [];
 
-  return Object
-    .getOwnPropertySymbols(obj)
+  return Object.getOwnPropertySymbols(obj)
     .filter(key => key !== Symbol.iterator)
     .map(key => [key, obj[key]])
-    
-    .concat(Object.entries(obj))
-}
+    .concat(Object.entries(obj));
+};
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
 

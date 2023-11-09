@@ -593,7 +593,7 @@ describe('iterableEquality', () => {
   });
 
   test('returns true when given a symbols keys within equal objects', () => {
-    const KEY = Symbol()
+    const KEY = Symbol();
 
     const a = {
       [Symbol.iterator]: () => ({next: () => ({done: true})}),
@@ -608,7 +608,7 @@ describe('iterableEquality', () => {
   });
 
   test('returns false when given a symbols keys within inequal objects', () => {
-    const KEY = Symbol()
+    const KEY = Symbol();
 
     const a = {
       [Symbol.iterator]: () => ({next: () => ({done: true})}),
