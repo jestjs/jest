@@ -204,6 +204,7 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -325,6 +326,7 @@ export type InitialOptions = Partial<{
   updateSnapshot: boolean;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -419,6 +421,7 @@ export type GlobalConfig = {
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -491,7 +494,13 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
+};
+
+export type SetupAfterEnvPerfStats = {
+  setupAfterEnvStart: number;
+  setupAfterEnvEnd: number;
 };
 
 export type Argv = Arguments<

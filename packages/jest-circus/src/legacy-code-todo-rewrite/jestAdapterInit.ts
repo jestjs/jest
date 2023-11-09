@@ -132,7 +132,12 @@ export const initialize = async ({
     addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
   }
 
-  addEventHandler(unhandledRejectionHandler(runtime));
+  addEventHandler(
+    unhandledRejectionHandler(
+      runtime,
+      globalConfig.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    ),
+  );
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals: globalsObject, snapshotState};
@@ -141,11 +146,13 @@ export const initialize = async ({
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
+  setupAfterEnvPerfStats,
   testPath,
 }: {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   testPath: string;
+  setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
 
@@ -189,6 +196,7 @@ export const runAndTransformResultsToJestFormat = async ({
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
         retryReasons: testResult.retryReasons,
+        startAt: testResult.startedAt,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
       };
@@ -215,8 +223,10 @@ export const runAndTransformResultsToJestFormat = async ({
 
   await dispatch({name: 'teardown'});
 
+  const emptyTestResult = createEmptyTestResult();
+
   return {
-    ...createEmptyTestResult(),
+    ...emptyTestResult,
     console: undefined,
     displayName: config.displayName,
     failureMessage,
@@ -224,6 +234,10 @@ export const runAndTransformResultsToJestFormat = async ({
     numPassingTests,
     numPendingTests,
     numTodoTests,
+    perfStats: {
+      ...emptyTestResult.perfStats,
+      ...setupAfterEnvPerfStats,
+    },
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,

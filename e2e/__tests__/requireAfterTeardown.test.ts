@@ -10,8 +10,21 @@ import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 
-test('prints useful error for requires after test is done', () => {
+test('prints useful error for requires after test is done w/o `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
   const {stderr} = runJest('require-after-teardown');
+
+  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
+
+  expect(interestingLines).toMatchSnapshot();
+  expect(stderr.split('\n')[19]).toMatch(
+    '(__tests__/lateRequire.test.js:11:20)',
+  );
+});
+
+test('prints useful error for requires after test is done w/ `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
+  const {stderr} = runJest('require-after-teardown', [
+    '--waitNextEventLoopTurnForUnhandledRejectionEvents',
+  ]);
 
   const interestingLines = stderr.split('\n').slice(5, 14).join('\n');
 

@@ -2080,13 +2080,22 @@ This option allows the use of a custom results processor. This processor must be
         "column": number,
         "line": number
       },
-      "duration": number | null
+      "duration": number | null,
+      "startAt": epoch | null
     },
     ...
     ],
     "perfStats": {
-      "start": epoch,
-      "end": epoch
+      "end": epoch,
+      "loadTestEnvironmentEnd": epoch,
+      "loadTestEnvironmentStart": epoch,
+      "runtime": number,
+      "setupAfterEnvEnd": epoch,
+      "setupAfterEnvStart": epoch,
+      "setupFilesEnd": epoch,
+      "setupFilesStart": epoch,
+      "slow": boolean,
+      "start": epoch
     },
     "testFilePath": absolute path to test file,
     "coverage": {}
@@ -2357,6 +2366,14 @@ It is possible to override this setting in individual tests by explicitly callin
 Default: `false` or `true` if there is only one test file to run
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+### `waitNextEventLoopTurnForUnhandledRejectionEvents` \[boolean]
+
+Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
+
+Without this flag Jest may report false-positive errors (e.g. actually handled rejection reported) or not report actually unhandled rejection (or report it for different test case).
+
+This option may add a noticeable overhead for fast test suites.
 
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 

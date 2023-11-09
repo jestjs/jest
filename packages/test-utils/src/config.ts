@@ -62,6 +62,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   updateSnapshot: 'none',
   useStderr: false,
   verbose: false,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watch: false,
   watchAll: false,
   watchPlugins: [],
@@ -125,6 +126,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watchPathIgnorePatterns: [],
 };
 

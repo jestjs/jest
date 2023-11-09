@@ -39,11 +39,20 @@ describe('requestAnimationFrame', () => {
 });
 
 describe('setImmediate', () => {
-  test('fakes setImmediate', () => {
+  test('fakes setImmediate w/o `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
+    const result = runJest('fake-timers-legacy/set-immediate');
+
+    expect(result.stderr).toMatch('setImmediate test');
+    expect(result.exitCode).toBe(0);
+  });
+
+  test('fakes setImmediate w/ `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
     // Jasmine runner does not handle unhandled promise rejections that are causing the test to fail in Jest circus
     const expectedExitCode = isJestJasmineRun() ? 0 : 1;
 
-    const result = runJest('fake-timers-legacy/set-immediate');
+    const result = runJest('fake-timers-legacy/set-immediate', [
+      '--waitNextEventLoopTurnForUnhandledRejectionEvents',
+    ]);
 
     expect(result.stderr).toMatch('setImmediate test');
     expect(result.exitCode).toBe(expectedExitCode);

@@ -8,6 +8,7 @@
 
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
+import {equals} from '../jasmineUtils';
 import {
   arrayBufferEquality,
   emptyObject,
@@ -355,6 +356,51 @@ describe('subsetEquality()', () => {
       ).toBe(false);
     });
   });
+
+  describe('matching subsets with symbols', () => {
+    describe('same symbol', () => {
+      test('objects to not match with value diff', () => {
+        const symbol = Symbol('foo');
+        expect(subsetEquality({[symbol]: 1}, {[symbol]: 2})).toBe(false);
+      });
+
+      test('objects to match with non-enumerable symbols', () => {
+        const symbol = Symbol('foo');
+        const foo = {};
+        Object.defineProperty(foo, symbol, {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, symbol, {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+
+    describe('different symbol', () => {
+      test('objects to not match with same value', () => {
+        expect(subsetEquality({[Symbol('foo')]: 1}, {[Symbol('foo')]: 2})).toBe(
+          false,
+        );
+      });
+      test('objects to match with non-enumerable symbols', () => {
+        const foo = {};
+        Object.defineProperty(foo, Symbol('foo'), {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, Symbol('foo'), {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+  });
 });
 
 describe('iterableEquality', () => {
@@ -578,9 +624,21 @@ describe('arrayBufferEquality', () => {
     expect(arrayBufferEquality(a, b)).toBeTruthy();
   });
 
-  test('returns false when given matching DataView', () => {
+  test('returns false when given non-matching DataView', () => {
     const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
     const b = new DataView(Uint8Array.from([3, 2, 1]).buffer);
     expect(arrayBufferEquality(a, b)).toBeFalsy();
+  });
+
+  test('returns true when given matching URL', () => {
+    const a = new URL('https://jestjs.io/');
+    const b = new URL('https://jestjs.io/');
+    expect(equals(a, b)).toBeTruthy();
+  });
+
+  test('returns false when given non-matching URL', () => {
+    const a = new URL('https://jestjs.io/docs/getting-started');
+    const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
+    expect(equals(a, b)).toBeFalsy();
   });
 });
