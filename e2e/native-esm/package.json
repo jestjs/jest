@@ -1,7 +1,7 @@
 {
   "type": "module",
   "devDependencies": {
-    "discord.js": "14.3.0",
+    "discord.js": "14.14.1",
     "iso-constants": "^0.1.2",
     "isolated-vm": "^4.6.0",
     "yargs": "^17.5.1"
