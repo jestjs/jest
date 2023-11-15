@@ -34,7 +34,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
     Note: Replace `<your_username>` with your GitHub username
 
-1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
+1.  Jest uses [Yarn](https://yarnpkg.com/) for running development scripts. If you haven't already done so, please run [`corepack enable`](https://nodejs.org/api/corepack.html#workflows).
 
 1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
@@ -44,13 +44,13 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 29th, 2021, `v16.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of November 15th, 2023, `v20.x` is recommended).
 
     ```sh
     node -v
     ```
 
-1.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
+1.  Run `yarn install`.
 
     ```sh
     yarn install
@@ -60,12 +60,6 @@ _Before_ submitting a pull request, please make sure the following is done…
 
     ```sh
     yarn --version
-    ```
-
-    On Windows `yarn install` may fail with `gyp ERR! build error`. One of the possible solutions:
-
-    ```sh
-     yarn global add windows-build-tools
     ```
 
 1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
@@ -90,8 +84,6 @@ _Before_ submitting a pull request, please make sure the following is done…
     $ yarn test
     ```
 
-1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
-
 #### Changelog entries
 
 All changes that add a feature to or fix a bug in any of Jest's packages require a changelog entry containing the names of the packages affected, a description of the change, and the number of and link to the pull request. Try to match the structure of the existing entries.
@@ -108,7 +100,7 @@ Code that is written needs to be tested to ensure that it achieves the desired b
 
 ##### Unit tests
 
-Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much of any setup.
+Some of the packages within Jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much of any setup.
 
 ##### Integration tests
 
@@ -118,7 +110,7 @@ It is possible to run the integration test itself manually to inspect that the n
 
 ```bash
 $ cd e2e/clear-cache
-$ node ../../packages/jest-cli/bin/jest.js # It is possible to use node --inspect or ndb
+$ node ../../packages/jest-cli/bin/jest.js # It is possible to use `node --inspect`
 PASS  __tests__/clear_cache.test.js
 ✓ stub (3ms)
 
@@ -166,9 +158,7 @@ The Jest website also offers documentation for older versions of Jest, which you
 
 ### Contributor License Agreement (CLA)
 
-In order to accept your pull request, we need you to submit a CLA. You only need to do this once, so if you've done this for another Facebook open source project, you're good to go. If you are submitting a pull request for the first time, just let us know that you have completed the CLA and we can cross-check with your GitHub username.
-
-[Complete your CLA here.](https://code.facebook.com/cla)
+In order to accept your pull request, we need you to submit a CLA. You only need to do this once, so if you've done this for another OpenJS open source project, you're good to go. If you are submitting a pull request for the first time, a bot will verify and guide you on how to sign it.
 
 ## How to try a development build of Jest in another project
 
@@ -180,10 +170,10 @@ $ cd /path/to/your/Jest_clone
 # Do one of the following:
 
 # Check out a commit from another contributor, and then
-$ yarn run build
+$ yarn run watch
 
 # Or, save your changes to Jest, and then
-$ yarn test # which also builds Jest
+$ yarn test
 ```
 
 To run tests in another project with the development build of Jest:
