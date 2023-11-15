@@ -5291,10 +5291,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pnpapi@npm:^0.0.4":
-  version: 0.0.4
-  resolution: "@types/pnpapi@npm:0.0.4"
-  checksum: 625a33121ac14819a6172efad5ffd694fb317172135c26f0d3fa51b00a29f82742e7a9531e51c92caa15be84cdb0d420f66a1b3c89dc8b274ac3abfc455da16c
+"@types/pnpapi@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@types/pnpapi@npm:0.0.5"
+  checksum: 46d8474b77358c8cc48b957c059de6ad0839d18d8e90252c500c6bc30702e44e2629cf330350f7b291f35d863190b5390b641992c0601853a5d8b129fa91bd4d
   languageName: node
   linkType: hard
 
@@ -8988,13 +8988,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docusaurus-remark-plugin-tab-blocks@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "docusaurus-remark-plugin-tab-blocks@npm:2.0.0"
+"docusaurus-remark-plugin-tab-blocks@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "docusaurus-remark-plugin-tab-blocks@npm:3.0.0"
   dependencies:
     unist-util-is: ^6.0.0
     unist-util-visit: ^5.0.0
-  checksum: 99eb4074071aee01938013c34f569e3ac12bee499a4e69e6431912812236b46bcc98c6d3d68a1bcb3d00ab0aac3829b8cc13c84391ec2c3ee1e3a2a8d3f9d27b
+  checksum: d33b85b33743fb500166847ae2889a17c49c57f5fa1b1e344b07433b3743bbbef85cbe25c134e6488340397a809f8e3ffde25ce482d9584808879902bd102ec0
   languageName: node
   linkType: hard
 
@@ -13228,7 +13228,7 @@ __metadata:
   dependencies:
     "@tsd/typescript": ^5.0.4
     "@types/graceful-fs": ^4.1.3
-    "@types/pnpapi": ^0.0.4
+    "@types/pnpapi": ^0.0.5
     "@types/resolve": ^1.20.2
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
@@ -13532,7 +13532,7 @@ __metadata:
     "@docusaurus/tsconfig": ^3.0.0
     "@types/react": ^18.2.0
     clsx: ^2.0.0
-    docusaurus-remark-plugin-tab-blocks: ^2.0.0
+    docusaurus-remark-plugin-tab-blocks: ^3.0.0
     graphql: ^16.3.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0
