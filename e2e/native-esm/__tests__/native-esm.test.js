@@ -46,9 +46,6 @@ test('should support importing node core modules', () => {
   const packageJsonPath = resolve(dir, '../package.json');
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
-    optionalDependencies: {
-      'isolated-vm': '^4.6.0',
-    },
     devDependencies: {
       'discord.js': '14.3.0',
       'iso-constants': '^0.1.2',
@@ -57,6 +54,9 @@ test('should support importing node core modules', () => {
     jest: {
       testEnvironment: 'node',
       transform: {},
+    },
+    optionalDependencies: {
+      'isolated-vm': '^4.6.0',
     },
     type: 'module',
   });
