@@ -11,9 +11,7 @@ module.exports = function (tests) {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve({
-        filtered: tests
-          .filter(t => t.includes('foo'))
-          .map(test => ({message: 'some message', test})),
+        filtered: tests.filter(t => t.includes('foo')),
       });
     }, 100);
   });

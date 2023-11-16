@@ -339,9 +339,7 @@ export default class SearchSource {
         );
       }
 
-      const filteredSet = new Set(
-        filterResult.filtered.map(result => result.test),
-      );
+      const filteredSet = new Set(filterResult.filtered);
 
       return {
         ...searchResult,
