@@ -46,7 +46,7 @@ export default function getResultHeader(
   if (result.memoryUsage) {
     const toMB = (bytes: number) => Math.floor(bytes / 1024 / 1024);
     testDetail.push(
-      `pid ${result.workerProcessId}: ${toMB(result.memoryUsage)} MB heap size`
+      `pid ${result.workerProcessId}: ${toMB(result.memoryUsage)} MB heap size`,
     );
   }
 
