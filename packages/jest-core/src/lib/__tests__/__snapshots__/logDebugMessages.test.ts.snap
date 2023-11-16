@@ -61,8 +61,10 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
+    "testTimeout": 5000,
     "transform": [],
     "transformIgnorePatterns": [],
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
     "watchPathIgnorePatterns": []
   },
   "globalConfig": {
@@ -101,6 +103,7 @@ exports[`prints the config object 1`] = `
     "projects": [],
     "reporters": [],
     "rootDir": "/test_root_dir/",
+    "runInBand": false,
     "runTestsByPath": false,
     "seed": 1234,
     "silent": false,
@@ -108,12 +111,13 @@ exports[`prints the config object 1`] = `
     "snapshotFormat": {},
     "testFailureExitCode": 1,
     "testNamePattern": "",
-    "testPathPattern": "",
+    "testPathPatterns": [],
     "testSequencer": "@jest/test-sequencer",
     "testTimeout": 5000,
     "updateSnapshot": "none",
     "useStderr": false,
     "verbose": false,
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
     "watch": true,
     "watchAll": false,
     "watchPlugins": [],

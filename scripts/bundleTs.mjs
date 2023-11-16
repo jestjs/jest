@@ -14,39 +14,22 @@ import {
   ExtractorConfig,
 } from '@microsoft/api-extractor';
 import chalk from 'chalk';
+import {ESLint} from 'eslint';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
-import {sync as pkgDir} from 'pkg-dir';
-import prettier from 'prettier';
+import pkgDir from 'pkg-dir';
 import {rimraf} from 'rimraf';
-import {getPackages} from './buildUtils.mjs';
-
-const prettierConfig = prettier.resolveConfig.sync(
-  fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
-);
+import {copyrightSnippet, getPackagesWithTsConfig} from './buildUtils.mjs';
 
 const require = createRequire(import.meta.url);
-const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
-
-const copyrightSnippet = `
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-`.trim();
+const typescriptCompilerFolder = await pkgDir(require.resolve('typescript'));
 
 const typesNodeReferenceDirective = '/// <reference types="node" />';
 
 const excludedPackages = new Set(['@jest/globals', '@jest/test-globals']);
 
-const packages = getPackages();
-
-const isTsPackage = p =>
-  fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
-
-const packagesToBundle = packages.filter(
-  p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
+const packagesToBundle = getPackagesWithTsConfig().filter(
+  p => !excludedPackages.has(p.pkg.name),
 );
 
 console.log(chalk.inverse(' Extracting TypeScript definition files '));
@@ -116,6 +99,20 @@ await fs.promises.writeFile(
   JSON.stringify(sharedExtractorConfig, null, 2),
 );
 
+const eslint = new ESLint({
+  cwd: process.cwd(),
+  fix: true,
+  overrideConfig: {
+    rules: {
+      // `d.ts` files are by nature `type` only imports, so it's just noise when looking at the file
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {prefer: 'no-type-imports'},
+      ],
+    },
+  },
+});
+
 let compilerState;
 
 await Promise.all(
@@ -165,16 +162,38 @@ await Promise.all(
 
     let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
-    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'), {glob: true});
-    fs.rmSync(path.resolve(packageDir, 'dist/'), {
+    await rimraf(path.resolve(packageDir, 'build/**/*.d.ts'), {glob: true});
+    await fs.promises.rm(path.resolve(packageDir, 'dist/'), {
       force: true,
       recursive: true,
     });
     // this is invalid now, so remove it to not confuse `tsc`
-    fs.rmSync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'), {
+    await fs.promises.rm(path.resolve(packageDir, 'tsconfig.tsbuildinfo'), {
       force: true,
       recursive: true,
     });
+
+    const dirsInBuild = await glob('**/', {
+      cwd: path.resolve(packageDir, 'build'),
+    });
+
+    await Promise.all(
+      dirsInBuild
+        .filter(dir => dir !== '.')
+        // reverse to delete deep directories first
+        .reverse()
+        .map(async dir => {
+          const dirToDelete = path.resolve(packageDir, 'build', dir);
+          try {
+            await fs.promises.rmdir(dirToDelete);
+          } catch (error) {
+            // e.g. `jest-jasmine2/build/jasmine` is not empty - ignore those errors
+            if (error.code !== 'ENOTEMPTY') {
+              throw error;
+            }
+          }
+        }),
+    );
 
     definitionFile = definitionFile.replace(/\r\n/g, '\n');
 
@@ -191,13 +210,16 @@ await Promise.all(
 
     definitionFile = [
       copyrightSnippet,
+      '',
       ...definitionFile.split(copyrightSnippet),
     ].join('\n');
 
-    const formattedContent = prettier.format(definitionFile, {
-      ...prettierConfig,
-      filepath,
+    const [lintResult] = await eslint.lintText(definitionFile, {
+      filePath: 'some-file.ts',
     });
+
+    // if the autofixer did anything, the result is in `output`
+    const formattedContent = lintResult.output || definitionFile;
 
     await fs.promises.writeFile(
       filepath.replace(

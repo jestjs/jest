@@ -30,7 +30,6 @@ function statSyncCached(path: string): IPathType {
 
   let stat;
   try {
-    // @ts-expect-error TS2554 - throwIfNoEntry is only available in recent version of node, but inclusion of the option is a backward compatible no-op.
     stat = fs.statSync(path, {throwIfNoEntry: false});
   } catch (e: any) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
@@ -96,6 +95,7 @@ export function findClosestPackageJson(start: string): string | undefined {
     dir = dirname(dir);
   }
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const pkgJsonFile = resolve(dir, './package.json');
     const hasPackageJson = isFile(pkgJsonFile);

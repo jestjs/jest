@@ -54,7 +54,7 @@ test('displays a user after a click', () => {
 
   // Assert that the fetchCurrentUser function was called, and that the
   // #username span's inner text was updated as we'd expect it to.
-  expect(fetchCurrentUser).toBeCalled();
+  expect(fetchCurrentUser).toHaveBeenCalled();
   expect($('#username').text()).toBe('Johnny Cash - Logged In');
 });
 ```
@@ -69,4 +69,4 @@ To get started with the JSDOM [test environment](Configuration.md#testenvironmen
 npm install --save-dev jest-environment-jsdom
 ```
 
-The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/main/examples/jquery).
+The code for this example is available at [examples/jquery](https://github.com/jestjs/jest/tree/main/examples/jquery).

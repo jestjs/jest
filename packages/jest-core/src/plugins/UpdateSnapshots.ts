@@ -5,19 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
-  JestHookSubscriber,
-  UpdateConfigCallback,
-  UsageData,
+  type JestHookSubscriber,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   private _hasSnapshotFailure: boolean;
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this.isInternal = true;
     this._hasSnapshotFailure = false;

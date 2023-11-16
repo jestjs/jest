@@ -29,7 +29,7 @@ Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/us
 
 :::caution
 
-If we want to mock Node's build-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because build-in modules are not mocked by default.
+If we want to mock Node's built-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because built-in modules are not mocked by default.
 
 :::
 
@@ -110,7 +110,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s build-in module:
+Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s built-in module:
 
 ```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
@@ -142,7 +142,7 @@ The example mock shown here uses [`jest.createMockFromModule`](JestObjectAPI.md#
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/main/examples/manual-mocks).
+The code for this example is available at [examples/manual-mocks](https://github.com/jestjs/jest/tree/main/examples/manual-mocks).
 
 ## Using with ES module imports
 

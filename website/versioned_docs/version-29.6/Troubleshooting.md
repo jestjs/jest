@@ -150,7 +150,7 @@ Most commonly this is being caused by conflicting Promise implementations. Consi
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
 ```js
-jest.setTimeout(10000); // 10 second timeout
+jest.setTimeout(10_000); // 10 second timeout
 ```
 
 ## Watchman Issues
@@ -161,9 +161,9 @@ Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/tro
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
-While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395) [discovered](https://github.com/facebook/jest/issues/1524#issuecomment-260246008).
+While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/jestjs/jest/issues/1395) [discovered](https://github.com/jestjs/jest/issues/1524#issuecomment-260246008).
 
-Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
+Based on the [findings](https://github.com/jestjs/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
@@ -190,7 +190,7 @@ If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://gith
 ```yaml
 - name: Get number of CPU cores
   id: cpu-cores
-  uses: SimenB/github-actions-cpu-cores@v1
+  uses: SimenB/github-actions-cpu-cores@v2
 - name: run tests
   run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
 ```

@@ -298,7 +298,7 @@ describe.each([
 });
 ```
 
-#### 2. `` describe.each`table`(name, fn, timeout) ``
+#### 2. ``describe.each`table`(name, fn, timeout)``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -355,7 +355,7 @@ describe('my other beverage', () => {
 
 ### `describe.only.each(table)(name, fn)`
 
-Also under the aliases: `fdescribe.each(table)(name, fn)` and `` fdescribe.each`table`(name, fn) ``
+Also under the aliases: `fdescribe.each(table)(name, fn)` and ``fdescribe.each`table`(name, fn)``
 
 Use `describe.only.each` if you want to only run specific tests suites of data driven tests.
 
@@ -379,7 +379,7 @@ test('will not be run', () => {
 });
 ```
 
-#### `` describe.only.each`table`(name, fn) ``
+#### ``describe.only.each`table`(name, fn)``
 
 ```js
 describe.only.each`
@@ -424,7 +424,7 @@ Using `describe.skip` is often a cleaner alternative to temporarily commenting o
 
 ### `describe.skip.each(table)(name, fn)`
 
-Also under the aliases: `xdescribe.each(table)(name, fn)` and `` xdescribe.each`table`(name, fn) ``
+Also under the aliases: `xdescribe.each(table)(name, fn)` and ``xdescribe.each`table`(name, fn)``
 
 Use `describe.skip.each` if you want to stop running a suite of data driven tests.
 
@@ -448,7 +448,7 @@ test('will be run', () => {
 });
 ```
 
-#### `` describe.skip.each`table`(name, fn) ``
+#### ``describe.skip.each`table`(name, fn)``
 
 ```js
 describe.skip.each`
@@ -505,7 +505,7 @@ Also under the alias: `it.concurrent(name, fn, timeout)`
 
 :::caution
 
-`test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
+`test.concurrent` is considered experimental - see [here](https://github.com/jestjs/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
 
 :::
 
@@ -525,7 +525,7 @@ test.concurrent('subtraction 2 numbers', async () => {
 
 :::tip
 
-Use the [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
+Use the [`maxConcurrency`](Configuration.md#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
 
 :::
 
@@ -566,7 +566,7 @@ test.concurrent.each([
 });
 ```
 
-#### 2. `` test.concurrent.each`table`(name, fn, timeout) ``
+#### 2. ``test.concurrent.each`table`(name, fn, timeout)``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -613,7 +613,7 @@ test('will not be run', () => {
 });
 ```
 
-#### `` test.only.each`table`(name, fn) ``
+#### ``test.only.each`table`(name, fn)``
 
 ```js
 test.concurrent.only.each`
@@ -654,7 +654,7 @@ test('will be run', () => {
 });
 ```
 
-#### `` test.concurrent.skip.each`table`(name, fn) ``
+#### ``test.concurrent.skip.each`table`(name, fn)``
 
 ```js
 test.concurrent.skip.each`
@@ -673,7 +673,7 @@ test('will be run', () => {
 
 ### `test.each(table)(name, fn, timeout)`
 
-Also under the alias: `it.each(table)(name, fn)` and `` it.each`table`(name, fn) ``
+Also under the alias: `it.each(table)(name, fn)` and ``it.each`table`(name, fn)``
 
 Use `test.each` if you keep duplicating the same test with different data. `test.each` allows you to write the test once and pass data in.
 
@@ -722,7 +722,7 @@ test.each([
 });
 ```
 
-#### 2. `` test.each`table`(name, fn, timeout) ``
+#### 2. ``test.each`table`(name, fn, timeout)``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -751,7 +751,7 @@ Also under the alias: `it.failing(name, fn, timeout)`
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -779,11 +779,11 @@ test.failing('it is equal', () => {
 
 ### `test.failing.each(name, fn, timeout)`
 
-Also under the alias: `it.failing.each(table)(name, fn)` and `` it.failing.each`table`(name, fn) ``
+Also under the alias: `it.failing.each(table)(name, fn)` and ``it.failing.each`table`(name, fn)``
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -807,7 +807,7 @@ Also under the aliases: `it.only.failing(name, fn, timeout)`, `fit.failing(name,
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -819,7 +819,7 @@ Also under the aliases: `it.skip.failing(name, fn, timeout)`, `xit.failing(name,
 
 :::note
 
-This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 
@@ -851,7 +851,7 @@ Usually you wouldn't check code using `test.only` into source control - you woul
 
 ### `test.only.each(table)(name, fn)`
 
-Also under the aliases: `it.only.each(table)(name, fn)`, `fit.each(table)(name, fn)`, `` it.only.each`table`(name, fn) `` and `` fit.each`table`(name, fn) ``
+Also under the aliases: `it.only.each(table)(name, fn)`, `fit.each(table)(name, fn)`, ``it.only.each`table`(name, fn)`` and ``fit.each`table`(name, fn)``
 
 Use `test.only.each` if you want to only run specific tests with different test data.
 
@@ -873,7 +873,7 @@ test('will not be run', () => {
 });
 ```
 
-#### `` test.only.each`table`(name, fn) ``
+#### ``test.only.each`table`(name, fn)``
 
 ```js
 test.only.each`
@@ -914,7 +914,7 @@ You could comment the test out, but it's often a bit nicer to use `test.skip` be
 
 ### `test.skip.each(table)(name, fn)`
 
-Also under the aliases: `it.skip.each(table)(name, fn)`, `xit.each(table)(name, fn)`, `xtest.each(table)(name, fn)`, `` it.skip.each`table`(name, fn) ``, `` xit.each`table`(name, fn) `` and `` xtest.each`table`(name, fn) ``
+Also under the aliases: `it.skip.each(table)(name, fn)`, `xit.each(table)(name, fn)`, `xtest.each(table)(name, fn)`, ``it.skip.each`table`(name, fn)``, ``xit.each`table`(name, fn)`` and ``xtest.each`table`(name, fn)``
 
 Use `test.skip.each` if you want to stop running a collection of data driven tests.
 
@@ -936,7 +936,7 @@ test('will be run', () => {
 });
 ```
 
-#### `` test.skip.each`table`(name, fn) ``
+#### ``test.skip.each`table`(name, fn)``
 
 ```js
 test.skip.each`

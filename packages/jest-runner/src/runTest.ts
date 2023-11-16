@@ -12,8 +12,8 @@ import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
-  LogMessage,
-  LogType,
+  type LogMessage,
+  type LogType,
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
@@ -24,6 +24,7 @@ import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -86,6 +87,7 @@ async function runTestInternal(
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
   const customEnvironment = docblockPragmas['jest-environment'];
 
+  const loadTestEnvironmentStart = Date.now();
   let testEnvironment = projectConfig.testEnvironment;
 
   if (customEnvironment) {
@@ -98,7 +100,8 @@ async function runTestInternal(
     }
     testEnvironment = resolveTestEnvironment({
       ...projectConfig,
-      requireResolveFunction: require.resolve,
+      // we wanna avoid webpack trying to be clever
+      requireResolveFunction: module => require.resolve(module),
       testEnvironment: customEnvironment,
     });
   }
@@ -167,6 +170,7 @@ async function runTestInternal(
       testPath: path,
     },
   );
+  const loadTestEnvironmentEnd = Date.now();
 
   if (typeof environment.getVmContext !== 'function') {
     console.error(
@@ -211,6 +215,7 @@ async function runTestInternal(
 
   const start = Date.now();
 
+  const setupFilesStart = Date.now();
   for (const path of projectConfig.setupFiles) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
@@ -223,6 +228,7 @@ async function runTestInternal(
       }
     }
   }
+  const setupFilesEnd = Date.now();
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
@@ -327,8 +333,13 @@ async function runTestInternal(
     const end = Date.now();
     const testRuntime = end - start;
     result.perfStats = {
+      ...result.perfStats,
       end,
+      loadTestEnvironmentEnd,
+      loadTestEnvironmentStart,
       runtime: testRuntime,
+      setupFilesEnd,
+      setupFilesStart,
       slow: testRuntime / 1000 > projectConfig.slowTestThreshold,
       start,
     };
@@ -341,7 +352,7 @@ async function runTestInternal(
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
-      if (coverageKeys.length) {
+      if (coverageKeys.length > 0) {
         result.coverage = coverage;
       }
     }
@@ -354,7 +365,6 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      // @ts-expect-error - doesn't exist on globalThis
       globalThis.gc?.();
 
       result.memoryUsage = process.memoryUsage().heapUsed;

@@ -44,13 +44,17 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 };
 
 // Retrieves an object's keys for evaluation by getObjectSubset.  This evaluates
-// the prototype chain for string keys but not for symbols.  (Otherwise, it
-// could find values such as a Set or Map's Symbol.toStringTag, with unexpected
-// results.)
-const getObjectKeys = (object: object) => [
-  ...Object.keys(object),
-  ...Object.getOwnPropertySymbols(object),
-];
+// the prototype chain for string keys but not for non-enumerable symbols.
+// (Otherwise, it could find values such as a Set or Map's Symbol.toStringTag,
+// with unexpected results.)
+export const getObjectKeys = (object: object): Array<string | symbol> => {
+  return [
+    ...Object.keys(object),
+    ...Object.getOwnPropertySymbols(object).filter(
+      s => Object.getOwnPropertyDescriptor(object, s)?.enumerable,
+    ),
+  ];
+};
 
 export const getPath = (
   object: Record<string, any>,
@@ -60,7 +64,7 @@ export const getPath = (
     propertyPath = pathAsArray(propertyPath);
   }
 
-  if (propertyPath.length) {
+  if (propertyPath.length > 0) {
     const lastProp = propertyPath.length === 1;
     const prop = propertyPath[0];
     const newObject = object[prop];
@@ -140,18 +144,18 @@ export const getObjectSubset = (
     const trimmed: any = {};
     seenReferences.set(object, trimmed);
 
-    getObjectKeys(object)
-      .filter(key => hasPropertyInObject(subset, key))
-      .forEach(key => {
-        trimmed[key] = seenReferences.has(object[key])
-          ? seenReferences.get(object[key])
-          : getObjectSubset(
-              object[key],
-              subset[key],
-              customTesters,
-              seenReferences,
-            );
-      });
+    for (const key of getObjectKeys(object).filter(key =>
+      hasPropertyInObject(subset, key),
+    )) {
+      trimmed[key] = seenReferences.has(object[key])
+        ? seenReferences.get(object[key])
+        : getObjectSubset(
+            object[key],
+            subset[key],
+            customTesters,
+            seenReferences,
+          );
+    }
 
     if (getObjectKeys(trimmed).length > 0) {
       return trimmed;
@@ -303,8 +307,8 @@ export const iterableEquality = (
     !isImmutableOrderedSet(a) &&
     !isImmutableRecord(a)
   ) {
-    const aEntries = Object.entries(a);
-    const bEntries = Object.entries(b);
+    const aEntries = entries(a);
+    const bEntries = entries(b);
     if (!equals(aEntries, bEntries)) {
       return false;
     }
@@ -314,6 +318,15 @@ export const iterableEquality = (
   aStack.pop();
   bStack.pop();
   return true;
+};
+
+const entries = (obj: any) => {
+  if (!isObject(obj)) return [];
+
+  return Object.getOwnPropertySymbols(obj)
+    .filter(key => key !== Symbol.iterator)
+    .map(key => [key, obj[key]])
+    .concat(Object.entries(obj));
 };
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
@@ -377,7 +390,7 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
     // Since Jest globals are different from Node globals,
     // constructors are different even between arrays when comparing properties of mock objects.
     // Both of them should be able to compare correctly when they are array-to-array.
-    // https://github.com/facebook/jest/issues/2549
+    // https://github.com/jestjs/jest/issues/2549
     (Array.isArray(a) && Array.isArray(b))
   ) {
     return undefined;
@@ -390,12 +403,17 @@ export const arrayBufferEquality = (
   a: unknown,
   b: unknown,
 ): boolean | undefined => {
-  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
-    return undefined;
+  let dataViewA = a;
+  let dataViewB = b;
+
+  if (a instanceof ArrayBuffer && b instanceof ArrayBuffer) {
+    dataViewA = new DataView(a);
+    dataViewB = new DataView(b);
   }
 
-  const dataViewA = new DataView(a);
-  const dataViewB = new DataView(b);
+  if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
+    return undefined;
+  }
 
   // Buffers are not equal when they do not have the same byte length
   if (dataViewA.byteLength !== dataViewB.byteLength) {
@@ -440,7 +458,7 @@ export const partition = <T>(
 ): [Array<T>, Array<T>] => {
   const result: [Array<T>, Array<T>] = [[], []];
 
-  items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
+  for (const item of items) result[predicate(item) ? 0 : 1].push(item);
 
   return result;
 };
@@ -482,7 +500,7 @@ export const isError = (value: unknown): value is Error => {
 };
 
 export function emptyObject(obj: unknown): boolean {
-  return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
+  return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
 }
 
 const MULTILINE_REGEXP = /[\r\n]/;

@@ -7,65 +7,53 @@
 
 import * as path from 'path';
 import {types} from 'util';
-import type {ParseResult, PluginItem} from '@babel/core';
-import type {
-  Expression,
-  File,
-  Node,
-  Program,
-  TraversalAncestors,
-} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
-} from 'prettier';
+} from 'prettier-v2';
 import semver = require('semver');
-import type {Frame} from 'jest-message-util';
-import {escapeBacktickString} from './utils';
+import {createSyncFn} from 'synckit';
+import type {InlineSnapshot} from './types';
+import {
+  groupSnapshotsByFile,
+  processInlineSnapshotsWithBabel,
+  processPrettierAst,
+} from './utils';
 
-// prettier-ignore
-const generate = (
-  // @ts-expect-error requireOutside Babel transform
-  requireOutside('@babel/generator') as typeof import('@babel/generator')
-).default;
-const {
-  isAwaitExpression,
-  templateElement,
-  templateLiteral,
-  traverse,
-  traverseFast,
-} =
-  // @ts-expect-error requireOutside Babel transform
-  requireOutside('@babel/types') as typeof import('@babel/types');
-// @ts-expect-error requireOutside Babel transform
-const {parseSync} = requireOutside(
-  '@babel/core',
-) as typeof import('@babel/core');
+type Prettier = typeof import('prettier-v2');
+type WorkerFn = (
+  prettierPath: string,
+  filepath: string,
+  sourceFileWithSnapshots: string,
+  snapshotMatcherNames: Array<string>,
+) => string;
 
-type Prettier = typeof import('prettier');
-
-export type InlineSnapshot = {
-  snapshot: string;
-  frame: Frame;
-  node?: Expression;
-};
+const cachedPrettier = new Map<string, Prettier | WorkerFn>();
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   rootDir: string,
   prettierPath: string | null,
 ): void {
-  let prettier: Prettier | null = null;
-  if (prettierPath) {
+  let prettier: Prettier | undefined = prettierPath
+    ? (cachedPrettier.get(`module|${prettierPath}`) as Prettier)
+    : undefined;
+  let workerFn: WorkerFn | undefined = prettierPath
+    ? (cachedPrettier.get(`worker|${prettierPath}`) as WorkerFn)
+    : undefined;
+  if (prettierPath && !prettier) {
     try {
-      // @ts-expect-error requireOutside Babel transform
-      prettier = requireOutside(prettierPath) as Prettier;
+      prettier =
+        // @ts-expect-error requireOutside
+        requireOutside(prettierPath) as Prettier;
+      cachedPrettier.set(`module|${prettierPath}`, prettier);
 
       if (semver.gte(prettier.version, '3.0.0')) {
-        throw new Error(
-          'Jest: Inline Snapshots are not supported when using Prettier 3.0.0 or above.\nSee https://jestjs.io/docs/configuration/#prettierpath-string for alternatives.',
+        workerFn = createSyncFn(
+          require.resolve(/*webpackIgnore: true*/ './worker'),
         );
+        cachedPrettier.set(`worker|${prettierPath}`, workerFn);
       }
     } catch (error) {
       if (!types.isNativeError(error)) {
@@ -81,220 +69,36 @@ export function saveInlineSnapshots(
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
   for (const sourceFilePath of Object.keys(snapshotsByFile)) {
-    saveSnapshotsForFile(
-      snapshotsByFile[sourceFilePath],
-      sourceFilePath,
-      rootDir,
-      prettier && semver.gte(prettier.version, '1.5.0') ? prettier : undefined,
-    );
-  }
-}
-
-const saveSnapshotsForFile = (
-  snapshots: Array<InlineSnapshot>,
-  sourceFilePath: string,
-  rootDir: string,
-  prettier: Prettier | undefined,
-) => {
-  const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
-
-  // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
-  const presets = [require.resolve('babel-preset-current-node-syntax')];
-  const plugins: Array<PluginItem> = [];
-  if (/\.([cm]?ts|tsx)$/.test(sourceFilePath)) {
-    plugins.push([
-      require.resolve('@babel/plugin-syntax-typescript'),
-      {isTSX: sourceFilePath.endsWith('x')},
-      // unique name to make sure Babel does not complain about a possible duplicate plugin.
-      'TypeScript syntax plugin added by Jest snapshot',
-    ]);
-  }
-
-  // Record the matcher names seen during traversal and pass them down one
-  // by one to formatting parser.
-  const snapshotMatcherNames: Array<string> = [];
-
-  let ast: ParseResult | null = null;
-
-  try {
-    ast = parseSync(sourceFile, {
-      filename: sourceFilePath,
-      plugins,
-      presets,
-      root: rootDir,
-    });
-  } catch (error: any) {
-    // attempt to recover from missing jsx plugin
-    if (error.message.includes('@babel/plugin-syntax-jsx')) {
-      try {
-        const jsxSyntaxPlugin: PluginItem = [
-          require.resolve('@babel/plugin-syntax-jsx'),
-          {},
-          // unique name to make sure Babel does not complain about a possible duplicate plugin.
-          'JSX syntax plugin added by Jest snapshot',
-        ];
-        ast = parseSync(sourceFile, {
-          filename: sourceFilePath,
-          plugins: [...plugins, jsxSyntaxPlugin],
-          presets,
-          root: rootDir,
-        });
-      } catch {
-        throw error;
-      }
-    } else {
-      throw error;
-    }
-  }
-
-  if (!ast) {
-    throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
-  }
-  traverseAst(snapshots, ast, snapshotMatcherNames);
-
-  // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
-  const sourceFileWithSnapshots = snapshots.reduceRight(
-    (sourceSoFar, nextSnapshot) => {
-      const {node} = nextSnapshot;
-      if (
-        !node ||
-        typeof node.start !== 'number' ||
-        typeof node.end !== 'number'
-      ) {
-        throw new Error('Jest: no snapshot insert location found');
-      }
-
-      // A hack to prevent unexpected line breaks in the generated code
-      node.loc!.end.line = node.loc!.start.line;
-
-      return (
-        sourceSoFar.slice(0, node.start) +
-        generate(node, {retainLines: true}).code.trim() +
-        sourceSoFar.slice(node.end)
+    const {sourceFileWithSnapshots, snapshotMatcherNames, sourceFile} =
+      processInlineSnapshotsWithBabel(
+        snapshotsByFile[sourceFilePath],
+        sourceFilePath,
+        rootDir,
       );
-    },
-    sourceFile,
-  );
 
-  const newSourceFile = prettier
-    ? runPrettier(
+    let newSourceFile = sourceFileWithSnapshots;
+
+    if (workerFn) {
+      newSourceFile = workerFn(
+        prettierPath!,
+        sourceFilePath,
+        sourceFileWithSnapshots,
+        snapshotMatcherNames,
+      );
+    } else if (prettier && semver.gte(prettier.version, '1.5.0')) {
+      newSourceFile = runPrettier(
         prettier,
         sourceFilePath,
         sourceFileWithSnapshots,
         snapshotMatcherNames,
-      )
-    : sourceFileWithSnapshots;
-
-  if (newSourceFile !== sourceFile) {
-    fs.writeFileSync(sourceFilePath, newSourceFile);
-  }
-};
-
-const groupSnapshotsBy =
-  (createKey: (inlineSnapshot: InlineSnapshot) => string) =>
-  (snapshots: Array<InlineSnapshot>) =>
-    snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
-      (object, inlineSnapshot) => {
-        const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-      },
-      {},
-    );
-
-const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
-  typeof line === 'number' && typeof column === 'number'
-    ? `${line}:${column - 1}`
-    : '',
-);
-const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
-
-const indent = (snapshot: string, numIndents: number, indentation: string) => {
-  const lines = snapshot.split('\n');
-  // Prevent re-indentation of inline snapshots.
-  if (
-    lines.length >= 2 &&
-    lines[1].startsWith(indentation.repeat(numIndents + 1))
-  ) {
-    return snapshot;
-  }
-
-  return lines
-    .map((line, index) => {
-      if (index === 0) {
-        // First line is either a 1-line snapshot or a blank line.
-        return line;
-      } else if (index !== lines.length - 1) {
-        // Do not indent empty lines.
-        if (line === '') {
-          return line;
-        }
-
-        // Not last line, indent one level deeper than expect call.
-        return indentation.repeat(numIndents + 1) + line;
-      } else {
-        // The last line should be placed on the same level as the expect call.
-        return indentation.repeat(numIndents) + line;
-      }
-    })
-    .join('\n');
-};
-
-const traverseAst = (
-  snapshots: Array<InlineSnapshot>,
-  ast: File | Program,
-  snapshotMatcherNames: Array<string>,
-) => {
-  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
-
-  traverseFast(ast, (node: Node) => {
-    if (node.type !== 'CallExpression') return;
-
-    const {arguments: args, callee} = node;
-    if (
-      callee.type !== 'MemberExpression' ||
-      callee.property.type !== 'Identifier' ||
-      callee.property.loc == null
-    ) {
-      return;
-    }
-    const {line, column} = callee.property.loc.start;
-    const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-    if (!snapshotsForFrame) {
-      return;
-    }
-    if (snapshotsForFrame.length > 1) {
-      throw new Error(
-        'Jest: Multiple inline snapshots for the same call are not supported.',
       );
     }
-    const inlineSnapshot = snapshotsForFrame[0];
-    inlineSnapshot.node = node;
 
-    snapshotMatcherNames.push(callee.property.name);
-
-    const snapshotIndex = args.findIndex(
-      ({type}) => type === 'TemplateLiteral',
-    );
-
-    const {snapshot} = inlineSnapshot;
-    remainingSnapshots.delete(snapshot);
-    const replacementNode = templateLiteral(
-      [templateElement({raw: escapeBacktickString(snapshot)})],
-      [],
-    );
-
-    if (snapshotIndex > -1) {
-      args[snapshotIndex] = replacementNode;
-    } else {
-      args.push(replacementNode);
+    if (newSourceFile !== sourceFile) {
+      fs.writeFileSync(sourceFilePath, newSourceFile);
     }
-  });
-
-  if (remainingSnapshots.size) {
-    throw new Error("Jest: Couldn't locate all inline snapshots.");
   }
-};
+}
 
 const runPrettier = (
   prettier: Prettier,
@@ -313,7 +117,7 @@ const runPrettier = (
   // For older versions of Prettier, fallback to a simple parser detection.
   // @ts-expect-error - `inferredParser` is `string`
   const inferredParser: PrettierParserName | null | undefined =
-    (config && typeof config.parser === 'string' && config.parser) ||
+    (typeof config?.parser === 'string' && config.parser) ||
     (prettier.getFileInfo
       ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
       : simpleDetectParser(sourceFilePath));
@@ -353,61 +157,7 @@ const createFormattingParser =
     options.parser = inferredParser;
 
     const ast = parsers[inferredParser](text, options);
-    traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
-      if (node.type !== 'CallExpression') return;
-
-      const {arguments: args, callee} = node;
-      if (
-        callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier' ||
-        !snapshotMatcherNames.includes(callee.property.name) ||
-        !callee.loc ||
-        callee.computed
-      ) {
-        return;
-      }
-
-      let snapshotIndex: number | undefined;
-      let snapshot: string | undefined;
-      for (let i = 0; i < args.length; i++) {
-        const node = args[i];
-        if (node.type === 'TemplateLiteral') {
-          snapshotIndex = i;
-          snapshot = node.quasis[0].value.raw;
-        }
-      }
-      if (snapshot === undefined) {
-        return;
-      }
-
-      const parent = ancestors[ancestors.length - 1].node;
-      const startColumn =
-        isAwaitExpression(parent) && parent.loc
-          ? parent.loc.start.column
-          : callee.loc.start.column;
-
-      const useSpaces = !options.useTabs;
-      snapshot = indent(
-        snapshot,
-        Math.ceil(
-          useSpaces
-            ? startColumn / (options.tabWidth ?? 1)
-            : // Each tab is 2 characters.
-              startColumn / 2,
-        ),
-        useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
-      );
-
-      const replacementNode = templateLiteral(
-        [
-          templateElement({
-            raw: snapshot,
-          }),
-        ],
-        [],
-      );
-      args[snapshotIndex!] = replacementNode;
-    });
+    processPrettierAst(ast, options, snapshotMatcherNames);
 
     return ast;
   };

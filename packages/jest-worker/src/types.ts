@@ -178,7 +178,7 @@ export type WorkerOptions = {
   idleMemoryLimit?: number;
   /**
    * This mainly exists so the path can be changed during testing.
-   * https://github.com/facebook/jest/issues/9543
+   * https://github.com/jestjs/jest/issues/9543
    */
   childWorkerPath?: string;
   /**

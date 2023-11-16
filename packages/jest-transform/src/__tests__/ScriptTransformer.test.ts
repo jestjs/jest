@@ -76,16 +76,14 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, "'");
-
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
         code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
-            filename: '${escapeStrings(filename)}',
-            script: '${escapeStrings(content)}',
-            config: '${escapeStrings(JSON.stringify(config))}',
+            filename: '${filename}',
+            script: '${content}',
+            config: '${JSON.stringify(config)}',
           };
         `,
       }),
@@ -99,17 +97,15 @@ jest.mock(
 jest.mock(
   'test_async_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, "'");
-
     const transformer: AsyncTransformer = {
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
           code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
-            filename: '${escapeStrings(filename)}',
-            script: '${escapeStrings(content)}',
-            config: '${escapeStrings(JSON.stringify(config))}',
+            filename: '${filename}',
+            script: '${content}',
+            config: '${JSON.stringify(config)}',
           };
         `,
         }),
@@ -438,7 +434,7 @@ describe('ScriptTransformer', () => {
       [[], '/fruits/grapefruit.js'],
     ];
 
-    incorrectReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of incorrectReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -448,11 +444,11 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrowErrorMatchingSnapshot();
-    });
+    }
 
     const correctReturnValues = [[{code: 'code'}, '/fruits/kiwi.js']];
 
-    correctReturnValues.forEach(([returnValue, filePath]) => {
+    for (const [returnValue, filePath] of correctReturnValues) {
       mockInvariant(typeof filePath === 'string');
       jest
         .mocked(
@@ -462,7 +458,7 @@ describe('ScriptTransformer', () => {
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
-    });
+    }
   });
 
   it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {

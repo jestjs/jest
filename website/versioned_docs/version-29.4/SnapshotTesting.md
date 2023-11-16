@@ -9,7 +9,7 @@ A typical snapshot test case renders a UI component, takes a snapshot, then comp
 
 ## Snapshot Testing with Jest
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/main/examples/snapshot/__tests__/link.test.js) for a [Link component](https://github.com/facebook/jest/blob/main/examples/snapshot/Link.js):
+A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/jestjs/jest/blob/main/examples/snapshot/__tests__/link.test.js) for a [Link component](https://github.com/jestjs/jest/blob/main/examples/snapshot/Link.js):
 
 ```tsx
 import renderer from 'react-test-renderer';
@@ -23,7 +23,7 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/main/examples/snapshot/__tests__/__snapshots__/link.test.js.snap) that looks like this:
+The first time this test is run, Jest creates a [snapshot file](https://github.com/jestjs/jest/blob/main/examples/snapshot/__tests__/__snapshots__/link.test.js.snap) that looks like this:
 
 ```javascript
 exports[`renders correctly 1`] = `
@@ -38,7 +38,7 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/main/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in the `<Link>` component in this case) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/jestjs/jest/tree/main/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in the `<Link>` component in this case) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
 :::note
 
@@ -84,7 +84,7 @@ Go ahead and accept the changes by running the above command. You may also use t
 
 If you'd like to limit which snapshot test cases get re-generated, you can pass an additional `--testNamePattern` flag to re-record snapshots only for those tests that match the pattern.
 
-You can try out this functionality by cloning the [snapshot example](https://github.com/facebook/jest/tree/main/examples/snapshot), modifying the `Link` component, and running Jest.
+You can try out this functionality by cloning the [snapshot example](https://github.com/jestjs/jest/tree/main/examples/snapshot), modifying the `Link` component, and running Jest.
 
 ### Interactive Snapshot Mode
 
@@ -127,15 +127,15 @@ it('renders correctly', () => {
     .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot(`
-<a
-  className="normal"
-  href="https://example.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  Example Site
-</a>
-`);
+    <a
+      className="normal"
+      href="https://example.com"
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+    >
+      Example Site
+    </a>
+  `);
 });
 ```
 
@@ -230,7 +230,7 @@ const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
 expect(stringWithConstantData).toMatchSnapshot();
 ```
 
-Another way is to [mock](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
+Other ways this can be done is using the [snapshot serializer](Configuration.md#snapshotserializers-arraystring) or [mocking](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
 
 :::
 
@@ -252,10 +252,10 @@ The goal is to make it easy to review snapshots in pull requests, and fight agai
 
 Your tests should be deterministic. Running the same tests multiple times on a component that has not changed should produce the same results every time. You're responsible for making sure your generated snapshots do not include platform specific or other non-deterministic data.
 
-For example, if you have a [Clock](https://github.com/facebook/jest/blob/main/examples/snapshot/Clock.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
+For example, if you have a [Clock](https://github.com/jestjs/jest/blob/main/examples/snapshot/Clock.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
 
 ```js
-Date.now = jest.fn(() => 1482363367071);
+Date.now = jest.fn(() => 1_482_363_367_071);
 ```
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
@@ -312,7 +312,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### Does snapshot testing only work with React components?
 
-[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/facebook/jest/blob/main/e2e/__tests__/console.test.ts) in the Jest repo.
+[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/jestjs/jest/blob/main/e2e/__tests__/console.test.ts) in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?
 

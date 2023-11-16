@@ -97,7 +97,7 @@ export function check(argv: Config.Argv): true {
 }
 
 export const usage =
-  'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
+  'Usage: $0 [--config=<pathToConfigFile>] [TestPathPatterns]';
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
@@ -309,10 +309,6 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
-  init: {
-    description: 'Generate a basic configuration file',
-    type: 'boolean',
-  },
   injectGlobals: {
     description: 'Should Jest inject global variables or not',
     type: 'boolean',
@@ -435,7 +431,7 @@ export const options: {[key: string]: Options} = {
   },
   passWithNoTests: {
     description:
-      'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
+      'Will not fail if no tests are found (for example while using `--testPathPatterns`.)',
     type: 'boolean',
   },
   preset: {
@@ -613,7 +609,7 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
-  testPathPattern: {
+  testPathPatterns: {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
@@ -688,6 +684,12 @@ export const options: {[key: string]: Options} = {
   verbose: {
     description:
       'Display individual test results with the test suite hierarchy.',
+    type: 'boolean',
+  },
+  waitNextEventLoopTurnForUnhandledRejectionEvents: {
+    description:
+      'Gives one event loop turn to handle `rejectionHandled`, ' +
+      '`uncaughtException` or `unhandledRejection`.',
     type: 'boolean',
   },
   watch: {

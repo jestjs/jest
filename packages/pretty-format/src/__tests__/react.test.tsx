@@ -48,10 +48,7 @@ test('supports a single element with non-empty string child', () => {
 });
 
 test('supports a single element with empty string child', () => {
-  assertPrintedJSX(
-    React.createElement('Mouse', null, ''),
-    '<Mouse>\n  \n</Mouse>',
-  );
+  assertPrintedJSX(React.createElement('Mouse', null, ''), '<Mouse />');
 });
 
 test('supports a single element with non-zero number child', () => {
@@ -769,11 +766,11 @@ test('supports context Consumer with a child', () => {
 
   expect(
     formatElement(
-      React.createElement(Consumer, null, () =>
-        React.createElement('div', null, 'child'),
-      ),
+      React.createElement(Consumer, {
+        children: () => React.createElement('div', null, 'child'),
+      }),
     ),
-  ).toBe('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+  ).toBe('<Context.Consumer>\n  [Function children]\n</Context.Consumer>');
 });
 
 test('ReactElement removes undefined props', () => {

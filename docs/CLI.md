@@ -194,13 +194,14 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--filter=<file>`
 
-Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with shape `{ filtered: Array<{ test: string }> }`. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests, e.g.
+Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running and must return an object with shape `{ filtered: Array<string> }` containing the tests that should be run by Jest. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests.
 
 ```js title="my-filter.js"
+// This filter when applied will only run tests ending in .spec.js (not the best way to do it, but it's just an example):
+const filteringFunction = testPath => testPath.endsWith('.spec.js');
+
 module.exports = testPaths => {
-  const allowedPaths = testPaths
-    .filter(filteringFunction)
-    .map(test => ({test})); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
+  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
 
   return {
     filtered: allowedPaths,
@@ -229,10 +230,6 @@ Show the help information, similar to this page.
 ### `--ignoreProjects <project1> ... <projectN>`
 
 Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
-
-### `--init`
-
-Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
 
 ### `--injectGlobals`
 
@@ -485,11 +482,11 @@ The regex is matched against the full name, which is a combination of the test n
 
 ### `--testPathIgnorePatterns=<regex>|[array]`
 
-A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
+A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPatterns`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/ /tests/e2e/\)`. Alternatively, you can omit parentheses by combining regexps into a single regexp like `/node_modules/|/tests/e2e/`. These two examples are equivalent.
 
-### `--testPathPattern=<regex>`
+### `--testPathPatterns=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
@@ -520,6 +517,14 @@ Display individual test results with the test suite hierarchy.
 ### `--version`
 
 Alias: `-v`. Print the version and exit.
+
+### `--waitNextEventLoopTurnForUnhandledRejectionEvents`
+
+Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
+
+Without this flag Jest may report false-positive errors (e.g. actually handled rejection reported) or not report actually unhandled rejection (or report it for different test case).
+
+This option may add a noticeable overhead for fast test suites.
 
 ### `--watch`
 

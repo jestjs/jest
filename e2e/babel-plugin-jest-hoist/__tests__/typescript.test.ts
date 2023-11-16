@@ -11,7 +11,7 @@
 import {color} from '../entry';
 import type {Color} from '../types';
 
-jest.mock('some-module', () => ({} as Partial<{}>), {virtual: true});
+jest.mock('some-module', () => ({}) as Partial<{}>, {virtual: true});
 
 jest.mock('../entry', () => {
   const color: Color = 'blue';

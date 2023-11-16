@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import runJest, {RunJestResult} from '../runJest';
+import runJest, {type RunJestResult} from '../runJest';
 
 const getLog = (result: RunJestResult) => result.stdout.split('\n')[1].trim();
 

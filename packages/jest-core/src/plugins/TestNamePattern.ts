@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
   Prompt,
-  UpdateConfigCallback,
-  UsageData,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';
@@ -19,7 +20,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;

@@ -5,8 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - '**'
+  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -35,10 +34,10 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -50,7 +49,7 @@ jobs:
         run: yarn test-ts --selectProjects ts-integration
       - name: type tests
         run: yarn test-ts --selectProjects type-tests
-      - name: verify TypeScript@4.3 compatibility
+      - name: verify TypeScript@5.0 compatibility
         run: yarn verify-old-ts
       - name: run ESLint with type info
         run: yarn lint-ts-files
@@ -61,10 +60,10 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -83,10 +82,10 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -110,10 +109,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache-ubuntu
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -125,18 +124,36 @@ jobs:
   test-ubuntu:
     uses: ./.github/workflows/test.yml
     needs: prepare-yarn-cache-ubuntu
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
+    name: Ubuntu with shard ${{ matrix.shard }}
     with:
       os: ubuntu-latest
+      shard: ${{ matrix.shard }}
   test-macos:
     uses: ./.github/workflows/test.yml
     needs: prepare-yarn-cache-macos
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/3', '2/3', '3/3']
+    name: macOS with shard ${{ matrix.shard }}
     with:
       os: macos-latest
+      shard: ${{ matrix.shard }}
   test-windows:
     uses: ./.github/workflows/test.yml
     needs: prepare-yarn-cache-windows
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
+    name: Windows with shard ${{ matrix.shard }}
     with:
       os: windows-latest
+      shard: ${{ matrix.shard }}
 
   test-leak:
     name: Node LTS on Ubuntu with leak detection
@@ -144,11 +161,11 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Use Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -169,11 +186,11 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Use Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -183,7 +200,7 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
+        uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests with coverage
         run: yarn jest-coverage --color --config jest.config.ci.mjs --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
       - name: map coverage
