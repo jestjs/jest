@@ -115,7 +115,7 @@ describe('SearchSource', () => {
         {
           ...config,
           ...initialOptions,
-        testPathPatterns: [],
+          testPathPatterns: [],
         },
         null,
         filter,
