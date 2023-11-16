@@ -22,13 +22,13 @@ let isolatedVmInstalled = false;
 beforeAll(() => {
   runYarnInstall(DIR);
 
-  const require = createRequire(DIR);
+  const require = createRequire(`${DIR}/index.js`);
 
   try {
     const ivm = require('isolated-vm');
     isolatedVmInstalled = ivm != null;
   } catch (error) {
-    console.warn('`isolated-vm` is not installed, skipping tests');
+    console.warn('`isolated-vm` is not installed, skipping tests', error);
   }
 });
 
