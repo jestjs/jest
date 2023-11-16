@@ -591,6 +591,36 @@ describe('iterableEquality', () => {
     const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
   });
+
+  test('returns true when given a symbols keys within equal objects', () => {
+    const KEY = Symbol();
+
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns false when given a symbols keys within inequal objects', () => {
+    const KEY = Symbol();
+
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [1],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(false);
+  });
 });
 
 describe('typeEquality', () => {
