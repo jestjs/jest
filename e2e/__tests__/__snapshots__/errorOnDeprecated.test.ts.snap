@@ -27,15 +27,15 @@ exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
 
     Illegal usage of global \`fail\`, prefer throwing an error, or the \`done.fail\` callback.
 
-       9 | test('fail', () => {
-      10 |   if (true) {
-    > 11 |     fail('The truth hurts!');
+      10 |   // eslint-disable-next-line no-constant-condition
+      11 |   if (true) {
+    > 12 |     fail('The truth hurts!');
          |     ^
-      12 |   }
-      13 | });
-      14 |
+      13 |   }
+      14 | });
+      15 |
 
-      at Object.fail (__tests__/fail.test.js:11:5)"
+      at Object.fail (__tests__/fail.test.js:12:5)"
 `;
 
 exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
@@ -173,15 +173,15 @@ exports[`pending.test.js errors in errorOnDeprecated mode 1`] = `
 
     Illegal usage of global \`pending\`, prefer explicitly skipping a test using \`test.skip\`
 
-       9 | test('pending', () => {
-      10 |   if (true) {
-    > 11 |     pending('This test is pending.');
+      10 |   // eslint-disable-next-line no-constant-condition
+      11 |   if (true) {
+    > 12 |     pending('This test is pending.');
          |     ^
-      12 |   }
-      13 |   expect(false).toBe(true);
-      14 | });
+      13 |   }
+      14 |   expect(false).toBe(true);
+      15 | });
 
-      at Object.pending (__tests__/pending.test.js:11:5)"
+      at Object.pending (__tests__/pending.test.js:12:5)"
 `;
 
 exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
