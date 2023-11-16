@@ -16,10 +16,18 @@ import type {
 } from '@jest/test-result';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
-import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
+import {
+  type JestWorkerFarm,
+  type PromiseWithCustomMessage,
+  Worker,
+} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver} from './testWorker';
-import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
+import {
+  EmittingTestRunner,
+  type TestRunnerOptions,
+  type UnsubscribeFn,
+} from './types';
 
 export type {Test, TestEvents} from '@jest/test-result';
 export type {Config} from '@jest/types';

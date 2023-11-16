@@ -42,7 +42,6 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
-// @ts-expect-error: doesn't exist in v12 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
@@ -106,7 +105,6 @@ export default function collectHandles(): HandleCollectionResult {
         // Handle that supports hasRef
         if ('hasRef' in resource) {
           if (hasWeakRef) {
-            // @ts-expect-error: doesn't exist in v12 typings
             const ref = new WeakRef(resource);
             isActive = () => {
               return ref.deref()?.hasRef() ?? false;

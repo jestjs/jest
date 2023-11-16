@@ -11,7 +11,7 @@
 import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
@@ -138,7 +138,6 @@ export const createMatcher = (
 
 const matchers: MatchersObject = {
   toThrow: createMatcher('toThrow'),
-  toThrowError: createMatcher('toThrowError'),
 };
 
 const toThrowExpectedRegExp = (
@@ -228,10 +227,17 @@ const toThrowExpectedObject = (
   const expectedMessageAndCause = createMessageAndCause(expected);
   const thrownMessageAndCause =
     thrown === null ? null : createMessageAndCause(thrown.value);
+  const isCompareErrorInstance = thrown?.isError && expected instanceof Error;
+  const isExpectedCustomErrorInstance =
+    expected.constructor.name !== Error.name;
+
   const pass =
     thrown !== null &&
     thrown.message === expected.message &&
-    thrownMessageAndCause === expectedMessageAndCause;
+    thrownMessageAndCause === expectedMessageAndCause &&
+    (!isCompareErrorInstance ||
+      !isExpectedCustomErrorInstance ||
+      thrown.value instanceof expected.constructor);
 
   const message = pass
     ? () =>

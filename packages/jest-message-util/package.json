@@ -1,6 +1,6 @@
 {
   "name": "jest-message-util",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -15,18 +15,20 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
     "@babel/code-frame": "^7.12.13",
-    "@jest/types": "workspace:^",
+    "@jest/types": "workspace:*",
     "@types/stack-utils": "^2.0.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "micromatch": "^4.0.4",
-    "pretty-format": "workspace:^",
+    "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.3"
   },

@@ -40,6 +40,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "cjs",
         "jsx",
         "ts",
+        "mts",
+        "cts",
         "tsx",
         "json",
         "node"
@@ -70,8 +72,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
-        "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[tj]s?(x)"
+        "**/__tests__/**/*.?([mc])[jt]s?(x)",
+        "**/?(*.)+(spec|test).?([mc])[jt]s?(x)"
       ],
       "testPathIgnorePatterns": [
         "/node_modules/"
@@ -89,6 +91,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/",
         "<<REPLACED_PNP_PATH>>"
       ],
+      "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
       "watchPathIgnorePatterns": []
     }
   ],
@@ -128,6 +131,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "passWithNoTests": false,
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
+    "runInBand": false,
     "runTestsByPath": false,
     "seed": <<RANDOM_SEED>>,
     "skipFilter": false,
@@ -136,10 +140,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "printBasicPrototype": false
     },
     "testFailureExitCode": 1,
-    "testPathPattern": "",
+    "testPathPatterns": [],
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "none",
     "useStderr": false,
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
     "watch": false,
     "watchAll": false,
     "watchman": true,

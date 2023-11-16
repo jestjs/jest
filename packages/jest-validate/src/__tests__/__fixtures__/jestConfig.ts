@@ -46,7 +46,7 @@ export const defaultConfig = {
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-node',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
   testResultsProcessor: null,
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   useStderr: false,
@@ -104,7 +104,7 @@ export const validConfig = {
   testEnvironment: 'jest-environment-node',
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'circus',
   transform: {

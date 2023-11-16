@@ -36,10 +36,10 @@ import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
 import queueRunner, {
-  Options as QueueRunnerOptions,
-  QueueableFn,
+  type Options as QueueRunnerOptions,
+  type QueueableFn,
 } from '../queueRunner';
-import treeProcessor, {TreeNode} from '../treeProcessor';
+import treeProcessor, {type TreeNode} from '../treeProcessor';
 import type {
   AssertionErrorWithStack,
   Jasmine,

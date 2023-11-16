@@ -51,8 +51,8 @@ test('supports top-level await', () => {
   expect(exitCode).toBe(0);
 });
 
-// minimum version supported by discord.js
-onNodeVersions('>=16.9.0', () => {
+// minimum version supported by discord.js is 16.9, but they use syntax from 16.11
+onNodeVersions('>=16.11.0', () => {
   test('support re-exports from CJS of dual packages', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
@@ -97,7 +97,21 @@ test('runs WebAssembly (Wasm) test with native ESM', () => {
 test('does not enforce import assertions', () => {
   const {exitCode, stderr, stdout} = runJest(
     DIR,
-    ['native-esm-missing-import-assertions.test'],
+    ['native-esm-missing-import-assertions.test.js'],
+    {nodeOptions: '--experimental-vm-modules --no-warnings'},
+  );
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+});
+
+test('properly handle re-exported native modules in ESM via CJS', () => {
+  const {exitCode, stderr, stdout} = runJest(
+    DIR,
+    ['native-esm-native-module.test.js'],
     {nodeOptions: '--experimental-vm-modules --no-warnings'},
   );
 
@@ -113,7 +127,7 @@ onNodeVersions('>=16.12.0', () => {
   test('supports import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
-      ['native-esm-import-assertions.test'],
+      ['native-esm-import-assertions.test.js'],
       {nodeOptions: '--experimental-vm-modules --no-warnings'},
     );
 
@@ -129,7 +143,7 @@ onNodeVersions('<16.12.0', () => {
   test('syntax error for import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
-      ['native-esm-import-assertions.test'],
+      ['native-esm-import-assertions.test.js'],
       {nodeOptions: '--experimental-vm-modules --no-warnings'},
     );
 

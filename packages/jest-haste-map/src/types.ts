@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Stats} from 'graceful-fs';
+// eslint-disable-next-line no-restricted-imports
+import type {Stats} from 'fs';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 

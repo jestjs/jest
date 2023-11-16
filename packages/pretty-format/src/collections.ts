@@ -146,7 +146,7 @@ export function printIteratorValues(
  * without surrounding punctuation (for example, brackets)
  **/
 export function printListItems(
-  list: ArrayLike<unknown>,
+  list: ArrayLike<unknown> | DataView | ArrayBuffer,
   config: Config,
   indentation: string,
   depth: number,
@@ -154,13 +154,16 @@ export function printListItems(
   printer: Printer,
 ): string {
   let result = '';
+  list = list instanceof ArrayBuffer ? new DataView(list) : list;
+  const isDataView = (l: unknown): l is DataView => l instanceof DataView;
+  const length = isDataView(list) ? list.byteLength : list.length;
 
-  if (list.length > 0) {
+  if (length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < length; i++) {
       result += indentationNext;
 
       if (i === config.maxWidth) {
@@ -168,11 +171,17 @@ export function printListItems(
         break;
       }
 
-      if (i in list) {
-        result += printer(list[i], config, indentationNext, depth, refs);
+      if (isDataView(list) || i in list) {
+        result += printer(
+          isDataView(list) ? list.getInt8(i) : list[i],
+          config,
+          indentationNext,
+          depth,
+          refs,
+        );
       }
 
-      if (i < list.length - 1) {
+      if (i < length - 1) {
         result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';

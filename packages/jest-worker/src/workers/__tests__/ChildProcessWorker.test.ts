@@ -13,13 +13,13 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
-  ChildMessage,
-  ChildMessageCall,
+  type ChildMessage,
+  type ChildMessageCall,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
-  WorkerOptions,
+  type WorkerOptions,
 } from '../../types';
 
 jest.useFakeTimers();
@@ -527,7 +527,7 @@ it('should check for memory limits and not restart if under percentage limit', a
   const memoryConfig = {
     limit: 0.2,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -594,7 +594,7 @@ it('should check for memory limits and not restart if under absolute limit', asy
   const memoryConfig = {
     limit: 2600,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -621,7 +621,7 @@ it('should check for memory limits and restart if above percentage limit', async
   const memoryConfig = {
     limit: 0.01,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({
@@ -648,7 +648,7 @@ it('should check for memory limits and restart if above absolute limit', async (
   const memoryConfig = {
     limit: 2000,
     processHeap: 2500,
-    totalMem: 16000,
+    totalMem: 16_000,
   };
 
   const worker = new Worker({

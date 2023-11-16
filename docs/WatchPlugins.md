@@ -172,7 +172,7 @@ For stability and safety reasons, only part of the global configuration keys can
 - [`onlyFailures`](configuration#onlyfailures-boolean)
 - [`reporters`](configuration#reporters-arraymodulename--modulename-options)
 - [`testNamePattern`](cli#--testnamepatternregex)
-- [`testPathPattern`](cli#--testpathpatternregex)
+- [`testPathPatterns`](cli#--testpathpatternsregex)
 - [`updateSnapshot`](cli#--updatesnapshot)
 - [`verbose`](configuration#verbose-boolean)
 

@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -12,13 +12,15 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "expect": "workspace:^",
-    "jest-snapshot": "workspace:^"
+    "expect": "workspace:*",
+    "jest-snapshot": "workspace:*"
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",

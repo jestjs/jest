@@ -83,6 +83,8 @@ jest.doMock(
 const watch = require('../watch').default;
 
 const globalConfig = {
+  rootDir: '',
+  testPathPatterns: [],
   watch: true,
 };
 

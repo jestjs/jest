@@ -7,16 +7,17 @@
 
 import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
-import {JestExpect, jestExpect} from '@jest/expect';
+import {type JestExpect, jestExpect} from '@jest/expect';
 import {
-  AssertionResult,
-  Status,
-  TestFileEvent,
-  TestResult,
+  type AssertionResult,
+  type Status,
+  type TestFileEvent,
+  type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
+import type Runtime from 'jest-runtime';
 import {
   SnapshotState,
   addSerializer,
@@ -31,6 +32,7 @@ import {
   getState as getRunnerState,
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
+import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID} from '../utils';
 
 interface RuntimeGlobals extends Global.TestFrameworkGlobals {
@@ -40,6 +42,7 @@ interface RuntimeGlobals extends Global.TestFrameworkGlobals {
 export const initialize = async ({
   config,
   environment,
+  runtime,
   globalConfig,
   localRequire,
   parentProcess,
@@ -49,6 +52,7 @@ export const initialize = async ({
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
+  runtime: Runtime;
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: string) => T;
   testPath: string;
@@ -128,6 +132,13 @@ export const initialize = async ({
     addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
   }
 
+  addEventHandler(
+    unhandledRejectionHandler(
+      runtime,
+      globalConfig.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    ),
+  );
+
   // Return it back to the outer scope (test runner outside the VM).
   return {globals: globalsObject, snapshotState};
 };
@@ -135,11 +146,13 @@ export const initialize = async ({
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
+  setupAfterEnvPerfStats,
   testPath,
 }: {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   testPath: string;
+  setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
 
@@ -173,6 +186,7 @@ export const runAndTransformResultsToJestFormat = async ({
       return {
         ancestorTitles,
         duration: testResult.duration,
+        failing: testResult.failing,
         failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
@@ -182,6 +196,7 @@ export const runAndTransformResultsToJestFormat = async ({
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
         retryReasons: testResult.retryReasons,
+        startAt: testResult.startedAt,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
       };
@@ -208,8 +223,10 @@ export const runAndTransformResultsToJestFormat = async ({
 
   await dispatch({name: 'teardown'});
 
+  const emptyTestResult = createEmptyTestResult();
+
   return {
-    ...createEmptyTestResult(),
+    ...emptyTestResult,
     console: undefined,
     displayName: config.displayName,
     failureMessage,
@@ -217,6 +234,10 @@ export const runAndTransformResultsToJestFormat = async ({
     numPassingTests,
     numPendingTests,
     numTodoTests,
+    perfStats: {
+      ...emptyTestResult.perfStats,
+      ...setupAfterEnvPerfStats,
+    },
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
@@ -236,7 +257,10 @@ const handleSnapshotStateAfterRetry =
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
-      jestExpect.setState({currentTestName: getTestID(event.test)});
+      jestExpect.setState({
+        currentTestName: getTestID(event.test),
+        testFailing: event.test.failing,
+      });
       break;
     }
     case 'test_done': {

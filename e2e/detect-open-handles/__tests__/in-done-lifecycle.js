@@ -6,7 +6,7 @@
  */
 
 beforeAll(done => {
-  setTimeout(() => {}, 10000);
+  setTimeout(() => {}, 10_000);
   done();
 });
 

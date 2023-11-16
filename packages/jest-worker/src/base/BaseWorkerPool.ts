@@ -9,10 +9,10 @@ import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
-  PoolExitResult,
-  WorkerInterface,
-  WorkerOptions,
-  WorkerPoolOptions,
+  type PoolExitResult,
+  type WorkerInterface,
+  type WorkerOptions,
+  type WorkerPoolOptions,
   WorkerStates,
 } from '../types';
 

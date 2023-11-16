@@ -46,6 +46,11 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {fixStyle: 'inline-type-imports', disallowTypeAnnotations: false},
+        ],
+        '@typescript-eslint/no-import-type-side-effects': 'error',
         '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
@@ -66,6 +71,9 @@ module.exports = {
         // TODO: part of "stylistic" rules, remove explicit activation when that lands
         '@typescript-eslint/no-empty-function': 'error',
         '@typescript-eslint/no-empty-interface': 'error',
+
+        // not needed to be enforced for TS
+        'import/namespace': 'off',
       },
     },
     {
@@ -148,6 +156,13 @@ module.exports = {
         ],
       },
     },
+    {
+      files: 'e2e/coverage-remapping/covered.ts',
+      rules: {
+        'no-constant-binary-expression': 'off',
+        'no-constant-condition': 'off',
+      },
+    },
 
     // 'eslint-plugin-jest' rules for test and test related files
     {
@@ -160,6 +175,7 @@ module.exports = {
         'e2e/failures/macros.js',
         'e2e/test-in-root/*.js',
         'e2e/test-match/test-suites/*',
+        'e2e/test-match-default/dot-spec-tests/*',
         'packages/test-utils/src/ConditionalTest.ts',
       ],
       env: {'jest/globals': true},
@@ -209,6 +225,7 @@ module.exports = {
         'jest/no-focused-tests': 'off',
         'jest/require-to-throw-message': 'off',
         'no-console': 'off',
+        'no-constant-condition': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
@@ -272,6 +289,16 @@ module.exports = {
       files: ['examples/**/*'],
       rules: {
         'no-restricted-imports': 'off',
+      },
+    },
+    {
+      files: ['examples/angular/**/*'],
+      rules: {
+        // Angular DI for some reason doesn't work with type imports
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+        ],
       },
     },
     {
@@ -412,6 +439,7 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
+    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -469,7 +497,8 @@ module.exports = {
       {allow: ['warn', 'error', 'time', 'timeEnd', 'timeStamp']},
     ],
     'no-const-assign': 'error',
-    'no-constant-condition': 'off',
+    'no-constant-condition': 'error',
+    'no-constant-binary-expression': 'error',
     'no-continue': 'off',
     'no-control-regex': 'off',
     'no-debugger': 'error',
@@ -599,6 +628,7 @@ module.exports = {
     'unicorn/explicit-length-check': 'error',
     'unicorn/no-array-for-each': 'error',
     'unicorn/no-negated-condition': 'error',
+    'unicorn/numeric-separators-style': 'error',
     'unicorn/prefer-default-parameters': 'error',
     'unicorn/prefer-includes': 'error',
     'unicorn/template-indent': 'error',

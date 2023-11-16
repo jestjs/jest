@@ -86,6 +86,7 @@ export const makeTest = (
   startedAt: null,
   status: null,
   timeout,
+  unhandledRejectionErrorByPromise: new Map(),
 });
 
 // Traverse the tree of describe blocks and return true if at least one describe
@@ -376,10 +377,12 @@ export const makeSingleTestResult = (
     duration: test.duration,
     errors: errorsDetailed.map(getErrorStack),
     errorsDetailed,
+    failing: test.failing,
     invocations: test.invocations,
     location,
     numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    startedAt: test.startedAt,
     status,
     testPath: Array.from(testPath),
   };
@@ -501,6 +504,7 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
+    failing: testResult.failing,
     failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
     fullName,

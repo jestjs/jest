@@ -12,7 +12,7 @@ import type {
   TestContext,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {testPathPatternToRegExp} from 'jest-util';
+import {TestPathPatterns} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
@@ -212,15 +212,14 @@ export default class SummaryReporter extends BaseReporter {
     testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
+    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests
         ? ' related to files matching '
         : ' matching ';
 
-      return (
-        chalk.dim(prefix) +
-        testPathPatternToRegExp(globalConfig.testPathPattern).toString()
-      );
+      return chalk.dim(prefix) + testPathPatterns.toPretty();
     };
 
     let testInfo = '';
@@ -229,7 +228,7 @@ export default class SummaryReporter extends BaseReporter {
       testInfo = chalk.dim(' within paths');
     } else if (globalConfig.onlyChanged) {
       testInfo = chalk.dim(' related to changed files');
-    } else if (globalConfig.testPathPattern) {
+    } else if (testPathPatterns.isSet()) {
       testInfo = getMatchingTestsInfo();
     }
 

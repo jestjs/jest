@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
-  MatcherHintOptions,
+  type MatcherHintOptions,
   diff,
   ensureNoExpected,
   ensureNumbers,
@@ -86,7 +86,7 @@ describe('stringify()', () => {
   test('reduces maxDepth if stringifying very large objects', () => {
     const big: any = {a: 1, b: {}};
     const small: any = {a: 1, b: {}};
-    for (let i = 0; i < 10000; i += 1) {
+    for (let i = 0; i < 10_000; i += 1) {
       big.b[i] = 'test';
     }
 

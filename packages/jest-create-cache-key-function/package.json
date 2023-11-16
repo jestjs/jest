@@ -1,17 +1,17 @@
 {
   "name": "@jest/create-cache-key-function",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-create-cache-key-function"
   },
   "dependencies": {
-    "@jest/types": "workspace:^"
+    "@jest/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "*",
-    "jest-util": "workspace:^"
+    "jest-util": "workspace:*"
   },
   "engines": {
     "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
@@ -22,6 +22,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"

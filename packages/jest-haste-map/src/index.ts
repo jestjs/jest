@@ -10,11 +10,11 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {deserialize, serialize} from 'v8';
-import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
+import {type Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {invariant, requireOrImportModule} from 'jest-util';
-import {JestWorkerFarm, Worker} from 'jest-worker';
+import {type JestWorkerFarm, Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -124,7 +124,7 @@ export type {
 } from './types';
 
 const CHANGE_INTERVAL = 30;
-const MAX_WAIT_TIME = 240000;
+const MAX_WAIT_TIME = 240_000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']

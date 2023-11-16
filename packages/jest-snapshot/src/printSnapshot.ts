@@ -11,8 +11,8 @@ import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptionsColor,
+  type Diff,
+  type DiffOptionsColor,
   diffLinesUnified,
   diffLinesUnified2,
   diffStringsRaw,
@@ -23,7 +23,7 @@ import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
   INVERTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
@@ -233,7 +233,7 @@ export const printPropertiesAndReceived = (
   )}${printReceived(received)}`;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printSnapshotAndReceived = (
   a: string, // snapshot without extra line breaks

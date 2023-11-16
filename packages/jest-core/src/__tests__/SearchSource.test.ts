@@ -14,7 +14,7 @@ import Runtime from 'jest-runtime';
 import SearchSource from '../SearchSource';
 import type {Filter} from '../types';
 
-jest.setTimeout(15000);
+jest.setTimeout(15_000);
 
 jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual<typeof import('fs')>('fs');
@@ -114,7 +114,8 @@ describe('SearchSource', () => {
       const {tests: paths} = await searchSource.getTestPaths(
         {
           ...config,
-          testPathPattern: '',
+          ...initialOptions,
+        testPathPatterns: [],
         },
         null,
         filter,

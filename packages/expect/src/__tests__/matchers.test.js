@@ -666,8 +666,8 @@ describe('.toEqual()', () => {
       [, , 2, ,],
     ],
     [
-      Object.assign([], {4294967295: 1}),
-      Object.assign([], {4294967295: 2}), // issue 11056
+      Object.assign([], {4_294_967_295: 1}),
+      Object.assign([], {4_294_967_295: 2}), // issue 11056
     ],
     [
       // eslint-disable-next-line no-useless-computed-key
@@ -1658,7 +1658,7 @@ describe('.toBeCloseTo', () => {
   for (const [n1, n2] of [
     [0, 0.01],
     [1, 1.23],
-    [1.23, 1.2249999],
+    [1.23, 1.224_999_9],
     [Infinity, -Infinity],
     [Infinity, 1.23],
     [-Infinity, -1.23],
@@ -1673,8 +1673,8 @@ describe('.toBeCloseTo', () => {
   }
 
   for (const [n1, n2, p] of [
-    [3.141592e-7, 3e-7, 8],
-    [56789, 51234, -4],
+    [3.141_592e-7, 3e-7, 8],
+    [56_789, 51_234, -4],
   ]) {
     it(`{pass: false} expect(${n1}).toBeCloseTo(${n2}, ${p})`, () => {
       jestExpect(n1).not.toBeCloseTo(n2, p);
@@ -1688,8 +1688,8 @@ describe('.toBeCloseTo', () => {
   for (const [n1, n2, p] of [
     [0, 0.1, 0],
     [0, 0.0001, 3],
-    [0, 0.000004, 5],
-    [2.0000002, 2, 5],
+    [0, 0.000_004, 5],
+    [2.000_000_2, 2, 5],
   ]) {
     it(`{pass: true} expect(${n1}).toBeCloseTo(${n2}, ${p})`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);

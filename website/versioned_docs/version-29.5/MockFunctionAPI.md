@@ -736,7 +736,7 @@ export function setDateNow(now: number): jest.Spied<typeof Date.now> {
 ```
 
 ```ts
-import {afterEach, expect, jest, test} from '@jest/globals';
+import {afterEach, expect, type jest, test} from '@jest/globals';
 import {setDateNow} from './__utils__/setDateNow';
 
 let spiedDateNow: jest.Spied<typeof Date.now> | undefined = undefined;
@@ -746,7 +746,7 @@ afterEach(() => {
 });
 
 test('renders correctly with a given date', () => {
-  spiedDateNow = setDateNow(1482363367071);
+  spiedDateNow = setDateNow(1_482_363_367_071);
   // ...
 
   expect(spiedDateNow).toHaveBeenCalledTimes(1);
