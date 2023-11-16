@@ -316,6 +316,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     ],
   ),
   testRunner: 'circus',
+  testTimeout: 5000,
   transform: {
     '\\.js$': '<rootDir>/preprocessor.js',
   },
