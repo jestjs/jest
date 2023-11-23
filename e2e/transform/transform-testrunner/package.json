@@ -4,8 +4,8 @@
     "testRunner": "<rootDir>/test-runner.ts"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@jest/test-result": "link:../../../packages/jest-test-result"
   }
 }

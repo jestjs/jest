@@ -24,15 +24,15 @@
   "dependencies": {
     "@babel/template": "^7.3.3",
     "@babel/types": "^7.3.3",
-    "@types/babel__core": "^7.1.14",
+    "@types/babel__core": "^7.20.4",
     "@types/babel__traverse": "^7.0.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-react": "^7.12.1",
-    "@babel/preset-typescript": "^7.0.0",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@prettier/sync": "^0.3.0",
-    "@types/babel__template": "^7.0.2",
+    "@types/babel__template": "^7.4.4",
     "@types/node": "*",
     "@types/prettier": "^2.1.5",
     "babel-plugin-tester": "^11.0.2",
