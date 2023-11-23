@@ -95,6 +95,7 @@ export function findClosestPackageJson(start: string): string | undefined {
     dir = dirname(dir);
   }
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const pkgJsonFile = resolve(dir, './package.json');
     const hasPackageJson = isFile(pkgJsonFile);

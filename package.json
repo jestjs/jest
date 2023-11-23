@@ -12,7 +12,8 @@
     "@crowdin/cli": "^3.5.2",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
-    "@lerna-lite/cli": "1.13.0",
+    "@lerna-lite/cli": "^2.0.0",
+    "@lerna-lite/publish": "^2.0.0",
     "@microsoft/api-extractor": "^7.35.0",
     "@tsconfig/node16": "^16.1.0",
     "@tsd/typescript": "^5.0.4",
@@ -202,5 +203,5 @@
     "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@3.7.0+sha256.7bf0c78a106332886ea4e59641fd819b1af953edcd72c4d93a32b1c71000ee67"
 }

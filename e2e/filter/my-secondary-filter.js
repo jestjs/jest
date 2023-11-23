@@ -9,6 +9,6 @@
 
 module.exports = function (tests) {
   return {
-    filtered: tests.filter(t => t.includes('foo')).map(test => ({test})),
+    filtered: tests.filter(t => t.includes('foo')),
   };
 };
