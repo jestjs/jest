@@ -156,6 +156,13 @@ module.exports = {
         ],
       },
     },
+    {
+      files: 'e2e/coverage-remapping/covered.ts',
+      rules: {
+        'no-constant-binary-expression': 'off',
+        'no-constant-condition': 'off',
+      },
+    },
 
     // 'eslint-plugin-jest' rules for test and test related files
     {
@@ -218,6 +225,7 @@ module.exports = {
         'jest/no-focused-tests': 'off',
         'jest/require-to-throw-message': 'off',
         'no-console': 'off',
+        'no-constant-condition': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
@@ -489,7 +497,8 @@ module.exports = {
       {allow: ['warn', 'error', 'time', 'timeEnd', 'timeStamp']},
     ],
     'no-const-assign': 'error',
-    'no-constant-condition': 'off',
+    'no-constant-condition': 'error',
+    'no-constant-binary-expression': 'error',
     'no-continue': 'off',
     'no-control-regex': 'off',
     'no-debugger': 'error',

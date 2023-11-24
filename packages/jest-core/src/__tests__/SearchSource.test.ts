@@ -12,6 +12,7 @@ import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
 import Runtime from 'jest-runtime';
 import SearchSource from '../SearchSource';
+import type {Filter} from '../types';
 
 jest.setTimeout(15_000);
 
@@ -105,13 +106,20 @@ describe('SearchSource', () => {
   });
 
   describe('getTestPaths', () => {
-    const getTestPaths = async (initialOptions: Config.InitialOptions) => {
+    const getTestPaths = async (
+      initialOptions: Config.InitialOptions,
+      filter?: Filter,
+    ) => {
       const {searchSource, config} = await initSearchSource(initialOptions);
-      const {tests: paths} = await searchSource.getTestPaths({
-        ...config,
-        ...initialOptions,
-        testPathPatterns: [],
-      });
+      const {tests: paths} = await searchSource.getTestPaths(
+        {
+          ...config,
+          ...initialOptions,
+          testPathPatterns: [],
+        },
+        null,
+        filter,
+      );
       return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
     };
 
@@ -291,6 +299,23 @@ describe('SearchSource', () => {
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
+    });
+
+    it('filter tests based on an optional filter method', async () => {
+      const filterFunction = (testPaths: Array<string>) =>
+        Promise.resolve({
+          filtered: testPaths.filter(testPath => testPath.includes('test.jsx')),
+        });
+      const paths = await getTestPaths(
+        {
+          id,
+          rootDir,
+        },
+        filterFunction,
+      );
+
+      expect(paths).toHaveLength(1);
+      expect(paths[0]).toStrictEqual(path.normalize('__testtests__/test.jsx'));
     });
   });
 

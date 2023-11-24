@@ -194,13 +194,14 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--filter=<file>`
 
-Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with shape `{ filtered: Array<{ test: string }> }`. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests, e.g.
+Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running and must return an object with shape `{ filtered: Array<string> }` containing the tests that should be run by Jest. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests.
 
 ```js title="my-filter.js"
+// This filter when applied will only run tests ending in .spec.js (not the best way to do it, but it's just an example):
+const filteringFunction = testPath => testPath.endsWith('.spec.js');
+
 module.exports = testPaths => {
-  const allowedPaths = testPaths
-    .filter(filteringFunction)
-    .map(test => ({test})); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
+  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
 
   return {
     filtered: allowedPaths,
