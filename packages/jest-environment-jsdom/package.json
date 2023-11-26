@@ -26,7 +26,7 @@
     "@types/node": "*",
     "jest-mock": "workspace:*",
     "jest-util": "workspace:*",
-    "jsdom": "^22.0.0"
+    "jsdom": "^23.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*"
