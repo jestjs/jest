@@ -2972,7 +2972,7 @@ __metadata:
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    "@lerna-lite/cli": ^2.0.0
+    "@lerna-lite/cli": ^3.0.0
     "@lerna-lite/publish": ^2.0.0
     "@microsoft/api-extractor": ^7.35.0
     "@tsconfig/node16": ^16.1.0
@@ -3342,7 +3342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lerna-lite/cli@npm:2.7.0, @lerna-lite/cli@npm:^2.0.0":
+"@lerna-lite/cli@npm:2.7.0":
   version: 2.7.0
   resolution: "@lerna-lite/cli@npm:2.7.0"
   dependencies:
@@ -3370,6 +3370,37 @@ __metadata:
   bin:
     lerna: dist/cli.js
   checksum: 6f82560f0e35fb6ff069e74dadf079949837e0825908c6156013d499a347967734e45a3d7c8299d1a87d4ee2c79bee99494c56262b8658a3796772ddc0b076ad
+  languageName: node
+  linkType: hard
+
+"@lerna-lite/cli@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@lerna-lite/cli@npm:3.0.0"
+  dependencies:
+    "@lerna-lite/core": 3.0.0
+    "@lerna-lite/init": 3.0.0
+    dedent: ^1.5.1
+    dotenv: ^16.3.1
+    import-local: ^3.1.0
+    load-json-file: ^7.0.1
+    npmlog: ^7.0.1
+    yargs: ^17.7.2
+  peerDependenciesMeta:
+    "@lerna-lite/exec":
+      optional: true
+    "@lerna-lite/list":
+      optional: true
+    "@lerna-lite/publish":
+      optional: true
+    "@lerna-lite/run":
+      optional: true
+    "@lerna-lite/version":
+      optional: true
+    "@lerna-lite/watch":
+      optional: true
+  bin:
+    lerna: dist/cli.js
+  checksum: 431374b7def4d8e49ea76201e4e79d7d67c28abab7cb3c1c3e5bda03cdc52b27925e46b2cd16a1f68a0ce3e3412c533dcf778be7255b50918a83450a374f3573
   languageName: node
   linkType: hard
 
@@ -3407,6 +3438,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lerna-lite/core@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@lerna-lite/core@npm:3.0.0"
+  dependencies:
+    "@npmcli/run-script": ^7.0.2
+    chalk: ^5.3.0
+    clone-deep: ^4.0.1
+    config-chain: ^1.1.13
+    cosmiconfig: ^8.3.6
+    dedent: ^1.5.1
+    execa: ^8.0.1
+    fs-extra: ^11.1.1
+    glob-parent: ^6.0.2
+    globby: ^14.0.0
+    inquirer: ^9.2.12
+    is-ci: ^3.0.1
+    json5: ^2.2.3
+    load-json-file: ^7.0.1
+    minimatch: ^9.0.3
+    npm-package-arg: ^11.0.1
+    npmlog: ^7.0.1
+    p-map: ^6.0.0
+    p-queue: ^7.4.1
+    resolve-from: ^5.0.0
+    semver: ^7.5.4
+    slash: ^5.1.0
+    strong-log-transformer: ^2.1.0
+    write-file-atomic: ^5.0.1
+    write-json-file: ^5.0.0
+    write-pkg: ^6.0.1
+  checksum: 597cb3e32c7fc7562e17a5a55d534f84d7661bfe6bdcec5e69bbc1ac775875efe31552212f7bced166bcb1b55deb0afd13069ab70832271b98369fe3023084d7
+  languageName: node
+  linkType: hard
+
 "@lerna-lite/init@npm:2.7.0":
   version: 2.7.0
   resolution: "@lerna-lite/init@npm:2.7.0"
@@ -3416,6 +3481,18 @@ __metadata:
     p-map: ^6.0.0
     write-json-file: ^5.0.0
   checksum: b47e27bc81f0a9f5054bf2dce95992a75836a9208f9f879fa21efb9a54a06c4d48e226094e6260b8969dd08100d6596ed2d6c5bf87a09d3e30d9767c27c9d9f0
+  languageName: node
+  linkType: hard
+
+"@lerna-lite/init@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@lerna-lite/init@npm:3.0.0"
+  dependencies:
+    "@lerna-lite/core": 3.0.0
+    fs-extra: ^11.1.1
+    p-map: ^6.0.0
+    write-json-file: ^5.0.0
+  checksum: cf92640a36eaa12fe947157590e7679af03749b8df1f69ed3f1883dd6fac9d0799d9598172884f1867bd4c115ae87bda9713e79c48e88864f0cb152329347771
   languageName: node
   linkType: hard
 
@@ -4468,6 +4545,13 @@ __metadata:
   version: 5.6.0
   resolution: "@sindresorhus/is@npm:5.6.0"
   checksum: 2e6e0c3acf188dcd9aea0f324ac1b6ad04c9fc672392a7b5a1218512fcde066965797eba8b9fe2108657a504388bd4a6664e6e6602555168e828a6df08b9f10e
+  languageName: node
+  linkType: hard
+
+"@sindresorhus/merge-streams@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@sindresorhus/merge-streams@npm:1.0.0"
+  checksum: 453c2a28164113a5ec4fd23ba636e291a4112f6ee9e91cd5476b9a96e0fc9ee5ff40d405fe81bbf284c9773b7ed718a3a0f31df7895a0efd413b1f9775d154fe
   languageName: node
   linkType: hard
 
@@ -10257,16 +10341,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "fast-glob@npm:3.3.1"
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1, fast-glob@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "fast-glob@npm:3.3.2"
   dependencies:
     "@nodelib/fs.stat": ^2.0.2
     "@nodelib/fs.walk": ^1.2.3
     glob-parent: ^5.1.2
     merge2: ^1.3.0
     micromatch: ^4.0.4
-  checksum: b6f3add6403e02cf3a798bfbb1183d0f6da2afd368f27456010c0bc1f9640aea308243d4cb2c0ab142f618276e65ecb8be1661d7c62a7b4e5ba774b9ce5432e5
+  checksum: 900e4979f4dbc3313840078419245621259f349950411ca2fa445a2f9a1a6d98c3b5e7e0660c5ccd563aa61abe133a21765c6c0dec8e57da1ba71d8000b05ec1
   languageName: node
   linkType: hard
 
@@ -11178,6 +11262,20 @@ __metadata:
     merge2: ^1.4.1
     slash: ^4.0.0
   checksum: f3d84ced58a901b4fcc29c846983108c426631fe47e94872868b65565495f7bee7b3defd68923bd480582771fd4bbe819217803a164a618ad76f1d22f666f41e
+  languageName: node
+  linkType: hard
+
+"globby@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "globby@npm:14.0.0"
+  dependencies:
+    "@sindresorhus/merge-streams": ^1.0.0
+    fast-glob: ^3.3.2
+    ignore: ^5.2.4
+    path-type: ^5.0.0
+    slash: ^5.1.0
+    unicorn-magic: ^0.1.0
+  checksum: f331b42993e420c8f2b61a6ca062276977ea6d95f181640ff018f00200f4fe5b50f1fae7540903483e6570ca626fe16234ab88e848d43381a2529220548a9d39
   languageName: node
   linkType: hard
 
@@ -17408,6 +17506,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-type@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "path-type@npm:5.0.0"
+  checksum: 15ec24050e8932c2c98d085b72cfa0d6b4eeb4cbde151a0a05726d8afae85784fc5544f733d8dfc68536587d5143d29c0bd793623fad03d7e61cc00067291cd5
+  languageName: node
+  linkType: hard
+
 "pend@npm:~1.2.0":
   version: 1.2.0
   resolution: "pend@npm:1.2.0"
@@ -21366,6 +21471,13 @@ __metadata:
   version: 2.1.0
   resolution: "unicode-property-aliases-ecmascript@npm:2.1.0"
   checksum: 243524431893649b62cc674d877bd64ef292d6071dd2fd01ab4d5ad26efbc104ffcd064f93f8a06b7e4ec54c172bf03f6417921a0d8c3a9994161fe1f88f815b
+  languageName: node
+  linkType: hard
+
+"unicorn-magic@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "unicorn-magic@npm:0.1.0"
+  checksum: 48c5882ca3378f380318c0b4eb1d73b7e3c5b728859b060276e0a490051d4180966beeb48962d850fd0c6816543bcdfc28629dcd030bb62a286a2ae2acb5acb6
   languageName: node
   linkType: hard
 
