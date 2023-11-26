@@ -2899,6 +2899,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/environment-jsdom-abstract@workspace:*, @jest/environment-jsdom-abstract@workspace:packages/jest-environment-jsdom-abstract":
+  version: 0.0.0-use.local
+  resolution: "@jest/environment-jsdom-abstract@workspace:packages/jest-environment-jsdom-abstract"
+  dependencies:
+    "@jest/environment": "workspace:*"
+    "@jest/fake-timers": "workspace:*"
+    "@jest/types": "workspace:*"
+    "@types/jsdom": ^21.1.1
+    "@types/node": "*"
+    jest-mock: "workspace:*"
+    jest-util: "workspace:*"
+    jsdom: ^22.0.0
+  peerDependencies:
+    canvas: ^2.5.0
+    jsdom: "*"
+  peerDependenciesMeta:
+    canvas:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@jest/environment@workspace:*, @jest/environment@workspace:packages/jest-environment":
   version: 0.0.0-use.local
   resolution: "@jest/environment@workspace:packages/jest-environment"
@@ -13018,13 +13039,10 @@ __metadata:
   resolution: "jest-environment-jsdom@workspace:packages/jest-environment-jsdom"
   dependencies:
     "@jest/environment": "workspace:*"
-    "@jest/fake-timers": "workspace:*"
+    "@jest/environment-jsdom-abstract": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    "@jest/types": "workspace:*"
     "@types/jsdom": ^21.1.1
     "@types/node": "*"
-    jest-mock: "workspace:*"
-    jest-util: "workspace:*"
     jsdom: ^22.0.0
   peerDependencies:
     canvas: ^2.5.0

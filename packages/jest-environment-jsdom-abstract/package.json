@@ -1,10 +1,10 @@
 {
-  "name": "jest-environment-jsdom",
+  "name": "@jest/environment-jsdom-abstract",
   "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
-    "directory": "packages/jest-environment-jsdom"
+    "directory": "packages/jest-environment-jsdom-abstract"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -20,16 +20,19 @@
   },
   "dependencies": {
     "@jest/environment": "workspace:*",
-    "@jest/environment-jsdom-abstract": "workspace:*",
+    "@jest/fake-timers": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/jsdom": "^21.1.1",
     "@types/node": "*",
-    "jsdom": "^22.0.0"
+    "jest-mock": "workspace:*",
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:*"
+    "jsdom": "^22.0.0"
   },
   "peerDependencies": {
-    "canvas": "^2.5.0"
+    "canvas": "^2.5.0",
+    "jsdom": "*"
   },
   "peerDependenciesMeta": {
     "canvas": {
