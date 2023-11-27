@@ -81,9 +81,27 @@ const resolveConfigPathByTraversing = (
     const jestKey = getPackageJsonJestKey(packageJson);
 
     if (jestKey) {
-      const resolvedKey = resolveJestKey(jestKey, packagePath);
+      if (typeof jestKey === 'string') {
+        const absolutePath = path.isAbsolute(jestKey)
+          ? jestKey
+          : path.resolve(packagePath, jestKey);
 
-      configFiles.push(resolvedKey || packageJson);
+        if (!isFile(absolutePath)) {
+          throw new ValidationError(
+            `${BULLET}Validation Error`,
+            `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
+              'Jest expects the string configuration to point to a file, but it does not. ' +
+              `Please check your Jest configuration in ${chalk.bold(
+                packageJson,
+              )}.`,
+            DOCUMENTATION_NOTE,
+          );
+        }
+
+        configFiles.push(absolutePath);
+      } else {
+        configFiles.push(packageJson);
+      }
     }
   }
 
@@ -91,8 +109,8 @@ const resolveConfigPathByTraversing = (
     throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
-  if (configFiles.length > 0 || packageJson) {
-    return configFiles[0] ?? packageJson;
+  if (configFiles.length > 0) {
+    return configFiles[0];
   }
 
   // This is the system root.
@@ -119,26 +137,18 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const resolveJestKey = (jestKeyContent: any, packagePath: string) => {
-  if (jestKeyContent && typeof jestKeyContent === 'string') {
-    const resolvedConfigFile = path.resolve(packagePath, jestKeyContent);
-
-    return isFile(resolvedConfigFile) ? resolvedConfigFile : undefined;
-  }
-
-  return undefined;
-};
-
-const getPackageJsonJestKey = (packageJsonPath: string) => {
+const getPackageJsonJestKey = (
+  packagePath: string,
+): Record<string, unknown> | string | undefined => {
   try {
-    const packageContent = fs.readFileSync(packageJsonPath, 'utf8');
-    const parsed = JSON.parse(packageContent);
+    const content = fs.readFileSync(packagePath, 'utf8');
+    const parsedContent = JSON.parse(content);
 
-    if ('jest' in parsed) return parsed.jest ?? false;
-  } catch {
-    // If package is not a valid JSON
-    return false;
-  }
+    if ('jest' in parsedContent) {
+      return parsedContent.jest;
+    }
+  } catch {}
+  return undefined;
 };
 
 const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>

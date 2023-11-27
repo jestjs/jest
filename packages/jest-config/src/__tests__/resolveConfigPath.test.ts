@@ -104,80 +104,11 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       });
       writeFiles(DIR, {[relativeAnyFilePath]: ''});
 
-      const result = resolveConfigPath(
-        path.dirname(absolutePackageJsonPath),
-        DIR,
+      expect(() =>
+        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
+      ).toThrow(
+        'Jest expects the string configuration to point to a file, but it does not.',
       );
-
-      expect(result).toBe(absolutePackageJsonPath);
-    });
-
-    test(`directory path with "${extension}"`, () => {
-      const relativePackageJsonPath = 'a/b/c/package.json';
-      const absolutePackageJsonPath = path.resolve(
-        DIR,
-        relativePackageJsonPath,
-      );
-      const relativeJestConfigPath = `a/b/c/jest.config${extension}`;
-      const absoluteJestConfigPath = path.resolve(DIR, relativeJestConfigPath);
-
-      // no configs yet. should throw
-      writeFiles(DIR, {[`a/b/c/some_random_file${extension}`]: ''});
-
-      expect(() =>
-        // absolute
-        resolveConfigPath(path.dirname(absoluteJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
-
-      expect(() =>
-        // relative
-        resolveConfigPath(path.dirname(relativeJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
-
-      writeFiles(DIR, {[relativePackageJsonPath]: ''});
-
-      // absolute
-      expect(
-        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toBe(absolutePackageJsonPath);
-
-      // relative
-      expect(
-        resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toBe(absolutePackageJsonPath);
-
-      // jest.config.js takes precedence
-      writeFiles(DIR, {[relativeJestConfigPath]: ''});
-
-      // absolute
-      expect(
-        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toBe(absoluteJestConfigPath);
-
-      // relative
-      expect(
-        resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toBe(absoluteJestConfigPath);
-
-      // jest.config.js and package.json with 'jest' cannot be used together
-      writeFiles(DIR, {[relativePackageJsonPath]: JSON.stringify({jest: {}})});
-
-      // absolute
-      expect(() =>
-        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
-
-      // relative
-      expect(() =>
-        resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
-
-      expect(() => {
-        resolveConfigPath(
-          path.join(path.dirname(relativePackageJsonPath), 'j/x/b/m/'),
-          DIR,
-        );
-      }).toThrow(NO_ROOT_DIR_ERROR_PATTERN);
     });
   },
 );
