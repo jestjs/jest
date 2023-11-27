@@ -6,7 +6,7 @@
  *
  */
 
-import Suite, {Attributes} from '../jasmine/Suite';
+import Suite, {type Attributes} from '../jasmine/Suite';
 
 describe('Suite', () => {
   let suite: Suite;

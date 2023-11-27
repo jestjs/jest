@@ -18,9 +18,11 @@ import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
+/* eslint-disable import/no-duplicates */
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
+/* eslint-enable */
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -52,6 +54,9 @@ test('should support importing node core modules', () => {
     jest: {
       testEnvironment: 'node',
       transform: {},
+    },
+    optionalDependencies: {
+      'isolated-vm': '^4.6.0',
     },
     type: 'module',
   });

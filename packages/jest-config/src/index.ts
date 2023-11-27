@@ -121,6 +121,7 @@ const groupOptions = (
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
     runTestsByPath: options.runTestsByPath,
     seed: options.seed,
     shard: options.shard,
@@ -130,13 +131,15 @@ const groupOptions = (
     snapshotFormat: options.snapshotFormat,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
-    testPathPattern: options.testPathPattern,
+    testPathPatterns: options.testPathPatterns,
     testResultsProcessor: options.testResultsProcessor,
     testSequencer: options.testSequencer,
     testTimeout: options.testTimeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watch: options.watch,
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
@@ -199,9 +202,12 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
+    testTimeout: options.testTimeout,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
   }),
 });
@@ -356,7 +362,7 @@ export async function readConfigs(
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
     configs = [parsedConfig.projectConfig];
-    if (globalConfig.projects && globalConfig.projects.length) {
+    if (globalConfig.projects && globalConfig.projects.length > 0) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
       // In other words, if this was a single project,
@@ -417,7 +423,7 @@ export async function readConfigs(
     }
   }
 
-  if (!globalConfig || !configs.length) {
+  if (!globalConfig || configs.length === 0) {
     throw new Error('jest: No configuration found for any project.');
   }
 

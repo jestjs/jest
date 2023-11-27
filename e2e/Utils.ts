@@ -9,9 +9,9 @@ import * as path from 'path';
 import * as util from 'util';
 import dedent from 'dedent';
 import {
-  ExecaSyncError,
-  SyncOptions as ExecaSyncOptions,
-  ExecaSyncReturnValue,
+  type ExecaSyncError,
+  type SyncOptions as ExecaSyncOptions,
+  type ExecaSyncReturnValue,
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';
@@ -128,7 +128,7 @@ export const writeFiles = (
   files: {[filename: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(files).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(files)) {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
@@ -138,7 +138,7 @@ export const writeFiles = (
       path.resolve(directory, ...fileOrPath.split('/')),
       dedent(files[fileOrPath]),
     );
-  });
+  }
 };
 
 export const writeSymlinks = (
@@ -146,7 +146,7 @@ export const writeSymlinks = (
   symlinks: {[existingFile: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(symlinks).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(symlinks)) {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
@@ -158,7 +158,7 @@ export const writeSymlinks = (
       path.resolve(directory, ...symLinkPath.split('/')),
       'junction',
     );
-  });
+  }
 };
 
 const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;

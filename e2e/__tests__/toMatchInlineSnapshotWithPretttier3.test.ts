@@ -28,26 +28,6 @@ afterAll(() => {
   cleanup(JEST_CONFIG_PATH);
 });
 
-test('throws correct error', () => {
-  writeFiles(DIR, {
-    'jest.config.js': `
-        module.exports = {prettierPath: require.resolve('prettier')};
-      `,
-  });
-  writeFiles(TESTS_DIR, {
-    'test.js': `
-        test('snapshots', () => {
-          expect(3).toMatchInlineSnapshot();
-        });
-      `,
-  });
-  const {stderr, exitCode} = runJest(DIR, ['--ci=false']);
-  expect(stderr).toContain(
-    'Jest: Inline Snapshots are not supported when using Prettier 3.0.0 or above.',
-  );
-  expect(exitCode).toBe(1);
-});
-
 test('supports passing `null` as `prettierPath`', () => {
   writeFiles(DIR, {
     'jest.config.js': `
@@ -70,6 +50,24 @@ test('supports passing `prettier-2` as `prettierPath`', () => {
   writeFiles(DIR, {
     'jest.config.js': `
         module.exports = {prettierPath: require.resolve('prettier-2')};
+      `,
+  });
+  writeFiles(TESTS_DIR, {
+    'test.js': `
+        test('snapshots', () => {
+          expect(3).toMatchInlineSnapshot();
+        });
+      `,
+  });
+  const {stderr, exitCode} = runJest(DIR, ['--ci=false']);
+  expect(stderr).toContain('Snapshots:   1 written, 1 total');
+  expect(exitCode).toBe(0);
+});
+
+test('supports passing `prettier` as `prettierPath`', () => {
+  writeFiles(DIR, {
+    'jest.config.js': `
+        module.exports = {prettierPath: require.resolve('prettier')};
       `,
   });
   writeFiles(TESTS_DIR, {

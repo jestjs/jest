@@ -20,7 +20,7 @@ Another use-case for `@types/jest` is a typed Jest config as those types are not
 
 ```ts
 // jest.config.ts
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const config: Config.InitialOptions = {
   // some typed config

@@ -7,8 +7,8 @@
 
 import {
   PatternPrompt,
-  Prompt,
-  ScrollOptions,
+  type Prompt,
+  type ScrollOptions,
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';

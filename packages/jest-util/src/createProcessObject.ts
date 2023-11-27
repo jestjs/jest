@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
@@ -79,7 +80,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function createProcessObject(): NodeJS.Process {
+export default function createProcessObject(): typeof Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
@@ -92,7 +93,7 @@ export default function createProcessObject(): NodeJS.Process {
   } catch (e: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      e.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n${e.message}`;
+      e.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/jestjs/jest\n\n${e.message}`;
 
       throw e;
     }

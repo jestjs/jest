@@ -7,7 +7,10 @@
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
+import {
+  type SyncOpts as UpstreamResolveOptions,
+  sync as resolveSync,
+} from 'resolve';
 import * as resolve from 'resolve.exports';
 import {
   findClosestPackageJson,

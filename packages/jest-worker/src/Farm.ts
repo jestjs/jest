@@ -8,17 +8,17 @@
 import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
-  ChildMessage,
-  OnCustomMessage,
-  OnEnd,
-  OnStart,
-  PromiseWithCustomMessage,
-  QueueChildMessage,
-  TaskQueue,
-  WorkerCallback,
-  WorkerFarmOptions,
-  WorkerInterface,
-  WorkerSchedulingPolicy,
+  type ChildMessage,
+  type OnCustomMessage,
+  type OnEnd,
+  type OnStart,
+  type PromiseWithCustomMessage,
+  type QueueChildMessage,
+  type TaskQueue,
+  type WorkerCallback,
+  type WorkerFarmOptions,
+  type WorkerInterface,
+  type WorkerSchedulingPolicy,
 } from './types';
 
 export default class Farm {
@@ -55,7 +55,7 @@ export default class Farm {
     };
 
     const onCustomMessage: OnCustomMessage = message => {
-      customMessageListeners.forEach(listener => listener(message));
+      for (const listener of customMessageListeners) listener(message);
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(

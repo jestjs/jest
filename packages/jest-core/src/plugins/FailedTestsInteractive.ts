@@ -9,9 +9,9 @@ import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
-  JestHookSubscriber,
-  UpdateConfigCallback,
-  UsageData,
+  type JestHookSubscriber,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import FailedTestsInteractiveMode from '../FailedTestsInteractiveMode';
 
@@ -58,7 +58,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: failure ? `^${failure.fullName}$` : '',
-          testPathPattern: failure?.path || '',
+          testPathPatterns: failure ? [failure.path] : [],
         });
 
         if (!this._manager.isActive()) {
@@ -84,16 +84,16 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
       return failedTestPaths;
     }
 
-    results.testResults.forEach(testResult => {
-      testResult.testResults.forEach(result => {
+    for (const testResult of results.testResults) {
+      for (const result of testResult.testResults) {
         if (result.status === 'failed') {
           failedTestPaths.push({
             fullName: result.fullName,
             path: testResult.testFilePath,
           });
         }
-      });
-    });
+      }
+    }
 
     return failedTestPaths;
   }

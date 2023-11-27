@@ -204,6 +204,7 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -325,6 +326,7 @@ export type InitialOptions = Partial<{
   updateSnapshot: boolean;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -400,6 +402,7 @@ export type GlobalConfig = {
   randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
+  runInBand: boolean;
   runTestsByPath: boolean;
   rootDir: string;
   seed: number;
@@ -411,13 +414,14 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPattern: string;
+  testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -486,11 +490,18 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
+  testTimeout: number;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
+};
+
+export type SetupAfterEnvPerfStats = {
+  setupAfterEnvStart: number;
+  setupAfterEnvEnd: number;
 };
 
 export type Argv = Arguments<
@@ -525,7 +536,6 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     ignoreProjects: Array<string>;
-    init: boolean;
     injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
@@ -569,7 +579,7 @@ export type Argv = Arguments<
     testMatch: Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
-    testPathPattern: Array<string>;
+    testPathPatterns: Array<string>;
     testRegex: string | Array<string>;
     testResultsProcessor: string;
     testRunner: string;

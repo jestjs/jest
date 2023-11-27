@@ -43,6 +43,69 @@ test('works fine when function throws error', () => {
   }
 });
 
+test('works fine when function throws error with cause', () => {
+  const filename = 'works-fine-when-function-throws-error-with-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      function ErrorWithCause(message, cause) {
+        const err = new Error(message, {cause});
+        if (err.cause !== cause) {
+          // cause does not exist in old versions of node
+          err.cause = cause;
+        }
+        return err;
+      }
+      expect(() => {
+        throw ErrorWithCause('apple',
+          ErrorWithCause('banana',
+            ErrorWithCause('orange')
+          )
+        );
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
+    expect(exitCode).toBe(0);
+  }
+});
+
+test('works fine when function throws error with string cause', () => {
+  const filename =
+    'works-fine-when-function-throws-error-with-string-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      function ErrorWithCause(message, cause) {
+        const err = new Error(message, {cause});
+        if (err.cause !== cause) {
+          // cause does not exist in old versions of node
+          err.cause = cause;
+        }
+        return err;
+      }
+      expect(() => {
+        throw ErrorWithCause('apple', 'here is a cause');
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
+    expect(exitCode).toBe(0);
+  }
+});
+
 test('updates existing snapshot', () => {
   const filename = 'updates-existing-snapshot.test.js';
   const template = makeTemplate(`

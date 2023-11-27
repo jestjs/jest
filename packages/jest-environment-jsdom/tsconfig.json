@@ -8,9 +8,6 @@
   "exclude": ["./**/__mocks__/**/*", "./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-environment"},
-    {"path": "../jest-fake-timers"},
-    {"path": "../jest-mock"},
-    {"path": "../jest-types"},
-    {"path": "../jest-util"}
+    {"path": "../jest-environment-jsdom-abstract"}
   ]
 }

@@ -12,8 +12,21 @@ import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import stripJsonComments from 'strip-json-comments';
+/* eslint-disable import/order */
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);
+
+const rootPackageJson = require('../package.json');
+
+const currentTsdTypescriptVersion =
+  rootPackageJson.devDependencies['@tsd/typescript'];
+const currentTypescriptVersion = rootPackageJson.devDependencies['typescript'];
+const tsconfigBasePackage = Object.keys(rootPackageJson.devDependencies).find(
+  packageName => packageName.startsWith('@tsconfig'),
+);
+const apiExtractorTypescriptVersion =
+  require('@microsoft/api-extractor/package.json').dependencies['typescript'];
+/* eslint-enable import/order */
 
 const baseTsConfig = JSON.parse(
   stripJsonComments(
@@ -31,9 +44,9 @@ const tsConfig = {
     noEmit: true,
   },
 };
-/* eslint-enable */
+/* eslint-enable sort-keys */
 
-const tsVersion = '4.3';
+const tsVersion = '5.0';
 
 function smoketest() {
   const jestDirectory = path.resolve(
@@ -51,8 +64,7 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
-      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14@1'],
+      ['add', `typescript@~${tsVersion}`, tsconfigBasePackage],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(
@@ -77,14 +89,6 @@ function smoketest() {
 
 function typeTests() {
   const cwd = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../');
-  const rootPackageJson = require('../package.json');
-
-  const currentTsdTypescriptVersion =
-    rootPackageJson.devDependencies['@tsd/typescript'];
-  const currentTypescriptVersion =
-    rootPackageJson.devDependencies['typescript'];
-  const apiExtractorTypescriptVersion =
-    require('@microsoft/api-extractor/package.json').dependencies['typescript'];
 
   try {
     const {stdout: statusStdout} = execa.sync(
@@ -99,8 +103,7 @@ function typeTests() {
       );
     }
 
-    // TODO: do not set version of @tsconfig/node14 after we upgrade to a version of TS that supports `"moduleResolution": "node16"` (https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/)
-    execa.sync('yarn', ['add', '@tsconfig/node14@1'], {cwd});
+    execa.sync('yarn', ['add', tsconfigBasePackage], {cwd});
 
     execa.sync(
       'yarn',
