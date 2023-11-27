@@ -77,20 +77,19 @@ const resolveConfigPathByTraversing = (
   const packageJson = findPackageJson(pathToResolve);
 
   if (packageJson) {
-    const packagePath = path.dirname(packageJson);
     const jestKey = getPackageJsonJestKey(packageJson);
 
     if (jestKey) {
       if (typeof jestKey === 'string') {
         const absolutePath = path.isAbsolute(jestKey)
           ? jestKey
-          : path.resolve(packagePath, jestKey);
+          : path.resolve(pathToResolve, jestKey);
 
         if (!isFile(absolutePath)) {
           throw new ValidationError(
             `${BULLET}Validation Error`,
             `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
-              'Jest expects the string configuration to point to a file, but it does not. ' +
+              `Jest expects the string configuration to point to a file, but ${absolutePath} is not. ` +
               `Please check your Jest configuration in ${chalk.bold(
                 packageJson,
               )}.`,
@@ -109,8 +108,8 @@ const resolveConfigPathByTraversing = (
     throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
-  if (configFiles.length > 0) {
-    return configFiles[0];
+  if (configFiles.length > 0 || packageJson) {
+    return configFiles[0] ?? packageJson;
   }
 
   // This is the system root.
