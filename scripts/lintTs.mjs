@@ -129,6 +129,9 @@ try {
               '@typescript-eslint/no-invalid-void-type': 'off',
               '@typescript-eslint/no-dynamic-delete': 'off',
               '@typescript-eslint/no-var-requires': 'off',
+
+              // nah
+              '@typescript-eslint/require-await': 'off',
             },
           },
         });
