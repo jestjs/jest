@@ -61,6 +61,7 @@
 - `[jest-mock]` [**BREAKING**] Remove `MockFunctionMetadataType`, `MockFunctionMetadata` and `SpyInstance` types ([#14621](https://github.com/jestjs/jest/pull/14621))
 - `[jest-transform]` Upgrade `write-file-atomic` ([#14274](https://github.com/jestjs/jest/pull/14274))
 - `[jest-util]` Upgrade `picomatch` to v3 ([#14653](https://github.com/jestjs/jest/pull/14653))
+- `[docs] Append to NODE_OPTIONS, not overwrite ([#14730](https://github.com/jestjs/jest/pull/14730))`
 
 ## 29.7.0
 
