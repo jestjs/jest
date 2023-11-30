@@ -81,6 +81,15 @@ Alternatively Jest's configuration can be defined through the `"jest"` key in th
 }
 ```
 
+Also Jest's configuration json file can be referenced through the `"jest"` key in the `package.json` of your project:
+
+```json title="package.json"
+{
+  "name": "my-project",
+  "jest": "./path/to/config.json"
+}
+```
+
 ## Options
 
 :::info
