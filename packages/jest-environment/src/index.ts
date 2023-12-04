@@ -298,12 +298,14 @@ export interface Jest {
    * the test to fail to the console, providing visibility on why a retry occurred.
    * retries is exhausted.
    *
+   * `waitBeforeRetry` is the number of milliseconds to wait before retrying
+   *
    * @remarks
    * Only available with `jest-circus` runner.
    */
   retryTimes(
     numRetries: number,
-    options?: {logErrorsBeforeRetry?: boolean},
+    options?: {logErrorsBeforeRetry?: boolean; waitBeforeRetry?: number},
   ): Jest;
   /**
    * Exhausts tasks queued by `setImmediate()`.
