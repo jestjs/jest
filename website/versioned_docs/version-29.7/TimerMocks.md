@@ -64,6 +64,8 @@ test('calls the callback after 1 second', () => {
 });
 ```
 
+Legacy note: At older versions (i.e. Jest v22.1.4, Node v9.3.0) if useFakeTimers() is called from beforeAll() resetAllMocks() will remove timers and runAllTimers() wont work anymore. In this case, use beforeEach() instead (https://github.com/jestjs/jest/issues/5371).
+
 ## Run Pending Timers
 
 There are also scenarios where you might have a recursive timer – that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop, throwing the following error: "Aborting after running 100000 timers, assuming an infinite loop!"
