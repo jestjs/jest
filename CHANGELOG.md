@@ -648,6 +648,7 @@
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 - `[jest-worker]` [**BREAKING**] Default to advanced serialization when using child process workers ([#10983](https://github.com/facebook/jest/pull/10983))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
+- `[jest-circus, jest-jasmine2]` Allow `setupFilesAfterEnv` to export an async function ([#10962](https://github.com/jestjs/jest/issues/10962))
 
 ### Fixes
 
