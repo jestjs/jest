@@ -391,17 +391,22 @@ export const makeSingleTestResult = (
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const testResults: Circus.TestResults = [];
+  const testResults = [];
+  const stack: [[Circus.DescribeBlock, number]] = [[describeBlock, 0]];
 
-  for (const child of describeBlock.children) {
-    switch (child.type) {
-      case 'describeBlock': {
-        testResults.push(...makeTestResults(child));
+  while (stack.length > 0) {
+    const [currentBlock, childIndex] = stack.pop()!;
+
+    for (let i = childIndex; i < currentBlock.children.length; i++) {
+      const child = currentBlock.children[i];
+
+      if (child.type === 'describeBlock') {
+        stack.push([currentBlock, i + 1]);
+        stack.push([child, 0]);
         break;
       }
-      case 'test': {
+      if (child.type === 'test') {
         testResults.push(makeSingleTestResult(child));
-        break;
       }
     }
   }
