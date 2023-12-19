@@ -136,6 +136,12 @@ export default abstract class BaseJSDOMEnvironment
       }
     }
 
+    // Workaround for jsdom missing structuredClone
+    // https://github.com/jsdom/jsdom/issues/3363
+    if (typeof structuredClone === 'function') {
+      global.structuredClone = structuredClone;
+    }
+
     this.moduleMocker = new ModuleMocker(global);
 
     this.fakeTimers = new LegacyFakeTimers({

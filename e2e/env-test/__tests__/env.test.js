@@ -9,3 +9,9 @@
 console.log(globalThis.window ? 'WINDOW' : 'NO WINDOW');
 
 test('stub', () => expect(1).toBe(1));
+
+test('structuredClone works in env', () => {
+  expect(typeof structuredClone).toBe('function');
+  const x = {a: 'b'};
+  expect(structuredClone(x)).not.toBe(x);
+});
