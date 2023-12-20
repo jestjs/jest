@@ -178,6 +178,7 @@ const groupOptions = (
     modulePaths: options.modulePaths,
     openHandlesTimeout: options.openHandlesTimeout,
     prettierPath: options.prettierPath,
+    reporters: options.reporters,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,
