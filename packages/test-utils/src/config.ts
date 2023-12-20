@@ -101,7 +101,11 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
-  resolver: undefined,
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   restoreMocks: false,
   rootDir: '/test_root_dir/',
   roots: [],
