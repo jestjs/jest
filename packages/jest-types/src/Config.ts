@@ -466,6 +466,7 @@ export type ProjectConfig = {
   openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
+  reporters: Array<string | ReporterConfig>;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;
