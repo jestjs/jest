@@ -41,7 +41,7 @@
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-unicorn": "^49.0.0",
+    "eslint-plugin-unicorn": "^50.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
     "glob": "^10.0.0",
