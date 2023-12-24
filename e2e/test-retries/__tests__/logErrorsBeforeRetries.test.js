@@ -17,3 +17,18 @@ it('retryTimes set', () => {
     expect(true).toBeFalsy();
   }
 });
+
+let iFakeTimers = 0;
+const startTimeInSecondsFakeTimers = new Date().getTime();
+jest.retryTimes(3, {logErrorsBeforeRetry: true, waitBeforeRetry: 100});
+it('retryTimes set with fake timers', () => {
+  jest.useFakeTimers();
+  iFakeTimers++;
+  if (iFakeTimers === 3) {
+    expect(new Date().getTime() - startTimeInSecondsFakeTimers).toBeGreaterThan(
+      200,
+    );
+  } else {
+    expect(true).toBeFalsy();
+  }
+});

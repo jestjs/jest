@@ -24,6 +24,10 @@ import {
   makeRunResult,
 } from './utils';
 
+// Global values can be overwritten by mocks or tests. We'll capture
+// the original values in the variables before we require any files.
+const {setTimeout} = globalThis;
+
 type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
   fn: Circus.ConcurrentTestFn;
 };
