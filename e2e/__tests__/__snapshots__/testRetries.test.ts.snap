@@ -38,7 +38,7 @@ PASS __tests__/logErrorsBeforeRetries.test.js
   ✓ retryTimes set"
 `;
 
-exports[`Test Retries logs error(s) before retry 2`] = `
+exports[`Test Retries logs error(s) before retry with fake timers 1`] = `
 "LOGGING RETRY ERRORS  retryTimes set with fake timers
  RETRY 1 
 
@@ -46,15 +46,15 @@ exports[`Test Retries logs error(s) before retry 2`] = `
 
     Received: true
 
-      18 |     );
-      19 |   } else {
-    > 20 |     expect(true).toBeFalsy();
+      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      17 |   } else {
+    > 18 |     expect(true).toBeFalsy();
          |                  ^
-      21 |     jest.runAllTimers();
-      22 |   }
-      23 | });
+      19 |     jest.runAllTimers();
+      20 |   }
+      21 | });
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:20:18)
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:18:18)
 
  RETRY 2 
 
@@ -62,15 +62,15 @@ exports[`Test Retries logs error(s) before retry 2`] = `
 
     Received: true
 
-      18 |     );
-      19 |   } else {
-    > 20 |     expect(true).toBeFalsy();
+      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      17 |   } else {
+    > 18 |     expect(true).toBeFalsy();
          |                  ^
-      21 |     jest.runAllTimers();
-      22 |   }
-      23 | });
+      19 |     jest.runAllTimers();
+      20 |   }
+      21 | });
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:20:18)
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:18:18)
 
 PASS __tests__/logErrorsBeforeRetriesFakeTimers.test.js
   ✓ retryTimes set with fake timers"
