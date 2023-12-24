@@ -112,13 +112,11 @@ const RawCoverageReporters = Type.Array(
 
 const RawGlobalFakeTimersConfig = Type.Partial(
   Type.Object({
-    /**
-     * Whether fake timers should be enabled globally for all test files.
-     *
-     * @defaultValue
-     * The default is `false`.
-     */
-    enableGlobally: Type.Boolean(),
+    enableGlobally: Type.Boolean({
+      description:
+        'Whether fake timers should be enabled globally for all test files.',
+      default: false,
+    }),
   }),
 );
 
@@ -142,59 +140,43 @@ const RawFakeableAPI = Type.Union([
 
 const RawFakeTimersConfig = Type.Partial(
   Type.Object({
-    /**
-     * If set to `true` all timers will be advanced automatically
-     * by 20 milliseconds every 20 milliseconds. A custom time delta
-     * may be provided by passing a number.
-     *
-     * @defaultValue
-     * The default is `false`.
-     */
-    advanceTimers: Type.Union([Type.Boolean(), Type.Number({minimum: 0})]),
-    /**
-     * List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`,
-     * `setTimeout()`) that should not be faked.
-     *
-     * @defaultValue
-     * The default is `[]`, meaning all APIs are faked.
-     */
-    doNotFake: Type.Array(RawFakeableAPI),
-    /**
-     * Sets current system time to be used by fake timers.
-     *
-     * @defaultValue
-     * The default is `Date.now()`.
-     */
-    now: Type.Union([Type.Integer({minimum: 0}), Type.Date()]),
-    /**
-     * The maximum number of recursive timers that will be run when calling
-     * `jest.runAllTimers()`.
-     *
-     * @defaultValue
-     * The default is `100_000` timers.
-     */
-    timerLimit: Type.Number(),
-    /**
-     * Use the old fake timers implementation instead of one backed by
-     * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
-     *
-     * @defaultValue
-     * The default is `false`.
-     */
-    legacyFakeTimers: Type.Literal(false),
+    advanceTimers: Type.Union([Type.Boolean(), Type.Number({minimum: 0})], {
+      description:
+        'If set to `true` all timers will be advanced automatically by 20 milliseconds every 20 milliseconds. A custom ' +
+        'time delta may be provided by passing a number.',
+      default: false,
+    }),
+    doNotFake: Type.Array(RawFakeableAPI, {
+      description:
+        'List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`, `setTimeout()`) that should not be faked.' +
+        '\n\nThe default is `[]`, meaning all APIs are faked.',
+      default: [],
+    }),
+    now: Type.Union([Type.Integer({minimum: 0}), Type.Date()], {
+      description:
+        'Sets current system time to be used by fake timers.\n\nThe default is `Date.now()`.',
+    }),
+    timerLimit: Type.Number({
+      description:
+        'The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.',
+      default: 100_000,
+      minimum: 0,
+    }),
+    legacyFakeTimers: Type.Literal(false, {
+      description:
+        'Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.',
+      default: false,
+    }),
   }),
 );
 
 const RawLegacyFakeTimersConfig = Type.Partial(
   Type.Object({
-    /**
-     * Use the old fake timers implementation instead of one backed by
-     * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
-     *
-     * @defaultValue
-     * The default is `false`.
-     */
-    legacyFakeTimers: Type.Literal(true),
+    legacyFakeTimers: Type.Literal(true, {
+      description:
+        'Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.',
+      default: true,
+    }),
   }),
 );
 
@@ -205,28 +187,38 @@ export const RawFakeTimers = Type.Intersect([
 
 const RawHasteConfig = Type.Partial(
   Type.Object({
-    /** Whether to hash files using SHA-1. */
-    computeSha1: Type.Boolean(),
-    /** The platform to use as the default, e.g. 'ios'. */
-    defaultPlatform: Type.Union([Type.String(), Type.Null()]),
-    /** Force use of Node's `fs` APIs rather than shelling out to `find` */
-    forceNodeFilesystemAPI: Type.Boolean(),
-    /**
-     * Whether to follow symlinks when crawling for files.
-     *   This options cannot be used in projects which use watchman.
-     *   Projects with `watchman` set to true will error if this option is set to true.
-     */
-    enableSymlinks: Type.Boolean(),
-    /** string to a custom implementation of Haste. */
-    hasteImplModulePath: Type.String(),
-    /** All platforms to target, e.g ['ios', 'android']. */
-    platforms: Type.Array(Type.String()),
-    /** Whether to throw on error on module collision. */
-    throwOnModuleCollision: Type.Boolean(),
-    /** Custom HasteMap module */
-    hasteMapModulePath: Type.String(),
-    /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
-    retainAllFiles: Type.Boolean(),
+    computeSha1: Type.Boolean({
+      description: 'Whether to hash files using SHA-1.',
+    }),
+    defaultPlatform: Type.Union([Type.String(), Type.Null()], {
+      description: 'The platform to use as the default, e.g. `ios`.',
+    }),
+    forceNodeFilesystemAPI: Type.Boolean({
+      description:
+        "Whether to force the use of Node's `fs` API when reading files rather than shelling out to `find`.",
+    }),
+    enableSymlinks: Type.Boolean({
+      description:
+        'Whether to follow symlinks when crawling for files.' +
+        '\n\tThis options cannot be used in projects which use watchman.' +
+        '\n\tProjects with `watchman` set to true will error if this option is set to true.',
+    }),
+    hasteImplModulePath: Type.String({
+      description: 'Path to a custom implementation of Haste.',
+    }),
+    platforms: Type.Array(Type.String(), {
+      description: "All platforms to target, e.g ['ios', 'android'].",
+    }),
+    throwOnModuleCollision: Type.Boolean({
+      description: 'Whether to throw on error on module collision.',
+    }),
+    hasteMapModulePath: Type.String({
+      description: 'Custom HasteMap module',
+    }),
+    retainAllFiles: Type.Boolean({
+      description:
+        'Whether to retain all files, allowing e.g. search for tests in `node_modules`.',
+    }),
   }),
 );
 
