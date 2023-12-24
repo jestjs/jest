@@ -37,3 +37,41 @@ exports[`Test Retries logs error(s) before retry 1`] = `
 PASS __tests__/logErrorsBeforeRetries.test.js
   ✓ retryTimes set"
 `;
+
+exports[`Test Retries logs error(s) before retry 2`] = `
+"LOGGING RETRY ERRORS  retryTimes set with fake timers
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      18 |     );
+      19 |   } else {
+    > 20 |     expect(true).toBeFalsy();
+         |                  ^
+      21 |     jest.runAllTimers();
+      22 |   }
+      23 | });
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:20:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      18 |     );
+      19 |   } else {
+    > 20 |     expect(true).toBeFalsy();
+         |                  ^
+      21 |     jest.runAllTimers();
+      22 |   }
+      23 | });
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:20:18)
+
+PASS __tests__/logErrorsBeforeRetriesFakeTimers.test.js
+  ✓ retryTimes set with fake timers"
+`;

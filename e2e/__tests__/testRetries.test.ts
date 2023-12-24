@@ -42,6 +42,14 @@ describe('Test Retries', () => {
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
+  it('logs error(s) before retry', () => {
+    const result = runJest('test-retries', ['logErrorsBeforeRetriesFakeTimers.test.js']);
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
   it('reporter shows more than 1 invocation if test is retried', () => {
     let jsonResult;
 
