@@ -20999,8 +20999,8 @@ __metadata:
   linkType: hard
 
 "ts-node@npm:^10.5.0":
-  version: 10.9.1
-  resolution: "ts-node@npm:10.9.1"
+  version: 10.9.2
+  resolution: "ts-node@npm:10.9.2"
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
@@ -21032,13 +21032,13 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
+  checksum: fde256c9073969e234526e2cfead42591b9a2aec5222bac154b0de2fa9e4ceb30efcd717ee8bc785a56f3a119bdd5aa27b333d9dbec94ed254bd26f8944c67ac
   languageName: node
   linkType: hard
 
 "ts-node@patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 10.9.1
-  resolution: "ts-node@patch:ts-node@npm%3A10.9.1#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::version=10.9.1&hash=4855ba&locator=%40jest%2Fmonorepo%40workspace%3A."
+  version: 10.9.2
+  resolution: "ts-node@patch:ts-node@npm%3A10.9.2#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::version=10.9.2&hash=4855ba&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
@@ -21070,7 +21070,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: d1ecd831ce5d10e37a6b34ed0d26957b989cc3ca723f68b0ca128e76c8626ee28047ec1c7a77f7c3943c544f8341519f0d51ab51aa0d921a67e3042dd4896f60
+  checksum: 0de5c8ea54be61909de8411ac744be99c2061bd6d6b1547fb1ef1ed585b0538fd84dff2ac4af61614e76084ac65386102387794642b0e475ebdb96369e1171ff
   languageName: node
   linkType: hard
 
