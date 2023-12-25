@@ -40,7 +40,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  fs.rmSync(dir, {recursive: true});
+  fs.rmSync(dir, {maxRetries: 5, recursive: true, retryDelay: 1000});
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {

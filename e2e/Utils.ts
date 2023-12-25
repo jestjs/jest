@@ -86,7 +86,7 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
   fs.mkdirSync(destination, {recursive: true});
-  fs.rmSync(destination, {force: true, recursive: true});
+  cleanup(destination);
   fs.symlinkSync(packagePath, destination, 'junction');
 };
 
@@ -101,16 +101,12 @@ export const makeTemplate =
     });
 
 export const cleanup = (directory: string) => {
-  try {
-    fs.rmSync(directory, {force: true, recursive: true});
-  } catch (error) {
-    try {
-      // retry once in case of e.g. permission errors
-      fs.rmSync(directory, {force: true, recursive: true});
-    } catch {
-      throw error;
-    }
-  }
+  fs.rmSync(directory, {
+    force: true,
+    maxRetries: 5,
+    recursive: true,
+    retryDelay: 1000,
+  });
 };
 
 /**

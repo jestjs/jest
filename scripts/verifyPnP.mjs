@@ -77,5 +77,10 @@ try {
 
   console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
 } finally {
-  fs.rmSync(cwd, {force: true, recursive: true});
+  fs.rmSync(cwd, {
+    force: true,
+    maxRetries: 5,
+    recursive: true,
+    retryDelay: 1000,
+  });
 }

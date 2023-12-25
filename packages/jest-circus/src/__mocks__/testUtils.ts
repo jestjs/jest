@@ -8,6 +8,7 @@
 import {sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
 import tempy = require('tempy');
+import {cleanup} from '../../../../e2e/Utils';
 
 const CIRCUS_PATH = require.resolve('../').replaceAll('\\', '\\\\');
 const CIRCUS_RUN_PATH = require.resolve('../run').replaceAll('\\', '\\\\');
@@ -62,7 +63,7 @@ export const runTest = (
     throw new Error(message);
   }
 
-  fs.rmSync(tmpFilename, {force: true});
+  cleanup(tmpFilename);
 
   if (result.stderr) {
     throw new Error(
