@@ -4890,9 +4890,9 @@ __metadata:
   linkType: hard
 
 "@tsd/typescript@npm:^5.0.4":
-  version: 5.2.2
-  resolution: "@tsd/typescript@npm:5.2.2"
-  checksum: b72d6311356a1fabcd78ffeb878a6ba3d51804d02fefdc6cf36ae8957d97b13823b9e396f550e37c2d1b405b6ad0fa190f4ec791bc6d730b02b22e39b33a4c76
+  version: 5.3.3
+  resolution: "@tsd/typescript@npm:5.3.3"
+  checksum: 0d7815cfe8038c3fcc172cf3f8f6fdcaded965466cf8b2cff31ada57db9d9788ecd9590bca4576afcb4785d8b3271bc978b1f3ff338f49b3fffdce33ec135afe
   languageName: node
   linkType: hard
 
@@ -20815,11 +20815,11 @@ __metadata:
   linkType: hard
 
 "tsd-lite@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "tsd-lite@npm:0.8.0"
+  version: 0.8.1
+  resolution: "tsd-lite@npm:0.8.1"
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 7d6b5bdb47d8dc779c66b9a6eac97ca81474b4e9d5acb52692da9e045455b731b36f9925babd98c87ad38685b3170fefef016a0cdf7c46876358c1a0421fffe3
+  checksum: 59ea35f7a1b172dcfea9b3d4ebf0971ebca63545310a97a882d8ab6fd1b33725ddb4fda2f1fea92027f0720a987988d9d94e97224b77cd65570b8c9f5eae72ef
   languageName: node
   linkType: hard
 
