@@ -280,6 +280,11 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   openHandlesTimeout: 1000,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',

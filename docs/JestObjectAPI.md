@@ -1071,6 +1071,16 @@ test('will fail', () => {
 });
 ```
 
+`waitBeforeRetry` is the number of milliseconds to wait before retrying.
+
+```js
+jest.retryTimes(3, {waitBeforeRetry: 1000});
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
 Returns the `jest` object for chaining.
 
 :::caution
