@@ -1,0 +1,3 @@
+{
+  "testFileMatch": ["**/packages/jest-types/__typetests__/config.test.ts"]
+}
