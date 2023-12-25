@@ -72,7 +72,7 @@ describe('Test Retries', () => {
     runJest('test-retries', [
       '--config',
       JSON.stringify(reporterConfig),
-      'retry.test.js',
+      '__tests__/retry.test.js',
     ]);
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
