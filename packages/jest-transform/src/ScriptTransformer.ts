@@ -1045,7 +1045,14 @@ function assertSyncTransformer(
   );
 }
 
-export type TransformerType = ScriptTransformer;
+export interface TransformerType {
+  requireAndTranspileModule: ScriptTransformer['requireAndTranspileModule'];
+  transform: ScriptTransformer['transform'];
+  transformAsync: ScriptTransformer['transformAsync'];
+  transformJson: ScriptTransformer['transformJson'];
+  transformSource: ScriptTransformer['transformSource'];
+  transformSourceAsync: ScriptTransformer['transformSourceAsync'];
+}
 
 export async function createScriptTransformer(
   config: Config.ProjectConfig,
