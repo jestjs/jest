@@ -20,12 +20,9 @@
   },
   "dependencies": {
     "@jest/environment": "workspace:*",
-    "@jest/fake-timers": "workspace:*",
-    "@jest/types": "workspace:*",
+    "@jest/environment-jsdom-abstract": "workspace:*",
     "@types/jsdom": "^21.1.1",
     "@types/node": "*",
-    "jest-mock": "workspace:*",
-    "jest-util": "workspace:*",
     "jsdom": "^22.0.0"
   },
   "devDependencies": {

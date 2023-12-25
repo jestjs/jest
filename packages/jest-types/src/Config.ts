@@ -58,7 +58,7 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers.
+   * Sets current system time to be used by fake timers, in milliseconds.
    *
    * @defaultValue
    * The default is `Date.now()`.
@@ -466,6 +466,7 @@ export type ProjectConfig = {
   openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
+  reporters: Array<string | ReporterConfig>;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;

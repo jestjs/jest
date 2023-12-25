@@ -75,8 +75,33 @@ const resolveConfigPathByTraversing = (
   ).filter(isFile);
 
   const packageJson = findPackageJson(pathToResolve);
-  if (packageJson && hasPackageJsonJestKey(packageJson)) {
-    configFiles.push(packageJson);
+
+  if (packageJson) {
+    const jestKey = getPackageJsonJestKey(packageJson);
+
+    if (jestKey) {
+      if (typeof jestKey === 'string') {
+        const absolutePath = path.isAbsolute(jestKey)
+          ? jestKey
+          : path.resolve(pathToResolve, jestKey);
+
+        if (!isFile(absolutePath)) {
+          throw new ValidationError(
+            `${BULLET}Validation Error`,
+            `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
+              `Jest expects the string configuration to point to a file, but ${absolutePath} is not. ` +
+              `Please check your Jest configuration in ${chalk.bold(
+                packageJson,
+              )}.`,
+            DOCUMENTATION_NOTE,
+          );
+        }
+
+        configFiles.push(absolutePath);
+      } else {
+        configFiles.push(packageJson);
+      }
+    }
   }
 
   if (!skipMultipleConfigError && configFiles.length > 1) {
@@ -111,14 +136,18 @@ const findPackageJson = (pathToResolve: string) => {
   return undefined;
 };
 
-const hasPackageJsonJestKey = (packagePath: string) => {
-  const content = fs.readFileSync(packagePath, 'utf8');
+const getPackageJsonJestKey = (
+  packagePath: string,
+): Record<string, unknown> | string | undefined => {
   try {
-    return 'jest' in JSON.parse(content);
-  } catch {
-    // If package is not a valid JSON
-    return false;
-  }
+    const content = fs.readFileSync(packagePath, 'utf8');
+    const parsedContent = JSON.parse(content);
+
+    if ('jest' in parsedContent) {
+      return parsedContent.jest;
+    }
+  } catch {}
+  return undefined;
 };
 
 const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>

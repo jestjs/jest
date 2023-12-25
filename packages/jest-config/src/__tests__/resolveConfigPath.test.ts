@@ -112,6 +112,72 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
         );
       }).toThrow(NO_ROOT_DIR_ERROR_PATTERN);
     });
+
+    test('file path from "jest" key', () => {
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+      const absoluteAnyFilePath = path.resolve(DIR, relativeAnyFilePath);
+
+      writeFiles(DIR, {
+        'a/b/c/package.json': `{ "jest": "conf/${anyFileName}" }`,
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
+
+      const result = resolveConfigPath(
+        path.dirname(absolutePackageJsonPath),
+        DIR,
+      );
+
+      expect(result).toBe(absoluteAnyFilePath);
+    });
+
+    test('not a file path from "jest" key', () => {
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        'a/b/c/package.json': '{ "jest": {"verbose": true} }',
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
+
+      const result = resolveConfigPath(
+        path.dirname(absolutePackageJsonPath),
+        DIR,
+      );
+
+      expect(result).toBe(absolutePackageJsonPath);
+    });
+
+    test('not a valid file when "jest" key is a path', () => {
+      const anyFileName = `anyJestConfigfile${extension}`;
+      const relativePackageJsonPath = 'a/b/c/package.json';
+      const relativeAnyFilePath = `a/b/c/conf/${anyFileName}`;
+      const absolutePackageJsonPath = path.resolve(
+        DIR,
+        relativePackageJsonPath,
+      );
+
+      writeFiles(DIR, {
+        'a/b/c/package.json': '{ "jest": "conf/nonExistentConfigfile.json" }',
+      });
+      writeFiles(DIR, {[relativeAnyFilePath]: ''});
+
+      expect(() =>
+        resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
+      ).toThrow(
+        /Jest expects the string configuration to point to a file, but .* not\./,
+      );
+    });
   },
 );
 
