@@ -240,6 +240,7 @@ export type InitialOptions = Partial<{
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   coverageThreshold: CoverageThreshold;
+  customMockPath?: string;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -442,6 +443,7 @@ export type ProjectConfig = {
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  customMockPath?: string;
   cwd: string;
   dependencyExtractor?: string;
   detectLeaks: boolean;

@@ -79,10 +79,12 @@ export class DependencyResolver {
       }
 
       if (resolvedMockDependency != null) {
-        const dependencyMockDir = path.resolve(
-          path.dirname(resolvedDependency),
-          '__mocks__',
-        );
+        // eslint-disable-next-line no-console
+        console.log(options?.customMockPath);
+        const dependencyMockDir =
+          options?.customMockPath != null
+            ? path.resolve(path.dirname(resolvedDependency), '__mocks__')
+            : options?.customMockPath;
 
         resolvedMockDependency = path.resolve(resolvedMockDependency);
 
