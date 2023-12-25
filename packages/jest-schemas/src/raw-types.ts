@@ -7,7 +7,7 @@
 
 /* eslint-disable sort-keys */
 
-import {Type} from '@sinclair/typebox';
+import {type Static, Type} from '@sinclair/typebox';
 
 export const RawSnapshotFormat = Type.Partial(
   Type.Object({
@@ -48,13 +48,15 @@ const RawCoverageThresholdValue = Type.Partial(
   }),
 );
 
-const RawCoverageThreshold = Type.Intersect([
-  Type.Object({
-    global: RawCoverageThresholdValue,
-  }),
-  // TODO: is there a better way of doing index type?
-  Type.Record(Type.String(), RawCoverageThresholdValue),
-]);
+const RawCoverageThresholdBase = Type.Object(
+  {global: RawCoverageThresholdValue},
+  {additionalProperties: RawCoverageThresholdValue},
+);
+
+const RawCoverageThreshold = Type.Unsafe<{
+  global: Static<typeof RawCoverageThresholdValue>;
+  [path: string]: Static<typeof RawCoverageThresholdValue>;
+}>(RawCoverageThresholdBase);
 
 // TODO: add type test that these are all the colors available in chalk.ForegroundColor
 export const ChalkForegroundColors = Type.Union([
@@ -152,7 +154,8 @@ const RawFakeTimersConfig = Type.Partial(
         '\n\nThe default is `[]`, meaning all APIs are faked.',
       default: [],
     }),
-    now: Type.Union([Type.Integer({minimum: 0}), Type.Date()], {
+    now: Type.Integer({
+      minimum: 0,
       description:
         'Sets current system time to be used by fake timers.\n\nThe default is `Date.now()`.',
     }),
