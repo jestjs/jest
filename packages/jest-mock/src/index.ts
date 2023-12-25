@@ -60,35 +60,35 @@ export type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunction<T[K]>
-    : T[K] extends object
-    ? MockedObject<T[K]>
-    : T[K];
+      ? MockedFunction<T[K]>
+      : T[K] extends object
+        ? MockedObject<T[K]>
+        : T[K];
 } & T;
 
 type MockedObjectShallow<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunctionShallow<T[K]>
-    : T[K];
+      ? MockedFunctionShallow<T[K]>
+      : T[K];
 } & T;
 
 export type Mocked<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunction<T>
-  : T extends object
-  ? MockedObject<T>
-  : T;
+    ? MockedFunction<T>
+    : T extends object
+      ? MockedObject<T>
+      : T;
 
 export type MockedShallow<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunctionShallow<T>
-  : T extends object
-  ? MockedObjectShallow<T>
-  : T;
+    ? MockedFunctionShallow<T>
+    : T extends object
+      ? MockedObjectShallow<T>
+      : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 export type UnknownClass = {new (...args: Array<unknown>): unknown};
@@ -107,8 +107,8 @@ export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
   ? SpiedClass<T>
   : T extends FunctionLike
-  ? SpiedFunction<T>
-  : never;
+    ? SpiedFunction<T>
+    : never;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -1106,8 +1106,8 @@ export class ModuleMocker {
   ): A extends 'get'
     ? SpiedGetter<V>
     : A extends 'set'
-    ? SpiedSetter<V>
-    : never;
+      ? SpiedSetter<V>
+      : never;
 
   spyOn<
     T extends object,

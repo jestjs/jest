@@ -1095,9 +1095,8 @@ describe('HasteMap', () => {
 
   describe('duplicate modules', () => {
     beforeEach(async () => {
-      mockFs[
-        path.join('/', 'project', 'fruits', 'another', 'Strawberry.js')
-      ] = `
+      mockFs[path.join('/', 'project', 'fruits', 'another', 'Strawberry.js')] =
+        `
         const Blackberry = require("Blackberry");
       `;
 
