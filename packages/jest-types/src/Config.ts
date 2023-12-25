@@ -58,7 +58,7 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers.
+   * Sets current system time to be used by fake timers, in milliseconds.
    *
    * @defaultValue
    * The default is `Date.now()`.
