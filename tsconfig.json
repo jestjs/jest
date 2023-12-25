@@ -7,7 +7,6 @@
     "composite": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "importsNotUsedAsValues": "error",
     "stripInternal": true,
 
     "strict": true,
@@ -23,9 +22,6 @@
     "esModuleInterop": false,
     "isolatedModules": true,
     "skipLibCheck": false,
-    "resolveJsonModule": true,
-
-    // TODO: remove for Jest 30
-    "ignoreDeprecations": "5.0"
+    "resolveJsonModule": true
   }
 }
