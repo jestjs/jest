@@ -99,6 +99,11 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   modulePaths: [],
   openHandlesTimeout: 1000,
   prettierPath: 'prettier',
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: undefined,

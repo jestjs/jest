@@ -15,7 +15,7 @@ import shuffleArray, {
   rngBuilder,
 } from './shuffleArray';
 import {dispatch, getState} from './state';
-import {RETRY_TIMES} from './types';
+import {RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -23,6 +23,10 @@ import {
   getTestID,
   makeRunResult,
 } from './utils';
+
+// Global values can be overwritten by mocks or tests. We'll capture
+// the original values in the variables before we require any files.
+const {setTimeout} = globalThis;
 
 type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
   fn: Circus.ConcurrentTestFn;
@@ -67,6 +71,10 @@ const _runTestsForDescribeBlock = async (
   const retryTimes =
     // eslint-disable-next-line no-restricted-globals
     parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
+
+  const waitBeforeRetry =
+    // eslint-disable-next-line no-restricted-globals
+    parseInt((global as Global.Global)[WAIT_BEFORE_RETRY] as string, 10) || 0;
   const deferredRetryTests = [];
 
   if (rng) {
@@ -101,6 +109,10 @@ const _runTestsForDescribeBlock = async (
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
+
+      if (waitBeforeRetry > 0) {
+        await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
+      }
 
       await _runTest(test, isSkipped);
       numRetriesAvailable--;

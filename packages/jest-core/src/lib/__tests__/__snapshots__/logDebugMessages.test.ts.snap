@@ -35,6 +35,16 @@ exports[`prints the config object 1`] = `
     "modulePaths": [],
     "openHandlesTimeout": 1000,
     "prettierPath": "prettier",
+    "reporters": [
+      "default",
+      "custom-reporter-1",
+      [
+        "custom-reporter-2",
+        {
+          "configValue": true
+        }
+      ]
+    ],
     "resetMocks": false,
     "resetModules": false,
     "restoreMocks": false,
