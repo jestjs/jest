@@ -29,6 +29,7 @@
 - `[jest-circus, jest-expect, jest-snapshot]` Pass `test.failing` tests when containing failing snapshot matchers ([#14313](https://github.com/jestjs/jest/pull/14313))
 - `[jest-config]` Make sure to respect `runInBand` option ([#14578](https://github.com/facebook/jest/pull/14578))
 - `[jest-config]` Support `testTimeout` in project config ([#14697](https://github.com/facebook/jest/pull/14697))
+- `[jest-config]` Allow `reporters` in project config ([#14768](https://github.com/jestjs/jest/pull/14768))
 - `[@jest/expect-utils]` Fix comparison of `DataView` ([#14408](https://github.com/jestjs/jest/pull/14408))
 - `[@jest/expect-utils]` [**BREAKING**] exclude non-enumerable in object matching ([#14670](https://github.com/jestjs/jest/pull/14670))
 - `[@jest/expect-utils]` Fix comparison of `URL` ([#14672](https://github.com/jestjs/jest/pull/14672))
@@ -62,7 +63,6 @@
 - `[jest-transform]` Upgrade `write-file-atomic` ([#14274](https://github.com/jestjs/jest/pull/14274))
 - `[jest-util]` Upgrade `picomatch` to v3 ([#14653](https://github.com/jestjs/jest/pull/14653))
 - `[docs] Append to NODE_OPTIONS, not overwrite ([#14730](https://github.com/jestjs/jest/pull/14730))`
-- `[jest-config]` Allow `reporters` in project config ([#14768](https://github.com/jestjs/jest/pull/14768))
 
 ## 29.7.0
 
