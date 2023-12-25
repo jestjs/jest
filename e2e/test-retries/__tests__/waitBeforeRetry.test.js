@@ -7,11 +7,12 @@
 'use strict';
 
 let i = 0;
-jest.retryTimes(3, {logErrorsBeforeRetry: true});
+const startTimeInSeconds = new Date().getTime();
+jest.retryTimes(3, {logErrorsBeforeRetry: true, waitBeforeRetry: 100});
 it('retryTimes set', () => {
   i++;
   if (i === 3) {
-    expect(true).toBeTruthy();
+    expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
   } else {
     expect(true).toBeFalsy();
   }

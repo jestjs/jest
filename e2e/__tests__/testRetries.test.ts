@@ -42,9 +42,17 @@ describe('Test Retries', () => {
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
-  it('logs error(s) before retry with fake timers', () => {
+  it('wait before retry', () => {
+    const result = runJest('test-retries', ['waitBeforeRetry.test.js']);
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
+  it('wait before retry with fake timers', () => {
     const result = runJest('test-retries', [
-      'logErrorsBeforeRetriesFakeTimers.test.js',
+      'waitBeforeRetryFakeTimers.test.js',
     ]);
     expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);

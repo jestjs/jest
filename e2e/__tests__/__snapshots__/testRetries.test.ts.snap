@@ -8,6 +8,44 @@ exports[`Test Retries logs error(s) before retry 1`] = `
 
     Received: true
 
+      14 |     expect(true).toBeTruthy();
+      15 |   } else {
+    > 16 |     expect(true).toBeFalsy();
+         |                  ^
+      17 |   }
+      18 | });
+      19 |
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:16:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      14 |     expect(true).toBeTruthy();
+      15 |   } else {
+    > 16 |     expect(true).toBeFalsy();
+         |                  ^
+      17 |   }
+      18 | });
+      19 |
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:16:18)
+
+PASS __tests__/logErrorsBeforeRetries.test.js
+  ✓ retryTimes set"
+`;
+
+exports[`Test Retries wait before retry 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
       15 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
       16 |   } else {
     > 17 |     expect(true).toBeFalsy();
@@ -16,7 +54,7 @@ exports[`Test Retries logs error(s) before retry 1`] = `
       19 | });
       20 |
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:17:18)
+      at Object.toBeFalsy (__tests__/waitBeforeRetry.test.js:17:18)
 
  RETRY 2 
 
@@ -32,13 +70,13 @@ exports[`Test Retries logs error(s) before retry 1`] = `
       19 | });
       20 |
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:17:18)
+      at Object.toBeFalsy (__tests__/waitBeforeRetry.test.js:17:18)
 
-PASS __tests__/logErrorsBeforeRetries.test.js
+PASS __tests__/waitBeforeRetry.test.js
   ✓ retryTimes set"
 `;
 
-exports[`Test Retries logs error(s) before retry with fake timers 1`] = `
+exports[`Test Retries wait before retry with fake timers 1`] = `
 "LOGGING RETRY ERRORS  retryTimes set with fake timers
  RETRY 1 
 
@@ -54,7 +92,7 @@ exports[`Test Retries logs error(s) before retry with fake timers 1`] = `
       20 |   }
       21 | });
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:18:18)
+      at Object.toBeFalsy (__tests__/waitBeforeRetryFakeTimers.test.js:18:18)
 
  RETRY 2 
 
@@ -70,8 +108,8 @@ exports[`Test Retries logs error(s) before retry with fake timers 1`] = `
       20 |   }
       21 | });
 
-      at Object.toBeFalsy (__tests__/logErrorsBeforeRetriesFakeTimers.test.js:18:18)
+      at Object.toBeFalsy (__tests__/waitBeforeRetryFakeTimers.test.js:18:18)
 
-PASS __tests__/logErrorsBeforeRetriesFakeTimers.test.js
+PASS __tests__/waitBeforeRetryFakeTimers.test.js
   ✓ retryTimes set with fake timers"
 `;
