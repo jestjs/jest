@@ -653,7 +653,7 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number;
   /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
