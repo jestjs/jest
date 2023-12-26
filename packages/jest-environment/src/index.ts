@@ -68,6 +68,14 @@ export interface Jest {
    */
   advanceTimersByTimeAsync(msToRun: number): Promise<void>;
   /**
+   * Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`.
+   * `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  advanceTimersToNextFrame(): void;
+  /**
    * Advances all timers by the needed milliseconds so that only the next
    * timeouts/intervals will run. Optionally, you can provide steps, so it will
    * run steps amount of next timeouts/intervals.
@@ -290,12 +298,14 @@ export interface Jest {
    * the test to fail to the console, providing visibility on why a retry occurred.
    * retries is exhausted.
    *
+   * `waitBeforeRetry` is the number of milliseconds to wait before retrying
+   *
    * @remarks
    * Only available with `jest-circus` runner.
    */
   retryTimes(
     numRetries: number,
-    options?: {logErrorsBeforeRetry?: boolean},
+    options?: {logErrorsBeforeRetry?: boolean; waitBeforeRetry?: number},
   ): Jest;
   /**
    * Exhausts tasks queued by `setImmediate()`.

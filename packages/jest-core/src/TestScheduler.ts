@@ -12,20 +12,20 @@ import {
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
-  BaseReporter as JestReporter,
+  type BaseReporter as JestReporter,
   NotifyReporter,
-  Reporter,
-  ReporterContext,
+  type Reporter,
+  type ReporterContext,
   SummaryReporter,
-  SummaryReporterOptions,
+  type SummaryReporterOptions,
   VerboseReporter,
 } from '@jest/reporters';
 import {
-  AggregatedResult,
-  SerializableError,
-  Test,
-  TestContext,
-  TestResult,
+  type AggregatedResult,
+  type SerializableError,
+  type Test,
+  type TestContext,
+  type TestResult,
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
@@ -386,9 +386,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor = await requireOrImportModule(
-        reporter,
-      );
+      const Reporter: ReporterConstructor =
+        await requireOrImportModule(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),

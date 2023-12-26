@@ -14,9 +14,9 @@ import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
-  AsyncResolver,
-  Resolver as ResolverInterface,
-  SyncResolver,
+  type AsyncResolver,
+  type Resolver as ResolverInterface,
+  type SyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
@@ -672,8 +672,8 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-      ? this.resolveModule(from, moduleName, options)
-      : from;
+        ? this.resolveModule(from, moduleName, options)
+        : from;
   }
 
   private async _getVirtualMockPathAsync(
@@ -686,8 +686,8 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-      ? this.resolveModuleAsync(from, moduleName, options)
-      : from;
+        ? this.resolveModuleAsync(from, moduleName, options)
+        : from;
   }
 
   private _isModuleResolved(from: string, moduleName: string): boolean {

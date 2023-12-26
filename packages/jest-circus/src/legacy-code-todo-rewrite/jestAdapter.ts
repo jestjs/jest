@@ -33,6 +33,7 @@ const jestAdapter = async (
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
+    runtime,
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
@@ -73,6 +74,7 @@ const jestAdapter = async (
     }
   });
 
+  const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
@@ -82,6 +84,7 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
+  const setupAfterEnvEnd = Date.now();
   const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
@@ -90,9 +93,15 @@ const jestAdapter = async (
     runtime.requireModule(testPath);
   }
 
+  const setupAfterEnvPerfStats = {
+    setupAfterEnvEnd,
+    setupAfterEnvStart,
+  };
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    setupAfterEnvPerfStats,
     testPath,
   });
 
@@ -108,10 +117,16 @@ const _addSnapshotData = (
   results: TestResult,
   snapshotState: SnapshotState,
 ) => {
-  for (const {fullName, status} of results.testResults) {
-    if (status === 'pending' || status === 'failed') {
-      // if test is skipped or failed, we don't want to mark
+  for (const {fullName, status, failing} of results.testResults) {
+    if (
+      status === 'pending' ||
+      status === 'failed' ||
+      (failing && status === 'passed')
+    ) {
+      // If test is skipped or failed, we don't want to mark
       // its snapshots as obsolete.
+      // When tests called with test.failing pass, they've thrown an exception,
+      // so maintain any snapshots after the error.
       snapshotState.markSnapshotsAsCheckedForTest(fullName);
     }
   }

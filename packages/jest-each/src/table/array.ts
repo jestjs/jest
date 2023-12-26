@@ -10,7 +10,7 @@ import * as util from 'util';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
-import {Templates, interpolateVariables} from './interpolation';
+import {type Templates, interpolateVariables} from './interpolation';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp#]/g;
 const PRETTY_PLACEHOLDER = '%p';
@@ -60,16 +60,19 @@ const formatTitle = (
   rowIndex: number,
 ): string =>
   row
-    .reduce<string>((formattedTitle, value) => {
-      const [placeholder] = getMatchingPlaceholders(formattedTitle);
-      const normalisedValue = normalisePlaceholderValue(value);
-      if (!placeholder) return formattedTitle;
+    .reduce<string>(
+      (formattedTitle, value) => {
+        const [placeholder] = getMatchingPlaceholders(formattedTitle);
+        const normalisedValue = normalisePlaceholderValue(value);
+        if (!placeholder) return formattedTitle;
 
-      if (placeholder === PRETTY_PLACEHOLDER)
-        return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
+        if (placeholder === PRETTY_PLACEHOLDER)
+          return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
-      return util.format(formattedTitle, normalisedValue);
-    }, interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex))
+        return util.format(formattedTitle, normalisedValue);
+      },
+      interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex),
+    )
     .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>

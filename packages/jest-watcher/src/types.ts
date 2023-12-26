@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 
@@ -62,7 +63,7 @@ export type AllowedConfigOptions = Partial<
     | 'onlyFailures'
     | 'reporters'
     | 'testNamePattern'
-    | 'testPathPattern'
+    | 'testPathPatterns'
     | 'updateSnapshot'
     | 'verbose'
   > & {mode: 'watch' | 'watchAll'}
@@ -83,8 +84,8 @@ export interface WatchPlugin {
 export interface WatchPluginClass {
   new (options: {
     config: Record<string, unknown>;
-    stdin: NodeJS.ReadStream;
-    stdout: NodeJS.WriteStream;
+    stdin: ReadStream;
+    stdout: WriteStream;
   }): WatchPlugin;
 }
 

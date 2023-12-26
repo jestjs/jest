@@ -6,10 +6,10 @@
  */
 
 import {
-  FakeTimerWithContext,
-  FakeMethod as FakeableAPI,
-  InstalledClock,
-  FakeTimerInstallOpts as SinonFakeTimersConfig,
+  type FakeTimerWithContext,
+  type FakeMethod as FakeableAPI,
+  type InstalledClock,
+  type FakeTimerInstallOpts as SinonFakeTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -107,6 +107,12 @@ export default class FakeTimers {
   async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
     if (this._checkFakeTimers()) {
       await this._clock.tickAsync(msToRun);
+    }
+  }
+
+  advanceTimersToNextFrame(): void {
+    if (this._checkFakeTimers()) {
+      this._clock.runToFrame();
     }
   }
 

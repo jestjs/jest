@@ -1,6 +1,6 @@
 {
   "name": "@jest/globals",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -20,10 +20,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/expect": "workspace:^",
-    "@jest/types": "workspace:^",
-    "jest-mock": "workspace:^"
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/types": "workspace:*",
+    "jest-mock": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

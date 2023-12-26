@@ -8,8 +8,8 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import {
-  PartialConfig,
-  TransformOptions,
+  type PartialConfig,
+  type TransformOptions,
   transformSync as babelTransform,
   transformAsync as babelTransformAsync,
 } from '@babel/core';

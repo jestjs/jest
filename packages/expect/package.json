@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -12,6 +12,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
@@ -19,15 +21,15 @@
     "./build/toThrowMatchers": "./build/toThrowMatchers.js"
   },
   "dependencies": {
-    "@jest/expect-utils": "workspace:^",
-    "jest-get-type": "workspace:^",
-    "jest-matcher-utils": "workspace:^",
-    "jest-message-util": "workspace:^",
-    "jest-util": "workspace:^"
+    "@jest/expect-utils": "workspace:*",
+    "jest-get-type": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
     "@fast-check/jest": "^1.3.0",
-    "@jest/test-utils": "workspace:^",
+    "@jest/test-utils": "workspace:*",
     "@tsd/typescript": "^5.0.4",
     "chalk": "^4.0.0",
     "immutable": "^4.0.0",

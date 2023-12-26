@@ -6,7 +6,7 @@
  */
 
 test('something', () => {
-  const timeout = setTimeout(() => {}, 30000);
+  const timeout = setTimeout(() => {}, 30_000);
   timeout.unref();
   expect(true).toBe(true);
 });

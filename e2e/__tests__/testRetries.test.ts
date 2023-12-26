@@ -42,6 +42,24 @@ describe('Test Retries', () => {
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
+  it('wait before retry', () => {
+    const result = runJest('test-retries', ['waitBeforeRetry.test.js']);
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
+  it('wait before retry with fake timers', () => {
+    const result = runJest('test-retries', [
+      'waitBeforeRetryFakeTimers.test.js',
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
   it('reporter shows more than 1 invocation if test is retried', () => {
     let jsonResult;
 
@@ -54,7 +72,7 @@ describe('Test Retries', () => {
     runJest('test-retries', [
       '--config',
       JSON.stringify(reporterConfig),
-      'retry.test.js',
+      '__tests__/retry.test.js',
     ]);
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');

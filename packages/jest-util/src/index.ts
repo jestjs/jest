@@ -21,7 +21,7 @@ export {default as deepCyclicCopy} from './deepCyclicCopy';
 export {default as convertDescriptorToString} from './convertDescriptorToString';
 export {specialChars};
 export {default as replacePathSepForGlob} from './replacePathSepForGlob';
-export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
+export {default as TestPathPatterns} from './TestPathPatterns';
 export {default as globsToMatcher} from './globsToMatcher';
 export {preRunMessage};
 export {default as pluralize} from './pluralize';

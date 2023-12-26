@@ -44,13 +44,17 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 };
 
 // Retrieves an object's keys for evaluation by getObjectSubset.  This evaluates
-// the prototype chain for string keys but not for symbols.  (Otherwise, it
-// could find values such as a Set or Map's Symbol.toStringTag, with unexpected
-// results.)
-export const getObjectKeys = (object: object): Array<string | symbol> => [
-  ...Object.keys(object),
-  ...Object.getOwnPropertySymbols(object),
-];
+// the prototype chain for string keys but not for non-enumerable symbols.
+// (Otherwise, it could find values such as a Set or Map's Symbol.toStringTag,
+// with unexpected results.)
+export const getObjectKeys = (object: object): Array<string | symbol> => {
+  return [
+    ...Object.keys(object),
+    ...Object.getOwnPropertySymbols(object).filter(
+      s => Object.getOwnPropertyDescriptor(object, s)?.enumerable,
+    ),
+  ];
+};
 
 export const getPath = (
   object: Record<string, any>,
@@ -303,8 +307,8 @@ export const iterableEquality = (
     !isImmutableOrderedSet(a) &&
     !isImmutableRecord(a)
   ) {
-    const aEntries = Object.entries(a);
-    const bEntries = Object.entries(b);
+    const aEntries = entries(a);
+    const bEntries = entries(b);
     if (!equals(aEntries, bEntries)) {
       return false;
     }
@@ -314,6 +318,15 @@ export const iterableEquality = (
   aStack.pop();
   bStack.pop();
   return true;
+};
+
+const entries = (obj: any) => {
+  if (!isObject(obj)) return [];
+
+  return Object.getOwnPropertySymbols(obj)
+    .filter(key => key !== Symbol.iterator)
+    .map(key => [key, obj[key]])
+    .concat(Object.entries(obj));
 };
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
@@ -390,12 +403,17 @@ export const arrayBufferEquality = (
   a: unknown,
   b: unknown,
 ): boolean | undefined => {
-  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
-    return undefined;
+  let dataViewA = a;
+  let dataViewB = b;
+
+  if (a instanceof ArrayBuffer && b instanceof ArrayBuffer) {
+    dataViewA = new DataView(a);
+    dataViewB = new DataView(b);
   }
 
-  const dataViewA = new DataView(a);
-  const dataViewB = new DataView(b);
+  if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
+    return undefined;
+  }
 
   // Buffers are not equal when they do not have the same byte length
   if (dataViewA.byteLength !== dataViewB.byteLength) {

@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {writeFileSync} from 'graceful-fs';
 import LeakDetector from 'jest-leak-detector';
-import {JestWorkerFarm, Worker} from '../../build';
+import {type JestWorkerFarm, Worker} from '../../build';
 
 describe('WorkerThreads leaks', () => {
   let workerFile: string;

@@ -58,7 +58,7 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers.
+   * Sets current system time to be used by fake timers, in milliseconds.
    *
    * @defaultValue
    * The default is `Date.now()`.
@@ -204,6 +204,7 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -325,6 +326,7 @@ export type InitialOptions = Partial<{
   updateSnapshot: boolean;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -412,13 +414,14 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPattern: string;
+  testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -463,6 +466,7 @@ export type ProjectConfig = {
   openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
+  reporters: Array<string | ReporterConfig>;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;
@@ -487,11 +491,18 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
+  testTimeout: number;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
+};
+
+export type SetupAfterEnvPerfStats = {
+  setupAfterEnvStart: number;
+  setupAfterEnvEnd: number;
 };
 
 export type Argv = Arguments<
@@ -569,7 +580,7 @@ export type Argv = Arguments<
     testMatch: Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
-    testPathPattern: Array<string>;
+    testPathPatterns: Array<string>;
     testRegex: string | Array<string>;
     testResultsProcessor: string;
     testRunner: string;

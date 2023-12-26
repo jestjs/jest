@@ -12,8 +12,8 @@ import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptions as ImportDiffOptions,
+  type Diff,
+  type DiffOptions as ImportDiffOptions,
   diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
@@ -94,7 +94,7 @@ export const stringify = (
   maxDepth = 10,
   maxWidth = 10,
 ): string => {
-  const MAX_LENGTH = 10000;
+  const MAX_LENGTH = 10_000;
   let result;
 
   try {
@@ -263,10 +263,10 @@ const getCommonAndChangedSubstrings = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op
-        ? hasCommonDiff
-          ? INVERTED_COLOR(diff[1])
-          : diff[1]
-        : ''),
+          ? hasCommonDiff
+            ? INVERTED_COLOR(diff[1])
+            : diff[1]
+          : ''),
     '',
   );
 
@@ -313,7 +313,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printDiffOrStringify = (
   expected: unknown,

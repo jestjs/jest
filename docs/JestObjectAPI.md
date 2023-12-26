@@ -344,17 +344,17 @@ Returns the `jest` object for chaining.
 
 :::tip
 
-Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md#jestmockedsource-options) helper method to have your mocked modules typed.
 
 :::
 
 ### `jest.Mocked<Source>`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource) chapter of Mock Functions page for documentation.
 
 ### `jest.mocked(source, options?)`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource-options) chapter of Mock Functions page for documentation.
 
 ### `jest.unmock(moduleName)`
 
@@ -753,7 +753,7 @@ afterEach(() => {
 
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
-  const isPlaying = video.play();
+  const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
@@ -839,7 +839,7 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number | Date;
   /**
    * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
@@ -989,6 +989,16 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
+### `jest.advanceTimersToNextFrame()`
+
+Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`. `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.clearAllTimers()`
 
 Removes any pending timers from the timer system.
@@ -1055,6 +1065,16 @@ If `logErrorsBeforeRetry` option is enabled, error(s) that caused the test to fa
 
 ```js
 jest.retryTimes(3, {logErrorsBeforeRetry: true});
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+`waitBeforeRetry` is the number of milliseconds to wait before retrying.
+
+```js
+jest.retryTimes(3, {waitBeforeRetry: 1000});
 
 test('will fail', () => {
   expect(true).toBe(false);

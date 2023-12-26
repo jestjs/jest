@@ -6,10 +6,10 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.0.0",
-    "@jest/globals": "workspace:^",
-    "babel-jest": "workspace:^",
-    "expect": "workspace:^",
-    "jest": "workspace:^",
+    "@jest/globals": "workspace:*",
+    "babel-jest": "workspace:*",
+    "expect": "workspace:*",
+    "jest": "workspace:*",
     "typescript": "^5.0.4"
   },
   "scripts": {

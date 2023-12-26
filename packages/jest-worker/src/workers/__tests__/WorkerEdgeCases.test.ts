@@ -11,13 +11,13 @@ import {transformFileAsync} from '@babel/core';
 import {
   CHILD_MESSAGE_CALL,
   WorkerEvents,
-  WorkerOptions,
+  type WorkerOptions,
   WorkerStates,
 } from '../../types';
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
-jest.setTimeout(10000);
+jest.setTimeout(10_000);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
@@ -99,7 +99,7 @@ describe.each([
           clearInterval(int);
         }
 
-        if (count > 100000) {
+        if (count > 100_000) {
           reject(new Error('Timeout waiting for change'));
         }
 

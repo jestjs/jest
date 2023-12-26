@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -13,13 +13,15 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/schemas": "workspace:^",
+    "@jest/schemas": "workspace:*",
     "ansi-styles": "^5.0.0",
     "react-is": "^18.0.0"
   },
@@ -28,7 +30,7 @@
     "@types/react-is": "^18.0.0",
     "@types/react-test-renderer": "^18.0.1",
     "immutable": "^4.0.0",
-    "jest-util": "workspace:^",
+    "jest-util": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-test-renderer": "18.2.0"

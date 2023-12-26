@@ -41,14 +41,14 @@ describe('readConfigFileAndSetRootDir', () => {
     test('handles exported async function', async () => {
       jest
         .mocked(requireOrImportModule)
-        .mockResolvedValueOnce(async () => ({testTimeout: 10000}));
+        .mockResolvedValueOnce(async () => ({testTimeout: 10_000}));
 
       const rootDir = path.resolve('some', 'path', 'to');
       const config = await readConfigFileAndSetRootDir(
         path.join(rootDir, 'jest.config.js'),
       );
 
-      expect(config).toEqual({rootDir, testTimeout: 10000});
+      expect(config).toEqual({rootDir, testTimeout: 10_000});
     });
   });
 

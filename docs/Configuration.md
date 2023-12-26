@@ -81,6 +81,15 @@ Alternatively Jest's configuration can be defined through the `"jest"` key in th
 }
 ```
 
+Also Jest's configuration json file can be referenced through the `"jest"` key in the `package.json` of your project:
+
+```json title="package.json"
+{
+  "name": "my-project",
+  "jest": "./path/to/config.json"
+}
+```
+
 ## Options
 
 :::info
@@ -92,7 +101,7 @@ const {defaults} = require('jest-config');
 
 /** @type {import('jest').Config} */
 const config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 module.exports = config;
@@ -103,7 +112,7 @@ import type {Config} from 'jest';
 import {defaults} from 'jest-config';
 
 const config: Config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
+  moduleDirectories: [...defaults.moduleDirectories, 'bower_components'],
 };
 
 export default config;
@@ -653,7 +662,7 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number;
   /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
@@ -787,7 +796,7 @@ While code transformation is applied to the linked setup-file, Jest will **not**
 
 ```js title="setup.js"
 module.exports = async function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPattern);
+  console.log(globalConfig.testPathPatterns);
   console.log(projectConfig.cache);
 
   // Set reference to mongod in order to close the server during teardown.
@@ -797,7 +806,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 ```js title="teardown.js"
 module.exports = async function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPattern);
+  console.log(globalConfig.testPathPatterns);
   console.log(projectConfig.cache);
 
   await globalThis.__MONGOD__.stop();
@@ -931,7 +940,7 @@ export default config;
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
-Default: `["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"]`
+Default: `["js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 
@@ -1144,42 +1153,6 @@ If you also have specified [`rootDir`](#rootdir-string), the resolution of this 
 Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
-
-<details>
-<summary>Prettier version 3 is not supported!</summary>
-
-You can either pass `prettierPath: null` in your config to disable using prettier if you don't need it, or use v2 of Prettier solely for Jest.
-
-```json title="package.json"
-{
-  "devDependencies": {
-    "prettier-2": "npm:prettier@^2"
-  }
-}
-```
-
-```js tab
-/** @type {import('jest').Config} */
-const config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-module.exports = config;
-```
-
-```ts tab
-import type {Config} from 'jest';
-
-const config: Config = {
-  prettierPath: require.resolve('prettier-2'),
-};
-
-export default config;
-```
-
-We hope to support Prettier v3 seamlessly out of the box in a future version of Jest. See [this](https://github.com/jestjs/jest/issues/14305) tracking issue.
-
-</details>
 
 ### `projects` \[array&lt;string | ProjectConfig&gt;]
 
@@ -2036,7 +2009,7 @@ This does not change the exit code in the case of Jest errors (e.g. invalid conf
 
 ### `testMatch` \[array&lt;string&gt;]
 
-(default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)
+(default: `[ "**/__tests__/**/*.?([mc])[jt]s?(x)", "**/?(*.)+(spec|test).?([mc])[jt]s?(x)" ]`)
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
 
@@ -2060,7 +2033,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `testRegex` \[string | array&lt;string&gt;]
 
-Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
+Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[mc]?[jt]sx?$`
 
 The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
 
@@ -2116,13 +2089,22 @@ This option allows the use of a custom results processor. This processor must be
         "column": number,
         "line": number
       },
-      "duration": number | null
+      "duration": number | null,
+      "startAt": epoch | null
     },
     ...
     ],
     "perfStats": {
-      "start": epoch,
-      "end": epoch
+      "end": epoch,
+      "loadTestEnvironmentEnd": epoch,
+      "loadTestEnvironmentStart": epoch,
+      "runtime": number,
+      "setupAfterEnvEnd": epoch,
+      "setupAfterEnvStart": epoch,
+      "setupFilesEnd": epoch,
+      "setupFilesStart": epoch,
+      "slow": boolean,
+      "start": epoch
     },
     "testFilePath": absolute path to test file,
     "coverage": {}
@@ -2393,6 +2375,14 @@ It is possible to override this setting in individual tests by explicitly callin
 Default: `false` or `true` if there is only one test file to run
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+### `waitNextEventLoopTurnForUnhandledRejectionEvents` \[boolean]
+
+Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
+
+Without this flag Jest may report false-positive errors (e.g. actually handled rejection reported) or not report actually unhandled rejection (or report it for different test case).
+
+This option may add a noticeable overhead for fast test suites.
 
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 

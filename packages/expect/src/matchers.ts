@@ -23,7 +23,7 @@ import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -331,11 +331,11 @@ const matchers: MatchersObject = {
                 received,
               )}`
             : typeof received.constructor === 'function'
-            ? printReceivedConstructorName(
-                'Received constructor',
-                received.constructor,
-              )
-            : `\nReceived value: ${printReceived(received)}`);
+              ? printReceivedConstructorName(
+                  'Received constructor',
+                  received.constructor,
+                )
+              : `\nReceived value: ${printReceived(received)}`);
 
     return {message, pass};
   },

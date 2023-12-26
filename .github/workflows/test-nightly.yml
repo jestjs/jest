@@ -21,7 +21,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 21-nightly
           cache: yarn
@@ -48,7 +48,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Use Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 21-nightly
           cache: yarn

@@ -19,9 +19,6 @@ export type MockMetadataType =
   | 'null'
   | 'undefined';
 
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadataType = MockMetadataType;
-
 export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
   members?: Record<string, MockMetadata<T>>;
@@ -32,12 +29,6 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   value?: T;
   length?: number;
 };
-
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadata<
-  T = unknown,
-  MetadataType = MockMetadataType,
-> = MockMetadata<T, MetadataType>;
 
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
@@ -69,35 +60,35 @@ export type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunction<T[K]>
-    : T[K] extends object
-    ? MockedObject<T[K]>
-    : T[K];
+      ? MockedFunction<T[K]>
+      : T[K] extends object
+        ? MockedObject<T[K]>
+        : T[K];
 } & T;
 
 type MockedObjectShallow<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunctionShallow<T[K]>
-    : T[K];
+      ? MockedFunctionShallow<T[K]>
+      : T[K];
 } & T;
 
 export type Mocked<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunction<T>
-  : T extends object
-  ? MockedObject<T>
-  : T;
+    ? MockedFunction<T>
+    : T extends object
+      ? MockedObject<T>
+      : T;
 
 export type MockedShallow<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunctionShallow<T>
-  : T extends object
-  ? MockedObjectShallow<T>
-  : T;
+    ? MockedFunctionShallow<T>
+    : T extends object
+      ? MockedObjectShallow<T>
+      : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 export type UnknownClass = {new (...args: Array<unknown>): unknown};
@@ -116,13 +107,8 @@ export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
   ? SpiedClass<T>
   : T extends FunctionLike
-  ? SpiedFunction<T>
-  : never;
-
-// TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SpyInstance<T extends FunctionLike = UnknownFunction>
-  extends MockInstance<T> {}
+    ? SpiedFunction<T>
+    : never;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -744,8 +730,7 @@ export class ModuleMocker {
         }
 
         return finalReturnValue;
-      },
-      metadata.length || 0);
+      }, metadata.length || 0);
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
@@ -1121,8 +1106,8 @@ export class ModuleMocker {
   ): A extends 'get'
     ? SpiedGetter<V>
     : A extends 'set'
-    ? SpiedSetter<V>
-    : never;
+      ? SpiedSetter<V>
+      : never;
 
   spyOn<
     T extends object,

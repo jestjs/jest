@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
@@ -26,7 +27,7 @@ import getResultHeader from './getResultHeader';
 import getSnapshotStatus from './getSnapshotStatus';
 import type {ReporterOnStartOptions} from './types';
 
-type write = NodeJS.WriteStream['write'];
+type write = WriteStream['write'];
 type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
@@ -57,9 +58,7 @@ export default class DefaultReporter extends BaseReporter {
     });
   }
 
-  protected __wrapStdio(
-    stream: NodeJS.WritableStream | NodeJS.WriteStream,
-  ): void {
+  protected __wrapStdio(stream: NodeJS.WritableStream | WriteStream): void {
     const write = stream.write.bind(stream);
 
     let buffer: Array<string> = [];

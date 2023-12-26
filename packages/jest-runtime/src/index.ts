@@ -14,12 +14,12 @@ import {
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
-  Context as VMContext,
+  type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
-  Module as VMModule,
+  type Module as VMModule,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
-import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
@@ -39,19 +39,19 @@ import type {
   V8CoverageResult,
 } from '@jest/test-result';
 import {
-  CallerTransformOptions,
-  ScriptTransformer,
-  ShouldInstrumentOptions,
-  TransformationOptions,
+  type CallerTransformOptions,
+  type ScriptTransformer,
+  type ShouldInstrumentOptions,
+  type TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {IHasteMap, IModuleMap} from 'jest-haste-map';
+import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
-import Resolver, {ResolveModuleConfig} from 'jest-resolve';
+import Resolver, {type ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {
   createDirectory,
@@ -122,6 +122,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
+const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -213,6 +214,7 @@ export default class Runtime {
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
+  private isInsideTestCode: boolean | undefined;
 
   constructor(
     config: Config.ProjectConfig,
@@ -570,6 +572,11 @@ export default class Runtime {
       // @ts-expect-error - exiting
       return;
     }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
 
     const registry = this._isolatedModuleRegistry
       ? this._isolatedModuleRegistry
@@ -718,6 +725,11 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
 
     if (module.status === 'unlinked') {
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
@@ -837,6 +849,18 @@ export default class Runtime {
 
     if (cachedNamedExports) {
       return cachedNamedExports;
+    }
+
+    if (path.extname(modulePath) === '.node') {
+      const nativeModule = this.requireModuleOrMock('', modulePath);
+
+      const namedExports = new Set(
+        Object.keys(nativeModule as Record<string, unknown>),
+      );
+
+      this._cjsNamedExports.set(modulePath, namedExports);
+
+      return namedExports;
     }
 
     const transformedCode =
@@ -1355,6 +1379,14 @@ export default class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
+  enterTestCode(): void {
+    this.isInsideTestCode = true;
+  }
+
+  leaveTestCode(): void {
+    this.isInsideTestCode = false;
+  }
+
   teardown(): void {
     this.restoreAllMocks();
     this.resetModules();
@@ -1497,6 +1529,11 @@ export default class Runtime {
       );
       process.exitCode = 1;
       return;
+    }
+    if (this.isInsideTestCode === false) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
     }
 
     // If the environment was disposed, prevent this module from being executed.
@@ -2166,6 +2203,11 @@ export default class Runtime {
         );
         process.exitCode = 1;
       }
+      if (this.isInsideTestCode === false) {
+        throw new ReferenceError(
+          'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
+        );
+      }
 
       return this._fakeTimersImplementation!;
     };
@@ -2224,6 +2266,8 @@ export default class Runtime {
       this._environment.global[retryTimesSymbol] = numTestRetries;
       this._environment.global[logErrorsBeforeRetrySymbol] =
         options?.logErrorsBeforeRetry;
+      this._environment.global[waitBeforeRetrySymbol] =
+        options?.waitBeforeRetry;
 
       return jestObject;
     };
@@ -2247,6 +2291,16 @@ export default class Runtime {
             '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
           );
         }
+      },
+      advanceTimersToNextFrame: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          return fakeTimers.advanceTimersToNextFrame();
+        }
+        throw new TypeError(
+          '`jest.advanceTimersToNextFrame()` is not available when using legacy fake timers.',
+        );
       },
       advanceTimersToNextTimer: steps =>
         _getFakeTimers().advanceTimersToNextTimer(steps),

@@ -5,20 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'util';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {EXTENSION, SnapshotResolver} from './SnapshotResolver';
+import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -277,7 +278,13 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     config;
   let {received} = config;
 
-  context.dontThrow && context.dontThrow();
+  /** If a test was ran with `test.failing`. Passed by Jest Circus. */
+  const {testFailing = false} = context;
+
+  if (!testFailing && context.dontThrow) {
+    // Supress errors while running tests
+    context.dontThrow();
+  }
 
   const {currentConcurrentTestName, isNot, snapshotState} = context;
   const currentTestName =
@@ -359,6 +366,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     inlineSnapshot,
     isInline,
     received,
+    testFailing,
     testName: fullTestName,
   });
   const {actual, count, expected, pass} = result;
@@ -518,12 +526,25 @@ const _toThrowErrorMatchingSnapshot = (
     );
   }
 
+  let message = error.message;
+  while ('cause' in error) {
+    error = error.cause;
+    if (types.isNativeError(error) || error instanceof Error) {
+      message += `\nCause: ${error.message}`;
+    } else {
+      if (typeof error === 'string') {
+        message += `\nCause: ${error}`;
+      }
+      break;
+    }
+  }
+
   return _toMatchSnapshot({
     context,
     hint,
     inlineSnapshot,
     isInline,
     matcherName,
-    received: error.message,
+    received: message,
   });
 };
