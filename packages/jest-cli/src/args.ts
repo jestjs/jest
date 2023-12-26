@@ -253,15 +253,6 @@ export const options: {[key: string]: Options} = {
       'end of a test run. Implies `runInBand`.',
     type: 'boolean',
   },
-  env: {
-    alias: 'testEnvironment',
-    description:
-      'The test environment used for all tests. This can point to ' +
-      'any file or node module. Examples: `jsdom`, `node` or ' +
-      '`path/to/my-environment.js`',
-    requiresArg: true,
-    type: 'string',
-  },
   errorOnDeprecated: {
     description: 'Make calling deprecated APIs throw helpful error messages.',
     type: 'boolean',
@@ -619,6 +610,15 @@ export const options: {[key: string]: Options} = {
     requiresArg: true,
     string: true,
     type: 'array',
+  },
+  testEnvironment: {
+    alias: 'env',
+    description:
+      'The test environment used for all tests. This can point to ' +
+      'any file or node module. Examples: `jsdom`, `node` or ' +
+      '`path/to/my-environment.js`',
+    requiresArg: true,
+    type: 'string',
   },
   testEnvironmentOptions: {
     description:
