@@ -19950,12 +19950,12 @@ __metadata:
   linkType: hard
 
 "synckit@npm:^0.8.5, synckit@npm:^0.8.6":
-  version: 0.8.6
-  resolution: "synckit@npm:0.8.6"
+  version: 0.8.7
+  resolution: "synckit@npm:0.8.7"
   dependencies:
     "@pkgr/utils": ^2.4.2
     tslib: ^2.6.2
-  checksum: 7c1f4991d0afd63c090c0537f1cf8619dd5777a40cf83bf46beadbf4eb0f9e400d92044e90a177a305df4bcb56efbaf1b689877f301f2672d865b6eecf1be75a
+  checksum: feacad1ba68d1c8849b0ace3d9aa563ba56909eec19691ed2bb1729307652e335aa99a05c509a999fc080d1e7265df98d35cc8b59a3a6889da285b8733042fcc
   languageName: node
   linkType: hard
 
