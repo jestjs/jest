@@ -20815,11 +20815,11 @@ __metadata:
   linkType: hard
 
 "tsd-lite@npm:^0.8.0":
-  version: 0.8.1
-  resolution: "tsd-lite@npm:0.8.1"
+  version: 0.8.2
+  resolution: "tsd-lite@npm:0.8.2"
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
-  checksum: 59ea35f7a1b172dcfea9b3d4ebf0971ebca63545310a97a882d8ab6fd1b33725ddb4fda2f1fea92027f0720a987988d9d94e97224b77cd65570b8c9f5eae72ef
+  checksum: c9da2b929dc66c785bf0df463ff26cb2761c06a99d6ebd0a11cf21ce49e808bef5c99fbbfe953cc7f9db1a916f80fecbee0f688cf0300c44d41c5bc41ee3c0c4
   languageName: node
   linkType: hard
 
