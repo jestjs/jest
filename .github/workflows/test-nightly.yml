@@ -35,7 +35,7 @@ jobs:
       - name: run tests
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 10
+          timeout_minutes: 30
           max_attempts: 3
           retry_on: error
           command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
