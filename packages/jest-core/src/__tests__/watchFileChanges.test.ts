@@ -38,15 +38,15 @@ describe('Watch mode flows with changed files', () => {
     stdin = new MockStdin();
     fs.rmSync(cacheDirectory, {
       force: true,
-      maxRetries: 5,
+      maxRetries: 10,
       recursive: true,
-      retryDelay: 1000,
+      retryDelay: 2000,
     });
     fs.rmSync(testDirectory, {
       force: true,
-      maxRetries: 5,
+      maxRetries: 10,
       recursive: true,
-      retryDelay: 1000,
+      retryDelay: 2000,
     });
     fs.mkdirSync(testDirectory);
     fs.mkdirSync(cacheDirectory);
@@ -59,15 +59,15 @@ describe('Watch mode flows with changed files', () => {
     }
     fs.rmSync(cacheDirectory, {
       force: true,
-      maxRetries: 5,
+      maxRetries: 10,
       recursive: true,
-      retryDelay: 1000,
+      retryDelay: 2000,
     });
     fs.rmSync(testDirectory, {
       force: true,
-      maxRetries: 5,
+      maxRetries: 10,
       recursive: true,
-      retryDelay: 1000,
+      retryDelay: 2000,
     });
   });
 

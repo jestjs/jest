@@ -103,9 +103,9 @@ export const makeTemplate =
 export const cleanup = (directory: string) => {
   fs.rmSync(directory, {
     force: true,
-    maxRetries: 5,
+    maxRetries: 10,
     recursive: true,
-    retryDelay: 1000,
+    retryDelay: 2000,
   });
 };
 
