@@ -38,7 +38,7 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           retry_on: error
-          command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard ${{ matrix.shard }}
+          command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-jasmine:
     strategy:
@@ -65,4 +65,4 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard ${{ matrix.shard }}
+        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}

@@ -41,7 +41,7 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           retry_on: error
-          command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard ${{ matrix.shard }}
+          command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-jasmine:
     name: Node LTS using jest-jasmine2
@@ -69,4 +69,4 @@ jobs:
           timeout_minutes: 30
           max_attempts: 3
           retry_on: error
-          command: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard ${{ inputs.shard }}
+          command: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
