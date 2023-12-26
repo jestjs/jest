@@ -755,7 +755,9 @@ export default async function normalize(
               // We expand it to these paths. If not, we keep the original path
               // for the future resolution.
               const globMatches =
-                typeof project === 'string' ? glob.sync(project) : [];
+                typeof project === 'string'
+                  ? glob.sync(project, {windowsPathsNoEscape: true})
+                  : [];
               return projects.concat(
                 globMatches.length > 0 ? globMatches : project,
               );

@@ -42,7 +42,7 @@ export const findSiblingsWithFileExtension = (
       const slashedDirname = slash(dirname);
 
       const matches = glob
-        .sync(`${pathToModule}.*`)
+        .sync(`${pathToModule}.*`, {windowsPathsNoEscape: true})
         .map(match => slash(match))
         .map(match => {
           const relativePath = path.posix.relative(slashedDirname, match);

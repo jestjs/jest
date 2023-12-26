@@ -296,7 +296,7 @@ export default class CoverageReporter extends BaseReporter {
           // of execution time.
           if (filesByGlob[absoluteThresholdGroup] === undefined) {
             filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup)
+              .sync(absoluteThresholdGroup, {windowsPathsNoEscape: true})
               .map(filePath => path.resolve(filePath));
           }
 
