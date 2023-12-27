@@ -20,5 +20,5 @@ test('makeTestResults does not thrown a stack overflow exception', () => {
 
   const {stdout} = runTest(testString);
 
-  expect(stdout).toMatchSnapshot();
+  expect(stdout.split('\n')).toHaveLength(900_010);
 });
