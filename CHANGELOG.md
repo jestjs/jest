@@ -44,6 +44,7 @@
   - [**BREAKING**] Changes `testPathPattern` configuration option to `testPathPatterns`, which now takes a list of patterns instead of the regex.
   - [**BREAKING**] `--testPathPattern` is now `--testPathPatterns`
 - `[jest-reporters, jest-runner]` Unhandled errors without stack get correctly logged to console ([#14619](https://github.com/jestjs/jest/pull/14619))
+- `[jest-circus]` Replace recursive `makeTestResults` implementation with iterative one ([#14760](https://github.com/jestjs/jest/pull/14760))
 
 ### Performance
 
