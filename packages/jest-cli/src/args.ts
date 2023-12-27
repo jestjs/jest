@@ -98,7 +98,7 @@ export function check(argv: Config.Argv): true {
 
 export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPatterns]';
-export const docs = 'Documentation: https://jestjs.io/';
+export const docs = 'Documentation: https://jestjs.io/docs/cli';
 
 // The default values are all set in jest-config
 export const options: {[key: string]: Options} = {
@@ -129,6 +129,7 @@ export const options: {[key: string]: Options} = {
     description:
       'The directory where Jest should store its cached ' +
       ' dependency information.',
+    requiresArg: true,
     type: 'string',
   },
   changedFilesWithAncestor: {
@@ -142,7 +143,7 @@ export const options: {[key: string]: Options} = {
       'Runs tests related to the changes since the provided branch. If the ' +
       'current branch has diverged from the given branch, then only changes ' +
       'made locally will be tested. Behaves similarly to `--onlyChanged`.',
-    nargs: 1,
+    requiresArg: true,
     type: 'string',
   },
   ci: {
@@ -172,6 +173,7 @@ export const options: {[key: string]: Options} = {
     description:
       'A glob pattern relative to <rootDir> matching the files that coverage ' +
       'info needs to be collected from.',
+    requiresArg: true,
     type: 'string',
   },
   color: {
@@ -191,6 +193,7 @@ export const options: {[key: string]: Options} = {
       'and execute tests. If no rootDir is set in the config, the directory ' +
       'containing the config file is assumed to be the rootDir for the project. ' +
       'This can also be a JSON encoded value which Jest will use as configuration.',
+    requiresArg: true,
     type: 'string',
   },
   coverage: {
@@ -201,6 +204,7 @@ export const options: {[key: string]: Options} = {
   },
   coverageDirectory: {
     description: 'The directory where Jest should output its coverage files.',
+    requiresArg: true,
     type: 'string',
   },
   coveragePathIgnorePatterns: {
@@ -208,17 +212,20 @@ export const options: {[key: string]: Options} = {
       'An array of regexp pattern strings that are matched ' +
       'against all file paths before executing the test. If the file path ' +
       'matches any of the patterns, coverage information will be skipped.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
   coverageProvider: {
     choices: ['babel', 'v8'],
     description: 'Select between Babel and V8 to collect coverage',
+    requiresArg: true,
   },
   coverageReporters: {
     description:
       'A list of reporter names that Jest uses when writing ' +
       'coverage reports. Any istanbul reporter can be used.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -226,6 +233,7 @@ export const options: {[key: string]: Options} = {
     description:
       'A JSON string with which will be used to configure ' +
       'minimum threshold enforcement for coverage results',
+    requiresArg: true,
     type: 'string',
   },
   debug: {
@@ -245,13 +253,6 @@ export const options: {[key: string]: Options} = {
       'end of a test run. Implies `runInBand`.',
     type: 'boolean',
   },
-  env: {
-    description:
-      'The test environment used for all tests. This can point to ' +
-      'any file or node module. Examples: `jsdom`, `node` or ' +
-      '`path/to/my-environment.js`',
-    type: 'string',
-  },
   errorOnDeprecated: {
     description: 'Make calling deprecated APIs throw helpful error messages.',
     type: 'boolean',
@@ -267,6 +268,7 @@ export const options: {[key: string]: Options} = {
       'a list of tests which can be manipulated to exclude tests from ' +
       'running. Especially useful when used in conjunction with a testing ' +
       'infrastructure to filter known broken tests.',
+    requiresArg: true,
     type: 'string',
   },
   findRelatedTests: {
@@ -285,27 +287,32 @@ export const options: {[key: string]: Options} = {
   },
   globalSetup: {
     description: 'The path to a module that runs before All Tests.',
+    requiresArg: true,
     type: 'string',
   },
   globalTeardown: {
     description: 'The path to a module that runs after All Tests.',
+    requiresArg: true,
     type: 'string',
   },
   globals: {
     description:
       'A JSON string with map of global variables that need ' +
       'to be available in all test environments.',
+    requiresArg: true,
     type: 'string',
   },
   haste: {
     description:
       'A JSON string with map of variables for the haste module system',
+    requiresArg: true,
     type: 'string',
   },
   ignoreProjects: {
     description:
       'Ignore the tests of the specified projects. ' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -343,6 +350,7 @@ export const options: {[key: string]: Options} = {
     description:
       'Specifies the maximum number of tests that are allowed to run ' +
       'concurrently. This only affects tests using `test.concurrent`.',
+    requiresArg: true,
     type: 'number',
   },
   maxWorkers: {
@@ -352,12 +360,14 @@ export const options: {[key: string]: Options} = {
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
+    requiresArg: true,
     type: 'string',
   },
   moduleDirectories: {
     description:
       'An array of directory names to be searched recursively ' +
       "up from the requiring module's location.",
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -366,6 +376,7 @@ export const options: {[key: string]: Options} = {
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
       'extensions Jest will look for.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -374,6 +385,7 @@ export const options: {[key: string]: Options} = {
       'A JSON string with a map from regular expressions to ' +
       'module names or to arrays of module names that allow to stub ' +
       'out resources, like images or styles with a single module',
+    requiresArg: true,
     type: 'string',
   },
   modulePathIgnorePatterns: {
@@ -381,6 +393,7 @@ export const options: {[key: string]: Options} = {
       'An array of regexp pattern strings that are matched ' +
       'against all module paths before those paths are to be considered ' +
       '"visible" to the module loader.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -389,6 +402,7 @@ export const options: {[key: string]: Options} = {
       'An alternative API to setting the NODE_PATH env variable, ' +
       'modulePaths is an array of absolute paths to additional locations to ' +
       'search when resolving modules.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -401,8 +415,16 @@ export const options: {[key: string]: Options} = {
     type: 'boolean',
   },
   notifyMode: {
+    choices: [
+      'always',
+      'failure',
+      'success',
+      'change',
+      'success-change',
+      'failure-change',
+    ],
     description: 'Specifies when notifications will appear for test results.',
-    type: 'string',
+    requiresArg: true,
   },
   onlyChanged: {
     alias: 'o',
@@ -421,12 +443,14 @@ export const options: {[key: string]: Options} = {
     description:
       'Print a warning about probable open handles if Jest does not exit ' +
       'cleanly after this number of milliseconds. `0` to disable.',
+    requiresArg: true,
     type: 'number',
   },
   outputFile: {
     description:
       'Write test results to a file when the --json option is ' +
       'also specified.',
+    requiresArg: true,
     type: 'string',
   },
   passWithNoTests: {
@@ -436,16 +460,19 @@ export const options: {[key: string]: Options} = {
   },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",
+    requiresArg: true,
     type: 'string',
   },
   prettierPath: {
     description: 'The path to the "prettier" module used for inline snapshots.',
+    requiresArg: true,
     type: 'string',
   },
   projects: {
     description:
       'A list of projects that use Jest to run all tests of all ' +
       'projects in a single instance of Jest.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -456,6 +483,7 @@ export const options: {[key: string]: Options} = {
   },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -473,6 +501,7 @@ export const options: {[key: string]: Options} = {
   },
   resolver: {
     description: 'A JSON string which allows the use of a custom resolver.',
+    requiresArg: true,
     type: 'string',
   },
   restoreMocks: {
@@ -485,12 +514,14 @@ export const options: {[key: string]: Options} = {
     description:
       'The root directory that Jest should scan for tests and ' +
       'modules within.',
+    requiresArg: true,
     type: 'string',
   },
   roots: {
     description:
       'A list of paths to directories that Jest should use to ' +
       'search for files in.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -513,17 +544,20 @@ export const options: {[key: string]: Options} = {
   runner: {
     description:
       "Allows to use a custom runner instead of Jest's default test runner.",
+    requiresArg: true,
     type: 'string',
   },
   seed: {
     description:
       'Sets a seed value that can be retrieved in a tests file via `jest.getSeed()`. If this option is not specified Jest will randomly generate the value. The seed value must be between `-0x80000000` and `0x7fffffff` inclusive.',
+    requiresArg: true,
     type: 'number',
   },
   selectProjects: {
     description:
       'Run the tests of the specified projects. ' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -531,6 +565,7 @@ export const options: {[key: string]: Options} = {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -538,6 +573,7 @@ export const options: {[key: string]: Options} = {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing framework before each test',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -545,6 +581,7 @@ export const options: {[key: string]: Options} = {
     description:
       'Shard tests and execute only the selected shard, specify in ' +
       'the form "current/all". 1-based, for example "3/5".',
+    requiresArg: true,
     type: 'string',
   },
   showConfig: {
@@ -570,21 +607,29 @@ export const options: {[key: string]: Options} = {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
       'use for snapshot testing.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
   testEnvironment: {
-    description: 'Alias for --env',
+    alias: 'env',
+    description:
+      'The test environment used for all tests. This can point to ' +
+      'any file or node module. Examples: `jsdom`, `node` or ' +
+      '`path/to/my-environment.js`',
+    requiresArg: true,
     type: 'string',
   },
   testEnvironmentOptions: {
     description:
       'A JSON string with options that will be passed to the `testEnvironment`. ' +
       'The relevant options depend on the environment.',
+    requiresArg: true,
     type: 'string',
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
+    requiresArg: true,
     type: 'string', // number
   },
   testLocationInResults: {
@@ -593,12 +638,14 @@ export const options: {[key: string]: Options} = {
   },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
   testNamePattern: {
     alias: 't',
     description: 'Run only tests with a name that matches the regex pattern.',
+    requiresArg: true,
     type: 'string',
   },
   testPathIgnorePatterns: {
@@ -606,6 +653,7 @@ export const options: {[key: string]: Options} = {
       'An array of regexp pattern strings that are matched ' +
       'against all test paths before executing the test. If the test path ' +
       'matches any of the patterns, it will be skipped.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -613,12 +661,14 @@ export const options: {[key: string]: Options} = {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
   testRegex: {
     description:
       'A string or array of string regexp patterns that Jest uses to detect test files.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -627,6 +677,7 @@ export const options: {[key: string]: Options} = {
       'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
       'a function expecting as the first argument the result object.',
+    requiresArg: true,
     type: 'string',
   },
   testRunner: {
@@ -634,6 +685,7 @@ export const options: {[key: string]: Options} = {
       'Allows to specify a custom test runner. The default is' +
       ' `jest-circus/runner`. A path to a custom test runner can be provided:' +
       ' `<rootDir>/path/to/testRunner.js`.',
+    requiresArg: true,
     type: 'string',
   },
   testSequencer: {
@@ -641,22 +693,26 @@ export const options: {[key: string]: Options} = {
       'Allows to specify a custom test sequencer. The default is ' +
       '`@jest/test-sequencer`. A path to a custom test sequencer can be ' +
       'provided: `<rootDir>/path/to/testSequencer.js`',
+    requiresArg: true,
     type: 'string',
   },
   testTimeout: {
     description: 'This option sets the default timeouts of test cases.',
+    requiresArg: true,
     type: 'number',
   },
   transform: {
     description:
       'A JSON string which maps from regular expressions to paths ' +
       'to transformers.',
+    requiresArg: true,
     type: 'string',
   },
   transformIgnorePatterns: {
     description:
       'An array of regexp pattern strings that are matched ' +
       'against all source file paths before transformation.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -665,6 +721,7 @@ export const options: {[key: string]: Options} = {
       'An array of regexp pattern strings that are matched ' +
       'against all modules before the module loader will automatically ' +
       'return a mock for them.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },
@@ -711,6 +768,7 @@ export const options: {[key: string]: Options} = {
       'An array of regexp pattern strings that are matched ' +
       'against all paths before trigger test re-run in watch mode. ' +
       'If the test path matches any of the patterns, it will be skipped.',
+    requiresArg: true,
     string: true,
     type: 'array',
   },

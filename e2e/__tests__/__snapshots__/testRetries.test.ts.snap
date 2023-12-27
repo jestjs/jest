@@ -37,3 +37,79 @@ exports[`Test Retries logs error(s) before retry 1`] = `
 PASS __tests__/logErrorsBeforeRetries.test.js
   ✓ retryTimes set"
 `;
+
+exports[`Test Retries wait before retry 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 |
+
+      at Object.toBeFalsy (__tests__/waitBeforeRetry.test.js:17:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 |
+
+      at Object.toBeFalsy (__tests__/waitBeforeRetry.test.js:17:18)
+
+PASS __tests__/waitBeforeRetry.test.js
+  ✓ retryTimes set"
+`;
+
+exports[`Test Retries wait before retry with fake timers 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set with fake timers
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      17 |   } else {
+    > 18 |     expect(true).toBeFalsy();
+         |                  ^
+      19 |     jest.runAllTimers();
+      20 |   }
+      21 | });
+
+      at Object.toBeFalsy (__tests__/waitBeforeRetryFakeTimers.test.js:18:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      17 |   } else {
+    > 18 |     expect(true).toBeFalsy();
+         |                  ^
+      19 |     jest.runAllTimers();
+      20 |   }
+      21 | });
+
+      at Object.toBeFalsy (__tests__/waitBeforeRetryFakeTimers.test.js:18:18)
+
+PASS __tests__/waitBeforeRetryFakeTimers.test.js
+  ✓ retryTimes set with fake timers"
+`;
