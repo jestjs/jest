@@ -3,11 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
-import {expectType} from 'tsd-lite';
+import {expect, test} from 'tstyche';
 import type {Options} from 'yargs';
 import {yargsOptions} from 'jest-cli';
 
-expectType<{[key: string]: Options}>(yargsOptions);
+test('yargsOptions', () => {
+  expect(yargsOptions).type.toEqual<{[key: string]: Options}>();
+});

@@ -29,6 +29,9 @@ export default {
       runner: 'jest-runner-tsd',
       testMatch: [
         '**/__typetests__/**/*.test.ts',
+        '!**/packages/expect-utils/__typetests__/*.test.ts',
+        '!**/packages/jest/__typetests__/*.test.ts',
+        '!**/packages/jest-cli/__typetests__/*.test.ts',
         '!**/packages/jest-types/__typetests__/config.test.ts',
       ],
     },
