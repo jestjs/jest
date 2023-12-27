@@ -6,7 +6,8 @@
  */
 
 import {resolve} from 'path';
-import {run} from '../Utils';
+import stripAnsi = require('strip-ansi');
+import {extractSummary, run} from '../Utils';
 
 const dir = resolve(__dirname, '..', 'run-programmatically');
 
@@ -18,4 +19,12 @@ test('run Jest programmatically cjs', () => {
 test('run Jest programmatically esm', () => {
   const {stdout} = run('node index.js --version', dir);
   expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[-\S]*-dev$/);
+});
+
+test('createJest run programmatically', () => {
+  const {stderr, stdout} = run('node jest.mjs', dir);
+  const {summary} = extractSummary(stripAnsi(stderr));
+
+  expect(summary).toMatchSnapshot('summary');
+  expect(stdout).toMatchSnapshot('stdout');
 });

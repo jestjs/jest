@@ -12,6 +12,8 @@ export {
   createTestScheduler,
   getVersion,
   runCLI,
+  Jest,
+  createJest,
 } from '@jest/core';
 
 export {run} from 'jest-cli';

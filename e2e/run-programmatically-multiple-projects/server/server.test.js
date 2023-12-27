@@ -6,5 +6,7 @@
  */
 
 describe('server', () => {
-  it('should work', () => {});
+  it('should work', () => {
+    expect(typeof document).toBe('undefined');
+  });
 });

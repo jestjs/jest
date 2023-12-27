@@ -5,18 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {runCLI} = require('@jest/core');
+const {createJest} = require('jest');
 
-const config = {
-  projects: [
-    {testMatch: ['<rootDir>/client/**/*.test.js']},
-    {testMatch: ['<rootDir>/server/**/*.test.js']},
-  ],
-};
+async function main() {
+  const jest = await createJest();
+  jest.globalConfig = {
+    collectCoverage: false,
+    watch: false,
+    ...jest.globalConfig,
+  };
+  await jest.run();
+  console.log('run-programmatically-core-multiple-projects completed');
+}
 
-runCLI({config: JSON.stringify(config)}, [process.cwd()])
-  .then(() => console.log('run-programmatically-mutiple-projects completed'))
-  .catch(err => {
-    console.error(err);
-    process.exitCode = 1;
-  });
+main().catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

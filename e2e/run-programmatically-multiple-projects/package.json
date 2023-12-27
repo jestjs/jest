@@ -2,5 +2,11 @@
   "name": "runcli-multiple-projects",
   "version": "1.0.0",
   "dependencies": {},
-  "jest": {}
+  "jest": {
+    "maxWorkers": 1,
+    "projects": [
+      "<rootDir>/server",
+      "<rootDir>/client"
+    ]
+  }
 }

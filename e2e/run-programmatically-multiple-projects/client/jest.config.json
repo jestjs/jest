@@ -1,0 +1,4 @@
+{
+  "testMatch": ["**/*.test.js"],
+  "testEnvironment": "jsdom"
+}
