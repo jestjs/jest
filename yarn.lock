@@ -2955,11 +2955,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
-    "@tsd/typescript": ^5.0.4
     immutable: ^4.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
-    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -12869,7 +12867,6 @@ __metadata:
     "@jest/core": "workspace:*"
     "@jest/test-result": "workspace:*"
     "@jest/types": "workspace:*"
-    "@tsd/typescript": ^5.0.4
     "@types/exit": ^0.1.30
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
@@ -12878,7 +12875,6 @@ __metadata:
     jest-config: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    tsd-lite: ^0.8.0
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -13595,10 +13591,8 @@ __metadata:
   dependencies:
     "@jest/core": "workspace:*"
     "@jest/types": "workspace:*"
-    "@tsd/typescript": ^5.0.4
     import-local: ^3.0.2
     jest-cli: "workspace:*"
-    tsd-lite: ^0.8.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:

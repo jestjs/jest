@@ -365,7 +365,7 @@ module.exports = {
         'website/**',
         '**/__benchmarks__/**',
         '**/__tests__/**',
-        'packages/jest-types/**/*',
+        '**/__typetests__/**',
         '.eslintplugin/**',
       ],
       rules: {
