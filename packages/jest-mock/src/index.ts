@@ -883,7 +883,7 @@ export class ModuleMocker {
     // if-do-while for perf reasons. The common case is for the if to fail.
     if (name.startsWith(boundFunctionPrefix)) {
       do {
-        name = name.substring(boundFunctionPrefix.length);
+        name = name.slice(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
         bindCall = '.bind(null)';
       } while (name && name.startsWith(boundFunctionPrefix));

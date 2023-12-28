@@ -312,5 +312,5 @@ const extractCustomPendingMessage = function (e: Error) {
   const boilerplateEnd =
     boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
-  return fullMessage.substr(boilerplateEnd);
+  return fullMessage.slice(boilerplateEnd);
 };

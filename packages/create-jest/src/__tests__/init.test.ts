@@ -205,7 +205,7 @@ describe('init', () => {
     });
   });
 
-  describe.each(JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+  describe.each(JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)))(
     'has-jest-config-file-%s',
     extension => {
       describe('ask the user whether to override config or not', () => {

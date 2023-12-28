@@ -58,7 +58,7 @@ function getGlobalCacheKey(
       createHash('sha1'),
     )
     .digest('hex')
-    .substring(0, length);
+    .slice(0, length);
 }
 
 function getCacheKeyFunction(
@@ -80,7 +80,7 @@ function getCacheKeyFunction(
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
       .digest('hex')
-      .substring(0, length);
+      .slice(0, length);
   };
 }
 

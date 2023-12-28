@@ -99,7 +99,7 @@ function getCacheKeyFromConfig(
     .update('\0', 'utf8')
     .update(process.version)
     .digest('hex')
-    .substring(0, 32);
+    .slice(0, 32);
 }
 
 function loadBabelConfig(

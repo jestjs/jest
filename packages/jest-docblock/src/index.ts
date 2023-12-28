@@ -23,13 +23,13 @@ const STRING_ARRAY: ReadonlyArray<string> = [];
 
 export function extract(contents: string): string {
   const match = contents.match(docblockRe);
-  return match ? match[0].trimLeft() : '';
+  return match ? match[0].trimStart() : '';
 }
 
 export function strip(contents: string): string {
   const matchResult = contents.match(docblockRe);
   const match = matchResult?.[0];
-  return match == null ? contents : contents.substring(match.length);
+  return match == null ? contents : contents.slice(match.length);
 }
 
 export function parse(docblock: string): Pragmas {
@@ -53,13 +53,13 @@ export function parseWithComments(docblock: string): {
     prev = docblock;
     docblock = docblock.replace(multilineRe, `${line}$1 $2${line}`);
   }
-  docblock = docblock.replace(ltrimNewlineRe, '').trimRight();
+  docblock = docblock.replace(ltrimNewlineRe, '').trimEnd();
 
   const result = Object.create(null) as Pragmas;
   const comments = docblock
     .replace(propertyRe, '')
     .replace(ltrimNewlineRe, '')
-    .trimRight();
+    .trimEnd();
 
   let match;
   while ((match = propertyRe.exec(docblock))) {

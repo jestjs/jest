@@ -295,7 +295,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -344,7 +344,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
-      `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
+      `${id.replace(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
     );
   }
 
