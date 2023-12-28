@@ -87,7 +87,8 @@ describe('DOMCollection plugin for list items', () => {
   ].join('\n');
 
   it('supports HTMLCollection for getElementsByTagName', () => {
-    const options = form.querySelectorAll('option');
+    // eslint-disable-next-line unicorn/prefer-query-selector
+    const options = form.getElementsByTagName('option');
     expect(options).toPrettyPrintTo(expectedHTMLCollection);
   });
 
