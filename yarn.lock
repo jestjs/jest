@@ -13507,6 +13507,7 @@ __metadata:
     "@docusaurus/preset-classic": ^3.0.0
     "@docusaurus/remark-plugin-npm2yarn": ^3.0.0
     "@docusaurus/tsconfig": ^3.0.0
+    "@jest/schemas": "workspace:*"
     "@types/react": ^18.2.0
     clsx: ^2.0.0
     docusaurus-remark-plugin-tab-blocks: ^3.0.0

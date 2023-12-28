@@ -25,6 +25,7 @@
 /website/build
 /website/backers.json
 /website/node_modules
+/website/static/schemas/
 /website/yarn.lock
 /website/i18n/*
 
