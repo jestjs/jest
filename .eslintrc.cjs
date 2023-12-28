@@ -688,7 +688,6 @@ module.exports = {
     'unicorn/no-useless-promise-resolve-reject': 'off',
     'unicorn/no-useless-undefined': 'off',
     'unicorn/number-literal-case': 'off',
-    'unicorn/prefer-add-event-listener': 'off',
     'unicorn/prefer-array-flat': 'off',
     'unicorn/prefer-array-flat-map': 'off',
     'unicorn/prefer-array-index-of': 'off',
