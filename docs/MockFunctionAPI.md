@@ -620,7 +620,7 @@ The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with ty
 
 ```ts
 import {expect, jest, test} from '@jest/globals';
-import type {fetch} from 'node-fetch';
+import {fetch} from 'node-fetch';
 
 jest.mock('node-fetch');
 
