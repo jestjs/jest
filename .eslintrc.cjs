@@ -686,7 +686,6 @@ module.exports = {
     'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
     'unicorn/escape-case': 'off',
-    'unicorn/new-for-builtins': 'off',
     'unicorn/no-array-method-this-argument': 'off',
     'unicorn/no-array-push-push': 'off',
     'unicorn/no-await-expression-member': 'off',

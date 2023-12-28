@@ -145,7 +145,7 @@ const buildContextsAndHasteMaps = async (
   globalConfig: Config.GlobalConfig,
   outputStream: WriteStream,
 ) => {
-  const hasteMapInstances = Array(configs.length);
+  const hasteMapInstances = new Array(configs.length);
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);

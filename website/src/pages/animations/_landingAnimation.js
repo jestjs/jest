@@ -177,7 +177,7 @@ export function setupLandingAnimation() {
     const firstButton = document.querySelector(
       '.matchers .blockContent .button'
     );
-    firstButton.onclick();
+    firstButton.click();
   }
 
   // Without forking Docusaurus which is on route to a breaking major semver,

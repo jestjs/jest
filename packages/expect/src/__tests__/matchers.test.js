@@ -486,7 +486,7 @@ describe('.toStrictEqual()', () => {
 });
 
 describe('.toEqual()', () => {
-  /* eslint-disable no-new-wrappers */
+  /* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
   for (const [a, b] of [
     [true, false],
     [1, 2],
