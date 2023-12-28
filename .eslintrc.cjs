@@ -432,6 +432,12 @@ module.exports = {
         'unicorn/no-static-only-class': 'off',
       },
     },
+    {
+      files: '**/*.mjs',
+      rules: {
+        'unicorn/prefer-top-level-await': 'error',
+      },
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -665,10 +671,8 @@ module.exports = {
     'unicorn/prefer-event-target': 'off',
     'unicorn/prefer-switch': 'off',
     'unicorn/prefer-ternary': 'off',
-    'unicorn/switch-case-braces': 'off',
-
-    // TODO: enable for `.mjs` files
     'unicorn/prefer-top-level-await': 'off',
+    'unicorn/switch-case-braces': 'off',
 
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
