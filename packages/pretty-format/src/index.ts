@@ -334,7 +334,7 @@ function printPlugin(
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
-    throw new Error(
+    throw new TypeError(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
     );
   }
@@ -438,7 +438,7 @@ function validateOptions(options: OptionsReceived) {
     }
 
     if (typeof options.theme !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `pretty-format: Option "theme" must be of type "object" but instead received "${typeof options.theme}".`,
       );
     }

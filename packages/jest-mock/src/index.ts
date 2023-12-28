@@ -1150,7 +1150,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the \`${String(
             methodKey,
           )}\` property because it is not a function; ${this._typeOf(
@@ -1247,7 +1247,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the ${String(
             propertyKey,
           )} property because it is not a function; ${this._typeOf(
@@ -1340,7 +1340,7 @@ export class ModuleMocker {
     }
 
     if (typeof descriptor.value === 'function') {
-      throw new Error(
+      throw new TypeError(
         `Cannot replace the \`${String(
           propertyKey,
         )}\` property because it is a function. Use \`jest.spyOn(object, '${String(

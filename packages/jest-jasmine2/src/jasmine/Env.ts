@@ -402,7 +402,7 @@ export default function jasmineEnv(j$: Jasmine) {
           );
         }
         if (typeof specDefinitions !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
           );
         }
@@ -557,7 +557,7 @@ export default function jasmineEnv(j$: Jasmine) {
           );
         }
         if (typeof fn !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${fn}. It must be a callback function.`,
           );
         }

@@ -106,7 +106,7 @@ export default class BaseWorkerPool {
   }
 
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
-    throw Error('Missing method createWorker in WorkerPool');
+    throw new Error('Missing method createWorker in WorkerPool');
   }
 
   async start(): Promise<void> {

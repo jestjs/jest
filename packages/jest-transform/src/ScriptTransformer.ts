@@ -291,7 +291,7 @@ class ScriptTransformer {
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new Error(makeInvalidTransformerError(transformPath));
+            throw new TypeError(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           const transformCacheKey = this._buildTransformCacheKey(

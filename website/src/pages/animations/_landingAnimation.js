@@ -153,26 +153,26 @@ export function setupLandingAnimation() {
       },
     ];
 
-    screenshotImg.onload = () => {
+    screenshotImg.addEventListener('load', () => {
       screenshotImg.style.opacity = 1;
-    };
+    });
 
     for (const button of buttons) {
       const clickButton = document.createElement('a');
       clickButton.text = button.title;
       clickButton.className = 'button button--primary button--outline landing';
-      clickButton.onclick = () => {
+      clickButton.addEventListener('click', () => {
         for (const b of document.querySelectorAll('.matchers .button.landing'))
           b.className = 'button button--primary button--outline landing';
         clickButton.className =
           'button button--primary button--outline landing button--active';
         screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
-      };
-      buttonWrapper.appendChild(clickButton);
+      });
+      buttonWrapper.append(clickButton);
     }
 
-    matcherSection.appendChild(buttonWrapper);
+    matcherSection.append(buttonWrapper);
 
     const firstButton = document.querySelector(
       '.matchers .blockContent .button'
@@ -186,9 +186,9 @@ export function setupLandingAnimation() {
   function makeScreenshotsClickable() {
     for (const img of document.querySelectorAll('.blockImage img')) {
       img.style.cursor = 'pointer';
-      img.onclick = () => {
+      img.addEventListener('click', () => {
         document.location = img.src;
-      };
+      });
     }
   }
 
