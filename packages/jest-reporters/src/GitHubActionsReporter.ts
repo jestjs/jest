@@ -25,43 +25,43 @@ import {
 import {specialChars} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
-type AnnotationOptions = {
+interface AnnotationOptions {
   file?: string;
   line?: number | string;
   message: string;
   title: string;
   type: 'error' | 'warning';
-};
+}
 
 const titleSeparator = ' \u203A ';
 const ICONS = specialChars.ICONS;
 
-type PerformanceInfo = {
+interface PerformanceInfo {
   end: number;
   runtime: number;
   slow: boolean;
   start: number;
-};
+}
 
-type ResultTreeLeaf = {
+interface ResultTreeLeaf {
   name: string;
   status: Status;
   duration: number;
   children: Array<never>;
-};
+}
 
-type ResultTreeNode = {
+interface ResultTreeNode {
   name: string;
   passed: boolean;
   children: Array<ResultTreeNode | ResultTreeLeaf>;
-};
+}
 
-type ResultTree = {
+interface ResultTree {
   children: Array<ResultTreeLeaf | ResultTreeNode>;
   name: string;
   passed: boolean;
   performanceInfo: PerformanceInfo;
-};
+}
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
@@ -231,10 +231,8 @@ export default class GitHubActionsReporter extends BaseReporter {
         });
       } else {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
-          if (
-            this.arrayEqual(branches[index], element.ancestorTitles.slice(0, 1))
-          ) {
+        for (const item of branches) {
+          if (this.arrayEqual(item, element.ancestorTitles.slice(0, 1))) {
             alreadyInserted = true;
             break;
           }
@@ -286,10 +284,10 @@ export default class GitHubActionsReporter extends BaseReporter {
         )
       ) {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
+        for (const item of branches) {
           if (
             this.arrayEqual(
-              branches[index],
+              item,
               element.ancestorTitles.slice(0, ancestors.length + 1),
             )
           ) {

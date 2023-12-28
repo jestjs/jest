@@ -12,10 +12,10 @@ export type ComputeTaskPriorityCallback = (
   ...args: Array<unknown>
 ) => number;
 
-type QueueItem = {
+interface QueueItem {
   task: QueueChildMessage;
   priority: number;
-};
+}
 
 /**
  * Priority queue that processes tasks in natural ordering (lower priority first)
@@ -81,9 +81,9 @@ export default class PriorityQueue implements TaskQueue {
   }
 }
 
-type HeapItem = {
+interface HeapItem {
   priority: number;
-};
+}
 
 class MinHeap<TItem extends HeapItem> {
   private readonly _heap: Array<TItem | null> = [];

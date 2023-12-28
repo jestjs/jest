@@ -8,9 +8,9 @@
 import type {Config} from '@jest/types';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
-type PatternsConfig = {
+interface PatternsConfig {
   rootDir: string;
-};
+}
 
 export default class TestPathPatterns {
   private _regexString: string | null = null;

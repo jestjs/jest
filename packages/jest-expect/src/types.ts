@@ -24,17 +24,17 @@ export type JestExpect = {
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
 
-type Inverse<Matchers> = {
+interface Inverse<Matchers> {
   /**
    * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
    */
   not: Matchers;
-};
+}
 
 type JestMatchers<R extends void | Promise<void>, T> = Matchers<R, T> &
   SnapshotMatchers<R, T>;
 
-type PromiseMatchers<T = unknown> = {
+interface PromiseMatchers<T = unknown> {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
@@ -47,7 +47,7 @@ type PromiseMatchers<T = unknown> = {
    */
   resolves: JestMatchers<Promise<void>, T> &
     Inverse<JestMatchers<Promise<void>, T>>;
-};
+}
 
 declare module 'expect' {
   interface MatcherState {

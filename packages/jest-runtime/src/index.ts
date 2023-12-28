@@ -78,14 +78,14 @@ interface JestGlobalsWithJest extends JestGlobals {
   jest: typeof jest;
 }
 
-type HasteMapOptions = {
+interface HasteMapOptions {
   console?: Console;
   maxWorkers: number;
   resetCache: boolean;
   watch?: boolean;
   watchman: boolean;
   workerThreads?: boolean;
-};
+}
 
 interface InternalModuleOptions extends Required<CallerTransformOptions> {
   isInternalModule: boolean;
@@ -146,7 +146,9 @@ const unmockRegExpCache = new WeakMap();
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
-type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
+interface RunScriptEvalResult {
+  [EVAL_RESULT_VARIABLE]: ModuleWrapper;
+}
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 

@@ -19,12 +19,12 @@ import type {
   SpecResult,
 } from './jasmine/Spec';
 
-export type SetupOptions = {
+export interface SetupOptions {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   localRequire: (moduleName: string) => Plugin;
   testPath: string;
-};
+}
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing

@@ -298,7 +298,7 @@ const spiedObject = {
   },
 };
 
-type IndexSpiedObject = {
+interface IndexSpiedObject {
   [key: string]: Record<string, any>;
 
   methodA(): boolean;
@@ -307,7 +307,7 @@ type IndexSpiedObject = {
   methodE: (e: any) => never;
 
   propertyA: {a: string};
-};
+}
 
 const indexSpiedObject: IndexSpiedObject = {
   methodA() {

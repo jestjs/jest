@@ -46,7 +46,7 @@ const PLUGINS = [
 
 type MatcherHintColor = (arg: string) => string; // subset of Chalk type
 
-export type MatcherHintOptions = {
+export interface MatcherHintOptions {
   comment?: string;
   expectedColor?: MatcherHintColor;
   isDirectExpectCall?: boolean;
@@ -55,7 +55,7 @@ export type MatcherHintOptions = {
   receivedColor?: MatcherHintColor;
   secondArgument?: string;
   secondArgumentColor?: MatcherHintColor;
-};
+}
 
 export type DiffOptions = ImportDiffOptions;
 
@@ -473,9 +473,9 @@ function _replaceMatchedToAsymmetricMatcher(
   };
 }
 
-type AsymmetricMatcher = {
+interface AsymmetricMatcher {
   asymmetricMatch: Function;
-};
+}
 
 function isAsymmetricMatcher(data: any): data is AsymmetricMatcher {
   const type = getType(data);

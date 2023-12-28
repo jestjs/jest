@@ -49,12 +49,12 @@ import type {
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json') as {version: string};
 
-type ProjectCache = {
+interface ProjectCache {
   configString: string;
   ignorePatternsRegExp?: RegExp;
   transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
-};
+}
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
@@ -254,8 +254,8 @@ class ScriptTransformer {
       return undefined;
     }
 
-    for (let i = 0; i < transformEntry.length; i++) {
-      const [transformRegExp, transformPath] = transformEntry[i];
+    for (const item of transformEntry) {
+      const [transformRegExp, transformPath] = item;
       if (transformRegExp.test(filename)) {
         return [transformRegExp.source, transformPath];
       }
@@ -1023,12 +1023,8 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
   }
 
   const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
-  for (let i = 0; i < config.transform.length; i++) {
-    transformRegexp.push([
-      new RegExp(config.transform[i][0]),
-      config.transform[i][1],
-      config.transform[i][2],
-    ]);
+  for (const item of config.transform) {
+    transformRegexp.push([new RegExp(item[0]), item[1], item[2]]);
   }
 
   return transformRegexp;

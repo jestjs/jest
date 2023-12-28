@@ -113,8 +113,8 @@ describe('collectHandles', () => {
     const server = http.createServer((_, response) => response.end('ok'));
 
     // Start and stop server.
-    await new Promise(r => server.listen(0, r));
-    await new Promise(r => server.close(r));
+    await new Promise(resolve => server.listen(0, resolve));
+    await new Promise(resolve => server.close(resolve));
 
     const openHandles = await handleCollector();
     expect(openHandles).toHaveLength(0);
@@ -130,11 +130,13 @@ describe('collectHandles', () => {
     // creates a long-lived `TCPSERVERWRAP` resource. We want to make sure we
     // capture that long-lived resource.
     const server = new http.Server();
-    await new Promise(r => server.listen({host: 'localhost', port: 0}, r));
+    await new Promise(resolve =>
+      server.listen({host: 'localhost', port: 0}, resolve),
+    );
 
     const openHandles = await handleCollector();
 
-    await new Promise(r => server.close(r));
+    await new Promise(resolve => server.close(resolve));
 
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),

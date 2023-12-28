@@ -42,7 +42,7 @@ import expectationResultFactory, {
 import type {QueueableFn, default as queueRunner} from '../queueRunner';
 import type {AssertionErrorWithStack} from '../types';
 
-export type Attributes = {
+export interface Attributes {
   id: string;
   resultCallback: (result: Spec['result']) => void;
   description: Circus.TestNameLike;
@@ -57,9 +57,9 @@ export type Attributes = {
   onStart: (context: Spec) => void;
   getSpecName: (spec: Spec) => string;
   queueRunnerFactory: typeof queueRunner;
-};
+}
 
-export type SpecResult = {
+export interface SpecResult {
   id: string;
   description: string;
   fullName: string;
@@ -73,7 +73,7 @@ export type SpecResult = {
     getColumnNumber: () => number;
     getLineNumber: () => number;
   };
-};
+}
 
 export default class Spec {
   id: string;

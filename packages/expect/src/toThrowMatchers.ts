@@ -177,9 +177,9 @@ const toThrowExpectedRegExp = (
   return {message, pass};
 };
 
-type AsymmetricMatcher = {
+interface AsymmetricMatcher {
   asymmetricMatch: (received: unknown) => boolean;
-};
+}
 
 const toThrowExpectedAsymmetric = (
   matcherName: string,

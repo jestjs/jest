@@ -9,18 +9,18 @@ import type {ReadStream, WriteStream} from 'tty';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 
-type TestSuiteInfo = {
+interface TestSuiteInfo {
   config: Config.ProjectConfig;
   duration?: number;
   testPath: string;
-};
+}
 
-export type JestHookExposedFS = {
+export interface JestHookExposedFS {
   projects: Array<{
     config: Config.ProjectConfig;
     testPaths: Array<string>;
   }>;
-};
+}
 
 export type FileChange = (fs: JestHookExposedFS) => void;
 export type ShouldRunTestSuite = (
@@ -28,24 +28,24 @@ export type ShouldRunTestSuite = (
 ) => Promise<boolean>;
 export type TestRunComplete = (results: AggregatedResult) => void;
 
-export type JestHookSubscriber = {
+export interface JestHookSubscriber {
   onFileChange: (fn: FileChange) => void;
   onTestRunComplete: (fn: TestRunComplete) => void;
   shouldRunTestSuite: (fn: ShouldRunTestSuite) => void;
-};
+}
 
-export type JestHookEmitter = {
+export interface JestHookEmitter {
   onFileChange: (fs: JestHookExposedFS) => void;
   onTestRunComplete: (results: AggregatedResult) => void;
   shouldRunTestSuite: (
     testSuiteInfo: TestSuiteInfo,
   ) => Promise<boolean> | boolean;
-};
+}
 
-export type UsageData = {
+export interface UsageData {
   key: string;
   prompt: string;
-};
+}
 
 export type AllowedConfigOptions = Partial<
   Pick<
@@ -81,15 +81,13 @@ export interface WatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }
-export interface WatchPluginClass {
-  new (options: {
-    config: Record<string, unknown>;
-    stdin: ReadStream;
-    stdout: WriteStream;
-  }): WatchPlugin;
-}
+export type WatchPluginClass = new (options: {
+  config: Record<string, unknown>;
+  stdin: ReadStream;
+  stdout: WriteStream;
+}) => WatchPlugin;
 
-export type ScrollOptions = {
+export interface ScrollOptions {
   offset: number;
   max: number;
-};
+}

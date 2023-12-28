@@ -30,10 +30,10 @@ import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFramework, TestRunnerContext} from './types';
 
-type RunTestInternalResult = {
+interface RunTestInternalResult {
   leakDetector: LeakDetector | null;
   result: TestResult;
-};
+}
 
 function freezeConsole(
   testConsole: BufferedConsole | CustomConsole | NullConsole,

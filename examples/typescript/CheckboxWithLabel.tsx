@@ -2,12 +2,12 @@
 
 import {useState} from 'react';
 
-type CheckboxWithLabelProps = {
+interface CheckboxWithLabelProps {
   labelRef: React.LegacyRef<HTMLLabelElement>;
   inputRef: React.LegacyRef<HTMLInputElement>;
   labelOff: string;
   labelOn: string;
-};
+}
 
 export default function CheckboxWithLabel({
   labelRef,

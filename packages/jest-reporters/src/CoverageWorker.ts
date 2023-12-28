@@ -24,12 +24,12 @@ type CoverageReporterSerializedContext = {
   [K in keyof CoverageReporterContext]: SerializeSet<ReporterContext[K]>;
 };
 
-export type CoverageWorkerData = {
+export interface CoverageWorkerData {
   config: Config.ProjectConfig;
   context: CoverageReporterSerializedContext;
   globalConfig: Config.GlobalConfig;
   path: string;
-};
+}
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {

@@ -6,13 +6,13 @@
  */
 import type Suite from './jasmine/Suite';
 
-type Options = {
+interface Options {
   nodeComplete: (suite: TreeNode) => void;
   nodeStart: (suite: TreeNode) => void;
   queueRunnerFactory: any;
   runnableIds: Array<string>;
   tree: TreeNode;
-};
+}
 
 export type TreeNode = {
   afterAllFns: Array<unknown>;

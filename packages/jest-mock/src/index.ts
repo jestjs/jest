@@ -19,7 +19,7 @@ export type MockMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockMetadata<T, MetadataType = MockMetadataType> = {
+export interface MockMetadata<T, MetadataType = MockMetadataType> {
   ref?: number;
   members?: Record<string, MockMetadata<T>>;
   mockImpl?: T;
@@ -28,9 +28,9 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   type?: MetadataType;
   value?: T;
   length?: number;
-};
+}
 
-export type ClassLike = {new (...args: any): any};
+export type ClassLike = new (...args: any) => any;
 export type FunctionLike = (...args: any) => any;
 
 export type ConstructorLikeKeys<T> = keyof {
@@ -91,7 +91,7 @@ export type MockedShallow<T> = T extends ClassLike
       : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
-export type UnknownClass = {new (...args: Array<unknown>): unknown};
+export type UnknownClass = new (...args: Array<unknown>) => unknown;
 
 export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
@@ -169,14 +169,14 @@ export interface Replaced<T = unknown> {
   replaceValue(value: T): this;
 }
 
-type ReplacedPropertyRestorer<T extends object, K extends keyof T> = {
+interface ReplacedPropertyRestorer<T extends object, K extends keyof T> {
   (): void;
   object: T;
   property: K;
   replaced: Replaced<T[K]>;
-};
+}
 
-type MockFunctionResultIncomplete = {
+interface MockFunctionResultIncomplete {
   type: 'incomplete';
   /**
    * Result of a single call to a mock function that has not yet completed.
@@ -184,28 +184,28 @@ type MockFunctionResultIncomplete = {
    * or from within a function that was called by the mock.
    */
   value: undefined;
-};
-type MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> = {
+}
+interface MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> {
   type: 'return';
   /**
    * Result of a single call to a mock function that returned.
    */
   value: ReturnType<T>;
-};
-type MockFunctionResultThrow = {
+}
+interface MockFunctionResultThrow {
   type: 'throw';
   /**
    * Result of a single call to a mock function that threw.
    */
   value: unknown;
-};
+}
 
 type MockFunctionResult<T extends FunctionLike = UnknownFunction> =
   | MockFunctionResultIncomplete
   | MockFunctionResultReturn<T>
   | MockFunctionResultThrow;
 
-type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
+interface MockFunctionState<T extends FunctionLike = UnknownFunction> {
   /**
    * List of the call arguments of all calls that have been made to the mock.
    */
@@ -232,13 +232,13 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
    * List of the results of all calls that have been made to the mock.
    */
   results: Array<MockFunctionResult<T>>;
-};
+}
 
-type MockFunctionConfig = {
+interface MockFunctionConfig {
   mockImpl: Function | undefined;
   mockName: string;
   specificMockImpls: Array<Function>;
-};
+}
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
@@ -533,9 +533,7 @@ export class ModuleMocker {
     ) {
       const ownNames = Object.getOwnPropertyNames(object);
 
-      for (let i = 0; i < ownNames.length; i++) {
-        const prop = ownNames[i];
-
+      for (const prop of ownNames) {
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {

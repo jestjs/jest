@@ -27,14 +27,14 @@ export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
 export type TestContext = Global.TestContext;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
-export type Hook = {
+export interface Hook {
   asyncError: Error;
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
   seenDone: boolean;
   timeout: number | undefined | null;
-};
+}
 
 export interface EventHandler {
   (event: AsyncEvent, state: State): void | Promise<void>;
@@ -180,26 +180,26 @@ export type AsyncEvent =
       name: 'teardown';
     };
 
-export type MatcherResults = {
+export interface MatcherResults {
   actual: unknown;
   expected: unknown;
   name: string;
   pass: boolean;
-};
+}
 
 export type TestStatus = 'skip' | 'done' | 'todo';
 
 export type TestNamesPath = Array<TestName | BlockName>;
 
-export type TestCaseStartInfo = {
+export interface TestCaseStartInfo {
   ancestorTitles: Array<string>;
   fullName: string;
   mode: TestMode;
   title: string;
   startedAt?: number | null;
-};
+}
 
-export type TestResult = {
+export interface TestResult {
   duration?: number | null;
   errors: Array<FormattedError>;
   errorsDetailed: Array<MatcherResults | unknown>;
@@ -215,22 +215,22 @@ export type TestResult = {
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
   testPath: TestNamesPath;
-};
+}
 
-export type RunResult = {
+export interface RunResult {
   unhandledErrors: Array<FormattedError>;
   testResults: TestResults;
-};
+}
 
 export type TestResults = Array<TestResult>;
 
-export type GlobalErrorHandlers = {
+export interface GlobalErrorHandlers {
   rejectionHandled: Array<(promise: Promise<unknown>) => void>;
   uncaughtException: Array<NodeJS.UncaughtExceptionListener>;
   unhandledRejection: Array<NodeJS.UnhandledRejectionListener>;
-};
+}
 
-export type State = {
+export interface State {
   currentDescribeBlock: DescribeBlock;
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   expand?: boolean; // expand error messages
@@ -250,9 +250,9 @@ export type State = {
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
   unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
-};
+}
 
-export type DescribeBlock = {
+export interface DescribeBlock {
   type: 'describeBlock';
   children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
@@ -261,11 +261,11 @@ export type DescribeBlock = {
   parent?: DescribeBlock;
   /** @deprecated Please get from `children` array instead */
   tests: Array<TestEntry>;
-};
+}
 
 export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
 
-export type TestEntry = {
+export interface TestEntry {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
@@ -284,4 +284,4 @@ export type TestEntry = {
   timeout?: number;
   failing: boolean;
   unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
-};
+}

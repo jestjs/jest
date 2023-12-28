@@ -7,15 +7,15 @@
 
 const EMPTY = new Set<string>();
 
-export type DeepCyclicCopyOptions = {
+export interface DeepCyclicCopyOptions {
   blacklist?: Set<string>;
   keepPrototype?: boolean;
-};
+}
 
 export default function deepCyclicCopy<T>(
   value: T,
   options: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
-  cycles: WeakMap<any, any> = new WeakMap(),
+  cycles = new WeakMap<any, any>(),
 ): T {
   if (typeof value !== 'object' || value === null || Buffer.isBuffer(value)) {
     return value;

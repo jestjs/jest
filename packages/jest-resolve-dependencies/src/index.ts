@@ -10,10 +10,10 @@ import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {type SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-export type ResolvedModule = {
+export interface ResolvedModule {
   file: string;
   dependencies: Array<string>;
-};
+}
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
@@ -139,7 +139,7 @@ export class DependencyResolver {
     };
 
     const relatedPaths = new Set<string>();
-    const changed: Set<string> = new Set();
+    const changed = new Set<string>();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)

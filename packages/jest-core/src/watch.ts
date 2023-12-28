@@ -51,12 +51,12 @@ import UpdateSnapshotsInteractivePlugin from './plugins/UpdateSnapshotsInteracti
 import runJest from './runJest';
 import type {Filter} from './types';
 
-type ReservedInfo = {
+interface ReservedInfo {
   forbiddenOverwriteMessage?: string;
   key?: string;
   overwritable: boolean;
   plugin: WatchPlugin;
-};
+}
 
 type WatchPluginKeysMap = Map<string, ReservedInfo>;
 

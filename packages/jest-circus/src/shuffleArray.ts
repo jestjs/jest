@@ -8,9 +8,9 @@
 import {unsafeUniformIntDistribution, xoroshiro128plus} from 'pure-rand';
 
 // Generates [from, to] inclusive
-export type RandomNumberGenerator = {
+export interface RandomNumberGenerator {
   next: (from: number, to: number) => number;
-};
+}
 
 export const rngBuilder = (seed: number): RandomNumberGenerator => {
   const gen = xoroshiro128plus(seed);

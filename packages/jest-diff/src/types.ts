@@ -8,7 +8,7 @@ import type {CompareKeys} from 'pretty-format';
 
 export type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
 
-export type DiffOptions = {
+export interface DiffOptions {
   aAnnotation?: string;
   aColor?: DiffOptionsColor;
   aIndicator?: string;
@@ -27,9 +27,9 @@ export type DiffOptions = {
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
   compareKeys?: CompareKeys;
-};
+}
 
-export type DiffOptionsNormalized = {
+export interface DiffOptionsNormalized {
   aAnnotation: string;
   aColor: DiffOptionsColor;
   aIndicator: string;
@@ -48,4 +48,4 @@ export type DiffOptionsNormalized = {
   includeChangeCounts: boolean;
   omitAnnotationLines: boolean;
   patchColor: DiffOptionsColor;
-};
+}

@@ -28,10 +28,10 @@ export interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 
-export type TransformedSource = {
+export interface TransformedSource {
   code: string;
   map?: FixedRawSourceMap | string | null;
-};
+}
 
 export type TransformResult = TransformTypes.TransformResult;
 
@@ -156,6 +156,6 @@ export type TransformerCreator<
  * directly, you can choose to export a factory function to dynamically create
  * transformers. This is to allow having a transformer config in your jest config.
  */
-export type TransformerFactory<X extends Transformer> = {
+export interface TransformerFactory<X extends Transformer> {
   createTransformer: TransformerCreator<X>;
-};
+}

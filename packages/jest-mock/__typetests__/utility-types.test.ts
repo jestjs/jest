@@ -94,7 +94,7 @@ const someObject = {
 
 type SomeObject = typeof someObject;
 
-type IndexObject = {
+interface IndexObject {
   [key: string]: Record<string, any>;
 
   methodA(): void;
@@ -103,7 +103,7 @@ type IndexObject = {
 
   propertyA: {a: number};
   propertyB: {b: string};
-};
+}
 
 // ClassLike
 

@@ -23,7 +23,7 @@ export type V8CoverageResult = Array<{
 
 export type SerializableError = TestResult.SerializableError;
 
-export type FailedAssertion = {
+export interface FailedAssertion {
   matcherName?: string;
   message?: string;
   actual?: unknown;
@@ -33,12 +33,12 @@ export type FailedAssertion = {
   isNot?: boolean;
   stack?: string;
   error?: unknown;
-};
+}
 
-export type AssertionLocation = {
+export interface AssertionLocation {
   fullName: string;
   path: string;
-};
+}
 
 export type Status = AssertionResult['status'];
 
@@ -51,7 +51,7 @@ export type FormattedAssertionResult = Pick<
   failureMessages: AssertionResult['failureMessages'] | null;
 };
 
-export type AggregatedResultWithoutCoverage = {
+export interface AggregatedResultWithoutCoverage {
   numFailedTests: number;
   numFailedTestSuites: number;
   numPassedTests: number;
@@ -69,7 +69,7 @@ export type AggregatedResultWithoutCoverage = {
   testResults: Array<TestResult>;
   wasInterrupted: boolean;
   runExecError?: SerializableError;
-};
+}
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
   coverageMap?: CoverageMap | null;
@@ -79,15 +79,15 @@ export type TestResultsProcessor = (
   results: AggregatedResult,
 ) => AggregatedResult | Promise<AggregatedResult>;
 
-export type Suite = {
+export interface Suite {
   title: string;
   suites: Array<Suite>;
   tests: Array<AssertionResult>;
-};
+}
 
 export type TestCaseResult = AssertionResult;
 
-export type TestResult = {
+export interface TestResult {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
   displayName?: Config.DisplayName;
@@ -130,9 +130,9 @@ export type TestResult = {
   testFilePath: string;
   testResults: Array<AssertionResult>;
   v8Coverage?: V8CoverageResult;
-};
+}
 
-export type FormattedTestResult = {
+export interface FormattedTestResult {
   message: string;
   name: string;
   summary: string;
@@ -141,9 +141,9 @@ export type FormattedTestResult = {
   endTime: number;
   coverage: unknown;
   assertionResults: Array<FormattedAssertionResult>;
-};
+}
 
-export type FormattedTestResults = {
+export interface FormattedTestResults {
   coverageMap?: CoverageMap | null | undefined;
   numFailedTests: number;
   numFailedTestSuites: number;
@@ -159,7 +159,7 @@ export type FormattedTestResults = {
   success: boolean;
   testResults: Array<FormattedTestResult>;
   wasInterrupted: boolean;
-};
+}
 
 export type CodeCoverageReporter = unknown;
 
@@ -168,12 +168,12 @@ export type CodeCoverageFormatter = (
   reporter: CodeCoverageReporter,
 ) => Record<string, unknown> | null | undefined;
 
-export type UncheckedSnapshot = {
+export interface UncheckedSnapshot {
   filePath: string;
   keys: Array<string>;
-};
+}
 
-export type SnapshotSummary = {
+export interface SnapshotSummary {
   added: number;
   didUpdate: boolean;
   failure: boolean;
@@ -188,29 +188,29 @@ export type SnapshotSummary = {
   uncheckedKeysByFile: Array<UncheckedSnapshot>;
   unmatched: number;
   updated: number;
-};
+}
 
-export type Test = {
+export interface Test {
   context: TestContext;
   duration?: number;
   path: string;
-};
+}
 
-export type TestContext = {
+export interface TestContext {
   config: Config.ProjectConfig;
   hasteFS: IHasteFS;
   moduleMap: IModuleMap;
   resolver: Resolver;
-};
+}
 
 // Typings for `sendMessageToJest` events
-export type TestEvents = {
+export interface TestEvents {
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];
   'test-case-start': [string, Circus.TestCaseStartInfo];
   'test-case-result': [string, AssertionResult];
-};
+}
 
 export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
   eventName: T,

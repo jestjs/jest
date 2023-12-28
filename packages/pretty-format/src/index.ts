@@ -342,10 +342,10 @@ function printPlugin(
 }
 
 function findPlugin(plugins: Plugins, val: unknown) {
-  for (let p = 0; p < plugins.length; p++) {
+  for (const plugin of plugins) {
     try {
-      if (plugins[p].test(val)) {
-        return plugins[p];
+      if (plugin.test(val)) {
+        return plugin;
       }
     } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);

@@ -13,12 +13,12 @@ import {
   printProps,
 } from './lib/markup';
 
-export type ReactTestObject = {
+export interface ReactTestObject {
   $$typeof: symbol;
   type: string;
   props?: Record<string, unknown>;
   children?: null | Array<ReactTestChild>;
-};
+}
 
 // Child can be `number` in Stack renderer but not in Fiber renderer.
 type ReactTestChild = ReactTestObject | string | number;

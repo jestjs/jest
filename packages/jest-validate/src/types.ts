@@ -5,19 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type Title = {
+interface Title {
   deprecation?: string;
   error?: string;
   warning?: string;
-};
+}
 
 export type DeprecatedOptionFunc = (arg: Record<string, unknown>) => string;
 
 export type DeprecatedOptions = Record<string, DeprecatedOptionFunc>;
 
-export type DeprecationItem = {fatal: boolean; name: string};
+export interface DeprecationItem {
+  fatal: boolean;
+  name: string;
+}
 
-export type ValidationOptions = {
+export interface ValidationOptions {
   comment?: string;
   condition?: (option: unknown, validOption: unknown) => boolean;
   deprecate?: (
@@ -45,4 +48,4 @@ export type ValidationOptions = {
     options: ValidationOptions,
     path?: Array<string>,
   ) => void;
-};
+}

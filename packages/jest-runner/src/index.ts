@@ -102,7 +102,7 @@ export default class TestRunner extends EmittingTestRunner {
   }
 
   async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
-    const resolvers: Map<string, SerializableResolver> = new Map();
+    const resolvers = new Map<string, SerializableResolver>();
     for (const test of tests) {
       if (!resolvers.has(test.context.config.id)) {
         resolvers.set(test.context.config.id, {
@@ -167,7 +167,7 @@ export default class TestRunner extends EmittingTestRunner {
         return promise;
       });
 
-    const onInterrupt = new Promise((_, reject) => {
+    const onInterrupt = new Promise((_resolve, reject) => {
       watcher.on('change', state => {
         if (state.interrupted) {
           reject(new CancelRun());

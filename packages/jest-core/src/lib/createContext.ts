@@ -10,7 +10,10 @@ import type {Config} from '@jest/types';
 import type {IHasteFS, IModuleMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
 
-type HasteContext = {hasteFS: IHasteFS; moduleMap: IModuleMap};
+interface HasteContext {
+  hasteFS: IHasteFS;
+  moduleMap: IModuleMap;
+}
 
 export default function createContext(
   config: Config.ProjectConfig,

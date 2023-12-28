@@ -19,23 +19,23 @@ import type {
 
 type WatchmanRoots = Map<string, Array<string>>;
 
-type WatchmanListCapabilitiesResponse = {
+interface WatchmanListCapabilitiesResponse {
   capabilities: Array<string>;
-};
+}
 
-type WatchmanCapabilityCheckResponse = {
+interface WatchmanCapabilityCheckResponse {
   // { 'suffix-set': true }
   capabilities: Record<string, boolean>;
   // '2021.06.07.00'
   version: string;
-};
+}
 
-type WatchmanWatchProjectResponse = {
+interface WatchmanWatchProjectResponse {
   watch: string;
   relative_path: string;
-};
+}
 
-type WatchmanQueryResponse = {
+interface WatchmanQueryResponse {
   warning?: string;
   is_fresh_instance: boolean;
   version: string;
@@ -52,7 +52,7 @@ type WatchmanQueryResponse = {
     size: number;
     'content.sha1hex'?: string;
   }>;
-};
+}
 
 const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting';
 

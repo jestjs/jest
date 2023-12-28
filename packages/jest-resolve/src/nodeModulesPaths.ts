@@ -10,10 +10,10 @@
 import * as path from 'path';
 import {tryRealpath} from 'jest-util';
 
-type NodeModulesPathsOptions = {
+interface NodeModulesPathsOptions {
   moduleDirectory?: Array<string>;
   paths?: Array<string>;
-};
+}
 
 export default function nodeModulesPaths(
   basedir: string,

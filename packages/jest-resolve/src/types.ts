@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export type ResolverConfig = {
+export interface ResolverConfig {
   defaultPlatform?: string | null;
   extensions: Array<string>;
   hasCoreModules: boolean;
@@ -15,12 +15,12 @@ export type ResolverConfig = {
   platforms?: Array<string>;
   resolver?: string | null;
   rootDir: string;
-};
+}
 
-type ModuleNameMapperConfig = {
+interface ModuleNameMapperConfig {
   regex: RegExp;
   moduleName: string | Array<string>;
-};
+}
 
 // https://github.com/Microsoft/TypeScript/issues/3496#issuecomment-128553540
 type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>;

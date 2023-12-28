@@ -10,11 +10,11 @@ import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {Mocked, ModuleMocker} from 'jest-mock';
 
-export type EnvironmentContext = {
+export interface EnvironmentContext {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
   testPath: string;
-};
+}
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (

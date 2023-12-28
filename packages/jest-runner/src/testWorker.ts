@@ -21,17 +21,17 @@ import {messageParent} from 'jest-worker';
 import runTest from './runTest';
 import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 
-export type SerializableResolver = {
+export interface SerializableResolver {
   config: Config.ProjectConfig;
   serializableModuleMap: SerializableModuleMap;
-};
+}
 
-type WorkerData = {
+interface WorkerData {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: string;
   context: TestRunnerSerializedContext;
-};
+}
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {

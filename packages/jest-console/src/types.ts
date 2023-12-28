@@ -7,19 +7,19 @@
 
 export type LogMessage = string;
 
-export type LogEntry = {
+export interface LogEntry {
   message: LogMessage;
   origin: string;
   type: LogType;
-};
+}
 
-export type LogCounters = {
+export interface LogCounters {
   [label: string]: number;
-};
+}
 
-export type LogTimers = {
+export interface LogTimers {
   [label: string]: Date;
-};
+}
 
 export type LogType =
   | 'assert'

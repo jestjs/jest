@@ -59,14 +59,14 @@ function stackFormatter(
   return new Error(errorMessage).stack;
 }
 
-export type Options = {
+export interface Options {
   matcherName: string;
   passed: boolean;
   actual?: any;
   error?: any;
   expected?: any;
   message?: string | null;
-};
+}
 
 export default function expectationResultFactory(
   options: Options,

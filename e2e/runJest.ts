@@ -19,7 +19,7 @@ import {ErrorWithStack} from 'jest-util';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
-type RunJestOptions = {
+interface RunJestOptions {
   keepTrailingNewline?: boolean; // keep final newline in output from stdout and stderr
   nodeOptions?: string;
   nodePath?: string;
@@ -27,7 +27,7 @@ type RunJestOptions = {
   stripAnsi?: boolean; // remove colors from stdout and stderr,
   timeout?: number; // kill the Jest process after X milliseconds
   env?: NodeJS.ProcessEnv;
-};
+}
 
 // return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
@@ -161,7 +161,10 @@ export const json = function (
   }
 };
 
-type StdErrAndOutString = {stderr: string; stdout: string};
+interface StdErrAndOutString {
+  stderr: string;
+  stdout: string;
+}
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
 type CheckerFunction = (arg: StdErrAndOutString) => void;
 

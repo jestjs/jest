@@ -29,11 +29,11 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export type Context = {
+export interface Context {
   object: unknown;
   args: Array<unknown>;
   returnValue?: unknown;
-};
+}
 
 class CallTracker {
   track: (context: Context) => void;
@@ -72,8 +72,8 @@ class CallTracker {
 
     this.allArgs = function () {
       const callArgs = [];
-      for (let i = 0; i < calls.length; i++) {
-        callArgs.push(calls[i].args);
+      for (const item of calls) {
+        callArgs.push(item.args);
       }
 
       return callArgs;

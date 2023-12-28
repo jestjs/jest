@@ -38,22 +38,22 @@ import expectationResultFactory from '../expectationResultFactory';
 import type {QueueableFn} from '../queueRunner';
 import type Spec from './Spec';
 
-export type SuiteResult = {
+export interface SuiteResult {
   id: string;
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   testPath: string;
   status?: string;
-};
+}
 
-export type Attributes = {
+export interface Attributes {
   id: string;
   parentSuite?: Suite;
   description: Circus.TestNameLike;
   throwOnExpectationFailure?: boolean;
   getTestPath: () => string;
-};
+}
 
 export default class Suite {
   id: string;
@@ -190,8 +190,7 @@ export default class Suite {
       };
       this.result.failedExpectations.push(expectationResultFactory(data));
     } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
+      for (const child of this.children) {
         child.onException.apply(child, args);
       }
     }
@@ -205,8 +204,7 @@ export default class Suite {
         throw new ExpectationFailed();
       }
     } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
+      for (const child of this.children) {
         try {
           child.addExpectationResult.apply(child, args);
         } catch {

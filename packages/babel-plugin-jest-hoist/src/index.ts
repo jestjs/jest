@@ -133,7 +133,7 @@ FUNCTIONS.mock = args => {
       );
     }
 
-    const ids: Set<NodePath<Identifier>> = new Set();
+    const ids = new Set<NodePath<Identifier>>();
     const parentScope = moduleFactory.parentPath.scope;
     // @ts-expect-error: ReferencedIdentifier and denylist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
@@ -256,10 +256,10 @@ const isJestObject = (
   return false;
 };
 
-type JestObjInfo = {
+interface JestObjInfo {
   hoist: boolean;
   path: NodePath<Expression>;
-};
+}
 
 const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
   if (!expr.isCallExpression()) {

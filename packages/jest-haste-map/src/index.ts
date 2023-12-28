@@ -55,7 +55,7 @@ import {getSha1, worker} from './worker';
 // understand `require`.
 const {version: VERSION} = require('../package.json');
 
-type Options = {
+interface Options {
   cacheDirectory?: string;
   computeDependencies?: boolean;
   computeSha1?: boolean;
@@ -80,9 +80,9 @@ type Options = {
   useWatchman?: boolean;
   watch?: boolean;
   workerThreads?: boolean;
-};
+}
 
-type InternalOptions = {
+interface InternalOptions {
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
@@ -105,11 +105,11 @@ type InternalOptions = {
   useWatchman: boolean;
   watch: boolean;
   workerThreads?: boolean;
-};
+}
 
-type Watcher = {
+interface Watcher {
   close(): Promise<void>;
-};
+}
 
 type HasteWorker = typeof import('./worker');
 

@@ -7,7 +7,7 @@
 
 import type {QueueChildMessage, TaskQueue} from './types';
 
-type WorkerQueueValue = {
+interface WorkerQueueValue {
   task: QueueChildMessage;
 
   /**
@@ -17,7 +17,7 @@ type WorkerQueueValue = {
    * previous shared task is null or has been processed.
    */
   previousSharedTask: QueueChildMessage | null;
-};
+}
 
 /**
  * First-in, First-out task queue that manages a dedicated pool
@@ -64,10 +64,10 @@ export default class FifoQueue implements TaskQueue {
   }
 }
 
-type QueueItem<TValue> = {
+interface QueueItem<TValue> {
   value: TValue;
   next: QueueItem<TValue> | null;
-};
+}
 
 /**
  * FIFO queue for a single worker / shared queue.

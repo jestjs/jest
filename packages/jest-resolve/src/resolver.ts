@@ -24,7 +24,7 @@ import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
-export type FindNodeModuleConfig = {
+export interface FindNodeModuleConfig {
   basedir: string;
   conditions?: Array<string>;
   extensions?: Array<string>;
@@ -33,13 +33,13 @@ export type FindNodeModuleConfig = {
   resolver?: string | null;
   rootDir?: string;
   throwIfNotFound?: boolean;
-};
+}
 
-export type ResolveModuleConfig = {
+export interface ResolveModuleConfig {
   conditions?: Array<string>;
   skipNodeResolution?: boolean;
   paths?: Array<string>;
-};
+}
 
 const NATIVE_PLATFORM = 'native';
 
@@ -859,8 +859,14 @@ Please check your configuration for these entries:
   return error;
 };
 
-type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
-type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
+interface ResolverSyncObject {
+  sync: SyncResolver;
+  async?: AsyncResolver;
+}
+interface ResolverAsyncObject {
+  sync?: SyncResolver;
+  async: AsyncResolver;
+}
 export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
 function loadResolver(

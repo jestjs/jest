@@ -25,19 +25,19 @@ export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
 
-export type RunDetails = {
+export interface RunDetails {
   totalSpecsDefined?: number;
   failedExpectations?: SuiteResult['failedExpectations'];
-};
+}
 
-export type Reporter = {
+export interface Reporter {
   jasmineDone: (runDetails: RunDetails) => void;
   jasmineStarted: (runDetails: RunDetails) => void;
   specDone: (result: SpecResult) => void;
   specStarted: (spec: SpecResult) => void;
   suiteDone: (result: SuiteResult) => void;
   suiteStarted: (result: SuiteResult) => void;
-};
+}
 
 export interface Spy extends Record<string, any> {
   (this: Record<string, unknown>, ...args: Array<any>): unknown;
@@ -46,13 +46,15 @@ export interface Spy extends Record<string, any> {
   restoreObjectToOriginalState?: () => void;
 }
 
-type JasmineMatcher = {
+interface JasmineMatcher {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
   compare(...args: Array<unknown>): unknown;
   negativeCompare(...args: Array<unknown>): unknown;
-};
+}
 
-export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
+export interface JasmineMatchersObject {
+  [id: string]: JasmineMatcher;
+}
 
 export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;

@@ -27,8 +27,9 @@ export function extract(contents: string): string {
 }
 
 export function strip(contents: string): string {
-  const match = contents.match(docblockRe);
-  return match && match[0] ? contents.substring(match[0].length) : contents;
+  const matchResult = contents.match(docblockRe);
+  const match = matchResult?.[0];
+  return match == null ? contents : contents.substring(match.length);
 }
 
 export function parse(docblock: string): Pragmas {

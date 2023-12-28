@@ -24,7 +24,7 @@ export interface FileSystem {
   matchFiles(pattern: RegExp | string): Array<string>;
 }
 
-export type MatchSnapshotConfig = {
+export interface MatchSnapshotConfig {
   context: Context;
   hint?: string;
   inlineSnapshot?: string;
@@ -32,7 +32,7 @@ export type MatchSnapshotConfig = {
   matcherName: string;
   properties?: object;
   received: any;
-};
+}
 
 export type SnapshotData = Record<string, string>;
 
@@ -78,8 +78,8 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
 
 export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;
 
-export type InlineSnapshot = {
+export interface InlineSnapshot {
   snapshot: string;
   frame: Frame;
   node?: Expression;
-};
+}

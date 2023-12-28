@@ -7,10 +7,10 @@
 
 // allows to make sure that `ts-node` compiles the config file without a need to build Jest types
 // integration tests of Jest types run in a separate CI job through `jest.config.ts.mjs`
-type DummyConfig = {
+interface DummyConfig {
   displayName: string;
   testEnvironment: string;
-};
+}
 
 const config: DummyConfig = {
   displayName: 'Config from ts file',

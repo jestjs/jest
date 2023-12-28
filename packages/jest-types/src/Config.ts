@@ -31,7 +31,7 @@ export type FakeableAPI =
   | 'setTimeout'
   | 'clearTimeout';
 
-export type GlobalFakeTimersConfig = {
+export interface GlobalFakeTimersConfig {
   /**
    * Whether fake timers should be enabled globally for all test files.
    *
@@ -39,9 +39,9 @@ export type GlobalFakeTimersConfig = {
    * The default is `false`.
    */
   enableGlobally?: boolean;
-};
+}
 
-export type FakeTimersConfig = {
+export interface FakeTimersConfig {
   /**
    * If set to `true` all timers will be advanced automatically
    * by 20 milliseconds every 20 milliseconds. A custom time delta
@@ -82,9 +82,9 @@ export type FakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: false;
-};
+}
 
-export type LegacyFakeTimersConfig = {
+export interface LegacyFakeTimersConfig {
   /**
    * Use the old fake timers implementation instead of one backed by
    * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
@@ -93,7 +93,7 @@ export type LegacyFakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: true;
-};
+}
 
 type FakeTimers = GlobalFakeTimersConfig &
   (
@@ -103,7 +103,7 @@ type FakeTimers = GlobalFakeTimersConfig &
     | LegacyFakeTimersConfig
   );
 
-export type HasteConfig = {
+export interface HasteConfig {
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -126,7 +126,7 @@ export type HasteConfig = {
   hasteMapModulePath?: string;
   /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
   retainAllFiles?: boolean;
-};
+}
 
 export type CoverageReporterName = keyof ReportOptions;
 
@@ -148,7 +148,7 @@ export interface ConfigGlobals {
   [K: string]: unknown;
 }
 
-export type DefaultOptions = {
+export interface DefaultOptions {
   automock: boolean;
   bail: number;
   cache: boolean;
@@ -211,12 +211,12 @@ export type DefaultOptions = {
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
   workerThreads: boolean;
-};
+}
 
-export type DisplayName = {
+export interface DisplayName {
   name: string;
   color: typeof ForegroundColor;
-};
+}
 
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
@@ -236,24 +236,24 @@ type NotifyMode =
   | 'success-change'
   | 'failure-change';
 
-export type CoverageThresholdValue = {
+export interface CoverageThresholdValue {
   branches?: number;
   functions?: number;
   lines?: number;
   statements?: number;
-};
+}
 
-type CoverageThreshold = {
+interface CoverageThreshold {
   [path: string]: CoverageThresholdValue;
   global: CoverageThresholdValue;
-};
+}
 
-type ShardConfig = {
+interface ShardConfig {
   shardIndex: number;
   shardCount: number;
-};
+}
 
-export type GlobalConfig = {
+export interface GlobalConfig {
   bail: number;
   changedSince?: string;
   changedFilesWithAncestor: boolean;
@@ -323,9 +323,9 @@ export type GlobalConfig = {
   workerIdleMemoryLimit?: number;
   // TODO: make non-optional in Jest 30
   workerThreads?: boolean;
-};
+}
 
-export type ProjectConfig = {
+export interface ProjectConfig {
   automock: boolean;
   cache: boolean;
   cacheDirectory: string;
@@ -389,12 +389,12 @@ export type ProjectConfig = {
   unmockedModulePathPatterns?: Array<string>;
   waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
-};
+}
 
-export type SetupAfterEnvPerfStats = {
+export interface SetupAfterEnvPerfStats {
   setupAfterEnvStart: number;
   setupAfterEnvEnd: number;
-};
+}
 
 export type Argv = Arguments<
   Partial<{
