@@ -38,22 +38,22 @@ import expectationResultFactory from '../expectationResultFactory';
 import type {QueueableFn} from '../queueRunner';
 import type Spec from './Spec';
 
-export interface SuiteResult {
+export type SuiteResult = {
   id: string;
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   testPath: string;
   status?: string;
-}
+};
 
-export interface Attributes {
+export type Attributes = {
   id: string;
   parentSuite?: Suite;
   description: Circus.TestNameLike;
   throwOnExpectationFailure?: boolean;
   getTestPath: () => string;
-}
+};
 
 export default class Suite {
   id: string;

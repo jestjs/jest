@@ -12,17 +12,17 @@ import {readFileSync} from 'fs';
 import {relative} from 'path';
 import type {Config} from '@jest/types';
 
-interface OldCacheKeyOptions {
+type OldCacheKeyOptions = {
   config: Config.ProjectConfig;
   instrument: boolean;
-}
+};
 
 // Should mirror `import('@jest/transform').TransformOptions`
-interface NewCacheKeyOptions {
+type NewCacheKeyOptions = {
   config: Config.ProjectConfig;
   configString: string;
   instrument: boolean;
-}
+};
 
 type OldGetCacheKeyFunction = (
   fileData: string,

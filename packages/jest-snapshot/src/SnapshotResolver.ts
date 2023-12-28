@@ -11,14 +11,14 @@ import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
 
-export interface SnapshotResolver {
+export type SnapshotResolver = {
   /** Resolves from `testPath` to snapshot path. */
   resolveSnapshotPath(testPath: string, snapshotExtension?: string): string;
   /** Resolves from `snapshotPath` to test path. */
   resolveTestPath(snapshotPath: string, snapshotExtension?: string): string;
   /** Example test path, used for preflight consistency check of the implementation above. */
   testPathForConsistencyCheck: string;
-}
+};
 
 export const EXTENSION = 'snap';
 export const DOT_EXTENSION = `.${EXTENSION}`;

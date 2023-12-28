@@ -6,8 +6,8 @@
  */
 
 // this is here to make it possible to avoid huge dependency trees just for types
-export interface TransformResult {
+export type TransformResult = {
   code: string;
   originalCode: string;
   sourceMapPath: string | null;
-}
+};

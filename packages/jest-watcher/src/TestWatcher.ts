@@ -7,9 +7,9 @@
 
 import Emittery = require('emittery');
 
-interface State {
+type State = {
   interrupted: boolean;
-}
+};
 
 export default class TestWatcher extends Emittery<{change: State}> {
   state: State;

@@ -18,13 +18,13 @@ import {buildSnapshotResolver} from 'jest-snapshot';
 import {TestPathPatterns, globsToMatcher} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
-export interface SearchResult {
+export type SearchResult = {
   noSCM?: boolean;
   stats?: Stats;
   collectCoverageFrom?: Set<string>;
   tests: Array<Test>;
   total?: number;
-}
+};
 
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));

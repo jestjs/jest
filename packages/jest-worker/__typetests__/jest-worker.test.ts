@@ -9,7 +9,7 @@ import {expectError, expectNotAssignable, expectType} from 'tsd-lite';
 import type {JestWorkerFarm} from 'jest-worker';
 import type * as testWorker from './testWorker';
 
-interface TestWorker {
+type TestWorker = {
   runTest: (a: string, b: number) => void;
   doSomething: () => void;
   isResult: boolean;
@@ -18,7 +18,7 @@ interface TestWorker {
   getStdout: () => string;
   setup: () => void;
   teardown: () => void;
-}
+};
 
 // unknown JestWorkerFarm
 

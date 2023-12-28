@@ -9,18 +9,18 @@ import type {ReadStream, WriteStream} from 'tty';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 
-interface TestSuiteInfo {
+type TestSuiteInfo = {
   config: Config.ProjectConfig;
   duration?: number;
   testPath: string;
-}
+};
 
-export interface JestHookExposedFS {
+export type JestHookExposedFS = {
   projects: Array<{
     config: Config.ProjectConfig;
     testPaths: Array<string>;
   }>;
-}
+};
 
 export type FileChange = (fs: JestHookExposedFS) => void;
 export type ShouldRunTestSuite = (
@@ -28,24 +28,24 @@ export type ShouldRunTestSuite = (
 ) => Promise<boolean>;
 export type TestRunComplete = (results: AggregatedResult) => void;
 
-export interface JestHookSubscriber {
+export type JestHookSubscriber = {
   onFileChange: (fn: FileChange) => void;
   onTestRunComplete: (fn: TestRunComplete) => void;
   shouldRunTestSuite: (fn: ShouldRunTestSuite) => void;
-}
+};
 
-export interface JestHookEmitter {
+export type JestHookEmitter = {
   onFileChange: (fs: JestHookExposedFS) => void;
   onTestRunComplete: (results: AggregatedResult) => void;
   shouldRunTestSuite: (
     testSuiteInfo: TestSuiteInfo,
   ) => Promise<boolean> | boolean;
-}
+};
 
-export interface UsageData {
+export type UsageData = {
   key: string;
   prompt: string;
-}
+};
 
 export type AllowedConfigOptions = Partial<
   Pick<
@@ -87,7 +87,7 @@ export type WatchPluginClass = new (options: {
   stdout: WriteStream;
 }) => WatchPlugin;
 
-export interface ScrollOptions {
+export type ScrollOptions = {
   offset: number;
   max: number;
-}
+};

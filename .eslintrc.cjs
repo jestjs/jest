@@ -75,6 +75,7 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-invalid-void-type': 'off',
+        '@typescript-eslint/consistent-type-definitions': 'off',
 
         // not needed to be enforced for TS
         'import/namespace': 'off',

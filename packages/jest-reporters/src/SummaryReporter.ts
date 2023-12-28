@@ -49,9 +49,9 @@ const NPM_EVENTS = new Set([
 const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
   process.env;
 
-export interface SummaryReporterOptions {
+export type SummaryReporterOptions = {
   summaryThreshold?: number;
-}
+};
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;

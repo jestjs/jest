@@ -10,12 +10,12 @@ import chalk = require('chalk');
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
-interface ResolveOptions {
+type ResolveOptions = {
   rootDir: string;
   key: string;
   filePath: string;
   optional?: boolean;
-}
+};
 
 export const BULLET: string = chalk.bold('\u25cf ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(

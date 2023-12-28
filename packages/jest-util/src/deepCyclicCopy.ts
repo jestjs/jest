@@ -7,10 +7,10 @@
 
 const EMPTY = new Set<string>();
 
-export interface DeepCyclicCopyOptions {
+export type DeepCyclicCopyOptions = {
   blacklist?: Set<string>;
   keepPrototype?: boolean;
-}
+};
 
 export default function deepCyclicCopy<T>(
   value: T,

@@ -17,7 +17,7 @@ validate(config, validationOptions); // => {hasDeprecationWarnings: boolean, isV
 Where `ValidationOptions` are:
 
 ```ts
-interface ValidationOptions {
+type ValidationOptions = {
   comment?: string;
   condition?: (option: unknown, validOption: unknown) => boolean;
   deprecate?: (
@@ -46,13 +46,13 @@ interface ValidationOptions {
     options: ValidationOptions,
     path?: Array<string>,
   ) => void;
-}
+};
 
-interface Title {
+type Title = {
   deprecation?: string;
   error?: string;
   warning?: string;
-}
+};
 ```
 
 `exampleConfig` is the only option required.

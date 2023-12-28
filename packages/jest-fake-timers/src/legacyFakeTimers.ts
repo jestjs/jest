@@ -21,19 +21,19 @@ type Callback = (...args: Array<unknown>) => void;
 
 type TimerID = string;
 
-interface Tick {
+type Tick = {
   uuid: string;
   callback: Callback;
-}
+};
 
-interface Timer {
+type Timer = {
   type: string;
   callback: Callback;
   expiry: number;
   interval?: number;
-}
+};
 
-interface TimerAPI {
+type TimerAPI = {
   cancelAnimationFrame: typeof globalThis.cancelAnimationFrame;
   clearImmediate: typeof globalThis.clearImmediate;
   clearInterval: typeof globalThis.clearInterval;
@@ -43,9 +43,9 @@ interface TimerAPI {
   setImmediate: typeof globalThis.setImmediate;
   setInterval: typeof globalThis.setInterval;
   setTimeout: typeof globalThis.setTimeout;
-}
+};
 
-interface FakeTimerAPI {
+type FakeTimerAPI = {
   cancelAnimationFrame: Mock<FakeTimers['_fakeClearTimer']>;
   clearImmediate: Mock<FakeTimers['_fakeClearImmediate']>;
   clearInterval: Mock<FakeTimers['_fakeClearTimer']>;
@@ -55,12 +55,12 @@ interface FakeTimerAPI {
   setImmediate: Mock<FakeTimers['_fakeSetImmediate']>;
   setInterval: Mock<FakeTimers['_fakeSetInterval']>;
   setTimeout: Mock<FakeTimers['_fakeSetTimeout']>;
-}
+};
 
-interface TimerConfig<Ref> {
+type TimerConfig<Ref> = {
   idToRef: (id: number) => Ref;
   refToId: (ref: Ref) => number | void;
-}
+};
 
 const MS_IN_A_YEAR = 31_536_000_000;
 

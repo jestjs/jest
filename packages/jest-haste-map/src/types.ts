@@ -12,12 +12,12 @@ import type ModuleMap from './ModuleMap';
 
 type ValueType<T> = T extends Map<string, infer V> ? V : never;
 
-export interface SerializableModuleMap {
+export type SerializableModuleMap = {
   duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
   map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
   mocks: ReadonlyArray<[string, ValueType<MockData>]>;
   rootDir: string;
-}
+};
 
 export interface IModuleMap<S = SerializableModuleMap> {
   getModule(
@@ -58,18 +58,18 @@ export interface IHasteMap {
   build(): Promise<{hasteFS: IHasteFS; moduleMap: IModuleMap}>;
 }
 
-export interface HasteMapStatic<S = SerializableModuleMap> {
+export type HasteMapStatic<S = SerializableModuleMap> = {
   getCacheFilePath(
     tmpdir: string,
     name: string,
     ...extra: Array<string>
   ): string;
   getModuleMapFromJSON(json: S): IModuleMap<S>;
-}
+};
 
 export type IgnoreMatcher = (item: string) => boolean;
 
-export interface WorkerMessage {
+export type WorkerMessage = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor?: string | null;
@@ -77,16 +77,16 @@ export interface WorkerMessage {
   filePath: string;
   hasteImplModulePath?: string;
   retainAllFiles?: boolean;
-}
+};
 
-export interface WorkerMetadata {
+export type WorkerMetadata = {
   dependencies: Array<string> | undefined | null;
   id: string | undefined | null;
   module: ModuleMetaData | undefined | null;
   sha1: string | undefined | null;
-}
+};
 
-export interface CrawlerOptions {
+export type CrawlerOptions = {
   computeSha1: boolean;
   enableSymlinks: boolean;
   data: InternalHasteMap;
@@ -95,11 +95,11 @@ export interface CrawlerOptions {
   ignore: IgnoreMatcher;
   rootDir: string;
   roots: Array<string>;
-}
+};
 
-export interface HasteImpl {
+export type HasteImpl = {
   getHasteName(filePath: string): string | undefined;
-}
+};
 
 export type FileData = Map<string, FileMetaData>;
 
@@ -121,32 +121,30 @@ export type HasteRegExp = RegExp | ((str: string) => boolean);
 export type DuplicatesSet = Map<string, /* type */ number>;
 export type DuplicatesIndex = Map<string, Map<string, DuplicatesSet>>;
 
-export interface InternalHasteMap {
+export type InternalHasteMap = {
   clocks: WatchmanClocks;
   duplicates: DuplicatesIndex;
   files: FileData;
   map: ModuleMapData;
   mocks: MockData;
-}
-export interface HasteMap {
+};
+export type HasteMap = {
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
   __hasteMapForTest?: InternalHasteMap | null;
-}
+};
 
-export interface RawModuleMap {
+export type RawModuleMap = {
   rootDir: string;
   duplicates: DuplicatesIndex;
   map: ModuleMapData;
   mocks: MockData;
-}
+};
 
-export interface ModuleMapItem {
-  [platform: string]: ModuleMetaData;
-}
+export type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [path: string, type: number];
 
-export interface HType {
+export type HType = {
   ID: 0;
   MTIME: 1;
   SIZE: 2;
@@ -160,7 +158,7 @@ export interface HType {
   GENERIC_PLATFORM: 'g';
   NATIVE_PLATFORM: 'native';
   DEPENDENCY_DELIM: '\0';
-}
+};
 
 export type HTypeValue = HType[keyof HType];
 
@@ -170,17 +168,17 @@ export type EventsQueue = Array<{
   type: string;
 }>;
 
-export interface ChangeEvent {
+export type ChangeEvent = {
   eventsQueue: EventsQueue;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-}
+};
 
-export interface DependencyExtractor {
+export type DependencyExtractor = {
   extract: (
     code: string,
     filePath: string,
     defaultExtract: DependencyExtractor['extract'],
   ) => Iterable<string>;
   getCacheKey?: () => string;
-}
+};

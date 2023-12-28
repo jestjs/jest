@@ -101,9 +101,9 @@ export interface WorkerInterface {
   waitForWorkerReady(): Promise<void>;
 }
 
-export interface PoolExitResult {
+export type PoolExitResult = {
   forceExited: boolean;
-}
+};
 
 export interface PromiseWithCustomMessage<T> extends Promise<T> {
   UNSTABLE_onCustomMessage?: (listener: OnCustomMessage) => () => void;
@@ -130,7 +130,7 @@ export interface TaskQueue {
 
 export type WorkerSchedulingPolicy = 'round-robin' | 'in-order';
 
-export interface WorkerFarmOptions {
+export type WorkerFarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
   enableWorkerThreads?: boolean;
   exposedMethods?: ReadonlyArray<string>;
@@ -146,9 +146,9 @@ export interface WorkerFarmOptions {
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
   idleMemoryLimit?: number;
-}
+};
 
-export interface WorkerPoolOptions {
+export type WorkerPoolOptions = {
   setupArgs: Array<unknown>;
   forkOptions: ForkOptions;
   resourceLimits: ResourceLimits;
@@ -156,9 +156,9 @@ export interface WorkerPoolOptions {
   numWorkers: number;
   enableWorkerThreads: boolean;
   idleMemoryLimit?: number;
-}
+};
 
-export interface WorkerOptions {
+export type WorkerOptions = {
   forkOptions: ForkOptions;
   resourceLimits: ResourceLimits;
   setupArgs: Array<unknown>;
@@ -194,7 +194,7 @@ export interface WorkerOptions {
       | OnStateChangeHandler
       | ReadonlyArray<OnStateChangeHandler>;
   };
-}
+};
 
 export type OnStateChangeHandler = (
   state: WorkerStates,
@@ -268,12 +268,12 @@ export type OnStart = (worker: WorkerInterface) => void;
 export type OnEnd = (err: Error | null, result: unknown) => void;
 export type OnCustomMessage = (message: Array<unknown> | unknown) => void;
 
-export interface QueueChildMessage {
+export type QueueChildMessage = {
   request: ChildMessageCall;
   onStart: OnStart;
   onEnd: OnEnd;
   onCustomMessage: OnCustomMessage;
-}
+};
 
 export enum WorkerStates {
   STARTING = 'starting',

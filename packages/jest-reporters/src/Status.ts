@@ -60,10 +60,10 @@ class CurrentTestList {
   }
 }
 
-interface Cache {
+type Cache = {
   content: string;
   clear: string;
-}
+};
 
 /**
  * A class that generates the CLI status of currently running tests

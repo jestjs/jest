@@ -179,11 +179,7 @@ describe('getObjectSubset', () => {
 
   describe('calculating subsets of objects with circular references', () => {
     test('simple circular references', () => {
-      interface CircularObj {
-        a?: string;
-        b?: string;
-        ref?: unknown;
-      }
+      type CircularObj = {a?: string; b?: string; ref?: unknown};
 
       const nonCircularObj = {a: 'world', b: 'something'};
 
@@ -217,10 +213,7 @@ describe('getObjectSubset', () => {
     });
 
     test('transitive circular references', () => {
-      interface CircularObj {
-        a?: string;
-        nestedObj?: unknown;
-      }
+      type CircularObj = {a?: string; nestedObj?: unknown};
 
       const nonCircularObj = {a: 'world', b: 'something'};
 
@@ -296,10 +289,7 @@ describe('subsetEquality()', () => {
 
   describe('matching subsets with circular references', () => {
     test('simple circular references', () => {
-      interface CircularObj {
-        a?: string;
-        ref?: unknown;
-      }
+      type CircularObj = {a?: string; ref?: unknown};
 
       const circularObjA1: CircularObj = {a: 'hello'};
       circularObjA1.ref = circularObjA1;
@@ -334,10 +324,7 @@ describe('subsetEquality()', () => {
     });
 
     test('transitive circular references', () => {
-      interface CircularObj {
-        a: string;
-        nestedObj?: unknown;
-      }
+      type CircularObj = {a: string; nestedObj?: unknown};
 
       const transitiveCircularObjA1: CircularObj = {a: 'hello'};
       transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};

@@ -256,10 +256,10 @@ const isJestObject = (
   return false;
 };
 
-interface JestObjInfo {
+type JestObjInfo = {
   hoist: boolean;
   path: NodePath<Expression>;
-}
+};
 
 const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
   if (!expr.isCallExpression()) {

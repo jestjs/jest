@@ -16,21 +16,21 @@ import HasteMap from 'jest-haste-map';
 const FAIL = 0;
 const SUCCESS = 1;
 
-export interface TestSequencerOptions {
+export type TestSequencerOptions = {
   contexts: ReadonlyArray<TestContext>;
   globalConfig: Config.GlobalConfig;
-}
+};
 
-interface Cache {
+type Cache = {
   [key: string]:
     | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
     | undefined;
-}
+};
 
-export interface ShardOptions {
+export type ShardOptions = {
   shardIndex: number;
   shardCount: number;
-}
+};
 
 type ShardPositionOptions = ShardOptions & {
   suiteLength: number;

@@ -25,43 +25,43 @@ import {
 import {specialChars} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
-interface AnnotationOptions {
+type AnnotationOptions = {
   file?: string;
   line?: number | string;
   message: string;
   title: string;
   type: 'error' | 'warning';
-}
+};
 
 const titleSeparator = ' \u203A ';
 const ICONS = specialChars.ICONS;
 
-interface PerformanceInfo {
+type PerformanceInfo = {
   end: number;
   runtime: number;
   slow: boolean;
   start: number;
-}
+};
 
-interface ResultTreeLeaf {
+type ResultTreeLeaf = {
   name: string;
   status: Status;
   duration: number;
   children: Array<never>;
-}
+};
 
-interface ResultTreeNode {
+type ResultTreeNode = {
   name: string;
   passed: boolean;
   children: Array<ResultTreeNode | ResultTreeLeaf>;
-}
+};
 
-interface ResultTree {
+type ResultTree = {
   children: Array<ResultTreeLeaf | ResultTreeNode>;
   name: string;
   passed: boolean;
   performanceInfo: PerformanceInfo;
-}
+};
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;

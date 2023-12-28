@@ -7,13 +7,13 @@
 
 import type {SnapshotFormat} from '@jest/schemas';
 
-export interface Colors {
+export type Colors = {
   comment: {close: string; open: string};
   content: {close: string; open: string};
   prop: {close: string; open: string};
   tag: {close: string; open: string};
   value: {close: string; open: string};
-}
+};
 type Indent = (arg0: string) => string;
 export type Refs = Array<unknown>;
 type Print = (arg0: unknown) => string;
@@ -38,7 +38,7 @@ export interface PrettyFormatOptions
 
 export type OptionsReceived = PrettyFormatOptions;
 
-export interface Config {
+export type Config = {
   callToJSON: boolean;
   compareKeys: CompareKeys;
   colors: Colors;
@@ -53,7 +53,7 @@ export interface Config {
   printFunctionName: boolean;
   spacingInner: string;
   spacingOuter: string;
-}
+};
 
 export type Printer = (
   val: unknown,
@@ -66,7 +66,7 @@ export type Printer = (
 
 type Test = (arg0: any) => boolean;
 
-export interface NewPlugin {
+export type NewPlugin = {
   serialize: (
     val: any,
     config: Config,
@@ -76,15 +76,15 @@ export interface NewPlugin {
     printer: Printer,
   ) => string;
   test: Test;
-}
+};
 
-interface PluginOptions {
+type PluginOptions = {
   edgeSpacing: string;
   min: boolean;
   spacing: string;
-}
+};
 
-export interface OldPlugin {
+export type OldPlugin = {
   print: (
     val: unknown,
     print: Print,
@@ -93,7 +93,7 @@ export interface OldPlugin {
     colors: Colors,
   ) => string;
   test: Test;
-}
+};
 
 export type Plugin = NewPlugin | OldPlugin;
 

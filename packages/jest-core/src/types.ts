@@ -7,13 +7,13 @@
 
 import type {Test, TestContext} from '@jest/test-result';
 
-export interface Stats {
+export type Stats = {
   roots: number;
   testMatch: number;
   testPathIgnorePatterns: number;
   testRegex: number;
   testPathPatterns?: number;
-}
+};
 
 export type TestRunData = Array<{
   context: TestContext;

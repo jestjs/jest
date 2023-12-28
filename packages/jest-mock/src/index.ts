@@ -19,7 +19,7 @@ export type MockMetadataType =
   | 'null'
   | 'undefined';
 
-export interface MockMetadata<T, MetadataType = MockMetadataType> {
+export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
   members?: Record<string, MockMetadata<T>>;
   mockImpl?: T;
@@ -28,7 +28,7 @@ export interface MockMetadata<T, MetadataType = MockMetadataType> {
   type?: MetadataType;
   value?: T;
   length?: number;
-}
+};
 
 export type ClassLike = new (...args: any) => any;
 export type FunctionLike = (...args: any) => any;
@@ -169,14 +169,14 @@ export interface Replaced<T = unknown> {
   replaceValue(value: T): this;
 }
 
-interface ReplacedPropertyRestorer<T extends object, K extends keyof T> {
+type ReplacedPropertyRestorer<T extends object, K extends keyof T> = {
   (): void;
   object: T;
   property: K;
   replaced: Replaced<T[K]>;
-}
+};
 
-interface MockFunctionResultIncomplete {
+type MockFunctionResultIncomplete = {
   type: 'incomplete';
   /**
    * Result of a single call to a mock function that has not yet completed.
@@ -184,28 +184,28 @@ interface MockFunctionResultIncomplete {
    * or from within a function that was called by the mock.
    */
   value: undefined;
-}
-interface MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> {
+};
+type MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> = {
   type: 'return';
   /**
    * Result of a single call to a mock function that returned.
    */
   value: ReturnType<T>;
-}
-interface MockFunctionResultThrow {
+};
+type MockFunctionResultThrow = {
   type: 'throw';
   /**
    * Result of a single call to a mock function that threw.
    */
   value: unknown;
-}
+};
 
 type MockFunctionResult<T extends FunctionLike = UnknownFunction> =
   | MockFunctionResultIncomplete
   | MockFunctionResultReturn<T>
   | MockFunctionResultThrow;
 
-interface MockFunctionState<T extends FunctionLike = UnknownFunction> {
+type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
   /**
    * List of the call arguments of all calls that have been made to the mock.
    */
@@ -232,13 +232,13 @@ interface MockFunctionState<T extends FunctionLike = UnknownFunction> {
    * List of the results of all calls that have been made to the mock.
    */
   results: Array<MockFunctionResult<T>>;
-}
+};
 
-interface MockFunctionConfig {
+type MockFunctionConfig = {
   mockImpl: Function | undefined;
   mockName: string;
   specificMockImpls: Array<Function>;
-}
+};
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 

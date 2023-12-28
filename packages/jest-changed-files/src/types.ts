@@ -5,26 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export interface Options {
+export type Options = {
   lastCommit?: boolean;
   withAncestor?: boolean;
   changedSince?: string;
   includePaths?: Array<string>;
-}
+};
 
 type Paths = Set<string>;
-export interface Repos {
-  git: Paths;
-  hg: Paths;
-  sl: Paths;
-}
-export interface ChangedFiles {
-  repos: Repos;
-  changedFiles: Paths;
-}
+export type Repos = {git: Paths; hg: Paths; sl: Paths};
+export type ChangedFiles = {repos: Repos; changedFiles: Paths};
 export type ChangedFilesPromise = Promise<ChangedFiles>;
 
-export interface SCMAdapter {
+export type SCMAdapter = {
   findChangedFiles: (cwd: string, options: Options) => Promise<Array<string>>;
   getRoot: (cwd: string) => Promise<string | null>;
-}
+};

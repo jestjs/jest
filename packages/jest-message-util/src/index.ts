@@ -37,10 +37,10 @@ export type StackTraceConfig = Pick<
   'rootDir' | 'testMatch'
 >;
 
-export interface StackTraceOptions {
+export type StackTraceOptions = {
   noStackTrace: boolean;
   noCodeFrame?: boolean;
-}
+};
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;

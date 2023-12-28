@@ -18,13 +18,13 @@ import {
 import {equals, isA} from './jasmineUtils';
 import type {Tester} from './types';
 
-interface GetPath {
+type GetPath = {
   hasEndProp?: boolean;
   endPropIsDefined?: boolean;
   lastTraversedObject: unknown;
   traversedPath: Array<string>;
   value?: unknown;
-}
+};
 
 /**
  * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.

@@ -57,10 +57,10 @@ interface TransformOptions<TransformerConfig = unknown> {
   transformerConfig: TransformerConfig;
 }
 
-interface TransformedSource {
+type TransformedSource = {
   code: string;
   map?: RawSourceMap | string | null;
-}
+};
 
 interface SyncTransformer<TransformerConfig = unknown> {
   canInstrument?: boolean;
@@ -127,9 +127,9 @@ type TransformerCreator<
   TransformerConfig = unknown,
 > = (transformerConfig?: TransformerConfig) => X;
 
-interface TransformerFactory<X extends Transformer> {
+type TransformerFactory<X extends Transformer> = {
   createTransformer: TransformerCreator<X>;
-}
+};
 ```
 
 :::note

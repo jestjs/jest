@@ -40,14 +40,14 @@ export type TestFramework = (
   sendMessageToJest?: TestFileEvent,
 ) => Promise<TestResult>;
 
-export interface TestRunnerOptions {
+export type TestRunnerOptions = {
   serial: boolean;
-}
+};
 
-export interface TestRunnerContext {
+export type TestRunnerContext = {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
-}
+};
 
 type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
 

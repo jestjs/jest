@@ -822,7 +822,7 @@ type FakeableAPI =
   | 'setTimeout'
   | 'clearTimeout';
 
-interface FakeTimersConfig {
+type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
@@ -846,7 +846,7 @@ interface FakeTimersConfig {
    * The default is `100_000` timers.
    */
   timerLimit?: number;
-}
+};
 ```
 
 Calling `jest.useFakeTimers()` will use fake timers for all tests within the file, until original timers are restored with `jest.useRealTimers()`.

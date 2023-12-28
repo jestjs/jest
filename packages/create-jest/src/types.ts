@@ -7,17 +7,17 @@
 
 import type {Config} from '@jest/types';
 
-export interface ProjectPackageJson {
+export type ProjectPackageJson = {
   jest?: Partial<Config.InitialOptions>;
   scripts?: Record<string, string>;
   type?: 'commonjs' | 'module';
-}
+};
 
-export interface PromptsResults {
+export type PromptsResults = {
   useTypescript: boolean;
   clearMocks: boolean;
   coverage: boolean;
   coverageProvider: string;
   environment: string;
   scripts: boolean;
-}
+};

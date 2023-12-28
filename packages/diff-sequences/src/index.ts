@@ -65,10 +65,10 @@ type FoundSubsequence = (
 ) => void;
 
 // Either original functions or wrapped to swap indexes if graph is transposed.
-export interface Callbacks {
+export type Callbacks = {
   foundSubsequence: FoundSubsequence;
   isCommon: IsCommon;
-}
+};
 
 // Indexes in sequence a of last point of forward or reverse paths in graph.
 // Myers algorithm indexes by diagonal k which for negative is bad deopt in V8.
@@ -80,7 +80,7 @@ type Indexes = Array<number>;
 
 // Division of index intervals in sequences a and b at the middle change.
 // Invariant: intervals do not have common items at the start or end.
-interface Division {
+type Division = {
   // The end of interval preceding division is open like array slice method.
   nChangePreceding: number; // number of change items
   aEndPreceding: number;
@@ -98,7 +98,7 @@ interface Division {
   nChangeFollowing: number; // number of change items
   aStartFollowing: number;
   bStartFollowing: number;
-}
+};
 
 const pkg = 'diff-sequences'; // for error messages
 const NOT_YET_SET = 0; // small int instead of undefined to avoid deopt in V8

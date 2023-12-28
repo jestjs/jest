@@ -14,10 +14,10 @@ import type {
 } from '@jest/test-result';
 import type {Circus, Config} from '@jest/types';
 
-export interface ReporterOnStartOptions {
+export type ReporterOnStartOptions = {
   estimatedTime: number;
   showStatus: boolean;
-}
+};
 
 export interface Reporter {
   readonly onTestResult?: (
@@ -55,19 +55,19 @@ export interface Reporter {
   readonly getLastError?: () => Error | void;
 }
 
-export interface ReporterContext {
+export type ReporterContext = {
   firstRun: boolean;
   previousSuccess: boolean;
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
   startRun?: (globalConfig: Config.GlobalConfig) => unknown;
-}
+};
 
-export interface SummaryOptions {
+export type SummaryOptions = {
   currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;
   showSeed?: boolean;
   seed?: number;
-}
+};

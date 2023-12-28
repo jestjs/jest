@@ -21,15 +21,15 @@ import {
   testNameToKey,
 } from './utils';
 
-export interface SnapshotStateOptions {
+export type SnapshotStateOptions = {
   readonly updateSnapshot: Config.SnapshotUpdateState;
   readonly prettierPath?: string | null;
   readonly expand?: boolean;
   readonly snapshotFormat: SnapshotFormat;
   readonly rootDir: string;
-}
+};
 
-export interface SnapshotMatchOptions {
+export type SnapshotMatchOptions = {
   readonly testName: string;
   readonly received: unknown;
   readonly key?: string;
@@ -37,20 +37,20 @@ export interface SnapshotMatchOptions {
   readonly isInline: boolean;
   readonly error?: Error;
   readonly testFailing?: boolean;
-}
+};
 
-interface SnapshotReturnOptions {
+type SnapshotReturnOptions = {
   readonly actual: string;
   readonly count: number;
   readonly expected?: string;
   readonly key: string;
   readonly pass: boolean;
-}
+};
 
-interface SaveStatus {
+type SaveStatus = {
   deleted: boolean;
   saved: boolean;
-}
+};
 
 export default class SnapshotState {
   private _counters: Map<string, number>;

@@ -10,10 +10,10 @@ import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {type SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-export interface ResolvedModule {
+export type ResolvedModule = {
   file: string;
   dependencies: Array<string>;
-}
+};
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or

@@ -51,7 +51,7 @@ export type PathFilter = (
   relativePath: string,
 ) => string;
 
-export interface ResolverOptions {
+export type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
@@ -80,7 +80,7 @@ export interface ResolverOptions {
   pathFilter?: PathFilter;
   /** Current root directory. */
   rootDir?: string;
-}
+};
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
   ResolverOptions;

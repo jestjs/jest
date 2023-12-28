@@ -14,13 +14,13 @@ type Status =
   | 'disabled'
   | 'focused';
 
-interface Callsite {
+type Callsite = {
   column: number;
   line: number;
-}
+};
 
 // this is here to make it possible to avoid huge dependency trees just for types
-export interface AssertionResult {
+export type AssertionResult = {
   ancestorTitles: Array<string>;
   duration?: number | null;
   startAt?: number | null;
@@ -38,11 +38,11 @@ export interface AssertionResult {
   retryReasons?: Array<string>;
   status: Status;
   title: string;
-}
+};
 
-export interface SerializableError {
+export type SerializableError = {
   code?: unknown;
   message: string;
   stack: string | null | undefined;
   type?: string;
-}
+};

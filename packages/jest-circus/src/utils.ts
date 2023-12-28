@@ -104,10 +104,10 @@ const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   );
 };
 
-interface DescribeHooks {
+type DescribeHooks = {
   beforeAll: Array<Circus.Hook>;
   afterAll: Array<Circus.Hook>;
-}
+};
 
 export const getAllHooksForDescribe = (
   describe: Circus.DescribeBlock,
@@ -133,10 +133,10 @@ export const getAllHooksForDescribe = (
   return result;
 };
 
-interface TestHooks {
+type TestHooks = {
   beforeEach: Array<Circus.Hook>;
   afterEach: Array<Circus.Hook>;
-}
+};
 
 export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
   const result: TestHooks = {afterEach: [], beforeEach: []};
@@ -465,11 +465,11 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-interface TestDescription {
+type TestDescription = {
   ancestorTitles: Array<string>;
   fullName: string;
   title: string;
-}
+};
 
 const resolveTestCaseStartInfo = (
   testNamesPath: Circus.TestNamesPath,

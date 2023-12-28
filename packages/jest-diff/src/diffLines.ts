@@ -17,10 +17,10 @@ import type {DiffOptions, DiffOptionsNormalized} from './types';
 const isEmptyString = (lines: Array<string>) =>
   lines.length === 1 && lines[0].length === 0;
 
-interface ChangeCounts {
+type ChangeCounts = {
   a: number;
   b: number;
-}
+};
 
 const countChanges = (diffs: Array<Diff>): ChangeCounts => {
   let a = 0;

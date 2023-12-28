@@ -16,11 +16,11 @@ import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 
-interface Timer {
+type Timer = {
   id: number;
   ref: () => Timer;
   unref: () => Timer;
-}
+};
 
 // some globals we do not want, either because deprecated or we set it ourselves
 const denyList = new Set([

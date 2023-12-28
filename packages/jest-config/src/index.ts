@@ -24,12 +24,12 @@ export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
 export {constants};
 
-interface ReadConfig {
+type ReadConfig = {
   configPath: string | null | undefined;
   globalConfig: Config.GlobalConfig;
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
-}
+};
 
 export async function readConfig(
   argv: Config.Argv,

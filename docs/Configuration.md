@@ -643,7 +643,7 @@ type FakeableAPI =
   | 'setTimeout'
   | 'clearTimeout';
 
-interface ModernFakeTimersConfig {
+type ModernFakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
@@ -666,7 +666,7 @@ interface ModernFakeTimersConfig {
   now?: number;
   /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
-}
+};
 ```
 
 :::info Legacy Fake Timers
@@ -834,7 +834,7 @@ Default: `undefined`
 This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
 
 ```ts
-interface HasteConfig {
+type HasteConfig = {
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -857,7 +857,7 @@ interface HasteConfig {
   hasteMapModulePath?: string;
   /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
   retainAllFiles?: boolean;
-}
+};
 ```
 
 ### `injectGlobals` \[boolean]
@@ -1434,7 +1434,7 @@ This option allows the use of a custom resolver. This resolver must be a module 
 The options object provided to resolvers has the shape:
 
 ```ts
-interface ResolverOptions {
+type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
@@ -1453,7 +1453,7 @@ interface ResolverOptions {
   pathFilter?: (pkg: PackageJSON, path: string, relativePath: string) => string;
   /** Current root directory. */
   rootDir?: string;
-}
+};
 ```
 
 :::tip
