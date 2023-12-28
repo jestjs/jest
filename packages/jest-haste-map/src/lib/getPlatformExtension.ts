@@ -17,7 +17,7 @@ export default function getPlatformExtension(
   if (secondToLast === -1) {
     return null;
   }
-  const platform = file.substring(secondToLast + 1, last);
+  const platform = file.slice(secondToLast + 1, last);
   // If an overriding platform array is passed, check that first
 
   if (platforms && platforms.includes(platform)) {

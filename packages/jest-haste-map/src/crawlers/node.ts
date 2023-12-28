@@ -104,7 +104,7 @@ function find(
             if (stat.isDirectory()) {
               search(file);
             } else {
-              const ext = path.extname(file).substr(1);
+              const ext = path.extname(file).slice(1);
               if (extensions.includes(ext)) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
               }

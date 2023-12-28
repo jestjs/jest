@@ -511,7 +511,7 @@ const removeBlankErrorLine = (str: string) =>
     // Lines saying just `Error:` are useless
     .filter(line => !errorRegexp.test(line))
     .join('\n')
-    .trimRight();
+    .trimEnd();
 
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string

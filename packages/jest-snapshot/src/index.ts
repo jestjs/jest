@@ -97,7 +97,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
         return inlineSnapshot;
       }
 
-      lines[i] = lines[i].substring(indentation.length);
+      lines[i] = lines[i].slice(indentation.length);
     }
   }
 
