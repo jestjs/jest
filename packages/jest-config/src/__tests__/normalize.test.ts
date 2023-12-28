@@ -76,7 +76,7 @@ it('picks an id based on the rootDir', async () => {
     .update('/root/path/foo')
     .update(String(Infinity))
     .digest('hex')
-    .substring(0, 32);
+    .slice(0, 32);
   const {options} = await normalize(
     {
       rootDir,

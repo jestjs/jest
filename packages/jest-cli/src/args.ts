@@ -79,7 +79,7 @@ export function check(argv: Config.Argv): true {
     !isJSONString(argv.config) &&
     !argv.config.match(
       new RegExp(
-        `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)).join(
+        `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)).join(
           '|',
         )})$`,
         'i',

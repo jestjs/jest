@@ -313,7 +313,7 @@ const normalizeMissingOptions = (
       .update(configPath || '')
       .update(String(projectIndex))
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   if (!options.setupFiles) {

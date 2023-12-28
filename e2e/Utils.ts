@@ -273,7 +273,7 @@ const sortTests = (stdout: string) =>
     }, [])
     .sort(([a], [b]) => (a > b ? 1 : -1))
     .map(strings =>
-      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
+      strings.length > 1 ? `${strings.join('\n').trimEnd()}\n` : strings[0],
     )
     .join('\n')
     .trim();

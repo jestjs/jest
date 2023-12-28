@@ -122,7 +122,7 @@ class ScriptTransformer {
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
         .digest('hex')
-        .substring(0, 32);
+        .slice(0, 32);
     }
 
     return createHash('sha1')
@@ -132,7 +132,7 @@ class ScriptTransformer {
       .update(filename)
       .update(CACHE_VERSION)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   private _buildTransformCacheKey(pattern: string, filepath: string) {
@@ -901,10 +901,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -919,12 +916,9 @@ function readCodeCacheFile(cachePath: string): string | null {
   if (content == null) {
     return null;
   }
-  const code = content.substring(33);
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
-  if (checksum === content.substring(0, 32)) {
+  const code = content.slice(33);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
+  if (checksum === content.slice(0, 32)) {
     return code;
   }
   return null;
