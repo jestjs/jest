@@ -238,7 +238,7 @@ test('writes the cache based on the results', async () => {
 test('works with multiple contexts', async () => {
   fs.readFileSync.mockImplementationOnce(cacheName => {
     if (typeof cacheName !== 'string') {
-      throw new Error('Must be called with a string');
+      throw new TypeError('Must be called with a string');
     }
 
     return cacheName.startsWith(`${path.sep}cache${path.sep}`)

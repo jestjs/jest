@@ -707,10 +707,8 @@ module.exports = {
     'unicorn/prefer-set-has': 'off',
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',
-    'unicorn/prefer-type-error': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/text-encoding-identifier-case': 'off',
-    'unicorn/throw-new-error': 'off',
   },
   settings: {
     'import/ignore': ['react-native'],

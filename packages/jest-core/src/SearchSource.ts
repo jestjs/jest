@@ -334,7 +334,7 @@ export default class SearchSource {
       const filterResult = await filter(tests.map(test => test.path));
 
       if (!Array.isArray(filterResult.filtered)) {
-        throw new Error(
+        throw new TypeError(
           `Filter ${filterPath} did not return a valid test list`,
         );
       }

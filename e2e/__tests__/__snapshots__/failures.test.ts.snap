@@ -896,7 +896,7 @@ exports[`works with node assert 1`] = `
       69 | test('assert.doesNotThrow', () => {
     > 70 |   assert.doesNotThrow(() => {
          |          ^
-      71 |     throw Error('err!');
+      71 |     throw new Error('err!');
       72 |   });
       73 | });
 

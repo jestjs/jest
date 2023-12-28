@@ -153,7 +153,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a number`,
@@ -163,7 +163,7 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a number`,
@@ -296,7 +296,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'function') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
@@ -485,7 +485,7 @@ const matchers: MatchersObject = {
       )} value is a string`;
 
       if (typeof expected !== 'string') {
-        throw new Error(
+        throw new TypeError(
           matcherErrorMessage(
             matcherHint(matcherName, received, String(expected), options),
             wrongTypeErrorMessage,
@@ -658,7 +658,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received?.length !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR(
@@ -817,7 +817,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received !== 'string') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a string`,

@@ -195,7 +195,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
 
   asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
-      throw new Error(
+      throw new TypeError(
         `You must provide an array to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );
@@ -232,7 +232,7 @@ class ObjectContaining extends AsymmetricMatcher<
 
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `You must provide an object to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );

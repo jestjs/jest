@@ -119,7 +119,7 @@ export const _interface = function (jasmine: Jasmine, env: any) {
 
     beforeEach() {
       if (typeof arguments[0] !== 'function') {
-        throw new Error(
+        throw new TypeError(
           'Invalid first argument. It must be a callback function.',
         );
       }
@@ -128,7 +128,7 @@ export const _interface = function (jasmine: Jasmine, env: any) {
 
     afterEach() {
       if (typeof arguments[0] !== 'function') {
-        throw new Error(
+        throw new TypeError(
           'Invalid first argument. It must be a callback function.',
         );
       }
@@ -137,7 +137,7 @@ export const _interface = function (jasmine: Jasmine, env: any) {
 
     beforeAll() {
       if (typeof arguments[0] !== 'function') {
-        throw new Error(
+        throw new TypeError(
           'Invalid first argument. It must be a callback function.',
         );
       }
@@ -146,7 +146,7 @@ export const _interface = function (jasmine: Jasmine, env: any) {
 
     afterAll() {
       if (typeof arguments[0] !== 'function') {
-        throw new Error(
+        throw new TypeError(
           'Invalid first argument. It must be a callback function.',
         );
       }
