@@ -169,10 +169,10 @@ export function setupLandingAnimation() {
         screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
       };
-      buttonWrapper.appendChild(clickButton);
+      buttonWrapper.append(clickButton);
     }
 
-    matcherSection.appendChild(buttonWrapper);
+    matcherSection.append(buttonWrapper);
 
     const firstButton = document.querySelector(
       '.matchers .blockContent .button'
