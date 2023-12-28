@@ -101,7 +101,7 @@ describe('stringify()', () => {
   test('reduces maxWidth if stringifying very large arrays', () => {
     const big: any = [];
     const small: any = [];
-    const testString = Array(1000).join('x');
+    const testString = new Array(1000).join('x');
 
     for (let i = 0; i < 100; i += 1) {
       big[i] = testString;
