@@ -9,8 +9,7 @@
 
 import * as asyncHooks from 'async_hooks';
 import {promisify} from 'util';
-import * as v8 from 'v8';
-import * as vm from 'vm';
+import {getHeapSnapshot} from 'v8';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -46,20 +45,9 @@ const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
 
-let gcFunc: (() => void) | undefined = (globalThis as any).gc;
 function runGC() {
-  if (!gcFunc) {
-    v8.setFlagsFromString('--expose-gc');
-    gcFunc = vm.runInNewContext('gc');
-    v8.setFlagsFromString('--no-expose-gc');
-    if (!gcFunc) {
-      throw new Error(
-        'Cannot find `global.gc` function. Please run node with `--expose-gc` and report this issue in jest repo.',
-      );
-    }
-  }
-
-  gcFunc();
+  // It is more aggressive than `gc()`.
+  getHeapSnapshot();
 }
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
@@ -82,7 +70,20 @@ export default function collectHandles(): HandleCollectionResult {
       // Skip resources that should not generally prevent the process from
       // exiting, not last a meaningfully long time, or otherwise shouldn't be
       // tracked.
-      if (type === 'PROMISE') {
+      if (
+        [
+          'PROMISE',
+          'TIMERWRAP',
+          'ELDHISTOGRAM',
+          'PerformanceObserver',
+          'RANDOMBYTESREQUEST',
+          'DNSCHANNEL',
+          'ZLIB',
+          'SIGNREQUEST',
+          'TLSWRAP',
+          'TCPWRAP',
+        ].includes(type)
+      ) {
         return;
       }
       const error = new ErrorWithStack(type, initHook, 100);
@@ -136,8 +137,6 @@ export default function collectHandles(): HandleCollectionResult {
       await asyncSleep(30);
 
       if (activeHandles.size > 0) {
-        // For some special objects such as `TLSWRAP`.
-        // Ref: https://github.com/jestjs/jest/issues/11665
         runGC();
 
         await asyncSleep(0);
