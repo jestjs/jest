@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
@@ -31,7 +32,7 @@ export type FakeableAPI =
   | 'setTimeout'
   | 'clearTimeout';
 
-export interface GlobalFakeTimersConfig {
+export type GlobalFakeTimersConfig = {
   /**
    * Whether fake timers should be enabled globally for all test files.
    *
@@ -39,9 +40,9 @@ export interface GlobalFakeTimersConfig {
    * The default is `false`.
    */
   enableGlobally?: boolean;
-}
+};
 
-export interface FakeTimersConfig {
+export type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically
    * by 20 milliseconds every 20 milliseconds. A custom time delta
@@ -82,9 +83,9 @@ export interface FakeTimersConfig {
    * The default is `false`.
    */
   legacyFakeTimers?: false;
-}
+};
 
-export interface LegacyFakeTimersConfig {
+export type LegacyFakeTimersConfig = {
   /**
    * Use the old fake timers implementation instead of one backed by
    * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
@@ -93,7 +94,7 @@ export interface LegacyFakeTimersConfig {
    * The default is `false`.
    */
   legacyFakeTimers?: true;
-}
+};
 
 type FakeTimers = GlobalFakeTimersConfig &
   (
@@ -103,7 +104,7 @@ type FakeTimers = GlobalFakeTimersConfig &
     | LegacyFakeTimersConfig
   );
 
-export interface HasteConfig {
+export type HasteConfig = {
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -126,7 +127,7 @@ export interface HasteConfig {
   hasteMapModulePath?: string;
   /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
   retainAllFiles?: boolean;
-}
+};
 
 export type CoverageReporterName = keyof ReportOptions;
 
@@ -148,7 +149,7 @@ export interface ConfigGlobals {
   [K: string]: unknown;
 }
 
-export interface DefaultOptions {
+export type DefaultOptions = {
   automock: boolean;
   bail: number;
   cache: boolean;
@@ -211,12 +212,12 @@ export interface DefaultOptions {
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
   workerThreads: boolean;
-}
+};
 
-export interface DisplayName {
+export type DisplayName = {
   name: string;
   color: typeof ForegroundColor;
-}
+};
 
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
@@ -236,24 +237,24 @@ type NotifyMode =
   | 'success-change'
   | 'failure-change';
 
-export interface CoverageThresholdValue {
+export type CoverageThresholdValue = {
   branches?: number;
   functions?: number;
   lines?: number;
   statements?: number;
-}
+};
 
-interface CoverageThreshold {
+type CoverageThreshold = {
   [path: string]: CoverageThresholdValue;
   global: CoverageThresholdValue;
-}
+};
 
-interface ShardConfig {
+type ShardConfig = {
   shardIndex: number;
   shardCount: number;
-}
+};
 
-export interface GlobalConfig {
+export type GlobalConfig = {
   bail: number;
   changedSince?: string;
   changedFilesWithAncestor: boolean;
@@ -323,9 +324,9 @@ export interface GlobalConfig {
   workerIdleMemoryLimit?: number;
   // TODO: make non-optional in Jest 30
   workerThreads?: boolean;
-}
+};
 
-export interface ProjectConfig {
+export type ProjectConfig = {
   automock: boolean;
   cache: boolean;
   cacheDirectory: string;
@@ -389,12 +390,12 @@ export interface ProjectConfig {
   unmockedModulePathPatterns?: Array<string>;
   waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
-}
+};
 
-export interface SetupAfterEnvPerfStats {
+export type SetupAfterEnvPerfStats = {
   setupAfterEnvStart: number;
   setupAfterEnvEnd: number;
-}
+};
 
 export type Argv = Arguments<
   Partial<{
