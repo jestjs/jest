@@ -11,6 +11,6 @@
 
 const div = document.createElement('div');
 
-div.innerText = 'Hello!';
+div.textContent = 'Hello!';
 
 module.exports = div;

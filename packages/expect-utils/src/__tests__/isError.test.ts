@@ -19,7 +19,7 @@ describe('isError', () => {
     createError: (win: Window | typeof globalThis) => Error | null,
   ) {
     const iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
+    document.body.append(iframe);
     try {
       const contentWindow = iframe.contentWindow;
 
@@ -32,7 +32,7 @@ describe('isError', () => {
       const error = createError(contentWindow);
       expect(isError(error)).toBe(true);
     } finally {
-      iframe.parentElement!.removeChild(iframe);
+      iframe.remove();
     }
   }
 
