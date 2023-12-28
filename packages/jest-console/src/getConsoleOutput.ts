@@ -54,10 +54,8 @@ export default function getConsoleOutput(
 
     return `${
       output + TITLE_INDENT + chalk.dim(typeMessage)
-    }\n${message.trimRight()}\n${chalk.dim(
-      formattedStackTrace.trimRight(),
-    )}\n\n`;
+    }\n${message.trimEnd()}\n${chalk.dim(formattedStackTrace.trimEnd())}\n\n`;
   }, '');
 
-  return `${logEntries.trimRight()}\n`;
+  return `${logEntries.trimEnd()}\n`;
 }

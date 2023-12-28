@@ -58,13 +58,13 @@ export const replaceRootDirInPath = (
   rootDir: string,
   filePath: string,
 ): string => {
-  if (!/^<rootDir>/.test(filePath)) {
+  if (!filePath.startsWith('<rootDir>')) {
     return filePath;
   }
 
   return path.resolve(
     rootDir,
-    path.normalize(`./${filePath.substring('<rootDir>'.length)}`),
+    path.normalize(`./${filePath.slice('<rootDir>'.length)}`),
   );
 };
 

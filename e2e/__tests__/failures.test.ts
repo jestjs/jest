@@ -78,9 +78,7 @@ test('works with snapshot failures', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with snapshot failures with hint', () => {
@@ -88,9 +86,7 @@ test('works with snapshot failures with hint', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with error with cause', () => {
@@ -113,7 +109,7 @@ test('works with error with cause thrown outside tests', () => {
   expect(
     // jasmine runner differ from circus one in this case, we just start
     // the comparison when the stack starts to be reported
-    sanitizedSummary.substring(sanitizedSummary.indexOf('error during f')),
+    sanitizedSummary.slice(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
 });
 
