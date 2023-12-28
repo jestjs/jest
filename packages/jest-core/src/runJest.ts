@@ -203,7 +203,7 @@ export default async function runJest({
 
   if (globalConfig.shard) {
     if (typeof sequencer.shard !== 'function') {
-      throw new Error(
+      throw new TypeError(
         `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
       );
     }

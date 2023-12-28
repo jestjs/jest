@@ -274,7 +274,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
           options.ignorePattern.flags,
         );
       } else {
-        throw new Error(
+        throw new TypeError(
           'jest-haste-map: the `ignorePattern` option must be a RegExp',
         );
       }

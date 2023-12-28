@@ -715,10 +715,8 @@ module.exports = {
     'unicorn/prefer-string-slice': 'off',
     'unicorn/prefer-string-starts-ends-with': 'off',
     'unicorn/prefer-string-trim-start-end': 'off',
-    'unicorn/prefer-type-error': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/text-encoding-identifier-case': 'off',
-    'unicorn/throw-new-error': 'off',
   },
   settings: {
     'import/ignore': ['react-native'],

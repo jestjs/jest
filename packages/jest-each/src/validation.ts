@@ -17,7 +17,7 @@ const RECEIVED_COLOR = chalk.red;
 
 export const validateArrayTable = (table: unknown): void => {
   if (!Array.isArray(table)) {
-    throw new Error(
+    throw new TypeError(
       '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
         `Instead was called with: ${pretty(table, {
           maxDepth: 1,

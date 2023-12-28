@@ -2175,7 +2175,9 @@ export default class Runtime {
       options,
     ) => {
       if (typeof mockFactory !== 'function') {
-        throw new Error('`unstable_mockModule` must be passed a mock factory');
+        throw new TypeError(
+          '`unstable_mockModule` must be passed a mock factory',
+        );
       }
 
       this.setModuleMock(from, moduleName, mockFactory, options);

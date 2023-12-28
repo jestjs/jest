@@ -42,7 +42,7 @@ describe('Custom matcher', () => {
     const foo = () => bar();
     const bar = () => baz();
     const baz = () => {
-      throw Error('qux');
+      throw new Error('qux');
     };
 
     // This expecation fails due to an error we throw (intentionally)

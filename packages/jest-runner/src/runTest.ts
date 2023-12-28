@@ -92,7 +92,7 @@ async function runTestInternal(
 
   if (customEnvironment) {
     if (Array.isArray(customEnvironment)) {
-      throw new Error(
+      throw new TypeError(
         `You can only define a single test environment through docblocks, got "${customEnvironment.join(
           ', ',
         )}"`,

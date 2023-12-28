@@ -95,7 +95,7 @@ export const makeTemplate =
   (values = []) =>
     str.replace(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {
-        throw new Error('Array of values must be passed to the template.');
+        throw new TypeError('Array of values must be passed to the template.');
       }
       return values[number - 1];
     });
