@@ -146,6 +146,7 @@ try {
               '@typescript-eslint/no-invalid-void-type': 'off',
               '@typescript-eslint/no-dynamic-delete': 'off',
               '@typescript-eslint/no-var-requires': 'off',
+              '@typescript-eslint/consistent-type-definitions': 'off',
 
               // nah
               '@typescript-eslint/consistent-indexed-object-style': 'off',
