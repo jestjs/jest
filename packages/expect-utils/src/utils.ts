@@ -472,7 +472,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
   }
 
   // will match everything that's not a dot or a bracket, and "" for consecutive dots.
-  const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
+  const pattern = new RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
 
   // Because the regex won't match a dot in the beginning of the path, if present.
   if (propertyPath[0] === '.') {

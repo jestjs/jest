@@ -577,7 +577,7 @@ describe('prettyFormat()', () => {
 
   describe('maxWidth option', () => {
     it('applies to arrays', () => {
-      const val = Array(1_000_000).fill('x');
+      const val = new Array(1_000_000).fill('x');
       expect(prettyFormat(val, {maxWidth: 5})).toEqual(
         [
           'Array [',

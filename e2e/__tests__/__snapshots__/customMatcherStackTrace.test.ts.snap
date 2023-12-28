@@ -31,7 +31,7 @@ exports[`works with custom matchers 1`] = `
     qux
 
       44 |     const baz = () => {
-      45 |       // eslint-disable-next-line unicorn/throw-new-error
+      45 |       // eslint-disable-next-line unicorn/throw-new-error,unicorn/new-for-builtins
     > 46 |       throw Error('qux');
          |             ^
       47 |     };

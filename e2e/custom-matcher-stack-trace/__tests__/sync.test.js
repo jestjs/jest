@@ -42,7 +42,7 @@ describe('Custom matcher', () => {
     const foo = () => bar();
     const bar = () => baz();
     const baz = () => {
-      // eslint-disable-next-line unicorn/throw-new-error
+      // eslint-disable-next-line unicorn/throw-new-error,unicorn/new-for-builtins
       throw Error('qux');
     };
 
