@@ -191,7 +191,9 @@ export default class SearchSource {
       {skipNodeResolution: this._context.config.skipNodeResolution},
     );
 
-    const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
+    const allPathsAbsolute = new Set(
+      Array.from(allPaths).map(p => path.resolve(p)),
+    );
 
     const collectCoverageFrom = new Set<string>();
 
@@ -201,7 +203,7 @@ export default class SearchSource {
       }
 
       for (const p of testModule.dependencies) {
-        if (!allPathsAbsolute.includes(p)) {
+        if (!allPathsAbsolute.has(p)) {
           continue;
         }
 
