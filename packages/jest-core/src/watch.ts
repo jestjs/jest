@@ -107,7 +107,7 @@ export default async function watch(
     passWithNoTests: true,
   });
 
-  const updateConfigAndRun = ({
+  const updateConfigAndRun = async ({
     bail,
     changedSince,
     collectCoverage,
@@ -205,8 +205,8 @@ export default async function watch(
           })}`,
         );
         delete errorWithContext.stack;
-        // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
-        return Promise.reject(errorWithContext);
+
+        throw errorWithContext;
       }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
 
@@ -278,11 +278,9 @@ export default async function watch(
     });
   }
 
-  const startRun = (
-    globalConfig: Config.GlobalConfig,
-  ): Promise<void | null> => {
+  const startRun = async (globalConfig: Config.GlobalConfig): Promise<void> => {
     if (isRunning) {
-      return Promise.resolve(null);
+      return;
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
@@ -292,53 +290,55 @@ export default async function watch(
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
-    return runJest({
-      changedFilesPromise,
-      contexts,
-      failedTestsCache,
-      filter,
-      globalConfig,
-      jestHooks: hooks.getEmitter(),
-      onComplete: results => {
-        isRunning = false;
-        hooks.getEmitter().onTestRunComplete(results);
+    try {
+      await runJest({
+        changedFilesPromise,
+        contexts,
+        failedTestsCache,
+        filter,
+        globalConfig,
+        jestHooks: hooks.getEmitter(),
+        onComplete: results => {
+          isRunning = false;
+          hooks.getEmitter().onTestRunComplete(results);
 
-        // Create a new testWatcher instance so that re-runs won't be blocked.
-        // The old instance that was passed to Jest will still be interrupted
-        // and prevent test runs from the previous run.
-        testWatcher = new TestWatcher({isWatchMode: true});
+          // Create a new testWatcher instance so that re-runs won't be blocked.
+          // The old instance that was passed to Jest will still be interrupted
+          // and prevent test runs from the previous run.
+          testWatcher = new TestWatcher({isWatchMode: true});
 
-        // Do not show any Watch Usage related stuff when running in a
-        // non-interactive environment
-        if (isInteractive) {
-          if (shouldDisplayWatchUsage) {
-            outputStream.write(usage(globalConfig, watchPlugins));
-            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-            isWatchUsageDisplayed = true;
+          // Do not show any Watch Usage related stuff when running in a
+          // non-interactive environment
+          if (isInteractive) {
+            if (shouldDisplayWatchUsage) {
+              outputStream.write(usage(globalConfig, watchPlugins));
+              shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+              isWatchUsageDisplayed = true;
+            } else {
+              outputStream.write(showToggleUsagePrompt());
+              shouldDisplayWatchUsage = false;
+              isWatchUsageDisplayed = false;
+            }
           } else {
-            outputStream.write(showToggleUsagePrompt());
-            shouldDisplayWatchUsage = false;
-            isWatchUsageDisplayed = false;
+            outputStream.write('\n');
           }
-        } else {
-          outputStream.write('\n');
-        }
-        failedTestsCache.setTestResults(results.testResults);
-      },
-      outputStream,
-      startRun,
-      testWatcher,
-    }).catch(error =>
+          failedTestsCache.setTestResults(results.testResults);
+        },
+        outputStream,
+        startRun,
+        testWatcher,
+      });
+    } catch (error) {
       // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
       // continuous watch mode execution. We need to reprint them to the
       // terminal and give just a little bit of extra space so they fit below
       // `preRunMessagePrint` message nicely.
       console.error(
-        `\n\n${formatExecError(error, contexts[0].config, {
+        `\n\n${formatExecError(error as any, contexts[0].config, {
           noStackTrace: false,
         })}`,
-      ),
-    );
+      );
+    }
   };
 
   const onKeypress = (key: string) => {
@@ -386,10 +386,10 @@ export default async function watch(
       activePlugin = matchingWatchPlugin;
       if (activePlugin.run) {
         activePlugin.run(globalConfig, updateConfigAndRun).then(
-          shouldRerun => {
+          async shouldRerun => {
             activePlugin = null;
             if (shouldRerun) {
-              updateConfigAndRun();
+              await updateConfigAndRun();
             }
           },
           () => {
