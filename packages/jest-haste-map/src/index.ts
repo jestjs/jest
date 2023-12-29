@@ -806,7 +806,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    */
   private async _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
-      return Promise.resolve();
+      return;
     }
 
     // In watch mode, we'll only warn about module collisions and we'll retain
