@@ -62,7 +62,8 @@ exports.isFileIncluded = function (globs, dot, doIgnore, relativePath) {
   }
   return globs.length > 0
     ? micromatch.some(relativePath, globs, {dot})
-    : dot || micromatch.some(relativePath, '**/*');
+    : // eslint-disable-next-line unicorn/no-array-method-this-argument
+      dot || micromatch.some(relativePath, '**/*');
 };
 
 /**

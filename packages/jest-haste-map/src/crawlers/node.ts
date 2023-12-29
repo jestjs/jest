@@ -151,8 +151,7 @@ function findNative(
     if (index) {
       args.push('-o');
     }
-    args.push('-iname');
-    args.push(`*.${ext}`);
+    args.push('-iname', `*.${ext}`);
   }
   if (extensions.length > 0) {
     args.push(')');

@@ -662,6 +662,12 @@ module.exports = {
     // enforced by `@typescript-eslint/no-this-alias` already
     'unicorn/no-this-assignment': 'off',
 
+    // Not an issue with TypeScript
+    'unicorn/no-array-callback-reference': 'off',
+
+    // reduce is fine
+    'unicorn/no-array-reduce': 'off',
+
     // nah
     'unicorn/consistent-destructuring': 'off',
     'unicorn/no-nested-ternary': 'off',
@@ -676,8 +682,6 @@ module.exports = {
 
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
-    'unicorn/no-array-callback-reference': 'off',
-    'unicorn/no-array-reduce': 'off',
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
@@ -686,26 +690,17 @@ module.exports = {
     'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
     'unicorn/escape-case': 'off',
-    'unicorn/no-array-method-this-argument': 'off',
-    'unicorn/no-array-push-push': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-console-spaces': 'off',
     'unicorn/no-empty-file': 'off',
     'unicorn/no-for-loop': 'off',
     'unicorn/no-hex-escape': 'off',
-    'unicorn/no-instanceof-array': 'off',
-    'unicorn/no-new-array': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/no-thenable': 'off',
     'unicorn/no-typeof-undefined': 'off',
     'unicorn/no-useless-promise-resolve-reject': 'off',
     'unicorn/no-useless-undefined': 'off',
     'unicorn/number-literal-case': 'off',
-    'unicorn/prefer-array-flat': 'off',
-    'unicorn/prefer-array-flat-map': 'off',
-    'unicorn/prefer-array-index-of': 'off',
-    'unicorn/prefer-array-some': 'off',
-    'unicorn/prefer-at': 'off',
     'unicorn/prefer-date-now': 'off',
     'unicorn/prefer-export-from': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',

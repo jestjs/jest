@@ -566,7 +566,7 @@ export class ModuleMocker {
       this._mockState.set(f, state);
     }
     if (state.calls.length > 0) {
-      state.lastCall = state.calls[state.calls.length - 1];
+      state.lastCall = state.calls.at(-1);
     }
     return state;
   }

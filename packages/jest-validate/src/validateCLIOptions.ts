@@ -115,7 +115,6 @@ export default function validateCLIOptions(
       !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
       (rawArgv.length === 0 || rawArgv.includes(arg)),
-    [],
   );
 
   if (unrecognizedOptions.length > 0) {

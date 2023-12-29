@@ -518,7 +518,7 @@ export default class Resolver {
 
     const moduleDirectory = this._options.moduleDirectories;
     const paths = nodeModulesPaths(from, {moduleDirectory});
-    if (paths[paths.length - 1] === undefined) {
+    if (paths.at(-1) === undefined) {
       // circumvent node-resolve bug that adds `undefined` as last item.
       paths.pop();
     }

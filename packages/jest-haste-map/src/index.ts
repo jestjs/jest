@@ -901,7 +901,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         .then(() => {
           // If we get duplicate events for the same file, ignore them.
           if (
-            eventsQueue.find(
+            eventsQueue.some(
               event =>
                 event.type === type &&
                 event.filePath === filePath &&
