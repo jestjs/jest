@@ -71,9 +71,9 @@ class CallTracker {
     };
 
     this.allArgs = function () {
-      const callArgs = [];
-      for (const item of calls) {
-        callArgs.push(item.args);
+      const callArgs: Array<unknown> = [];
+      for (const call of calls) {
+        callArgs.push(call.args);
       }
 
       return callArgs;

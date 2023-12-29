@@ -231,8 +231,8 @@ export default class GitHubActionsReporter extends BaseReporter {
         });
       } else {
         let alreadyInserted = false;
-        for (const item of branches) {
-          if (this.arrayEqual(item, element.ancestorTitles.slice(0, 1))) {
+        for (const branch of branches) {
+          if (this.arrayEqual(branch, element.ancestorTitles.slice(0, 1))) {
             alreadyInserted = true;
             break;
           }
@@ -284,10 +284,10 @@ export default class GitHubActionsReporter extends BaseReporter {
         )
       ) {
         let alreadyInserted = false;
-        for (const item of branches) {
+        for (const branch of branches) {
           if (
             this.arrayEqual(
-              item,
+              branch,
               element.ancestorTitles.slice(0, ancestors.length + 1),
             )
           ) {
