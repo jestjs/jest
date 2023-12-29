@@ -124,7 +124,7 @@ try {
               '@typescript-eslint/no-base-to-string': [
                 'error',
                 // https://github.com/typescript-eslint/typescript-eslint/issues/1655#issuecomment-593639305
-                {ignoredTypeNames: ['Error']},
+                {ignoredTypeNames: ['AssertionError', 'Error']},
               ],
               '@typescript-eslint/no-duplicate-type-constituents': 'error',
               '@typescript-eslint/no-redundant-type-constituents': 'error',
