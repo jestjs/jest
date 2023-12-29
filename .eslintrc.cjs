@@ -702,21 +702,22 @@ module.exports = {
     'unicorn/no-useless-undefined': 'off',
     'unicorn/number-literal-case': 'off',
     'unicorn/prefer-date-now': 'off',
-    'unicorn/prefer-export-from': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-math-trunc': 'off',
     'unicorn/prefer-native-coercion-functions': 'off',
-    'unicorn/prefer-node-protocol': 'off',
     'unicorn/prefer-number-properties': 'off',
     'unicorn/prefer-object-from-entries': 'off',
-    'unicorn/prefer-optional-catch-binding': 'off',
     'unicorn/prefer-prototype-methods': 'off',
     'unicorn/prefer-regexp-test': 'off',
-    'unicorn/prefer-set-has': 'off',
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/text-encoding-identifier-case': 'off',
+
+    // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
+    'unicorn/prefer-export-from': 'off',
+    // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
+    'unicorn/prefer-node-protocol': 'off',
   },
   settings: {
     'import/ignore': ['react-native'],
