@@ -198,7 +198,7 @@ export default class Status {
       }
     }
 
-    const clear = '\r\x1B[K\r\x1B[1A'.repeat(height);
+    const clear = '\r\u001B[K\r\u001B[1A'.repeat(height);
     return (this._cache = {clear, content});
   }
 
