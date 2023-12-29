@@ -313,6 +313,52 @@ const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
   return null;
 };
 
+function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
+  // use a temporary empty statement instead of the real first statement, which may itself be hoisted
+  const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer('body', [
+    emptyStatement(),
+    emptyStatement(),
+  ]);
+  block.traverse({
+    CallExpression: visitCallExpr,
+    VariableDeclarator: visitVariableDeclarator,
+    // do not traverse into nested blocks, or we'll hoist calls in there out to this block
+    denylist: ['BlockStatement'],
+  });
+  callsHoistPoint.remove();
+  varsHoistPoint.remove();
+
+  function visitCallExpr(callExpr: NodePath<CallExpression>) {
+    if (hoistedJestGetters.has(callExpr.node)) {
+      const mockStmt = callExpr.getStatementParent();
+
+      if (mockStmt) {
+        const mockStmtParent = mockStmt.parentPath;
+        if (mockStmtParent.isBlock()) {
+          const mockStmtNode = mockStmt.node;
+          mockStmt.remove();
+          callsHoistPoint.insertBefore(mockStmtNode);
+        }
+      }
+    }
+  }
+
+  function visitVariableDeclarator(varDecl: NodePath<VariableDeclarator>) {
+    if (hoistedVariables.has(varDecl.node)) {
+      // should be assert function, but it's not. So let's cast below
+      varDecl.parentPath.assertVariableDeclaration();
+
+      const {kind, declarations} = varDecl.parent as VariableDeclaration;
+      if (declarations.length === 1) {
+        varDecl.parentPath.remove();
+      } else {
+        varDecl.remove();
+      }
+      varsHoistPoint.insertBefore(variableDeclaration(kind, [varDecl.node]));
+    }
+  }
+}
+
 /* eslint-disable sort-keys */
 export default function jestHoist(): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
@@ -360,56 +406,6 @@ export default function jestHoist(): PluginObj<{
     post({path: program}) {
       visitBlock(program);
       program.traverse({BlockStatement: visitBlock});
-
-      function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
-        // use a temporary empty statement instead of the real first statement, which may itself be hoisted
-        const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer(
-          'body',
-          [emptyStatement(), emptyStatement()],
-        );
-        block.traverse({
-          CallExpression: visitCallExpr,
-          VariableDeclarator: visitVariableDeclarator,
-          // do not traverse into nested blocks, or we'll hoist calls in there out to this block
-          denylist: ['BlockStatement'],
-        });
-        callsHoistPoint.remove();
-        varsHoistPoint.remove();
-
-        function visitCallExpr(callExpr: NodePath<CallExpression>) {
-          if (hoistedJestGetters.has(callExpr.node)) {
-            const mockStmt = callExpr.getStatementParent();
-
-            if (mockStmt) {
-              const mockStmtParent = mockStmt.parentPath;
-              if (mockStmtParent.isBlock()) {
-                const mockStmtNode = mockStmt.node;
-                mockStmt.remove();
-                callsHoistPoint.insertBefore(mockStmtNode);
-              }
-            }
-          }
-        }
-
-        function visitVariableDeclarator(
-          varDecl: NodePath<VariableDeclarator>,
-        ) {
-          if (hoistedVariables.has(varDecl.node)) {
-            // should be assert function, but it's not. So let's cast below
-            varDecl.parentPath.assertVariableDeclaration();
-
-            const {kind, declarations} = varDecl.parent as VariableDeclaration;
-            if (declarations.length === 1) {
-              varDecl.parentPath.remove();
-            } else {
-              varDecl.remove();
-            }
-            varsHoistPoint.insertBefore(
-              variableDeclaration(kind, [varDecl.node]),
-            );
-          }
-        }
-      }
     },
   };
 }

@@ -28,6 +28,20 @@ export type TreeNode = {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
+function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
+  return function fn(done: (error?: unknown) => void = noop) {
+    node.execute(done, enabled);
+  };
+}
+
+function hasNoEnabledTest(node: TreeNode): boolean {
+  return (
+    node.disabled ||
+    node.markedPending ||
+    (node.children?.every(hasNoEnabledTest) ?? false)
+  );
+}
+
 export default function treeProcessor(options: Options): void {
   const {nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} =
     options;
@@ -43,12 +57,6 @@ export default function treeProcessor(options: Options): void {
       : getNodeWithoutChildrenHandler(node, enabled);
   }
 
-  function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
-    return function fn(done: (error?: unknown) => void = noop) {
-      node.execute(done, enabled);
-    };
-  }
-
   function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
     return async function fn(done: (error?: unknown) => void = noop) {
       nodeStart(node);
@@ -60,14 +68,6 @@ export default function treeProcessor(options: Options): void {
       nodeComplete(node);
       done();
     };
-  }
-
-  function hasNoEnabledTest(node: TreeNode): boolean {
-    return (
-      node.disabled ||
-      node.markedPending ||
-      (node.children?.every(hasNoEnabledTest) ?? false)
-    );
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
