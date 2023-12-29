@@ -46,6 +46,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
     });
   }
 
+  // eslint-disable-next-line unicorn/no-thenable
   then<TResult1 = T, TResult2 = never>(
     onFulfilled?:
       | ((value: T) => TResult1 | PromiseLike<TResult1>)

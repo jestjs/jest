@@ -205,6 +205,7 @@ export default async function watch(
           })}`,
         );
         delete errorWithContext.stack;
+        // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
         return Promise.reject(errorWithContext);
       }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
@@ -463,7 +464,6 @@ export default async function watch(
   }
 
   startRun(globalConfig);
-  return Promise.resolve();
 }
 
 const checkForConflicts = (

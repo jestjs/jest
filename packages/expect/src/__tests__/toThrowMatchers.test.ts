@@ -512,9 +512,9 @@ describe('toThrow', () => {
         err = new Err('async apple');
       }
       if (resolve) {
-        return Promise.resolve(err || 'apple');
+        return err || 'apple';
       } else {
-        return Promise.reject(err || 'apple');
+        throw err || 'apple';
       }
     };
 
