@@ -9,6 +9,6 @@ import type {WriteStream} from 'tty';
 
 export default function clearLine(stream: WriteStream): void {
   if (stream.isTTY) {
-    stream.write('\x1b[999D\x1b[K');
+    stream.write('\x1B[999D\x1B[K');
   }
 }

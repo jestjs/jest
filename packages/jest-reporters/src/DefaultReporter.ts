@@ -30,7 +30,7 @@ import type {ReporterOnStartOptions} from './types';
 type write = WriteStream['write'];
 type FlushBufferedOutput = () => void;
 
-const TITLE_BULLET = chalk.bold('\u25cf ');
+const TITLE_BULLET = chalk.bold('\u25CF ');
 
 export default class DefaultReporter extends BaseReporter {
   private _clear: string; // ANSI clear sequence for the last printed status

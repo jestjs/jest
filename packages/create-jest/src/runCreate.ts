@@ -62,7 +62,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
 
   try {
     projectPackageJson = JSON.parse(
-      fs.readFileSync(projectPackageJsonPath, 'utf-8'),
+      fs.readFileSync(projectPackageJsonPath, 'utf8'),
     ) as ProjectPackageJson;
   } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);

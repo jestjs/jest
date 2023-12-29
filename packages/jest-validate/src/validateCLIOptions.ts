@@ -21,7 +21,7 @@ import {
   logValidationWarning,
 } from './utils';
 
-const BULLET: string = chalk.bold('\u25cf');
+const BULLET: string = chalk.bold('\u25CF');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
   https://jestjs.io/docs/cli
 `;

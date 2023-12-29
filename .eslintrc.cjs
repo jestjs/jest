@@ -33,9 +33,9 @@ module.exports = {
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
-    'plugin:prettier/recommended',
     'plugin:unicorn/recommended',
     'plugin:promise/recommended',
+    'plugin:prettier/recommended',
   ],
   globals: {
     console: 'readonly',
@@ -424,6 +424,7 @@ module.exports = {
       rules: {
         'unicorn/prefer-code-point': 'off',
         'unicorn/prefer-optional-catch-binding': 'off',
+        'unicorn/text-encoding-identifier-case': 'off',
       },
     },
     {
@@ -670,7 +671,6 @@ module.exports = {
 
     // nah
     'unicorn/consistent-destructuring': 'off',
-    'unicorn/no-nested-ternary': 'off',
     'unicorn/no-lonely-if': 'off',
     'unicorn/no-null': 'off',
     'unicorn/no-process-exit': 'off',
@@ -688,7 +688,6 @@ module.exports = {
     'unicorn/catch-error-name': 'off',
     'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
-    'unicorn/escape-case': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-console-spaces': 'off',
     'unicorn/no-empty-file': 'off',
@@ -699,7 +698,6 @@ module.exports = {
     'unicorn/no-typeof-undefined': 'off',
     'unicorn/no-useless-promise-resolve-reject': 'off',
     'unicorn/no-useless-undefined': 'off',
-    'unicorn/number-literal-case': 'off',
     'unicorn/prefer-date-now': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-math-trunc': 'off',
@@ -710,7 +708,6 @@ module.exports = {
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',
     'unicorn/prevent-abbreviations': 'off',
-    'unicorn/text-encoding-identifier-case': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',
