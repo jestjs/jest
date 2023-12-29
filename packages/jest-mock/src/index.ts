@@ -1047,7 +1047,7 @@ export class ModuleMocker {
         if (
           type === 'function' &&
           this.isMockFunction(component) &&
-          slot.match(/^mock/)
+          slot.startsWith('mock')
         ) {
           continue;
         }

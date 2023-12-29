@@ -121,7 +121,7 @@ describe('toThrow', () => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw 0;
-        }).toThrow(/^[123456789]\d*/);
+        }).toThrow(/^[1-9]\d*/);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -138,7 +138,7 @@ describe('toThrow', () => {
         jestExpect(() => {
           // eslint-disable-next-line no-throw-literal
           throw 404;
-        }).not.toThrow(/^[123456789]\d*/);
+        }).not.toThrow(/^[1-9]\d*/);
       }).toThrowErrorMatchingSnapshot();
     });
   });

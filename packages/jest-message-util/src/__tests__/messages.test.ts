@@ -36,7 +36,7 @@ const unixStackTrace =
   at Object.it (build/__tests__/messages-test.js:45:41)
   at Object.<anonymous> (../jest-jasmine2/build/jasmine-pit.js:35:32)
   at attemptAsync (../jest-jasmine2/build/jasmine-2.4.1.js:1919:24)`;
-const unixError = new Error(unixStackTrace.replace(/\n\s*at [\s\s]*/m, ''));
+const unixError = new Error(unixStackTrace.replace(/\n\s*at \s*/m, ''));
 unixError.stack = unixStackTrace;
 
 const assertionStack =
@@ -59,9 +59,7 @@ const assertionStack =
       at process._tickCallback (internal/process/next_tick.js:188:7)
       at internal/process/next_tick.js:188:7
 `;
-const assertionError = new Error(
-  assertionStack.replace(/\n\s*at [\s\s]*/m, ''),
-);
+const assertionError = new Error(assertionStack.replace(/\n\s*at \s*/m, ''));
 assertionError.stack = assertionStack;
 
 const vendorStack =
@@ -90,7 +88,7 @@ const babelStack =
      \u001b[90m 22 | \u001b[39m      )\u001b[33m;\u001b[39m
      \u001b[90m 23 | \u001b[39m    } \u001b[36melse\u001b[39m \u001b[36mif\u001b[39m (\u001b[36mtypeof\u001b[39m render \u001b[33m!==\u001b[39m \u001b[32m'function'\u001b[39m) {\u001b[0m
 `;
-const babelError = new Error(babelStack.replace(/\n\s*at [\s\s]*/m, ''));
+const babelError = new Error(babelStack.replace(/\n\s*at \s*/m, ''));
 babelError.stack = babelStack;
 
 function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {

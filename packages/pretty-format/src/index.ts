@@ -183,7 +183,7 @@ function printBasicValue(
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
       // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
-      return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+      return regExpToString.call(val).replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
     }
     return regExpToString.call(val);
   }

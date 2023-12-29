@@ -77,14 +77,10 @@ export function check(argv: Config.Argv): true {
   if (
     argv.config &&
     !isJSONString(argv.config) &&
-    !argv.config.match(
-      new RegExp(
-        `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)).join(
-          '|',
-        )})$`,
-        'i',
-      ),
-    )
+    !new RegExp(
+      `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)).join('|')})$`,
+      'i',
+    ).test(argv.config)
   ) {
     throw new Error(
       `The --config option requires a JSON string literal, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(

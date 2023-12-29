@@ -8,7 +8,7 @@
 import fs from 'graceful-fs';
 
 const linkRegex =
-  /\[#(\d+)\]\(https:\/\/github.com\/facebook\/jest\/(issues|pull)\/(\d+)\)/g;
+  /\[#(\d+)]\(https:\/\/github.com\/facebook\/jest\/(issues|pull)\/(\d+)\)/g;
 
 const changelogPath = 'CHANGELOG.md';
 const data = fs.readFileSync(changelogPath, 'utf-8');

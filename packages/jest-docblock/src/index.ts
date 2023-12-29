@@ -13,11 +13,11 @@ type Pragmas = Record<string, string | Array<string>>;
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*?/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
-const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
+const lineCommentRe = /(^|\s+)\/\/([^\n\r]*)/g;
 const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe =
-  /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
-const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
+  /(?:^|\r?\n) *(@[^\n\r]*?) *\r?\n *(?![^\n\r@]*\/\/[^]*)([^\s@][^\n\r@]+?) *\r?\n/g;
+const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\n\r]*)/g;
 const stringStartRe = /(\r?\n|^) *\* ?/g;
 const STRING_ARRAY: ReadonlyArray<string> = [];
 

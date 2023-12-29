@@ -33,7 +33,7 @@ function stringToBytes(
     if (isNaN(Number.parseFloat(input.slice(-1)))) {
       // eslint-disable-next-line prefer-const
       let [, numericString, trailingChars] =
-        input.match(/(.*?)([^0-9.-]+)$/i) || [];
+        input.match(/(.*?)([^\d.-]+)$/i) || [];
 
       if (trailingChars && numericString) {
         const numericValue = Number.parseFloat(numericString);

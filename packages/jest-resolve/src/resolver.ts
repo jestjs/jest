@@ -438,7 +438,7 @@ export default class Resolver {
     return matches
       ? (moduleName: string) =>
           moduleName.replace(
-            /\$([0-9]+)/g,
+            /\$(\d+)/g,
             (_, index) => matches[parseInt(index, 10)] || '',
           )
       : (moduleName: string) => moduleName;

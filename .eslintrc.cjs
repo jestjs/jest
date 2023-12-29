@@ -681,7 +681,6 @@ module.exports = {
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
-    'unicorn/better-regex': 'off',
     'unicorn/catch-error-name': 'off',
     'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
@@ -716,7 +715,6 @@ module.exports = {
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-optional-catch-binding': 'off',
     'unicorn/prefer-prototype-methods': 'off',
-    'unicorn/prefer-regexp-test': 'off',
     'unicorn/prefer-set-has': 'off',
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',

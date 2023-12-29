@@ -74,7 +74,7 @@ const trim = (string: string) => (string || '').trim();
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
 const trimPaths = (string: string) =>
-  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
+  STACK_PATH_REGEXP.test(string) ? trim(string) : string;
 
 const getRenderedCallsite = (
   fileContent: string,
@@ -292,7 +292,7 @@ export const formatPath = (
   relativeTestPath: string | null = null,
 ): string => {
   // Extract the file path from the trace line.
-  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
+  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
   if (!match) {
     return line;
   }
@@ -528,7 +528,7 @@ export const separateMessageFromStack = (
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
   const messageMatch = content.match(
-    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
+    /^(?:Error: )?([\S\s]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\S\s]*)$/,
   );
   if (!messageMatch) {
     // For typescript
