@@ -137,7 +137,7 @@ export default class TestRunner extends EmittingTestRunner {
     const runTestInWorker = (test: Test) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
-          return Promise.reject();
+          throw new Error();
         }
 
         await this.#eventEmitter.emit('test-file-start', [test]);

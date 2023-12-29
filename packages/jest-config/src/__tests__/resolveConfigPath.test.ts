@@ -182,11 +182,9 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
 );
 
 const pickPairsWithSameOrder = <T>(array: ReadonlyArray<T>) =>
-  array
-    .map((value1, idx, arr) =>
-      arr.slice(idx + 1).map(value2 => [value1, value2]),
-    )
-    .flat();
+  array.flatMap((value1, idx, arr) =>
+    arr.slice(idx + 1).map(value2 => [value1, value2]),
+  );
 
 test('pickPairsWithSameOrder', () => {
   expect(pickPairsWithSameOrder([1, 2, 3])).toStrictEqual([

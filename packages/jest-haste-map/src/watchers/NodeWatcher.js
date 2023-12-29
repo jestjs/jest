@@ -219,7 +219,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     let closest = {mtime: 0};
     let c = 0;
     // eslint-disable-next-line unicorn/no-array-for-each
-    Object.keys(this.dirRegistery[dir]).forEach(function (file, i, arr) {
+    Object.keys(this.dirRegistery[dir]).forEach((file, i, arr) => {
       fs.lstat(path.join(dir, file), (error, stat) => {
         if (found) {
           return;
@@ -242,7 +242,7 @@ module.exports = class NodeWatcher extends EventEmitter {
           }
         }
       });
-    }, this);
+    });
   }
 
   /**

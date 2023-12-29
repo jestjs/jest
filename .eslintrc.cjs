@@ -33,9 +33,9 @@ module.exports = {
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
-    'plugin:prettier/recommended',
     'plugin:unicorn/recommended',
     'plugin:promise/recommended',
+    'plugin:prettier/recommended',
   ],
   globals: {
     console: 'readonly',
@@ -425,6 +425,7 @@ module.exports = {
       rules: {
         'unicorn/prefer-code-point': 'off',
         'unicorn/prefer-optional-catch-binding': 'off',
+        'unicorn/text-encoding-identifier-case': 'off',
       },
     },
     {
@@ -437,6 +438,19 @@ module.exports = {
       files: '**/*.mjs',
       rules: {
         'unicorn/prefer-top-level-await': 'error',
+      },
+    },
+    {
+      files: [
+        'e2e/coverage-report/__mocks__/sumDependency.js',
+        'e2e/require-main-after-create-require/empty.js',
+        'packages/create-jest/src/__tests__/__fixtures__/**/*',
+        'packages/jest-core/src/__tests__/**/*',
+        'packages/jest-haste-map/src/__tests__/test_dotfiles_root/**/*',
+        'packages/jest-resolve/src/__mocks__/**/*',
+      ],
+      rules: {
+        'unicorn/no-empty-file': 'off',
       },
     },
     {
@@ -669,9 +683,14 @@ module.exports = {
     // enforced by `@typescript-eslint/no-this-alias` already
     'unicorn/no-this-assignment': 'off',
 
+    // Not an issue with TypeScript
+    'unicorn/no-array-callback-reference': 'off',
+
+    // reduce is fine
+    'unicorn/no-array-reduce': 'off',
+
     // nah
     'unicorn/consistent-destructuring': 'off',
-    'unicorn/no-nested-ternary': 'off',
     'unicorn/no-lonely-if': 'off',
     'unicorn/no-null': 'off',
     'unicorn/no-process-exit': 'off',
@@ -683,43 +702,23 @@ module.exports = {
 
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
-    'unicorn/no-array-callback-reference': 'off',
-    'unicorn/no-array-reduce': 'off',
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
     'unicorn/catch-error-name': 'off',
     'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
-    'unicorn/escape-case': 'off',
-    'unicorn/no-array-method-this-argument': 'off',
-    'unicorn/no-array-push-push': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-console-spaces': 'off',
-    'unicorn/no-empty-file': 'off',
-    'unicorn/no-for-loop': 'off',
-    'unicorn/no-hex-escape': 'off',
-    'unicorn/no-instanceof-array': 'off',
-    'unicorn/no-new-array': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
-    'unicorn/no-thenable': 'off',
     'unicorn/no-typeof-undefined': 'off',
-    'unicorn/no-useless-promise-resolve-reject': 'off',
     'unicorn/no-useless-undefined': 'off',
-    'unicorn/number-literal-case': 'off',
-    'unicorn/prefer-array-flat': 'off',
-    'unicorn/prefer-array-flat-map': 'off',
-    'unicorn/prefer-array-index-of': 'off',
-    'unicorn/prefer-array-some': 'off',
-    'unicorn/prefer-at': 'off',
-    'unicorn/prefer-date-now': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-prototype-methods': 'off',
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',
     'unicorn/prevent-abbreviations': 'off',
-    'unicorn/text-encoding-identifier-case': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',

@@ -446,8 +446,7 @@ export const processPrettierAst = (
 
     let snapshotIndex: number | undefined;
     let snapshot: string | undefined;
-    for (let i = 0; i < args.length; i++) {
-      const node = args[i];
+    for (const [i, node] of args.entries()) {
       if (node.type === 'TemplateLiteral') {
         snapshotIndex = i;
         snapshot = node.quasis[0].value.raw;
@@ -457,7 +456,7 @@ export const processPrettierAst = (
       return;
     }
 
-    const parent = ancestors[ancestors.length - 1].node;
+    const parent = ancestors.at(-1)!.node;
     const startColumn =
       isAwaitExpression(parent) && parent.loc
         ? parent.loc.start.column

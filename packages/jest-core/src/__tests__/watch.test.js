@@ -720,7 +720,7 @@ describe('Watch mode flows', () => {
 
       // We need the penultimate call as Jest forces a final call to restore
       // updateSnapshot because it's not sticky after a run…?
-      const lastCall = updateGlobalConfig.mock.calls.slice(-2)[0];
+      const lastCall = updateGlobalConfig.mock.calls.at(-2);
       // eslint-disable-next-line jest/valid-expect
       let expector = expect(lastCall[1]);
       if (!ok) {

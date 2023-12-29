@@ -8,14 +8,14 @@
 const isWindows = process.platform === 'win32';
 
 export const KEYS = {
-  ARROW_DOWN: '\u001b[B',
-  ARROW_LEFT: '\u001b[D',
-  ARROW_RIGHT: '\u001b[C',
-  ARROW_UP: '\u001b[A',
+  ARROW_DOWN: '\u001B[B',
+  ARROW_LEFT: '\u001B[D',
+  ARROW_RIGHT: '\u001B[C',
+  ARROW_UP: '\u001B[A',
   BACKSPACE: Buffer.from(isWindows ? '08' : '7f', 'hex').toString(),
   CONTROL_C: '\u0003',
   CONTROL_D: '\u0004',
   CONTROL_U: '\u0015',
   ENTER: '\r',
-  ESCAPE: '\u001b',
+  ESCAPE: '\u001B',
 };

@@ -17,7 +17,7 @@ type ResolveOptions = {
   optional?: boolean;
 };
 
-export const BULLET: string = chalk.bold('\u25cf ');
+export const BULLET: string = chalk.bold('\u25CF ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Configuration Documentation:',
 )}

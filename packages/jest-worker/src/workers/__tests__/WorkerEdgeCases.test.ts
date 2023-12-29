@@ -39,9 +39,7 @@ beforeAll(async () => {
 
     const result = await transformFileAsync(sourcePath);
 
-    await writeFile(writePath, result!.code!, {
-      encoding: 'utf-8',
-    });
+    await writeFile(writePath, result!.code!, 'utf8');
   }
 });
 

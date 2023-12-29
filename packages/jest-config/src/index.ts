@@ -231,9 +231,9 @@ const ensureNoDuplicateConfigs = (
         String(configPath),
       )}:
 
-  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 1: ${chalk.bold(projects[parsedConfigs.indexOf(config)])}
   Project 2: ${chalk.bold(
-    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+    projects[parsedConfigs.indexOf(configPathMap.get(configPath))],
   )}
 
 This usually means that your ${chalk.bold(

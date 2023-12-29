@@ -40,7 +40,7 @@ describe('Runtime require.resolve', () => {
     await fs.writeFile(
       absoluteFilePath,
       'module.exports = require.resolve(__filename);',
-      'utf-8',
+      'utf8',
     );
 
     const runtime = await createRuntime(__filename);
@@ -66,10 +66,10 @@ describe('Runtime require.resolve', () => {
       `module.exports = require.resolve(${JSON.stringify(
         target,
       )}, {paths: []});`,
-      'utf-8',
+      'utf8',
     );
 
-    await fs.writeFile(target, 'module.exports = {}', 'utf-8');
+    await fs.writeFile(target, 'module.exports = {}', 'utf8');
 
     const runtime = await createRuntime(__filename);
     const resolved = runtime.requireModule(runtime.__mockRootPath, entrypoint);

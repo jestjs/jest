@@ -284,7 +284,7 @@ export default async function runJest({
             );
           }),
         )
-      ).reduce((total, paths) => total.concat(paths), []);
+      ).flat();
       testSchedulerContext.sourcesRelatedToTestsInChangedFiles = new Set(
         sourcesRelatedToTestsInChangedFilesArray,
       );

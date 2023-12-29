@@ -334,7 +334,7 @@ const isObject = (a: any) => a !== null && typeof a === 'object';
 const isObjectWithKeys = (a: any) =>
   isObject(a) &&
   !(a instanceof Error) &&
-  !(a instanceof Array) &&
+  !Array.isArray(a) &&
   !(a instanceof Date);
 
 export const subsetEquality = (
