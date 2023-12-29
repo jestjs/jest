@@ -39,10 +39,10 @@ describe('annotations', () => {
   } as Test;
 
   const expectationsErrorMessage =
-    'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBe\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m) // Object.is equality\x1B[22m\n' +
+    'Error: \u001B[2mexpect(\u001B[22m\u001B[31mreceived\u001B[39m\u001B[2m).\u001B[22mtoBe\u001B[2m(\u001B[22m\u001B[32mexpected\u001B[39m\u001B[2m) // Object.is equality\u001B[22m\n' +
     '\n' +
-    'Expected: \x1B[32m1\x1B[39m\n' +
-    'Received: \x1B[31m10\x1B[39m\n' +
+    'Expected: \u001B[32m1\u001B[39m\n' +
+    'Received: \u001B[31m10\u001B[39m\n' +
     '    at Object.toBe (/user/project/__tests__/example.test.js:20:14)\n' +
     '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
     '    at new Promise (<anonymous>)\n' +
@@ -68,9 +68,9 @@ describe('annotations', () => {
     '    at run (/user/project/jest/packages/jest-circus/build/run.js:31:3)';
 
   const retryErrorMessage =
-    'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBeFalsy\x1B[2m()\x1B[22m\n' +
+    'Error: \u001B[2mexpect(\u001B[22m\u001B[31mreceived\u001B[39m\u001B[2m).\u001B[22mtoBeFalsy\u001B[2m()\u001B[22m\n' +
     '\n' +
-    'Received: \x1B[31mtrue\x1B[39m\n' +
+    'Received: \u001B[31mtrue\u001B[39m\n' +
     '    at Object.toBeFalsy (/user/project/__tests__/example.test.js:19:20)\n' +
     '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
     '    at new Promise (<anonymous>)\n' +
