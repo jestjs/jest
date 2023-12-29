@@ -503,7 +503,7 @@ export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
 }
 
-const MULTILINE_REGEXP = /[\r\n]/;
+const MULTILINE_REGEXP = /[\n\r]/;
 
 export const isOneline = (expected: unknown, received: unknown): boolean =>
   typeof expected === 'string' &&

@@ -18,12 +18,12 @@ export const escapePathForRegex = (dir: string): string => {
 };
 
 export const escapeStrForRegex = (string: string): string =>
-  string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
+  string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
 export const replacePathSepForRegex = (string: string): string => {
   if (sep === '\\') {
     return string.replace(
-      /(\/|(.)?\\(?![[\]{}()*+?.^$|\\]))/g,
+      /(\/|(.)?\\(?![$()*+.?[\\\]^{|}]))/g,
       (_match, _, p2) => (p2 && p2 !== '\\' ? `${p2}\\\\` : '\\\\'),
     );
   }

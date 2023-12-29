@@ -108,7 +108,7 @@ const replInstance: repl.REPLServer = repl.start({
 });
 
 replInstance.context.require = (moduleName: string) => {
-  if (/(\/|\\|\.)/.test(moduleName)) {
+  if (/([./\\])/.test(moduleName)) {
     moduleName = path.resolve(process.cwd(), moduleName);
   }
   return require(moduleName) as unknown;

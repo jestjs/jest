@@ -12,7 +12,7 @@ import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
 import {type Templates, interpolateVariables} from './interpolation';
 
-const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp#]/g;
+const SUPPORTED_PLACEHOLDERS = /%[#Odfijops]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 const PLACEHOLDER_PREFIX = '%';

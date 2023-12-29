@@ -1100,7 +1100,7 @@ describe('preset', () => {
     );
 
     const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
-      ? /Unexpected token } in JSON at position (104|110)[\s\S]* at /
+      ? /Unexpected token } in JSON at position (104|110)[\S\s]* at /
       : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
 
     await expect(
@@ -1125,7 +1125,7 @@ describe('preset', () => {
     );
 
     const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
-      ? /TypeError: Cannot read property 'call' of undefined[\s\S]* at /
+      ? /TypeError: Cannot read property 'call' of undefined[\S\s]* at /
       : "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
