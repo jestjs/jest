@@ -149,7 +149,10 @@ test('closeTo(number)', () => {
 });
 
 test('closeTo(Infinity)', () => {
-  const result = prettyFormat(expect.closeTo(-Infinity), options);
+  const result = prettyFormat(
+    expect.closeTo(Number.NEGATIVE_INFINITY),
+    options,
+  );
   expect(result).toBe('NumberCloseTo -Infinity (2 digits)');
 });
 

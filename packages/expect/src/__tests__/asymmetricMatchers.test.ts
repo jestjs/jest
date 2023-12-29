@@ -415,8 +415,8 @@ describe('closeTo', () => {
     [1.23, 1.226],
     [1.23, 1.225],
     [1.23, 1.234],
-    [Infinity, Infinity],
-    [-Infinity, -Infinity],
+    [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+    [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
   ]) {
     test(`${expected} closeTo ${received} return true`, () => {
       jestExpect(closeTo(expected).asymmetricMatch(received)).toBe(true);
@@ -430,9 +430,9 @@ describe('closeTo', () => {
     [0, 0.01],
     [1, 1.23],
     [1.23, 1.224_999_9],
-    [Infinity, -Infinity],
-    [Infinity, 1.23],
-    [-Infinity, -1.23],
+    [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+    [Number.POSITIVE_INFINITY, 1.23],
+    [Number.NEGATIVE_INFINITY, -1.23],
   ]) {
     test(`${expected} closeTo ${received} return false`, () => {
       jestExpect(closeTo(expected).asymmetricMatch(received)).toBe(false);

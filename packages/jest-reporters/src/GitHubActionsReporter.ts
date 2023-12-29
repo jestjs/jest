@@ -264,7 +264,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     const branches: Array<Array<string>> = [];
     for (const element of suiteResult) {
       let duration = element.duration;
-      if (!duration || isNaN(duration)) {
+      if (!duration || Number.isNaN(duration)) {
         duration = 1;
       }
       if (this.arrayEqual(element.ancestorTitles, ancestors)) {

@@ -27,7 +27,7 @@ export function setupLandingAnimation() {
   function positionCards() {
     const handWidth = hand.offsetWidth;
     for (const card of cards) {
-      const offset = parseInt(card.dataset.index, 10) - 2;
+      const offset = Number.parseInt(card.dataset.index, 10) - 2;
       card.parentElement.style.transform = cardTransform(offset, handWidth);
     }
   }
@@ -111,7 +111,7 @@ export function setupLandingAnimation() {
       card = ev.target.parentElement;
     }
     if (card) {
-      const index = parseInt(card.dataset.index, 10);
+      const index = Number.parseInt(card.dataset.index, 10);
       runTest(card, index);
     }
   }
