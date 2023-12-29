@@ -133,7 +133,7 @@ export default class CustomConsole extends Console {
     const startTime = this._timers[label];
 
     if (startTime != null) {
-      const endTime = new Date().getTime();
+      const endTime = Date.now();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];

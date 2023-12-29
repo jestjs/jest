@@ -92,6 +92,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
   return {
     cancel: token.cancel.bind(token),
     catch: result.catch.bind(result),
+    // eslint-disable-next-line unicorn/no-thenable
     then: result.then.bind(result),
   };
 }

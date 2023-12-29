@@ -183,8 +183,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length !== a2.length) {
       return false;
     }
-    for (let index = 0; index < a1.length; index++) {
-      const element = a1[index];
+    for (const [index, element] of a1.entries()) {
       if (element !== a2[index]) {
         return false;
       }
@@ -196,8 +195,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length - a2.length !== 1) {
       return false;
     }
-    for (let index = 0; index < a2.length; index++) {
-      const element = a2[index];
+    for (const [index, element] of a2.entries()) {
       if (element !== a1[index]) {
         return false;
       }

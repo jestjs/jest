@@ -446,8 +446,7 @@ export const processPrettierAst = (
 
     let snapshotIndex: number | undefined;
     let snapshot: string | undefined;
-    for (let i = 0; i < args.length; i++) {
-      const node = args[i];
+    for (const [i, node] of args.entries()) {
       if (node.type === 'TemplateLiteral') {
         snapshotIndex = i;
         snapshot = node.quasis[0].value.raw;
