@@ -15,7 +15,7 @@ export type DeepCyclicCopyOptions = {
 export default function deepCyclicCopy<T>(
   value: T,
   options: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
-  cycles: WeakMap<any, any> = new WeakMap(),
+  cycles = new WeakMap<any, any>(),
 ): T {
   if (typeof value !== 'object' || value === null || Buffer.isBuffer(value)) {
     return value;

@@ -254,8 +254,8 @@ class ScriptTransformer {
       return undefined;
     }
 
-    for (let i = 0; i < transformEntry.length; i++) {
-      const [transformRegExp, transformPath] = transformEntry[i];
+    for (const item of transformEntry) {
+      const [transformRegExp, transformPath] = item;
       if (transformRegExp.test(filename)) {
         return [transformRegExp.source, transformPath];
       }
@@ -1017,12 +1017,8 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
   }
 
   const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
-  for (let i = 0; i < config.transform.length; i++) {
-    transformRegexp.push([
-      new RegExp(config.transform[i][0]),
-      config.transform[i][1],
-      config.transform[i][2],
-    ]);
+  for (const item of config.transform) {
+    transformRegexp.push([new RegExp(item[0]), item[1], item[2]]);
   }
 
   return transformRegexp;

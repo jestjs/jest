@@ -30,7 +30,7 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   length?: number;
 };
 
-export type ClassLike = {new (...args: any): any};
+export type ClassLike = new (...args: any) => any;
 export type FunctionLike = (...args: any) => any;
 
 export type ConstructorLikeKeys<T> = keyof {
@@ -91,7 +91,7 @@ export type MockedShallow<T> = T extends ClassLike
       : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
-export type UnknownClass = {new (...args: Array<unknown>): unknown};
+export type UnknownClass = new (...args: Array<unknown>) => unknown;
 
 export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
@@ -533,9 +533,7 @@ export class ModuleMocker {
     ) {
       const ownNames = Object.getOwnPropertyNames(object);
 
-      for (let i = 0; i < ownNames.length; i++) {
-        const prop = ownNames[i];
-
+      for (const prop of ownNames) {
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {

@@ -85,7 +85,10 @@ try {
           fix,
           fixTypes: ['problem', 'suggestion', 'layout'],
           overrideConfig: {
-            extends: ['plugin:@typescript-eslint/recommended-type-checked'],
+            extends: [
+              'plugin:@typescript-eslint/recommended-type-checked',
+              'plugin:@typescript-eslint/stylistic-type-checked',
+            ],
             overrides: [
               {
                 files: ['**/__tests__/**'],
@@ -95,6 +98,15 @@ try {
                   '@typescript-eslint/no-empty-function': 'off',
                   '@typescript-eslint/no-non-null-assertion': 'off',
                   'jest/unbound-method': 'error',
+                },
+              },
+              {
+                files: 'packages/jest-types/src/Circus.ts',
+                rules: {
+                  // We're faking nominal types
+                  '@typescript-eslint/no-duplicate-type-constituents': 'off',
+                  // this file has `Exception`, which is `unknown`
+                  '@typescript-eslint/no-redundant-type-constituents': 'off',
                 },
               },
             ],
@@ -109,6 +121,14 @@ try {
             rules: {
               '@typescript-eslint/consistent-type-exports': 'error',
               '@typescript-eslint/dot-notation': 'error',
+              '@typescript-eslint/no-base-to-string': [
+                'error',
+                // https://github.com/typescript-eslint/typescript-eslint/issues/1655#issuecomment-593639305
+                {ignoredTypeNames: ['AssertionError', 'Error']},
+              ],
+              '@typescript-eslint/no-duplicate-type-constituents': 'error',
+              '@typescript-eslint/no-redundant-type-constituents': 'error',
+              '@typescript-eslint/no-useless-template-literals': 'error',
               '@typescript-eslint/non-nullable-type-assertion-style': 'error',
               '@typescript-eslint/prefer-nullish-coalescing': 'error',
               '@typescript-eslint/prefer-readonly': 'error',
@@ -119,18 +139,17 @@ try {
               '@typescript-eslint/strict-boolean-expressions': 'error',
               '@typescript-eslint/switch-exhaustiveness-check': 'error',
 
-              // TODO: enable these
+              // TODO: enable this
               '@typescript-eslint/no-explicit-any': 'off',
-              '@typescript-eslint/no-redundant-type-constituents': 'off',
-              '@typescript-eslint/no-duplicate-type-constituents': 'off',
-              '@typescript-eslint/no-base-to-string': 'off',
 
               // disable the ones we disable in main config
               '@typescript-eslint/no-invalid-void-type': 'off',
               '@typescript-eslint/no-dynamic-delete': 'off',
               '@typescript-eslint/no-var-requires': 'off',
+              '@typescript-eslint/consistent-type-definitions': 'off',
 
               // nah
+              '@typescript-eslint/consistent-indexed-object-style': 'off',
               '@typescript-eslint/require-await': 'off',
             },
           },

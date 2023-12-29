@@ -88,7 +88,7 @@ const regularUpdateGlobalConfig = require('../lib/updateGlobalConfig').default;
 const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
 jest.doMock('../lib/updateGlobalConfig', () => updateGlobalConfig);
 
-const nextTick = () => new Promise(res => process.nextTick(res));
+const nextTick = () => new Promise(resolve => process.nextTick(resolve));
 
 beforeAll(() => {
   jest.spyOn(process, 'on').mockImplementation(() => {});
@@ -771,7 +771,9 @@ describe('Watch mode flows', () => {
 
   it('prevents Jest from handling keys when active and returns control when end is called', async () => {
     let resolveShowPrompt;
-    const run = jest.fn(() => new Promise(res => (resolveShowPrompt = res)));
+    const run = jest.fn(
+      () => new Promise(resolve => (resolveShowPrompt = resolve)),
+    );
     const pluginPath = `${__dirname}/__fixtures__/plugin_path_1`;
     jest.doMock(
       pluginPath,

@@ -133,7 +133,7 @@ FUNCTIONS.mock = args => {
       );
     }
 
-    const ids: Set<NodePath<Identifier>> = new Set();
+    const ids = new Set<NodePath<Identifier>>();
     const parentScope = moduleFactory.parentPath.scope;
     // @ts-expect-error: ReferencedIdentifier and denylist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});

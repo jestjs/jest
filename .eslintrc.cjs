@@ -35,13 +35,19 @@ module.exports = {
     'plugin:eslint-comments/recommended',
     'plugin:prettier/recommended',
     'plugin:unicorn/recommended',
+    'plugin:promise/recommended',
   ],
   globals: {
     console: 'readonly',
   },
   overrides: [
     {
-      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/strict',
+        'plugin:@typescript-eslint/stylistic',
+        'plugin:import/typescript',
+      ],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
@@ -59,6 +65,7 @@ module.exports = {
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/consistent-indexed-object-style': 'off',
         // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
@@ -68,10 +75,7 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-invalid-void-type': 'off',
-
-        // TODO: part of "stylistic" rules, remove explicit activation when that lands
-        '@typescript-eslint/no-empty-function': 'error',
-        '@typescript-eslint/no-empty-interface': 'error',
+        '@typescript-eslint/consistent-type-definitions': 'off',
 
         // not needed to be enforced for TS
         'import/namespace': 'off',
@@ -326,6 +330,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/class-literal-property-style': 'off',
       },
     },
     {
@@ -425,6 +430,12 @@ module.exports = {
       files: 'packages/jest-mock/src/__tests__/**/*',
       rules: {
         'unicorn/no-static-only-class': 'off',
+      },
+    },
+    {
+      files: '**/*.mjs',
+      rules: {
+        'unicorn/prefer-top-level-await': 'error',
       },
     },
   ],
@@ -617,6 +628,11 @@ module.exports = {
     'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'error',
+
+    'promise/always-return': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/no-callback-in-promise': 'off',
+
     quotes: [
       'error',
       'single',
@@ -655,10 +671,8 @@ module.exports = {
     'unicorn/prefer-event-target': 'off',
     'unicorn/prefer-switch': 'off',
     'unicorn/prefer-ternary': 'off',
-    'unicorn/switch-case-braces': 'off',
-
-    // TODO: enable for `.mjs` files
     'unicorn/prefer-top-level-await': 'off',
+    'unicorn/switch-case-braces': 'off',
 
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',

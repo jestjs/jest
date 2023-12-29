@@ -75,10 +75,10 @@ const isRecoverableError = (error: unknown) => {
 
 if (jestProjectConfig.transform) {
   let transformerPath = null;
-  for (let i = 0; i < jestProjectConfig.transform.length; i++) {
-    if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
-      transformerPath = jestProjectConfig.transform[i][1];
-      transformerConfig = jestProjectConfig.transform[i][2];
+  for (const transform of jestProjectConfig.transform) {
+    if (new RegExp(transform[0]).test('foobar.js')) {
+      transformerPath = transform[1];
+      transformerConfig = transform[2];
       break;
     }
   }

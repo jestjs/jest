@@ -192,8 +192,8 @@ export default class Status {
 
     let height = 0;
 
-    for (let i = 0; i < content.length; i++) {
-      if (content[i] === '\n') {
+    for (const char of content) {
+      if (char === '\n') {
         height++;
       }
     }

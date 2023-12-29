@@ -113,9 +113,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
   ) => void;
 }
 
-export interface HookBase {
-  (fn: HookFn, timeout?: number): void;
-}
+export type HookBase = (fn: HookFn, timeout?: number) => void;
 
 export interface Failing<T extends TestFn> {
   (testName: TestNameLike, fn: T, timeout?: number): void;
