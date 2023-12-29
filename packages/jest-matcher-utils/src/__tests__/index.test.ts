@@ -33,6 +33,11 @@ describe('stringify()', () => {
     [undefined, 'undefined'],
     ['abc', '"abc"'],
     [Symbol.for('abc'), 'Symbol(abc)'],
+    /* eslint-disable unicorn/prefer-number-properties */
+    [NaN, 'NaN'],
+    [Infinity, 'Infinity'],
+    [-Infinity, '-Infinity'],
+    /* eslint-enable */
     [Number.NaN, 'NaN'],
     [Number.POSITIVE_INFINITY, 'Infinity'],
     [Number.NEGATIVE_INFINITY, '-Infinity'],
