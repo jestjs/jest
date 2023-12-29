@@ -8,7 +8,7 @@
 import chalk = require('chalk');
 import slash = require('slash');
 
-const BULLET = '\u25cf ';
+const BULLET = '\u25CF ';
 const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Code Transformation Documentation:',
 )}

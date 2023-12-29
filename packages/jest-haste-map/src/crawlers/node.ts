@@ -164,7 +164,7 @@ function findNative(
       'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
-  child.stdout.setEncoding('utf-8');
+  child.stdout.setEncoding('utf8');
   child.stdout.on('data', data => (stdout += data));
 
   child.stdout.on('close', () => {

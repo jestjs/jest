@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 
-const BULLET: string = chalk.bold('\u25cf ');
+const BULLET: string = chalk.bold('\u25CF ');
 const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
   https://jestjs.io/docs/configuration
 `;

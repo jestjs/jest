@@ -78,6 +78,7 @@ const vendorStack =
 
 const babelStack =
   '  ' +
+  // eslint-disable-next-line unicorn/escape-case
   `
     packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
     \u001b[0m \u001b[90m 18 | \u001b[39m        \u001b[36mfalse\u001b[39m\u001b[33m,\u001b[39m

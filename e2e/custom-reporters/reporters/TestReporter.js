@@ -42,7 +42,7 @@ class TestReporter {
    */
   clearLine() {
     if (process.stdout.isTTY) {
-      process.stderr.write('\x1b[999D\x1b[K');
+      process.stderr.write('\x1B[999D\x1B[K');
     }
   }
 
