@@ -84,7 +84,7 @@ class CallTracker {
     };
 
     this.mostRecent = function () {
-      return calls.at(-1);
+      return calls.at(-1)!;
     };
 
     this.reset = function () {

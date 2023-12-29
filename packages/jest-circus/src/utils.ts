@@ -477,7 +477,7 @@ const resolveTestCaseStartInfo = (
     name => name !== ROOT_DESCRIBE_BLOCK_NAME,
   );
   const fullName = ancestorTitles.join(' ');
-  const title = testNamesPath.at(-1);
+  const title = testNamesPath.at(-1)!;
   // remove title
   ancestorTitles.pop();
   return {
