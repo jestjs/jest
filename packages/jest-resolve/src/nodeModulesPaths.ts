@@ -47,7 +47,7 @@ export default function nodeModulesPaths(
 
   const paths: Array<string> = [physicalBasedir];
   let parsed = path.parse(physicalBasedir);
-  while (parsed.dir !== paths[paths.length - 1]) {
+  while (parsed.dir !== paths.at(-1)) {
     paths.push(parsed.dir);
     parsed = path.parse(parsed.dir);
   }

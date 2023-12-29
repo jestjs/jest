@@ -198,7 +198,7 @@ export const runAndTransformResultsToJestFormat = async ({
         retryReasons: testResult.retryReasons,
         startAt: testResult.startedAt,
         status,
-        title: testResult.testPath[testResult.testPath.length - 1],
+        title: testResult.testPath.at(-1)!,
       };
     },
   );

@@ -147,7 +147,7 @@ export default function jasmineEnv(j$: Jasmine) {
       let currentDeclarationSuite = topSuite;
 
       const currentSuite = function () {
-        return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+        return currentlyExecutingSuites.at(-1)!;
       };
 
       const currentRunnable = function () {

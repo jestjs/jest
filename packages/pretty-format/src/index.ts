@@ -504,7 +504,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
 });
 
 function createIndent(indent: number): string {
-  return new Array(indent + 1).join(' ');
+  return Array.from({length: indent + 1}).join(' ');
 }
 
 /**

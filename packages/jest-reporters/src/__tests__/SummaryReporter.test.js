@@ -53,7 +53,7 @@ test('snapshots needs update with npm test', () => {
       unmatched: 2,
     },
     startTime: 0,
-    testResults: {},
+    testResults: [],
   };
 
   process.env.npm_config_user_agent = 'npm';
@@ -78,7 +78,7 @@ test('snapshots needs update with yarn test', () => {
       unmatched: 2,
     },
     startTime: 0,
-    testResults: {},
+    testResults: [],
   };
 
   process.env.npm_config_user_agent = 'yarn';
@@ -116,7 +116,7 @@ test('snapshots all have results (no update)', () => {
       updated: 1,
     },
     startTime: 0,
-    testResults: {},
+    testResults: [],
   };
 
   requireReporter();
@@ -153,7 +153,7 @@ test('snapshots all have results (after update)', () => {
       updated: 1,
     },
     startTime: 0,
-    testResults: {},
+    testResults: [],
   };
 
   requireReporter();

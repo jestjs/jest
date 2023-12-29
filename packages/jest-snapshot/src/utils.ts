@@ -457,7 +457,7 @@ export const processPrettierAst = (
       return;
     }
 
-    const parent = ancestors[ancestors.length - 1].node;
+    const parent = ancestors.at(-1)!.node;
     const startColumn =
       isAwaitExpression(parent) && parent.loc
         ? parent.loc.start.column

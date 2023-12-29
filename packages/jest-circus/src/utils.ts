@@ -401,8 +401,7 @@ const makeTestResults = (
       const child = currentBlock.children[i];
 
       if (child.type === 'describeBlock') {
-        stack.push([currentBlock, i + 1]);
-        stack.push([child, 0]);
+        stack.push([currentBlock, i + 1], [child, 0]);
         break;
       }
       if (child.type === 'test') {
@@ -478,7 +477,7 @@ const resolveTestCaseStartInfo = (
     name => name !== ROOT_DESCRIBE_BLOCK_NAME,
   );
   const fullName = ancestorTitles.join(' ');
-  const title = testNamesPath[testNamesPath.length - 1];
+  const title = testNamesPath.at(-1)!;
   // remove title
   ancestorTitles.pop();
   return {

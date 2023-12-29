@@ -513,7 +513,7 @@ export default class FakeTimers<TimerRef = unknown> {
 
     this._timerAPIs.setImmediate(() => {
       if (!this._disposed) {
-        if (this._immediates.find(x => x.uuid === uuid)) {
+        if (this._immediates.some(x => x.uuid === uuid)) {
           try {
             callback.apply(null, args);
           } finally {
