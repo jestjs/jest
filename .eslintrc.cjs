@@ -692,7 +692,6 @@ module.exports = {
     'unicorn/no-console-spaces': 'off',
     'unicorn/no-empty-file': 'off',
     'unicorn/no-for-loop': 'off',
-    'unicorn/no-hex-escape': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/no-thenable': 'off',
     'unicorn/no-typeof-undefined': 'off',
