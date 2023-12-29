@@ -7,13 +7,13 @@
 'use strict';
 
 let i = 0;
-const startTimeInSeconds = new Date().getTime();
+const startTimeInSeconds = Date.now();
 jest.retryTimes(3, {logErrorsBeforeRetry: true, waitBeforeRetry: 100});
 it('retryTimes set with fake timers', () => {
   jest.useFakeTimers();
   i++;
   if (i === 3) {
-    expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+    expect(Date.now() - startTimeInSeconds).toBeGreaterThan(200);
   } else {
     expect(true).toBeFalsy();
     jest.runAllTimers();
