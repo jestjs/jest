@@ -205,7 +205,7 @@ SomeClass.mockImplementation(() => {
 const some = new SomeClass();
 some.method('a', 'b');
 
-console.log('Calls to method: ', mockMethod.mock.calls);
+console.log('Calls to method:', mockMethod.mock.calls);
 ```
 
 ```ts tab={"span":2} title="SomeClass.ts"
@@ -230,7 +230,7 @@ jest.mocked(SomeClass).mockImplementation(() => {
 const some = new SomeClass();
 some.method('a', 'b');
 
-console.log('Calls to method: ', mockMethod.mock.calls);
+console.log('Calls to method:', mockMethod.mock.calls);
 ```
 
 ### `mockFn.mockImplementationOnce(fn)`

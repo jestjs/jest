@@ -1119,6 +1119,7 @@ describe('preset', () => {
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => ({
         // @ts-expect-error: Testing runtime error
+        // eslint-disable-next-line unicorn/prefer-prototype-methods
         transform: {}.nonExistingProp.call(),
       }),
       {virtual: true},
