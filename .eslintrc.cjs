@@ -234,9 +234,10 @@ module.exports = {
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
-        'unicorn/prefer-number-properties': 'off',
-        'unicorn/no-static-only-class': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/no-static-only-class': 'off',
+        'unicorn/prefer-number-properties': 'off',
       },
     },
     // demonstration of matchers usage
@@ -345,6 +346,7 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        'unicorn/no-await-expression-member': 'off',
         'unicorn/consistent-function-scoping': 'off',
       },
     },
@@ -711,9 +713,7 @@ module.exports = {
     // TODO: turn on at some point
     'unicorn/catch-error-name': 'off',
     'unicorn/error-message': 'off',
-    'unicorn/no-await-expression-member': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
-    'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',

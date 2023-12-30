@@ -43,9 +43,12 @@ export const getChangedFilesForRoots = async (
     sl.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const changedFiles = (
-    await Promise.all([...gitPromises, ...hgPromises, ...slPromises])
-  ).reduce((allFiles, changedFilesInTheRepo) => {
+  const allVcs = await Promise.all([
+    ...gitPromises,
+    ...hgPromises,
+    ...slPromises,
+  ]);
+  const changedFiles = allVcs.reduce((allFiles, changedFilesInTheRepo) => {
     for (const file of changedFilesInTheRepo) {
       allFiles.add(file);
     }

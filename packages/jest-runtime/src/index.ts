@@ -423,9 +423,7 @@ export default class Runtime {
     query = '',
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
-    const registry = this._isolatedModuleRegistry
-      ? this._isolatedModuleRegistry
-      : this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
       await this._fileTransformsMutex.get(cacheKey);
@@ -578,9 +576,7 @@ export default class Runtime {
       );
     }
 
-    const registry = this._isolatedModuleRegistry
-      ? this._isolatedModuleRegistry
-      : this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
       const fromCache = registry.get('@jest/globals');
