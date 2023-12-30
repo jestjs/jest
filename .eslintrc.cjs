@@ -715,7 +715,6 @@ module.exports = {
     'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/no-typeof-undefined': 'off',
     'unicorn/no-useless-undefined': 'off',
-    'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-prototype-methods': 'off',
     'unicorn/prefer-spread': 'off',

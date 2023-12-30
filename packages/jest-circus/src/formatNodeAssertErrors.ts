@@ -55,9 +55,9 @@ const formatNodeAssertErrors = (
         } else {
           error = asyncError;
 
-          error.message = originalError.message
-            ? originalError.message
-            : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
+          error.message =
+            originalError.message ||
+            `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
         }
       } else {
         error = errors;
