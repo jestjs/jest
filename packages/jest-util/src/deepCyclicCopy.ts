@@ -48,7 +48,7 @@ function deepCyclicCopyObject<T>(
     }
 
     const descriptor = descriptors[key];
-    if (typeof descriptor.value !== 'undefined') {
+    if (descriptor.value !== undefined) {
       descriptor.value = deepCyclicCopy(
         descriptor.value,
         {blacklist: EMPTY, keepPrototype: options.keepPrototype},

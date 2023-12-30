@@ -155,7 +155,7 @@ export const ensureNoExpected = (
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
-  if (typeof expected !== 'undefined') {
+  if (expected !== undefined) {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
