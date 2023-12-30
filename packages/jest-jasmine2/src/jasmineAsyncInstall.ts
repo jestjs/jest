@@ -230,6 +230,7 @@ function makeConcurrent(
     return spec;
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const failing = () => {
     throw new Error(
       'Jest: `failing` tests are only supported in `jest-circus`.',
@@ -242,7 +243,7 @@ function makeConcurrent(
     );
   };
   // each is bound after the function is made concurrent, so for now it is made noop
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,unicorn/consistent-function-scoping
   concurrentFn.each = () => () => {};
   concurrentFn.failing = failing;
 

@@ -54,6 +54,10 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
   return !noSCM;
 };
 
+function normalizePosix(filePath: string) {
+  return filePath.replace(/\\/g, '/');
+}
+
 export default class SearchSource {
   private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
@@ -298,10 +302,6 @@ export default class SearchSource {
   public filterPathsWin32(paths: Array<string>): Array<string> {
     const allFiles = this._context.hasteFS.getAllFiles();
     const options = {nocase: true, windows: false};
-
-    function normalizePosix(filePath: string) {
-      return filePath.replace(/\\/g, '/');
-    }
 
     paths = paths
       .map(p => {

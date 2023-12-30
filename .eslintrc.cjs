@@ -236,6 +236,7 @@ module.exports = {
         'sort-keys': 'off',
         'unicorn/prefer-number-properties': 'off',
         'unicorn/no-static-only-class': 'off',
+        'unicorn/consistent-function-scoping': 'off',
       },
     },
     // demonstration of matchers usage
@@ -344,6 +345,7 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        'unicorn/consistent-function-scoping': 'off',
       },
     },
     {
@@ -378,6 +380,7 @@ module.exports = {
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
+        'unicorn/consistent-function-scoping': 'off',
       },
     },
     {
@@ -706,7 +709,6 @@ module.exports = {
 
     // TODO: turn on at some point
     'unicorn/catch-error-name': 'off',
-    'unicorn/consistent-function-scoping': 'off',
     'unicorn/error-message': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-console-spaces': 'off',

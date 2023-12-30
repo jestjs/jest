@@ -426,17 +426,17 @@ const buildTestPathPatterns = (
   return testPathPatterns;
 };
 
+function printConfig(opts: Array<string>) {
+  const string = opts.map(ext => `'${ext}'`).join(', ');
+
+  return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+}
+
 function validateExtensionsToTreatAsEsm(
   extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
 ) {
   if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
     return;
-  }
-
-  function printConfig(opts: Array<string>) {
-    const string = opts.map(ext => `'${ext}'`).join(', ');
-
-    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
   }
 
   const extensionWithoutDot = extensionsToTreatAsEsm.some(

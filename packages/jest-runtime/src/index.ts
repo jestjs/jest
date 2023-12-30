@@ -1819,6 +1819,7 @@ export default class Runtime {
       return this._moduleImplementation;
     }
 
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
@@ -2195,6 +2196,7 @@ export default class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const _getFakeTimers = () => {
       if (
         this.isTornDown ||
@@ -2238,9 +2240,7 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
-    const isolateModulesAsync = (fn: () => Promise<void>): Promise<void> => {
-      return this.isolateModulesAsync(fn);
-    };
+    const isolateModulesAsync = this.isolateModulesAsync.bind(this);
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =

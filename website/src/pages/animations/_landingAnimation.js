@@ -5,6 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+function cardTransform(offset, handWidth) {
+  const transform = `rotate(${offset * 4}deg) translateX(${
+    (offset - (Math.abs(offset) * offset) / 7) * Math.min(140, handWidth / 8)
+  }px)`;
+  return transform;
+}
+
 // Docusaurus v1 animation, reworked a bit for the Docusaurus v2 migration
 // TODO maybe we can use React code instead of Vanilla JS now?
 export function setupLandingAnimation() {
@@ -16,13 +23,6 @@ export function setupLandingAnimation() {
 
   const hand = document.querySelector('.jest-hand');
   const cards = hand.querySelectorAll('.jest-card');
-
-  function cardTransform(offset, handWidth) {
-    const transform = `rotate(${offset * 4}deg) translateX(${
-      (offset - (Math.abs(offset) * offset) / 7) * Math.min(140, handWidth / 8)
-    }px)`;
-    return transform;
-  }
 
   function positionCards() {
     const handWidth = hand.offsetWidth;
