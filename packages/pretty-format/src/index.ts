@@ -210,7 +210,7 @@ function printComplexValue(
   if (refs.includes(val)) {
     return '[Circular]';
   }
-  refs = refs.slice();
+  refs = [...refs];
   refs.push(val);
 
   const hitMaxDepth = ++depth > config.maxDepth;

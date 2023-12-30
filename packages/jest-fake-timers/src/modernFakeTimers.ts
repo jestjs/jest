@@ -220,7 +220,7 @@ export default class FakeTimers {
       now: fakeTimersConfig.now ?? Date.now(),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
-      toFake: Array.from(toFake),
+      toFake: [...toFake],
     };
   }
 }

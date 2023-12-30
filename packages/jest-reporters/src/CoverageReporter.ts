@@ -169,12 +169,13 @@ export default class CoverageReporter extends BaseReporter {
           const result = await worker.worker({
             config,
             context: {
-              changedFiles:
-                this._context.changedFiles &&
-                Array.from(this._context.changedFiles),
-              sourcesRelatedToTestsInChangedFiles:
-                this._context.sourcesRelatedToTestsInChangedFiles &&
-                Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
+              changedFiles: this._context.changedFiles && [
+                ...this._context.changedFiles,
+              ],
+              sourcesRelatedToTestsInChangedFiles: this._context
+                .sourcesRelatedToTestsInChangedFiles && [
+                ...this._context.sourcesRelatedToTestsInChangedFiles,
+              ],
             },
             globalConfig: this._globalConfig,
             path: filename,
@@ -286,7 +287,7 @@ export default class CoverageReporter extends BaseReporter {
           if (file.indexOf(absoluteThresholdGroup) === 0) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.PATH;
-            return agg.concat([[file, thresholdGroup]]);
+            return [...agg, [file, thresholdGroup]];
           }
 
           // If the threshold group is not a path it might be a glob:
@@ -303,7 +304,7 @@ export default class CoverageReporter extends BaseReporter {
           if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
-            return agg.concat([[file, thresholdGroup]]);
+            return [...agg, [file, thresholdGroup]];
           }
 
           return agg;
@@ -317,11 +318,11 @@ export default class CoverageReporter extends BaseReporter {
         if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
-          return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
+          return [...files, [file, THRESHOLD_GROUP_TYPES.GLOBAL]];
         }
 
         // A covered file that doesn't have a threshold:
-        return files.concat([[file, undefined]]);
+        return [...files, [file, undefined]];
       }, []);
 
       const getFilesInThresholdGroup = (thresholdGroup: string) =>

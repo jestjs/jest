@@ -257,7 +257,7 @@ export default async function watch(
 
         activePlugin = null;
 
-        searchSources = searchSources.slice();
+        searchSources = [...searchSources];
         searchSources[index] = {
           context,
           searchSource: new SearchSource(context),

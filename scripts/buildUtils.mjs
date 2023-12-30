@@ -161,7 +161,7 @@ export function createBuildConfigs() {
     }
 
     const options = Object.assign({}, babelConfig);
-    options.plugins = options.plugins.slice();
+    options.plugins = [...options.plugins];
 
     if (INLINE_REQUIRE_EXCLUDE_LIST.test(input)) {
       // The excluded modules are injected into the user's sandbox

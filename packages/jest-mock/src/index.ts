@@ -545,7 +545,7 @@ export class ModuleMocker {
       object = Object.getPrototypeOf(object);
     }
 
-    return Array.from(slots);
+    return [...slots];
   }
 
   private _ensureMockConfig(f: Mock): MockFunctionConfig {

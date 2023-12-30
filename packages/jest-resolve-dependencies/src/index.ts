@@ -134,7 +134,7 @@ export class DependencyResolver {
         );
       }
       return result.concat(
-        Array.from(related).map(file => ({dependencies: [], file})),
+        [...related].map(file => ({dependencies: [], file})),
       );
     };
 

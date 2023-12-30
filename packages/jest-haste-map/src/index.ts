@@ -258,7 +258,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
-      roots: Array.from(new Set(options.roots)),
+      roots: [...new Set(options.roots)],
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,

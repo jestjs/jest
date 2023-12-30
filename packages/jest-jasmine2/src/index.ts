@@ -227,7 +227,7 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 
   return results;
 };

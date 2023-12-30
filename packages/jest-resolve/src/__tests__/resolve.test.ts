@@ -128,7 +128,7 @@ describe('findNodeModule', () => {
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      paths: (nodePaths || []).concat(['/something']),
+      paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
   });
@@ -431,7 +431,7 @@ describe('findNodeModuleAsync', () => {
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      paths: (nodePaths || []).concat(['/something']),
+      paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
   });

@@ -19,7 +19,7 @@ const MULTIPLE_CONFIGS_ERROR_PATTERN = /Multiple configurations found/;
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
+describe.each([...JEST_CONFIG_EXT_ORDER])(
   'Resolve config path %s',
   extension => {
     test(`file path with "${extension}"`, () => {

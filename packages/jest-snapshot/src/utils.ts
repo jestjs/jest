@@ -234,7 +234,7 @@ const isAnyOrAnything = (input: object) =>
   ['Any', 'Anything'].includes(input.constructor.name);
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
-  const mergedOutput = Array.from(target);
+  const mergedOutput = [...target];
 
   for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];

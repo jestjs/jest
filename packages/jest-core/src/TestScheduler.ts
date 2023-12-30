@@ -174,7 +174,7 @@ class TestScheduler {
 
     const updateSnapshotState = async () => {
       const contextsWithSnapshotResolvers = await Promise.all(
-        Array.from(testContexts).map(
+        [...testContexts].map(
           async context =>
             [context, await buildSnapshotResolver(context.config)] as const,
         ),
@@ -213,7 +213,7 @@ class TestScheduler {
 
     try {
       await Promise.all(
-        Array.from(testContexts).map(async context => {
+        [...testContexts].map(async context => {
           const {config} = context;
           if (!testRunners[config.runner]) {
             const transformer = await createScriptTransformer(config);

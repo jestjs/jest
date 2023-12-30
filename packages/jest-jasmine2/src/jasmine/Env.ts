@@ -269,8 +269,8 @@ export default function jasmineEnv(j$: Jasmine) {
       let oldListenersRejection: Array<NodeJS.UnhandledRejectionListener>;
       const executionSetup = function () {
         // Need to ensure we are the only ones handling these exceptions.
-        oldListenersException = process.listeners('uncaughtException').slice();
-        oldListenersRejection = process.listeners('unhandledRejection').slice();
+        oldListenersException = [...process.listeners('uncaughtException')];
+        oldListenersRejection = [...process.listeners('unhandledRejection')];
 
         j$.process.removeAllListeners('uncaughtException');
         j$.process.removeAllListeners('unhandledRejection');

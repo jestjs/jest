@@ -146,7 +146,7 @@ export const makeGlobalConfig = (
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of GlobalConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 
@@ -163,7 +163,7 @@ export const makeProjectConfig = (
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of ProjectConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 

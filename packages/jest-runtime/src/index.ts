@@ -283,12 +283,12 @@ export default class Runtime {
 
     const envExportConditions = this._environment.exportConditions?.() ?? [];
 
-    this.esmConditions = Array.from(
-      new Set(['import', 'default', ...envExportConditions]),
-    );
-    this.cjsConditions = Array.from(
-      new Set(['require', 'default', ...envExportConditions]),
-    );
+    this.esmConditions = [
+      ...new Set(['import', 'default', ...envExportConditions]),
+    ];
+    this.cjsConditions = [
+      ...new Set(['require', 'default', ...envExportConditions]),
+    ];
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
@@ -1304,7 +1304,7 @@ export default class Runtime {
             res.url,
             this._coverageOptions,
             this._config,
-            /* loadedFilenames */ Array.from(this._v8CoverageSources!.keys()),
+            /* loadedFilenames */ [...this._v8CoverageSources!.keys()],
           ),
       )
       .map(result => {
@@ -2101,7 +2101,7 @@ export default class Runtime {
         },
         has: (_target, key) =>
           typeof key === 'string' && this._moduleRegistry.has(key),
-        ownKeys: () => Array.from(this._moduleRegistry.keys()),
+        ownKeys: () => [...this._moduleRegistry.keys()],
         set: notPermittedMethod,
       });
     })();

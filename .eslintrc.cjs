@@ -686,6 +686,9 @@ module.exports = {
     // reduce is fine
     'unicorn/no-array-reduce': 'off',
 
+    // this is very aggressive (600+ files changed). might make sense to apply bit by bit over time?
+    'unicorn/prevent-abbreviations': 'off',
+
     // nah
     'unicorn/consistent-destructuring': 'off',
     'unicorn/no-lonely-if': 'off',
@@ -706,9 +709,7 @@ module.exports = {
     'unicorn/error-message': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/prefer-object-from-entries': 'off',
-    'unicorn/prefer-spread': 'off',
     'unicorn/prefer-string-replace-all': 'off',
-    'unicorn/prevent-abbreviations': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',

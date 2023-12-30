@@ -43,7 +43,7 @@ export const serialize: NewPlugin['serialize'] = (
     (OBJECT_NAMES.has(name)
       ? `{${printObjectProperties(
           isNamedNodeMap(collection)
-            ? Array.from(collection).reduce<Record<string, string>>(
+            ? [...collection].reduce<Record<string, string>>(
                 (props, attribute) => {
                   props[attribute.name] = attribute.value;
                   return props;
@@ -58,7 +58,7 @@ export const serialize: NewPlugin['serialize'] = (
           printer,
         )}}`
       : `[${printListItems(
-          Array.from(collection),
+          [...collection],
           config,
           indentation,
           depth,

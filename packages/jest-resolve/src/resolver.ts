@@ -393,7 +393,7 @@ export default class Resolver {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
     const key = dirname + path.delimiter + moduleName + stringifiedOptions;
     const defaultPlatform = this._options.defaultPlatform;
-    const extensions = this._options.extensions.slice();
+    const extensions = [...this._options.extensions];
 
     if (this._supportsNativePlatform) {
       extensions.unshift(
