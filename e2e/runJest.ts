@@ -151,10 +151,10 @@ export const json = function (
       ...result,
       json: JSON.parse(result.stdout),
     };
-  } catch (e: any) {
+  } catch (error: any) {
     throw new Error(dedent`
       Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
+      ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
     `);

@@ -91,12 +91,12 @@ export default class CoverageReporter extends BaseReporter {
           .execute(reportContext);
       }
       aggregatedResults.coverageMap = map;
-    } catch (e: any) {
+    } catch (error: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
-        ERROR: ${e.toString()}
-        STACK: ${e.stack}
+        ERROR: ${error.toString()}
+        STACK: ${error.stack}
       `),
       );
     }

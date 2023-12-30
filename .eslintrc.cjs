@@ -424,14 +424,6 @@ module.exports = {
       },
     },
     {
-      files: 'e2e/native-esm/wasm-bindgen/index_bg.js',
-      rules: {
-        'unicorn/prefer-code-point': 'off',
-        'unicorn/prefer-optional-catch-binding': 'off',
-        'unicorn/text-encoding-identifier-case': 'off',
-      },
-    },
-    {
       files: 'packages/jest-mock/src/__tests__/**/*',
       rules: {
         'unicorn/no-static-only-class': 'off',
@@ -709,7 +701,6 @@ module.exports = {
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
-    'unicorn/catch-error-name': 'off',
     'unicorn/error-message': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-object-as-default-parameter': 'off',

@@ -138,8 +138,8 @@ describe('worker', () => {
 
     try {
       await worker({computeDependencies: true, filePath: '/kiwi.js', rootDir});
-    } catch (err) {
-      error = err;
+    } catch (thrownError) {
+      error = thrownError;
     }
 
     expect(error.message).toBe("Cannot read path '/kiwi.js'.");

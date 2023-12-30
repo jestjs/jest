@@ -121,13 +121,13 @@ async function registerTsNode(): Promise<Service> {
         '**': 'cjs',
       },
     });
-  } catch (e: any) {
-    if (e.code === 'ERR_MODULE_NOT_FOUND') {
+  } catch (error: any) {
+    if (error.code === 'ERR_MODULE_NOT_FOUND') {
       throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
       );
     }
 
-    throw e;
+    throw error;
   }
 }

@@ -514,8 +514,8 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e) {
-      error = e;
+    } catch (receivedError) {
+      error = receivedError;
     }
   }
 

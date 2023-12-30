@@ -311,11 +311,11 @@ async function runTestInternal(
         path,
         sendMessageToJest,
       );
-    } catch (err: any) {
+    } catch (error: any) {
       // Access stack before uninstalling sourcemaps
-      err.stack;
+      error.stack;
 
-      throw err;
+      throw error;
     } finally {
       if (collectV8Coverage) {
         await runtime.stopCollectingV8Coverage();

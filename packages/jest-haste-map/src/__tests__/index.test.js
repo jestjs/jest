@@ -376,8 +376,8 @@ describe('HasteMap', () => {
 
     try {
       await (await HasteMap.create(config)).build();
-    } catch (err) {
-      expect(err.message).toBe(
+    } catch (error) {
+      expect(error.message).toBe(
         'jest-haste-map: the `ignorePattern` option must be a RegExp',
       );
     }
@@ -819,8 +819,8 @@ describe('HasteMap', () => {
           ...defaultConfig,
         })
       ).build();
-    } catch (err) {
-      expect(err.message).toBe(
+    } catch (error) {
+      expect(error.message).toBe(
         'Duplicated files or mocks. Please check the console for more info',
       );
     }

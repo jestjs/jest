@@ -637,11 +637,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -683,11 +683,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -933,17 +933,17 @@ function readCodeCacheFile(cachePath: string): string | null {
 const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
-    if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
+    if (cacheWriteErrorSafeToIgnore(error, cachePath)) {
       return;
     }
 
-    e.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 };
 
@@ -969,22 +969,22 @@ const readCacheFile = (cachePath: string): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
     // on windows write-file-atomic is not atomic which can
     // result in this error
     if (
-      (e as NodeJS.ErrnoException).code === 'ENOENT' &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT' &&
       process.platform === 'win32'
     ) {
       return null;
     }
 
-    e.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 
   if (fileData == null) {

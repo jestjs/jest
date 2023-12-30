@@ -158,9 +158,9 @@ export default class NotifyReporter extends BaseReporter {
 function loadNotifier(): typeof import('node-notifier') {
   try {
     return require('node-notifier');
-  } catch (err: any) {
-    if (err.code !== 'MODULE_NOT_FOUND') {
-      throw err;
+  } catch (error: any) {
+    if (error.code !== 'MODULE_NOT_FOUND') {
+      throw error;
     }
 
     throw new Error(

@@ -452,8 +452,8 @@ export default function jasmineEnv(j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e: any) {
-          declarationError = e;
+        } catch (error: any) {
+          declarationError = error;
         }
 
         if (isPromise(describeReturnValue)) {

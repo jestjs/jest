@@ -29,8 +29,8 @@ function testCase(name, fn) {
 
   try {
     result = fn();
-  } catch (err) {
-    error = err;
+  } catch (thrownError) {
+    error = thrownError;
   }
 
   if (!error) {
