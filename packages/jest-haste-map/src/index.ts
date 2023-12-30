@@ -270,7 +270,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
+          `${options.ignorePattern.source}|${VCS_DIRECTORIES}`,
           options.ignorePattern.flags,
         );
       } else {

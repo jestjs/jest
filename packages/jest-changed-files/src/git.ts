@@ -46,22 +46,31 @@ const adapter: SCMAdapter = {
 
     if (options.lastCommit === true) {
       return findChangedFilesUsingCommand(
-        ['show', '--name-only', '--pretty=format:', 'HEAD', '--'].concat(
-          includePaths,
-        ),
+        [
+          'show',
+          '--name-only',
+          '--pretty=format:',
+          'HEAD',
+          '--',
+          ...includePaths,
+        ],
         cwd,
       );
     }
     if (changedSince != null && changedSince.length > 0) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
-          ['diff', '--name-only', `${changedSince}...HEAD`, '--'].concat(
-            includePaths,
-          ),
+          [
+            'diff',
+            '--name-only',
+            `${changedSince}...HEAD`,
+            '--',
+            ...includePaths,
+          ],
           cwd,
         ),
         findChangedFilesUsingCommand(
-          ['diff', '--cached', '--name-only', '--'].concat(includePaths),
+          ['diff', '--cached', '--name-only', '--', ...includePaths],
           cwd,
         ),
         findChangedFilesUsingCommand(
@@ -71,7 +80,8 @@ const adapter: SCMAdapter = {
             '--modified',
             '--exclude-standard',
             '--',
-          ].concat(includePaths),
+            ...includePaths,
+          ],
           cwd,
         ),
       ]);
@@ -79,7 +89,7 @@ const adapter: SCMAdapter = {
     }
     const [staged, unstaged] = await Promise.all([
       findChangedFilesUsingCommand(
-        ['diff', '--cached', '--name-only', '--'].concat(includePaths),
+        ['diff', '--cached', '--name-only', '--', ...includePaths],
         cwd,
       ),
       findChangedFilesUsingCommand(
@@ -89,7 +99,8 @@ const adapter: SCMAdapter = {
           '--modified',
           '--exclude-standard',
           '--',
-        ].concat(includePaths),
+          ...includePaths,
+        ],
         cwd,
       ),
     ]);

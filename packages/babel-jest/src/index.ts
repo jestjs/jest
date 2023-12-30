@@ -167,9 +167,9 @@ export const createTransformer: TransformerCreator<
     },
     compact: false,
     plugins: inputOptions.plugins ?? [],
-    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
+    presets: [...(inputOptions.presets ?? []), jestPresetPath],
     sourceMaps: 'both',
-  } as const;
+  } satisfies TransformOptions;
 
   function mergeBabelTransformOptions(
     filename: string,

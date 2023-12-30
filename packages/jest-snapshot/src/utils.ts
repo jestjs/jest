@@ -496,7 +496,10 @@ const groupSnapshotsBy =
     snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
       (object, inlineSnapshot) => {
         const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+        return {
+          ...object,
+          [key]: [...(object[key] || []), inlineSnapshot],
+        };
       },
       {},
     );

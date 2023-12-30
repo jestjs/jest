@@ -25,7 +25,7 @@ const testPath = (names: Array<string>) => {
 
   const next = getSerializers();
   expect(next).toHaveLength(added.length + prev.length);
-  expect(next).toEqual(added.concat(prev));
+  expect(next).toEqual([...added, ...prev]);
 };
 
 it('gets plugins', () => {

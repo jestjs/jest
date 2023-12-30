@@ -311,7 +311,7 @@ export default class CoverageReporter extends BaseReporter {
         }, []);
 
         if (pathOrGlobMatches.length > 0) {
-          return files.concat(pathOrGlobMatches);
+          return [...files, ...pathOrGlobMatches];
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
@@ -359,13 +359,14 @@ export default class CoverageReporter extends BaseReporter {
               getFilesInThresholdGroup(THRESHOLD_GROUP_TYPES.GLOBAL),
             );
             if (coverage) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   thresholdGroup,
                   coverageThreshold[thresholdGroup],
                   coverage,
                 ),
-              );
+              ];
             }
             break;
           }
@@ -374,13 +375,14 @@ export default class CoverageReporter extends BaseReporter {
               getFilesInThresholdGroup(thresholdGroup),
             );
             if (coverage) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   thresholdGroup,
                   coverageThreshold[thresholdGroup],
                   coverage,
                 ),
-              );
+              ];
             }
             break;
           }
@@ -388,22 +390,24 @@ export default class CoverageReporter extends BaseReporter {
             for (const fileMatchingGlob of getFilesInThresholdGroup(
               thresholdGroup,
             )) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   fileMatchingGlob,
                   coverageThreshold[thresholdGroup],
                   map.fileCoverageFor(fileMatchingGlob).toSummary(),
                 ),
-              );
+              ];
             }
 
             break;
           default:
             // If the file specified by path is not found, error is returned.
             if (thresholdGroup !== THRESHOLD_GROUP_TYPES.GLOBAL) {
-              errors = errors.concat(
+              errors = [
+                ...errors,
                 `Jest: Coverage data for ${thresholdGroup} was not found.`,
-              );
+              ];
             }
           // Sometimes all files in the coverage data are matched by
           // PATH and GLOB threshold groups in which case, don't error when

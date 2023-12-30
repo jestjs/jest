@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/prefer-spread-eventually */
-
 import {promisify} from 'util';
 import {type StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import type {
@@ -485,7 +483,7 @@ export default class FakeTimers<TimerRef = unknown> {
     const uuid = String(this._uuidCounter++);
 
     this._ticks.push({
-      callback: () => callback.apply(null, args),
+      callback: () => callback(...args),
       uuid,
     });
 
@@ -494,7 +492,7 @@ export default class FakeTimers<TimerRef = unknown> {
       if (!Object.prototype.hasOwnProperty.call(cancelledTicks, uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
-        callback.apply(null, args);
+        callback(...args);
       }
     });
   }
@@ -514,7 +512,7 @@ export default class FakeTimers<TimerRef = unknown> {
     const uuid = String(this._uuidCounter++);
 
     this._immediates.push({
-      callback: () => callback.apply(null, args),
+      callback: () => callback(...args),
       uuid,
     });
 
@@ -522,7 +520,7 @@ export default class FakeTimers<TimerRef = unknown> {
       if (!this._disposed) {
         if (this._immediates.some(x => x.uuid === uuid)) {
           try {
-            callback.apply(null, args);
+            callback(...args);
           } finally {
             this._fakeClearImmediate(uuid);
           }
@@ -549,7 +547,7 @@ export default class FakeTimers<TimerRef = unknown> {
     const uuid = this._uuidCounter++;
 
     this._timers.set(String(uuid), {
-      callback: () => callback.apply(null, args),
+      callback: () => callback(...args),
       expiry: this._now + intervalDelay,
       interval: intervalDelay,
       type: 'interval',
@@ -573,7 +571,7 @@ export default class FakeTimers<TimerRef = unknown> {
     const uuid = this._uuidCounter++;
 
     this._timers.set(String(uuid), {
-      callback: () => callback.apply(null, args),
+      callback: () => callback(...args),
       expiry: this._now + delay,
       interval: undefined,
       type: 'timeout',

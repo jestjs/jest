@@ -156,10 +156,10 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
 
         if (canBeFiltered) {
           if (response.relative_path) {
-            watchmanRoots.set(
-              response.watch,
-              (existing || []).concat(response.relative_path),
-            );
+            watchmanRoots.set(response.watch, [
+              ...(existing || []),
+              response.relative_path,
+            ]);
           } else {
             // Make the filter directories an empty array to signal that this
             // root was already seen and needs to be watched for all files or

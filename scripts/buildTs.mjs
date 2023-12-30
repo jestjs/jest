@@ -41,8 +41,10 @@ for (const {packageDir, pkg} of packagesWithTs) {
     `\`main\` and \`types\` field of ${pkg.name} does not match`,
   );
 
-  const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
-    .concat(Object.keys(pkg.devDependencies || {}))
+  const jestDependenciesOfPackage = [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.devDependencies || {}),
+  ]
     .filter(dep => {
       if (!workspacesWithTs.has(dep)) {
         return false;

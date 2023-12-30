@@ -346,8 +346,9 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
-        'unicorn/no-await-expression-member': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/prefer-spread': 'off',
       },
     },
     {

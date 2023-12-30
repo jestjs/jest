@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/prefer-spread-eventually */
-
 import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
@@ -127,7 +125,7 @@ export default class Resolver {
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
-        paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
         rootDir: options.rootDir,
       });
     } catch (error) {
@@ -170,7 +168,7 @@ export default class Resolver {
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
-        paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+        paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
         rootDir: options.rootDir,
       });
       return result;
@@ -419,7 +417,7 @@ export default class Resolver {
     const parts = moduleName.split('/');
     const hastePackage = this.getPackage(parts.shift()!);
     if (hastePackage) {
-      return path.join.apply(path, [path.dirname(hastePackage)].concat(parts));
+      return path.join(path.dirname(hastePackage), ...parts);
     }
     return null;
   }

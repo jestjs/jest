@@ -362,7 +362,7 @@ export default class Runtime {
       console: options?.console,
       dependencyExtractor: config.dependencyExtractor,
       enableSymlinks: config.haste.enableSymlinks,
-      extensions: [SnapshotExtension].concat(config.moduleFileExtensions),
+      extensions: [SnapshotExtension, ...config.moduleFileExtensions],
       forceNodeFilesystemAPI: config.haste.forceNodeFilesystemAPI,
       hasteImplModulePath: config.haste.hasteImplModulePath,
       hasteMapModulePath: config.haste.hasteMapModulePath,
