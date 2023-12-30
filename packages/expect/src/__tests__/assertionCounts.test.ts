@@ -71,7 +71,7 @@ describe('numPassingAsserts', () => {
     expect('a').toBe('a');
     try {
       expect('a').toBe('b');
-    } catch (error) {}
+    } catch {}
     const {numPassingAsserts} = jestExpect.getState();
     expect(numPassingAsserts).toBe(1);
   });

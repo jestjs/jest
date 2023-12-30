@@ -1387,9 +1387,9 @@ class CustomReporter {
 
   onRunComplete(testContexts, results) {
     console.log('Custom reporter output:');
-    console.log('global config: ', this._globalConfig);
-    console.log('options for this reporter from Jest config: ', this._options);
-    console.log('reporter context passed from test scheduler: ', this._context);
+    console.log('global config:', this._globalConfig);
+    console.log('options for this reporter from Jest config:', this._options);
+    console.log('reporter context passed from test scheduler:', this._context);
   }
 
   // Optionally, reporters can force Jest to exit with non zero code by returning

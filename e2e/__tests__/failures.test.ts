@@ -11,7 +11,7 @@ import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
-const normalizeDots = (text: string) => text.replace(/\.{1,}$/gm, '.');
+const normalizeDots = (text: string) => text.replace(/\.+$/gm, '.');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
@@ -65,7 +65,7 @@ test('works with async failures', () => {
   const result = normalizeDots(rest)
     .replace(/.*thrown:.*\n/, '')
     .replace(
-      /.*Add a timeout value to this test to increase the timeout, if this is a long-running test. See https:\/\/jestjs.io\/docs\/api#testname-fn-timeout..*/,
+      /.*Add a timeout value to this test to increase the timeout, if this is a long-running test. See https:\/\/jestjs.io\/docs\/api#testname-fn-timeout.+/,
       '<REPLACED>',
     )
     .replace(/.*Timeout - Async callback was not.*/, '<REPLACED>');
@@ -78,9 +78,7 @@ test('works with snapshot failures', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with snapshot failures with hint', () => {
@@ -88,9 +86,7 @@ test('works with snapshot failures with hint', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with error with cause', () => {
@@ -113,7 +109,7 @@ test('works with error with cause thrown outside tests', () => {
   expect(
     // jasmine runner differ from circus one in this case, we just start
     // the comparison when the stack starts to be reported
-    sanitizedSummary.substring(sanitizedSummary.indexOf('error during f')),
+    sanitizedSummary.slice(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
 });
 

@@ -130,10 +130,10 @@ export default class Resolver {
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
         rootDir: options.rootDir,
       });
-    } catch (e) {
+    } catch (error) {
       // we always wanna throw if it's an internal import
       if (options.throwIfNotFound || path.startsWith('#')) {
-        throw e;
+        throw error;
       }
     }
     return null;
@@ -174,10 +174,10 @@ export default class Resolver {
         rootDir: options.rootDir,
       });
       return result;
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       // we always wanna throw if it's an internal import
       if (options.throwIfNotFound || path.startsWith('#')) {
-        throw e;
+        throw error;
       }
     }
     return null;
@@ -438,8 +438,8 @@ export default class Resolver {
     return matches
       ? (moduleName: string) =>
           moduleName.replace(
-            /\$([0-9]+)/g,
-            (_, index) => matches[parseInt(index, 10)] || '',
+            /\$(\d+)/g,
+            (_, index) => matches[Number.parseInt(index, 10)] || '',
           )
       : (moduleName: string) => moduleName;
   }
@@ -518,7 +518,7 @@ export default class Resolver {
 
     const moduleDirectory = this._options.moduleDirectories;
     const paths = nodeModulesPaths(from, {moduleDirectory});
-    if (paths[paths.length - 1] === undefined) {
+    if (paths.at(-1) === undefined) {
       // circumvent node-resolve bug that adds `undefined` as last item.
       paths.pop();
     }

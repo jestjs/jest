@@ -485,14 +485,14 @@ describe('FakeTimers', () => {
       const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
-      global.setTimeout(mock2, NaN);
+      global.setTimeout(mock2, Number.NaN);
       global.setTimeout(mock3, 0);
       const intervalHandler = global.setInterval(() => {
         mock4();
         global.clearInterval(intervalHandler);
       }, 200);
-      global.setTimeout(mock5, Infinity);
-      global.setTimeout(mock6, -Infinity);
+      global.setTimeout(mock5, Number.POSITIVE_INFINITY);
+      global.setTimeout(mock6, Number.NEGATIVE_INFINITY);
       global.requestAnimationFrame(mockAnimationFrame);
 
       timers.runAllTimers();

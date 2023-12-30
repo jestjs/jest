@@ -55,8 +55,8 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       };
       try {
         fn.call(options.userContext, next);
-      } catch (e: any) {
-        options.onException(e);
+      } catch (error: any) {
+        options.onException(error);
         resolve();
       }
     });
@@ -92,6 +92,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
   return {
     cancel: token.cancel.bind(token),
     catch: result.catch.bind(result),
+    // eslint-disable-next-line unicorn/no-thenable
     then: result.then.bind(result),
   };
 }

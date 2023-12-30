@@ -74,12 +74,12 @@ function verifyDirectoryExists(path: string, key: string) {
         )} option is not a directory.`,
       );
     }
-  } catch (err: any) {
-    if (err instanceof ValidationError) {
-      throw err;
+  } catch (error: any) {
+    if (error instanceof ValidationError) {
+      throw error;
     }
 
-    if (err.code === 'ENOENT') {
+    if (error.code === 'ENOENT') {
       throw createConfigError(
         `  Directory ${chalk.bold(path)} in the ${chalk.bold(
           key,
@@ -91,7 +91,7 @@ function verifyDirectoryExists(path: string, key: string) {
     throw createConfigError(
       `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
         key,
-      )} option.\n\n  Error was: ${err.message}`,
+      )} option.\n\n  Error was: ${error.message}`,
     );
   }
 }
@@ -313,7 +313,7 @@ const normalizeMissingOptions = (
       .update(configPath || '')
       .update(String(projectIndex))
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   if (!options.setupFiles) {
@@ -426,17 +426,17 @@ const buildTestPathPatterns = (
   return testPathPatterns;
 };
 
+function printConfig(opts: Array<string>) {
+  const string = opts.map(ext => `'${ext}'`).join(', ');
+
+  return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+}
+
 function validateExtensionsToTreatAsEsm(
   extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
 ) {
   if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
     return;
-  }
-
-  function printConfig(opts: Array<string>) {
-    const string = opts.map(ext => `'${ext}'`).join(', ');
-
-    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
   }
 
   const extensionWithoutDot = extensionsToTreatAsEsm.some(
@@ -487,7 +487,7 @@ export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
@@ -1009,7 +1009,7 @@ export default async function normalize(
   newOptions.testPathPatterns = testPathPatterns.patterns;
   newOptions.json = !!argv.json;
 
-  newOptions.testFailureExitCode = parseInt(
+  newOptions.testFailureExitCode = Number.parseInt(
     newOptions.testFailureExitCode as unknown as string,
     10,
   );
@@ -1086,7 +1086,7 @@ export default async function normalize(
         ? 'all'
         : 'new';
 
-  newOptions.maxConcurrency = parseInt(
+  newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
     10,
   );

@@ -40,7 +40,7 @@ export async function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   const {config: initialOptions, configPath} = await readInitialOptions(
@@ -231,9 +231,9 @@ const ensureNoDuplicateConfigs = (
         String(configPath),
       )}:
 
-  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 1: ${chalk.bold(projects[parsedConfigs.indexOf(config)])}
   Project 2: ${chalk.bold(
-    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+    projects[parsedConfigs.indexOf(configPathMap.get(configPath))],
   )}
 
 This usually means that your ${chalk.bold(

@@ -274,7 +274,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
           options.ignorePattern.flags,
         );
       } else {
-        throw new Error(
+        throw new TypeError(
           'jest-haste-map: the `ignorePattern` option must be a RegExp',
         );
       }
@@ -295,7 +295,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -344,7 +344,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
-      `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
+      `${id.replace(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
     );
   }
 
@@ -772,7 +772,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       roots: options.roots,
     };
 
-    const retry = (error: Error) => {
+    const retry = (retryError: Error) => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
           'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
@@ -780,18 +780,18 @@ class HasteMap extends EventEmitter implements IHasteMap {
             "  Usually this happens when watchman isn't running. Create an " +
             "empty `.watchmanconfig` file in your project's root folder or " +
             'initialize a git or hg repository in your project.\n' +
-            `  ${error}`,
+            `  ${retryError}`,
         );
-        return nodeCrawl(crawlerOptions).catch(e => {
+        return nodeCrawl(crawlerOptions).catch(error => {
           throw new Error(
             'Crawler retry failed:\n' +
-              `  Original error: ${error.message}\n` +
-              `  Retry error: ${e.message}\n`,
+              `  Original error: ${retryError.message}\n` +
+              `  Retry error: ${error.message}\n`,
           );
         });
       }
 
-      throw error;
+      throw retryError;
     };
 
     try {
@@ -806,7 +806,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    */
   private async _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
-      return Promise.resolve();
+      return;
     }
 
     // In watch mode, we'll only warn about module collisions and we'll retain
@@ -901,7 +901,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         .then(() => {
           // If we get duplicate events for the same file, ignore them.
           if (
-            eventsQueue.find(
+            eventsQueue.some(
               event =>
                 event.type === type &&
                 event.filePath === filePath &&

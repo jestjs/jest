@@ -42,7 +42,7 @@ export function validationCondition(
 export function multipleValidOptions<T extends Array<unknown>>(
   ...args: T
 ): T[number] {
-  const options = <T>[...args];
+  const options = [...args] as T;
   // @ts-expect-error: no index signature
   options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
 

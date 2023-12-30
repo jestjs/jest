@@ -76,13 +76,8 @@ function eq(
   }
 
   const testerContext: TesterContext = {equals};
-  for (let i = 0; i < customTesters.length; i++) {
-    const customTesterResult = customTesters[i].call(
-      testerContext,
-      a,
-      b,
-      customTesters,
-    );
+  for (const item of customTesters) {
+    const customTesterResult = item.call(testerContext, a, b, customTesters);
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }

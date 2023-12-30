@@ -139,7 +139,7 @@ export class DependencyResolver {
     };
 
     const relatedPaths = new Set<string>();
-    const changed: Set<string> = new Set();
+    const changed = new Set<string>();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)

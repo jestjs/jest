@@ -244,7 +244,7 @@ Received message: <r>"apple"</>
 exports[`toThrow regexp threw, but message did not match (non-error falsey) 1`] = `
 <d>expect(</><r>received</><d>).</>toThrow<d>(</><g>expected</><d>)</>
 
-Expected pattern: <g>/^[123456789]\\d*/</>
+Expected pattern: <g>/^[1-9]\\d*/</>
 Received value:   <r>0</>
 
 `;
@@ -261,7 +261,7 @@ Received message:     <r>"Invalid<i> array </i>length"</>
 exports[`toThrow regexp threw, but message should not match (non-error truthy) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toThrow<d>(</><g>expected</><d>)</>
 
-Expected pattern: not <g>/^[123456789]\\d*/</>
+Expected pattern: not <g>/^[1-9]\\d*/</>
 Received value:       <r>404</>
 
 `;

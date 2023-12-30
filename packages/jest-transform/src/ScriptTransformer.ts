@@ -122,7 +122,7 @@ class ScriptTransformer {
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
         .digest('hex')
-        .substring(0, 32);
+        .slice(0, 32);
     }
 
     return createHash('sha1')
@@ -132,7 +132,7 @@ class ScriptTransformer {
       .update(filename)
       .update(CACHE_VERSION)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   private _buildTransformCacheKey(pattern: string, filepath: string) {
@@ -254,8 +254,8 @@ class ScriptTransformer {
       return undefined;
     }
 
-    for (let i = 0; i < transformEntry.length; i++) {
-      const [transformRegExp, transformPath] = transformEntry[i];
+    for (const item of transformEntry) {
+      const [transformRegExp, transformPath] = item;
       if (transformRegExp.test(filename)) {
         return [transformRegExp.source, transformPath];
       }
@@ -291,7 +291,7 @@ class ScriptTransformer {
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new Error(makeInvalidTransformerError(transformPath));
+            throw new TypeError(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           const transformCacheKey = this._buildTransformCacheKey(
@@ -637,11 +637,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -683,11 +683,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -901,10 +901,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -919,12 +916,9 @@ function readCodeCacheFile(cachePath: string): string | null {
   if (content == null) {
     return null;
   }
-  const code = content.substring(33);
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
-  if (checksum === content.substring(0, 32)) {
+  const code = content.slice(33);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
+  if (checksum === content.slice(0, 32)) {
     return code;
   }
   return null;
@@ -939,17 +933,17 @@ function readCodeCacheFile(cachePath: string): string | null {
 const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
-    if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
+    if (cacheWriteErrorSafeToIgnore(error, cachePath)) {
       return;
     }
 
-    e.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 };
 
@@ -975,22 +969,22 @@ const readCacheFile = (cachePath: string): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
     // on windows write-file-atomic is not atomic which can
     // result in this error
     if (
-      (e as NodeJS.ErrnoException).code === 'ENOENT' &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT' &&
       process.platform === 'win32'
     ) {
       return null;
     }
 
-    e.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 
   if (fileData == null) {
@@ -1023,12 +1017,8 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
   }
 
   const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
-  for (let i = 0; i < config.transform.length; i++) {
-    transformRegexp.push([
-      new RegExp(config.transform[i][0]),
-      config.transform[i][1],
-      config.transform[i][2],
-    ]);
+  for (const item of config.transform) {
+    transformRegexp.push([new RegExp(item[0]), item[1], item[2]]);
   }
 
   return transformRegexp;

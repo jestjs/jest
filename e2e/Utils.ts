@@ -95,7 +95,7 @@ export const makeTemplate =
   (values = []) =>
     str.replace(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {
-        throw new Error('Array of values must be passed to the template.');
+        throw new TypeError('Array of values must be passed to the template.');
       }
       return values[number - 1];
     });
@@ -235,7 +235,7 @@ export const createEmptyPackage = (
 
 export const extractSummary = (stdout: string) => {
   const match = stdout
-    .replace(/(?:\\[rn])+/g, '\n')
+    .replace(/(?:\\[nr])+/g, '\n')
     .match(
       /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
@@ -267,13 +267,13 @@ const sortTests = (stdout: string) =>
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
         tests.push([line]);
       } else {
-        tests[tests.length - 1].push(line);
+        tests.at(-1)!.push(line);
       }
       return tests;
     }, [])
     .sort(([a], [b]) => (a > b ? 1 : -1))
     .map(strings =>
-      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
+      strings.length > 1 ? `${strings.join('\n').trimEnd()}\n` : strings[0],
     )
     .join('\n')
     .trim();

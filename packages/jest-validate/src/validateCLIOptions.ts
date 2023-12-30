@@ -21,7 +21,7 @@ import {
   logValidationWarning,
 } from './utils';
 
-const BULLET: string = chalk.bold('\u25cf');
+const BULLET: string = chalk.bold('\u25CF');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
   https://jestjs.io/docs/cli
 `;
@@ -115,7 +115,6 @@ export default function validateCLIOptions(
       !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
       (rawArgv.length === 0 || rawArgv.includes(arg)),
-    [],
   );
 
   if (unrecognizedOptions.length > 0) {

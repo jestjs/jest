@@ -175,7 +175,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
+    return Number.isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);
@@ -183,7 +183,7 @@ function printBasicValue(
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
       // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
-      return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+      return regExpToString.call(val).replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
     }
     return regExpToString.call(val);
   }
@@ -334,7 +334,7 @@ function printPlugin(
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
-    throw new Error(
+    throw new TypeError(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
     );
   }
@@ -342,10 +342,10 @@ function printPlugin(
 }
 
 function findPlugin(plugins: Plugins, val: unknown) {
-  for (let p = 0; p < plugins.length; p++) {
+  for (const plugin of plugins) {
     try {
-      if (plugins[p].test(val)) {
-        return plugins[p];
+      if (plugin.test(val)) {
+        return plugin;
       }
     } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);
@@ -410,8 +410,8 @@ export const DEFAULT_OPTIONS = toOptionsSubtype({
   escapeString: true,
   highlight: false,
   indent: 2,
-  maxDepth: Infinity,
-  maxWidth: Infinity,
+  maxDepth: Number.POSITIVE_INFINITY,
+  maxWidth: Number.POSITIVE_INFINITY,
   min: false,
   plugins: [],
   printBasicPrototype: true,
@@ -438,7 +438,7 @@ function validateOptions(options: OptionsReceived) {
     }
 
     if (typeof options.theme !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `pretty-format: Option "theme" must be of type "object" but instead received "${typeof options.theme}".`,
       );
     }
@@ -504,7 +504,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
 });
 
 function createIndent(indent: number): string {
-  return new Array(indent + 1).join(' ');
+  return Array.from({length: indent + 1}).join(' ');
 }
 
 /**

@@ -5,6 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+function cardTransform(offset, handWidth) {
+  const transform = `rotate(${offset * 4}deg) translateX(${
+    (offset - (Math.abs(offset) * offset) / 7) * Math.min(140, handWidth / 8)
+  }px)`;
+  return transform;
+}
+
 // Docusaurus v1 animation, reworked a bit for the Docusaurus v2 migration
 // TODO maybe we can use React code instead of Vanilla JS now?
 export function setupLandingAnimation() {
@@ -17,17 +24,10 @@ export function setupLandingAnimation() {
   const hand = document.querySelector('.jest-hand');
   const cards = hand.querySelectorAll('.jest-card');
 
-  function cardTransform(offset, handWidth) {
-    const transform = `rotate(${offset * 4}deg) translateX(${
-      (offset - (Math.abs(offset) * offset) / 7) * Math.min(140, handWidth / 8)
-    }px)`;
-    return transform;
-  }
-
   function positionCards() {
     const handWidth = hand.offsetWidth;
     for (const card of cards) {
-      const offset = parseInt(card.dataset.index, 10) - 2;
+      const offset = Number.parseInt(card.dataset.index, 10) - 2;
       card.parentElement.style.transform = cardTransform(offset, handWidth);
     }
   }
@@ -111,7 +111,7 @@ export function setupLandingAnimation() {
       card = ev.target.parentElement;
     }
     if (card) {
-      const index = parseInt(card.dataset.index, 10);
+      const index = Number.parseInt(card.dataset.index, 10);
       runTest(card, index);
     }
   }
@@ -153,31 +153,31 @@ export function setupLandingAnimation() {
       },
     ];
 
-    screenshotImg.onload = () => {
+    screenshotImg.addEventListener('load', () => {
       screenshotImg.style.opacity = 1;
-    };
+    });
 
     for (const button of buttons) {
       const clickButton = document.createElement('a');
       clickButton.text = button.title;
       clickButton.className = 'button button--primary button--outline landing';
-      clickButton.onclick = () => {
+      clickButton.addEventListener('click', () => {
         for (const b of document.querySelectorAll('.matchers .button.landing'))
           b.className = 'button button--primary button--outline landing';
         clickButton.className =
           'button button--primary button--outline landing button--active';
         screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
-      };
-      buttonWrapper.appendChild(clickButton);
+      });
+      buttonWrapper.append(clickButton);
     }
 
-    matcherSection.appendChild(buttonWrapper);
+    matcherSection.append(buttonWrapper);
 
     const firstButton = document.querySelector(
       '.matchers .blockContent .button'
     );
-    firstButton.onclick();
+    firstButton.click();
   }
 
   // Without forking Docusaurus which is on route to a breaking major semver,
@@ -186,9 +186,9 @@ export function setupLandingAnimation() {
   function makeScreenshotsClickable() {
     for (const img of document.querySelectorAll('.blockImage img')) {
       img.style.cursor = 'pointer';
-      img.onclick = () => {
+      img.addEventListener('click', () => {
         document.location = img.src;
-      };
+      });
     }
   }
 

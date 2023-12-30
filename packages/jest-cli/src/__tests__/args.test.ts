@@ -65,7 +65,7 @@ describe('check', () => {
     expect(() => check(argv({maxWorkers: '50%'}))).not.toThrow();
   });
 
-  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)))(
     'allows using "%s" file for --config option',
     ext => {
       expect(() => check(argv({config: `jest.config.${ext}`}))).not.toThrow();

@@ -772,7 +772,7 @@ exports[`works with node assert 1`] = `
 
       48 |
       49 | test('assert.strictEqual', () => {
-    > 50 |   assert.strictEqual(1, NaN);
+    > 50 |   assert.strictEqual(1, Number.NaN);
          |          ^
       51 | });
       52 |
@@ -896,7 +896,7 @@ exports[`works with node assert 1`] = `
       69 | test('assert.doesNotThrow', () => {
     > 70 |   assert.doesNotThrow(() => {
          |          ^
-      71 |     throw Error('err!');
+      71 |     throw new Error('err!');
       72 |   });
       73 | });
 

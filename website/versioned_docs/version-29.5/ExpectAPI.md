@@ -1364,7 +1364,7 @@ function toBeWithinRange(actual, floor, ceiling) {
     typeof floor !== 'number' ||
     typeof ceiling !== 'number'
   ) {
-    throw new Error('These must be of type number!');
+    throw new TypeError('These must be of type number!');
   }
 
   const pass = actual >= floor && actual <= ceiling;
@@ -1439,7 +1439,7 @@ const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
       typeof floor !== 'number' ||
       typeof ceiling !== 'number'
     ) {
-      throw new Error('These must be of type number!');
+      throw new TypeError('These must be of type number!');
     }
 
     const pass = actual >= floor && actual <= ceiling;
@@ -1664,7 +1664,7 @@ expect.extend({
   toMatchTrimmedSnapshot(received, length) {
     return toMatchSnapshot.call(
       this,
-      received.substring(0, length),
+      received.slice(0, length),
       'toMatchTrimmedSnapshot',
     );
   },
@@ -1688,7 +1688,7 @@ const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedInlineSnapshot(received, ...rest) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
+    return toMatchInlineSnapshot.call(this, received.slice(0, 10), ...rest);
   },
 });
 

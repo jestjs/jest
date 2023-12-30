@@ -68,7 +68,7 @@ jest.doMock(
 
 const watch = require('../watch').default;
 
-const nextTick = () => new Promise(res => process.nextTick(res));
+const nextTick = () => new Promise(resolve => process.nextTick(resolve));
 
 const globalConfig = {
   rootDir: '',

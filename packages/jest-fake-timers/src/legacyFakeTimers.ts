@@ -324,9 +324,9 @@ export default class FakeTimers<TimerRef = unknown> {
     let errThrown = false;
     try {
       cb();
-    } catch (e) {
+    } catch (error) {
       errThrown = true;
-      cbErr = e;
+      cbErr = error;
     }
 
     this._global.clearImmediate = prevClearImmediate;
@@ -431,11 +431,16 @@ export default class FakeTimers<TimerRef = unknown> {
     }
   }
 
-  private _createMocks() {
-    const fn = <T extends FunctionLike = UnknownFunction>(implementation?: T) =>
-      this._moduleMocker.fn(implementation);
+  #createMockFunction<T extends FunctionLike = UnknownFunction>(
+    implementation: T,
+  ) {
+    return this._moduleMocker.fn(implementation.bind(this));
+  }
 
-    const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
+  private _createMocks() {
+    const promisifiableFakeSetTimeout = this.#createMockFunction(
+      this._fakeSetTimeout,
+    );
     // @ts-expect-error: no index
     promisifiableFakeSetTimeout[promisify.custom] = (
       delay?: number,
@@ -444,14 +449,16 @@ export default class FakeTimers<TimerRef = unknown> {
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 
     this._fakeTimerAPIs = {
-      cancelAnimationFrame: fn(this._fakeClearTimer.bind(this)),
-      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
-      clearInterval: fn(this._fakeClearTimer.bind(this)),
-      clearTimeout: fn(this._fakeClearTimer.bind(this)),
-      nextTick: fn(this._fakeNextTick.bind(this)),
-      requestAnimationFrame: fn(this._fakeRequestAnimationFrame.bind(this)),
-      setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      setInterval: fn(this._fakeSetInterval.bind(this)),
+      cancelAnimationFrame: this.#createMockFunction(this._fakeClearTimer),
+      clearImmediate: this.#createMockFunction(this._fakeClearImmediate),
+      clearInterval: this.#createMockFunction(this._fakeClearTimer),
+      clearTimeout: this.#createMockFunction(this._fakeClearTimer),
+      nextTick: this.#createMockFunction(this._fakeNextTick),
+      requestAnimationFrame: this.#createMockFunction(
+        this._fakeRequestAnimationFrame,
+      ),
+      setImmediate: this.#createMockFunction(this._fakeSetImmediate),
+      setInterval: this.#createMockFunction(this._fakeSetInterval),
       setTimeout: promisifiableFakeSetTimeout,
     };
   }
@@ -513,7 +520,7 @@ export default class FakeTimers<TimerRef = unknown> {
 
     this._timerAPIs.setImmediate(() => {
       if (!this._disposed) {
-        if (this._immediates.find(x => x.uuid === uuid)) {
+        if (this._immediates.some(x => x.uuid === uuid)) {
           try {
             callback.apply(null, args);
           } finally {
@@ -560,7 +567,7 @@ export default class FakeTimers<TimerRef = unknown> {
       return null;
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise,unicorn/prefer-math-trunc
     delay = Number(delay) | 0;
 
     const uuid = this._uuidCounter++;

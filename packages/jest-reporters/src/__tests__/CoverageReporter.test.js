@@ -439,7 +439,7 @@ describe('onRunComplete', () => {
       .onRunComplete(new Set(), {}, mockAggResults)
       .then(() => {
         expect(istanbulReports.create).toHaveBeenCalledWith('json', {
-          maxCols: process.stdout.columns || Infinity,
+          maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
         });
         expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
           maxCols: 10,

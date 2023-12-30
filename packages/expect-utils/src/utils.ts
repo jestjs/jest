@@ -334,7 +334,7 @@ const isObject = (a: any) => a !== null && typeof a === 'object';
 const isObjectWithKeys = (a: any) =>
   isObject(a) &&
   !(a instanceof Error) &&
-  !(a instanceof Array) &&
+  !Array.isArray(a) &&
   !(a instanceof Date);
 
 export const subsetEquality = (
@@ -472,7 +472,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
   }
 
   // will match everything that's not a dot or a bracket, and "" for consecutive dots.
-  const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
+  const pattern = new RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
 
   // Because the regex won't match a dot in the beginning of the path, if present.
   if (propertyPath[0] === '.') {
@@ -503,7 +503,7 @@ export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
 }
 
-const MULTILINE_REGEXP = /[\r\n]/;
+const MULTILINE_REGEXP = /[\n\r]/;
 
 export const isOneline = (expected: unknown, received: unknown): boolean =>
   typeof expected === 'string' &&

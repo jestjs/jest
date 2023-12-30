@@ -24,7 +24,7 @@ it('code coverage for transform instrumented code', () => {
   expect(result.exitCode).toBe(0);
 
   const coverageMapFile = path.join(coverageDir, 'coverage-final.json');
-  const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
+  const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf8'));
 
   // reduce absolute paths embedded in the coverage map to just filenames
   for (const filename of Object.keys(coverageMap)) {

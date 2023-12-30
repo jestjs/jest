@@ -89,7 +89,7 @@ export default class SpyStrategy {
 
     this.callFake = function (fn) {
       if (typeof fn !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Argument passed to callFake should be a function, got ${fn}`,
         );
       }

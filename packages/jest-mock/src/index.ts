@@ -30,7 +30,7 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   length?: number;
 };
 
-export type ClassLike = {new (...args: any): any};
+export type ClassLike = new (...args: any) => any;
 export type FunctionLike = (...args: any) => any;
 
 export type ConstructorLikeKeys<T> = keyof {
@@ -91,7 +91,7 @@ export type MockedShallow<T> = T extends ClassLike
       : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
-export type UnknownClass = {new (...args: Array<unknown>): unknown};
+export type UnknownClass = new (...args: Array<unknown>) => unknown;
 
 export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
@@ -533,9 +533,7 @@ export class ModuleMocker {
     ) {
       const ownNames = Object.getOwnPropertyNames(object);
 
-      for (let i = 0; i < ownNames.length; i++) {
-        const prop = ownNames[i];
-
+      for (const prop of ownNames) {
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
@@ -568,7 +566,7 @@ export class ModuleMocker {
       this._mockState.set(f, state);
     }
     if (state.calls.length > 0) {
-      state.lastCall = state.calls[state.calls.length - 1];
+      state.lastCall = state.calls.at(-1);
     }
     return state;
   }
@@ -885,7 +883,7 @@ export class ModuleMocker {
     // if-do-while for perf reasons. The common case is for the if to fail.
     if (name.startsWith(boundFunctionPrefix)) {
       do {
-        name = name.substring(boundFunctionPrefix.length);
+        name = name.slice(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
         bindCall = '.bind(null)';
       } while (name && name.startsWith(boundFunctionPrefix));
@@ -1049,7 +1047,7 @@ export class ModuleMocker {
         if (
           type === 'function' &&
           this.isMockFunction(component) &&
-          slot.match(/^mock/)
+          slot.startsWith('mock')
         ) {
           continue;
         }
@@ -1152,7 +1150,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the \`${String(
             methodKey,
           )}\` property because it is not a function; ${this._typeOf(
@@ -1249,7 +1247,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the ${String(
             propertyKey,
           )} property because it is not a function; ${this._typeOf(
@@ -1342,7 +1340,7 @@ export class ModuleMocker {
     }
 
     if (typeof descriptor.value === 'function') {
-      throw new Error(
+      throw new TypeError(
         `Cannot replace the \`${String(
           propertyKey,
         )}\` property because it is a function. Use \`jest.spyOn(object, '${String(

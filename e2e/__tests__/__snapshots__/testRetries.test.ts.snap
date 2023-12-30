@@ -46,7 +46,7 @@ exports[`Test Retries wait before retry 1`] = `
 
     Received: true
 
-      15 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      15 |     expect(Date.now() - startTimeInSeconds).toBeGreaterThan(200);
       16 |   } else {
     > 17 |     expect(true).toBeFalsy();
          |                  ^
@@ -62,7 +62,7 @@ exports[`Test Retries wait before retry 1`] = `
 
     Received: true
 
-      15 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      15 |     expect(Date.now() - startTimeInSeconds).toBeGreaterThan(200);
       16 |   } else {
     > 17 |     expect(true).toBeFalsy();
          |                  ^
@@ -84,7 +84,7 @@ exports[`Test Retries wait before retry with fake timers 1`] = `
 
     Received: true
 
-      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      16 |     expect(Date.now() - startTimeInSeconds).toBeGreaterThan(200);
       17 |   } else {
     > 18 |     expect(true).toBeFalsy();
          |                  ^
@@ -100,7 +100,7 @@ exports[`Test Retries wait before retry with fake timers 1`] = `
 
     Received: true
 
-      16 |     expect(new Date().getTime() - startTimeInSeconds).toBeGreaterThan(200);
+      16 |     expect(Date.now() - startTimeInSeconds).toBeGreaterThan(200);
       17 |   } else {
     > 18 |     expect(true).toBeFalsy();
          |                  ^

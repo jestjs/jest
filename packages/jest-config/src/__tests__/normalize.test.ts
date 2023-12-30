@@ -74,9 +74,9 @@ it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
   const expected = createHash('sha1')
     .update('/root/path/foo')
-    .update(String(Infinity))
+    .update(String(Number.POSITIVE_INFINITY))
     .digest('hex')
-    .substring(0, 32);
+    .slice(0, 32);
   const {options} = await normalize(
     {
       rootDir,
@@ -1100,7 +1100,7 @@ describe('preset', () => {
     );
 
     const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
-      ? /Unexpected token } in JSON at position (104|110)[\s\S]* at /
+      ? /Unexpected token } in JSON at position (104|110)[\S\s]* at /
       : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
 
     await expect(
@@ -1119,13 +1119,14 @@ describe('preset', () => {
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => ({
         // @ts-expect-error: Testing runtime error
+        // eslint-disable-next-line unicorn/prefer-prototype-methods
         transform: {}.nonExistingProp.call(),
       }),
       {virtual: true},
     );
 
     const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
-      ? /TypeError: Cannot read property 'call' of undefined[\s\S]* at /
+      ? /TypeError: Cannot read property 'call' of undefined[\S\s]* at /
       : "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(

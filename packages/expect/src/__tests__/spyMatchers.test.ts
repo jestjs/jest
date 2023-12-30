@@ -649,7 +649,7 @@ describe.each([
       fn('foo1', 'bar');
 
       expect(() => {
-        jestExpect(fn).not[calledWith](Infinity, 'foo1', 'bar');
+        jestExpect(fn).not[calledWith](Number.POSITIVE_INFINITY, 'foo1', 'bar');
       }).toThrowErrorMatchingSnapshot();
     });
   }

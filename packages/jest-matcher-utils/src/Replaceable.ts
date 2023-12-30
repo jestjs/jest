@@ -7,7 +7,7 @@
 
 import {getType} from 'jest-get-type';
 
-const supportTypes = ['map', 'array', 'object'];
+const supportTypes = new Set(['map', 'array', 'object']);
 
 type ReplaceableForEachCallBack = (
   value: unknown,
@@ -23,7 +23,7 @@ export default class Replaceable {
   constructor(object: any) {
     this.object = object;
     this.type = getType(object);
-    if (!supportTypes.includes(this.type)) {
+    if (!supportTypes.has(this.type)) {
       throw new Error(`Type ${this.type} is not support in Replaceable!`);
     }
   }
@@ -31,7 +31,7 @@ export default class Replaceable {
   static isReplaceable(obj1: unknown, obj2: unknown): boolean {
     const obj1Type = getType(obj1);
     const obj2Type = getType(obj2);
-    return obj1Type === obj2Type && supportTypes.includes(obj1Type);
+    return obj1Type === obj2Type && supportTypes.has(obj1Type);
   }
 
   forEach(cb: ReplaceableForEachCallBack): void {

@@ -33,6 +33,8 @@ module.exports = {
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
+    'plugin:unicorn/recommended',
+    'plugin:promise/recommended',
     'plugin:prettier/recommended',
   ],
   globals: {
@@ -40,7 +42,12 @@ module.exports = {
   },
   overrides: [
     {
-      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/strict',
+        'plugin:@typescript-eslint/stylistic',
+        'plugin:import/typescript',
+      ],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
@@ -58,6 +65,7 @@ module.exports = {
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/consistent-indexed-object-style': 'off',
         // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
@@ -67,10 +75,7 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-invalid-void-type': 'off',
-
-        // TODO: part of "stylistic" rules, remove explicit activation when that lands
-        '@typescript-eslint/no-empty-function': 'error',
-        '@typescript-eslint/no-empty-interface': 'error',
+        '@typescript-eslint/consistent-type-definitions': 'off',
 
         // not needed to be enforced for TS
         'import/namespace': 'off',
@@ -229,6 +234,10 @@ module.exports = {
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/no-static-only-class': 'off',
+        'unicorn/prefer-number-properties': 'off',
       },
     },
     // demonstration of matchers usage
@@ -324,6 +333,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/class-literal-property-style': 'off',
       },
     },
     {
@@ -336,6 +346,8 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/consistent-function-scoping': 'off',
       },
     },
     {
@@ -370,6 +382,7 @@ module.exports = {
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
+        'unicorn/consistent-function-scoping': 'off',
       },
     },
     {
@@ -412,12 +425,43 @@ module.exports = {
         'no-unused-vars': 'off',
       },
     },
+    {
+      files: 'packages/jest-mock/src/__tests__/**/*',
+      rules: {
+        'unicorn/no-static-only-class': 'off',
+      },
+    },
+    {
+      files: '**/*.mjs',
+      rules: {
+        'unicorn/prefer-top-level-await': 'error',
+      },
+    },
+    {
+      files: [
+        'e2e/coverage-report/__mocks__/sumDependency.js',
+        'e2e/require-main-after-create-require/empty.js',
+        'packages/create-jest/src/__tests__/__fixtures__/**/*',
+        'packages/jest-core/src/__tests__/**/*',
+        'packages/jest-haste-map/src/__tests__/test_dotfiles_root/**/*',
+        'packages/jest-resolve/src/__mocks__/**/*',
+      ],
+      rules: {
+        'unicorn/no-empty-file': 'off',
+      },
+    },
+    {
+      files: 'packages/expect/src/__tests__/*.test.js',
+      rules: {
+        'unicorn/prefer-number-properties': 'off',
+      },
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jsdoc', 'unicorn'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -540,9 +584,7 @@ module.exports = {
     'no-multi-str': 'error',
     'no-multiple-empty-lines': 'off',
     'no-native-reassign': ['error', {exceptions: ['Map', 'Set']}],
-    'no-negated-condition': 'off',
     'no-negated-in-lhs': 'error',
-    'no-nested-ternary': 'off',
     'no-new': 'warn',
     'no-new-func': 'error',
     'no-new-object': 'warn',
@@ -604,6 +646,11 @@ module.exports = {
     'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'error',
+
+    'promise/always-return': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/no-callback-in-promise': 'off',
+
     quotes: [
       'error',
       'single',
@@ -625,13 +672,48 @@ module.exports = {
     'wrap-regex': 'off',
     yoda: 'off',
 
-    'unicorn/explicit-length-check': 'error',
-    'unicorn/no-array-for-each': 'error',
-    'unicorn/no-negated-condition': 'error',
-    'unicorn/numeric-separators-style': 'error',
-    'unicorn/prefer-default-parameters': 'error',
-    'unicorn/prefer-includes': 'error',
-    'unicorn/template-indent': 'error',
+    // doesn't work without ESModuleInterop
+    'unicorn/import-style': 'off',
+    // we're a CJS project
+    'unicorn/prefer-module': 'off',
+
+    // enforced by `@typescript-eslint/no-this-alias` already
+    'unicorn/no-this-assignment': 'off',
+
+    // Not an issue with TypeScript
+    'unicorn/no-array-callback-reference': 'off',
+
+    // reduce is fine
+    'unicorn/no-array-reduce': 'off',
+
+    // nah
+    'unicorn/consistent-destructuring': 'off',
+    'unicorn/no-lonely-if': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/no-process-exit': 'off',
+    'unicorn/no-useless-undefined': 'off',
+    'unicorn/prefer-event-target': 'off',
+    'unicorn/prefer-switch': 'off',
+    'unicorn/prefer-ternary': 'off',
+    'unicorn/prefer-top-level-await': 'off',
+    'unicorn/switch-case-braces': 'off',
+
+    // TODO: decide whether or not we want these
+    'unicorn/filename-case': 'off',
+    'unicorn/prefer-reflect-apply': 'off',
+
+    // TODO: turn on at some point
+    'unicorn/error-message': 'off',
+    'unicorn/no-object-as-default-parameter': 'off',
+    'unicorn/prefer-object-from-entries': 'off',
+    'unicorn/prefer-spread': 'off',
+    'unicorn/prefer-string-replace-all': 'off',
+    'unicorn/prevent-abbreviations': 'off',
+
+    // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
+    'unicorn/prefer-export-from': 'off',
+    // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
+    'unicorn/prefer-node-protocol': 'off',
   },
   settings: {
     'import/ignore': ['react-native'],

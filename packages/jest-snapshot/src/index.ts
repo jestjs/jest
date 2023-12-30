@@ -83,7 +83,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
     return inlineSnapshot;
   }
 
-  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+  if (lines[0].trim() !== '' || lines.at(-1)!.trim() !== '') {
     // If not blank first and last lines, abort.
     return inlineSnapshot;
   }
@@ -97,7 +97,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
         return inlineSnapshot;
       }
 
-      lines[i] = lines[i].substring(indentation.length);
+      lines[i] = lines[i].slice(indentation.length);
     }
   }
 
@@ -514,8 +514,8 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e) {
-      error = e;
+    } catch (receivedError) {
+      error = receivedError;
     }
   }
 

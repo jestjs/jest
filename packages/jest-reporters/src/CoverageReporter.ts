@@ -85,18 +85,18 @@ export default class CoverageReporter extends BaseReporter {
         }
         istanbulReports
           .create(reporter, {
-            maxCols: process.stdout.columns || Infinity,
+            maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
             ...additionalOptions,
           })
           .execute(reportContext);
       }
       aggregatedResults.coverageMap = map;
-    } catch (e: any) {
+    } catch (error: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
-        ERROR: ${e.toString()}
-        STACK: ${e.stack}
+        ERROR: ${error.toString()}
+        STACK: ${error.stack}
       `),
       );
     }

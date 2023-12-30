@@ -64,7 +64,7 @@ jest.mock('graceful-fs', () => {
       // readdir has an optional `options` arg that's in the middle of the args list.
       // we always provide it in practice, but let's try to handle the case where it's not
       // provided too
-      if (typeof callback === 'undefined') {
+      if (callback === undefined) {
         if (typeof options === 'function') {
           callback = options;
         }

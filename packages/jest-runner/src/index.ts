@@ -72,13 +72,6 @@ export default class TestRunner extends EmittingTestRunner {
                 throw new CancelRun();
               }
 
-              // `deepCyclicCopy` used here to avoid mem-leak
-              const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this.#eventEmitter.emit(
-                  eventName,
-                  deepCyclicCopy(args, {keepPrototype: false}),
-                );
-
               await this.#eventEmitter.emit('test-file-start', [test]);
 
               return runTest(
@@ -87,7 +80,7 @@ export default class TestRunner extends EmittingTestRunner {
                 test.context.config,
                 test.context.resolver,
                 this._context,
-                sendMessageToJest,
+                this.#sendMessageToJest,
               );
             })
             .then(
@@ -102,7 +95,7 @@ export default class TestRunner extends EmittingTestRunner {
   }
 
   async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
-    const resolvers: Map<string, SerializableResolver> = new Map();
+    const resolvers = new Map<string, SerializableResolver>();
     for (const test of tests) {
       if (!resolvers.has(test.context.config.id)) {
         resolvers.set(test.context.config.id, {
@@ -137,7 +130,7 @@ export default class TestRunner extends EmittingTestRunner {
     const runTestInWorker = (test: Test) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
-          return Promise.reject();
+          throw new Error();
         }
 
         await this.#eventEmitter.emit('test-file-start', [test]);
@@ -167,7 +160,7 @@ export default class TestRunner extends EmittingTestRunner {
         return promise;
       });
 
-    const onInterrupt = new Promise((_, reject) => {
+    const onInterrupt = new Promise((_resolve, reject) => {
       watcher.on('change', state => {
         if (state.interrupted) {
           reject(new CancelRun());
@@ -208,6 +201,14 @@ export default class TestRunner extends EmittingTestRunner {
   ): UnsubscribeFn {
     return this.#eventEmitter.on(eventName, listener);
   }
+
+  #sendMessageToJest: TestFileEvent = async (eventName, args) => {
+    await this.#eventEmitter.emit(
+      eventName,
+      // `deepCyclicCopy` used here to avoid mem-leak
+      deepCyclicCopy(args, {keepPrototype: false}),
+    );
+  };
 }
 
 class CancelRun extends Error {

@@ -79,9 +79,9 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err: any) {
+    } catch (error: any) {
       throw new Error(
-        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+        `Can't parse the JSON result from ${outputFileName}, ${error.toString()}`,
       );
     }
 
@@ -110,9 +110,9 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err: any) {
+    } catch (error: any) {
       throw new Error(
-        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+        `Can't parse the JSON result from ${outputFileName}, ${error.toString()}`,
       );
     }
 
@@ -141,9 +141,9 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err: any) {
+    } catch (error: any) {
       throw new Error(
-        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+        `Can't parse the JSON result from ${outputFileName}, ${error.toString()}`,
       );
     }
 

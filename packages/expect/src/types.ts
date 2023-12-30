@@ -98,11 +98,10 @@ export interface BaseExpect {
   setState(state: Partial<MatcherState>): void;
 }
 
-export type Expect = {
-  <T = unknown>(
-    actual: T,
-  ): Matchers<void, T> & Inverse<Matchers<void, T>> & PromiseMatchers<T>;
-} & BaseExpect &
+export type Expect = (<T = unknown>(
+  actual: T,
+) => Matchers<void, T> & Inverse<Matchers<void, T>> & PromiseMatchers<T>) &
+  BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
 

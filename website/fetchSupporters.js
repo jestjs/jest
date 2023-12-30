@@ -49,7 +49,7 @@ request('https://api.opencollective.com/graphql/v2', graphqlQuery)
   .then(() => {
     console.log('Fetched 1 file: backers.json');
   })
-  .catch(e => {
-    console.error('Failed to write backers file: ', e);
+  .catch(error => {
+    console.error('Failed to write backers file:', error);
     process.exitCode = 1;
   });

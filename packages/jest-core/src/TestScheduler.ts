@@ -114,7 +114,7 @@ class TestScheduler {
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
-        return Promise.resolve();
+        return;
       }
 
       if (testResult.testResults.length === 0) {

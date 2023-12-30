@@ -79,7 +79,7 @@ export async function buildArgv(
 }
 
 const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
-  const projects = argv.projects ? argv.projects : [];
+  const projects = argv.projects ?? [];
 
   if (project) {
     projects.push(project);

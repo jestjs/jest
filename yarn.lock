@@ -3040,6 +3040,7 @@ __metadata:
     eslint-plugin-local: "link:./.eslintplugin"
     eslint-plugin-markdown: ^3.0.0
     eslint-plugin-prettier: ^5.0.0
+    eslint-plugin-promise: ^6.1.1
     eslint-plugin-unicorn: ^50.0.0
     execa: ^5.0.0
     find-process: ^1.4.1
@@ -9644,6 +9645,15 @@ __metadata:
     eslint-config-prettier:
       optional: true
   checksum: ee972ca16c1d05773abe370dcd43c71ffe729ad4eca86752e21be3d4afbc18f04184b4143e9d17869395d534eb8ad685b7589fcdc2706cb734fe17c3c3f4e6cd
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-promise@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "eslint-plugin-promise@npm:6.1.1"
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+  checksum: 46b9a4f79dae5539987922afc27cc17cbccdecf4f0ba19c0ccbf911b0e31853e9f39d9959eefb9637461b52772afa1a482f1f87ff16c1ba38bdb6fcf21897e9a
   languageName: node
   linkType: hard
 
