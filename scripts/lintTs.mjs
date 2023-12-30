@@ -174,12 +174,12 @@ try {
       }),
     ),
   );
-} catch (e) {
+} catch (error) {
   console.error(
     chalk.inverse.red(' Unable to lint using TypeScript info files '),
   );
 
-  throw e;
+  throw error;
 }
 
 if (allLintResults.length > 0) {

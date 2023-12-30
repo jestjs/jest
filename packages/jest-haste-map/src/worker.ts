@@ -66,8 +66,8 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
         id = fileData.name;
         module = [relativeFilePath, H.PACKAGE];
       }
-    } catch (err: any) {
-      throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
+    } catch (error: any) {
+      throw new Error(`Cannot parse ${filePath} as JSON: ${error.message}`);
     }
   } else if (!blacklist.has(filePath.slice(filePath.lastIndexOf('.')))) {
     // Process a random file that is returned as a MODULE.

@@ -21,8 +21,8 @@ describe('parent', () => {
         try {
           expect(() => new Promise()).toThrow('Booo');
           done();
-        } catch (e) {
-          done.fail(e);
+        } catch (error) {
+          done.fail(error);
         }
       }, 10);
     });

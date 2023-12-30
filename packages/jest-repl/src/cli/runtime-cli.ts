@@ -140,8 +140,10 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e: any) {
-    console.error(chalk.red(util.types.isNativeError(e) ? e.stack : e));
+  } catch (error: any) {
+    console.error(
+      chalk.red(util.types.isNativeError(error) ? error.stack : error),
+    );
     process.on('exit', () => {
       process.exitCode = 1;
     });

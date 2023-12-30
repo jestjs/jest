@@ -55,8 +55,8 @@ describe('isError', () => {
     testErrorFromDifferentContext(win => {
       try {
         win.document.querySelectorAll('');
-      } catch (e) {
-        return e as Error;
+      } catch (error) {
+        return error as Error;
       }
 
       return null;

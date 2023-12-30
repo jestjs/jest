@@ -1153,8 +1153,8 @@ export default class Runtime {
       } else {
         return this.requireModule<T>(from, moduleName);
       }
-    } catch (e) {
-      const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
+    } catch (error) {
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(error);
       if (moduleNotFound) {
         if (
           moduleNotFound.siblingWithSimilarExtensionFound === null ||
@@ -1172,7 +1172,7 @@ export default class Runtime {
         moduleNotFound.buildMessage(this._config.rootDir);
         throw moduleNotFound;
       }
-      throw e;
+      throw error;
     }
   }
 
@@ -1477,13 +1477,13 @@ export default class Runtime {
 
     try {
       return this._resolveCjsModule(from, moduleName);
-    } catch (err) {
+    } catch (error) {
       const module = this._resolver.getMockModule(from, moduleName);
 
       if (module) {
         return module;
       } else {
-        throw err;
+        throw error;
       }
     }
   }
@@ -1720,8 +1720,8 @@ export default class Runtime {
           return this.linkAndEvaluateModule(module);
         },
       });
-    } catch (e: any) {
-      throw handlePotentialSyntaxError(e);
+    } catch (error: any) {
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -1946,13 +1946,13 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = this._resolveCjsModule(from, moduleName);
-    } catch (e) {
+    } catch (error) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
       }
-      throw e;
+      throw error;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {
@@ -2017,7 +2017,7 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = await this._resolveModule(from, moduleName);
-    } catch (e) {
+    } catch (error) {
       const manualMock = await this._resolver.getMockModuleAsync(
         from,
         moduleName,
@@ -2026,7 +2026,7 @@ export default class Runtime {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
       }
-      throw e;
+      throw error;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {

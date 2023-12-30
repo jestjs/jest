@@ -193,7 +193,7 @@ const makeResolveMatcher =
           null,
           args,
         ),
-      reason => {
+      error => {
         outerErr.message =
           `${matcherUtils.matcherHint(
             matcherName,
@@ -202,7 +202,7 @@ const makeResolveMatcher =
             options,
           )}\n\n` +
           'Received promise rejected instead of resolved\n' +
-          `Rejected to value: ${matcherUtils.printReceived(reason)}`;
+          `Rejected to value: ${matcherUtils.printReceived(error)}`;
         throw outerErr;
       },
     );
@@ -256,8 +256,8 @@ const makeRejectMatcher =
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         throw outerErr;
       },
-      reason =>
-        makeThrowingMatcher(matcher, isNot, 'rejects', reason, innerErr).apply(
+      error =>
+        makeThrowingMatcher(matcher, isNot, 'rejects', error, innerErr).apply(
           null,
           args,
         ),

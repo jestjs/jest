@@ -324,9 +324,9 @@ export default class FakeTimers<TimerRef = unknown> {
     let errThrown = false;
     try {
       cb();
-    } catch (e) {
+    } catch (error) {
       errThrown = true;
-      cbErr = e;
+      cbErr = error;
     }
 
     this._global.clearImmediate = prevClearImmediate;

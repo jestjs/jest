@@ -38,7 +38,7 @@ export default function bind<EachCallback extends Global.TestCallback>(
     table: Global.EachTable,
     ...taggedTemplateData: Global.TemplateData
   ) => {
-    const error = new ErrorWithStack(undefined, bindWrap);
+    const errorWithStack = new ErrorWithStack(undefined, bindWrap);
 
     return function eachBind(
       title: Global.BlockNameLike,
@@ -57,7 +57,7 @@ export default function bind<EachCallback extends Global.TestCallback>(
                 row.title,
                 applyArguments(supportsDone, row.arguments, test),
                 timeout,
-                error,
+                errorWithStack,
               )
             : cb(
                 row.title,
@@ -67,9 +67,12 @@ export default function bind<EachCallback extends Global.TestCallback>(
         }
 
         return;
-      } catch (e: any) {
-        const err = new Error(e.message);
-        err.stack = error.stack?.replace(/^Error: /s, `Error: ${e.message}`);
+      } catch (error: any) {
+        const err = new Error(error.message);
+        err.stack = errorWithStack.stack?.replace(
+          /^Error: /s,
+          `Error: ${error.message}`,
+        );
 
         return cb(title, () => {
           throw err;

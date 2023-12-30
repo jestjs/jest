@@ -74,12 +74,12 @@ function verifyDirectoryExists(path: string, key: string) {
         )} option is not a directory.`,
       );
     }
-  } catch (err: any) {
-    if (err instanceof ValidationError) {
-      throw err;
+  } catch (error: any) {
+    if (error instanceof ValidationError) {
+      throw error;
     }
 
-    if (err.code === 'ENOENT') {
+    if (error.code === 'ENOENT') {
       throw createConfigError(
         `  Directory ${chalk.bold(path)} in the ${chalk.bold(
           key,
@@ -91,7 +91,7 @@ function verifyDirectoryExists(path: string, key: string) {
     throw createConfigError(
       `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
         key,
-      )} option.\n\n  Error was: ${err.message}`,
+      )} option.\n\n  Error was: ${error.message}`,
     );
   }
 }

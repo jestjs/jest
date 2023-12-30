@@ -50,8 +50,10 @@ const evalCommand: repl.REPLEval = (
           : transformResult.code;
     }
     result = runInThisContext(cmd) as unknown;
-  } catch (e: any) {
-    return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
+  } catch (error: any) {
+    return callback(
+      isRecoverableError(error) ? new repl.Recoverable(error) : error,
+    );
   }
   return callback(null, result);
 };

@@ -38,14 +38,14 @@ const adapter: SCMAdapter = {
 
     try {
       result = await execa('sl', args, {cwd, env});
-    } catch (e) {
-      if (types.isNativeError(e)) {
-        const err = e as execa.ExecaError;
+    } catch (error) {
+      if (types.isNativeError(error)) {
+        const err = error as execa.ExecaError;
         // TODO: Should we keep the original `message`?
         err.message = err.stderr;
       }
 
-      throw e;
+      throw error;
     }
 
     return result.stdout

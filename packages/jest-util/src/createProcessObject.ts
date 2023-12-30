@@ -90,12 +90,12 @@ export default function createProcessObject(): typeof Process {
   try {
     // This fails on Node 12, but it's already set to 'process'
     newProcess[Symbol.toStringTag] = 'process';
-  } catch (e: any) {
+  } catch (error: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      e.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/jestjs/jest\n\n${e.message}`;
+      error.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/jestjs/jest\n\n${error.message}`;
 
-      throw e;
+      throw error;
     }
   }
 

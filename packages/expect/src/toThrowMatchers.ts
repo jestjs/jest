@@ -91,8 +91,8 @@ export const createMatcher = (
       if (typeof received === 'function') {
         try {
           received();
-        } catch (e) {
-          thrown = getThrown(e);
+        } catch (error) {
+          thrown = getThrown(error);
         }
       } else {
         if (!fromPromise) {

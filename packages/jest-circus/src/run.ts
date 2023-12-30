@@ -168,9 +168,9 @@ function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.catch(() => {});
       test.fn = () => promise;
-    } catch (err) {
+    } catch (error) {
       test.fn = () => {
-        throw err;
+        throw error;
       };
     }
   }

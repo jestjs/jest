@@ -19,14 +19,14 @@ const findChangedFilesUsingCommand = async (
 
   try {
     result = await execa('git', args, {cwd});
-  } catch (e) {
-    if (types.isNativeError(e)) {
-      const err = e as execa.ExecaError;
+  } catch (error) {
+    if (types.isNativeError(error)) {
+      const err = error as execa.ExecaError;
       // TODO: Should we keep the original `message`?
       err.message = err.stderr;
     }
 
-    throw e;
+    throw error;
   }
 
   return result.stdout
