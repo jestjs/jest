@@ -487,7 +487,7 @@ export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
@@ -1009,7 +1009,7 @@ export default async function normalize(
   newOptions.testPathPatterns = testPathPatterns.patterns;
   newOptions.json = !!argv.json;
 
-  newOptions.testFailureExitCode = parseInt(
+  newOptions.testFailureExitCode = Number.parseInt(
     newOptions.testFailureExitCode as unknown as string,
     10,
   );
@@ -1086,7 +1086,7 @@ export default async function normalize(
         ? 'all'
         : 'new';
 
-  newOptions.maxConcurrency = parseInt(
+  newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
     10,
   );

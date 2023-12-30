@@ -234,6 +234,7 @@ module.exports = {
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
+        'unicorn/prefer-number-properties': 'off',
         'unicorn/no-static-only-class': 'off',
       },
     },
@@ -450,6 +451,12 @@ module.exports = {
       ],
       rules: {
         'unicorn/no-empty-file': 'off',
+      },
+    },
+    {
+      files: 'packages/expect/src/__tests__/*.test.js',
+      rules: {
+        'unicorn/prefer-number-properties': 'off',
       },
     },
   ],
@@ -707,9 +714,6 @@ module.exports = {
     'unicorn/no-typeof-undefined': 'off',
     'unicorn/no-useless-undefined': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',
-    'unicorn/prefer-math-trunc': 'off',
-    'unicorn/prefer-native-coercion-functions': 'off',
-    'unicorn/prefer-number-properties': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-prototype-methods': 'off',
     'unicorn/prefer-spread': 'off',

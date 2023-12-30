@@ -74,7 +74,7 @@ it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
   const expected = createHash('sha1')
     .update('/root/path/foo')
-    .update(String(Infinity))
+    .update(String(Number.POSITIVE_INFINITY))
     .digest('hex')
     .slice(0, 32);
   const {options} = await normalize(

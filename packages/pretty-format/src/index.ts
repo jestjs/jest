@@ -175,7 +175,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
+    return Number.isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);
@@ -410,8 +410,8 @@ export const DEFAULT_OPTIONS = toOptionsSubtype({
   escapeString: true,
   highlight: false,
   indent: 2,
-  maxDepth: Infinity,
-  maxWidth: Infinity,
+  maxDepth: Number.POSITIVE_INFINITY,
+  maxWidth: Number.POSITIVE_INFINITY,
   min: false,
   plugins: [],
   printBasicPrototype: true,

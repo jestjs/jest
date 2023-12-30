@@ -47,7 +47,7 @@ test('assert.notDeepEqual', () => {
 });
 
 test('assert.strictEqual', () => {
-  assert.strictEqual(1, NaN);
+  assert.strictEqual(1, Number.NaN);
 });
 
 test('assert.notStrictEqual', () => {

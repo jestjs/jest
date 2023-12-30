@@ -560,7 +560,7 @@ export default class FakeTimers<TimerRef = unknown> {
       return null;
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise,unicorn/prefer-math-trunc
     delay = Number(delay) | 0;
 
     const uuid = this._uuidCounter++;

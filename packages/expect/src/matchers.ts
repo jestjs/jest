@@ -176,9 +176,15 @@ const matchers: MatchersObject = {
     let expectedDiff = 0;
     let receivedDiff = 0;
 
-    if (received === Infinity && expected === Infinity) {
+    if (
+      received === Number.POSITIVE_INFINITY &&
+      expected === Number.POSITIVE_INFINITY
+    ) {
       pass = true; // Infinity - Infinity is NaN
-    } else if (received === -Infinity && expected === -Infinity) {
+    } else if (
+      received === Number.NEGATIVE_INFINITY &&
+      expected === Number.NEGATIVE_INFINITY
+    ) {
       pass = true; // -Infinity - -Infinity is NaN
     } else {
       expectedDiff = Math.pow(10, -precision) / 2;

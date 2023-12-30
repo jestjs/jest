@@ -950,8 +950,8 @@ describe('Immutable.Seq lazy values', () => {
   const filterer = (item: string) => item.length > 0;
 
   test('from Immutable.Range', () => {
-    const val = Immutable.Range(1, Infinity);
-    expect(val.size).toBe(Infinity);
+    const val = Immutable.Range(1, Number.POSITIVE_INFINITY);
+    expect(val.size).toBe(Number.POSITIVE_INFINITY);
     expect(val).toPrettyPrintTo(expected);
   });
 
