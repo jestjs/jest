@@ -713,7 +713,6 @@ module.exports = {
     'unicorn/error-message': 'off',
     'unicorn/no-await-expression-member': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
-    'unicorn/no-typeof-undefined': 'off',
     'unicorn/prefer-logical-operator-over-ternary': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-spread': 'off',
