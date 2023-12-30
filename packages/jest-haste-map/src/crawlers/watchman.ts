@@ -222,7 +222,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
           );
 
           if ('warning' in response) {
-            console.warn('watchman warning: ', response.warning);
+            console.warn('watchman warning:', response.warning);
           }
 
           // When a source-control query is used, we ignore the "is fresh"
