@@ -12,6 +12,7 @@ import type {NodePath} from '@babel/traverse';
 import {
   type BlockStatement,
   type CallExpression,
+  type EmptyStatement,
   type Expression,
   type Identifier,
   type ImportDeclaration,
@@ -315,10 +316,11 @@ const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
 
 function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
   // use a temporary empty statement instead of the real first statement, which may itself be hoisted
-  const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer('body', [
-    emptyStatement(),
-    emptyStatement(),
-  ]);
+  const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer<
+    BlockStatement | Program,
+    'body',
+    [EmptyStatement, EmptyStatement]
+  >('body', [emptyStatement(), emptyStatement()]);
   block.traverse({
     CallExpression: visitCallExpr,
     VariableDeclarator: visitVariableDeclarator,
