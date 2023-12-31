@@ -698,7 +698,6 @@ module.exports = {
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
-    'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-string-replace-all': 'off',
 
