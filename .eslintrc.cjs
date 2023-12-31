@@ -697,7 +697,6 @@ module.exports = {
 
     // TODO: turn on at some point
     'unicorn/error-message': 'off',
-    'unicorn/prefer-object-from-entries': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',
