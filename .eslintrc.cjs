@@ -697,7 +697,6 @@ module.exports = {
 
     // TODO: turn on at some point
     'unicorn/error-message': 'off',
-    'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/prefer-object-from-entries': 'off',
     'unicorn/prefer-string-replace-all': 'off',
 
