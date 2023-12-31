@@ -83,13 +83,6 @@ module.exports = {
     },
     {
       files: [
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/createSpy.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
         'packages/jest-mock/src/index.ts',
         'packages/pretty-format/src/__tests__/Immutable.test.ts',
@@ -104,11 +97,6 @@ module.exports = {
       files: [
         'packages/expect/src/index.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-jasmine2/src/jestExpect.ts',
         'packages/jest-resolve/src/resolver.ts',
       ],
@@ -127,8 +115,6 @@ module.exports = {
         'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
         'packages/jest-matcher-utils/src/index.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
@@ -356,8 +342,12 @@ module.exports = {
         'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
+        '@typescript-eslint/ban-types': 'off',
         'eslint-comments/disable-enable-pair': 'off',
         'eslint-comments/no-unlimited-disable': 'off',
+        'prefer-rest-params': 'off',
+        'prefer-spread': 'off',
+        'sort-keys ': 'off',
       },
     },
     {
