@@ -130,7 +130,7 @@ const useBuitinsInContext = value => {
   switch (stringTag) {
     case '[object Map]':
       return new Map(
-        Array.from(value).map(([k, v]) => [
+        [...value].map(([k, v]) => [
           useBuitinsInContext(k),
           useBuitinsInContext(v),
         ]),

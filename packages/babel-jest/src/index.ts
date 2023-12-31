@@ -51,7 +51,8 @@ function addIstanbulInstrumentation(
     const copiedBabelOptions: TransformOptions = {...babelOptions};
     copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
     // Copied from jest-runtime transform.js
-    copiedBabelOptions.plugins = (copiedBabelOptions.plugins ?? []).concat([
+    copiedBabelOptions.plugins = [
+      ...(copiedBabelOptions.plugins ?? []),
       [
         babelIstanbulPlugin,
         {
@@ -60,7 +61,7 @@ function addIstanbulInstrumentation(
           exclude: [],
         },
       ],
-    ]);
+    ];
 
     return copiedBabelOptions;
   }
@@ -166,9 +167,9 @@ export const createTransformer: TransformerCreator<
     },
     compact: false,
     plugins: inputOptions.plugins ?? [],
-    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
+    presets: [...(inputOptions.presets ?? []), jestPresetPath],
     sourceMaps: 'both',
-  } as const;
+  } satisfies TransformOptions;
 
   function mergeBabelTransformOptions(
     filename: string,

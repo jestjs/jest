@@ -234,7 +234,7 @@ const isAnyOrAnything = (input: object) =>
   ['Any', 'Anything'].includes(input.constructor.name);
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
-  const mergedOutput = Array.from(target);
+  const mergedOutput = [...target];
 
   for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];
@@ -496,7 +496,10 @@ const groupSnapshotsBy =
     snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
       (object, inlineSnapshot) => {
         const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+        return {
+          ...object,
+          [key]: [...(object[key] || []), inlineSnapshot],
+        };
       },
       {},
     );

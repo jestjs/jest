@@ -219,7 +219,7 @@ function typeTests() {
         return entries[0][1].locator;
       });
 
-    return Array.from(new Set(locators));
+    return [...new Set(locators)];
   }
 }
 

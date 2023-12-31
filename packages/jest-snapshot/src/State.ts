@@ -180,7 +180,7 @@ export default class SnapshotState {
   }
 
   getUncheckedKeys(): Array<string> {
-    return Array.from(this._uncheckedKeys);
+    return [...this._uncheckedKeys];
   }
 
   removeUncheckedKeys(): void {

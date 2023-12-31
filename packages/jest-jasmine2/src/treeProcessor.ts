@@ -80,7 +80,7 @@ export default function treeProcessor(options: Options): void {
     if (hasNoEnabledTest(node)) {
       return children;
     }
-    return node.beforeAllFns.concat(children).concat(node.afterAllFns);
+    return [...node.beforeAllFns, ...children, ...node.afterAllFns];
   }
 
   const treeHandler = getNodeHandler(tree, false);

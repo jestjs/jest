@@ -145,7 +145,7 @@ const _addSnapshotData = (
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 };
 
 export default jestAdapter;

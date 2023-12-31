@@ -45,7 +45,7 @@ jest.doMock(
   '../runJest',
   () =>
     function () {
-      const args = Array.from(arguments);
+      const args = [...arguments];
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
 

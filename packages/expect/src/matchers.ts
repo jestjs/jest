@@ -535,7 +535,7 @@ const matchers: MatchersObject = {
       return {message, pass};
     }
 
-    const indexable = Array.from(received);
+    const indexable = [...received];
     const index = indexable.indexOf(expected);
     const pass = index !== -1;
 
@@ -587,7 +587,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const index = Array.from(received).findIndex(item =>
+    const index = [...received].findIndex(item =>
       equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;

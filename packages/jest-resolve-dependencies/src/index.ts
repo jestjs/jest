@@ -133,9 +133,10 @@ export class DependencyResolver {
           }, []),
         );
       }
-      return result.concat(
-        Array.from(related).map(file => ({dependencies: [], file})),
-      );
+      return [
+        ...result,
+        ...[...related].map(file => ({dependencies: [], file})),
+      ];
     };
 
     const relatedPaths = new Set<string>();

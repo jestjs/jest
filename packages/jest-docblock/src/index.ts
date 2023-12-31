@@ -69,7 +69,12 @@ export function parseWithComments(docblock: string): {
       typeof result[match[1]] === 'string' ||
       Array.isArray(result[match[1]])
     ) {
-      result[match[1]] = STRING_ARRAY.concat(result[match[1]], nextPragma);
+      const resultElement = result[match[1]];
+      result[match[1]] = [
+        ...STRING_ARRAY,
+        ...(Array.isArray(resultElement) ? resultElement : [resultElement]),
+        nextPragma,
+      ];
     } else {
       result[match[1]] = nextPragma;
     }
@@ -123,7 +128,8 @@ export function print({
 }
 
 function printKeyValues(key: string, valueOrArray: string | Array<string>) {
-  return STRING_ARRAY.concat(valueOrArray).map(value =>
-    `@${key} ${value}`.trim(),
-  );
+  return [
+    ...STRING_ARRAY,
+    ...(Array.isArray(valueOrArray) ? valueOrArray : [valueOrArray]),
+  ].map(value => `@${key} ${value}`.trim());
 }

@@ -258,7 +258,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
-      roots: Array.from(new Set(options.roots)),
+      roots: [...new Set(options.roots)],
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
@@ -270,7 +270,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
+          `${options.ignorePattern.source}|${VCS_DIRECTORIES}`,
           options.ignorePattern.flags,
         );
       } else {

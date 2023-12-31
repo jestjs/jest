@@ -117,7 +117,7 @@ export default class TestRunner extends EmittingTestRunner {
           : undefined,
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
-      setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
+      setupArgs: [{serializableResolvers: [...resolvers.values()]}],
     }) as JestWorkerFarm<TestWorker>;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
@@ -139,12 +139,13 @@ export default class TestRunner extends EmittingTestRunner {
           config: test.context.config,
           context: {
             ...this._context,
-            changedFiles:
-              this._context.changedFiles &&
-              Array.from(this._context.changedFiles),
-            sourcesRelatedToTestsInChangedFiles:
-              this._context.sourcesRelatedToTestsInChangedFiles &&
-              Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
+            changedFiles: this._context.changedFiles && [
+              ...this._context.changedFiles,
+            ],
+            sourcesRelatedToTestsInChangedFiles: this._context
+              .sourcesRelatedToTestsInChangedFiles && [
+              ...this._context.sourcesRelatedToTestsInChangedFiles,
+            ],
           },
           globalConfig: this._globalConfig,
           path: test.path,
