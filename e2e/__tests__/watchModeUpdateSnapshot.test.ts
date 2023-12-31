@@ -17,7 +17,7 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => (val as string).replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replaceAll('[s[u', '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 

@@ -6,5 +6,5 @@
  */
 
 export default function escapeHTML(str: string): string {
-  return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }

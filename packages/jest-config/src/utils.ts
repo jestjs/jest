@@ -52,7 +52,7 @@ export const resolve = (
 };
 
 export const escapeGlobCharacters = (path: string): string =>
-  path.replace(/([!()*?[\\\]{}])/g, '\\$1');
+  path.replaceAll(/([!()*?[\\\]{}])/g, '\\$1');
 
 export const replaceRootDirInPath = (
   rootDir: string,

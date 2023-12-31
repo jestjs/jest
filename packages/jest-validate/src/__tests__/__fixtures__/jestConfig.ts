@@ -12,7 +12,7 @@ import chalk = require('chalk');
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
-    return string.replace(/(\/|\\(?!\.))/g, '\\\\');
+    return string.replaceAll(/(\/|\\(?!\.))/g, '\\\\');
   }
   return string;
 };

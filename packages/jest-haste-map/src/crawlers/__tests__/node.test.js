@@ -115,7 +115,7 @@ jest.mock('graceful-fs', () => {
 
 const pearMatcher = path => /pear/.test(path);
 const normalize = path =>
-  process.platform === 'win32' ? path.replace(/\//g, '\\') : path;
+  process.platform === 'win32' ? path.replaceAll('/', '\\') : path;
 const createMap = obj =>
   new Map(Object.keys(obj).map(key => [normalize(key), obj[key]]));
 

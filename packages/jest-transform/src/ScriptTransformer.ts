@@ -224,7 +224,7 @@ class ScriptTransformer {
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
-      .replace(/\W/g, '');
+      .replaceAll(/\W/g, '');
     return slash(path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`));
   }
 

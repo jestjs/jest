@@ -699,7 +699,6 @@ module.exports = {
     'unicorn/error-message': 'off',
     'unicorn/no-object-as-default-parameter': 'off',
     'unicorn/prefer-object-from-entries': 'off',
-    'unicorn/prefer-string-replace-all': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',

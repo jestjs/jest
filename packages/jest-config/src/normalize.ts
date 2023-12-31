@@ -300,7 +300,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   options[key]!.map(pattern =>
-    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+    replacePathSepForRegex(pattern.replaceAll('<rootDir>', options.rootDir)),
   );
 
 const normalizeMissingOptions = (

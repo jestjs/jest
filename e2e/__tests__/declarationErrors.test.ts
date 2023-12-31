@@ -10,7 +10,7 @@ import runJest from '../runJest';
 
 const extractMessage = (str: string) =>
   extractSummary(str)
-    .rest.replace(
+    .rest.replaceAll(
       // circus-jasmine normalization
       /.+addSpecsToSuite (.+:\d+:\d+).+\n/g,
       '',

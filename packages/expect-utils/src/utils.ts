@@ -480,7 +480,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
     properties.push('');
   }
 
-  propertyPath.replace(pattern, match => {
+  propertyPath.replaceAll(pattern, match => {
     properties.push(match);
     return match;
   });
