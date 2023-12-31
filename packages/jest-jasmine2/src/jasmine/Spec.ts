@@ -131,6 +131,7 @@ export default class Spec {
     this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
+    // eslint-disable-next-line unicorn/error-message
     this.initError = new Error();
     this.initError.name = '';
 

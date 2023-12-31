@@ -432,6 +432,7 @@ const _getError = (
     asyncError = errors[1];
   } else {
     error = errors;
+    // eslint-disable-next-line unicorn/error-message
     asyncError = new Error();
   }
 

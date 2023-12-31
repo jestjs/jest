@@ -220,6 +220,7 @@ module.exports = {
         'no-unused-vars': 'off',
         'sort-keys': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
         'unicorn/no-await-expression-member': 'off',
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
@@ -373,6 +374,7 @@ module.exports = {
       rules: {
         'import/no-extraneous-dependencies': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
       },
     },
     {
@@ -696,7 +698,6 @@ module.exports = {
     'unicorn/prefer-reflect-apply': 'off',
 
     // TODO: turn on at some point
-    'unicorn/error-message': 'off',
     'unicorn/prefer-string-replace-all': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780

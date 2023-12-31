@@ -63,6 +63,7 @@ function promisifyLifeCycleFunction(
       return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
+    // eslint-disable-next-line unicorn/error-message
     const extraError = new Error();
 
     // Without this line v8 stores references to all closures
@@ -142,6 +143,7 @@ function promisifyIt(
       return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
+    // eslint-disable-next-line unicorn/error-message
     const extraError = new Error();
 
     // Without this line v8 stores references to all closures
