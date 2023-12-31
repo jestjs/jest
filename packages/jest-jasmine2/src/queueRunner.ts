@@ -39,6 +39,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
     onCancel(resolve);
   });
 
+  // eslint-disable-next-line unicorn/error-message
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise<void>(resolve => {
       const next = function (...args: [Error]) {

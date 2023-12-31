@@ -220,6 +220,7 @@ module.exports = {
         'no-unused-vars': 'off',
         'sort-keys': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
         'unicorn/no-await-expression-member': 'off',
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
@@ -373,6 +374,7 @@ module.exports = {
       rules: {
         'import/no-extraneous-dependencies': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
       },
     },
     {
@@ -694,9 +696,6 @@ module.exports = {
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
     'unicorn/prefer-reflect-apply': 'off',
-
-    // TODO: turn on at some point
-    'unicorn/error-message': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',

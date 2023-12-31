@@ -182,6 +182,7 @@ export default class FakeTimers {
           'with fake timers. Call `jest.useFakeTimers()` in this test file or enable ' +
           "fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} " +
           `in Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
             new Error().stack!,
             this._config,
             {noStackTrace: false},
