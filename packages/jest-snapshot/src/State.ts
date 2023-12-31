@@ -113,6 +113,7 @@ export default class SnapshotState {
   ): void {
     this._dirty = true;
     if (options.isInline) {
+      // eslint-disable-next-line unicorn/error-message
       const error = options.error || new Error();
       const lines = getStackTraceLines(
         removeLinesBeforeExternalMatcherTrap(error.stack || ''),

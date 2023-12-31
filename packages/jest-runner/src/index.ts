@@ -130,6 +130,7 @@ export default class TestRunner extends EmittingTestRunner {
     const runTestInWorker = (test: Test) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
+          // eslint-disable-next-line unicorn/error-message
           throw new Error();
         }
 

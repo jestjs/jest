@@ -10,7 +10,7 @@
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {isPromise} from 'jest-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import {
   any,
   anything,
@@ -428,10 +428,7 @@ const _validateResult = (result: any) => {
 };
 
 function assertions(expected: number): void {
-  const error = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(error, assertions);
-  }
+  const error = new ErrorWithStack(undefined, assertions);
 
   setState({
     expectedAssertionsNumber: expected,
@@ -439,10 +436,7 @@ function assertions(expected: number): void {
   });
 }
 function hasAssertions(...args: Array<unknown>): void {
-  const error = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(error, hasAssertions);
-  }
+  const error = new ErrorWithStack(undefined, hasAssertions);
 
   matcherUtils.ensureNoExpected(args[0], '.hasAssertions');
   setState({

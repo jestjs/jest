@@ -423,6 +423,7 @@ export default class FakeTimers<TimerRef = unknown> {
           'in this test file or enable fake timers for all tests by setting ' +
           "{'enableGlobally': true, 'legacyFakeTimers': true} in " +
           `Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
             new Error().stack!,
             this._config,
             {noStackTrace: false},
