@@ -477,7 +477,7 @@ describe('ScriptTransformer', () => {
       TransformedSource,
       string,
     ]): Promise<any> => {
-      const processorName = `passthrough-preprocessor${filePath.replace(
+      const processorName = `passthrough-preprocessor${filePath.replaceAll(
         /\.|\//g,
         '-',
       )}`;

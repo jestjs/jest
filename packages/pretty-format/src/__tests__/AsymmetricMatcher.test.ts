@@ -249,12 +249,12 @@ describe('indent option', () => {
   // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
     expect(prettyFormat(val, {...options, indent: 0})).toEqual(
-      result.replace(/ {2}/g, ''),
+      result.replaceAll(/ {2}/g, ''),
     );
   });
   test('non-default: 4 spaces', () => {
     expect(prettyFormat(val, {...options, indent: 4})).toEqual(
-      result.replace(/ {2}/g, ' '.repeat(4)),
+      result.replaceAll(/ {2}/g, ' '.repeat(4)),
     );
   });
 });

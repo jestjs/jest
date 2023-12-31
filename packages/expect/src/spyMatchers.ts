@@ -216,7 +216,7 @@ const printExpectedReceivedCallsPositive = (
   );
 };
 
-const indentation = 'Received'.replace(/\w/g, ' ');
+const indentation = 'Received'.replaceAll(/\w/g, ' ');
 
 const printDiffCall = (
   expected: Array<unknown>,

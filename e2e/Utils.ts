@@ -93,7 +93,7 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
 export const makeTemplate =
   (str: string): ((values?: Array<string>) => string) =>
   (values = []) =>
-    str.replace(/\$(\d+)/g, (_match, number) => {
+    str.replaceAll(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {
         throw new TypeError('Array of values must be passed to the template.');
       }
@@ -191,12 +191,12 @@ export const copyDir = (src: string, dest: string) => {
 };
 
 export const replaceSeed = (str: string) =>
-  str.replace(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
+  str.replaceAll(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
-    .replace(/, estimated <<REPLACED>>/g, '');
+    .replaceAll(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
+    .replaceAll(', estimated <<REPLACED>>', '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>
@@ -235,7 +235,7 @@ export const createEmptyPackage = (
 
 export const extractSummary = (stdout: string) => {
   const match = stdout
-    .replace(/(?:\\[nr])+/g, '\n')
+    .replaceAll(/(?:\\[nr])+/g, '\n')
     .match(
       /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
@@ -252,7 +252,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
+    .replaceAll(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),

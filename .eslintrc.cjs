@@ -697,9 +697,6 @@ module.exports = {
     'unicorn/filename-case': 'off',
     'unicorn/prefer-reflect-apply': 'off',
 
-    // TODO: turn on at some point
-    'unicorn/prefer-string-replace-all': 'off',
-
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',
     // enabling this is blocked by https://github.com/jestjs/jest/pull/14297

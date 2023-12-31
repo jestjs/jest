@@ -20,7 +20,7 @@ const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2).*\n/g, '');
+  return rest.replaceAll(/.*(jest-jasmine2).*\n/g, '');
 }
 
 beforeEach(() => {

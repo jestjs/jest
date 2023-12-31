@@ -101,7 +101,7 @@ const buildTemplateTests = (
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  extractValidTemplateHeadings(headings).replace(/\s/g, '').split('|');
+  extractValidTemplateHeadings(headings).replaceAll(/\s/g, '').split('|');
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,

@@ -748,15 +748,21 @@ describe('indent option', () => {
   // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
     const indent = 0;
-    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
-      indent,
-    });
+    expect(val).toPrettyPrintTo(
+      expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
+      {
+        indent,
+      },
+    );
   });
   test('non-default: 4 spaces', () => {
     const indent = 4;
-    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
-      indent,
-    });
+    expect(val).toPrettyPrintTo(
+      expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
+      {
+        indent,
+      },
+    );
   });
 });
 

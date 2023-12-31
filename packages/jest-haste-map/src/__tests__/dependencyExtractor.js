@@ -21,9 +21,9 @@ export function extract(code, filePath, defaultDependencyExtractor) {
   };
 
   code
-    .replace(blockCommentRe, '')
-    .replace(lineCommentRe, '')
-    .replace(LOAD_MODULE_RE, addDependency);
+    .replaceAll(blockCommentRe, '')
+    .replaceAll(lineCommentRe, '')
+    .replaceAll(LOAD_MODULE_RE, addDependency);
 
   return dependencies;
 }

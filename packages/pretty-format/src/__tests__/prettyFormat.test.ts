@@ -539,13 +539,13 @@ describe('prettyFormat()', () => {
     test('non-default: 0 spaces', () => {
       const indent = 0;
       expect(prettyFormat(val, {indent})).toEqual(
-        expected.replace(/ {2}/g, ' '.repeat(indent)),
+        expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
       );
     });
     test('non-default: 4 spaces', () => {
       const indent = 4;
       expect(prettyFormat(val, {indent})).toEqual(
-        expected.replace(/ {2}/g, ' '.repeat(indent)),
+        expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
       );
     });
   });

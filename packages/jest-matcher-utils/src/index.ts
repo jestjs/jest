@@ -124,12 +124,12 @@ export const stringify = (
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
-  text.replace(/\s+$/gm, chalk.inverse('$&'));
+  text.replaceAll(/\s+$/gm, chalk.inverse('$&'));
 
 // Instead of inverse highlight which now implies a change,
 // replace common spaces with middle dot at the end of any line.
 const replaceTrailingSpaces = (text: string): string =>
-  text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
+  text.replaceAll(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
 export const printReceived = (object: unknown): string =>
   RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));

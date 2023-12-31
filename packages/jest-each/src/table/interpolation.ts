@@ -19,7 +19,7 @@ export const interpolateVariables = (
   index: number,
 ): string =>
   title
-    .replace(
+    .replaceAll(
       new RegExp(`\\$(${Object.keys(template).join('|')})[.\\w]*`, 'g'),
       match => {
         const keyPath = match.slice(1).split('.');

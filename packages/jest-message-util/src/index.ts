@@ -65,7 +65,7 @@ const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 export const indentAllLines = (lines: string): string =>
-  lines.replace(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
+  lines.replaceAll(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
 
 const trim = (string: string) => (string || '').trim();
 

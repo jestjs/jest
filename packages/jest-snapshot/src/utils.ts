@@ -192,10 +192,10 @@ export const minify = (val: unknown): string =>
 
 // Remove double quote marks and unescape double quotes and backslashes.
 export const deserializeString = (stringified: string): string =>
-  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
+  stringified.slice(1, -1).replaceAll(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
-  str.replace(/`|\\|\${/g, '\\$&');
+  str.replaceAll(/`|\\|\${/g, '\\$&');
 
 const printBacktickString = (str: string): string =>
   `\`${escapeBacktickString(str)}\``;
@@ -206,7 +206,8 @@ export const ensureDirectoryExists = (filePath: string): void => {
   } catch {}
 };
 
-const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
+const normalizeNewlines = (string: string) =>
+  string.replaceAll(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,

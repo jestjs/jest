@@ -435,7 +435,7 @@ export default class Resolver {
   private _getMapModuleName(matches: RegExpMatchArray | null) {
     return matches
       ? (moduleName: string) =>
-          moduleName.replace(
+          moduleName.replaceAll(
             /\$(\d+)/g,
             (_, index) => matches[Number.parseInt(index, 10)] || '',
           )
