@@ -131,6 +131,8 @@ const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
 
+type WorkerOptions = {forceInBand: boolean};
+
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
  *
@@ -450,7 +452,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     map: ModuleMapData,
     mocks: MockData,
     filePath: string,
-    workerOptions?: {forceInBand: boolean},
+    workerOptions?: WorkerOptions,
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
 
@@ -738,10 +740,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * Creates workers or parses files and extracts metadata in-process.
    */
   private _getWorker(
-    options = {forceInBand: false},
+    options: WorkerOptions | undefined,
   ): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
-      if (options.forceInBand || this._options.maxWorkers <= 1) {
+      if (options?.forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
