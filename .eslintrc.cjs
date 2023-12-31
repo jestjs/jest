@@ -110,7 +110,6 @@ module.exports = {
         'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-jasmine2/src/jestExpect.ts',
-        'packages/jest-resolve/src/resolver.ts',
       ],
       rules: {
         'local/prefer-spread-eventually': 'warn',
