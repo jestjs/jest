@@ -772,15 +772,17 @@ class ScriptTransformer {
   async requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-    options: RequireAndTranspileModuleOptions = {
+    options?: RequireAndTranspileModuleOptions,
+  ): Promise<ModuleType> {
+    options = {
       applyInteropRequireDefault: true,
       instrument: false,
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
-    },
-  ): Promise<ModuleType> {
+      ...options,
+    };
     let transforming = false;
     const {applyInteropRequireDefault, ...transformOptions} = options;
     const revertHook = addHook(
