@@ -79,10 +79,11 @@ function getPackages() {
                 },
         /* eslint-enable */
         './package.json': './package.json',
-        ...Object.values(pkg.bin || {}).reduce(
-          (mem, curr) =>
-            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
-          {},
+        ...Object.fromEntries(
+          Object.values(pkg.bin || {}).map(curr => [
+            curr.replace(/\.js$/, ''),
+            curr,
+          ]),
         ),
         ...(pkg.name === 'jest-circus'
           ? {'./runner': './build/runner.js'}
