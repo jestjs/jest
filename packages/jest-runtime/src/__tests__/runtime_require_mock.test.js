@@ -89,8 +89,8 @@ describe('Runtime', () => {
       // are not correctly falling back to 'native' require.
       try {
         runtime.requireMock(__filename, './test_root/NativeModule.node');
-      } catch (e) {
-        error = e;
+      } catch (thrownError) {
+        error = thrownError;
       } finally {
         expect(error.message).toMatch(
           /NativeModule.node: file too short|NativeModule.node, 0x0001|not a valid Win\d+ application/,

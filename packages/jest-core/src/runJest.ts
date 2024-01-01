@@ -194,7 +194,7 @@ export default async function runJest({
         jestHooks,
         filter,
       );
-      allTests = allTests.concat(matches.tests);
+      allTests = [...allTests, ...matches.tests];
 
       return {context, matches};
     }),
@@ -203,7 +203,7 @@ export default async function runJest({
 
   if (globalConfig.shard) {
     if (typeof sequencer.shard !== 'function') {
-      throw new Error(
+      throw new TypeError(
         `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
       );
     }
@@ -213,7 +213,7 @@ export default async function runJest({
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
+    const testsPaths = [...new Set(allTests.map(test => test.path))];
     /* eslint-disable no-console */
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
@@ -274,17 +274,16 @@ export default async function runJest({
     const changedFilesInfo = await changedFilesPromise;
     if (changedFilesInfo.changedFiles) {
       testSchedulerContext.changedFiles = changedFilesInfo.changedFiles;
-      const sourcesRelatedToTestsInChangedFilesArray = (
-        await Promise.all(
-          contexts.map(async (_, index) => {
-            const searchSource = searchSources[index];
+      const relatedFiles = await Promise.all(
+        contexts.map(async (_, index) => {
+          const searchSource = searchSources[index];
 
-            return searchSource.findRelatedSourcesFromTestsInChangedFiles(
-              changedFilesInfo,
-            );
-          }),
-        )
-      ).reduce((total, paths) => total.concat(paths), []);
+          return searchSource.findRelatedSourcesFromTestsInChangedFiles(
+            changedFilesInfo,
+          );
+        }),
+      );
+      const sourcesRelatedToTestsInChangedFilesArray = relatedFiles.flat();
       testSchedulerContext.sourcesRelatedToTestsInChangedFiles = new Set(
         sourcesRelatedToTestsInChangedFilesArray,
       );

@@ -662,7 +662,7 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number;
   /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
@@ -1387,9 +1387,9 @@ class CustomReporter {
 
   onRunComplete(testContexts, results) {
     console.log('Custom reporter output:');
-    console.log('global config: ', this._globalConfig);
-    console.log('options for this reporter from Jest config: ', this._options);
-    console.log('reporter context passed from test scheduler: ', this._context);
+    console.log('global config:', this._globalConfig);
+    console.log('options for this reporter from Jest config:', this._options);
+    console.log('reporter context passed from test scheduler:', this._context);
   }
 
   // Optionally, reporters can force Jest to exit with non zero code by returning
@@ -2185,7 +2185,7 @@ class CustomSequencer extends Sequencer {
   sort(tests) {
     // Test structure information
     // https://github.com/jestjs/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
-    const copyTests = Array.from(tests);
+    const copyTests = [...tests];
     return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
 }

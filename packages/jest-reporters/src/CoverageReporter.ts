@@ -9,7 +9,7 @@ import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk = require('chalk');
-import glob = require('glob');
+import {glob} from 'glob';
 import * as fs from 'graceful-fs';
 import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
@@ -85,18 +85,18 @@ export default class CoverageReporter extends BaseReporter {
         }
         istanbulReports
           .create(reporter, {
-            maxCols: process.stdout.columns || Infinity,
+            maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
             ...additionalOptions,
           })
           .execute(reportContext);
       }
       aggregatedResults.coverageMap = map;
-    } catch (e: any) {
+    } catch (error: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
-        ERROR: ${e.toString()}
-        STACK: ${e.stack}
+        ERROR: ${error.toString()}
+        STACK: ${error.stack}
       `),
       );
     }
@@ -169,12 +169,13 @@ export default class CoverageReporter extends BaseReporter {
           const result = await worker.worker({
             config,
             context: {
-              changedFiles:
-                this._context.changedFiles &&
-                Array.from(this._context.changedFiles),
-              sourcesRelatedToTestsInChangedFiles:
-                this._context.sourcesRelatedToTestsInChangedFiles &&
-                Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
+              changedFiles: this._context.changedFiles && [
+                ...this._context.changedFiles,
+              ],
+              sourcesRelatedToTestsInChangedFiles: this._context
+                .sourcesRelatedToTestsInChangedFiles && [
+                ...this._context.sourcesRelatedToTestsInChangedFiles,
+              ],
             },
             globalConfig: this._globalConfig,
             path: filename,
@@ -286,7 +287,7 @@ export default class CoverageReporter extends BaseReporter {
           if (file.indexOf(absoluteThresholdGroup) === 0) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.PATH;
-            return agg.concat([[file, thresholdGroup]]);
+            return [...agg, [file, thresholdGroup]];
           }
 
           // If the threshold group is not a path it might be a glob:
@@ -296,32 +297,32 @@ export default class CoverageReporter extends BaseReporter {
           // of execution time.
           if (filesByGlob[absoluteThresholdGroup] === undefined) {
             filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup)
+              .sync(absoluteThresholdGroup, {windowsPathsNoEscape: true})
               .map(filePath => path.resolve(filePath));
           }
 
           if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
-            return agg.concat([[file, thresholdGroup]]);
+            return [...agg, [file, thresholdGroup]];
           }
 
           return agg;
         }, []);
 
         if (pathOrGlobMatches.length > 0) {
-          return files.concat(pathOrGlobMatches);
+          return [...files, ...pathOrGlobMatches];
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
         if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
-          return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
+          return [...files, [file, THRESHOLD_GROUP_TYPES.GLOBAL]];
         }
 
         // A covered file that doesn't have a threshold:
-        return files.concat([[file, undefined]]);
+        return [...files, [file, undefined]];
       }, []);
 
       const getFilesInThresholdGroup = (thresholdGroup: string) =>
@@ -358,13 +359,14 @@ export default class CoverageReporter extends BaseReporter {
               getFilesInThresholdGroup(THRESHOLD_GROUP_TYPES.GLOBAL),
             );
             if (coverage) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   thresholdGroup,
                   coverageThreshold[thresholdGroup],
                   coverage,
                 ),
-              );
+              ];
             }
             break;
           }
@@ -373,13 +375,14 @@ export default class CoverageReporter extends BaseReporter {
               getFilesInThresholdGroup(thresholdGroup),
             );
             if (coverage) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   thresholdGroup,
                   coverageThreshold[thresholdGroup],
                   coverage,
                 ),
-              );
+              ];
             }
             break;
           }
@@ -387,22 +390,24 @@ export default class CoverageReporter extends BaseReporter {
             for (const fileMatchingGlob of getFilesInThresholdGroup(
               thresholdGroup,
             )) {
-              errors = errors.concat(
-                check(
+              errors = [
+                ...errors,
+                ...check(
                   fileMatchingGlob,
                   coverageThreshold[thresholdGroup],
                   map.fileCoverageFor(fileMatchingGlob).toSummary(),
                 ),
-              );
+              ];
             }
 
             break;
           default:
             // If the file specified by path is not found, error is returned.
             if (thresholdGroup !== THRESHOLD_GROUP_TYPES.GLOBAL) {
-              errors = errors.concat(
+              errors = [
+                ...errors,
                 `Jest: Coverage data for ${thresholdGroup} was not found.`,
-              );
+              ];
             }
           // Sometimes all files in the coverage data are matched by
           // PATH and GLOB threshold groups in which case, don't error when

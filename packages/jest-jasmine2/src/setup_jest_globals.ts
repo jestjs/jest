@@ -58,7 +58,10 @@ const addAssertionErrors = (result: SpecResult) => {
       passed: false,
     }));
     result.status = 'failed';
-    result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
+    result.failedExpectations = [
+      ...result.failedExpectations,
+      ...jasmineErrors,
+    ];
   }
 };
 

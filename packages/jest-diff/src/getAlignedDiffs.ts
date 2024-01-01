@@ -23,8 +23,8 @@ const concatenateRelevantDiffs = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op && diff[1].length > 0 // empty if change is newline
-        ? changeColor(diff[1])
-        : ''),
+          ? changeColor(diff[1])
+          : ''),
     '',
   );
 
@@ -82,9 +82,7 @@ class ChangeBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      for (let i = 0; i < substrings.length; i++) {
-        const substring = substrings[i];
-
+      for (const [i, substring] of substrings.entries()) {
         if (i < iLast) {
           // The first substring completes the current change line.
           // A middle substring is a change line.
@@ -155,9 +153,7 @@ class CommonBuffer {
     if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
-      for (let i = 0; i < substrings.length; i++) {
-        const substring = substrings[i];
-
+      for (const [i, substring] of substrings.entries()) {
         if (i === 0) {
           const subdiff = new Diff(op, substring);
           if (

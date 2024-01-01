@@ -383,11 +383,11 @@ export default class ExperimentalWorker
 
       try {
         this._worker.postMessage([CHILD_MESSAGE_MEM_USAGE]);
-      } catch (err: any) {
+      } catch (error: any) {
         this._memoryUsagePromise = undefined;
         this._resolveMemoryUsage = undefined;
 
-        rejectCallback(err);
+        rejectCallback(error);
       }
 
       return promise;

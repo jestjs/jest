@@ -91,13 +91,14 @@ export default class TestSequencer {
     const shardRest = options.suiteLength % options.shardCount;
     const ratio = options.suiteLength / options.shardCount;
 
-    return new Array(options.shardIndex)
-      .fill(true)
-      .reduce<number>((acc, _, shardIndex) => {
+    return Array.from({length: options.shardIndex}).reduce<number>(
+      (acc, _, shardIndex) => {
         const dangles = shardIndex < shardRest;
         const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
         return acc + shardSize;
-      }, 0);
+      },
+      0,
+    );
   }
 
   /**

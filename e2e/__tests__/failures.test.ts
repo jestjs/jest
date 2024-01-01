@@ -11,13 +11,13 @@ import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
-const normalizeDots = (text: string) => text.replace(/\.{1,}$/gm, '.');
+const normalizeDots = (text: string) => text.replaceAll(/\.+$/gm, '.');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest
-    .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
-    .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
+    .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+    .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
 beforeAll(() => {
@@ -65,7 +65,7 @@ test('works with async failures', () => {
   const result = normalizeDots(rest)
     .replace(/.*thrown:.*\n/, '')
     .replace(
-      /.*Add a timeout value to this test to increase the timeout, if this is a long-running test. See https:\/\/jestjs.io\/docs\/api#testname-fn-timeout..*/,
+      /.*Add a timeout value to this test to increase the timeout, if this is a long-running test. See https:\/\/jestjs.io\/docs\/api#testname-fn-timeout.+/,
       '<REPLACED>',
     )
     .replace(/.*Timeout - Async callback was not.*/, '<REPLACED>');
@@ -78,9 +78,7 @@ test('works with snapshot failures', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with snapshot failures with hint', () => {
@@ -88,9 +86,7 @@ test('works with snapshot failures with hint', () => {
 
   const result = normalizeDots(cleanStderr(stderr));
 
-  expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
-  ).toMatchSnapshot();
+  expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
 test('works with error with cause', () => {
@@ -105,7 +101,7 @@ test('works with error with cause thrown outside tests', () => {
   const summary = normalizeDots(cleanStderr(stderr));
 
   const sanitizedSummary = summary
-    .replace(/ Suite\.f /g, ' f ') // added by jasmine runner
+    .replaceAll(' Suite.f ', ' f ') // added by jasmine runner
     .split('\n')
     .map(line => line.trim()) // jasmine runner does not come with the same indentation
     .join('\n');
@@ -113,7 +109,7 @@ test('works with error with cause thrown outside tests', () => {
   expect(
     // jasmine runner differ from circus one in this case, we just start
     // the comparison when the stack starts to be reported
-    sanitizedSummary.substring(sanitizedSummary.indexOf('error during f')),
+    sanitizedSummary.slice(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
 });
 

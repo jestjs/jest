@@ -51,7 +51,7 @@ export default class HasteFS implements IHasteFS {
   }
 
   getAllFiles(): Array<string> {
-    return Array.from(this.getAbsoluteFileIterator());
+    return [...this.getAbsoluteFileIterator()];
   }
 
   getFileIterator(): Iterable<string> {

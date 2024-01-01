@@ -70,11 +70,14 @@ const _runTestsForDescribeBlock = async (
   // Tests that fail and are retried we run after other tests
   const retryTimes =
     // eslint-disable-next-line no-restricted-globals
-    parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
+    Number.parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
 
   const waitBeforeRetry =
-    // eslint-disable-next-line no-restricted-globals
-    parseInt((global as Global.Global)[WAIT_BEFORE_RETRY] as string, 10) || 0;
+    Number.parseInt(
+      // eslint-disable-next-line no-restricted-globals
+      (global as Global.Global)[WAIT_BEFORE_RETRY] as string,
+      10,
+    ) || 0;
   const deferredRetryTests = [];
 
   if (rng) {
@@ -165,9 +168,9 @@ function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.catch(() => {});
       test.fn = () => promise;
-    } catch (err) {
+    } catch (error) {
       test.fn = () => {
-        throw err;
+        throw error;
       };
     }
   }

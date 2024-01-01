@@ -19,7 +19,7 @@ describe('isError', () => {
     createError: (win: Window | typeof globalThis) => Error | null,
   ) {
     const iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
+    document.body.append(iframe);
     try {
       const contentWindow = iframe.contentWindow;
 
@@ -32,7 +32,7 @@ describe('isError', () => {
       const error = createError(contentWindow);
       expect(isError(error)).toBe(true);
     } finally {
-      iframe.parentElement!.removeChild(iframe);
+      iframe.remove();
     }
   }
 
@@ -55,8 +55,8 @@ describe('isError', () => {
     testErrorFromDifferentContext(win => {
       try {
         win.document.querySelectorAll('');
-      } catch (e) {
-        return e as Error;
+      } catch (error) {
+        return error as Error;
       }
 
       return null;

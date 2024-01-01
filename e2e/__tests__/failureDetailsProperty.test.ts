@@ -9,7 +9,7 @@ import {isJestJasmineRun} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const removeStackTraces = (stdout: string) =>
-  stdout.replace(
+  stdout.replaceAll(
     /at (new Promise \(<anonymous>\)|.+:\d+:\d+\)?)/g,
     'at <stacktrace>',
   );

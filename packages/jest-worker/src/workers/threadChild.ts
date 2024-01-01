@@ -114,11 +114,11 @@ function reportSuccess(result: unknown) {
 
   try {
     parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
-  } catch (err: any) {
+  } catch (error: any) {
     // Handling it here to avoid unhandled `DataCloneError` rejection
     // which is hard to distinguish on the parent side
     // (such error doesn't have any message or stack trace)
-    reportClientError(err);
+    reportClientError(error);
   }
 }
 
@@ -202,8 +202,8 @@ function execFunction(
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err: any) {
-    onError(err);
+  } catch (error: any) {
+    onError(error);
 
     return;
   }

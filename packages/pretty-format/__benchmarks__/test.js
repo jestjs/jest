@@ -29,8 +29,8 @@ function testCase(name, fn) {
 
   try {
     result = fn();
-  } catch (err) {
-    error = err;
+  } catch (thrownError) {
+    error = thrownError;
   }
 
   if (!error) {
@@ -149,8 +149,8 @@ test('a function constructor', new Function());
 test('an anonymous function', () => {});
 function named() {}
 test('a named function', named);
-test('Infinity', Infinity);
-test('-Infinity', -Infinity);
+test('Infinity', Number.POSITIVE_INFINITY);
+test('-Infinity', Number.NEGATIVE_INFINITY);
 test('an empty map', new Map());
 const mapWithValues = new Map();
 const mapWithNonStringKeys = new Map();
@@ -159,7 +159,7 @@ mapWithValues.set('prop2', 'value2');
 mapWithNonStringKeys.set({prop: 'value'}, {prop: 'value'});
 test('a map with values', mapWithValues);
 test('a map with non-string keys', mapWithNonStringKeys);
-test('NaN', NaN);
+test('NaN', Number.NaN);
 test('null', null);
 test('a number', 123);
 test('a date', new Date(10e11));

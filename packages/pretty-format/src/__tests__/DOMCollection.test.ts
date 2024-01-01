@@ -54,7 +54,7 @@ describe('DOMCollection plugin for list items', () => {
   ].join('');
 
   const form = document.createElement('form');
-  form.appendChild(select);
+  form.append(select);
 
   const expectedOption1 = [
     '  <option',
@@ -87,6 +87,7 @@ describe('DOMCollection plugin for list items', () => {
   ].join('\n');
 
   it('supports HTMLCollection for getElementsByTagName', () => {
+    // eslint-disable-next-line unicorn/prefer-query-selector
     const options = form.getElementsByTagName('option');
     expect(options).toPrettyPrintTo(expectedHTMLCollection);
   });

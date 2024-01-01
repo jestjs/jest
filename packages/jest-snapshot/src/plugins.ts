@@ -33,7 +33,7 @@ let PLUGINS: PrettyFormatPlugins = [
 
 // Prepend to list so the last added is the first tested.
 export const addSerializer = (plugin: PrettyFormatPlugin): void => {
-  PLUGINS = [plugin].concat(PLUGINS);
+  PLUGINS = [plugin, ...PLUGINS];
 };
 
 export const getSerializers = (): PrettyFormatPlugins => PLUGINS;

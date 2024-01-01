@@ -63,8 +63,8 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
     let kept = undefined;
     let negatives = 0;
 
-    for (let i = 0; i < matchers.length; i++) {
-      const {isMatch, negated} = matchers[i];
+    for (const matcher of matchers) {
+      const {isMatch, negated} = matcher;
 
       if (negated) {
         negatives++;

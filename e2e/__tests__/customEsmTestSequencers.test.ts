@@ -17,7 +17,7 @@ test('run prioritySequence', () => {
 
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual([
     './a.test.js',

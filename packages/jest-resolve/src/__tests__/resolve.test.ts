@@ -128,7 +128,7 @@ describe('findNodeModule', () => {
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      paths: (nodePaths || []).concat(['/something']),
+      paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
   });
@@ -431,7 +431,7 @@ describe('findNodeModuleAsync', () => {
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      paths: (nodePaths || []).concat(['/something']),
+      paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
   });
@@ -740,7 +740,7 @@ describe('nodeModulesPaths', () => {
   it('provides custom module paths after node_modules', () => {
     const src = require.resolve('../');
     const result = nodeModulesPaths(src, {paths: ['./customFolder']});
-    expect(result[result.length - 1]).toBe('./customFolder');
+    expect(result.at(-1)).toBe('./customFolder');
   });
 
   it('provides custom module multy paths after node_modules', () => {

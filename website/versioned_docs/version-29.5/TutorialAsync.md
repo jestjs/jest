@@ -46,7 +46,7 @@ const users = {
 
 export default function request(url) {
   return new Promise((resolve, reject) => {
-    const userID = parseInt(url.substr('/users/'.length), 10);
+    const userID = parseInt(url.slice('/users/'.length), 10);
     process.nextTick(() =>
       users[userID]
         ? resolve(users[userID])
@@ -114,8 +114,8 @@ Errors can be handled using the `.catch` method. Make sure to add `expect.assert
 // Testing for async errors using Promise.catch.
 it('tests error with promises', () => {
   expect.assertions(1);
-  return user.getUserName(2).catch(e =>
-    expect(e).toEqual({
+  return user.getUserName(2).catch(error =>
+    expect(error).toEqual({
       error: 'User with 2 not found.',
     }),
   );
@@ -126,8 +126,8 @@ it('tests error with async/await', async () => {
   expect.assertions(1);
   try {
     await user.getUserName(1);
-  } catch (e) {
-    expect(e).toEqual({
+  } catch (error) {
+    expect(error).toEqual({
       error: 'User with 1 not found.',
     });
   }

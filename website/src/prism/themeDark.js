@@ -59,5 +59,5 @@ module.exports = {
     backgroundColor: '#242526',
     color: '#eee',
   },
-  styles: baseTheme.styles.concat(themeDark),
+  styles: [...baseTheme.styles, ...themeDark],
 };

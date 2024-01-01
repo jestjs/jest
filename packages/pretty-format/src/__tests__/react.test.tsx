@@ -446,13 +446,13 @@ describe('indent option', () => {
   // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
     const indent = 0;
-    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+    assertPrintedJSX(val, expected.replaceAll(/ {2}/g, ' '.repeat(indent)), {
       indent,
     });
   });
   test('non-default: 4 spaces', () => {
     const indent = 4;
-    assertPrintedJSX(val, expected.replace(/ {2}/g, ' '.repeat(indent)), {
+    assertPrintedJSX(val, expected.replaceAll(/ {2}/g, ' '.repeat(indent)), {
       indent,
     });
   });

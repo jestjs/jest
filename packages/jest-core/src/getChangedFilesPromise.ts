@@ -31,8 +31,8 @@ export default function getChangedFilesPromise(
       changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
       withAncestor: globalConfig.changedFilesWithAncestor,
-    }).catch(e => {
-      const message = formatExecError(e, configs[0], {noStackTrace: true})
+    }).catch(error => {
+      const message = formatExecError(error, configs[0], {noStackTrace: true})
         .split('\n')
         .filter(line => !line.includes('Command failed:'))
         .join('\n');

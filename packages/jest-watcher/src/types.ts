@@ -81,13 +81,11 @@ export interface WatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }
-export interface WatchPluginClass {
-  new (options: {
-    config: Record<string, unknown>;
-    stdin: ReadStream;
-    stdout: WriteStream;
-  }): WatchPlugin;
-}
+export type WatchPluginClass = new (options: {
+  config: Record<string, unknown>;
+  stdin: ReadStream;
+  stdout: WriteStream;
+}) => WatchPlugin;
 
 export type ScrollOptions = {
   offset: number;

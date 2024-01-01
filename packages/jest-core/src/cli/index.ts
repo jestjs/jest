@@ -145,7 +145,9 @@ const buildContextsAndHasteMaps = async (
   globalConfig: Config.GlobalConfig,
   outputStream: WriteStream,
 ) => {
-  const hasteMapInstances = Array(configs.length);
+  const hasteMapInstances = Array.from<IHasteMap>({
+    length: configs.length,
+  });
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
@@ -197,8 +199,8 @@ const _run10000 = async (
       filterSetupPromise = (async () => {
         try {
           await rawFilter.setup();
-        } catch (err) {
-          return err;
+        } catch (error) {
+          return error;
         }
         return undefined;
       })();

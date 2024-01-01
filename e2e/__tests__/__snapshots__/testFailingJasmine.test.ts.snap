@@ -46,7 +46,7 @@ FAIL __tests__/worksWithConcurrentMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/index.js:308:17)
+      at Function.failing (../../packages/jest-jasmine2/build/index.js:311:17)
       at Suite.failing (__tests__/worksWithConcurrentMode.test.js:13:17)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
@@ -80,7 +80,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/index.js:308:17)
+      at Function.failing (../../packages/jest-jasmine2/build/index.js:311:17)
       at Suite.failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 

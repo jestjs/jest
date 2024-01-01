@@ -6,18 +6,19 @@
  *
  */
 
+import {makeProjectConfig} from '@jest/test-utils';
 import HasteMap from 'jest-haste-map';
 import Runtime from '../';
 
 jest.mock('jest-haste-map');
 
 describe('Runtime statics', () => {
-  const projectConfig = {
+  const projectConfig = makeProjectConfig({
     cacheDirectory: '/tmp',
     haste: {},
     modulePathIgnorePatterns: ['/root/ignore-1', '/root/ignore-2'],
     watchPathIgnorePatterns: ['/watch-root/ignore-1'],
-  };
+  });
   const options = {};
 
   beforeEach(() => {

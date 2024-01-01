@@ -63,7 +63,7 @@ export default class BaseTestRunner {
               };
             })
             .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err)),
+            .catch(error => onFailure(test, error)),
         ),
       Promise.resolve(),
     );

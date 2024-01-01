@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const tempDir = path.resolve(tmpdir(), 'clashing-dependencies-test');
 const hasteImplModulePath = path
   .resolve('./packages/jest-haste-map/src/__tests__/haste_impl.js')
-  .replace(/\\/g, '\\\\');
+  .replaceAll('\\', '\\\\');
 
 beforeEach(() => {
   cleanup(tempDir);

@@ -42,7 +42,7 @@ export default function getMaxWorkers(
 }
 
 const parseWorkers = (maxWorkers: string | number): number => {
-  const parsed = parseInt(maxWorkers.toString(), 10);
+  const parsed = Number.parseInt(maxWorkers.toString(), 10);
 
   if (
     typeof maxWorkers === 'string' &&

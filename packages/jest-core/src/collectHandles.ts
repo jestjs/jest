@@ -147,7 +147,7 @@ export default function collectHandles(): HandleCollectionResult {
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
-    const result = Array.from(activeHandles.values())
+    const result = [...activeHandles.values()]
       .filter(({isActive}) => isActive())
       .map(({error}) => error);
 
@@ -197,7 +197,7 @@ export function formatHandleErrors(
     stacks.set(stackText, stack);
   }
 
-  return Array.from(stacks.values()).map(({stack, names}) =>
-    stack.replace('%%OBJECT_NAME%%', Array.from(names).join(',')),
+  return [...stacks.values()].map(({stack, names}) =>
+    stack.replace('%%OBJECT_NAME%%', [...names].join(',')),
   );
 }
