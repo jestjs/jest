@@ -1665,6 +1665,12 @@ const config: Config = {
 export default config;
 ```
 
+:::tip
+
+If your setup script is a CJS module, it may export an async function. Jest will call the function and await its result. This might be useful to fetch some data asynchronously. If the file is an ESM module, simply use top-level await to achieve the same result.
+
+:::
+
 ### `showSeed` \[boolean]
 
 Default: `false`
