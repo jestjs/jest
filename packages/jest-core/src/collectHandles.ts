@@ -9,7 +9,8 @@
 
 import * as asyncHooks from 'async_hooks';
 import {promisify} from 'util';
-import {getHeapSnapshot} from 'v8';
+import * as v8 from 'v8';
+import * as vm from 'vm';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -45,9 +46,20 @@ const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
 
+let gcFunc: (() => void) | undefined = (globalThis as any).gc;
 function runGC() {
-  // It is more aggressive than `gc()`.
-  getHeapSnapshot();
+  if (!gcFunc) {
+    v8.setFlagsFromString('--expose-gc');
+    gcFunc = vm.runInNewContext('gc');
+    v8.setFlagsFromString('--no-expose-gc');
+    if (!gcFunc) {
+      throw new Error(
+        'Cannot find `global.gc` function. Please run node with `--expose-gc` and report this issue in jest repo.',
+      );
+    }
+  }
+
+  gcFunc();
 }
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
