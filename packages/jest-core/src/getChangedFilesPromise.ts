@@ -18,16 +18,10 @@ export default function getChangedFilesPromise(
   configs: Array<Config.ProjectConfig>,
 ): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<string>>(
-      (roots, config) => {
-        if (config.roots) {
-          roots.push(...config.roots);
-        }
-        return roots;
-      },
-      [],
+    const allRootsForAllProjects = new Set(
+      configs.flatMap(config => config.roots || []),
     );
-    return getChangedFilesForRoots(allRootsForAllProjects, {
+    return getChangedFilesForRoots([...allRootsForAllProjects], {
       changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
       withAncestor: globalConfig.changedFilesWithAncestor,
