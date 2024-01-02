@@ -113,6 +113,8 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
+let isWatchmanInstalledPromise: Promise<boolean> | undefined;
+
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
 };
@@ -216,7 +218,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
-  private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
@@ -1108,10 +1109,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (!this._options.useWatchman) {
       return false;
     }
-    if (!this._isWatchmanInstalledPromise) {
-      this._isWatchmanInstalledPromise = isWatchmanInstalled();
+    if (!isWatchmanInstalledPromise) {
+      isWatchmanInstalledPromise = isWatchmanInstalled();
     }
-    return this._isWatchmanInstalledPromise;
+    return isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {
