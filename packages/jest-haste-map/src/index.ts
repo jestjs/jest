@@ -113,7 +113,7 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
-const isWatchmanInstalledPromise = isWatchmanInstalled();
+let isWatchmanInstalledPromise: Promise<boolean> | undefined;
 
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
@@ -1108,6 +1108,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private async _shouldUseWatchman(): Promise<boolean> {
     if (!this._options.useWatchman) {
       return false;
+    }
+    if (!isWatchmanInstalledPromise) {
+      isWatchmanInstalledPromise = isWatchmanInstalled();
     }
     return isWatchmanInstalledPromise;
   }
