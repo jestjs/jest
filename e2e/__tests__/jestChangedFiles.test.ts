@@ -57,7 +57,7 @@ function gitCreateBranch(branchName: string, dir: string) {
 }
 
 function npmCacheClean() {
-  run(`npm cache clean --force`);
+  run('npm cache clean --force');
 }
 
 jest.retryTimes(3);
