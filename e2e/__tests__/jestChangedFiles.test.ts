@@ -56,10 +56,20 @@ function gitCreateBranch(branchName: string, dir: string) {
   run(`git branch ${branchName}`, dir);
 }
 
+function npmCacheClean() {
+  run(`npm cache clean --force`);
+}
+
 jest.retryTimes(3);
 
-beforeEach(() => cleanup(DIR));
-afterEach(() => cleanup(DIR));
+beforeEach(() => {
+  npmCacheClean();
+  cleanup(DIR);
+});
+afterEach(() => {
+  npmCacheClean();
+  cleanup(DIR);
+});
 
 testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
