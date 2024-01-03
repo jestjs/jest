@@ -70,12 +70,7 @@ export async function runCLI(
       configs.map(config => config.cacheDirectory),
     );
     for (const cacheDirectory of uniqueConfigDirectories) {
-      fs.rmSync(cacheDirectory, {
-        force: true,
-        maxRetries: 10,
-        recursive: true,
-        retryDelay: 2000,
-      });
+      fs.rmSync(cacheDirectory, {force: true, recursive: true});
       process.stdout.write(`Cleared ${cacheDirectory}\n`);
     }
 

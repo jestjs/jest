@@ -23,7 +23,5 @@ fs.writeFileSync(
 
 fs.rmSync(path.resolve(dirname, '../examples/'), {
   force: true,
-  maxRetries: 10,
   recursive: true,
-  retryDelay: 2000,
 });

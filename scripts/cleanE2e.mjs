@@ -30,10 +30,5 @@ const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', {
 });
 
 for (const dir of e2eNodeModules) {
-  fs.rmSync(dir, {
-    force: true,
-    maxRetries: 10,
-    recursive: true,
-    retryDelay: 2000,
-  });
+  fs.rmSync(dir, {force: true, recursive: true});
 }

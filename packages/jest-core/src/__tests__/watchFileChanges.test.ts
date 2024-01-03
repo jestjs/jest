@@ -36,18 +36,8 @@ describe('Watch mode flows with changed files', () => {
     watch = interopRequireDefault(require('../watch')).default;
     pipe = {write: jest.fn()} as unknown;
     stdin = new MockStdin();
-    fs.rmSync(cacheDirectory, {
-      force: true,
-      maxRetries: 10,
-      recursive: true,
-      retryDelay: 2000,
-    });
-    fs.rmSync(testDirectory, {
-      force: true,
-      maxRetries: 10,
-      recursive: true,
-      retryDelay: 2000,
-    });
+    fs.rmSync(cacheDirectory, {force: true, recursive: true});
+    fs.rmSync(testDirectory, {force: true, recursive: true});
     fs.mkdirSync(testDirectory);
     fs.mkdirSync(cacheDirectory);
   });
@@ -57,18 +47,8 @@ describe('Watch mode flows with changed files', () => {
     if (hasteMapInstance) {
       hasteMapInstance.end();
     }
-    fs.rmSync(cacheDirectory, {
-      force: true,
-      maxRetries: 10,
-      recursive: true,
-      retryDelay: 2000,
-    });
-    fs.rmSync(testDirectory, {
-      force: true,
-      maxRetries: 10,
-      recursive: true,
-      retryDelay: 2000,
-    });
+    fs.rmSync(cacheDirectory, {force: true, recursive: true});
+    fs.rmSync(testDirectory, {force: true, recursive: true});
   });
 
   it('should correct require new files without legacy cache', async () => {

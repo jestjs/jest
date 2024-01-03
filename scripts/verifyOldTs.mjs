@@ -83,12 +83,7 @@ function smoketest() {
       ),
     );
   } finally {
-    fs.rmSync(cwd, {
-      force: true,
-      maxRetries: 10,
-      recursive: true,
-      retryDelay: 2000,
-    });
+    fs.rmSync(cwd, {force: true, recursive: true});
   }
 }
 
