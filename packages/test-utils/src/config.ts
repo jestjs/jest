@@ -77,6 +77,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   collectCoverageFrom: ['src', '!public'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [],
+  coverageReporters: [],
   cwd: '/test_root_dir/',
   detectLeaks: false,
   detectOpenHandles: false,

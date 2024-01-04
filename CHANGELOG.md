@@ -34,6 +34,7 @@
 - `[jest-cli]` [**BREAKING**] Validate CLI flags that require arguments receives them ([#14783](https://github.com/jestjs/jest/pull/14783))
 - `[jest-config]` Make sure to respect `runInBand` option ([#14578](https://github.com/jestjs/jest/pull/14578))
 - `[jest-config]` Support `testTimeout` in project config ([#14697](https://github.com/jestjs/jest/pull/14697))
+- `[jest-config]` Support `coverageReporters` in project config ([#14697](https://github.com/jestjs/jest/pull/14830))
 - `[jest-config]` Allow `reporters` in project config ([#14768](https://github.com/jestjs/jest/pull/14768))
 - `[@jest/expect-utils]` Fix comparison of `DataView` ([#14408](https://github.com/jestjs/jest/pull/14408))
 - `[@jest/expect-utils]` [**BREAKING**] exclude non-enumerable in object matching ([#14670](https://github.com/jestjs/jest/pull/14670))

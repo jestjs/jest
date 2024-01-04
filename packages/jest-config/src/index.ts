@@ -155,6 +155,7 @@ const groupOptions = (
     collectCoverageFrom: options.collectCoverageFrom,
     coverageDirectory: options.coverageDirectory,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+    coverageReporters: options.coverageReporters,
     cwd: options.cwd,
     dependencyExtractor: options.dependencyExtractor,
     detectLeaks: options.detectLeaks,
