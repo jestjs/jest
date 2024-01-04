@@ -71,6 +71,8 @@ export function getPath(
   template: Template,
   [head, ...tail]: Array<string>,
 ): unknown {
+  if (template === null) return 'null';
+  if (template === undefined) return 'undefined';
   if (!head || !Object.prototype.hasOwnProperty.call(template, head))
     return template;
   return getPath(template[head] as Template, tail);
