@@ -27,7 +27,9 @@ import {
 export default async function readConfigFileAndSetRootDir(
   configPath: string,
 ): Promise<Config.InitialOptions> {
-  const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS || JEST_CONFIG_EXT_CTS);
+  const isTS =
+    configPath.endsWith(JEST_CONFIG_EXT_TS) ||
+    configPath.endsWith(JEST_CONFIG_EXT_CTS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
