@@ -8,8 +8,8 @@
 import {EventEmitter, PassThrough} from 'stream';
 import {
   WorkerEvents,
-  WorkerInterface,
-  WorkerOptions,
+  type WorkerInterface,
+  type WorkerOptions,
   WorkerStates,
 } from '../types';
 

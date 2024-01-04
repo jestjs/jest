@@ -8,7 +8,7 @@
 import type {Config} from '@jest/types';
 import {isJSONString} from './utils';
 
-const specialArgs = ['_', '$0', 'h', 'help', 'config'];
+const specialArgs = new Set(['_', '$0', 'h', 'help', 'config']);
 
 export default function setFromArgv(
   options: Config.InitialOptions,
@@ -16,7 +16,7 @@ export default function setFromArgv(
 ): Config.InitialOptions {
   const argvToOptions = Object.keys(argv).reduce(
     (options: Record<string, unknown>, key) => {
-      if (argv[key] === undefined || specialArgs.includes(key)) {
+      if (argv[key] === undefined || specialArgs.has(key)) {
         return options;
       }
 

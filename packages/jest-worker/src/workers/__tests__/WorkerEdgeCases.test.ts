@@ -11,7 +11,7 @@ import {transformFileAsync} from '@babel/core';
 import {
   CHILD_MESSAGE_CALL,
   WorkerEvents,
-  WorkerOptions,
+  type WorkerOptions,
   WorkerStates,
 } from '../../types';
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
@@ -39,9 +39,7 @@ beforeAll(async () => {
 
     const result = await transformFileAsync(sourcePath);
 
-    await writeFile(writePath, result!.code!, {
-      encoding: 'utf-8',
-    });
+    await writeFile(writePath, result!.code!, 'utf8');
   }
 });
 

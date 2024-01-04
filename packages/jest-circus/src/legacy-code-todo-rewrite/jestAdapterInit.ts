@@ -7,12 +7,12 @@
 
 import type * as Process from 'process';
 import type {JestEnvironment} from '@jest/environment';
-import {JestExpect, jestExpect} from '@jest/expect';
+import {type JestExpect, jestExpect} from '@jest/expect';
 import {
-  AssertionResult,
-  Status,
-  TestFileEvent,
-  TestResult,
+  type AssertionResult,
+  type Status,
+  type TestFileEvent,
+  type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
@@ -112,7 +112,7 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  for (const path of config.snapshotSerializers.concat().reverse())
+  for (const path of [...config.snapshotSerializers].reverse())
     addSerializer(localRequire(path));
 
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
@@ -132,7 +132,12 @@ export const initialize = async ({
     addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
   }
 
-  addEventHandler(unhandledRejectionHandler(runtime));
+  addEventHandler(
+    unhandledRejectionHandler(
+      runtime,
+      globalConfig.waitNextEventLoopTurnForUnhandledRejectionEvents,
+    ),
+  );
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals: globalsObject, snapshotState};
@@ -141,11 +146,13 @@ export const initialize = async ({
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
+  setupAfterEnvPerfStats,
   testPath,
 }: {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   testPath: string;
+  setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
 
@@ -183,14 +190,15 @@ export const runAndTransformResultsToJestFormat = async ({
         failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
-          ? ancestorTitles.concat(title).join(' ')
+          ? [...ancestorTitles, title].join(' ')
           : ancestorTitles.join(' '),
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
         retryReasons: testResult.retryReasons,
+        startAt: testResult.startedAt,
         status,
-        title: testResult.testPath[testResult.testPath.length - 1],
+        title: testResult.testPath.at(-1)!,
       };
     },
   );
@@ -215,8 +223,10 @@ export const runAndTransformResultsToJestFormat = async ({
 
   await dispatch({name: 'teardown'});
 
+  const emptyTestResult = createEmptyTestResult();
+
   return {
-    ...createEmptyTestResult(),
+    ...emptyTestResult,
     console: undefined,
     displayName: config.displayName,
     failureMessage,
@@ -224,6 +234,10 @@ export const runAndTransformResultsToJestFormat = async ({
     numPassingTests,
     numPendingTests,
     numTodoTests,
+    perfStats: {
+      ...emptyTestResult.perfStats,
+      ...setupAfterEnvPerfStats,
+    },
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
@@ -261,7 +275,7 @@ const eventHandler = async (event: Circus.Event) => {
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
   const failures = jestExpect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
-  test.errors = test.errors.concat(errors);
+  test.errors = [...test.errors, ...errors];
 };
 
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
@@ -271,6 +285,6 @@ const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length > 0) {
-    test.errors = test.errors.concat(suppressedErrors);
+    test.errors = [...test.errors, ...suppressedErrors];
   }
 };

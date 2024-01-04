@@ -26,13 +26,13 @@ describe('Runtime', () => {
 
       try {
         sum();
-      } catch (err) {
+      } catch (error) {
         if (process.platform === 'win32') {
-          expect(err.stack).toMatch(
+          expect(error.stack).toMatch(
             /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\(out\\)?throwing-mapped-fn.js:\d+:\d+/,
           );
         } else {
-          expect(err.stack).toMatch(
+          expect(error.stack).toMatch(
             /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/(out\/)?throwing-mapped-fn.js:\d+:\d+/,
           );
         }

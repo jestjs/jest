@@ -1,12 +1,14 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
@@ -25,10 +27,8 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@tsd/typescript": "^5.0.4",
     "@types/exit": "^0.1.30",
-    "@types/yargs": "^17.0.8",
-    "tsd-lite": "^0.8.0"
+    "@types/yargs": "^17.0.8"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"

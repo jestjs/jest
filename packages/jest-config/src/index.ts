@@ -40,7 +40,7 @@ export async function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   const {config: initialOptions, configPath} = await readInitialOptions(
@@ -138,6 +138,8 @@ const groupOptions = (
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watch: options.watch,
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
@@ -176,6 +178,7 @@ const groupOptions = (
     modulePaths: options.modulePaths,
     openHandlesTimeout: options.openHandlesTimeout,
     prettierPath: options.prettierPath,
+    reporters: options.reporters,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,
@@ -200,9 +203,12 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
+    testTimeout: options.testTimeout,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
   }),
 });
@@ -225,9 +231,9 @@ const ensureNoDuplicateConfigs = (
         String(configPath),
       )}:
 
-  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 1: ${chalk.bold(projects[parsedConfigs.indexOf(config)])}
   Project 2: ${chalk.bold(
-    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+    projects[parsedConfigs.indexOf(configPathMap.get(configPath))],
   )}
 
 This usually means that your ${chalk.bold(

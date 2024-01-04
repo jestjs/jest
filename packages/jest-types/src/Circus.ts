@@ -209,6 +209,7 @@ export type TestResult = {
    */
   failing?: boolean;
   invocations: number;
+  startedAt?: number | null;
   status: TestStatus;
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;

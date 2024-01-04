@@ -31,9 +31,9 @@ function statSyncCached(path: string): IPathType {
   let stat;
   try {
     stat = fs.statSync(path, {throwIfNoEntry: false});
-  } catch (e: any) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
+  } catch (error: any) {
+    if (!(error && (error.code === 'ENOENT' || error.code === 'ENOTDIR'))) {
+      throw error;
     }
   }
 
@@ -95,6 +95,7 @@ export function findClosestPackageJson(start: string): string | undefined {
     dir = dirname(dir);
   }
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const pkgJsonFile = resolve(dir, './package.json');
     const hasPackageJson = isFile(pkgJsonFile);

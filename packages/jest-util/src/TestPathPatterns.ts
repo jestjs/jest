@@ -35,12 +35,12 @@ export default class TestPathPatterns {
     const regexString = this.patterns
       .map(p => {
         // absolute paths passed on command line should stay same
-        if (p.match(/^\//)) {
+        if (/^\//.test(p)) {
           return p;
         }
 
         // explicit relative paths should resolve against rootDir
-        if (p.match(/^\.\//)) {
+        if (/^\.\//.test(p)) {
           return p.replace(/^\.\//, rootDirRegex);
         }
 

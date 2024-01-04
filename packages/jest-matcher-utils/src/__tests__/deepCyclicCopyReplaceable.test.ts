@@ -15,7 +15,7 @@ test('returns the same value for primitive or function values', () => {
   expect(deepCyclicCopyReplaceable(null)).toBeNull();
   expect(deepCyclicCopyReplaceable(true)).toBe(true);
   expect(deepCyclicCopyReplaceable(42)).toBe(42);
-  expect(Number.isNaN(deepCyclicCopyReplaceable(NaN))).toBe(true);
+  expect(Number.isNaN(deepCyclicCopyReplaceable(Number.NaN))).toBe(true);
   expect(deepCyclicCopyReplaceable('foo')).toBe('foo');
   expect(deepCyclicCopyReplaceable(fn)).toBe(fn);
 });

@@ -12,9 +12,7 @@ describe('rngBuilder', () => {
   // Some people will be using seeds relying on a particular order
   test.each([1, 2, 4, 8, 16])('creates a randomizer given seed %s', seed => {
     const rng = rngBuilder(seed);
-    const results = Array(10)
-      .fill(0)
-      .map(() => rng.next(0, 10));
+    const results = Array.from({length: 10}).map(() => rng.next(0, 10));
     expect(results).toMatchSnapshot();
   });
 });

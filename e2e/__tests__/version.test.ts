@@ -22,7 +22,7 @@ test('works with jest.config.js', () => {
   });
 
   const {exitCode, stdout, stderr} = runJest(DIR, ['--version']);
-  expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[-\S]*-dev$/);
+  expect(stdout).toMatch(/\d{2}(?:\.\d{1,2}){2}\S*-dev$/);
   // Only version gets printed and nothing else
   expect(stdout.split(/\n/)).toHaveLength(1);
   expect(stderr).toBe('');

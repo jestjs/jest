@@ -54,6 +54,10 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
   return !noSCM;
 };
 
+function normalizePosix(filePath: string) {
+  return filePath.replaceAll('\\', '/');
+}
+
 export default class SearchSource {
   private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
@@ -127,7 +131,7 @@ export default class SearchSource {
       total: allPaths.length,
     };
 
-    const testCases = Array.from(this._testPathCases); // clone
+    const testCases = [...this._testPathCases]; // clone
     if (testPathPatterns.isSet()) {
       testCases.push({
         isMatch: (path: string) => testPathPatterns.isMatch(path),
@@ -191,7 +195,7 @@ export default class SearchSource {
       {skipNodeResolution: this._context.config.skipNodeResolution},
     );
 
-    const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
+    const allPathsAbsolute = new Set([...allPaths].map(p => path.resolve(p)));
 
     const collectCoverageFrom = new Set<string>();
 
@@ -201,7 +205,7 @@ export default class SearchSource {
       }
 
       for (const p of testModule.dependencies) {
-        if (!allPathsAbsolute.includes(p)) {
+        if (!allPathsAbsolute.has(p)) {
           continue;
         }
 
@@ -297,10 +301,6 @@ export default class SearchSource {
     const allFiles = this._context.hasteFS.getAllFiles();
     const options = {nocase: true, windows: false};
 
-    function normalizePosix(filePath: string) {
-      return filePath.replace(/\\/g, '/');
-    }
-
     paths = paths
       .map(p => {
         // micromatch works with forward slashes: https://github.com/micromatch/micromatch#backslashes
@@ -334,14 +334,12 @@ export default class SearchSource {
       const filterResult = await filter(tests.map(test => test.path));
 
       if (!Array.isArray(filterResult.filtered)) {
-        throw new Error(
+        throw new TypeError(
           `Filter ${filterPath} did not return a valid test list`,
         );
       }
 
-      const filteredSet = new Set(
-        filterResult.filtered.map(result => result.test),
-      );
+      const filteredSet = new Set(filterResult.filtered);
 
       return {
         ...searchResult,
@@ -369,6 +367,6 @@ export default class SearchSource {
         for (const sourcePath of sourcePaths) relatedSourcesSet.add(sourcePath);
       }
     }
-    return Array.from(relatedSourcesSet);
+    return [...relatedSourcesSet];
   }
 }

@@ -181,6 +181,7 @@ export const initialOptions: Config.InitialOptions = {
   updateSnapshot: true,
   useStderr: false,
   verbose: false,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watch: false,
   watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
@@ -279,6 +280,11 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   openHandlesTimeout: 1000,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: '<rootDir>/resolver.js',
@@ -315,11 +321,13 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     ],
   ),
   testRunner: 'circus',
+  testTimeout: 5000,
   transform: {
     '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };

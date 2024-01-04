@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, createContext, runInContext} from 'vm';
+import {type Context, createContext, runInContext} from 'vm';
 import type {
   EnvironmentContext,
   JestEnvironment,
@@ -59,6 +59,18 @@ const nodeGlobals = new Map(
 function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
+
+const timerIdToRef = (id: number) => ({
+  id,
+  ref() {
+    return this;
+  },
+  unref() {
+    return this;
+  },
+});
+
+const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
@@ -158,18 +170,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     this.moduleMocker = new ModuleMocker(global);
-
-    const timerIdToRef = (id: number) => ({
-      id,
-      ref() {
-        return this;
-      },
-      unref() {
-        return this;
-      },
-    });
-
-    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,

@@ -89,7 +89,7 @@ WatchmanWatcher.prototype.init = function () {
     handleWarning(resp);
 
     self.watchProjectInfo = {
-      relativePath: resp.relative_path ? resp.relative_path : '',
+      relativePath: resp.relative_path ?? '',
       root: resp.watch,
     };
 

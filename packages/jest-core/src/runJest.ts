@@ -13,10 +13,10 @@ import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import {
-  AggregatedResult,
-  Test,
-  TestContext,
-  TestResultsProcessor,
+  type AggregatedResult,
+  type Test,
+  type TestContext,
+  type TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
@@ -25,11 +25,13 @@ import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
-import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
+import {JestHook, type JestHookEmitter, type TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
-import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
+import {type TestSchedulerContext, createTestScheduler} from './TestScheduler';
+import collectNodeHandles, {
+  type HandleCollectionResult,
+} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
@@ -192,7 +194,7 @@ export default async function runJest({
         jestHooks,
         filter,
       );
-      allTests = allTests.concat(matches.tests);
+      allTests = [...allTests, ...matches.tests];
 
       return {context, matches};
     }),
@@ -201,7 +203,7 @@ export default async function runJest({
 
   if (globalConfig.shard) {
     if (typeof sequencer.shard !== 'function') {
-      throw new Error(
+      throw new TypeError(
         `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
       );
     }
@@ -211,7 +213,7 @@ export default async function runJest({
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
+    const testsPaths = [...new Set(allTests.map(test => test.path))];
     /* eslint-disable no-console */
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
@@ -272,17 +274,16 @@ export default async function runJest({
     const changedFilesInfo = await changedFilesPromise;
     if (changedFilesInfo.changedFiles) {
       testSchedulerContext.changedFiles = changedFilesInfo.changedFiles;
-      const sourcesRelatedToTestsInChangedFilesArray = (
-        await Promise.all(
-          contexts.map(async (_, index) => {
-            const searchSource = searchSources[index];
+      const relatedFiles = await Promise.all(
+        contexts.map(async (_, index) => {
+          const searchSource = searchSources[index];
 
-            return searchSource.findRelatedSourcesFromTestsInChangedFiles(
-              changedFilesInfo,
-            );
-          }),
-        )
-      ).reduce((total, paths) => total.concat(paths), []);
+          return searchSource.findRelatedSourcesFromTestsInChangedFiles(
+            changedFilesInfo,
+          );
+        }),
+      );
+      const sourcesRelatedToTestsInChangedFilesArray = relatedFiles.flat();
       testSchedulerContext.sourcesRelatedToTestsInChangedFiles = new Set(
         sourcesRelatedToTestsInChangedFilesArray,
       );

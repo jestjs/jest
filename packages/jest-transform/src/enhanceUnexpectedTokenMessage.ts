@@ -64,7 +64,7 @@ ${chalk.cyan('https://jestjs.io/docs/code-transformation')}
 
 ${chalk.bold.red('Details:')}
 
-${e.stack ?? ''}`.trimRight();
+${e.stack ?? ''}`.trimEnd();
 
   return e;
 }

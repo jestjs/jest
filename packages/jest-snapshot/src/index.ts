@@ -12,14 +12,14 @@ import type {MatcherFunctionWithContext} from 'expect';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {EXTENSION, SnapshotResolver} from './SnapshotResolver';
+import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -83,7 +83,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
     return inlineSnapshot;
   }
 
-  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+  if (lines[0].trim() !== '' || lines.at(-1)!.trim() !== '') {
     // If not blank first and last lines, abort.
     return inlineSnapshot;
   }
@@ -97,7 +97,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
         return inlineSnapshot;
       }
 
-      lines[i] = lines[i].substring(indentation.length);
+      lines[i] = lines[i].slice(indentation.length);
     }
   }
 
@@ -514,8 +514,8 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e) {
-      error = e;
+    } catch (receivedError) {
+      error = receivedError;
     }
   }
 

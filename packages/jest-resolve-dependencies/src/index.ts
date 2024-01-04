@@ -8,7 +8,7 @@
 import * as path from 'path';
 import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
-import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
+import {type SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 export type ResolvedModule = {
   file: string;
@@ -133,13 +133,14 @@ export class DependencyResolver {
           }, []),
         );
       }
-      return result.concat(
-        Array.from(related).map(file => ({dependencies: [], file})),
-      );
+      return [
+        ...result,
+        ...[...related].map(file => ({dependencies: [], file})),
+      ];
     };
 
     const relatedPaths = new Set<string>();
-    const changed: Set<string> = new Set();
+    const changed = new Set<string>();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)

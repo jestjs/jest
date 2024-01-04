@@ -63,6 +63,7 @@ function promisifyLifeCycleFunction(
       return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
+    // eslint-disable-next-line unicorn/error-message
     const extraError = new Error();
 
     // Without this line v8 stores references to all closures
@@ -142,6 +143,7 @@ function promisifyIt(
       return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
+    // eslint-disable-next-line unicorn/error-message
     const extraError = new Error();
 
     // Without this line v8 stores references to all closures
@@ -230,6 +232,7 @@ function makeConcurrent(
     return spec;
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const failing = () => {
     throw new Error(
       'Jest: `failing` tests are only supported in `jest-circus`.',
@@ -242,7 +245,7 @@ function makeConcurrent(
     );
   };
   // each is bound after the function is made concurrent, so for now it is made noop
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,unicorn/consistent-function-scoping
   concurrentFn.each = () => () => {};
   concurrentFn.failing = failing;
 

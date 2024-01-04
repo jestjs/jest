@@ -10,7 +10,7 @@ import type {DeprecatedOptions} from 'jest-validate';
 
 function formatDeprecation(message: string): string {
   const lines = [
-    message.replace(/\*(.+?)\*/g, (_, s) => chalk.bold(`"${s}"`)),
+    message.replaceAll(/\*(.+?)\*/g, (_, s) => chalk.bold(`"${s}"`)),
     '',
     'Please update your configuration.',
   ];

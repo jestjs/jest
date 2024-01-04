@@ -62,6 +62,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   updateSnapshot: 'none',
   useStderr: false,
   verbose: false,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watch: false,
   watchAll: false,
   watchPlugins: [],
@@ -98,6 +99,11 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   modulePaths: [],
   openHandlesTimeout: 1000,
   prettierPath: 'prettier',
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: undefined,
@@ -122,9 +128,11 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-circus/runner',
+  testTimeout: 5000,
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
   watchPathIgnorePatterns: [],
 };
 
@@ -132,13 +140,14 @@ export const makeGlobalConfig = (
   overrides: Partial<Config.GlobalConfig> = {},
 ): Config.GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  for (const key of Object.keys(DEFAULT_GLOBAL_CONFIG))
+  for (const key of Object.keys(DEFAULT_GLOBAL_CONFIG)) {
     overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of GlobalConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 
@@ -149,13 +158,14 @@ export const makeProjectConfig = (
   overrides: Partial<Config.ProjectConfig> = {},
 ): Config.ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  for (const key of Object.keys(DEFAULT_PROJECT_CONFIG))
+  for (const key of Object.keys(DEFAULT_PROJECT_CONFIG)) {
     overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of ProjectConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 

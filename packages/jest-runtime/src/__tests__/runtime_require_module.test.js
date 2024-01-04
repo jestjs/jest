@@ -136,7 +136,7 @@ describe('Runtime requireModule', () => {
     expect(exports.paths.length).toBeGreaterThan(0);
     const root = path.parse(process.cwd()).root;
     const globalPath = path.join(root, 'node_modules');
-    const rootIndex = exports.paths.findIndex(path => path === globalPath);
+    const rootIndex = exports.paths.indexOf(globalPath);
     for (const [index, path] of exports.paths.entries()) {
       if (index <= rootIndex) {
         expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);

@@ -56,7 +56,7 @@ describe('Runtime', () => {
   });
 
   it('does not find modules if NODE_PATH is relative', async () => {
-    const nodePath = `${cwd.substr(
+    const nodePath = `${cwd.slice(
       path.sep.length,
     )}src/Runtime/__tests__/NODE_PATH_dir`;
     const runtime = await createLocalRuntime(nodePath);

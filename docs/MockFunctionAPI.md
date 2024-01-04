@@ -205,7 +205,7 @@ SomeClass.mockImplementation(() => {
 const some = new SomeClass();
 some.method('a', 'b');
 
-console.log('Calls to method: ', mockMethod.mock.calls);
+console.log('Calls to method:', mockMethod.mock.calls);
 ```
 
 ```ts tab={"span":2} title="SomeClass.ts"
@@ -230,7 +230,7 @@ jest.mocked(SomeClass).mockImplementation(() => {
 const some = new SomeClass();
 some.method('a', 'b');
 
-console.log('Calls to method: ', mockMethod.mock.calls);
+console.log('Calls to method:', mockMethod.mock.calls);
 ```
 
 ### `mockFn.mockImplementationOnce(fn)`
@@ -736,7 +736,7 @@ export function setDateNow(now: number): jest.Spied<typeof Date.now> {
 ```
 
 ```ts
-import {afterEach, expect, jest, test} from '@jest/globals';
+import {afterEach, expect, type jest, test} from '@jest/globals';
 import {setDateNow} from './__utils__/setDateNow';
 
 let spiedDateNow: jest.Spied<typeof Date.now> | undefined = undefined;

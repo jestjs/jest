@@ -1,0 +1,48 @@
+{
+  "name": "@jest/environment-jsdom-abstract",
+  "version": "30.0.0-alpha.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-environment-jsdom-abstract"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/environment": "workspace:*",
+    "@jest/fake-timers": "workspace:*",
+    "@jest/types": "workspace:*",
+    "@types/jsdom": "^21.1.1",
+    "@types/node": "*",
+    "jest-mock": "workspace:*",
+    "jest-util": "workspace:*"
+  },
+  "devDependencies": {
+    "jsdom": "^22.0.0"
+  },
+  "peerDependencies": {
+    "canvas": "^2.5.0",
+    "jsdom": "*"
+  },
+  "peerDependenciesMeta": {
+    "canvas": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

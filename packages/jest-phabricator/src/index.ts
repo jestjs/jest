@@ -21,7 +21,7 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
     const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
 
     for (const lineNumber of Object.keys(lineCoverage)) {
-      const number = parseInt(lineNumber, 10);
+      const number = Number.parseInt(lineNumber, 10);
       // Line numbers start at one
       covered[number - 1] = lineCoverage[number] ? 'C' : 'U';
     }

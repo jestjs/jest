@@ -6,7 +6,11 @@
  */
 
 import pLimit from 'p-limit';
-import {Test, TestResult, createEmptyTestResult} from '@jest/test-result';
+import {
+  type Test,
+  type TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {
   OnTestFailure,
@@ -59,7 +63,7 @@ export default class BaseTestRunner {
               };
             })
             .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err)),
+            .catch(error => onFailure(test, error)),
         ),
       Promise.resolve(),
     );

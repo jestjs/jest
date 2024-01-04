@@ -7,9 +7,9 @@
 
 import {
   CHILD_MESSAGE_END,
-  WorkerInterface,
-  WorkerOptions,
-  WorkerPoolOptions,
+  type WorkerInterface,
+  type WorkerOptions,
+  type WorkerPoolOptions,
 } from '../../types';
 import BaseWorkerPool from '../BaseWorkerPool';
 

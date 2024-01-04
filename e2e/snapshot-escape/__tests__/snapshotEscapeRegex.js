@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const regex = /\dd \s+ \w \\\[ \. blahzz.* [xyz]+/;
+const regex = /\dd \s+ \w \\\[ \. blahzz.* [x-z]+/;
 
 test('escape regex', () => expect(regex).toMatchSnapshot());
 

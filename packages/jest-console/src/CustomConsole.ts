@@ -8,7 +8,7 @@
 import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import type {WriteStream} from 'tty';
-import {InspectOptions, format, formatWithOptions, inspect} from 'util';
+import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
@@ -58,7 +58,7 @@ export default class CustomConsole extends Console {
         throw error;
       }
       // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
-      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
+      this._logError('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
     }
   }
 
@@ -133,7 +133,7 @@ export default class CustomConsole extends Console {
     const startTime = this._timers[label];
 
     if (startTime != null) {
-      const endTime = new Date().getTime();
+      const endTime = Date.now();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];

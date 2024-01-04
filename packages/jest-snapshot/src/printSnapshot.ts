@@ -11,8 +11,8 @@ import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptionsColor,
+  type Diff,
+  type DiffOptionsColor,
   diffLinesUnified,
   diffLinesUnified2,
   diffStringsRaw,
@@ -23,7 +23,7 @@ import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
   INVERTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
@@ -156,10 +156,10 @@ const joinDiffs = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op
-        ? hasCommon
-          ? INVERTED_COLOR(diff[1])
-          : diff[1]
-        : ''),
+          ? hasCommon
+            ? INVERTED_COLOR(diff[1])
+            : diff[1]
+          : ''),
     '',
   );
 

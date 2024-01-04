@@ -58,14 +58,14 @@ const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
-const TITLE_BULLET = chalk.bold('\u25cf ');
+const TITLE_BULLET = chalk.bold('\u25CF ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(:\d*:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 export const indentAllLines = (lines: string): string =>
-  lines.replace(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
+  lines.replaceAll(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
 
 const trim = (string: string) => (string || '').trim();
 
@@ -74,7 +74,7 @@ const trim = (string: string) => (string || '').trim();
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
 const trimPaths = (string: string) =>
-  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
+  STACK_PATH_REGEXP.test(string) ? trim(string) : string;
 
 const getRenderedCallsite = (
   fileContent: string,
@@ -292,7 +292,7 @@ export const formatPath = (
   relativeTestPath: string | null = null,
 ): string => {
   // Extract the file path from the trace line.
-  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
+  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:\d+:\d+\)?.*$)/);
   if (!match) {
     return line;
   }
@@ -310,12 +310,15 @@ export const formatPath = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-export const getStackTraceLines = (
+export function getStackTraceLines(
   stack: string,
-  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
-): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
+  options?: StackTraceOptions,
+): Array<string> {
+  options = {noCodeFrame: false, noStackTrace: false, ...options};
+  return removeInternalStackEntries(stack.split(/\n/), options);
+}
 
-export const getTopFrame = (lines: Array<string>): Frame | null => {
+export function getTopFrame(lines: Array<string>): Frame | null {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -332,14 +335,14 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
   }
 
   return null;
-};
+}
 
-export const formatStackTrace = (
+export function formatStackTrace(
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: string,
-): string => {
+): string {
   const lines = getStackTraceLines(stack, options);
   let renderedCallsite = '';
   const relativeTestPath = testPath
@@ -376,7 +379,7 @@ export const formatStackTrace = (
   return renderedCallsite
     ? `${renderedCallsite}\n${stacktrace}`
     : `\n${stacktrace}`;
-};
+}
 
 type FailedResults = Array<{
   /** Stringified version of the error */
@@ -511,7 +514,7 @@ const removeBlankErrorLine = (str: string) =>
     // Lines saying just `Error:` are useless
     .filter(line => !errorRegexp.test(line))
     .join('\n')
-    .trimRight();
+    .trimEnd();
 
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
@@ -528,7 +531,7 @@ export const separateMessageFromStack = (
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
   const messageMatch = content.match(
-    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
+    /^(?:Error: )?([\S\s]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\S\s]*)$/,
   );
   if (!messageMatch) {
     // For typescript

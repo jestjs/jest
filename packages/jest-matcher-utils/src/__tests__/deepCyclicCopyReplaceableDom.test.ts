@@ -24,8 +24,8 @@ test('should copy complex element', () => {
   const div = document.createElement('div');
   const span = document.createElement('span');
   div.setAttribute('id', 'div');
-  div.innerText = 'this is div';
-  div.appendChild(span);
+  div.textContent = 'this is div';
+  div.append(span);
   const copied = deepCyclicCopyReplaceable(div);
   expect(copied).toEqual(div);
   expect(div === copied).toBe(false); //assert reference is not the same

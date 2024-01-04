@@ -29,16 +29,16 @@ test('--showConfig outputs config info and exits', () => {
   ]);
 
   stdout = stdout
-    .replace(/\\\\node_modules\\\\/g, 'node_modules')
-    .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
-    .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
-    .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
-    .replace(/"id": "(.+)"/g, '"id": "[md5 hash]"')
-    .replace(/"version": "(.+)"/g, '"version": "[version]"')
-    .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
-    .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>')
-    .replace(/"seed": (-?\d+)/g, '"seed": <<RANDOM_SEED>>');
+    .replaceAll('\\\\node_modules\\\\', 'node_modules')
+    .replaceAll(/\\\\\.pnp\\\\\.\[\^[/\\]+]\+\$/g, '<<REPLACED_PNP_PATH>>')
+    .replaceAll(/\\\\(?:([^.]+?)|$)/g, '/$1')
+    .replaceAll(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
+    .replaceAll(/"id": "(.+)"/g, '"id": "[md5 hash]"')
+    .replaceAll(/"version": "(.+)"/g, '"version": "[version]"')
+    .replaceAll(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
+    .replaceAll(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
+    .replaceAll(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>')
+    .replaceAll(/"seed": (-?\d+)/g, '"seed": <<RANDOM_SEED>>');
 
   expect(stdout).toMatchSnapshot();
 });

@@ -33,7 +33,7 @@ jest.mock('fb-watchman', () => {
   return {Client};
 });
 
-const forcePOSIXPaths = path => path.replace(/\\/g, '/');
+const forcePOSIXPaths = path => path.replaceAll('\\', '/');
 const pearMatcher = path => /pear/.test(path);
 
 let watchman;
