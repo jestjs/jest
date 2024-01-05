@@ -5,7 +5,7 @@ title: Configuring Jest
 
 The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
-It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|cts|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
 
 :::note
 
