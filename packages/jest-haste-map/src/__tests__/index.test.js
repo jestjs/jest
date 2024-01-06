@@ -45,7 +45,7 @@ jest.mock('../crawlers/watchman', () => ({
 
     for (const file in list) {
       if (
-        new RegExp(roots.join('|').replace(/\\/g, '\\\\')).test(file) &&
+        new RegExp(roots.join('|').replaceAll('\\', '\\\\')).test(file) &&
         !ignore(file)
       ) {
         const relativeFilePath = path.relative(rootDir, file);
@@ -130,7 +130,7 @@ const useBuitinsInContext = value => {
   switch (stringTag) {
     case '[object Map]':
       return new Map(
-        Array.from(value).map(([k, v]) => [
+        [...value].map(([k, v]) => [
           useBuitinsInContext(k),
           useBuitinsInContext(v),
         ]),
@@ -772,7 +772,7 @@ describe('HasteMap', () => {
       ).build();
     } catch {
       expect(
-        console.error.mock.calls[0][0].replace(/\\/g, '/'),
+        console.error.mock.calls[0][0].replaceAll('\\', '/'),
       ).toMatchSnapshot();
     }
   });
@@ -790,7 +790,9 @@ describe('HasteMap', () => {
     // non-determinism later on.
     expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).toBeUndefined();
 
-    expect(console.warn.mock.calls[0][0].replace(/\\/g, '/')).toMatchSnapshot();
+    expect(
+      console.warn.mock.calls[0][0].replaceAll('\\', '/'),
+    ).toMatchSnapshot();
   });
 
   it('warns on duplicate module ids only once', async () => {
@@ -1711,7 +1713,7 @@ describe('HasteMap', () => {
                 H.MODULE,
             }),
           );
-          expect(error.message.replace(/\\/g, '/')).toMatchSnapshot();
+          expect(error.message.replaceAll('\\', '/')).toMatchSnapshot();
         }
       }
 

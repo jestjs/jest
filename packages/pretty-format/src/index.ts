@@ -146,7 +146,7 @@ function printBasicValue(
   }
   if (typeOf === 'string') {
     if (escapeString) {
-      return `"${val.replace(/"|\\/g, '\\$&')}"`;
+      return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
     }
     return `"${val}"`;
   }
@@ -183,7 +183,7 @@ function printBasicValue(
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
       // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
-      return regExpToString.call(val).replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+      return regExpToString.call(val).replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
     }
     return regExpToString.call(val);
   }
@@ -210,7 +210,7 @@ function printComplexValue(
   if (refs.includes(val)) {
     return '[Circular]';
   }
-  refs = refs.slice();
+  refs = [...refs];
   refs.push(val);
 
   const hitMaxDepth = ++depth > config.maxDepth;
@@ -320,7 +320,7 @@ function printPlugin(
             const indentationNext = indentation + config.indent;
             return (
               indentationNext +
-              str.replace(NEWLINE_REGEXP, `\n${indentationNext}`)
+              str.replaceAll(NEWLINE_REGEXP, `\n${indentationNext}`)
             );
           },
           {

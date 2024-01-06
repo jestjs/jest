@@ -273,7 +273,7 @@ export function getConfig(
 } {
   const {exitCode, stdout, stderr} = runJest(
     dir,
-    args.concat('--show-config'),
+    [...args, '--show-config'],
     options,
   );
 

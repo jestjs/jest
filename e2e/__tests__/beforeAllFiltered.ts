@@ -12,7 +12,7 @@ describe('Correct BeforeAll run', () => {
     let {stdout} = runJest('before-all-filtered');
 
     // for some reason Circus does not have the `Object` part
-    stdout = stdout.replace(/at Object.log \(/g, 'at log (');
+    stdout = stdout.replaceAll(/at Object.log \(/g, 'at log (');
 
     expect(stdout).toMatchSnapshot();
   });

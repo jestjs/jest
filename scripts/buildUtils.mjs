@@ -79,10 +79,11 @@ function getPackages() {
                 },
         /* eslint-enable */
         './package.json': './package.json',
-        ...Object.values(pkg.bin || {}).reduce(
-          (mem, curr) =>
-            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
-          {},
+        ...Object.fromEntries(
+          Object.values(pkg.bin || {}).map(curr => [
+            curr.replace(/\.js$/, ''),
+            curr,
+          ]),
         ),
         ...(pkg.name === 'jest-circus'
           ? {'./runner': './build/runner.js'}
@@ -161,7 +162,7 @@ export function createBuildConfigs() {
     }
 
     const options = Object.assign({}, babelConfig);
-    options.plugins = options.plugins.slice();
+    options.plugins = [...options.plugins];
 
     if (INLINE_REQUIRE_EXCLUDE_LIST.test(input)) {
       // The excluded modules are injected into the user's sandbox

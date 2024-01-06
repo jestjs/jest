@@ -156,10 +156,10 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
 
         if (canBeFiltered) {
           if (response.relative_path) {
-            watchmanRoots.set(
-              response.watch,
-              (existing || []).concat(response.relative_path),
-            );
+            watchmanRoots.set(response.watch, [
+              ...(existing || []),
+              response.relative_path,
+            ]);
           } else {
             // Make the filter directories an empty array to signal that this
             // root was already seen and needs to be watched for all files or
@@ -176,68 +176,62 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
     const results = new Map<string, WatchmanQueryResponse>();
     let isFresh = false;
     await Promise.all(
-      Array.from(rootProjectDirMappings).map(
-        async ([root, directoryFilters]) => {
-          const expression = Array.from(defaultWatchExpression);
-          const glob = [];
+      [...rootProjectDirMappings].map(async ([root, directoryFilters]) => {
+        const expression = [...defaultWatchExpression];
+        const glob = [];
 
-          if (directoryFilters.length > 0) {
-            expression.push([
-              'anyof',
-              ...directoryFilters.map(dir => ['dirname', dir]),
-            ]);
+        if (directoryFilters.length > 0) {
+          expression.push([
+            'anyof',
+            ...directoryFilters.map(dir => ['dirname', dir]),
+          ]);
 
-            for (const directory of directoryFilters) {
-              for (const extension of extensions) {
-                glob.push(`${directory}/**/*.${extension}`);
-              }
-            }
-          } else {
+          for (const directory of directoryFilters) {
             for (const extension of extensions) {
-              glob.push(`**/*.${extension}`);
+              glob.push(`${directory}/**/*.${extension}`);
             }
           }
-
-          // Jest is only going to store one type of clock; a string that
-          // represents a local clock. However, the Watchman crawler supports
-          // a second type of clock that can be written by automation outside of
-          // Jest, called an "scm query", which fetches changed files based on
-          // source control mergebases. The reason this is necessary is because
-          // local clocks are not portable across systems, but scm queries are.
-          // By using scm queries, we can create the haste map on a different
-          // system and import it, transforming the clock into a local clock.
-          const since = clocks.get(fastPath.relative(rootDir, root));
-
-          const query =
-            since === undefined
-              ? // Use the `since` generator if we have a clock available
-                {expression, fields, glob, glob_includedotfiles: true}
-              : // Otherwise use the `glob` filter
-                {expression, fields, since};
-
-          const response = await cmd<WatchmanQueryResponse>(
-            'query',
-            root,
-            query,
-          );
-
-          if ('warning' in response) {
-            console.warn('watchman warning:', response.warning);
+        } else {
+          for (const extension of extensions) {
+            glob.push(`**/*.${extension}`);
           }
+        }
 
-          // When a source-control query is used, we ignore the "is fresh"
-          // response from Watchman because it will be true despite the query
-          // being incremental.
-          const isSourceControlQuery =
-            typeof since !== 'string' &&
-            since?.scm?.['mergebase-with'] !== undefined;
-          if (!isSourceControlQuery) {
-            isFresh = isFresh || response.is_fresh_instance;
-          }
+        // Jest is only going to store one type of clock; a string that
+        // represents a local clock. However, the Watchman crawler supports
+        // a second type of clock that can be written by automation outside of
+        // Jest, called an "scm query", which fetches changed files based on
+        // source control mergebases. The reason this is necessary is because
+        // local clocks are not portable across systems, but scm queries are.
+        // By using scm queries, we can create the haste map on a different
+        // system and import it, transforming the clock into a local clock.
+        const since = clocks.get(fastPath.relative(rootDir, root));
 
-          results.set(root, response);
-        },
-      ),
+        const query =
+          since === undefined
+            ? // Use the `since` generator if we have a clock available
+              {expression, fields, glob, glob_includedotfiles: true}
+            : // Otherwise use the `glob` filter
+              {expression, fields, since};
+
+        const response = await cmd<WatchmanQueryResponse>('query', root, query);
+
+        if ('warning' in response) {
+          console.warn('watchman warning:', response.warning);
+        }
+
+        // When a source-control query is used, we ignore the "is fresh"
+        // response from Watchman because it will be true despite the query
+        // being incremental.
+        const isSourceControlQuery =
+          typeof since !== 'string' &&
+          since?.scm?.['mergebase-with'] !== undefined;
+        if (!isSourceControlQuery) {
+          isFresh = isFresh || response.is_fresh_instance;
+        }
+
+        results.set(root, response);
+      }),
     );
 
     return {

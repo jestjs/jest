@@ -192,10 +192,10 @@ export const minify = (val: unknown): string =>
 
 // Remove double quote marks and unescape double quotes and backslashes.
 export const deserializeString = (stringified: string): string =>
-  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
+  stringified.slice(1, -1).replaceAll(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
-  str.replace(/`|\\|\${/g, '\\$&');
+  str.replaceAll(/`|\\|\${/g, '\\$&');
 
 const printBacktickString = (str: string): string =>
   `\`${escapeBacktickString(str)}\``;
@@ -206,7 +206,8 @@ export const ensureDirectoryExists = (filePath: string): void => {
   } catch {}
 };
 
-const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
+const normalizeNewlines = (string: string) =>
+  string.replaceAll(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
@@ -234,7 +235,7 @@ const isAnyOrAnything = (input: object) =>
   ['Any', 'Anything'].includes(input.constructor.name);
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
-  const mergedOutput = Array.from(target);
+  const mergedOutput = [...target];
 
   for (const [index, sourceElement] of source.entries()) {
     const targetElement = mergedOutput[index];
@@ -496,7 +497,10 @@ const groupSnapshotsBy =
     snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
       (object, inlineSnapshot) => {
         const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+        return {
+          ...object,
+          [key]: [...(object[key] || []), inlineSnapshot],
+        };
       },
       {},
     );

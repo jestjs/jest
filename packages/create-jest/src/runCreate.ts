@@ -56,7 +56,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
     throw new NotFoundPackageJsonError(rootDir);
   }
 
-  const questions = defaultQuestions.slice(0);
+  const questions = [...defaultQuestions];
   let hasJestProperty = false;
   let projectPackageJson: ProjectPackageJson;
 

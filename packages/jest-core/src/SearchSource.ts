@@ -55,7 +55,7 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 };
 
 function normalizePosix(filePath: string) {
-  return filePath.replace(/\\/g, '/');
+  return filePath.replaceAll('\\', '/');
 }
 
 export default class SearchSource {
@@ -131,7 +131,7 @@ export default class SearchSource {
       total: allPaths.length,
     };
 
-    const testCases = Array.from(this._testPathCases); // clone
+    const testCases = [...this._testPathCases]; // clone
     if (testPathPatterns.isSet()) {
       testCases.push({
         isMatch: (path: string) => testPathPatterns.isMatch(path),
@@ -195,9 +195,7 @@ export default class SearchSource {
       {skipNodeResolution: this._context.config.skipNodeResolution},
     );
 
-    const allPathsAbsolute = new Set(
-      Array.from(allPaths).map(p => path.resolve(p)),
-    );
+    const allPathsAbsolute = new Set([...allPaths].map(p => path.resolve(p)));
 
     const collectCoverageFrom = new Set<string>();
 
@@ -369,6 +367,6 @@ export default class SearchSource {
         for (const sourcePath of sourcePaths) relatedSourcesSet.add(sourcePath);
       }
     }
-    return Array.from(relatedSourcesSet);
+    return [...relatedSourcesSet];
   }
 }

@@ -5,7 +5,7 @@ title: Configuring Jest
 
 The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
-It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|cts|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
 
 :::note
 
@@ -1665,6 +1665,12 @@ const config: Config = {
 export default config;
 ```
 
+:::tip
+
+If your setup script is a CJS module, it may export an async function. Jest will call the function and await its result. This might be useful to fetch some data asynchronously. If the file is an ESM module, simply use top-level await to achieve the same result.
+
+:::
+
 ### `showSeed` \[boolean]
 
 Default: `false`
@@ -2179,7 +2185,7 @@ class CustomSequencer extends Sequencer {
   sort(tests) {
     // Test structure information
     // https://github.com/jestjs/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
-    const copyTests = Array.from(tests);
+    const copyTests = [...tests];
     return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
 }

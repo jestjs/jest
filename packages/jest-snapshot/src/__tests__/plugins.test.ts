@@ -21,11 +21,11 @@ const testPath = (names: Array<string>) => {
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  for (const serializer of added.concat().reverse()) addSerializer(serializer);
+  for (const serializer of [...added].reverse()) addSerializer(serializer);
 
   const next = getSerializers();
   expect(next).toHaveLength(added.length + prev.length);
-  expect(next).toEqual(added.concat(prev));
+  expect(next).toEqual([...added, ...prev]);
 };
 
 it('gets plugins', () => {

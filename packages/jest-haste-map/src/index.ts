@@ -113,6 +113,8 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
+let isWatchmanInstalledPromise: Promise<boolean> | undefined;
+
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
 };
@@ -130,6 +132,8 @@ const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
+
+type WorkerOptions = {forceInBand: boolean};
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -214,7 +218,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
-  private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
@@ -258,7 +261,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
-      roots: Array.from(new Set(options.roots)),
+      roots: [...new Set(options.roots)],
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
@@ -270,7 +273,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
+          `${options.ignorePattern.source}|${VCS_DIRECTORIES}`,
           options.ignorePattern.flags,
         );
       } else {
@@ -344,7 +347,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
-      `${id.replace(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
+      `${id.replaceAll(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
     );
   }
 
@@ -450,7 +453,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     map: ModuleMapData,
     mocks: MockData,
     filePath: string,
-    workerOptions?: {forceInBand: boolean},
+    workerOptions?: WorkerOptions,
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
 
@@ -738,10 +741,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * Creates workers or parses files and extracts metadata in-process.
    */
   private _getWorker(
-    options = {forceInBand: false},
+    options: WorkerOptions | undefined,
   ): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
-      if (options.forceInBand || this._options.maxWorkers <= 1) {
+      if (options?.forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
@@ -1106,10 +1109,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (!this._options.useWatchman) {
       return false;
     }
-    if (!this._isWatchmanInstalledPromise) {
-      this._isWatchmanInstalledPromise = isWatchmanInstalled();
+    if (!isWatchmanInstalledPromise) {
+      isWatchmanInstalledPromise = isWatchmanInstalled();
     }
-    return this._isWatchmanInstalledPromise;
+    return isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {

@@ -83,13 +83,13 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
             false,
           )
         : defaultDependencyExtractor;
-      dependencies = Array.from(
-        extractor.extract(
+      dependencies = [
+        ...extractor.extract(
           content,
           filePath,
           defaultDependencyExtractor.extract,
         ),
-      );
+      ];
     }
 
     if (id) {

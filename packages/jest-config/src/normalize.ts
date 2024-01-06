@@ -187,17 +187,19 @@ const setupPreset = async (
   }
 
   if (options.setupFiles) {
-    options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
+    options.setupFiles = [...(preset.setupFiles || []), ...options.setupFiles];
   }
   if (options.setupFilesAfterEnv) {
-    options.setupFilesAfterEnv = (preset.setupFilesAfterEnv || []).concat(
-      options.setupFilesAfterEnv,
-    );
+    options.setupFilesAfterEnv = [
+      ...(preset.setupFilesAfterEnv || []),
+      ...options.setupFilesAfterEnv,
+    ];
   }
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
-    options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
-      options.modulePathIgnorePatterns,
-    );
+    options.modulePathIgnorePatterns = [
+      ...preset.modulePathIgnorePatterns,
+      ...options.modulePathIgnorePatterns,
+    ];
   }
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
@@ -298,7 +300,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   options[key]!.map(pattern =>
-    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+    replacePathSepForRegex(pattern.replaceAll('<rootDir>', options.rootDir)),
   );
 
 const normalizeMissingOptions = (
@@ -758,9 +760,14 @@ export default async function normalize(
                 typeof project === 'string'
                   ? glob.sync(project, {windowsPathsNoEscape: true})
                   : [];
-              return projects.concat(
-                globMatches.length > 0 ? globMatches : project,
-              );
+              const projectEntry =
+                globMatches.length > 0 ? globMatches : project;
+              return [
+                ...projects,
+                ...(Array.isArray(projectEntry)
+                  ? projectEntry
+                  : [projectEntry]),
+              ];
             },
             [],
           );

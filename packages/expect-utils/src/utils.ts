@@ -323,10 +323,11 @@ export const iterableEquality = (
 const entries = (obj: any) => {
   if (!isObject(obj)) return [];
 
-  return Object.getOwnPropertySymbols(obj)
+  const symbolProperties = Object.getOwnPropertySymbols(obj)
     .filter(key => key !== Symbol.iterator)
-    .map(key => [key, obj[key]])
-    .concat(Object.entries(obj));
+    .map(key => [key, obj[key]]);
+
+  return [...symbolProperties, ...Object.entries(obj)];
 };
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
@@ -479,7 +480,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
     properties.push('');
   }
 
-  propertyPath.replace(pattern, match => {
+  propertyPath.replaceAll(pattern, match => {
     properties.push(match);
     return match;
   });

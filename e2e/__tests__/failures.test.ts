@@ -11,13 +11,13 @@ import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
-const normalizeDots = (text: string) => text.replace(/\.+$/gm, '.');
+const normalizeDots = (text: string) => text.replaceAll(/\.+$/gm, '.');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest
-    .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
-    .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
+    .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+    .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
 beforeAll(() => {
@@ -101,7 +101,7 @@ test('works with error with cause thrown outside tests', () => {
   const summary = normalizeDots(cleanStderr(stderr));
 
   const sanitizedSummary = summary
-    .replace(/ Suite\.f /g, ' f ') // added by jasmine runner
+    .replaceAll(' Suite.f ', ' f ') // added by jasmine runner
     .split('\n')
     .map(line => line.trim()) // jasmine runner does not come with the same indentation
     .join('\n');

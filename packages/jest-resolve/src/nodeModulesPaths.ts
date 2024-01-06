@@ -21,7 +21,7 @@ export default function nodeModulesPaths(
 ): Array<string> {
   const modules =
     options && options.moduleDirectory
-      ? Array.from(options.moduleDirectory)
+      ? [...options.moduleDirectory]
       : ['node_modules'];
 
   // ensure that `basedir` is an absolute path at this point,

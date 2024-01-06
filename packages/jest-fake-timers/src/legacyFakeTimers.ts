@@ -245,7 +245,7 @@ export default class FakeTimers<TimerRef = unknown> {
     // We need to hold the current shape of `this._timers` because existing
     // timers can add new ones to the map and hence would run more than necessary.
     // See https://github.com/jestjs/jest/pull/4608 for details
-    const timerEntries = Array.from(this._timers.entries());
+    const timerEntries = [...this._timers.entries()];
     this._checkFakeTimers();
     for (const _immediate of this._immediates) this._runImmediate(_immediate);
 
@@ -261,7 +261,7 @@ export default class FakeTimers<TimerRef = unknown> {
     if (steps < 1) {
       return;
     }
-    const nextExpiry = Array.from(this._timers.values()).reduce(
+    const nextExpiry = [...this._timers.values()].reduce(
       (minExpiry: number | null, timer: Timer): number => {
         if (minExpiry === null || timer.expiry < minExpiry) return timer.expiry;
         return minExpiry;
@@ -423,6 +423,7 @@ export default class FakeTimers<TimerRef = unknown> {
           'in this test file or enable fake timers for all tests by setting ' +
           "{'enableGlobally': true, 'legacyFakeTimers': true} in " +
           `Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
             new Error().stack!,
             this._config,
             {noStackTrace: false},

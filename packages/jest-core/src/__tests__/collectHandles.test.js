@@ -32,10 +32,8 @@ describe('collectHandles', () => {
   it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
 
-    let obs = new PerformanceObserver((list, observer) => {});
+    const obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
-    obs.disconnect();
-    obs = null;
 
     const openHandles = await handleCollector();
 
@@ -47,11 +45,8 @@ describe('collectHandles', () => {
   it('should not collect the DNSCHANNEL open handle', async () => {
     const handleCollector = collectHandles();
 
-    let resolver = new dns.Resolver();
+    const resolver = new dns.Resolver();
     resolver.getServers();
-
-    // We must drop references to it
-    resolver = null;
 
     const openHandles = await handleCollector();
 
@@ -143,11 +138,10 @@ describe('collectHandles', () => {
     );
   });
 
-  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+  it('should not collect the `TLSWRAP` open handle', async () => {
     const handleCollector = collectHandles();
 
     const socket = new TLSSocket();
-    socket.destroy();
 
     const openHandles = await handleCollector();
 

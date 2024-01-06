@@ -194,7 +194,7 @@ export default async function runJest({
         jestHooks,
         filter,
       );
-      allTests = allTests.concat(matches.tests);
+      allTests = [...allTests, ...matches.tests];
 
       return {context, matches};
     }),
@@ -213,7 +213,7 @@ export default async function runJest({
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
-    const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
+    const testsPaths = [...new Set(allTests.map(test => test.path))];
     /* eslint-disable no-console */
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));

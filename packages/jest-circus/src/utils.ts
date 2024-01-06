@@ -384,7 +384,7 @@ export const makeSingleTestResult = (
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     startedAt: test.startedAt,
     status,
-    testPath: Array.from(testPath),
+    testPath: [...testPath],
   };
 };
 
@@ -432,6 +432,7 @@ const _getError = (
     asyncError = errors[1];
   } else {
     error = errors;
+    // eslint-disable-next-line unicorn/error-message
     asyncError = new Error();
   }
 
@@ -510,12 +511,12 @@ export const parseSingleTestResult = (
     duration: testResult.duration,
     failing: testResult.failing,
     failureDetails: testResult.errorsDetailed,
-    failureMessages: Array.from(testResult.errors),
+    failureMessages: [...testResult.errors],
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
-    retryReasons: Array.from(testResult.retryReasons),
+    retryReasons: [...testResult.retryReasons],
     status,
     title,
   };

@@ -65,7 +65,7 @@ const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 export const indentAllLines = (lines: string): string =>
-  lines.replace(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
+  lines.replaceAll(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
 
 const trim = (string: string) => (string || '').trim();
 
@@ -310,12 +310,15 @@ export const formatPath = (
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-export const getStackTraceLines = (
+export function getStackTraceLines(
   stack: string,
-  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
-): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
+  options?: StackTraceOptions,
+): Array<string> {
+  options = {noCodeFrame: false, noStackTrace: false, ...options};
+  return removeInternalStackEntries(stack.split(/\n/), options);
+}
 
-export const getTopFrame = (lines: Array<string>): Frame | null => {
+export function getTopFrame(lines: Array<string>): Frame | null {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -332,14 +335,14 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
   }
 
   return null;
-};
+}
 
-export const formatStackTrace = (
+export function formatStackTrace(
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: string,
-): string => {
+): string {
   const lines = getStackTraceLines(stack, options);
   let renderedCallsite = '';
   const relativeTestPath = testPath
@@ -376,7 +379,7 @@ export const formatStackTrace = (
   return renderedCallsite
     ? `${renderedCallsite}\n${stacktrace}`
     : `\n${stacktrace}`;
-};
+}
 
 type FailedResults = Array<{
   /** Stringified version of the error */

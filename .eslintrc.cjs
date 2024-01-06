@@ -83,13 +83,6 @@ module.exports = {
     },
     {
       files: [
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/createSpy.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
         'packages/jest-mock/src/index.ts',
         'packages/pretty-format/src/__tests__/Immutable.test.ts',
@@ -104,13 +97,7 @@ module.exports = {
       files: [
         'packages/expect/src/index.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-jasmine2/src/jestExpect.ts',
-        'packages/jest-resolve/src/resolver.ts',
       ],
       rules: {
         'local/prefer-spread-eventually': 'warn',
@@ -127,8 +114,6 @@ module.exports = {
         'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
         'packages/jest-matcher-utils/src/index.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
@@ -235,6 +220,7 @@ module.exports = {
         'no-unused-vars': 'off',
         'sort-keys': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
         'unicorn/no-await-expression-member': 'off',
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
@@ -346,8 +332,9 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
-        'unicorn/no-await-expression-member': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/prefer-spread': 'off',
       },
     },
     {
@@ -356,8 +343,12 @@ module.exports = {
         'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
+        '@typescript-eslint/ban-types': 'off',
         'eslint-comments/disable-enable-pair': 'off',
         'eslint-comments/no-unlimited-disable': 'off',
+        'prefer-rest-params': 'off',
+        'prefer-spread': 'off',
+        'sort-keys ': 'off',
       },
     },
     {
@@ -383,6 +374,7 @@ module.exports = {
       rules: {
         'import/no-extraneous-dependencies': 'off',
         'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
       },
     },
     {
@@ -686,6 +678,9 @@ module.exports = {
     // reduce is fine
     'unicorn/no-array-reduce': 'off',
 
+    // this is very aggressive (600+ files changed). might make sense to apply bit by bit over time?
+    'unicorn/prevent-abbreviations': 'off',
+
     // nah
     'unicorn/consistent-destructuring': 'off',
     'unicorn/no-lonely-if': 'off',
@@ -701,14 +696,6 @@ module.exports = {
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
     'unicorn/prefer-reflect-apply': 'off',
-
-    // TODO: turn on at some point
-    'unicorn/error-message': 'off',
-    'unicorn/no-object-as-default-parameter': 'off',
-    'unicorn/prefer-object-from-entries': 'off',
-    'unicorn/prefer-spread': 'off',
-    'unicorn/prefer-string-replace-all': 'off',
-    'unicorn/prevent-abbreviations': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',

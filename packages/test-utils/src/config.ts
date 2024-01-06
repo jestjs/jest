@@ -77,6 +77,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   collectCoverageFrom: ['src', '!public'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [],
+  coverageReporters: [],
   cwd: '/test_root_dir/',
   detectLeaks: false,
   detectOpenHandles: false,
@@ -140,13 +141,14 @@ export const makeGlobalConfig = (
   overrides: Partial<Config.GlobalConfig> = {},
 ): Config.GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  for (const key of Object.keys(DEFAULT_GLOBAL_CONFIG))
+  for (const key of Object.keys(DEFAULT_GLOBAL_CONFIG)) {
     overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of GlobalConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 
@@ -157,13 +159,14 @@ export const makeProjectConfig = (
   overrides: Partial<Config.ProjectConfig> = {},
 ): Config.ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  for (const key of Object.keys(DEFAULT_PROJECT_CONFIG))
+  for (const key of Object.keys(DEFAULT_PROJECT_CONFIG)) {
     overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of ProjectConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 

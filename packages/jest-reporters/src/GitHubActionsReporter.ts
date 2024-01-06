@@ -69,7 +69,7 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: {silent?: boolean} = {silent: true},
+    reporterOptions: {silent?: boolean} = {},
   ) {
     super();
     this.options = {
@@ -143,7 +143,10 @@ export default class GitHubActionsReporter extends BaseReporter {
   #createAnnotation({file, line, message, title, type}: AnnotationOptions) {
     message = stripAnsi(
       // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
-      message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'),
+      message
+        .replaceAll('%', '%25')
+        .replaceAll('\r', '%0D')
+        .replaceAll('\n', '%0A'),
     );
 
     this.log(

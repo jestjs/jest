@@ -224,7 +224,7 @@ class ScriptTransformer {
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
-      .replace(/\W/g, '');
+      .replaceAll(/\W/g, '');
     return slash(path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`));
   }
 
@@ -772,15 +772,17 @@ class ScriptTransformer {
   async requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-    options: RequireAndTranspileModuleOptions = {
+    options?: RequireAndTranspileModuleOptions,
+  ): Promise<ModuleType> {
+    options = {
       applyInteropRequireDefault: true,
       instrument: false,
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
-    },
-  ): Promise<ModuleType> {
+      ...options,
+    };
     let transforming = false;
     const {applyInteropRequireDefault, ...transformOptions} = options;
     const revertHook = addHook(

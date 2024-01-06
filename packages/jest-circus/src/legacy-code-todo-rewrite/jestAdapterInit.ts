@@ -112,7 +112,7 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  for (const path of config.snapshotSerializers.concat().reverse())
+  for (const path of [...config.snapshotSerializers].reverse())
     addSerializer(localRequire(path));
 
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
@@ -190,7 +190,7 @@ export const runAndTransformResultsToJestFormat = async ({
         failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
-          ? ancestorTitles.concat(title).join(' ')
+          ? [...ancestorTitles, title].join(' ')
           : ancestorTitles.join(' '),
         invocations: testResult.invocations,
         location: testResult.location,
@@ -275,7 +275,7 @@ const eventHandler = async (event: Circus.Event) => {
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
   const failures = jestExpect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
-  test.errors = test.errors.concat(errors);
+  test.errors = [...test.errors, ...errors];
 };
 
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
@@ -285,6 +285,6 @@ const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length > 0) {
-    test.errors = test.errors.concat(suppressedErrors);
+    test.errors = [...test.errors, ...suppressedErrors];
   }
 };

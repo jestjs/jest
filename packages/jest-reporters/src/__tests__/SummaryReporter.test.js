@@ -122,7 +122,7 @@ test('snapshots all have results (no update)', () => {
   requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
-  expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+  expect(results.join('').replaceAll('\\', '/')).toMatchSnapshot();
 });
 
 test('snapshots all have results (after update)', () => {
@@ -159,7 +159,7 @@ test('snapshots all have results (after update)', () => {
   requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
-  expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+  expect(results.join('').replaceAll('\\', '/')).toMatchSnapshot();
 });
 
 describe('summaryThreshold option', () => {
@@ -200,7 +200,7 @@ describe('summaryThreshold option', () => {
     requireReporter();
     const testReporter = new SummaryReporter(globalConfig, options);
     testReporter.onRunComplete(new Set(), aggregatedResults);
-    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+    expect(results.join('').replaceAll('\\', '/')).toMatchSnapshot();
   });
 
   it('Should not print failure messages when number of test suites is under the threshold', () => {
@@ -211,7 +211,7 @@ describe('summaryThreshold option', () => {
     requireReporter();
     const testReporter = new SummaryReporter(globalConfig, options);
     testReporter.onRunComplete(new Set(), aggregatedResults);
-    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+    expect(results.join('').replaceAll('\\', '/')).toMatchSnapshot();
   });
 
   it('Should not print failure messages when number of test suites is equal to the threshold', () => {
@@ -222,7 +222,7 @@ describe('summaryThreshold option', () => {
     requireReporter();
     const testReporter = new SummaryReporter(globalConfig, options);
     testReporter.onRunComplete(new Set(), aggregatedResults);
-    expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
+    expect(results.join('').replaceAll('\\', '/')).toMatchSnapshot();
   });
 
   it('Should throw error if threshold is not a number', () => {

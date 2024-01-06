@@ -545,7 +545,7 @@ export class ModuleMocker {
       object = Object.getPrototypeOf(object);
     }
 
-    return Array.from(slots);
+    return [...slots];
   }
 
   private _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -906,7 +906,7 @@ export class ModuleMocker {
     // It's also a syntax error to define a function with a reserved character
     // as part of it's name.
     if (FUNCTION_NAME_RESERVED_PATTERN.test(name)) {
-      name = name.replace(FUNCTION_NAME_RESERVED_REPLACE, '$');
+      name = name.replaceAll(FUNCTION_NAME_RESERVED_REPLACE, '$');
     }
 
     const body =

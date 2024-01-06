@@ -45,31 +45,36 @@ export function parseWithComments(docblock: string): {
   docblock = docblock
     .replace(commentStartRe, '')
     .replace(commentEndRe, '')
-    .replace(stringStartRe, '$1');
+    .replaceAll(stringStartRe, '$1');
 
   // Normalize multi-line directives
   let prev = '';
   while (prev !== docblock) {
     prev = docblock;
-    docblock = docblock.replace(multilineRe, `${line}$1 $2${line}`);
+    docblock = docblock.replaceAll(multilineRe, `${line}$1 $2${line}`);
   }
   docblock = docblock.replace(ltrimNewlineRe, '').trimEnd();
 
   const result = Object.create(null) as Pragmas;
   const comments = docblock
-    .replace(propertyRe, '')
+    .replaceAll(propertyRe, '')
     .replace(ltrimNewlineRe, '')
     .trimEnd();
 
   let match;
   while ((match = propertyRe.exec(docblock))) {
     // strip linecomments from pragmas
-    const nextPragma = match[2].replace(lineCommentRe, '');
+    const nextPragma = match[2].replaceAll(lineCommentRe, '');
     if (
       typeof result[match[1]] === 'string' ||
       Array.isArray(result[match[1]])
     ) {
-      result[match[1]] = STRING_ARRAY.concat(result[match[1]], nextPragma);
+      const resultElement = result[match[1]];
+      result[match[1]] = [
+        ...STRING_ARRAY,
+        ...(Array.isArray(resultElement) ? resultElement : [resultElement]),
+        nextPragma,
+      ];
     } else {
       result[match[1]] = nextPragma;
     }
@@ -123,7 +128,8 @@ export function print({
 }
 
 function printKeyValues(key: string, valueOrArray: string | Array<string>) {
-  return STRING_ARRAY.concat(valueOrArray).map(value =>
-    `@${key} ${value}`.trim(),
-  );
+  return [
+    ...STRING_ARRAY,
+    ...(Array.isArray(valueOrArray) ? valueOrArray : [valueOrArray]),
+  ].map(value => `@${key} ${value}`.trim());
 }
