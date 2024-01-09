@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`run programmatically with multiple projects: summary 1`] = `
-"Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total (100%)
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

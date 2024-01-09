@@ -41,7 +41,7 @@ exports[`console printing 1`] = `
 `;
 
 exports[`console printing 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -92,7 +92,7 @@ exports[`console printing with --verbose 2`] = `
 `;
 
 exports[`console printing with --verbose 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -127,7 +127,7 @@ exports[`does not error out when using winston 2`] = `
 `;
 
 exports[`does not error out when using winston 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -139,7 +139,7 @@ exports[`does not print to console with --silent 1`] = `""`;
 exports[`does not print to console with --silent 2`] = `"PASS __tests__/console.test.js"`;
 
 exports[`does not print to console with --silent 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>"
@@ -174,7 +174,7 @@ exports[`respects --noStackTrace 2`] = `
 `;
 
 exports[`respects --noStackTrace 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -210,7 +210,7 @@ exports[`respects noStackTrace in config 2`] = `
 `;
 
 exports[`respects noStackTrace in config 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -225,7 +225,7 @@ exports[`the jsdom console is the same as the test console 2`] = `
 `;
 
 exports[`the jsdom console is the same as the test console 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

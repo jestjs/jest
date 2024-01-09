@@ -10,7 +10,7 @@ exports[`snapshots all have results (after update) 1`] = `
    ↳ <dim>../path/to/</intensity><bold>suite_one</intensity>
        • unchecked snapshot 1
 
-<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
 <bold>Snapshots:   </intensity><bold><red>1 failed</color></intensity>, <bold><green>1 removed</color></intensity>, <bold><green>1 file removed</color></intensity>, <bold><green>1 updated</color></intensity>, <bold><green>1 written</color></intensity>, <bold><green>2 passed</color></intensity>, 2 total
 <bold>Time:</intensity>        0.01 s
@@ -28,7 +28,7 @@ exports[`snapshots all have results (no update) 1`] = `
    ↳ <dim>../path/to/</intensity><bold>suite_one</intensity>
        • unchecked snapshot 1
 
-<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
 <bold>Snapshots:   </intensity><bold><red>1 failed</color></intensity>, <bold><yellow>1 obsolete</color></intensity>, <bold><yellow>1 file obsolete</color></intensity>, <bold><green>1 updated</color></intensity>, <bold><green>1 written</color></intensity>, <bold><green>2 passed</color></intensity>, 2 total
 <bold>Time:</intensity>        0.01 s
@@ -40,7 +40,7 @@ exports[`snapshots needs update with npm test 1`] = `
 "<bold>Snapshot Summary</intensity>
 <bold><red> › 2 snapshots failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`npm test -- -u\` to update them.</intensity>
 
-<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
 <bold>Snapshots:   </intensity><bold><red>2 failed</color></intensity>, 2 total
 <bold>Time:</intensity>        0.01 s
@@ -52,7 +52,7 @@ exports[`snapshots needs update with yarn test 1`] = `
 "<bold>Snapshot Summary</intensity>
 <bold><red> › 2 snapshots failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</intensity>
 
-<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
 <bold>Snapshots:   </intensity><bold><red>2 failed</color></intensity>, 2 total
 <bold>Time:</intensity>        0.01 s
@@ -61,7 +61,7 @@ exports[`snapshots needs update with yarn test 1`] = `
 `;
 
 exports[`summaryThreshold option Should not print failure messages when number of test suites is equal to the threshold 1`] = `
-"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
 <bold>Snapshots:   </intensity>0 total
 <bold>Time:</intensity>        0.01 s
@@ -70,7 +70,7 @@ exports[`summaryThreshold option Should not print failure messages when number o
 `;
 
 exports[`summaryThreshold option Should not print failure messages when number of test suites is under the threshold 1`] = `
-"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
 <bold>Snapshots:   </intensity>0 total
 <bold>Time:</intensity>        0.01 s
@@ -85,7 +85,7 @@ FailureMessage1
 </><inverse><bold><red> FAIL </color></intensity></inverse></> <dim>../</intensity><bold>path2</intensity>
 FailureMessage2
 
-<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total (100%)
 <bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
 <bold>Snapshots:   </intensity>0 total
 <bold>Time:</intensity>        0.01 s
