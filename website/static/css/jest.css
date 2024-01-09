@@ -19,8 +19,8 @@
 
 .sponsor-avatar {
   display: inline-block;
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   border: 1px solid white;
   overflow: hidden;
@@ -175,10 +175,13 @@
   margin-left: 0;
 }
 
+.logos .logo-item {
+  margin: 10px;
+}
+
 .logos img {
-  max-height: 56px;
-  padding: 10px;
-  width: 56px;
+  max-height: 75px;
+  width: 75px;
 }
 
 .gridBlockV1 > *:first-child {
