@@ -73,7 +73,7 @@
 - `[jest-transform]` Upgrade `write-file-atomic` ([#14274](https://github.com/jestjs/jest/pull/14274))
 - `[jest-util]` Upgrade `picomatch` to v3 ([#14653](https://github.com/jestjs/jest/pull/14653))
 - `[docs] Append to NODE_OPTIONS, not overwrite ([#14730](https://github.com/jestjs/jest/pull/14730))`
-- `[docs]` Corrected `.toHaveBeenCalled()` description ([#14842](https://github.com/jestjs/jest/pull/14842))`
+- `[docs]` Corrected `.toHaveBeenCalled()` naming and description([#14842](https://github.com/jestjs/jest/pull/14842))
 
 ## 29.7.0
 
