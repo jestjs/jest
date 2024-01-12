@@ -32,6 +32,7 @@ class CurrentTestList {
   private _array: Array<{
     testPath: string;
     config: Config.ProjectConfig;
+    passedTests: number;
   } | null>;
 
   constructor() {
@@ -40,12 +41,18 @@ class CurrentTestList {
 
   add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
-    const record = {config, testPath};
+    const passedTests = 0;
+    const record = {config, passedTests, testPath};
     if (index === -1) {
       this._array.push(record);
     } else {
       this._array[index] = record;
     }
+  }
+
+  addPassedTest(path: string) {
+    const record = this._array.find(record => record?.testPath === path);
+    if (record) record.passedTests++;
   }
 
   delete(testPath: string) {
@@ -123,6 +130,8 @@ export default class Status {
     } else {
       this._emit();
     }
+    if (testCaseResult.status == 'passed')
+      this._currentTests.addPassedTest(test.path);
   }
 
   testStarted(testPath: string, config: Config.ProjectConfig): void {
@@ -164,19 +173,15 @@ export default class Status {
     let content = '\n';
     for (const record of this._currentTests.get()) {
       if (record) {
-        const {config, testPath} = record;
+        const {config, testPath, passedTests} = record;
 
         const projectDisplayName = config.displayName
           ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
 
-        const suitesPassed = this._currentTestCases.filter(
-          c => c.testCaseResult.status == 'passed' && c.test.path === testPath,
-        ).length;
-
         const currentTestPassed = `${chalk.bold.green(
-          `${suitesPassed} passed`,
+          `${passedTests} passed`,
         )}`;
         content += `${wrapAnsiString(
           prefix +
