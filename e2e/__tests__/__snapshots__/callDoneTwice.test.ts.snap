@@ -25,7 +25,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
     > 17 |         done();
          |         ^
       18 |       })
-      19 |       .catch(err => err);
+      19 |       .catch(error => error);
       20 |   });
 
       at done (__tests__/index.test.js:17:9)

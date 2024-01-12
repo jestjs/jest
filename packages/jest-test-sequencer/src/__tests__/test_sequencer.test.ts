@@ -238,7 +238,7 @@ test('writes the cache based on the results', async () => {
 test('works with multiple contexts', async () => {
   fs.readFileSync.mockImplementationOnce(cacheName => {
     if (typeof cacheName !== 'string') {
-      throw new Error('Must be called with a string');
+      throw new TypeError('Must be called with a string');
     }
 
     return cacheName.startsWith(`${path.sep}cache${path.sep}`)
@@ -343,10 +343,10 @@ test('return third shard', async () => {
 });
 
 test('returns expected 100/10 shards', async () => {
-  const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
+  const allTests = toTests(Array.from({length: 100}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    new Array(10).fill(true).map((_, i) =>
+    Array.from({length: 10}).map((_, i) =>
       sequencer.shard(allTests, {
         shardCount: 10,
         shardIndex: i + 1,
@@ -360,10 +360,10 @@ test('returns expected 100/10 shards', async () => {
 });
 
 test('returns expected 100/8 shards', async () => {
-  const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
+  const allTests = toTests(Array.from({length: 100}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    new Array(8).fill(true).map((_, i) =>
+    Array.from({length: 8}).map((_, i) =>
       sequencer.shard(allTests, {
         shardCount: 8,
         shardIndex: i + 1,
@@ -377,10 +377,10 @@ test('returns expected 100/8 shards', async () => {
 });
 
 test('returns expected 55/12 shards', async () => {
-  const allTests = toTests(new Array(55).fill(true).map((_, i) => `/${i}.js`));
+  const allTests = toTests(Array.from({length: 55}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    new Array(12).fill(true).map((_, i) =>
+    Array.from({length: 12}).map((_, i) =>
       sequencer.shard(allTests, {
         shardCount: 12,
         shardIndex: i + 1,

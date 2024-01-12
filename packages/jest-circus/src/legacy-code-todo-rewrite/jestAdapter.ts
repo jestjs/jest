@@ -81,7 +81,10 @@ const jestAdapter = async (
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
   const setupAfterEnvEnd = Date.now();
@@ -145,7 +148,7 @@ const _addSnapshotData = (
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 };
 
 export default jestAdapter;

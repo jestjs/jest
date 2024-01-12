@@ -237,8 +237,8 @@ export default class ChildProcessWorker
           this.state = WorkerStates.OUT_OF_MEMORY;
         }
       }
-    } catch (err) {
-      console.error('Error looking for out of memory crash', err);
+    } catch (error) {
+      console.error('Error looking for out of memory crash', error);
     }
   }
 

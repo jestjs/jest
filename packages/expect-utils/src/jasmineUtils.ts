@@ -76,13 +76,8 @@ function eq(
   }
 
   const testerContext: TesterContext = {equals};
-  for (let i = 0; i < customTesters.length; i++) {
-    const customTesterResult = customTesters[i].call(
-      testerContext,
-      a,
-      b,
-      customTesters,
-    );
+  for (const item of customTesters) {
+    const customTesterResult = item.call(testerContext, a, b, customTesters);
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }
@@ -218,14 +213,15 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
       keys.push(key);
     }
   }
-  return keys.concat(
-    (Object.getOwnPropertySymbols(obj) as Array<any>).filter(
+  return [
+    ...keys,
+    ...Object.getOwnPropertySymbols(obj).filter(
       symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
     ),
-  );
+  ];
 }
 
-function hasKey(obj: any, key: string) {
+function hasKey(obj: any, key: string | symbol) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 

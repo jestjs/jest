@@ -44,7 +44,7 @@ describe('WorkerPool', () => {
 
   it('should create a ChildProcessWorker and send to it', () => {
     jest.mock('worker_threads', () => {
-      throw Error('Undefined');
+      throw new Error('Undefined');
     });
     const workerPool = new WorkerPool('/path', {
       forkOptions: {},

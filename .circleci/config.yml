@@ -12,7 +12,7 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@5.1.0
+  node: circleci/node@5.2.0
 
 jobs:
   test-node:

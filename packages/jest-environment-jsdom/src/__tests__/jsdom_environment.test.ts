@@ -118,7 +118,7 @@ describe('JSDomEnvironment', () => {
     // append an instance of the custom element
     env.global.customElements.define('my-custom-element', MyCustomElement);
     const instance = env.global.document.createElement('my-custom-element');
-    env.global.document.body.appendChild(instance);
+    env.global.document.body.append(instance);
 
     // teardown will disconnect the custom elements
     env.teardown();

@@ -1164,7 +1164,7 @@ describe('printSnapshotAndReceived', () => {
 
       test('number', () => {
         const expected = -0;
-        const received = NaN;
+        const received = Number.NaN;
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
       });

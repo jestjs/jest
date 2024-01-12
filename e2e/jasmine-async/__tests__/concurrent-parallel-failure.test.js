@@ -8,7 +8,7 @@
 'use strict';
 
 it.concurrent('Good Test', async () => {
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise(resolve => setTimeout(resolve, 100));
 });
 
 it.concurrent('Bad Test', async () => {

@@ -165,12 +165,12 @@ describe('prettyFormat()', () => {
   });
 
   it('prints Infinity', () => {
-    const val = Infinity;
+    const val = Number.POSITIVE_INFINITY;
     expect(prettyFormat(val)).toBe('Infinity');
   });
 
   it('prints -Infinity', () => {
-    const val = -Infinity;
+    const val = Number.NEGATIVE_INFINITY;
     expect(prettyFormat(val)).toBe('-Infinity');
   });
 
@@ -228,7 +228,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints NaN', () => {
-    const val = NaN;
+    const val = Number.NaN;
     expect(prettyFormat(val)).toBe('NaN');
   });
 
@@ -283,7 +283,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an invalid date', () => {
-    const val = new Date(Infinity);
+    const val = new Date(Number.POSITIVE_INFINITY);
     expect(prettyFormat(val)).toBe('Date { NaN }');
   });
 
@@ -539,13 +539,13 @@ describe('prettyFormat()', () => {
     test('non-default: 0 spaces', () => {
       const indent = 0;
       expect(prettyFormat(val, {indent})).toEqual(
-        expected.replace(/ {2}/g, ' '.repeat(indent)),
+        expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
       );
     });
     test('non-default: 4 spaces', () => {
       const indent = 4;
       expect(prettyFormat(val, {indent})).toEqual(
-        expected.replace(/ {2}/g, ' '.repeat(indent)),
+        expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
       );
     });
   });
@@ -577,7 +577,7 @@ describe('prettyFormat()', () => {
 
   describe('maxWidth option', () => {
     it('applies to arrays', () => {
-      const val = Array(1_000_000).fill('x');
+      const val = Array.from({length: 1_000_000}).fill('x');
       expect(prettyFormat(val, {maxWidth: 5})).toEqual(
         [
           'Array [',
@@ -914,7 +914,15 @@ describe('prettyFormat()', () => {
       const val = {
         boolean: [false, true],
         null: null,
-        number: [0, -0, 123, -123, Infinity, -Infinity, NaN],
+        number: [
+          0,
+          -0,
+          123,
+          -123,
+          Number.POSITIVE_INFINITY,
+          Number.NEGATIVE_INFINITY,
+          Number.NaN,
+        ],
         string: ['', 'non-empty'],
         undefined,
       };

@@ -22,13 +22,13 @@ export default function getConfigsOfProjectsToRun(
   });
 }
 
+const always = () => true;
+
 function createProjectFilter(opts: {
   ignoreProjects: Array<string> | undefined;
   selectProjects: Array<string> | undefined;
 }) {
   const {selectProjects, ignoreProjects} = opts;
-
-  const always = () => true;
 
   const selected = selectProjects
     ? (name: string | undefined) => name && selectProjects.includes(name)

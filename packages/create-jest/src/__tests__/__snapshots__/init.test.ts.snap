@@ -18,6 +18,15 @@ Object {
 }
 `;
 
+exports[`init has-jest-config-file-cts ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
 exports[`init has-jest-config-file-js ask the user whether to override config or not user answered with "Yes" 1`] = `
 Object {
   "initial": true,

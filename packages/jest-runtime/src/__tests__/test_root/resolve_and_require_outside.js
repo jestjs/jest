@@ -11,7 +11,9 @@ const resolved = require.resolve('./create_require_module', {
   [Symbol.for('jest-resolve-outside-vm-option')]: true,
 });
 if (typeof resolved !== 'string') {
-  throw new Error('require.resolve not spec-compliant: must return a string');
+  throw new TypeError(
+    'require.resolve not spec-compliant: must return a string',
+  );
 }
 module.exports = {
   required: require(resolved),

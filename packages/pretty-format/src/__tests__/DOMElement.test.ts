@@ -71,7 +71,7 @@ describe('DOMElement Plugin', () => {
     const parent = document.createElement('div');
     parent.setAttribute('style', 'color: #99424F');
     const text = document.createTextNode('Jest');
-    parent.appendChild(text);
+    parent.append(text);
 
     expect(parent).toPrettyPrintTo(
       '<div\n  style="color: #99424F"\n>\n  Jest\n</div>',
@@ -81,7 +81,7 @@ describe('DOMElement Plugin', () => {
   it('supports an element with text content', () => {
     const parent = document.createElement('div');
     const child = document.createTextNode('texty texty');
-    parent.appendChild(child);
+    parent.append(child);
 
     expect(parent).toPrettyPrintTo('<div>\n  texty texty\n</div>');
   });
@@ -89,14 +89,14 @@ describe('DOMElement Plugin', () => {
   it('supports nested elements', () => {
     const parent = document.createElement('div');
     const child = document.createElement('span');
-    parent.appendChild(child);
+    parent.append(child);
     expect(parent).toPrettyPrintTo('<div>\n  <span />\n</div>');
   });
 
   it('supports nested elements with attributes', () => {
     const parent = document.createElement('div');
     const child = document.createElement('span');
-    parent.appendChild(child);
+    parent.append(child);
 
     // set attributes in sorted order by name
     child.setAttribute('class', 'classy');
@@ -110,11 +110,11 @@ describe('DOMElement Plugin', () => {
   it('supports nested elements with attribute and text content', () => {
     const parent = document.createElement('div');
     const child = document.createElement('span');
-    parent.appendChild(child);
+    parent.append(child);
 
     child.setAttribute('style', 'color: #99424F');
     const text = document.createTextNode('Jest');
-    child.appendChild(text);
+    child.append(text);
 
     expect(parent).toPrettyPrintTo(
       '<div>\n  <span\n    style="color: #99424F"\n  >\n    Jest\n  </span>\n</div>',
@@ -124,7 +124,7 @@ describe('DOMElement Plugin', () => {
   it('supports nested elements with text content', () => {
     const parent = document.createElement('div');
     const child = document.createElement('span');
-    parent.appendChild(child);
+    parent.append(child);
     child.textContent = 'texty texty';
 
     expect(parent).toPrettyPrintTo(
@@ -228,11 +228,11 @@ Testing.`;
     // React 16 does not render text in comments (see below)
     const parent = document.createElement('span');
     const text = document.createTextNode('');
-    parent.appendChild(text);
+    parent.append(text);
     const abbr = document.createElement('abbr');
     abbr.setAttribute('title', 'meter');
     abbr.innerHTML = 'm';
-    parent.appendChild(abbr);
+    parent.append(abbr);
 
     expect(parent).toPrettyPrintTo(
       [
@@ -321,7 +321,7 @@ Testing.`;
     for (const browser of browsers) {
       const li = document.createElement('li');
       li.textContent = browser;
-      fragment.appendChild(li);
+      fragment.append(li);
     }
 
     expect(fragment).toPrettyPrintTo(
@@ -458,7 +458,7 @@ Testing.`;
     const namespace = 'http://www.w3.org/2000/svg';
 
     const title = document.createElementNS(namespace, 'title');
-    title.appendChild(document.createTextNode('JS community logo'));
+    title.append(document.createTextNode('JS community logo'));
 
     const rect = document.createElementNS(namespace, 'rect');
     // printProps sorts attributes in order by name
@@ -475,18 +475,18 @@ Testing.`;
     g.setAttribute('fill', 'none');
     g.setAttribute('stroke', '#000000');
     g.setAttribute('stroke-width', '0.095');
-    g.appendChild(polyline);
-    g.appendChild(comment);
+    g.append(polyline);
+    g.append(comment);
 
     const svg = document.createElementNS(namespace, 'svg');
     svg.setAttribute('viewBox', '0 0 1 1');
-    svg.appendChild(title);
-    svg.appendChild(rect);
-    svg.appendChild(g);
+    svg.append(title);
+    svg.append(rect);
+    svg.append(g);
 
     const parent = document.createElement('div');
     parent.setAttribute('id', 'JS');
-    parent.appendChild(svg);
+    parent.append(svg);
 
     expect(parent).toPrettyPrintTo(
       [
@@ -558,9 +558,9 @@ Testing.`;
     dd2.setAttribute('style', 'color: #99424F');
 
     const dl = document.createElement('dl');
-    dl.appendChild(dt);
-    dl.appendChild(dd1);
-    dl.appendChild(dd2);
+    dl.append(dt);
+    dl.append(dd1);
+    dl.append(dd2);
 
     expect(dl).toPrettyPrintTo(
       [

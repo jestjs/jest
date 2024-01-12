@@ -10,9 +10,9 @@ import * as fs from 'graceful-fs';
 export default function createDirectory(path: string): void {
   try {
     fs.mkdirSync(path, {recursive: true});
-  } catch (e: any) {
-    if (e.code !== 'EEXIST') {
-      throw e;
+  } catch (error: any) {
+    if (error.code !== 'EEXIST') {
+      throw error;
     }
   }
 }

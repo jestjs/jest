@@ -144,8 +144,8 @@ describe('toEqual', () => {
 
         const a = document.createElement(name);
         const b = document.createElement(name);
-        a.appendChild(document.createTextNode(data));
-        b.appendChild(document.createTextNode(data));
+        a.append(document.createTextNode(data));
+        b.append(document.createTextNode(data));
 
         expect(a).toEqual(b);
         expect(b).toEqual(a);
@@ -156,8 +156,8 @@ describe('toEqual', () => {
 
         const a = document.createElement('strong');
         const b = document.createElement('span');
-        a.appendChild(document.createTextNode(data));
-        b.appendChild(document.createTextNode(data));
+        a.append(document.createTextNode(data));
+        b.append(document.createTextNode(data));
 
         expect(a).not.toEqual(b);
         expect(b).not.toEqual(a);
@@ -173,20 +173,20 @@ describe('toEqual', () => {
 
         const aSpan1 = document.createElement(name1);
         const bSpan1 = document.createElement(name1);
-        aSpan1.appendChild(document.createTextNode(data1));
-        bSpan1.appendChild(document.createTextNode(data1));
+        aSpan1.append(document.createTextNode(data1));
+        bSpan1.append(document.createTextNode(data1));
 
         const aSpan2 = document.createElement(name2);
         const bSpan2 = document.createElement(name2);
-        aSpan2.appendChild(document.createTextNode(data2));
-        bSpan2.appendChild(document.createTextNode(data2));
+        aSpan2.append(document.createTextNode(data2));
+        bSpan2.append(document.createTextNode(data2));
 
         const a = document.createDocumentFragment();
         const b = document.createDocumentFragment();
-        a.appendChild(aSpan1);
-        a.appendChild(aSpan2);
-        b.appendChild(bSpan1);
-        b.appendChild(bSpan2);
+        a.append(aSpan1);
+        a.append(aSpan2);
+        b.append(bSpan1);
+        b.append(bSpan2);
 
         expect(a).toEqual(b);
         expect(b).toEqual(a);
@@ -199,20 +199,20 @@ describe('toEqual', () => {
 
         const aSpan1 = document.createElement('strong');
         const bSpan1 = document.createElement(name);
-        aSpan1.appendChild(document.createTextNode(data1));
-        bSpan1.appendChild(document.createTextNode(data1));
+        aSpan1.append(document.createTextNode(data1));
+        bSpan1.append(document.createTextNode(data1));
 
         const aSpan2 = document.createElement(name);
         const bSpan2 = document.createElement(name);
-        aSpan2.appendChild(document.createTextNode(data2));
-        bSpan2.appendChild(document.createTextNode(data2));
+        aSpan2.append(document.createTextNode(data2));
+        bSpan2.append(document.createTextNode(data2));
 
         const a = document.createDocumentFragment();
         const b = document.createDocumentFragment();
-        a.appendChild(aSpan1);
-        a.appendChild(aSpan2);
-        b.appendChild(bSpan1);
-        b.appendChild(bSpan2);
+        a.append(aSpan1);
+        a.append(aSpan2);
+        b.append(bSpan1);
+        b.append(bSpan2);
 
         expect(a).not.toEqual(b);
         expect(b).not.toEqual(a);

@@ -18,21 +18,15 @@ export default function getChangedFilesPromise(
   configs: Array<Config.ProjectConfig>,
 ): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<string>>(
-      (roots, config) => {
-        if (config.roots) {
-          roots.push(...config.roots);
-        }
-        return roots;
-      },
-      [],
+    const allRootsForAllProjects = new Set(
+      configs.flatMap(config => config.roots || []),
     );
-    return getChangedFilesForRoots(allRootsForAllProjects, {
+    return getChangedFilesForRoots([...allRootsForAllProjects], {
       changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
       withAncestor: globalConfig.changedFilesWithAncestor,
-    }).catch(e => {
-      const message = formatExecError(e, configs[0], {noStackTrace: true})
+    }).catch(error => {
+      const message = formatExecError(error, configs[0], {noStackTrace: true})
         .split('\n')
         .filter(line => !line.includes('Command failed:'))
         .join('\n');

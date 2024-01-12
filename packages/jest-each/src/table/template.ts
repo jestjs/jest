@@ -10,7 +10,6 @@ import type {Global} from '@jest/types';
 import type {EachTests} from '../bind';
 import {
   type Headings,
-  type Template,
   type Templates,
   interpolateVariables,
 } from './interpolation';
@@ -41,8 +40,5 @@ const convertTableToTemplates = (
   headings: Headings,
 ): Templates =>
   table.map(row =>
-    row.reduce<Template>(
-      (acc, value, index) => Object.assign(acc, {[headings[index]]: value}),
-      {},
-    ),
+    Object.fromEntries(row.map((value, index) => [headings[index], value])),
   );

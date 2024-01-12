@@ -44,7 +44,7 @@ jest.mock('../__test_modules__/f', () => {
     fn: () => {
       // The `jest.mock` transform will allow require, built-ins and globals.
       const path = require('path');
-      const array = new Array(3);
+      const array = Array.from({length: 3});
       array[0] = path.sep;
       return jest.fn(() => array);
     },

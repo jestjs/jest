@@ -114,7 +114,7 @@ const dedentMarkup = (input: Array<string>, output: Array<string>): boolean => {
         return false; // because text has more than one adjacent line
       }
 
-      const indentationLengthOfTag = stack[stack.length - 1];
+      const indentationLengthOfTag = stack.at(-1)!;
       output.push(line.slice(indentationLengthOfTag + 2));
       isText = true;
     }

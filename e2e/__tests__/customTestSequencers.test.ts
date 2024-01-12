@@ -24,7 +24,7 @@ test('run prioritySequence first sync', () => {
   );
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual([
     './a.test.js',
@@ -49,7 +49,7 @@ test('run prioritySequence first async', () => {
   );
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual([
     './a.test.js',
@@ -75,7 +75,7 @@ test('run failed tests async', () => {
   );
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual(['./c.test.js', './d.test.js']);
 });
@@ -95,7 +95,7 @@ test('run tests based on even seed', () => {
   );
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual([
     './a.test.js',
@@ -121,7 +121,7 @@ test('run tests based on odd seed', () => {
   );
   expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
+    .rest.replaceAll('PASS ', '')
     .split('\n');
   expect(sequence).toEqual([
     './e.test.js',

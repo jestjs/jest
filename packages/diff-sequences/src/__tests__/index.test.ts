@@ -21,12 +21,12 @@ describe('invalid arg', () => {
     });
     test('Infinity is not a safe integer', () => {
       expect(() => {
-        diff(Infinity, 0, isCommon, foundSubsequence);
+        diff(Number.POSITIVE_INFINITY, 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Not a Number is not a safe integer', () => {
       expect(() => {
-        diff(NaN, 0, isCommon, foundSubsequence);
+        diff(Number.NaN, 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
 
@@ -109,7 +109,7 @@ describe('input callback encapsulates comparison', () => {
 
   describe('Not a Number', () => {
     // input callback encapsulates identical sequences
-    const a = [NaN];
+    const a = [Number.NaN];
 
     test('is common according to Object.is method', () => {
       expect(countCommonObjectIs(a, a)).toBe(1);

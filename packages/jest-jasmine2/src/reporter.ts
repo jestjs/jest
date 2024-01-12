@@ -52,7 +52,7 @@ export default class Jasmine2Reporter implements Reporter {
 
   specDone(result: SpecResult): void {
     this._testResults.push(
-      this._extractSpecResults(result, this._currentSuites.slice(0)),
+      this._extractSpecResults(result, [...this._currentSuites]),
     );
   }
 

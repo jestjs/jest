@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+    "noEmit": true,
     "module": "commonjs",
     "jsx": "react-jsx"
-  }
+  },
+  "include": ["./**/*"]
 }

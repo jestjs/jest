@@ -10,7 +10,7 @@
 const blockCommentRe = /\/\*[^]*?\*\//g;
 const lineCommentRe = /\/\/.*/g;
 const LOAD_MODULE_RE =
-  /(?:^|[^.]\s*)(\bloadModule\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g;
+  /(?:^|[^.]\s*)(\bloadModule\s*?\(\s*?)(["'`])([^"'`]+)(\2\s*?\))/g;
 
 export function extract(code, filePath, defaultDependencyExtractor) {
   const dependencies = defaultDependencyExtractor(code);
@@ -21,9 +21,9 @@ export function extract(code, filePath, defaultDependencyExtractor) {
   };
 
   code
-    .replace(blockCommentRe, '')
-    .replace(lineCommentRe, '')
-    .replace(LOAD_MODULE_RE, addDependency);
+    .replaceAll(blockCommentRe, '')
+    .replaceAll(lineCommentRe, '')
+    .replaceAll(LOAD_MODULE_RE, addDependency);
 
   return dependencies;
 }

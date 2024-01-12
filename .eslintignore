@@ -12,6 +12,7 @@ website/static
 
 # Third-party script
 packages/jest-diff/src/cleanupSemantic.ts
+e2e/native-esm/wasm-bindgen/index_bg.js
 
 **/.yarn
 **/.pnp.*

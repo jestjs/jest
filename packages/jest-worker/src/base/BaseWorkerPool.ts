@@ -34,7 +34,7 @@ export default class BaseWorkerPool {
   constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
     this._workerPath = workerPath;
-    this._workers = new Array(options.numWorkers);
+    this._workers = Array.from({length: options.numWorkers});
 
     const stdout = mergeStream();
     const stderr = mergeStream();
@@ -106,7 +106,7 @@ export default class BaseWorkerPool {
   }
 
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
-    throw Error('Missing method createWorker in WorkerPool');
+    throw new Error('Missing method createWorker in WorkerPool');
   }
 
   async start(): Promise<void> {

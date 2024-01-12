@@ -25,6 +25,7 @@ test('a rejected Promise', () => {
 });
 
 test('a thenable', () => {
+  // eslint-disable-next-line unicorn/no-thenable
   expect(isPromise({then: () => 'hello'})).toBe(true);
 });
 
