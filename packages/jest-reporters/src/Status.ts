@@ -171,11 +171,18 @@ export default class Status {
           : '';
         const prefix = RUNNING + projectDisplayName;
 
+        const suitesPassed = this._currentTestCases.filter(
+          c => c.testCaseResult.status == 'passed' && c.test.path === testPath,
+        ).length;
+
+        const currentTestPassed = `${chalk.bold.green(
+          `${suitesPassed} passed`,
+        )}`;
         content += `${wrapAnsiString(
           prefix +
             trimAndFormatPath(stringLength(prefix), config, testPath, width),
           width,
-        )}\n`;
+        )} ${currentTestPassed}\n`;
       }
     }
 
