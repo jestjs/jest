@@ -520,12 +520,10 @@ export default class Runtime {
             initializeImportMeta: (meta: JestImportMeta) => {
               meta.url = pathToFileURL(modulePath).href;
 
-              if (meta.url.startsWith('file://')) {
-                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-                meta.filename = fileURLToPath(meta.url);
-                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-                meta.dirname = path.dirname(meta.filename);
-              }
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.filename = fileURLToPath(meta.url);
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.dirname = path.dirname(meta.filename);
 
               let jest = this.jestObjectCaches.get(modulePath);
 
