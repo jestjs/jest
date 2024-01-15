@@ -125,15 +125,11 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type ResolveType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<
-  infer U
->
-  ? U
-  : never;
+type ResolveType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<infer U> ? U : never;
 
-type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
-  ? unknown
-  : never;
+type RejectType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
