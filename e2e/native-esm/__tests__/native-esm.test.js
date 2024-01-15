@@ -37,13 +37,25 @@ test('should have correct import.meta', () => {
   expect(
     import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
-  expect(
-    import.meta.filename.endsWith(
-      '/e2e/native-esm/__tests__/native-esm.test.js',
-    ),
-  ).toBe(true);
-  expect(import.meta.filename.startsWith('/')).toBe(true);
-  expect(import.meta.dirname.endsWith('/e2e/native-esm/__tests__')).toBe(true);
+  if (process.platform === 'win32') {
+    expect(
+      import.meta.filename.endsWith(
+        '\\e2e\\native-esm\\__tests__\\native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('\\e2e\\native-esm\\__tests__')).toBe(
+      true,
+    );
+  } else {
+    expect(
+      import.meta.filename.endsWith(
+        '/e2e/native-esm/__tests__/native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('/e2e/native-esm/__tests__')).toBe(
+      true,
+    );
+  }
 });
 
 test('should double stuff', () => {
