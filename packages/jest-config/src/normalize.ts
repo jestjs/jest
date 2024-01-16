@@ -928,6 +928,7 @@ export default async function normalize(
       case 'resetModules':
       case 'restoreMocks':
       case 'rootDir':
+      case 'runInBand':
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
@@ -1098,7 +1099,7 @@ export default async function normalize(
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
-  newOptions.runInBand = argv.runInBand || false;
+  newOptions.runInBand = options.runInBand || argv.runInBand || false;
 
   if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(

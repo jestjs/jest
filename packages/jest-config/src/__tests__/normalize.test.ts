@@ -2175,4 +2175,12 @@ describe('runInBand', () => {
     } as Config.Argv);
     expect(options.runInBand).toBe(true);
   });
+
+  test('respect options', async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', runInBand: true},
+      {} as Config.Argv,
+    );
+    expect(options.runInBand).toBe(true);
+  });
 });
