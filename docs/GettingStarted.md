@@ -150,6 +150,22 @@ If you'd like to avoid these imports, you can configure your [ESLint environment
 }
 ```
 
+Or use `eslint-plugin-jest`, which has a similar effect:
+
+```json
+{
+  "overrides": [
+    {
+      "files": ["tests/**/*"],
+      "plugins": ["jest"],
+      "env": {
+        "jest/globals": true
+      }
+    }
+  ]
+}
+```
+
 ### Using TypeScript
 
 #### Via `babel`
