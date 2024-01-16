@@ -7,7 +7,7 @@
 const greet = require('../greet.hbs');
 
 test('am', () => {
-  expect(greet({am: true, name: 'Joe'}).replace(/\r\n/g, '\n')).toBe(
+  expect(greet({am: true, name: 'Joe'}).replaceAll('\r\n', '\n')).toBe(
     '<p>Good\n  morning\nJoe!</p>\n',
   );
 });

@@ -13,7 +13,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
+import HasteMap, {type SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';

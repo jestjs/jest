@@ -17,8 +17,8 @@ describe('.isPrimitive()', () => {
     true,
     Symbol.for('a'),
     0,
-    NaN,
-    Infinity,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
     BigInt(1),
   ])('returns true when given primitive value of: %s', primitive => {
     expect(isPrimitive(primitive)).toBe(true);

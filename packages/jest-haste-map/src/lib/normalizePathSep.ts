@@ -12,7 +12,7 @@ if (path.sep === '/') {
   normalizePathSep = (filePath: string): string => filePath;
 } else {
   normalizePathSep = (filePath: string): string =>
-    filePath.replace(/\//g, path.sep);
+    filePath.replaceAll('/', path.sep);
 }
 
 export default normalizePathSep;

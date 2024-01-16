@@ -16,7 +16,7 @@ const config = {
 
 runCLI({config: JSON.stringify(config)}, [process.cwd()])
   .then(() => console.log('run-programmatically-mutiple-projects completed'))
-  .catch(err => {
-    console.error(err);
+  .catch(error => {
+    console.error(error);
     process.exitCode = 1;
   });

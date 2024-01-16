@@ -105,7 +105,7 @@ export default class SummaryReporter extends BaseReporter {
   ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
-      const lastResult = testResults[testResults.length - 1];
+      const lastResult = testResults.at(-1);
       // Print a newline if the last test did not fail to line up newlines
       // similar to when an error would have been thrown in the test.
       if (

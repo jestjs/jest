@@ -13,9 +13,7 @@ const setupData = {
 
 module.exports = function (tests) {
   return {
-    filtered: tests
-      .filter(t => t.includes(setupData.filterText))
-      .map(test => ({test})),
+    filtered: tests.filter(t => t.includes(setupData.filterText)),
   };
 };
 

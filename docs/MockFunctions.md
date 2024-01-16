@@ -13,8 +13,8 @@ Let's imagine we're testing an implementation of a function `forEach`, which inv
 
 ```js title="forEach.js"
 export function forEach(items, callback) {
-  for (let index = 0; index < items.length; index++) {
-    callback(items[index]);
+  for (const item of items) {
+    callback(item);
   }
 }
 ```

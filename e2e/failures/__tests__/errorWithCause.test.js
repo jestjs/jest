@@ -23,8 +23,8 @@ function g() {
 function f() {
   try {
     g();
-  } catch (err) {
-    throw buildErrorWithCause('error during f', {cause: err});
+  } catch (error) {
+    throw buildErrorWithCause('error during f', {cause: error});
   }
 }
 

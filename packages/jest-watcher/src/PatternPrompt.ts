@@ -41,7 +41,7 @@ export default abstract class PatternPrompt {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
-    if (options && options.header) {
+    if (typeof options?.header === 'string' && options.header) {
       this._pipe.write(`${options.header}\n`);
       this._currentUsageRows = usageRows + options.header.split('\n').length;
     } else {

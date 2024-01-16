@@ -22,6 +22,7 @@ const untilNextEventLoopTurn = async () => {
 
 export const unhandledRejectionHandler = (
   runtime: Runtime,
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean,
 ): Circus.EventHandler => {
   return async (event, state) => {
     if (event.name === 'hook_start') {
@@ -29,8 +30,10 @@ export const unhandledRejectionHandler = (
     } else if (event.name === 'hook_success' || event.name === 'hook_failure') {
       runtime.leaveTestCode();
 
-      // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
-      await untilNextEventLoopTurn();
+      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+        // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
+        await untilNextEventLoopTurn();
+      }
 
       const {test, describeBlock, hook} = event;
       const {asyncError, type} = hook;
@@ -60,8 +63,10 @@ export const unhandledRejectionHandler = (
     ) {
       runtime.leaveTestCode();
 
-      // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
-      await untilNextEventLoopTurn();
+      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+        // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
+        await untilNextEventLoopTurn();
+      }
 
       const {test} = event;
       invariant(test, 'always present for `*Each` hooks');
@@ -70,8 +75,10 @@ export const unhandledRejectionHandler = (
         test.errors.push([error, event.test.asyncError]);
       }
     } else if (event.name === 'teardown') {
-      // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
-      await untilNextEventLoopTurn();
+      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+        // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
+        await untilNextEventLoopTurn();
+      }
 
       state.unhandledErrors.push(
         ...state.unhandledRejectionErrorByPromise.values(),

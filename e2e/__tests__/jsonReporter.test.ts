@@ -32,9 +32,9 @@ describe('JSON Reporter', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err: any) {
+    } catch (error: any) {
       throw new Error(
-        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+        `Can't parse the JSON result from ${outputFileName}, ${error.toString()}`,
       );
     }
 
@@ -85,9 +85,9 @@ describe('JSON Reporter', () => {
 
     try {
       jsonResult = JSON.parse(result.stdout);
-    } catch (err: any) {
+    } catch (error: any) {
       throw new Error(
-        `Can't parse the JSON result from stdout${err.toString()}`,
+        `Can't parse the JSON result from stdout${error.toString()}`,
       );
     }
 

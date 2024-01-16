@@ -101,9 +101,7 @@ interface SomeFunctionObject {
   one: {
     (oneA: number, oneB?: boolean): boolean;
     more: {
-      time: {
-        (time: number): void;
-      };
+      time: (time: number) => void;
     };
   };
 }

@@ -477,7 +477,7 @@ describe('ScriptTransformer', () => {
       TransformedSource,
       string,
     ]): Promise<any> => {
-      const processorName = `passthrough-preprocessor${filePath.replace(
+      const processorName = `passthrough-preprocessor${filePath.replaceAll(
         /\.|\//g,
         '-',
       )}`;
@@ -2062,7 +2062,7 @@ describe('ScriptTransformer', () => {
     });
 
     // @ts-expect-error - private property
-    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
+    expect([...scriptTransformer._transformCache.entries()]).toEqual([
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });

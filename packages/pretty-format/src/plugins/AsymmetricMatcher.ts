@@ -81,7 +81,7 @@ export const serialize: NewPlugin['serialize'] = (
   }
 
   if (typeof val.toAsymmetricMatcher !== 'function') {
-    throw new Error(
+    throw new TypeError(
       `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
     );
   }

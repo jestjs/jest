@@ -19,9 +19,6 @@ export type MockMetadataType =
   | 'null'
   | 'undefined';
 
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadataType = MockMetadataType;
-
 export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
   members?: Record<string, MockMetadata<T>>;
@@ -33,13 +30,7 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
   length?: number;
 };
 
-// TODO remove re-export in Jest 30
-export type MockFunctionMetadata<
-  T = unknown,
-  MetadataType = MockMetadataType,
-> = MockMetadata<T, MetadataType>;
-
-export type ClassLike = {new (...args: any): any};
+export type ClassLike = new (...args: any) => any;
 export type FunctionLike = (...args: any) => any;
 
 export type ConstructorLikeKeys<T> = keyof {
@@ -69,38 +60,38 @@ export type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunction<T[K]>
-    : T[K] extends object
-    ? MockedObject<T[K]>
-    : T[K];
+      ? MockedFunction<T[K]>
+      : T[K] extends object
+        ? MockedObject<T[K]>
+        : T[K];
 } & T;
 
 type MockedObjectShallow<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-    ? MockedFunctionShallow<T[K]>
-    : T[K];
+      ? MockedFunctionShallow<T[K]>
+      : T[K];
 } & T;
 
 export type Mocked<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunction<T>
-  : T extends object
-  ? MockedObject<T>
-  : T;
+    ? MockedFunction<T>
+    : T extends object
+      ? MockedObject<T>
+      : T;
 
 export type MockedShallow<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-  ? MockedFunctionShallow<T>
-  : T extends object
-  ? MockedObjectShallow<T>
-  : T;
+    ? MockedFunctionShallow<T>
+    : T extends object
+      ? MockedObjectShallow<T>
+      : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
-export type UnknownClass = {new (...args: Array<unknown>): unknown};
+export type UnknownClass = new (...args: Array<unknown>) => unknown;
 
 export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
   (...args: ConstructorParameters<T>) => InstanceType<T>
@@ -116,13 +107,8 @@ export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
   ? SpiedClass<T>
   : T extends FunctionLike
-  ? SpiedFunction<T>
-  : never;
-
-// TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SpyInstance<T extends FunctionLike = UnknownFunction>
-  extends MockInstance<T> {}
+    ? SpiedFunction<T>
+    : never;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -139,15 +125,11 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type ResolveType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<
-  infer U
->
-  ? U
-  : never;
+type ResolveType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<infer U> ? U : never;
 
-type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
-  ? unknown
-  : never;
+type RejectType<T extends FunctionLike> =
+  ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
@@ -547,9 +529,7 @@ export class ModuleMocker {
     ) {
       const ownNames = Object.getOwnPropertyNames(object);
 
-      for (let i = 0; i < ownNames.length; i++) {
-        const prop = ownNames[i];
-
+      for (const prop of ownNames) {
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
@@ -561,7 +541,7 @@ export class ModuleMocker {
       object = Object.getPrototypeOf(object);
     }
 
-    return Array.from(slots);
+    return [...slots];
   }
 
   private _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -582,7 +562,7 @@ export class ModuleMocker {
       this._mockState.set(f, state);
     }
     if (state.calls.length > 0) {
-      state.lastCall = state.calls[state.calls.length - 1];
+      state.lastCall = state.calls.at(-1);
     }
     return state;
   }
@@ -899,7 +879,7 @@ export class ModuleMocker {
     // if-do-while for perf reasons. The common case is for the if to fail.
     if (name.startsWith(boundFunctionPrefix)) {
       do {
-        name = name.substring(boundFunctionPrefix.length);
+        name = name.slice(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
         bindCall = '.bind(null)';
       } while (name && name.startsWith(boundFunctionPrefix));
@@ -922,7 +902,7 @@ export class ModuleMocker {
     // It's also a syntax error to define a function with a reserved character
     // as part of it's name.
     if (FUNCTION_NAME_RESERVED_PATTERN.test(name)) {
-      name = name.replace(FUNCTION_NAME_RESERVED_REPLACE, '$');
+      name = name.replaceAll(FUNCTION_NAME_RESERVED_REPLACE, '$');
     }
 
     const body =
@@ -1063,7 +1043,7 @@ export class ModuleMocker {
         if (
           type === 'function' &&
           this.isMockFunction(component) &&
-          slot.match(/^mock/)
+          slot.startsWith('mock')
         ) {
           continue;
         }
@@ -1120,8 +1100,8 @@ export class ModuleMocker {
   ): A extends 'get'
     ? SpiedGetter<V>
     : A extends 'set'
-    ? SpiedSetter<V>
-    : never;
+      ? SpiedSetter<V>
+      : never;
 
   spyOn<
     T extends object,
@@ -1166,7 +1146,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the \`${String(
             methodKey,
           )}\` property because it is not a function; ${this._typeOf(
@@ -1263,7 +1243,7 @@ export class ModuleMocker {
 
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Cannot spy on the ${String(
             propertyKey,
           )} property because it is not a function; ${this._typeOf(
@@ -1356,7 +1336,7 @@ export class ModuleMocker {
     }
 
     if (typeof descriptor.value === 'function') {
-      throw new Error(
+      throw new TypeError(
         `Cannot replace the \`${String(
           propertyKey,
         )}\` property because it is a function. Use \`jest.spyOn(object, '${String(

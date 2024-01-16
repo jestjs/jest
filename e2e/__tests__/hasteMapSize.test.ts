@@ -38,7 +38,7 @@ const options = {
 
 test('reports the correct file size', async () => {
   const hasteMap = await HasteMap.create(options);
-  const hasteFS = (await hasteMap.build()).hasteFS;
+  const {hasteFS} = await hasteMap.build();
   expect(hasteFS.getSize(path.join(DIR, 'file.js'))).toBe(5);
 });
 

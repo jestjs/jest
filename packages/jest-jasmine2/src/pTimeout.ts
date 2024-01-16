@@ -21,9 +21,9 @@ export default function pTimeout(
         clearTimeout(timer);
         resolve(val);
       },
-      err => {
+      error => {
         clearTimeout(timer);
-        reject(err);
+        reject(error);
       },
     );
   });

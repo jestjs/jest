@@ -5,34 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectType} from 'tsd-lite';
+import {expect, test} from 'tstyche';
 import {isA} from '@jest/expect-utils';
 
-// isA
+test('isA', () => {
+  expect(isA('String', 'default')).type.toBeBoolean();
+  expect(isA<number>('Number', 123)).type.toBeBoolean();
 
-expectType<boolean>(isA('String', 'default'));
-expectType<boolean>(isA<number>('Number', 123));
+  const sample = {} as unknown;
 
-const sample = {} as unknown;
+  if (isA('String', sample)) {
+    expect(sample).type.toBeUnknown();
+  }
 
-expectType<unknown>(sample);
+  if (isA<string>('String', sample)) {
+    expect(sample).type.toBeString();
+  }
 
-if (isA('String', sample)) {
-  expectType<unknown>(sample);
-}
+  if (isA<number>('Number', sample)) {
+    expect(sample).type.toBeNumber();
+  }
 
-if (isA<string>('String', sample)) {
-  expectType<string>(sample);
-}
+  if (isA<Map<unknown, unknown>>('Map', sample)) {
+    expect(sample).type.toEqual<Map<unknown, unknown>>();
+  }
 
-if (isA<number>('Number', sample)) {
-  expectType<number>(sample);
-}
-
-if (isA<Map<unknown, unknown>>('Map', sample)) {
-  expectType<Map<unknown, unknown>>(sample);
-}
-
-if (isA<Set<unknown>>('Set', sample)) {
-  expectType<Set<unknown>>(sample);
-}
+  if (isA<Set<unknown>>('Set', sample)) {
+    expect(sample).type.toEqual<Set<unknown>>();
+  }
+});

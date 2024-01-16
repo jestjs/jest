@@ -10,8 +10,20 @@ import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 
-test('prints useful error for environment methods after test is done', () => {
+test('prints useful error for environment methods after test is done w/o `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
   const {stderr} = runJest('environment-after-teardown');
+  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
+
+  expect(interestingLines).toMatchSnapshot();
+  expect(stderr.split('\n')[9]).toBe(
+    'ReferenceError: You are trying to access a property or method of the Jest environment after it has been torn down. From __tests__/afterTeardown.test.js.',
+  );
+});
+
+test('prints useful error for environment methods after test is done w/ `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
+  const {stderr} = runJest('environment-after-teardown', [
+    '--waitNextEventLoopTurnForUnhandledRejectionEvents',
+  ]);
   const interestingLines = stderr.split('\n').slice(5, 14).join('\n');
 
   expect(interestingLines).toMatchSnapshot();

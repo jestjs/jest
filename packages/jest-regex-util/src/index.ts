@@ -12,18 +12,18 @@ export const escapePathForRegex = (dir: string): string => {
   if (sep === '\\') {
     // Replace "\" with "/" so it's not escaped by escapeStrForRegex.
     // replacePathSepForRegex will convert it back.
-    dir = dir.replace(/\\/g, '/');
+    dir = dir.replaceAll('\\', '/');
   }
   return replacePathSepForRegex(escapeStrForRegex(dir));
 };
 
 export const escapeStrForRegex = (string: string): string =>
-  string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
+  string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
 export const replacePathSepForRegex = (string: string): string => {
   if (sep === '\\') {
-    return string.replace(
-      /(\/|(.)?\\(?![[\]{}()*+?.^$|\\]))/g,
+    return string.replaceAll(
+      /(\/|(.)?\\(?![$()*+.?[\\\]^{|}]))/g,
       (_match, _, p2) => (p2 && p2 !== '\\' ? `${p2}\\\\` : '\\\\'),
     );
   }

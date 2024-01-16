@@ -104,7 +104,7 @@ function find(
             if (stat.isDirectory()) {
               search(file);
             } else {
-              const ext = path.extname(file).substr(1);
+              const ext = path.extname(file).slice(1);
               if (extensions.includes(ext)) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
               }
@@ -137,7 +137,7 @@ function findNative(
   enableSymlinks: boolean,
   callback: Callback,
 ): void {
-  const args = Array.from(roots);
+  const args = [...roots];
   if (enableSymlinks) {
     args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
   } else {
@@ -151,8 +151,7 @@ function findNative(
     if (index) {
       args.push('-o');
     }
-    args.push('-iname');
-    args.push(`*.${ext}`);
+    args.push('-iname', `*.${ext}`);
   }
   if (extensions.length > 0) {
     args.push(')');
@@ -165,7 +164,7 @@ function findNative(
       'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
-  child.stdout.setEncoding('utf-8');
+  child.stdout.setEncoding('utf8');
   child.stdout.on('data', data => (stdout += data));
 
   child.stdout.on('close', () => {

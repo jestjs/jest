@@ -10,6 +10,12 @@ import {processPrettierAst} from './utils';
 
 let prettier: typeof import('prettier');
 
+async function getInferredParser(filepath: string) {
+  const fileInfo = await prettier.getFileInfo(filepath);
+
+  return fileInfo.inferredParser;
+}
+
 runAsWorker(
   async (
     prettierPath: string,
@@ -25,8 +31,9 @@ runAsWorker(
     });
 
     const inferredParser: string | null =
-      (typeof config?.parser === 'string' && config.parser) ||
-      (await prettier.getFileInfo(filepath)).inferredParser;
+      typeof config?.parser === 'string'
+        ? config.parser
+        : await getInferredParser(filepath);
 
     if (!inferredParser) {
       throw new Error(`Could not infer Prettier parser for file ${filepath}`);
@@ -51,13 +58,13 @@ runAsWorker(
     // after the initial format because we don't know where the call expression
     // will be placed (specifically its indentation), so we have to do two
     // prettier.format calls back-to-back.
-    return /** @ts-expect-error private API */ (
-      await prettier.__debug.formatAST(ast, {
-        ...config,
-        filepath,
-        originalText: sourceFileWithSnapshots,
-        parser: inferredParser,
-      })
-    ).formatted;
+    // @ts-expect-error private API
+    const formatAST = await prettier.__debug.formatAST(ast, {
+      ...config,
+      filepath,
+      originalText: sourceFileWithSnapshots,
+      parser: inferredParser,
+    });
+    return formatAST.formatted;
   },
 );

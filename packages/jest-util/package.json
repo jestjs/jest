@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -12,6 +12,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
@@ -20,9 +22,9 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "ci-info": "^3.2.0",
+    "ci-info": "^4.0.0",
     "graceful-fs": "^4.2.9",
-    "picomatch": "^2.2.3"
+    "picomatch": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3",

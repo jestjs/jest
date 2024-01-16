@@ -10,7 +10,7 @@ import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
-import {sync as glob} from 'glob';
+import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
@@ -74,12 +74,12 @@ function verifyDirectoryExists(path: string, key: string) {
         )} option is not a directory.`,
       );
     }
-  } catch (err: any) {
-    if (err instanceof ValidationError) {
-      throw err;
+  } catch (error: any) {
+    if (error instanceof ValidationError) {
+      throw error;
     }
 
-    if (err.code === 'ENOENT') {
+    if (error.code === 'ENOENT') {
       throw createConfigError(
         `  Directory ${chalk.bold(path)} in the ${chalk.bold(
           key,
@@ -91,7 +91,7 @@ function verifyDirectoryExists(path: string, key: string) {
     throw createConfigError(
       `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
         key,
-      )} option.\n\n  Error was: ${err.message}`,
+      )} option.\n\n  Error was: ${error.message}`,
     );
   }
 }
@@ -187,17 +187,19 @@ const setupPreset = async (
   }
 
   if (options.setupFiles) {
-    options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
+    options.setupFiles = [...(preset.setupFiles || []), ...options.setupFiles];
   }
   if (options.setupFilesAfterEnv) {
-    options.setupFilesAfterEnv = (preset.setupFilesAfterEnv || []).concat(
-      options.setupFilesAfterEnv,
-    );
+    options.setupFilesAfterEnv = [
+      ...(preset.setupFilesAfterEnv || []),
+      ...options.setupFilesAfterEnv,
+    ];
   }
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
-    options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
-      options.modulePathIgnorePatterns,
-    );
+    options.modulePathIgnorePatterns = [
+      ...preset.modulePathIgnorePatterns,
+      ...options.modulePathIgnorePatterns,
+    ];
   }
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
@@ -298,7 +300,7 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   options[key]!.map(pattern =>
-    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+    replacePathSepForRegex(pattern.replaceAll('<rootDir>', options.rootDir)),
   );
 
 const normalizeMissingOptions = (
@@ -313,7 +315,7 @@ const normalizeMissingOptions = (
       .update(configPath || '')
       .update(String(projectIndex))
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   if (!options.setupFiles) {
@@ -426,17 +428,17 @@ const buildTestPathPatterns = (
   return testPathPatterns;
 };
 
+function printConfig(opts: Array<string>) {
+  const string = opts.map(ext => `'${ext}'`).join(', ');
+
+  return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+}
+
 function validateExtensionsToTreatAsEsm(
   extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
 ) {
   if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
     return;
-  }
-
-  function printConfig(opts: Array<string>) {
-    const string = opts.map(ext => `'${ext}'`).join(', ');
-
-    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
   }
 
   const extensionWithoutDot = extensionsToTreatAsEsm.some(
@@ -487,7 +489,7 @@ export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
@@ -755,10 +757,17 @@ export default async function normalize(
               // We expand it to these paths. If not, we keep the original path
               // for the future resolution.
               const globMatches =
-                typeof project === 'string' ? glob(project) : [];
-              return projects.concat(
-                globMatches.length > 0 ? globMatches : project,
-              );
+                typeof project === 'string'
+                  ? glob.sync(project, {windowsPathsNoEscape: true})
+                  : [];
+              const projectEntry =
+                globMatches.length > 0 ? globMatches : project;
+              return [
+                ...projects,
+                ...(Array.isArray(projectEntry)
+                  ? projectEntry
+                  : [projectEntry]),
+              ];
             },
             [],
           );
@@ -933,6 +942,7 @@ export default async function normalize(
       case 'testNamePattern':
       case 'useStderr':
       case 'verbose':
+      case 'waitNextEventLoopTurnForUnhandledRejectionEvents':
       case 'watch':
       case 'watchAll':
       case 'watchman':
@@ -1006,7 +1016,7 @@ export default async function normalize(
   newOptions.testPathPatterns = testPathPatterns.patterns;
   newOptions.json = !!argv.json;
 
-  newOptions.testFailureExitCode = parseInt(
+  newOptions.testFailureExitCode = Number.parseInt(
     newOptions.testFailureExitCode as unknown as string,
     10,
   );
@@ -1080,10 +1090,10 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-      ? 'all'
-      : 'new';
+        ? 'all'
+        : 'new';
 
-  newOptions.maxConcurrency = parseInt(
+  newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
     10,
   );

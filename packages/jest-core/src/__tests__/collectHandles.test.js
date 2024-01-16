@@ -32,10 +32,8 @@ describe('collectHandles', () => {
   it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
 
-    let obs = new PerformanceObserver((list, observer) => {});
+    const obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
-    obs.disconnect();
-    obs = null;
 
     const openHandles = await handleCollector();
 
@@ -47,11 +45,8 @@ describe('collectHandles', () => {
   it('should not collect the DNSCHANNEL open handle', async () => {
     const handleCollector = collectHandles();
 
-    let resolver = new dns.Resolver();
+    const resolver = new dns.Resolver();
     resolver.getServers();
-
-    // We must drop references to it
-    resolver = null;
 
     const openHandles = await handleCollector();
 
@@ -113,8 +108,8 @@ describe('collectHandles', () => {
     const server = http.createServer((_, response) => response.end('ok'));
 
     // Start and stop server.
-    await new Promise(r => server.listen(0, r));
-    await new Promise(r => server.close(r));
+    await new Promise(resolve => server.listen(0, resolve));
+    await new Promise(resolve => server.close(resolve));
 
     const openHandles = await handleCollector();
     expect(openHandles).toHaveLength(0);
@@ -130,22 +125,23 @@ describe('collectHandles', () => {
     // creates a long-lived `TCPSERVERWRAP` resource. We want to make sure we
     // capture that long-lived resource.
     const server = new http.Server();
-    await new Promise(r => server.listen({host: 'localhost', port: 0}, r));
+    await new Promise(resolve =>
+      server.listen({host: 'localhost', port: 0}, resolve),
+    );
 
     const openHandles = await handleCollector();
 
-    await new Promise(r => server.close(r));
+    await new Promise(resolve => server.close(resolve));
 
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),
     );
   });
 
-  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+  it('should not collect the `TLSWRAP` open handle', async () => {
     const handleCollector = collectHandles();
 
     const socket = new TLSSocket();
-    socket.destroy();
 
     const openHandles = await handleCollector();
 

@@ -9,7 +9,7 @@ const users = {
 
 export default function request(url) {
   return new Promise((resolve, reject) => {
-    const userID = parseInt(url.substr('/users/'.length), 10);
+    const userID = Number.parseInt(url.slice('/users/'.length), 10);
     process.nextTick(() =>
       users[userID]
         ? resolve(users[userID])

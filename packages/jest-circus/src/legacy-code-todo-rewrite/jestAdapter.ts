@@ -74,15 +74,20 @@ const jestAdapter = async (
     }
   });
 
+  const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
+  const setupAfterEnvEnd = Date.now();
   const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
@@ -91,9 +96,15 @@ const jestAdapter = async (
     runtime.requireModule(testPath);
   }
 
+  const setupAfterEnvPerfStats = {
+    setupAfterEnvEnd,
+    setupAfterEnvStart,
+  };
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    setupAfterEnvPerfStats,
     testPath,
   });
 
@@ -137,7 +148,7 @@ const _addSnapshotData = (
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 };
 
 export default jestAdapter;

@@ -1,5 +1,6 @@
 {
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "waitNextEventLoopTurnForUnhandledRejectionEvents": true
   }
 }

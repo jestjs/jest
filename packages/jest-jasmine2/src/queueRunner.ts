@@ -39,6 +39,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
     onCancel(resolve);
   });
 
+  // eslint-disable-next-line unicorn/error-message
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise<void>(resolve => {
       const next = function (...args: [Error]) {
@@ -55,8 +56,8 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       };
       try {
         fn.call(options.userContext, next);
-      } catch (e: any) {
-        options.onException(e);
+      } catch (error: any) {
+        options.onException(error);
         resolve();
       }
     });
@@ -92,6 +93,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
   return {
     cancel: token.cancel.bind(token),
     catch: result.catch.bind(result),
+    // eslint-disable-next-line unicorn/no-thenable
     then: result.then.bind(result),
   };
 }
