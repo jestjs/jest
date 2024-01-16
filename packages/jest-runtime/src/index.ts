@@ -520,6 +520,11 @@ export default class Runtime {
             initializeImportMeta: (meta: JestImportMeta) => {
               meta.url = pathToFileURL(modulePath).href;
 
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.filename = fileURLToPath(meta.url);
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.dirname = path.dirname(meta.filename);
+
               let jest = this.jestObjectCaches.get(modulePath);
 
               if (!jest) {
@@ -672,6 +677,13 @@ export default class Runtime {
             initializeImportMeta(meta: ImportMeta) {
               // no `jest` here as it's not loaded in a file
               meta.url = specifier;
+
+              if (meta.url.startsWith('file://')) {
+                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                meta.filename = fileURLToPath(meta.url);
+                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                meta.dirname = path.dirname(meta.filename);
+              }
             },
           });
         }
@@ -685,19 +697,22 @@ export default class Runtime {
       specifier = fileURLToPath(specifier);
     }
 
-    const [path, query] = specifier.split('?');
+    const [specifierPath, query] = specifier.split('?');
 
     if (
       await this._shouldMockModule(
         referencingIdentifier,
-        path,
+        specifierPath,
         this._explicitShouldMockModule,
       )
     ) {
-      return this.importMock(referencingIdentifier, path, context);
+      return this.importMock(referencingIdentifier, specifierPath, context);
     }
 
-    const resolved = await this._resolveModule(referencingIdentifier, path);
+    const resolved = await this._resolveModule(
+      referencingIdentifier,
+      specifierPath,
+    );
 
     if (
       // json files are modules when imported in modules
