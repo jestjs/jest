@@ -142,7 +142,7 @@ If you'd like to avoid these imports, you can configure your [ESLint environment
   // Enable jest environment for test files
   "overrides": [
     {
-      "files": ["tests/**/*"]
+      "files": ["tests/**/*"],
       "env": {
         "jest": true
       }
