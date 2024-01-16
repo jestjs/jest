@@ -137,9 +137,8 @@ Jest can be used with ESLint without any further configuration as long as you im
 
 If you'd like to avoid these imports, you can configure your [ESLint environment](https://eslint.org/docs/latest/use/configure/language-options#specifying-environments) to support these globals by adding the `jest` environment:
 
-```json5
+```json
 {
-  // Enable jest environment for test files
   "overrides": [
     {
       "files": ["tests/**/*"],
