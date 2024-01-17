@@ -23,7 +23,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 21-nightly
+          node-version: 22-nightly
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -55,7 +55,7 @@ jobs:
       - name: Use Node.js LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 21-nightly
+          node-version: 22-nightly
           cache: yarn
       - name: install
         run: yarn --immutable
