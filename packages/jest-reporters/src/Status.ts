@@ -91,6 +91,7 @@ export default class Status {
   private _interval?: NodeJS.Timeout;
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
+  private _numberOfTests: Map<string, number>;
 
   constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
@@ -100,6 +101,7 @@ export default class Status {
     this._emitScheduled = false;
     this._estimatedTime = 0;
     this._showStatus = false;
+    this._numberOfTests = new Map<string, number>();
   }
 
   onChange(callback: () => void): void {
@@ -132,6 +134,14 @@ export default class Status {
     }
     if (testCaseResult.status == 'passed')
       this._currentTests.addPassedTest(test.path);
+  }
+
+  addNumberOfTests(testPath: string, numberOfTests: number): void {
+    this._numberOfTests.set(testPath, numberOfTests);
+  }
+
+  getNumberOfTests(testPath: string): number | undefined {
+    return this._numberOfTests.get(testPath);
   }
 
   testStarted(testPath: string, config: Config.ProjectConfig): void {
@@ -180,8 +190,10 @@ export default class Status {
           : '';
         const prefix = RUNNING + projectDisplayName;
 
+        const numberOfTests = this.getNumberOfTests(testPath);
+        const txtNumberOfTests = numberOfTests ? `of ${numberOfTests}` : '';
         const currentTestPassed = `${chalk.bold.green(
-          `${passedTests} passed`,
+          `${passedTests} passed ${txtNumberOfTests}`,
         )}`;
         content += `${wrapAnsiString(
           prefix +

@@ -7,6 +7,7 @@
 
 import {
   type AssertionResult,
+  type TestFileEvent,
   type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
@@ -27,11 +28,13 @@ export default class Jasmine2Reporter implements Reporter {
   private readonly _resultsPromise: Promise<TestResult>;
   private readonly _startTimes: Map<string, Microseconds>;
   private readonly _testPath: string;
+  private readonly _sendMessageToJest?: TestFileEvent;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
     testPath: string,
+    sendMessageToJest?: TestFileEvent,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -41,10 +44,16 @@ export default class Jasmine2Reporter implements Reporter {
     this._resolve = null;
     this._resultsPromise = new Promise(resolve => (this._resolve = resolve));
     this._startTimes = new Map();
+    this._sendMessageToJest = sendMessageToJest;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  jasmineStarted(_runDetails: RunDetails): void {}
+  jasmineStarted(_runDetails: RunDetails): void {
+    if (this._sendMessageToJest && _runDetails.totalSpecsDefined !== undefined)
+      this._sendMessageToJest('test-file-num-of-tests', [
+        this._testPath,
+        _runDetails.totalSpecsDefined,
+      ]);
+  }
 
   specStarted(spec: SpecResult): void {
     this._startTimes.set(spec.id, Date.now());

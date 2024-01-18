@@ -147,6 +147,10 @@ export default class DefaultReporter extends BaseReporter {
     this._status.addTestCaseResult(test, testCaseResult);
   }
 
+  override onNumberOfTests(testPath: string, numberOfTests: number): void {
+    this._status.addNumberOfTests(testPath, numberOfTests);
+  }
+
   override onRunComplete(): void {
     this.forceFlushBufferedOutput();
     this._status.runFinished();

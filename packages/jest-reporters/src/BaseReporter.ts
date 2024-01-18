@@ -34,6 +34,8 @@ export default class BaseReporter implements Reporter {
   /* eslint-disable @typescript-eslint/no-empty-function */
   onTestCaseResult(_test: Test, _testCaseResult: TestCaseResult): void {}
 
+  onNumberOfTests(_testPath: string, _numberOfTests: number): void {}
+
   onTestResult(
     _test?: Test,
     _testResult?: TestResult,

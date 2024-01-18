@@ -272,6 +272,12 @@ class TestScheduler {
                     this._dispatcher.onTestCaseResult(test, testCaseResult);
                   },
                 ),
+                testRunner.on(
+                  'test-file-num-of-tests',
+                  ([testPath, numberOfTests]) => {
+                    this._dispatcher.onNumberOfTests(testPath, numberOfTests);
+                  },
+                ),
               ];
 
               await testRunner.runTests(tests, watcher, testRunnerOptions);
