@@ -4005,12 +4005,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prettier/sync@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@prettier/sync@npm:0.3.0"
+"@prettier/sync@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@prettier/sync@npm:0.5.0"
+  dependencies:
+    make-synchronized: ^0.2.5
   peerDependencies:
-    prettier: ^3.0.0
-  checksum: a663ceca292629c66c2c983662293b047b48435942c25b7ea76f0eab899e434f2bc17ae3dce56ee66b29929f7853118073f716fd4c7dabc3cccf78458a168dd4
+    prettier: "*"
+  checksum: 491e30148a05128a5e290916a58ab8c328dfd1e6aafa13688ad031caedb47da2ffaea22e12afa14f786c1ae998cbd332fe0ff6bd1152bd176b7a862752a39944
   languageName: node
   linkType: hard
 
@@ -6734,7 +6736,7 @@ __metadata:
     "@babel/preset-typescript": ^7.0.0
     "@babel/template": ^7.3.3
     "@babel/types": ^7.3.3
-    "@prettier/sync": ^0.3.0
+    "@prettier/sync": ^0.5.0
     "@types/babel__core": ^7.1.14
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
@@ -14150,6 +14152,13 @@ __metadata:
     promise-retry: ^2.0.1
     ssri: ^10.0.0
   checksum: 7c7a6d381ce919dd83af398b66459a10e2fe8f4504f340d1d090d3fa3d1b0c93750220e1d898114c64467223504bd258612ba83efbc16f31b075cd56de24b4af
+  languageName: node
+  linkType: hard
+
+"make-synchronized@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "make-synchronized@npm:0.2.5"
+  checksum: 36cc5ecc287a4ac5924e1f5bc38d435c26278717c6b7238a5bbc2486d616ba28c6e4a0b3fbbf1b0c2aaa018341f5283e7a682aa1e094656fb2846c46df2f998e
   languageName: node
   linkType: hard
 
