@@ -28,6 +28,8 @@ test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
   expect(import.meta).toEqual({
+    dirname: expect.any(String),
+    filename: expect.any(String),
     jest: expect.anything(),
     url: expect.any(String),
   });
@@ -35,6 +37,25 @@ test('should have correct import.meta', () => {
   expect(
     import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
+  if (process.platform === 'win32') {
+    expect(
+      import.meta.filename.endsWith(
+        '\\e2e\\native-esm\\__tests__\\native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('\\e2e\\native-esm\\__tests__')).toBe(
+      true,
+    );
+  } else {
+    expect(
+      import.meta.filename.endsWith(
+        '/e2e/native-esm/__tests__/native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('/e2e/native-esm/__tests__')).toBe(
+      true,
+    );
+  }
 });
 
 test('should double stuff', () => {
