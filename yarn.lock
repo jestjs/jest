@@ -12961,10 +12961,8 @@ __metadata:
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
     "@jest/types": "workspace:*"
-    "@tsd/typescript": ^5.0.4
     "@types/node": "*"
     jest-util: "workspace:*"
-    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
