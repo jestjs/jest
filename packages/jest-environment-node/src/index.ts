@@ -84,7 +84,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
-    this.context = createContext();
+    this.context = createContext({Symbol});
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
