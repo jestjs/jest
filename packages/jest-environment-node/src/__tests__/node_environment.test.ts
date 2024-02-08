@@ -72,6 +72,19 @@ describe('NodeEnvironment', () => {
     }
   });
 
+  it('should configure host global Symbol', () => {
+    const env = new NodeEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      context,
+    );
+
+    expect(env.global.Symbol).toBeDefined();
+    expect(env.global.Symbol).toStrictEqual(Symbol);
+  });
+
   it('has modern fake timers implementation', () => {
     const env = new NodeEnvironment(
       {
