@@ -60,6 +60,22 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
+function setDisposeSymbols(context: Context): void {
+  if ('asyncDispose' in Symbol) {
+    runInContext(
+      'if (!"asyncDispose" in Symbol) { Symbol.asyncDispose = Symbol.for("nodejs.asyncDispose") }',
+      context,
+    );
+  }
+
+  if ('dispose' in Symbol) {
+    runInContext(
+      'if (!"dispose" in Symbol) { Symbol.dispose = Symbol.for("nodejs.dispose") }',
+      context,
+    );
+  }
+}
+
 const timerIdToRef = (id: number) => ({
   id,
   ref() {
@@ -85,6 +101,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
+
+    setDisposeSymbols(this.context);
+
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),

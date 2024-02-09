@@ -15,6 +15,7 @@
 - `[@jest/core, @jest/test-sequencer]` [**BREAKING**] Exposes `globalConfig` & `contexts` to `TestSequencer` ([#14535](https://github.com/jestjs/jest/pull/14535), & [#14543](https://github.com/jestjs/jest/pull/14543))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM to v22 ([#13825](https://github.com/jestjs/jest/pull/13825))
 - `[@jest/environment-jsdom-abstract]` Introduce new package which abstracts over the `jsdom` environment, allowing usage of custom versions of JSDOM ([#14717](https://github.com/jestjs/jest/pull/14717))
+- `[jest-environment-node]` Update jest environment with dispose symbols `Symbol` ([#14888](https://github.com/jestjs/jest/pull/14888))
 - `[@jest/fake-timers]` [**BREAKING**] Upgrade `@sinonjs/fake-timers` to v11 ([#14544](https://github.com/jestjs/jest/pull/14544))
 - `[@jest/fake-timers]` Exposing new modern timers function `advanceTimersToFrame()` which advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-runtime]` Exposing new modern timers function `jest.advanceTimersToFrame()` from `@jest/fake-timers` ([#14598](https://github.com/jestjs/jest/pull/14598))
