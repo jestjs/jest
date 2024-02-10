@@ -82,7 +82,7 @@
     "tempy": "^1.0.0",
     "ts-node": "^10.5.0",
     "tstyche": "^1.0.0-beta.9",
-    "typescript": "^5.2.2",
+    "typescript": "^5.0.4",
     "webpack": "^5.68.0",
     "webpack-node-externals": "^3.0.0",
     "which": "^4.0.0"

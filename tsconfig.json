@@ -8,7 +8,6 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "stripInternal": true,
-    "lib": ["es2021", "ESNext.Disposable"],
 
     "strict": true,
 
