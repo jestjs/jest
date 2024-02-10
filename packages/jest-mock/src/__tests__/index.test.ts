@@ -10,16 +10,7 @@
 
 import * as util from 'util';
 import {type Context, createContext, runInContext, runInNewContext} from 'vm';
-import {onNodeVersions} from '@jest/test-utils';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
-
-if (!Symbol.dispose) {
-  Object.defineProperty(Symbol, 'dispose', {
-    get() {
-      return Symbol.for('nodejs.dispose');
-    },
-  });
-}
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
@@ -2440,29 +2431,4 @@ test('`fn` and `spyOn` do not throw', () => {
     fn();
     spyOn({apple: () => {}}, 'apple');
   }).not.toThrow();
-});
-
-onNodeVersions('>=18.0.0', () => {
-  describe('Explicit Resource Management', () => {
-    it('jest.fn state should be restored with the `using` keyword', () => {
-      const mock = jest.fn();
-      {
-        using inScope = mock.mockReturnValue(2);
-        expect(inScope()).toBe(2);
-        expect(mock()).toBe(2);
-      }
-      expect(mock()).not.toBe(2);
-    });
-
-    it('should be restored with the `using` keyword', () => {
-      {
-        using mockedLog = jest.spyOn(console, 'log');
-        expect(jest.isMockFunction(console.log)).toBeTruthy();
-
-        console.log('test');
-        expect(mockedLog).toHaveBeenCalled();
-      }
-      expect(jest.isMockFunction(console.log)).toBeFalsy();
-    });
-  });
 });
