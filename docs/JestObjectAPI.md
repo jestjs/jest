@@ -719,9 +719,11 @@ test('logs a warning', () => {
   using spy = jest.spyOn(console.warn);
   doSomeThingWarnWorthy();
   expect(spy).toHaveBeenCalled();
-})
+});
 ```
+
 That code is semantically equal to
+
 ```js
 test('logs a warning', () => {
   try {
@@ -729,22 +731,24 @@ test('logs a warning', () => {
     doSomeThingWarnWorthy();
     expect(spy).toHaveBeenCalled();
   } finally {
-    spy.mockRestore()
+    spy.mockRestore();
   }
-})
+});
 ```
+
 That way, your spy will automatically be restored to the original value once the current code block is left.
 
 You can even go a step further and use a code block to restrict your mock to only a part of your test without hurting readability.
+
 ```js
 test('testing something', () => {
   {
     using spy = jest.spyOn(console.warn);
-    setupStepThatWillLogAWarning()
+    setupStepThatWillLogAWarning();
   }
   // here, console.warn is already restored to the original value
   // your test can now continue normally
-})
+});
 ```
 
 :::note
