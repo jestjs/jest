@@ -18,7 +18,7 @@
 - `[jest-core, jest-circus, jest-reporter, jest-runner]` Added support for reporting about start individual test cases using jest-circus ([#14174](https://github.com/jestjs/jest/pull/14174))
 
 ### Fixes
-
+- `[expect-utils]` Catch circular references within arrays when matching objects ([#14894](https://github.com/jestjs/jest/pull/14894))
 - `[jest-circus]` Prevent false test failures caused by promise rejections handled asynchronously ([#14110](https://github.com/jestjs/jest/pull/14110))
 - `[jest-config]` Handle frozen config object ([#14054](https://github.com/facebook/jest/pull/14054))
 - `[jest-config]` Allow `coverageDirectory` and `collectCoverageFrom` in project config ([#14180](https://github.com/jestjs/jest/pull/14180))
