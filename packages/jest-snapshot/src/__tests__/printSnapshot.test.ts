@@ -11,7 +11,7 @@ import chalk = require('chalk');
 import type {SyncExpectationResult} from 'expect';
 import format from 'pretty-format';
 import {
-  Context,
+  type Context,
   toMatchInlineSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
@@ -1164,7 +1164,7 @@ describe('printSnapshotAndReceived', () => {
 
       test('number', () => {
         const expected = -0;
-        const received = NaN;
+        const received = Number.NaN;
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
       });

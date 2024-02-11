@@ -14,12 +14,12 @@ import {
   expectType,
 } from 'tsd-lite';
 import {
-  Mock,
-  Replaced,
-  SpiedClass,
-  SpiedFunction,
-  SpiedGetter,
-  SpiedSetter,
+  type Mock,
+  type Replaced,
+  type SpiedClass,
+  type SpiedFunction,
+  type SpiedGetter,
+  type SpiedSetter,
   fn,
   replaceProperty,
   spyOn,

@@ -20,6 +20,7 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
+  invariant,
   isPromise,
   requireOrImportModule,
   tryRealpath,
@@ -121,7 +122,7 @@ class ScriptTransformer {
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
         .digest('hex')
-        .substring(0, 32);
+        .slice(0, 32);
     }
 
     return createHash('sha1')
@@ -131,7 +132,7 @@ class ScriptTransformer {
       .update(filename)
       .update(CACHE_VERSION)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
   }
 
   private _buildTransformCacheKey(pattern: string, filepath: string) {
@@ -223,7 +224,7 @@ class ScriptTransformer {
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
-      .replace(/\W/g, '');
+      .replaceAll(/\W/g, '');
     return slash(path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`));
   }
 
@@ -253,8 +254,8 @@ class ScriptTransformer {
       return undefined;
     }
 
-    for (let i = 0; i < transformEntry.length; i++) {
-      const [transformRegExp, transformPath] = transformEntry[i];
+    for (const item of transformEntry) {
+      const [transformRegExp, transformPath] = item;
       if (transformRegExp.test(filename)) {
         return [transformRegExp.source, transformPath];
       }
@@ -283,15 +284,14 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
-            transformer = await transformer.createTransformer(
-              transformerConfig,
-            );
+            transformer =
+              await transformer.createTransformer(transformerConfig);
           }
           if (
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new Error(makeInvalidTransformerError(transformPath));
+            throw new TypeError(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           const transformCacheKey = this._buildTransformCacheKey(
@@ -411,7 +411,7 @@ class ScriptTransformer {
     if (transformed.map == null || transformed.map === '') {
       try {
         //Could be a potential freeze here.
-        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        //See: https://github.com/jestjs/jest/pull/5177#discussion_r158883570
         const inlineSourceMap = sourcemapFromSource(transformed.code);
         if (inlineSourceMap) {
           transformed.map = inlineSourceMap.toObject() as FixedRawSourceMap;
@@ -458,15 +458,15 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (map != null) {
+    if (map == null) {
+      sourceMapPath = null;
+    } else {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
 
       invariant(sourceMapPath, 'We should always have default sourceMapPath');
 
       writeCacheFile(sourceMapPath, sourceMapContent);
-    } else {
-      sourceMapPath = null;
     }
 
     writeCodeCacheFile(cacheFilePath, code);
@@ -637,11 +637,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -683,11 +683,11 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
-      if (!(e instanceof Error)) {
-        throw e;
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
       }
-      throw handlePotentialSyntaxError(e);
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -772,15 +772,17 @@ class ScriptTransformer {
   async requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-    options: RequireAndTranspileModuleOptions = {
+    options?: RequireAndTranspileModuleOptions,
+  ): Promise<ModuleType> {
+    options = {
       applyInteropRequireDefault: true,
       instrument: false,
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
-    },
-  ): Promise<ModuleType> {
+      ...options,
+    };
     let transforming = false;
     const {applyInteropRequireDefault, ...transformOptions} = options;
     const revertHook = addHook(
@@ -839,7 +841,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return this._config.transform.length !== 0 && !isIgnored;
+    return this._config.transform.length > 0 && !isIgnored;
   }
 }
 
@@ -901,10 +903,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -919,12 +918,9 @@ function readCodeCacheFile(cachePath: string): string | null {
   if (content == null) {
     return null;
   }
-  const code = content.substring(33);
-  const checksum = createHash('sha1')
-    .update(code)
-    .digest('hex')
-    .substring(0, 32);
-  if (checksum === content.substring(0, 32)) {
+  const code = content.slice(33);
+  const checksum = createHash('sha1').update(code).digest('hex').slice(0, 32);
+  if (checksum === content.slice(0, 32)) {
     return code;
   }
   return null;
@@ -939,17 +935,17 @@ function readCodeCacheFile(cachePath: string): string | null {
 const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
-    if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
+    if (cacheWriteErrorSafeToIgnore(error, cachePath)) {
       return;
     }
 
-    e.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 };
 
@@ -975,22 +971,22 @@ const readCacheFile = (cachePath: string): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
     }
     // on windows write-file-atomic is not atomic which can
     // result in this error
     if (
-      (e as NodeJS.ErrnoException).code === 'ENOENT' &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT' &&
       process.platform === 'win32'
     ) {
       return null;
     }
 
-    e.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${e.message}`;
+    error.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${error.message}`;
     removeFile(cachePath);
-    throw e;
+    throw error;
   }
 
   if (fileData == null) {
@@ -1018,27 +1014,17 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 };
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
-  if (!config.transform.length) {
+  if (config.transform.length === 0) {
     return undefined;
   }
 
   const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
-  for (let i = 0; i < config.transform.length; i++) {
-    transformRegexp.push([
-      new RegExp(config.transform[i][0]),
-      config.transform[i][1],
-      config.transform[i][2],
-    ]);
+  for (const item of config.transform) {
+    transformRegexp.push([new RegExp(item[0]), item[1], item[2]]);
   }
 
   return transformRegexp;
 };
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (condition == null || condition === false || condition === '') {
-    throw new Error(message);
-  }
-}
 
 function assertSyncTransformer(
   transformer: Transformer,

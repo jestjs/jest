@@ -26,5 +26,5 @@ it('schedules a 10-second timer after 1 second', () => {
   // And it should have created a new timer to start the game over in
   // 10 seconds
   expect(setTimeout).toHaveBeenCalledTimes(2);
-  expect(setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 10000);
+  expect(setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 10_000);
 });

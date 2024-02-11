@@ -11,7 +11,7 @@
 import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
@@ -88,7 +88,13 @@ export const createMatcher = (
     if (fromPromise && isError(received)) {
       thrown = getThrown(received);
     } else {
-      if (typeof received !== 'function') {
+      if (typeof received === 'function') {
+        try {
+          received();
+        } catch (error) {
+          thrown = getThrown(error);
+        }
+      } else {
         if (!fromPromise) {
           const placeholder = expected === undefined ? '' : 'expected';
           throw new Error(
@@ -98,12 +104,6 @@ export const createMatcher = (
               printWithType('Received', received, printReceived),
             ),
           );
-        }
-      } else {
-        try {
-          received();
-        } catch (e) {
-          thrown = getThrown(e);
         }
       }
     }
@@ -138,7 +138,6 @@ export const createMatcher = (
 
 const matchers: MatchersObject = {
   toThrow: createMatcher('toThrow'),
-  toThrowError: createMatcher('toThrowError'),
 };
 
 const toThrowExpectedRegExp = (
@@ -171,9 +170,9 @@ const toThrowExpectedRegExp = (
         (thrown === null
           ? `\n${DID_NOT_THROW}`
           : thrown.hasMessage
-          ? formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'));
+            ? formatReceived('Received message: ', thrown, 'message') +
+              formatStack(thrown)
+            : formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -211,10 +210,10 @@ const toThrowExpectedAsymmetric = (
         (thrown === null
           ? DID_NOT_THROW
           : thrown.hasMessage
-          ? formatReceived('Received name:    ', thrown, 'name') +
-            formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Thrown value: ', thrown, 'value'));
+            ? formatReceived('Received name:    ', thrown, 'name') +
+              formatReceived('Received message: ', thrown, 'message') +
+              formatStack(thrown)
+            : formatReceived('Thrown value: ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -227,11 +226,18 @@ const toThrowExpectedObject = (
 ): SyncExpectationResult => {
   const expectedMessageAndCause = createMessageAndCause(expected);
   const thrownMessageAndCause =
-    thrown !== null ? createMessageAndCause(thrown.value) : null;
+    thrown === null ? null : createMessageAndCause(thrown.value);
+  const isCompareErrorInstance = thrown?.isError && expected instanceof Error;
+  const isExpectedCustomErrorInstance =
+    expected.constructor.name !== Error.name;
+
   const pass =
     thrown !== null &&
     thrown.message === expected.message &&
-    thrownMessageAndCause === expectedMessageAndCause;
+    thrownMessageAndCause === expectedMessageAndCause &&
+    (!isCompareErrorInstance ||
+      !isExpectedCustomErrorInstance ||
+      thrown.value instanceof expected.constructor);
 
   const message = pass
     ? () =>
@@ -258,20 +264,20 @@ const toThrowExpectedObject = (
             '\n' +
             DID_NOT_THROW
           : thrown.hasMessage
-          ? // eslint-disable-next-line prefer-template
-            printDiffOrStringify(
-              expectedMessageAndCause,
-              thrownMessageAndCause,
-              `Expected ${messageAndCause(expected)}`,
-              `Received ${messageAndCause(thrown.value)}`,
-              true,
-            ) +
-            '\n' +
-            formatStack(thrown)
-          : formatExpected(
-              `Expected ${messageAndCause(expected)}: `,
-              expectedMessageAndCause,
-            ) + formatReceived('Received value:   ', thrown, 'value'));
+            ? // eslint-disable-next-line prefer-template
+              printDiffOrStringify(
+                expectedMessageAndCause,
+                thrownMessageAndCause,
+                `Expected ${messageAndCause(expected)}`,
+                `Received ${messageAndCause(thrown.value)}`,
+                true,
+              ) +
+              '\n' +
+              formatStack(thrown)
+            : formatExpected(
+                `Expected ${messageAndCause(expected)}: `,
+                expectedMessageAndCause,
+              ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -360,9 +366,9 @@ const toThrowExpectedString = (
         (thrown === null
           ? `\n${DID_NOT_THROW}`
           : thrown.hasMessage
-          ? formatReceived('Received message:   ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Received value:     ', thrown, 'value'));
+            ? formatReceived('Received message:   ', thrown, 'message') +
+              formatStack(thrown)
+            : formatReceived('Received value:     ', thrown, 'value'));
 
   return {message, pass};
 };

@@ -76,13 +76,8 @@ function eq(
   }
 
   const testerContext: TesterContext = {equals};
-  for (let i = 0; i < customTesters.length; i++) {
-    const customTesterResult = customTesters[i].call(
-      testerContext,
-      a,
-      b,
-      customTesters,
-    );
+  for (const item of customTesters) {
+    const customTesterResult = item.call(testerContext, a, b, customTesters);
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }
@@ -125,6 +120,9 @@ function eq(
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source === b.source && a.flags === b.flags;
+    // URLs are compared by their href property which contains the entire url string.
+    case '[object URL]':
+      return a.href === b.href;
   }
   if (typeof a !== 'object' || typeof b !== 'object') {
     return false;
@@ -215,14 +213,15 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
       keys.push(key);
     }
   }
-  return keys.concat(
-    (Object.getOwnPropertySymbols(obj) as Array<any>).filter(
+  return [
+    ...keys,
+    ...Object.getOwnPropertySymbols(obj).filter(
       symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
     ),
-  );
+  ];
 }
 
-function hasKey(obj: any, key: string) {
+function hasKey(obj: any, key: string | symbol) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 

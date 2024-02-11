@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as ProcessModule from 'process';
 import type * as Global from './Global';
 
-type Process = NodeJS.Process;
+type Process = typeof ProcessModule;
 
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
@@ -202,7 +203,13 @@ export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
   errorsDetailed: Array<MatcherResults | unknown>;
+  /**
+   * Whether [`test.failing()`](https://jestjs.io/docs/api#testfailingname-fn-timeout)
+   * was used.
+   */
+  failing?: boolean;
   invocations: number;
+  startedAt?: number | null;
   status: TestStatus;
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
@@ -219,10 +226,8 @@ export type TestResults = Array<TestResult>;
 
 export type GlobalErrorHandlers = {
   rejectionHandled: Array<(promise: Promise<unknown>) => void>;
-  uncaughtException: Array<(exception: Exception) => void>;
-  unhandledRejection: Array<
-    (exception: Exception, promise: Promise<unknown>) => void
-  >;
+  uncaughtException: Array<NodeJS.UncaughtExceptionListener>;
+  unhandledRejection: Array<NodeJS.UnhandledRejectionListener>;
 };
 
 export type State = {

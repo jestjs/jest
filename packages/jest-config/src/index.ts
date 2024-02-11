@@ -40,7 +40,7 @@ export async function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: string | null,
-  projectIndex = Infinity,
+  projectIndex = Number.POSITIVE_INFINITY,
   skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   const {config: initialOptions, configPath} = await readInitialOptions(
@@ -121,6 +121,7 @@ const groupOptions = (
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
     runTestsByPath: options.runTestsByPath,
     seed: options.seed,
     shard: options.shard,
@@ -130,13 +131,15 @@ const groupOptions = (
     snapshotFormat: options.snapshotFormat,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
-    testPathPattern: options.testPathPattern,
+    testPathPatterns: options.testPathPatterns,
     testResultsProcessor: options.testResultsProcessor,
     testSequencer: options.testSequencer,
     testTimeout: options.testTimeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watch: options.watch,
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
@@ -152,6 +155,7 @@ const groupOptions = (
     collectCoverageFrom: options.collectCoverageFrom,
     coverageDirectory: options.coverageDirectory,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+    coverageReporters: options.coverageReporters,
     cwd: options.cwd,
     dependencyExtractor: options.dependencyExtractor,
     detectLeaks: options.detectLeaks,
@@ -175,6 +179,7 @@ const groupOptions = (
     modulePaths: options.modulePaths,
     openHandlesTimeout: options.openHandlesTimeout,
     prettierPath: options.prettierPath,
+    reporters: options.reporters,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,
@@ -199,9 +204,12 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
+    testTimeout: options.testTimeout,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+    waitNextEventLoopTurnForUnhandledRejectionEvents:
+      options.waitNextEventLoopTurnForUnhandledRejectionEvents,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
   }),
 });
@@ -224,9 +232,9 @@ const ensureNoDuplicateConfigs = (
         String(configPath),
       )}:
 
-  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 1: ${chalk.bold(projects[parsedConfigs.indexOf(config)])}
   Project 2: ${chalk.bold(
-    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+    projects[parsedConfigs.indexOf(configPathMap.get(configPath))],
   )}
 
 This usually means that your ${chalk.bold(
@@ -356,7 +364,7 @@ export async function readConfigs(
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
     configs = [parsedConfig.projectConfig];
-    if (globalConfig.projects && globalConfig.projects.length) {
+    if (globalConfig.projects && globalConfig.projects.length > 0) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
       // In other words, if this was a single project,
@@ -417,7 +425,7 @@ export async function readConfigs(
     }
   }
 
-  if (!globalConfig || !configs.length) {
+  if (!globalConfig || configs.length === 0) {
     throw new Error('jest: No configuration found for any project.');
   }
 

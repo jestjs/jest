@@ -344,17 +344,17 @@ Returns the `jest` object for chaining.
 
 :::tip
 
-Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md#jestmockedsource-options) helper method to have your mocked modules typed.
 
 :::
 
 ### `jest.Mocked<Source>`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource) chapter of Mock Functions page for documentation.
 
 ### `jest.mocked(source, options?)`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource-options) chapter of Mock Functions page for documentation.
 
 ### `jest.unmock(moduleName)`
 
@@ -669,7 +669,7 @@ Creates a mock function similar to `jest.fn` but also tracks calls to `object[me
 
 :::note
 
-By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `jest.replaceProperty(object, methodName, jest.fn(() => customImplementation));`
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation)`.
 
 :::
 
@@ -753,7 +753,7 @@ afterEach(() => {
 
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
-  const isPlaying = video.play();
+  const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
@@ -839,7 +839,7 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number | Date;
   /**
    * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
@@ -1031,7 +1031,7 @@ Returns the `jest` object for chaining.
 
 :::info
 
-This function is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+This function is only available with the default [jest-circus](https://github.com/jestjs/jest/tree/main/packages/jest-circus) runner.
 
 :::
 

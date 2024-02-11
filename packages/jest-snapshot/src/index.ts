@@ -5,20 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'util';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {EXTENSION, SnapshotResolver} from './SnapshotResolver';
+import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -57,8 +58,8 @@ const printSnapshotName = (
   hint = '',
   count: number,
 ): string => {
-  const hasNames = concatenatedBlockNames.length !== 0;
-  const hasHint = hint.length !== 0;
+  const hasNames = concatenatedBlockNames.length > 0;
+  const hasHint = hint.length > 0;
 
   return `Snapshot name: \`${
     hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
@@ -82,7 +83,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
     return inlineSnapshot;
   }
 
-  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+  if (lines[0].trim() !== '' || lines.at(-1)!.trim() !== '') {
     // If not blank first and last lines, abort.
     return inlineSnapshot;
   }
@@ -96,7 +97,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
         return inlineSnapshot;
       }
 
-      lines[i] = lines[i].substring(indentation.length);
+      lines[i] = lines[i].slice(indentation.length);
     }
   }
 
@@ -262,9 +263,9 @@ export const toMatchInlineSnapshot: MatcherFunctionWithContext<
   return _toMatchSnapshot({
     context: this,
     inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
+      inlineSnapshot === undefined
+        ? undefined
+        : stripAddedIndentation(inlineSnapshot),
     isInline: true,
     matcherName,
     properties,
@@ -277,11 +278,17 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     config;
   let {received} = config;
 
-  context.dontThrow && context.dontThrow();
+  /** If a test was ran with `test.failing`. Passed by Jest Circus. */
+  const {testFailing = false} = context;
+
+  if (!testFailing && context.dontThrow) {
+    // Supress errors while running tests
+    context.dontThrow();
+  }
 
   const {currentConcurrentTestName, isNot, snapshotState} = context;
   const currentTestName =
-    currentConcurrentTestName?.getStore() ?? context.currentTestName;
+    currentConcurrentTestName?.() ?? context.currentTestName;
 
   if (isNot) {
     throw new Error(
@@ -328,7 +335,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       context.utils.subsetEquality,
     ]);
 
-    if (!propertyPass) {
+    if (propertyPass) {
+      received = deepMerge(received, properties);
+    } else {
       const key = snapshotState.fail(fullTestName, received);
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
@@ -349,8 +358,6 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         name: matcherName,
         pass: false,
       };
-    } else {
-      received = deepMerge(received, properties);
     }
   }
 
@@ -359,6 +366,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     inlineSnapshot,
     isInline,
     received,
+    testFailing,
     testName: fullTestName,
   });
   const {actual, count, expected, pass} = result;
@@ -454,9 +462,9 @@ export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<
     {
       context: this,
       inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
+        inlineSnapshot === undefined
+          ? undefined
+          : stripAddedIndentation(inlineSnapshot),
       isInline: true,
       matcherName,
       received,
@@ -506,8 +514,8 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e) {
-      error = e;
+    } catch (receivedError) {
+      error = receivedError;
     }
   }
 
@@ -518,12 +526,25 @@ const _toThrowErrorMatchingSnapshot = (
     );
   }
 
+  let message = error.message;
+  while ('cause' in error) {
+    error = error.cause;
+    if (types.isNativeError(error) || error instanceof Error) {
+      message += `\nCause: ${error.message}`;
+    } else {
+      if (typeof error === 'string') {
+        message += `\nCause: ${error}`;
+      }
+      break;
+    }
+  }
+
   return _toMatchSnapshot({
     context,
     hint,
     inlineSnapshot,
     isInline,
     matcherName,
-    received: error.message,
+    received: message,
   });
 };

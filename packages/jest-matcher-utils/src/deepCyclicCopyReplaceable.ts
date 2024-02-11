@@ -36,7 +36,7 @@ const isMap = (value: any): value is Map<unknown, unknown> =>
 
 export default function deepCyclicCopyReplaceable<T>(
   value: T,
-  cycles: WeakMap<any, any> = new WeakMap(),
+  cycles = new WeakMap<any, any>(),
 ): T {
   if (typeof value !== 'object' || value === null) {
     return value;
@@ -125,9 +125,9 @@ function deepCyclicCopyMap<T>(
 
   cycles.set(map, newMap);
 
-  map.forEach((value, key) => {
+  for (const [key, value] of map.entries()) {
     newMap.set(key, deepCyclicCopyReplaceable(value, cycles));
-  });
+  }
 
   return newMap as any;
 }

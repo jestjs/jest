@@ -6,6 +6,6 @@
  */
 
 module.exports = function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPattern);
+  console.log(globalConfig.testPathPatterns);
   console.log(projectConfig.cache);
 };

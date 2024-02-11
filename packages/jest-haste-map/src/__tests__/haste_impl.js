@@ -25,7 +25,7 @@ module.exports = {
     }
 
     return filename
-      .substr(filename.lastIndexOf(path.sep) + 1)
+      .slice(filename.lastIndexOf(path.sep) + 1)
       .replace(/(\.(android|ios|native))?\.js$/, '');
   },
 

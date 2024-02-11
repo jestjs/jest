@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import testResult from '@jest/test-result';
-
-const {createEmptyTestResult} = testResult;
+import {createEmptyTestResult} from '@jest/test-result';
 
 export default class BaseTestRunner {
   constructor(globalConfig, context) {
@@ -41,7 +39,7 @@ export default class BaseTestRunner {
             };
           })
           .then(result => onResult(test, result))
-          .catch(err => onFailure(test, err)),
+          .catch(error => onFailure(test, error)),
       Promise.resolve(),
     );
   }

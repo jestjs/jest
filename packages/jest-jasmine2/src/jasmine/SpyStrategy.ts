@@ -29,7 +29,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually, @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-empty-function */
 
 export default class SpyStrategy {
   identity: () => string;
@@ -89,7 +89,7 @@ export default class SpyStrategy {
 
     this.callFake = function (fn) {
       if (typeof fn !== 'function') {
-        throw new Error(
+        throw new TypeError(
           `Argument passed to callFake should be a function, got ${fn}`,
         );
       }

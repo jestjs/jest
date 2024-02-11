@@ -10,8 +10,12 @@ import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
 
-test('prints useful error for requires after test is done', () => {
-  const {stderr} = runJest('require-after-teardown');
+test.each`
+  jestArgs
+  ${[]}
+  ${['--waitNextEventLoopTurnForUnhandledRejectionEvents']}
+`('prints useful error for requires after test is done', ({jestArgs}) => {
+  const {stderr} = runJest('require-after-teardown', jestArgs);
 
   const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
 

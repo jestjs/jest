@@ -25,7 +25,7 @@ import {
 test('Any.asymmetricMatch()', () => {
   class Thing {}
 
-  [
+  for (const test of [
     any(String).asymmetricMatch('jest'),
     any(Number).asymmetricMatch(1),
     any(Function).asymmetricMatch(() => {}),
@@ -36,26 +36,25 @@ test('Any.asymmetricMatch()', () => {
     any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toBe(true);
-  });
+  }
 });
 
 test('Any.asymmetricMatch() on primitive wrapper classes', () => {
-  [
-    // eslint-disable-next-line no-new-wrappers
+  for (const test of [
+    /* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
     any(String).asymmetricMatch(new String('jest')),
-    // eslint-disable-next-line no-new-wrappers
     any(Number).asymmetricMatch(new Number(1)),
     // eslint-disable-next-line no-new-func
     any(Function).asymmetricMatch(new Function('() => {}')),
-    // eslint-disable-next-line no-new-wrappers
     any(Boolean).asymmetricMatch(new Boolean(true)),
     any(BigInt).asymmetricMatch(Object(1n)),
     any(Symbol).asymmetricMatch(Object(Symbol())),
-  ].forEach(test => {
+    /* eslint-enable */
+  ]) {
     jestExpect(test).toBe(true);
-  });
+  }
 });
 
 test('Any.toAsymmetricMatcher()', () => {
@@ -63,7 +62,7 @@ test('Any.toAsymmetricMatcher()', () => {
 });
 
 test('Any.toAsymmetricMatcher() with function name', () => {
-  [
+  for (const [name, fn] of [
     ['someFunc', function someFunc() {}],
     ['$someFunc', function $someFunc() {}],
     [
@@ -98,9 +97,9 @@ test('Any.toAsymmetricMatcher() with function name', () => {
         return $someFuncWithFakeToString;
       })(),
     ],
-  ].forEach(([name, fn]) => {
+  ]) {
     jestExpect(any(fn).toAsymmetricMatcher()).toBe(`Any<${name}>`);
-  });
+  }
 });
 
 test('Any throws when called with empty constructor', () => {
@@ -111,25 +110,25 @@ test('Any throws when called with empty constructor', () => {
 });
 
 test('Anything matches any type', () => {
-  [
+  for (const test of [
     anything().asymmetricMatch('jest'),
     anything().asymmetricMatch(1),
     anything().asymmetricMatch(() => {}),
     anything().asymmetricMatch(true),
     anything().asymmetricMatch({}),
     anything().asymmetricMatch([]),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toBe(true);
-  });
+  }
 });
 
 test('Anything does not match null and undefined', () => {
-  [
+  for (const test of [
     anything().asymmetricMatch(null),
     anything().asymmetricMatch(undefined),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toBe(false);
-  });
+  }
 });
 
 test('Anything.toAsymmetricMatcher()', () => {
@@ -137,14 +136,14 @@ test('Anything.toAsymmetricMatcher()', () => {
 });
 
 test('ArrayContaining matches', () => {
-  [
+  for (const test of [
     arrayContaining([]).asymmetricMatch('jest'),
     arrayContaining(['foo']).asymmetricMatch(['foo']),
     arrayContaining(['foo']).asymmetricMatch(['foo', 'bar']),
     arrayContaining([]).asymmetricMatch({}),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toEqual(true);
-  });
+  }
 });
 
 test('ArrayContaining does not match', () => {
@@ -163,14 +162,14 @@ test('ArrayNotContaining matches', () => {
 });
 
 test('ArrayNotContaining does not match', () => {
-  [
+  for (const test of [
     arrayNotContaining([]).asymmetricMatch('jest'),
     arrayNotContaining(['foo']).asymmetricMatch(['foo']),
     arrayNotContaining(['foo']).asymmetricMatch(['foo', 'bar']),
     arrayNotContaining([]).asymmetricMatch({}),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toEqual(false);
-  });
+  }
 });
 
 test('ArrayNotContaining throws for non-arrays', () => {
@@ -181,7 +180,8 @@ test('ArrayNotContaining throws for non-arrays', () => {
 });
 
 test('ObjectContaining matches', () => {
-  [
+  const foo = Symbol('foo');
+  for (const test of [
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
@@ -192,13 +192,16 @@ test('ObjectContaining matches', () => {
       foo: Buffer.from('foo'),
       jest: 'jest',
     }),
-  ].forEach(test => {
+    objectContaining({[foo]: 'foo'}).asymmetricMatch({[foo]: 'foo'}),
+  ]) {
     jestExpect(test).toEqual(true);
-  });
+  }
 });
 
 test('ObjectContaining does not match', () => {
-  [
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
+  for (const test of [
     objectContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectContaining({foo: undefined}).asymmetricMatch({}),
@@ -206,9 +209,10 @@ test('ObjectContaining does not match', () => {
       answer: 42,
       foo: {bar: 'baz', foobar: 'qux'},
     }).asymmetricMatch({foo: {bar: 'baz'}}),
-  ].forEach(test => {
+    objectContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
+  ]) {
     jestExpect(test).toEqual(false);
-  });
+  }
 });
 
 test('ObjectContaining matches defined properties', () => {
@@ -250,9 +254,12 @@ test('ObjectContaining does not mutate the sample', () => {
 });
 
 test('ObjectNotContaining matches', () => {
-  [
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
+  for (const test of [
     objectContaining({}).asymmetricMatch(null),
     objectContaining({}).asymmetricMatch(undefined),
+    objectNotContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectNotContaining({foo: undefined}).asymmetricMatch({}),
@@ -268,13 +275,13 @@ test('ObjectNotContaining matches', () => {
     objectNotContaining({foo: 'foo', jest: 'jest'}).asymmetricMatch({
       foo: 'foo',
     }),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toEqual(true);
-  });
+  }
 });
 
 test('ObjectNotContaining does not match', () => {
-  [
+  for (const test of [
     objectNotContaining({}).asymmetricMatch('jest'),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({
       foo: 'foo',
@@ -290,29 +297,27 @@ test('ObjectNotContaining does not match', () => {
     objectNotContaining({}).asymmetricMatch(null),
     objectNotContaining({}).asymmetricMatch(undefined),
     objectNotContaining({}).asymmetricMatch({}),
-  ].forEach(test => {
+  ]) {
     jestExpect(test).toEqual(false);
-  });
+  }
 });
 
 test('ObjectNotContaining inverts ObjectContaining', () => {
-  (
-    [
-      [{}, null],
-      [{foo: 'foo'}, {foo: 'foo', jest: 'jest'}],
-      [{foo: 'foo', jest: 'jest'}, {foo: 'foo'}],
-      [{foo: undefined}, {foo: undefined}],
-      [{foo: undefined}, {}],
-      [{first: {second: {}}}, {first: {second: {}}}],
-      [{first: objectContaining({second: {}})}, {first: {second: {}}}],
-      [{first: objectNotContaining({second: {}})}, {first: {second: {}}}],
-      [{}, {foo: undefined}],
-    ] as const
-  ).forEach(([sample, received]) => {
+  for (const [sample, received] of [
+    [{}, null],
+    [{foo: 'foo'}, {foo: 'foo', jest: 'jest'}],
+    [{foo: 'foo', jest: 'jest'}, {foo: 'foo'}],
+    [{foo: undefined}, {foo: undefined}],
+    [{foo: undefined}, {}],
+    [{first: {second: {}}}, {first: {second: {}}}],
+    [{first: objectContaining({second: {}})}, {first: {second: {}}}],
+    [{first: objectNotContaining({second: {}})}, {first: {second: {}}}],
+    [{}, {foo: undefined}],
+  ] as const) {
     jestExpect(objectNotContaining(sample).asymmetricMatch(received)).toEqual(
       !objectContaining(sample).asymmetricMatch(received),
     );
-  });
+  }
 });
 
 test('ObjectNotContaining throws for non-objects', () => {
@@ -403,46 +408,46 @@ test('StringNotMatching returns true if received value is not string', () => {
 });
 
 describe('closeTo', () => {
-  [
+  for (const [expected, received] of [
     [0, 0],
     [0, 0.001],
     [1.23, 1.229],
     [1.23, 1.226],
     [1.23, 1.225],
     [1.23, 1.234],
-    [Infinity, Infinity],
-    [-Infinity, -Infinity],
-  ].forEach(([expected, received]) => {
+    [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+    [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  ]) {
     test(`${expected} closeTo ${received} return true`, () => {
       jestExpect(closeTo(expected).asymmetricMatch(received)).toBe(true);
     });
     test(`${expected} notCloseTo ${received} return false`, () => {
       jestExpect(notCloseTo(expected).asymmetricMatch(received)).toBe(false);
     });
-  });
+  }
 
-  [
+  for (const [expected, received] of [
     [0, 0.01],
     [1, 1.23],
-    [1.23, 1.2249999],
-    [Infinity, -Infinity],
-    [Infinity, 1.23],
-    [-Infinity, -1.23],
-  ].forEach(([expected, received]) => {
+    [1.23, 1.224_999_9],
+    [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+    [Number.POSITIVE_INFINITY, 1.23],
+    [Number.NEGATIVE_INFINITY, -1.23],
+  ]) {
     test(`${expected} closeTo ${received} return false`, () => {
       jestExpect(closeTo(expected).asymmetricMatch(received)).toBe(false);
     });
     test(`${expected} notCloseTo ${received} return true`, () => {
       jestExpect(notCloseTo(expected).asymmetricMatch(received)).toBe(true);
     });
-  });
+  }
 
-  [
+  for (const [expected, received, precision] of [
     [0, 0.1, 0],
     [0, 0.0001, 3],
-    [0, 0.000004, 5],
-    [2.0000002, 2, 5],
-  ].forEach(([expected, received, precision]) => {
+    [0, 0.000_004, 5],
+    [2.000_000_2, 2, 5],
+  ]) {
     test(`${expected} closeTo ${received} with precision ${precision} return true`, () => {
       jestExpect(closeTo(expected, precision).asymmetricMatch(received)).toBe(
         true,
@@ -453,12 +458,12 @@ describe('closeTo', () => {
         notCloseTo(expected, precision).asymmetricMatch(received),
       ).toBe(false);
     });
-  });
+  }
 
-  [
-    [3.141592e-7, 3e-7, 8],
-    [56789, 51234, -4],
-  ].forEach(([expected, received, precision]) => {
+  for (const [expected, received, precision] of [
+    [3.141_592e-7, 3e-7, 8],
+    [56_789, 51_234, -4],
+  ]) {
     test(`${expected} closeTo ${received} with precision ${precision} return false`, () => {
       jestExpect(closeTo(expected, precision).asymmetricMatch(received)).toBe(
         false,
@@ -469,7 +474,7 @@ describe('closeTo', () => {
         notCloseTo(expected, precision).asymmetricMatch(received),
       ).toBe(true);
     });
-  });
+  }
 
   test('closeTo throw if expected is not number', () => {
     jestExpect(() => {

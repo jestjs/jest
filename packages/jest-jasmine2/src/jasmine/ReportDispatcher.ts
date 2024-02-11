@@ -29,8 +29,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/prefer-spread-eventually, local/prefer-rest-params-eventually */
-
 import type {Reporter, RunDetails} from '../types';
 import type {SpecResult} from './Spec';
 import type {SuiteResult} from './Suite';
@@ -56,8 +54,7 @@ export default class ReportDispatcher implements Reporter {
   constructor(methods: Array<keyof Reporter>) {
     const dispatchedMethods = methods || [];
 
-    for (let i = 0; i < dispatchedMethods.length; i++) {
-      const method = dispatchedMethods[i];
+    for (const method of dispatchedMethods) {
       this[method] = (function (m) {
         return function () {
           dispatch(m, arguments);
@@ -86,8 +83,7 @@ export default class ReportDispatcher implements Reporter {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
-      for (let i = 0; i < reporters.length; i++) {
-        const reporter = reporters[i];
+      for (const reporter of reporters) {
         if (reporter[method]) {
           // @ts-expect-error: wrong context
           reporter[method].apply(reporter, args);

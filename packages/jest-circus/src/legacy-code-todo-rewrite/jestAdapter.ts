@@ -74,15 +74,20 @@ const jestAdapter = async (
     }
   });
 
+  const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
+  const setupAfterEnvEnd = Date.now();
   const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
@@ -91,9 +96,15 @@ const jestAdapter = async (
     runtime.requireModule(testPath);
   }
 
+  const setupAfterEnvPerfStats = {
+    setupAfterEnvEnd,
+    setupAfterEnvStart,
+  };
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    setupAfterEnvPerfStats,
     testPath,
   });
 
@@ -109,13 +120,19 @@ const _addSnapshotData = (
   results: TestResult,
   snapshotState: SnapshotState,
 ) => {
-  results.testResults.forEach(({fullName, status}) => {
-    if (status === 'pending' || status === 'failed') {
-      // if test is skipped or failed, we don't want to mark
+  for (const {fullName, status, failing} of results.testResults) {
+    if (
+      status === 'pending' ||
+      status === 'failed' ||
+      (failing && status === 'passed')
+    ) {
+      // If test is skipped or failed, we don't want to mark
       // its snapshots as obsolete.
+      // When tests called with test.failing pass, they've thrown an exception,
+      // so maintain any snapshots after the error.
       snapshotState.markSnapshotsAsCheckedForTest(fullName);
     }
-  });
+  }
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
@@ -129,9 +146,9 @@ const _addSnapshotData = (
   results.snapshot.matched = snapshotState.matched;
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
-  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 };
 
 export default jestAdapter;

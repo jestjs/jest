@@ -33,13 +33,13 @@ function assertCallsToChild(
     calls.length + 1,
   );
 
-  calls.forEach(([methodName, ...args], numCall) => {
+  for (const [numCall, [methodName, ...args]] of calls.entries()) {
     expect(
       jest.mocked(mockForkedProcesses[childNum].send).mock.calls[
         numCall + 1
       ][0],
     ).toEqual([CHILD_MESSAGE_CALL, true, methodName, args]);
-  });
+  }
 }
 
 describe('Jest Worker Integration', () => {

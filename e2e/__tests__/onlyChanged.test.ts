@@ -246,7 +246,7 @@ test('collect test coverage when using onlyChanged', () => {
   expect(exitCode).toBe(0);
 });
 
-test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
+test('onlyChanged in config is overwritten by --all or testPathPatterns', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",

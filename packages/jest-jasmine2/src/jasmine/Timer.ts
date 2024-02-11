@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const defaultNow = (function (Date) {
   return function () {
-    return new Date().getTime();
+    return Date.now();
   };
 })(Date);
 

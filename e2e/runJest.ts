@@ -8,14 +8,14 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
+import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
@@ -151,10 +151,10 @@ export const json = function (
       ...result,
       json: JSON.parse(result.stdout),
     };
-  } catch (e: any) {
+  } catch (error: any) {
     throw new Error(dedent`
       Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
+      ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
     `);
@@ -172,7 +172,7 @@ export const runContinuous = function (
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
+  const jestPromise = spawnJest(dir, args, {timeout: 30_000, ...options}, true);
 
   let stderr = '';
   let stdout = '';
@@ -273,7 +273,7 @@ export function getConfig(
 } {
   const {exitCode, stdout, stderr} = runJest(
     dir,
-    args.concat('--show-config'),
+    [...args, '--show-config'],
     options,
   );
 

@@ -50,8 +50,10 @@ const evalCommand: repl.REPLEval = (
           : transformResult.code;
     }
     result = runInThisContext(cmd) as unknown;
-  } catch (e: any) {
-    return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
+  } catch (error: any) {
+    return callback(
+      isRecoverableError(error) ? new repl.Recoverable(error) : error,
+    );
   }
   return callback(null, result);
 };
@@ -75,10 +77,10 @@ const isRecoverableError = (error: unknown) => {
 
 if (jestProjectConfig.transform) {
   let transformerPath = null;
-  for (let i = 0; i < jestProjectConfig.transform.length; i++) {
-    if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
-      transformerPath = jestProjectConfig.transform[i][1];
-      transformerConfig = jestProjectConfig.transform[i][2];
+  for (const transform of jestProjectConfig.transform) {
+    if (new RegExp(transform[0]).test('foobar.js')) {
+      transformerPath = transform[1];
+      transformerConfig = transform[2];
       break;
     }
   }
@@ -108,7 +110,7 @@ const replInstance: repl.REPLServer = repl.start({
 });
 
 replInstance.context.require = (moduleName: string) => {
-  if (/(\/|\\|\.)/.test(moduleName)) {
+  if (/([./\\])/.test(moduleName)) {
     moduleName = path.resolve(process.cwd(), moduleName);
   }
   return require(moduleName) as unknown;

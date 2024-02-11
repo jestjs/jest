@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, createContext, runInContext} from 'vm';
+import {type Context, createContext, runInContext} from 'vm';
 import type {
   EnvironmentContext,
   JestEnvironment,
@@ -27,6 +27,7 @@ const denyList = new Set([
   'GLOBAL',
   'root',
   'global',
+  'globalThis',
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
@@ -34,9 +35,11 @@ const denyList = new Set([
   'jest-symbol-do-not-touch',
 ]);
 
+type GlobalProperties = Array<keyof typeof globalThis>;
+
 const nodeGlobals = new Map(
-  Object.getOwnPropertyNames(globalThis)
-    .filter(global => !denyList.has(global))
+  (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
+    .filter(global => !denyList.has(global as string))
     .map(nodeGlobalsKey => {
       const descriptor = Object.getOwnPropertyDescriptor(
         globalThis,
@@ -57,6 +60,34 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
+function setDisposeSymbols(context: Context): void {
+  if ('asyncDispose' in Symbol) {
+    runInContext(
+      'if (!"asyncDispose" in Symbol) { Symbol.asyncDispose = Symbol.for("nodejs.asyncDispose") }',
+      context,
+    );
+  }
+
+  if ('dispose' in Symbol) {
+    runInContext(
+      'if (!"dispose" in Symbol) { Symbol.dispose = Symbol.for("nodejs.dispose") }',
+      context,
+    );
+  }
+}
+
+const timerIdToRef = (id: number) => ({
+  id,
+  ref() {
+    return this;
+  },
+  unref() {
+    return this;
+  },
+});
+
+const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
@@ -64,19 +95,24 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
-  private _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
+
+    setDisposeSymbols(this.context);
+
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
     ) as Global.Global;
     this.global = global;
 
-    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    const contextGlobals = new Set(
+      Object.getOwnPropertyNames(global) as GlobalProperties,
+    );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (descriptor.configurable) {
@@ -84,27 +120,24 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             configurable: true,
             enumerable: descriptor.enumerable,
             get() {
-              // @ts-expect-error: no index signature
-              const val = globalThis[nodeGlobalsKey] as unknown;
+              const value = globalThis[nodeGlobalsKey];
 
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
                 configurable: true,
                 enumerable: descriptor.enumerable,
-                value: val,
-                writable:
-                  descriptor.writable === true ||
-                  // Node 19 makes performance non-readable. This is probably not the correct solution.
-                  nodeGlobalsKey === 'performance',
+                value,
+                writable: true,
               });
-              return val;
+
+              return value;
             },
-            set(val: unknown) {
+            set(value: unknown) {
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
                 configurable: true,
                 enumerable: descriptor.enumerable,
-                value: val,
+                value,
                 writable: true,
               });
             },
@@ -127,7 +160,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       }
     }
 
-    // @ts-expect-error - Buffer and gc is "missing"
     global.global = global;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
@@ -157,18 +189,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     this.moduleMocker = new ModuleMocker(global);
-
-    const timerIdToRef = (id: number) => ({
-      id,
-      ref() {
-        return this;
-      },
-      unref() {
-        return this;
-      },
-    });
-
-    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,

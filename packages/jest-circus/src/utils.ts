@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import co from 'co';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
@@ -17,6 +17,7 @@ import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
+  invariant,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -236,9 +237,9 @@ export const callAsyncCircusFn = (
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
             asyncError.message = dedent`
-      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `;
+              Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+              Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+            `;
             return reject(asyncError);
           }
 
@@ -289,9 +290,9 @@ export const callAsyncCircusFn = (
       reject(
         new Error(
           dedent`
-      test functions can only return Promise or undefined.
-      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
-      `,
+            test functions can only return Promise or undefined.
+            Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+          `,
         ),
       );
       return;
@@ -355,7 +356,7 @@ export const makeSingleTestResult = (
     const stackLine = stackLines[1];
     let parsedLine = stackUtils.parseLine(stackLine);
     if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
-      const stackLine = stackLines[4];
+      const stackLine = stackLines[2];
       parsedLine = stackUtils.parseLine(stackLine);
     }
     if (
@@ -376,29 +377,35 @@ export const makeSingleTestResult = (
     duration: test.duration,
     errors: errorsDetailed.map(getErrorStack),
     errorsDetailed,
+    failing: test.failing,
     invocations: test.invocations,
     location,
     numPassingAsserts: test.numPassingAsserts,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    startedAt: test.startedAt,
     status,
-    testPath: Array.from(testPath),
+    testPath: [...testPath],
   };
 };
 
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const testResults: Circus.TestResults = [];
+  const testResults = [];
+  const stack: [[Circus.DescribeBlock, number]] = [[describeBlock, 0]];
 
-  for (const child of describeBlock.children) {
-    switch (child.type) {
-      case 'describeBlock': {
-        testResults.push(...makeTestResults(child));
+  while (stack.length > 0) {
+    const [currentBlock, childIndex] = stack.pop()!;
+
+    for (let i = childIndex; i < currentBlock.children.length; i++) {
+      const child = currentBlock.children[i];
+
+      if (child.type === 'describeBlock') {
+        stack.push([currentBlock, i + 1], [child, 0]);
         break;
       }
-      case 'test': {
+      if (child.type === 'test') {
         testResults.push(makeSingleTestResult(child));
-        break;
       }
     }
   }
@@ -425,6 +432,7 @@ const _getError = (
     asyncError = errors[1];
   } else {
     error = errors;
+    // eslint-disable-next-line unicorn/error-message
     asyncError = new Error();
   }
 
@@ -457,15 +465,6 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-export function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
 type TestDescription = {
   ancestorTitles: Array<string>;
   fullName: string;
@@ -479,7 +478,7 @@ const resolveTestCaseStartInfo = (
     name => name !== ROOT_DESCRIBE_BLOCK_NAME,
   );
   const fullName = ancestorTitles.join(' ');
-  const title = testNamesPath[testNamesPath.length - 1];
+  const title = testNamesPath.at(-1)!;
   // remove title
   ancestorTitles.pop();
   return {
@@ -510,13 +509,14 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
+    failing: testResult.failing,
     failureDetails: testResult.errorsDetailed,
-    failureMessages: Array.from(testResult.errors),
+    failureMessages: [...testResult.errors],
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
-    retryReasons: Array.from(testResult.retryReasons),
+    retryReasons: [...testResult.retryReasons],
     status,
     title,
   };

@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import dedent = require('dedent');
+import dedent from 'dedent';
 import {
-  ExecaSyncError,
-  SyncOptions as ExecaSyncOptions,
-  ExecaSyncReturnValue,
+  type ExecaSyncError,
+  type SyncOptions as ExecaSyncOptions,
+  type ExecaSyncReturnValue,
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';
@@ -93,9 +93,9 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
 export const makeTemplate =
   (str: string): ((values?: Array<string>) => string) =>
   (values = []) =>
-    str.replace(/\$(\d+)/g, (_match, number) => {
+    str.replaceAll(/\$(\d+)/g, (_match, number) => {
       if (!Array.isArray(values)) {
-        throw new Error('Array of values must be passed to the template.');
+        throw new TypeError('Array of values must be passed to the template.');
       }
       return values[number - 1];
     });
@@ -128,7 +128,7 @@ export const writeFiles = (
   files: {[filename: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(files).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(files)) {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
@@ -138,7 +138,7 @@ export const writeFiles = (
       path.resolve(directory, ...fileOrPath.split('/')),
       dedent(files[fileOrPath]),
     );
-  });
+  }
 };
 
 export const writeSymlinks = (
@@ -146,7 +146,7 @@ export const writeSymlinks = (
   symlinks: {[existingFile: string]: string},
 ) => {
   fs.mkdirSync(directory, {recursive: true});
-  Object.keys(symlinks).forEach(fileOrPath => {
+  for (const fileOrPath of Object.keys(symlinks)) {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
@@ -158,7 +158,7 @@ export const writeSymlinks = (
       path.resolve(directory, ...symLinkPath.split('/')),
       'junction',
     );
-  });
+  }
 };
 
 const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
@@ -191,12 +191,12 @@ export const copyDir = (src: string, dest: string) => {
 };
 
 export const replaceSeed = (str: string) =>
-  str.replace(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
+  str.replaceAll(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
-    .replace(/, estimated <<REPLACED>>/g, '');
+    .replaceAll(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
+    .replaceAll(', estimated <<REPLACED>>', '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>
@@ -235,7 +235,7 @@ export const createEmptyPackage = (
 
 export const extractSummary = (stdout: string) => {
   const match = stdout
-    .replace(/(?:\\[rn])+/g, '\n')
+    .replaceAll(/(?:\\[nr])+/g, '\n')
     .match(
       /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
@@ -252,7 +252,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
+    .replaceAll(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),
@@ -267,13 +267,13 @@ const sortTests = (stdout: string) =>
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
         tests.push([line]);
       } else {
-        tests[tests.length - 1].push(line);
+        tests.at(-1)!.push(line);
       }
       return tests;
     }, [])
     .sort(([a], [b]) => (a > b ? 1 : -1))
     .map(strings =>
-      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
+      strings.length > 1 ? `${strings.join('\n').trimEnd()}\n` : strings[0],
     )
     .join('\n')
     .trim();
@@ -308,17 +308,6 @@ export const extractSummaries = (
       return {end, start};
     })
     .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
-};
-
-export const normalizeIcons = (str: string) => {
-  if (!str) {
-    return str;
-  }
-
-  // Make sure to keep in sync with `jest-util/src/specialChars`
-  return str
-    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
-    .replace(new RegExp('\u221A', 'gu'), '\u2713');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

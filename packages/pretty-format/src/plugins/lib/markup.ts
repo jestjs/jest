@@ -26,7 +26,7 @@ export const printProps = (
       let printed = printer(value, config, indentationNext, depth, refs);
 
       if (typeof value !== 'string') {
-        if (printed.indexOf('\n') !== -1) {
+        if (printed.includes('\n')) {
           printed =
             config.spacingOuter +
             indentationNext +

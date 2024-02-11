@@ -7,7 +7,8 @@
 
 import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
-import {InspectOptions, format, formatWithOptions, inspect} from 'util';
+import type {WriteStream} from 'tty';
+import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
@@ -15,8 +16,8 @@ import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private readonly _stdout: NodeJS.WriteStream;
-  private readonly _stderr: NodeJS.WriteStream;
+  private readonly _stdout: WriteStream;
+  private readonly _stderr: WriteStream;
   private readonly _formatBuffer: Formatter;
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
@@ -25,8 +26,8 @@ export default class CustomConsole extends Console {
   override Console: typeof Console = Console;
 
   constructor(
-    stdout: NodeJS.WriteStream,
-    stderr: NodeJS.WriteStream,
+    stdout: WriteStream,
+    stderr: WriteStream,
     formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
@@ -56,8 +57,8 @@ export default class CustomConsole extends Console {
       if (!(error instanceof AssertionError)) {
         throw error;
       }
-      // https://github.com/facebook/jest/pull/13422#issuecomment-1273396392
-      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
     }
   }
 
@@ -132,7 +133,7 @@ export default class CustomConsole extends Console {
     const startTime = this._timers[label];
 
     if (startTime != null) {
-      const endTime = new Date().getTime();
+      const endTime = Date.now();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];

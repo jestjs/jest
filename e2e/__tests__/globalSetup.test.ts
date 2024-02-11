@@ -56,7 +56,7 @@ test('globalSetup is triggered once before all test suites', () => {
   const setupPath = path.join(e2eDir, 'setup.js');
   const result = runWithJson(e2eDir, [
     `--globalSetup=${setupPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -70,7 +70,7 @@ test('jest throws an error when globalSetup does not export a function', () => {
   const setupPath = path.resolve(__dirname, '../global-setup/invalidSetup.js');
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
@@ -83,15 +83,13 @@ test('jest throws an error when globalSetup does not export a function', () => {
 test('globalSetup function gets global config object and project config as parameters', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithConfig.js');
 
-  const testPathPattern = 'pass';
-
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    `--testPathPattern=${testPathPattern}`,
+    '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
+  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
 });
 
 test('should call globalSetup function of multiple projects', () => {
@@ -111,7 +109,7 @@ test('should not call a globalSetup of a project if there are no tests to run fr
 
   const result = runWithJson(e2eDir, [
     `--config=${configPath}`,
-    '--testPathPattern=project-1',
+    '--testPathPatterns=project-1',
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -140,15 +138,13 @@ test('should not call any globalSetup if there are no tests to run', () => {
 test('globalSetup works with default export', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithDefaultExport.js');
 
-  const testPathPattern = 'pass';
-
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    `--testPathPattern=${testPathPattern}`,
+    '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
+  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
 });
 
 test('globalSetup throws with named export', () => {
@@ -156,7 +152,7 @@ test('globalSetup throws with named export', () => {
 
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
-    '--testPathPattern=__tests__',
+    '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);

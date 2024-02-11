@@ -23,7 +23,7 @@ import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -120,11 +120,11 @@ const matchers: MatchersObject = {
             // eslint-disable-next-line prefer-template
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
-            (deepEqualityName !== null
-              ? `${DIM_COLOR(
+            (deepEqualityName === null
+              ? ''
+              : `${DIM_COLOR(
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
-                )}\n\n`
-              : '') +
+                )}\n\n`) +
             printDiffOrStringify(
               expected,
               received,
@@ -153,7 +153,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a number`,
@@ -163,7 +163,7 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a number`,
@@ -176,9 +176,15 @@ const matchers: MatchersObject = {
     let expectedDiff = 0;
     let receivedDiff = 0;
 
-    if (received === Infinity && expected === Infinity) {
+    if (
+      received === Number.POSITIVE_INFINITY &&
+      expected === Number.POSITIVE_INFINITY
+    ) {
       pass = true; // Infinity - Infinity is NaN
-    } else if (received === -Infinity && expected === -Infinity) {
+    } else if (
+      received === Number.NEGATIVE_INFINITY &&
+      expected === Number.NEGATIVE_INFINITY
+    ) {
       pass = true; // -Infinity - -Infinity is NaN
     } else {
       expectedDiff = Math.pow(10, -precision) / 2;
@@ -296,7 +302,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'function') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
@@ -330,12 +336,12 @@ const matchers: MatchersObject = {
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`
-            : typeof received.constructor !== 'function'
-            ? `\nReceived value: ${printReceived(received)}`
-            : printReceivedConstructorName(
-                'Received constructor',
-                received.constructor,
-              ));
+            : typeof received.constructor === 'function'
+              ? printReceivedConstructorName(
+                  'Received constructor',
+                  received.constructor,
+                )
+              : `\nReceived value: ${printReceived(received)}`);
 
     return {message, pass};
   },
@@ -485,7 +491,7 @@ const matchers: MatchersObject = {
       )} value is a string`;
 
       if (typeof expected !== 'string') {
-        throw new Error(
+        throw new TypeError(
           matcherErrorMessage(
             matcherHint(matcherName, received, String(expected), options),
             wrongTypeErrorMessage,
@@ -529,7 +535,7 @@ const matchers: MatchersObject = {
       return {message, pass};
     }
 
-    const indexable = Array.from(received);
+    const indexable = [...received];
     const index = indexable.indexOf(expected);
     const pass = index !== -1;
 
@@ -581,7 +587,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const index = Array.from(received).findIndex(item =>
+    const index = [...received].findIndex(item =>
       equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;
@@ -628,9 +634,9 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `Received:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
@@ -658,7 +664,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received?.length !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR(
@@ -777,9 +783,9 @@ const matchers: MatchersObject = {
           (hasValue
             ? `Expected path: ${printExpected(expectedPath)}\n\n` +
               `Expected value: not ${printExpected(expectedValue)}${
-                stringify(expectedValue) !== stringify(receivedValue)
-                  ? `\nReceived value:     ${printReceived(receivedValue)}`
-                  : ''
+                stringify(expectedValue) === stringify(receivedValue)
+                  ? ''
+                  : `\nReceived value:     ${printReceived(receivedValue)}`
               }`
             : `Expected path: not ${printExpected(expectedPath)}\n\n` +
               `Received value: ${printReceived(receivedValue)}`)
@@ -817,7 +823,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received !== 'string') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a string`,
@@ -926,9 +932,9 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}` +
-          (stringify(expected) !== stringify(received)
-            ? `\nReceived:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `\nReceived:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
@@ -965,9 +971,9 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          (stringify(expected) === stringify(received)
+            ? ''
+            : `Received:     ${printReceived(received)}`)
       : () =>
           // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +

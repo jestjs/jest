@@ -20,6 +20,7 @@ afterEach(() => {
   jest.resetModules();
 
   if (process.version === 'new-node-version') {
+    // @ts-expect-error: Testing purpose
     process.version = processVersion;
   }
 
@@ -194,6 +195,7 @@ describe('getCacheKey', () => {
   test('if node version is changing', () => {
     // @ts-expect-error: Testing purpose
     delete process.version;
+    // @ts-expect-error: Testing purpose
     process.version = 'new-node-version';
 
     const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);

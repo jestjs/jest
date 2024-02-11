@@ -9,15 +9,15 @@ import {sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
 import tempy = require('tempy');
 
-const CIRCUS_PATH = require.resolve('../').replace(/\\/g, '\\\\');
-const CIRCUS_RUN_PATH = require.resolve('../run').replace(/\\/g, '\\\\');
-const CIRCUS_STATE_PATH = require.resolve('../state').replace(/\\/g, '\\\\');
+const CIRCUS_PATH = require.resolve('../').replaceAll('\\', '\\\\');
+const CIRCUS_RUN_PATH = require.resolve('../run').replaceAll('\\', '\\\\');
+const CIRCUS_STATE_PATH = require.resolve('../state').replaceAll('\\', '\\\\');
 const TEST_EVENT_HANDLER_PATH = require
   .resolve('./testEventHandler')
-  .replace(/\\/g, '\\\\');
+  .replaceAll('\\', '\\\\');
 const BABEL_REGISTER_PATH = require
   .resolve('@babel/register')
-  .replace(/\\/g, '\\\\');
+  .replaceAll('\\', '\\\\');
 
 export const runTest = (
   source: string,

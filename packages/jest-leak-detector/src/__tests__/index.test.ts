@@ -7,6 +7,11 @@
 
 import LeakDetector from '../index';
 
+jest.mock('v8', () => ({
+  ...(jest.requireActual('v8') as Record<string, unknown>),
+  getHeapSnapshot: jest.fn(),
+}));
+
 const gc = globalThis.gc;
 
 // Some tests override the "gc" value. Let's make sure we roll it back to its
@@ -23,7 +28,7 @@ it('complains if the value is a primitive', () => {
   expect(() => new LeakDetector('foo')).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
-  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Number.NaN)).toThrowErrorMatchingSnapshot();
 });
 
 it('does not show the GC if hidden', async () => {

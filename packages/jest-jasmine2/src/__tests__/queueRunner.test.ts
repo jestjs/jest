@@ -6,7 +6,7 @@
  *
  */
 
-import queueRunner, {Options, QueueableFn} from '../queueRunner';
+import queueRunner, {type Options, type QueueableFn} from '../queueRunner';
 
 describe('queueRunner', () => {
   it('runs every function in the queue.', async () => {

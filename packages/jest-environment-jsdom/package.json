@@ -1,9 +1,9 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "29.6.0",
+  "version": "30.0.0-alpha.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-environment-jsdom"
   },
   "license": "MIT",
@@ -12,22 +12,21 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "workspace:^",
-    "@jest/fake-timers": "workspace:^",
-    "@jest/types": "workspace:^",
-    "@types/jsdom": "^20.0.0",
+    "@jest/environment": "workspace:*",
+    "@jest/environment-jsdom-abstract": "workspace:*",
+    "@types/jsdom": "^21.1.1",
     "@types/node": "*",
-    "jest-mock": "workspace:^",
-    "jest-util": "workspace:^",
-    "jsdom": "^20.0.0"
+    "jsdom": "^22.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^"
+    "@jest/test-utils": "workspace:*"
   },
   "peerDependencies": {
     "canvas": "^2.5.0"
@@ -38,7 +37,7 @@
     }
   },
   "engines": {
-    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
   },
   "publishConfig": {
     "access": "public"

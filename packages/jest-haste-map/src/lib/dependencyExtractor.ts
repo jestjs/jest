@@ -80,8 +80,8 @@ export const extractor: DependencyExtractor = {
     };
 
     code
-      .replace(BLOCK_COMMENT_RE, '')
-      .replace(LINE_COMMENT_RE, '')
+      .replaceAll(BLOCK_COMMENT_RE, '')
+      .replaceAll(LINE_COMMENT_RE, '')
       .replace(IMPORT_OR_EXPORT_RE, addDependency)
       .replace(REQUIRE_OR_DYNAMIC_IMPORT_RE, addDependency)
       .replace(JEST_EXTENSIONS_RE, addDependency);

@@ -65,11 +65,33 @@ describe('NodeEnvironment', () => {
     const timer1 = env1.global.setTimeout(() => {}, 0);
     const timer2 = env1.global.setInterval(() => {}, 0);
 
-    [timer1, timer2].forEach(timer => {
+    for (const timer of [timer1, timer2]) {
       expect(timer.id).toBeDefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
-    });
+    }
+  });
+
+  it('should configure dispose symbols', () => {
+    const env = new NodeEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      context,
+    );
+
+    if ('asyncDispose' in Symbol) {
+      expect(env.global.Symbol).toHaveProperty('asyncDispose');
+    } else {
+      expect(env.global.Symbol).not.toHaveProperty('asyncDispose');
+    }
+
+    if ('dispose' in Symbol) {
+      expect(env.global.Symbol).toHaveProperty('dispose');
+    } else {
+      expect(env.global.Symbol).not.toHaveProperty('dispose');
+    }
   });
 
   it('has modern fake timers implementation', () => {

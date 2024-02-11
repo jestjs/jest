@@ -106,12 +106,12 @@ export default class ReporterDispatcher {
   // Return a list of last errors for every reporter
   getErrors(): Array<Error> {
     return this._reporters.reduce<Array<Error>>((list, reporter) => {
-      const error = reporter.getLastError && reporter.getLastError();
-      return error ? list.concat(error) : list;
+      const error = reporter.getLastError?.();
+      return error ? [...list, error] : list;
     }, []);
   }
 
   hasErrors(): boolean {
-    return this.getErrors().length !== 0;
+    return this.getErrors().length > 0;
   }
 }

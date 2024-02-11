@@ -12,7 +12,7 @@ import type {
   TestContext,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {testPathPatternToRegExp} from 'jest-util';
+import {TestPathPatterns} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
@@ -105,7 +105,7 @@ export default class SummaryReporter extends BaseReporter {
   ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
-      const lastResult = testResults[testResults.length - 1];
+      const lastResult = testResults.at(-1);
       // Print a newline if the last test did not fail to line up newlines
       // similar to when an error would have been thrown in the test.
       if (
@@ -177,7 +177,7 @@ export default class SummaryReporter extends BaseReporter {
         globalConfig,
         updateCommand,
       );
-      snapshotSummary.forEach(this.log);
+      for (const summary of snapshotSummary) this.log(summary);
 
       this.log(''); // print empty line
     }
@@ -196,14 +196,14 @@ export default class SummaryReporter extends BaseReporter {
       aggregatedResults.numTotalTestSuites > this._summaryThreshold
     ) {
       this.log(chalk.bold('Summary of all failing tests'));
-      aggregatedResults.testResults.forEach(testResult => {
+      for (const testResult of aggregatedResults.testResults) {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
             `${getResultHeader(testResult, globalConfig)}\n${failureMessage}\n`,
           );
         }
-      });
+      }
       this.log(''); // print empty line
     }
   }
@@ -212,15 +212,14 @@ export default class SummaryReporter extends BaseReporter {
     testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
+    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests
         ? ' related to files matching '
         : ' matching ';
 
-      return (
-        chalk.dim(prefix) +
-        testPathPatternToRegExp(globalConfig.testPathPattern).toString()
-      );
+      return chalk.dim(prefix) + testPathPatterns.toPretty();
     };
 
     let testInfo = '';
@@ -229,7 +228,7 @@ export default class SummaryReporter extends BaseReporter {
       testInfo = chalk.dim(' within paths');
     } else if (globalConfig.onlyChanged) {
       testInfo = chalk.dim(' related to changed files');
-    } else if (globalConfig.testPathPattern) {
+    } else if (testPathPatterns.isSet()) {
       testInfo = getMatchingTestsInfo();
     }
 

@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const baseTheme = require('prism-react-renderer/themes/vsDark');
+const {themes} = require('prism-react-renderer');
+const baseTheme = themes.vsDark;
 
 const themeDark = [
   {
@@ -58,5 +59,5 @@ module.exports = {
     backgroundColor: '#242526',
     color: '#eee',
   },
-  styles: baseTheme.styles.concat(themeDark),
+  styles: [...baseTheme.styles, ...themeDark],
 };

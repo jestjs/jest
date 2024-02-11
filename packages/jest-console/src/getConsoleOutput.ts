@@ -8,8 +8,8 @@
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
 import {
-  StackTraceConfig,
-  StackTraceOptions,
+  type StackTraceConfig,
+  type StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
@@ -54,10 +54,8 @@ export default function getConsoleOutput(
 
     return `${
       output + TITLE_INDENT + chalk.dim(typeMessage)
-    }\n${message.trimRight()}\n${chalk.dim(
-      formattedStackTrace.trimRight(),
-    )}\n\n`;
+    }\n${message.trimEnd()}\n${chalk.dim(formattedStackTrace.trimEnd())}\n\n`;
   }, '');
 
-  return `${logEntries.trimRight()}\n`;
+  return `${logEntries.trimEnd()}\n`;
 }

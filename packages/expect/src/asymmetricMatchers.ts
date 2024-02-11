@@ -8,6 +8,7 @@
 
 import {
   equals,
+  getObjectKeys,
   isA,
   iterableEquality,
   subsetEquality,
@@ -52,7 +53,10 @@ function getPrototype(obj: object) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: object | null, property: string): boolean {
+export function hasProperty(
+  obj: object | null,
+  property: string | symbol,
+): boolean {
   if (!obj) {
     return false;
   }
@@ -69,7 +73,10 @@ export abstract class AsymmetricMatcher<T>
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(protected sample: T, protected inverse = false) {}
+  constructor(
+    protected sample: T,
+    protected inverse = false,
+  ) {}
 
   protected getMatcherContext(): MatcherContext {
     return {
@@ -91,7 +98,7 @@ export abstract class AsymmetricMatcher<T>
 
 class Any extends AsymmetricMatcher<any> {
   constructor(sample: unknown) {
-    if (typeof sample === 'undefined') {
+    if (sample === undefined) {
       throw new TypeError(
         'any() expects to be passed a constructor function. ' +
           'Please pass one or use anything() to match any object.',
@@ -188,7 +195,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
 
   asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
-      throw new Error(
+      throw new TypeError(
         `You must provide an array to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );
@@ -216,14 +223,16 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse = false) {
+class ObjectContaining extends AsymmetricMatcher<
+  Record<string | symbol, unknown>
+> {
+  constructor(sample: Record<string | symbol, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `You must provide an object to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );
@@ -232,14 +241,12 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     let result = true;
 
     const matcherContext = this.getMatcherContext();
-    for (const property in this.sample) {
+    const objectKeys = getObjectKeys(this.sample);
+
+    for (const key of objectKeys) {
       if (
-        !hasProperty(other, property) ||
-        !equals(
-          this.sample[property],
-          other[property],
-          matcherContext.customTesters,
-        )
+        !hasProperty(other, key) ||
+        !equals(this.sample[key], other[key], matcherContext.customTesters)
       ) {
         result = false;
         break;
@@ -326,9 +333,15 @@ class CloseTo extends AsymmetricMatcher<number> {
       return false;
     }
     let result = false;
-    if (other === Infinity && this.sample === Infinity) {
+    if (
+      other === Number.POSITIVE_INFINITY &&
+      this.sample === Number.POSITIVE_INFINITY
+    ) {
       result = true; // Infinity - Infinity is NaN
-    } else if (other === -Infinity && this.sample === -Infinity) {
+    } else if (
+      other === Number.NEGATIVE_INFINITY &&
+      this.sample === Number.NEGATIVE_INFINITY
+    ) {
       result = true; // -Infinity - -Infinity is NaN
     } else {
       result =

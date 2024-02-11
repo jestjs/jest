@@ -64,4 +64,48 @@ describe('setupFilesAfterEnv', () => {
     expect(result.json.testResults).toHaveLength(1);
     expect(result.exitCode).toBe(0);
   });
+
+  it('awaits async function returned from the setup file (jest-circus)', () => {
+    const pkgJson = {
+      jest: {
+        setupFilesAfterEnv: ['./setupAsyncFunction.js'],
+        testRunner: 'jest-circus',
+      },
+    };
+
+    writeFiles(DIR, {
+      'package.json': JSON.stringify(pkgJson, null, 2),
+    });
+
+    const result = runWithJson('setup-files-after-env-config', [
+      'setupAsyncFunction.test.js',
+    ]);
+
+    expect(result.json.numTotalTests).toBe(1);
+    expect(result.json.numPassedTests).toBe(1);
+    expect(result.json.testResults).toHaveLength(1);
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('awaits async function returned from the setup file (jest-jasmine2)', () => {
+    const pkgJson = {
+      jest: {
+        setupFilesAfterEnv: ['./setupAsyncFunction.js'],
+        testRunner: 'jest-jasmine2',
+      },
+    };
+
+    writeFiles(DIR, {
+      'package.json': JSON.stringify(pkgJson, null, 2),
+    });
+
+    const result = runWithJson('setup-files-after-env-config', [
+      'setupAsyncFunction.test.js',
+    ]);
+
+    expect(result.json.numTotalTests).toBe(1);
+    expect(result.json.numPassedTests).toBe(1);
+    expect(result.json.testResults).toHaveLength(1);
+    expect(result.exitCode).toBe(0);
+  });
 });

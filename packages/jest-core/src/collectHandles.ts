@@ -42,7 +42,6 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
-// @ts-expect-error: doesn't exist in v12 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
@@ -84,14 +83,18 @@ export default function collectHandles(): HandleCollectionResult {
       // exiting, not last a meaningfully long time, or otherwise shouldn't be
       // tracked.
       if (
-        type === 'PROMISE' ||
-        type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM' ||
-        type === 'PerformanceObserver' ||
-        type === 'RANDOMBYTESREQUEST' ||
-        type === 'DNSCHANNEL' ||
-        type === 'ZLIB' ||
-        type === 'SIGNREQUEST'
+        [
+          'PROMISE',
+          'TIMERWRAP',
+          'ELDHISTOGRAM',
+          'PerformanceObserver',
+          'RANDOMBYTESREQUEST',
+          'DNSCHANNEL',
+          'ZLIB',
+          'SIGNREQUEST',
+          'TLSWRAP',
+          'TCPWRAP',
+        ].includes(type)
       ) {
         return;
       }
@@ -115,7 +118,6 @@ export default function collectHandles(): HandleCollectionResult {
         // Handle that supports hasRef
         if ('hasRef' in resource) {
           if (hasWeakRef) {
-            // @ts-expect-error: doesn't exist in v12 typings
             const ref = new WeakRef(resource);
             isActive = () => {
               return ref.deref()?.hasRef() ?? false;
@@ -141,20 +143,22 @@ export default function collectHandles(): HandleCollectionResult {
     // For example, Node.js TCP Servers are not destroyed until *after* their
     // `close` callback runs. If someone finishes a test from the `close`
     // callback, we will not yet have seen the resource be destroyed here.
-    await asyncSleep(100);
+    await asyncSleep(0);
 
     if (activeHandles.size > 0) {
-      // For some special objects such as `TLSWRAP`.
-      // Ref: https://github.com/facebook/jest/issues/11665
-      runGC();
+      await asyncSleep(30);
 
-      await asyncSleep(0);
+      if (activeHandles.size > 0) {
+        runGC();
+
+        await asyncSleep(0);
+      }
     }
 
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
-    const result = Array.from(activeHandles.values())
+    const result = [...activeHandles.values()]
       .filter(({isActive}) => isActive())
       .map(({error}) => error);
 
@@ -167,33 +171,44 @@ export function formatHandleErrors(
   errors: Array<Error>,
   config: Config.ProjectConfig,
 ): Array<string> {
-  const stacks = new Set();
+  const stacks = new Map<string, {stack: string; names: Set<string>}>();
 
-  return (
-    errors
-      .map(err =>
-        formatExecError(err, config, {noStackTrace: false}, undefined, true),
-      )
-      // E.g. timeouts might give multiple traces to the same line of code
-      // This hairy filtering tries to remove entries with duplicate stack traces
-      .filter(handle => {
-        const ansiFree: string = stripAnsi(handle);
+  for (const err of errors) {
+    const formatted = formatExecError(
+      err,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
 
-        const match = ansiFree.match(/\s+at(.*)/);
+    // E.g. timeouts might give multiple traces to the same line of code
+    // This hairy filtering tries to remove entries with duplicate stack traces
 
-        if (!match || match.length < 2) {
-          return true;
-        }
+    const ansiFree: string = stripAnsi(formatted);
+    const match = ansiFree.match(/\s+at(.*)/);
+    if (!match || match.length < 2) {
+      continue;
+    }
 
-        const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+    const stackText = ansiFree.slice(ansiFree.indexOf(match[1])).trim();
 
-        if (stacks.has(stack)) {
-          return false;
-        }
+    const name = ansiFree.match(/(?<=● {2}).*$/m);
+    if (name == null || name.length === 0) {
+      continue;
+    }
 
-        stacks.add(stack);
+    const stack = stacks.get(stackText) || {
+      names: new Set(),
+      stack: formatted.replace(name[0], '%%OBJECT_NAME%%'),
+    };
 
-        return true;
-      })
+    stack.names.add(name[0]);
+
+    stacks.set(stackText, stack);
+  }
+
+  return [...stacks.values()].map(({stack, names}) =>
+    stack.replace('%%OBJECT_NAME%%', [...names].join(',')),
   );
 }

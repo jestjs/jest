@@ -8,16 +8,24 @@
 import type {
   AggregatedResult,
   AssertionResult,
+  Status,
   Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
+import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import GitHubActionsReporter from '../GitHubActionsReporter';
+import BaseGitHubActionsReporter from '../GitHubActionsReporter';
 
 afterEach(() => {
   jest.clearAllMocks();
 });
+
+class GitHubActionsReporter extends BaseGitHubActionsReporter {
+  override log(message: string): void {
+    super.log(normalizeIcons(message));
+  }
+}
 
 const mockedStderrWrite = jest
   .spyOn(process.stderr, 'write')
@@ -31,10 +39,10 @@ describe('annotations', () => {
   } as Test;
 
   const expectationsErrorMessage =
-    'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBe\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m) // Object.is equality\x1B[22m\n' +
+    'Error: \u001B[2mexpect(\u001B[22m\u001B[31mreceived\u001B[39m\u001B[2m).\u001B[22mtoBe\u001B[2m(\u001B[22m\u001B[32mexpected\u001B[39m\u001B[2m) // Object.is equality\u001B[22m\n' +
     '\n' +
-    'Expected: \x1B[32m1\x1B[39m\n' +
-    'Received: \x1B[31m10\x1B[39m\n' +
+    'Expected: \u001B[32m1\u001B[39m\n' +
+    'Received: \u001B[31m10\u001B[39m\n' +
     '    at Object.toBe (/user/project/__tests__/example.test.js:20:14)\n' +
     '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
     '    at new Promise (<anonymous>)\n' +
@@ -60,9 +68,9 @@ describe('annotations', () => {
     '    at run (/user/project/jest/packages/jest-circus/build/run.js:31:3)';
 
   const retryErrorMessage =
-    'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBeFalsy\x1B[2m()\x1B[22m\n' +
+    'Error: \u001B[2mexpect(\u001B[22m\u001B[31mreceived\u001B[39m\u001B[2m).\u001B[22mtoBeFalsy\u001B[2m()\u001B[22m\n' +
     '\n' +
-    'Received: \x1B[31mtrue\x1B[39m\n' +
+    'Received: \u001B[31mtrue\u001B[39m\n' +
     '    at Object.toBeFalsy (/user/project/__tests__/example.test.js:19:20)\n' +
     '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
     '    at new Promise (<anonymous>)\n' +
@@ -82,7 +90,7 @@ describe('annotations', () => {
 
   describe('logs error annotation', () => {
     test('when an expectation fails to pass', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -96,7 +104,7 @@ describe('annotations', () => {
     });
 
     test('when a test has reference error', () => {
-      reporter['generateAnnotations'](
+      reporter.generateAnnotations(
         {...testMeta, path: '/user/project/__tests__/example.test.js:25:12'},
         {
           testResults: [
@@ -113,7 +121,7 @@ describe('annotations', () => {
     });
 
     test('when test is wrapped in describe block', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -129,7 +137,7 @@ describe('annotations', () => {
 
   describe('logs warning annotation before logging errors', () => {
     test('when test result includes retry reasons', () => {
-      reporter['generateAnnotations'](testMeta, {
+      reporter.generateAnnotations(testMeta, {
         testResults: [
           {
             ...testCaseResult,
@@ -174,7 +182,7 @@ describe('logs', () => {
             children: [],
             duration: 10,
             name: 'test',
-            passed: false,
+            status: 'failed',
           },
         ],
         name: '/',
@@ -190,7 +198,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -217,7 +225,7 @@ describe('logs', () => {
             children: [],
             duration: 10,
             name: 'test',
-            passed: true,
+            status: 'passed',
           },
         ],
         name: '/',
@@ -233,7 +241,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -262,7 +270,7 @@ describe('logs', () => {
                 children: [],
                 duration: 10,
                 name: 'test',
-                passed: false,
+                status: 'failed',
               },
             ],
             name: 'Test describe',
@@ -282,7 +290,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -311,7 +319,7 @@ describe('logs', () => {
                 children: [],
                 duration: 10,
                 name: 'test',
-                passed: true,
+                status: 'passed',
               },
             ],
             name: 'Test describe',
@@ -331,7 +339,68 @@ describe('logs', () => {
         silent: false,
       });
 
-      const generated = gha['getResultTree'](testResults, '/', suitePerf);
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
+
+      expect(mockedStderrWrite).not.toHaveBeenCalled();
+      expect(generated).toEqual(expectedResults);
+    });
+
+    test('skipped single test and todo single test inside describe', () => {
+      const testResults = [
+        {
+          ancestorTitles: ['Test describe'],
+          duration: 10,
+          status: 'skipped',
+          title: 'test',
+        },
+        {
+          ancestorTitles: ['Test describe'],
+          duration: 14,
+          status: 'todo',
+          title: 'test2',
+        },
+      ] as unknown as Array<AssertionResult>;
+      const suitePerf = {
+        end: 30,
+        runtime: 20,
+        slow: false,
+        start: 10,
+      };
+      const expectedResults = {
+        children: [
+          {
+            children: [
+              {
+                children: [],
+                duration: 10,
+                name: 'test',
+                status: 'skipped',
+              },
+              {
+                children: [],
+                duration: 14,
+                name: 'test2',
+                status: 'todo',
+              },
+            ],
+            name: 'Test describe',
+            passed: true,
+          },
+        ],
+        name: '/',
+        passed: true,
+        performanceInfo: {
+          end: 30,
+          runtime: 20,
+          slow: false,
+          start: 10,
+        },
+      };
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
+
+      const generated = gha.getResultTree(testResults, '/', suitePerf);
 
       expect(mockedStderrWrite).not.toHaveBeenCalled();
       expect(generated).toEqual(expectedResults);
@@ -346,7 +415,7 @@ describe('logs', () => {
             children: [],
             duration: 10,
             name: 'test',
-            passed: false,
+            status: 'failed' as Status,
           },
         ],
         name: '/',
@@ -362,7 +431,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -374,7 +443,7 @@ describe('logs', () => {
             children: [],
             duration: 10,
             name: 'test',
-            passed: true,
+            status: 'passed' as Status,
           },
         ],
         name: '/',
@@ -390,7 +459,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -404,7 +473,7 @@ describe('logs', () => {
                 children: [],
                 duration: 10,
                 name: 'test',
-                passed: false,
+                status: 'failed' as Status,
               },
             ],
             name: 'Test describe',
@@ -424,7 +493,7 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -438,7 +507,7 @@ describe('logs', () => {
                 children: [],
                 duration: 10,
                 name: 'test',
-                passed: true,
+                status: 'passed' as Status,
               },
             ],
             name: 'Test describe',
@@ -458,7 +527,75 @@ describe('logs', () => {
         silent: false,
       });
 
-      gha['printResultTree'](generatedTree);
+      gha.printResultTree(generatedTree);
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
+    test('todo single test inside describe', () => {
+      const generatedTree = {
+        children: [
+          {
+            children: [
+              {
+                children: [],
+                duration: 10,
+                name: 'test',
+                status: 'todo' as Status,
+              },
+            ],
+            name: 'Test describe',
+            passed: true,
+          },
+        ],
+        name: '/',
+        passed: true,
+        performanceInfo: {
+          end: 30,
+          runtime: 20,
+          slow: false,
+          start: 10,
+        },
+      };
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
+
+      gha.printResultTree(generatedTree);
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
+    test('skipped single test inside describe', () => {
+      const generatedTree = {
+        children: [
+          {
+            children: [
+              {
+                children: [],
+                duration: 10,
+                name: 'test',
+                status: 'skipped' as Status,
+              },
+            ],
+            name: 'Test describe',
+            passed: true,
+          },
+        ],
+        name: '/',
+        passed: true,
+        performanceInfo: {
+          end: 30,
+          runtime: 20,
+          slow: false,
+          start: 10,
+        },
+      };
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
+
+      gha.printResultTree(generatedTree);
 
       expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
     });
@@ -496,7 +633,7 @@ describe('logs', () => {
       const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
         silent: false,
       });
-      gha['generateAnnotations'] = jest.fn();
+      gha.generateAnnotations = jest.fn();
 
       gha.onTestResult(
         mockTest as Test,
@@ -540,7 +677,7 @@ describe('logs', () => {
       const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
         silent: false,
       });
-      gha['generateAnnotations'] = jest.fn();
+      gha.generateAnnotations = jest.fn();
 
       gha.onTestResult(
         mockTest as Test,

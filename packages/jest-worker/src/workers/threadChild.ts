@@ -13,14 +13,14 @@ import {
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
-  ChildMessageCall,
-  ChildMessageInitialize,
+  type ChildMessageCall,
+  type ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_ERROR,
+  type PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
-  ParentMessageMemUsage,
+  type ParentMessageMemUsage,
 } from '../types';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
@@ -112,7 +112,14 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  try {
+    parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  } catch (error: any) {
+    // Handling it here to avoid unhandled `DataCloneError` rejection
+    // which is hard to distinguish on the parent side
+    // (such error doesn't have any message or stack trace)
+    reportClientError(error);
+  }
 }
 
 function reportClientError(error: Error) {
@@ -195,8 +202,8 @@ function execFunction(
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err: any) {
-    onError(err);
+  } catch (error: any) {
+    onError(error);
 
     return;
   }

@@ -60,9 +60,10 @@ exports.isFileIncluded = function (globs, dot, doIgnore, relativePath) {
   if (doIgnore(relativePath)) {
     return false;
   }
-  return globs.length
+  return globs.length > 0
     ? micromatch.some(relativePath, globs, {dot})
-    : dot || micromatch.some(relativePath, '**/*');
+    : // eslint-disable-next-line unicorn/no-array-method-this-argument
+      dot || micromatch.some(relativePath, '**/*');
 };
 
 /**

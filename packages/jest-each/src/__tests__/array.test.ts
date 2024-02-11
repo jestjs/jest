@@ -39,7 +39,7 @@ const getGlobalTestMocks = () => {
 };
 
 describe('jest-each', () => {
-  [
+  for (const keyPath of [
     ['test'],
     ['test', 'concurrent'],
     ['test', 'concurrent', 'only'],
@@ -51,7 +51,7 @@ describe('jest-each', () => {
     ['describe'],
     ['fdescribe'],
     ['describe', 'only'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('throws an error when not called with an array', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -126,8 +126,8 @@ describe('jest-each', () => {
             {foo: 'bar'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
           [
             'world',
@@ -138,8 +138,8 @@ describe('jest-each', () => {
             {baz: 'qux'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
@@ -283,12 +283,12 @@ describe('jest-each', () => {
         const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
 
         const testFunction = get(eachObject, keyPath);
-        testFunction('some test', noop, 10000);
+        testFunction('some test', noop, 10_000);
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledWith(
           'some test',
           expect.any(Function),
-          10000,
+          10_000,
         );
       });
 
@@ -304,8 +304,8 @@ describe('jest-each', () => {
             f: {key: 'foo'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
           {
             a: 'world',
@@ -316,8 +316,8 @@ describe('jest-each', () => {
             f: {key: 'bar'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
         ]);
         const testFunction = get(eachObject, keyPath);
@@ -415,7 +415,7 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 
   describe('done callback', () => {
     test.each([
@@ -459,7 +459,7 @@ describe('jest-each', () => {
     );
   });
 
-  [
+  for (const keyPath of [
     ['xtest'],
     ['test', 'skip'],
     ['test', 'concurrent', 'skip'],
@@ -467,7 +467,7 @@ describe('jest-each', () => {
     ['it', 'skip'],
     ['xdescribe'],
     ['describe', 'skip'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -551,5 +551,5 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 });

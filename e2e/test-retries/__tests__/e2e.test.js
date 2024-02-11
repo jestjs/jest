@@ -18,7 +18,7 @@ beforeAll(() => {
 jest.retryTimes(3);
 
 it('retries', () => {
-  const tries = parseInt(fs.readFileSync(countPath, 'utf8'), 10);
+  const tries = Number.parseInt(fs.readFileSync(countPath, 'utf8'), 10);
   fs.writeFileSync(countPath, `${tries + 1}`, 'utf8');
   expect(tries).toBe(3);
 });

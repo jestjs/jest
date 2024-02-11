@@ -12,20 +12,20 @@ import {
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
-  BaseReporter as JestReporter,
+  type BaseReporter as JestReporter,
   NotifyReporter,
-  Reporter,
-  ReporterContext,
+  type Reporter,
+  type ReporterContext,
   SummaryReporter,
-  SummaryReporterOptions,
+  type SummaryReporterOptions,
   VerboseReporter,
 } from '@jest/reporters';
 import {
-  AggregatedResult,
-  SerializableError,
-  Test,
-  TestContext,
-  TestResult,
+  type AggregatedResult,
+  type SerializableError,
+  type Test,
+  type TestContext,
+  type TestResult,
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
@@ -38,7 +38,7 @@ import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
-import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -98,12 +98,12 @@ class TestScheduler {
     );
     const timings: Array<number> = [];
     const testContexts = new Set<TestContext>();
-    tests.forEach(test => {
+    for (const test of tests) {
       testContexts.add(test.context);
       if (test.duration) {
         timings.push(test.duration);
       }
-    });
+    }
 
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
@@ -114,7 +114,7 @@ class TestScheduler {
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
-        return Promise.resolve();
+        return;
       }
 
       if (testResult.testResults.length === 0) {
@@ -174,13 +174,13 @@ class TestScheduler {
 
     const updateSnapshotState = async () => {
       const contextsWithSnapshotResolvers = await Promise.all(
-        Array.from(testContexts).map(
+        [...testContexts].map(
           async context =>
             [context, await buildSnapshotResolver(context.config)] as const,
         ),
       );
 
-      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
+      for (const [context, snapshotResolver] of contextsWithSnapshotResolvers) {
         const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
@@ -189,10 +189,11 @@ class TestScheduler {
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-        aggregatedResults.snapshot.filesRemovedList = (
-          aggregatedResults.snapshot.filesRemovedList || []
-        ).concat(status.filesRemovedList);
-      });
+        aggregatedResults.snapshot.filesRemovedList = [
+          ...(aggregatedResults.snapshot.filesRemovedList || []),
+          ...status.filesRemovedList,
+        ];
+      }
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
       aggregatedResults.snapshot.failure = !!(
@@ -213,7 +214,7 @@ class TestScheduler {
 
     try {
       await Promise.all(
-        Array.from(testContexts).map(async context => {
+        [...testContexts].map(async context => {
           const {config} = context;
           if (!testRunners[config.runner]) {
             const transformer = await createScriptTransformer(config);
@@ -275,7 +276,7 @@ class TestScheduler {
 
               await testRunner.runTests(tests, watcher, testRunnerOptions);
 
-              unsubscribes.forEach(sub => sub());
+              for (const sub of unsubscribes) sub();
             } else {
               await testRunner.runTests(
                 tests,
@@ -386,9 +387,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor = await requireOrImportModule(
-        reporter,
-      );
+      const Reporter: ReporterConstructor =
+        await requireOrImportModule(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),
@@ -422,12 +422,6 @@ class TestScheduler {
         exit(exitCode);
       }
     }
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
   }
 }
 
