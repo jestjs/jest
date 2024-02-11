@@ -341,12 +341,14 @@ export const subsetEquality = (
         return undefined;
       }
 
-      return getObjectKeys(subset).every(key => {
+      if (seenReferences.has(subset)) return undefined;
+      seenReferences.set(subset, true);
+
+      const matchResult = getObjectKeys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
             return equals(object[key], subset[key], filteredCustomTesters);
           }
-          seenReferences.set(subset[key], true);
         }
         const result =
           object != null &&
@@ -363,6 +365,8 @@ export const subsetEquality = (
         seenReferences.delete(subset[key]);
         return result;
       });
+      seenReferences.delete(subset);
+      return matchResult;
     };
 
   return subsetEqualityWithContext()(object, subset);
