@@ -310,6 +310,15 @@ export const extractSummaries = (
     .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
 };
 
+/** Only works in --logHeapUsage mode. */
+export const extractWorkerPids = (stdout: string) => {
+  const processIds = new Set<string>();
+  for (const groups of stdout.matchAll(/(?:PASS|FAIL) .*pid (\d+)/gm)) {
+    processIds.add(groups[1]);
+  }
+  return processIds;
+};
+
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed
 let hgIsInstalled: boolean | null = null;
 

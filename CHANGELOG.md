@@ -18,6 +18,7 @@
 - `[jest-environment-node]` Update jest environment with dispose symbols `Symbol` ([#14888](https://github.com/jestjs/jest/pull/14888))
 - `[@jest/fake-timers]` [**BREAKING**] Upgrade `@sinonjs/fake-timers` to v11 ([#14544](https://github.com/jestjs/jest/pull/14544))
 - `[@jest/fake-timers]` Exposing new modern timers function `advanceTimersToFrame()` which advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame` ([#14598](https://github.com/jestjs/jest/pull/14598))
+- `[@jest/reporters, jest-runner, @jest/test-result]` Add logging of process id when --logHeapUsage flag is given ([#14410](https://github.com/facebook/jest/pull/14410))
 - `[jest-runtime]` Exposing new modern timers function `jest.advanceTimersToFrame()` from `@jest/fake-timers` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-runtime]` Support `import.meta.filename` and `import.meta.dirname` (available from [Node 20.11](https://nodejs.org/en/blog/release/v20.11.0))
 - `[@jest/schemas]` Upgrade `@sinclair/typebox` to v0.31 ([#14072](https://github.com/jestjs/jest/pull/14072))
