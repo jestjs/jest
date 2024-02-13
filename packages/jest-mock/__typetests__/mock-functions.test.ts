@@ -269,6 +269,19 @@ expectType<Promise<void>>(
 
 expectError(mockFn.withImplementation(mockFnImpl));
 
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
+  mockFn
+    .whenCalledWith('special input')
+    .mockReturnValue(true)
+    .mockReturnValueOnce(false),
+);
+expectError(mockFn.whenCalledWith('special input', 'this should be a number'));
+expectError(
+  mockFn
+    .whenCalledWith('special input')
+    .mockReturnValue('this should be a string'),
+);
+
 // jest.spyOn()
 
 const spiedArray = ['a', 'b'];

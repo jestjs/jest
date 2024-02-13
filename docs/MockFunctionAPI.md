@@ -273,6 +273,58 @@ mockFn(); // 'default'
 mockFn(); // 'default'
 ```
 
+### `mockFn.whenCalledWith(arg1, arg2, ...)`
+
+Accepts arguments to the function; returns a new mock to be used only when the mocked function is called with those arguments. When called with other arguments, any other mocked implementation will apply.
+
+For example:
+
+```js tab
+const mockFn = jest.fn();
+mockFn.mockReturnValue('Hello, world!');
+mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
+
+mockFn('world'); // 'Hello, world!'
+mockFn('jest'); // 'Testing is great!'
+```
+
+```ts tab
+import {jest} from '@jest/globals';
+
+const mockFn = jest.fn<(arg: string) => string>();
+mockFn.mockReturnValue('Hello, world!');
+mockFn.whenCalledWith('jest').mockReturnValue('Testing is great!');
+
+mockFn('world'); // 'Hello, world!'
+mockFn('jest'); // 'Testing is great!'
+```
+
+The arguments may also be [`expect` asymmetric matchers](ExpectAPI.md#asymmetric-matchers):
+
+```js tab
+const mockFn = jest.fn();
+mockFn.mockReturnValue('called');
+mockFn
+  .whenCalledWith(expect.any(String))
+  .mockReturnValue('called with a string');
+
+mockFn(3); // 'called'
+mockFn('jest'); // 'called with a string'
+```
+
+```ts tab
+import {expect, jest} from '@jest/globals';
+
+const mockFn = jest.fn<(arg: unknown) => string>();
+mockFn.mockReturnValue('called');
+mockFn
+  .whenCalledWith(expect.any(String))
+  .mockReturnValue('called with a string');
+
+mockFn(3); // 'called'
+mockFn('jest'); // 'called with a string'
+```
+
 ### `mockFn.mockName(name)`
 
 Accepts a string to use in test result output in place of `'jest.fn()'` to indicate which mock function is being referenced.
