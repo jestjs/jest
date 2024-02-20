@@ -3076,7 +3076,7 @@ __metadata:
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
-    tstyche: ^1.0.0-rc.2
+    tstyche: ^1.0.0
     typescript: ^5.0.4
     webpack: ^5.68.0
     webpack-node-externals: ^3.0.0
@@ -20151,9 +20151,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "tstyche@npm:1.0.0-rc.2"
+"tstyche@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tstyche@npm:1.0.0"
   peerDependencies:
     typescript: 4.x || 5.x
   peerDependenciesMeta:
@@ -20161,7 +20161,7 @@ __metadata:
       optional: true
   bin:
     tstyche: ./build/bin.js
-  checksum: a118cde0744a4074f4abeb9f2392919aa6d2a3cf0b73a05ed41a6cd2c95ee5b6ff63fa495342fa8596d679c4370b8ffa822e0ad49ba7910edeb993fb620537bf
+  checksum: 83725c3651707d1d6afe46833a1ef43a650e839116a5f10193f6059f5f52923968dd0f05aaef827d96dcad8438330a9b53ffa4f69ebccee1fb25e8b77f0e81e0
   languageName: node
   linkType: hard
 
