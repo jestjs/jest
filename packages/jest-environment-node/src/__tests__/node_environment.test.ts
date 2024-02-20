@@ -72,6 +72,28 @@ describe('NodeEnvironment', () => {
     }
   });
 
+  it('should configure dispose symbols', () => {
+    const env = new NodeEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      context,
+    );
+
+    if ('asyncDispose' in Symbol) {
+      expect(env.global.Symbol).toHaveProperty('asyncDispose');
+    } else {
+      expect(env.global.Symbol).not.toHaveProperty('asyncDispose');
+    }
+
+    if ('dispose' in Symbol) {
+      expect(env.global.Symbol).toHaveProperty('dispose');
+    } else {
+      expect(env.global.Symbol).not.toHaveProperty('dispose');
+    }
+  });
+
   it('has modern fake timers implementation', () => {
     const env = new NodeEnvironment(
       {
