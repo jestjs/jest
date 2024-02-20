@@ -155,9 +155,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
       const globalSymbol = global.Symbol as unknown as SymbolConstructor;
       // @ts-expect-error - it's readonly - but we have checked above that it's not there
-      globalSymbol.asyncDispose = globalSymbol('nodejs.asyncDispose');
+      globalSymbol.asyncDispose = globalSymbol.for('nodejs.asyncDispose');
       // @ts-expect-error - it's readonly - but we have checked above that it's not there
-      globalSymbol.dispose = globalSymbol('nodejs.dispose');
+      globalSymbol.dispose = globalSymbol.for('nodejs.dispose');
     }
 
     // Node's error-message stack size is limited at 10, but it's pretty useful

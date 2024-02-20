@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/// <reference lib="ESNext.Disposable" />
+
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import {isPromise} from 'jest-util';
@@ -131,7 +133,8 @@ type ResolveType<T extends FunctionLike> =
 type RejectType<T extends FunctionLike> =
   ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
-export interface MockInstance<T extends FunctionLike = UnknownFunction> {
+export interface MockInstance<T extends FunctionLike = UnknownFunction>
+  extends Disposable {
   _isMockFunction: true;
   _protoImpl: Function;
   getMockImplementation(): T | undefined;
@@ -797,6 +800,9 @@ export class ModuleMocker {
       };
 
       f.withImplementation = withImplementation.bind(this);
+      if (Symbol.dispose) {
+        f[Symbol.dispose] = f.mockRestore;
+      }
 
       function withImplementation(fn: T, callback: () => void): void;
       function withImplementation(
