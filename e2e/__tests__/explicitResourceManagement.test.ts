@@ -6,6 +6,7 @@
  */
 
 import {resolve} from 'path';
+import {onNodeVersions} from '@jest/test-utils';
 import {runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -15,7 +16,9 @@ beforeAll(() => {
   runYarnInstall(DIR);
 });
 
-test('Explicit resource management is supported', () => {
-  const result = runJest(DIR);
-  expect(result.exitCode).toBe(0);
+onNodeVersions('^18.18.0 || >=20.4.0', () => {
+  test('Explicit resource management is supported', () => {
+    const result = runJest(DIR);
+    expect(result.exitCode).toBe(0);
+  });
 });
