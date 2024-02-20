@@ -211,7 +211,7 @@ jobs:
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         if: always()
         with:
           directory: ./coverage
