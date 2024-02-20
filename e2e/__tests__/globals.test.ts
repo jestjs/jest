@@ -297,7 +297,7 @@ test('function as it() descriptor', () => {
   expect(exitCode).toBe(0);
 });
 
-onNodeVersions('^18.18.0 ||>=20.4.0', () => {
+onNodeVersions('^18.18.0 || >=20.4.0', () => {
   test("Symbol's `dispose` are available", () => {
     const filename = 'symbolDispose.test.js';
     const content = `
