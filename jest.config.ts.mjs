@@ -32,6 +32,7 @@ export default {
         '!**/packages/expect-utils/__typetests__/*.test.ts',
         '!**/packages/jest/__typetests__/*.test.ts',
         '!**/packages/jest-cli/__typetests__/*.test.ts',
+        '!**/packages/jest-mock/__typetests__/*.test.ts',
         '!**/packages/jest-types/__typetests__/config.test.ts',
       ],
     },

@@ -3076,7 +3076,7 @@ __metadata:
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
-    tstyche: ^1.0.0-beta.9
+    tstyche: ^1.0.0
     typescript: ^5.0.4
     webpack: ^5.68.0
     webpack-node-externals: ^3.0.0
@@ -12961,10 +12961,8 @@ __metadata:
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
     "@jest/types": "workspace:*"
-    "@tsd/typescript": ^5.0.4
     "@types/node": "*"
     jest-util: "workspace:*"
-    tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
 
@@ -20153,9 +20151,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^1.0.0-beta.9":
-  version: 1.0.0-beta.9
-  resolution: "tstyche@npm:1.0.0-beta.9"
+"tstyche@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tstyche@npm:1.0.0"
   peerDependencies:
     typescript: 4.x || 5.x
   peerDependenciesMeta:
@@ -20163,7 +20161,7 @@ __metadata:
       optional: true
   bin:
     tstyche: ./build/bin.js
-  checksum: 448171bd7d747e4463c8d4bde67a05b16300fba098e07cb576c64fe1524dedcb02f087e5291be35d883d06fa70a61d7c313ca07cc33e43fd104fcf6246cc97e6
+  checksum: 83725c3651707d1d6afe46833a1ef43a650e839116a5f10193f6059f5f52923968dd0f05aaef827d96dcad8438330a9b53ffa4f69ebccee1fb25e8b77f0e81e0
   languageName: node
   linkType: hard
 
