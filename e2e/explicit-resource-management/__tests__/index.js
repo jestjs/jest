@@ -5,14 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-if (!Symbol.dispose) {
-  Object.defineProperty(Symbol, 'dispose', {
-    get() {
-      return Symbol.for('nodejs.dispose');
-    },
-  });
-}
-
 const TestClass = require('../');
 const localClass = new TestClass();
 
