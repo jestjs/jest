@@ -35,18 +35,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.35.1":
-  version: 3.35.1
-  resolution: "core-js@npm:3.35.1"
-  checksum: e246af6b634be3763ffe3ce6ac4601b4dc5b928006fb6c95e5d08ecd82a2413bf36f00ffe178b89c9a8e94000288933a78a9881b2c9498e6cf312b031013b952
-  languageName: node
-  linkType: hard
-
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@babel/plugin-proposal-explicit-resource-management": ^7.23.9
-    core-js: ^3.35.1
   languageName: unknown
   linkType: soft
