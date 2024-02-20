@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectType} from 'tsd-lite';
+import {expect, test} from 'tstyche';
 import {type MockMetadata, type Mocked, ModuleMocker} from 'jest-mock';
 
 class ExampleClass {
@@ -45,31 +45,37 @@ const exampleModule = {
 
 const moduleMocker = new ModuleMocker(globalThis);
 
-// getMetadata
-
 const exampleMetadata = moduleMocker.getMetadata(exampleModule);
 
-expectType<MockMetadata<typeof exampleModule> | null>(exampleMetadata);
+test('getMetadata', () => {
+  expect(exampleMetadata).type.toEqual<MockMetadata<
+    typeof exampleModule
+  > | null>();
+});
 
-// generateFromMetadata
+test('generateFromMetadata', () => {
+  const exampleMock = moduleMocker.generateFromMetadata(exampleMetadata!);
 
-const exampleMock = moduleMocker.generateFromMetadata(exampleMetadata!);
+  expect(exampleMock).type.toEqual<Mocked<typeof exampleModule>>();
 
-expectType<Mocked<typeof exampleModule>>(exampleMock);
+  expect(exampleMock.methodA.mock.calls).type.toEqual<
+    Array<[a: number, b: number]>
+  >();
+  expect(exampleMock.methodB.mock.calls).type.toEqual<
+    Array<[a: number, b: number]>
+  >();
 
-expectType<Array<[a: number, b: number]>>(exampleMock.methodA.mock.calls);
-expectType<Array<[a: number, b: number]>>(exampleMock.methodB.mock.calls);
+  expect(exampleMock.instance.memberA).type.toEqual<Array<number>>();
+  expect(exampleMock.instance.memberB.mock.calls).type.toEqual<Array<[]>>();
 
-expectType<Array<number>>(exampleMock.instance.memberA);
-expectType<Array<[]>>(exampleMock.instance.memberB.mock.calls);
+  expect(exampleMock.propertyA.one).type.toBeString();
+  expect(exampleMock.propertyA.two.mock.calls).type.toEqual<Array<[]>>();
+  expect(exampleMock.propertyA.three.nine).type.toBeNumber();
+  expect(exampleMock.propertyA.three.ten).type.toEqual<Array<number>>();
 
-expectType<string>(exampleMock.propertyA.one);
-expectType<Array<[]>>(exampleMock.propertyA.two.mock.calls);
-expectType<number>(exampleMock.propertyA.three.nine);
-expectType<Array<number>>(exampleMock.propertyA.three.ten);
-
-expectType<Array<number>>(exampleMock.propertyB);
-expectType<number>(exampleMock.propertyC);
-expectType<string>(exampleMock.propertyD);
-expectType<boolean>(exampleMock.propertyE);
-expectType<symbol>(exampleMock.propertyF);
+  expect(exampleMock.propertyB).type.toEqual<Array<number>>();
+  expect(exampleMock.propertyC).type.toBeNumber();
+  expect(exampleMock.propertyD).type.toBeString();
+  expect(exampleMock.propertyE).type.toBeBoolean();
+  expect(exampleMock.propertyF).type.toBeSymbol();
+});
