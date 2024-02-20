@@ -710,9 +710,9 @@ test('plays video', () => {
 });
 ```
 
-#### spied methods and the `using` keyword
+#### Spied methods and the `using` keyword
 
-If your codebase is set up to transpile the ["explicit resource management"](https://github.com/tc39/proposal-explicit-resource-management) (e.g. if you are using TypeScript >= 5.2 or the `'@babel/plugin-proposal-explicit-resource-management'` plugin), you can use `spyOn` in combination with the `using` keyword:
+If your codebase is set up to transpile the ["explicit resource management"](https://github.com/tc39/proposal-explicit-resource-management) (e.g. if you are using TypeScript >= 5.2 or the `@babel/plugin-proposal-explicit-resource-management` plugin), you can use `spyOn` in combination with the `using` keyword:
 
 ```js
 test('logs a warning', () => {
@@ -726,8 +726,9 @@ That code is semantically equal to
 
 ```js
 test('logs a warning', () => {
+  let spy;
   try {
-    using spy = jest.spyOn(console.warn);
+    spy = jest.spyOn(console.warn);
     doSomeThingWarnWorthy();
     expect(spy).toHaveBeenCalled();
   } finally {
