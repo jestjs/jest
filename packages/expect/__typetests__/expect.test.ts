@@ -14,7 +14,7 @@ import {
   type Matchers,
   type Tester,
   type TesterContext,
-  expect as _expect,
+  expect as jestExpect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
@@ -51,7 +51,7 @@ describe('Expect', () => {
     };
 
     expect(
-      _expect.addEqualityTesters([
+      jestExpect.addEqualityTesters([
         tester1,
 
         (a, b, customTesters) => {
@@ -83,7 +83,7 @@ describe('Expect', () => {
     };
 
     expect(
-      _expect.extend({
+      jestExpect.extend({
         // TODO `actual` should be allowed to have only `unknown` type
         toBeWithinRange(actual: number, floor: number, ceiling: number) {
           expect(this.assertionCalls).type.toBeNumber();
@@ -126,19 +126,19 @@ describe('Expect', () => {
       }),
     ).type.toBeVoid();
 
-    expect(_expect(100).toBeWithinRange(90, 110)).type.toBeVoid();
-    expect(_expect(101).not.toBeWithinRange(0, 100)).type.toBeVoid();
+    expect(jestExpect(100).toBeWithinRange(90, 110)).type.toBeVoid();
+    expect(jestExpect(101).not.toBeWithinRange(0, 100)).type.toBeVoid();
 
     expect(
-      _expect({apples: 6, bananas: 3}).toEqual({
-        apples: _expect.toBeWithinRange(1, 10),
-        bananas: _expect.not.toBeWithinRange(11, 20),
+      jestExpect({apples: 6, bananas: 3}).toEqual({
+        apples: jestExpect.toBeWithinRange(1, 10),
+        bananas: jestExpect.not.toBeWithinRange(11, 20),
       }),
     ).type.toBeVoid();
   });
 
   test('does not define the `.toMatchSnapshot()` matcher', () => {
-    expect(_expect(null)).type.not.toHaveProperty('toMatchSnapshot');
+    expect(jestExpect(null)).type.not.toHaveProperty('toMatchSnapshot');
   });
 });
 
