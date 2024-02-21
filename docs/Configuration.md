@@ -938,6 +938,12 @@ const config: Config = {
 export default config;
 ```
 
+:::caution
+
+It is discouraged to use `'.'` as one of the `moduleDirectories`, because this prevents scoped packages such as `@emotion/react` from accessing packages with the same subdirectory name (`react`). See [this issue](https://github.com/jestjs/jest/issues/10498) for more details. In most cases, it is preferable to use the [moduleNameMapper](#modulenamemapper-objectstring-string--arraystring) configuration instead.
+
+:::
+
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
 Default: `["js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "json", "node"]`
