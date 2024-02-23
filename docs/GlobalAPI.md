@@ -1094,3 +1094,23 @@ test.each<{a: number; b: number; expected: string; extra?: boolean}>`
   // all arguments are typed as expected, e.g. `a: number`, `expected: string`, `extra: boolean | undefined`
 });
 ```
+
+:::caution
+
+Keep in mind the variables inside the template literal are not type checked, so you have to ensure that their types are correct.
+
+```ts
+import {test} from '@jest/globals';
+
+test.each<{a: number; expected: string}>`
+  a                            | expected
+  ${1}                         | ${'one'}
+  ${'will not raise TS error'} | ${'two'}
+  ${3}                         | ${'three'}
+`('template literal with wrongly typed input', ({a, expected}) => {
+  // all arguments are typed as stated in the generic: `a: number`, `expected: string`
+  // WARNING: `a` is of type `number` but will be a string in the 2nd test case.
+});
+```
+
+:::
