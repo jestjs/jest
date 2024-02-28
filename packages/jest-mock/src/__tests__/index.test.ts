@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import * as util from 'util';
-import {Context, createContext, runInContext, runInNewContext} from 'vm';
+import {type Context, createContext, runInContext, runInNewContext} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
@@ -49,7 +49,9 @@ describe('moduleMocker', () => {
       expect(moduleMocker.getMetadata('banana').value).toBe('banana');
       expect(moduleMocker.getMetadata(27).value).toBe(27);
       expect(moduleMocker.getMetadata(false).value).toBe(false);
-      expect(moduleMocker.getMetadata(Infinity).value).toEqual(Infinity);
+      expect(moduleMocker.getMetadata(Number.POSITIVE_INFINITY).value).toEqual(
+        Number.POSITIVE_INFINITY,
+      );
     });
 
     it('does not retrieve metadata for arrays', () => {
@@ -1326,16 +1328,16 @@ describe('moduleMocker', () => {
 
     describe('should throw', () => {
       it.each`
-        value        | type
-        ${'foo'}     | ${'string'}
-        ${1}         | ${'number'}
-        ${NaN}       | ${'number'}
-        ${1n}        | ${'bigint'}
-        ${Symbol()}  | ${'symbol'}
-        ${true}      | ${'boolean'}
-        ${false}     | ${'boolean'}
-        ${undefined} | ${'undefined'}
-        ${null}      | ${'null'}
+        value         | type
+        ${'foo'}      | ${'string'}
+        ${1}          | ${'number'}
+        ${Number.NaN} | ${'number'}
+        ${1n}         | ${'bigint'}
+        ${Symbol()}   | ${'symbol'}
+        ${true}       | ${'boolean'}
+        ${false}      | ${'boolean'}
+        ${undefined}  | ${'undefined'}
+        ${null}       | ${'null'}
       `(
         'when primitive value $value is provided instead of an object',
         ({value, type}) => {
@@ -2208,16 +2210,16 @@ describe('moduleMocker', () => {
 
     describe('should throw', () => {
       it.each`
-        value        | type
-        ${'foo'}     | ${'string'}
-        ${1}         | ${'number'}
-        ${NaN}       | ${'number'}
-        ${1n}        | ${'bigint'}
-        ${Symbol()}  | ${'symbol'}
-        ${true}      | ${'boolean'}
-        ${false}     | ${'boolean'}
-        ${undefined} | ${'undefined'}
-        ${null}      | ${'null'}
+        value         | type
+        ${'foo'}      | ${'string'}
+        ${1}          | ${'number'}
+        ${Number.NaN} | ${'number'}
+        ${1n}         | ${'bigint'}
+        ${Symbol()}   | ${'symbol'}
+        ${true}       | ${'boolean'}
+        ${false}      | ${'boolean'}
+        ${undefined}  | ${'undefined'}
+        ${null}       | ${'null'}
       `(
         'when primitive value $value is provided instead of an object',
         ({value, type}) => {

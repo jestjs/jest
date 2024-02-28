@@ -33,6 +33,8 @@ module.exports = {
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
+    'plugin:unicorn/recommended',
+    'plugin:promise/recommended',
     'plugin:prettier/recommended',
   ],
   globals: {
@@ -40,12 +42,22 @@ module.exports = {
   },
   overrides: [
     {
-      extends: ['plugin:@typescript-eslint/strict', 'plugin:import/typescript'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/strict',
+        'plugin:@typescript-eslint/stylistic',
+        'plugin:import/typescript',
+      ],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {fixStyle: 'inline-type-imports', disallowTypeAnnotations: false},
+        ],
+        '@typescript-eslint/no-import-type-side-effects': 'error',
         '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
@@ -53,6 +65,7 @@ module.exports = {
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/consistent-indexed-object-style': 'off',
         // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
@@ -62,21 +75,14 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-invalid-void-type': 'off',
+        '@typescript-eslint/consistent-type-definitions': 'off',
 
-        // TODO: part of "stylistic" rules, remove explicit activation when that lands
-        '@typescript-eslint/no-empty-function': 'error',
-        '@typescript-eslint/no-empty-interface': 'error',
+        // not needed to be enforced for TS
+        'import/namespace': 'off',
       },
     },
     {
       files: [
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/createSpy.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
         'packages/jest-mock/src/index.ts',
         'packages/pretty-format/src/__tests__/Immutable.test.ts',
@@ -91,13 +97,7 @@ module.exports = {
       files: [
         'packages/expect/src/index.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
-        'packages/jest-jasmine2/src/jasmine/Env.ts',
-        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
-        'packages/jest-jasmine2/src/jasmine/Spec.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
-        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
         'packages/jest-jasmine2/src/jestExpect.ts',
-        'packages/jest-resolve/src/resolver.ts',
       ],
       rules: {
         'local/prefer-spread-eventually': 'warn',
@@ -114,8 +114,6 @@ module.exports = {
         'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
-        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
-        'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
         'packages/jest-matcher-utils/src/index.ts',
         'packages/jest-mock/src/__tests__/index.test.ts',
@@ -148,6 +146,13 @@ module.exports = {
         ],
       },
     },
+    {
+      files: 'e2e/coverage-remapping/covered.ts',
+      rules: {
+        'no-constant-binary-expression': 'off',
+        'no-constant-condition': 'off',
+      },
+    },
 
     // 'eslint-plugin-jest' rules for test and test related files
     {
@@ -160,6 +165,7 @@ module.exports = {
         'e2e/failures/macros.js',
         'e2e/test-in-root/*.js',
         'e2e/test-match/test-suites/*',
+        'e2e/test-match-default/dot-spec-tests/*',
         'packages/test-utils/src/ConditionalTest.ts',
       ],
       env: {'jest/globals': true},
@@ -209,9 +215,15 @@ module.exports = {
         'jest/no-focused-tests': 'off',
         'jest/require-to-throw-message': 'off',
         'no-console': 'off',
+        'no-constant-condition': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
         'sort-keys': 'off',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/no-static-only-class': 'off',
+        'unicorn/prefer-number-properties': 'off',
       },
     },
     // demonstration of matchers usage
@@ -275,6 +287,16 @@ module.exports = {
       },
     },
     {
+      files: ['examples/angular/**/*'],
+      rules: {
+        // Angular DI for some reason doesn't work with type imports
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+        ],
+      },
+    },
+    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -297,6 +319,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/class-literal-property-style': 'off',
       },
     },
     {
@@ -309,6 +332,9 @@ module.exports = {
       ],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-await-expression-member': 'off',
+        'unicorn/prefer-spread': 'off',
       },
     },
     {
@@ -317,8 +343,12 @@ module.exports = {
         'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
+        '@typescript-eslint/ban-types': 'off',
         'eslint-comments/disable-enable-pair': 'off',
         'eslint-comments/no-unlimited-disable': 'off',
+        'prefer-rest-params': 'off',
+        'prefer-spread': 'off',
+        'sort-keys ': 'off',
       },
     },
     {
@@ -338,11 +368,13 @@ module.exports = {
         'website/**',
         '**/__benchmarks__/**',
         '**/__tests__/**',
-        'packages/jest-types/**/*',
+        '**/__typetests__/**',
         '.eslintplugin/**',
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'off',
       },
     },
     {
@@ -384,12 +416,43 @@ module.exports = {
         'no-unused-vars': 'off',
       },
     },
+    {
+      files: 'packages/jest-mock/src/__tests__/**/*',
+      rules: {
+        'unicorn/no-static-only-class': 'off',
+      },
+    },
+    {
+      files: '**/*.mjs',
+      rules: {
+        'unicorn/prefer-top-level-await': 'error',
+      },
+    },
+    {
+      files: [
+        'e2e/coverage-report/__mocks__/sumDependency.js',
+        'e2e/require-main-after-create-require/empty.js',
+        'packages/create-jest/src/__tests__/__fixtures__/**/*',
+        'packages/jest-core/src/__tests__/**/*',
+        'packages/jest-haste-map/src/__tests__/test_dotfiles_root/**/*',
+        'packages/jest-resolve/src/__mocks__/**/*',
+      ],
+      rules: {
+        'unicorn/no-empty-file': 'off',
+      },
+    },
+    {
+      files: 'packages/expect/src/__tests__/*.test.js',
+      rules: {
+        'unicorn/prefer-number-properties': 'off',
+      },
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jsdoc', 'unicorn'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -411,6 +474,7 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
+    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -468,7 +532,8 @@ module.exports = {
       {allow: ['warn', 'error', 'time', 'timeEnd', 'timeStamp']},
     ],
     'no-const-assign': 'error',
-    'no-constant-condition': 'off',
+    'no-constant-condition': 'error',
+    'no-constant-binary-expression': 'error',
     'no-continue': 'off',
     'no-control-regex': 'off',
     'no-debugger': 'error',
@@ -510,9 +575,7 @@ module.exports = {
     'no-multi-str': 'error',
     'no-multiple-empty-lines': 'off',
     'no-native-reassign': ['error', {exceptions: ['Map', 'Set']}],
-    'no-negated-condition': 'off',
     'no-negated-in-lhs': 'error',
-    'no-nested-ternary': 'off',
     'no-new': 'warn',
     'no-new-func': 'error',
     'no-new-object': 'warn',
@@ -574,6 +637,11 @@ module.exports = {
     'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'error',
+
+    'promise/always-return': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/no-callback-in-promise': 'off',
+
     quotes: [
       'error',
       'single',
@@ -595,13 +663,43 @@ module.exports = {
     'wrap-regex': 'off',
     yoda: 'off',
 
-    'unicorn/explicit-length-check': 'error',
-    'unicorn/no-array-for-each': 'error',
-    'unicorn/no-negated-condition': 'error',
-    'unicorn/numeric-separators-style': 'error',
-    'unicorn/prefer-default-parameters': 'error',
-    'unicorn/prefer-includes': 'error',
-    'unicorn/template-indent': 'error',
+    // doesn't work without ESModuleInterop
+    'unicorn/import-style': 'off',
+    // we're a CJS project
+    'unicorn/prefer-module': 'off',
+
+    // enforced by `@typescript-eslint/no-this-alias` already
+    'unicorn/no-this-assignment': 'off',
+
+    // Not an issue with TypeScript
+    'unicorn/no-array-callback-reference': 'off',
+
+    // reduce is fine
+    'unicorn/no-array-reduce': 'off',
+
+    // this is very aggressive (600+ files changed). might make sense to apply bit by bit over time?
+    'unicorn/prevent-abbreviations': 'off',
+
+    // nah
+    'unicorn/consistent-destructuring': 'off',
+    'unicorn/no-lonely-if': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/no-process-exit': 'off',
+    'unicorn/no-useless-undefined': 'off',
+    'unicorn/prefer-event-target': 'off',
+    'unicorn/prefer-switch': 'off',
+    'unicorn/prefer-ternary': 'off',
+    'unicorn/prefer-top-level-await': 'off',
+    'unicorn/switch-case-braces': 'off',
+
+    // TODO: decide whether or not we want these
+    'unicorn/filename-case': 'off',
+    'unicorn/prefer-reflect-apply': 'off',
+
+    // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
+    'unicorn/prefer-export-from': 'off',
+    // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
+    'unicorn/prefer-node-protocol': 'off',
   },
   settings: {
     'import/ignore': ['react-native'],

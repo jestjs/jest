@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x, 21.x]
     name: Node v${{ matrix.node-version }}
     runs-on: ${{ inputs.os }}
 
@@ -24,7 +24,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
@@ -36,7 +36,12 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
 
   test-jasmine:
     name: Node LTS using jest-jasmine2
@@ -47,7 +52,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Use Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -59,4 +64,9 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          command: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}

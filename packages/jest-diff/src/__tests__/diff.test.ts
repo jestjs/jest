@@ -78,8 +78,10 @@ describe('no visual difference', () => {
       [1, 2],
     ],
     [11, 11],
+    /* eslint-disable unicorn/prefer-number-properties */
     [NaN, NaN],
     [Number.NaN, NaN],
+    /* eslint-enable */
     [() => {}, () => {}],
     [null, null],
     [undefined, undefined],

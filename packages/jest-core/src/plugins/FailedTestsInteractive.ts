@@ -9,9 +9,9 @@ import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
-  JestHookSubscriber,
-  UpdateConfigCallback,
-  UsageData,
+  type JestHookSubscriber,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import FailedTestsInteractiveMode from '../FailedTestsInteractiveMode';
 
@@ -58,7 +58,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: failure ? `^${failure.fullName}$` : '',
-          testPathPattern: failure?.path || '',
+          testPathPatterns: failure ? [failure.path] : [],
         });
 
         if (!this._manager.isActive()) {

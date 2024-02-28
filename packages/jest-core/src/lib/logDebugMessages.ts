@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 const VERSION = require('../../package.json').version;
 
@@ -12,7 +13,7 @@ const VERSION = require('../../package.json').version;
 export default function logDebugMessages(
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig> | Config.ProjectConfig,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
 ): void {
   const output = {
     configs,

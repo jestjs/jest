@@ -20,7 +20,7 @@ test('multiple configs will throw error', () => {
   expect(exitCode).toBe(1);
   expect(stderr).toContain(MULTIPLE_CONFIGS_WARNING_TEXT);
 
-  const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
+  const cleanStdErr = stderr.replaceAll(new RegExp(rootDir, 'g'), '<rootDir>');
   expect(cleanStdErr).toMatchSnapshot();
 });
 

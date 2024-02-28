@@ -192,13 +192,13 @@ export default class Status {
 
     let height = 0;
 
-    for (let i = 0; i < content.length; i++) {
-      if (content[i] === '\n') {
+    for (const char of content) {
+      if (char === '\n') {
         height++;
       }
     }
 
-    const clear = '\r\x1B[K\r\x1B[1A'.repeat(height);
+    const clear = '\r\u001B[K\r\u001B[1A'.repeat(height);
     return (this._cache = {clear, content});
   }
 

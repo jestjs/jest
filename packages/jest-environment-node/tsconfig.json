@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["es2021", "ESNext.Disposable"]
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],

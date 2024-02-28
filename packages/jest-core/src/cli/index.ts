@@ -6,6 +6,7 @@
  */
 
 import {performance} from 'perf_hooks';
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -142,9 +143,11 @@ export async function runCLI(
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
 ) => {
-  const hasteMapInstances = Array(configs.length);
+  const hasteMapInstances = Array.from<IHasteMap>({
+    length: configs.length,
+  });
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
@@ -171,7 +174,7 @@ const _run10000 = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   onComplete: OnCompleteCallback,
 ) => {
   // Queries to hg/git can take a while, so we need to start the process
@@ -196,8 +199,8 @@ const _run10000 = async (
       filterSetupPromise = (async () => {
         try {
           await rawFilter.setup();
-        } catch (err) {
-          return err;
+        } catch (error) {
+          return error;
         }
         return undefined;
       })();
@@ -247,7 +250,7 @@ const runWatch = async (
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   hasteMapInstances: Array<IHasteMap>,
   filter?: Filter,
 ) => {
@@ -282,7 +285,7 @@ const runWatch = async (
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
   contexts: Array<TestContext>,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,

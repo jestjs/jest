@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
-import runJest, {RunJestResult} from '../runJest';
+import runJest, {type RunJestResult} from '../runJest';
 
 skipSuiteOnJasmine();
 

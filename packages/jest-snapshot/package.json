@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "29.7.0",
+  "version": "30.0.0-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -12,6 +12,8 @@
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
@@ -37,7 +39,7 @@
     "natural-compare": "^1.4.0",
     "pretty-format": "workspace:*",
     "semver": "^7.5.3",
-    "synckit": "^0.8.5"
+    "synckit": "^0.9.0"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.7.2",

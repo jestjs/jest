@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function clearLine(stream: NodeJS.WriteStream): void {
+import type {WriteStream} from 'tty';
+
+export default function clearLine(stream: WriteStream): void {
   if (stream.isTTY) {
-    stream.write('\x1b[999D\x1b[K');
+    stream.write('\u001B[999D\u001B[K');
   }
 }

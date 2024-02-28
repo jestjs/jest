@@ -9,7 +9,11 @@
 
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
+import {
+  BaseWatchPlugin,
+  type JestHookSubscriber,
+  type UsageData,
+} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
@@ -63,19 +67,19 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     updateConfigAndRun: Function,
   ): Promise<void> {
     if (this._failedSnapshotTestAssertions.length > 0) {
-      return new Promise(res => {
+      return new Promise(resolve => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,
           (assertion, shouldUpdateSnapshot) => {
             updateConfigAndRun({
               mode: 'watch',
               testNamePattern: assertion ? `^${assertion.fullName}$` : '',
-              testPathPattern: assertion ? assertion.path : '',
+              testPathPatterns: assertion ? [assertion.path] : [],
 
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
             });
             if (!this._snapshotInteractiveMode.isActive()) {
-              res();
+              resolve();
             }
           },
         );

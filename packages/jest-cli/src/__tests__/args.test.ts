@@ -65,7 +65,7 @@ describe('check', () => {
     expect(() => check(argv({maxWorkers: '50%'}))).not.toThrow();
   });
 
-  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.slice(1)))(
     'allows using "%s" file for --config option',
     ext => {
       expect(() => check(argv({config: `jest.config.${ext}`}))).not.toThrow();
@@ -89,13 +89,13 @@ describe('check', () => {
 
   it('raises an exception if config is not a valid JSON string', () => {
     expect(() => check(argv({config: 'x:1'}))).toThrow(
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json',
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .cts, .json',
     );
   });
 
   it('raises an exception if config is not a supported file type', () => {
     const message =
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json';
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .cts, .json';
 
     expect(() => check(argv({config: 'jest.configjs'}))).toThrow(message);
     expect(() => check(argv({config: 'jest.config.exe'}))).toThrow(message);

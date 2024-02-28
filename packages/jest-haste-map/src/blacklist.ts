@@ -15,7 +15,7 @@
 //
 // Feel free to add any extensions that cannot be a Haste module.
 
-const extensions: Set<string> = new Set([
+const extensions = new Set<string>([
   // JSONs are never haste modules, except for "package.json", which is handled.
   '.json',
 

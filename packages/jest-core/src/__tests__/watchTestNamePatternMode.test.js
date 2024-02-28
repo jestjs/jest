@@ -31,7 +31,7 @@ jest.doMock(
   '../runJest',
   () =>
     function () {
-      const args = Array.from(arguments);
+      const args = [...arguments];
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
@@ -83,6 +83,8 @@ jest.doMock(
 const watch = require('../watch').default;
 
 const globalConfig = {
+  rootDir: '',
+  testPathPatterns: [],
   watch: true,
 };
 

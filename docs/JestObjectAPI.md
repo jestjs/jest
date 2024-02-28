@@ -710,6 +710,64 @@ test('plays video', () => {
 });
 ```
 
+#### Spied methods and the `using` keyword
+
+If your codebase is set up to transpile the ["explicit resource management"](https://github.com/tc39/proposal-explicit-resource-management) (e.g. if you are using TypeScript >= 5.2 or the `@babel/plugin-proposal-explicit-resource-management` plugin), you can use `spyOn` in combination with the `using` keyword:
+
+```js
+test('logs a warning', () => {
+  using spy = jest.spyOn(console.warn);
+  doSomeThingWarnWorthy();
+  expect(spy).toHaveBeenCalled();
+});
+```
+
+That code is semantically equal to
+
+```js
+test('logs a warning', () => {
+  let spy;
+  try {
+    spy = jest.spyOn(console.warn);
+    doSomeThingWarnWorthy();
+    expect(spy).toHaveBeenCalled();
+  } finally {
+    spy.mockRestore();
+  }
+});
+```
+
+That way, your spy will automatically be restored to the original value once the current code block is left.
+
+You can even go a step further and use a code block to restrict your mock to only a part of your test without hurting readability.
+
+```js
+test('testing something', () => {
+  {
+    using spy = jest.spyOn(console.warn);
+    setupStepThatWillLogAWarning();
+  }
+  // here, console.warn is already restored to the original value
+  // your test can now continue normally
+});
+```
+
+:::note
+
+If you get a warning that `Symbol.dispose` does not exist, you might need to polyfill that, e.g. with this code:
+
+```js
+if (!Symbol.dispose) {
+  Object.defineProperty(Symbol, 'dispose', {
+    get() {
+      return Symbol.for('nodejs.dispose');
+    },
+  });
+}
+```
+
+:::
+
 ### `jest.spyOn(object, methodName, accessType?)`
 
 Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of `accessType` that can be either `'get'` or `'set'`, which proves to be useful when you want to spy on a getter or a setter, respectively.
@@ -753,7 +811,7 @@ afterEach(() => {
 
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
-  const isPlaying = video.play();
+  const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
@@ -839,7 +897,7 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
   now?: number | Date;
   /**
    * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
@@ -989,6 +1047,16 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
+### `jest.advanceTimersToNextFrame()`
+
+Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`. `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.clearAllTimers()`
 
 Removes any pending timers from the timer system.
@@ -1055,6 +1123,16 @@ If `logErrorsBeforeRetry` option is enabled, error(s) that caused the test to fa
 
 ```js
 jest.retryTimes(3, {logErrorsBeforeRetry: true});
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+`waitBeforeRetry` is the number of milliseconds to wait before retrying.
+
+```js
+jest.retryTimes(3, {waitBeforeRetry: 1000});
 
 test('will fail', () => {
   expect(true).toBe(false);

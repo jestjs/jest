@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 
-const BULLET: string = chalk.bold('\u25cf ');
+const BULLET: string = chalk.bold('\u25CF ');
 const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
   https://jestjs.io/docs/configuration
 `;
@@ -19,13 +19,13 @@ const createValidationError = (message: string) =>
   new ValidationError(`${BULLET}Validation Error`, message, DOCUMENTATION_NOTE);
 
 const replaceRootDirInPath = (rootDir: string, filePath: string): string => {
-  if (!/^<rootDir>/.test(filePath)) {
+  if (!filePath.startsWith('<rootDir>')) {
     return filePath;
   }
 
   return path.resolve(
     rootDir,
-    path.normalize(`./${filePath.substr('<rootDir>'.length)}`),
+    path.normalize(`./${filePath.slice('<rootDir>'.length)}`),
   );
 };
 

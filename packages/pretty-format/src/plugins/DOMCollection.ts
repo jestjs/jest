@@ -10,11 +10,11 @@ import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const SPACE = ' ';
 
-const OBJECT_NAMES = ['DOMStringMap', 'NamedNodeMap'];
+const OBJECT_NAMES = new Set(['DOMStringMap', 'NamedNodeMap']);
 const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 
 const testName = (name: any) =>
-  OBJECT_NAMES.includes(name) || ARRAY_REGEXP.test(name);
+  OBJECT_NAMES.has(name) || ARRAY_REGEXP.test(name);
 
 export const test: NewPlugin['test'] = (val: object) =>
   val &&
@@ -40,10 +40,10 @@ export const serialize: NewPlugin['serialize'] = (
 
   return (
     (config.min ? '' : name + SPACE) +
-    (OBJECT_NAMES.includes(name)
+    (OBJECT_NAMES.has(name)
       ? `{${printObjectProperties(
           isNamedNodeMap(collection)
-            ? Array.from(collection).reduce<Record<string, string>>(
+            ? [...collection].reduce<Record<string, string>>(
                 (props, attribute) => {
                   props[attribute.name] = attribute.value;
                   return props;
@@ -58,7 +58,7 @@ export const serialize: NewPlugin['serialize'] = (
           printer,
         )}}`
       : `[${printListItems(
-          Array.from(collection),
+          [...collection],
           config,
           indentation,
           depth,

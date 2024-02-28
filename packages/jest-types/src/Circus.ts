@@ -203,7 +203,13 @@ export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
   errorsDetailed: Array<MatcherResults | unknown>;
+  /**
+   * Whether [`test.failing()`](https://jestjs.io/docs/api#testfailingname-fn-timeout)
+   * was used.
+   */
+  failing?: boolean;
   invocations: number;
+  startedAt?: number | null;
   status: TestStatus;
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;

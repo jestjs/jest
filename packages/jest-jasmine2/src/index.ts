@@ -143,9 +143,9 @@ export default async function jasmine2(
   env.addReporter(reporter);
 
   runtime
-    .requireInternalModule<typeof import('./jestExpect')>(
-      require.resolve('./jestExpect.js'),
-    )
+    .requireInternalModule<
+      typeof import('./jestExpect')
+    >(require.resolve('./jestExpect.js'))
     .default({expand: globalConfig.expand});
 
   if (globalConfig.errorOnDeprecated) {
@@ -164,9 +164,9 @@ export default async function jasmine2(
   }
 
   const snapshotState: SnapshotState = await runtime
-    .requireInternalModule<typeof import('./setup_jest_globals')>(
-      require.resolve('./setup_jest_globals.js'),
-    )
+    .requireInternalModule<
+      typeof import('./setup_jest_globals')
+    >(require.resolve('./setup_jest_globals.js'))
     .default({
       config,
       globalConfig,
@@ -180,7 +180,10 @@ export default async function jasmine2(
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
 
@@ -227,7 +230,7 @@ const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 
   return results;
 };

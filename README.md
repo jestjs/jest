@@ -10,8 +10,8 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/facebook/jest/nodejs.yml?label=CI&logo=GitHub"></a>
-  <a href="https://codecov.io/github/facebook/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/facebook/jest/main.svg?maxAge=43200"></a>
+  <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/jestjs/jest/nodejs.yml?label=CI&logo=GitHub"></a>
+  <a href="https://codecov.io/github/jestjs/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/jestjs/jest/main.svg?maxAge=43200"></a>
 </p>
 <p align="center">
   <a href="https://gitpod.io/#https://github.com/jestjs/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
@@ -53,6 +53,7 @@
   - [Backers](#backers)
   - [Sponsors](#sponsors)
 - [License](#license)
+- [Copyright](#copyright)
 
 ## Getting Started
 
@@ -276,3 +277,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 Jest is [MIT licensed](./LICENSE).
+
+## Copyright
+
+Copyright Contributors to the Jest project.

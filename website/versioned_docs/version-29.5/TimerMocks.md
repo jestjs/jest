@@ -53,13 +53,13 @@ test('calls the callback after 1 second', () => {
   timerGame(callback);
 
   // At this point in time, the callback should not have been called yet
-  expect(callback).not.toBeCalled();
+  expect(callback).not.toHaveBeenCalled();
 
   // Fast-forward until all timers have been executed
   jest.runAllTimers();
 
   // Now our callback should have been called!
-  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
@@ -109,7 +109,7 @@ describe('infiniteTimerGame', () => {
     jest.runOnlyPendingTimers();
 
     // At this point, our 1-second timer should have fired its callback
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
 
     // And it should have created a new timer to start the game over in
     // 10 seconds
@@ -154,13 +154,13 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
   timerGame(callback);
 
   // At this point in time, the callback should not have been called yet
-  expect(callback).not.toBeCalled();
+  expect(callback).not.toHaveBeenCalled();
 
   // Fast-forward until all timers have been executed
   jest.advanceTimersByTime(1000);
 
   // Now our callback should have been called!
-  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```

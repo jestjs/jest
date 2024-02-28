@@ -55,7 +55,7 @@ jest.doMock(
   '../runJest',
   () =>
     function () {
-      const args = Array.from(arguments);
+      const args = [...arguments];
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
@@ -68,9 +68,13 @@ jest.doMock(
 
 const watch = require('../watch').default;
 
-const nextTick = () => new Promise(res => process.nextTick(res));
+const nextTick = () => new Promise(resolve => process.nextTick(resolve));
 
-const globalConfig = {watch: true};
+const globalConfig = {
+  rootDir: '',
+  testPathPatterns: [],
+  watch: true,
+};
 
 afterEach(runJestMock.mockReset);
 

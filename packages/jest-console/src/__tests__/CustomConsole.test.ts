@@ -6,6 +6,7 @@
  */
 
 import {Writable} from 'stream';
+import type {WriteStream} from 'tty';
 import chalk = require('chalk');
 import CustomConsole from '../CustomConsole';
 
@@ -23,14 +24,14 @@ describe('CustomConsole', () => {
         _stdout += chunk.toString();
         callback();
       },
-    }) as NodeJS.WriteStream;
+    }) as WriteStream;
 
     const stderr = new Writable({
       write(chunk: string, _encoding, callback) {
         _stderr += chunk.toString();
         callback();
       },
-    }) as NodeJS.WriteStream;
+    }) as WriteStream;
 
     _console = new CustomConsole(stdout, stderr);
   });

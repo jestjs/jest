@@ -8,7 +8,9 @@
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
-import type {SnapshotFormat} from '@jest/schemas';
+import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
+
+export type {InitialOptions} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -58,7 +60,7 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers.
+   * Sets current system time to be used by fake timers, in milliseconds.
    *
    * @defaultValue
    * The default is `Date.now()`.
@@ -204,6 +206,7 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -222,116 +225,6 @@ export type InitialProjectOptions = Pick<
   InitialOptions & {cwd?: string},
   keyof ProjectConfig
 >;
-
-export type InitialOptions = Partial<{
-  automock: boolean;
-  bail: boolean | number;
-  cache: boolean;
-  cacheDirectory: string;
-  ci: boolean;
-  clearMocks: boolean;
-  changedFilesWithAncestor: boolean;
-  changedSince: string;
-  collectCoverage: boolean;
-  collectCoverageFrom: Array<string>;
-  coverageDirectory: string;
-  coveragePathIgnorePatterns: Array<string>;
-  coverageProvider: CoverageProvider;
-  coverageReporters: CoverageReporters;
-  coverageThreshold: CoverageThreshold;
-  dependencyExtractor: string;
-  detectLeaks: boolean;
-  detectOpenHandles: boolean;
-  displayName: string | DisplayName;
-  expand: boolean;
-  extensionsToTreatAsEsm: Array<string>;
-  fakeTimers: FakeTimers;
-  filter: string;
-  findRelatedTests: boolean;
-  forceCoverageMatch: Array<string>;
-  forceExit: boolean;
-  json: boolean;
-  globals: ConfigGlobals;
-  globalSetup: string | null | undefined;
-  globalTeardown: string | null | undefined;
-  haste: HasteConfig;
-  id: string;
-  injectGlobals: boolean;
-  reporters: Array<string | ReporterConfig>;
-  logHeapUsage: boolean;
-  lastCommit: boolean;
-  listTests: boolean;
-  maxConcurrency: number;
-  maxWorkers: number | string;
-  moduleDirectories: Array<string>;
-  moduleFileExtensions: Array<string>;
-  moduleNameMapper: {
-    [key: string]: string | Array<string>;
-  };
-  modulePathIgnorePatterns: Array<string>;
-  modulePaths: Array<string>;
-  noStackTrace: boolean;
-  notify: boolean;
-  notifyMode: string;
-  onlyChanged: boolean;
-  onlyFailures: boolean;
-  openHandlesTimeout: number;
-  outputFile: string;
-  passWithNoTests: boolean;
-  preset: string | null | undefined;
-  prettierPath: string | null | undefined;
-  projects: Array<string | InitialProjectOptions>;
-  randomize: boolean;
-  replname: string | null | undefined;
-  resetMocks: boolean;
-  resetModules: boolean;
-  resolver: string | null | undefined;
-  restoreMocks: boolean;
-  rootDir: string;
-  roots: Array<string>;
-  runner: string;
-  runTestsByPath: boolean;
-  runtime: string;
-  sandboxInjectedGlobals: Array<string>;
-  setupFiles: Array<string>;
-  setupFilesAfterEnv: Array<string>;
-  showSeed: boolean;
-  silent: boolean;
-  skipFilter: boolean;
-  skipNodeResolution: boolean;
-  slowTestThreshold: number;
-  snapshotResolver: string;
-  snapshotSerializers: Array<string>;
-  snapshotFormat: SnapshotFormat;
-  errorOnDeprecated: boolean;
-  testEnvironment: string;
-  testEnvironmentOptions: Record<string, unknown>;
-  testFailureExitCode: string | number;
-  testLocationInResults: boolean;
-  testMatch: Array<string>;
-  testNamePattern: string;
-  testPathIgnorePatterns: Array<string>;
-  testRegex: string | Array<string>;
-  testResultsProcessor: string;
-  testRunner: string;
-  testSequencer: string;
-  testTimeout: number;
-  transform: {
-    [regex: string]: string | TransformerConfig;
-  };
-  transformIgnorePatterns: Array<string>;
-  watchPathIgnorePatterns: Array<string>;
-  unmockedModulePathPatterns: Array<string>;
-  updateSnapshot: boolean;
-  useStderr: boolean;
-  verbose?: boolean;
-  watch: boolean;
-  watchAll: boolean;
-  watchman: boolean;
-  watchPlugins: Array<string | [string, Record<string, unknown>]>;
-  workerIdleMemoryLimit: number | string;
-  workerThreads: boolean;
-}>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
@@ -412,13 +305,14 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPattern: string;
+  testPathPatterns: Array<string>;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -439,6 +333,7 @@ export type ProjectConfig = {
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
   detectLeaks: boolean;
@@ -463,6 +358,7 @@ export type ProjectConfig = {
   openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
+  reporters: Array<string | ReporterConfig>;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;
@@ -487,11 +383,18 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
+  testTimeout: number;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
   workerIdleMemoryLimit?: number;
+};
+
+export type SetupAfterEnvPerfStats = {
+  setupAfterEnvStart: number;
+  setupAfterEnvEnd: number;
 };
 
 export type Argv = Arguments<
@@ -569,7 +472,7 @@ export type Argv = Arguments<
     testMatch: Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
-    testPathPattern: Array<string>;
+    testPathPatterns: Array<string>;
     testRegex: string | Array<string>;
     testResultsProcessor: string;
     testRunner: string;

@@ -41,8 +41,10 @@ for (const {packageDir, pkg} of packagesWithTs) {
     `\`main\` and \`types\` field of ${pkg.name} does not match`,
   );
 
-  const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
-    .concat(Object.keys(pkg.devDependencies || {}))
+  const jestDependenciesOfPackage = [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.devDependencies || {}),
+  ]
     .filter(dep => {
       if (!workspacesWithTs.has(dep)) {
         return false;
@@ -164,11 +166,11 @@ try {
   console.log(
     chalk.inverse.green(' Successfully built TypeScript definition files '),
   );
-} catch (e) {
+} catch (error) {
   console.error(
     chalk.inverse.red(' Unable to build TypeScript definition files '),
   );
-  throw e;
+  throw error;
 }
 
 console.log(chalk.inverse(' Validating TypeScript definition files '));
@@ -247,12 +249,12 @@ try {
       }),
     ),
   );
-} catch (e) {
+} catch (error) {
   console.error(
     chalk.inverse.red(' Unable to validate TypeScript definition files '),
   );
 
-  throw e;
+  throw error;
 }
 
 console.log(

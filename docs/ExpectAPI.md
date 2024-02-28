@@ -144,9 +144,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 ### `.toHaveBeenCalled()`
 
-Also under the alias: `.toBeCalled()`
-
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
+Use `.toHaveBeenCalled` to ensure that a mock function was called.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -174,8 +172,6 @@ describe('drinkAll', () => {
 
 ### `.toHaveBeenCalledTimes(number)`
 
-Also under the alias: `.toBeCalledTimes(number)`
-
 Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact number of times.
 
 For example, let's say you have a `drinkEach(drink, Array<flavor>)` function that takes a `drink` function and applies it to array of passed beverages. You might want to check that drink function was called exact number of times. You can do that with this test suite:
@@ -189,8 +185,6 @@ test('drinkEach drinks each drink', () => {
 ```
 
 ### `.toHaveBeenCalledWith(arg1, arg2, ...)`
-
-Also under the alias: `.toBeCalledWith()`
 
 Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
@@ -208,8 +202,6 @@ test('registration applies correctly to orange La Croix', () => {
 
 ### `.toHaveBeenLastCalledWith(arg1, arg2, ...)`
 
-Also under the alias: `.lastCalledWith(arg1, arg2, ...)`
-
 If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
 
 ```js
@@ -221,8 +213,6 @@ test('applying to all flavors does mango last', () => {
 ```
 
 ### `.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)`
-
-Also under the alias: `.nthCalledWith(nthCall, arg1, arg2, ...)`
 
 If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what arguments it was nth called with. For example, let's say you have a `drinkEach(drink, Array<flavor>)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the first flavor it operates on is `'lemon'` and the second one is `'octopus'`. You can write:
 
@@ -243,8 +233,6 @@ The nth argument must be positive integer starting from 1.
 
 ### `.toHaveReturned()`
 
-Also under the alias: `.toReturn()`
-
 If you have a mock function, you can use `.toHaveReturned` to test that the mock function successfully returned (i.e., did not throw an error) at least one time. For example, let's say you have a mock `drink` that returns `true`. You can write:
 
 ```js
@@ -258,8 +246,6 @@ test('drinks returns', () => {
 ```
 
 ### `.toHaveReturnedTimes(number)`
-
-Also under the alias: `.toReturnTimes(number)`
 
 Use `.toHaveReturnedTimes` to ensure that a mock function returned successfully (i.e., did not throw an error) an exact number of times. Any calls to the mock function that throw an error are not counted toward the number of times the function returned.
 
@@ -278,8 +264,6 @@ test('drink returns twice', () => {
 
 ### `.toHaveReturnedWith(value)`
 
-Also under the alias: `.toReturnWith(value)`
-
 Use `.toHaveReturnedWith` to ensure that a mock function returned a specific value.
 
 For example, let's say you have a mock `drink` that returns the name of the beverage that was consumed. You can write:
@@ -296,8 +280,6 @@ test('drink returns La Croix', () => {
 ```
 
 ### `.toHaveLastReturnedWith(value)`
-
-Also under the alias: `.lastReturnedWith(value)`
 
 Use `.toHaveLastReturnedWith` to test the specific value that a mock function last returned. If the last call to the mock function threw an error, then this matcher will fail no matter what value you provided as the expected return value.
 
@@ -317,8 +299,6 @@ test('drink returns La Croix (Orange) last', () => {
 ```
 
 ### `.toHaveNthReturnedWith(nthCall, value)`
-
-Also under the alias: `.nthReturnedWith(nthCall, value)`
 
 Use `.toHaveNthReturnedWith` to test the specific value that a mock function returned for the nth call. If the nth call to the mock function threw an error, then this matcher will fail no matter what value you provided as the expected return value.
 
@@ -782,8 +762,6 @@ describe('the La Croix cans on my desk', () => {
 
 ### `.toThrow(error?)`
 
-Also under the alias: `.toThrowError(error?)`
-
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
 ```js
@@ -888,7 +866,7 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `expect.anything()`
 
-`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
+`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
 
 ```js
 test('map calls its argument with a non-null argument', () => {
@@ -900,7 +878,7 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
 class Cat {}
@@ -931,7 +909,7 @@ test('randocall calls its callback with a number', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match a property in `objectContaining` or `toMatchObject`
 
 ```js
@@ -1063,7 +1041,7 @@ describe('not.stringContaining', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match an element in `arrayContaining`
 - to match a property in `objectContaining` or `toMatchObject`
 
@@ -1364,7 +1342,7 @@ function toBeWithinRange(actual, floor, ceiling) {
     typeof floor !== 'number' ||
     typeof ceiling !== 'number'
   ) {
-    throw new Error('These must be of type number!');
+    throw new TypeError('These must be of type number!');
   }
 
   const pass = actual >= floor && actual <= ceiling;
@@ -1439,7 +1417,7 @@ const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
       typeof floor !== 'number' ||
       typeof ceiling !== 'number'
     ) {
-      throw new Error('These must be of type number!');
+      throw new TypeError('These must be of type number!');
     }
 
     const pass = actual >= floor && actual <= ceiling;
@@ -1664,7 +1642,7 @@ expect.extend({
   toMatchTrimmedSnapshot(received, length) {
     return toMatchSnapshot.call(
       this,
-      received.substring(0, length),
+      received.slice(0, length),
       'toMatchTrimmedSnapshot',
     );
   },
@@ -1688,7 +1666,7 @@ const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedInlineSnapshot(received, ...rest) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
+    return toMatchInlineSnapshot.call(this, received.slice(0, 10), ...rest);
   },
 });
 

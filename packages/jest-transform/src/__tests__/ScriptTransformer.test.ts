@@ -76,16 +76,14 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, "'");
-
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
         code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
-            filename: '${escapeStrings(filename)}',
-            script: '${escapeStrings(content)}',
-            config: '${escapeStrings(JSON.stringify(config))}',
+            filename: '${filename}',
+            script: '${content}',
+            config: '${JSON.stringify(config)}',
           };
         `,
       }),
@@ -99,17 +97,15 @@ jest.mock(
 jest.mock(
   'test_async_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, "'");
-
     const transformer: AsyncTransformer = {
       getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
       processAsync: (content, filename, config) =>
         Promise.resolve({
           code: (require('dedent') as typeof import('dedent').default)`
           const TRANSFORMED = {
-            filename: '${escapeStrings(filename)}',
-            script: '${escapeStrings(content)}',
-            config: '${escapeStrings(JSON.stringify(config))}',
+            filename: '${filename}',
+            script: '${content}',
+            config: '${JSON.stringify(config)}',
           };
         `,
         }),
@@ -481,7 +477,7 @@ describe('ScriptTransformer', () => {
       TransformedSource,
       string,
     ]): Promise<any> => {
-      const processorName = `passthrough-preprocessor${filePath.replace(
+      const processorName = `passthrough-preprocessor${filePath.replaceAll(
         /\.|\//g,
         '-',
       )}`;
@@ -2066,7 +2062,7 @@ describe('ScriptTransformer', () => {
     });
 
     // @ts-expect-error - private property
-    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
+    expect([...scriptTransformer._transformCache.entries()]).toEqual([
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });

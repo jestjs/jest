@@ -12,20 +12,20 @@ import {
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
-  BaseReporter as JestReporter,
+  type BaseReporter as JestReporter,
   NotifyReporter,
-  Reporter,
-  ReporterContext,
+  type Reporter,
+  type ReporterContext,
   SummaryReporter,
-  SummaryReporterOptions,
+  type SummaryReporterOptions,
   VerboseReporter,
 } from '@jest/reporters';
 import {
-  AggregatedResult,
-  SerializableError,
-  Test,
-  TestContext,
-  TestResult,
+  type AggregatedResult,
+  type SerializableError,
+  type Test,
+  type TestContext,
+  type TestResult,
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
@@ -114,7 +114,7 @@ class TestScheduler {
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
-        return Promise.resolve();
+        return;
       }
 
       if (testResult.testResults.length === 0) {
@@ -174,7 +174,7 @@ class TestScheduler {
 
     const updateSnapshotState = async () => {
       const contextsWithSnapshotResolvers = await Promise.all(
-        Array.from(testContexts).map(
+        [...testContexts].map(
           async context =>
             [context, await buildSnapshotResolver(context.config)] as const,
         ),
@@ -189,9 +189,10 @@ class TestScheduler {
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-        aggregatedResults.snapshot.filesRemovedList = (
-          aggregatedResults.snapshot.filesRemovedList || []
-        ).concat(status.filesRemovedList);
+        aggregatedResults.snapshot.filesRemovedList = [
+          ...(aggregatedResults.snapshot.filesRemovedList || []),
+          ...status.filesRemovedList,
+        ];
       }
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
@@ -213,7 +214,7 @@ class TestScheduler {
 
     try {
       await Promise.all(
-        Array.from(testContexts).map(async context => {
+        [...testContexts].map(async context => {
           const {config} = context;
           if (!testRunners[config.runner]) {
             const transformer = await createScriptTransformer(config);
@@ -386,9 +387,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor = await requireOrImportModule(
-        reporter,
-      );
+      const Reporter: ReporterConstructor =
+        await requireOrImportModule(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),

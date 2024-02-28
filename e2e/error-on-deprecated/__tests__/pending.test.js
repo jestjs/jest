@@ -7,6 +7,7 @@
 'use strict';
 
 test('pending', () => {
+  // eslint-disable-next-line no-constant-condition
   if (true) {
     pending('This test is pending.');
   }

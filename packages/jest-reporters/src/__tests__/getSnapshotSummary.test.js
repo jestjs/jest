@@ -40,7 +40,7 @@ test('creates a snapshot summary', () => {
   expect(
     getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
       .join('\n')
-      .replace(/\\/g, '/'),
+      .replaceAll('\\', '/'),
   ).toMatchSnapshot();
 });
 
@@ -67,7 +67,7 @@ test('creates a snapshot summary after an update', () => {
   expect(
     getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
       .join('\n')
-      .replace(/\\/g, '/'),
+      .replaceAll('\\', '/'),
   ).toMatchSnapshot();
 });
 
@@ -98,7 +98,7 @@ it('creates a snapshot summary with multiple snapshot being written/updated', ()
   expect(
     getSnapshotSummary(snapshots, globalConfig, UPDATE_COMMAND)
       .join('\n')
-      .replace(/\\/g, '/'),
+      .replaceAll('\\', '/'),
   ).toMatchSnapshot();
 });
 

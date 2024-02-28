@@ -20,6 +20,7 @@ async function leakMemory() {
   );
 
   let i = Number.MAX_SAFE_INTEGER / 2;
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     i++;
 

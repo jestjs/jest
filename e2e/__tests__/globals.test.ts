@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,
@@ -20,7 +21,7 @@ const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2).*\n/g, '');
+  return rest.replaceAll(/.*(jest-jasmine2).*\n/g, '');
 }
 
 beforeEach(() => {
@@ -294,4 +295,24 @@ test('function as it() descriptor', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
+});
+
+onNodeVersions('^18.18.0 || >=20.4.0', () => {
+  test("Symbol's `dispose` are available", () => {
+    const filename = 'symbolDispose.test.js';
+    const content = `
+    it('test', () => {
+      expect(Symbol.dispose).toBeDefined();
+      expect(Symbol.asyncDispose).toBeDefined();
+    });
+  `;
+
+    writeFiles(TEST_DIR, {[filename]: content});
+    const {stderr, exitCode} = runJest(DIR);
+
+    const {summary, rest} = extractSummary(stderr);
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+    expect(exitCode).toBe(0);
+  });
 });
