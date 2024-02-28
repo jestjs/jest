@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.23.3",
     "@babel/preset-flow": "^7.0.0"
   },
   "jest": {

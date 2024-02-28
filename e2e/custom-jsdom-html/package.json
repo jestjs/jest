@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.2"
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3"
   },
   "jest": {
     "testEnvironment": "jsdom",

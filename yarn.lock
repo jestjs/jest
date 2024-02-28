@@ -311,7 +311,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.19.6, @babel/core@npm:^7.20.0, @babel/core@npm:^7.23.3":
+"@babel/core@npm:^7.11.1, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.19.6, @babel/core@npm:^7.20.0, @babel/core@npm:^7.23.3":
   version: 7.23.7
   resolution: "@babel/core@npm:7.23.7"
   dependencies:
@@ -1320,7 +1320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^7.0.0, @babel/plugin-transform-modules-commonjs@npm:^7.1.0, @babel/plugin-transform-modules-commonjs@npm:^7.13.8, @babel/plugin-transform-modules-commonjs@npm:^7.23.3":
+"@babel/plugin-transform-modules-commonjs@npm:^7.0.0, @babel/plugin-transform-modules-commonjs@npm:^7.13.8, @babel/plugin-transform-modules-commonjs@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/plugin-transform-modules-commonjs@npm:7.23.3"
   dependencies:
@@ -1744,7 +1744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.1.0, @babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.19.4, @babel/preset-env@npm:^7.22.9, @babel/preset-env@npm:^7.23.3":
+"@babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.19.4, @babel/preset-env@npm:^7.22.9, @babel/preset-env@npm:^7.23.3":
   version: 7.23.8
   resolution: "@babel/preset-env@npm:7.23.8"
   dependencies:
@@ -1860,7 +1860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.18.6, @babel/preset-react@npm:^7.22.5":
+"@babel/preset-react@npm:^7.18.6, @babel/preset-react@npm:^7.22.5, @babel/preset-react@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/preset-react@npm:7.23.3"
   dependencies:
@@ -1876,7 +1876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.0.0, @babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.18.6, @babel/preset-typescript@npm:^7.22.5":
+"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.18.6, @babel/preset-typescript@npm:^7.22.5, @babel/preset-typescript@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/preset-typescript@npm:7.23.3"
   dependencies:
@@ -1891,7 +1891,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.0.0, @babel/register@npm:^7.13.16":
+"@babel/register@npm:^7.13.16, @babel/register@npm:^7.22.15":
   version: 7.23.7
   resolution: "@babel/register@npm:7.23.7"
   dependencies:
@@ -2999,12 +2999,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/monorepo@workspace:."
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/plugin-transform-modules-commonjs": ^7.1.0
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.12.1
-    "@babel/preset-typescript": ^7.0.0
-    "@babel/register": ^7.0.0
+    "@babel/core": ^7.23.3
+    "@babel/plugin-transform-modules-commonjs": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
+    "@babel/preset-typescript": ^7.23.3
+    "@babel/register": ^7.22.15
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
@@ -3013,9 +3013,9 @@ __metadata:
     "@microsoft/api-extractor": ^7.35.0
     "@tsconfig/node16": ^16.1.0
     "@tsd/typescript": ^5.0.4
-    "@types/babel__core": ^7.1.14
-    "@types/babel__generator": ^7.0.0
-    "@types/babel__template": ^7.0.2
+    "@types/babel__core": ^7.20.4
+    "@types/babel__generator": ^7.6.7
+    "@types/babel__template": ^7.4.4
     "@types/node": ^16.10.0
     "@types/which": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^6.6.0
@@ -3230,11 +3230,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@jridgewell/trace-mapping": ^0.3.18
-    "@types/babel__core": ^7.1.14
+    "@types/babel__core": ^7.20.4
     "@types/convert-source-map": ^2.0.0
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -4940,7 +4940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:^7.20.4":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
   dependencies:
@@ -4953,7 +4953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__generator@npm:*, @types/babel__generator@npm:^7.0.0":
+"@types/babel__generator@npm:*, @types/babel__generator@npm:^7.6.7":
   version: 7.6.8
   resolution: "@types/babel__generator@npm:7.6.8"
   dependencies:
@@ -4962,7 +4962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__template@npm:*, @types/babel__template@npm:^7.0.2":
+"@types/babel__template@npm:*, @types/babel__template@npm:^7.4.4":
   version: 7.4.4
   resolution: "@types/babel__template@npm:7.4.4"
   dependencies:
@@ -6279,10 +6279,10 @@ __metadata:
     "@angular/forms": ^12.0.0
     "@angular/platform-browser": ^12.0.0
     "@angular/platform-browser-dynamic": ^12.0.0
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@babel/plugin-proposal-decorators": "*"
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-typescript": ^7.0.0
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-typescript": ^7.23.3
     "@jest/globals": "workspace:*"
     babel-jest: "workspace:*"
     babel-plugin-transform-typescript-metadata: "*"
@@ -6675,10 +6675,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "babel-jest@workspace:packages/babel-jest"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
-    "@types/babel__core": ^7.1.14
+    "@types/babel__core": ^7.20.4
     "@types/graceful-fs": ^4.1.3
     babel-plugin-istanbul: ^6.1.1
     babel-preset-jest: "workspace:*"
@@ -6686,7 +6686,7 @@ __metadata:
     graceful-fs: ^4.2.9
     slash: ^3.0.0
   peerDependencies:
-    "@babel/core": ^7.11.0
+    "@babel/core": ^7.23.3
   languageName: unknown
   linkType: soft
 
@@ -6729,14 +6729,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "babel-plugin-jest-hoist@workspace:packages/babel-plugin-jest-hoist"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-react": ^7.12.1
-    "@babel/preset-typescript": ^7.0.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-react": ^7.23.3
+    "@babel/preset-typescript": ^7.23.3
     "@babel/template": ^7.3.3
     "@babel/types": ^7.3.3
     "@prettier/sync": ^0.3.0
-    "@types/babel__core": ^7.1.14
-    "@types/babel__template": ^7.0.2
+    "@types/babel__core": ^7.20.4
+    "@types/babel__template": ^7.4.4
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
     "@types/prettier": ^2.1.5
@@ -6843,7 +6843,7 @@ __metadata:
     babel-plugin-jest-hoist: "workspace:*"
     babel-preset-current-node-syntax: ^1.0.0
   peerDependencies:
-    "@babel/core": ^7.11.0
+    "@babel/core": ^7.23.3
   languageName: unknown
   linkType: soft
 
@@ -9809,8 +9809,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-async@workspace:examples/async"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
   languageName: unknown
@@ -9820,8 +9820,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-automatic-mocks@workspace:examples/automatic-mocks"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
   languageName: unknown
@@ -9831,9 +9831,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-expect-extend@workspace:examples/expect-extend"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-typescript": ^7.0.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-typescript": ^7.23.3
     "@jest/globals": "workspace:*"
     babel-jest: "workspace:*"
     expect: "workspace:*"
@@ -9846,8 +9846,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
   languageName: unknown
@@ -9857,8 +9857,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-jquery@workspace:examples/jquery"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
     jest-environment-jsdom: "workspace:*"
@@ -9870,8 +9870,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mock@workspace:examples/module-mock"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
   languageName: unknown
@@ -9881,8 +9881,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mocks@workspace:examples/manual-mocks"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
     lodash: ^4.17.19
@@ -9893,8 +9893,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-native@workspace:examples/react-native"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
     react: 18.2.0
@@ -9907,9 +9907,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-testing-library@workspace:examples/react-testing-library"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.12.1
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
     "@testing-library/react": ^14.0.0
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -9923,9 +9923,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react@workspace:examples/react"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.12.1
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
     jest-environment-jsdom: "workspace:*"
@@ -9938,9 +9938,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-snapshot@workspace:examples/snapshot"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.12.1
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
     react: 18.2.0
@@ -9952,8 +9952,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-timer@workspace:examples/timer"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
     babel-jest: "workspace:*"
     jest: "workspace:*"
   languageName: unknown
@@ -9963,10 +9963,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-typescript@workspace:examples/typescript"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.12.1
-    "@babel/preset-typescript": ^7.0.0
+    "@babel/core": ^7.23.3
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
+    "@babel/preset-typescript": ^7.23.3
     "@jest/globals": "workspace:*"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -12655,8 +12655,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/register": ^7.0.0
+    "@babel/core": ^7.23.3
+    "@babel/register": ^7.22.15
     "@jest/environment": "workspace:*"
     "@jest/expect": "workspace:*"
     "@jest/test-result": "workspace:*"
@@ -12716,7 +12716,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@jest/test-sequencer": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": ^4.1.3
@@ -13161,19 +13161,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@babel/generator": ^7.7.2
     "@babel/plugin-syntax-jsx": ^7.7.2
     "@babel/plugin-syntax-typescript": ^7.7.2
     "@babel/preset-flow": ^7.7.2
-    "@babel/preset-react": ^7.12.1
+    "@babel/preset-react": ^7.23.3
     "@babel/types": ^7.3.3
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@tsd/typescript": ^5.0.4
-    "@types/babel__core": ^7.1.14
+    "@types/babel__core": ^7.20.4
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
     "@types/prettier-v2": "npm:@types/prettier@^2.1.5"
@@ -13322,7 +13322,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-website@workspace:website"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@crowdin/cli": ^3.5.2
     "@docusaurus/core": ^3.0.0
     "@docusaurus/module-type-aliases": ^3.0.0
@@ -13385,7 +13385,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
-    "@babel/core": ^7.11.6
+    "@babel/core": ^7.23.3
     "@tsd/typescript": ^5.0.4
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
