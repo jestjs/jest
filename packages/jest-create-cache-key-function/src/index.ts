@@ -40,14 +40,16 @@ type NewGetCacheKeyFunction = (
 
 type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
+const {NODE_ENV, BABEL_ENV} = process.env;
+
 function getGlobalCacheKey(
   files: Array<string>,
   values: Array<string>,
   length: number,
 ) {
   return [
-    process.env.NODE_ENV,
-    process.env.BABEL_ENV,
+    NODE_ENV,
+    BABEL_ENV,
     ...values,
     ...files.map((file: string) => readFileSync(file)),
   ]
@@ -56,7 +58,7 @@ function getGlobalCacheKey(
       createHash('sha1'),
     )
     .digest('hex')
-    .substring(0, length);
+    .slice(0, length);
 }
 
 function getCacheKeyFunction(
@@ -78,7 +80,7 @@ function getCacheKeyFunction(
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
       .digest('hex')
-      .substring(0, length);
+      .slice(0, length);
   };
 }
 

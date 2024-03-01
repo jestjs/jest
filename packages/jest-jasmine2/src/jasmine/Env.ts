@@ -28,7 +28,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
 import type {Circus} from '@jest/types';
@@ -36,10 +36,10 @@ import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
 import queueRunner, {
-  Options as QueueRunnerOptions,
-  QueueableFn,
+  type Options as QueueRunnerOptions,
+  type QueueableFn,
 } from '../queueRunner';
-import treeProcessor, {TreeNode} from '../treeProcessor';
+import treeProcessor, {type TreeNode} from '../treeProcessor';
 import type {
   AssertionErrorWithStack,
   Jasmine,
@@ -147,7 +147,7 @@ export default function jasmineEnv(j$: Jasmine) {
       let currentDeclarationSuite = topSuite;
 
       const currentSuite = function () {
-        return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+        return currentlyExecutingSuites.at(-1)!;
       };
 
       const currentRunnable = function () {
@@ -269,8 +269,8 @@ export default function jasmineEnv(j$: Jasmine) {
       let oldListenersRejection: Array<NodeJS.UnhandledRejectionListener>;
       const executionSetup = function () {
         // Need to ensure we are the only ones handling these exceptions.
-        oldListenersException = process.listeners('uncaughtException').slice();
-        oldListenersRejection = process.listeners('unhandledRejection').slice();
+        oldListenersException = [...process.listeners('uncaughtException')];
+        oldListenersRejection = [...process.listeners('unhandledRejection')];
 
         j$.process.removeAllListeners('uncaughtException');
         j$.process.removeAllListeners('unhandledRejection');
@@ -284,18 +284,18 @@ export default function jasmineEnv(j$: Jasmine) {
         j$.process.removeListener('unhandledRejection', uncaught);
 
         // restore previous exception handlers
-        oldListenersException.forEach(listener => {
+        for (const listener of oldListenersException) {
           j$.process.on('uncaughtException', listener);
-        });
+        }
 
-        oldListenersRejection.forEach(listener => {
+        for (const listener of oldListenersRejection) {
           j$.process.on('unhandledRejection', listener);
-        });
+        }
       };
 
       this.execute = async function (runnablesToRun, suiteTree = topSuite) {
         if (!runnablesToRun) {
-          if (focusedRunnables.length) {
+          if (focusedRunnables.length > 0) {
             runnablesToRun = focusedRunnables;
           } else {
             runnablesToRun = [suiteTree.id];
@@ -402,7 +402,7 @@ export default function jasmineEnv(j$: Jasmine) {
           );
         }
         if (typeof specDefinitions !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
           );
         }
@@ -452,8 +452,8 @@ export default function jasmineEnv(j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e: any) {
-          declarationError = e;
+        } catch (error: any) {
+          declarationError = error;
         }
 
         if (isPromise(describeReturnValue)) {
@@ -557,7 +557,7 @@ export default function jasmineEnv(j$: Jasmine) {
           );
         }
         if (typeof fn !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${fn}. It must be a callback function.`,
           );
         }
@@ -688,9 +688,9 @@ export default function jasmineEnv(j$: Jasmine) {
           const check = isError(error);
 
           checkIsError = check.isError;
-          message = check.message;
+          message = check.message || undefined;
         }
-        const errorAsErrorObject = checkIsError ? error : new Error(message!);
+        const errorAsErrorObject = checkIsError ? error : new Error(message);
         const runnable = currentRunnable();
 
         if (!runnable) {

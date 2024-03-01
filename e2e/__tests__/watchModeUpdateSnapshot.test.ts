@@ -17,7 +17,7 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => (val as string).replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replaceAll('[s[u', '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
@@ -46,9 +46,9 @@ test('can press "u" to update snapshots', () => {
   const {exitCode, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
   const results = extractSummaries(stderr);
   expect(results).toHaveLength(2);
-  results.forEach(({rest, summary}) => {
+  for (const {rest, summary} of results) {
     expect(rest).toMatchSnapshot('test results');
     expect(summary).toMatchSnapshot('test summary');
-  });
+  }
   expect(exitCode).toBe(0);
 });

@@ -73,7 +73,10 @@ export abstract class AsymmetricMatcher<T>
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(protected sample: T, protected inverse = false) {}
+  constructor(
+    protected sample: T,
+    protected inverse = false,
+  ) {}
 
   protected getMatcherContext(): MatcherContext {
     return {
@@ -95,7 +98,7 @@ export abstract class AsymmetricMatcher<T>
 
 class Any extends AsymmetricMatcher<any> {
   constructor(sample: unknown) {
-    if (typeof sample === 'undefined') {
+    if (sample === undefined) {
       throw new TypeError(
         'any() expects to be passed a constructor function. ' +
           'Please pass one or use anything() to match any object.',
@@ -192,7 +195,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
 
   asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
-      throw new Error(
+      throw new TypeError(
         `You must provide an array to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );
@@ -229,7 +232,7 @@ class ObjectContaining extends AsymmetricMatcher<
 
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `You must provide an object to ${this.toString()}, not '${typeof this
           .sample}'.`,
       );
@@ -330,9 +333,15 @@ class CloseTo extends AsymmetricMatcher<number> {
       return false;
     }
     let result = false;
-    if (other === Infinity && this.sample === Infinity) {
+    if (
+      other === Number.POSITIVE_INFINITY &&
+      this.sample === Number.POSITIVE_INFINITY
+    ) {
       result = true; // Infinity - Infinity is NaN
-    } else if (other === -Infinity && this.sample === -Infinity) {
+    } else if (
+      other === Number.NEGATIVE_INFINITY &&
+      this.sample === Number.NEGATIVE_INFINITY
+    ) {
       result = true; // -Infinity - -Infinity is NaN
     } else {
       result =

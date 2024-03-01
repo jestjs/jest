@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import {pluralize} from 'jest-util';
+import {TestPathPatterns, pluralize} from 'jest-util';
 import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
@@ -33,7 +33,7 @@ export default function getNoTestFoundVerbose(
         }
         return null;
       })
-      .filter(line => line)
+      .filter(Boolean)
       .join('\n');
 
     return testRun.matches.total
@@ -56,8 +56,9 @@ export default function getNoTestFoundVerbose(
       .map(p => `"${p}"`)
       .join(', ')}`;
   } else {
+    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
     dataMessage = `Pattern: ${chalk.yellow(
-      globalConfig.testPathPattern,
+      testPathPatterns.toPretty(),
     )} - 0 matches`;
   }
 

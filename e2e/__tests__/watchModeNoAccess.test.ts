@@ -71,7 +71,7 @@ test('does not re-run tests when only access time is modified', async () => {
   await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
 
   // Should NOT re-run the test
-  const fakeATime = 1541723621;
+  const fakeATime = 1_541_723_621;
   fs.utimesSync(
     modulePath,
     getOneSecondAfterMs(fakeATime),
@@ -81,6 +81,6 @@ test('does not re-run tests when only access time is modified', async () => {
   expect(numberOfTestRuns(testRun.getCurrentOutput().stderr)).toBe(2);
 
   // Should re-run the test
-  fs.writeFileSync(modulePath, 'module.exports = 1;', {encoding: 'utf-8'});
+  fs.writeFileSync(modulePath, 'module.exports = 1;', 'utf8');
   await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 3);
 });

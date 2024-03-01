@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, createContext, runInContext} from 'vm';
+import {type Context, createContext, runInContext} from 'vm';
 import type {
   EnvironmentContext,
   JestEnvironment,
@@ -60,6 +60,18 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
+const timerIdToRef = (id: number) => ({
+  id,
+  ref() {
+    return this;
+  },
+  unref() {
+    return this;
+  },
+});
+
+const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
@@ -67,12 +79,13 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
-  private _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<string>;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
+
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
@@ -129,7 +142,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       }
     }
 
-    // @ts-expect-error - Buffer and gc is "missing"
     global.global = global;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
@@ -139,6 +151,14 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     global.Uint8Array = Uint8Array;
 
     installCommonGlobals(global, projectConfig.globals);
+
+    if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
+      const globalSymbol = global.Symbol as unknown as SymbolConstructor;
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.asyncDispose = globalSymbol.for('nodejs.asyncDispose');
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.dispose = globalSymbol.for('nodejs.dispose');
+    }
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
@@ -159,18 +179,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     this.moduleMocker = new ModuleMocker(global);
-
-    const timerIdToRef = (id: number) => ({
-      id,
-      ref() {
-        return this;
-      },
-      unref() {
-        return this;
-      },
-    });
-
-    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,

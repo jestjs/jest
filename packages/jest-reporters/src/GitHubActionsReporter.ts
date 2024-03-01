@@ -69,7 +69,7 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: {silent?: boolean} = {silent: true},
+    reporterOptions: {silent?: boolean} = {},
   ) {
     super();
     this.options = {
@@ -98,27 +98,28 @@ export default class GitHubActionsReporter extends BaseReporter {
     {context}: Test,
     {testResults}: TestResult,
   ): void {
-    testResults.forEach(result => {
+    for (const result of testResults) {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
       );
 
-      result.retryReasons?.forEach((retryReason, index) => {
-        this.#createAnnotation({
-          ...this.#getMessageDetails(retryReason, context.config),
-          title: `RETRY ${index + 1}: ${title}`,
-          type: 'warning',
-        });
-      });
+      if (result.retryReasons)
+        for (const [index, retryReason] of result.retryReasons.entries()) {
+          this.#createAnnotation({
+            ...this.#getMessageDetails(retryReason, context.config),
+            title: `RETRY ${index + 1}: ${title}`,
+            type: 'warning',
+          });
+        }
 
-      result.failureMessages.forEach(failureMessage => {
+      for (const failureMessage of result.failureMessages) {
         this.#createAnnotation({
           ...this.#getMessageDetails(failureMessage, context.config),
           title,
           type: 'error',
         });
-      });
-    });
+      }
+    }
   }
 
   #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
@@ -142,7 +143,10 @@ export default class GitHubActionsReporter extends BaseReporter {
   #createAnnotation({file, line, message, title, type}: AnnotationOptions) {
     message = stripAnsi(
       // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
-      message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'),
+      message
+        .replaceAll('%', '%25')
+        .replaceAll('\r', '%0D')
+        .replaceAll('\n', '%0A'),
     );
 
     this.log(
@@ -182,8 +186,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length !== a2.length) {
       return false;
     }
-    for (let index = 0; index < a1.length; index++) {
-      const element = a1[index];
+    for (const [index, element] of a1.entries()) {
       if (element !== a2[index]) {
         return false;
       }
@@ -195,8 +198,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length - a2.length !== 1) {
       return false;
     }
-    for (let index = 0; index < a2.length; index++) {
-      const element = a2[index];
+    for (const [index, element] of a2.entries()) {
       if (element !== a1[index]) {
         return false;
       }
@@ -216,7 +218,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       performanceInfo: suitePerf,
     };
     const branches: Array<Array<string>> = [];
-    suiteResult.forEach(element => {
+    for (const element of suiteResult) {
       if (element.ancestorTitles.length === 0) {
         if (element.status === 'failed') {
           root.passed = false;
@@ -230,10 +232,8 @@ export default class GitHubActionsReporter extends BaseReporter {
         });
       } else {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
-          if (
-            this.arrayEqual(branches[index], element.ancestorTitles.slice(0, 1))
-          ) {
+        for (const branch of branches) {
+          if (this.arrayEqual(branch, element.ancestorTitles.slice(0, 1))) {
             alreadyInserted = true;
             break;
           }
@@ -242,14 +242,14 @@ export default class GitHubActionsReporter extends BaseReporter {
           branches.push(element.ancestorTitles.slice(0, 1));
         }
       }
-    });
-    branches.forEach(element => {
+    }
+    for (const element of branches) {
       const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         root.passed = false;
       }
       root.children.push(newChild);
-    });
+    }
     return root;
   }
 
@@ -259,13 +259,13 @@ export default class GitHubActionsReporter extends BaseReporter {
   ): ResultTreeNode {
     const node: ResultTreeNode = {
       children: [],
-      name: ancestors[ancestors.length - 1],
+      name: ancestors.at(-1)!,
       passed: true,
     };
     const branches: Array<Array<string>> = [];
-    suiteResult.forEach(element => {
+    for (const element of suiteResult) {
       let duration = element.duration;
-      if (!duration || isNaN(duration)) {
+      if (!duration || Number.isNaN(duration)) {
         duration = 1;
       }
       if (this.arrayEqual(element.ancestorTitles, ancestors)) {
@@ -285,10 +285,10 @@ export default class GitHubActionsReporter extends BaseReporter {
         )
       ) {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
+        for (const branch of branches) {
           if (
             this.arrayEqual(
-              branches[index],
+              branch,
               element.ancestorTitles.slice(0, ancestors.length + 1),
             )
           ) {
@@ -300,14 +300,14 @@ export default class GitHubActionsReporter extends BaseReporter {
           branches.push(element.ancestorTitles.slice(0, ancestors.length + 1));
         }
       }
-    });
-    branches.forEach(element => {
+    }
+    for (const element of branches) {
       const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         node.passed = false;
       }
       node.children.push(newChild);
-    });
+    }
     return node;
   }
 
@@ -324,17 +324,17 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.startGroup(
         `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
       );
-      resultTree.children.forEach(child => {
+      for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, true, 1);
-      });
+      }
       this.endGroup();
     } else {
       this.log(
         `  ${chalk.bold.red.inverse('FAIL')} ${resultTree.name}${perfMs}`,
       );
-      resultTree.children.forEach(child => {
+      for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, false, 1);
-      });
+      }
     }
   }
 
@@ -380,21 +380,21 @@ export default class GitHubActionsReporter extends BaseReporter {
       if (resultTree.passed) {
         if (alreadyGrouped) {
           this.log('  '.repeat(depth) + resultTree.name);
-          resultTree.children.forEach(child => {
+          for (const child of resultTree.children) {
             this.recursivePrintResultTree(child, true, depth + 1);
-          });
+          }
         } else {
           this.startGroup('  '.repeat(depth) + resultTree.name);
-          resultTree.children.forEach(child => {
+          for (const child of resultTree.children) {
             this.recursivePrintResultTree(child, true, depth + 1);
-          });
+          }
           this.endGroup();
         }
       } else {
         this.log('  '.repeat(depth + 1) + resultTree.name);
-        resultTree.children.forEach(child => {
+        for (const child of resultTree.children) {
           this.recursivePrintResultTree(child, false, depth + 1);
-        });
+        }
       }
     }
   }
@@ -406,7 +406,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     const rootDir = context.context.config.rootDir;
     const results = testResults.testResults;
     let written = false;
-    results.forEach(result => {
+    for (const result of results) {
       let testDir = result.testFilePath;
       testDir = testDir.replace(rootDir, '');
       testDir = testDir.slice(1, testDir.length);
@@ -419,7 +419,7 @@ export default class GitHubActionsReporter extends BaseReporter {
         this.log(result.failureMessage);
         this.endGroup();
       }
-    });
+    }
     return written;
   }
 

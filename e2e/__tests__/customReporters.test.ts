@@ -49,7 +49,7 @@ describe('Custom Reporters Integration', () => {
 
   test('invalid format for adding reporters', () => {
     const reporterConfig = {
-      reporters: [[3243242]],
+      reporters: [[3_243_242]],
     };
 
     const {exitCode, stderr} = runJest('custom-reporters', [

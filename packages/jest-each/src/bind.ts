@@ -38,7 +38,7 @@ export default function bind<EachCallback extends Global.TestCallback>(
     table: Global.EachTable,
     ...taggedTemplateData: Global.TemplateData
   ) => {
-    const error = new ErrorWithStack(undefined, bindWrap);
+    const errorWithStack = new ErrorWithStack(undefined, bindWrap);
 
     return function eachBind(
       title: Global.BlockNameLike,
@@ -51,23 +51,28 @@ export default function bind<EachCallback extends Global.TestCallback>(
           ? buildArrayTests(title, table)
           : buildTemplateTests(title, table, taggedTemplateData);
 
-        return tests.forEach(row =>
+        for (const row of tests) {
           needsEachError
             ? cb(
                 row.title,
                 applyArguments(supportsDone, row.arguments, test),
                 timeout,
-                error,
+                errorWithStack,
               )
             : cb(
                 row.title,
                 applyArguments(supportsDone, row.arguments, test),
                 timeout,
-              ),
+              );
+        }
+
+        return;
+      } catch (error: any) {
+        const err = new Error(error.message);
+        err.stack = errorWithStack.stack?.replace(
+          /^Error: /s,
+          `Error: ${error.message}`,
         );
-      } catch (e: any) {
-        const err = new Error(e.message);
-        err.stack = error.stack?.replace(/^Error: /s, `Error: ${e.message}`);
 
         return cb(title, () => {
           throw err;
@@ -96,7 +101,7 @@ const buildTemplateTests = (
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  extractValidTemplateHeadings(headings).replace(/\s/g, '').split('|');
+  extractValidTemplateHeadings(headings).replaceAll(/\s/g, '').split('|');
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,

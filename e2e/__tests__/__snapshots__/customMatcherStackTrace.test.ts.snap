@@ -30,18 +30,18 @@ exports[`works with custom matchers 1`] = `
 
     qux
 
-      43 |     const bar = () => baz();
       44 |     const baz = () => {
-    > 45 |       throw Error('qux');
+      45 |       // eslint-disable-next-line unicorn/throw-new-error,unicorn/new-for-builtins
+    > 46 |       throw Error('qux');
          |             ^
-      46 |     };
-      47 |
-      48 |     // This expecation fails due to an error we throw (intentionally)
+      47 |     };
+      48 |
+      49 |     // This expectation fails due to an error we throw (intentionally)
 
-      at Error (__tests__/sync.test.js:45:13)
+      at Error (__tests__/sync.test.js:46:13)
       at baz (__tests__/sync.test.js:43:23)
       at bar (__tests__/sync.test.js:42:23)
-      at foo (__tests__/sync.test.js:52:7)
+      at foo (__tests__/sync.test.js:53:7)
       at Object.callback (__tests__/sync.test.js:11:18)
-      at Object.toCustomMatch (__tests__/sync.test.js:53:8)"
+      at Object.toCustomMatch (__tests__/sync.test.js:54:8)"
 `;

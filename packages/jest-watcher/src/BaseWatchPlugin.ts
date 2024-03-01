@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'tty';
 import type {Config} from '@jest/types';
 import type {
   JestHookSubscriber,
@@ -14,16 +15,10 @@ import type {
 } from './types';
 
 abstract class BaseWatchPlugin implements WatchPlugin {
-  protected _stdin: NodeJS.ReadStream;
-  protected _stdout: NodeJS.WriteStream;
+  protected _stdin: ReadStream;
+  protected _stdout: WriteStream;
 
-  constructor({
-    stdin,
-    stdout,
-  }: {
-    stdin: NodeJS.ReadStream;
-    stdout: NodeJS.WriteStream;
-  }) {
+  constructor({stdin, stdout}: {stdin: ReadStream; stdout: WriteStream}) {
     this._stdin = stdin;
     this._stdout = stdout;
   }

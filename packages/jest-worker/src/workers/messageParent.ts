@@ -17,6 +17,6 @@ export default function messageParent(
   } else if (typeof parentProcess.send === 'function') {
     parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
   } else {
-    throw new Error('"messageParent" can only be used inside a worker');
+    throw new TypeError('"messageParent" can only be used inside a worker');
   }
 }

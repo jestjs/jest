@@ -146,7 +146,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
+Use `.toHaveBeenCalled` to ensure that a mock function was called.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -888,7 +888,7 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `expect.anything()`
 
-`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
+`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
 
 ```js
 test('map calls its argument with a non-null argument', () => {
@@ -900,7 +900,7 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toHaveBeenCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
 class Cat {}
@@ -931,7 +931,7 @@ test('randocall calls its callback with a number', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match a property in `objectContaining` or `toMatchObject`
 
 ```js
@@ -1063,7 +1063,7 @@ describe('not.stringContaining', () => {
 
 You can use it instead of a literal value:
 
-- in `toEqual` or `toBeCalledWith`
+- in `toEqual` or `toHaveBeenCalledWith`
 - to match an element in `arrayContaining`
 - to match a property in `objectContaining` or `toMatchObject`
 
@@ -1186,10 +1186,10 @@ function areVolumesEqual(a, b) {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1243,10 +1243,10 @@ function areVolumesEqual(a: unknown, b: unknown): boolean | undefined {
 
   if (isAVolume && isBVolume) {
     return a.equals(b);
-  } else if (isAVolume !== isBVolume) {
-    return false;
-  } else {
+  } else if (isAVolume === isBVolume) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1297,10 +1297,10 @@ function areAuthorEqual(a, b) {
   if (isAAuthor && isBAuthor) {
     // Authors are equal if they have the same name
     return a.name === b.name;
-  } else if (isAAuthor !== isBAuthor) {
-    return false;
-  } else {
+  } else if (isAAuthor === isBAuthor) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1315,10 +1315,10 @@ function areBooksEqual(a, b, customTesters) {
     return (
       a.name === b.name && this.equals(a.authors, b.authors, customTesters)
     );
-  } else if (isABook !== isBBook) {
-    return false;
-  } else {
+  } else if (isABook === isBBook) {
     return undefined;
+  } else {
+    return false;
   }
 }
 
@@ -1364,7 +1364,7 @@ function toBeWithinRange(actual, floor, ceiling) {
     typeof floor !== 'number' ||
     typeof ceiling !== 'number'
   ) {
-    throw new Error('These must be of type number!');
+    throw new TypeError('These must be of type number!');
   }
 
   const pass = actual >= floor && actual <= ceiling;
@@ -1439,7 +1439,7 @@ const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
       typeof floor !== 'number' ||
       typeof ceiling !== 'number'
     ) {
-      throw new Error('These must be of type number!');
+      throw new TypeError('These must be of type number!');
     }
 
     const pass = actual >= floor && actual <= ceiling;
@@ -1505,7 +1505,7 @@ The type declaration of the matcher can live in a `.d.ts` file or in an imported
 
 :::tip
 
-Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
+Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md#setupfilesafterenv-array) script:
 
 ```js
 import {expect} from '@jest/globals';
@@ -1664,7 +1664,7 @@ expect.extend({
   toMatchTrimmedSnapshot(received, length) {
     return toMatchSnapshot.call(
       this,
-      received.substring(0, length),
+      received.slice(0, length),
       'toMatchTrimmedSnapshot',
     );
   },
@@ -1688,7 +1688,7 @@ const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedInlineSnapshot(received, ...rest) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
+    return toMatchInlineSnapshot.call(this, received.slice(0, 10), ...rest);
   },
 });
 

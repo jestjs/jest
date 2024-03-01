@@ -10,11 +10,11 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {deserialize, serialize} from 'v8';
-import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
+import {type Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {invariant, requireOrImportModule} from 'jest-util';
-import {JestWorkerFarm, Worker} from 'jest-worker';
+import {type JestWorkerFarm, Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -113,6 +113,8 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
+let isWatchmanInstalledPromise: Promise<boolean> | undefined;
+
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
 };
@@ -124,12 +126,14 @@ export type {
 } from './types';
 
 const CHANGE_INTERVAL = 30;
-const MAX_WAIT_TIME = 240000;
+const MAX_WAIT_TIME = 240_000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
+
+type WorkerOptions = {forceInBand: boolean};
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -214,8 +218,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
   private readonly _console: Console;
-  private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
-  private _options: InternalOptions;
+  private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
   private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
 
@@ -258,7 +261,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
-      roots: Array.from(new Set(options.roots)),
+      roots: [...new Set(options.roots)],
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
@@ -270,11 +273,11 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
+          `${options.ignorePattern.source}|${VCS_DIRECTORIES}`,
           options.ignorePattern.flags,
         );
       } else {
-        throw new Error(
+        throw new TypeError(
           'jest-haste-map: the `ignorePattern` option must be a RegExp',
         );
       }
@@ -295,7 +298,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
-      .substring(0, 32);
+      .slice(0, 32);
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -344,7 +347,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
-      `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
+      `${id.replaceAll(/\W/g, '-')}-${hash.digest('hex').slice(0, 32)}`,
     );
   }
 
@@ -450,7 +453,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     map: ModuleMapData,
     mocks: MockData,
     filePath: string,
-    workerOptions?: {forceInBand: boolean},
+    workerOptions?: WorkerOptions,
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
 
@@ -670,7 +673,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     let map: ModuleMapData;
     let mocks: MockData;
     let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size) {
+    if (changedFiles === undefined || removedFiles.size > 0) {
       map = new Map();
       mocks = new Map();
       filesToProcess = hasteMap.files;
@@ -738,10 +741,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * Creates workers or parses files and extracts metadata in-process.
    */
   private _getWorker(
-    options = {forceInBand: false},
+    options: WorkerOptions | undefined,
   ): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
-      if (options.forceInBand || this._options.maxWorkers <= 1) {
+      if (options?.forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
@@ -772,7 +775,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       roots: options.roots,
     };
 
-    const retry = (error: Error) => {
+    const retry = (retryError: Error) => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
           'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
@@ -780,18 +783,18 @@ class HasteMap extends EventEmitter implements IHasteMap {
             "  Usually this happens when watchman isn't running. Create an " +
             "empty `.watchmanconfig` file in your project's root folder or " +
             'initialize a git or hg repository in your project.\n' +
-            `  ${error}`,
+            `  ${retryError}`,
         );
-        return nodeCrawl(crawlerOptions).catch(e => {
+        return nodeCrawl(crawlerOptions).catch(error => {
           throw new Error(
             'Crawler retry failed:\n' +
-              `  Original error: ${error.message}\n` +
-              `  Retry error: ${e.message}\n`,
+              `  Original error: ${retryError.message}\n` +
+              `  Retry error: ${error.message}\n`,
           );
         });
       }
 
-      throw error;
+      throw retryError;
     };
 
     try {
@@ -806,7 +809,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    */
   private async _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
-      return Promise.resolve();
+      return;
     }
 
     // In watch mode, we'll only warn about module collisions and we'll retain
@@ -818,8 +821,8 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const Watcher = (await this._shouldUseWatchman())
       ? WatchmanWatcher
       : FSEventsWatcher.isSupported()
-      ? FSEventsWatcher
-      : NodeWatcher;
+        ? FSEventsWatcher
+        : NodeWatcher;
 
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
@@ -852,7 +855,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     const emitChange = () => {
-      if (eventsQueue.length) {
+      if (eventsQueue.length > 0) {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
@@ -901,7 +904,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         .then(() => {
           // If we get duplicate events for the same file, ignore them.
           if (
-            eventsQueue.find(
+            eventsQueue.some(
               event =>
                 event.type === type &&
                 event.filePath === filePath &&
@@ -1077,7 +1080,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       clearInterval(this._changeInterval);
     }
 
-    if (!this._watchers.length) {
+    if (this._watchers.length === 0) {
       return;
     }
 
@@ -1106,10 +1109,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
     if (!this._options.useWatchman) {
       return false;
     }
-    if (!this._isWatchmanInstalledPromise) {
-      this._isWatchmanInstalledPromise = isWatchmanInstalled();
+    if (!isWatchmanInstalledPromise) {
+      isWatchmanInstalledPromise = isWatchmanInstalled();
     }
-    return this._isWatchmanInstalledPromise;
+    return isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {

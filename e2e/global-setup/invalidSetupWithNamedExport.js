@@ -6,7 +6,7 @@
  */
 
 function invalidSetupWithNamedExport(jestConfig): void {
-  console.log(jestConfig.testPathPattern);
+  console.log(jestConfig.testPathPatterns);
 }
 
 export {invalidSetupWithNamedExport};

@@ -8,6 +8,7 @@
 
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
+import {equals} from '../jasmineUtils';
 import {
   arrayBufferEquality,
   emptyObject,
@@ -118,7 +119,7 @@ describe('getPath()', () => {
 });
 
 describe('getObjectSubset', () => {
-  [
+  for (const [object, subset, expected] of [
     [{a: 'b', c: 'd'}, {a: 'd'}, {a: 'b'}],
     [{a: [1, 2], b: 'b'}, {a: [3, 4]}, {a: [1, 2]}],
     [[{a: 'b', c: 'd'}], [{a: 'z'}], [{a: 'b'}]],
@@ -129,7 +130,7 @@ describe('getObjectSubset', () => {
     ],
     [{a: [1]}, {a: [1, 2]}, {a: [1]}],
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
-  ].forEach(([object, subset, expected]) => {
+  ]) {
     test(
       `expect(getObjectSubset(${stringify(object)}, ${stringify(subset)}))` +
         `.toEqual(${stringify(expected)})`,
@@ -137,7 +138,7 @@ describe('getObjectSubset', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
-  });
+  }
 
   describe('returns the object instance if the subset has no extra properties', () => {
     test('Date', () => {
@@ -355,6 +356,51 @@ describe('subsetEquality()', () => {
       ).toBe(false);
     });
   });
+
+  describe('matching subsets with symbols', () => {
+    describe('same symbol', () => {
+      test('objects to not match with value diff', () => {
+        const symbol = Symbol('foo');
+        expect(subsetEquality({[symbol]: 1}, {[symbol]: 2})).toBe(false);
+      });
+
+      test('objects to match with non-enumerable symbols', () => {
+        const symbol = Symbol('foo');
+        const foo = {};
+        Object.defineProperty(foo, symbol, {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, symbol, {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+
+    describe('different symbol', () => {
+      test('objects to not match with same value', () => {
+        expect(subsetEquality({[Symbol('foo')]: 1}, {[Symbol('foo')]: 2})).toBe(
+          false,
+        );
+      });
+      test('objects to match with non-enumerable symbols', () => {
+        const foo = {};
+        Object.defineProperty(foo, Symbol('foo'), {
+          enumerable: false,
+          value: 1,
+        });
+        const bar = {};
+        Object.defineProperty(bar, Symbol('foo'), {
+          enumerable: false,
+          value: 2,
+        });
+        expect(subsetEquality(foo, bar)).toBe(true);
+      });
+    });
+  });
 });
 
 describe('iterableEquality', () => {
@@ -545,6 +591,36 @@ describe('iterableEquality', () => {
     const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
   });
+
+  test('returns true when given a symbols keys within equal objects', () => {
+    const KEY = Symbol();
+
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns false when given a symbols keys within inequal objects', () => {
+    const KEY = Symbol();
+
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [1],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      [KEY]: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(false);
+  });
 });
 
 describe('typeEquality', () => {
@@ -570,5 +646,29 @@ describe('arrayBufferEquality', () => {
     const a = Uint8Array.from([1, 2]).buffer;
     const b = Uint8Array.from([1, 2]).buffer;
     expect(arrayBufferEquality(a, b)).toBeTruthy();
+  });
+
+  test('returns true when given matching DataView', () => {
+    const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    const b = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    expect(arrayBufferEquality(a, b)).toBeTruthy();
+  });
+
+  test('returns false when given non-matching DataView', () => {
+    const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
+    const b = new DataView(Uint8Array.from([3, 2, 1]).buffer);
+    expect(arrayBufferEquality(a, b)).toBeFalsy();
+  });
+
+  test('returns true when given matching URL', () => {
+    const a = new URL('https://jestjs.io/');
+    const b = new URL('https://jestjs.io/');
+    expect(equals(a, b)).toBeTruthy();
+  });
+
+  test('returns false when given non-matching URL', () => {
+    const a = new URL('https://jestjs.io/docs/getting-started');
+    const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
+    expect(equals(a, b)).toBeFalsy();
   });
 });

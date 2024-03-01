@@ -92,12 +92,10 @@ export const serialize: NewPlugin['serialize'] = (
     printProps(
       nodeIsFragment(node)
         ? []
-        : Array.from(node.attributes)
-            .map(attr => attr.name)
-            .sort(),
+        : Array.from(node.attributes, attr => attr.name).sort(),
       nodeIsFragment(node)
         ? {}
-        : Array.from(node.attributes).reduce<Record<string, string>>(
+        : [...node.attributes].reduce<Record<string, string>>(
             (props, attribute) => {
               props[attribute.name] = attribute.value;
               return props;

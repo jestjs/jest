@@ -18,7 +18,7 @@ import {
 
 // Format substring but do not enclose in double quote marks.
 // The replacement is compatible with pretty-format package.
-const printSubstring = (val: string): string => val.replace(/"|\\/g, '\\$&');
+const printSubstring = (val: string): string => val.replaceAll(/"|\\/g, '\\$&');
 
 export const printReceivedStringContainExpectedSubstring = (
   received: string,
@@ -70,11 +70,11 @@ export const printCloseTo = (
     ? // toExponential arg is number of digits after the decimal point.
       expectedDiff.toExponential(0)
     : 0 <= precision && precision < 20
-    ? // toFixed arg is number of digits after the decimal point.
-      // It may be a value between 0 and 20 inclusive.
-      // Implementations may optionally support a larger range of values.
-      expectedDiff.toFixed(precision + 1)
-    : stringify(expectedDiff);
+      ? // toFixed arg is number of digits after the decimal point.
+        // It may be a value between 0 and 20 inclusive.
+        // Implementations may optionally support a larger range of values.
+        expectedDiff.toFixed(precision + 1)
+      : stringify(expectedDiff);
 
   return (
     `Expected precision:  ${isNot ? '    ' : ''}  ${stringify(precision)}\n` +
@@ -109,9 +109,9 @@ export const printReceivedConstructorNameNot = (
   expected: Function,
 ): string =>
   typeof expected.name === 'string' &&
-  expected.name.length !== 0 &&
+  expected.name.length > 0 &&
   typeof received.name === 'string' &&
-  received.name.length !== 0
+  received.name.length > 0
     ? `${printConstructorName(label, received, true, false)} ${
         Object.getPrototypeOf(received) === expected
           ? 'extends'
@@ -125,12 +125,12 @@ const printConstructorName = (
   isNot: boolean,
   isExpected: boolean,
 ): string =>
-  typeof constructor.name !== 'string'
-    ? `${label} name is not a string`
-    : constructor.name.length === 0
-    ? `${label} name is an empty string`
-    : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
-        isExpected
-          ? EXPECTED_COLOR(constructor.name)
-          : RECEIVED_COLOR(constructor.name)
-      }`;
+  typeof constructor.name === 'string'
+    ? constructor.name.length === 0
+      ? `${label} name is an empty string`
+      : `${label}: ${isNot ? (isExpected ? 'not ' : '    ') : ''}${
+          isExpected
+            ? EXPECTED_COLOR(constructor.name)
+            : RECEIVED_COLOR(constructor.name)
+        }`
+    : `${label} name is not a string`;

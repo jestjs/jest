@@ -151,10 +151,10 @@ export const json = function (
       ...result,
       json: JSON.parse(result.stdout),
     };
-  } catch (e: any) {
+  } catch (error: any) {
     throw new Error(dedent`
       Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
+      ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
     `);
@@ -172,7 +172,7 @@ export const runContinuous = function (
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
+  const jestPromise = spawnJest(dir, args, {timeout: 30_000, ...options}, true);
 
   let stderr = '';
   let stdout = '';
@@ -273,7 +273,7 @@ export function getConfig(
 } {
   const {exitCode, stdout, stderr} = runJest(
     dir,
-    args.concat('--show-config'),
+    [...args, '--show-config'],
     options,
   );
 

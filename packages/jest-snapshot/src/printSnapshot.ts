@@ -11,8 +11,8 @@ import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptionsColor,
+  type Diff,
+  type DiffOptionsColor,
   diffLinesUnified,
   diffLinesUnified2,
   diffStringsRaw,
@@ -23,7 +23,7 @@ import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
   INVERTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
@@ -114,7 +114,7 @@ export const matcherHintFromConfig = (
       options.expectedColor = noColor;
     }
 
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       options.secondArgument = HINT_ARG;
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -126,7 +126,7 @@ export const matcherHintFromConfig = (
       }
     }
   } else {
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       expectedArgument = HINT_ARG;
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -155,11 +155,11 @@ const joinDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] !== op
-        ? ''
-        : hasCommon
-        ? INVERTED_COLOR(diff[1])
-        : diff[1]),
+        : diff[0] === op
+          ? hasCommon
+            ? INVERTED_COLOR(diff[1])
+            : diff[1]
+          : ''),
     '',
   );
 
@@ -233,7 +233,7 @@ export const printPropertiesAndReceived = (
   )}${printReceived(received)}`;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printSnapshotAndReceived = (
   a: string, // snapshot without extra line breaks

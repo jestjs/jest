@@ -8,19 +8,19 @@
 import {expectType} from 'tsd-lite';
 import {
   CallbackTestRunner,
-  CallbackTestRunnerInterface,
-  Config,
+  type CallbackTestRunnerInterface,
+  type Config,
   EmittingTestRunner,
-  EmittingTestRunnerInterface,
-  OnTestFailure,
-  OnTestStart,
-  OnTestSuccess,
-  Test,
-  TestEvents,
-  TestRunnerContext,
-  TestRunnerOptions,
-  TestWatcher,
-  UnsubscribeFn,
+  type EmittingTestRunnerInterface,
+  type OnTestFailure,
+  type OnTestStart,
+  type OnTestSuccess,
+  type Test,
+  type TestEvents,
+  type TestRunnerContext,
+  type TestRunnerOptions,
+  type TestWatcher,
+  type UnsubscribeFn,
 } from 'jest-runner';
 
 const globalConfig = {} as Config.GlobalConfig;

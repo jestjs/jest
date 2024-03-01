@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 describe('A', () => {
   it.concurrent('a', async () => {

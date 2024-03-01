@@ -8,11 +8,14 @@
 import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
 import {jestExpect} from '@jest/expect';
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
-import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
+import shuffleArray, {
+  type RandomNumberGenerator,
+  rngBuilder,
+} from './shuffleArray';
 import {dispatch, getState} from './state';
-import {RETRY_TIMES} from './types';
+import {RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -20,6 +23,10 @@ import {
   getTestID,
   makeRunResult,
 } from './utils';
+
+// Global values can be overwritten by mocks or tests. We'll capture
+// the original values in the variables before we require any files.
+const {setTimeout} = globalThis;
 
 type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
   fn: Circus.ConcurrentTestFn;
@@ -61,8 +68,16 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
-  // eslint-disable-next-line no-restricted-globals
-  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const retryTimes =
+    // eslint-disable-next-line no-restricted-globals
+    Number.parseInt((global as Global.Global)[RETRY_TIMES] as string, 10) || 0;
+
+  const waitBeforeRetry =
+    Number.parseInt(
+      // eslint-disable-next-line no-restricted-globals
+      (global as Global.Global)[WAIT_BEFORE_RETRY] as string,
+      10,
+    ) || 0;
   const deferredRetryTests = [];
 
   if (rng) {
@@ -97,6 +112,10 @@ const _runTestsForDescribeBlock = async (
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
+
+      if (waitBeforeRetry > 0) {
+        await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
+      }
 
       await _runTest(test, isSkipped);
       numRetriesAvailable--;
@@ -149,9 +168,9 @@ function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.catch(() => {});
       test.fn = () => promise;
-    } catch (err) {
+    } catch (error) {
       test.fn = () => {
-        throw err;
+        throw error;
       };
     }
   }
@@ -186,7 +205,7 @@ const _runTest = async (
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -239,7 +258,7 @@ const _callCircusTest = async (
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
-  if (test.errors.length) {
+  if (test.errors.length > 0) {
     return; // We don't run the test if there's already an error in before hooks.
   }
 

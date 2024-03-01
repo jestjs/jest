@@ -8,7 +8,7 @@
 
 import {EventEmitter} from 'events';
 import * as path from 'path';
-import anymatch, {Matcher} from 'anymatch';
+import anymatch, {type Matcher} from 'anymatch';
 import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 // @ts-expect-error no types
@@ -140,7 +140,7 @@ export class FSEventsWatcher extends EventEmitter {
     if (this.doIgnore(relativePath)) {
       return false;
     }
-    return this.glob.length
+    return this.glob.length > 0
       ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
       : this.dot || micromatch([relativePath], '**/*').length > 0;
   }

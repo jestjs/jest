@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type {WriteStream} from 'tty';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
@@ -15,6 +16,7 @@ import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
+  TestPathPatterns,
   isInteractive,
   preRunMessage,
   requireOrImportModule,
@@ -22,12 +24,12 @@ import {
 } from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
-  AllowedConfigOptions,
+  type AllowedConfigOptions,
   JestHook,
   KEYS,
   TestWatcher,
-  WatchPlugin,
-  WatchPluginClass,
+  type WatchPlugin,
+  type WatchPluginClass,
 } from 'jest-watcher';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
@@ -89,7 +91,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<TestContext>,
-  outputStream: NodeJS.WriteStream,
+  outputStream: WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),
@@ -105,7 +107,7 @@ export default async function watch(
     passWithNoTests: true,
   });
 
-  const updateConfigAndRun = ({
+  const updateConfigAndRun = async ({
     bail,
     changedSince,
     collectCoverage,
@@ -120,7 +122,7 @@ export default async function watch(
     onlyFailures,
     reporters,
     testNamePattern,
-    testPathPattern,
+    testPathPatterns,
     updateSnapshot,
     verbose,
   }: AllowedConfigOptions = {}) => {
@@ -140,7 +142,7 @@ export default async function watch(
       onlyFailures,
       reporters,
       testNamePattern,
-      testPathPattern,
+      testPathPatterns,
       updateSnapshot,
       verbose,
     });
@@ -156,12 +158,12 @@ export default async function watch(
   const watchPlugins: Array<WatchPlugin> = INTERNAL_PLUGINS.map(
     InternalPlugin => new InternalPlugin({stdin, stdout: outputStream}),
   );
-  watchPlugins.forEach((plugin: WatchPlugin) => {
+  for (const plugin of watchPlugins) {
     const hookSubscriber = hooks.getSubscriber();
     if (plugin.apply) {
       plugin.apply(hookSubscriber);
     }
-  });
+  }
 
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
@@ -203,7 +205,8 @@ export default async function watch(
           })}`,
         );
         delete errorWithContext.stack;
-        return Promise.reject(errorWithContext);
+
+        throw errorWithContext;
       }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
 
@@ -227,9 +230,12 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
+      const testPathPatterns = new TestPathPatterns([], globalConfig);
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
-        testPaths: searchSource.findMatchingTests('').tests.map(t => t.path),
+        testPaths: searchSource
+          .findMatchingTests(testPathPatterns)
+          .tests.map(t => t.path),
       }));
       hooks.getEmitter().onFileChange({projects});
     }
@@ -237,13 +243,13 @@ export default async function watch(
 
   emitFileChange();
 
-  hasteMapInstances.forEach((hasteMapInstance, index) => {
+  for (const [index, hasteMapInstance] of hasteMapInstances.entries()) {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) =>
         isValidPath(globalConfig, filePath),
       );
 
-      if (validPaths.length) {
+      if (validPaths.length > 0) {
         const context = (contexts[index] = createContext(
           contexts[index].config,
           {hasteFS, moduleMap},
@@ -251,7 +257,7 @@ export default async function watch(
 
         activePlugin = null;
 
-        searchSources = searchSources.slice();
+        searchSources = [...searchSources];
         searchSources[index] = {
           context,
           searchSource: new SearchSource(context),
@@ -260,7 +266,7 @@ export default async function watch(
         startRun(globalConfig);
       }
     });
-  });
+  }
 
   if (!hasExitListener) {
     hasExitListener = true;
@@ -272,11 +278,9 @@ export default async function watch(
     });
   }
 
-  const startRun = (
-    globalConfig: Config.GlobalConfig,
-  ): Promise<void | null> => {
+  const startRun = async (globalConfig: Config.GlobalConfig): Promise<void> => {
     if (isRunning) {
-      return Promise.resolve(null);
+      return;
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
@@ -286,53 +290,55 @@ export default async function watch(
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
-    return runJest({
-      changedFilesPromise,
-      contexts,
-      failedTestsCache,
-      filter,
-      globalConfig,
-      jestHooks: hooks.getEmitter(),
-      onComplete: results => {
-        isRunning = false;
-        hooks.getEmitter().onTestRunComplete(results);
+    try {
+      await runJest({
+        changedFilesPromise,
+        contexts,
+        failedTestsCache,
+        filter,
+        globalConfig,
+        jestHooks: hooks.getEmitter(),
+        onComplete: results => {
+          isRunning = false;
+          hooks.getEmitter().onTestRunComplete(results);
 
-        // Create a new testWatcher instance so that re-runs won't be blocked.
-        // The old instance that was passed to Jest will still be interrupted
-        // and prevent test runs from the previous run.
-        testWatcher = new TestWatcher({isWatchMode: true});
+          // Create a new testWatcher instance so that re-runs won't be blocked.
+          // The old instance that was passed to Jest will still be interrupted
+          // and prevent test runs from the previous run.
+          testWatcher = new TestWatcher({isWatchMode: true});
 
-        // Do not show any Watch Usage related stuff when running in a
-        // non-interactive environment
-        if (isInteractive) {
-          if (shouldDisplayWatchUsage) {
-            outputStream.write(usage(globalConfig, watchPlugins));
-            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-            isWatchUsageDisplayed = true;
+          // Do not show any Watch Usage related stuff when running in a
+          // non-interactive environment
+          if (isInteractive) {
+            if (shouldDisplayWatchUsage) {
+              outputStream.write(usage(globalConfig, watchPlugins));
+              shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+              isWatchUsageDisplayed = true;
+            } else {
+              outputStream.write(showToggleUsagePrompt());
+              shouldDisplayWatchUsage = false;
+              isWatchUsageDisplayed = false;
+            }
           } else {
-            outputStream.write(showToggleUsagePrompt());
-            shouldDisplayWatchUsage = false;
-            isWatchUsageDisplayed = false;
+            outputStream.write('\n');
           }
-        } else {
-          outputStream.write('\n');
-        }
-        failedTestsCache.setTestResults(results.testResults);
-      },
-      outputStream,
-      startRun,
-      testWatcher,
-    }).catch(error =>
+          failedTestsCache.setTestResults(results.testResults);
+        },
+        outputStream,
+        startRun,
+        testWatcher,
+      });
+    } catch (error) {
       // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
       // continuous watch mode execution. We need to reprint them to the
       // terminal and give just a little bit of extra space so they fit below
       // `preRunMessagePrint` message nicely.
       console.error(
-        `\n\n${formatExecError(error, contexts[0].config, {
+        `\n\n${formatExecError(error as any, contexts[0].config, {
           noStackTrace: false,
         })}`,
-      ),
-    );
+      );
+    }
   };
 
   const onKeypress = (key: string) => {
@@ -359,7 +365,7 @@ export default async function watch(
     if (
       isRunning &&
       testWatcher &&
-      ['q', KEYS.ENTER, 'a', 'o', 'f'].concat(pluginKeys).includes(key)
+      ['q', KEYS.ENTER, 'a', 'o', 'f', ...pluginKeys].includes(key)
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -380,10 +386,10 @@ export default async function watch(
       activePlugin = matchingWatchPlugin;
       if (activePlugin.run) {
         activePlugin.run(globalConfig, updateConfigAndRun).then(
-          shouldRerun => {
+          async shouldRerun => {
             activePlugin = null;
             if (shouldRerun) {
-              updateConfigAndRun();
+              await updateConfigAndRun();
             }
           },
           () => {
@@ -404,7 +410,7 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watchAll',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;
@@ -412,7 +418,7 @@ export default async function watch(
         updateConfigAndRun({
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         break;
       case 'f':
@@ -425,7 +431,7 @@ export default async function watch(
         globalConfig = updateGlobalConfig(globalConfig, {
           mode: 'watch',
           testNamePattern: '',
-          testPathPattern: '',
+          testPathPatterns: [],
         });
         startRun(globalConfig);
         break;
@@ -458,7 +464,6 @@ export default async function watch(
   }
 
   startRun(globalConfig);
-  return Promise.resolve();
 }
 
 const checkForConflicts = (
@@ -496,8 +501,8 @@ const checkForConflicts = (
       .join(' and ');
     error = `
   Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
-      `<${key}>`,
-    )}.
+    `<${key}>`,
+  )}.
   Please change the key configuration for one of the conflicting plugins to avoid overlap.`.trim();
   }
 
@@ -528,10 +533,11 @@ const usage = (
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {
+  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
   const messages = [
     activeFilters(globalConfig),
 
-    globalConfig.testPathPattern || globalConfig.testNamePattern
+    testPathPatterns.isSet() || globalConfig.testNamePattern
       ? `${chalk.dim(' \u203A Press ')}c${chalk.dim(' to clear filters.')}`
       : null,
     `\n${chalk.bold('Watch Usage')}`,
@@ -549,7 +555,7 @@ const usage = (
         )}`,
 
     (globalConfig.watchAll ||
-      globalConfig.testPathPattern ||
+      testPathPatterns.isSet() ||
       globalConfig.testNamePattern) &&
     !globalConfig.noSCM
       ? `${chalk.dim(' \u203A Press ')}o${chalk.dim(

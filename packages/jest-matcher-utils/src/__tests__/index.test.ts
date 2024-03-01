@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
-  MatcherHintOptions,
+  type MatcherHintOptions,
   diff,
   ensureNoExpected,
   ensureNumbers,
@@ -23,7 +23,7 @@ import {
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('stringify()', () => {
-  [
+  for (const [v, s] of [
     [[], '[]'],
     [{}, '{}'],
     [1, '1'],
@@ -33,17 +33,22 @@ describe('stringify()', () => {
     [undefined, 'undefined'],
     ['abc', '"abc"'],
     [Symbol.for('abc'), 'Symbol(abc)'],
+    /* eslint-disable unicorn/prefer-number-properties */
     [NaN, 'NaN'],
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
+    /* eslint-enable */
+    [Number.NaN, 'NaN'],
+    [Number.POSITIVE_INFINITY, 'Infinity'],
+    [Number.NEGATIVE_INFINITY, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
     [BigInt(1), '1n'],
     [BigInt(0), '0n'],
-  ].forEach(([v, s]) => {
+  ]) {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
     });
-  });
+  }
 
   test('circular references', () => {
     const a: any = {};
@@ -86,7 +91,7 @@ describe('stringify()', () => {
   test('reduces maxDepth if stringifying very large objects', () => {
     const big: any = {a: 1, b: {}};
     const small: any = {a: 1, b: {}};
-    for (let i = 0; i < 10000; i += 1) {
+    for (let i = 0; i < 10_000; i += 1) {
       big.b[i] = 'test';
     }
 
@@ -101,7 +106,7 @@ describe('stringify()', () => {
   test('reduces maxWidth if stringifying very large arrays', () => {
     const big: any = [];
     const small: any = [];
-    const testString = Array(1000).join('x');
+    const testString = Array.from({length: 1000}).join('x');
 
     for (let i = 0; i < 100; i += 1) {
       big[i] = testString;
@@ -231,7 +236,7 @@ jest.mock('jest-diff', () => ({
 }));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
-    [
+    for (const [actual, expected] of [
       ['a', 'b'],
       ['a', {}],
       ['a', null],
@@ -240,9 +245,8 @@ describe('diff', () => {
       ['a', true],
       [1, true],
       [BigInt(1), true],
-    ].forEach(([actual, expected]) =>
-      expect(diff(actual, expected)).toBe('diff output'),
-    );
+    ])
+      expect(diff(actual, expected)).toBe('diff output');
   });
 
   test('two booleans', () => {

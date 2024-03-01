@@ -16,7 +16,7 @@ describe('`done()` called more than once', () => {
         done();
         done();
       })
-      .catch(err => err);
+      .catch(error => error);
   });
 });
 

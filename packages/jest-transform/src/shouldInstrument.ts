@@ -41,7 +41,7 @@ export default function shouldInstrument(
   }
 
   if (
-    config.forceCoverageMatch.length &&
+    config.forceCoverageMatch.length > 0 &&
     micromatch.any(filename, config.forceCoverageMatch)
   ) {
     return true;
@@ -71,7 +71,7 @@ export default function shouldInstrument(
 
   if (
     // still cover if `only` is specified
-    options.collectCoverageFrom.length &&
+    options.collectCoverageFrom.length > 0 &&
     !globsToMatcher(options.collectCoverageFrom)(
       replacePathSepForGlob(path.relative(config.rootDir, filename)),
     )
@@ -80,7 +80,9 @@ export default function shouldInstrument(
   }
 
   if (
-    config.coveragePathIgnorePatterns.some(pattern => !!filename.match(pattern))
+    config.coveragePathIgnorePatterns.some(pattern =>
+      new RegExp(pattern).test(filename),
+    )
   ) {
     return false;
   }

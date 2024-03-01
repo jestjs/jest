@@ -10,7 +10,7 @@
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {isPromise} from 'jest-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import {
   any,
   anything,
@@ -87,7 +87,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
 };
 
 const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
-  if (name === 'toThrow' || name === 'toThrowError') {
+  if (name === 'toThrow') {
     return createThrowMatcher(name, true);
   } else if (
     name === 'toThrowErrorMatchingSnapshot' ||
@@ -100,7 +100,7 @@ const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
 };
 
 export const expect: Expect = (actual: any, ...rest: Array<any>) => {
-  if (rest.length !== 0) {
+  if (rest.length > 0) {
     throw new Error('Expect takes at most one argument.');
   }
 
@@ -113,7 +113,7 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
 
   const err = new JestAssertionError();
 
-  Object.keys(allMatchers).forEach(name => {
+  for (const name of Object.keys(allMatchers)) {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
     expectation[name] = makeThrowingMatcher(matcher, false, '', actual);
@@ -148,7 +148,7 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
       actual,
       err,
     );
-  });
+  }
 
   return expectation;
 };
@@ -193,7 +193,7 @@ const makeResolveMatcher =
           null,
           args,
         ),
-      reason => {
+      error => {
         outerErr.message =
           `${matcherUtils.matcherHint(
             matcherName,
@@ -202,8 +202,8 @@ const makeResolveMatcher =
             options,
           )}\n\n` +
           'Received promise rejected instead of resolved\n' +
-          `Rejected to value: ${matcherUtils.printReceived(reason)}`;
-        return Promise.reject(outerErr);
+          `Rejected to value: ${matcherUtils.printReceived(error)}`;
+        throw outerErr;
       },
     );
   };
@@ -254,10 +254,10 @@ const makeRejectMatcher =
           )}\n\n` +
           'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
-        return Promise.reject(outerErr);
+        throw outerErr;
       },
-      reason =>
-        makeThrowingMatcher(matcher, isNot, 'rejects', reason, innerErr).apply(
+      error =>
+        makeThrowingMatcher(matcher, isNot, 'rejects', error, innerErr).apply(
           null,
           args,
         ),
@@ -428,10 +428,7 @@ const _validateResult = (result: any) => {
 };
 
 function assertions(expected: number): void {
-  const error = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(error, assertions);
-  }
+  const error = new ErrorWithStack(undefined, assertions);
 
   setState({
     expectedAssertionsNumber: expected,
@@ -439,10 +436,7 @@ function assertions(expected: number): void {
   });
 }
 function hasAssertions(...args: Array<unknown>): void {
-  const error = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(error, hasAssertions);
-  }
+  const error = new ErrorWithStack(undefined, hasAssertions);
 
   matcherUtils.ensureNoExpected(args[0], '.hasAssertions');
   setState({

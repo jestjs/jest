@@ -27,7 +27,7 @@ export default class ModuleMap implements IModuleMap {
   private static mapToArrayRecursive(
     map: Map<string, any>,
   ): Array<[string, unknown]> {
-    let arr = Array.from(map);
+    let arr = [...map];
     if (arr[0] && arr[0][1] instanceof Map) {
       arr = arr.map(
         el => [el[0], this.mapToArrayRecursive(el[1])] as [string, unknown],
@@ -102,8 +102,8 @@ export default class ModuleMap implements IModuleMap {
         duplicates: ModuleMap.mapToArrayRecursive(
           this._raw.duplicates,
         ) as SerializableModuleMap['duplicates'],
-        map: Array.from(this._raw.map),
-        mocks: Array.from(this._raw.mocks),
+        map: [...this._raw.map],
+        mocks: [...this._raw.mocks],
         rootDir: this._raw.rootDir,
       };
     }
@@ -224,9 +224,9 @@ class DuplicateHasteCandidatesError extends Error {
         'cannot be resolved, because there exists several different ' +
         'files, or packages, that provide a module for ' +
         `that particular name and platform. ${platformMessage} You must ` +
-        `delete or exclude files until there remains only one of these:\n\n${Array.from(
-          duplicatesSet,
-        )
+        `delete or exclude files until there remains only one of these:\n\n${[
+          ...duplicatesSet,
+        ]
           .map(
             ([dupFilePath, dupFileType]) =>
               `  * \`${dupFilePath}\` (${getTypeMessage(dupFileType)})\n`,

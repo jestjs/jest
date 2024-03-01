@@ -10,8 +10,8 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/facebook/jest/nodejs.yml?label=CI&logo=GitHub"></a>
-  <a href="https://codecov.io/github/facebook/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/facebook/jest/main.svg?maxAge=43200"></a>
+  <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/jestjs/jest/nodejs.yml?label=CI&logo=GitHub"></a>
+  <a href="https://codecov.io/github/jestjs/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/jestjs/jest/main.svg?maxAge=43200"></a>
 </p>
 <p align="center">
   <a href="https://gitpod.io/#https://github.com/jestjs/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
@@ -53,6 +53,7 @@
   - [Backers](#backers)
   - [Sponsors](#sponsors)
 - [License](#license)
+- [Copyright](#copyright)
 
 ## Getting Started
 
@@ -131,7 +132,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
 
 ```bash
-jest --init
+yarn create jest
 ```
 
 ### Using Babel
@@ -153,7 +154,8 @@ module.exports = {
 
 The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
-<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
+<details>
+  <summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
@@ -275,3 +277,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 Jest is [MIT licensed](./LICENSE).
+
+## Copyright
+
+Copyright Contributors to the Jest project.

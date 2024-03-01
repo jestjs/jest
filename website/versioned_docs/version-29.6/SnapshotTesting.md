@@ -127,15 +127,15 @@ it('renders correctly', () => {
     .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot(`
-<a
-  className="normal"
-  href="https://example.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  Example Site
-</a>
-`);
+    <a
+      className="normal"
+      href="https://example.com"
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+    >
+      Example Site
+    </a>
+  `);
 });
 ```
 
@@ -230,7 +230,7 @@ const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
 expect(stringWithConstantData).toMatchSnapshot();
 ```
 
-Another way is to [mock](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
+Other ways this can be done is using the [snapshot serializer](Configuration.md#snapshotserializers-arraystring) or [mocking](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
 
 :::
 
@@ -255,7 +255,7 @@ Your tests should be deterministic. Running the same tests multiple times on a c
 For example, if you have a [Clock](https://github.com/jestjs/jest/blob/main/examples/snapshot/Clock.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
 
 ```js
-Date.now = jest.fn(() => 1482363367071);
+Date.now = jest.fn(() => 1_482_363_367_071);
 ```
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.

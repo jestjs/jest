@@ -33,10 +33,11 @@ export async function run(
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = <Config.Argv>(
-      yargs.usage(args.usage).help(false).version(false).options(args.options)
-        .argv
-    );
+    argv = yargs
+      .usage(args.usage)
+      .help(false)
+      .version(false)
+      .options(args.options).argv as Config.Argv;
 
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
@@ -52,7 +53,7 @@ export async function run(
     return;
   }
 
-  if (!argv._.length) {
+  if (argv._.length === 0) {
     console.log('Please provide a path to a script. (See --help for details)');
     process.on('exit', () => (process.exitCode = 1));
     return;
@@ -139,8 +140,10 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e: any) {
-    console.error(chalk.red(util.types.isNativeError(e) ? e.stack : e));
+  } catch (error: any) {
+    console.error(
+      chalk.red(util.types.isNativeError(error) ? error.stack : error),
+    );
     process.on('exit', () => {
       process.exitCode = 1;
     });

@@ -9,9 +9,8 @@
 import type {Global} from '@jest/types';
 import type {EachTests} from '../bind';
 import {
-  Headings,
-  Template,
-  Templates,
+  type Headings,
+  type Templates,
   interpolateVariables,
 } from './interpolation';
 
@@ -29,7 +28,7 @@ export default function template(
 }
 
 const convertRowToTable = (row: Global.Row, headings: Headings): Global.Table =>
-  Array.from({length: row.length / headings.length}).map((_, index) =>
+  Array.from({length: row.length / headings.length}, (_, index) =>
     row.slice(
       index * headings.length,
       index * headings.length + headings.length,
@@ -41,8 +40,5 @@ const convertTableToTemplates = (
   headings: Headings,
 ): Templates =>
   table.map(row =>
-    row.reduce<Template>(
-      (acc, value, index) => Object.assign(acc, {[headings[index]]: value}),
-      {},
-    ),
+    Object.fromEntries(row.map((value, index) => [headings[index], value])),
   );

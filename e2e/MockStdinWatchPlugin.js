@@ -20,7 +20,7 @@ class MockStdinWatchPlugin {
   apply(jestHooks) {
     jestHooks.onTestRunComplete(() => {
       const {keys} = this._config.input.shift();
-      keys.forEach(key => this._stdin.emit('data', key));
+      for (const key of keys) this._stdin.emit('data', key);
     });
   }
 }

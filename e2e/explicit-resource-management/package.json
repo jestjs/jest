@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-explicit-resource-management": "^7.23.9"
+  }
+}

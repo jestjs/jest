@@ -54,7 +54,7 @@ class CallTracker {
     };
 
     this.any = function () {
-      return !!calls.length;
+      return calls.length > 0;
     };
 
     this.count = function () {
@@ -71,9 +71,9 @@ class CallTracker {
     };
 
     this.allArgs = function () {
-      const callArgs = [];
-      for (let i = 0; i < calls.length; i++) {
-        callArgs.push(calls[i].args);
+      const callArgs: Array<unknown> = [];
+      for (const call of calls) {
+        callArgs.push(call.args);
       }
 
       return callArgs;
@@ -84,7 +84,7 @@ class CallTracker {
     };
 
     this.mostRecent = function () {
-      return calls[calls.length - 1];
+      return calls.at(-1)!;
     };
 
     this.reset = function () {
