@@ -3052,7 +3052,7 @@ __metadata:
     jest-junit: ^16.0.0
     jest-mock: "workspace:*"
     jest-runner-tsd: ^6.0.0
-    jest-serializer-ansi-escapes: ^2.0.1
+    jest-serializer-ansi-escapes: ^3.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
@@ -13142,10 +13142,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-serializer-ansi-escapes@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "jest-serializer-ansi-escapes@npm:2.0.1"
-  checksum: 90af1e8811656326375073472593370e6279ce9e4b965b1861d6c12a6cf0167b8b213261e837e1b2072aba5483cb87afcc1fea66af79b87bcf96f672f041e4af
+"jest-serializer-ansi-escapes@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jest-serializer-ansi-escapes@npm:3.0.0"
+  dependencies:
+    pretty-ansi: 2.0.0
+  checksum: 51b84889c9fda562d8eeac65328d693cc6c11549f01c6060555a4993d6d52a7df8a7b661d33bfad13856397cc64320806db0ba1c81398872a33ed5569be14282
   languageName: node
   linkType: hard
 
@@ -17238,6 +17240,13 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: b416e1e4b26c351403343ebe461feda631c0eee5c3cf316c711204a08f3c639f38a8f9177c75e98a690998ff82e8ddc80c6bc027fb4ef6cedb6a4db035b4fe9a
+  languageName: node
+  linkType: hard
+
+"pretty-ansi@npm:2.0.0":
+  version: 2.0.0
+  resolution: "pretty-ansi@npm:2.0.0"
+  checksum: 782fb6111a3acb3a1a52859e702852075cf63249854fbf5ddb23b1a12f35447f77d3ed432acae8c4f32ce6cc5e4e66e79aaafd457a707d5ae260c82b2acf9e5f
   languageName: node
   linkType: hard
 
