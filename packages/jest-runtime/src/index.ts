@@ -529,10 +529,10 @@ export default class Runtime {
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
               meta.dirname = path.dirname(meta.filename);
 
-              meta.resolve = (
+              meta.resolve = async (
                 specifier: string,
                 parent?: string | URL,
-              ): string | null => {
+              ): Promise<string> => {
                 let filename;
                 let dirname;
 
@@ -573,7 +573,7 @@ export default class Runtime {
                     ? pathToFileURL(resolvedPath).href
                     : resolvedPath;
                 } else {
-                  return null;
+                  throw new Error('Cannot Resolve Path');
                 }
               };
 
