@@ -530,41 +530,30 @@ export default class Runtime {
                 parent?: string | URL,
               ): Promise<string> => {
                 let filename: string;
-                let dirname: string;
 
                 if (typeof parent === 'string') {
                   // Check if parent is a valid file URL
                   if (parent.startsWith('file:///')) {
                     filename = path.resolve(fileURLToPath(parent), specifier);
-                    dirname = `./${parent.replace('file:///', '')}`; // Convert file URL to relative path
                   } else {
                     // Parent is a non-URL string; treat as a file path
                     filename = path.resolve(parent, specifier);
-                    dirname = parent;
                   }
                 } else {
                   // No valid parent provided fallback to module's URL
-                  filename = fileURLToPath(meta.url);
-                  dirname = path.dirname(filename);
+                  filename = modulePath;
                 }
 
-                const resolvedPath =
-                  this._resolver.resolveModuleFromDirIfExists(
-                    dirname,
-                    specifier,
-                    {conditions: this.esmConditions},
-                  );
+                const resolvedPath = await this._resolveModule(
+                  filename,
+                  specifier,
+                );
 
-                // Check resolution result and format output
-                if (resolvedPath) {
-                  // Convert the resolved path back to a URL if parent was originally a URL otherwise return the path
-                  return typeof parent === 'string' &&
-                    parent.startsWith('file:///')
-                    ? pathToFileURL(resolvedPath).href
-                    : resolvedPath;
-                }
-
-                throw new Error('Cannot Resolve Path');
+                // Convert the resolved path back to a URL if parent was originally a URL otherwise return the path
+                return typeof parent === 'string' &&
+                  parent.startsWith('file:///')
+                  ? pathToFileURL(resolvedPath).href
+                  : resolvedPath;
               };
 
               let jest = this.jestObjectCaches.get(modulePath);
@@ -1508,28 +1497,25 @@ export default class Runtime {
       if (module) {
         return module;
       }
-    } else {
-      const {paths} = options;
-      if (paths) {
-        for (const p of paths) {
-          const absolutePath = path.resolve(from, '..', p);
-          const module = this._resolver.resolveModuleFromDirIfExists(
-            absolutePath,
-            moduleName,
-            // required to also resolve files without leading './' directly in the path
-            {conditions: this.cjsConditions, paths: [absolutePath]},
-          );
-          if (module) {
-            return module;
-          }
-        }
-
-        throw new Resolver.ModuleNotFoundError(
-          `Cannot resolve module '${moduleName}' from paths ['${paths.join(
-            "', '",
-          )}'] from ${from}`,
+    } else if (options.paths) {
+      for (const p of options.paths) {
+        const absolutePath = path.resolve(from, '..', p);
+        const module = this._resolver.resolveModuleFromDirIfExists(
+          absolutePath,
+          moduleName,
+          // required to also resolve files without leading './' directly in the path
+          {conditions: this.cjsConditions, paths: [absolutePath]},
         );
+        if (module) {
+          return module;
+        }
       }
+
+      throw new Resolver.ModuleNotFoundError(
+        `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
     }
 
     try {
