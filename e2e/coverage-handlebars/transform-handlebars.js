@@ -5,41 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const dedent = require('dedent');
+const {build} = require('@jridgewell/build-mapping');
+const {encodedMap, AnyMap} = require('@jridgewell/trace-mapping');
 const Handlebars = require('handlebars/dist/cjs/handlebars.js');
+const dedent = require('string-dedent');
 
-function makeOffset(code) {
-  const lines = code.split('\n');
-
-  const line = lines.length;
-  const column = lines.at(-1).length;
-
-  return {column, line};
-}
-
-exports.process = (inputCode, filename) => {
-  const pc = Handlebars.precompile(inputCode, {srcName: filename});
-
-  let code = dedent`
+exports.process = (code, filename) => {
+  const pc = Handlebars.precompile(code, {srcName: filename});
+  const out = dedent(build)`
     const Handlebars = require("handlebars/dist/cjs/handlebars.runtime.js");
-    module.exports = Handlebars.template(
+    module.exports = Handlebars.template(${pc});
   `;
-
-  const sections = [
-    {
-      map: pc.map,
-      offset: makeOffset(code),
-    },
-  ];
-
-  code += pc.code;
-
-  code += ');\n';
-
-  const map = {
-    sections,
-    version: 3,
-  };
-
-  return {code, map};
+  return {code: out.code, map: encodedMap(new AnyMap(out.map))};
 };
