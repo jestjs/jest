@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
 import nativeModule = require('module');
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
@@ -20,7 +21,6 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import type {ResolverConfig} from 'jest-resolve/src/types';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
@@ -47,11 +47,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {
-  type IHasteMap,
-  type IModuleMap,
-  ModuleMap,
-} from 'jest-haste-map';
+import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -533,8 +529,8 @@ export default class Runtime {
                 specifier: string,
                 parent?: string | URL,
               ): Promise<string> => {
-                let filename;
-                let dirname;
+                let filename: string;
+                let dirname: string;
 
                 if (typeof parent === 'string') {
                   // Check if parent is a valid file URL
@@ -552,29 +548,23 @@ export default class Runtime {
                   dirname = path.dirname(filename);
                 }
 
-                // Configure the module resolver
-                const moduleMap = ModuleMap.create('/');
-                const resolver = new Resolver(moduleMap, {
-                  defaultPlatform: 'node',
-                  extensions: ['.js', '.json', '.ts', '.node', '.mjs'],
-                  hasCoreModules: false,
-                } as ResolverConfig);
-
-                const resolvedPath = resolver.resolveModuleFromDirIfExists(
-                  dirname,
-                  specifier,
-                );
+                const resolvedPath =
+                  this._resolver.resolveModuleFromDirIfExists(
+                    dirname,
+                    specifier,
+                    {conditions: this.esmConditions},
+                  );
 
                 // Check resolution result and format output
                 if (resolvedPath) {
-                  // Convert the resolved path back to a URL if sparent was originally a URL otherwise return the path
+                  // Convert the resolved path back to a URL if parent was originally a URL otherwise return the path
                   return typeof parent === 'string' &&
                     parent.startsWith('file:///')
                     ? pathToFileURL(resolvedPath).href
                     : resolvedPath;
-                } else {
-                  throw new Error('Cannot Resolve Path');
                 }
+
+                throw new Error('Cannot Resolve Path');
               };
 
               let jest = this.jestObjectCaches.get(modulePath);
