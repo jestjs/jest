@@ -546,11 +546,7 @@ export default class Runtime {
                   specifier,
                 );
 
-                // Convert the resolved path back to a URL if parent was originally a URL otherwise return the path
-                return typeof parent === 'string' &&
-                  parent.startsWith('file:///')
-                  ? pathToFileURL(resolvedPath).href
-                  : resolvedPath;
+                return pathToFileURL(resolvedPath).href;
               };
 
               let jest = this.jestObjectCaches.get(modulePath);
