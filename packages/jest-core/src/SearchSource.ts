@@ -9,13 +9,13 @@ import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
 import type {Test, TestContext} from '@jest/test-result';
-import type {Config} from '@jest/types';
+import {type Config, TestPathPatterns} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
 import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {TestPathPatterns, globsToMatcher} from 'jest-util';
+import {globsToMatcher} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {

@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import {TestPathPatterns} from 'jest-util';
+import {type Config, TestPathPatterns} from '@jest/types';
 import type {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<

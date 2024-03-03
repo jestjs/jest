@@ -11,8 +11,7 @@ import type {
   SnapshotSummary,
   TestContext,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
-import {TestPathPatterns} from 'jest-util';
+import {type Config, TestPathPatterns} from '@jest/types';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';

@@ -13,7 +13,7 @@ import merge = require('deepmerge');
 import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
-import type {Config} from '@jest/types';
+import {type Config, TestPathPatterns} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver, {
   resolveRunner,
@@ -22,7 +22,6 @@ import Resolver, {
   resolveWatchPlugin,
 } from 'jest-resolve';
 import {
-  TestPathPatterns,
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,

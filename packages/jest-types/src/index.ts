@@ -12,3 +12,4 @@ import type * as TestResult from './TestResult';
 import type * as TransformTypes from './Transform';
 
 export type {Circus, Config, Global, TestResult, TransformTypes};
+export {default as TestPathPatterns} from './TestPathPatterns';

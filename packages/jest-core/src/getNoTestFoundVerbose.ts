@@ -6,8 +6,8 @@
  */
 
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
-import {TestPathPatterns, pluralize} from 'jest-util';
+import {type Config, TestPathPatterns} from '@jest/types';
+import {pluralize} from 'jest-util';
 import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(

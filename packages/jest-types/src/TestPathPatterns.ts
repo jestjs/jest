@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import type * as Config from './Config';
 
 type PatternsConfig = {
   rootDir: string;

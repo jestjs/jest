@@ -3293,6 +3293,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
+    jest-regex-util: "workspace:*"
     tsd-lite: ^0.8.0
   languageName: unknown
   linkType: soft
