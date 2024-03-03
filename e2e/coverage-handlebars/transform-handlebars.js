@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {build} = require('@jridgewell/build-mapping');
-const {encodedMap, AnyMap} = require('@jridgewell/trace-mapping');
+const {build, normalize} = require('@jridgewell/build-mapping');
 const Handlebars = require('handlebars/dist/cjs/handlebars.js');
 const dedent = require('string-dedent');
 
@@ -16,5 +15,5 @@ exports.process = (code, filename) => {
     const Handlebars = require("handlebars/dist/cjs/handlebars.runtime.js");
     module.exports = Handlebars.template(${pc});
   `;
-  return {code: out.code, map: encodedMap(new AnyMap(out.map))};
+  return normalize(out);
 };
