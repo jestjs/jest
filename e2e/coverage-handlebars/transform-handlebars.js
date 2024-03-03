@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {build, normalize} = require('@jridgewell/build-mapping');
+const {build} = require('@jridgewell/build-mapping');
 const Handlebars = require('handlebars/dist/cjs/handlebars.js');
 const dedent = require('string-dedent');
 
 exports.process = (code, filename) => {
   const pc = Handlebars.precompile(code, {srcName: filename});
-  const out = dedent(build)`
+  return dedent(build)`
     const Handlebars = require("handlebars/dist/cjs/handlebars.runtime.js");
     module.exports = Handlebars.template(${pc});
   `;
-  return normalize(out);
 };

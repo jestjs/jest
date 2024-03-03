@@ -5,12 +5,12 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@jridgewell/build-mapping@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@jridgewell/build-mapping@npm:0.1.1"
+"@jridgewell/build-mapping@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@jridgewell/build-mapping@npm:0.2.0"
   dependencies:
-    "@jridgewell/trace-mapping": 0.3.25
-  checksum: c1847c8092f764416e4d40aba58c08d5cdff13f8554d71dcca05217cafb5125101370ca7f2b52ef0ce7b8a073b35311f91bd9bd97fecbf5f2eec08ab5705a8ab
+    "@jridgewell/trace-mapping": ^0.3.25
+  checksum: af6f85edd42a437cc6f0794485528e5e66e1295315df55cc4cc8f27dcc937619e4ddc526cbebd87c154dfb9e14c0e16562cbc8e0e758fc19d7030314bb30534c
   languageName: node
   linkType: hard
 
@@ -28,7 +28,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/trace-mapping@npm:0.3.25":
+"@jridgewell/trace-mapping@npm:^0.3.25":
   version: 0.3.25
   resolution: "@jridgewell/trace-mapping@npm:0.3.25"
   dependencies:
@@ -74,7 +74,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@jridgewell/build-mapping": ^0.1.1
+    "@jridgewell/build-mapping": ^0.2.0
     handlebars: ^4.7.3
     string-dedent: ^3.0.1
   languageName: unknown
