@@ -6,7 +6,8 @@
     "testEnvironment": "node"
   },
   "dependencies": {
+    "@jridgewell/build-mapping": "^0.2.0",
     "handlebars": "^4.7.3",
-    "source-map": "^0.6.1"
+    "string-dedent": "^3.0.1"
   }
 }
