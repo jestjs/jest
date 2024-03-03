@@ -408,9 +408,7 @@ const buildTestPathPatterns = (
   const config = {rootDir};
   const testPathPatterns = new TestPathPatterns(patterns, config);
 
-  try {
-    testPathPatterns.validate();
-  } catch {
+  if (!testPathPatterns.isValid()) {
     clearLine(process.stdout);
 
     // eslint-disable-next-line no-console

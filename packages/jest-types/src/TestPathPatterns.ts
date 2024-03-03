@@ -61,10 +61,15 @@ export default class TestPathPatterns {
   }
 
   /**
-   * Throw an error if the patterns don't form a valid regex.
+   * Return true if the patterns are valid.
    */
-  validate(): void {
-    this.toRegex();
+  isValid(): boolean {
+    try {
+      this.toRegex();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
