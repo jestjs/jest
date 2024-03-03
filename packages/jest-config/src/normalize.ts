@@ -1012,7 +1012,7 @@ export default async function normalize(
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   const testPathPatterns = buildTestPathPatterns(argv, options.rootDir);
-  newOptions.testPathPatterns = testPathPatterns.patterns;
+  newOptions.testPathPatterns = testPathPatterns;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = Number.parseInt(

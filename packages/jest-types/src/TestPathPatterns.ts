@@ -6,7 +6,6 @@
  */
 
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
-import type * as Config from './Config';
 
 type PatternsConfig = {
   rootDir: string;
@@ -19,10 +18,6 @@ export default class TestPathPatterns {
     readonly patterns: Array<string>,
     private readonly config: PatternsConfig,
   ) {}
-
-  static fromGlobalConfig(globalConfig: Config.GlobalConfig): TestPathPatterns {
-    return new TestPathPatterns(globalConfig.testPathPatterns, globalConfig);
-  }
 
   private get regexString(): string {
     if (this._regexString !== null) {

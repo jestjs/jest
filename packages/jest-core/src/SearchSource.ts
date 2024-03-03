@@ -9,7 +9,7 @@ import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
 import type {Test, TestContext} from '@jest/test-result';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config, TestPathPatterns} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
 import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -291,9 +291,7 @@ export default class SearchSource {
         globalConfig.collectCoverage,
       );
     } else {
-      return this.findMatchingTests(
-        TestPathPatterns.fromGlobalConfig(globalConfig),
-      );
+      return this.findMatchingTests(globalConfig.testPathPatterns);
     }
   }
 

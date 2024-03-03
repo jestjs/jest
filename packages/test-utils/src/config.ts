@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
+import {type Config, TestPathPatterns} from '@jest/types';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
@@ -55,7 +55,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   snapshotFormat: {},
   testFailureExitCode: 1,
   testNamePattern: '',
-  testPathPatterns: [],
+  testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
   testResultsProcessor: undefined,
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,

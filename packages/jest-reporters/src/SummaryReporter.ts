@@ -11,7 +11,7 @@ import type {
   SnapshotSummary,
   TestContext,
 } from '@jest/test-result';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
@@ -211,7 +211,7 @@ export default class SummaryReporter extends BaseReporter {
     testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
-    const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+    const testPathPatterns = globalConfig.testPathPatterns;
 
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests

@@ -63,10 +63,12 @@ export type AllowedConfigOptions = Partial<
     | 'onlyFailures'
     | 'reporters'
     | 'testNamePattern'
-    | 'testPathPatterns'
     | 'updateSnapshot'
     | 'verbose'
-  > & {mode: 'watch' | 'watchAll'}
+  > & {
+    mode: 'watch' | 'watchAll';
+    testPathPatterns: Array<string>;
+  }
 >;
 
 export type UpdateConfigCallback = (config?: AllowedConfigOptions) => void;

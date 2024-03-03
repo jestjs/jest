@@ -31,13 +31,13 @@ export default function updateGlobalConfig(
   }
 
   if (options.testPathPatterns !== undefined) {
-    newConfig.testPathPatterns = options.testPathPatterns;
+    newConfig.testPathPatterns = new TestPathPatterns(options.testPathPatterns, {rootDir: globalConfig.rootDir});
   }
 
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&
-    !TestPathPatterns.fromGlobalConfig(newConfig).isSet();
+    !newConfig.testPathPatterns.isSet();
 
   if (typeof options.bail === 'boolean') {
     newConfig.bail = options.bail ? 1 : 0;
