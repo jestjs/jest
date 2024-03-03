@@ -38,13 +38,19 @@ import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
+  projectConfig: Config.ProjectConfig,
   source: SearchSource,
   outputStream: WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
 ) => {
-  const data = await source.getTestPaths(globalConfig, changedFiles, filter);
+  const data = await source.getTestPaths(
+    globalConfig,
+    projectConfig,
+    changedFiles,
+    filter,
+  );
 
   if (data.tests.length === 0 && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
@@ -188,6 +194,7 @@ export default async function runJest({
       const searchSource = searchSources[index];
       const matches = await getTestPaths(
         globalConfig,
+        context.config,
         searchSource,
         outputStream,
         changedFilesPromise && (await changedFilesPromise),

@@ -268,6 +268,7 @@ export default class SearchSource {
 
   private async _getTestPaths(
     globalConfig: Config.GlobalConfig,
+    projectConfig: Config.ProjectConfig,
     changedFiles?: ChangedFiles,
   ): Promise<SearchResult> {
     if (globalConfig.onlyChanged) {
@@ -297,7 +298,7 @@ export default class SearchSource {
     } else {
       return this.findMatchingTests(
         globalConfig.testPathPatterns.toExecutor({
-          rootDir: globalConfig.rootDir,
+          rootDir: projectConfig.rootDir,
         }),
       );
     }
@@ -327,10 +328,15 @@ export default class SearchSource {
 
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
+    projectConfig: Config.ProjectConfig,
     changedFiles?: ChangedFiles,
     filter?: Filter,
   ): Promise<SearchResult> {
-    const searchResult = await this._getTestPaths(globalConfig, changedFiles);
+    const searchResult = await this._getTestPaths(
+      globalConfig,
+      projectConfig,
+      changedFiles,
+    );
 
     const filterPath = globalConfig.filter;
 

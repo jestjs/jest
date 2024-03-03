@@ -111,12 +111,14 @@ describe('SearchSource', () => {
       filter?: Filter,
     ) => {
       const {searchSource, config} = await initSearchSource(initialOptions);
+      const allConfig = {
+        ...config,
+        ...initialOptions,
+        testPathPatterns: new TestPathPatterns([]),
+      };
       const {tests: paths} = await searchSource.getTestPaths(
-        {
-          ...config,
-          ...initialOptions,
-          testPathPatterns: new TestPathPatterns([]),
-        },
+        allConfig,
+        allConfig,
         null,
         filter,
       );
