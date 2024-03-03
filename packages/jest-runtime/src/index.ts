@@ -518,32 +518,22 @@ export default class Runtime {
               return this.linkAndEvaluateModule(module);
             },
             initializeImportMeta: (meta: JestImportMeta) => {
-              meta.url = pathToFileURL(modulePath).href;
+              const metaUrl = pathToFileURL(modulePath).href;
+              meta.url = metaUrl;
 
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-              meta.filename = fileURLToPath(meta.url);
+              meta.filename = modulePath;
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-              meta.dirname = path.dirname(meta.filename);
+              meta.dirname = path.dirname(modulePath);
 
-              meta.resolve = async (specifier, parent) => {
-                let filename: string;
+              // @ts-expect-error It should not be async. Will be fixed when updated to @types/node@20.11.0
+              meta.resolve = (specifier, parent = metaUrl) => {
+                const parentPath = fileURLToPath(parent);
 
-                if (typeof parent === 'string') {
-                  // Check if parent is a valid file URL
-                  if (parent.startsWith('file:///')) {
-                    filename = path.resolve(fileURLToPath(parent), specifier);
-                  } else {
-                    // Parent is a non-URL string; treat as a file path
-                    filename = path.resolve(parent, specifier);
-                  }
-                } else {
-                  // No valid parent provided fallback to module's URL
-                  filename = modulePath;
-                }
-
-                const resolvedPath = await this._resolveModule(
-                  filename,
+                const resolvedPath = this._resolver.resolveModule(
+                  parentPath,
                   specifier,
+                  {conditions: this.esmConditions},
                 );
 
                 return pathToFileURL(resolvedPath).href;

@@ -24,7 +24,7 @@ import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable */
 
-test('should have correct import.meta', async () => {
+test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
   expect(import.meta).toEqual({
@@ -45,14 +45,14 @@ test('should have correct import.meta', async () => {
   ).toBe(true);
   expect(import.meta.dirname.endsWith('/e2e/native-esm/__tests__')).toBe(true);
   expect(
-    (await import.meta.resolve('colors')).endsWith(
-      'jest/e2e/native-esm/node_modules/colors/lib/index.js',
-    ),
+    import.meta
+      .resolve('colors')
+      .endsWith('jest/e2e/native-esm/node_modules/colors/lib/index.js'),
   ).toBe(true);
   expect(
-    (await import.meta.resolve('./native-esm.test')).endsWith(
-      'jest/e2e/native-esm/__tests__/native-esm.test.js',
-    ),
+    import.meta
+      .resolve('./native-esm.test')
+      .endsWith('jest/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 
