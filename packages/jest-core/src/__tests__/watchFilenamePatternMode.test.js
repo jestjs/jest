@@ -73,7 +73,7 @@ const nextTick = () => new Promise(resolve => process.nextTick(resolve));
 
 const globalConfig = {
   rootDir: '',
-  testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
+  testPathPatterns: new TestPathPatterns([]),
   watch: true,
 };
 

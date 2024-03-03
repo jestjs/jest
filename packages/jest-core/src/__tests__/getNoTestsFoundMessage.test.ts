@@ -18,7 +18,7 @@ describe('getNoTestsFoundMessage', () => {
   function createGlobalConfig(options?: Partial<Config.GlobalConfig>) {
     return makeGlobalConfig({
       rootDir: '/root/dir',
-      testPathPatterns: new TestPathPatterns(['/path/pattern'], {rootDir: '/'}),
+      testPathPatterns: new TestPathPatterns(['/path/pattern']),
       ...options,
     });
   }

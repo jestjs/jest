@@ -288,6 +288,6 @@ export function getConfig(
 
   return {
     ...globalConfig,
-    testPathPatterns: new TestPathPatterns(testPathPatterns, {rootDir: '/'}),
+    testPathPatterns: new TestPathPatterns(testPathPatterns),
   };
 }

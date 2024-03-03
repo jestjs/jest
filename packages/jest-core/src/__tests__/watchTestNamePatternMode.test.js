@@ -85,7 +85,7 @@ const watch = require('../watch').default;
 
 const globalConfig = {
   rootDir: '',
-  testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
+  testPathPatterns: new TestPathPatterns([]),
   watch: true,
 };
 

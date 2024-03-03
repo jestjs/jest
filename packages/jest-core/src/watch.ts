@@ -229,11 +229,13 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
-      const testPathPatterns = new TestPathPatterns([], globalConfig);
+      const testPathPatternsExecutor = new TestPathPatterns([]).toExecutor({
+        rootDir: globalConfig.rootDir,
+      });
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource
-          .findMatchingTests(testPathPatterns)
+          .findMatchingTests(testPathPatternsExecutor)
           .tests.map(t => t.path),
       }));
       hooks.getEmitter().onFileChange({projects});

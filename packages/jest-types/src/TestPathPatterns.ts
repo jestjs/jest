@@ -7,16 +7,62 @@
 
 import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 
-type PatternsConfig = {
+export class TestPathPatterns {
+  constructor(readonly patterns: Array<string>) {}
+
+  /**
+   * Return true if there are any patterns.
+   */
+  isSet(): boolean {
+    return this.patterns.length > 0;
+  }
+
+  /**
+   * Return true if the patterns are valid.
+   */
+  isValid(): boolean {
+    return this.toExecutor({
+      // isValid() doesn't require rootDir to be accurate, so just
+      // specify a dummy rootDir here
+      rootDir: '/',
+    }).isValid();
+  }
+
+  /**
+   * Return a human-friendly version of the pattern regex.
+   */
+  toPretty(): string {
+    return this.patterns.join('|');
+  }
+
+  /**
+   * Return a TestPathPatternsExecutor that can execute the patterns.
+   */
+  toExecutor(
+    options: TestPathPatternsExecutorOptions,
+  ): TestPathPatternsExecutor {
+    return new TestPathPatternsExecutor(this, options);
+  }
+
+  /** For jest serializers */
+  toJSON(): any {
+    return {
+      patterns: this.patterns,
+      type: 'TestPathPatterns',
+    };
+  }
+}
+
+export type TestPathPatternsExecutorOptions = {
   rootDir: string;
 };
 
-export default class TestPathPatterns {
+export class TestPathPatternsExecutor {
   private _regexString: string | null = null;
 
   constructor(
-    readonly patterns: Array<string>,
-    private readonly config: PatternsConfig,
+    readonly patterns: TestPathPatterns,
+    private readonly options: TestPathPatternsExecutorOptions,
   ) {}
 
   private get regexString(): string {
@@ -24,10 +70,10 @@ export default class TestPathPatterns {
       return this._regexString;
     }
 
-    const rootDir = this.config.rootDir.replace(/\/*$/, '/');
+    const rootDir = this.options.rootDir.replace(/\/*$/, '/');
     const rootDirRegex = escapePathForRegex(rootDir);
 
-    const regexString = this.patterns
+    const regexString = this.patterns.patterns
       .map(p => {
         // absolute paths passed on command line should stay same
         if (p.startsWith('/')) {
@@ -57,7 +103,7 @@ export default class TestPathPatterns {
    * Return true if there are any patterns.
    */
   isSet(): boolean {
-    return this.patterns.length > 0;
+    return this.patterns.isSet();
   }
 
   /**
@@ -85,14 +131,6 @@ export default class TestPathPatterns {
    * Return a human-friendly version of the pattern regex.
    */
   toPretty(): string {
-    return this.patterns.join('|');
-  }
-
-  /** For jest serializers */
-  toJSON(): any {
-    return {
-      patterns: this.patterns,
-      type: 'TestPathPatterns',
-    };
+    return this.patterns.toPretty();
   }
 }

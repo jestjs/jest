@@ -143,7 +143,7 @@ describe('Watch mode flows', () => {
     pipe = {write: jest.fn()};
     globalConfig = {
       rootDir: '',
-      testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
+      testPathPatterns: new TestPathPatterns([]),
       watch: true,
     };
     hasteMapInstances = [{on: () => {}}];
@@ -157,9 +157,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Correctly passing test path pattern', async () => {
-    globalConfig.testPathPatterns = new TestPathPatterns(['test-*'], {
-      rootDir: '/',
-    });
+    globalConfig.testPathPatterns = new TestPathPatterns(['test-*']);
 
     await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
@@ -695,7 +693,7 @@ describe('Watch mode flows', () => {
 
       const newVal = (() => {
         if (option === 'testPathPatterns') {
-          return new TestPathPatterns(['a/b', 'c'], {rootDir: '/'});
+          return new TestPathPatterns(['a/b', 'c']);
         }
 
         return '__JUST_TRYING__';

@@ -392,10 +392,7 @@ const normalizeReporters = ({
   });
 };
 
-const buildTestPathPatterns = (
-  argv: Config.Argv,
-  rootDir: string,
-): TestPathPatterns => {
+const buildTestPathPatterns = (argv: Config.Argv): TestPathPatterns => {
   const patterns = [];
 
   if (argv._) {
@@ -405,8 +402,7 @@ const buildTestPathPatterns = (
     patterns.push(...argv.testPathPatterns);
   }
 
-  const config = {rootDir};
-  const testPathPatterns = new TestPathPatterns(patterns, config);
+  const testPathPatterns = new TestPathPatterns(patterns);
 
   if (!testPathPatterns.isValid()) {
     clearLine(process.stdout);
@@ -419,7 +415,7 @@ const buildTestPathPatterns = (
       ),
     );
 
-    return new TestPathPatterns([], config);
+    return new TestPathPatterns([]);
   }
 
   return testPathPatterns;
@@ -1009,7 +1005,7 @@ export default async function normalize(
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
-  const testPathPatterns = buildTestPathPatterns(argv, options.rootDir);
+  const testPathPatterns = buildTestPathPatterns(argv);
   newOptions.testPathPatterns = testPathPatterns;
   newOptions.json = !!argv.json;
 

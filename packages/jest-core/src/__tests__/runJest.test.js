@@ -24,7 +24,7 @@ describe('runJest', () => {
       contexts: [],
       globalConfig: {
         rootDir: '',
-        testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
+        testPathPatterns: new TestPathPatterns([]),
         testSequencer: require.resolve('@jest/test-sequencer'),
         watch: true,
       },

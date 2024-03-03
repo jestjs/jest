@@ -15,7 +15,7 @@ const now = Date.now;
 const write = process.stderr.write;
 const globalConfig = {
   rootDir: 'root',
-  testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
+  testPathPatterns: new TestPathPatterns([]),
   watch: false,
 };
 

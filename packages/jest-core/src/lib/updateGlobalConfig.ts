@@ -31,7 +31,7 @@ export default function updateGlobalConfig(
   }
 
   if (options.testPathPatterns !== undefined) {
-    newConfig.testPathPatterns = new TestPathPatterns(options.testPathPatterns, {rootDir: globalConfig.rootDir});
+    newConfig.testPathPatterns = new TestPathPatterns(options.testPathPatterns);
   }
 
   newConfig.onlyChanged =
