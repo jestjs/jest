@@ -8,14 +8,14 @@
 import type * as path from 'path';
 import TestPathPatterns from '../TestPathPatterns';
 
-const mockSep = jest.fn();
+const mockSep: jest.Mock<() => string> = jest.fn();
 jest.mock('path', () => {
   return {
-    ...(jest.requireActual('path') as typeof path),
+    ...jest.requireActual('path'),
     get sep() {
       return mockSep() || '/';
     },
-  };
+  } as typeof path;
 });
 beforeEach(() => {
   jest.resetAllMocks();
