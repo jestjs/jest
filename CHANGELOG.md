@@ -80,6 +80,7 @@
 - `[jest-util]` Upgrade `picomatch` to v4 ([#14653](https://github.com/jestjs/jest/pull/14653) & [#14885](https://github.com/jestjs/jest/pull/14885))
 - `[docs] Append to NODE_OPTIONS, not overwrite ([#14730](https://github.com/jestjs/jest/pull/14730))`
 - `[docs]` Updated `.toHaveBeenCalled()` documentation to correctly reflect its functionality ([#14842](https://github.com/jestjs/jest/pull/14842))
+- `[docs]` Link NestJS documentation on testing with Jest ([#14940](https://github.com/jestjs/jest/pull/14940))
 
 ## 29.7.0
 
