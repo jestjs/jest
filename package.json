@@ -39,7 +39,7 @@
     "eslint-plugin-jest": "^27.1.0",
     "eslint-plugin-jsdoc": "^48.0.0",
     "eslint-plugin-local": "link:./.eslintplugin",
-    "eslint-plugin-markdown": "^3.0.0",
+    "eslint-plugin-markdown": "^4.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-unicorn": "^51.0.0",
