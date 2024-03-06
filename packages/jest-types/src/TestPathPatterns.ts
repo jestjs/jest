@@ -82,4 +82,12 @@ export default class TestPathPatterns {
   toPretty(): string {
     return this.patterns.join('|');
   }
+
+  /** For jest serializers */
+  toJSON(): any {
+    return {
+      patterns: this.patterns,
+      type: 'TestPathPatterns',
+    };
+  }
 }

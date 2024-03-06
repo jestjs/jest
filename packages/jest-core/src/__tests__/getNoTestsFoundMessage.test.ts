@@ -6,7 +6,7 @@
  */
 
 import {makeGlobalConfig} from '@jest/test-utils';
-import type {Config} from '@jest/types';
+import {type Config, TestPathPatterns} from '@jest/types';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 jest.mock('jest-util', () => ({
@@ -18,7 +18,7 @@ describe('getNoTestsFoundMessage', () => {
   function createGlobalConfig(options?: Partial<Config.GlobalConfig>) {
     return makeGlobalConfig({
       rootDir: '/root/dir',
-      testPathPatterns: ['/path/pattern'],
+      testPathPatterns: new TestPathPatterns(['/path/pattern'], {rootDir: '/'}),
       ...options,
     });
   }

@@ -7,6 +7,7 @@
  */
 
 import chalk from 'chalk';
+import {TestPathPatterns} from '@jest/types';
 // eslint-disable-next-line import/order
 import {JestHook, KEYS, TestWatcher} from 'jest-watcher';
 
@@ -142,7 +143,7 @@ describe('Watch mode flows', () => {
     pipe = {write: jest.fn()};
     globalConfig = {
       rootDir: '',
-      testPathPatterns: [],
+      testPathPatterns: new TestPathPatterns([], {rootDir: '/'}),
       watch: true,
     };
     hasteMapInstances = [{on: () => {}}];
@@ -156,7 +157,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Correctly passing test path pattern', async () => {
-    globalConfig.testPathPatterns = ['test-*'];
+    globalConfig.testPathPatterns = new TestPathPatterns(['test-*'], {
+      rootDir: '/',
+    });
 
     await watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
@@ -690,6 +693,14 @@ describe('Watch mode flows', () => {
       ok = ok === '✔︎';
       const pluginPath = `${__dirname}/__fixtures__/plugin_path_config_updater_${option}`;
 
+      const newVal = (() => {
+        if (option === 'testPathPatterns') {
+          return new TestPathPatterns(['a/b', 'c'], {rootDir: '/'});
+        }
+
+        return '__JUST_TRYING__';
+      })();
+
       jest.doMock(
         pluginPath,
         () =>
@@ -699,7 +710,7 @@ describe('Watch mode flows', () => {
             }
 
             run(globalConfig, updateConfigAndRun) {
-              updateConfigAndRun({[option]: '__JUST_TRYING__'});
+              updateConfigAndRun({[option]: newVal});
               return Promise.resolve();
             }
           },
@@ -726,7 +737,7 @@ describe('Watch mode flows', () => {
       if (!ok) {
         expector = expector.not;
       }
-      expector.toHaveProperty(option, '__JUST_TRYING__');
+      expector.toHaveProperty(option, newVal);
     },
   );
 
@@ -904,7 +915,7 @@ describe('Watch mode flows', () => {
     await nextTick();
 
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
-      testPathPatterns: ['file'],
+      testPathPatterns: {patterns: ['file']},
       watch: true,
       watchAll: false,
     });
@@ -928,7 +939,7 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock.mock.calls[1][0].globalConfig).toMatchObject({
       testNamePattern: 'test',
-      testPathPatterns: ['file'],
+      testPathPatterns: {patterns: ['file']},
       watch: true,
       watchAll: false,
     });

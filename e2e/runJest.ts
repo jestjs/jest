@@ -14,7 +14,7 @@ import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
 import {normalizeIcons} from '@jest/test-utils';
-import type {Config} from '@jest/types';
+import {type Config, TestPathPatterns} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -284,5 +284,10 @@ export function getConfig(
     throw error;
   }
 
-  return JSON.parse(stdout);
+  const {testPathPatterns, ...globalConfig} = JSON.parse(stdout);
+
+  return {
+    ...globalConfig,
+    testPathPatterns: new TestPathPatterns(testPathPatterns, {rootDir: '/'}),
+  };
 }

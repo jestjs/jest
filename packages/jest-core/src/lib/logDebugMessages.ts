@@ -17,7 +17,10 @@ export default function logDebugMessages(
 ): void {
   const output = {
     configs,
-    globalConfig,
+    globalConfig: {
+      ...globalConfig,
+      testPathPatterns: globalConfig.testPathPatterns.patterns,
+    },
     version: VERSION,
   };
   outputStream.write(`${JSON.stringify(output, null, '  ')}\n`);
