@@ -223,11 +223,8 @@ export default async function runJest({
     }
 
     if (globalConfig.outputFile) {
-      const outputFile = path().resolve(
-        process.cwd(),
-        globalConfig.outputFile
-      );
-      fs().writeFileSync(outputFile, testsListOutput, 'utf8');
+      const outputFile = path.resolve(process.cwd(), globalConfig.outputFile);
+      fs.writeFileSync(outputFile, testsListOutput, 'utf8');
     } else {
       /* eslint-disable no-console */
       console.log(testsListOutput);
