@@ -46,7 +46,7 @@ test('Tests are executed only once even in an MPR', () => {
   });
   /* eslint-enable sort-keys */
 
-  const {stderr, exitCode} = runJest(DIR, ['foo/folder/my-test-bar.js']);
+  const {stderr, exitCode} = runJest(DIR, ['my-test-bar.js']);
 
   expect(exitCode).toBe(0);
 

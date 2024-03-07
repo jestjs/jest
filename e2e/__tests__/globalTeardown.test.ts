@@ -93,7 +93,7 @@ test('should not call a globalTeardown of a project if there are no tests to run
 
   const result = runWithJson('global-teardown', [
     `--config=${configPath}`,
-    '--testPathPatterns=project-1',
+    '--testPathPatterns=teardown1',
   ]);
 
   expect(result.exitCode).toBe(0);
