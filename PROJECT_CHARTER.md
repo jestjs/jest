@@ -42,10 +42,10 @@ Section Intentionally Left Blank
 
 ## Section 5: Definitions
 
-- *Outside Contributors*: contribute code or other artifacts, but do not have the right to commit to the codebase. Contributors work with the project’s maintainers to have code committed to the code base. An Outside Contributor may be promoted to a Contributor or Maintainer by the Maintainers. Outside Contributors should rarely be encumbered by the Maintainers and never by the CPC or OpenJS Foundation Board.
+- _Outside Contributors_: contribute code or other artifacts, but do not have the right to commit to the codebase. Contributors work with the project’s maintainers to have code committed to the code base. An Outside Contributor may be promoted to a Contributor or Maintainer by the Maintainers. Outside Contributors should rarely be encumbered by the Maintainers and never by the CPC or OpenJS Foundation Board.
 
-- *Contributors*: Contributors have triaging rights and commit access to the repository.
+- _Contributors_: Contributors have triaging rights and commit access to the repository.
 
-- *Maintainers*: Contributors with any kind of decision-making authority in the project, and access to publishing and CI setup.
+- _Maintainers_: Contributors with any kind of decision-making authority in the project, and access to publishing and CI setup.
 
 [openjs foundation]: https://openjsf.org
