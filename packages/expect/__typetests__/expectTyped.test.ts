@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError, expectType} from 'tsd-lite';
-import {Matchers, expect} from 'expect';
+import {describe, expect, test} from 'tstyche';
+import {expect as _expect} from 'expect';
 
 declare module 'expect' {
   interface Matchers<R, T> {
@@ -14,9 +14,13 @@ declare module 'expect' {
   }
 }
 
-expectType<void>(expect(100).toTypedEqual(100));
-expectType<void>(expect(101).not.toTypedEqual(101));
+describe('Expect', () => {
+  test('allows type inference of the `actual` argument', () => {
+    expect(_expect(100).toTypedEqual(100)).type.toBeVoid();
+    expect(_expect(101).not.toTypedEqual(100)).type.toBeVoid();
 
-expectError(() => {
-  expect(100).toTypedEqual('three');
+    expect(_expect(100).toTypedEqual('three')).type.toRaiseError(
+      "Argument of type 'string' is not assignable to parameter of type 'number'.",
+    );
+  });
 });
