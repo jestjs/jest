@@ -19,12 +19,7 @@ const normalizePaths = (rawPaths: string) =>
     .split('\\')
     .join('/');
 
-const outputFilePath = path.resolve('.', 'test-lists.json');
-
 describe('--listTests flag', () => {
-  afterAll(() => {
-    fs.unlinkSync(outputFilePath);
-  });
   it('causes tests to be printed in different lines', () => {
     const {exitCode, stdout} = runJest('list-tests', ['--listTests']);
 
@@ -34,7 +29,7 @@ describe('--listTests flag', () => {
     ).toMatchSnapshot();
   });
 
-  it('--listTests flag causes tests to be printed out as JSON when using the --json flag', () => {
+  it('causes tests to be printed out as JSON when using the --json flag', () => {
     const {exitCode, stdout} = runJest('list-tests', ['--listTests', '--json']);
 
     expect(exitCode).toBe(0);
@@ -44,43 +39,50 @@ describe('--listTests flag', () => {
     ).toMatchSnapshot();
   });
 
-  it('--outputFile flag causes tests to be saved in the file as JSON', () => {
-    const {exitCode, stdout} = runJest('list-tests', [
-      '--listTests',
-      '--json',
-      '--outputFile',
-      outputFilePath,
-    ]);
+  describe('--outputFile flag', () => {
+    const outputFilePath = path.resolve('.', 'test-lists.json');
+    afterAll(() => {
+      fs.unlinkSync(outputFilePath);
+    });
+    it('causes tests to be saved in the file as JSON', () => {
+      const {exitCode, stdout} = runJest('list-tests', [
+        '--listTests',
+        '--json',
+        '--outputFile',
+        outputFilePath,
+      ]);
 
-    expect(exitCode).toBe(0);
-    expect(stdout).toBe('');
+      expect(exitCode).toBe(0);
+      expect(stdout).toBe('');
 
-    const outputFileExists = fs.existsSync(outputFilePath);
-    expect(outputFileExists).toBe(true);
+      const outputFileExists = fs.existsSync(outputFilePath);
+      expect(outputFileExists).toBe(true);
 
-    const outputFileContent = fs.readFileSync(outputFilePath, 'utf8');
-    expect(() => JSON.parse(outputFileContent)).not.toThrow();
-    expect(
-      JSON.stringify(JSON.parse(outputFileContent).map(normalizePaths).sort()),
-    ).toMatchSnapshot();
-  });
+      const outputFileContent = fs.readFileSync(outputFilePath, 'utf8');
+      expect(() => JSON.parse(outputFileContent)).not.toThrow();
+      expect(
+        JSON.stringify(
+          JSON.parse(outputFileContent).map(normalizePaths).sort(),
+        ),
+      ).toMatchSnapshot();
+    });
+    it('causes tests to be saved in the file in different lines', () => {
+      const {exitCode, stdout} = runJest('list-tests', [
+        '--listTests',
+        '--outputFile',
+        outputFilePath,
+      ]);
 
-  it('--outputFile flag causes tests to be saved in the file in different lines', () => {
-    const {exitCode, stdout} = runJest('list-tests', [
-      '--listTests',
-      '--outputFile',
-      outputFilePath,
-    ]);
+      expect(exitCode).toBe(0);
+      expect(stdout).toBe('');
 
-    expect(exitCode).toBe(0);
-    expect(stdout).toBe('');
+      const outputFileExists = fs.existsSync(outputFilePath);
+      expect(outputFileExists).toBe(true);
 
-    const outputFileExists = fs.existsSync(outputFilePath);
-    expect(outputFileExists).toBe(true);
-
-    const outputFileContent = fs.readFileSync(outputFilePath, 'utf8');
-    expect(
-      normalizePaths(outputFileContent).split('\n').sort().join('\n'),
-    ).toMatchSnapshot();
+      const outputFileContent = fs.readFileSync(outputFilePath, 'utf8');
+      expect(
+        normalizePaths(outputFileContent).split('\n').sort().join('\n'),
+      ).toMatchSnapshot();
+    });
   });
 });
