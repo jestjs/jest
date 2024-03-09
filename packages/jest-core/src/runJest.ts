@@ -226,9 +226,8 @@ export default async function runJest({
       const outputFile = path.resolve(process.cwd(), globalConfig.outputFile);
       fs.writeFileSync(outputFile, testsListOutput, 'utf8');
     } else {
-      /* eslint-disable no-console */
+      // eslint-disable-next-line no-console
       console.log(testsListOutput);
-      /* eslint-enable */
     }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
