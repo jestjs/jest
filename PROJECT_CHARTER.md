@@ -4,7 +4,7 @@ Jest is a modular test runner and framework for JavaScript, designed for running
 
 ## Section 0: Guiding Principles
 
-The `jest` project is part of the [OpenJS Foundation][openjs foundation], which operates transparently, openly, collaboratively, and ethically. Project proposals, timelines, and status must not merely be open, but also easily visible to outsiders.
+The `jest` project is part of the [OpenJS Foundation][openjs foundation]. The project operates transparently, openly, collaboratively, and ethically. Project proposals, timelines, and status must not merely be open, but also easily visible to outsiders.
 
 ## Section 1: Scope
 
