@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {describe} from 'node:test';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import runJest from '../runJest';
