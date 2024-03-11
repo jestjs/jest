@@ -214,13 +214,9 @@ export default async function runJest({
 
   if (globalConfig.listTests) {
     const testsPaths = [...new Set(allTests.map(test => test.path))];
-    let testsListOutput;
-
-    if (globalConfig.json) {
-      testsListOutput = JSON.stringify(testsPaths);
-    } else {
-      testsListOutput = testsPaths.join('\n');
-    }
+    const testsListOutput = globalConfig.json
+      ? JSON.stringify(testsPaths)
+      : testsPaths.join('\n');
 
     if (globalConfig.outputFile) {
       const outputFile = path.resolve(process.cwd(), globalConfig.outputFile);
