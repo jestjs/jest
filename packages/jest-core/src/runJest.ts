@@ -226,7 +226,7 @@ export default async function runJest({
       console.log(testsListOutput);
     }
 
-    onComplete && onComplete(makeEmptyAggregatedTestResult());
+    onComplete(makeEmptyAggregatedTestResult());
     return;
   }
 
