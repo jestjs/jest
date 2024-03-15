@@ -17,21 +17,17 @@ If you would like to write your own preprocessor, uninstall and delete babel-jes
 _Note: this step is only required if you are using `babel-jest` with additional code preprocessors._
 
 To explicitly define `babel-jest` as a transformer for your JavaScript code, map _.js_ files to the `babel-jest` module. Typescript files are also supported.
-Default load babel configs.
+
+By default, it loads your existing Babel configuration (if any)
+
 ```json
 "transform": {
   "\\.[jt]sx?$": "babel-jest"
 },
 ```
 
-Also we can use [babel options](https://babeljs.io/docs/options).
-```json
-"transform": {
-  "\\.[jt]sx?$": ["babel-jest", { "configFile": "./babel.config.js" }]
-},
-```
+You can use also pass further [babel options](https://babeljs.io/docs/options)
 
-Extends babel configs.
 ```json
 "transform": {
   "\\.[jt]sx?$": ["babel-jest", { "extends": "./babel.config.js", "plugins": ["babel-plugin-transform-import-meta"] }]
