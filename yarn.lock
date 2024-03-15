@@ -4486,6 +4486,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sec-ant/readable-stream@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@sec-ant/readable-stream@npm:0.3.2"
+  checksum: e7f1347704562824bbfef9a9a68cb4dcf75ff2cd8f4df81840de315a84c628a82e7731a8810abe98ba4b970ff8afb7a2debef2e003c530514d60bcb8317b94c9
+  languageName: node
+  linkType: hard
+
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
@@ -10825,6 +10832,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-stream@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "get-stream@npm:9.0.0"
+  dependencies:
+    "@sec-ant/readable-stream": ^0.3.2
+    is-stream: ^4.0.1
+  checksum: b899388a972836e79c848e27b89e0dce5d60ecdc59d6c140340a41dc2efa0416e9e03f566399a80a02edc38e18f19258c3749d97de354d38aff3644aca7b0b2e
+  languageName: node
+  linkType: hard
+
 "get-symbol-description@npm:^1.0.2":
   version: 1.0.2
   resolution: "get-symbol-description@npm:1.0.2"
@@ -12456,6 +12473,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-stream@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "is-stream@npm:4.0.1"
+  checksum: cbea3f1fc271b21ceb228819d0c12a0965a02b57f39423925f99530b4eb86935235f258f06310b67cd02b2d10b49e9a0998f5ececf110ab7d3760bae4055ad23
+  languageName: node
+  linkType: hard
+
 "is-string@npm:^1.0.5, is-string@npm:^1.0.7":
   version: 1.0.7
   resolution: "is-string@npm:1.0.7"
@@ -13447,7 +13471,7 @@ __metadata:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
-    get-stream: ^6.0.0
+    get-stream: ^9.0.0
     jest-leak-detector: "workspace:*"
     jest-util: "workspace:*"
     merge-stream: ^2.0.0
