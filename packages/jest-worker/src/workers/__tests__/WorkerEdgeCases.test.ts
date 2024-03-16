@@ -6,6 +6,7 @@
  */
 
 import {access, mkdir, rm, writeFile} from 'fs/promises';
+import * as os from 'os';
 import {dirname, join} from 'path';
 import {transformFileAsync} from '@babel/core';
 import {
@@ -27,6 +28,13 @@ const processChildWorkerPath = join(
   'workers/processChild.js',
 );
 const threadChildWorkerPath = join(writeDestination, 'workers/threadChild.js');
+
+if (process.platform === 'win32' && process.version.startsWith('v21.')) {
+  // eslint-disable-next-line jest/no-focused-tests
+  test.only('skipping test on broken platform', () => {
+    console.warn('Skipping test on broken platform');
+  });
+}
 
 beforeAll(async () => {
   await mkdir(writeDestination, {recursive: true});
