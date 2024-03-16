@@ -26,7 +26,7 @@ By default, it loads your existing Babel configuration (if any)
 },
 ```
 
-You can use also pass further [babel options](https://babeljs.io/docs/options)
+You can also pass further [babel options](https://babeljs.io/docs/options)
 
 ```json
 "transform": {
