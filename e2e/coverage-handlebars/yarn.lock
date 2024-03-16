@@ -6,11 +6,11 @@ __metadata:
   cacheKey: 8
 
 "@jridgewell/build-mapping@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@jridgewell/build-mapping@npm:0.2.0"
+  version: 0.2.1
+  resolution: "@jridgewell/build-mapping@npm:0.2.1"
   dependencies:
     "@jridgewell/trace-mapping": ^0.3.25
-  checksum: af6f85edd42a437cc6f0794485528e5e66e1295315df55cc4cc8f27dcc937619e4ddc526cbebd87c154dfb9e14c0e16562cbc8e0e758fc19d7030314bb30534c
+  checksum: 31f553c995370e65fa4eb2ead53de77378131276be879a1b558ed4eb0863d05085b21f1c37e66e59fac01a131c95a26dff78f8e98d98e37b31f88a2cebdf75e0
   languageName: node
   linkType: hard
 
