@@ -6,7 +6,6 @@
  */
 
 import {access, mkdir, rm, writeFile} from 'fs/promises';
-import * as os from 'os';
 import {dirname, join} from 'path';
 import {transformFileAsync} from '@babel/core';
 import {
