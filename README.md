@@ -53,6 +53,7 @@
   - [Backers](#backers)
   - [Sponsors](#sponsors)
 - [License](#license)
+- [Copyright](#copyright)
 
 ## Getting Started
 
@@ -276,3 +277,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 Jest is [MIT licensed](./LICENSE).
+
+## Copyright
+
+Copyright Contributors to the Jest project.

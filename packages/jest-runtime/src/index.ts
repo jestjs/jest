@@ -518,12 +518,26 @@ export default class Runtime {
               return this.linkAndEvaluateModule(module);
             },
             initializeImportMeta: (meta: JestImportMeta) => {
-              meta.url = pathToFileURL(modulePath).href;
+              const metaUrl = pathToFileURL(modulePath).href;
+              meta.url = metaUrl;
 
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-              meta.filename = fileURLToPath(meta.url);
+              meta.filename = modulePath;
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
-              meta.dirname = path.dirname(meta.filename);
+              meta.dirname = path.dirname(modulePath);
+
+              // @ts-expect-error It should not be async. Will be fixed when updated to @types/node@20.11.0
+              meta.resolve = (specifier, parent = metaUrl) => {
+                const parentPath = fileURLToPath(parent);
+
+                const resolvedPath = this._resolver.resolveModule(
+                  parentPath,
+                  specifier,
+                  {conditions: this.esmConditions},
+                );
+
+                return pathToFileURL(resolvedPath).href;
+              };
 
               let jest = this.jestObjectCaches.get(modulePath);
 
@@ -1466,28 +1480,25 @@ export default class Runtime {
       if (module) {
         return module;
       }
-    } else {
-      const {paths} = options;
-      if (paths) {
-        for (const p of paths) {
-          const absolutePath = path.resolve(from, '..', p);
-          const module = this._resolver.resolveModuleFromDirIfExists(
-            absolutePath,
-            moduleName,
-            // required to also resolve files without leading './' directly in the path
-            {conditions: this.cjsConditions, paths: [absolutePath]},
-          );
-          if (module) {
-            return module;
-          }
-        }
-
-        throw new Resolver.ModuleNotFoundError(
-          `Cannot resolve module '${moduleName}' from paths ['${paths.join(
-            "', '",
-          )}'] from ${from}`,
+    } else if (options.paths) {
+      for (const p of options.paths) {
+        const absolutePath = path.resolve(from, '..', p);
+        const module = this._resolver.resolveModuleFromDirIfExists(
+          absolutePath,
+          moduleName,
+          // required to also resolve files without leading './' directly in the path
+          {conditions: this.cjsConditions, paths: [absolutePath]},
         );
+        if (module) {
+          return module;
+        }
       }
+
+      throw new Resolver.ModuleNotFoundError(
+        `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
     }
 
     try {
