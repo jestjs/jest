@@ -1065,7 +1065,7 @@ test.each`
 });
 ```
 
-If the inputs have different types, the arguments will be typed as a union of all the input types (ie type of the variables inside the template literal):
+If the inputs have different types, the arguments will be typed as a union of all the input types (i.e. type of the variables inside the template literal):
 
 ```ts
 import {test} from '@jest/globals';
