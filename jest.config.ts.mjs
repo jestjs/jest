@@ -38,6 +38,7 @@ export default {
         '!**/packages/jest-runner/__typetests__/*.test.ts',
         '!**/packages/jest-snapshot/__typetests__/*.test.ts',
         '!**/packages/jest-types/__typetests__/config.test.ts',
+        '!**/packages/jest-types/__typetests__/globals.test.ts',
         '!**/packages/jest-types/__typetests__/jest.test.ts',
         '!**/packages/jest-worker/__typetests__/*.test.ts',
       ],
