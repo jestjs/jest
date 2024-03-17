@@ -28,6 +28,10 @@ if (typeof Buffer !== 'undefined') {
   builtInObject.push(Buffer);
 }
 
+export const SERIALIZABLE_PROPERTIES = Symbol.for(
+  '@jest/serializableProperties',
+);
+
 const isBuiltInObject = (object: any) =>
   builtInObject.includes(object.constructor);
 
@@ -57,14 +61,27 @@ export default function deepCyclicCopyReplaceable<T>(
 
 function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
   const newObject = Object.create(Object.getPrototypeOf(object));
-  let descriptors: Record<string, PropertyDescriptor> = {};
+  let descriptors: Record<string | symbol, PropertyDescriptor> = {};
   let obj = object;
   do {
-    descriptors = Object.assign(
-      {},
-      Object.getOwnPropertyDescriptors(obj),
-      descriptors,
-    );
+    const serializableProperties = getSerializableProperties(obj);
+
+    if (serializableProperties === undefined) {
+      descriptors = Object.assign(
+        {},
+        Object.getOwnPropertyDescriptors(obj),
+        descriptors,
+      );
+    } else {
+      for (const property of serializableProperties) {
+        if (!descriptors[property]) {
+          descriptors[property] = Object.getOwnPropertyDescriptor(
+            obj,
+            property,
+          )!;
+        }
+      }
+    }
   } while (
     (obj = Object.getPrototypeOf(obj)) &&
     obj !== Object.getPrototypeOf({})
@@ -130,4 +147,25 @@ function deepCyclicCopyMap<T>(
   }
 
   return newMap as any;
+}
+
+function getSerializableProperties<T>(
+  obj: T,
+): Array<string | symbol> | undefined {
+  if (typeof obj !== 'object' || obj === null) {
+    return;
+  }
+
+  const serializableProperties: unknown = (obj as Record<string | symbol, any>)[
+    SERIALIZABLE_PROPERTIES
+  ];
+
+  if (!Array.isArray(serializableProperties)) {
+    return;
+  }
+
+  return serializableProperties.filter(
+    (key): key is string | symbol =>
+      typeof key === 'string' || typeof key === 'symbol',
+  );
 }
