@@ -86,8 +86,8 @@ function spawnJest(
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
-    NO_COLOR: '1',
     FORCE_COLOR: '0',
+    NO_COLOR: '1',
     ...options.env,
   };
 
