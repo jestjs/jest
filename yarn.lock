@@ -2981,7 +2981,7 @@ __metadata:
     "@tsd/typescript": ^5.0.4
     expect: "workspace:*"
     jest-snapshot: "workspace:*"
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -3140,7 +3140,7 @@ __metadata:
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -3309,7 +3309,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -10143,7 +10143,7 @@ __metadata:
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -13171,7 +13171,7 @@ __metadata:
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
     slash: ^3.0.0
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -13220,7 +13220,7 @@ __metadata:
     jest-worker: "workspace:*"
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -13313,7 +13313,7 @@ __metadata:
     pretty-format: "workspace:*"
     semver: ^7.5.3
     synckit: ^0.9.0
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
   languageName: unknown
   linkType: soft
 
@@ -13513,7 +13513,7 @@ __metadata:
     jest-util: "workspace:*"
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
-    tsd-lite: ^0.8.0
+    tsd-lite: ^0.9.0
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
@@ -20314,6 +20314,15 @@ __metadata:
   peerDependencies:
     "@tsd/typescript": 4.x || 5.x
   checksum: c9da2b929dc66c785bf0df463ff26cb2761c06a99d6ebd0a11cf21ce49e808bef5c99fbbfe953cc7f9db1a916f80fecbee0f688cf0300c44d41c5bc41ee3c0c4
+  languageName: node
+  linkType: hard
+
+"tsd-lite@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "tsd-lite@npm:0.9.0"
+  peerDependencies:
+    "@tsd/typescript": 4.x || 5.x
+  checksum: 4a239f77ce1393fdccecec1fb7bea3fb63a0376d00b3c4a6110590f1201e929e82218d37f730e21059dfd84cc47a46b038ce3121f8491baa22f0dd844e1bd85e
   languageName: node
   linkType: hard
 

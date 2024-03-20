@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",
-    "tsd-lite": "^0.8.0"
+    "tsd-lite": "^0.9.0"
   },
   "publishConfig": {
     "access": "public"
