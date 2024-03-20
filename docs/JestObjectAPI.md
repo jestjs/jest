@@ -1139,6 +1139,16 @@ test('will fail', () => {
 });
 ```
 
+`immediately` option is used to retry the failed test immediately.
+
+```js
+jest.retryTimes(3, {immediately: true});
+
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
 Returns the `jest` object for chaining.
 
 :::caution

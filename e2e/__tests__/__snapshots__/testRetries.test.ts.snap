@@ -1,5 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Test Retries immediately retry after failed test 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 | it('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/immediatelyRetry.test.js:17:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 | it('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/immediatelyRetry.test.js:17:18)
+
+PASS __tests__/immediatelyRetry.test.js
+  ✓ retryTimes set
+  ✓ truthy test"
+`;
+
 exports[`Test Retries logs error(s) before retry 1`] = `
 "LOGGING RETRY ERRORS  retryTimes set
  RETRY 1 
