@@ -78,6 +78,7 @@ const _runTestsForDescribeBlock = async (
       (global as Global.Global)[WAIT_BEFORE_RETRY] as string,
       10,
     ) || 0;
+
   const retryImmediately: boolean =
     // eslint-disable-next-line no-restricted-globals
     ((global as Global.Global)[IMMEDIATELY] as any) || false;

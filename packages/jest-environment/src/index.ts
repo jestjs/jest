@@ -309,9 +309,9 @@ export interface Jest {
   retryTimes(
     numRetries: number,
     options?: {
+      immediately?: boolean;
       logErrorsBeforeRetry?: boolean;
       waitBeforeRetry?: number;
-      immediately?: boolean;
     },
   ): Jest;
   /**
