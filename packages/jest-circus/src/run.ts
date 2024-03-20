@@ -15,7 +15,7 @@ import shuffleArray, {
   rngBuilder,
 } from './shuffleArray';
 import {dispatch, getState} from './state';
-import {IMMEDIATELY, RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
+import {RETRY_IMMEDIATELY, RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -81,7 +81,7 @@ const _runTestsForDescribeBlock = async (
 
   const retryImmediately: boolean =
     // eslint-disable-next-line no-restricted-globals
-    ((global as Global.Global)[IMMEDIATELY] as any) || false;
+    ((global as Global.Global)[RETRY_IMMEDIATELY] as any) || false;
 
   const deferredRetryTests = [];
 

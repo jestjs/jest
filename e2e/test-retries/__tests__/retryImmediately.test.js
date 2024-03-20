@@ -6,7 +6,7 @@
  */
 'use strict';
 
-jest.retryTimes(3, {immediately: true, logErrorsBeforeRetry: true});
+jest.retryTimes(3, {logErrorsBeforeRetry: true, retryImmediately: true});
 let i = 0;
 it('retryTimes set', () => {
   i++;

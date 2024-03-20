@@ -300,7 +300,7 @@ export interface Jest {
    *
    * `waitBeforeRetry` is the number of milliseconds to wait before retrying
    *
-   * `immediately` is the flag to retry the failed tests immediately after
+   * `retryImmediately` is the flag to retry the failed test immediately after
    *  failure
    *
    * @remarks
@@ -309,8 +309,8 @@ export interface Jest {
   retryTimes(
     numRetries: number,
     options?: {
-      immediately?: boolean;
       logErrorsBeforeRetry?: boolean;
+      retryImmediately?: boolean;
       waitBeforeRetry?: number;
     },
   ): Jest;
