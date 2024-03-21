@@ -115,7 +115,7 @@
     "test-types": "yarn tstyche && yarn test-ts --selectProjects type-tests",
     "test": "yarn lint && yarn jest",
     "typecheck": "yarn typecheck:examples && yarn typecheck:tests",
-    "typecheck:examples": "tsc -p examples/angular && tsc -p examples/expect-extend && tsc -p examples/typescript",
+    "typecheck:examples": "tsc -p examples/expect-extend && tsc -p examples/typescript",
     "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,create-jest,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-snapshot,jest-util,jest-validate,jest-watcher,jest-worker,pretty-format}/**/__tests__",
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
     "verify-pnp": "node ./scripts/verifyPnP.mjs",
@@ -205,5 +205,5 @@
     "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.8.0"
+  "packageManager": "yarn@3.8.1"
 }

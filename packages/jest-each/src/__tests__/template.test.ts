@@ -417,6 +417,30 @@ describe('jest-each', () => {
         );
       });
 
+      test.each([null, undefined])(
+        'calls global with title containing $key.path for %s',
+        value => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${{foo: value}}
+        `;
+          const testFunction = get(eachObject, keyPath);
+          testFunction(
+            'interpolates object keyPath to value: $a.foo.bar',
+            noop,
+          );
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock).toHaveBeenCalledTimes(1);
+          expect(globalMock).toHaveBeenCalledWith(
+            `interpolates object keyPath to value: ${value}`,
+            expectFunction,
+            undefined,
+          );
+        },
+      );
+
       test('calls global with title containing last seen object when $key.path is invalid', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
