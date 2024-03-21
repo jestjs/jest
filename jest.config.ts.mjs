@@ -28,7 +28,6 @@ export default {
       roots: ['<rootDir>/packages'],
       runner: 'jest-runner-tsd',
       testMatch: [
-        '**/packages/jest-reporters/__typetests__/jest-reporters.test.ts',
         '**/packages/jest-resolve/__typetests__/resolver.test.ts',
         '**/packages/jest-types/__typetests__/each.test.ts',
       ],
