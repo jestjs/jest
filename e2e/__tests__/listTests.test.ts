@@ -65,6 +65,7 @@ describe('--listTests flag', () => {
         ),
       ).toMatchSnapshot();
     });
+
     it('causes tests to be saved in the file in different lines', () => {
       const {exitCode, stdout} = runJest('list-tests', [
         '--listTests',
