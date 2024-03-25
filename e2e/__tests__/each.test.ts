@@ -60,3 +60,10 @@ test('formats args with pretty format when given %p', () => {
   expect(rest).toMatchSnapshot();
   expect(result.exitCode).toBe(0);
 });
+
+test('allows nullable or undefined args when templating object each args', () => {
+  const result = runJest(dir, ['eachTemplate.test.js']);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+  expect(result.exitCode).toBe(0);
+});

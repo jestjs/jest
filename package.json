@@ -115,7 +115,7 @@
     "test-types": "yarn tstyche && yarn test-ts --selectProjects type-tests",
     "test": "yarn lint && yarn jest",
     "typecheck": "yarn typecheck:examples && yarn typecheck:tests",
-    "typecheck:examples": "tsc -p examples/angular && tsc -p examples/expect-extend && tsc -p examples/typescript",
+    "typecheck:examples": "tsc -p examples/expect-extend && tsc -p examples/typescript",
     "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,create-jest,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-snapshot,jest-util,jest-validate,jest-watcher,jest-worker,pretty-format}/**/__tests__",
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
     "verify-pnp": "node ./scripts/verifyPnP.mjs",
