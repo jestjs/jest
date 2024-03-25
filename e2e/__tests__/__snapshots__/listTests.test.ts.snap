@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`--listTests flag --outputFile flag causes tests to be saved in the file as JSON 1`] = `"["/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/dummy.test.js","/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/other.test.js"]"`;
+
+exports[`--listTests flag --outputFile flag causes tests to be saved in the file in different lines 1`] = `
+"/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/dummy.test.js
+/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/other.test.js"
+`;
+
 exports[`--listTests flag causes tests to be printed in different lines 1`] = `
 "/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/dummy.test.js
 /MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/other.test.js"
