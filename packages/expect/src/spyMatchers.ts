@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable unicorn/consistent-function-scoping */
+
 import {equals, iterableEquality} from '@jest/expect-utils';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
@@ -214,7 +216,7 @@ const printExpectedReceivedCallsPositive = (
   );
 };
 
-const indentation = 'Received'.replace(/\w/g, ' ');
+const indentation = 'Received'.replaceAll(/\w/g, ' ');
 
 const printDiffCall = (
   expected: Array<unknown>,
@@ -312,10 +314,10 @@ const printResult = (result: any, expected: unknown) =>
   result.type === 'throw'
     ? 'function call threw an error'
     : result.type === 'incomplete'
-    ? 'function call has not returned yet'
-    : isEqualValue(expected, result.value)
-    ? printCommon(result.value)
-    : printReceived(result.value);
+      ? 'function call has not returned yet'
+      : isEqualValue(expected, result.value)
+        ? printCommon(result.value)
+        : printReceived(result.value);
 
 type IndexedResult = [number, any];
 

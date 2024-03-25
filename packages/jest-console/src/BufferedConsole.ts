@@ -79,7 +79,7 @@ export default class BufferedConsole extends Console {
         throw error;
       }
       // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
-      this._log('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
+      this._log('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
     }
   }
 

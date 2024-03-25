@@ -33,8 +33,8 @@ test('the fetch fails with an error', async () => {
   expect.assertions(1);
   try {
     await fetchData();
-  } catch (e) {
-    expect(e).toMatch('error');
+  } catch (error) {
+    expect(error).toMatch('error');
   }
 });
 ```
@@ -64,7 +64,7 @@ If you expect a promise to be rejected, use the `.catch` method. Make sure to ad
 ```js
 test('the fetch fails with an error', () => {
   expect.assertions(1);
-  return fetchData().catch(e => expect(e).toMatch('error'));
+  return fetchData().catch(error => expect(error).toMatch('error'));
 });
 ```
 

@@ -5,115 +5,126 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectNotAssignable} from 'tsd-lite';
-import type {Config} from '@jest/types';
+import {describe, expect, test} from 'tstyche';
+import type {Config} from 'jest';
 
-expectAssignable<Config.InitialOptions>({});
+const config: Config = {};
 
-expectAssignable<Config.InitialOptions>({
-  coverageThreshold: {
-    './src/api/very-important-module.js': {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-    './src/components/': {
-      branches: 40,
-      statements: 40,
-    },
-    './src/reducers/**/*.js': {
-      statements: 90,
-    },
-    global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50,
-    },
-  },
-  projects: [
-    // projects can be globs or objects
-    './src/**',
-    {
-      displayName: 'A Project',
-      rootDir: './src/components',
-    },
-  ],
-});
+describe('Config', () => {
+  test('coverageThreshold', () => {
+    expect(config).type.toBeAssignable({
+      coverageThreshold: {
+        './src/api/very-important-module.js': {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100,
+        },
+        './src/components/': {
+          branches: 40,
+          statements: 40,
+        },
+        './src/reducers/**/*.js': {
+          statements: 90,
+        },
+        global: {
+          branches: 50,
+          functions: 50,
+          lines: 50,
+          statements: 50,
+        },
+      },
+    });
+  });
 
-const doNotFake: Array<Config.FakeableAPI> = [
-  'Date',
-  'hrtime',
-  'nextTick',
-  'performance',
-  'queueMicrotask',
-  'requestAnimationFrame',
-  'cancelAnimationFrame',
-  'requestIdleCallback',
-  'cancelIdleCallback',
-  'setImmediate',
-  'clearImmediate',
-  'setInterval',
-  'clearInterval',
-  'setTimeout',
-  'clearTimeout',
-];
+  test('fakeTimers', () => {
+    const doNotFake = [
+      'Date' as const,
+      'hrtime' as const,
+      'nextTick' as const,
+      'performance' as const,
+      'queueMicrotask' as const,
+      'requestAnimationFrame' as const,
+      'cancelAnimationFrame' as const,
+      'requestIdleCallback' as const,
+      'cancelIdleCallback' as const,
+      'setImmediate' as const,
+      'clearImmediate' as const,
+      'setInterval' as const,
+      'clearInterval' as const,
+      'setTimeout' as const,
+      'clearTimeout' as const,
+    ];
 
-expectAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    advanceTimers: true,
-    doNotFake,
-    enableGlobally: true,
-    now: 1_483_228_800_000,
-    timerLimit: 1000,
-  },
-});
+    expect(config).type.toBeAssignable({
+      fakeTimers: {
+        advanceTimers: true,
+        doNotFake,
+        enableGlobally: true,
+        now: 1_483_228_800_000,
+        timerLimit: 1000,
+      },
+    });
 
-expectAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    advanceTimers: 40,
-    now: Date.now(),
-  },
-});
+    expect(config).type.toBeAssignable({
+      fakeTimers: {
+        advanceTimers: 40,
+        now: Date.now(),
+      },
+    });
 
-expectNotAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    now: new Date(),
-  },
-});
+    expect(config).type.not.toBeAssignable({
+      fakeTimers: {
+        now: new Date(),
+      },
+    });
 
-expectAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    enableGlobally: true,
-    legacyFakeTimers: true as const,
-  },
-});
+    expect(config).type.toBeAssignable({
+      fakeTimers: {
+        enableGlobally: true,
+        legacyFakeTimers: true as const,
+      },
+    });
 
-expectNotAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    advanceTimers: true,
-    legacyFakeTimers: true as const,
-  },
-});
+    expect(config).type.not.toBeAssignable({
+      fakeTimers: {
+        advanceTimers: true,
+        legacyFakeTimers: true as const,
+      },
+    });
 
-expectNotAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    doNotFake,
-    legacyFakeTimers: true as const,
-  },
-});
+    expect(config).type.not.toBeAssignable({
+      fakeTimers: {
+        doNotFake,
+        legacyFakeTimers: true as const,
+      },
+    });
 
-expectNotAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    legacyFakeTimers: true as const,
-    now: 1_483_228_800_000,
-  },
-});
+    expect(config).type.not.toBeAssignable({
+      fakeTimers: {
+        legacyFakeTimers: true as const,
+        now: 1_483_228_800_000,
+      },
+    });
 
-expectNotAssignable<Config.InitialOptions>({
-  fakeTimers: {
-    legacyFakeTimers: true as const,
-    timerLimit: 1000,
-  },
+    expect(config).type.not.toBeAssignable({
+      fakeTimers: {
+        legacyFakeTimers: true as const,
+        timerLimit: 1000,
+      },
+    });
+  });
+
+  test('projects', () => {
+    expect(config).type.toBeAssignable({
+      projects: [
+        // projects can be globs or objects
+        './src/**',
+        {
+          displayName: 'A Project',
+          rootDir: './src/components',
+        },
+      ],
+    });
+  });
 });

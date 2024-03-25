@@ -66,23 +66,24 @@ function getPackages() {
           pkg.types == null
             ? pkg.main
             : typeOnlyPackages.has(pkg.name)
-            ? /* eslint-disable sort-keys */
-              {
-                types: pkg.types,
-                default: pkg.main,
-              }
-            : {
-                types: pkg.types,
-                require: pkg.main,
-                import: pkg.main.replace(/\.js$/, '.mjs'),
-                default: pkg.main,
-              },
+              ? /* eslint-disable sort-keys */
+                {
+                  types: pkg.types,
+                  default: pkg.main,
+                }
+              : {
+                  types: pkg.types,
+                  require: pkg.main,
+                  import: pkg.main.replace(/\.js$/, '.mjs'),
+                  default: pkg.main,
+                },
         /* eslint-enable */
         './package.json': './package.json',
-        ...Object.values(pkg.bin || {}).reduce(
-          (mem, curr) =>
-            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
-          {},
+        ...Object.fromEntries(
+          Object.values(pkg.bin || {}).map(curr => [
+            curr.replace(/\.js$/, ''),
+            curr,
+          ]),
         ),
         ...(pkg.name === 'jest-circus'
           ? {'./runner': './build/runner.js'}
@@ -161,7 +162,7 @@ export function createBuildConfigs() {
     }
 
     const options = Object.assign({}, babelConfig);
-    options.plugins = options.plugins.slice();
+    options.plugins = [...options.plugins];
 
     if (INLINE_REQUIRE_EXCLUDE_LIST.test(input)) {
       // The excluded modules are injected into the user's sandbox
@@ -195,35 +196,43 @@ export function createBuildConfigs() {
             ),
           }
         : pkg.name === 'jest-haste-map'
-        ? {worker: path.resolve(packageDir, './src/worker.ts')}
-        : pkg.name === '@jest/reporters'
-        ? {CoverageWorker: path.resolve(packageDir, './src/CoverageWorker.ts')}
-        : pkg.name === 'jest-runner'
-        ? {testWorker: path.resolve(packageDir, './src/testWorker.ts')}
-        : pkg.name === 'jest-circus'
-        ? {
-            jestAdapterInit: path.resolve(
-              packageDir,
-              './src/legacy-code-todo-rewrite/jestAdapterInit.ts',
-            ),
-          }
-        : pkg.name === 'jest-jasmine2'
-        ? {
-            'jasmine/jasmineLight': path.resolve(
-              packageDir,
-              './src/jasmine/jasmineLight.ts',
-            ),
-            jestExpect: path.resolve(packageDir, './src/jestExpect.ts'),
-            setup_jest_globals: path.resolve(
-              packageDir,
-              './src/setup_jest_globals.ts',
-            ),
-          }
-        : pkg.name === 'jest-repl'
-        ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
-        : pkg.name === 'jest-snapshot'
-        ? {worker: path.resolve(packageDir, './src/worker.ts')}
-        : {};
+          ? {worker: path.resolve(packageDir, './src/worker.ts')}
+          : pkg.name === '@jest/reporters'
+            ? {
+                CoverageWorker: path.resolve(
+                  packageDir,
+                  './src/CoverageWorker.ts',
+                ),
+              }
+            : pkg.name === 'jest-runner'
+              ? {testWorker: path.resolve(packageDir, './src/testWorker.ts')}
+              : pkg.name === 'jest-circus'
+                ? {
+                    jestAdapterInit: path.resolve(
+                      packageDir,
+                      './src/legacy-code-todo-rewrite/jestAdapterInit.ts',
+                    ),
+                  }
+                : pkg.name === 'jest-jasmine2'
+                  ? {
+                      'jasmine/jasmineLight': path.resolve(
+                        packageDir,
+                        './src/jasmine/jasmineLight.ts',
+                      ),
+                      jestExpect: path.resolve(
+                        packageDir,
+                        './src/jestExpect.ts',
+                      ),
+                      setup_jest_globals: path.resolve(
+                        packageDir,
+                        './src/setup_jest_globals.ts',
+                      ),
+                    }
+                  : pkg.name === 'jest-repl'
+                    ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
+                    : pkg.name === 'jest-snapshot'
+                      ? {worker: path.resolve(packageDir, './src/worker.ts')}
+                      : {};
 
     const extraEntryPoints =
       // skip expect for now

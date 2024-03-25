@@ -144,7 +144,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 ### `.toHaveBeenCalled()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
+Use `.toHaveBeenCalled` to ensure that a mock function was called.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -1342,7 +1342,7 @@ function toBeWithinRange(actual, floor, ceiling) {
     typeof floor !== 'number' ||
     typeof ceiling !== 'number'
   ) {
-    throw new Error('These must be of type number!');
+    throw new TypeError('These must be of type number!');
   }
 
   const pass = actual >= floor && actual <= ceiling;
@@ -1417,7 +1417,7 @@ const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
       typeof floor !== 'number' ||
       typeof ceiling !== 'number'
     ) {
-      throw new Error('These must be of type number!');
+      throw new TypeError('These must be of type number!');
     }
 
     const pass = actual >= floor && actual <= ceiling;
@@ -1642,7 +1642,7 @@ expect.extend({
   toMatchTrimmedSnapshot(received, length) {
     return toMatchSnapshot.call(
       this,
-      received.substring(0, length),
+      received.slice(0, length),
       'toMatchTrimmedSnapshot',
     );
   },
@@ -1666,7 +1666,7 @@ const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedInlineSnapshot(received, ...rest) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
+    return toMatchInlineSnapshot.call(this, received.slice(0, 10), ...rest);
   },
 });
 
@@ -1756,4 +1756,40 @@ it('transitions as expected', () => {
   transition();
   expect(state).toMatchStateInlineSnapshot(`"done"`);
 });
+```
+
+## Serializable properties
+
+### `SERIALIZABLE_PROPERTIES`
+
+Serializable properties is a set of properties that are considered serializable by Jest. This set is used to determine if a property should be serializable or not. If an object has a property that is not in this set, it is considered not serializable and will not be printed in error messages.
+
+You can add your own properties to this set to make sure that your objects are printed correctly. For example, if you have a `Volume` class, and you want to make sure that only the `amount` and `unit` properties are printed, you can add it to `SERIALIZABLE_PROPERTIES`:
+
+```js
+import {SERIALIZABLE_PROPERTIES} from 'jest-matcher-utils';
+
+class Volume {
+  constructor(amount, unit) {
+    this.amount = amount;
+    this.unit = unit;
+  }
+
+  get label() {
+    throw new Error('Not implemented');
+  }
+}
+
+Volume.prototype[SERIALIZABLE_PROPERTIES] = ['amount', 'unit'];
+
+expect(new Volume(1, 'L')).toEqual(new Volume(10, 'L'));
+```
+
+This will print only the `amount` and `unit` properties in the error message, ignoring the `label` property.
+
+```bash
+expect(received).toEqual(expected) // deep equality
+
+Expected: {"amount": 10, "unit": "L"}
+Received: {"amount": 1, "unit": "L"}
 ```

@@ -748,15 +748,21 @@ describe('indent option', () => {
   // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
     const indent = 0;
-    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
-      indent,
-    });
+    expect(val).toPrettyPrintTo(
+      expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
+      {
+        indent,
+      },
+    );
   });
   test('non-default: 4 spaces', () => {
     const indent = 4;
-    expect(val).toPrettyPrintTo(expected.replace(/ {2}/g, ' '.repeat(indent)), {
-      indent,
-    });
+    expect(val).toPrettyPrintTo(
+      expected.replaceAll(/ {2}/g, ' '.repeat(indent)),
+      {
+        indent,
+      },
+    );
   });
 });
 
@@ -950,8 +956,8 @@ describe('Immutable.Seq lazy values', () => {
   const filterer = (item: string) => item.length > 0;
 
   test('from Immutable.Range', () => {
-    const val = Immutable.Range(1, Infinity);
-    expect(val.size).toBe(Infinity);
+    const val = Immutable.Range(1, Number.POSITIVE_INFINITY);
+    expect(val.size).toBe(Number.POSITIVE_INFINITY);
     expect(val).toPrettyPrintTo(expected);
   });
 

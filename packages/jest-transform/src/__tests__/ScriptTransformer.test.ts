@@ -477,7 +477,7 @@ describe('ScriptTransformer', () => {
       TransformedSource,
       string,
     ]): Promise<any> => {
-      const processorName = `passthrough-preprocessor${filePath.replace(
+      const processorName = `passthrough-preprocessor${filePath.replaceAll(
         /\.|\//g,
         '-',
       )}`;
@@ -1267,6 +1267,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['content'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -1316,6 +1317,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['content'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -1365,6 +1367,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['content'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -1406,6 +1409,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['module.exports = "banana";'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -1446,6 +1450,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['module.exports = "banana";'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -1486,6 +1491,7 @@ describe('ScriptTransformer', () => {
       sourcesContent: ['module.exports = "banana";'],
       mappings:
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,MAAM,CAACC,OAAO,GAAG,QAAQ',
+      ignoreList: [],
     };
     /* eslint-enable */
 
@@ -2062,7 +2068,7 @@ describe('ScriptTransformer', () => {
     });
 
     // @ts-expect-error - private property
-    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
+    expect([...scriptTransformer._transformCache.entries()]).toEqual([
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });

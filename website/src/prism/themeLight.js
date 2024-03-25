@@ -56,5 +56,5 @@ const themeLight = [
 
 module.exports = {
   plain: Object.assign(baseTheme.plain, {backgroundColor: '#f6f6f6'}),
-  styles: baseTheme.styles.concat(themeLight),
+  styles: [...baseTheme.styles, ...themeLight],
 };

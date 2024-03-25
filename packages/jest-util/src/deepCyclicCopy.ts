@@ -14,9 +14,10 @@ export type DeepCyclicCopyOptions = {
 
 export default function deepCyclicCopy<T>(
   value: T,
-  options: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
-  cycles: WeakMap<any, any> = new WeakMap(),
+  options?: DeepCyclicCopyOptions,
+  cycles = new WeakMap<any, any>(),
 ): T {
+  options = {blacklist: EMPTY, keepPrototype: false, ...options};
   if (typeof value !== 'object' || value === null || Buffer.isBuffer(value)) {
     return value;
   } else if (cycles.has(value)) {
@@ -48,7 +49,7 @@ function deepCyclicCopyObject<T>(
     }
 
     const descriptor = descriptors[key];
-    if (typeof descriptor.value !== 'undefined') {
+    if (descriptor.value !== undefined) {
       descriptor.value = deepCyclicCopy(
         descriptor.value,
         {blacklist: EMPTY, keepPrototype: options.keepPrototype},

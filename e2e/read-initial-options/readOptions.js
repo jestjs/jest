@@ -16,7 +16,7 @@ async function readConfig() {
   }
   console.log(JSON.stringify(await readInitialOptions(config, options)));
 }
-readConfig().catch(err => {
-  console.error(err);
+readConfig().catch(error => {
+  console.error(error);
   process.exitCode = 1;
 });

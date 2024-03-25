@@ -323,10 +323,11 @@ export const iterableEquality = (
 const entries = (obj: any) => {
   if (!isObject(obj)) return [];
 
-  return Object.getOwnPropertySymbols(obj)
+  const symbolProperties = Object.getOwnPropertySymbols(obj)
     .filter(key => key !== Symbol.iterator)
-    .map(key => [key, obj[key]])
-    .concat(Object.entries(obj));
+    .map(key => [key, obj[key]]);
+
+  return [...symbolProperties, ...Object.entries(obj)];
 };
 
 const isObject = (a: any) => a !== null && typeof a === 'object';
@@ -334,7 +335,7 @@ const isObject = (a: any) => a !== null && typeof a === 'object';
 const isObjectWithKeys = (a: any) =>
   isObject(a) &&
   !(a instanceof Error) &&
-  !(a instanceof Array) &&
+  !Array.isArray(a) &&
   !(a instanceof Date);
 
 export const subsetEquality = (
@@ -354,12 +355,14 @@ export const subsetEquality = (
         return undefined;
       }
 
-      return getObjectKeys(subset).every(key => {
+      if (seenReferences.has(subset)) return undefined;
+      seenReferences.set(subset, true);
+
+      const matchResult = getObjectKeys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
             return equals(object[key], subset[key], filteredCustomTesters);
           }
-          seenReferences.set(subset[key], true);
         }
         const result =
           object != null &&
@@ -376,6 +379,8 @@ export const subsetEquality = (
         seenReferences.delete(subset[key]);
         return result;
       });
+      seenReferences.delete(subset);
+      return matchResult;
     };
 
   return subsetEqualityWithContext()(object, subset);
@@ -472,14 +477,14 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
   }
 
   // will match everything that's not a dot or a bracket, and "" for consecutive dots.
-  const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
+  const pattern = new RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
 
   // Because the regex won't match a dot in the beginning of the path, if present.
   if (propertyPath[0] === '.') {
     properties.push('');
   }
 
-  propertyPath.replace(pattern, match => {
+  propertyPath.replaceAll(pattern, match => {
     properties.push(match);
     return match;
   });
@@ -503,7 +508,7 @@ export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? Object.keys(obj).length === 0 : false;
 }
 
-const MULTILINE_REGEXP = /[\r\n]/;
+const MULTILINE_REGEXP = /[\n\r]/;
 
 export const isOneline = (expected: unknown, received: unknown): boolean =>
   typeof expected === 'string' &&

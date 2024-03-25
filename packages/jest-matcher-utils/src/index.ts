@@ -24,7 +24,11 @@ import {
   plugins as prettyFormatPlugins,
 } from 'pretty-format';
 import Replaceable from './Replaceable';
-import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
+import deepCyclicCopyReplaceable, {
+  SERIALIZABLE_PROPERTIES,
+} from './deepCyclicCopyReplaceable';
+
+export {SERIALIZABLE_PROPERTIES};
 
 const {
   AsymmetricMatcher,
@@ -124,12 +128,12 @@ export const stringify = (
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
-  text.replace(/\s+$/gm, chalk.inverse('$&'));
+  text.replaceAll(/\s+$/gm, chalk.inverse('$&'));
 
 // Instead of inverse highlight which now implies a change,
 // replace common spaces with middle dot at the end of any line.
 const replaceTrailingSpaces = (text: string): string =>
-  text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
+  text.replaceAll(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
 export const printReceived = (object: unknown): string =>
   RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
@@ -155,7 +159,7 @@ export const ensureNoExpected = (
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
-  if (typeof expected !== 'undefined') {
+  if (expected !== undefined) {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
@@ -263,10 +267,10 @@ const getCommonAndChangedSubstrings = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op
-        ? hasCommonDiff
-          ? INVERTED_COLOR(diff[1])
-          : diff[1]
-        : ''),
+          ? hasCommonDiff
+            ? INVERTED_COLOR(diff[1])
+            : diff[1]
+          : ''),
     '',
   );
 

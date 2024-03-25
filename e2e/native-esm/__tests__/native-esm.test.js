@@ -28,12 +28,44 @@ test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
   expect(import.meta).toEqual({
+    dirname: expect.any(String),
+    filename: expect.any(String),
     jest: expect.anything(),
+    resolve: expect.any(Function),
     url: expect.any(String),
   });
   expect(import.meta.jest).toBe(jestObject);
   expect(
     import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
+  ).toBe(true);
+  if (process.platform === 'win32') {
+    expect(
+      import.meta.filename.endsWith(
+        '\\e2e\\native-esm\\__tests__\\native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('\\e2e\\native-esm\\__tests__')).toBe(
+      true,
+    );
+  } else {
+    expect(
+      import.meta.filename.endsWith(
+        '/e2e/native-esm/__tests__/native-esm.test.js',
+      ),
+    ).toBe(true);
+    expect(import.meta.dirname.endsWith('/e2e/native-esm/__tests__')).toBe(
+      true,
+    );
+  }
+  expect(
+    import.meta
+      .resolve('colors')
+      .endsWith('jest/e2e/native-esm/node_modules/colors/lib/index.js'),
+  ).toBe(true);
+  expect(
+    import.meta
+      .resolve('./native-esm.test')
+      .endsWith('jest/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 
@@ -47,6 +79,7 @@ test('should support importing node core modules', () => {
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
     devDependencies: {
+      colors: '^1.4.0',
       'discord.js': '14.3.0',
       'iso-constants': '^0.1.2',
       yargs: '^17.5.1',
@@ -241,23 +274,24 @@ test('supports imports from "data:text/javascript" URI without explicit encoding
 
 test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
   const code = 'export const something = "some value"';
-  await expect(() =>
-    import(
-      `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
-    ),
+  await expect(
+    () =>
+      import(
+        `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+      ),
   ).rejects.toThrow('Invalid data URI');
 });
 
 test('imports from "data:" URI with invalid mime type fail', async () => {
   const code = 'export const something = "some value"';
-  await expect(() =>
-    import(`data:something/else,${encodeURIComponent(code)}`),
+  await expect(
+    () => import(`data:something/else,${encodeURIComponent(code)}`),
   ).rejects.toThrow('Invalid data URI');
 });
 
 test('imports from "data:text/javascript" URI with invalid data fail', async () => {
-  await expect(() =>
-    import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
+  await expect(
+    () => import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
   ).rejects.toThrow("Unexpected token '.'");
 });
 

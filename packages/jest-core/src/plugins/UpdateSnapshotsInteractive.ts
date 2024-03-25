@@ -67,7 +67,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     updateConfigAndRun: Function,
   ): Promise<void> {
     if (this._failedSnapshotTestAssertions.length > 0) {
-      return new Promise(res => {
+      return new Promise(resolve => {
         this._snapshotInteractiveMode.run(
           this._failedSnapshotTestAssertions,
           (assertion, shouldUpdateSnapshot) => {
@@ -79,7 +79,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
               updateSnapshot: shouldUpdateSnapshot ? 'all' : 'none',
             });
             if (!this._snapshotInteractiveMode.isActive()) {
-              res();
+              resolve();
             }
           },
         );

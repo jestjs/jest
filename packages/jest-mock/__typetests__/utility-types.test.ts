@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectNotAssignable, expectType} from 'tsd-lite';
+import {expect, test} from 'tstyche';
 import type {
   ClassLike,
   ConstructorLikeKeys,
@@ -105,64 +105,63 @@ type IndexObject = {
   propertyB: {b: string};
 };
 
-// ClassLike
+test('ClassLike', () => {
+  expect<ClassLike>().type.toBeAssignable(SomeClass);
 
-expectAssignable<ClassLike>(SomeClass);
-expectNotAssignable<ClassLike>(() => {});
-expectNotAssignable<ClassLike>(function abc() {
-  return;
+  expect<ClassLike>().type.not.toBeAssignable(() => {});
+  expect<ClassLike>().type.not.toBeAssignable(function abc() {
+    return;
+  });
+  expect<ClassLike>().type.not.toBeAssignable('abc');
+  expect<ClassLike>().type.not.toBeAssignable(123);
+  expect<ClassLike>().type.not.toBeAssignable(false);
+  expect<ClassLike>().type.not.toBeAssignable(someObject);
 });
-expectNotAssignable<ClassLike>('abc');
-expectNotAssignable<ClassLike>(123);
-expectNotAssignable<ClassLike>(false);
-expectNotAssignable<ClassLike>(someObject);
 
-// FunctionLike
+test('FunctionLike', () => {
+  expect<FunctionLike>().type.toBeAssignable(() => {});
+  expect<FunctionLike>().type.toBeAssignable(function abc() {
+    return;
+  });
 
-expectAssignable<FunctionLike>(() => {});
-expectAssignable<FunctionLike>(function abc() {
-  return;
+  expect<FunctionLike>().type.not.toBeAssignable('abc');
+  expect<FunctionLike>().type.not.toBeAssignable(123);
+  expect<FunctionLike>().type.not.toBeAssignable(false);
+  expect<FunctionLike>().type.not.toBeAssignable(SomeClass);
+  expect<FunctionLike>().type.not.toBeAssignable(someObject);
 });
-expectNotAssignable<FunctionLike>('abc');
-expectNotAssignable<FunctionLike>(123);
-expectNotAssignable<FunctionLike>(false);
-expectNotAssignable<FunctionLike>(SomeClass);
-expectNotAssignable<FunctionLike>(someObject);
 
-// ConstructorKeys
+test('ConstructorKeys', () => {
+  expect<ConstructorLikeKeys<OptionalInterface>>().type.toEqual<
+    'constructorA' | 'constructorB'
+  >();
+  expect<ConstructorLikeKeys<SomeObject>>().type.toEqual<'SomeClass'>();
+});
 
-declare const interfaceConstructorKeys: ConstructorLikeKeys<OptionalInterface>;
-declare const objectConstructorKeys: ConstructorLikeKeys<SomeObject>;
+test('MethodKeys', () => {
+  expect<MethodLikeKeys<SomeClass>>().type.toEqual<'methodA' | 'methodB'>();
+  expect<MethodLikeKeys<IndexClass>>().type.toEqual<'methodA' | 'methodB'>();
+  expect<MethodLikeKeys<OptionalInterface>>().type.toEqual<
+    'methodA' | 'methodB'
+  >();
+  expect<MethodLikeKeys<SomeObject>>().type.toEqual<
+    'methodA' | 'methodB' | 'methodC'
+  >();
+  expect<MethodLikeKeys<IndexObject>>().type.toEqual<
+    'methodA' | 'methodB' | 'methodC'
+  >();
+});
 
-expectType<'constructorA' | 'constructorB'>(interfaceConstructorKeys);
-expectType<'SomeClass'>(objectConstructorKeys);
-
-// MethodKeys
-
-declare const classMethods: MethodLikeKeys<SomeClass>;
-declare const indexClassMethods: MethodLikeKeys<IndexClass>;
-declare const interfaceMethods: MethodLikeKeys<OptionalInterface>;
-declare const objectMethods: MethodLikeKeys<SomeObject>;
-declare const indexObjectMethods: MethodLikeKeys<IndexObject>;
-
-expectType<'methodA' | 'methodB'>(classMethods);
-expectType<'methodA' | 'methodB'>(indexClassMethods);
-expectType<'methodA' | 'methodB'>(interfaceMethods);
-expectType<'methodA' | 'methodB' | 'methodC'>(objectMethods);
-expectType<'methodA' | 'methodB' | 'methodC'>(indexObjectMethods);
-
-// PropertyKeys
-
-declare const classProperties: PropertyLikeKeys<SomeClass>;
-declare const indexClassProperties: PropertyLikeKeys<IndexClass>;
-declare const interfaceProperties: PropertyLikeKeys<OptionalInterface>;
-declare const objectProperties: PropertyLikeKeys<SomeObject>;
-declare const indexObjectProperties: PropertyLikeKeys<IndexObject>;
-
-expectType<'propertyA' | 'propertyB' | 'propertyC'>(classProperties);
-expectType<string | number>(indexClassProperties);
-expectType<'propertyA' | 'propertyB' | 'propertyC' | 'propertyD'>(
-  interfaceProperties,
-);
-expectType<'propertyA' | 'propertyB' | 'someClassInstance'>(objectProperties);
-expectType<string | number>(indexObjectProperties);
+test('PropertyKeys', () => {
+  expect<PropertyLikeKeys<SomeClass>>().type.toEqual<
+    'propertyA' | 'propertyB' | 'propertyC'
+  >();
+  expect<PropertyLikeKeys<IndexClass>>().type.toEqual<string | number>();
+  expect<PropertyLikeKeys<OptionalInterface>>().type.toEqual<
+    'propertyA' | 'propertyB' | 'propertyC' | 'propertyD'
+  >();
+  expect<PropertyLikeKeys<SomeObject>>().type.toEqual<
+    'propertyA' | 'propertyB' | 'someClassInstance'
+  >();
+  expect<PropertyLikeKeys<IndexObject>>().type.toEqual<string | number>();
+});

@@ -13,6 +13,7 @@ import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
+  JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
@@ -26,7 +27,9 @@ import {
 export default async function readConfigFileAndSetRootDir(
   configPath: string,
 ): Promise<Config.InitialOptions> {
-  const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
+  const isTS =
+    configPath.endsWith(JEST_CONFIG_EXT_TS) ||
+    configPath.endsWith(JEST_CONFIG_EXT_CTS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
@@ -121,13 +124,13 @@ async function registerTsNode(): Promise<Service> {
         '**': 'cjs',
       },
     });
-  } catch (e: any) {
-    if (e.code === 'ERR_MODULE_NOT_FOUND') {
+  } catch (error: any) {
+    if (error.code === 'ERR_MODULE_NOT_FOUND') {
       throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
       );
     }
 
-    throw e;
+    throw error;
   }
 }

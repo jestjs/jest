@@ -93,12 +93,12 @@ interface Each<EachFn extends TestFn | BlockFn> {
   ) => void;
 
   // when the table is a template literal
-  <T = unknown>(
+  <T extends Array<unknown>>(
     strings: TemplateStringsArray,
-    ...expressions: Array<T>
+    ...expressions: T
   ): (
     name: string | NameLike,
-    fn: (arg: Record<string, T>, done: DoneFn) => ReturnType<EachFn>,
+    fn: (arg: Record<string, T[number]>, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
@@ -113,9 +113,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
   ) => void;
 }
 
-export interface HookBase {
-  (fn: HookFn, timeout?: number): void;
-}
+export type HookBase = (fn: HookFn, timeout?: number) => void;
 
 export interface Failing<T extends TestFn> {
   (testName: TestNameLike, fn: T, timeout?: number): void;

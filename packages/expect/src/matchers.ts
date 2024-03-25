@@ -153,7 +153,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a number`,
@@ -163,7 +163,7 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a number`,
@@ -176,9 +176,15 @@ const matchers: MatchersObject = {
     let expectedDiff = 0;
     let receivedDiff = 0;
 
-    if (received === Infinity && expected === Infinity) {
+    if (
+      received === Number.POSITIVE_INFINITY &&
+      expected === Number.POSITIVE_INFINITY
+    ) {
       pass = true; // Infinity - Infinity is NaN
-    } else if (received === -Infinity && expected === -Infinity) {
+    } else if (
+      received === Number.NEGATIVE_INFINITY &&
+      expected === Number.NEGATIVE_INFINITY
+    ) {
       pass = true; // -Infinity - -Infinity is NaN
     } else {
       expectedDiff = Math.pow(10, -precision) / 2;
@@ -296,7 +302,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'function') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
@@ -331,11 +337,11 @@ const matchers: MatchersObject = {
                 received,
               )}`
             : typeof received.constructor === 'function'
-            ? printReceivedConstructorName(
-                'Received constructor',
-                received.constructor,
-              )
-            : `\nReceived value: ${printReceived(received)}`);
+              ? printReceivedConstructorName(
+                  'Received constructor',
+                  received.constructor,
+                )
+              : `\nReceived value: ${printReceived(received)}`);
 
     return {message, pass};
   },
@@ -485,7 +491,7 @@ const matchers: MatchersObject = {
       )} value is a string`;
 
       if (typeof expected !== 'string') {
-        throw new Error(
+        throw new TypeError(
           matcherErrorMessage(
             matcherHint(matcherName, received, String(expected), options),
             wrongTypeErrorMessage,
@@ -529,7 +535,7 @@ const matchers: MatchersObject = {
       return {message, pass};
     }
 
-    const indexable = Array.from(received);
+    const indexable = [...received];
     const index = indexable.indexOf(expected);
     const pass = index !== -1;
 
@@ -581,7 +587,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const index = Array.from(received).findIndex(item =>
+    const index = [...received].findIndex(item =>
       equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;
@@ -658,7 +664,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received?.length !== 'number') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR(
@@ -817,7 +823,7 @@ const matchers: MatchersObject = {
     };
 
     if (typeof received !== 'string') {
-      throw new Error(
+      throw new TypeError(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a string`,

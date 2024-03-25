@@ -126,8 +126,8 @@ describe('jest-each', () => {
             {foo: 'bar'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
           [
             'world',
@@ -138,8 +138,8 @@ describe('jest-each', () => {
             {baz: 'qux'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
@@ -304,8 +304,8 @@ describe('jest-each', () => {
             f: {key: 'foo'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
           {
             a: 'world',
@@ -316,8 +316,8 @@ describe('jest-each', () => {
             f: {key: 'bar'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
         ]);
         const testFunction = get(eachObject, keyPath);

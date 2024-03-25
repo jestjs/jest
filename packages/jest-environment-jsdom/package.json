@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "30.0.0-alpha.2",
+  "version": "30.0.0-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -20,12 +20,9 @@
   },
   "dependencies": {
     "@jest/environment": "workspace:*",
-    "@jest/fake-timers": "workspace:*",
-    "@jest/types": "workspace:*",
+    "@jest/environment-jsdom-abstract": "workspace:*",
     "@types/jsdom": "^21.1.1",
     "@types/node": "*",
-    "jest-mock": "workspace:*",
-    "jest-util": "workspace:*",
     "jsdom": "^22.0.0"
   },
   "devDependencies": {

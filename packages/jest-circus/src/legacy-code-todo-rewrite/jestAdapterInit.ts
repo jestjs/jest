@@ -112,7 +112,7 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  for (const path of config.snapshotSerializers.concat().reverse())
+  for (const path of [...config.snapshotSerializers].reverse())
     addSerializer(localRequire(path));
 
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
@@ -190,7 +190,7 @@ export const runAndTransformResultsToJestFormat = async ({
         failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
-          ? ancestorTitles.concat(title).join(' ')
+          ? [...ancestorTitles, title].join(' ')
           : ancestorTitles.join(' '),
         invocations: testResult.invocations,
         location: testResult.location,
@@ -198,7 +198,7 @@ export const runAndTransformResultsToJestFormat = async ({
         retryReasons: testResult.retryReasons,
         startAt: testResult.startedAt,
         status,
-        title: testResult.testPath[testResult.testPath.length - 1],
+        title: testResult.testPath.at(-1)!,
       };
     },
   );
@@ -254,7 +254,8 @@ const handleSnapshotStateAfterRetry =
     }
   };
 
-const eventHandler = async (event: Circus.Event) => {
+// Exported for direct access from unit tests.
+export const eventHandler = async (event: Circus.Event): Promise<void> => {
   switch (event.name) {
     case 'test_start': {
       jestExpect.setState({
@@ -273,9 +274,13 @@ const eventHandler = async (event: Circus.Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
+  const {isExpectingAssertions} = jestExpect.getState();
   const failures = jestExpect.extractExpectedAssertionsErrors();
-  const errors = failures.map(failure => failure.error);
-  test.errors = test.errors.concat(errors);
+  if (isExpectingAssertions && test.errors.length > 0) {
+    // Only show errors from `expect.hasAssertions()` when no other failure has happened.
+    return;
+  }
+  test.errors.push(...failures.map(failure => failure.error));
 };
 
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
@@ -285,6 +290,6 @@ const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = jestExpect.getState();
   jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length > 0) {
-    test.errors = test.errors.concat(suppressedErrors);
+    test.errors.push(...suppressedErrors);
   }
 };

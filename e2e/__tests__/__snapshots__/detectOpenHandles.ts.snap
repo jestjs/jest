@@ -19,7 +19,7 @@ exports[`prints message about flag on slow tests with a custom timeout 1`] = `
 exports[`prints out info about open handlers 1`] = `
 "Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
-  ●  DNSCHANNEL,TCPSERVERWRAP
+  ●  TCPSERVERWRAP
 
       12 | const app = new Server();
       13 |

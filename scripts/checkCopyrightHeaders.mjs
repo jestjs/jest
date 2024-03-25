@@ -9,7 +9,7 @@ import {execSync} from 'child_process';
 import fs from 'graceful-fs';
 import {isBinaryFileSync} from 'isbinaryfile';
 
-const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});
+const getFileContents = path => fs.readFileSync(path, 'utf8');
 const isDirectory = path => fs.lstatSync(path).isDirectory();
 const createRegExp = pattern => new RegExp(pattern);
 
@@ -130,7 +130,7 @@ function needsCopyrightHeader(file) {
 }
 
 function check() {
-  const allFiles = execSync('git ls-files', {encoding: 'utf-8'})
+  const allFiles = execSync('git ls-files', {encoding: 'utf8'})
     .trim()
     .split('\n');
 

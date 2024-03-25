@@ -16,7 +16,7 @@ export default function wrapAnsiString(
     return string;
   }
 
-  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/gu;
+  const ANSI_REGEXP = /[\u001B\u009B]\[\d{1,2}m/gu;
   const tokens = [];
   let lastIndex = 0;
   let match;

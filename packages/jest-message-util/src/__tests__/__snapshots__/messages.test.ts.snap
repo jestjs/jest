@@ -12,8 +12,8 @@ exports[`codeframe 1`] = `
 
     Whoops!
 
-    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color></>
-    </> <gray>   |</color>       <red><bold>^</intensity></color></>
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color>
+     <gray>   |</color>       <red><bold>^</intensity></color></>
 
       <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
 "
@@ -33,8 +33,8 @@ exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] 
 
 exports[`formatStackTrace prints code frame and stacktrace 1`] = `
 "
-    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color></>
-    </> <gray>   |</color>       <red><bold>^</intensity></color></>
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color>
+     <gray>   |</color>       <red><bold>^</intensity></color></>
 
       <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
         "
@@ -116,16 +116,16 @@ exports[`on node >=15.0.0 should return the inner errors of an AggregateError 1`
 
     AggregateError:
 
-      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:588:22)</intensity>
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:586:22)</intensity>
 
     Errors contained in AggregateError:
      Err 1
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:589:7)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:587:7)</intensity>
 
      Err 2
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:590:7)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:588:7)</intensity>
 
 "
 `;
@@ -177,12 +177,12 @@ exports[`should return the error cause if there is one 1`] = `
 
     Test exception
 
-      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:567:17)</intensity>
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:565:17)</intensity>
 
     Cause:
      Cause Error
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:570:17)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:568:17)</intensity>
 
 "
 `;

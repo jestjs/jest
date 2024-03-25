@@ -5,10 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectType} from 'tsd-lite';
-import type {Config as ConfigTypes} from '@jest/types';
+import {describe, expect, test} from 'tstyche';
 import type {Config} from 'jest';
 
-declare const config: Config;
+describe('Config', () => {
+  test('is a reexport of the `InitialOptions`', () => {
+    type InitialOptions = import('@jest/types').Config.InitialOptions;
 
-expectType<ConfigTypes.InitialOptions>(config);
+    expect<Config>().type.toEqual<InitialOptions>();
+  });
+});

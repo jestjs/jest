@@ -19,7 +19,7 @@ export const interpolateVariables = (
   index: number,
 ): string =>
   title
-    .replace(
+    .replaceAll(
       new RegExp(`\\$(${Object.keys(template).join('|')})[.\\w]*`, 'g'),
       match => {
         const keyPath = match.slice(1).split('.');
@@ -71,6 +71,8 @@ export function getPath(
   template: Template,
   [head, ...tail]: Array<string>,
 ): unknown {
+  if (template === null) return 'null';
+  if (template === undefined) return 'undefined';
   if (!head || !Object.prototype.hasOwnProperty.call(template, head))
     return template;
   return getPath(template[head] as Template, tail);

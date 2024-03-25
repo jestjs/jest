@@ -28,7 +28,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys */
 
 import type {Spy} from '../types';
 import CallTracker, {type Context} from './CallTracker';

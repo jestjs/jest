@@ -12,6 +12,6 @@ export function normalizeIcons(str: string): string {
 
   // Make sure to keep in sync with `jest-util/src/specialChars`
   return str
-    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
-    .replace(new RegExp('\u221A', 'gu'), '\u2713');
+    .replaceAll(new RegExp('\u00D7', 'gu'), '\u2715')
+    .replaceAll(new RegExp('\u221A', 'gu'), '\u2713');
 }

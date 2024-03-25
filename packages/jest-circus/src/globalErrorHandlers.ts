@@ -31,9 +31,9 @@ const rejectionHandledListener: NodeJS.RejectionHandledListener = (
 export const injectGlobalErrorHandlers = (
   parentProcess: typeof Process,
 ): Circus.GlobalErrorHandlers => {
-  const uncaughtException = process.listeners('uncaughtException').slice();
-  const unhandledRejection = process.listeners('unhandledRejection').slice();
-  const rejectionHandled = process.listeners('rejectionHandled').slice();
+  const uncaughtException = [...process.listeners('uncaughtException')];
+  const unhandledRejection = [...process.listeners('unhandledRejection')];
+  const rejectionHandled = [...process.listeners('rejectionHandled')];
   parentProcess.removeAllListeners('uncaughtException');
   parentProcess.removeAllListeners('unhandledRejection');
   parentProcess.removeAllListeners('rejectionHandled');

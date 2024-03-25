@@ -41,7 +41,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       const testNamePatternPrompt = new TestNamePatternPrompt(
         this._stdout,
         this._prompt,
@@ -50,9 +50,9 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
       testNamePatternPrompt.run(
         (value: string) => {
           updateConfigAndRun({mode: 'watch', testNamePattern: value});
-          res();
+          resolve();
         },
-        rej,
+        reject,
         {
           header: activeFilters(globalConfig),
         },
