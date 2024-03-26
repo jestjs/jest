@@ -116,7 +116,7 @@ const _runTestsForDescribeBlock = async (
         const hasRetryTimes = retryTimes > 0;
         await _runTest(child, isSkipped);
 
-        //If immediate retry is set, we retry the test immediately after the first run
+        // If immediate retry is set, we retry the test immediately after the first run
         if (
           retryImmediately &&
           hasErrorsBeforeTestRun === false &&

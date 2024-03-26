@@ -1139,7 +1139,7 @@ test('will fail', () => {
 });
 ```
 
-`retryImmediately` option is used to retry the failed test immediately after the failure. If this option is not specified, the tests are retried after Jest is finished running all test in a file.
+`retryImmediately` option is used to retry the failed test immediately after the failure. If this option is not specified, the tests are retried after Jest is finished running all other tests in the file.
 
 ```js
 jest.retryTimes(3, {retryImmediately: true});
