@@ -667,6 +667,11 @@ expect(jest.retryTimes(3, {logErrorsBeforeRetry: 'all'})).type.toRaiseError();
 expect(jest.retryTimes({logErrorsBeforeRetry: true})).type.toRaiseError();
 expect(jest.retryTimes(3, {waitBeforeRetry: 1000})).type.toEqual<typeof jest>();
 expect(jest.retryTimes(3, {waitBeforeRetry: true})).type.toRaiseError();
+expect(jest.retryTimes(3, {retryImmediately: true})).type.toEqual<
+  typeof jest
+>();
+expect(jest.retryTimes(3, {retryImmediately: 'now'})).type.toRaiseError();
+expect(jest.retryTimes(3, {retryImmediately: 1000})).type.toRaiseError();
 expect(jest.retryTimes({logErrorsBeforeRetry: 'all'})).type.toRaiseError();
 expect(jest.retryTimes()).type.toRaiseError();
 

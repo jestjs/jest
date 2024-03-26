@@ -113,3 +113,42 @@ exports[`Test Retries wait before retry with fake timers 1`] = `
 PASS __tests__/waitBeforeRetryFakeTimers.test.js
   ✓ retryTimes set with fake timers"
 `;
+
+exports[`Test Retries with flag retryImmediately retry immediately after failed test 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 | it('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/retryImmediately.test.js:17:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 | it('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/retryImmediately.test.js:17:18)
+
+PASS __tests__/retryImmediately.test.js
+  ✓ retryTimes set
+  ✓ truthy test"
+`;
