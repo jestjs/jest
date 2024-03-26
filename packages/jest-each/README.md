@@ -40,6 +40,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - `%j` - JSON.
   - `%o` - Object.
   - `%#` - Index of the test case.
+  - `%$` - Number of the test case.
   - `%%` - single percent sign ('%'). This does not consume an argument.
 - Unique test titles by injecting properties of test case object
 - 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
@@ -118,6 +119,7 @@ const each = require('jest-each').default;
     - `%j` - JSON.
     - `%o` - Object.
     - `%#` - Index of the test case.
+    - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
@@ -144,6 +146,7 @@ const each = require('jest-each').default;
     - `%j` - JSON.
     - `%o` - Object.
     - `%#` - Index of the test case.
+    - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`

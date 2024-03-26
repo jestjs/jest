@@ -248,6 +248,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - `%j` - JSON.
     - `%o` - Object.
     - `%#` - Index of the test case.
+    - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
@@ -550,6 +551,7 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
     - `%j` - JSON.
     - `%o` - Object.
     - `%#` - Index of the test case.
+    - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
@@ -692,6 +694,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%j` - JSON.
     - `%o` - Object.
     - `%#` - Index of the test case.
+    - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`

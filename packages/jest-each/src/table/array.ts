@@ -15,6 +15,7 @@ import {type Templates, interpolateVariables} from './interpolation';
 const SUPPORTED_PLACEHOLDERS = /%[#Odfijops]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
+const NUMBER_PLACEHOLDER = '%$';
 const PLACEHOLDER_PREFIX = '%';
 const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
@@ -71,7 +72,10 @@ const formatTitle = (
 
         return util.format(formattedTitle, normalisedValue);
       },
-      interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex),
+      interpolateTitleIndexAndNumber(
+        interpolateEscapedPlaceholders(title),
+        rowIndex,
+      ),
     )
     .replaceAll(
       new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'),
@@ -92,8 +96,10 @@ const getMatchingPlaceholders = (title: string) =>
 const interpolateEscapedPlaceholders = (title: string) =>
   title.replaceAll(ESCAPED_PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE);
 
-const interpolateTitleIndex = (title: string, index: number) =>
-  title.replace(INDEX_PLACEHOLDER, index.toString());
+const interpolateTitleIndexAndNumber = (title: string, index: number) =>
+  title
+    .replace(INDEX_PLACEHOLDER, index.toString())
+    .replace(NUMBER_PLACEHOLDER, (index + 1).toString());
 
 const interpolatePrettyPlaceholder = (title: string, value: unknown) =>
   title.replace(PRETTY_PLACEHOLDER, pretty(value, {maxDepth: 1, min: true}));
