@@ -36,7 +36,7 @@ export const runTest = (
     global.afterAll = circus.afterAll;
 
     const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}').default;
-    const {addEventHandler, getState} = require('${CIRCUS_STATE_PATH}');
+    const {addEventHandler, removeEventHandler, getState} = require('${CIRCUS_STATE_PATH}');
     getState().randomize = ${opts?.randomize};
     getState().seed = ${opts?.seed ?? 0};
     addEventHandler(testEventHandler);
