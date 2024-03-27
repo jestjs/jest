@@ -8,7 +8,7 @@ Jest: "global" coverage threshold for lines (100%) not met: 0%"
 `;
 
 exports[`excludes tests matched by path threshold groups from global group 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -42,7 +42,7 @@ Jest: "global" coverage threshold for lines (90%) not met: 50%"
 `;
 
 exports[`exits with 1 if coverage threshold is not met 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -66,7 +66,7 @@ Jest: Coverage data for apple.js was not found."
 `;
 
 exports[`exits with 1 if path threshold group is not found in coverage data 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -92,7 +92,7 @@ Jest: "./banana.js" coverage threshold for lines (100%) not met: 50%"
 `;
 
 exports[`file is matched by all path and glob threshold groups 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

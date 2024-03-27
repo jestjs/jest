@@ -32,6 +32,7 @@ class CurrentTestList {
   private _array: Array<{
     testPath: string;
     config: Config.ProjectConfig;
+    passedTests: number;
   } | null>;
 
   constructor() {
@@ -40,12 +41,18 @@ class CurrentTestList {
 
   add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
-    const record = {config, testPath};
+    const passedTests = 0;
+    const record = {config, passedTests, testPath};
     if (index === -1) {
       this._array.push(record);
     } else {
       this._array[index] = record;
     }
+  }
+
+  addPassedTest(path: string) {
+    const record = this._array.find(record => record?.testPath === path);
+    if (record) record.passedTests++;
   }
 
   delete(testPath: string) {
@@ -84,6 +91,7 @@ export default class Status {
   private _interval?: NodeJS.Timeout;
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
+  private _numberOfTests: Map<string, number>;
 
   constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
@@ -93,6 +101,7 @@ export default class Status {
     this._emitScheduled = false;
     this._estimatedTime = 0;
     this._showStatus = false;
+    this._numberOfTests = new Map<string, number>();
   }
 
   onChange(callback: () => void): void {
@@ -123,6 +132,16 @@ export default class Status {
     } else {
       this._emit();
     }
+    if (testCaseResult.status == 'passed')
+      this._currentTests.addPassedTest(test.path);
+  }
+
+  addNumberOfTests(testPath: string, numberOfTests: number): void {
+    this._numberOfTests.set(testPath, numberOfTests);
+  }
+
+  getNumberOfTests(testPath: string): number | undefined {
+    return this._numberOfTests.get(testPath);
   }
 
   testStarted(testPath: string, config: Config.ProjectConfig): void {
@@ -164,18 +183,23 @@ export default class Status {
     let content = '\n';
     for (const record of this._currentTests.get()) {
       if (record) {
-        const {config, testPath} = record;
+        const {config, testPath, passedTests} = record;
 
         const projectDisplayName = config.displayName
           ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
 
+        const numberOfTests = this.getNumberOfTests(testPath);
+        const txtNumberOfTests = numberOfTests ? `of ${numberOfTests}` : '';
+        const currentTestPassed = `${chalk.bold.green(
+          `${passedTests} passed ${txtNumberOfTests}`,
+        )}`;
         content += `${wrapAnsiString(
           prefix +
             trimAndFormatPath(stringLength(prefix), config, testPath, width),
           width,
-        )}\n`;
+        )} ${currentTestPassed}\n`;
       }
     }
 

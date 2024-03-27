@@ -30,6 +30,7 @@ import {
   addEventHandler,
   dispatch,
   getState as getRunnerState,
+  getState,
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
@@ -143,17 +144,44 @@ export const initialize = async ({
   return {globals: globalsObject, snapshotState};
 };
 
+const countNumberOfTests = (describeBlock: Circus.DescribeBlock) => {
+  let numberOfTests = 0;
+
+  for (const child of describeBlock.children) {
+    switch (child.type) {
+      case 'describeBlock':
+        numberOfTests += countNumberOfTests(child);
+        break;
+
+      case 'test':
+        numberOfTests++;
+        break;
+    }
+  }
+
+  return numberOfTests;
+};
+
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
+  sendMessageToJest,
   setupAfterEnvPerfStats,
   testPath,
 }: {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
+  sendMessageToJest?: TestFileEvent;
   testPath: string;
   setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
+  const {rootDescribeBlock} = getState();
+  if (sendMessageToJest)
+    sendMessageToJest('test-file-num-of-tests', [
+      testPath,
+      countNumberOfTests(rootDescribeBlock),
+    ]);
+
   const runResult: Circus.RunResult = await run();
 
   let numFailingTests = 0;

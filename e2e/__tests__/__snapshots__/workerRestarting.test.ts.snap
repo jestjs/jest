@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`all 3 test files should complete 1`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

@@ -104,6 +104,7 @@ const jestAdapter = async (
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    sendMessageToJest,
     setupAfterEnvPerfStats,
     testPath,
   });

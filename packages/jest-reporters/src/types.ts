@@ -42,6 +42,10 @@ export interface Reporter {
     test: Test,
     testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
+  readonly onNumberOfTests?: (
+    testPath: string,
+    numberOfTests: number,
+  ) => Promise<void> | void;
   readonly onRunStart?: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 1`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   9 written, 9 total
 Time:        <<REPLACED>>
@@ -9,7 +9,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 2`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       6 passed, 6 total
 Snapshots:   1 file removed, 5 passed, 5 total
 Time:        <<REPLACED>>
@@ -17,7 +17,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation deletes the snapshot if the test suite has been removed 1`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   9 written, 9 total
 Time:        <<REPLACED>>
@@ -25,7 +25,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation deletes the snapshot if the test suite has been removed 2`] = `
-"Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total (100%)
 Tests:       5 passed, 5 total
 Snapshots:   1 file removed, 5 passed, 5 total
 Time:        <<REPLACED>>
@@ -33,7 +33,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation does not save snapshots in CI mode by default 1`] = `
-"Test Suites: 3 failed, 3 total
+"Test Suites: 3 failed, 3 total (100%)
 Tests:       7 failed, 2 passed, 9 total
 Snapshots:   9 failed, 9 total
 Time:        <<REPLACED>>
@@ -41,7 +41,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 1`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   9 written, 9 total
 Time:        <<REPLACED>>
@@ -49,7 +49,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 2`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   1 removed, 1 updated, 7 passed, 8 total
 Time:        <<REPLACED>>
@@ -57,7 +57,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation works on subsequent runs without \`-u\` 1`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   9 written, 9 total
 Time:        <<REPLACED>>
@@ -65,7 +65,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot Validation works on subsequent runs without \`-u\` 2`] = `
-"Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total (100%)
 Tests:       9 passed, 9 total
 Snapshots:   9 passed, 9 total
 Time:        <<REPLACED>>
@@ -73,7 +73,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot stores new snapshots on the first run 1`] = `
-"Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total (100%)
 Tests:       5 passed, 5 total
 Snapshots:   5 written, 5 total
 Time:        <<REPLACED>>
@@ -81,7 +81,7 @@ Ran all test suites."
 `;
 
 exports[`Snapshot works with escaped characters 1`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   1 written, 1 total
 Time:        <<REPLACED>>
@@ -89,7 +89,7 @@ Ran all test suites matching snapshot.test.js."
 `;
 
 exports[`Snapshot works with escaped characters 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       2 passed, 2 total
 Snapshots:   1 written, 1 passed, 2 total
 Time:        <<REPLACED>>
@@ -97,7 +97,7 @@ Ran all test suites matching snapshot.test.js."
 `;
 
 exports[`Snapshot works with escaped characters 3`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       2 passed, 2 total
 Snapshots:   2 passed, 2 total
 Time:        <<REPLACED>>
@@ -105,7 +105,7 @@ Ran all test suites matching snapshot.test.js."
 `;
 
 exports[`Snapshot works with escaped regex 1`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       2 passed, 2 total
 Snapshots:   2 written, 2 total
 Time:        <<REPLACED>>
@@ -113,7 +113,7 @@ Ran all test suites matching snapshotEscapeRegex.js."
 `;
 
 exports[`Snapshot works with escaped regex 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       2 passed, 2 total
 Snapshots:   2 passed, 2 total
 Time:        <<REPLACED>>
@@ -121,7 +121,7 @@ Ran all test suites matching snapshotEscapeRegex.js."
 `;
 
 exports[`Snapshot works with template literal substitutions 1`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   1 written, 1 total
 Time:        <<REPLACED>>
@@ -129,7 +129,7 @@ Ran all test suites matching snapshotEscapeSubstitution.test.js."
 `;
 
 exports[`Snapshot works with template literal substitutions 2`] = `
-"Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total (100%)
 Tests:       1 passed, 1 total
 Snapshots:   1 passed, 1 total
 Time:        <<REPLACED>>

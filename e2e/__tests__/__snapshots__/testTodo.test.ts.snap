@@ -7,7 +7,7 @@ exports[`counts todo tests when inside of a \`describe.only\` 1`] = `
     ✎ todo todo test 1
     ✎ todo todo test 2
 
-Test Suites: 1 passed, 1 total
+Test Suites: 1 passed, 1 total (100%)
 Tests:       2 todo, 1 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

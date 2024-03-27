@@ -92,6 +92,17 @@ export default class ReporterDispatcher {
     }
   }
 
+  async onNumberOfTests(
+    testPath: string,
+    numberOfTests: number,
+  ): Promise<void> {
+    for (const reporter of this._reporters) {
+      if (reporter.onNumberOfTests) {
+        await reporter.onNumberOfTests(testPath, numberOfTests);
+      }
+    }
+  }
+
   async onRunComplete(
     testContexts: Set<TestContext>,
     results: AggregatedResult,

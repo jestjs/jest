@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Stack Trace does not print a stack trace for errors when --noStackTrace is given 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       3 failed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -9,7 +9,7 @@ Ran all test suites matching testError.test.js."
 `;
 
 exports[`Stack Trace does not print a stack trace for matching errors when --noStackTrace is given 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -17,7 +17,7 @@ Ran all test suites matching stackTrace.test.js."
 `;
 
 exports[`Stack Trace does not print a stack trace for runtime errors when --noStackTrace is given 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -25,7 +25,7 @@ Ran all test suites matching runtimeError.test.js."
 `;
 
 exports[`Stack Trace prints a stack trace for errors 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       3 failed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -33,7 +33,7 @@ Ran all test suites matching testError.test.js."
 `;
 
 exports[`Stack Trace prints a stack trace for errors without message in stack trace 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -41,7 +41,7 @@ Ran all test suites matching stackTraceWithoutMessage.test.js."
 `;
 
 exports[`Stack Trace prints a stack trace for matching errors 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -49,7 +49,7 @@ Ran all test suites matching stackTrace.test.js."
 `;
 
 exports[`Stack Trace prints a stack trace for runtime errors 1`] = `
-"Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total (100%)
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

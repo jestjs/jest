@@ -205,6 +205,7 @@ export type TestContext = {
 
 // Typings for `sendMessageToJest` events
 export type TestEvents = {
+  'test-file-num-of-tests': [string, number];
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];

@@ -124,6 +124,9 @@ export default function getSummary(
     optionalLines.push(`${chalk.bold('Seed:        ') + seed}`);
   }
 
+  const percent = (
+    ((suitesPending || 0) + (suitesRun || 0) * 100) / (suitesTotal || 0) || 100
+  ).toFixed(0);
   const suites = `${
     chalk.bold('Test Suites: ') +
     (suitesFailed ? `${chalk.bold.red(`${suitesFailed} failed`)}, ` : '') +
@@ -132,7 +135,7 @@ export default function getSummary(
       : '') +
     (suitesPassed ? `${chalk.bold.green(`${suitesPassed} passed`)}, ` : '') +
     (suitesRun === suitesTotal ? suitesTotal : `${suitesRun} of ${suitesTotal}`)
-  } total`;
+  } total (${percent}%)`;
 
   const updatedTestsFailed =
     testsFailed + valuesForCurrentTestCases.numFailingTests;
