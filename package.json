@@ -110,7 +110,7 @@
     "remove-examples": "node ./scripts/remove-examples.mjs",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
     "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.mjs",
-    "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
+    "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff pretty-format",
     "test-ts": "yarn jest --config jest.config.ts.mjs",
     "test-types": "yarn tstyche && yarn test-ts --selectProjects type-tests",
     "test": "yarn lint && yarn jest",

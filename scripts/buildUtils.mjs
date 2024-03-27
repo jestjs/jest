@@ -228,11 +228,9 @@ export function createBuildConfigs() {
                         './src/setup_jest_globals.ts',
                       ),
                     }
-                  : pkg.name === 'jest-repl'
-                    ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
-                    : pkg.name === 'jest-snapshot'
-                      ? {worker: path.resolve(packageDir, './src/worker.ts')}
-                      : {};
+                  : pkg.name === 'jest-snapshot'
+                    ? {worker: path.resolve(packageDir, './src/worker.ts')}
+                    : {};
 
     const extraEntryPoints =
       // skip expect for now
