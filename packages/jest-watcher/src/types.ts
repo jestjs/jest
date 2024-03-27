@@ -66,6 +66,7 @@ export type AllowedConfigOptions = Partial<
     | 'testPathPatterns'
     | 'updateSnapshot'
     | 'verbose'
+    | 'runInBand'
   > & {mode: 'watch' | 'watchAll'}
 >;
 

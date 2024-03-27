@@ -187,6 +187,7 @@ export type DefaultOptions = {
   resetModules: boolean;
   restoreMocks: boolean;
   roots: Array<string>;
+  runInBand: boolean;
   runTestsByPath: boolean;
   runner: string;
   setupFiles: Array<string>;

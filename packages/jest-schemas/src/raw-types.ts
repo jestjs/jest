@@ -305,6 +305,7 @@ export const RawInitialOptions = Type.Partial(
     rootDir: Type.String(),
     roots: Type.Array(Type.String()),
     runner: Type.String(),
+    runInBand: Type.Boolean(),
     runTestsByPath: Type.Boolean(),
     runtime: Type.String(),
     sandboxInjectedGlobals: Type.Array(Type.String()),

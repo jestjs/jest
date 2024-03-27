@@ -1546,6 +1546,12 @@ By default, `roots` has a single entry `<rootDir>` but there are cases where you
 
 :::
 
+### `runInBand` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--runInBand`](CLI.md#--runInBand) flag to run all tests serially in the current process.
+
 ### `runner` \[string]
 
 Default: `"jest-runner"`
