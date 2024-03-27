@@ -93,9 +93,12 @@ Object {
   "onlyChanged": false,
   "passWithNoTests": true,
   "rootDir": "",
-  "testPathPatterns": Array [
-    "p.*3",
-  ],
+  "testPathPatterns": Object {
+    "patterns": Array [
+      "p.*3",
+    ],
+    "type": "TestPathPatterns",
+  },
   "watch": true,
   "watchAll": false,
 }

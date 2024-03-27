@@ -655,7 +655,7 @@ export const options: {[key: string]: Options} = {
   },
   testPathPatterns: {
     description:
-      'A regexp pattern string that is matched against all tests ' +
+      'An array of regexp pattern strings that are matched against all tests ' +
       'paths before executing the test.',
     requiresArg: true,
     string: true,

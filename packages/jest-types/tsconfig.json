@@ -5,5 +5,6 @@
     "outDir": "build"
   },
   "include": ["./src/**/*"],
-  "references": [{"path": "../jest-schemas"}]
+  "exclude": ["./**/__tests__/**/*"],
+  "references": [{"path": "../jest-regex-util"}, {"path": "../jest-schemas"}]
 }
