@@ -69,7 +69,7 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: {silent?: boolean} = {silent: true},
+    reporterOptions: {silent?: boolean} = {},
   ) {
     super();
     this.options = {
@@ -143,7 +143,10 @@ export default class GitHubActionsReporter extends BaseReporter {
   #createAnnotation({file, line, message, title, type}: AnnotationOptions) {
     message = stripAnsi(
       // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
-      message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'),
+      message
+        .replaceAll('%', '%25')
+        .replaceAll('\r', '%0D')
+        .replaceAll('\n', '%0A'),
     );
 
     this.log(
@@ -183,8 +186,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length !== a2.length) {
       return false;
     }
-    for (let index = 0; index < a1.length; index++) {
-      const element = a1[index];
+    for (const [index, element] of a1.entries()) {
       if (element !== a2[index]) {
         return false;
       }
@@ -196,8 +198,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     if (a1.length - a2.length !== 1) {
       return false;
     }
-    for (let index = 0; index < a2.length; index++) {
-      const element = a2[index];
+    for (const [index, element] of a2.entries()) {
       if (element !== a1[index]) {
         return false;
       }
@@ -231,10 +232,8 @@ export default class GitHubActionsReporter extends BaseReporter {
         });
       } else {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
-          if (
-            this.arrayEqual(branches[index], element.ancestorTitles.slice(0, 1))
-          ) {
+        for (const branch of branches) {
+          if (this.arrayEqual(branch, element.ancestorTitles.slice(0, 1))) {
             alreadyInserted = true;
             break;
           }
@@ -260,13 +259,13 @@ export default class GitHubActionsReporter extends BaseReporter {
   ): ResultTreeNode {
     const node: ResultTreeNode = {
       children: [],
-      name: ancestors[ancestors.length - 1],
+      name: ancestors.at(-1)!,
       passed: true,
     };
     const branches: Array<Array<string>> = [];
     for (const element of suiteResult) {
       let duration = element.duration;
-      if (!duration || isNaN(duration)) {
+      if (!duration || Number.isNaN(duration)) {
         duration = 1;
       }
       if (this.arrayEqual(element.ancestorTitles, ancestors)) {
@@ -286,10 +285,10 @@ export default class GitHubActionsReporter extends BaseReporter {
         )
       ) {
         let alreadyInserted = false;
-        for (let index = 0; index < branches.length; index++) {
+        for (const branch of branches) {
           if (
             this.arrayEqual(
-              branches[index],
+              branch,
               element.ancestorTitles.slice(0, ancestors.length + 1),
             )
           ) {

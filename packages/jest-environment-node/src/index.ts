@@ -60,6 +60,18 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
+const timerIdToRef = (id: number) => ({
+  id,
+  ref() {
+    return this;
+  },
+  unref() {
+    return this;
+  },
+});
+
+const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
@@ -73,6 +85,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
+
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
@@ -139,6 +152,14 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
 
     installCommonGlobals(global, projectConfig.globals);
 
+    if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
+      const globalSymbol = global.Symbol as unknown as SymbolConstructor;
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.asyncDispose = globalSymbol.for('nodejs.asyncDispose');
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.dispose = globalSymbol.for('nodejs.dispose');
+    }
+
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     global.Error.stackTraceLimit = 100;
@@ -158,18 +179,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     this.moduleMocker = new ModuleMocker(global);
-
-    const timerIdToRef = (id: number) => ({
-      id,
-      ref() {
-        return this;
-      },
-      unref() {
-        return this;
-      },
-    });
-
-    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,

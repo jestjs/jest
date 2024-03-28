@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "30.0.0-alpha.2",
+  "version": "30.0.0-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -22,10 +22,6 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "jest-util": "workspace:*"
-  },
-  "devDependencies": {
-    "@tsd/typescript": "^5.0.4",
-    "tsd-lite": "^0.8.0"
   },
   "engines": {
     "node": "^16.10.0 || ^18.12.0 || >=20.0.0"

@@ -98,7 +98,7 @@ function assertionErrorMessage(
   const operatorName = getOperatorName(operator, stack);
   const trimmedStack = stack
     .replace(message, '')
-    .replace(/AssertionError(.*)/g, '');
+    .replaceAll(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
     return `${

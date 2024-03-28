@@ -17,9 +17,10 @@ type MethodLikeKeys<T> = {
   [K in keyof T]: T[K] extends FunctionLike ? K : never;
 }[keyof T];
 
-type Promisify<T extends FunctionLike> = ReturnType<T> extends Promise<infer R>
-  ? (...args: Parameters<T>) => Promise<R>
-  : (...args: Parameters<T>) => Promise<ReturnType<T>>;
+type Promisify<T extends FunctionLike> =
+  ReturnType<T> extends Promise<infer R>
+    ? (...args: Parameters<T>) => Promise<R>
+    : (...args: Parameters<T>) => Promise<ReturnType<T>>;
 
 export type WorkerModule<T> = {
   [K in keyof T as Extract<

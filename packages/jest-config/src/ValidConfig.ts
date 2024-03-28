@@ -208,6 +208,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   collectCoverageFrom: ['src', '!public'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageReporters: ['json', 'text', 'lcov', 'clover'],
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   detectLeaks: false,
   detectOpenHandles: false,

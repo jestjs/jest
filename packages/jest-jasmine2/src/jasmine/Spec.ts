@@ -28,7 +28,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually, @typescript-eslint/no-empty-function */
+/* eslint-disable sort-keys, @typescript-eslint/no-empty-function */
 
 import {AssertionError} from 'assert';
 import type {FailedAssertion, Status} from '@jest/test-result';
@@ -131,6 +131,7 @@ export default class Spec {
     this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
+    // eslint-disable-next-line unicorn/error-message
     this.initError = new Error();
     this.initError.name = '';
 
@@ -312,5 +313,5 @@ const extractCustomPendingMessage = function (e: Error) {
   const boilerplateEnd =
     boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
-  return fullMessage.substr(boilerplateEnd);
+  return fullMessage.slice(boilerplateEnd);
 };

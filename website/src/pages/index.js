@@ -117,36 +117,34 @@ class Contributors extends React.Component {
     return (
       <div className="opencollective">
         <h3>
-          <Translate>Sponsors</Translate>
+          <Translate>Featured Sponsors</Translate>
         </h3>
-        <p>
-          <Translate>
-            Sponsors are those who contribute $100 or more per month to Jest
-          </Translate>
-        </p>
         <div className="opencollective-avatars">
           {backers
-            .filter(b => b.tier && b.tier.slug === 'sponsor')
+            .filter(b => b.featured)
+            .sort((a, b) => b.totalDonations.value - a.totalDonations.value)
             .map(Sponsor)}
         </div>
-        <h3>
-          <Translate>Backers</Translate>
-        </h3>
         <p>
-          <Translate>
-            Backers are those who contribute $2 or more per month to Jest
-          </Translate>
+          <a
+            href="https://opencollective.com/jest#section-contributors"
+            target="_blank"
+            rel="nofollow noopener"
+          >
+            Join{' '}
+            {backers.filter(b => b.tier && b.tier.slug === 'backer').length}+
+            donors
+          </a>{' '}
+          who sponsor Jest for $3 or more per month on{' '}
+          <a
+            href="https://opencollective.com/jest#section-contributors"
+            target="_blank"
+            rel="nofollow noopener"
+          >
+            opencollective.com
+          </a>
+          .
         </p>
-        <div className="opencollective-avatars">
-          {backers
-            .filter(
-              b =>
-                b.tier &&
-                b.tier.slug === 'backer' &&
-                !b.fromAccount.slug.includes('adult')
-            )
-            .map(Backer)}
-        </div>
       </div>
     );
   }
@@ -285,7 +283,7 @@ class Index extends React.Component {
   render() {
     const {config: siteConfig} = this.props;
     const showcase = UsersJSON.users.map((user, i) => (
-      <a href={user.infoLink} key={i}>
+      <a className="logo-item" href={user.infoLink} key={i}>
         <img src={user.image} title={user.caption} alt={user.caption} />
       </a>
     ));
@@ -537,16 +535,15 @@ class Index extends React.Component {
             background="light"
             className="section-container community imageAlignSide twoByGridBlock"
           >
-            <div className="gridBlockV1 yellow">
+            <div className="yellow">
               <div className="blockContent">
                 <h2>
                   <Translate>Open Collective</Translate>
                 </h2>
                 <MarkdownBlock>
                   <Translate>
-                    With so many users, the core team of Jest uses an [Open
-                    Collective](https://opencollective.com/jest) for
-                    non-Facebook contributors.
+                    Jest uses Open Collective to support developers contributing
+                    to Jest.
                   </Translate>
                 </MarkdownBlock>
                 <Contributors />
@@ -557,18 +554,19 @@ class Index extends React.Component {
                 </h2>
                 <MarkdownBlock>
                   <Translate>
-                    A lot of people! With
-                    [93m](https://www.npmjs.com/package/jest) downloads in the
-                    last month, and used on over
-                    [8,756,000](https://github.com/jestjs/jest/network/dependents)
-                    public repos on GitHub. Jest is used extensively at these
-                    companies:
+                    A lot of people! With [300+
+                    million](https://www.npmjs.com/package/jest) downloads in
+                    the last month, and used on over
+                    [11,000,000](https://github.com/jestjs/jest/network/dependents)
+                    public repos on GitHub.
                   </Translate>
                 </MarkdownBlock>
-                <div className="gridBlockV1 logos">
-                  {showcase}
-                  <p className="others">And many others</p>
-                </div>
+                <MarkdownBlock>
+                  <Translate>
+                    Jest is used extensively at these companies:
+                  </Translate>
+                </MarkdownBlock>
+                <div className="gridBlockV1 logos">{showcase}</div>
               </div>
             </div>
           </Container>

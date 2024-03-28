@@ -71,8 +71,8 @@ describe('.rejects', () => {
       let error;
       try {
         jestExpect(value).rejects.toBe(111);
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
     });
@@ -81,8 +81,8 @@ describe('.rejects', () => {
       let error;
       try {
         await jestExpect(value).rejects.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -94,8 +94,8 @@ describe('.rejects', () => {
       let error;
       try {
         jestExpect(value).rejects.not.toBe(111);
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
     });
@@ -104,8 +104,8 @@ describe('.rejects', () => {
       let error;
       try {
         await jestExpect(value).rejects.not.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -116,8 +116,8 @@ describe('.rejects', () => {
     let error;
     try {
       await jestExpect(Promise.resolve(4)).rejects.toBe(4);
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
     expect(error).toBeDefined();
     expect(error.message).toMatchSnapshot();
@@ -148,8 +148,8 @@ describe('.resolves', () => {
       let error;
       try {
         jestExpect(value).resolves.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -159,8 +159,8 @@ describe('.resolves', () => {
       let error;
       try {
         await jestExpect(value).resolves.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -172,8 +172,8 @@ describe('.resolves', () => {
       let error;
       try {
         jestExpect(value).resolves.not.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -183,8 +183,8 @@ describe('.resolves', () => {
       let error;
       try {
         await jestExpect(value).resolves.not.toBeDefined();
-      } catch (e) {
-        error = e;
+      } catch (rejectedError) {
+        error = rejectedError;
       }
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
@@ -195,8 +195,8 @@ describe('.resolves', () => {
     let error;
     try {
       await jestExpect(Promise.reject(4)).resolves.toBe(4);
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
     expect(error).toBeDefined();
     expect(error.message).toMatchSnapshot();
@@ -486,7 +486,7 @@ describe('.toStrictEqual()', () => {
 });
 
 describe('.toEqual()', () => {
-  /* eslint-disable no-new-wrappers */
+  /* eslint-disable no-new-wrappers, unicorn/new-for-builtins */
   for (const [a, b] of [
     [true, false],
     [1, 2],
@@ -1817,7 +1817,7 @@ describe('.toMatch()', () => {
   });
 
   it('does not maintain RegExp state between calls', () => {
-    const regex = /[f]\d+/gi;
+    const regex = /f\d+/gi;
     jestExpect('f123').toMatch(regex);
     jestExpect('F456').toMatch(regex);
     jestExpect(regex.lastIndex).toBe(0);

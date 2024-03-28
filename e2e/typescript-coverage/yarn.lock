@@ -14,21 +14,21 @@ __metadata:
   linkType: soft
 
 "typescript@npm:^5.0.0":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+  version: 5.4.2
+  resolution: "typescript@npm:5.4.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 2007ccb6e51bbbf6fde0a78099efe04dc1c3dfbdff04ca3b6a8bc717991862b39fd6126c0c3ebf2d2d98ac5e960bcaa873826bb2bb241f14277034148f41f6a2
+  checksum: 96d80fde25a09bcb04d399082fb27a808a9e17c2111e43849d2aafbd642d835e4f4ef0de09b0ba795ec2a700be6c4c2c3f62bf4660c05404c948727b5bbfb32a
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@^5.0.0#~builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+  version: 5.4.2
+  resolution: "typescript@patch:typescript@npm%3A5.4.2#~builtin<compat/typescript>::version=5.4.2&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4e604a9e107ce0c23b16a2f8d79d0531d4d8fe9ebbb7a8c395c66998c39892f0e0a071ef0b0d4e66420a8ec2b8d6cfd9cdb29ba24f25b37cba072e9282376df9
+  checksum: 797ac213c03a19749181c745647b4cab03d13bf4b6b738b05a3426f46c6b540f908989e839d9b0c89d7a4ee2bdb50493b4d4898d4ef1c897c3e9d0b082e78a67
   languageName: node
   linkType: hard

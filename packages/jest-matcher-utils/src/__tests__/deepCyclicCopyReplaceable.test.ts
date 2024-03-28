@@ -6,7 +6,9 @@
  *
  */
 
-import deepCyclicCopyReplaceable from '../deepCyclicCopyReplaceable';
+import deepCyclicCopyReplaceable, {
+  SERIALIZABLE_PROPERTIES,
+} from '../deepCyclicCopyReplaceable';
 
 test('returns the same value for primitive or function values', () => {
   const fn = () => {};
@@ -15,7 +17,7 @@ test('returns the same value for primitive or function values', () => {
   expect(deepCyclicCopyReplaceable(null)).toBeNull();
   expect(deepCyclicCopyReplaceable(true)).toBe(true);
   expect(deepCyclicCopyReplaceable(42)).toBe(42);
-  expect(Number.isNaN(deepCyclicCopyReplaceable(NaN))).toBe(true);
+  expect(Number.isNaN(deepCyclicCopyReplaceable(Number.NaN))).toBe(true);
   expect(deepCyclicCopyReplaceable('foo')).toBe('foo');
   expect(deepCyclicCopyReplaceable(fn)).toBe(fn);
 });
@@ -149,5 +151,26 @@ test('should set writable, configurable to true', () => {
   const copied = deepCyclicCopyReplaceable(a);
   expect(Object.getOwnPropertyDescriptors(copied)).toEqual({
     key: {configurable: true, enumerable: true, value: 1, writable: true},
+  });
+});
+
+test('should only copy the properties mapped to be serializable', () => {
+  class Foo {
+    foo = 'foo';
+    bar = ['bar'];
+    get baz() {
+      throw new Error('should not call getter');
+    }
+  }
+
+  // @ts-expect-error: Testing purpose
+  Foo.prototype[SERIALIZABLE_PROPERTIES] = ['foo', 'bar'];
+
+  const obj = new Foo();
+
+  const copied = deepCyclicCopyReplaceable(obj);
+  expect(Object.getOwnPropertyDescriptors(copied)).toEqual({
+    bar: {configurable: true, enumerable: true, value: ['bar'], writable: true},
+    foo: {configurable: true, enumerable: true, value: 'foo', writable: true},
   });
 });

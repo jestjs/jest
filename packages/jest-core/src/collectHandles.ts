@@ -82,7 +82,20 @@ export default function collectHandles(): HandleCollectionResult {
       // Skip resources that should not generally prevent the process from
       // exiting, not last a meaningfully long time, or otherwise shouldn't be
       // tracked.
-      if (type === 'PROMISE') {
+      if (
+        [
+          'PROMISE',
+          'TIMERWRAP',
+          'ELDHISTOGRAM',
+          'PerformanceObserver',
+          'RANDOMBYTESREQUEST',
+          'DNSCHANNEL',
+          'ZLIB',
+          'SIGNREQUEST',
+          'TLSWRAP',
+          'TCPWRAP',
+        ].includes(type)
+      ) {
         return;
       }
       const error = new ErrorWithStack(type, initHook, 100);
@@ -136,8 +149,6 @@ export default function collectHandles(): HandleCollectionResult {
       await asyncSleep(30);
 
       if (activeHandles.size > 0) {
-        // For some special objects such as `TLSWRAP`.
-        // Ref: https://github.com/jestjs/jest/issues/11665
         runGC();
 
         await asyncSleep(0);
@@ -147,7 +158,7 @@ export default function collectHandles(): HandleCollectionResult {
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
-    const result = Array.from(activeHandles.values())
+    const result = [...activeHandles.values()]
       .filter(({isActive}) => isActive())
       .map(({error}) => error);
 
@@ -197,7 +208,7 @@ export function formatHandleErrors(
     stacks.set(stackText, stack);
   }
 
-  return Array.from(stacks.values()).map(({stack, names}) =>
-    stack.replace('%%OBJECT_NAME%%', Array.from(names).join(',')),
+  return [...stacks.values()].map(({stack, names}) =>
+    stack.replace('%%OBJECT_NAME%%', [...names].join(',')),
   );
 }

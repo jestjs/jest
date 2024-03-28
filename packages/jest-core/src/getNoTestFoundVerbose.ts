@@ -33,7 +33,7 @@ export default function getNoTestFoundVerbose(
         }
         return null;
       })
-      .filter(line => line)
+      .filter(Boolean)
       .join('\n');
 
     return testRun.matches.total

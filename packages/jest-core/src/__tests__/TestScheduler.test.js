@@ -347,8 +347,8 @@ describe('scheduleTests should always dispatch runStart and runComplete events',
           throw new Error('should throw exception');
         }
         expect(result.runExecError).toBeUndefined();
-      } catch (e) {
-        expect(e).toEqual(errorMsg);
+      } catch (error) {
+        expect(error).toEqual(errorMsg);
       }
 
       expect(mockReporter.onRunStart).toHaveBeenCalledTimes(1);

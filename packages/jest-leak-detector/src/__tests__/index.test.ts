@@ -28,7 +28,7 @@ it('complains if the value is a primitive', () => {
   expect(() => new LeakDetector('foo')).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(Symbol())).toThrowErrorMatchingSnapshot();
   expect(() => new LeakDetector(Symbol('foo'))).toThrowErrorMatchingSnapshot();
-  expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
+  expect(() => new LeakDetector(Number.NaN)).toThrowErrorMatchingSnapshot();
 });
 
 it('does not show the GC if hidden', async () => {

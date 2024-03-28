@@ -21,7 +21,7 @@ export default function nodeModulesPaths(
 ): Array<string> {
   const modules =
     options && options.moduleDirectory
-      ? Array.from(options.moduleDirectory)
+      ? [...options.moduleDirectory]
       : ['node_modules'];
 
   // ensure that `basedir` is an absolute path at this point,
@@ -47,7 +47,7 @@ export default function nodeModulesPaths(
 
   const paths: Array<string> = [physicalBasedir];
   let parsed = path.parse(physicalBasedir);
-  while (parsed.dir !== paths[paths.length - 1]) {
+  while (parsed.dir !== paths.at(-1)) {
     paths.push(parsed.dir);
     parsed = path.parse(parsed.dir);
   }

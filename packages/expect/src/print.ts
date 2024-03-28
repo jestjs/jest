@@ -18,7 +18,7 @@ import {
 
 // Format substring but do not enclose in double quote marks.
 // The replacement is compatible with pretty-format package.
-const printSubstring = (val: string): string => val.replace(/"|\\/g, '\\$&');
+const printSubstring = (val: string): string => val.replaceAll(/"|\\/g, '\\$&');
 
 export const printReceivedStringContainExpectedSubstring = (
   received: string,

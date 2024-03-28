@@ -93,7 +93,10 @@ async function buildNodePackages() {
   process.stdout.write(`${OK}\n`);
 }
 
-buildNodePackages().catch(error => {
+try {
+  await buildNodePackages();
+} catch (error) {
+  process.stderr.write(`${ERROR}\n`);
   console.error(error);
   process.exitCode = 1;
-});
+}

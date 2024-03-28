@@ -55,9 +55,9 @@ const formatNodeAssertErrors = (
         } else {
           error = asyncError;
 
-          error.message = originalError.message
-            ? originalError.message
-            : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
+          error.message =
+            originalError.message ||
+            `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
         }
       } else {
         error = errors;
@@ -135,7 +135,7 @@ function assertionErrorMessage(
   const operatorName = getOperatorName(operator, stack);
   const trimmedStack = stack
     .replace(message, '')
-    .replace(/AssertionError(.*)/g, '');
+    .replaceAll(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
     return (

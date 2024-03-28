@@ -12,7 +12,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 class CustomSequencer extends Sequencer {
   async sort(tests) {
     await sleep(50);
-    const copyTests = Array.from(tests);
+    const copyTests = [...tests];
     return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
 

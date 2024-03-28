@@ -31,9 +31,9 @@ function statSyncCached(path: string): IPathType {
   let stat;
   try {
     stat = fs.statSync(path, {throwIfNoEntry: false});
-  } catch (e: any) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
+  } catch (error: any) {
+    if (!(error && (error.code === 'ENOENT' || error.code === 'ENOTDIR'))) {
+      throw error;
     }
   }
 

@@ -14,7 +14,7 @@ class CustomSequencer extends Sequencer {
   }
 
   sort(tests) {
-    const copyTests = Array.from(tests);
+    const copyTests = [...tests];
     const seed = this.globalConfig.seed;
     const sortedTests = copyTests.sort((testA, testB) =>
       testA.path > testB.path ? 1 : -1,

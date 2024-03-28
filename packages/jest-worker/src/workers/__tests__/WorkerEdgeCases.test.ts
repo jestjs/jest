@@ -28,6 +28,17 @@ const processChildWorkerPath = join(
 );
 const threadChildWorkerPath = join(writeDestination, 'workers/threadChild.js');
 
+// https://github.com/nodejs/node/issues/51766
+if (
+  process.platform === 'win32' &&
+  (process.version.startsWith('v21.') || process.version.startsWith('v22.'))
+) {
+  // eslint-disable-next-line jest/no-focused-tests
+  test.only('skipping test on broken platform', () => {
+    console.warn('Skipping test on broken platform');
+  });
+}
+
 beforeAll(async () => {
   await mkdir(writeDestination, {recursive: true});
 
@@ -39,9 +50,7 @@ beforeAll(async () => {
 
     const result = await transformFileAsync(sourcePath);
 
-    await writeFile(writePath, result!.code!, {
-      encoding: 'utf-8',
-    });
+    await writeFile(writePath, result!.code!, 'utf8');
   }
 });
 

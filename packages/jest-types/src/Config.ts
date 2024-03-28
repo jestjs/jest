@@ -333,6 +333,7 @@ export type ProjectConfig = {
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
   detectLeaks: boolean;

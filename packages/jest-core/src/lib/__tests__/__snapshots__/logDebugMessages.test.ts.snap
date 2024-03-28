@@ -13,6 +13,7 @@ exports[`prints the config object 1`] = `
     ],
     "coverageDirectory": "coverage",
     "coveragePathIgnorePatterns": [],
+    "coverageReporters": [],
     "cwd": "/test_root_dir/",
     "detectLeaks": false,
     "detectOpenHandles": false,

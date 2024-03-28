@@ -115,7 +115,7 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
     if (!isJestJasmineRun()) {
-      expect(stderr.match(/\[\[\w+\]\]/g)).toEqual([
+      expect(stderr.match(/\[\[\w+]]/g)).toEqual([
         '[[beforeAll]]',
         '[[test]]',
         '[[test]]',

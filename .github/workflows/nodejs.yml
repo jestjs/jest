@@ -48,7 +48,7 @@ jobs:
       - name: ts integration
         run: yarn test-ts --selectProjects ts-integration
       - name: type tests
-        run: yarn tstyche --target 5.0,latest && yarn test-ts --selectProjects type-tests
+        run: yarn tstyche --target 5.0,current && yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@5.0 compatibility
         run: yarn verify-old-ts
       - name: run ESLint with type info
@@ -202,7 +202,7 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests with coverage
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 10
           max_attempts: 3
@@ -211,7 +211,7 @@ jobs:
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         if: always()
         with:
           directory: ./coverage

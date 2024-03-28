@@ -87,6 +87,7 @@ function spawnJest(
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     FORCE_COLOR: '0',
+    NO_COLOR: '1',
     ...options.env,
   };
 
@@ -151,10 +152,10 @@ export const json = function (
       ...result,
       json: JSON.parse(result.stdout),
     };
-  } catch (e: any) {
+  } catch (error: any) {
     throw new Error(dedent`
       Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
+      ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
     `);
@@ -273,7 +274,7 @@ export function getConfig(
 } {
   const {exitCode, stdout, stderr} = runJest(
     dir,
-    args.concat('--show-config'),
+    [...args, '--show-config'],
     options,
   );
 

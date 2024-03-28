@@ -195,7 +195,7 @@ await Promise.all(
         }),
     );
 
-    definitionFile = definitionFile.replace(/\r\n/g, '\n');
+    definitionFile = definitionFile.replaceAll('\r\n', '\n');
 
     const hasNodeTypesReference = definitionFile.includes(
       typesNodeReferenceDirective,

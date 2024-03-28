@@ -124,6 +124,19 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
+exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 1`] = `
+"PASS __tests__/symbolDispose.test.js
+  ✓ test"
+`;
+
+exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
 exports[`only 1`] = `
 "PASS __tests__/onlyConstructs.test.js
   ✓ test.only

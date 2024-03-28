@@ -123,6 +123,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
+const retryImmediatelySybmbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -283,12 +284,12 @@ export default class Runtime {
 
     const envExportConditions = this._environment.exportConditions?.() ?? [];
 
-    this.esmConditions = Array.from(
-      new Set(['import', 'default', ...envExportConditions]),
-    );
-    this.cjsConditions = Array.from(
-      new Set(['require', 'default', ...envExportConditions]),
-    );
+    this.esmConditions = [
+      ...new Set(['import', 'default', ...envExportConditions]),
+    ];
+    this.cjsConditions = [
+      ...new Set(['require', 'default', ...envExportConditions]),
+    ];
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
@@ -362,7 +363,7 @@ export default class Runtime {
       console: options?.console,
       dependencyExtractor: config.dependencyExtractor,
       enableSymlinks: config.haste.enableSymlinks,
-      extensions: [SnapshotExtension].concat(config.moduleFileExtensions),
+      extensions: [SnapshotExtension, ...config.moduleFileExtensions],
       forceNodeFilesystemAPI: config.haste.forceNodeFilesystemAPI,
       hasteImplModulePath: config.haste.hasteImplModulePath,
       hasteMapModulePath: config.haste.hasteMapModulePath,
@@ -423,9 +424,7 @@ export default class Runtime {
     query = '',
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
-    const registry = this._isolatedModuleRegistry
-      ? this._isolatedModuleRegistry
-      : this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
       await this._fileTransformsMutex.get(cacheKey);
@@ -520,7 +519,26 @@ export default class Runtime {
               return this.linkAndEvaluateModule(module);
             },
             initializeImportMeta: (meta: JestImportMeta) => {
-              meta.url = pathToFileURL(modulePath).href;
+              const metaUrl = pathToFileURL(modulePath).href;
+              meta.url = metaUrl;
+
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.filename = modulePath;
+              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              meta.dirname = path.dirname(modulePath);
+
+              // @ts-expect-error It should not be async. Will be fixed when updated to @types/node@20.11.0
+              meta.resolve = (specifier, parent = metaUrl) => {
+                const parentPath = fileURLToPath(parent);
+
+                const resolvedPath = this._resolver.resolveModule(
+                  parentPath,
+                  specifier,
+                  {conditions: this.esmConditions},
+                );
+
+                return pathToFileURL(resolvedPath).href;
+              };
 
               let jest = this.jestObjectCaches.get(modulePath);
 
@@ -578,9 +596,7 @@ export default class Runtime {
       );
     }
 
-    const registry = this._isolatedModuleRegistry
-      ? this._isolatedModuleRegistry
-      : this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
       const fromCache = registry.get('@jest/globals');
@@ -676,6 +692,13 @@ export default class Runtime {
             initializeImportMeta(meta: ImportMeta) {
               // no `jest` here as it's not loaded in a file
               meta.url = specifier;
+
+              if (meta.url.startsWith('file://')) {
+                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                meta.filename = fileURLToPath(meta.url);
+                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                meta.dirname = path.dirname(meta.filename);
+              }
             },
           });
         }
@@ -689,19 +712,22 @@ export default class Runtime {
       specifier = fileURLToPath(specifier);
     }
 
-    const [path, query] = specifier.split('?');
+    const [specifierPath, query] = specifier.split('?');
 
     if (
       await this._shouldMockModule(
         referencingIdentifier,
-        path,
+        specifierPath,
         this._explicitShouldMockModule,
       )
     ) {
-      return this.importMock(referencingIdentifier, path, context);
+      return this.importMock(referencingIdentifier, specifierPath, context);
     }
 
-    const resolved = await this._resolveModule(referencingIdentifier, path);
+    const resolved = await this._resolveModule(
+      referencingIdentifier,
+      specifierPath,
+    );
 
     if (
       // json files are modules when imported in modules
@@ -1157,8 +1183,8 @@ export default class Runtime {
       } else {
         return this.requireModule<T>(from, moduleName);
       }
-    } catch (e) {
-      const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
+    } catch (error) {
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(error);
       if (moduleNotFound) {
         if (
           moduleNotFound.siblingWithSimilarExtensionFound === null ||
@@ -1176,7 +1202,7 @@ export default class Runtime {
         moduleNotFound.buildMessage(this._config.rootDir);
         throw moduleNotFound;
       }
-      throw e;
+      throw error;
     }
   }
 
@@ -1308,7 +1334,7 @@ export default class Runtime {
             res.url,
             this._coverageOptions,
             this._config,
-            /* loadedFilenames */ Array.from(this._v8CoverageSources!.keys()),
+            /* loadedFilenames */ [...this._v8CoverageSources!.keys()],
           ),
       )
       .map(result => {
@@ -1455,39 +1481,36 @@ export default class Runtime {
       if (module) {
         return module;
       }
-    } else {
-      const {paths} = options;
-      if (paths) {
-        for (const p of paths) {
-          const absolutePath = path.resolve(from, '..', p);
-          const module = this._resolver.resolveModuleFromDirIfExists(
-            absolutePath,
-            moduleName,
-            // required to also resolve files without leading './' directly in the path
-            {conditions: this.cjsConditions, paths: [absolutePath]},
-          );
-          if (module) {
-            return module;
-          }
-        }
-
-        throw new Resolver.ModuleNotFoundError(
-          `Cannot resolve module '${moduleName}' from paths ['${paths.join(
-            "', '",
-          )}'] from ${from}`,
+    } else if (options.paths) {
+      for (const p of options.paths) {
+        const absolutePath = path.resolve(from, '..', p);
+        const module = this._resolver.resolveModuleFromDirIfExists(
+          absolutePath,
+          moduleName,
+          // required to also resolve files without leading './' directly in the path
+          {conditions: this.cjsConditions, paths: [absolutePath]},
         );
+        if (module) {
+          return module;
+        }
       }
+
+      throw new Resolver.ModuleNotFoundError(
+        `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
     }
 
     try {
       return this._resolveCjsModule(from, moduleName);
-    } catch (err) {
+    } catch (error) {
       const module = this._resolver.getMockModule(from, moduleName);
 
       if (module) {
         return module;
       } else {
-        throw err;
+        throw error;
       }
     }
   }
@@ -1724,8 +1747,8 @@ export default class Runtime {
           return this.linkAndEvaluateModule(module);
         },
       });
-    } catch (e: any) {
-      throw handlePotentialSyntaxError(e);
+    } catch (error: any) {
+      throw handlePotentialSyntaxError(error);
     }
   }
 
@@ -1819,6 +1842,7 @@ export default class Runtime {
       return this._moduleImplementation;
     }
 
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
@@ -1949,13 +1973,13 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = this._resolveCjsModule(from, moduleName);
-    } catch (e) {
+    } catch (error) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
       }
-      throw e;
+      throw error;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {
@@ -2020,7 +2044,7 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = await this._resolveModule(from, moduleName);
-    } catch (e) {
+    } catch (error) {
       const manualMock = await this._resolver.getMockModuleAsync(
         from,
         moduleName,
@@ -2029,7 +2053,7 @@ export default class Runtime {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
       }
-      throw e;
+      throw error;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {
@@ -2104,7 +2128,7 @@ export default class Runtime {
         },
         has: (_target, key) =>
           typeof key === 'string' && this._moduleRegistry.has(key),
-        ownKeys: () => Array.from(this._moduleRegistry.keys()),
+        ownKeys: () => [...this._moduleRegistry.keys()],
         set: notPermittedMethod,
       });
     })();
@@ -2175,7 +2199,9 @@ export default class Runtime {
       options,
     ) => {
       if (typeof mockFactory !== 'function') {
-        throw new Error('`unstable_mockModule` must be passed a mock factory');
+        throw new TypeError(
+          '`unstable_mockModule` must be passed a mock factory',
+        );
       }
 
       this.setModuleMock(from, moduleName, mockFactory, options);
@@ -2193,6 +2219,7 @@ export default class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const _getFakeTimers = () => {
       if (
         this.isTornDown ||
@@ -2236,9 +2263,7 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
-    const isolateModulesAsync = (fn: () => Promise<void>): Promise<void> => {
-      return this.isolateModulesAsync(fn);
-    };
+    const isolateModulesAsync = this.isolateModulesAsync.bind(this);
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =
@@ -2268,6 +2293,8 @@ export default class Runtime {
         options?.logErrorsBeforeRetry;
       this._environment.global[waitBeforeRetrySymbol] =
         options?.waitBeforeRetry;
+      this._environment.global[retryImmediatelySybmbol] =
+        options?.retryImmediately;
 
       return jestObject;
     };

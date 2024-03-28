@@ -92,7 +92,7 @@ async function runTestInternal(
 
   if (customEnvironment) {
     if (Array.isArray(customEnvironment)) {
-      throw new Error(
+      throw new TypeError(
         `You can only define a single test environment through docblocks, got "${customEnvironment.join(
           ', ',
         )}"`,
@@ -250,9 +250,9 @@ async function runTestInternal(
 
   // For tests
   runtime
-    .requireInternalModule<typeof import('source-map-support')>(
-      require.resolve('source-map-support'),
-    )
+    .requireInternalModule<
+      typeof import('source-map-support')
+    >(require.resolve('source-map-support'))
     .install(sourcemapOptions);
 
   // For runtime errors
@@ -311,11 +311,11 @@ async function runTestInternal(
         path,
         sendMessageToJest,
       );
-    } catch (err: any) {
+    } catch (error: any) {
       // Access stack before uninstalling sourcemaps
-      err.stack;
+      error.stack;
 
-      throw err;
+      throw error;
     } finally {
       if (collectV8Coverage) {
         await runtime.stopCollectingV8Coverage();
