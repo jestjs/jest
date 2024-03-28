@@ -33,3 +33,11 @@
 
 # Redirect Docusaurus v1 blog RSS feed
 /blog/feed.xml   /blog/rss.xml
+
+# JSON Schemas
+# TODO: should be `latest.json`, not `next.json`, when we actually publish a version with a schema
+/schema.json          /static/schemas/next.json 200
+/schemas/latest.json  /static/schemas/next.json 200
+/schemas/30.0.json    /static/schemas/next.json 200
+/schemas/30.x.json    /static/schemas/next.json 200
+/schemas/next.json    /static/schemas/next.json 200
