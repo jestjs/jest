@@ -19,16 +19,6 @@ export default {
       roots: ['<rootDir>/e2e/__tests__'],
       testMatch: ['<rootDir>/e2e/__tests__/ts*'],
     },
-    {
-      displayName: {
-        color: 'blue',
-        name: 'type-tests',
-      },
-      modulePathIgnorePatterns: baseConfig.modulePathIgnorePatterns,
-      roots: ['<rootDir>/packages'],
-      runner: 'jest-runner-tsd',
-      testMatch: ['**/packages/jest-types/__typetests__/each.test.ts'],
-    },
   ],
   reporters: ['default', 'github-actions'],
 };

@@ -6,14 +6,6 @@
   "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [
     {
-      "matchPackageNames": ["@tsd/typescript", "typescript"],
-      "groupName": "typescript"
-    },
-    {
-      "matchPackageNames": ["jest-runner-tsd", "tsd-lite"],
-      "groupName": "tsd"
-    },
-    {
       "matchPackageNames": ["@lerna-lite/cli", "@lerna-lite/publish"],
       "groupName": "lerna-lite"
     }
