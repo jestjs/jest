@@ -2718,12 +2718,12 @@ __metadata:
   linkType: hard
 
 "@fast-check/jest@npm:^1.3.0":
-  version: 1.8.0
-  resolution: "@fast-check/jest@npm:1.8.0"
+  version: 1.8.1
+  resolution: "@fast-check/jest@npm:1.8.1"
   dependencies:
     fast-check: ^3.0.0
   peerDependencies:
-    "@fast-check/worker": ~0.0.7 || ~0.1.0
+    "@fast-check/worker": ">=0.0.7 <0.4.0"
     "@jest/expect": ">=28.0.0"
     "@jest/globals": ">=25.5.2"
   peerDependenciesMeta:
@@ -2731,7 +2731,7 @@ __metadata:
       optional: true
     "@jest/expect":
       optional: true
-  checksum: 61a66447bd9fca043f2b0a8988755ae8585eb97d9558ae6c1df77919371574924bde8ee7cf6472fc17ddcaa1e4be285d9399d4ec31ce7f947a332a9f8652bc65
+  checksum: a78279ed1d0756ce2cb4b80eb9e6d13492c77d664ad2cb24793295fe4d8cb49cb7a5fd03a659683fba96c1824a4211b79a236d28b359f32e22ee7029a0f20b2a
   languageName: node
   linkType: hard
 
@@ -3054,7 +3054,7 @@ __metadata:
     eslint-plugin-markdown: ^3.0.0
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-promise: ^6.1.1
-    eslint-plugin-unicorn: ^51.0.0
+    eslint-plugin-unicorn: ^52.0.0
     execa: ^5.0.0
     find-process: ^1.4.1
     glob: ^10.3.10
@@ -5092,12 +5092,12 @@ __metadata:
   linkType: hard
 
 "@types/eslint@npm:*":
-  version: 8.56.5
-  resolution: "@types/eslint@npm:8.56.5"
+  version: 8.56.7
+  resolution: "@types/eslint@npm:8.56.7"
   dependencies:
     "@types/estree": "*"
     "@types/json-schema": "*"
-  checksum: 95a7a23ca38c78e5c27a2ed36ef60f094d5e6589e3473c320b6ff69eb3ca6333d5b7f0d5053416369f5ab2fb86874df19562d4d67a98237c17def6e30abff540
+  checksum: 26b036e27e369981843585248591b15068f1ba3ac44a01c09c34717f0b57cbb422a7ed2b497b51093b0ead97739e187dde65bbd5893ec901672dac39f41c8038
   languageName: node
   linkType: hard
 
@@ -9573,8 +9573,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jsdoc@npm:^48.0.0":
-  version: 48.2.1
-  resolution: "eslint-plugin-jsdoc@npm:48.2.1"
+  version: 48.2.2
+  resolution: "eslint-plugin-jsdoc@npm:48.2.2"
   dependencies:
     "@es-joy/jsdoccomment": ~0.42.0
     are-docs-informative: ^0.0.2
@@ -9587,7 +9587,7 @@ __metadata:
     spdx-expression-parse: ^4.0.0
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
-  checksum: e01414706a0cc5b958783d9212adfcf9599bbb4bab3f3277874d427efd6c9cbb798c0486aefbb5f73a48d0bf8cd74e1262d4e0542d51941e5bdd8ac8a6c025d6
+  checksum: 93e8021aa82734920c87de2c5a70b58b41c0beae40578d033bee54e6637058ce70c69f6575f99b67354202047a976aeba90300c37a7f0b7aa25439cb341d63d9
   languageName: node
   linkType: hard
 
@@ -9637,9 +9637,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unicorn@npm:^51.0.0":
-  version: 51.0.1
-  resolution: "eslint-plugin-unicorn@npm:51.0.1"
+"eslint-plugin-unicorn@npm:^52.0.0":
+  version: 52.0.0
+  resolution: "eslint-plugin-unicorn@npm:52.0.0"
   dependencies:
     "@babel/helper-validator-identifier": ^7.22.20
     "@eslint-community/eslint-utils": ^4.4.0
@@ -9659,7 +9659,7 @@ __metadata:
     strip-indent: ^3.0.0
   peerDependencies:
     eslint: ">=8.56.0"
-  checksum: 1ab19ed95444f69220e385eb6292f4eadf1886a68fb775de7513e5e4a7aa667142200adda0212dea850d61ebf433c16b6a7163b8b032eeec25029ba0ab41c4ea
+  checksum: 27c827b67951d07145d451c426e714ce5b06f8022156185247dbebaf02642349cf0b5821a8b56ad7812646bcfb161f4db4382d10ba07544bf566b377bea3e70d
   languageName: node
   linkType: hard
 
@@ -10230,11 +10230,11 @@ __metadata:
   linkType: hard
 
 "fast-check@npm:^3.0.0":
-  version: 3.16.0
-  resolution: "fast-check@npm:3.16.0"
+  version: 3.17.1
+  resolution: "fast-check@npm:3.17.1"
   dependencies:
-    pure-rand: ^6.0.0
-  checksum: 4917b09a74049cc123b68477971215a0f3427e20a436fa1877c696b2506e37ef956493b18ee03a40bfae2a78e75b0e8936d63dd94e8d21c32df48058a65d6056
+    pure-rand: ^6.1.0
+  checksum: 8654df49e6f38be692c4187aad53b3e02df7e7fa38d84f97623dbbf5307c55559ea24aee9873a74005bb83b344a1ecd5cafaf99f94e0e4eb5d33d8a37c8912da
   languageName: node
   linkType: hard
 
@@ -17643,10 +17643,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0":
-  version: 6.0.4
-  resolution: "pure-rand@npm:6.0.4"
-  checksum: e1c4e69f8bf7303e5252756d67c3c7551385cd34d94a1f511fe099727ccbab74c898c03a06d4c4a24a89b51858781057b83ebbfe740d984240cdc04fead36068
+"pure-rand@npm:^6.0.0, pure-rand@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "pure-rand@npm:6.1.0"
+  checksum: 8d53bc02bed99eca0b65b505090152ee7e9bd67dd74f8ff32ba1c883b87234067c5bf68d2614759fb217d82594d7a92919e6df80f97885e7b12b42af4bd3316a
   languageName: node
   linkType: hard
 
