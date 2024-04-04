@@ -53,8 +53,10 @@ export default class DefaultReporter extends BaseReporter {
     this.__wrapStdio(process.stdout);
     this.__wrapStdio(process.stderr);
     this._status.onChange(() => {
+      this.__beginSynchronizedUpdate();
       this.__clearStatus();
       this.__printStatus();
+      this.__endSynchronizedUpdate();
     });
   }
 
@@ -69,11 +71,13 @@ export default class DefaultReporter extends BaseReporter {
       buffer = [];
 
       // This is to avoid conflicts between random output and status text
+      this.__beginSynchronizedUpdate();
       this.__clearStatus();
       if (string) {
         write(string);
       }
       this.__printStatus();
+      this.__endSynchronizedUpdate();
 
       this._bufferedOutput.delete(flushBufferedOutput);
     };
@@ -116,6 +120,26 @@ export default class DefaultReporter extends BaseReporter {
         this._err(this._clear);
       } else {
         this._out(this._clear);
+      }
+    }
+  }
+
+  protected __beginSynchronizedUpdate(): void {
+    if (isInteractive) {
+      if (this._globalConfig.useStderr) {
+        this._err('\x1b[?2026h');
+      } else {
+        this._out('\x1b[?2026h');
+      }
+    }
+  }
+
+  protected __endSynchronizedUpdate(): void {
+    if (isInteractive) {
+      if (this._globalConfig.useStderr) {
+        this._err('\x1b[?2026l');
+      } else {
+        this._out('\x1b[?2026l');
       }
     }
   }
