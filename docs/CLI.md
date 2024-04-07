@@ -176,6 +176,16 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 Print debugging info about your Jest config.
 
+### `--detailedErrorsInResults`
+
+Populates `errorsDetailed` field in the test results. Useful to some tooling like WebStorm but can result in circular reference errors under some test failure conditions.
+
+:::note
+
+This flag should generally be provided by tools like WebStorm automatically; you don't need to specify it yourself.
+
+:::
+
 ### `--detectOpenHandles`
 
 Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. This implies `--runInBand`, making tests run serially. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html). This option has a significant performance penalty and should only be used for debugging.
