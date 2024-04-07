@@ -15,6 +15,7 @@ exports[`prints the config object 1`] = `
     "coveragePathIgnorePatterns": [],
     "coverageReporters": [],
     "cwd": "/test_root_dir/",
+    "detailedErrorsInResults": false,
     "detectLeaks": false,
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
