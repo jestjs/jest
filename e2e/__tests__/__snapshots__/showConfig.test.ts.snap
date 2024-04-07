@@ -20,6 +20,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "clover"
       ],
       "cwd": "<<REPLACED_ROOT_DIR>>",
+      "detailedErrorsInResults": false,
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
