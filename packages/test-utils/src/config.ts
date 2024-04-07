@@ -79,6 +79,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   coveragePathIgnorePatterns: [],
   coverageReporters: [],
   cwd: '/test_root_dir/',
+  detailedErrorsInResults: false,
   detectLeaks: false,
   detectOpenHandles: false,
   displayName: undefined,
