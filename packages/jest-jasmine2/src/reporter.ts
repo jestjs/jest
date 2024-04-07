@@ -160,7 +160,10 @@ export default class Jasmine2Reporter implements Reporter {
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
-      results.failureDetails.push(failed);
+
+      if (this._config.detailedErrorsInResults) {
+        results.failureDetails.push(failed);
+      }
     }
 
     return results;
