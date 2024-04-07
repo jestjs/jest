@@ -898,6 +898,7 @@ export default async function normalize(
       case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
+      case 'detailedErrorsInResults':
       case 'detectLeaks':
       case 'detectOpenHandles':
       case 'errorOnDeprecated':

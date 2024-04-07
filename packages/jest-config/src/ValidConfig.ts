@@ -37,6 +37,7 @@ export const initialOptions: Config.InitialOptions = {
     },
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
+  detailedErrorsInResults: false,
   detectLeaks: false,
   detectOpenHandles: false,
   displayName: multipleValidOptions('test-config', {
@@ -210,6 +211,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
+  detailedErrorsInResults: false,
   detectLeaks: false,
   detectOpenHandles: false,
   displayName: multipleValidOptions('test-config', {
