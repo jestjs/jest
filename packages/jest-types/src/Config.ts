@@ -348,6 +348,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  includeDetailedErrorsInResults: boolean;
   id: string;
   injectGlobals: boolean;
   moduleDirectories: Array<string>;

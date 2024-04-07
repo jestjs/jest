@@ -110,6 +110,10 @@ export const initialize = async ({
     await dispatch({name: 'include_test_location_in_result'});
   }
 
+  if (config.includeDetailedErrorsInResults) {
+    await dispatch({name: 'include_detailed_errors_in_result'});
+  }
+
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   for (const path of [...config.snapshotSerializers].reverse())

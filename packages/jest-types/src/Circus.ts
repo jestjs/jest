@@ -101,6 +101,9 @@ export type AsyncEvent =
       name: 'include_test_location_in_result';
     }
   | {
+      name: 'include_detailed_errors_in_result';
+    }
+  | {
       name: 'hook_start';
       hook: Hook;
     }
@@ -248,6 +251,7 @@ export type State = {
   testTimeout: number;
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
+  includeDetailedErrorsInResult: boolean;
   maxConcurrency: number;
   unhandledRejectionErrorByPromise: Map<Promise<unknown>, Exception>;
 };

@@ -343,7 +343,8 @@ const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
 export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
-  const {includeTestLocationInResult} = getState();
+  const {includeTestLocationInResult, includeDetailedErrorsInResult} =
+    getState();
 
   const {status} = test;
   invariant(status, 'Status should be present after tests are run.');
@@ -376,7 +377,7 @@ export const makeSingleTestResult = (
   return {
     duration: test.duration,
     errors: errorsDetailed.map(getErrorStack),
-    errorsDetailed,
+    errorsDetailed: includeDetailedErrorsInResult ? errorsDetailed : [],
     failing: test.failing,
     invocations: test.invocations,
     location,
