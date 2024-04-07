@@ -16,6 +16,7 @@ const removeStackTraces = (stdout: string) =>
 
 test('that the failureDetails property is set', () => {
   const {stdout, stderr} = runJest('failureDetails-property', [
+    '--detailed-errors-in-results',
     'tests.test.js',
   ]);
 
