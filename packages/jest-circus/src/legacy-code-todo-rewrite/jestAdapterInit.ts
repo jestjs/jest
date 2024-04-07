@@ -110,7 +110,7 @@ export const initialize = async ({
     await dispatch({name: 'include_test_location_in_result'});
   }
 
-  if (config.includeDetailedErrorsInResults) {
+  if (config.detailedErrorsInResults) {
     await dispatch({name: 'include_detailed_errors_in_result'});
   }
 
