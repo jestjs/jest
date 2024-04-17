@@ -13302,6 +13302,7 @@ __metadata:
     chalk: ^4.0.0
     ci-info: ^4.0.0
     graceful-fs: ^4.2.9
+    jest-regex-util: "workspace:*"
     picomatch: ^4.0.0
   languageName: unknown
   linkType: soft
