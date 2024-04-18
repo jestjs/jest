@@ -758,17 +758,24 @@ export default class Runtime {
     }
 
     if (module.status === 'unlinked') {
+      // ensure that every import fully evaluates before any siblings are allowed to import.
+      let linkPromiseChain = Promise.resolve();
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
-        module.link((specifier: string, referencingModule: VMModule) =>
-          this.resolveModule(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          ),
-        ),
+        module.link((specifier: string, referencingModule: VMModule) => {
+          linkPromiseChain = linkPromiseChain.then(async () => {
+            const mod = await this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context
+            );
+            await this.linkAndEvaluateModule(mod);
+            return mod;
+          });
+          return linkPromiseChain;
+        }),
       );
     }
 
