@@ -43,6 +43,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   openHandlesTimeout: 1000,
   outputFile: undefined,
   passWithNoTests: false,
+  preserveLoadOrder: false,
   projects: [],
   replname: undefined,
   reporters: [],
@@ -99,6 +100,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   modulePathIgnorePatterns: [],
   modulePaths: [],
   openHandlesTimeout: 1000,
+  preserveLoadOrder: false,
   prettierPath: 'prettier',
   reporters: [
     'default',

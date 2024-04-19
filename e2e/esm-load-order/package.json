@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "jest": {
+    "transform": {},
+    "testEnvironment": "node",
+    "preserveLoadOrder": true
+  }
+}

@@ -922,6 +922,7 @@ export default async function normalize(
       case 'openHandlesTimeout':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'preserveLoadOrder':
       case 'randomize':
       case 'replname':
       case 'resetMocks':

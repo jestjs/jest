@@ -758,23 +758,32 @@ export default class Runtime {
     }
 
     if (module.status === 'unlinked') {
+      const preserveLoadOrder =
+        this._config.preserveLoadOrder || this._globalConfig?.preserveLoadOrder;
       // ensure that every import fully evaluates before any siblings are allowed to import.
-      let linkPromiseChain = Promise.resolve();
+      let linkPromiseChain = (Promise<VMModule | void>).resolve();
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
         module.link((specifier: string, referencingModule: VMModule) => {
-          linkPromiseChain = linkPromiseChain.then(async () => {
-            const mod = await this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context
-            );
-            await this.linkAndEvaluateModule(mod);
-            return mod;
-          });
-          return linkPromiseChain;
+          if (preserveLoadOrder) {
+            linkPromiseChain = linkPromiseChain.then(async () => {
+              const mod = await this.resolveModule<VMModule>(
+                specifier,
+                referencingModule.identifier,
+                referencingModule.context,
+              );
+              await this.linkAndEvaluateModule(mod);
+              return mod;
+            });
+            return linkPromiseChain;
+          }
+          return this.resolveModule<VMModule>(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          );
         }),
       );
     }

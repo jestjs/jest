@@ -64,6 +64,7 @@ const defaultOptions: Config.DefaultOptions = {
   notifyMode: 'failure-change',
   openHandlesTimeout: 1000,
   passWithNoTests: false,
+  preserveLoadOrder: false,
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
