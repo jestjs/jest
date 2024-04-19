@@ -1,0 +1,1 @@
+Registrar['file1'];
