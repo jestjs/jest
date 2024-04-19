@@ -1,1 +1,1 @@
-module.exports = Registrar['esm-package'];
+module.exports = globalThis.Registrar['esm-package'];

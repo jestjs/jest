@@ -1,3 +1,3 @@
 globalThis.Registrar = {};
 
-Registrar['esm-package'] = {};
+globalThis.Registrar['esm-package'] = {};

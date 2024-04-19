@@ -1,3 +1,3 @@
 globalThis.Registrar = {};
 
-Registrar['file1'] = {};
+globalThis.Registrar['file1'] = {};
