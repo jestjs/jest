@@ -42,10 +42,8 @@ Section Intentionally Left Blank
 
 ## Section 5: Definitions
 
-- _Outside Contributors_: contribute code or other artifacts, but do not have the right to commit to the codebase. Contributors work with the project’s maintainers to have code committed to the code base. An Outside Contributor may be promoted to a Contributor or Maintainer by the Maintainers. Outside Contributors should rarely be encumbered by the Maintainers and never by the CPC or OpenJS Foundation Board.
+_Maintainers_: responsible for the technical direction of the project and for release management.
 
-- _Contributors_: Contributors have triaging rights and commit access to the repository.
-
-- _Maintainers_: Contributors with any kind of decision-making authority in the project, and access to publishing and CI setup.
+_Core contributors_: Maintainers delegate project responsibilities to core contributors, as documented in [GOVERNANCE.md](./GOVERNANCE.md).
 
 [openjs foundation]: https://openjsf.org
