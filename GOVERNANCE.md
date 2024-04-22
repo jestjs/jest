@@ -6,9 +6,11 @@
 
 Maintainers are responsible for issue/PR triage, feature additions, maintenance, bugfixes, security fixes, releases, promoting existing contributors to maintainers, managing repo and CI configuration, etc.
 
+Promoting contributors to maintainers is done by a maintainer after a significant number of high-quality PRs.
+
 ## Contributors
 
-Anyone who contributes code or content or time, via issues or pull requests or otherwise. Contributors Have access to triaging issues/PRs and commit access to the repository.
+Anyone who contributes code or content or time, via issues or pull requests or otherwise. Contributors have access to triaging issues/PRs and commit access to the repository.
 
 ## Outside Contributors
 
