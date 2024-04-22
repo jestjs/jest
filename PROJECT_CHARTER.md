@@ -34,7 +34,7 @@ Section Intentionally Left Blank
 
 ### Section 4.2: Decision-making, Voting, and/or Elections
 
-Section Intentionally Left Blank
+The project will define a consensus-driven governance model in GOVERNANCE.md as need arises.
 
 ### Section 4.3: Other Project Roles
 
