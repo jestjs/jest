@@ -123,6 +123,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
+const retryImmediatelySybmbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -2292,6 +2293,8 @@ export default class Runtime {
         options?.logErrorsBeforeRetry;
       this._environment.global[waitBeforeRetrySymbol] =
         options?.waitBeforeRetry;
+      this._environment.global[retryImmediatelySybmbol] =
+        options?.retryImmediately;
 
       return jestObject;
     };

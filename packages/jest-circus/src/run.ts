@@ -15,7 +15,7 @@ import shuffleArray, {
   rngBuilder,
 } from './shuffleArray';
 import {dispatch, getState} from './state';
-import {RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
+import {RETRY_IMMEDIATELY, RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -78,35 +78,18 @@ const _runTestsForDescribeBlock = async (
       (global as Global.Global)[WAIT_BEFORE_RETRY] as string,
       10,
     ) || 0;
+
+  const retryImmediately: boolean =
+    // eslint-disable-next-line no-restricted-globals
+    ((global as Global.Global)[RETRY_IMMEDIATELY] as any) || false;
+
   const deferredRetryTests = [];
 
   if (rng) {
     describeBlock.children = shuffleArray(describeBlock.children, rng);
   }
-  for (const child of describeBlock.children) {
-    switch (child.type) {
-      case 'describeBlock': {
-        await _runTestsForDescribeBlock(child, rng);
-        break;
-      }
-      case 'test': {
-        const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child, isSkipped);
 
-        if (
-          hasErrorsBeforeTestRun === false &&
-          retryTimes > 0 &&
-          child.errors.length > 0
-        ) {
-          deferredRetryTests.push(child);
-        }
-        break;
-      }
-    }
-  }
-
-  // Re-run failed tests n-times if configured
-  for (const test of deferredRetryTests) {
+  const rerunTest = async (test: Circus.TestEntry) => {
     let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
@@ -120,6 +103,43 @@ const _runTestsForDescribeBlock = async (
       await _runTest(test, isSkipped);
       numRetriesAvailable--;
     }
+  };
+
+  for (const child of describeBlock.children) {
+    switch (child.type) {
+      case 'describeBlock': {
+        await _runTestsForDescribeBlock(child, rng);
+        break;
+      }
+      case 'test': {
+        const hasErrorsBeforeTestRun = child.errors.length > 0;
+        const hasRetryTimes = retryTimes > 0;
+        await _runTest(child, isSkipped);
+
+        // If immediate retry is set, we retry the test immediately after the first run
+        if (
+          retryImmediately &&
+          hasErrorsBeforeTestRun === false &&
+          hasRetryTimes
+        ) {
+          await rerunTest(child);
+        }
+
+        if (
+          hasErrorsBeforeTestRun === false &&
+          hasRetryTimes &&
+          !retryImmediately
+        ) {
+          deferredRetryTests.push(child);
+        }
+        break;
+      }
+    }
+  }
+
+  // Re-run failed tests n-times if configured
+  for (const test of deferredRetryTests) {
+    await rerunTest(test);
   }
 
   if (!isSkipped) {

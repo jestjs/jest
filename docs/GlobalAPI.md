@@ -1050,7 +1050,7 @@ test.each(table)('table as a variable example', (a, b, expected, extra) => {
 
 #### Template literal
 
-If all values are of the same type, the template literal API will type the arguments correctly:
+If all input values are of the same type, the template literal API will type the arguments correctly:
 
 ```ts
 import {test} from '@jest/globals';
@@ -1060,12 +1060,27 @@ test.each`
   ${1} | ${2} | ${3}
   ${3} | ${4} | ${7}
   ${5} | ${6} | ${11}
-`('template literal example', ({a, b, expected}) => {
-  // all arguments are of type `number`
+`('template literal example same type', ({a, b, expected}) => {
+  // all arguments are of type `number` because all inputs (a, b, expected) are of type `number`
 });
 ```
 
-Otherwise it will require a generic type argument:
+If the inputs have different types, the arguments will be typed as a union of all the input types (i.e. type of the variables inside the template literal):
+
+```ts
+import {test} from '@jest/globals';
+
+test.each`
+  a    | b    | expected
+  ${1} | ${2} | ${'three'}
+  ${3} | ${4} | ${'seven'}
+  ${5} | ${6} | ${'eleven'}
+`('template literal example different types', ({a, b, expected}) => {
+  // all arguments are of type `number | string` because some inputs (a, b) are of type `number` and some others (expected) are of type `string`
+});
+```
+
+Otherwise, if you want each argument to have the right type, you have to explicitly provide the generic type argument:
 
 ```ts
 import {test} from '@jest/globals';
@@ -1076,6 +1091,26 @@ test.each<{a: number; b: number; expected: string; extra?: boolean}>`
   ${3} | ${4} | ${'seven'}  | ${false}
   ${5} | ${6} | ${'eleven'}
 `('template literal example', ({a, b, expected, extra}) => {
-  // without the generic argument in this case types would default to `unknown`
+  // all arguments are typed as expected, e.g. `a: number`, `expected: string`, `extra: boolean | undefined`
 });
 ```
+
+:::caution
+
+Keep in mind the variables inside the template literal are not type checked, so you have to ensure that their types are correct.
+
+```ts
+import {test} from '@jest/globals';
+
+test.each<{a: number; expected: string}>`
+  a                            | expected
+  ${1}                         | ${'one'}
+  ${'will not raise TS error'} | ${'two'}
+  ${3}                         | ${'three'}
+`('template literal with wrongly typed input', ({a, expected}) => {
+  // all arguments are typed as stated in the generic: `a: number`, `expected: string`
+  // WARNING: `a` is of type `number` but will be a string in the 2nd test case.
+});
+```
+
+:::

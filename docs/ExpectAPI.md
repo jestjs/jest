@@ -1757,3 +1757,39 @@ it('transitions as expected', () => {
   expect(state).toMatchStateInlineSnapshot(`"done"`);
 });
 ```
+
+## Serializable properties
+
+### `SERIALIZABLE_PROPERTIES`
+
+Serializable properties is a set of properties that are considered serializable by Jest. This set is used to determine if a property should be serializable or not. If an object has a property that is not in this set, it is considered not serializable and will not be printed in error messages.
+
+You can add your own properties to this set to make sure that your objects are printed correctly. For example, if you have a `Volume` class, and you want to make sure that only the `amount` and `unit` properties are printed, you can add it to `SERIALIZABLE_PROPERTIES`:
+
+```js
+import {SERIALIZABLE_PROPERTIES} from 'jest-matcher-utils';
+
+class Volume {
+  constructor(amount, unit) {
+    this.amount = amount;
+    this.unit = unit;
+  }
+
+  get label() {
+    throw new Error('Not implemented');
+  }
+}
+
+Volume.prototype[SERIALIZABLE_PROPERTIES] = ['amount', 'unit'];
+
+expect(new Volume(1, 'L')).toEqual(new Volume(10, 'L'));
+```
+
+This will print only the `amount` and `unit` properties in the error message, ignoring the `label` property.
+
+```bash
+expect(received).toEqual(expected) // deep equality
+
+Expected: {"amount": 10, "unit": "L"}
+Received: {"amount": 1, "unit": "L"}
+```
