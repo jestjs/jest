@@ -300,12 +300,19 @@ export interface Jest {
    *
    * `waitBeforeRetry` is the number of milliseconds to wait before retrying
    *
+   * `retryImmediately` is the flag to retry the failed test immediately after
+   *  failure
+   *
    * @remarks
    * Only available with `jest-circus` runner.
    */
   retryTimes(
     numRetries: number,
-    options?: {logErrorsBeforeRetry?: boolean; waitBeforeRetry?: number},
+    options?: {
+      logErrorsBeforeRetry?: boolean;
+      retryImmediately?: boolean;
+      waitBeforeRetry?: number;
+    },
   ): Jest;
   /**
    * Exhausts tasks queued by `setImmediate()`.

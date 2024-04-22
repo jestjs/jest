@@ -31,6 +31,7 @@ test('should have correct import.meta', () => {
     dirname: expect.any(String),
     filename: expect.any(String),
     jest: expect.anything(),
+    resolve: expect.any(Function),
     url: expect.any(String),
   });
   expect(import.meta.jest).toBe(jestObject);
@@ -56,6 +57,16 @@ test('should have correct import.meta', () => {
       true,
     );
   }
+  expect(
+    import.meta
+      .resolve('colors')
+      .endsWith('jest/e2e/native-esm/node_modules/colors/lib/index.js'),
+  ).toBe(true);
+  expect(
+    import.meta
+      .resolve('./native-esm.test')
+      .endsWith('jest/e2e/native-esm/__tests__/native-esm.test.js'),
+  ).toBe(true);
 });
 
 test('should double stuff', () => {
@@ -68,6 +79,7 @@ test('should support importing node core modules', () => {
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
     devDependencies: {
+      colors: '^1.4.0',
       'discord.js': '14.3.0',
       'iso-constants': '^0.1.2',
       yargs: '^17.5.1',

@@ -217,8 +217,8 @@ expectType<void>(
     ${'a'} | ${true}
     ${'b'} | ${false}
   `('some test', ({item, expected}) => {
-    expectType<unknown>(item);
-    expectType<unknown>(expected);
+    expectType<string | boolean>(item);
+    expectType<string | boolean>(expected);
   }),
 );
 expectType<void>(
@@ -257,8 +257,8 @@ expectType<void>(
   `(
     'some test',
     ({item, expected}) => {
-      expectType<unknown>(item);
-      expectType<unknown>(expected);
+      expectType<string | boolean>(item);
+      expectType<string | boolean>(expected);
     },
     1000,
   ),
@@ -393,8 +393,8 @@ expectType<void>(
     ${'a'} | ${true}
     ${'b'} | ${false}
   `('some test', async ({item, expected}) => {
-    expectType<unknown>(item);
-    expectType<unknown>(expected);
+    expectType<string | boolean>(item);
+    expectType<string | boolean>(expected);
   }),
 );
 expectType<void>(
@@ -432,8 +432,8 @@ expectType<void>(
   `(
     'some test',
     ({item, expected}) => {
-      expectType<unknown>(item);
-      expectType<unknown>(expected);
+      expectType<string | boolean>(item);
+      expectType<string | boolean>(expected);
     },
     1000,
   ),

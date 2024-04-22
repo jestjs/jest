@@ -53,8 +53,14 @@ export default class DefaultReporter extends BaseReporter {
     this.__wrapStdio(process.stdout);
     this.__wrapStdio(process.stderr);
     this._status.onChange(() => {
+      this.__beginSynchronizedUpdate(
+        this._globalConfig.useStderr ? this._err : this._out,
+      );
       this.__clearStatus();
       this.__printStatus();
+      this.__endSynchronizedUpdate(
+        this._globalConfig.useStderr ? this._err : this._out,
+      );
     });
   }
 
@@ -69,11 +75,17 @@ export default class DefaultReporter extends BaseReporter {
       buffer = [];
 
       // This is to avoid conflicts between random output and status text
+      this.__beginSynchronizedUpdate(
+        this._globalConfig.useStderr ? this._err : this._out,
+      );
       this.__clearStatus();
       if (string) {
         write(string);
       }
       this.__printStatus();
+      this.__endSynchronizedUpdate(
+        this._globalConfig.useStderr ? this._err : this._out,
+      );
 
       this._bufferedOutput.delete(flushBufferedOutput);
     };
@@ -194,9 +206,7 @@ export default class DefaultReporter extends BaseReporter {
       const testRetryReasons = testResult.retryReasons;
       if (testRetryReasons && testRetryReasons.length > 0) {
         this.log(
-          `${chalk.reset.inverse.bold.yellow(
-            ' LOGGING RETRY ERRORS ',
-          )} ${chalk.bold(testResult.fullName)}`,
+          `${chalk.reset.inverse.bold.yellow(' LOGGING RETRY ERRORS ')} ${chalk.bold(testResult.fullName)}`,
         );
         for (const [index, retryReasons] of testRetryReasons.entries()) {
           let {message, stack} = separateMessageFromStack(retryReasons);
@@ -219,11 +229,7 @@ export default class DefaultReporter extends BaseReporter {
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
-        `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(
-          result.console,
-          config,
-          this._globalConfig,
-        )}`,
+        `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(result.console, config, this._globalConfig)}`,
       );
     }
   }

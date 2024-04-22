@@ -60,6 +60,26 @@ describe('Test Retries', () => {
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
+  it('with flag retryImmediately retry immediately after failed test', () => {
+    const logMessage = `console.log
+    FIRST TRUTHY TEST
+
+      at Object.log (__tests__/retryImmediately.test.js:14:13)
+
+  console.log
+    SECOND TRUTHY TEST
+
+      at Object.log (__tests__/retryImmediately.test.js:21:11)`;
+
+    const result = runJest('test-retries', ['retryImmediately.test.js']);
+    const stdout = result.stdout.trim();
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(stdout).toBe(logMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
   it('reporter shows more than 1 invocation if test is retried', () => {
     let jsonResult;
 

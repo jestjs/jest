@@ -214,13 +214,21 @@ export default async function runJest({
 
   if (globalConfig.listTests) {
     const testsPaths = [...new Set(allTests.map(test => test.path))];
-    /* eslint-disable no-console */
+    let testsListOutput;
+
     if (globalConfig.json) {
-      console.log(JSON.stringify(testsPaths));
+      testsListOutput = JSON.stringify(testsPaths);
     } else {
-      console.log(testsPaths.join('\n'));
+      testsListOutput = testsPaths.join('\n');
     }
-    /* eslint-enable */
+
+    if (globalConfig.outputFile) {
+      const outputFile = path.resolve(process.cwd(), globalConfig.outputFile);
+      fs.writeFileSync(outputFile, testsListOutput, 'utf8');
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(testsListOutput);
+    }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return;
