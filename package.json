@@ -36,7 +36,7 @@
     "eslint-import-resolver-typescript": "^3.2.5",
     "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-jest": "^27.1.0",
+    "eslint-plugin-jest": "^28.0.0",
     "eslint-plugin-jsdoc": "^48.0.0",
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
