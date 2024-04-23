@@ -8,13 +8,13 @@ The `jest` project is part of the [OpenJS Foundation][openjs foundation]. The pr
 
 ## Section 1: Scope
 
-`jest` is primarily a test framework and test runner, focused on making it easy to test any JS code, either written for the server, the client or both. The Jest project consists of many different smaller modules, such as the assertion library, test runner, diffing algorithm, object serializer, task manager and more. The project is designed to be modular, so that it can be used in a variety of different environments and for different purposes.
+`jest` is primarily a test framework and test runner, focused on making it easy to test any JS code, either written for the server, the client or both. The Jest project consists of many different smaller modules, such as the assertion library, test runner, diffing algorithm, object serializer, task manager, and more. The project is designed to be modular, so that it can be used in a variety of different environments and for different purposes.
 
 ## Section 2: Relationship with OpenJS Foundation CPC.
 
 Technical leadership for the projects within the [OpenJS Foundation][openjs foundation] is delegated to the projects through their project charters by the [OpenJS Foundation Cross-Project Council](https://openjsf.org/about/governance/) (CPC). In the case of the `jest` project, it is delegated to the [`jest` Maintainers](GOVERNANCE.md#maintainers) (the “Maintainers”). The OpenJS Foundation's business leadership is the Board of Directors (the “Board”).
 
-This `jest` Charter reflects a carefully constructed balanced role for the Maintainers and the CPC in the governance of the OpenJS Foundation. The charter amendment process is for the Maintainers to propose changes using simple majority of the full Maintainers, the proposed changes being subject to review and approval by the CPC. The CPC may additionally make amendments to the project charter at any time, though the CPC will not interfere with day-to-day discussions, votes or meetings of the Maintainers.
+This `jest` Charter reflects a carefully constructed balanced role for the Maintainers and the CPC in the governance of the OpenJS Foundation. The charter amendment process is for the Maintainers to propose changes using simple majority of the full Maintainers, the proposed changes being subject to review and approval by the CPC. The CPC may additionally make amendments to the project charter at any time, though the CPC will not interfere with day-to-day discussions, votes, or meetings of the Maintainers.
 
 ### 2.1 Other Formal Project Relationships
 
