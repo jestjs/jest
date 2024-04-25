@@ -221,6 +221,7 @@ module.exports = {
         'sort-keys': 'off',
         'unicorn/consistent-function-scoping': 'off',
         'unicorn/error-message': 'off',
+        'unicorn/no-anonymous-default-export': 'off',
         'unicorn/no-await-expression-member': 'off',
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
@@ -405,6 +406,7 @@ module.exports = {
         'e2e/**',
         'examples/**',
         'website/**',
+        '**/__benchmarks__/**',
         '**/__mocks__/**',
         '**/__tests__/**',
         '**/__typetests__/**',
@@ -415,6 +417,13 @@ module.exports = {
         'import/no-unresolved': 'off',
         'no-console': 'off',
         'no-unused-vars': 'off',
+        'unicorn/no-anonymous-default-export': 'off',
+      },
+    },
+    {
+      files: 'scripts/**/*',
+      rules: {
+        'unicorn/no-anonymous-default-export': 'off',
       },
     },
     {
