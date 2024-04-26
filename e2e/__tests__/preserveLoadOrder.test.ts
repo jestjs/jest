@@ -8,11 +8,15 @@
 import runJest from '../runJest';
 
 test("errors when you don't provide the option", () => {
-  const result = runJest('esm-load-order/default');
+  const result = runJest('esm-load-order/default', [], {
+    nodeOptions: '--experimental-vm-modules',
+  });
   expect(result.exitCode).toBe(1);
 });
 
 test('works when you do provide the option', () => {
-  const result = runJest('esm-load-order/preserve-load-order');
+  const result = runJest('esm-load-order/preserve-load-order', [], {
+    nodeOptions: '--experimental-vm-modules',
+  });
   expect(result.exitCode).toBe(0);
 });
