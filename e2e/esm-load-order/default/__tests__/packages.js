@@ -5,8 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import '../mixed-package/file1.js';
-import '../pure-esm/file3.js';
-
-it('load order is preserved', () =>
-  expect(globalThis.Registrar['file1']).toEqual({}));
+import '../../__tests__/packages.js';
