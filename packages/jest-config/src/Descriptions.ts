@@ -52,8 +52,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   notify: 'Activates notifications for test results',
   notifyMode:
     'An enum that specifies notification mode. Requires { notify: true }',
-  preserveLoadOrder:
-    'Load CJS and ESM modules in the same order as node would - depth first',
+  preserveLoadOrder: 'Load CJS and ESM modules in the same order as node would',
   preset: "A preset that is used as a base for Jest's configuration",
   projects: 'Run tests from one or more projects',
   reporters: 'Use this configuration option to add custom reporters to Jest',

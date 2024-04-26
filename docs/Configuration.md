@@ -1094,6 +1094,31 @@ Default: `1000`
 
 Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
 
+### `preserveLoadOrder` \[boolean]
+
+Default: `false`
+
+When running ESM tests, ensures that ESM and CJS modules load in the exact order that node would load them in. This only matters if you have implicit load order dependencies between ESM and CJS modules.
+
+Consider the following:
+
+```js
+// __tests__/testfile.js
+import '../file1.mjs';
+import '../file3.mjs';
+
+// file1.mjs
+globalThis.Registrar = {};
+
+// file3.mjs
+import './file2.cjs';
+
+// file2.cjs
+globalThis.Registrar.whatever = true;
+```
+
+In node, this code will work - but in jest (without `preserveLoadOrder: true`) it will crash, because jest uses virtual modules - which can fully link before they run the code - as such, file2.cjs can run before file1.mjs
+
 ### `preset` \[string]
 
 Default: `undefined`
