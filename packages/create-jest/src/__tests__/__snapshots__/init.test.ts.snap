@@ -230,6 +230,9 @@ const config: Config = {
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
+  // Load CJS and ESM modules in the same order as node would
+  // preserveLoadOrder: false,
+
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
@@ -434,6 +437,9 @@ const config = {
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
+  // Load CJS and ESM modules in the same order as node would
+  // preserveLoadOrder: false,
+
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
@@ -637,6 +643,9 @@ const config = {
 
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
+
+  // Load CJS and ESM modules in the same order as node would
+  // preserveLoadOrder: false,
 
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
