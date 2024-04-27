@@ -4023,13 +4023,13 @@ __metadata:
   linkType: hard
 
 "@prettier/sync@npm:^0.5.0":
-  version: 0.5.1
-  resolution: "@prettier/sync@npm:0.5.1"
+  version: 0.5.2
+  resolution: "@prettier/sync@npm:0.5.2"
   dependencies:
     make-synchronized: ^0.2.8
   peerDependencies:
     prettier: "*"
-  checksum: fbce51d160a708c6eb47e74530d2dbf2f764165fe16c5ddbeb292c110f0c1b3cf0f6fba4bd1af5f77231e7224780d5442562433b828130ad1ea5bdeb473ce098
+  checksum: 172cdc62f4103b022f8e8d0a63839350d97bc51468ea476594bce651c2cda311e4810417f16a3c967941a8493a68468a5df27beea4c85eaeaa37e84be3acf399
   languageName: node
   linkType: hard
 
