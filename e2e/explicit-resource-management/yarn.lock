@@ -5,7 +5,7 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@babel/helper-plugin-utils@npm:^7.22.5":
+"@babel/helper-plugin-utils@npm:^7.24.0":
   version: 7.24.0
   resolution: "@babel/helper-plugin-utils@npm:7.24.0"
   checksum: e2baa0eede34d2fa2265947042aa84d444aa48dc51e9feedea55b67fc1bc3ab051387e18b33ca7748285a6061390831ab82f8a2c767d08470b93500ec727e9b9
@@ -13,25 +13,25 @@ __metadata:
   linkType: hard
 
 "@babel/plugin-proposal-explicit-resource-management@npm:^7.23.9":
-  version: 7.23.9
-  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.23.9"
+  version: 7.24.1
+  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.24.1"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.22.5
-    "@babel/plugin-syntax-explicit-resource-management": ^7.23.3
+    "@babel/helper-plugin-utils": ^7.24.0
+    "@babel/plugin-syntax-explicit-resource-management": ^7.24.1
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: d7a37ea28178e251fe289895cf4a37fee47195122a3e172eb088be9b0a55d16d2b2ac3cd6569e9f94c9f9a7744a812f3eba50ec64e3d8f7a48a4e2b0f2caa959
+  checksum: 158be7ee1d4dd2933c6679449cbcf8aad8769989508e03ecfcd0df917a1074de213f9017b46e2b7c4164c70c41b0be1dd6632bd98043869427313db2b2a663b5
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-explicit-resource-management@npm:^7.23.3":
-  version: 7.23.3
-  resolution: "@babel/plugin-syntax-explicit-resource-management@npm:7.23.3"
+"@babel/plugin-syntax-explicit-resource-management@npm:^7.24.1":
+  version: 7.24.1
+  resolution: "@babel/plugin-syntax-explicit-resource-management@npm:7.24.1"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/helper-plugin-utils": ^7.24.0
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 60306808e4680b180a2945d13d4edc7aba91bbd43b300271b89ebd3d3d0bc60f97c6eb7eaa7b9e2f7b61bb0111c24469846f636766517da5385351957c264eb9
+  checksum: 7977156265679d0061c3562cada7a82c006b19cad13242bbce9894a4fd5b8450a0a41183e12c5344b915f152a04fa80963fee12357ac98260244b31e4f460c73
   languageName: node
   linkType: hard
 
