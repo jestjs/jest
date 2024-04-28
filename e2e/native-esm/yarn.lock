@@ -394,9 +394,9 @@ __metadata:
   linkType: hard
 
 "discord-api-types@npm:^0.37.3, discord-api-types@npm:^0.37.41":
-  version: 0.37.82
-  resolution: "discord-api-types@npm:0.37.82"
-  checksum: 459e8373f2deb45d57d0a0b27a2adffed34d6cf944596a3db223f422f9541946eee7e7b18101cc12abea452cded2138fceb1ce0f9a0b646f93979a0c2062da5c
+  version: 0.37.83
+  resolution: "discord-api-types@npm:0.37.83"
+  checksum: ab2a31188352d9c742f09a114a95322e7f7de90199cb9f5571f7f5ac25765e7abc9b83c15c14d513ffc5e1d63d9e3ea5ff088fa8a1c5d9c1e1f395b27027cef0
   languageName: node
   linkType: hard
 
@@ -1456,8 +1456,8 @@ __metadata:
   linkType: hard
 
 "ws@npm:^8.8.1":
-  version: 8.16.0
-  resolution: "ws@npm:8.16.0"
+  version: 8.17.0
+  resolution: "ws@npm:8.17.0"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -1466,7 +1466,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: feb3eecd2bae82fa8a8beef800290ce437d8b8063bdc69712725f21aef77c49cb2ff45c6e5e7fce622248f9c7abaee506bae0a9064067ffd6935460c7357321b
+  checksum: 147ef9eab0251364e1d2c55338ad0efb15e6913923ccbfdf20f7a8a6cb8f88432bcd7f4d8f66977135bfad35575644f9983201c1a361019594a4e53977bf6d4e
   languageName: node
   linkType: hard
 
