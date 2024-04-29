@@ -2359,7 +2359,6 @@ export default class Runtime {
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFromModule: moduleName => this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
