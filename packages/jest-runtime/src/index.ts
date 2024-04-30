@@ -14,9 +14,9 @@ import {
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
+  type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   type Module as VMModule,
-  type Context as VMContext,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
