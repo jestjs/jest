@@ -165,7 +165,7 @@ export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _cacheFSBuffer = new Map<string, Buffer>();
   private readonly _config: Config.ProjectConfig;
-  private readonly _globalConfig?: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
@@ -225,8 +225,7 @@ export default class Runtime {
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
-    // TODO: make mandatory in Jest 30
-    globalConfig?: Config.GlobalConfig,
+    globalConfig: Config.GlobalConfig,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
@@ -2372,7 +2371,7 @@ export default class Runtime {
       },
       getSeed: () => {
         // TODO: remove this check in Jest 30
-        if (this._globalConfig?.seed === undefined) {
+        if (this._globalConfig.seed === undefined) {
           throw new Error(
             'The seed value is not available. Likely you are using older versions of the jest dependencies.',
           );
