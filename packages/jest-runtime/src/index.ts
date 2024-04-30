@@ -14,9 +14,9 @@ import {
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
-  type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   type Module as VMModule,
+  type Context as VMContext,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
@@ -190,6 +190,7 @@ export default class Runtime {
   private readonly _esmoduleRegistry: Map<string, VMModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
+  private readonly _hasCyclicDependencyMap: WeakMap<VMModule, boolean>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -237,6 +238,7 @@ export default class Runtime {
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
     this._internalModuleRegistry = new Map();
+    this._hasCyclicDependencyMap = new Map();
     this._isCurrentlyExecutingManualMock = null;
     this._mainModule = null;
     this._mockFactories = new Map();
@@ -581,6 +583,7 @@ export default class Runtime {
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
+    skipCjsModules = false, // this is used for detecting cyclic dependencies - we can't traverse into CJS modules
   ): Promise<T> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -737,12 +740,70 @@ export default class Runtime {
     ) {
       return this.loadEsmModule(resolved, query);
     }
-
+    if (skipCjsModules) {
+      // @ts-expect-error - exiting
+      return;
+    }
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
+  }
+
+  private async checkForCyclicDependencies(
+    module: VMModule,
+    parentChain: Set<VMModule>,
+  ): Promise<boolean> {
+    if (
+      module.status !== 'unlinked' ||
+      this._hasCyclicDependencyMap.has(module)
+    ) {
+      return this._hasCyclicDependencyMap.get(module) as boolean;
+    }
+
+    // if the dependency resolves to a CJS module, it will be undefined
+    const dependencies: Array<VMModule | undefined> = await Promise.all(
+      (module.dependencySpecifiers || []).map(async (modSpec: VMModule) => {
+        const dependency = await this.resolveModule(
+          modSpec,
+          module.identifier,
+          module.context,
+          true,
+        );
+        return dependency;
+      }),
+    );
+
+    let hasCyclicDependency = false;
+    await Promise.all(
+      dependencies.filter(Boolean).map(async (possiblyCyclicMod: VMModule) => {
+        const isCyclic = parentChain.has(possiblyCyclicMod);
+        if (isCyclic) {
+          // if the found dependency is already in the parentChain
+          // this is a cyclic dependency. As such, everything between where
+          // that module is in the parentChain and the end of the chain
+          // (e.g., the current module) is also cyclic.
+          const chainInOrder = [...parentChain];
+          const indexOf = chainInOrder.indexOf(possiblyCyclicMod);
+          for (const cyclicDep of chainInOrder.slice(indexOf))
+            this._hasCyclicDependencyMap.set(cyclicDep, true);
+          hasCyclicDependency = true;
+        } else {
+          this.checkForCyclicDependencies(
+            possiblyCyclicMod,
+            new Set([...parentChain, possiblyCyclicMod]),
+          );
+        }
+      }),
+    );
+    // if somehow the map got set to false for this module, but we now know it's true
+    // set it to true
+    if (!this._hasCyclicDependencyMap.has(module) || hasCyclicDependency) {
+      this._hasCyclicDependencyMap.set(module, hasCyclicDependency);
+    }
+    return hasCyclicDependency;
   }
 
   private async linkAndEvaluateModule(
     module: VMModule,
+    parentChain = new Set<VMModule>([module]),
   ): Promise<VMModule | void> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -774,7 +835,16 @@ export default class Runtime {
                 referencingModule.identifier,
                 referencingModule.context,
               );
-              await this.linkAndEvaluateModule(mod);
+              const hasCyclicDependency = await this.checkForCyclicDependencies(
+                mod,
+                parentChain,
+              );
+              if (mod.status === 'unlinked' && !hasCyclicDependency) {
+                await this.linkAndEvaluateModule(
+                  mod,
+                  new Set<VMModule>([...parentChain, mod]),
+                );
+              }
               return mod;
             });
             return linkPromiseChain;
