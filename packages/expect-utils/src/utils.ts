@@ -336,7 +336,9 @@ const isObjectWithKeys = (a: any) =>
   isObject(a) &&
   !(a instanceof Error) &&
   !Array.isArray(a) &&
-  !(a instanceof Date);
+  !(a instanceof Date) &&
+  !(a instanceof Set) &&
+  !(a instanceof Map);
 
 export const subsetEquality = (
   object: unknown,
