@@ -2895,7 +2895,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
-    ansi-escapes: ^4.2.1
+    ansi-escapes: ^7.0.0
     chalk: ^4.0.0
     ci-info: ^4.0.0
     exit: ^0.1.2
@@ -6264,6 +6264,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansi-escapes@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "ansi-escapes@npm:7.0.0"
+  dependencies:
+    environment: ^1.0.0
+  checksum: 19baa61e68d1998c03b3b8bd023653a6c2667f0ed6caa9a00780ffd6f0a14f4a6563c57a38b3c0aba71bd704cd49c4c8df41be60bd81c957409f91e9dd49051f
+  languageName: node
+  linkType: hard
+
 "ansi-fragments@npm:^0.2.1":
   version: 0.2.1
   resolution: "ansi-fragments@npm:0.2.1"
@@ -9081,6 +9090,13 @@ __metadata:
   bin:
     envinfo: dist/cli.js
   checksum: 4c83a55768cf8b7e553155c29e7fa7bbdb0fb2c1156208efc373fc030045c6aca5e8e642e96027d3eb0c752156922ea3fca6183d9e13f38507f0e02ec82c23a1
+  languageName: node
+  linkType: hard
+
+"environment@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "environment@npm:1.0.0"
+  checksum: 1e1ed785405d1eff7df09502dfc7c4d7253ba8e24db34efa28a4bf80ca9b8e6334aab61f63d5a379d02fdb423a00ffdfe2bca30605776a04944dc97fd313e56e
   languageName: node
   linkType: hard
 
@@ -13300,7 +13316,7 @@ __metadata:
     "@jest/test-result": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/node": "*"
-    ansi-escapes: ^4.2.1
+    ansi-escapes: ^7.0.0
     chalk: ^4.0.0
     emittery: ^0.13.1
     jest-util: "workspace:*"
