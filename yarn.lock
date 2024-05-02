@@ -3063,7 +3063,7 @@ __metadata:
     eslint-plugin-jest: ^28.0.0
     eslint-plugin-jsdoc: ^48.0.0
     eslint-plugin-local: "link:./.eslintplugin"
-    eslint-plugin-markdown: ^3.0.0
+    eslint-plugin-markdown: ^5.0.0
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-promise: ^6.1.1
     eslint-plugin-unicorn: ^52.0.0
@@ -9447,14 +9447,14 @@ __metadata:
   languageName: node
   linkType: soft
 
-"eslint-plugin-markdown@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "eslint-plugin-markdown@npm:3.0.1"
+"eslint-plugin-markdown@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "eslint-plugin-markdown@npm:5.0.0"
   dependencies:
     mdast-util-from-markdown: ^0.8.5
   peerDependencies:
-    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
-  checksum: 91233d35777517a290377233eecbdbbe17d583f40b11b9adf371d051a98012ad6b540967aae59c2786fb8b66aa7c1abb27108947034b1f0f3e0df1c8aae9f2e7
+    eslint: ">=8"
+  checksum: 8f65e478ad01138b946d0e3f1b6813d0cf37974aa41b5eef841ba18944cc97f692af390661f6440c3c33ac17d11e05d3775819923a08c1c97882ce345e05ff74
   languageName: node
   linkType: hard
 
