@@ -57,22 +57,17 @@ const adapter: SCMAdapter = {
   getRoot: async cwd => {
     try {
       const subprocess = execa('sl', ['root'], {cwd, env});
-      if (subprocess.stdout == null) {
-        return null;
-      }
 
       // Check if we're calling sl (steam locomotive) instead of sl (sapling)
       // by looking for the escape character in the first chunk of data.
-      let firstChunk = true;
-      subprocess.stdout.on('data', data => {
-        if (!firstChunk) {
-          return;
-        }
-        if (data.toString().codePointAt(0) === 27) {
-          subprocess.cancel();
-        }
-        firstChunk = false;
-      });
+      if (subprocess.stdout) {
+        subprocess.stdout.once('data', (data: Buffer | string) => {
+          data = Buffer.isBuffer(data) ? data.toString() : data;
+          if (data.codePointAt(0) === 27) {
+            subprocess.cancel();
+          }
+        });
+      }
 
       const result = await subprocess;
       if (result.killed) {
