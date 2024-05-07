@@ -17,6 +17,9 @@ import type {SCMAdapter} from './types';
  */
 const env = {...process.env, HGPLAIN: '1'};
 
+// Whether `sl` is a steam locomotive or not
+let isSteamLocomotive = false;
+
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
     const includePaths = options.includePaths ?? [];
@@ -55,6 +58,10 @@ const adapter: SCMAdapter = {
   },
 
   getRoot: async cwd => {
+    if (isSteamLocomotive) {
+      return null;
+    }
+
     try {
       const subprocess = execa('sl', ['root'], {cwd, env});
 
@@ -65,6 +72,7 @@ const adapter: SCMAdapter = {
           data = Buffer.isBuffer(data) ? data.toString() : data;
           if (data.codePointAt(0) === 27) {
             subprocess.cancel();
+            isSteamLocomotive = true;
           }
         });
       }
