@@ -65,7 +65,7 @@ const adapter: SCMAdapter = {
       }
 
       const result = await subprocess;
-      if (result.killed) {
+      if (result.killed && isSteamLocomotive) {
         return null;
       }
 
