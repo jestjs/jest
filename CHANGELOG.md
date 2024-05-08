@@ -39,6 +39,7 @@
 
 - `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[expect]` Check error instance type for `toThrow/toThrowError` ([#14576](https://github.com/jestjs/jest/pull/14576))
+- `[jest-changed-files]` Print underlying errors when VCS commands fail ([#15052](https://github.com/jestjs/jest/pull/15052))
 - `[jest-circus]` [**BREAKING**] Prevent false test failures caused by promise rejections handled asynchronously ([#14315](https://github.com/jestjs/jest/pull/14315))
 - `[jest-circus]` Replace recursive `makeTestResults` implementation with iterative one ([#14760](https://github.com/jestjs/jest/pull/14760))
 - `[jest-circus]` Omit `expect.hasAssertions()` errors if a test already has errors ([#14866](https://github.com/jestjs/jest/pull/14866))
