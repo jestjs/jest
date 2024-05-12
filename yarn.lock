@@ -4581,9 +4581,9 @@ __metadata:
   linkType: hard
 
 "@sinclair/typebox@npm:^0.32.1":
-  version: 0.32.26
-  resolution: "@sinclair/typebox@npm:0.32.26"
-  checksum: 7df511c479ae5173c7d42ca9c5b29f25c734d2e7ee61a5b6594b7420788a827905aa5790be1183af88d4710bd587e017a4ba370ba9091ac248d83b16eba84f48
+  version: 0.32.27
+  resolution: "@sinclair/typebox@npm:0.32.27"
+  checksum: a1978ba30b1720673c093b7b393a8d8f7cf1ce7fe54121ea1d7d70a9218efebe8ea412cd1316542b80eba2a143ecefe52a197675ddab58c15f99e7ce7da10e7a
   languageName: node
   linkType: hard
 
@@ -7166,9 +7166,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001587, caniuse-lite@npm:^1.0.30001599":
-  version: 1.0.30001613
-  resolution: "caniuse-lite@npm:1.0.30001613"
-  checksum: 909bae9083aecd4b7488d39b66f454448f52a64bceab4f512720775bcff16aa00124fc3439ee76b1e3bb5b795ea54a7cc9a5ece0affa31c07657447cf198a9e2
+  version: 1.0.30001614
+  resolution: "caniuse-lite@npm:1.0.30001614"
+  checksum: 1b695625f9a1b08584c3c229d4b8deaebb89e7901a2a2ffe599a6250c0a79fc61afc49c374c32a76dbf593a5dedac3229bb0140bbacd438276211bdd1d7c4958
   languageName: node
   linkType: hard
 
@@ -8421,9 +8421,9 @@ __metadata:
   linkType: hard
 
 "dayjs@npm:^1.8.15":
-  version: 1.11.10
-  resolution: "dayjs@npm:1.11.10"
-  checksum: a6b5a3813b8884f5cd557e2e6b7fa569f4c5d0c97aca9558e38534af4f2d60daafd3ff8c2000fed3435cfcec9e805bcebd99f90130c6d1c5ef524084ced588c4
+  version: 1.11.11
+  resolution: "dayjs@npm:1.11.11"
+  checksum: 84788275aad8a87fee4f1ce4be08861df29687aae6b7b43dd65350118a37dda56772a3902f802cb2dc651dfed447a5a8df62d88f0fb900dba8333e411190a5d5
   languageName: node
   linkType: hard
 
@@ -10087,11 +10087,11 @@ __metadata:
   linkType: hard
 
 "fast-check@npm:^3.0.0":
-  version: 3.17.2
-  resolution: "fast-check@npm:3.17.2"
+  version: 3.18.0
+  resolution: "fast-check@npm:3.18.0"
   dependencies:
     pure-rand: ^6.1.0
-  checksum: c1f1b1d18f389f4cccab74bf67a39647a788b6c52c86b7f53814a7612f363bd95b20270895e30cd6be715968b1f5fb2caee4b439e5cbc7457875b1d66e875ff6
+  checksum: 5e844c81b87919e713fbd09c9c1ad211b580a27324c0f163eea1d86b304ed8f7930f6922ab722e9d2e9cffed9edbbab56c8f0326882740f0ed2eaec1c1219ffc
   languageName: node
   linkType: hard
 
@@ -14029,9 +14029,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^10.0.1, lru-cache@npm:^10.2.0":
-  version: 10.2.1
-  resolution: "lru-cache@npm:10.2.1"
-  checksum: ae81586eaeb92389fc9a05790d7efd424a29334daa4e513196d6e138a069d0afad1738cfa67773f05b9cb8666fb076f8af88a1b5cc4c7e569202f18a0c032a35
+  version: 10.2.2
+  resolution: "lru-cache@npm:10.2.2"
+  checksum: 98e8fc93691c546f719a76103ef2bee5a3ac823955c755a47641ec41f8c7fafa1baeaba466937cc1cbfa9cfd47e03536d10e2db3158a64ad91ff3a58a32c893e
   languageName: node
   linkType: hard
 
@@ -21647,11 +21647,11 @@ __metadata:
   linkType: hard
 
 "yaml@npm:^2.2.1":
-  version: 2.4.1
-  resolution: "yaml@npm:2.4.1"
+  version: 2.4.2
+  resolution: "yaml@npm:2.4.2"
   bin:
     yaml: bin.mjs
-  checksum: 4c391d07a5d5e935e058babb71026c9cdc9a6fd889e35dd91b53cfb0a12691b67c6c5c740858e71345fef18cd9c13c554a6dda9196f59820d769d94041badb0b
+  checksum: 90dda4485de04367251face9abb5c36927c94e44078f4e958e6468a07e74e7e92f89be20fc49860b6268c51ee5a5fc79ef89197d3f874bf24ef8921cc4ba9013
   languageName: node
   linkType: hard
 
