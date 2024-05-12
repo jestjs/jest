@@ -2176,13 +2176,13 @@ exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContain
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 <g>- Expected  - 2</>
-<r>+ Received  + 3</>
+<r>+ Received  + 2</>
 
 <g>- ObjectContaining {</>
 <g>-   "a": 2,</>
 <r>+ Object {</>
 <r>+   "a": 1,</>
-<r>+   "b": 2,</>
+<d>    "b": 2,</>
 <d>  }</>
 `;
 

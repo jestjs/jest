@@ -243,11 +243,19 @@ class ObjectContaining extends AsymmetricMatcher<
     const matcherContext = this.getMatcherContext();
     const objectKeys = getObjectKeys(this.sample);
 
+    const otherKeys = other ? getObjectKeys(other) : [];
+
     for (const key of objectKeys) {
       if (
         !hasProperty(other, key) ||
         !equals(this.sample[key], other[key], matcherContext.customTesters)
       ) {
+        // Result has already been determined, mutation only affects diff output
+        for (const key of otherKeys) {
+          if (!hasProperty(this.sample, key)) {
+            this.sample[key] = other[key];
+          }
+        }
         result = false;
         break;
       }
