@@ -16,7 +16,7 @@ Time:        <<REPLACED>>
 Ran all test suites matching native-esm-deep-cjs-reexport.test.js."
 `;
 
-exports[`on node >=16.12.0 supports import assertions 1`] = `
+exports[`on node >=16.12.0 <22.0.0 supports import assertions 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total

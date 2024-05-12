@@ -137,8 +137,9 @@ test('does not enforce import assertions', () => {
   },
 );
 
-// version where `vm` API gets `import assertions`
-onNodeVersions('>=16.12.0', () => {
+// support for import assertions in dynamic imports was added in Node.js 16.12.0
+// support for import assertions was removed in Node.js 22.0.0
+onNodeVersions('>=16.12.0 <22.0.0', () => {
   test('supports import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
@@ -154,7 +155,7 @@ onNodeVersions('>=16.12.0', () => {
   });
 });
 
-onNodeVersions('<16.12.0', () => {
+onNodeVersions('<16.12.0 || >=22.0.0', () => {
   test('syntax error for import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
