@@ -9,7 +9,7 @@ import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
 import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
-import type {TestPathPatterns} from './TestPathPatterns';
+import type {TestPathPatterns} from 'jest-pattern';
 
 export type {InitialOptions} from '@jest/schemas';
 

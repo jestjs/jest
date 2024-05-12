@@ -14,7 +14,8 @@ import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
 import {normalizeIcons} from '@jest/test-utils';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
+import {TestPathPatterns} from 'jest-pattern';
 import {ErrorWithStack} from 'jest-util';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');

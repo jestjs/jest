@@ -50,6 +50,7 @@
     "@types/istanbul-lib-source-maps": "^4.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node-notifier": "^8.0.0",
+    "jest-pattern": "workspace:*",
     "jest-resolve": "workspace:*",
     "mock-fs": "^5.1.2",
     "node-notifier": "^10.0.0",

@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
+import {TestPathPatterns} from 'jest-pattern';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,

@@ -19,6 +19,7 @@
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
+    "jest-pattern": "workspace:*",
     "pretty-format": "workspace:*",
     "semver": "^7.5.3"
   },

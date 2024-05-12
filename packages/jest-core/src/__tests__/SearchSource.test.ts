@@ -8,8 +8,9 @@
 
 import * as path from 'path';
 import type {Test} from '@jest/test-result';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
+import {TestPathPatterns} from 'jest-pattern';
 import Runtime from 'jest-runtime';
 import SearchSource from '../SearchSource';
 import type {Filter} from '../types';

@@ -6,7 +6,8 @@
  */
 
 import {makeGlobalConfig} from '@jest/test-utils';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
+import {TestPathPatterns} from 'jest-pattern';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 jest.mock('jest-util', () => ({

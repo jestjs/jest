@@ -29,6 +29,7 @@
     "jest-config": "workspace:*",
     "jest-haste-map": "workspace:*",
     "jest-message-util": "workspace:*",
+    "jest-pattern": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-resolve": "workspace:*",
     "jest-resolve-dependencies": "workspace:*",

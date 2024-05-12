@@ -12,9 +12,10 @@ import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import type {TestContext} from '@jest/test-result';
-import {type Config, TestPathPatterns} from '@jest/types';
+import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
+import {TestPathPatterns} from 'jest-pattern';
 import {
   isInteractive,
   preRunMessage,

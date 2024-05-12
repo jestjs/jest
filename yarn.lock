@@ -2876,6 +2876,7 @@ __metadata:
     jest-config: "workspace:*"
     jest-haste-map: "workspace:*"
     jest-message-util: "workspace:*"
+    jest-pattern: "workspace:*"
     jest-regex-util: "workspace:*"
     jest-resolve: "workspace:*"
     jest-resolve-dependencies: "workspace:*"
@@ -3116,6 +3117,7 @@ __metadata:
     istanbul-lib-source-maps: ^5.0.0
     istanbul-reports: ^3.1.3
     jest-message-util: "workspace:*"
+    jest-pattern: "workspace:*"
     jest-resolve: "workspace:*"
     jest-util: "workspace:*"
     jest-worker: "workspace:*"
@@ -3221,6 +3223,7 @@ __metadata:
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
+    jest-pattern: "workspace:*"
     pretty-format: "workspace:*"
     semver: ^7.5.3
   languageName: unknown
@@ -3293,6 +3296,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
+    jest-pattern: "workspace:*"
     jest-regex-util: "workspace:*"
     tsd-lite: ^0.8.0
   languageName: unknown
@@ -12787,6 +12791,7 @@ __metadata:
     jest-circus: "workspace:*"
     jest-environment-node: "workspace:*"
     jest-get-type: "workspace:*"
+    jest-pattern: "workspace:*"
     jest-regex-util: "workspace:*"
     jest-resolve: "workspace:*"
     jest-runner: "workspace:*"
@@ -13019,6 +13024,15 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/node": "*"
     jest-util: "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"jest-pattern@workspace:*, jest-pattern@workspace:packages/jest-pattern":
+  version: 0.0.0-use.local
+  resolution: "jest-pattern@workspace:packages/jest-pattern"
+  dependencies:
+    "@types/node": "*"
+    jest-regex-util: "workspace:*"
   languageName: unknown
   linkType: soft
 

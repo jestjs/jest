@@ -43,6 +43,7 @@
     "jest-circus": "workspace:*",
     "jest-environment-node": "workspace:*",
     "jest-get-type": "workspace:*",
+    "jest-pattern": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-resolve": "workspace:*",
     "jest-runner": "workspace:*",
