@@ -26,8 +26,7 @@
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
     "@types/yargs": "^17.0.8",
-    "chalk": "^4.0.0",
-    "jest-regex-util": "workspace:*"
+    "chalk": "^4.0.0"
   },
   "devDependencies": {
     "@tsd/typescript": "^5.0.4",
