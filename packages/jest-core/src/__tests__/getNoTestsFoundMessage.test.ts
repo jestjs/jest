@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import {makeGlobalConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import {TestPathPatterns} from 'jest-pattern';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 jest.mock('jest-util', () => ({

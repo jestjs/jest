@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@jest/console": "workspace:*",
+    "@jest/pattern": "workspace:*",
     "@jest/reporters": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",
@@ -29,7 +30,6 @@
     "jest-config": "workspace:*",
     "jest-haste-map": "workspace:*",
     "jest-message-util": "workspace:*",
-    "jest-pattern": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-resolve": "workspace:*",
     "jest-resolve-dependencies": "workspace:*",

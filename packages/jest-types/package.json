@@ -20,13 +20,13 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@jest/pattern": "workspace:*",
     "@jest/schemas": "workspace:*",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
     "@types/yargs": "^17.0.8",
     "chalk": "^4.0.0",
-    "jest-pattern": "workspace:*",
     "jest-regex-util": "workspace:*"
   },
   "devDependencies": {

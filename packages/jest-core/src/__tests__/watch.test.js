@@ -6,8 +6,8 @@
  *
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import chalk from 'chalk';
-import {TestPathPatterns} from 'jest-pattern';
 // eslint-disable-next-line import/order
 import {JestHook, KEYS, TestWatcher} from 'jest-watcher';
 
