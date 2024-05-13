@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`allows nullable or undefined args when templating object each args 1`] = `
+"PASS __tests__/eachTemplate.test.js
+  ✓ allows templating "value"
+  ✓ allows templating "null"
+  ✓ allows templating "undefined"
+  ✓ allows templating "1"
+  ✓ allows templating "null"
+  ✓ allows templating "undefined""
+`;
+
 exports[`formats args with pretty format when given %p 1`] = `
 "PASS __tests__/pretty.test.js
   array

@@ -24,7 +24,11 @@ import {
   plugins as prettyFormatPlugins,
 } from 'pretty-format';
 import Replaceable from './Replaceable';
-import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
+import deepCyclicCopyReplaceable, {
+  SERIALIZABLE_PROPERTIES,
+} from './deepCyclicCopyReplaceable';
+
+export {SERIALIZABLE_PROPERTIES};
 
 const {
   AsymmetricMatcher,

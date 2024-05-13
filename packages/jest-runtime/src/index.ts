@@ -123,6 +123,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
+const retryImmediatelySybmbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -164,7 +165,7 @@ export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _cacheFSBuffer = new Map<string, Buffer>();
   private readonly _config: Config.ProjectConfig;
-  private readonly _globalConfig?: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
@@ -224,8 +225,7 @@ export default class Runtime {
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
-    // TODO: make mandatory in Jest 30
-    globalConfig?: Config.GlobalConfig,
+    globalConfig: Config.GlobalConfig,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
@@ -2265,21 +2265,10 @@ export default class Runtime {
     const isolateModulesAsync = this.isolateModulesAsync.bind(this);
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
-    const mocked =
-      this._moduleMocker.mocked?.bind(this._moduleMocker) ??
-      (() => {
-        throw new Error(
-          'Your test environment does not support `mocked`, please update it.',
-        );
-      });
-    const replaceProperty =
-      typeof this._moduleMocker.replaceProperty === 'function'
-        ? this._moduleMocker.replaceProperty.bind(this._moduleMocker)
-        : () => {
-            throw new Error(
-              'Your test environment does not support `jest.replaceProperty` - please ensure its Jest dependencies are updated to version 29.4 or later',
-            );
-          };
+    const mocked = this._moduleMocker.mocked.bind(this._moduleMocker);
+    const replaceProperty = this._moduleMocker.replaceProperty.bind(
+      this._moduleMocker,
+    );
 
     const setTimeout: Jest['setTimeout'] = timeout => {
       this._environment.global[testTimeoutSymbol] = timeout;
@@ -2292,6 +2281,8 @@ export default class Runtime {
         options?.logErrorsBeforeRetry;
       this._environment.global[waitBeforeRetrySymbol] =
         options?.waitBeforeRetry;
+      this._environment.global[retryImmediatelySybmbol] =
+        options?.retryImmediately;
 
       return jestObject;
     };
@@ -2303,12 +2294,6 @@ export default class Runtime {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          // TODO: remove this check in Jest 30
-          if (typeof fakeTimers.advanceTimersByTimeAsync !== 'function') {
-            throw new TypeError(
-              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
-            );
-          }
           await fakeTimers.advanceTimersByTimeAsync(msToRun);
         } else {
           throw new TypeError(
@@ -2332,12 +2317,6 @@ export default class Runtime {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          // TODO: remove this check in Jest 30
-          if (typeof fakeTimers.advanceTimersToNextTimerAsync !== 'function') {
-            throw new TypeError(
-              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
-            );
-          }
           await fakeTimers.advanceTimersToNextTimerAsync(steps);
         } else {
           throw new TypeError(
@@ -2356,7 +2335,6 @@ export default class Runtime {
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFromModule: moduleName => this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
@@ -2368,15 +2346,7 @@ export default class Runtime {
           );
         }
       },
-      getSeed: () => {
-        // TODO: remove this check in Jest 30
-        if (this._globalConfig?.seed === undefined) {
-          throw new Error(
-            'The seed value is not available. Likely you are using older versions of the jest dependencies.',
-          );
-        }
-        return this._globalConfig.seed;
-      },
+      getSeed: () => this._globalConfig.seed,
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
@@ -2409,12 +2379,6 @@ export default class Runtime {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          // TODO: remove this check in Jest 30
-          if (typeof fakeTimers.runAllTimersAsync !== 'function') {
-            throw new TypeError(
-              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
-            );
-          }
           await fakeTimers.runAllTimersAsync();
         } else {
           throw new TypeError(
@@ -2427,12 +2391,6 @@ export default class Runtime {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          // TODO: remove this check in Jest 30
-          if (typeof fakeTimers.runOnlyPendingTimersAsync !== 'function') {
-            throw new TypeError(
-              'Your test environment does not support async fake timers - please ensure its Jest dependencies are updated to version 29.5 or later',
-            );
-          }
           await fakeTimers.runOnlyPendingTimersAsync();
         } else {
           throw new TypeError(
