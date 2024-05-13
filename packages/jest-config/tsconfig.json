@@ -12,6 +12,7 @@
   "references": [
     {"path": "../jest-environment-node"},
     {"path": "../jest-get-type"},
+    {"path": "../jest-pattern"},
     {"path": "../jest-regex-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-runner"},

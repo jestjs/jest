@@ -9,6 +9,7 @@
   "references": [
     {"path": "../jest-console"},
     {"path": "../jest-message-util"},
+    {"path": "../jest-pattern"},
     {"path": "../jest-resolve"},
     {"path": "../jest-test-result"},
     {"path": "../jest-transform"},
