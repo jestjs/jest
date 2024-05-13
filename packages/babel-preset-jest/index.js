@@ -11,4 +11,5 @@ const jestPreset = {
 };
 
 // @babel/core requires us to export a function
-module.exports = () => jestPreset;
+const jestPresetPlugin = () => jestPreset;
+module.exports = jestPresetPlugin;

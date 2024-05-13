@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {WriteStream} from 'tty';
 import type {
   AggregatedResult,
   Test,
@@ -12,7 +13,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
-import {preRunMessage} from 'jest-util';
+import {isInteractive, preRunMessage} from 'jest-util';
 import type {Reporter, ReporterOnStartOptions} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
@@ -56,5 +57,17 @@ export default class BaseReporter implements Reporter {
   // define whether the test run was successful or failed.
   getLastError(): Error | undefined {
     return this._error;
+  }
+
+  protected __beginSynchronizedUpdate(write: WriteStream['write']): void {
+    if (isInteractive) {
+      write('\u001B[?2026h');
+    }
+  }
+
+  protected __endSynchronizedUpdate(write: WriteStream['write']): void {
+    if (isInteractive) {
+      write('\u001B[?2026l');
+    }
   }
 }

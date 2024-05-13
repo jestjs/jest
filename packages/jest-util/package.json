@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "30.0.0-alpha.2",
+  "version": "30.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -24,7 +24,8 @@
     "chalk": "^4.0.0",
     "ci-info": "^4.0.0",
     "graceful-fs": "^4.2.9",
-    "picomatch": "^3.0.0"
+    "jest-regex-util": "workspace:*",
+    "picomatch": "^4.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3",

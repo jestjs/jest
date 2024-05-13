@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectNotAssignable, expectType} from 'tsd-lite';
+import {expect} from 'tstyche';
 import type {
   AsyncResolver,
   JestResolver,
@@ -18,7 +18,7 @@ import type {
 
 // PackageJSON
 
-expectAssignable<PackageJSON>({
+expect<PackageJSON>().type.toBeAssignable({
   caption: 'test',
   count: 100,
   isTest: true,
@@ -26,7 +26,7 @@ expectAssignable<PackageJSON>({
   values: [0, 10, 20, {x: 1, y: 2}, true, 'test', ['a', 'b']],
 });
 
-expectNotAssignable<PackageJSON>({
+expect<PackageJSON>().type.not.toBeAssignable({
   filter: () => {},
 });
 
@@ -34,21 +34,21 @@ expectNotAssignable<PackageJSON>({
 
 const packageFilter = (pkg: PackageJSON, file: string, dir: string) => pkg;
 
-expectAssignable<PackageFilter>(packageFilter);
+expect<PackageFilter>().type.toBeAssignable(packageFilter);
 
 // PathFilter
 
 const pathFilter = (pkg: PackageJSON, path: string, relativePath: string) =>
   relativePath;
 
-expectAssignable<PathFilter>(pathFilter);
+expect<PathFilter>().type.toBeAssignable(pathFilter);
 
 // ResolverOptions
 
 function customSyncResolver(path: string, options: ResolverOptions): string {
   return path;
 }
-expectAssignable<SyncResolver>(customSyncResolver);
+expect<SyncResolver>().type.toBeAssignable(customSyncResolver);
 
 async function customAsyncResolver(
   path: string,
@@ -56,53 +56,56 @@ async function customAsyncResolver(
 ): Promise<string> {
   return path;
 }
-expectAssignable<AsyncResolver>(customAsyncResolver);
+expect<AsyncResolver>().type.toBeAssignable(customAsyncResolver);
 
 // AsyncResolver
 
 const asyncResolver: AsyncResolver = async (path, options) => {
-  expectType<string>(path);
+  expect(path).type.toBeString();
 
-  expectType<string>(options.basedir);
-  expectType<Array<string> | undefined>(options.conditions);
-  expectType<SyncResolver>(options.defaultResolver);
-  expectType<Array<string> | undefined>(options.extensions);
-  expectType<Array<string> | undefined>(options.moduleDirectory);
-  expectType<PackageFilter | undefined>(options.packageFilter);
-  expectType<PathFilter | undefined>(options.pathFilter);
-  expectType<Array<string> | undefined>(options.paths);
-  expectType<string | undefined>(options.rootDir);
+  expect(options.basedir).type.toBeString();
+  expect(options.conditions).type.toEqual<Array<string> | undefined>();
+  expect(options.defaultResolver).type.toEqual<SyncResolver>();
+  expect(options.extensions).type.toEqual<Array<string> | undefined>();
+  expect(options.moduleDirectory).type.toEqual<Array<string> | undefined>();
+  expect(options.packageFilter).type.toEqual<PackageFilter | undefined>();
+  expect(options.pathFilter).type.toEqual<PathFilter | undefined>();
+  expect(options.paths).type.toEqual<Array<string> | undefined>();
+  expect(options.rootDir).type.toEqual<string | undefined>();
 
   return path;
 };
 
 const notReturningAsyncResolver = async () => {};
-expectNotAssignable<AsyncResolver>(notReturningAsyncResolver());
+expect<AsyncResolver>().type.not.toBeAssignable(notReturningAsyncResolver());
 
 // SyncResolver
 
 const syncResolver: SyncResolver = (path, options) => {
-  expectType<string>(path);
+  expect(path).type.toBeString();
 
-  expectType<string>(options.basedir);
-  expectType<Array<string> | undefined>(options.conditions);
-  expectType<SyncResolver>(options.defaultResolver);
-  expectType<Array<string> | undefined>(options.extensions);
-  expectType<Array<string> | undefined>(options.moduleDirectory);
-  expectType<PackageFilter | undefined>(options.packageFilter);
-  expectType<PathFilter | undefined>(options.pathFilter);
-  expectType<Array<string> | undefined>(options.paths);
-  expectType<string | undefined>(options.rootDir);
+  expect(options.basedir).type.toBeString();
+  expect(options.conditions).type.toEqual<Array<string> | undefined>();
+  expect(options.defaultResolver).type.toEqual<SyncResolver>();
+  expect(options.extensions).type.toEqual<Array<string> | undefined>();
+  expect(options.moduleDirectory).type.toEqual<Array<string> | undefined>();
+  expect(options.packageFilter).type.toEqual<PackageFilter | undefined>();
+  expect(options.pathFilter).type.toEqual<PathFilter | undefined>();
+  expect(options.paths).type.toEqual<Array<string> | undefined>();
+  expect(options.rootDir).type.toEqual<string | undefined>();
 
   return path;
 };
 
 const notReturningSyncResolver = () => {};
-expectNotAssignable<SyncResolver>(notReturningSyncResolver());
+expect<SyncResolver>().type.not.toBeAssignable(notReturningSyncResolver());
 
 // JestResolver
 
-expectAssignable<JestResolver>({async: asyncResolver});
-expectAssignable<JestResolver>({sync: syncResolver});
-expectAssignable<JestResolver>({async: asyncResolver, sync: syncResolver});
-expectNotAssignable<JestResolver>({});
+expect<JestResolver>().type.toBeAssignable({async: asyncResolver});
+expect<JestResolver>().type.toBeAssignable({sync: syncResolver});
+expect<JestResolver>().type.toBeAssignable({
+  async: asyncResolver,
+  sync: syncResolver,
+});
+expect<JestResolver>().type.not.toBeAssignable({});

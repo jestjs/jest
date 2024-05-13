@@ -85,6 +85,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
+
     const global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
@@ -150,6 +151,14 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     global.Uint8Array = Uint8Array;
 
     installCommonGlobals(global, projectConfig.globals);
+
+    if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
+      const globalSymbol = global.Symbol as unknown as SymbolConstructor;
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.asyncDispose = globalSymbol.for('nodejs.asyncDispose');
+      // @ts-expect-error - it's readonly - but we have checked above that it's not there
+      globalSymbol.dispose = globalSymbol.for('nodejs.dispose');
+    }
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
