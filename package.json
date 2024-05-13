@@ -41,7 +41,7 @@
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unicorn": "^52.0.0",
+    "eslint-plugin-unicorn": "^53.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
     "glob": "^10.3.10",
@@ -203,5 +203,5 @@
     "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.8.1"
+  "packageManager": "yarn@3.8.2"
 }

@@ -231,28 +231,6 @@ describe('dependencyExtractor', () => {
     );
   });
 
-  it('should extract dependencies from `jest.genMockFromModule` calls', () => {
-    const code = `
-      // Good
-      jest.genMockFromModule('dep1');
-      const dep2 = jest.genMockFromModule(
-        "dep2",
-      );
-      if (jest.genMockFromModule(\`dep3\`).cond) {}
-      jest
-        .requireMock('dep4');
-
-      // Bad
-      foo . jest.genMockFromModule('inv1')
-      xjest.genMockFromModule('inv2');
-      jest.genMockFromModulex('inv3');
-      jest.genMockFromModule('inv4', 'inv5');
-    `;
-    expect(extractor.extract(code)).toEqual(
-      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
-    );
-  });
-
   it('should extract dependencies from `jest.createMockFromModule` calls', () => {
     const code = `
       // Good

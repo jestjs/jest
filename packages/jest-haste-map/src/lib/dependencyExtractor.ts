@@ -60,7 +60,7 @@ const IMPORT_OR_EXPORT_RE = createRegExp(
 const JEST_EXTENSIONS_RE = createRegExp(
   [
     ...functionCallStart(
-      'jest\\s*\\.\\s*(?:requireActual|requireMock|genMockFromModule|createMockFromModule)',
+      'jest\\s*\\.\\s*(?:requireActual|requireMock|createMockFromModule)',
     ),
     CAPTURE_STRING_LITERAL(1),
     WHITESPACE,

@@ -401,6 +401,37 @@ describe('subsetEquality()', () => {
       });
     });
   });
+
+  describe('subset is not object with keys', () => {
+    test('returns true if subset has keys', () => {
+      expect(subsetEquality({foo: 'bar'}, {foo: 'bar'})).toBe(true);
+    });
+    test('returns true if subset has Symbols', () => {
+      const symbol = Symbol('foo');
+      expect(subsetEquality({[symbol]: 'bar'}, {[symbol]: 'bar'})).toBe(true);
+    });
+    test('returns undefined if subset has no keys', () => {
+      expect(subsetEquality('foo', 'bar')).toBeUndefined();
+    });
+    test('returns undefined if subset is null', () => {
+      expect(subsetEquality({foo: 'bar'}, null)).toBeUndefined();
+    });
+    test('returns undefined if subset is Error', () => {
+      expect(subsetEquality({foo: 'bar'}, new Error())).toBeUndefined();
+    });
+    test('returns undefined if subset is Array', () => {
+      expect(subsetEquality({foo: 'bar'}, [])).toBeUndefined();
+    });
+    test('returns undefined if subset is Date', () => {
+      expect(subsetEquality({foo: 'bar'}, new Date())).toBeUndefined();
+    });
+    test('returns undefined if subset is Set', () => {
+      expect(subsetEquality({foo: 'bar'}, new Set())).toBeUndefined();
+    });
+    test('returns undefined if subset is Map', () => {
+      expect(subsetEquality({foo: 'bar'}, new Map())).toBeUndefined();
+    });
+  });
 });
 
 describe('iterableEquality', () => {

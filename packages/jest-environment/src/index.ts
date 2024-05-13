@@ -153,17 +153,6 @@ export interface Jest {
    * Creates a mock function. Optionally takes a mock implementation.
    */
   fn: ModuleMocker['fn'];
-  // TODO remove `genMockFromModule()` in Jest 30
-  /**
-   * Given the name of a module, use the automatic mocking system to generate a
-   * mocked version of the module for you.
-   *
-   * This is useful when you want to create a manual mock that extends the
-   * automatic mock's behavior.
-   *
-   * @deprecated Use `jest.createMockFromModule()` instead
-   */
-  genMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * When mocking time, `Date.now()` will also be mocked. If you for some reason
    * need access to the real current time, you can invoke this function.

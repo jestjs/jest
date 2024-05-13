@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "30.0.0-alpha.3",
+  "version": "30.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -34,7 +34,6 @@
     "@prettier/sync": "^0.5.0",
     "@types/babel__template": "^7.0.2",
     "@types/node": "*",
-    "@types/prettier": "^3.0.0",
     "babel-plugin-tester": "^11.0.2",
     "prettier": "^3.0.3"
   },
