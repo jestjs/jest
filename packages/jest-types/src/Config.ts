@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {TestPathPatterns} from '@jest/pattern';
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
+import type {TestPathPatterns} from '@jest/pattern';
 import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
 
 export type {InitialOptions} from '@jest/schemas';

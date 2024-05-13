@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import type {WriteStream} from 'tty';
-import {TestPathPatterns} from '@jest/pattern';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
+import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
