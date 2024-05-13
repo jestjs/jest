@@ -225,6 +225,7 @@ module.exports = {
         'unicorn/no-await-expression-member': 'off',
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
+        'unicorn/prefer-string-raw': 'off',
       },
     },
     // demonstration of matchers usage
@@ -336,6 +337,7 @@ module.exports = {
         'unicorn/consistent-function-scoping': 'off',
         'unicorn/no-await-expression-member': 'off',
         'unicorn/prefer-spread': 'off',
+        'unicorn/prefer-string-raw': 'off',
       },
     },
     {
@@ -705,6 +707,8 @@ module.exports = {
     // TODO: decide whether or not we want these
     'unicorn/filename-case': 'off',
     'unicorn/prefer-reflect-apply': 'off',
+    'unicorn/prefer-string-raw': 'off',
+    'unicorn/prefer-structured-clone': 'off',
 
     // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
     'unicorn/prefer-export-from': 'off',
