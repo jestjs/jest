@@ -24,7 +24,7 @@
 - `[@jest/fake-timers]` Exposing new modern timers function `advanceTimersToFrame()` which advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-matcher-utils]` Add `SERIALIZABLE_PROPERTIES` to allow custom serialization of objects ([#14893](https://github.com/jestjs/jest/pull/14893))
 - `[jest-mock]` Add support for the Explicit Resource Management proposal to use the `using` keyword with `jest.spyOn(object, methodName)` ([#14895](https://github.com/jestjs/jest/pull/14895))
-- `[jest-reporters]` Add support for [DEC mode 2026](https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036)
+- `[jest-reporters]` Add support for [DEC mode 2026](https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036) ([#15008](https://github.com/jestjs/jest/pull/15008))
 - `[jest-runtime]` Exposing new modern timers function `jest.advanceTimersToFrame()` from `@jest/fake-timers` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-runtime]` Support `import.meta.filename` and `import.meta.dirname` (available from [Node 20.11](https://nodejs.org/en/blog/release/v20.11.0)) ([#14854](https://github.com/jestjs/jest/pull/14854))
 - `[jest-runtime]` Support `import.meta.resolve` ([#14930](https://github.com/jestjs/jest/pull/14930))
@@ -96,6 +96,7 @@
 - `[docs] Append to NODE_OPTIONS, not overwrite ([#14730](https://github.com/jestjs/jest/pull/14730))`
 - `[docs]` Updated `.toHaveBeenCalled()` documentation to correctly reflect its functionality ([#14842](https://github.com/jestjs/jest/pull/14842))
 - `[docs]` Link NestJS documentation on testing with Jest ([#14940](https://github.com/jestjs/jest/pull/14940))
+- `[docs]` `Revised documentation for .toHaveBeenCalled()` to accurately depict its functionality. ([#14853](https://github.com/jestjs/jest/pull/14853))
 
 ## 29.7.0
 
