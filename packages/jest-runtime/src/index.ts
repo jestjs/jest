@@ -584,7 +584,7 @@ export default class Runtime {
     referencingIdentifier: string,
     context: VMContext,
     skipCjsModules = false, // this is used for detecting cyclic dependencies - we can't traverse into CJS modules
-  ): Promise<T> {
+  ): Promise<T | null> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
@@ -741,8 +741,7 @@ export default class Runtime {
       return this.loadEsmModule(resolved, query);
     }
     if (skipCjsModules) {
-      // @ts-expect-error - exiting
-      return;
+      return null;
     }
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
   }
@@ -782,8 +781,9 @@ export default class Runtime {
           // (e.g., the current module) is also cyclic.
           const chainInOrder = [...parentChain];
           const indexOf = chainInOrder.indexOf(possiblyCyclicMod);
-          for (const cyclicDep of chainInOrder.slice(indexOf))
+          for (const cyclicDep of chainInOrder.slice(indexOf)) {
             this._hasCyclicDependencyMap.set(cyclicDep, true);
+          }
           hasCyclicDependency = true;
         } else {
           this.checkForCyclicDependencies(
@@ -799,6 +799,44 @@ export default class Runtime {
       this._hasCyclicDependencyMap.set(module, hasCyclicDependency);
     }
     return hasCyclicDependency;
+  }
+
+  private linkModule(
+    specifier: string,
+    referencingModule: VMModule,
+    parentChain: Set<VMModule>,
+  ): VMModule {
+    const preserveLoadOrder =
+      this._config.preserveLoadOrder || this._globalConfig?.preserveLoadOrder;
+
+    // ensure that every import fully evaluates before any siblings are allowed to import.
+    let linkPromiseChain = (Promise<VMModule | void>).resolve();
+    if (preserveLoadOrder) {
+      linkPromiseChain = linkPromiseChain.then(async () => {
+        const mod = await this.resolveModule<VMModule>(
+          specifier,
+          referencingModule.identifier,
+          referencingModule.context,
+        );
+        const hasCyclicDependency = await this.checkForCyclicDependencies(
+          mod,
+          parentChain,
+        );
+        if (mod.status === 'unlinked' && !hasCyclicDependency) {
+          await this.linkAndEvaluateModule(
+            mod,
+            new Set<VMModule>([...parentChain, mod]),
+          );
+        }
+        return mod;
+      });
+      return linkPromiseChain;
+    }
+    return this.resolveModule<VMModule>(
+      specifier,
+      referencingModule.identifier,
+      referencingModule.context,
+    );
   }
 
   private async linkAndEvaluateModule(
@@ -819,42 +857,13 @@ export default class Runtime {
     }
 
     if (module.status === 'unlinked') {
-      const preserveLoadOrder =
-        this._config.preserveLoadOrder || this._globalConfig?.preserveLoadOrder;
-      // ensure that every import fully evaluates before any siblings are allowed to import.
-      let linkPromiseChain = (Promise<VMModule | void>).resolve();
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
-        module.link((specifier: string, referencingModule: VMModule) => {
-          if (preserveLoadOrder) {
-            linkPromiseChain = linkPromiseChain.then(async () => {
-              const mod = await this.resolveModule<VMModule>(
-                specifier,
-                referencingModule.identifier,
-                referencingModule.context,
-              );
-              const hasCyclicDependency = await this.checkForCyclicDependencies(
-                mod,
-                parentChain,
-              );
-              if (mod.status === 'unlinked' && !hasCyclicDependency) {
-                await this.linkAndEvaluateModule(
-                  mod,
-                  new Set<VMModule>([...parentChain, mod]),
-                );
-              }
-              return mod;
-            });
-            return linkPromiseChain;
-          }
-          return this.resolveModule<VMModule>(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          );
-        }),
+        module.link((specifier: string, referencingModule: VMModule) =>
+          this.linkModule(specifier, referencingModule, parentChain),
+        ),
       );
     }
 
