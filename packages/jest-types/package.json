@@ -27,10 +27,6 @@
     "@types/yargs": "^17.0.8",
     "chalk": "^4.0.0"
   },
-  "devDependencies": {
-    "@tsd/typescript": "^5.0.4",
-    "tsd-lite": "^0.8.0"
-  },
   "publishConfig": {
     "access": "public"
   }
