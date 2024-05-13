@@ -56,7 +56,7 @@ type WatchmanQueryResponse = {
 
 const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting';
 
-function WatchmanError(error: Error): Error {
+function watchmanError(error: Error): Error {
   error.message =
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
     `is running for this project. See ${watchmanURL}.`;
@@ -121,12 +121,12 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   }
 
   let clientError;
-  client.on('error', error => (clientError = WatchmanError(error)));
+  client.on('error', error => (clientError = watchmanError(error)));
 
   const cmd = <T>(...args: Array<any>): Promise<T> =>
     new Promise((resolve, reject) =>
       client.command(args, (error, result) =>
-        error ? reject(WatchmanError(error)) : resolve(result),
+        error ? reject(watchmanError(error)) : resolve(result),
       ),
     );
 
