@@ -239,22 +239,21 @@ export function createBuildConfigs() {
       pkg.name === 'expect'
         ? {}
         : Object.keys(pkg.exports)
-            .filter(
-              key =>
+            .reduce((previousValue, currentValue) => {
+              if (
                 key !== '.' &&
                 key !== './package.json' &&
-                !key.startsWith('./bin'),
-            )
-            .reduce((previousValue, currentValue) => {
-              return {
-                ...previousValue,
+                !key.startsWith('./bin')
+              ) {
                 // skip `./`
-                [currentValue.slice(2)]: path.resolve(
+                previousValue[currentValue.slice(2)] = path.resolve(
                   packageDir,
                   './src',
                   `${currentValue}.ts`,
-                ),
-              };
+                );
+              }
+
+              return previousValue;
             }, {});
 
     return {
