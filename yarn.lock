@@ -3082,7 +3082,7 @@ __metadata:
     jest-junit: ^16.0.0
     jest-mock: "workspace:*"
     jest-serializer-ansi-escapes: ^3.0.0
-    jest-silent-reporter: ^0.5.0
+    jest-silent-reporter: ^0.6.0
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     jest-watch-typeahead: ^2.2.0
@@ -13156,13 +13156,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-silent-reporter@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "jest-silent-reporter@npm:0.5.0"
+"jest-silent-reporter@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "jest-silent-reporter@npm:0.6.0"
   dependencies:
     chalk: ^4.0.0
     jest-util: ^26.0.0
-  checksum: 54853eb1fd342eb074ff97bbd2f177c3425e635deb008ce1a5feede398930b6472549797342e3ea536f8e2e538d8718d6f281f3d44dec2ae4d32f61da0eb547e
+  checksum: 443e0abaf5a6dc8c17da1e8495b7a55f813224adc39b6d1954bf49ff7fe70533b1020571453180dbb8388ace87f8e1dfc79610a4554bb93334f6c4154231c292
   languageName: node
   linkType: hard
 
