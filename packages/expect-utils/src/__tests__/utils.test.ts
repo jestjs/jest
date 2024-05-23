@@ -703,3 +703,26 @@ describe('arrayBufferEquality', () => {
     expect(equals(a, b)).toBeFalsy();
   });
 });
+
+describe('jasmineUtils primitives comparison', () => {
+  const falseCases: Array<[any, any]> = [
+    [null, undefined],
+    [null, 0],
+    [false, 0],
+    [false, ''],
+  ];
+
+  for (const [a, b] of falseCases) {
+    test(`${JSON.stringify(a)} and ${JSON.stringify(b)} returns false`, () => {
+      expect(equals(a, b)).toBe(false);
+    });
+  }
+
+  const trueCases: Array<any> = [null, 0, false, '', undefined];
+
+  for (const value of trueCases) {
+    test(`${JSON.stringify(value)} returns true`, () => {
+      expect(equals(value, value)).toBe(true);
+    });
+  }
+});
