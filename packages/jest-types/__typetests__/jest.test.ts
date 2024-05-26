@@ -51,6 +51,7 @@ expect(
     .setMock('moduleName', {a: 'b'})
     .setTimeout(6000)
     .unmock('moduleName')
+    .unstable_unmockModule('moduleName')
     .useFakeTimers()
     .useFakeTimers({legacyFakeTimers: true})
     .useRealTimers(),
@@ -182,6 +183,9 @@ expect(jest.setMock('moduleName')).type.toRaiseError();
 
 expect(jest.unmock('moduleName')).type.toBe<typeof jest>();
 expect(jest.unmock()).type.toRaiseError();
+
+expect(jest.unstable_unmockModule('moduleName')).type.toBe<typeof jest>();
+expect(jest.unstable_unmockModule()).type.toRaiseError();
 
 // Mock Functions
 
