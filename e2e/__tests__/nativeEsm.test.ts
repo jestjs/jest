@@ -51,6 +51,22 @@ test('runs test with native ESM', () => {
   expect(exitCode).toBe(0);
 });
 
+test('runs test with native mock ESM', () => {
+  const {exitCode, stderr, stdout} = runJest(
+    DIR,
+    ['native-esm-mocks.test.js'],
+    {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    },
+  );
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+});
+
 test('supports top-level await', () => {
   const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.tla.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
