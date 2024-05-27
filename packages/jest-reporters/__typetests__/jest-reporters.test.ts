@@ -48,7 +48,7 @@ expect(utils.getResultHeader(testResult, globalConfig, {})).type.toRaiseError();
 
 // utils.getSnapshotStatus()
 
-expect(utils.getSnapshotStatus(snapshot, true)).type.toEqual<Array<string>>();
+expect(utils.getSnapshotStatus(snapshot, true)).type.toBe<Array<string>>();
 expect(utils.getSnapshotStatus()).type.toRaiseError();
 expect(utils.getSnapshotStatus({}, true)).type.toRaiseError();
 expect(utils.getSnapshotStatus(snapshot, 123)).type.toRaiseError();
@@ -57,7 +57,7 @@ expect(utils.getSnapshotStatus(snapshot, 123)).type.toRaiseError();
 
 expect(
   utils.getSnapshotSummary(snapshotSummary, globalConfig, 'press `u`'),
-).type.toEqual<Array<string>>();
+).type.toBe<Array<string>>();
 expect(utils.getSnapshotSummary()).type.toRaiseError();
 expect(
   utils.getSnapshotSummary({}, globalConfig, 'press `u`'),
@@ -85,11 +85,11 @@ expect(utils.printDisplayName({})).type.toRaiseError();
 
 // utils.relativePath()
 
-expect(utils.relativePath(globalConfig, 'some/path')).type.toEqual<{
+expect(utils.relativePath(globalConfig, 'some/path')).type.toBe<{
   basename: string;
   dirname: string;
 }>();
-expect(utils.relativePath(projectConfig, 'some/path')).type.toEqual<{
+expect(utils.relativePath(projectConfig, 'some/path')).type.toBe<{
   basename: string;
   dirname: string;
 }>();

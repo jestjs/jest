@@ -48,7 +48,7 @@ const moduleMocker = new ModuleMocker(globalThis);
 const exampleMetadata = moduleMocker.getMetadata(exampleModule);
 
 test('getMetadata', () => {
-  expect(exampleMetadata).type.toEqual<MockMetadata<
+  expect(exampleMetadata).type.toBe<MockMetadata<
     typeof exampleModule
   > | null>();
 });
@@ -56,24 +56,24 @@ test('getMetadata', () => {
 test('generateFromMetadata', () => {
   const exampleMock = moduleMocker.generateFromMetadata(exampleMetadata!);
 
-  expect(exampleMock).type.toEqual<Mocked<typeof exampleModule>>();
+  expect(exampleMock).type.toBe<Mocked<typeof exampleModule>>();
 
-  expect(exampleMock.methodA.mock.calls).type.toEqual<
+  expect(exampleMock.methodA.mock.calls).type.toBe<
     Array<[a: number, b: number]>
   >();
-  expect(exampleMock.methodB.mock.calls).type.toEqual<
+  expect(exampleMock.methodB.mock.calls).type.toBe<
     Array<[a: number, b: number]>
   >();
 
-  expect(exampleMock.instance.memberA).type.toEqual<Array<number>>();
-  expect(exampleMock.instance.memberB.mock.calls).type.toEqual<Array<[]>>();
+  expect(exampleMock.instance.memberA).type.toBe<Array<number>>();
+  expect(exampleMock.instance.memberB.mock.calls).type.toBe<Array<[]>>();
 
   expect(exampleMock.propertyA.one).type.toBeString();
-  expect(exampleMock.propertyA.two.mock.calls).type.toEqual<Array<[]>>();
+  expect(exampleMock.propertyA.two.mock.calls).type.toBe<Array<[]>>();
   expect(exampleMock.propertyA.three.nine).type.toBeNumber();
-  expect(exampleMock.propertyA.three.ten).type.toEqual<Array<number>>();
+  expect(exampleMock.propertyA.three.ten).type.toBe<Array<number>>();
 
-  expect(exampleMock.propertyB).type.toEqual<Array<number>>();
+  expect(exampleMock.propertyB).type.toBe<Array<number>>();
   expect(exampleMock.propertyC).type.toBeNumber();
   expect(exampleMock.propertyD).type.toBeString();
   expect(exampleMock.propertyE).type.toBeBoolean();

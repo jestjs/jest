@@ -135,23 +135,23 @@ expect(jestExpect.assertions()).type.toRaiseError();
 expect(jestExpect.hasAssertions()).type.toBeVoid();
 expect(jestExpect.hasAssertions(true)).type.toRaiseError();
 
-expect(
-  jestExpect(Promise.resolve('lemon')).resolves.toBe('lemon'),
-).type.toEqual<Promise<void>>();
+expect(jestExpect(Promise.resolve('lemon')).resolves.toBe('lemon')).type.toBe<
+  Promise<void>
+>();
 
 expect(
   jestExpect(Promise.resolve('lemon')).resolves.not.toBe('lemon'),
-).type.toEqual<Promise<void>>();
+).type.toBe<Promise<void>>();
 
 expect(
   jestExpect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus'),
-).type.toEqual<Promise<void>>();
+).type.toBe<Promise<void>>();
 
 expect(
   jestExpect(Promise.reject(new Error('octopus'))).rejects.not.toThrow(
     'octopus',
   ),
-).type.toEqual<Promise<void>>();
+).type.toBe<Promise<void>>();
 
 expect(jestExpect(1).not).type.not.toHaveProperty('not');
 expect(jestExpect(1).not).type.not.toHaveProperty('resolves');
@@ -483,23 +483,21 @@ expect(
   jestExpect.extend({
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expect(this.assertionCalls).type.toBeNumber();
-      expect(this.currentTestName).type.toEqual<string | undefined>();
-      expect(this.dontThrow).type.toEqual<() => void>();
-      expect(this.error).type.toEqual<Error | undefined>();
-      expect(this.equals).type.toEqual<EqualsFunction>();
-      expect(this.expand).type.toEqual<boolean | undefined>();
-      expect(this.expectedAssertionsNumber).type.toEqual<number | null>();
-      expect(this.expectedAssertionsNumberError).type.toEqual<
-        Error | undefined
-      >();
+      expect(this.currentTestName).type.toBe<string | undefined>();
+      expect(this.dontThrow).type.toBe<() => void>();
+      expect(this.error).type.toBe<Error | undefined>();
+      expect(this.equals).type.toBe<EqualsFunction>();
+      expect(this.expand).type.toBe<boolean | undefined>();
+      expect(this.expectedAssertionsNumber).type.toBe<number | null>();
+      expect(this.expectedAssertionsNumberError).type.toBe<Error | undefined>();
       expect(this.isExpectingAssertions).type.toBeBoolean();
-      expect(this.isExpectingAssertionsError).type.toEqual<Error | undefined>();
-      expect(this.isNot).type.toEqual<boolean | undefined>();
+      expect(this.isExpectingAssertionsError).type.toBe<Error | undefined>();
+      expect(this.isNot).type.toBe<boolean | undefined>();
       expect(this.numPassingAsserts).type.toBeNumber();
-      expect(this.promise).type.toEqual<string | undefined>();
-      expect(this.suppressedErrors).type.toEqual<Array<Error>>();
-      expect(this.testPath).type.toEqual<string | undefined>();
-      expect(this.utils).type.toEqual<MatcherUtils>();
+      expect(this.promise).type.toBe<string | undefined>();
+      expect(this.suppressedErrors).type.toBe<Array<Error>>();
+      expect(this.testPath).type.toBe<string | undefined>();
+      expect(this.utils).type.toBe<MatcherUtils>();
 
       const pass = actual >= floor && actual <= ceiling;
       if (pass) {

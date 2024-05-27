@@ -43,9 +43,9 @@ describe('Expect', () => {
     const tester1: Tester = function (a, b, customTesters) {
       expect(a).type.toBeAny();
       expect(b).type.toBeAny();
-      expect(customTesters).type.toEqual<Array<Tester>>();
-      expect(this).type.toEqual<TesterContext>();
-      expect(this.equals).type.toEqual<EqualsFunction>();
+      expect(customTesters).type.toBe<Array<Tester>>();
+      expect(this).type.toBe<TesterContext>();
+      expect(this.equals).type.toBe<EqualsFunction>();
 
       return undefined;
     };
@@ -57,7 +57,7 @@ describe('Expect', () => {
         (a, b, customTesters) => {
           expect(a).type.toBeAny();
           expect(b).type.toBeAny();
-          expect(customTesters).type.toEqual<Array<Tester>>();
+          expect(customTesters).type.toBe<Array<Tester>>();
           expect(this).type.toBeUndefined();
 
           return true;
@@ -66,9 +66,9 @@ describe('Expect', () => {
         function anotherTester(a, b, customTesters) {
           expect(a).type.toBeAny();
           expect(b).type.toBeAny();
-          expect(customTesters).type.toEqual<Array<Tester>>();
-          expect(this).type.toEqual<TesterContext>();
-          expect(this.equals).type.toEqual<EqualsFunction>();
+          expect(customTesters).type.toBe<Array<Tester>>();
+          expect(this).type.toBe<TesterContext>();
+          expect(this.equals).type.toBe<EqualsFunction>();
 
           return undefined;
         },
@@ -87,26 +87,26 @@ describe('Expect', () => {
         // TODO `actual` should be allowed to have only `unknown` type
         toBeWithinRange(actual: number, floor: number, ceiling: number) {
           expect(this.assertionCalls).type.toBeNumber();
-          expect(this.currentTestName).type.toEqual<string | undefined>();
-          expect(this.customTesters).type.toEqual<Array<Tester>>();
-          expect(this.dontThrow).type.toEqual<() => void>();
-          expect(this.error).type.toEqual<Error | undefined>();
-          expect(this.equals).type.toEqual<EqualsFunction>();
-          expect(this.expand).type.toEqual<boolean | undefined>();
-          expect(this.expectedAssertionsNumber).type.toEqual<number | null>();
-          expect(this.expectedAssertionsNumberError).type.toEqual<
+          expect(this.currentTestName).type.toBe<string | undefined>();
+          expect(this.customTesters).type.toBe<Array<Tester>>();
+          expect(this.dontThrow).type.toBe<() => void>();
+          expect(this.error).type.toBe<Error | undefined>();
+          expect(this.equals).type.toBe<EqualsFunction>();
+          expect(this.expand).type.toBe<boolean | undefined>();
+          expect(this.expectedAssertionsNumber).type.toBe<number | null>();
+          expect(this.expectedAssertionsNumberError).type.toBe<
             Error | undefined
           >();
           expect(this.isExpectingAssertions).type.toBeBoolean();
-          expect(this.isExpectingAssertionsError).type.toEqual<
+          expect(this.isExpectingAssertionsError).type.toBe<
             Error | undefined
           >();
-          expect(this.isNot).type.toEqual<boolean | undefined>();
+          expect(this.isNot).type.toBe<boolean | undefined>();
           expect(this.numPassingAsserts).type.toBeNumber();
-          expect(this.promise).type.toEqual<string | undefined>();
-          expect(this.suppressedErrors).type.toEqual<Array<Error>>();
-          expect(this.testPath).type.toEqual<string | undefined>();
-          expect(this.utils).type.toEqual<MatcherUtils>();
+          expect(this.promise).type.toBe<string | undefined>();
+          expect(this.suppressedErrors).type.toBe<Array<Error>>();
+          expect(this.testPath).type.toBe<string | undefined>();
+          expect(this.utils).type.toBe<MatcherUtils>();
 
           const pass = actual >= floor && actual <= ceiling;
           if (pass) {
@@ -162,7 +162,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<ToBeWithinRange>().type.toBeAssignable(toBeWithinRange);
+    expect<ToBeWithinRange>().type.toBeAssignableWith(toBeWithinRange);
   });
 
   test('requires the `actual` argument to be of type `unknown`', () => {
@@ -173,7 +173,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignable(actualMustBeUnknown);
+    expect<MatcherFunction>().type.not.toBeAssignableWith(actualMustBeUnknown);
   });
 
   test('allows omitting the `expected` argument', () => {
@@ -193,7 +193,9 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<AllowOmittingExpected>().type.toBeAssignable(allowOmittingExpected);
+    expect<AllowOmittingExpected>().type.toBeAssignableWith(
+      allowOmittingExpected,
+    );
   });
 
   test('the `message` property is required in the return type', () => {
@@ -203,7 +205,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignable(lacksMessage);
+    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksMessage);
   });
 
   test('the `pass` property is required in the return type', () => {
@@ -213,7 +215,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignable(lacksPass);
+    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksPass);
   });
 
   test('context is defined inside a matcher function', () => {
@@ -221,7 +223,7 @@ describe('MatcherFunction', () => {
       actual: unknown,
       ...expected: Array<unknown>
     ) {
-      expect(this).type.toEqual<MatcherContext>();
+      expect(this).type.toBe<MatcherContext>();
 
       if (expected.length > 0) {
         throw new Error('This matcher does not take any expected argument.');
@@ -243,7 +245,7 @@ describe('MatcherFunction', () => {
       actual: unknown,
       ...expected: Array<unknown>
     ) {
-      expect(this).type.toEqual<CustomContext>();
+      expect(this).type.toBe<CustomContext>();
       expect(this.customMethod()).type.toBeVoid();
 
       if (expected.length > 0) {
@@ -272,7 +274,7 @@ describe('MatcherFunction', () => {
       CustomContext,
       [count: number]
     > = function (actual: unknown, count: unknown) {
-      expect(this).type.toEqual<CustomContext>();
+      expect(this).type.toBe<CustomContext>();
       expect(this.customMethod()).type.toBeVoid();
 
       return {
@@ -281,7 +283,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<CustomStateAndExpected>().type.toBeAssignable(
+    expect<CustomStateAndExpected>().type.toBeAssignableWith(
       customContextAndExpected,
     );
   });

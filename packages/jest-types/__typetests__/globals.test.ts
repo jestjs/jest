@@ -43,7 +43,7 @@ test(testName, done => {
 });
 
 test(testName, done => {
-  expect(done).type.toEqual<Global.DoneFn>();
+  expect(done).type.toBe<Global.DoneFn>();
 });
 
 test(testName, done => {
@@ -57,7 +57,7 @@ expect(beforeAll(asyncFn)).type.toBeVoid();
 expect(beforeAll(genFn)).type.toBeVoid();
 expect(
   beforeAll(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBeVoid();
 
@@ -66,7 +66,7 @@ expect(beforeAll(asyncFn, timeout)).type.toBeVoid();
 expect(beforeAll(genFn, timeout)).type.toBeVoid();
 expect(
   beforeAll(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
 ).type.toBeVoid();
 
@@ -91,7 +91,7 @@ expect(beforeEach(asyncFn)).type.toBeVoid();
 expect(beforeEach(genFn)).type.toBeVoid();
 expect(
   beforeEach(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBeVoid();
 
@@ -100,7 +100,7 @@ expect(beforeEach(asyncFn, timeout)).type.toBeVoid();
 expect(beforeEach(genFn, timeout)).type.toBeVoid();
 expect(
   beforeEach(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
 ).type.toBeVoid();
 
@@ -125,7 +125,7 @@ expect(afterAll(asyncFn)).type.toBeVoid();
 expect(afterAll(genFn)).type.toBeVoid();
 expect(
   afterAll(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBeVoid();
 
@@ -134,7 +134,7 @@ expect(afterAll(asyncFn, timeout)).type.toBeVoid();
 expect(afterAll(genFn, timeout)).type.toBeVoid();
 expect(
   afterAll(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
 ).type.toBeVoid();
 
@@ -159,7 +159,7 @@ expect(afterEach(asyncFn)).type.toBeVoid();
 expect(afterEach(genFn)).type.toBeVoid();
 expect(
   afterEach(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBeVoid();
 
@@ -168,7 +168,7 @@ expect(afterEach(asyncFn, timeout)).type.toBeVoid();
 expect(afterEach(genFn, timeout)).type.toBeVoid();
 expect(
   afterEach(done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
 ).type.toBeVoid();
 
@@ -193,7 +193,7 @@ expect(test(testName, asyncFn)).type.toBeVoid();
 expect(test(testName, genFn)).type.toBeVoid();
 expect(
   test(testName, done => {
-    expect(done).type.toEqual<Global.DoneFn>();
+    expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBeVoid();
 
@@ -204,7 +204,7 @@ expect(
   test(
     testName,
     done => {
-      expect(done).type.toEqual<Global.DoneFn>();
+      expect(done).type.toBe<Global.DoneFn>();
     },
     timeout,
   ),
@@ -271,21 +271,21 @@ expect(test.concurrent.failing(function named() {}, asyncFn)).type.toBeVoid();
 expect(test.concurrent.failing(class {}, asyncFn)).type.toBeVoid();
 expect(test.concurrent.failing(class Named {}, asyncFn)).type.toBeVoid();
 
-expect(test.concurrent.failing.each).type.toEqual(test.concurrent.each);
+expect(test.concurrent.failing.each).type.toBe(test.concurrent.each);
 
 expect(test.concurrent.failing(testName, fn)).type.toRaiseError();
 
 // test.concurrent.only
 
-expect(test.concurrent.only.each).type.toEqual(test.concurrent.each);
-expect(test.concurrent.only.failing).type.toEqual(test.concurrent.failing);
-expect(test.concurrent.only.failing.each).type.toEqual(test.concurrent.each);
+expect(test.concurrent.only.each).type.toBe(test.concurrent.each);
+expect(test.concurrent.only.failing).type.toBe(test.concurrent.failing);
+expect(test.concurrent.only.failing.each).type.toBe(test.concurrent.each);
 
 // test.concurrent.skip
 
-expect(test.concurrent.skip.each).type.toEqual(test.concurrent.each);
-expect(test.concurrent.skip.failing).type.toEqual(test.concurrent.failing);
-expect(test.concurrent.skip.failing.each).type.toEqual(test.concurrent.each);
+expect(test.concurrent.skip.each).type.toBe(test.concurrent.each);
+expect(test.concurrent.skip.failing).type.toBe(test.concurrent.failing);
+expect(test.concurrent.skip.failing.each).type.toBe(test.concurrent.each);
 
 // test.each
 
@@ -309,7 +309,7 @@ expect(test.failing(function named() {}, fn)).type.toBeVoid();
 expect(test.failing(class {}, fn)).type.toBeVoid();
 expect(test.failing(class Named {}, fn)).type.toBeVoid();
 
-expect(test.failing.each).type.toEqual(test.each);
+expect(test.failing.each).type.toBe(test.each);
 
 // test.only
 
@@ -322,9 +322,9 @@ expect(test.only(function named() {}, fn)).type.toBeVoid();
 expect(test.only(class {}, fn)).type.toBeVoid();
 expect(test.only(class Named {}, fn)).type.toBeVoid();
 
-expect(test.only.each).type.toEqual(test.each);
-expect(test.only.failing).type.toEqual(test.failing);
-expect(test.only.failing.each).type.toEqual(test.each);
+expect(test.only.each).type.toBe(test.each);
+expect(test.only.failing).type.toBe(test.failing);
+expect(test.only.failing.each).type.toBe(test.each);
 
 // test.skip
 
@@ -337,9 +337,9 @@ expect(test.skip(function named() {}, fn)).type.toBeVoid();
 expect(test.skip(class {}, fn)).type.toBeVoid();
 expect(test.skip(class Named {}, fn)).type.toBeVoid();
 
-expect(test.skip.each).type.toEqual(test.each);
-expect(test.skip.failing).type.toEqual(test.failing);
-expect(test.skip.failing.each).type.toEqual(test.each);
+expect(test.skip.each).type.toBe(test.each);
+expect(test.skip.failing).type.toBe(test.failing);
+expect(test.skip.failing.each).type.toBe(test.each);
 
 // test.todo
 
@@ -391,7 +391,7 @@ expect(describe.only(function named() {}, fn)).type.toBeVoid();
 expect(describe.only(class {}, fn)).type.toBeVoid();
 expect(describe.only(class Named {}, fn)).type.toBeVoid();
 
-expect(describe.only.each).type.toEqual(describe.each);
+expect(describe.only.each).type.toBe(describe.each);
 
 // describe.skip
 
@@ -407,4 +407,4 @@ expect(describe.skip(function named() {}, fn)).type.toBeVoid();
 expect(describe.skip(class {}, fn)).type.toBeVoid();
 expect(describe.skip(class Named {}, fn)).type.toBeVoid();
 
-expect(describe.skip.each).type.toEqual(describe.each);
+expect(describe.skip.each).type.toBe(describe.each);
