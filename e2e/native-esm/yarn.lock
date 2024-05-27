@@ -691,13 +691,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isolated-vm@npm:^4.6.0":
-  version: 4.7.2
-  resolution: "isolated-vm@npm:4.7.2"
+"isolated-vm@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "isolated-vm@npm:5.0.0"
   dependencies:
     node-gyp: latest
     prebuild-install: ^7.1.1
-  checksum: 16f43f6413623dc7009a8bb9fa567fb30ffc151e21e9a7ae616f25626e750ba823527fb24e2e17408943c6bbbcc7235db89f41262d43a8d8155ad99e888b0760
+  checksum: 47a8efa611cb4b25f6944a513ec040c7b71e920b5e8828338e73d8f773a40673e388634eec6c83d35295fa4175685c699e9bc9e5d4afe2d40a3a35ef534d7704
   languageName: node
   linkType: hard
 
@@ -1099,7 +1099,7 @@ __metadata:
     colors: ^1.4.0
     discord.js: 14.3.0
     iso-constants: ^0.1.2
-    isolated-vm: ^4.6.0
+    isolated-vm: ^5.0.0
     yargs: ^17.5.1
   dependenciesMeta:
     isolated-vm:
