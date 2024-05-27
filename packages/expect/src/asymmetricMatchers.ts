@@ -137,7 +137,7 @@ class Any extends AsymmetricMatcher<any> {
     }
 
     if (this.sample == Array) {
-      return Array.isArray(other)
+      return Array.isArray(other);
     }
 
     return other instanceof this.sample;

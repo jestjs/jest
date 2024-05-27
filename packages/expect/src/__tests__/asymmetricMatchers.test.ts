@@ -6,6 +6,7 @@
  *
  */
 
+import {runInNewContext} from 'node:vm';
 import jestExpect from '../';
 import {
   any,
@@ -21,7 +22,6 @@ import {
   stringNotContaining,
   stringNotMatching,
 } from '../asymmetricMatchers';
-import { runInNewContext } from 'node:vm';
 
 test('Any.asymmetricMatch()', () => {
   class Thing {}
