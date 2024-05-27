@@ -23,12 +23,12 @@ describe('Mocked', () => {
 
     const MockSomeClass = SomeClass as Mocked<typeof SomeClass>;
 
-    expect(MockSomeClass.mock.calls[0]).type.toEqual<
+    expect(MockSomeClass.mock.calls[0]).type.toBe<
       [one: string, two?: boolean]
     >();
 
-    expect(MockSomeClass.prototype.methodA.mock.calls[0]).type.toEqual<[]>();
-    expect(MockSomeClass.prototype.methodB.mock.calls[0]).type.toEqual<
+    expect(MockSomeClass.prototype.methodA.mock.calls[0]).type.toBe<[]>();
+    expect(MockSomeClass.prototype.methodB.mock.calls[0]).type.toBe<
       [a: string, b?: number]
     >();
 
@@ -43,10 +43,10 @@ describe('Mocked', () => {
       ),
     ).type.toRaiseError();
 
-    expect(MockSomeClass.mock.instances[0].methodA.mock.calls[0]).type.toEqual<
+    expect(MockSomeClass.mock.instances[0].methodA.mock.calls[0]).type.toBe<
       []
     >();
-    expect(MockSomeClass.prototype.methodB.mock.calls[0]).type.toEqual<
+    expect(MockSomeClass.prototype.methodB.mock.calls[0]).type.toBe<
       [a: string, b?: number]
     >();
 
@@ -54,8 +54,8 @@ describe('Mocked', () => {
       InstanceType<typeof MockSomeClass>
     >;
 
-    expect(mockSomeInstance.methodA.mock.calls[0]).type.toEqual<[]>();
-    expect(mockSomeInstance.methodB.mock.calls[0]).type.toEqual<
+    expect(mockSomeInstance.methodA.mock.calls[0]).type.toBe<[]>();
+    expect(mockSomeInstance.methodB.mock.calls[0]).type.toBe<
       [a: string, b?: number]
     >();
 
@@ -68,7 +68,7 @@ describe('Mocked', () => {
       }),
     ).type.toRaiseError();
 
-    expect(new SomeClass('sample')).type.toBeAssignable(mockSomeInstance);
+    expect(new SomeClass('sample')).type.toBeAssignableWith(mockSomeInstance);
   });
 
   test('wraps a function type with type definitions of the Jest mock function', () => {
@@ -78,14 +78,14 @@ describe('Mocked', () => {
 
     const mockFunction = someFunction as Mocked<typeof someFunction>;
 
-    expect(mockFunction.mock.calls[0]).type.toEqual<[a: string, b?: number]>();
+    expect(mockFunction.mock.calls[0]).type.toBe<[a: string, b?: number]>();
 
     expect(mockFunction.mockReturnValue(123)).type.toRaiseError();
     expect(
       mockFunction.mockImplementation((a: boolean, b?: number) => true),
     ).type.toRaiseError();
 
-    expect(someFunction).type.toBeAssignable(mockFunction);
+    expect(someFunction).type.toBeAssignableWith(mockFunction);
   });
 
   test('wraps an async function type with type definitions of the Jest mock function', () => {
@@ -97,7 +97,7 @@ describe('Mocked', () => {
       typeof someAsyncFunction
     >;
 
-    expect(mockAsyncFunction.mock.calls[0]).type.toEqual<[Array<boolean>]>();
+    expect(mockAsyncFunction.mock.calls[0]).type.toBe<[Array<boolean>]>();
 
     expect(mockAsyncFunction.mockResolvedValue(123)).type.toRaiseError();
     expect(
@@ -106,7 +106,7 @@ describe('Mocked', () => {
       ),
     ).type.toRaiseError();
 
-    expect(someAsyncFunction).type.toBeAssignable(mockAsyncFunction);
+    expect(someAsyncFunction).type.toBeAssignableWith(mockAsyncFunction);
   });
 
   test('wraps a function object type with type definitions of the Jest mock function', () => {
@@ -126,7 +126,7 @@ describe('Mocked', () => {
       typeof someFunctionObject
     >;
 
-    expect(mockFunctionObject.mock.calls[0]).type.toEqual<
+    expect(mockFunctionObject.mock.calls[0]).type.toBe<
       [a: number, b?: string]
     >();
 
@@ -135,7 +135,7 @@ describe('Mocked', () => {
       mockFunctionObject.mockImplementation(() => true),
     ).type.toRaiseError();
 
-    expect(mockFunctionObject.one.more.time.mock.calls[0]).type.toEqual<
+    expect(mockFunctionObject.one.more.time.mock.calls[0]).type.toBe<
       [time: number]
     >();
 
@@ -148,7 +148,7 @@ describe('Mocked', () => {
       }),
     ).type.toRaiseError();
 
-    expect(someFunctionObject).type.toBeAssignable(mockFunctionObject);
+    expect(someFunctionObject).type.toBeAssignableWith(mockFunctionObject);
   });
 
   test('wraps an object type with type definitions of the Jest mock function', () => {
@@ -190,26 +190,24 @@ describe('Mocked', () => {
 
     const mockObject = someObject as Mocked<typeof someObject>;
 
-    expect(mockObject.methodA.mock.calls[0]).type.toEqual<[]>();
-    expect(mockObject.methodB.mock.calls[0]).type.toEqual<[b: string]>();
-    expect(mockObject.methodC.mock.calls[0]).type.toEqual<[c: number]>();
+    expect(mockObject.methodA.mock.calls[0]).type.toBe<[]>();
+    expect(mockObject.methodB.mock.calls[0]).type.toBe<[b: string]>();
+    expect(mockObject.methodC.mock.calls[0]).type.toBe<[c: number]>();
 
-    expect(mockObject.one.more.time.mock.calls[0]).type.toEqual<[t: number]>();
+    expect(mockObject.one.more.time.mock.calls[0]).type.toBe<[t: number]>();
 
-    expect(mockObject.SomeClass.mock.calls[0]).type.toEqual<
+    expect(mockObject.SomeClass.mock.calls[0]).type.toBe<
       [one: string, two?: boolean]
     >();
-    expect(mockObject.SomeClass.prototype.methodA.mock.calls[0]).type.toEqual<
+    expect(mockObject.SomeClass.prototype.methodA.mock.calls[0]).type.toBe<
       []
     >();
-    expect(mockObject.SomeClass.prototype.methodB.mock.calls[0]).type.toEqual<
+    expect(mockObject.SomeClass.prototype.methodB.mock.calls[0]).type.toBe<
       [a: string, b?: number]
     >();
 
-    expect(mockObject.someClassInstance.methodA.mock.calls[0]).type.toEqual<
-      []
-    >();
-    expect(mockObject.someClassInstance.methodB.mock.calls[0]).type.toEqual<
+    expect(mockObject.someClassInstance.methodA.mock.calls[0]).type.toBe<[]>();
+    expect(mockObject.someClassInstance.methodB.mock.calls[0]).type.toBe<
       [a: string, b?: number]
     >();
 
@@ -265,16 +263,16 @@ describe('Mocked', () => {
       ),
     ).type.toRaiseError();
 
-    expect(someObject).type.toBeAssignable(mockObject);
+    expect(someObject).type.toBeAssignableWith(mockObject);
   });
 
   test('wraps the global `console` object type with type definitions of the Jest mock function', () => {
     const mockConsole = console as Mocked<typeof console>;
 
-    expect(console.log).type.toBeAssignable(
+    expect(console.log).type.toBeAssignableWith(
       mockConsole.log.mockImplementation(() => {}),
     );
-    expect<MockInstance<typeof console.log>>().type.toBeAssignable(
+    expect<MockInstance<typeof console.log>>().type.toBeAssignableWith(
       mockConsole.log.mockImplementation(() => {}),
     );
   });

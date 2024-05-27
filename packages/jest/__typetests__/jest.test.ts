@@ -12,6 +12,6 @@ describe('Config', () => {
   test('is a reexport of the `InitialOptions`', () => {
     type InitialOptions = import('@jest/types').Config.InitialOptions;
 
-    expect<Config>().type.toEqual<InitialOptions>();
+    expect<Config>().type.toBe<InitialOptions>();
   });
 });

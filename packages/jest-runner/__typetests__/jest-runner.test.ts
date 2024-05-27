@@ -37,8 +37,8 @@ class CallbackRunner extends CallbackTestRunner {
     onFailure: OnTestFailure,
     options: TestRunnerOptions,
   ): Promise<void> {
-    expect(this._globalConfig).type.toEqual<Config.GlobalConfig>();
-    expect(this._context).type.toEqual<TestRunnerContext>();
+    expect(this._globalConfig).type.toBe<Config.GlobalConfig>();
+    expect(this._context).type.toBe<TestRunnerContext>();
 
     return;
   }
@@ -46,8 +46,8 @@ class CallbackRunner extends CallbackTestRunner {
 
 const callbackRunner = new CallbackRunner(globalConfig, runnerContext);
 
-expect(callbackRunner.isSerial).type.toEqual<boolean | undefined>();
-expect(callbackRunner.supportsEventEmitters).type.toEqual<false>();
+expect(callbackRunner.isSerial).type.toBe<boolean | undefined>();
+expect(callbackRunner.supportsEventEmitters).type.toBe<false>();
 
 // CallbackTestRunnerInterface
 
@@ -68,7 +68,7 @@ class CustomCallbackRunner implements CallbackTestRunnerInterface {
     onFailure: OnTestFailure,
     options: TestRunnerOptions,
   ): Promise<void> {
-    expect(this.#globalConfig).type.toEqual<Config.GlobalConfig>();
+    expect(this.#globalConfig).type.toBe<Config.GlobalConfig>();
     expect(this.#maxConcurrency).type.toBeNumber();
 
     return;
@@ -83,8 +83,8 @@ class EmittingRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    expect(this._globalConfig).type.toEqual<Config.GlobalConfig>();
-    expect(this._context).type.toEqual<TestRunnerContext>();
+    expect(this._globalConfig).type.toBe<Config.GlobalConfig>();
+    expect(this._context).type.toBe<TestRunnerContext>();
 
     return;
   }
@@ -99,8 +99,8 @@ class EmittingRunner extends EmittingTestRunner {
 
 const emittingRunner = new EmittingRunner(globalConfig, runnerContext);
 
-expect(emittingRunner.isSerial).type.toEqual<boolean | undefined>();
-expect(emittingRunner.supportsEventEmitters).type.toEqual<true>();
+expect(emittingRunner.isSerial).type.toBe<boolean | undefined>();
+expect(emittingRunner.supportsEventEmitters).type.toBe<true>();
 
 // EmittingTestRunnerInterface
 
@@ -119,7 +119,7 @@ class CustomEmittingRunner implements EmittingTestRunnerInterface {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    expect(this.#globalConfig).type.toEqual<Config.GlobalConfig>();
+    expect(this.#globalConfig).type.toBe<Config.GlobalConfig>();
     expect(this.#maxConcurrency).type.toBeNumber();
 
     return;

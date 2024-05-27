@@ -106,62 +106,62 @@ type IndexObject = {
 };
 
 test('ClassLike', () => {
-  expect<ClassLike>().type.toBeAssignable(SomeClass);
+  expect<ClassLike>().type.toBeAssignableWith(SomeClass);
 
-  expect<ClassLike>().type.not.toBeAssignable(() => {});
-  expect<ClassLike>().type.not.toBeAssignable(function abc() {
+  expect<ClassLike>().type.not.toBeAssignableWith(() => {});
+  expect<ClassLike>().type.not.toBeAssignableWith(function abc() {
     return;
   });
-  expect<ClassLike>().type.not.toBeAssignable('abc');
-  expect<ClassLike>().type.not.toBeAssignable(123);
-  expect<ClassLike>().type.not.toBeAssignable(false);
-  expect<ClassLike>().type.not.toBeAssignable(someObject);
+  expect<ClassLike>().type.not.toBeAssignableWith('abc');
+  expect<ClassLike>().type.not.toBeAssignableWith(123);
+  expect<ClassLike>().type.not.toBeAssignableWith(false);
+  expect<ClassLike>().type.not.toBeAssignableWith(someObject);
 });
 
 test('FunctionLike', () => {
-  expect<FunctionLike>().type.toBeAssignable(() => {});
-  expect<FunctionLike>().type.toBeAssignable(function abc() {
+  expect<FunctionLike>().type.toBeAssignableWith(() => {});
+  expect<FunctionLike>().type.toBeAssignableWith(function abc() {
     return;
   });
 
-  expect<FunctionLike>().type.not.toBeAssignable('abc');
-  expect<FunctionLike>().type.not.toBeAssignable(123);
-  expect<FunctionLike>().type.not.toBeAssignable(false);
-  expect<FunctionLike>().type.not.toBeAssignable(SomeClass);
-  expect<FunctionLike>().type.not.toBeAssignable(someObject);
+  expect<FunctionLike>().type.not.toBeAssignableWith('abc');
+  expect<FunctionLike>().type.not.toBeAssignableWith(123);
+  expect<FunctionLike>().type.not.toBeAssignableWith(false);
+  expect<FunctionLike>().type.not.toBeAssignableWith(SomeClass);
+  expect<FunctionLike>().type.not.toBeAssignableWith(someObject);
 });
 
 test('ConstructorKeys', () => {
-  expect<ConstructorLikeKeys<OptionalInterface>>().type.toEqual<
+  expect<ConstructorLikeKeys<OptionalInterface>>().type.toBe<
     'constructorA' | 'constructorB'
   >();
-  expect<ConstructorLikeKeys<SomeObject>>().type.toEqual<'SomeClass'>();
+  expect<ConstructorLikeKeys<SomeObject>>().type.toBe<'SomeClass'>();
 });
 
 test('MethodKeys', () => {
-  expect<MethodLikeKeys<SomeClass>>().type.toEqual<'methodA' | 'methodB'>();
-  expect<MethodLikeKeys<IndexClass>>().type.toEqual<'methodA' | 'methodB'>();
-  expect<MethodLikeKeys<OptionalInterface>>().type.toEqual<
+  expect<MethodLikeKeys<SomeClass>>().type.toBe<'methodA' | 'methodB'>();
+  expect<MethodLikeKeys<IndexClass>>().type.toBe<'methodA' | 'methodB'>();
+  expect<MethodLikeKeys<OptionalInterface>>().type.toBe<
     'methodA' | 'methodB'
   >();
-  expect<MethodLikeKeys<SomeObject>>().type.toEqual<
+  expect<MethodLikeKeys<SomeObject>>().type.toBe<
     'methodA' | 'methodB' | 'methodC'
   >();
-  expect<MethodLikeKeys<IndexObject>>().type.toEqual<
+  expect<MethodLikeKeys<IndexObject>>().type.toBe<
     'methodA' | 'methodB' | 'methodC'
   >();
 });
 
 test('PropertyKeys', () => {
-  expect<PropertyLikeKeys<SomeClass>>().type.toEqual<
+  expect<PropertyLikeKeys<SomeClass>>().type.toBe<
     'propertyA' | 'propertyB' | 'propertyC'
   >();
-  expect<PropertyLikeKeys<IndexClass>>().type.toEqual<string | number>();
-  expect<PropertyLikeKeys<OptionalInterface>>().type.toEqual<
+  expect<PropertyLikeKeys<IndexClass>>().type.toBe<string | number>();
+  expect<PropertyLikeKeys<OptionalInterface>>().type.toBe<
     'propertyA' | 'propertyB' | 'propertyC' | 'propertyD'
   >();
-  expect<PropertyLikeKeys<SomeObject>>().type.toEqual<
+  expect<PropertyLikeKeys<SomeObject>>().type.toBe<
     'propertyA' | 'propertyB' | 'someClassInstance'
   >();
-  expect<PropertyLikeKeys<IndexObject>>().type.toEqual<string | number>();
+  expect<PropertyLikeKeys<IndexObject>>().type.toBe<string | number>();
 });

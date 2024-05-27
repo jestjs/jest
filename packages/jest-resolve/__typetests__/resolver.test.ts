@@ -18,7 +18,7 @@ import type {
 
 // PackageJSON
 
-expect<PackageJSON>().type.toBeAssignable({
+expect<PackageJSON>().type.toBeAssignableWith({
   caption: 'test',
   count: 100,
   isTest: true,
@@ -26,7 +26,7 @@ expect<PackageJSON>().type.toBeAssignable({
   values: [0, 10, 20, {x: 1, y: 2}, true, 'test', ['a', 'b']],
 });
 
-expect<PackageJSON>().type.not.toBeAssignable({
+expect<PackageJSON>().type.not.toBeAssignableWith({
   filter: () => {},
 });
 
@@ -34,21 +34,21 @@ expect<PackageJSON>().type.not.toBeAssignable({
 
 const packageFilter = (pkg: PackageJSON, file: string, dir: string) => pkg;
 
-expect<PackageFilter>().type.toBeAssignable(packageFilter);
+expect<PackageFilter>().type.toBeAssignableWith(packageFilter);
 
 // PathFilter
 
 const pathFilter = (pkg: PackageJSON, path: string, relativePath: string) =>
   relativePath;
 
-expect<PathFilter>().type.toBeAssignable(pathFilter);
+expect<PathFilter>().type.toBeAssignableWith(pathFilter);
 
 // ResolverOptions
 
 function customSyncResolver(path: string, options: ResolverOptions): string {
   return path;
 }
-expect<SyncResolver>().type.toBeAssignable(customSyncResolver);
+expect<SyncResolver>().type.toBeAssignableWith(customSyncResolver);
 
 async function customAsyncResolver(
   path: string,
@@ -56,7 +56,7 @@ async function customAsyncResolver(
 ): Promise<string> {
   return path;
 }
-expect<AsyncResolver>().type.toBeAssignable(customAsyncResolver);
+expect<AsyncResolver>().type.toBeAssignableWith(customAsyncResolver);
 
 // AsyncResolver
 
@@ -64,20 +64,22 @@ const asyncResolver: AsyncResolver = async (path, options) => {
   expect(path).type.toBeString();
 
   expect(options.basedir).type.toBeString();
-  expect(options.conditions).type.toEqual<Array<string> | undefined>();
-  expect(options.defaultResolver).type.toEqual<SyncResolver>();
-  expect(options.extensions).type.toEqual<Array<string> | undefined>();
-  expect(options.moduleDirectory).type.toEqual<Array<string> | undefined>();
-  expect(options.packageFilter).type.toEqual<PackageFilter | undefined>();
-  expect(options.pathFilter).type.toEqual<PathFilter | undefined>();
-  expect(options.paths).type.toEqual<Array<string> | undefined>();
-  expect(options.rootDir).type.toEqual<string | undefined>();
+  expect(options.conditions).type.toBe<Array<string> | undefined>();
+  expect(options.defaultResolver).type.toBe<SyncResolver>();
+  expect(options.extensions).type.toBe<Array<string> | undefined>();
+  expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
+  expect(options.packageFilter).type.toBe<PackageFilter | undefined>();
+  expect(options.pathFilter).type.toBe<PathFilter | undefined>();
+  expect(options.paths).type.toBe<Array<string> | undefined>();
+  expect(options.rootDir).type.toBe<string | undefined>();
 
   return path;
 };
 
 const notReturningAsyncResolver = async () => {};
-expect<AsyncResolver>().type.not.toBeAssignable(notReturningAsyncResolver());
+expect<AsyncResolver>().type.not.toBeAssignableWith(
+  notReturningAsyncResolver(),
+);
 
 // SyncResolver
 
@@ -85,27 +87,27 @@ const syncResolver: SyncResolver = (path, options) => {
   expect(path).type.toBeString();
 
   expect(options.basedir).type.toBeString();
-  expect(options.conditions).type.toEqual<Array<string> | undefined>();
-  expect(options.defaultResolver).type.toEqual<SyncResolver>();
-  expect(options.extensions).type.toEqual<Array<string> | undefined>();
-  expect(options.moduleDirectory).type.toEqual<Array<string> | undefined>();
-  expect(options.packageFilter).type.toEqual<PackageFilter | undefined>();
-  expect(options.pathFilter).type.toEqual<PathFilter | undefined>();
-  expect(options.paths).type.toEqual<Array<string> | undefined>();
-  expect(options.rootDir).type.toEqual<string | undefined>();
+  expect(options.conditions).type.toBe<Array<string> | undefined>();
+  expect(options.defaultResolver).type.toBe<SyncResolver>();
+  expect(options.extensions).type.toBe<Array<string> | undefined>();
+  expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
+  expect(options.packageFilter).type.toBe<PackageFilter | undefined>();
+  expect(options.pathFilter).type.toBe<PathFilter | undefined>();
+  expect(options.paths).type.toBe<Array<string> | undefined>();
+  expect(options.rootDir).type.toBe<string | undefined>();
 
   return path;
 };
 
 const notReturningSyncResolver = () => {};
-expect<SyncResolver>().type.not.toBeAssignable(notReturningSyncResolver());
+expect<SyncResolver>().type.not.toBeAssignableWith(notReturningSyncResolver());
 
 // JestResolver
 
-expect<JestResolver>().type.toBeAssignable({async: asyncResolver});
-expect<JestResolver>().type.toBeAssignable({sync: syncResolver});
-expect<JestResolver>().type.toBeAssignable({
+expect<JestResolver>().type.toBeAssignableWith({async: asyncResolver});
+expect<JestResolver>().type.toBeAssignableWith({sync: syncResolver});
+expect<JestResolver>().type.toBeAssignableWith({
   async: asyncResolver,
   sync: syncResolver,
 });
-expect<JestResolver>().type.not.toBeAssignable({});
+expect<JestResolver>().type.not.toBeAssignableWith({});

@@ -10,5 +10,5 @@ import type {Options} from 'yargs';
 import {yargsOptions} from 'jest-cli';
 
 test('yargsOptions', () => {
-  expect(yargsOptions).type.toEqual<{[key: string]: Options}>();
+  expect(yargsOptions).type.toBe<{[key: string]: Options}>();
 });

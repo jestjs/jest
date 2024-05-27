@@ -18,21 +18,21 @@ import {
 
 // Context
 
-expect(({} as Context).snapshotState).type.toEqual<SnapshotState>();
+expect(({} as Context).snapshotState).type.toBe<SnapshotState>();
 
 // toMatchSnapshot
 
 expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}, 'someHint'),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}, {property: 'match'}),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchSnapshot.call(
@@ -41,7 +41,7 @@ expect(
     {property: 'match'},
     'someHint',
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(toMatchSnapshot({received: 'value'})).type.toRaiseError();
 
@@ -49,7 +49,7 @@ expect(toMatchSnapshot({received: 'value'})).type.toRaiseError();
 
 expect(
   toMatchInlineSnapshot.call({} as Context, {received: 'value'}),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchInlineSnapshot.call(
@@ -57,7 +57,7 @@ expect(
     {received: 'value'},
     'inlineSnapshot',
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchInlineSnapshot.call(
@@ -65,7 +65,7 @@ expect(
     {received: 'value'},
     {property: 'match'},
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toMatchInlineSnapshot.call(
@@ -74,7 +74,7 @@ expect(
     {property: 'match'},
     'inlineSnapshot',
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(toMatchInlineSnapshot({received: 'value'})).type.toRaiseError();
 
@@ -82,7 +82,7 @@ expect(toMatchInlineSnapshot({received: 'value'})).type.toRaiseError();
 
 expect(
   toThrowErrorMatchingSnapshot.call({} as Context, new Error('received')),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingSnapshot.call(
@@ -90,7 +90,7 @@ expect(
     new Error('received'),
     'someHint',
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingSnapshot.call(
@@ -99,7 +99,7 @@ expect(
     'someHint',
     true, // fromPromise
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingSnapshot.call(
@@ -108,7 +108,7 @@ expect(
     undefined,
     false, // fromPromise
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(toThrowErrorMatchingSnapshot({received: 'value'})).type.toRaiseError();
 
@@ -116,7 +116,7 @@ expect(toThrowErrorMatchingSnapshot({received: 'value'})).type.toRaiseError();
 
 expect(
   toThrowErrorMatchingInlineSnapshot.call({} as Context, new Error('received')),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingInlineSnapshot.call(
@@ -124,7 +124,7 @@ expect(
     new Error('received'),
     'inlineSnapshot',
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingInlineSnapshot.call(
@@ -133,7 +133,7 @@ expect(
     'inlineSnapshot',
     true, // fromPromise
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingInlineSnapshot.call(
@@ -142,7 +142,7 @@ expect(
     undefined,
     false, // fromPromise
   ),
-).type.toEqual<ExpectationResult>();
+).type.toBe<ExpectationResult>();
 
 expect(
   toThrowErrorMatchingInlineSnapshot({received: 'value'}),

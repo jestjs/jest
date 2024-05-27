@@ -27,10 +27,10 @@ test('isA', () => {
   }
 
   if (isA<Map<unknown, unknown>>('Map', sample)) {
-    expect(sample).type.toEqual<Map<unknown, unknown>>();
+    expect(sample).type.toBe<Map<unknown, unknown>>();
   }
 
   if (isA<Set<unknown>>('Set', sample)) {
-    expect(sample).type.toEqual<Set<unknown>>();
+    expect(sample).type.toBe<Set<unknown>>();
   }
 });

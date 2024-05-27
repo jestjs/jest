@@ -13,13 +13,13 @@ import type {SnapshotResolver} from 'jest-snapshot';
 const snapshotResolver: SnapshotResolver = {
   resolveSnapshotPath: (testPath, snapshotExtension) => {
     expect(testPath).type.toBeString();
-    expect(snapshotExtension).type.toEqual<string | undefined>();
+    expect(snapshotExtension).type.toBe<string | undefined>();
     return 'snapshot/path';
   },
 
   resolveTestPath: (snapshotPath, snapshotExtension) => {
     expect(snapshotPath).type.toBeString();
-    expect(snapshotExtension).type.toEqual<string | undefined>();
+    expect(snapshotExtension).type.toBe<string | undefined>();
     return 'test/path';
   },
 
@@ -28,65 +28,65 @@ const snapshotResolver: SnapshotResolver = {
 
 // resolveSnapshotPath
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: (testPath: string, snapshotExtension: boolean) =>
     'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: (testPath: boolean) => 'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => true,
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
 // resolveTestPath
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: (snapshotPath: string, snapshotExtension: boolean) =>
     'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: (snapshotPath: boolean) => 'test/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => true,
   testPathForConsistencyCheck: 'test/path/example',
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   testPathForConsistencyCheck: 'test/path/example',
 });
 
 // testPathForConsistencyCheck
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => 'test/path',
   testPathForConsistencyCheck: true,
 });
 
-expect<SnapshotResolver>().type.not.toBeAssignable({
+expect<SnapshotResolver>().type.not.toBeAssignableWith({
   resolveSnapshotPath: () => 'snapshot/path',
   resolveTestPath: () => 'test/path',
 });

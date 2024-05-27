@@ -34,27 +34,23 @@ test('unknown JestWorkerFarm', () => {
   expect(unknownWorkerFarm).type.not.toHaveProperty('setup');
   expect(unknownWorkerFarm).type.not.toHaveProperty('teardown');
 
-  expect(unknownWorkerFarm.start()).type.toEqual<Promise<void>>();
-  expect(unknownWorkerFarm.end()).type.toEqual<
-    Promise<{forceExited: boolean}>
-  >();
+  expect(unknownWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(unknownWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-  expect(unknownWorkerFarm.getStderr()).type.toEqual<NodeJS.ReadableStream>();
-  expect(unknownWorkerFarm.getStdout()).type.toEqual<NodeJS.ReadableStream>();
+  expect(unknownWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(unknownWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
 });
 
 declare const inferredWorkerFarm: JestWorkerFarm<typeof testWorker>;
 
 test('inferred JestWorkerFarm', () => {
-  expect(inferredWorkerFarm.runTest('abc', true)).type.toEqual<Promise<void>>();
-  expect(inferredWorkerFarm.runTestAsync(123, 456)).type.toEqual<
-    Promise<void>
-  >();
+  expect(inferredWorkerFarm.runTest('abc', true)).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.runTestAsync(123, 456)).type.toBe<Promise<void>>();
 
-  expect(inferredWorkerFarm.doSomething()).type.toEqual<Promise<void>>();
-  expect(inferredWorkerFarm.doSomething()).type.toEqual<Promise<void>>();
-  expect(inferredWorkerFarm.doSomethingAsync()).type.toEqual<Promise<void>>();
-  expect(inferredWorkerFarm.doSomethingAsync()).type.toEqual<Promise<void>>();
+  expect(inferredWorkerFarm.doSomething()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomething()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
 
   expect(inferredWorkerFarm.runTest()).type.toRaiseError();
   expect(inferredWorkerFarm.runTest('abc')).type.toRaiseError();
@@ -69,20 +65,18 @@ test('inferred JestWorkerFarm', () => {
   expect(inferredWorkerFarm).type.not.toHaveProperty('setup');
   expect(inferredWorkerFarm).type.not.toHaveProperty('teardown');
 
-  expect(inferredWorkerFarm.start()).type.toEqual<Promise<void>>();
-  expect(inferredWorkerFarm.end()).type.toEqual<
-    Promise<{forceExited: boolean}>
-  >();
+  expect(inferredWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-  expect(inferredWorkerFarm.getStderr()).type.toEqual<NodeJS.ReadableStream>();
-  expect(inferredWorkerFarm.getStdout()).type.toEqual<NodeJS.ReadableStream>();
+  expect(inferredWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(inferredWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
 });
 
 declare const typedWorkerFarm: JestWorkerFarm<TestWorker>;
 
 test('typed JestWorkerFarm', () => {
-  expect(typedWorkerFarm.runTest('abc', 123)).type.toEqual<Promise<void>>();
-  expect(typedWorkerFarm.doSomething()).type.toEqual<Promise<void>>();
+  expect(typedWorkerFarm.runTest('abc', 123)).type.toBe<Promise<void>>();
+  expect(typedWorkerFarm.doSomething()).type.toBe<Promise<void>>();
 
   expect(typedWorkerFarm.runTest()).type.toRaiseError();
   expect(typedWorkerFarm.runTest('abc')).type.toRaiseError();
@@ -94,9 +88,9 @@ test('typed JestWorkerFarm', () => {
   expect(typedWorkerFarm).type.not.toHaveProperty('setup');
   expect(typedWorkerFarm).type.not.toHaveProperty('teardown');
 
-  expect(typedWorkerFarm.start()).type.toEqual<Promise<void>>();
-  expect(typedWorkerFarm.end()).type.toEqual<Promise<{forceExited: boolean}>>();
+  expect(typedWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(typedWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-  expect(typedWorkerFarm.getStderr()).type.toEqual<NodeJS.ReadableStream>();
-  expect(typedWorkerFarm.getStdout()).type.toEqual<NodeJS.ReadableStream>();
+  expect(typedWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(typedWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
 });
