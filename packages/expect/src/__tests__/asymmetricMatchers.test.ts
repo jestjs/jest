@@ -21,6 +21,7 @@ import {
   stringNotContaining,
   stringNotMatching,
 } from '../asymmetricMatchers';
+import { runInNewContext } from 'node:vm';
 
 test('Any.asymmetricMatch()', () => {
   class Thing {}
@@ -51,6 +52,7 @@ test('Any.asymmetricMatch() on primitive wrapper classes', () => {
     any(Boolean).asymmetricMatch(new Boolean(true)),
     any(BigInt).asymmetricMatch(Object(1n)),
     any(Symbol).asymmetricMatch(Object(Symbol())),
+    any(Array).asymmetricMatch(runInNewContext('[];')),
     /* eslint-enable */
   ]) {
     jestExpect(test).toBe(true);
