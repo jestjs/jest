@@ -9,7 +9,7 @@
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@crowdin/cli": "^3.5.2",
+    "@crowdin/cli": "^4.0.0",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
     "@lerna-lite/cli": "^3.0.0",
