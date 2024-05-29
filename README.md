@@ -1,13 +1,7 @@
 <p align="center">
-  <a href="https://badge.fury.io/js/jest">
-    <img src="https://badge.fury.io/js/jest.svg" alt="npm version">
-  </a>
-  <a href="https://github.com/jestjs/jest/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=jestjs_">
-    <img src="https://img.shields.io/twitter/follow/jestjs_.svg?style=social&label=Follow%20@jestjs_" alt="Follow on Twitter" />
-  </a>
+  <a href="https://www.npmjs.com/package/jest"><img src="https://img.shields.io/npm/v/jest" alt="npm version"></a>
+  <a href="https://github.com/jestjs/jest/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license."></a>
+  <a href="https://twitter.com/intent/follow?screen_name=jestjs_"><img src="https://img.shields.io/twitter/follow/jestjs_.svg?style=social&label=Follow%20@jestjs_" alt="Follow on Twitter" /></a>
 </p>
 <p align="center">
   <a href="https://github.com/jestjs/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/jestjs/jest/nodejs.yml?label=CI&logo=GitHub"></a>
@@ -53,6 +47,7 @@
   - [Backers](#backers)
   - [Sponsors](#sponsors)
 - [License](#license)
+- [Copyright](#copyright)
 
 ## Getting Started
 
@@ -276,3 +271,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 Jest is [MIT licensed](./LICENSE).
+
+## Copyright
+
+Copyright Contributors to the Jest project.

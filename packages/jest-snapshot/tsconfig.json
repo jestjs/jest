@@ -13,6 +13,7 @@
     {"path": "../jest-get-type"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
+    {"path": "../jest-snapshot-utils"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},

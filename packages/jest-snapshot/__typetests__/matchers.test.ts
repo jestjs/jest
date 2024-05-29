@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expect} from 'tstyche';
 import type {ExpectationResult} from 'expect';
 import {
   type Context,
@@ -18,130 +18,132 @@ import {
 
 // Context
 
-expectType<SnapshotState>(({} as Context).snapshotState);
+expect(({} as Context).snapshotState).type.toBe<SnapshotState>();
 
 // toMatchSnapshot
 
-expectType<ExpectationResult>(
+expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}, 'someHint'),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchSnapshot.call({} as Context, {received: 'value'}, {property: 'match'}),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchSnapshot.call(
     {} as Context,
     {received: 'value'},
     {property: 'match'},
     'someHint',
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectError(toMatchSnapshot({received: 'value'}));
+expect(toMatchSnapshot({received: 'value'})).type.toRaiseError();
 
 // toMatchInlineSnapshot
 
-expectType<ExpectationResult>(
+expect(
   toMatchInlineSnapshot.call({} as Context, {received: 'value'}),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchInlineSnapshot.call(
     {} as Context,
     {received: 'value'},
     'inlineSnapshot',
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchInlineSnapshot.call(
     {} as Context,
     {received: 'value'},
     {property: 'match'},
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toMatchInlineSnapshot.call(
     {} as Context,
     {received: 'value'},
     {property: 'match'},
     'inlineSnapshot',
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectError(toMatchInlineSnapshot({received: 'value'}));
+expect(toMatchInlineSnapshot({received: 'value'})).type.toRaiseError();
 
 // toThrowErrorMatchingSnapshot
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingSnapshot.call({} as Context, new Error('received')),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingSnapshot.call(
     {} as Context,
     new Error('received'),
     'someHint',
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingSnapshot.call(
     {} as Context,
     new Error('received'),
     'someHint',
     true, // fromPromise
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingSnapshot.call(
     {} as Context,
     new Error('received'),
     undefined,
     false, // fromPromise
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectError(toThrowErrorMatchingSnapshot({received: 'value'}));
+expect(toThrowErrorMatchingSnapshot({received: 'value'})).type.toRaiseError();
 
 // toThrowErrorMatchingInlineSnapshot
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingInlineSnapshot.call({} as Context, new Error('received')),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingInlineSnapshot.call(
     {} as Context,
     new Error('received'),
     'inlineSnapshot',
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingInlineSnapshot.call(
     {} as Context,
     new Error('received'),
     'inlineSnapshot',
     true, // fromPromise
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectType<ExpectationResult>(
+expect(
   toThrowErrorMatchingInlineSnapshot.call(
     {} as Context,
     new Error('received'),
     undefined,
     false, // fromPromise
   ),
-);
+).type.toBe<ExpectationResult>();
 
-expectError(toThrowErrorMatchingInlineSnapshot({received: 'value'}));
+expect(
+  toThrowErrorMatchingInlineSnapshot({received: 'value'}),
+).type.toRaiseError();

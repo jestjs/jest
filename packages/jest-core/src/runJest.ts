@@ -38,13 +38,19 @@ import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
+  projectConfig: Config.ProjectConfig,
   source: SearchSource,
   outputStream: WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
 ) => {
-  const data = await source.getTestPaths(globalConfig, changedFiles, filter);
+  const data = await source.getTestPaths(
+    globalConfig,
+    projectConfig,
+    changedFiles,
+    filter,
+  );
 
   if (data.tests.length === 0 && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
@@ -188,6 +194,7 @@ export default async function runJest({
       const searchSource = searchSources[index];
       const matches = await getTestPaths(
         globalConfig,
+        context.config,
         searchSource,
         outputStream,
         changedFilesPromise && (await changedFilesPromise),
@@ -214,13 +221,21 @@ export default async function runJest({
 
   if (globalConfig.listTests) {
     const testsPaths = [...new Set(allTests.map(test => test.path))];
-    /* eslint-disable no-console */
+    let testsListOutput;
+
     if (globalConfig.json) {
-      console.log(JSON.stringify(testsPaths));
+      testsListOutput = JSON.stringify(testsPaths);
     } else {
-      console.log(testsPaths.join('\n'));
+      testsListOutput = testsPaths.join('\n');
     }
-    /* eslint-enable */
+
+    if (globalConfig.outputFile) {
+      const outputFile = path.resolve(process.cwd(), globalConfig.outputFile);
+      fs.writeFileSync(outputFile, testsListOutput, 'utf8');
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(testsListOutput);
+    }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return;

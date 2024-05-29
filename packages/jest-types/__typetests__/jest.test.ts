@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError, expectType} from 'tsd-lite';
+import {expect} from 'tstyche';
 import {jest} from '@jest/globals';
 import type {
   Mock,
@@ -18,7 +18,7 @@ import type {
   ModuleMocker,
 } from 'jest-mock';
 
-expectType<typeof jest>(
+expect(
   jest
     .autoMockOff()
     .autoMockOn()
@@ -54,161 +54,173 @@ expectType<typeof jest>(
     .useFakeTimers()
     .useFakeTimers({legacyFakeTimers: true})
     .useRealTimers(),
-);
+).type.toBe<typeof jest>();
 
-expectType<typeof jest>(jest.autoMockOff());
-expectError(jest.autoMockOff(true));
+expect(jest.autoMockOff()).type.toBe<typeof jest>();
+expect(jest.autoMockOff(true)).type.toRaiseError();
 
-expectType<typeof jest>(jest.autoMockOn());
-expectError(jest.autoMockOn(false));
+expect(jest.autoMockOn()).type.toBe<typeof jest>();
+expect(jest.autoMockOn(false)).type.toRaiseError();
 
 const someModule = {
   methodA: () => {},
   propertyB: 'B',
 };
 
-expectType<unknown>(jest.createMockFromModule('moduleName'));
-expectType<Mocked<typeof someModule>>(
-  jest.createMockFromModule<typeof someModule>('moduleName'),
-);
-expectError(jest.createMockFromModule());
+expect(jest.createMockFromModule('moduleName')).type.toBeUnknown();
+expect(jest.createMockFromModule<typeof someModule>('moduleName')).type.toBe<
+  Mocked<typeof someModule>
+>();
+expect(jest.createMockFromModule()).type.toRaiseError();
 
-expectType<typeof jest>(jest.deepUnmock('moduleName'));
-expectError(jest.deepUnmock());
+expect(jest.deepUnmock('moduleName')).type.toBe<typeof jest>();
+expect(jest.deepUnmock()).type.toRaiseError();
 
-expectType<typeof jest>(jest.doMock('moduleName'));
-expectType<typeof jest>(jest.doMock('moduleName', jest.fn()));
-expectType<typeof jest>(
+expect(jest.doMock('moduleName')).type.toBe<typeof jest>();
+expect(jest.doMock('moduleName', jest.fn())).type.toBe<typeof jest>();
+expect(
   jest.doMock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
-);
-expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {}));
-expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {virtual: true}));
-expectError(jest.doMock());
-expectError(jest.doMock<{some: 'test'}>('moduleName', () => false));
+).type.toBe<typeof jest>();
+expect(jest.doMock('moduleName', jest.fn(), {})).type.toBe<typeof jest>();
+expect(jest.doMock('moduleName', jest.fn(), {virtual: true})).type.toBe<
+  typeof jest
+>();
+expect(jest.doMock()).type.toRaiseError();
+expect(
+  jest.doMock<{some: 'test'}>('moduleName', () => false),
+).type.toRaiseError();
 
-expectType<typeof jest>(jest.dontMock('moduleName'));
-expectError(jest.dontMock());
+expect(jest.dontMock('moduleName')).type.toBe<typeof jest>();
+expect(jest.dontMock()).type.toRaiseError();
 
-expectType<typeof jest>(jest.disableAutomock());
-expectError(jest.disableAutomock(true));
+expect(jest.disableAutomock()).type.toBe<typeof jest>();
+expect(jest.disableAutomock(true)).type.toRaiseError();
 
-expectType<typeof jest>(jest.enableAutomock());
-expectError(jest.enableAutomock('moduleName'));
+expect(jest.enableAutomock()).type.toBe<typeof jest>();
+expect(jest.enableAutomock('moduleName')).type.toRaiseError();
 
-expectType<typeof jest>(jest.isolateModules(() => {}));
-expectError(jest.isolateModules());
+expect(jest.isolateModules(() => {})).type.toBe<typeof jest>();
+expect(jest.isolateModules()).type.toRaiseError();
 
-expectType<Promise<void>>(jest.isolateModulesAsync(async () => {}));
-expectError(jest.isolateModulesAsync(() => {}));
-expectError(jest.isolateModulesAsync());
+expect(jest.isolateModulesAsync(async () => {})).type.toBe<Promise<void>>();
+expect(jest.isolateModulesAsync(() => {})).type.toRaiseError();
+expect(jest.isolateModulesAsync()).type.toRaiseError();
 
-expectType<typeof jest>(jest.mock('moduleName'));
-expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
-expectType<typeof jest>(
+expect(jest.mock('moduleName')).type.toBe<typeof jest>();
+expect(jest.mock('moduleName', jest.fn())).type.toBe<typeof jest>();
+expect(
   jest.mock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
-);
-expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {}));
-expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {virtual: true}));
-expectError(jest.mock());
-expectError(jest.mock<{some: 'test'}>('moduleName', () => false));
+).type.toBe<typeof jest>();
+expect(jest.mock('moduleName', jest.fn(), {})).type.toBe<typeof jest>();
+expect(jest.mock('moduleName', jest.fn(), {virtual: true})).type.toBe<
+  typeof jest
+>();
+expect(jest.mock()).type.toRaiseError();
+expect(
+  jest.mock<{some: 'test'}>('moduleName', () => false),
+).type.toRaiseError();
 
-expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn()));
-expectType<typeof jest>(
+expect(jest.unstable_mockModule('moduleName', jest.fn())).type.toBe<
+  typeof jest
+>();
+expect(
   jest.unstable_mockModule<{some: 'test'}>('moduleName', () => ({
     some: 'test',
   })),
-);
-expectType<typeof jest>(
+).type.toBe<typeof jest>();
+expect(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn())),
-);
-expectType<typeof jest>(
+).type.toBe<typeof jest>();
+expect(
   jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
     Promise.resolve({
       some: 'test',
     }),
   ),
-);
-expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn(), {}));
-expectType<typeof jest>(
+).type.toBe<typeof jest>();
+expect(jest.unstable_mockModule('moduleName', jest.fn(), {})).type.toBe<
+  typeof jest
+>();
+expect(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn()), {}),
-);
-expectType<typeof jest>(
+).type.toBe<typeof jest>();
+expect(
   jest.unstable_mockModule('moduleName', jest.fn(), {virtual: true}),
-);
-expectType<typeof jest>(
+).type.toBe<typeof jest>();
+expect(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn()), {
     virtual: true,
   }),
-);
-expectError(jest.unstable_mockModule('moduleName'));
-expectError(
+).type.toBe<typeof jest>();
+expect(jest.unstable_mockModule('moduleName')).type.toRaiseError();
+expect(
   jest.unstable_mockModule<{some: 'test'}>('moduleName', () => false),
-);
-expectError(
+).type.toRaiseError();
+expect(
   jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
     Promise.resolve(false),
   ),
-);
+).type.toRaiseError();
 
-expectType<unknown>(jest.requireActual('./pathToModule'));
-expectType<{some: 'module'}>(
-  jest.requireActual<{some: 'module'}>('./pathToModule'),
-);
-expectError(jest.requireActual());
+expect(jest.requireActual('./pathToModule')).type.toBeUnknown();
+expect(jest.requireActual<{some: 'module'}>('./pathToModule')).type.toBe<{
+  some: 'module';
+}>();
+expect(jest.requireActual()).type.toRaiseError();
 
-expectType<unknown>(jest.requireMock('./pathToModule'));
-expectType<{some: 'module'}>(
-  jest.requireMock<{some: 'module'}>('./pathToModule'),
-);
-expectError(jest.requireMock());
+expect(jest.requireMock('./pathToModule')).type.toBeUnknown();
+expect(jest.requireMock<{some: 'module'}>('./pathToModule')).type.toBe<{
+  some: 'module';
+}>();
+expect(jest.requireMock()).type.toRaiseError();
 
-expectType<typeof jest>(jest.resetModules());
-expectError(jest.resetModules('moduleName'));
+expect(jest.resetModules()).type.toBe<typeof jest>();
+expect(jest.resetModules('moduleName')).type.toRaiseError();
 
-expectType<typeof jest>(jest.setMock('moduleName', {a: 'b'}));
-expectError(jest.setMock('moduleName'));
+expect(jest.setMock('moduleName', {a: 'b'})).type.toBe<typeof jest>();
+expect(jest.setMock('moduleName')).type.toRaiseError();
 
-expectType<typeof jest>(jest.unmock('moduleName'));
-expectError(jest.unmock());
+expect(jest.unmock('moduleName')).type.toBe<typeof jest>();
+expect(jest.unmock()).type.toRaiseError();
 
 // Mock Functions
 
-expectType<typeof jest>(jest.clearAllMocks());
-expectError(jest.clearAllMocks('moduleName'));
+expect(jest.clearAllMocks()).type.toBe<typeof jest>();
+expect(jest.clearAllMocks('moduleName')).type.toRaiseError();
 
-expectType<typeof jest>(jest.resetAllMocks());
-expectError(jest.resetAllMocks(true));
+expect(jest.resetAllMocks()).type.toBe<typeof jest>();
+expect(jest.resetAllMocks(true)).type.toRaiseError();
 
-expectType<typeof jest>(jest.restoreAllMocks());
-expectError(jest.restoreAllMocks(false));
+expect(jest.restoreAllMocks()).type.toBe<typeof jest>();
+expect(jest.restoreAllMocks(false)).type.toRaiseError();
 
-expectType<boolean>(jest.isMockFunction(() => {}));
-expectError(jest.isMockFunction());
+expect(jest.isMockFunction(() => {})).type.toBeBoolean();
+expect(jest.isMockFunction()).type.toRaiseError();
 
 const maybeMock = (a: string, b: number) => true;
 
 if (jest.isMockFunction(maybeMock)) {
-  expectType<Mock<(a: string, b: number) => boolean>>(maybeMock);
+  expect(maybeMock).type.toBe<Mock<(a: string, b: number) => boolean>>();
 
   maybeMock.mockReturnValueOnce(false);
-  expectError(maybeMock.mockReturnValueOnce(123));
+  expect(maybeMock.mockReturnValueOnce(123)).type.toRaiseError();
 }
 
 if (!jest.isMockFunction(maybeMock)) {
-  expectType<(a: string, b: number) => boolean>(maybeMock);
+  expect(maybeMock).type.toBe<(a: string, b: number) => boolean>();
 }
 
 const surelyMock = jest.fn((a: string, b: number) => true);
 
 if (jest.isMockFunction(surelyMock)) {
-  expectType<Mock<(a: string, b: number) => boolean>>(surelyMock);
+  expect(surelyMock).type.toBe<Mock<(a: string, b: number) => boolean>>();
 
   surelyMock.mockReturnValueOnce(false);
-  expectError(surelyMock.mockReturnValueOnce(123));
+  expect(surelyMock.mockReturnValueOnce(123)).type.toRaiseError();
 }
 
 if (!jest.isMockFunction(surelyMock)) {
-  expectType<never>(surelyMock);
+  expect(surelyMock).type.toBeNever();
 }
 
 const spiedObject = {
@@ -220,58 +232,64 @@ const spiedObject = {
 const surelySpy = jest.spyOn(spiedObject, 'methodA');
 
 if (jest.isMockFunction(surelySpy)) {
-  expectType<MockInstance<(a: number, b: string) => boolean>>(surelySpy);
+  expect(surelySpy).type.toBe<
+    MockInstance<(a: number, b: string) => boolean>
+  >();
 
   surelySpy.mockReturnValueOnce(false);
-  expectError(surelyMock.mockReturnValueOnce(123));
+  expect(surelyMock.mockReturnValueOnce(123)).type.toRaiseError();
 }
 
 if (!jest.isMockFunction(surelySpy)) {
-  expectType<never>(surelySpy);
+  expect(surelySpy).type.toBeNever();
 }
 
 declare const stringMaybeMock: string;
 
 if (jest.isMockFunction(stringMaybeMock)) {
-  expectType<string & Mock<(...args: Array<unknown>) => unknown>>(
-    stringMaybeMock,
-  );
+  expect(stringMaybeMock).type.toBe<
+    string & Mock<(...args: Array<unknown>) => unknown>
+  >();
 }
 
 if (!jest.isMockFunction(stringMaybeMock)) {
-  expectType<string>(stringMaybeMock);
+  expect(stringMaybeMock).type.toBeString();
 }
 
 declare const anyMaybeMock: any;
 
 if (jest.isMockFunction(anyMaybeMock)) {
-  expectType<Mock<(...args: Array<unknown>) => unknown>>(anyMaybeMock);
+  expect(anyMaybeMock).type.toBe<Mock<(...args: Array<unknown>) => unknown>>();
 }
 
 if (!jest.isMockFunction(anyMaybeMock)) {
-  expectType<any>(anyMaybeMock);
+  expect(anyMaybeMock).type.toBeAny();
 }
 
 declare const unknownMaybeMock: unknown;
 
 if (jest.isMockFunction(unknownMaybeMock)) {
-  expectType<Mock<(...args: Array<unknown>) => unknown>>(unknownMaybeMock);
+  expect(unknownMaybeMock).type.toBe<
+    Mock<(...args: Array<unknown>) => unknown>
+  >();
 }
 
 if (!jest.isMockFunction(unknownMaybeMock)) {
-  expectType<unknown>(unknownMaybeMock);
+  expect(unknownMaybeMock).type.toBeUnknown();
 }
 
-expectType<ModuleMocker['fn']>(jest.fn);
+expect(jest.fn).type.toBe<ModuleMocker['fn']>();
 
-expectType<ModuleMocker['spyOn']>(jest.spyOn);
+expect(jest.spyOn).type.toBe<ModuleMocker['spyOn']>();
 
-expectType<ModuleMocker['replaceProperty']>(jest.replaceProperty);
+expect(jest.replaceProperty).type.toBe<ModuleMocker['replaceProperty']>();
 
 // Mock<T>
 
-expectType<Mock<() => boolean>>({} as jest.Mock<() => boolean>);
-expectType<Mock<(a: string) => string>>({} as jest.Mock<(a: string) => string>);
+expect({} as jest.Mock<() => boolean>).type.toBe<Mock<() => boolean>>();
+expect({} as jest.Mock<(a: string) => string>).type.toBe<
+  Mock<(a: string) => string>
+>();
 
 // Mocked*<T>
 
@@ -325,226 +343,256 @@ const someObject = {
   someClassInstance: new SomeClass('value'),
 };
 
-expectType<Mocked<typeof someObject>>(
-  someObject as jest.Mocked<typeof someObject>,
-);
+expect(someObject as jest.Mocked<typeof someObject>).type.toBe<
+  Mocked<typeof someObject>
+>();
 
-expectType<MockedClass<typeof SomeClass>>(
-  SomeClass as jest.MockedClass<typeof SomeClass>,
-);
+expect(SomeClass as jest.MockedClass<typeof SomeClass>).type.toBe<
+  MockedClass<typeof SomeClass>
+>();
 
-expectType<MockedFunction<typeof someFunction>>(
-  someFunction as jest.MockedFunction<typeof someFunction>,
-);
+expect(someFunction as jest.MockedFunction<typeof someFunction>).type.toBe<
+  MockedFunction<typeof someFunction>
+>();
 
-expectType<MockedObject<typeof someObject>>(
-  someObject as jest.MockedObject<typeof someObject>,
-);
+expect(someObject as jest.MockedObject<typeof someObject>).type.toBe<
+  MockedObject<typeof someObject>
+>();
 
 // mocked()
 
-expectType<Mocked<typeof someObject>>(jest.mocked(someObject));
-expectType<Mocked<typeof someObject>>(
-  jest.mocked(someObject, {shallow: false}),
-);
-expectType<MockedShallow<typeof someObject>>(
-  jest.mocked(someObject, {shallow: true}),
-);
+expect(jest.mocked(someObject)).type.toBe<Mocked<typeof someObject>>();
+expect(jest.mocked(someObject, {shallow: false})).type.toBe<
+  Mocked<typeof someObject>
+>();
+expect(jest.mocked(someObject, {shallow: true})).type.toBe<
+  MockedShallow<typeof someObject>
+>();
 
-expectError(jest.mocked('abc'));
+expect(jest.mocked('abc')).type.toRaiseError();
 
 const mockObjectA = jest.mocked(someObject);
 
-expectType<[]>(mockObjectA.methodA.mock.calls[0]);
-expectType<[b: string]>(mockObjectA.methodB.mock.calls[0]);
-expectType<[c: number]>(mockObjectA.methodC.mock.calls[0]);
+expect(mockObjectA.methodA.mock.calls[0]).type.toBe<[]>();
+expect(mockObjectA.methodB.mock.calls[0]).type.toBe<[b: string]>();
+expect(mockObjectA.methodC.mock.calls[0]).type.toBe<[c: number]>();
 
-expectType<[t: number]>(mockObjectA.one.more.time.mock.calls[0]);
+expect(mockObjectA.one.more.time.mock.calls[0]).type.toBe<[t: number]>();
 
-expectType<[one: string, two?: boolean]>(mockObjectA.SomeClass.mock.calls[0]);
-expectType<[]>(mockObjectA.SomeClass.prototype.methodA.mock.calls[0]);
-expectType<[a: string, b?: number]>(
-  mockObjectA.SomeClass.prototype.methodB.mock.calls[0],
-);
+expect(mockObjectA.SomeClass.mock.calls[0]).type.toBe<
+  [one: string, two?: boolean]
+>();
+expect(mockObjectA.SomeClass.prototype.methodA.mock.calls[0]).type.toBe<[]>();
+expect(mockObjectA.SomeClass.prototype.methodB.mock.calls[0]).type.toBe<
+  [a: string, b?: number]
+>();
 
-expectType<[]>(mockObjectA.someClassInstance.methodA.mock.calls[0]);
-expectType<[a: string, b?: number]>(
-  mockObjectA.someClassInstance.methodB.mock.calls[0],
-);
+expect(mockObjectA.someClassInstance.methodA.mock.calls[0]).type.toBe<[]>();
+expect(mockObjectA.someClassInstance.methodB.mock.calls[0]).type.toBe<
+  [a: string, b?: number]
+>();
 
-expectError(mockObjectA.methodA.mockReturnValue(123));
-expectError(mockObjectA.methodA.mockImplementation((a: number) => 123));
-expectError(mockObjectA.methodB.mockReturnValue(123));
-expectError(mockObjectA.methodB.mockImplementation((b: number) => 123));
-expectError(mockObjectA.methodC.mockReturnValue(123));
-expectError(mockObjectA.methodC.mockImplementation((c: number) => 123));
+expect(mockObjectA.methodA.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectA.methodA.mockImplementation((a: number) => 123),
+).type.toRaiseError();
+expect(mockObjectA.methodB.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectA.methodB.mockImplementation((b: number) => 123),
+).type.toRaiseError();
+expect(mockObjectA.methodC.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectA.methodC.mockImplementation((c: number) => 123),
+).type.toRaiseError();
 
-expectError(mockObjectA.one.more.time.mockReturnValue(123));
-expectError(mockObjectA.one.more.time.mockImplementation((t: boolean) => 123));
+expect(mockObjectA.one.more.time.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectA.one.more.time.mockImplementation((t: boolean) => 123),
+).type.toRaiseError();
 
-expectError(mockObjectA.SomeClass.prototype.methodA.mockReturnValue(123));
-expectError(
+expect(
+  mockObjectA.SomeClass.prototype.methodA.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectA.SomeClass.prototype.methodA.mockImplementation(
     (a: number) => 123,
   ),
-);
-expectError(mockObjectA.SomeClass.prototype.methodB.mockReturnValue(123));
-expectError(
+).type.toRaiseError();
+expect(
+  mockObjectA.SomeClass.prototype.methodB.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectA.SomeClass.prototype.methodB.mockImplementation(
     (a: number) => 123,
   ),
-);
+).type.toRaiseError();
 
-expectError(mockObjectA.someClassInstance.methodA.mockReturnValue(123));
-expectError(
+expect(
+  mockObjectA.someClassInstance.methodA.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectA.someClassInstance.methodA.mockImplementation((a: number) => 123),
-);
-expectError(mockObjectA.someClassInstance.methodB.mockReturnValue(123));
-expectError(
+).type.toRaiseError();
+expect(
+  mockObjectA.someClassInstance.methodB.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectA.someClassInstance.methodB.mockImplementation((a: number) => 123),
-);
+).type.toRaiseError();
 
-expectAssignable<typeof someObject>(mockObjectA);
+expect<typeof someObject>().type.toBeAssignableWith(mockObjectA);
 
 // shallow mocked()
 
 const mockObjectB = jest.mocked(someObject, {shallow: true});
 
-expectType<[]>(mockObjectB.methodA.mock.calls[0]);
-expectType<[b: string]>(mockObjectB.methodB.mock.calls[0]);
-expectType<[c: number]>(mockObjectB.methodC.mock.calls[0]);
+expect(mockObjectB.methodA.mock.calls[0]).type.toBe<[]>();
+expect(mockObjectB.methodB.mock.calls[0]).type.toBe<[b: string]>();
+expect(mockObjectB.methodC.mock.calls[0]).type.toBe<[c: number]>();
 
-expectError(mockObjectB.one.more.time.mock.calls[0]);
+expect(mockObjectB.one.more.time.mock.calls[0]).type.toRaiseError();
 
-expectType<[one: string, two?: boolean]>(mockObjectB.SomeClass.mock.calls[0]);
-expectType<[]>(mockObjectB.SomeClass.prototype.methodA.mock.calls[0]);
-expectType<[a: string, b?: number]>(
-  mockObjectB.SomeClass.prototype.methodB.mock.calls[0],
-);
+expect(mockObjectB.SomeClass.mock.calls[0]).type.toBe<
+  [one: string, two?: boolean]
+>();
+expect(mockObjectB.SomeClass.prototype.methodA.mock.calls[0]).type.toBe<[]>();
+expect(mockObjectB.SomeClass.prototype.methodB.mock.calls[0]).type.toBe<
+  [a: string, b?: number]
+>();
 
-expectError(mockObjectB.someClassInstance.methodA.mock.calls[0]);
-expectError(mockObjectB.someClassInstance.methodB.mock.calls[0]);
+expect(mockObjectB.someClassInstance.methodA.mock.calls[0]).type.toRaiseError();
+expect(mockObjectB.someClassInstance.methodB.mock.calls[0]).type.toRaiseError();
 
-expectError(mockObjectB.methodA.mockReturnValue(123));
-expectError(mockObjectB.methodA.mockImplementation((a: number) => 123));
-expectError(mockObjectB.methodB.mockReturnValue(123));
-expectError(mockObjectB.methodB.mockImplementation((b: number) => 123));
-expectError(mockObjectB.methodC.mockReturnValue(123));
-expectError(mockObjectB.methodC.mockImplementation((c: number) => 123));
+expect(mockObjectB.methodA.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectB.methodA.mockImplementation((a: number) => 123),
+).type.toRaiseError();
+expect(mockObjectB.methodB.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectB.methodB.mockImplementation((b: number) => 123),
+).type.toRaiseError();
+expect(mockObjectB.methodC.mockReturnValue(123)).type.toRaiseError();
+expect(
+  mockObjectB.methodC.mockImplementation((c: number) => 123),
+).type.toRaiseError();
 
-expectError(mockObjectB.SomeClass.prototype.methodA.mockReturnValue(123));
-expectError(
+expect(
+  mockObjectB.SomeClass.prototype.methodA.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectB.SomeClass.prototype.methodA.mockImplementation(
     (a: number) => 123,
   ),
-);
-expectError(mockObjectB.SomeClass.prototype.methodB.mockReturnValue(123));
-expectError(
+).type.toRaiseError();
+expect(
+  mockObjectB.SomeClass.prototype.methodB.mockReturnValue(123),
+).type.toRaiseError();
+expect(
   mockObjectB.SomeClass.prototype.methodB.mockImplementation(
     (a: number) => 123,
   ),
-);
+).type.toRaiseError();
 
-expectAssignable<typeof someObject>(mockObjectB);
+expect<typeof someObject>().type.toBeAssignableWith(mockObjectB);
 
 // Replaced
 
-expectAssignable<jest.Replaced<number>>(
+expect<jest.Replaced<number>>().type.toBeAssignableWith(
   jest.replaceProperty(someObject, 'propertyA', 123),
 );
 
 // Spied
 
-expectAssignable<jest.Spied<typeof someObject.methodA>>(
+expect<jest.Spied<typeof someObject.methodA>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'methodA'),
 );
 
-expectAssignable<jest.Spied<typeof someObject.SomeClass>>(
+expect<jest.Spied<typeof someObject.SomeClass>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'SomeClass'),
 );
 
 // Spied*
 
-expectAssignable<jest.SpiedClass<typeof someObject.SomeClass>>(
+expect<jest.SpiedClass<typeof someObject.SomeClass>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'SomeClass'),
 );
 
-expectAssignable<jest.SpiedFunction<typeof someObject.methodB>>(
+expect<jest.SpiedFunction<typeof someObject.methodB>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'methodB'),
 );
 
-expectAssignable<jest.SpiedGetter<typeof someObject.propertyC>>(
+expect<jest.SpiedGetter<typeof someObject.propertyC>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'propertyC', 'get'),
 );
 
-expectAssignable<jest.SpiedSetter<typeof someObject.propertyC>>(
+expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableWith(
   jest.spyOn(someObject, 'propertyC', 'set'),
 );
 
 // Mock Timers
 
-expectType<void>(jest.advanceTimersByTime(6000));
-expectError(jest.advanceTimersByTime());
+expect(jest.advanceTimersByTime(6000)).type.toBeVoid();
+expect(jest.advanceTimersByTime()).type.toRaiseError();
 
-expectType<Promise<void>>(jest.advanceTimersByTimeAsync(6000));
-expectError(jest.advanceTimersByTimeAsync());
+expect(jest.advanceTimersByTimeAsync(6000)).type.toBe<Promise<void>>();
+expect(jest.advanceTimersByTimeAsync()).type.toRaiseError();
 
-expectType<void>(jest.advanceTimersToNextTimer());
-expectType<void>(jest.advanceTimersToNextTimer(2));
-expectError(jest.advanceTimersToNextTimer('2'));
+expect(jest.advanceTimersToNextTimer()).type.toBeVoid();
+expect(jest.advanceTimersToNextTimer(2)).type.toBeVoid();
+expect(jest.advanceTimersToNextTimer('2')).type.toRaiseError();
 
-expectType<Promise<void>>(jest.advanceTimersToNextTimerAsync());
-expectType<Promise<void>>(jest.advanceTimersToNextTimerAsync(2));
-expectError(jest.advanceTimersToNextTimerAsync('2'));
+expect(jest.advanceTimersToNextTimerAsync()).type.toBe<Promise<void>>();
+expect(jest.advanceTimersToNextTimerAsync(2)).type.toBe<Promise<void>>();
+expect(jest.advanceTimersToNextTimerAsync('2')).type.toRaiseError();
 
-expectType<void>(jest.clearAllTimers());
-expectError(jest.clearAllTimers(false));
+expect(jest.clearAllTimers()).type.toBeVoid();
+expect(jest.clearAllTimers(false)).type.toRaiseError();
 
-expectType<number>(jest.getTimerCount());
-expectError(jest.getTimerCount(true));
+expect(jest.getTimerCount()).type.toBeNumber();
+expect(jest.getTimerCount(true)).type.toRaiseError();
 
-expectType<number>(jest.now());
-expectError(jest.now('1995-12-17T03:24:00'));
+expect(jest.now()).type.toBeNumber();
+expect(jest.now('1995-12-17T03:24:00')).type.toRaiseError();
 
-expectType<number>(jest.getRealSystemTime());
-expectError(jest.getRealSystemTime(true));
+expect(jest.getRealSystemTime()).type.toBeNumber();
+expect(jest.getRealSystemTime(true)).type.toRaiseError();
 
-expectType<void>(jest.runAllImmediates());
-expectError(jest.runAllImmediates(true));
+expect(jest.runAllImmediates()).type.toBeVoid();
+expect(jest.runAllImmediates(true)).type.toRaiseError();
 
-expectType<void>(jest.runAllTicks());
-expectError(jest.runAllTicks(true));
+expect(jest.runAllTicks()).type.toBeVoid();
+expect(jest.runAllTicks(true)).type.toRaiseError();
 
-expectType<void>(jest.runAllTimers());
-expectError(jest.runAllTimers(false));
+expect(jest.runAllTimers()).type.toBeVoid();
+expect(jest.runAllTimers(false)).type.toRaiseError();
 
-expectType<Promise<void>>(jest.runAllTimersAsync());
-expectError(jest.runAllTimersAsync(false));
+expect(jest.runAllTimersAsync()).type.toBe<Promise<void>>();
+expect(jest.runAllTimersAsync(false)).type.toRaiseError();
 
-expectType<void>(jest.runOnlyPendingTimers());
-expectError(jest.runOnlyPendingTimers(true));
+expect(jest.runOnlyPendingTimers()).type.toBeVoid();
+expect(jest.runOnlyPendingTimers(true)).type.toRaiseError();
 
-expectType<Promise<void>>(jest.runOnlyPendingTimersAsync());
-expectError(jest.runOnlyPendingTimersAsync(true));
+expect(jest.runOnlyPendingTimersAsync()).type.toBe<Promise<void>>();
+expect(jest.runOnlyPendingTimersAsync(true)).type.toRaiseError();
 
-expectType<void>(jest.advanceTimersToNextFrame());
-expectError(jest.advanceTimersToNextFrame(true));
-expectError(jest.advanceTimersToNextFrame(100));
+expect(jest.advanceTimersToNextFrame()).type.toBeVoid();
+expect(jest.advanceTimersToNextFrame(true)).type.toRaiseError();
+expect(jest.advanceTimersToNextFrame(100)).type.toRaiseError();
 
-expectType<void>(jest.setSystemTime());
-expectType<void>(jest.setSystemTime(1_483_228_800_000));
-expectType<void>(jest.setSystemTime(Date.now()));
-expectType<void>(jest.setSystemTime(new Date(1995, 11, 17)));
-expectError(jest.setSystemTime('1995-12-17T03:24:00'));
+expect(jest.setSystemTime()).type.toBeVoid();
+expect(jest.setSystemTime(1_483_228_800_000)).type.toBeVoid();
+expect(jest.setSystemTime(Date.now())).type.toBeVoid();
+expect(jest.setSystemTime(new Date(1995, 11, 17))).type.toBeVoid();
+expect(jest.setSystemTime('1995-12-17T03:24:00')).type.toRaiseError();
 
-expectType<typeof jest>(jest.useFakeTimers());
+expect(jest.useFakeTimers()).type.toBe<typeof jest>();
 
-expectType<typeof jest>(jest.useFakeTimers({advanceTimers: true}));
-expectType<typeof jest>(jest.useFakeTimers({advanceTimers: 10}));
-expectError(jest.useFakeTimers({advanceTimers: 'fast'}));
+expect(jest.useFakeTimers({advanceTimers: true})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({advanceTimers: 10})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({advanceTimers: 'fast'})).type.toRaiseError();
 
-expectType<typeof jest>(jest.useFakeTimers({doNotFake: ['Date']}));
-expectType<typeof jest>(
+expect(jest.useFakeTimers({doNotFake: ['Date']})).type.toBe<typeof jest>();
+expect(
   jest.useFakeTimers({
     doNotFake: [
       'Date',
@@ -564,46 +612,62 @@ expectType<typeof jest>(
       'clearTimeout',
     ],
   }),
-);
-expectError(jest.useFakeTimers({doNotFake: ['globalThis']}));
+).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({doNotFake: ['globalThis']})).type.toRaiseError();
 
-expectType<typeof jest>(jest.useFakeTimers({legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({legacyFakeTimers: 1000}));
-expectError(jest.useFakeTimers({doNotFake: ['Date'], legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));
-expectError(
+expect(jest.useFakeTimers({legacyFakeTimers: true})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({legacyFakeTimers: 1000})).type.toRaiseError();
+expect(
+  jest.useFakeTimers({doNotFake: ['Date'], legacyFakeTimers: true}),
+).type.toRaiseError();
+expect(
+  jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}),
+).type.toRaiseError();
+expect(
   jest.useFakeTimers({legacyFakeTimers: true, now: 1_483_228_800_000}),
-);
-expectError(jest.useFakeTimers({legacyFakeTimers: true, timerLimit: 1000}));
+).type.toRaiseError();
+expect(
+  jest.useFakeTimers({legacyFakeTimers: true, timerLimit: 1000}),
+).type.toRaiseError();
 
-expectType<typeof jest>(jest.useFakeTimers({now: 1_483_228_800_000}));
-expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
-expectType<typeof jest>(jest.useFakeTimers({now: new Date(1995, 11, 17)}));
-expectError(jest.useFakeTimers({now: '1995-12-17T03:24:00'}));
+expect(jest.useFakeTimers({now: 1_483_228_800_000})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({now: Date.now()})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({now: new Date(1995, 11, 17)})).type.toBe<
+  typeof jest
+>();
+expect(jest.useFakeTimers({now: '1995-12-17T03:24:00'})).type.toRaiseError();
 
-expectType<typeof jest>(jest.useFakeTimers({timerLimit: 1000}));
-expectError(jest.useFakeTimers({timerLimit: true}));
+expect(jest.useFakeTimers({timerLimit: 1000})).type.toBe<typeof jest>();
+expect(jest.useFakeTimers({timerLimit: true})).type.toRaiseError();
 
-expectError(jest.useFakeTimers({enableGlobally: true}));
-expectError(jest.useFakeTimers('legacy'));
-expectError(jest.useFakeTimers('modern'));
+expect(jest.useFakeTimers({enableGlobally: true})).type.toRaiseError();
+expect(jest.useFakeTimers('legacy')).type.toRaiseError();
+expect(jest.useFakeTimers('modern')).type.toRaiseError();
 
-expectType<typeof jest>(jest.useRealTimers());
-expectError(jest.useRealTimers(true));
+expect(jest.useRealTimers()).type.toBe<typeof jest>();
+expect(jest.useRealTimers(true)).type.toRaiseError();
 
 // Misc
 
-expectType<typeof jest>(jest.retryTimes(3));
-expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
-expectError(jest.retryTimes(3, {logErrorsBeforeRetry: 'all'}));
-expectError(jest.retryTimes({logErrorsBeforeRetry: true}));
-expectError(jest.retryTimes());
+expect(jest.retryTimes(3)).type.toBe<typeof jest>();
+expect(jest.retryTimes(3, {logErrorsBeforeRetry: true})).type.toBe<
+  typeof jest
+>();
+expect(jest.retryTimes(3, {logErrorsBeforeRetry: 'all'})).type.toRaiseError();
+expect(jest.retryTimes({logErrorsBeforeRetry: true})).type.toRaiseError();
+expect(jest.retryTimes(3, {waitBeforeRetry: 1000})).type.toBe<typeof jest>();
+expect(jest.retryTimes(3, {waitBeforeRetry: true})).type.toRaiseError();
+expect(jest.retryTimes(3, {retryImmediately: true})).type.toBe<typeof jest>();
+expect(jest.retryTimes(3, {retryImmediately: 'now'})).type.toRaiseError();
+expect(jest.retryTimes(3, {retryImmediately: 1000})).type.toRaiseError();
+expect(jest.retryTimes({logErrorsBeforeRetry: 'all'})).type.toRaiseError();
+expect(jest.retryTimes()).type.toRaiseError();
 
-expectType<typeof jest>(jest.setTimeout(6000));
-expectError(jest.setTimeout());
+expect(jest.setTimeout(6000)).type.toBe<typeof jest>();
+expect(jest.setTimeout()).type.toRaiseError();
 
-expectType<number>(jest.getSeed());
-expectError(jest.getSeed(123));
+expect(jest.getSeed()).type.toBeNumber();
+expect(jest.getSeed(123)).type.toRaiseError();
 
-expectType<boolean>(jest.isEnvironmentTornDown());
-expectError(jest.isEnvironmentTornDown(123));
+expect(jest.isEnvironmentTornDown()).type.toBeBoolean();
+expect(jest.isEnvironmentTornDown(123)).type.toRaiseError();

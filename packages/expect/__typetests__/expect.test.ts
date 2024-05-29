@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError, expectType} from 'tsd-lite';
+import {describe, expect, test} from 'tstyche';
 import type {EqualsFunction} from '@jest/expect-utils';
 import {
   type MatcherContext,
@@ -14,93 +14,9 @@ import {
   type Matchers,
   type Tester,
   type TesterContext,
-  expect,
+  expect as jestExpect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
-
-type M = Matchers<void>;
-type N = Matchers<void, string>;
-
-expectError(() => {
-  type E = Matchers;
-});
-
-const tester1: Tester = function (a, b, customTesters) {
-  expectType<any>(a);
-  expectType<any>(b);
-  expectType<Array<Tester>>(customTesters);
-  expectType<TesterContext>(this);
-  expectType<EqualsFunction>(this.equals);
-  return undefined;
-};
-
-expectType<void>(
-  expect.addEqualityTesters([
-    tester1,
-    (a, b, customTesters) => {
-      expectType<any>(a);
-      expectType<any>(b);
-      expectType<Array<Tester>>(customTesters);
-      expectType<undefined>(this);
-      return true;
-    },
-    function anotherTester(a, b, customTesters) {
-      expectType<any>(a);
-      expectType<any>(b);
-      expectType<Array<Tester>>(customTesters);
-      expectType<TesterContext>(this);
-      expectType<EqualsFunction>(this.equals);
-      return undefined;
-    },
-  ]),
-);
-
-// extend
-
-type MatcherUtils = typeof jestMatcherUtils & {
-  iterableEquality: Tester;
-  subsetEquality: Tester;
-};
-
-// TODO `actual` should be allowed to have only `unknown` type
-expectType<void>(
-  expect.extend({
-    toBeWithinRange(actual: number, floor: number, ceiling: number) {
-      expectType<number>(this.assertionCalls);
-      expectType<string | undefined>(this.currentTestName);
-      expectType<Array<Tester>>(this.customTesters);
-      expectType<() => void>(this.dontThrow);
-      expectType<Error | undefined>(this.error);
-      expectType<EqualsFunction>(this.equals);
-      expectType<boolean | undefined>(this.expand);
-      expectType<number | null>(this.expectedAssertionsNumber);
-      expectType<Error | undefined>(this.expectedAssertionsNumberError);
-      expectType<boolean>(this.isExpectingAssertions);
-      expectType<Error | undefined>(this.isExpectingAssertionsError);
-      expectType<boolean | undefined>(this.isNot);
-      expectType<number>(this.numPassingAsserts);
-      expectType<string | undefined>(this.promise);
-      expectType<Array<Error>>(this.suppressedErrors);
-      expectType<string | undefined>(this.testPath);
-      expectType<MatcherUtils>(this.utils);
-
-      const pass = actual >= floor && actual <= ceiling;
-      if (pass) {
-        return {
-          message: () =>
-            `expected ${actual} not to be within range ${floor} - ${ceiling}`,
-          pass: true,
-        };
-      } else {
-        return {
-          message: () =>
-            `expected ${actual} to be within range ${floor} - ${ceiling}`,
-          pass: false,
-        };
-      }
-    },
-  }),
-);
 
 declare module 'expect' {
   interface AsymmetricMatchers {
@@ -111,141 +27,264 @@ declare module 'expect' {
   }
 }
 
-expectType<void>(expect(100).toBeWithinRange(90, 110));
-expectType<void>(expect(101).not.toBeWithinRange(0, 100));
+describe('Matchers', () => {
+  test('requires between 1 and 2 type arguments', () => {
+    expect<Matchers<void, string>>().type.not.toRaiseError();
+    expect<Matchers<void>>().type.not.toRaiseError();
 
-expectType<void>(
-  expect({apples: 6, bananas: 3}).toEqual({
-    apples: expect.toBeWithinRange(1, 10),
-    bananas: expect.not.toBeWithinRange(11, 20),
-  }),
-);
-
-// MatcherFunction
-
-expectError(() => {
-  const actualMustBeUnknown: MatcherFunction = (actual: string) => {
-    return {
-      message: () => `result: ${actual}`,
-      pass: actual === 'result',
-    };
-  };
+    expect<Matchers>().type.toRaiseError(
+      'requires between 1 and 2 type arguments',
+    );
+  });
 });
 
-expectError(() => {
-  const lacksMessage: MatcherFunction = (actual: unknown) => {
-    return {
-      pass: actual === 'result',
+describe('Expect', () => {
+  test('.addEqualityTesters()', () => {
+    const tester1: Tester = function (a, b, customTesters) {
+      expect(a).type.toBeAny();
+      expect(b).type.toBeAny();
+      expect(customTesters).type.toBe<Array<Tester>>();
+      expect(this).type.toBe<TesterContext>();
+      expect(this.equals).type.toBe<EqualsFunction>();
+
+      return undefined;
     };
-  };
+
+    expect(
+      jestExpect.addEqualityTesters([
+        tester1,
+
+        (a, b, customTesters) => {
+          expect(a).type.toBeAny();
+          expect(b).type.toBeAny();
+          expect(customTesters).type.toBe<Array<Tester>>();
+          expect(this).type.toBeUndefined();
+
+          return true;
+        },
+
+        function anotherTester(a, b, customTesters) {
+          expect(a).type.toBeAny();
+          expect(b).type.toBeAny();
+          expect(customTesters).type.toBe<Array<Tester>>();
+          expect(this).type.toBe<TesterContext>();
+          expect(this.equals).type.toBe<EqualsFunction>();
+
+          return undefined;
+        },
+      ]),
+    ).type.toBeVoid();
+  });
+
+  test('.extend()', () => {
+    type MatcherUtils = typeof jestMatcherUtils & {
+      iterableEquality: Tester;
+      subsetEquality: Tester;
+    };
+
+    expect(
+      jestExpect.extend({
+        // TODO `actual` should be allowed to have only `unknown` type
+        toBeWithinRange(actual: number, floor: number, ceiling: number) {
+          expect(this.assertionCalls).type.toBeNumber();
+          expect(this.currentTestName).type.toBe<string | undefined>();
+          expect(this.customTesters).type.toBe<Array<Tester>>();
+          expect(this.dontThrow).type.toBe<() => void>();
+          expect(this.error).type.toBe<Error | undefined>();
+          expect(this.equals).type.toBe<EqualsFunction>();
+          expect(this.expand).type.toBe<boolean | undefined>();
+          expect(this.expectedAssertionsNumber).type.toBe<number | null>();
+          expect(this.expectedAssertionsNumberError).type.toBe<
+            Error | undefined
+          >();
+          expect(this.isExpectingAssertions).type.toBeBoolean();
+          expect(this.isExpectingAssertionsError).type.toBe<
+            Error | undefined
+          >();
+          expect(this.isNot).type.toBe<boolean | undefined>();
+          expect(this.numPassingAsserts).type.toBeNumber();
+          expect(this.promise).type.toBe<string | undefined>();
+          expect(this.suppressedErrors).type.toBe<Array<Error>>();
+          expect(this.testPath).type.toBe<string | undefined>();
+          expect(this.utils).type.toBe<MatcherUtils>();
+
+          const pass = actual >= floor && actual <= ceiling;
+          if (pass) {
+            return {
+              message: () =>
+                `expected ${actual} not to be within range ${floor} - ${ceiling}`,
+              pass: true,
+            };
+          } else {
+            return {
+              message: () =>
+                `expected ${actual} to be within range ${floor} - ${ceiling}`,
+              pass: false,
+            };
+          }
+        },
+      }),
+    ).type.toBeVoid();
+
+    expect(jestExpect(100).toBeWithinRange(90, 110)).type.toBeVoid();
+    expect(jestExpect(101).not.toBeWithinRange(0, 100)).type.toBeVoid();
+
+    expect(
+      jestExpect({apples: 6, bananas: 3}).toEqual({
+        apples: jestExpect.toBeWithinRange(1, 10),
+        bananas: jestExpect.not.toBeWithinRange(11, 20),
+      }),
+    ).type.toBeVoid();
+  });
+
+  test('does not define the `.toMatchSnapshot()` matcher', () => {
+    expect(jestExpect(null)).type.not.toHaveProperty('toMatchSnapshot');
+  });
 });
 
-expectError(() => {
-  const lacksPass: MatcherFunction = (actual: unknown) => {
-    return {
-      message: () => `result: ${actual}`,
+describe('MatcherFunction', () => {
+  test('models typings of a matcher function', () => {
+    type ToBeWithinRange = (
+      this: MatcherContext,
+      actual: unknown,
+      floor: number,
+      ceiling: number,
+    ) => any;
+
+    const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
+      actual: unknown,
+      floor: unknown,
+      ceiling: unknown,
+    ) => {
+      return {
+        message: () => `actual ${actual}; range ${floor}-${ceiling}`,
+        pass: true,
+      };
     };
-  };
-});
 
-type ToBeWithinRange = (
-  this: MatcherContext,
-  actual: unknown,
-  floor: number,
-  ceiling: number,
-) => any;
+    expect<ToBeWithinRange>().type.toBeAssignableWith(toBeWithinRange);
+  });
 
-const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
-  actual: unknown,
-  floor: unknown,
-  ceiling: unknown,
-) => {
-  return {
-    message: () => `actual ${actual}; range ${floor}-${ceiling}`,
-    pass: true,
-  };
-};
+  test('requires the `actual` argument to be of type `unknown`', () => {
+    const actualMustBeUnknown = (actual: string) => {
+      return {
+        message: () => `result: ${actual}`,
+        pass: actual === 'result',
+      };
+    };
 
-expectAssignable<ToBeWithinRange>(toBeWithinRange);
+    expect<MatcherFunction>().type.not.toBeAssignableWith(actualMustBeUnknown);
+  });
 
-type AllowOmittingExpected = (this: MatcherContext, actual: unknown) => any;
+  test('allows omitting the `expected` argument', () => {
+    type AllowOmittingExpected = (this: MatcherContext, actual: unknown) => any;
 
-const allowOmittingExpected: MatcherFunction = (
-  actual: unknown,
-  ...expect: Array<unknown>
-) => {
-  if (expect.length > 0) {
-    throw new Error('This matcher does not take any expected argument.');
-  }
+    const allowOmittingExpected: MatcherFunction = (
+      actual: unknown,
+      ...expected: Array<unknown>
+    ) => {
+      if (expected.length > 0) {
+        throw new Error('This matcher does not take any expected argument.');
+      }
 
-  return {
-    message: () => `actual ${actual}`,
-    pass: true,
-  };
-};
+      return {
+        message: () => `actual ${actual}`,
+        pass: true,
+      };
+    };
 
-expectAssignable<AllowOmittingExpected>(allowOmittingExpected);
+    expect<AllowOmittingExpected>().type.toBeAssignableWith(
+      allowOmittingExpected,
+    );
+  });
 
-// MatcherContext
+  test('the `message` property is required in the return type', () => {
+    const lacksMessage = (actual: unknown) => {
+      return {
+        pass: actual === 'result',
+      };
+    };
 
-const toHaveContext: MatcherFunction = function (
-  actual: unknown,
-  ...expect: Array<unknown>
-) {
-  expectType<MatcherContext>(this);
+    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksMessage);
+  });
 
-  if (expect.length > 0) {
-    throw new Error('This matcher does not take any expected argument.');
-  }
+  test('the `pass` property is required in the return type', () => {
+    const lacksPass = (actual: unknown) => {
+      return {
+        message: () => `result: ${actual}`,
+      };
+    };
 
-  return {
-    message: () => `result: ${actual}`,
-    pass: actual === 'result',
-  };
-};
+    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksPass);
+  });
 
-interface CustomContext extends MatcherContext {
-  customMethod(): void;
-}
+  test('context is defined inside a matcher function', () => {
+    const toHaveContext: MatcherFunction = function (
+      actual: unknown,
+      ...expected: Array<unknown>
+    ) {
+      expect(this).type.toBe<MatcherContext>();
 
-const customContext: MatcherFunctionWithContext<CustomContext> = function (
-  actual: unknown,
-  ...expect: Array<unknown>
-) {
-  expectType<CustomContext>(this);
-  expectType<void>(this.customMethod());
+      if (expected.length > 0) {
+        throw new Error('This matcher does not take any expected argument.');
+      }
 
-  if (expect.length > 0) {
-    throw new Error('This matcher does not take any expected argument.');
-  }
+      return {
+        message: () => `result: ${actual}`,
+        pass: actual === 'result',
+      };
+    };
+  });
 
-  return {
-    message: () => `result: ${actual}`,
-    pass: actual === 'result',
-  };
-};
+  test('context can be customized', () => {
+    interface CustomContext extends MatcherContext {
+      customMethod(): void;
+    }
 
-type CustomStateAndExpected = (
-  this: CustomContext,
-  actual: unknown,
-  count: number,
-) => any;
+    const customContext: MatcherFunctionWithContext<CustomContext> = function (
+      actual: unknown,
+      ...expected: Array<unknown>
+    ) {
+      expect(this).type.toBe<CustomContext>();
+      expect(this.customMethod()).type.toBeVoid();
 
-const customStateAndExpected: MatcherFunctionWithContext<
-  CustomContext,
-  [count: number]
-> = function (actual: unknown, count: unknown) {
-  expectType<CustomContext>(this);
-  expectType<void>(this.customMethod());
+      if (expected.length > 0) {
+        throw new Error('This matcher does not take any expected argument.');
+      }
 
-  return {
-    message: () => `count: ${count}`,
-    pass: actual === count,
-  };
-};
+      return {
+        message: () => `result: ${actual}`,
+        pass: actual === 'result',
+      };
+    };
+  });
 
-expectAssignable<CustomStateAndExpected>(customStateAndExpected);
+  test('context and type of `expected` can be customized', () => {
+    interface CustomContext extends MatcherContext {
+      customMethod(): void;
+    }
 
-expectError(() => {
-  expect({}).toMatchSnapshot();
+    type CustomStateAndExpected = (
+      this: CustomContext,
+      actual: unknown,
+      count: number,
+    ) => any;
+
+    const customContextAndExpected: MatcherFunctionWithContext<
+      CustomContext,
+      [count: number]
+    > = function (actual: unknown, count: unknown) {
+      expect(this).type.toBe<CustomContext>();
+      expect(this.customMethod()).type.toBeVoid();
+
+      return {
+        message: () => `count: ${count}`,
+        pass: actual === count,
+      };
+    };
+
+    expect<CustomStateAndExpected>().type.toBeAssignableWith(
+      customContextAndExpected,
+    );
+  });
 });

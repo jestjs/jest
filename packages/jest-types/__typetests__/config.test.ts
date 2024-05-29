@@ -12,7 +12,7 @@ const config: Config = {};
 
 describe('Config', () => {
   test('coverageThreshold', () => {
-    expect(config).type.toBeAssignable({
+    expect(config).type.toBeAssignableWith({
       coverageThreshold: {
         './src/api/very-important-module.js': {
           branches: 100,
@@ -56,7 +56,7 @@ describe('Config', () => {
       'clearTimeout' as const,
     ];
 
-    expect(config).type.toBeAssignable({
+    expect(config).type.toBeAssignableWith({
       fakeTimers: {
         advanceTimers: true,
         doNotFake,
@@ -66,48 +66,48 @@ describe('Config', () => {
       },
     });
 
-    expect(config).type.toBeAssignable({
+    expect(config).type.toBeAssignableWith({
       fakeTimers: {
         advanceTimers: 40,
         now: Date.now(),
       },
     });
 
-    expect(config).type.not.toBeAssignable({
+    expect(config).type.not.toBeAssignableWith({
       fakeTimers: {
         now: new Date(),
       },
     });
 
-    expect(config).type.toBeAssignable({
+    expect(config).type.toBeAssignableWith({
       fakeTimers: {
         enableGlobally: true,
         legacyFakeTimers: true as const,
       },
     });
 
-    expect(config).type.not.toBeAssignable({
+    expect(config).type.not.toBeAssignableWith({
       fakeTimers: {
         advanceTimers: true,
         legacyFakeTimers: true as const,
       },
     });
 
-    expect(config).type.not.toBeAssignable({
+    expect(config).type.not.toBeAssignableWith({
       fakeTimers: {
         doNotFake,
         legacyFakeTimers: true as const,
       },
     });
 
-    expect(config).type.not.toBeAssignable({
+    expect(config).type.not.toBeAssignableWith({
       fakeTimers: {
         legacyFakeTimers: true as const,
         now: 1_483_228_800_000,
       },
     });
 
-    expect(config).type.not.toBeAssignable({
+    expect(config).type.not.toBeAssignableWith({
       fakeTimers: {
         legacyFakeTimers: true as const,
         timerLimit: 1000,
@@ -116,7 +116,7 @@ describe('Config', () => {
   });
 
   test('projects', () => {
-    expect(config).type.toBeAssignable({
+    expect(config).type.toBeAssignableWith({
       projects: [
         // projects can be globs or objects
         './src/**',

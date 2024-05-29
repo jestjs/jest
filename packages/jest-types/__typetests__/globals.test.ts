@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expect} from 'tstyche';
 import {
   afterAll,
   afterEach,
@@ -43,366 +43,368 @@ test(testName, done => {
 });
 
 test(testName, done => {
-  expectType<Global.DoneFn>(done);
+  expect(done).type.toBe<Global.DoneFn>();
 });
 
 test(testName, done => {
-  expectError(done(123));
+  expect(done(123)).type.toRaiseError();
 });
 
 // beforeAll
 
-expectType<void>(beforeAll(fn));
-expectType<void>(beforeAll(asyncFn));
-expectType<void>(beforeAll(genFn));
-expectType<void>(
+expect(beforeAll(fn)).type.toBeVoid();
+expect(beforeAll(asyncFn)).type.toBeVoid();
+expect(beforeAll(genFn)).type.toBeVoid();
+expect(
   beforeAll(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(beforeAll(fn, timeout));
-expectType<void>(beforeAll(asyncFn, timeout));
-expectType<void>(beforeAll(genFn, timeout));
-expectType<void>(
+expect(beforeAll(fn, timeout)).type.toBeVoid();
+expect(beforeAll(asyncFn, timeout)).type.toBeVoid();
+expect(beforeAll(genFn, timeout)).type.toBeVoid();
+expect(
   beforeAll(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
-);
+).type.toBeVoid();
 
-expectError(beforeAll());
-expectError(beforeAll('abc'));
+expect(beforeAll()).type.toRaiseError();
+expect(beforeAll('abc')).type.toRaiseError();
 
-expectError(
+expect(
   beforeAll(async done => {
     done();
   }),
-);
-expectError(
+).type.toRaiseError();
+expect(
   beforeAll(function* (done) {
     done();
   }),
-);
+).type.toRaiseError();
 
 // beforeEach
 
-expectType<void>(beforeEach(fn));
-expectType<void>(beforeEach(asyncFn));
-expectType<void>(beforeEach(genFn));
-expectType<void>(
+expect(beforeEach(fn)).type.toBeVoid();
+expect(beforeEach(asyncFn)).type.toBeVoid();
+expect(beforeEach(genFn)).type.toBeVoid();
+expect(
   beforeEach(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(beforeEach(fn, timeout));
-expectType<void>(beforeEach(asyncFn, timeout));
-expectType<void>(beforeEach(genFn, timeout));
-expectType<void>(
+expect(beforeEach(fn, timeout)).type.toBeVoid();
+expect(beforeEach(asyncFn, timeout)).type.toBeVoid();
+expect(beforeEach(genFn, timeout)).type.toBeVoid();
+expect(
   beforeEach(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
-);
+).type.toBeVoid();
 
-expectError(beforeEach());
-expectError(beforeEach('abc'));
+expect(beforeEach()).type.toRaiseError();
+expect(beforeEach('abc')).type.toRaiseError();
 
-expectError(
+expect(
   beforeEach(async done => {
     done();
   }),
-);
-expectError(
+).type.toRaiseError();
+expect(
   beforeEach(function* (done) {
     done();
   }),
-);
+).type.toRaiseError();
 
 // afterAll
 
-expectType<void>(afterAll(fn));
-expectType<void>(afterAll(asyncFn));
-expectType<void>(afterAll(genFn));
-expectType<void>(
+expect(afterAll(fn)).type.toBeVoid();
+expect(afterAll(asyncFn)).type.toBeVoid();
+expect(afterAll(genFn)).type.toBeVoid();
+expect(
   afterAll(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(afterAll(fn, timeout));
-expectType<void>(afterAll(asyncFn, timeout));
-expectType<void>(afterAll(genFn, timeout));
-expectType<void>(
+expect(afterAll(fn, timeout)).type.toBeVoid();
+expect(afterAll(asyncFn, timeout)).type.toBeVoid();
+expect(afterAll(genFn, timeout)).type.toBeVoid();
+expect(
   afterAll(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
-);
+).type.toBeVoid();
 
-expectError(afterAll());
-expectError(afterAll('abc'));
+expect(afterAll()).type.toRaiseError();
+expect(afterAll('abc')).type.toRaiseError();
 
-expectError(
+expect(
   afterAll(async done => {
     done();
   }),
-);
-expectError(
+).type.toRaiseError();
+expect(
   afterAll(function* (done) {
     done();
   }),
-);
+).type.toRaiseError();
 
 // afterEach
 
-expectType<void>(afterEach(fn));
-expectType<void>(afterEach(asyncFn));
-expectType<void>(afterEach(genFn));
-expectType<void>(
+expect(afterEach(fn)).type.toBeVoid();
+expect(afterEach(asyncFn)).type.toBeVoid();
+expect(afterEach(genFn)).type.toBeVoid();
+expect(
   afterEach(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(afterEach(fn, timeout));
-expectType<void>(afterEach(asyncFn, timeout));
-expectType<void>(afterEach(genFn, timeout));
-expectType<void>(
+expect(afterEach(fn, timeout)).type.toBeVoid();
+expect(afterEach(asyncFn, timeout)).type.toBeVoid();
+expect(afterEach(genFn, timeout)).type.toBeVoid();
+expect(
   afterEach(done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
-);
+).type.toBeVoid();
 
-expectError(afterEach());
-expectError(afterEach('abc'));
+expect(afterEach()).type.toRaiseError();
+expect(afterEach('abc')).type.toRaiseError();
 
-expectError(
+expect(
   afterEach(async done => {
     done();
   }),
-);
-expectError(
+).type.toRaiseError();
+expect(
   afterEach(function* (done) {
     done();
   }),
-);
+).type.toRaiseError();
 
 // test
 
-expectType<void>(test(testName, fn));
-expectType<void>(test(testName, asyncFn));
-expectType<void>(test(testName, genFn));
-expectType<void>(
+expect(test(testName, fn)).type.toBeVoid();
+expect(test(testName, asyncFn)).type.toBeVoid();
+expect(test(testName, genFn)).type.toBeVoid();
+expect(
   test(testName, done => {
-    expectType<Global.DoneFn>(done);
+    expect(done).type.toBe<Global.DoneFn>();
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(test(testName, fn, timeout));
-expectType<void>(test(testName, asyncFn, timeout));
-expectType<void>(test(testName, genFn, timeout));
-expectType<void>(
+expect(test(testName, fn, timeout)).type.toBeVoid();
+expect(test(testName, asyncFn, timeout)).type.toBeVoid();
+expect(test(testName, genFn, timeout)).type.toBeVoid();
+expect(
   test(
     testName,
     done => {
-      expectType<Global.DoneFn>(done);
+      expect(done).type.toBe<Global.DoneFn>();
     },
     timeout,
   ),
-);
+).type.toBeVoid();
 
-expectType<void>(test(123, fn));
-expectType<void>(test(() => {}, fn));
-expectType<void>(test(function named() {}, fn));
-expectType<void>(test(class {}, fn));
-expectType<void>(test(class Named {}, fn));
+expect(test(123, fn)).type.toBeVoid();
+expect(test(() => {}, fn)).type.toBeVoid();
+expect(test(function named() {}, fn)).type.toBeVoid();
+expect(test(class {}, fn)).type.toBeVoid();
+expect(test(class Named {}, fn)).type.toBeVoid();
 
-expectError(test());
-expectError(test(testName));
-expectError(test(testName, timeout));
-expectError(test(testName, () => 42));
+expect(test()).type.toRaiseError();
+expect(test(testName)).type.toRaiseError();
+expect(test(testName, timeout)).type.toRaiseError();
+expect(test(testName, () => 42)).type.toRaiseError();
 
-expectError(
+expect(
   test(testName, async done => {
     done();
   }),
-);
-expectError(
+).type.toRaiseError();
+expect(
   test(testName, function* (done) {
     done();
   }),
-);
+).type.toRaiseError();
 
 // test.concurrent
 
-expectType<void>(test.concurrent(testName, asyncFn));
-expectType<void>(test.concurrent(testName, asyncFn, timeout));
+expect(test.concurrent(testName, asyncFn)).type.toBeVoid();
+expect(test.concurrent(testName, asyncFn, timeout)).type.toBeVoid();
 
-expectType<void>(test.concurrent(123, asyncFn));
-expectType<void>(test.concurrent(() => {}, asyncFn));
-expectType<void>(test.concurrent(function named() {}, asyncFn));
-expectType<void>(test.concurrent(class {}, asyncFn));
-expectType<void>(test.concurrent(class Named {}, asyncFn));
+expect(test.concurrent(123, asyncFn)).type.toBeVoid();
+expect(test.concurrent(() => {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent(function named() {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent(class {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent(class Named {}, asyncFn)).type.toBeVoid();
 
-expectError(test.concurrent(testName, fn));
+expect(test.concurrent(testName, fn)).type.toRaiseError();
 
 // test.concurrent.each
 
-expectType<void>(test.concurrent.each(table)(testName, asyncFn));
-expectType<void>(test.concurrent.each(table)(testName, asyncFn, timeout));
+expect(test.concurrent.each(table)(testName, asyncFn)).type.toBeVoid();
+expect(test.concurrent.each(table)(testName, asyncFn, timeout)).type.toBeVoid();
 
-expectType<void>(test.concurrent.each(table)(123, asyncFn));
-expectType<void>(test.concurrent.each(table)(() => {}, asyncFn));
-expectType<void>(test.concurrent.each(table)(function named() {}, asyncFn));
-expectType<void>(test.concurrent.each(table)(class {}, asyncFn));
-expectType<void>(test.concurrent.each(table)(class Named {}, asyncFn));
+expect(test.concurrent.each(table)(123, asyncFn)).type.toBeVoid();
+expect(test.concurrent.each(table)(() => {}, asyncFn)).type.toBeVoid();
+expect(
+  test.concurrent.each(table)(function named() {}, asyncFn),
+).type.toBeVoid();
+expect(test.concurrent.each(table)(class {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent.each(table)(class Named {}, asyncFn)).type.toBeVoid();
 
-expectError(test.concurrent.each(table)(testName, fn));
+expect(test.concurrent.each(table)(testName, fn)).type.toRaiseError();
 
 // test.concurrent.failing
 
-expectType<void>(test.concurrent.failing(testName, asyncFn));
-expectType<void>(test.concurrent.failing(testName, asyncFn, timeout));
+expect(test.concurrent.failing(testName, asyncFn)).type.toBeVoid();
+expect(test.concurrent.failing(testName, asyncFn, timeout)).type.toBeVoid();
 
-expectType<void>(test.concurrent.failing(123, asyncFn));
-expectType<void>(test.concurrent.failing(() => {}, asyncFn));
-expectType<void>(test.concurrent.failing(function named() {}, asyncFn));
-expectType<void>(test.concurrent.failing(class {}, asyncFn));
-expectType<void>(test.concurrent.failing(class Named {}, asyncFn));
+expect(test.concurrent.failing(123, asyncFn)).type.toBeVoid();
+expect(test.concurrent.failing(() => {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent.failing(function named() {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent.failing(class {}, asyncFn)).type.toBeVoid();
+expect(test.concurrent.failing(class Named {}, asyncFn)).type.toBeVoid();
 
-expectType<typeof test.concurrent.each>(test.concurrent.failing.each);
+expect(test.concurrent.failing.each).type.toBe(test.concurrent.each);
 
-expectError(test.concurrent.failing(testName, fn));
+expect(test.concurrent.failing(testName, fn)).type.toRaiseError();
 
 // test.concurrent.only
 
-expectType<typeof test.concurrent.each>(test.concurrent.only.each);
-expectType<typeof test.concurrent.failing>(test.concurrent.only.failing);
-expectType<typeof test.concurrent.each>(test.concurrent.only.failing.each);
+expect(test.concurrent.only.each).type.toBe(test.concurrent.each);
+expect(test.concurrent.only.failing).type.toBe(test.concurrent.failing);
+expect(test.concurrent.only.failing.each).type.toBe(test.concurrent.each);
 
 // test.concurrent.skip
 
-expectType<typeof test.concurrent.each>(test.concurrent.skip.each);
-expectType<typeof test.concurrent.failing>(test.concurrent.skip.failing);
-expectType<typeof test.concurrent.each>(test.concurrent.skip.failing.each);
+expect(test.concurrent.skip.each).type.toBe(test.concurrent.each);
+expect(test.concurrent.skip.failing).type.toBe(test.concurrent.failing);
+expect(test.concurrent.skip.failing.each).type.toBe(test.concurrent.each);
 
 // test.each
 
-expectType<void>(test.each(table)(testName, fn));
-expectType<void>(test.each(table)(testName, fn, timeout));
+expect(test.each(table)(testName, fn)).type.toBeVoid();
+expect(test.each(table)(testName, fn, timeout)).type.toBeVoid();
 
-expectType<void>(test.each(table)(123, fn));
-expectType<void>(test.each(table)(() => {}, fn));
-expectType<void>(test.each(table)(function named() {}, fn));
-expectType<void>(test.each(table)(class {}, fn));
-expectType<void>(test.each(table)(class Named {}, fn));
+expect(test.each(table)(123, fn)).type.toBeVoid();
+expect(test.each(table)(() => {}, fn)).type.toBeVoid();
+expect(test.each(table)(function named() {}, fn)).type.toBeVoid();
+expect(test.each(table)(class {}, fn)).type.toBeVoid();
+expect(test.each(table)(class Named {}, fn)).type.toBeVoid();
 
 // test.failing
 
-expectType<void>(test.failing(testName, fn));
-expectType<void>(test.failing(testName, fn, timeout));
+expect(test.failing(testName, fn)).type.toBeVoid();
+expect(test.failing(testName, fn, timeout)).type.toBeVoid();
 
-expectType<void>(test.failing(123, fn));
-expectType<void>(test.failing(() => {}, fn));
-expectType<void>(test.failing(function named() {}, fn));
-expectType<void>(test.failing(class {}, fn));
-expectType<void>(test.failing(class Named {}, fn));
+expect(test.failing(123, fn)).type.toBeVoid();
+expect(test.failing(() => {}, fn)).type.toBeVoid();
+expect(test.failing(function named() {}, fn)).type.toBeVoid();
+expect(test.failing(class {}, fn)).type.toBeVoid();
+expect(test.failing(class Named {}, fn)).type.toBeVoid();
 
-expectType<typeof test.each>(test.failing.each);
+expect(test.failing.each).type.toBe(test.each);
 
 // test.only
 
-expectType<void>(test.only(testName, fn));
-expectType<void>(test.only(testName, fn, timeout));
+expect(test.only(testName, fn)).type.toBeVoid();
+expect(test.only(testName, fn, timeout)).type.toBeVoid();
 
-expectType<void>(test.only(123, fn));
-expectType<void>(test.only(() => {}, fn));
-expectType<void>(test.only(function named() {}, fn));
-expectType<void>(test.only(class {}, fn));
-expectType<void>(test.only(class Named {}, fn));
+expect(test.only(123, fn)).type.toBeVoid();
+expect(test.only(() => {}, fn)).type.toBeVoid();
+expect(test.only(function named() {}, fn)).type.toBeVoid();
+expect(test.only(class {}, fn)).type.toBeVoid();
+expect(test.only(class Named {}, fn)).type.toBeVoid();
 
-expectType<typeof test.each>(test.only.each);
-expectType<typeof test.failing>(test.only.failing);
-expectType<typeof test.each>(test.only.failing.each);
+expect(test.only.each).type.toBe(test.each);
+expect(test.only.failing).type.toBe(test.failing);
+expect(test.only.failing.each).type.toBe(test.each);
 
 // test.skip
 
-expectType<void>(test.skip(testName, fn));
-expectType<void>(test.skip(testName, fn, timeout));
+expect(test.skip(testName, fn)).type.toBeVoid();
+expect(test.skip(testName, fn, timeout)).type.toBeVoid();
 
-expectType<void>(test.skip(123, fn));
-expectType<void>(test.skip(() => {}, fn));
-expectType<void>(test.skip(function named() {}, fn));
-expectType<void>(test.skip(class {}, fn));
-expectType<void>(test.skip(class Named {}, fn));
+expect(test.skip(123, fn)).type.toBeVoid();
+expect(test.skip(() => {}, fn)).type.toBeVoid();
+expect(test.skip(function named() {}, fn)).type.toBeVoid();
+expect(test.skip(class {}, fn)).type.toBeVoid();
+expect(test.skip(class Named {}, fn)).type.toBeVoid();
 
-expectType<typeof test.each>(test.skip.each);
-expectType<typeof test.failing>(test.skip.failing);
-expectType<typeof test.each>(test.skip.failing.each);
+expect(test.skip.each).type.toBe(test.each);
+expect(test.skip.failing).type.toBe(test.failing);
+expect(test.skip.failing.each).type.toBe(test.each);
 
 // test.todo
 
-expectType<void>(test.todo(testName));
+expect(test.todo(testName)).type.toBeVoid();
 
-expectType<void>(test.todo(123));
-expectType<void>(test.todo(() => {}));
-expectType<void>(test.todo(function named() {}));
-expectType<void>(test.todo(class {}));
-expectType<void>(test.todo(class Named {}));
+expect(test.todo(123)).type.toBeVoid();
+expect(test.todo(() => {})).type.toBeVoid();
+expect(test.todo(function named() {})).type.toBeVoid();
+expect(test.todo(class {})).type.toBeVoid();
+expect(test.todo(class Named {})).type.toBeVoid();
 
-expectError(test.todo());
-expectError(test.todo(testName, fn));
+expect(test.todo()).type.toRaiseError();
+expect(test.todo(testName, fn)).type.toRaiseError();
 
 // describe
 
-expectType<void>(describe(testName, fn));
+expect(describe(testName, fn)).type.toBeVoid();
 
-expectError(describe());
-expectError(describe(fn));
-expectError(describe(testName, fn, timeout));
+expect(describe()).type.toRaiseError();
+expect(describe(fn)).type.toRaiseError();
+expect(describe(testName, fn, timeout)).type.toRaiseError();
 
-expectType<void>(describe(123, fn));
-expectType<void>(describe(() => {}, fn));
-expectType<void>(describe(function named() {}, fn));
-expectType<void>(describe(class {}, fn));
-expectType<void>(describe(class Named {}, fn));
+expect(describe(123, fn)).type.toBeVoid();
+expect(describe(() => {}, fn)).type.toBeVoid();
+expect(describe(function named() {}, fn)).type.toBeVoid();
+expect(describe(class {}, fn)).type.toBeVoid();
+expect(describe(class Named {}, fn)).type.toBeVoid();
 
-expectType<void>(describe.each(table)(testName, fn));
-expectType<void>(describe.each(table)(testName, fn, timeout));
+expect(describe.each(table)(testName, fn)).type.toBeVoid();
+expect(describe.each(table)(testName, fn, timeout)).type.toBeVoid();
 
-expectType<void>(describe.each(table)(testName, fn));
-expectType<void>(describe.each(table)(123, fn));
-expectType<void>(describe.each(table)(() => {}, fn));
-expectType<void>(describe.each(table)(function named() {}, fn));
-expectType<void>(describe.each(table)(class Named {}, fn));
+expect(describe.each(table)(testName, fn)).type.toBeVoid();
+expect(describe.each(table)(123, fn)).type.toBeVoid();
+expect(describe.each(table)(() => {}, fn)).type.toBeVoid();
+expect(describe.each(table)(function named() {}, fn)).type.toBeVoid();
+expect(describe.each(table)(class Named {}, fn)).type.toBeVoid();
 
 // describe.only
 
-expectType<void>(describe.only(testName, fn));
+expect(describe.only(testName, fn)).type.toBeVoid();
 
-expectError(describe.only());
-expectError(describe.only(fn));
-expectError(describe.only(testName, fn, timeout));
+expect(describe.only()).type.toRaiseError();
+expect(describe.only(fn)).type.toRaiseError();
+expect(describe.only(testName, fn, timeout)).type.toRaiseError();
 
-expectType<void>(describe.only(123, fn));
-expectType<void>(describe.only(() => {}, fn));
-expectType<void>(describe.only(function named() {}, fn));
-expectType<void>(describe.only(class {}, fn));
-expectType<void>(describe.only(class Named {}, fn));
+expect(describe.only(123, fn)).type.toBeVoid();
+expect(describe.only(() => {}, fn)).type.toBeVoid();
+expect(describe.only(function named() {}, fn)).type.toBeVoid();
+expect(describe.only(class {}, fn)).type.toBeVoid();
+expect(describe.only(class Named {}, fn)).type.toBeVoid();
 
-expectType<typeof describe.each>(describe.only.each);
+expect(describe.only.each).type.toBe(describe.each);
 
 // describe.skip
 
-expectType<void>(describe.skip(testName, fn));
+expect(describe.skip(testName, fn)).type.toBeVoid();
 
-expectError(describe.skip());
-expectError(describe.skip(fn));
-expectError(describe.skip(testName, fn, timeout));
+expect(describe.skip()).type.toRaiseError();
+expect(describe.skip(fn)).type.toRaiseError();
+expect(describe.skip(testName, fn, timeout)).type.toRaiseError();
 
-expectType<void>(describe.skip(123, fn));
-expectType<void>(describe.skip(() => {}, fn));
-expectType<void>(describe.skip(function named() {}, fn));
-expectType<void>(describe.skip(class {}, fn));
-expectType<void>(describe.skip(class Named {}, fn));
+expect(describe.skip(123, fn)).type.toBeVoid();
+expect(describe.skip(() => {}, fn)).type.toBeVoid();
+expect(describe.skip(function named() {}, fn)).type.toBeVoid();
+expect(describe.skip(class {}, fn)).type.toBeVoid();
+expect(describe.skip(class Named {}, fn)).type.toBeVoid();
 
-expectType<typeof describe.each>(describe.skip.each);
+expect(describe.skip.each).type.toBe(describe.each);

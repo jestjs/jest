@@ -5,359 +5,472 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expect} from 'tstyche';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import {expect, jest} from '@jest/globals';
+import {jest, expect as jestExpect} from '@jest/globals';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 // asymmetric matchers
 
-expectType<void>(expect('value').toEqual(expect.any(String)));
-expectError(expect(123).toEqual(expect.any()));
-expectError(expect('value').toEqual(expect.not.any(Number)));
+expect(jestExpect('value').toEqual(jestExpect.any(String))).type.toBeVoid();
+expect(jestExpect(123).toEqual(jestExpect.any())).type.toRaiseError();
+expect(jestExpect.not).type.not.toHaveProperty('any');
 
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(expect.anything()));
-expectError(expect(jest.fn()).toHaveBeenCalledWith(expect.anything(true)));
-expectError(expect(jest.fn()).toHaveBeenCalledWith(expect.not.anything()));
+expect(
+  jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything()),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything(true)),
+).type.toRaiseError();
+expect(jestExpect.not).type.not.toHaveProperty('anything');
 
-expectType<void>(expect(['A', 'B']).toEqual(expect.arrayContaining(['A'])));
-expectError(expect(['A']).toEqual(expect.arrayContaining('A')));
-expectError(expect(['A']).toEqual(expect.arrayContaining()));
-expectType<void>(expect(['B']).toEqual(expect.not.arrayContaining(['A'])));
-expectError(expect(['A']).toEqual(expect.not.arrayContaining('A')));
-expectError(expect(['A']).toEqual(expect.not.arrayContaining()));
+expect(
+  jestExpect(['A', 'B']).toEqual(jestExpect.arrayContaining(['A'])),
+).type.toBeVoid();
+expect(
+  jestExpect(['A']).toEqual(jestExpect.arrayContaining('A')),
+).type.toRaiseError();
+expect(
+  jestExpect(['A']).toEqual(jestExpect.arrayContaining()),
+).type.toRaiseError();
+expect(
+  jestExpect(['B']).toEqual(jestExpect.not.arrayContaining(['A'])),
+).type.toBeVoid();
+expect(
+  jestExpect(['A']).toEqual(jestExpect.not.arrayContaining('A')),
+).type.toRaiseError();
+expect(
+  jestExpect(['A']).toEqual(jestExpect.not.arrayContaining()),
+).type.toRaiseError();
 
-expectType<void>(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3)));
-expectType<void>(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3, 5)));
-expectError(expect(0.1 + 0.2).toEqual(expect.closeTo('three')));
-expectError(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3, false)));
-expectError(expect(0.1 + 0.2).toEqual(expect.closeTo()));
-expectType<void>(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3)));
-expectType<void>(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3, 5)));
-expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo('three')));
-expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3, false)));
-expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo()));
+expect(jestExpect(0.1 + 0.2).toEqual(jestExpect.closeTo(0.3))).type.toBeVoid();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.closeTo(0.3, 5)),
+).type.toBeVoid();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.closeTo('three')),
+).type.toRaiseError();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.closeTo(0.3, false)),
+).type.toRaiseError();
+expect(jestExpect(0.1 + 0.2).toEqual(jestExpect.closeTo())).type.toRaiseError();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.not.closeTo(0.3)),
+).type.toBeVoid();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.not.closeTo(0.3, 5)),
+).type.toBeVoid();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.not.closeTo('three')),
+).type.toRaiseError();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.not.closeTo(0.3, false)),
+).type.toRaiseError();
+expect(
+  jestExpect(0.1 + 0.2).toEqual(jestExpect.not.closeTo()),
+).type.toRaiseError();
 
-expectType<void>(expect({a: 1}).toEqual(expect.objectContaining({a: 1})));
-expectError(expect({a: 1}).toEqual(expect.objectContaining(1)));
-expectError(expect({a: 1}).toEqual(expect.objectContaining()));
-expectType<void>(expect({b: 2}).toEqual(expect.not.objectContaining({a: 1})));
-expectError(expect({a: 1}).toEqual(expect.not.objectContaining(1)));
-expectError(expect({a: 1}).toEqual(expect.not.objectContaining()));
+expect(
+  jestExpect({a: 1}).toEqual(jestExpect.objectContaining({a: 1})),
+).type.toBeVoid();
+expect(
+  jestExpect({a: 1}).toEqual(jestExpect.objectContaining(1)),
+).type.toRaiseError();
+expect(
+  jestExpect({a: 1}).toEqual(jestExpect.objectContaining()),
+).type.toRaiseError();
+expect(
+  jestExpect({b: 2}).toEqual(jestExpect.not.objectContaining({a: 1})),
+).type.toBeVoid();
+expect(
+  jestExpect({a: 1}).toEqual(jestExpect.not.objectContaining(1)),
+).type.toRaiseError();
+expect(
+  jestExpect({a: 1}).toEqual(jestExpect.not.objectContaining()),
+).type.toRaiseError();
 
-expectType<void>(expect('one').toEqual(expect.stringContaining('n')));
-expectError(expect('two').toEqual(expect.stringContaining(2)));
-expectError(expect('three').toEqual(expect.stringContaining()));
-expectType<void>(expect('one').toEqual(expect.not.stringContaining('m')));
-expectError(expect('two').toEqual(expect.not.stringContaining(2)));
-expectError(expect('three').toEqual(expect.not.stringContaining()));
+expect(
+  jestExpect('one').toEqual(jestExpect.stringContaining('n')),
+).type.toBeVoid();
+expect(
+  jestExpect('two').toEqual(jestExpect.stringContaining(2)),
+).type.toRaiseError();
+expect(
+  jestExpect('three').toEqual(jestExpect.stringContaining()),
+).type.toRaiseError();
+expect(
+  jestExpect('one').toEqual(jestExpect.not.stringContaining('m')),
+).type.toBeVoid();
+expect(
+  jestExpect('two').toEqual(jestExpect.not.stringContaining(2)),
+).type.toRaiseError();
+expect(
+  jestExpect('three').toEqual(jestExpect.not.stringContaining()),
+).type.toRaiseError();
 
-expectType<void>(expect('one').toEqual(expect.stringMatching(/^[No]ne/)));
-expectError(expect('one').toEqual(expect.stringMatching(2)));
-expectError(expect('one').toEqual(expect.stringMatching()));
-expectType<void>(expect('two').toEqual(expect.not.stringMatching(/^[No]ne/)));
-expectError(expect('two').toEqual(expect.not.stringMatching(1)));
-expectError(expect('two').toEqual(expect.not.stringMatching()));
+expect(
+  jestExpect('one').toEqual(jestExpect.stringMatching(/^[No]ne/)),
+).type.toBeVoid();
+expect(
+  jestExpect('one').toEqual(jestExpect.stringMatching(2)),
+).type.toRaiseError();
+expect(
+  jestExpect('one').toEqual(jestExpect.stringMatching()),
+).type.toRaiseError();
+expect(
+  jestExpect('two').toEqual(jestExpect.not.stringMatching(/^[No]ne/)),
+).type.toBeVoid();
+expect(
+  jestExpect('two').toEqual(jestExpect.not.stringMatching(1)),
+).type.toRaiseError();
+expect(
+  jestExpect('two').toEqual(jestExpect.not.stringMatching()),
+).type.toRaiseError();
 
 // modifiers and utilities
 
-expectType<void>(expect.assertions(2));
-expectError(expect.assertions());
+expect(jestExpect.assertions(2)).type.toBeVoid();
+expect(jestExpect.assertions()).type.toRaiseError();
 
-expectType<void>(expect.hasAssertions());
-expectError(expect.hasAssertions(true));
+expect(jestExpect.hasAssertions()).type.toBeVoid();
+expect(jestExpect.hasAssertions(true)).type.toRaiseError();
 
-expectType<Promise<void>>(
-  expect(Promise.resolve('lemon')).resolves.toBe('lemon'),
-);
+expect(jestExpect(Promise.resolve('lemon')).resolves.toBe('lemon')).type.toBe<
+  Promise<void>
+>();
 
-expectType<Promise<void>>(
-  expect(Promise.resolve('lemon')).resolves.not.toBe('lemon'),
-);
+expect(
+  jestExpect(Promise.resolve('lemon')).resolves.not.toBe('lemon'),
+).type.toBe<Promise<void>>();
 
-expectType<Promise<void>>(
-  expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus'),
-);
+expect(
+  jestExpect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus'),
+).type.toBe<Promise<void>>();
 
-expectType<Promise<void>>(
-  expect(Promise.reject(new Error('octopus'))).rejects.not.toThrow('octopus'),
-);
+expect(
+  jestExpect(Promise.reject(new Error('octopus'))).rejects.not.toThrow(
+    'octopus',
+  ),
+).type.toBe<Promise<void>>();
 
-expectError(expect(1).not.not.toBe(2));
-expectError(expect(1).not.resolves.toBe(2));
-expectError(expect(1).not.rejects.toBe(2));
+expect(jestExpect(1).not).type.not.toHaveProperty('not');
+expect(jestExpect(1).not).type.not.toHaveProperty('resolves');
+expect(jestExpect(1).not).type.not.toHaveProperty('rejects');
 
-expectError(expect(1).resolves.resolves.toBe(2));
-expectError(expect(1).resolves.rejects.toBe(2));
+expect(jestExpect(1).resolves).type.not.toHaveProperty('resolves');
+expect(jestExpect(1).resolves).type.not.toHaveProperty('rejects');
 
-expectError(expect(1).rejects.resolves.toBe(2));
-expectError(expect(1).rejects.rejects.toBe(2));
+expect(jestExpect(1).resolves.not).type.not.toHaveProperty('not');
+expect(jestExpect(1).resolves.not).type.not.toHaveProperty('resolves');
+expect(jestExpect(1).resolves.not).type.not.toHaveProperty('rejects');
+
+expect(jestExpect(1).rejects).type.not.toHaveProperty('resolves');
+expect(jestExpect(1).rejects).type.not.toHaveProperty('rejects');
+
+expect(jestExpect(1).rejects.not).type.not.toHaveProperty('not');
+expect(jestExpect(1).rejects.not).type.not.toHaveProperty('resolves');
+expect(jestExpect(1).rejects.not).type.not.toHaveProperty('rejects');
 
 // equality and relational matchers
 
-expectType<void>(expect(2).toBe(2));
-expectType<void>(expect('three').not.toBe('four'));
-expectError(expect(false).toBe());
+expect(jestExpect(2).toBe(2)).type.toBeVoid();
+expect(jestExpect('three').not.toBe('four')).type.toBeVoid();
+expect(jestExpect(false).toBe()).type.toRaiseError();
 
-expectType<void>(expect(0.2 + 0.1).toBeCloseTo(0.3));
-expectType<void>(expect(0.2 + 0.1).toBeCloseTo(0.3, 5));
-expectError(expect(0.2 + 0.1).toBeCloseTo());
-expectError(expect(0.2 + 0.1).toBeCloseTo('three'));
-expectError(expect(BigInt(0.2 + 0.1)).toBeCloseTo(BigInt(0.3)));
-expectError(expect(0.2 + 0.1).toBeCloseTo(0.3, false));
+expect(jestExpect(0.2 + 0.1).toBeCloseTo(0.3)).type.toBeVoid();
+expect(jestExpect(0.2 + 0.1).toBeCloseTo(0.3, 5)).type.toBeVoid();
+expect(jestExpect(0.2 + 0.1).toBeCloseTo()).type.toRaiseError();
+expect(jestExpect(0.2 + 0.1).toBeCloseTo('three')).type.toRaiseError();
+expect(
+  jestExpect(BigInt(0.2 + 0.1)).toBeCloseTo(BigInt(0.3)),
+).type.toRaiseError();
+expect(jestExpect(0.2 + 0.1).toBeCloseTo(0.3, false)).type.toRaiseError();
 
-expectType<void>(expect('value').toBeDefined());
-expectError(expect(true).not.toBeDefined(false));
+expect(jestExpect('value').toBeDefined()).type.toBeVoid();
+expect(jestExpect(true).not.toBeDefined(false)).type.toRaiseError();
 
-expectType<void>(expect(0).toBeFalsy());
-expectError(expect(true).not.toBeFalsy(true));
+expect(jestExpect(0).toBeFalsy()).type.toBeVoid();
+expect(jestExpect(true).not.toBeFalsy(true)).type.toRaiseError();
 
-expectType<void>(expect(10).toBeGreaterThan(5));
-expectType<void>(expect(BigInt(5.65)).toBeGreaterThan(BigInt(5.61)));
-expectError(expect(10).toBeGreaterThan());
-expectError(expect(10).toBeGreaterThan('1'));
+expect(jestExpect(10).toBeGreaterThan(5)).type.toBeVoid();
+expect(jestExpect(BigInt(5.65)).toBeGreaterThan(BigInt(5.61))).type.toBeVoid();
+expect(jestExpect(10).toBeGreaterThan()).type.toRaiseError();
+expect(jestExpect(10).toBeGreaterThan('1')).type.toRaiseError();
 
-expectType<void>(expect(10).toBeGreaterThanOrEqual(5));
-expectType<void>(expect(BigInt(5.65)).toBeGreaterThanOrEqual(BigInt(5.61)));
-expectError(expect(10).toBeGreaterThanOrEqual());
-expectError(expect(10).toBeGreaterThanOrEqual('1'));
+expect(jestExpect(10).toBeGreaterThanOrEqual(5)).type.toBeVoid();
+expect(
+  jestExpect(BigInt(5.65)).toBeGreaterThanOrEqual(BigInt(5.61)),
+).type.toBeVoid();
+expect(jestExpect(10).toBeGreaterThanOrEqual()).type.toRaiseError();
+expect(jestExpect(10).toBeGreaterThanOrEqual('1')).type.toRaiseError();
 
-expectType<void>(expect(5).toBeLessThan(10));
-expectType<void>(expect(BigInt(5.61)).toBeLessThan(BigInt(5.65)));
-expectError(expect(1).toBeLessThan());
-expectError(expect(1).toBeLessThan('10'));
+expect(jestExpect(5).toBeLessThan(10)).type.toBeVoid();
+expect(jestExpect(BigInt(5.61)).toBeLessThan(BigInt(5.65))).type.toBeVoid();
+expect(jestExpect(1).toBeLessThan()).type.toRaiseError();
+expect(jestExpect(1).toBeLessThan('10')).type.toRaiseError();
 
-expectType<void>(expect(5).toBeLessThanOrEqual(10));
-expectType<void>(expect(BigInt(5.61)).toBeLessThanOrEqual(BigInt(5.65)));
-expectError(expect(1).toBeLessThanOrEqual());
-expectError(expect(1).toBeLessThanOrEqual('10'));
+expect(jestExpect(5).toBeLessThanOrEqual(10)).type.toBeVoid();
+expect(
+  jestExpect(BigInt(5.61)).toBeLessThanOrEqual(BigInt(5.65)),
+).type.toBeVoid();
+expect(jestExpect(1).toBeLessThanOrEqual()).type.toRaiseError();
+expect(jestExpect(1).toBeLessThanOrEqual('10')).type.toRaiseError();
 
-expectType<void>(expect(() => {}).toBeInstanceOf(Function));
-expectError(expect(() => {}).toBeInstanceOf());
+expect(jestExpect(() => {}).toBeInstanceOf(Function)).type.toBeVoid();
+expect(jestExpect(() => {}).toBeInstanceOf()).type.toRaiseError();
 
-expectType<void>(expect(Number('ten')).toBeNaN());
-expectError(expect(Number('10')).not.toBeNaN(true));
+expect(jestExpect(Number('ten')).toBeNaN()).type.toBeVoid();
+expect(jestExpect(Number('10')).not.toBeNaN(true)).type.toRaiseError();
 
-expectType<void>(expect(null).toBeNull());
-expectError(expect('not null').not.toBeNull(true));
+expect(jestExpect(null).toBeNull()).type.toBeVoid();
+expect(jestExpect('not null').not.toBeNull(true)).type.toRaiseError();
 
-expectType<void>(expect('true').toBeTruthy());
-expectError(expect(false).not.toBeTruthy(true));
+expect(jestExpect('true').toBeTruthy()).type.toBeVoid();
+expect(jestExpect(false).not.toBeTruthy(true)).type.toRaiseError();
 
-expectType<void>(expect(undefined).toBeUndefined());
-expectError(expect('value').not.toBeUndefined(false));
+expect(jestExpect(undefined).toBeUndefined()).type.toBeVoid();
+expect(jestExpect('value').not.toBeUndefined(false)).type.toRaiseError();
 
-expectType<void>(expect(['lemon', 'lime']).not.toContain('orange'));
-expectType<void>(expect('citrus fruits').toContain('fruit'));
+expect(jestExpect(['lemon', 'lime']).not.toContain('orange')).type.toBeVoid();
+expect(jestExpect('citrus fruits').toContain('fruit')).type.toBeVoid();
 
 const a = {key1: true, key2: false};
-expectType<void>(expect([{key1: true, key2: false}]).toContainEqual(a));
+expect(
+  jestExpect([{key1: true, key2: false}]).toContainEqual(a),
+).type.toBeVoid();
 
-expectType<void>(expect({a: 1, b: undefined}).toEqual({a: 1}));
-expectError(expect({a: 1}).toEqual());
+expect(jestExpect({a: 1, b: undefined}).toEqual({a: 1})).type.toBeVoid();
+expect(jestExpect({a: 1}).toEqual()).type.toRaiseError();
 
-expectType<void>(expect({a: 1, b: 2}).toStrictEqual({a: 1, b: 2}));
-expectError(expect({a: 1}).toStrictEqual());
+expect(jestExpect({a: 1, b: 2}).toStrictEqual({a: 1, b: 2})).type.toBeVoid();
+expect(jestExpect({a: 1}).toStrictEqual()).type.toRaiseError();
 
-expectType<void>(expect([1, 2, 3]).toHaveLength(3));
-expectType<void>(expect('abc').not.toHaveLength(5));
-expectError(expect('abc').toHaveLength());
+expect(jestExpect([1, 2, 3]).toHaveLength(3)).type.toBeVoid();
+expect(jestExpect('abc').not.toHaveLength(5)).type.toBeVoid();
+expect(jestExpect('abc').toHaveLength()).type.toRaiseError();
 
-expectType<void>(
-  expect({kitchen: {area: 20}}).toHaveProperty('kitchen.area', 20),
-);
-expectType<void>(
-  expect({kitchen: {area: 20}}).not.toHaveProperty(['kitchen', 'color']),
-);
-expectError(expect({kitchen: {area: 20}}).toHaveProperty());
-expectError(expect({kitchen: {area: 20}}).toHaveProperty(true));
+expect(
+  jestExpect({kitchen: {area: 20}}).toHaveProperty('kitchen.area', 20),
+).type.toBeVoid();
+expect(
+  jestExpect({kitchen: {area: 20}}).not.toHaveProperty(['kitchen', 'color']),
+).type.toBeVoid();
+expect(jestExpect({kitchen: {area: 20}}).toHaveProperty()).type.toRaiseError();
+expect(
+  jestExpect({kitchen: {area: 20}}).toHaveProperty(true),
+).type.toRaiseError();
 
-expectType<void>(expect('grapefruits').toMatch(/fruit/));
-expectType<void>(expect('grapefruits').toMatch('fruit'));
-expectError(expect('grapefruits').toMatch(true));
+expect(jestExpect('grapefruits').toMatch(/fruit/)).type.toBeVoid();
+expect(jestExpect('grapefruits').toMatch('fruit')).type.toBeVoid();
+expect(jestExpect('grapefruits').toMatch(true)).type.toRaiseError();
 
-expectType<void>(expect({a: 1, b: 2}).toMatchObject({b: 2}));
-expectType<void>(
-  expect([{a: 1}, {b: 2, c: true}]).toMatchObject([{a: 1}, {b: 2}]),
-);
-expectError(expect({c: true}).toMatchObject(true));
-expectError(expect({c: true}).toMatchObject());
+expect(jestExpect({a: 1, b: 2}).toMatchObject({b: 2})).type.toBeVoid();
+expect(
+  jestExpect([{a: 1}, {b: 2, c: true}]).toMatchObject([{a: 1}, {b: 2}]),
+).type.toBeVoid();
+expect(jestExpect({c: true}).toMatchObject(true)).type.toRaiseError();
+expect(jestExpect({c: true}).toMatchObject()).type.toRaiseError();
 
 // error matchers
 
-expectType<void>(expect(() => {}).toThrow());
-expectType<void>(expect(() => {}).toThrow(/error/));
-expectType<void>(expect(() => {}).toThrow('error'));
-expectType<void>(expect(() => {}).toThrow(Error));
-expectType<void>(expect(() => {}).toThrow(new Error('error')));
+expect(jestExpect(() => {}).toThrow()).type.toBeVoid();
+expect(jestExpect(() => {}).toThrow(/error/)).type.toBeVoid();
+expect(jestExpect(() => {}).toThrow('error')).type.toBeVoid();
+expect(jestExpect(() => {}).toThrow(Error)).type.toBeVoid();
+expect(jestExpect(() => {}).toThrow(new Error('error'))).type.toBeVoid();
 
 // mock matchers
-expectType<void>(expect(jest.fn()).toHaveBeenCalled());
-expectError(expect(jest.fn()).toHaveBeenCalled(false));
-expectError(expect(jest.fn()).toHaveBeenCalled('value'));
+expect(jestExpect(jest.fn()).toHaveBeenCalled()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalled(false)).type.toRaiseError();
+expect(jestExpect(jest.fn()).toHaveBeenCalled('value')).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(3));
-expectError(expect(jest.fn()).toHaveBeenCalledTimes(true));
-expectError(expect(jest.fn()).toHaveBeenCalledTimes('twice'));
-expectError(expect(jest.fn()).toHaveBeenCalledTimes());
+expect(jestExpect(jest.fn()).toHaveBeenCalledTimes(3)).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalledTimes(true)).type.toRaiseError();
+expect(
+  jestExpect(jest.fn()).toHaveBeenCalledTimes('twice'),
+).type.toRaiseError();
+expect(jestExpect(jest.fn()).toHaveBeenCalledTimes()).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value'));
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value', 123));
-expectType<void>(
-  expect(jest.fn<(a: string, b: number) => void>()).toHaveBeenCalledWith(
-    expect.stringContaining('value'),
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenCalledWith(123, 'value'),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenCalledWith('value', 123),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenCalledWith(
+    jestExpect.stringContaining('value'),
     123,
   ),
-);
+).type.toBeVoid();
 
-expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith());
-expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith('value'));
-expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123));
-expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'));
-expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith('value', 123));
-expectType<void>(
-  expect(jest.fn<(a: string, b: number) => void>()).toHaveBeenLastCalledWith(
-    expect.stringContaining('value'),
-    123,
-  ),
-);
+expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith('value')).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith(123)).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenLastCalledWith('value', 123),
+).type.toBeVoid();
+expect(
+  jestExpect(
+    jest.fn<(a: string, b: number) => void>(),
+  ).toHaveBeenLastCalledWith(jestExpect.stringContaining('value'), 123),
+).type.toBeVoid();
 
-expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(2));
-expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
-expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));
-expectType<void>(
-  expect(jest.fn<(a: string, b: number) => void>()).toHaveBeenNthCalledWith(
+expect(jestExpect(jest.fn()).toHaveBeenNthCalledWith(2)).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenNthCalledWith(
     1,
-    expect.stringContaining('value'),
+    jestExpect.stringContaining('value'),
     123,
   ),
-);
-expectError(expect(jest.fn()).toHaveBeenNthCalledWith());
+).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenNthCalledWith()).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toHaveReturned());
-expectError(expect(jest.fn()).toHaveReturned('value'));
-expectError(expect(jest.fn()).toHaveReturned(false));
+expect(jestExpect(jest.fn()).toHaveReturned()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveReturned('value')).type.toRaiseError();
+expect(jestExpect(jest.fn()).toHaveReturned(false)).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toHaveReturnedTimes(3));
-expectError(expect(jest.fn()).toHaveReturnedTimes('twice'));
-expectError(expect(jest.fn()).toHaveReturnedTimes(true));
-expectError(expect(jest.fn()).toHaveReturnedTimes());
+expect(jestExpect(jest.fn()).toHaveReturnedTimes(3)).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveReturnedTimes('twice')).type.toRaiseError();
+expect(jestExpect(jest.fn()).toHaveReturnedTimes(true)).type.toRaiseError();
+expect(jestExpect(jest.fn()).toHaveReturnedTimes()).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toHaveReturnedWith());
-expectType<void>(expect(jest.fn()).toHaveReturnedWith('value'));
-expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
-expectType<void>(
-  expect(jest.fn<() => string>()).toHaveReturnedWith(
-    expect.stringContaining('value'),
+expect(jestExpect(jest.fn()).toHaveReturnedWith()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveReturnedWith('value')).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveReturnedWith(123)).type.toBeVoid();
+expect(
+  jestExpect(jest.fn<() => string>()).toHaveReturnedWith(
+    jestExpect.stringContaining('value'),
   ),
-);
+).type.toBeVoid();
 
-expectType<void>(expect(jest.fn()).toHaveLastReturnedWith());
-expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
-expectType<void>(
-  expect(jest.fn<() => string>()).toHaveLastReturnedWith(
-    expect.stringContaining('value'),
+expect(jestExpect(jest.fn()).toHaveLastReturnedWith()).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveLastReturnedWith(123)).type.toBeVoid();
+expect(
+  jestExpect(jest.fn<() => string>()).toHaveLastReturnedWith(
+    jestExpect.stringContaining('value'),
   ),
-);
+).type.toBeVoid();
 
-expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1));
-expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1, 'value'));
-expectType<void>(
-  expect(jest.fn<() => string>()).toHaveNthReturnedWith(
+expect(jestExpect(jest.fn()).toHaveNthReturnedWith(1)).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveNthReturnedWith(1, 'value')).type.toBeVoid();
+expect(
+  jestExpect(jest.fn<() => string>()).toHaveNthReturnedWith(
     2,
-    expect.stringContaining('value'),
+    jestExpect.stringContaining('value'),
   ),
-);
-expectError(expect(jest.fn()).toHaveNthReturnedWith());
+).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveNthReturnedWith()).type.toRaiseError();
 
 // snapshot matchers
 
-expectType<void>(expect({a: 1}).toMatchSnapshot());
-expectType<void>(expect({a: 1}).toMatchSnapshot('hint'));
-expectError(expect({a: 1}).toMatchSnapshot(true));
+expect(jestExpect({a: 1}).toMatchSnapshot()).type.toBeVoid();
+expect(jestExpect({a: 1}).toMatchSnapshot('hint')).type.toBeVoid();
+expect(jestExpect({a: 1}).toMatchSnapshot(true)).type.toRaiseError();
 
-expectType<void>(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchSnapshot({
-    date: expect.any(Date),
-    name: expect.any(String),
+    date: jestExpect.any(Date),
+    name: jestExpect.any(String),
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchSnapshot(
     {
-      date: expect.any(Date),
-      name: expect.any(String),
+      date: jestExpect.any(Date),
+      name: jestExpect.any(String),
     },
     'hint',
   ),
-);
+).type.toBeVoid();
 
-expectError(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchSnapshot({
-    date: expect.any(Date),
-    time: expect.any(Date),
+    date: jestExpect.any(Date),
+    time: jestExpect.any(Date),
   }),
-);
+).type.toRaiseError();
 
-expectType<void>(expect('abc').toMatchInlineSnapshot());
-expectType<void>(expect('abc').toMatchInlineSnapshot('inline snapshot here'));
-expectError(expect('abc').toMatchInlineSnapshot(true));
+expect(jestExpect('abc').toMatchInlineSnapshot()).type.toBeVoid();
+expect(
+  jestExpect('abc').toMatchInlineSnapshot('inline snapshot here'),
+).type.toBeVoid();
+expect(jestExpect('abc').toMatchInlineSnapshot(true)).type.toRaiseError();
 
-expectType<void>(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchInlineSnapshot({
-    date: expect.any(Date),
-    name: expect.any(String),
+    date: jestExpect.any(Date),
+    name: jestExpect.any(String),
   }),
-);
+).type.toBeVoid();
 
-expectType<void>(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchInlineSnapshot(
     {
-      date: expect.any(Date),
-      name: expect.any(String),
+      date: jestExpect.any(Date),
+      name: jestExpect.any(String),
     },
     'inline snapshot here',
   ),
-);
+).type.toBeVoid();
 
-expectError(
-  expect({
+expect(
+  jestExpect({
     date: new Date(),
     name: 'John Doe',
   }).toMatchInlineSnapshot({
-    date: expect.any(Date),
-    time: expect.any(Date),
+    date: jestExpect.any(Date),
+    time: jestExpect.any(Date),
   }),
-);
+).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot());
-expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot('hint'));
-expectError(expect(jest.fn()).toThrowErrorMatchingSnapshot(true));
+expect(jestExpect(jest.fn()).toThrowErrorMatchingSnapshot()).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toThrowErrorMatchingSnapshot('hint'),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toThrowErrorMatchingSnapshot(true),
+).type.toRaiseError();
 
-expectType<void>(expect(jest.fn()).toThrowErrorMatchingInlineSnapshot());
-expectType<void>(
-  expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('inline snapshot here'),
-);
-expectError(expect(jest.fn()).toThrowErrorMatchingInlineSnapshot(true));
+expect(
+  jestExpect(jest.fn()).toThrowErrorMatchingInlineSnapshot(),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toThrowErrorMatchingInlineSnapshot(
+    'inline snapshot here',
+  ),
+).type.toBeVoid();
+expect(
+  jestExpect(jest.fn()).toThrowErrorMatchingInlineSnapshot(true),
+).type.toRaiseError();
 
 // extend
 
@@ -366,25 +479,25 @@ type MatcherUtils = typeof jestMatcherUtils & {
   subsetEquality: Tester;
 };
 
-expectType<void>(
-  expect.extend({
+expect(
+  jestExpect.extend({
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
-      expectType<number>(this.assertionCalls);
-      expectType<string | undefined>(this.currentTestName);
-      expectType<() => void>(this.dontThrow);
-      expectType<Error | undefined>(this.error);
-      expectType<EqualsFunction>(this.equals);
-      expectType<boolean | undefined>(this.expand);
-      expectType<number | null>(this.expectedAssertionsNumber);
-      expectType<Error | undefined>(this.expectedAssertionsNumberError);
-      expectType<boolean>(this.isExpectingAssertions);
-      expectType<Error | undefined>(this.isExpectingAssertionsError);
-      expectType<boolean | undefined>(this.isNot);
-      expectType<number>(this.numPassingAsserts);
-      expectType<string | undefined>(this.promise);
-      expectType<Array<Error>>(this.suppressedErrors);
-      expectType<string | undefined>(this.testPath);
-      expectType<MatcherUtils>(this.utils);
+      expect(this.assertionCalls).type.toBeNumber();
+      expect(this.currentTestName).type.toBe<string | undefined>();
+      expect(this.dontThrow).type.toBe<() => void>();
+      expect(this.error).type.toBe<Error | undefined>();
+      expect(this.equals).type.toBe<EqualsFunction>();
+      expect(this.expand).type.toBe<boolean | undefined>();
+      expect(this.expectedAssertionsNumber).type.toBe<number | null>();
+      expect(this.expectedAssertionsNumberError).type.toBe<Error | undefined>();
+      expect(this.isExpectingAssertions).type.toBeBoolean();
+      expect(this.isExpectingAssertionsError).type.toBe<Error | undefined>();
+      expect(this.isNot).type.toBe<boolean | undefined>();
+      expect(this.numPassingAsserts).type.toBeNumber();
+      expect(this.promise).type.toBe<string | undefined>();
+      expect(this.suppressedErrors).type.toBe<Array<Error>>();
+      expect(this.testPath).type.toBe<string | undefined>();
+      expect(this.utils).type.toBe<MatcherUtils>();
 
       const pass = actual >= floor && actual <= ceiling;
       if (pass) {
@@ -402,7 +515,7 @@ expectType<void>(
       }
     },
   }),
-);
+).type.toBeVoid();
 
 declare module 'expect' {
   interface AsymmetricMatchers {
@@ -413,12 +526,12 @@ declare module 'expect' {
   }
 }
 
-expectType<void>(expect(100).toBeWithinRange(90, 110));
-expectType<void>(expect(101).not.toBeWithinRange(0, 100));
+expect(jestExpect(100).toBeWithinRange(90, 110)).type.toBeVoid();
+expect(jestExpect(101).not.toBeWithinRange(0, 100)).type.toBeVoid();
 
-expectType<void>(
-  expect({apples: 6, bananas: 3}).toEqual({
-    apples: expect.toBeWithinRange(1, 10),
-    bananas: expect.not.toBeWithinRange(11, 20),
+expect(
+  jestExpect({apples: 6, bananas: 3}).toEqual({
+    apples: jestExpect.toBeWithinRange(1, 10),
+    bananas: jestExpect.not.toBeWithinRange(11, 20),
   }),
-);
+).type.toBeVoid();

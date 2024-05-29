@@ -6,6 +6,8 @@
  */
 'use strict';
 
+import {TestPathPatterns} from '@jest/pattern';
+
 let SummaryReporter;
 
 const env = {...process.env};
@@ -13,7 +15,7 @@ const now = Date.now;
 const write = process.stderr.write;
 const globalConfig = {
   rootDir: 'root',
-  testPathPatterns: [],
+  testPathPatterns: new TestPathPatterns([]),
   watch: false,
 };
 

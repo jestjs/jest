@@ -19,7 +19,7 @@ afterEach(() => cleanup(DIR));
 
 test("--listTests doesn't duplicate the test files", () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     '/project1.js': "module.exports = {rootDir: './', displayName: 'BACKEND'}",
     '/project2.js': "module.exports = {rootDir: './', displayName: 'BACKEND'}",
     '__tests__/inBothProjectsTest.js': "test('test', () => {});",
@@ -35,7 +35,7 @@ test("--listTests doesn't duplicate the test files", () => {
 
 test('can pass projects or global config', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'base_config.js': `
       module.exports = {
         haste: {
@@ -132,7 +132,7 @@ test('can pass projects or global config', () => {
 
 test('"No tests found" message for projects', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'package.json': '{}',
     'project1/__tests__/file1.test.js': `
       const file1 = require('../file1');
@@ -336,7 +336,7 @@ test('allows a single project', () => {
 
 test('resolves projects and their <rootDir> properly', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'package.json': JSON.stringify({
       jest: {
         projects: [
@@ -436,7 +436,7 @@ test('resolves projects and their <rootDir> properly', () => {
 
 test('Does transform files with the corresponding project transformer', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'file.js': SAMPLE_FILE_CONTENT,
     'package.json': '{}',
     'project1/__tests__/project1.test.js': `
@@ -487,7 +487,7 @@ test('Does transform files with the corresponding project transformer', () => {
 describe("doesn't bleed module file extensions resolution with multiple workers", () => {
   test('external config files', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       'file.js': 'module.exports = "file1"',
       'file.p2.js': 'module.exports = "file2"',
       'package.json': '{}',
@@ -537,7 +537,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
 
   test('inline config files', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       'file.js': 'module.exports = "file1"',
       'file.p2.js': 'module.exports = "file2"',
       'package.json': JSON.stringify({

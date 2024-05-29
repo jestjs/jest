@@ -7,11 +7,11 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import {TestPathPatterns, isNonNullable} from 'jest-util';
+import {isNonNullable} from 'jest-util';
 
 const activeFilters = (globalConfig: Config.GlobalConfig): string => {
   const {testNamePattern} = globalConfig;
-  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+  const testPathPatterns = globalConfig.testPathPatterns;
   if (testNamePattern || testPathPatterns.isSet()) {
     const filters = [
       testPathPatterns.isSet()

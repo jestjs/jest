@@ -8,6 +8,7 @@
 import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
+import type {TestPathPatternsExecutor} from '@jest/pattern';
 import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
@@ -15,7 +16,7 @@ import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {TestPathPatterns, globsToMatcher} from 'jest-util';
+import {globsToMatcher} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
@@ -114,7 +115,7 @@ export default class SearchSource {
 
   private _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPatterns: TestPathPatterns,
+    testPathPatternsExecutor: TestPathPatternsExecutor,
   ): SearchResult {
     const data: {
       stats: Stats;
@@ -132,9 +133,9 @@ export default class SearchSource {
     };
 
     const testCases = [...this._testPathCases]; // clone
-    if (testPathPatterns.isSet()) {
+    if (testPathPatternsExecutor.isSet()) {
       testCases.push({
-        isMatch: (path: string) => testPathPatterns.isMatch(path),
+        isMatch: (path: string) => testPathPatternsExecutor.isMatch(path),
         stat: 'testPathPatterns',
       });
       data.stats.testPathPatterns = 0;
@@ -155,10 +156,12 @@ export default class SearchSource {
     return data;
   }
 
-  private _getAllTestPaths(testPathPatterns: TestPathPatterns): SearchResult {
+  private _getAllTestPaths(
+    testPathPatternsExecutor: TestPathPatternsExecutor,
+  ): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
-      testPathPatterns,
+      testPathPatternsExecutor,
     );
   }
 
@@ -166,8 +169,10 @@ export default class SearchSource {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
-  findMatchingTests(testPathPatterns: TestPathPatterns): SearchResult {
-    return this._getAllTestPaths(testPathPatterns);
+  findMatchingTests(
+    testPathPatternsExecutor: TestPathPatternsExecutor,
+  ): SearchResult {
+    return this._getAllTestPaths(testPathPatternsExecutor);
   }
 
   async findRelatedTests(
@@ -264,6 +269,7 @@ export default class SearchSource {
 
   private async _getTestPaths(
     globalConfig: Config.GlobalConfig,
+    projectConfig: Config.ProjectConfig,
     changedFiles?: ChangedFiles,
   ): Promise<SearchResult> {
     if (globalConfig.onlyChanged) {
@@ -292,7 +298,9 @@ export default class SearchSource {
       );
     } else {
       return this.findMatchingTests(
-        TestPathPatterns.fromGlobalConfig(globalConfig),
+        globalConfig.testPathPatterns.toExecutor({
+          rootDir: projectConfig.rootDir,
+        }),
       );
     }
   }
@@ -321,10 +329,15 @@ export default class SearchSource {
 
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
+    projectConfig: Config.ProjectConfig,
     changedFiles?: ChangedFiles,
     filter?: Filter,
   ): Promise<SearchResult> {
-    const searchResult = await this._getTestPaths(globalConfig, changedFiles);
+    const searchResult = await this._getTestPaths(
+      globalConfig,
+      projectConfig,
+      changedFiles,
+    );
 
     const filterPath = globalConfig.filter;
 

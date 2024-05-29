@@ -1,6 +1,6 @@
 {
   "name": "@jest/types",
-  "version": "30.0.0-alpha.3",
+  "version": "30.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -20,16 +20,13 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@jest/pattern": "workspace:*",
     "@jest/schemas": "workspace:*",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
     "@types/yargs": "^17.0.8",
     "chalk": "^4.0.0"
-  },
-  "devDependencies": {
-    "@tsd/typescript": "^5.0.4",
-    "tsd-lite": "^0.8.0"
   },
   "publishConfig": {
     "access": "public"

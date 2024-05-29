@@ -401,6 +401,37 @@ describe('subsetEquality()', () => {
       });
     });
   });
+
+  describe('subset is not object with keys', () => {
+    test('returns true if subset has keys', () => {
+      expect(subsetEquality({foo: 'bar'}, {foo: 'bar'})).toBe(true);
+    });
+    test('returns true if subset has Symbols', () => {
+      const symbol = Symbol('foo');
+      expect(subsetEquality({[symbol]: 'bar'}, {[symbol]: 'bar'})).toBe(true);
+    });
+    test('returns undefined if subset has no keys', () => {
+      expect(subsetEquality('foo', 'bar')).toBeUndefined();
+    });
+    test('returns undefined if subset is null', () => {
+      expect(subsetEquality({foo: 'bar'}, null)).toBeUndefined();
+    });
+    test('returns undefined if subset is Error', () => {
+      expect(subsetEquality({foo: 'bar'}, new Error())).toBeUndefined();
+    });
+    test('returns undefined if subset is Array', () => {
+      expect(subsetEquality({foo: 'bar'}, [])).toBeUndefined();
+    });
+    test('returns undefined if subset is Date', () => {
+      expect(subsetEquality({foo: 'bar'}, new Date())).toBeUndefined();
+    });
+    test('returns undefined if subset is Set', () => {
+      expect(subsetEquality({foo: 'bar'}, new Set())).toBeUndefined();
+    });
+    test('returns undefined if subset is Map', () => {
+      expect(subsetEquality({foo: 'bar'}, new Map())).toBeUndefined();
+    });
+  });
 });
 
 describe('iterableEquality', () => {
@@ -671,4 +702,27 @@ describe('arrayBufferEquality', () => {
     const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
     expect(equals(a, b)).toBeFalsy();
   });
+});
+
+describe('jasmineUtils primitives comparison', () => {
+  const falseCases: Array<[any, any]> = [
+    [null, undefined],
+    [null, 0],
+    [false, 0],
+    [false, ''],
+  ];
+
+  for (const [a, b] of falseCases) {
+    test(`${JSON.stringify(a)} and ${JSON.stringify(b)} returns false`, () => {
+      expect(equals(a, b)).toBe(false);
+    });
+  }
+
+  const trueCases: Array<any> = [null, 0, false, '', undefined];
+
+  for (const value of trueCases) {
+    test(`${JSON.stringify(value)} returns true`, () => {
+      expect(equals(value, value)).toBe(true);
+    });
+  }
 });

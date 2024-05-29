@@ -1601,7 +1601,7 @@ describe('testPathPatterns', () => {
   it('defaults to empty', async () => {
     const {options} = await normalize(initialOptions, {} as Config.Argv);
 
-    expect(options.testPathPatterns).toEqual([]);
+    expect(options.testPathPatterns.patterns).toEqual([]);
   });
 
   const cliOptions = [
@@ -1614,14 +1614,14 @@ describe('testPathPatterns', () => {
         const argv = {[opt.property]: ['a/b']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPatterns).toEqual(['a/b']);
+        expect(options.testPathPatterns.patterns).toEqual(['a/b']);
       });
 
       it('ignores invalid regular expressions and logs a warning', async () => {
         const argv = {[opt.property]: ['a(']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPatterns).toEqual([]);
+        expect(options.testPathPatterns.patterns).toEqual([]);
         expect(jest.mocked(console.log).mock.calls[0][0]).toMatchSnapshot();
       });
 
@@ -1629,7 +1629,7 @@ describe('testPathPatterns', () => {
         const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPatterns).toEqual(['a/b', 'c/d']);
+        expect(options.testPathPatterns.patterns).toEqual(['a/b', 'c/d']);
       });
     });
   }
@@ -1638,7 +1638,7 @@ describe('testPathPatterns', () => {
     const argv = {_: [1]} as Config.Argv;
     const {options} = await normalize(initialOptions, argv);
 
-    expect(options.testPathPatterns).toEqual(['1']);
+    expect(options.testPathPatterns.patterns).toEqual(['1']);
   });
 
   it('joins multiple --testPathPatterns and <regexForTestFiles>', async () => {
@@ -1646,7 +1646,7 @@ describe('testPathPatterns', () => {
       _: ['a', 'b'],
       testPathPatterns: ['c', 'd'],
     } as Config.Argv);
-    expect(options.testPathPatterns).toEqual(['a', 'b', 'c', 'd']);
+    expect(options.testPathPatterns.patterns).toEqual(['a', 'b', 'c', 'd']);
   });
 
   it('gives precedence to --all', async () => {

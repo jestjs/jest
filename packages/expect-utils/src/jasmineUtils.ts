@@ -92,7 +92,7 @@ function eq(
   }
   // A strict comparison is necessary because `null == undefined`.
   if (a === null || b === null) {
-    return a === b;
+    return false;
   }
   const className = Object.prototype.toString.call(a);
   if (className != Object.prototype.toString.call(b)) {
@@ -107,7 +107,7 @@ function eq(
         return false;
       } else if (typeof a !== 'object' && typeof b !== 'object') {
         // both are proper primitives
-        return Object.is(a, b);
+        return false;
       } else {
         // both are `new Primitive()`s
         return Object.is(a.valueOf(), b.valueOf());

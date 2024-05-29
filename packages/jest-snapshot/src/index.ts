@@ -7,6 +7,7 @@
 
 import {types} from 'util';
 import * as fs from 'graceful-fs';
+import {escapeBacktickString} from '@jest/snapshot-utils';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithContext} from 'expect';
 import {
@@ -32,7 +33,7 @@ import {
   printSnapshotAndReceived,
 } from './printSnapshot';
 import type {Context, FileSystem, MatchSnapshotConfig} from './types';
-import {deepMerge, escapeBacktickString, serialize} from './utils';
+import {deepMerge, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
 export {

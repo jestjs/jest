@@ -119,6 +119,7 @@ async function registerTsNode(): Promise<Service> {
     return tsNode.register({
       compilerOptions: {
         module: 'CommonJS',
+        moduleResolution: 'Node10',
       },
       moduleTypes: {
         '**': 'cjs',

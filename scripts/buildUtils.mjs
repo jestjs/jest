@@ -238,24 +238,22 @@ export function createBuildConfigs() {
       // skip expect for now
       pkg.name === 'expect'
         ? {}
-        : Object.keys(pkg.exports)
-            .filter(
-              key =>
-                key !== '.' &&
-                key !== './package.json' &&
-                !key.startsWith('./bin'),
-            )
-            .reduce((previousValue, currentValue) => {
-              return {
-                ...previousValue,
-                // skip `./`
-                [currentValue.slice(2)]: path.resolve(
-                  packageDir,
-                  './src',
-                  `${currentValue}.ts`,
-                ),
-              };
-            }, {});
+        : Object.keys(pkg.exports).reduce((previousValue, currentValue) => {
+            if (
+              currentValue !== '.' &&
+              currentValue !== './package.json' &&
+              !currentValue.startsWith('./bin')
+            ) {
+              // skip `./`
+              previousValue[currentValue.slice(2)] = path.resolve(
+                packageDir,
+                './src',
+                `${currentValue}.ts`,
+              );
+            }
+
+            return previousValue;
+          }, {});
 
     return {
       packageDir,

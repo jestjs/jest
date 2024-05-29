@@ -8,6 +8,7 @@
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
+import type {TestPathPatterns} from '@jest/pattern';
 import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
 
 export type {InitialOptions} from '@jest/schemas';
@@ -305,7 +306,7 @@ export type GlobalConfig = {
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
-  testPathPatterns: Array<string>;
+  testPathPatterns: TestPathPatterns;
   testResultsProcessor?: string;
   testSequencer: string;
   testTimeout?: number;

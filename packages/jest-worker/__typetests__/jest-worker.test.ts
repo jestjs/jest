@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectNotAssignable, expectType} from 'tsd-lite';
+import {expect, test} from 'tstyche';
 import type {JestWorkerFarm} from 'jest-worker';
 import type * as testWorker from './testWorker';
 
@@ -13,88 +13,84 @@ type TestWorker = {
   runTest: (a: string, b: number) => void;
   doSomething: () => void;
   isResult: boolean;
-  end: () => void; // reserved keys should be excluded from returned type
+
+  // the reserved keys should not be included in the resulting type
+  end: () => void;
   getStderr: () => string;
   getStdout: () => string;
   setup: () => void;
   teardown: () => void;
 };
 
-// unknown JestWorkerFarm
-
 declare const unknownWorkerFarm: JestWorkerFarm<Record<string, unknown>>;
 
-expectError(unknownWorkerFarm.runTest());
-expectError(unknownWorkerFarm.runTestAsync());
+test('unknown JestWorkerFarm', () => {
+  expect(unknownWorkerFarm).type.not.toHaveProperty('runTest');
+  expect(unknownWorkerFarm).type.not.toHaveProperty('runTestAsync');
 
-expectError(unknownWorkerFarm.getResult());
-expectError(unknownWorkerFarm.isResult);
+  expect(unknownWorkerFarm).type.not.toHaveProperty('getResult');
+  expect(unknownWorkerFarm).type.not.toHaveProperty('isResult');
 
-expectError(unknownWorkerFarm.setup());
-expectError(unknownWorkerFarm.teardown());
+  expect(unknownWorkerFarm).type.not.toHaveProperty('setup');
+  expect(unknownWorkerFarm).type.not.toHaveProperty('teardown');
 
-expectType<Promise<{forceExited: boolean}>>(unknownWorkerFarm.end());
-expectType<NodeJS.ReadableStream>(unknownWorkerFarm.getStderr());
-expectType<NodeJS.ReadableStream>(unknownWorkerFarm.getStdout());
+  expect(unknownWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(unknownWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-// detected JestWorkerFarm
+  expect(unknownWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(unknownWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
+});
 
-declare const detectedWorkerFarm: JestWorkerFarm<typeof testWorker>;
+declare const inferredWorkerFarm: JestWorkerFarm<typeof testWorker>;
 
-expectType<Promise<void>>(detectedWorkerFarm.runTest('abc', true));
-expectType<Promise<void>>(detectedWorkerFarm.runTestAsync(123, 456));
+test('inferred JestWorkerFarm', () => {
+  expect(inferredWorkerFarm.runTest('abc', true)).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.runTestAsync(123, 456)).type.toBe<Promise<void>>();
 
-expectType<Promise<void>>(detectedWorkerFarm.doSomething());
-expectType<Promise<void>>(detectedWorkerFarm.doSomething());
-expectType<Promise<void>>(detectedWorkerFarm.doSomethingAsync());
-expectType<Promise<void>>(detectedWorkerFarm.doSomethingAsync());
+  expect(inferredWorkerFarm.doSomething()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomething()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
 
-expectError(detectedWorkerFarm.runTest());
-expectError(detectedWorkerFarm.runTest('abc'));
-expectError(detectedWorkerFarm.runTestAsync());
-expectError(detectedWorkerFarm.runTestAsync(123));
-expectError(detectedWorkerFarm.doSomething(123));
-expectError(detectedWorkerFarm.doSomethingAsync('abc'));
+  expect(inferredWorkerFarm.runTest()).type.toRaiseError();
+  expect(inferredWorkerFarm.runTest('abc')).type.toRaiseError();
+  expect(inferredWorkerFarm.runTestAsync()).type.toRaiseError();
+  expect(inferredWorkerFarm.runTestAsync(123)).type.toRaiseError();
+  expect(inferredWorkerFarm.doSomething(123)).type.toRaiseError();
+  expect(inferredWorkerFarm.doSomethingAsync('abc')).type.toRaiseError();
 
-expectError(detectedWorkerFarm.getResult());
-expectError(detectedWorkerFarm.isResult);
+  expect(inferredWorkerFarm).type.not.toHaveProperty('getResult');
+  expect(inferredWorkerFarm).type.not.toHaveProperty('isResult');
 
-expectError(detectedWorkerFarm.setup());
-expectError(detectedWorkerFarm.teardown());
+  expect(inferredWorkerFarm).type.not.toHaveProperty('setup');
+  expect(inferredWorkerFarm).type.not.toHaveProperty('teardown');
 
-expectNotAssignable<Promise<void>>(detectedWorkerFarm.end());
-expectType<Promise<{forceExited: boolean}>>(detectedWorkerFarm.end());
+  expect(inferredWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(inferredWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-expectNotAssignable<Promise<string>>(detectedWorkerFarm.getStderr());
-expectType<NodeJS.ReadableStream>(detectedWorkerFarm.getStderr());
-
-expectNotAssignable<Promise<string>>(detectedWorkerFarm.getStdout());
-expectType<NodeJS.ReadableStream>(detectedWorkerFarm.getStdout());
-
-// typed JestWorkerFarm
+  expect(inferredWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(inferredWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
+});
 
 declare const typedWorkerFarm: JestWorkerFarm<TestWorker>;
 
-expectType<Promise<void>>(typedWorkerFarm.runTest('abc', 123));
-expectType<Promise<void>>(typedWorkerFarm.doSomething());
+test('typed JestWorkerFarm', () => {
+  expect(typedWorkerFarm.runTest('abc', 123)).type.toBe<Promise<void>>();
+  expect(typedWorkerFarm.doSomething()).type.toBe<Promise<void>>();
 
-expectError(typedWorkerFarm.runTest());
-expectError(typedWorkerFarm.runTest('abc'));
-expectError(typedWorkerFarm.doSomething('abc'));
+  expect(typedWorkerFarm.runTest()).type.toRaiseError();
+  expect(typedWorkerFarm.runTest('abc')).type.toRaiseError();
+  expect(typedWorkerFarm.doSomething('abc')).type.toRaiseError();
 
-expectError(typedWorkerFarm.isResult);
-expectError(typedWorkerFarm.runTestAsync());
+  expect(typedWorkerFarm).type.not.toHaveProperty('isResult');
+  expect(typedWorkerFarm).type.not.toHaveProperty('runTestAsync');
 
-expectError(typedWorkerFarm.setup());
-expectError(typedWorkerFarm.teardown());
+  expect(typedWorkerFarm).type.not.toHaveProperty('setup');
+  expect(typedWorkerFarm).type.not.toHaveProperty('teardown');
 
-expectType<Promise<void>>(typedWorkerFarm.start());
+  expect(typedWorkerFarm.start()).type.toBe<Promise<void>>();
+  expect(typedWorkerFarm.end()).type.toBe<Promise<{forceExited: boolean}>>();
 
-expectNotAssignable<Promise<void>>(typedWorkerFarm.end());
-expectType<Promise<{forceExited: boolean}>>(typedWorkerFarm.end());
-
-expectNotAssignable<Promise<string>>(typedWorkerFarm.getStderr());
-expectType<NodeJS.ReadableStream>(typedWorkerFarm.getStderr());
-
-expectNotAssignable<Promise<string>>(typedWorkerFarm.getStdout());
-expectType<NodeJS.ReadableStream>(typedWorkerFarm.getStdout());
+  expect(typedWorkerFarm.getStderr()).type.toBe<NodeJS.ReadableStream>();
+  expect(typedWorkerFarm.getStdout()).type.toBe<NodeJS.ReadableStream>();
+});

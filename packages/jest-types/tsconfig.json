@@ -5,5 +5,5 @@
     "outDir": "build"
   },
   "include": ["./src/**/*"],
-  "references": [{"path": "../jest-schemas"}]
+  "references": [{"path": "../jest-pattern"}, {"path": "../jest-schemas"}]
 }

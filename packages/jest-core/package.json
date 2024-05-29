@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "30.0.0-alpha.3",
+  "version": "30.0.0-alpha.4",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@jest/console": "workspace:*",
+    "@jest/pattern": "workspace:*",
     "@jest/reporters": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",
