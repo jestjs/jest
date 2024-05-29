@@ -2011,9 +2011,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@crowdin/cli@npm:^3.5.2":
-  version: 3.19.3
-  resolution: "@crowdin/cli@npm:3.19.3"
+"@crowdin/cli@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@crowdin/cli@npm:4.0.0"
   dependencies:
     command-exists-promise: ^2.0.2
     node-fetch: 2.7.0
@@ -2022,7 +2022,7 @@ __metadata:
     yauzl: ^3.1.0
   bin:
     crowdin: jdeploy-bundle/jdeploy.js
-  checksum: 33e131c11d7d8d2f9d8863e7869e0ed201156bc3892e96d1b6cbfbc7d4f145ca2198495db38eb871862902a2e6ad8fc01815ce690829a7812544c367c90f2f8f
+  checksum: 6cb5b84ed98f28693dcb921ffcfd9f2554f6da7890351dc5abb4d91655d883c4d7f9000986cda20c8bc01f3804c83af1f764eee188df5520e4dc6921825be5fb
   languageName: node
   linkType: hard
 
@@ -3036,7 +3036,7 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
-    "@crowdin/cli": ^3.5.2
+    "@crowdin/cli": ^4.0.0
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@lerna-lite/cli": ^3.0.0
@@ -13343,7 +13343,7 @@ __metadata:
   resolution: "jest-website@workspace:website"
   dependencies:
     "@babel/core": ^7.11.6
-    "@crowdin/cli": ^3.5.2
+    "@crowdin/cli": ^4.0.0
     "@docusaurus/core": ^3.0.0
     "@docusaurus/module-type-aliases": ^3.0.0
     "@docusaurus/plugin-client-redirects": ^3.0.0
