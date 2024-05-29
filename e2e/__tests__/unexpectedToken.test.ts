@@ -17,7 +17,7 @@ afterEach(() => cleanup(DIR));
 
 test('triggers unexpected token error message for non-JS assets', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'asset.css': '.style {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -37,7 +37,7 @@ test('triggers unexpected token error message for non-JS assets', () => {
 
 test('triggers unexpected token error message for untranspiled node_modules', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'node_modules/untranspiled-module': 'import {module} from "some-module"',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -59,7 +59,7 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
 
 test('does not trigger unexpected token error message for regular syntax errors', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'faulty.js': 'import {module from "some-module"',
     'faulty2.js': 'const name = {first: "Name" second: "Second"}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),

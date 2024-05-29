@@ -25,6 +25,7 @@
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/types": "^7.3.3",
     "@jest/expect-utils": "workspace:*",
+    "@jest/snapshot-utils": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
     "babel-preset-current-node-syntax": "^1.0.0",
