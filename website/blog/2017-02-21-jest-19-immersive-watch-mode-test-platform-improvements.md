@@ -83,7 +83,7 @@ We now also error on invalid CLI arguments instead of ignoring them. But we've g
 
 We're close to almost full feature parity with the `expect` npm package. [Michael Jackson](https://twitter.com/mjackson), the author of the package, agreed to [donate](https://github.com/jestjs/jest/issues/1679) it to the Jest project, which means that `jest-matchers` will be renamed to `expect`. Since our version of `expect` is not intended to be fully compatible, [Christopher Chedeau](https://twitter.com/Vjeux) is working on a codemod to make the transition painless. Christopher also worked on a number of improvements to `jest-matchers` which enables it to be used outside of Jest and even [works inside browsers](https://github.com/jestjs/jest/pull/2795).
 
-## [eslint-plugin-jest](https://github.com/jestjs/jest/tree/main/packages/eslint-plugin-jest) – our very own ESLint plugin
+## [eslint-plugin-jest](https://github.com/jest-community/eslint-plugin-jest) – our very own ESLint plugin
 
 Thanks to [Jonathan Kim](https://twitter.com/jonnykim) Jest finally has its own official ESLint plugin. It exposes three rules:
 
