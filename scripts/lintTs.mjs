@@ -58,6 +58,7 @@ const packagesNotToTest = [
   'jest-runner',
   'jest-runtime',
   'jest-snapshot',
+  'jest-snapshot-utils',
   'jest-util',
   'jest-validate',
   'jest-worker',
