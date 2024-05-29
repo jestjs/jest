@@ -35,6 +35,7 @@ exports[`prints the config object 1`] = `
     "modulePathIgnorePatterns": [],
     "modulePaths": [],
     "openHandlesTimeout": 1000,
+    "preserveLoadOrder": false,
     "prettierPath": "prettier",
     "reporters": [
       "default",
@@ -111,6 +112,7 @@ exports[`prints the config object 1`] = `
     "onlyFailures": false,
     "openHandlesTimeout": 1000,
     "passWithNoTests": false,
+    "preserveLoadOrder": false,
     "projects": [],
     "reporters": [],
     "rootDir": "/test_root_dir/",

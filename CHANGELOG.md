@@ -36,6 +36,7 @@
 - `[jest-snapshot]` Support Prettier 3 ([#14566](https://github.com/facebook/jest/pull/14566))
 - `[@jest/util-snapshot]` Extract utils used by tooling from `jest-snapshot` into its own package ([#15095](https://github.com/facebook/jest/pull/15095))
 - `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/facebook/jest/pull/14470))
+- `[jest-runtime] provide an option to preserve the load order across CJS and ESM modules. Useful when load order is important (e.g., implicit dependencies or global declarations) ([#15031](https://github.com/jestjs/jest/pull/15031))
 
 ### Fixes
 

@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": {
+        "require": "./index.cjs",
+        "import": "./index.js"
+      }
+    }
+  }
+}
