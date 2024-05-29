@@ -13197,7 +13197,6 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/babel__core": ^7.1.14
     "@types/graceful-fs": ^4.1.3
-    "@types/natural-compare": ^1.4.0
     "@types/prettier-v2": "npm:@types/prettier@^2.1.5"
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.1
@@ -13211,7 +13210,6 @@ __metadata:
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    natural-compare: ^1.4.0
     prettier: ^3.0.3
     prettier-v2: "npm:prettier@^2.1.5"
     pretty-format: "workspace:*"
