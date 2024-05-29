@@ -34,8 +34,6 @@ export type MatchSnapshotConfig = {
   received: any;
 };
 
-export type SnapshotData = Record<string, string>;
-
 export interface SnapshotMatchers<R extends void | Promise<void>, T> {
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.

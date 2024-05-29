@@ -18,7 +18,7 @@ afterEach(() => cleanup(DIR));
 describe('--findRelatedTests flag', () => {
   test('runs tests related to filename', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/test.test.js': `
       const a = require('../a');
       test('a', () => {});
@@ -44,7 +44,7 @@ describe('--findRelatedTests flag', () => {
     }
 
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/test.test.js': `
       const a = require('../a');
       test('a', () => {});
@@ -65,7 +65,7 @@ describe('--findRelatedTests flag', () => {
 
   test('runs tests related to filename with a custom dependency extractor', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/test-skip-deps.test.js': `
       const dynamicImport = path => Promise.resolve(require(path));
       test('a', () => dynamicImport('../a').then(a => {
@@ -118,7 +118,7 @@ describe('--findRelatedTests flag', () => {
 
   test('runs tests related to filename with a custom dependency extractor written in ESM', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/test-skip-deps.test.js': `
       const dynamicImport = path => Promise.resolve(require(path));
       test('a', () => dynamicImport('../a').then(a => {
@@ -168,7 +168,7 @@ describe('--findRelatedTests flag', () => {
 
   test('generates coverage report for filename', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/a.test.js': `
         require('../a');
         require('../b');
@@ -219,7 +219,7 @@ describe('--findRelatedTests flag', () => {
 
   test('coverage configuration is applied correctly', () => {
     writeFiles(DIR, {
-      '.watchmanconfig': '',
+      '.watchmanconfig': '{}',
       '__tests__/a.test.js': `
         require('../a');
         test('a', () => expect(1).toBe(1));
