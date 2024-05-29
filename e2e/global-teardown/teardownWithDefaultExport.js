@@ -6,6 +6,6 @@
  */
 
 export default function (globalConfig, projectConfig): void {
-  console.log(globalConfig.testPathPatterns);
+  console.log(globalConfig.testPathPatterns.patterns);
   console.log(projectConfig.cache);
 }

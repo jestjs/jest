@@ -40,6 +40,7 @@
     "v8-to-istanbul": "^9.0.1"
   },
   "devDependencies": {
+    "@jest/pattern": "workspace:*",
     "@jest/test-utils": "workspace:*",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.3",

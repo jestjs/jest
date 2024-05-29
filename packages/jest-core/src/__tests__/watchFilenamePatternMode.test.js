@@ -7,6 +7,7 @@
  */
 
 import chalk from 'chalk';
+import {TestPathPatterns} from '@jest/pattern';
 // eslint-disable-next-line import/order
 import {KEYS} from 'jest-watcher';
 
@@ -72,7 +73,7 @@ const nextTick = () => new Promise(resolve => process.nextTick(resolve));
 
 const globalConfig = {
   rootDir: '',
-  testPathPatterns: [],
+  testPathPatterns: new TestPathPatterns([]),
   watch: true,
 };
 

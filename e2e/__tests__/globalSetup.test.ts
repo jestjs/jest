@@ -109,7 +109,7 @@ test('should not call a globalSetup of a project if there are no tests to run fr
 
   const result = runWithJson(e2eDir, [
     `--config=${configPath}`,
-    '--testPathPatterns=project-1',
+    '--testPathPatterns=setup1',
   ]);
 
   expect(result.exitCode).toBe(0);

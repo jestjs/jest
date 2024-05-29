@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = function (globalConfig, projectConfig) {
-  console.log(globalConfig.testPathPatterns.patterns);
-  console.log(projectConfig.cache);
-};
+'use strict';
+
+it('test', () => {});

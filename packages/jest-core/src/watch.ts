@@ -11,12 +11,12 @@ import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
+import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
-  TestPathPatterns,
   isInteractive,
   preRunMessage,
   requireOrImportModule,
@@ -230,11 +230,14 @@ export default async function watch(
 
   const emitFileChange = () => {
     if (hooks.isUsed('onFileChange')) {
-      const testPathPatterns = new TestPathPatterns([], globalConfig);
       const projects = searchSources.map(({context, searchSource}) => ({
         config: context.config,
         testPaths: searchSource
-          .findMatchingTests(testPathPatterns)
+          .findMatchingTests(
+            new TestPathPatterns([]).toExecutor({
+              rootDir: context.config.rootDir,
+            }),
+          )
           .tests.map(t => t.path),
       }));
       hooks.getEmitter().onFileChange({projects});
@@ -533,7 +536,7 @@ const usage = (
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {
-  const testPathPatterns = TestPathPatterns.fromGlobalConfig(globalConfig);
+  const testPathPatterns = globalConfig.testPathPatterns;
   const messages = [
     activeFilters(globalConfig),
 

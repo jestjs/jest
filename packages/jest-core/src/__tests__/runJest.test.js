@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import runJest from '../runJest';
 
 jest.mock('@jest/console');
@@ -23,7 +24,7 @@ describe('runJest', () => {
       contexts: [],
       globalConfig: {
         rootDir: '',
-        testPathPatterns: [],
+        testPathPatterns: new TestPathPatterns([]),
         testSequencer: require.resolve('@jest/test-sequencer'),
         watch: true,
       },

@@ -13,6 +13,7 @@ import merge = require('deepmerge');
 import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
+import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver, {
@@ -22,7 +23,6 @@ import Resolver, {
   resolveWatchPlugin,
 } from 'jest-resolve';
 import {
-  TestPathPatterns,
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,
@@ -393,10 +393,7 @@ const normalizeReporters = ({
   });
 };
 
-const buildTestPathPatterns = (
-  argv: Config.Argv,
-  rootDir: string,
-): TestPathPatterns => {
+const buildTestPathPatterns = (argv: Config.Argv): TestPathPatterns => {
   const patterns = [];
 
   if (argv._) {
@@ -406,12 +403,9 @@ const buildTestPathPatterns = (
     patterns.push(...argv.testPathPatterns);
   }
 
-  const config = {rootDir};
-  const testPathPatterns = new TestPathPatterns(patterns, config);
+  const testPathPatterns = new TestPathPatterns(patterns);
 
-  try {
-    testPathPatterns.validate();
-  } catch {
+  if (!testPathPatterns.isValid()) {
     clearLine(process.stdout);
 
     // eslint-disable-next-line no-console
@@ -422,7 +416,7 @@ const buildTestPathPatterns = (
       ),
     );
 
-    return new TestPathPatterns([], config);
+    return new TestPathPatterns([]);
   }
 
   return testPathPatterns;
@@ -1012,8 +1006,8 @@ export default async function normalize(
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
-  const testPathPatterns = buildTestPathPatterns(argv, options.rootDir);
-  newOptions.testPathPatterns = testPathPatterns.patterns;
+  const testPathPatterns = buildTestPathPatterns(argv);
+  newOptions.testPathPatterns = testPathPatterns;
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = Number.parseInt(

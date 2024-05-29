@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {TestPathPatterns} from '@jest/pattern';
 import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
@@ -111,12 +112,14 @@ describe('SearchSource', () => {
       filter?: Filter,
     ) => {
       const {searchSource, config} = await initSearchSource(initialOptions);
+      const allConfig = {
+        ...config,
+        ...initialOptions,
+        testPathPatterns: new TestPathPatterns([]),
+      };
       const {tests: paths} = await searchSource.getTestPaths(
-        {
-          ...config,
-          ...initialOptions,
-          testPathPatterns: [],
-        },
+        allConfig,
+        allConfig,
         null,
         filter,
       );
