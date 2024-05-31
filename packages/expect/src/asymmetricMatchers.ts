@@ -136,6 +136,10 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'object';
     }
 
+    if (this.sample == Array) {
+      return Array.isArray(other);
+    }
+
     return other instanceof this.sample;
   }
 
@@ -162,6 +166,10 @@ class Any extends AsymmetricMatcher<any> {
 
     if (this.sample == Boolean) {
       return 'boolean';
+    }
+
+    if (Array.isArray(this.sample)) {
+      return 'array';
     }
 
     return fnNameFor(this.sample);
