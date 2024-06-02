@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "colors": "^1.4.0",
-    "discord.js": "14.3.0",
+    "discord.js": "14.15.3",
     "iso-constants": "^0.1.2",
     "yargs": "^17.5.1"
   },
