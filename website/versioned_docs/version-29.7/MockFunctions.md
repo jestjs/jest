@@ -296,8 +296,6 @@ expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 // The last call to the mock function was called with the specified args
 expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
-// All calls and the name of the mock is written as a snapshot
-expect(mockFunc).toMatchSnapshot();
 ```
 
 These matchers are sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
@@ -319,10 +317,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual([
 // (note that there is no sugar helper for this specific of an assertion)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 
-// A snapshot will check that a mock was invoked the same number of times,
-// in the same order, with the same arguments. It will also assert on the name.
-expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
-expect(mockFunc.getMockName()).toBe('a mock name');
+
 ```
 
 For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
