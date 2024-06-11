@@ -9,7 +9,6 @@
 import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
-import {onNodeVersions} from '@jest/test-utils';
 import {
   formatExecError,
   formatResultsErrors,
@@ -579,24 +578,18 @@ it('should return the error cause if there is one', () => {
   expect(message).toMatchSnapshot();
 });
 
-// TODO remove this wrapper when the lowest supported Node version is v16
-onNodeVersions('>=15.0.0', () => {
-  it('should return the inner errors of an AggregateError', () => {
-    // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
-    const aggError = new AggregateError([
-      new Error('Err 1'),
-      new Error('Err 2'),
-    ]);
-    const message = formatExecError(
-      aggError,
-      {
-        rootDir: '',
-        testMatch: [],
-      },
-      {
-        noStackTrace: false,
-      },
-    );
-    expect(message).toMatchSnapshot();
-  });
+it('should return the inner errors of an AggregateError', () => {
+  // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
+  const aggError = new AggregateError([new Error('Err 1'), new Error('Err 2')]);
+  const message = formatExecError(
+    aggError,
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+  expect(message).toMatchSnapshot();
 });

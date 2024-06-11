@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {alignedAnsiStyleSerializer, onNodeVersions} from '@jest/test-utils';
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -302,36 +302,32 @@ describe('toThrow', () => {
         }).not.toThrow(expected);
       });
 
-      onNodeVersions('>=16.9.0', () => {
-        test('isNot true, incorrect cause', () => {
-          jestExpect(() => {
-            throw new Error('good', {cause: errorA});
-          }).not.toThrow(expected);
-        });
+      test('isNot true, incorrect cause', () => {
+        jestExpect(() => {
+          throw new Error('good', {cause: errorA});
+        }).not.toThrow(expected);
       });
     });
 
     describe('fail', () => {
-      onNodeVersions('>=16.9.0', () => {
-        test('isNot false, incorrect message', () => {
-          expect(() =>
-            jestExpect(() => {
-              throw new Error('bad', {cause: errorB});
-            }).toThrow(expected),
-          ).toThrow(
-            /^(?=.*Expected message and cause: ).*Received message and cause: /s,
-          );
-        });
+      test('isNot false, incorrect message', () => {
+        expect(() =>
+          jestExpect(() => {
+            throw new Error('bad', {cause: errorB});
+          }).toThrow(expected),
+        ).toThrow(
+          /^(?=.*Expected message and cause: ).*Received message and cause: /s,
+        );
+      });
 
-        test('isNot true, incorrect cause', () => {
-          expect(() =>
-            jestExpect(() => {
-              throw new Error('good', {cause: errorA});
-            }).toThrow(expected),
-          ).toThrow(
-            /^(?=.*Expected message and cause: ).*Received message and cause: /s,
-          );
-        });
+      test('isNot true, incorrect cause', () => {
+        expect(() =>
+          jestExpect(() => {
+            throw new Error('good', {cause: errorA});
+          }).toThrow(expected),
+        ).toThrow(
+          /^(?=.*Expected message and cause: ).*Received message and cause: /s,
+        );
       });
     });
   });
