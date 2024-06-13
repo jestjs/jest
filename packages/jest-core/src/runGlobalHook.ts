@@ -20,30 +20,40 @@ export default async function runGlobalHook({
   globalConfig: Config.GlobalConfig;
   moduleName: 'globalSetup' | 'globalTeardown';
 }): Promise<void> {
-  const globalModulePaths = new Set(
-    allTests.map(test => test.context.config[moduleName]),
+  const {configs} = allTests.reduce<{
+    ids: Array<string>;
+    configs: Array<Config.ProjectConfig>;
+  }>(
+    (acc, test) => {
+      const hook = test.context.config[moduleName];
+      if (!hook) return acc;
+
+      const id = test.context.config.id;
+      const registered = acc.ids.includes(id);
+      if (registered) return acc;
+
+      acc.ids.push(id);
+      acc.configs.push(test.context.config);
+      return acc;
+    },
+    {configs: [], ids: []},
   );
 
   if (globalConfig[moduleName]) {
-    globalModulePaths.add(globalConfig[moduleName]);
+    configs.push({
+      ...allTests[0].context.config,
+      [moduleName]: globalConfig[moduleName],
+    });
   }
 
-  if (globalModulePaths.size > 0) {
-    for (const modulePath of globalModulePaths) {
+  if (configs.length > 0) {
+    for (const config of configs) {
+      const modulePath = config[moduleName];
       if (!modulePath) {
         continue;
       }
 
-      const correctConfig = allTests.find(
-        t => t.context.config[moduleName] === modulePath,
-      );
-
-      const projectConfig = correctConfig
-        ? correctConfig.context.config
-        : // Fallback to first config
-          allTests[0].context.config;
-
-      const transformer = await createScriptTransformer(projectConfig);
+      const transformer = await createScriptTransformer(config);
 
       try {
         await transformer.requireAndTranspileModule(
@@ -55,7 +65,7 @@ export default async function runGlobalHook({
               );
             }
 
-            await globalModule(globalConfig, projectConfig);
+            await globalModule(globalConfig, config);
           },
         );
       } catch (error) {
