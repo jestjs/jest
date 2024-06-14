@@ -41,7 +41,7 @@
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unicorn": "^53.0.0",
+    "eslint-plugin-unicorn": "^54.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
     "glob": "^10.3.10",
