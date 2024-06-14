@@ -36,7 +36,7 @@ const printImmutableEntries = (
   ++depth > config.maxDepth
     ? printAsLeaf(getImmutableName(type))
     : `${getImmutableName(type) + SPACE}{${printIteratorEntries(
-        val.entries(),
+        'entries' in val ? val.entries() : [].entries(),
         config,
         indentation,
         depth,
