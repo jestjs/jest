@@ -287,7 +287,8 @@ export default class CoverageReporter extends BaseReporter {
           if (file.indexOf(absoluteThresholdGroup) === 0) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.PATH;
-            return [...agg, [file, thresholdGroup]];
+            agg.push([file, thresholdGroup]);
+            return agg;
           }
 
           // If the threshold group is not a path it might be a glob:
@@ -304,25 +305,30 @@ export default class CoverageReporter extends BaseReporter {
           if (filesByGlob[absoluteThresholdGroup].includes(file)) {
             groupTypeByThresholdGroup[thresholdGroup] =
               THRESHOLD_GROUP_TYPES.GLOB;
-            return [...agg, [file, thresholdGroup]];
+            agg.push([file, thresholdGroup]);
+            return agg;
           }
 
           return agg;
         }, []);
 
         if (pathOrGlobMatches.length > 0) {
-          return [...files, ...pathOrGlobMatches];
+          files.push(...pathOrGlobMatches);
+          return files;
         }
 
         // Neither a glob or a path? Toss it in global if there's a global threshold:
         if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
           groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
             THRESHOLD_GROUP_TYPES.GLOBAL;
-          return [...files, [file, THRESHOLD_GROUP_TYPES.GLOBAL]];
+          files.push([file, THRESHOLD_GROUP_TYPES.GLOBAL]);
+          return files;
         }
 
         // A covered file that doesn't have a threshold:
-        return [...files, [file, undefined]];
+        files.push([file, undefined]);
+
+        return files;
       }, []);
 
       const getFilesInThresholdGroup = (thresholdGroup: string) =>
