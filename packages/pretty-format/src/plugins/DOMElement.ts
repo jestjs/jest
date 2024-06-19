@@ -47,7 +47,7 @@ const testNode = (val: any) => {
 };
 
 export const test: NewPlugin['test'] = (val: any) =>
-  val?.constructor?.name && testNode(val);
+  val?.constructor && testNode(val);
 
 type HandledType = Element | Text | Comment | DocumentFragment;
 
