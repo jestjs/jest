@@ -2,7 +2,7 @@
 
 ## Code of Conduct
 
-Jest has adopted the OpenJS Code of Conduct that we expect project participants to adhere to. See [the CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
+Jest has adopted the OpenJS Code of Conduct that we expect project participants to adhere to. See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## Open Development
 
