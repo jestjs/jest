@@ -1,12 +1,8 @@
 # How to Contribute
 
-Jest is one of Facebook's open-source projects that is both under very active development and is also being used to ship code to everybody on [Facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully, this document makes the process for contributing clear and answers some questions that you may have.
+## Code of Conduct
 
-If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/jestjs/jest)!
-
-## [Code of Conduct](https://code.facebook.com/codeofconduct)
-
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.facebook.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
+Jest has adopted the OpenJS Code of Conduct that we expect project participants to adhere to. See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 ## Open Development
 
@@ -17,8 +13,6 @@ All work on Jest happens directly on [GitHub](/). Both core team members and ext
 We will do our best to keep `main` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
 
 ### Workflow and Pull Requests
-
-The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delays. We'll do our best to provide updates and feedback throughout the process.
 
 _Before_ submitting a pull request, please make sure the following is done…
 
@@ -54,12 +48,6 @@ _Before_ submitting a pull request, please make sure the following is done…
 
     ```sh
     yarn install
-    ```
-
-    To check your version of Yarn and ensure it's installed you can type:
-
-    ```sh
-    yarn --version
     ```
 
 1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
@@ -202,7 +190,7 @@ We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any a
 
 ### Security Bugs
 
-Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
+See [SECURITY.md](./SECURITY.md) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined there.
 
 ## How to Get in Touch
 
@@ -240,3 +228,23 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 By contributing to Jest, you agree that your contributions will be licensed under its MIT license.
+
+## Publishing a new release
+
+This project uses [`lerna-lite`](https://github.com/lerna-lite/lerna-lite) to publish to npm. To publish a new release, run:
+
+```sh
+$ yarn lerna publish
+```
+
+This will prompt you for which versions to release.
+
+After the release is published, you can create a new release on GitHub with the release notes (copied from [CHANGELOG.md](./CHANGELOG.md)).
+
+In order to publish a pre-release, the same steps apply, but you need to specify some extra flags:
+
+```sh
+$ yarn lerna publish *version-number* --preid alpha --pre-dist-tag next --dist-tag next
+```
+
+Where `version-number` is e.g. `30.0.0-alpha.5`.
