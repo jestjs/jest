@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/// <reference lib="ESNext.Disposable" />
+/// <reference lib="ESNext.Disposable" preserve="true" />
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
