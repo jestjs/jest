@@ -85,7 +85,7 @@ export type Suite = {
   tests: Array<AssertionResult>;
 };
 
-export type TestCaseResult = AssertionResult;
+export type TestCaseResult = AssertionResult & {startedAt?: number | null};
 
 export type TestResult = {
   console?: ConsoleBuffer;
