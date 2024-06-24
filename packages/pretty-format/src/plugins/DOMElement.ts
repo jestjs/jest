@@ -31,9 +31,12 @@ const testHasAttribute = (val: any) => {
 };
 
 const isCustomElement = (val: any) => {
-  const { tagName } = val
-  return ((typeof tagName === 'string' && tagName.includes('-')) || testHasAttribute(val));
-}
+  const {tagName} = val;
+  return (
+    (typeof tagName === 'string' && tagName.includes('-')) ||
+    testHasAttribute(val)
+  );
+};
 
 const testNode = (val: any) => {
   const constructorName = val.constructor.name;
