@@ -13,7 +13,10 @@ import {
 } from '../../types';
 import BaseWorkerPool from '../BaseWorkerPool';
 
-const Worker = jest.fn<(workerOptions: WorkerOptions) => WorkerInterface>();
+const Worker =
+  jest.fn<
+    (workerOptions: Omit<WorkerOptions, 'resourceLimits'>) => WorkerInterface
+  >();
 
 const mockSend = jest.fn();
 

@@ -25,6 +25,7 @@
     "jest-get-type": "workspace:*",
     "jest-matcher-utils": "workspace:*",
     "jest-message-util": "workspace:*",
+    "jest-mock": "workspace:*",
     "jest-util": "workspace:*"
   },
   "devDependencies": {
