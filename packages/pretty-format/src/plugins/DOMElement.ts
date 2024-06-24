@@ -31,7 +31,7 @@ const testHasAttribute = (val: any) => {
 };
 
 const isCustomElement = (val: any) => {
-  const {tagName} = val;
+  const tagName = val?.tagName;
   return (
     (typeof tagName === 'string' && tagName.includes('-')) ||
     testHasAttribute(val)
