@@ -16,12 +16,6 @@ expect(jestExpect('value').toEqual(jestExpect.any(String))).type.toBeVoid();
 expect(jestExpect(123).toEqual(jestExpect.any())).type.toRaiseError();
 expect(jestExpect.not).type.not.toHaveProperty('any');
 
-expect(
-  jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything()),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything(true)),
-).type.toRaiseError();
 expect(jestExpect.not).type.not.toHaveProperty('anything');
 
 expect(
@@ -290,53 +284,6 @@ expect(
   jestExpect(jest.fn()).toHaveBeenCalledTimes('twice'),
 ).type.toRaiseError();
 expect(jestExpect(jest.fn()).toHaveBeenCalledTimes()).type.toRaiseError();
-
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenCalledWith(123, 'value'),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenCalledWith('value', 123),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenCalledWith(
-    jestExpect.stringContaining('value'),
-    123,
-  ),
-).type.toBeVoid();
-
-expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith()).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith('value')).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenLastCalledWith(123)).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenLastCalledWith('value', 123),
-).type.toBeVoid();
-expect(
-  jestExpect(
-    jest.fn<(a: string, b: number) => void>(),
-  ).toHaveBeenLastCalledWith(jestExpect.stringContaining('value'), 123),
-).type.toBeVoid();
-
-expect(jestExpect(jest.fn()).toHaveBeenNthCalledWith(2)).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123),
-).type.toBeVoid();
-expect(
-  jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenNthCalledWith(
-    1,
-    jestExpect.stringContaining('value'),
-    123,
-  ),
-).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenNthCalledWith()).type.toRaiseError();
 
 expect(jestExpect(jest.fn()).toHaveReturned()).type.toBeVoid();
 expect(jestExpect(jest.fn()).toHaveReturned('value')).type.toRaiseError();

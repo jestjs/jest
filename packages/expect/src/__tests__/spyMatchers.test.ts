@@ -7,6 +7,7 @@
 
 import * as Immutable from 'immutable';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import type {FunctionLike} from 'jest-mock';
 import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -25,7 +26,7 @@ declare module '../types' {
 }
 
 // Given a Jest mock function, return a minimal mock of a spy.
-const createSpy = (fn: jest.Mock) => {
+const createSpy = <T extends FunctionLike>(fn: jest.Mock<T>): jest.Mock<T> => {
   const spy = function () {};
 
   spy.calls = {
@@ -37,7 +38,7 @@ const createSpy = (fn: jest.Mock) => {
     },
   };
 
-  return spy;
+  return spy as unknown as jest.Mock<T>;
 };
 
 describe('toHaveBeenCalled', () => {

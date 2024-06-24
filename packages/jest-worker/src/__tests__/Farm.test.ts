@@ -120,7 +120,9 @@ describe('Farm', () => {
   });
 
   it('handles null computeWorkerKey, sending to first worker', async () => {
-    const computeWorkerKey = jest.fn(() => null);
+    const computeWorkerKey = jest.fn<
+      (method: string, ...args: Array<unknown>) => string | null
+    >(() => null);
 
     const farm = new Farm(4, callback, {computeWorkerKey});
 
@@ -144,7 +146,7 @@ describe('Farm', () => {
 
   it('sends the same worker key to the same worker', async () => {
     const computeWorkerKey = jest
-      .fn<() => string>()
+      .fn<(method: string, ...args: Array<unknown>) => string | null>()
       .mockReturnValueOnce('one')
       .mockReturnValueOnce('two')
       .mockReturnValueOnce('one');

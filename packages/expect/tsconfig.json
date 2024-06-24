@@ -12,6 +12,7 @@
     {"path": "../jest-get-type"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
+    {"path": "../jest-mock"},
     {"path": "../jest-util"}
   ]
 }
