@@ -111,7 +111,7 @@ export class Worker {
     }
 
     const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
+      enableWorkerThreads: this._options.enableWorkerThreads ?? true,
       forkOptions: this._options.forkOptions ?? {},
       idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
