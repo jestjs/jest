@@ -37,7 +37,7 @@ exports[`show error message with matching files 1`] = `
         |                  ^
       9 |
 
-      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:927:11)
+      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:937:11)
       at Object.require (index.js:8:18)
       at Object.require (__tests__/test.js:8:11)"
 `;

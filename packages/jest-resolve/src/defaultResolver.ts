@@ -6,6 +6,7 @@
  */
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
+import {fileURLToPath} from 'url';
 import pnpResolver from 'jest-pnp-resolver';
 import {
   type SyncOpts as UpstreamResolveOptions,
@@ -132,6 +133,10 @@ function getPathInModule(
   path: string,
   options: UpstreamResolveOptionsWithConditions,
 ): string {
+  if (path.startsWith('file://')) {
+    path = fileURLToPath(path);
+  }
+
   if (shouldIgnoreRequestForExports(path)) {
     return path;
   }
