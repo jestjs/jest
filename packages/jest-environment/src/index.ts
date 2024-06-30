@@ -393,6 +393,12 @@ export interface Jest {
    */
   unmock(moduleName: string): Jest;
   /**
+   * Indicates that the module system should never return a mocked version of
+   * the specified module when it is being imported (e.g. that it should always
+   * return the real module).
+   */
+  unstable_unmockModule(moduleName: string): Jest;
+  /**
    * Instructs Jest to use fake versions of the global date, performance,
    * time and timer APIs. Fake timers implementation is backed by
    * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).

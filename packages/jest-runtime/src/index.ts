@@ -2159,6 +2159,16 @@ export default class Runtime {
       this._explicitShouldMock.set(moduleID, false);
       return jestObject;
     };
+    const unmockModule = (moduleName: string) => {
+      const moduleID = this._resolver.getModuleID(
+        this._virtualModuleMocks,
+        from,
+        moduleName,
+        {conditions: this.esmConditions},
+      );
+      this._explicitShouldMockModule.set(moduleID, false);
+      return jestObject;
+    };
     const deepUnmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
         this._virtualMocks,
@@ -2414,6 +2424,7 @@ export default class Runtime {
       spyOn,
       unmock,
       unstable_mockModule: mockModule,
+      unstable_unmockModule: unmockModule,
       useFakeTimers,
       useRealTimers,
     };
