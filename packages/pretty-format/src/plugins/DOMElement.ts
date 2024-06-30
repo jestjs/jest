@@ -30,16 +30,21 @@ const testHasAttribute = (val: any) => {
   }
 };
 
+const isCustomElement = (val: any) => {
+  const tagName = val?.tagName;
+  return (
+    (typeof tagName === 'string' && tagName.includes('-')) ||
+    testHasAttribute(val)
+  );
+};
+
 const testNode = (val: any) => {
   const constructorName = val.constructor.name;
-  const {nodeType, tagName} = val;
-  const isCustomElement =
-    (typeof tagName === 'string' && tagName.includes('-')) ||
-    testHasAttribute(val);
+  const {nodeType} = val;
 
   return (
     (nodeType === ELEMENT_NODE &&
-      (ELEMENT_REGEXP.test(constructorName) || isCustomElement)) ||
+      (ELEMENT_REGEXP.test(constructorName) || isCustomElement(val))) ||
     (nodeType === TEXT_NODE && constructorName === 'Text') ||
     (nodeType === COMMENT_NODE && constructorName === 'Comment') ||
     (nodeType === FRAGMENT_NODE && constructorName === 'DocumentFragment')
@@ -47,7 +52,7 @@ const testNode = (val: any) => {
 };
 
 export const test: NewPlugin['test'] = (val: any) =>
-  val?.constructor?.name && testNode(val);
+  (val?.constructor?.name || isCustomElement(val)) && testNode(val);
 
 type HandledType = Element | Text | Comment | DocumentFragment;
 
