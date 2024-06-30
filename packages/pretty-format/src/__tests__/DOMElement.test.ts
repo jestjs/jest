@@ -357,12 +357,14 @@ Testing.`;
     customElements.define('custom-paragraph', CustomParagraphElement, {
       extends: 'p',
     });
+    customElements.define('anonymous-element', class extends HTMLElement {});
 
     const parent = document.createElement('div');
     parent.innerHTML = [
       '<custom-element></custom-element>',
       '<custom-extended-element></custom-extended-element>',
       '<p is="custom-paragraph"></p>',
+      '<anonymous-element></anonymous-element>',
     ].join('');
 
     expect(parent).toPrettyPrintTo(
@@ -373,6 +375,7 @@ Testing.`;
         '  <p',
         '    is="custom-paragraph"',
         '  />',
+        '  <anonymous-element />',
         '</div>',
       ].join('\n'),
     );

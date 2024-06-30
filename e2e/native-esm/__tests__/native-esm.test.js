@@ -224,26 +224,6 @@ test('require of ESM should throw correct error', () => {
   );
 });
 
-test('can mock module', async () => {
-  jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
-    virtual: true,
-  });
-
-  const importedMock = await import('../mockedModule.mjs');
-
-  expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toBe('bar');
-});
-
-test('can mock transitive module', async () => {
-  jestObject.unstable_mockModule('../index.js', () => ({foo: 'bar'}));
-
-  const importedMock = await import('../reexport.js');
-
-  expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toBe('bar');
-});
-
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
 });

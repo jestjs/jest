@@ -292,6 +292,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--onlyFailures`
+
+Alias: `-f`. Run tests that failed in the previous execution.
+
 ### `--openHandlesTimeout=<milliseconds>`
 
 When `--detectOpenHandles` and `--forceExit` are _disabled_, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
