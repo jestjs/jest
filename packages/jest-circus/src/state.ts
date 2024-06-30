@@ -8,13 +8,16 @@
 import type {Circus, Global} from '@jest/types';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
-import {STATE_SYM} from './types';
+import {EVENT_HANDLERS, STATE_SYM} from './types';
 import {makeDescribe} from './utils';
 
-const eventHandlers: Array<Circus.EventHandler> = [
-  eventHandler,
-  formatNodeAssertErrors,
-];
+/* eslint-disable no-restricted-globals */
+const handlers: Array<Circus.EventHandler> = ((global as Global.Global)[
+  EVENT_HANDLERS
+] = ((global as Global.Global)[
+  EVENT_HANDLERS
+] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors]);
+/* eslint-enable */
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
@@ -52,17 +55,24 @@ export const setState = (state: Circus.State): Circus.State =>
 /* eslint-enable */
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
-  for (const handler of eventHandlers) {
+  for (const handler of handlers) {
     await handler(event, getState());
   }
 };
 
 export const dispatchSync = (event: Circus.SyncEvent): void => {
-  for (const handler of eventHandlers) {
+  for (const handler of handlers) {
     handler(event, getState());
   }
 };
 
 export const addEventHandler = (handler: Circus.EventHandler): void => {
-  eventHandlers.push(handler);
+  handlers.push(handler);
+};
+
+export const removeEventHandler = (handler: Circus.EventHandler): void => {
+  const index = handlers.lastIndexOf(handler);
+  if (index !== -1) {
+    handlers.splice(index, 1);
+  }
 };
