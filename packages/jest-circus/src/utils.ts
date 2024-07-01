@@ -11,7 +11,7 @@ import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
-import type {AssertionResult, Status} from '@jest/test-result';
+import type {Status, TestCaseResult} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
 import {
   ErrorWithStack,
@@ -490,7 +490,7 @@ const resolveTestCaseStartInfo = (
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,
-): AssertionResult => {
+): TestCaseResult => {
   let status: Status;
   if (testResult.status === 'skip') {
     status = 'pending';
@@ -517,6 +517,7 @@ export const parseSingleTestResult = (
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: [...testResult.retryReasons],
+    startedAt: testResult.startedAt,
     status,
     title,
   };
