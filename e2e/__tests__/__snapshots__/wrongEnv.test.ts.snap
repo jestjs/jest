@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Wrong globals for environment on node <21 print useful error for navigator 1`] = `
+exports[`Wrong globals for environment on node <=18 print useful error for navigator 1`] = `
 "FAIL __tests__/node.js
   ✕ use navigator
   ○ skipped use document
