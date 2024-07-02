@@ -26,6 +26,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       state.includeTestLocationInResult = true;
       break;
     }
+    case 'include_detailed_errors_in_result': {
+      state.includeDetailedErrorsInResult = true;
+      break;
+    }
     case 'hook_start': {
       event.hook.seenDone = false;
       break;

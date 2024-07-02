@@ -242,6 +242,7 @@ export const RawInitialOptions = Type.Partial(
     coverageProvider: RawCoverageProvider,
     coverageReporters: RawCoverageReporters,
     coverageThreshold: RawCoverageThreshold,
+    detailedErrorsInResults: Type.Boolean(),
     dependencyExtractor: Type.String(),
     detectLeaks: Type.Boolean(),
     detectOpenHandles: Type.Boolean(),

@@ -176,6 +176,9 @@ const config: Config = {
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
 
+  // Add detailed error information to the test results for tooling
+  // detailedErrorsInResults: false,
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
@@ -380,6 +383,9 @@ const config = {
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
 
+  // Add detailed error information to the test results for tooling
+  // detailedErrorsInResults: false,
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
@@ -583,6 +589,9 @@ const config = {
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
+
+  // Add detailed error information to the test results for tooling
+  // detailedErrorsInResults: false,
 
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,

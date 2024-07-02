@@ -89,15 +89,28 @@ test('works with snapshot failures with hint', () => {
   expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
-test('works with error with cause', () => {
+test('cause support is fine when there are no detailed errors in the results', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
 
   expect(summary).toMatchSnapshot();
 });
 
+test('works with error with cause', () => {
+  const {stderr} = runJest(dir, [
+    '--detailed-errors-in-results',
+    'errorWithCause.test.js',
+  ]);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('works with error with cause thrown outside tests', () => {
-  const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
+  const {stderr} = runJest(dir, [
+    '--detailed-errors-in-results',
+    'errorWithCauseInDescribe.test.js',
+  ]);
   const summary = normalizeDots(cleanStderr(stderr));
 
   const sanitizedSummary = summary

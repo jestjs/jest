@@ -236,6 +236,11 @@ export const options: {[key: string]: Options} = {
     description: 'Print debugging info about your jest config.',
     type: 'boolean',
   },
+  detailedErrorsInResults: {
+    description:
+      'Add detailed error information to the test results for tooling',
+    type: 'boolean',
+  },
   detectLeaks: {
     description:
       '**EXPERIMENTAL**: Detect memory leaks in tests. After executing a ' +

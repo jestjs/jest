@@ -158,6 +158,7 @@ const groupOptions = (
     coverageReporters: options.coverageReporters,
     cwd: options.cwd,
     dependencyExtractor: options.dependencyExtractor,
+    detailedErrorsInResults: options.detailedErrorsInResults,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,

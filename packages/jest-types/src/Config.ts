@@ -161,6 +161,7 @@ export type DefaultOptions = {
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
+  detailedErrorsInResults: boolean;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
@@ -337,6 +338,7 @@ export type ProjectConfig = {
   coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
+  detailedErrorsInResults: boolean;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   displayName?: DisplayName;

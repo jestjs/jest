@@ -29,6 +29,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   coverageThreshold:
     'An object that configures minimum threshold enforcement for coverage results',
   dependencyExtractor: 'A path to a custom dependency extractor',
+  detailedErrorsInResults:
+    'Add detailed error information to the test results for tooling',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
   fakeTimers: 'The default configuration for fake timers',
