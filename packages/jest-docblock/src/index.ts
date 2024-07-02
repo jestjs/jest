@@ -6,7 +6,7 @@
  */
 
 import {EOL} from 'os';
-import detectNewline = require('detect-newline');
+import {detectNewline} from 'detect-newline';
 
 type Pragmas = Record<string, string | Array<string>>;
 
