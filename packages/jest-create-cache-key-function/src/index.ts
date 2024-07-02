@@ -38,7 +38,7 @@ type NewGetCacheKeyFunction = (
   options: NewCacheKeyOptions,
 ) => string;
 
-type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
+type GetCacheKeyFunction = OldGetCacheKeyFunction & NewGetCacheKeyFunction;
 
 const {NODE_ENV, BABEL_ENV} = process.env;
 
@@ -65,7 +65,7 @@ function getCacheKeyFunction(
   globalCacheKey: string,
   length: number,
 ): GetCacheKeyFunction {
-  return (sourceText, sourcePath, configString, options) => {
+  return ((sourceText, sourcePath, configString, options) => {
     // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
     // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
     const inferredOptions = options || configString;
@@ -81,7 +81,7 @@ function getCacheKeyFunction(
       .update(instrument ? 'instrument' : '')
       .digest('hex')
       .slice(0, length);
-  };
+  }) as GetCacheKeyFunction;
 }
 
 /**
