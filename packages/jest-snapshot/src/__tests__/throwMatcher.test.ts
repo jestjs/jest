@@ -7,7 +7,9 @@
 
 import {type Context, toThrowErrorMatchingSnapshot} from '../';
 
-const mockedMatch = jest.fn(() => ({
+const mockedMatch = jest.fn<
+  (args: {received: string; testName: string}) => unknown
+>(() => ({
   actual: 'coconut',
   expected: 'coconut',
 }));

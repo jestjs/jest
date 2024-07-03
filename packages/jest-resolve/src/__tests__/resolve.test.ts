@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {fileURLToPath, pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {type IModuleMap, ModuleMap} from 'jest-haste-map';
@@ -150,6 +151,15 @@ describe('findNodeModule', () => {
       expect.objectContaining({name: '__mocks__'}),
       expect.any(String),
     );
+  });
+
+  it('supports file URLs', () => {
+    const path = pathToFileURL(__filename).href;
+    const newPath = Resolver.findNodeModule(path, {
+      basedir: '/',
+    });
+
+    expect(newPath).toBe(__filename);
   });
 
   describe('conditions', () => {
@@ -455,6 +465,15 @@ describe('findNodeModuleAsync', () => {
         packageFilter,
       }),
     );
+  });
+
+  it('supports file URLs', async () => {
+    const path = pathToFileURL(__filename).href;
+    const newPath = await Resolver.findNodeModuleAsync(path, {
+      basedir: '/',
+    });
+
+    expect(newPath).toBe(__filename);
   });
 });
 
