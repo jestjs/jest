@@ -124,6 +124,8 @@ async function registerTsNode(): Promise<Service> {
       moduleTypes: {
         '**': 'cjs',
       },
+      // eslint-disable-next-line no-unneeded-ternary
+      transpileOnly: process.env.DISABLE_TS_NODE == 'True' ? true : false,
     });
   } catch (error: any) {
     if (error.code === 'ERR_MODULE_NOT_FOUND') {
