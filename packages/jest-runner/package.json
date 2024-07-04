@@ -38,7 +38,7 @@
     "jest-util": "workspace:*",
     "jest-watcher": "workspace:*",
     "jest-worker": "workspace:*",
-    "p-limit": "^3.1.0",
+    "p-limit": "^6.0.0",
     "source-map-support": "0.5.13"
   },
   "devDependencies": {
