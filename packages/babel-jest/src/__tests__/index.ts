@@ -169,3 +169,34 @@ test('can pass null to createTransformer', async () => {
     }),
   );
 });
+
+test('include babel-preset-jest by default', () => {
+  defaultBabelJestTransformer.process(sourceString, 'dummy_path.js', {
+    cacheFS: new Map<string, string>(),
+    config: makeProjectConfig(),
+    configString: JSON.stringify(makeProjectConfig()),
+    instrument: false,
+    transformerConfig: {},
+  } as TransformOptions<BabelTransformOptions>);
+
+  expect(loadPartialConfig).toHaveBeenCalledTimes(1);
+  expect(loadPartialConfig).toHaveBeenCalledWith(
+    expect.objectContaining({presets: [require.resolve('babel-preset-jest')]}),
+  );
+});
+
+test('can opting out of babel-preset-jest by passing excludeJestPreset: true', async () => {
+  const transformer = await createTransformer({excludeJestPreset: true});
+  transformer.process(sourceString, 'dummy_path.js', {
+    cacheFS: new Map<string, string>(),
+    config: makeProjectConfig(),
+    configString: JSON.stringify(makeProjectConfig()),
+    instrument: false,
+    transformerConfig: {},
+  } as TransformOptions<BabelTransformOptions>);
+
+  expect(loadPartialConfig).toHaveBeenCalledTimes(1);
+  expect(loadPartialConfig).toHaveBeenCalledWith(
+    expect.objectContaining({presets: []}),
+  );
+});

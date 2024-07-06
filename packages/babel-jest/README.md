@@ -33,3 +33,11 @@ You can also pass further [babel options](https://babeljs.io/docs/options)
   "\\.[jt]sx?$": ["babel-jest", { "extends": "./babel.config.js", "plugins": ["babel-plugin-transform-import-meta"] }]
 },
 ```
+
+By default, `babel-jest` includes `babel-preset-jest`. In addition to the babel options, we introduce a new option, `excludeJestPreset`, which allows you to disable this behavior. Note that this will break `jest.mock` hoisting.
+
+```json
+"transform": {
+  "\\.[jt]sx?$": ["babel-jest", { "excludeJestPreset": true }],
+}
+```
