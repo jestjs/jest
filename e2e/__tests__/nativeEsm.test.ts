@@ -28,7 +28,14 @@ beforeAll(() => {
     const ivm = require('isolated-vm');
     isolatedVmInstalled = ivm != null;
   } catch (error) {
-    console.warn('`isolated-vm` is not installed, skipping tests', error);
+    if (
+      error instanceof Error &&
+      (error as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND'
+    ) {
+      console.warn('`isolated-vm` is not installed, skipping its test');
+    } else {
+      throw error;
+    }
   }
 });
 
