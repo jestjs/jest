@@ -7,6 +7,7 @@
 
 import {createRequire} from 'module';
 import {resolve} from 'path';
+import {isNativeError} from 'util/types';
 import {onNodeVersions} from '@jest/test-utils';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest, {getConfig} from '../runJest';
@@ -29,7 +30,7 @@ beforeAll(() => {
     isolatedVmInstalled = ivm != null;
   } catch (error) {
     if (
-      error instanceof Error &&
+      isNativeError(error) &&
       (error as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND'
     ) {
       console.warn('`isolated-vm` is not installed, skipping its test');
