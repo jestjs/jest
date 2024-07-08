@@ -148,11 +148,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.14.9
-  resolution: "@types/node@npm:20.14.9"
+  version: 20.14.10
+  resolution: "@types/node@npm:20.14.10"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 5e9eda1ac8c6cc6bcd1063903ae195eaede9aad1bdad00408a919409cfbcdd2d6535aa3d50346f0d385528f9e03dafc7d1b3bad25aedb1dcd79a6ad39d06c35d
+  checksum: 2f397d393de8cddb126e0b7999402ea450215ac69d49666ddef4f730a73325054499ce7345f86095e7b935c55b2e02139f3b8b9afc72fb978ed29edf6bb956b0
   languageName: node
   linkType: hard
 
@@ -561,8 +561,8 @@ __metadata:
   linkType: hard
 
 "glob@npm:^10.2.2, glob@npm:^10.3.10":
-  version: 10.4.2
-  resolution: "glob@npm:10.4.2"
+  version: 10.4.3
+  resolution: "glob@npm:10.4.3"
   dependencies:
     foreground-child: ^3.1.0
     jackspeak: ^3.1.2
@@ -572,7 +572,7 @@ __metadata:
     path-scurry: ^1.11.1
   bin:
     glob: dist/esm/bin.mjs
-  checksum: bd7c0e30701136e936f414e5f6f82c7f04503f01df77408f177aa584927412f0bde0338e6ec541618cd21eacc57dde33e7b3c6c0a779cc1c6e6a0e14f3d15d9b
+  checksum: a1daeb570b841480fe95b3dd9492a98a58759186d14cf2ebe81057c3f308b47980d5e757b533422dbc5288ebf7b06b169960ce9f71198d7dbe320bc5068f89f0
   languageName: node
   linkType: hard
 
@@ -710,15 +710,15 @@ __metadata:
   linkType: hard
 
 "jackspeak@npm:^3.1.2":
-  version: 3.4.0
-  resolution: "jackspeak@npm:3.4.0"
+  version: 3.4.1
+  resolution: "jackspeak@npm:3.4.1"
   dependencies:
     "@isaacs/cliui": ^8.0.2
     "@pkgjs/parseargs": ^0.11.0
   dependenciesMeta:
     "@pkgjs/parseargs":
       optional: true
-  checksum: 350f6f311018bb175ffbe736b19c26ac0b134bb5a17a638169e89594eb0c24ab1c658ab3a2fda24ff63b3b19292e1a5ec19d2255bc526df704e8168d392bef85
+  checksum: 772483c6835f01b4e06eaaf3cf7fa65a0d5e0f2fd3b7290f657df4602b013c60efa53bebd64489862bc7a290167e7671bb41a990512c91e25d2e89c82b2628b8
   languageName: node
   linkType: hard
 
@@ -744,9 +744,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^10.0.1, lru-cache@npm:^10.2.0":
-  version: 10.3.0
-  resolution: "lru-cache@npm:10.3.0"
-  checksum: f2289639bd94cf3c87bfd8a77ac991f9afe3af004ddca3548c3dae63ead1c73bba449a60a4e270992e16cf3261b3d4130943234d52ca3a4d4de2fc074a3cc7b5
+  version: 10.4.0
+  resolution: "lru-cache@npm:10.4.0"
+  checksum: 6816a809a225faaa29ae2075ef6493cebb7374c14fc4a56a44f2aeaa2a2dc33c83043eb4d653fc72cf3ea89507dc51def19e6e07fa57351b9f40449d7c37fb0d
   languageName: node
   linkType: hard
 
@@ -996,7 +996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"peek-readable@npm:^5.0.0":
+"peek-readable@npm:^5.1.1":
   version: 5.1.1
   resolution: "peek-readable@npm:5.1.1"
   checksum: 77ca3e7dbd6078d475895a92df07bc60655e46918f2e46d6370dfa136ad06f2cdb70bcb7b59defb5adf47d7f1a667e95075b3a0d2cc23e192392dfcb49904120
@@ -1287,12 +1287,12 @@ __metadata:
   linkType: hard
 
 "strtok3@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "strtok3@npm:7.0.0"
+  version: 7.1.0
+  resolution: "strtok3@npm:7.1.0"
   dependencies:
     "@tokenizer/token": ^0.3.0
-    peek-readable: ^5.0.0
-  checksum: 2ebe7ad8f2aea611dec6742cf6a42e82764892a362907f7ce493faf334501bf981ce21c828dcc300457e6d460dc9c34d644ededb3b01dcb9e37559203cf1748c
+    peek-readable: ^5.1.1
+  checksum: cded3aa66a62ef4a7b1947b099b39b7fd70aa3f9b1af9e51338898786f49f23ffc8900eb8a1ad96060ad0ee7d579378845e71d72bc4731a97a00d9c20a21bcb7
   languageName: node
   linkType: hard
 
