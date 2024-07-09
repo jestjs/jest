@@ -39,7 +39,7 @@
     "chalk": "^4.0.0",
     "ci-info": "^4.0.0",
     "deepmerge": "^4.2.2",
-    "glob": "^10.3.10",
+    "glob": "^11.0.0",
     "graceful-fs": "^4.2.9",
     "jest-circus": "workspace:*",
     "jest-environment-node": "workspace:*",
