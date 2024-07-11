@@ -670,37 +670,55 @@ describe('arrayBufferEquality', () => {
   test('returns false when given non-matching buffers', () => {
     const a = Uint8Array.from([2, 4]).buffer;
     const b = Uint16Array.from([1, 7]).buffer;
-    expect(arrayBufferEquality(a, b)).not.toBeTruthy();
+    expect(arrayBufferEquality(a, b)).toBe(false);
+  });
+
+  test('returns false when given matching buffers of different byte length', () => {
+    const a = Uint8Array.from([1, 2]).buffer;
+    const b = Uint16Array.from([1, 2]).buffer;
+    expect(arrayBufferEquality(a, b)).toBe(false);
   });
 
   test('returns true when given matching buffers', () => {
     const a = Uint8Array.from([1, 2]).buffer;
     const b = Uint8Array.from([1, 2]).buffer;
-    expect(arrayBufferEquality(a, b)).toBeTruthy();
+    expect(arrayBufferEquality(a, b)).toBe(true);
   });
 
   test('returns true when given matching DataView', () => {
     const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
     const b = new DataView(Uint8Array.from([1, 2, 3]).buffer);
-    expect(arrayBufferEquality(a, b)).toBeTruthy();
+    expect(arrayBufferEquality(a, b)).toBe(true);
   });
 
   test('returns false when given non-matching DataView', () => {
     const a = new DataView(Uint8Array.from([1, 2, 3]).buffer);
     const b = new DataView(Uint8Array.from([3, 2, 1]).buffer);
-    expect(arrayBufferEquality(a, b)).toBeFalsy();
+    expect(arrayBufferEquality(a, b)).toBe(false);
+  });
+
+  test('returns true when given matching Float64Array', () => {
+    const a = Float64Array.from(Array.from({length: 10}));
+    const b = Float64Array.from(Array.from({length: 10}));
+    expect(arrayBufferEquality(a, b)).toBe(true);
+  });
+
+  test('returns false when given non-matching Float64Array', () => {
+    const a = Float64Array.from(Array.from({length: 10}));
+    const b = Float64Array.from(Array.from({length: 100}));
+    expect(arrayBufferEquality(a, b)).toBe(false);
   });
 
   test('returns true when given matching URL', () => {
     const a = new URL('https://jestjs.io/');
     const b = new URL('https://jestjs.io/');
-    expect(equals(a, b)).toBeTruthy();
+    expect(equals(a, b)).toBe(true);
   });
 
   test('returns false when given non-matching URL', () => {
     const a = new URL('https://jestjs.io/docs/getting-started');
     const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
-    expect(equals(a, b)).toBeFalsy();
+    expect(equals(a, b)).toBe(false);
   });
 });
 
