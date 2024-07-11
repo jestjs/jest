@@ -18,7 +18,7 @@ import {
   fn,
   replaceProperty,
   spyOn,
-} from '../src/index';
+} from 'jest-mock';
 
 describe('jest.fn()', () => {
   const mockFnImpl: (this: Date, a: string, b?: number) => boolean = (a, b) =>

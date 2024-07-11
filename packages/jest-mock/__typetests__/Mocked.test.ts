@@ -6,7 +6,7 @@
  */
 
 import {describe, expect, test} from 'tstyche';
-import type {MockInstance, Mocked} from '../src/index';
+import type {MockInstance, Mocked} from 'jest-mock';
 
 describe('Mocked', () => {
   test('wraps a class type with type definitions of the Jest mock function', () => {
