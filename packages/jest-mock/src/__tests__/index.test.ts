@@ -242,7 +242,6 @@ describe('moduleMocker', () => {
       );
       const foo = new ClassFooMock();
       expect(typeof foo.foo).toBe('function');
-      expect(typeof foo.foo).toBe('function');
       expect(foo.foo.mock).toBeDefined();
 
       expect(foo.toString.mock).toBeDefined();
