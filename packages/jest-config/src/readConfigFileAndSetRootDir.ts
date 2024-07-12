@@ -124,7 +124,8 @@ async function registerTsNode(): Promise<Service> {
       moduleTypes: {
         '**': 'cjs',
       },
-      transpileOnly: process.env.JEST_CONFIG_TRANSPILE_ONLY == 'True',
+      transpileOnly:
+        process.env.JEST_CONFIG_TRANSPILE_ONLY?.toLowerCase() === 'true',
     });
   } catch (error: any) {
     if (error.code === 'ERR_MODULE_NOT_FOUND') {
