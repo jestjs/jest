@@ -24,14 +24,14 @@ export default function wrapAnsiString(
   while ((match = ANSI_REGEXP.exec(string))) {
     const ansi = match[0];
     const index = match.index;
-    if (index != lastIndex) {
+    if (index !== lastIndex) {
       tokens.push(['string', string.slice(lastIndex, index)]);
     }
     tokens.push(['ansi', ansi]);
     lastIndex = index + ansi.length;
   }
 
-  if (lastIndex != string.length - 1) {
+  if (lastIndex !== string.length - 1) {
     tokens.push(['string', string.slice(lastIndex, string.length)]);
   }
 
