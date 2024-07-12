@@ -105,7 +105,7 @@ jest.mock('graceful-fs', () => {
             ]),
           0,
         );
-      } else if (slash(dir) == '/error') {
+      } else if (slash(dir) === '/error') {
         setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),

@@ -48,7 +48,7 @@ export async function run(
     return;
   }
 
-  if (argv.version == true) {
+  if (argv.version === true) {
     console.log(`v${VERSION}\n`);
     return;
   }

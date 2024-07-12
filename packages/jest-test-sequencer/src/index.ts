@@ -202,9 +202,10 @@ export default class TestSequencer {
       const failedA = this.hasFailed(testA);
       const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
+      const hasTimeB = testB.duration != null;
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
-      } else if (hasTimeA != (testB.duration != null)) {
+      } else if (hasTimeA !== hasTimeB) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
       } else if (testA.duration != null && testB.duration != null) {
