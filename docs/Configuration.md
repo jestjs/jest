@@ -59,6 +59,8 @@ export default async (): Promise<Config> => {
 
 To read TypeScript configuration files Jest requires [`ts-node`](https://npmjs.com/package/ts-node). Make sure it is installed in your project.
 
+To read configuration files without typechecking, You can set `JEST_CONFIG_TRANSPILE_ONLY` environment variable to `true` (case insensitive).
+
 :::
 
 The configuration also can be stored in a JSON file as a plain object:
