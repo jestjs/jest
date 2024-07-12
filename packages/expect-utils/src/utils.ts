@@ -183,6 +183,8 @@ export const iterableEquality = (
     typeof b !== 'object' ||
     Array.isArray(a) ||
     Array.isArray(b) ||
+    ArrayBuffer.isView(a) ||
+    ArrayBuffer.isView(b) ||
     !hasIterator(a) ||
     !hasIterator(b)
   ) {
@@ -413,9 +415,12 @@ export const arrayBufferEquality = (
   let dataViewA = a;
   let dataViewB = b;
 
-  if (a instanceof ArrayBuffer && b instanceof ArrayBuffer) {
+  if (isArrayBuffer(a) && isArrayBuffer(b)) {
     dataViewA = new DataView(a);
     dataViewB = new DataView(b);
+  } else if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
+    dataViewA = new DataView(a.buffer, a.byteOffset, a.byteLength);
+    dataViewB = new DataView(b.buffer, b.byteOffset, b.byteLength);
   }
 
   if (!(dataViewA instanceof DataView && dataViewB instanceof DataView)) {
@@ -436,6 +441,10 @@ export const arrayBufferEquality = (
 
   return true;
 };
+
+function isArrayBuffer(obj: unknown): obj is ArrayBuffer {
+  return Object.prototype.toString.call(obj) === '[object ArrayBuffer]';
+}
 
 export const sparseArrayEquality = (
   a: unknown,

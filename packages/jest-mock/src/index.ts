@@ -628,11 +628,7 @@ export class ModuleMocker {
     ) {
       return metadata.value;
     } else if (metadata.type === 'function') {
-      const prototype =
-        (metadata.members &&
-          metadata.members.prototype &&
-          metadata.members.prototype.members) ||
-        {};
+      const prototype = metadata.members?.prototype?.members ?? {};
       const prototypeSlots = this._getSlots(prototype);
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
