@@ -102,11 +102,11 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
     });
 
     if (skipTypeCheck) {
-      expect(stderr).toMatch(typeErrorString);
-      expect(stderr).not.toMatch(runtimeErrorString);
-    } else {
       expect(stderr).not.toMatch(typeErrorString);
       expect(stderr).toMatch(runtimeErrorString);
+    } else {
+      expect(stderr).toMatch(typeErrorString);
+      expect(stderr).not.toMatch(runtimeErrorString);
     }
 
     expect(exitCode).toBe(1);
