@@ -76,12 +76,42 @@ test('traverses directory tree up until it finds jest.config', () => {
 test('it does type check the config', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-    'jest.config.ts': 'export default { testTimeout: "10000" }',
+    'jest.config.ts': `
+      import {Config} from 'jest';
+      const config: Config = { testTimeout: "10000" };
+      export default config;
+    `,
     'package.json': '{}',
   });
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  expect(stderr).toMatch('must be of type');
+  expect(stderr).toMatch(
+    "TS2322: Type 'string' is not assignable to type 'number'.",
+  );
+  expect(stderr).not.toMatch('Option "testTimeout" must be of type:');
+  expect(exitCode).toBe(1);
+});
+
+test('it can ignore type errors the config', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts': `
+      import {Config} from 'jest';
+      const config: Config = { testTimeout: "10000" };
+      export default config;
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
+    env: {
+      JEST_CONFIG_TRANSPILE_ONLY: 'true',
+    },
+  });
+  expect(stderr).not.toMatch(
+    "TS2322: Type 'string' is not assignable to type 'number'.",
+  );
+  expect(stderr).toMatch('Option "testTimeout" must be of type:');
   expect(exitCode).toBe(1);
 });
 
