@@ -111,6 +111,7 @@
     "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
     "test-ts": "yarn jest --config jest.config.ts.mjs",
     "test-types": "yarn tstyche",
+    "test-with-type-info": "yarn jest e2e/__tests__/jest.config.ts.test.ts",
     "test": "yarn lint && yarn jest",
     "typecheck": "yarn typecheck:examples && yarn typecheck:tests",
     "typecheck:examples": "tsc -p examples/expect-extend && tsc -p examples/typescript",

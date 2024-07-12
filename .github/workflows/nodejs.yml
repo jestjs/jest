@@ -75,6 +75,8 @@ jobs:
         run: yarn typecheck:examples
       - name: typecheck tests
         run: yarn typecheck:tests
+      - name: Run tests depending on type information
+        run: yarn test-with-type-info
 
   lint:
     name: Lint
