@@ -5500,10 +5500,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/picomatch@npm:^2.2.2":
-  version: 2.3.4
-  resolution: "@types/picomatch@npm:2.3.4"
-  checksum: 18966941e46e0eac64b94b4b1b0d840a63576458b26b1abb6f61c38afbb4af031bb12013610b554b923ac4c2199c551411e63401c76884dea8d86ea447a548ef
+"@types/picomatch@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/picomatch@npm:3.0.0"
+  checksum: d1d39f5132a5579ff75fdb31f18b4b2abb850af7bbb361cc773ae536687e1e6d51f20d4772ec71286f608cfe25363a9e25c3ffd58215c650d92b0040f32e74cd
   languageName: node
   linkType: hard
 
@@ -13397,7 +13397,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    "@types/picomatch": ^2.2.2
+    "@types/picomatch": ^3.0.0
     chalk: ^4.0.0
     ci-info: ^4.0.0
     graceful-fs: ^4.2.9
