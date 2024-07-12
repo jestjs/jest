@@ -84,7 +84,7 @@ function eq(
   }
 
   if (a instanceof Error && b instanceof Error) {
-    return a.message == b.message;
+    return a.message === b.message;
   }
 
   if (Object.is(a, b)) {
@@ -95,7 +95,7 @@ function eq(
     return false;
   }
   const className = Object.prototype.toString.call(a);
-  if (className != Object.prototype.toString.call(b)) {
+  if (className !== Object.prototype.toString.call(b)) {
     return false;
   }
   switch (className) {
@@ -116,7 +116,7 @@ function eq(
       // Coerce dates to numeric primitive values. Dates are compared by their
       // millisecond representations. Note that invalid dates with millisecond representations
       // of `NaN` are not equivalent.
-      return +a == +b;
+      return +a === +b;
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source === b.source && a.flags === b.flags;
@@ -151,7 +151,7 @@ function eq(
   bStack.push(b);
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
-  if (strictCheck && className == '[object Array]' && a.length !== b.length) {
+  if (strictCheck && className === '[object Array]' && a.length !== b.length) {
     return false;
   }
 
