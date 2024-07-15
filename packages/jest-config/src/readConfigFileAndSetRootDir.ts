@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson = require('parse-json');
 import stripJsonComments = require('strip-json-comments');
@@ -124,9 +125,14 @@ async function registerTsNode(): Promise<Service> {
       moduleTypes: {
         '**': 'cjs',
       },
+      transpileOnly:
+        process.env.JEST_CONFIG_TRANSPILE_ONLY?.toLowerCase() === 'true',
     });
-  } catch (error: any) {
-    if (error.code === 'ERR_MODULE_NOT_FOUND') {
+  } catch (error) {
+    if (
+      isNativeError(error) &&
+      (error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND'
+    ) {
       throw new Error(
         `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
       );

@@ -53,6 +53,8 @@ jobs:
         run: yarn verify-old-ts
       - name: run ESLint with type info
         run: yarn lint-ts-files
+      - name: Run tests depending on type information
+        run: yarn test-with-type-info
 
   typecheck:
     name: Typecheck Examples and Tests

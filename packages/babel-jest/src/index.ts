@@ -8,8 +8,8 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import {
+  type TransformOptions as BabelTransformOptions,
   type PartialConfig,
-  type TransformOptions,
   transformSync as babelTransform,
   transformAsync as babelTransformAsync,
 } from '@babel/core';
@@ -22,6 +22,10 @@ import type {
   TransformerCreator,
 } from '@jest/transform';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
+
+interface TransformerConfig extends BabelTransformOptions {
+  excludeJestPreset?: boolean;
+}
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -44,11 +48,11 @@ function assertLoadedBabelConfig(
 }
 
 function addIstanbulInstrumentation(
-  babelOptions: TransformOptions,
+  babelOptions: BabelTransformOptions,
   transformOptions: JestTransformOptions,
-): TransformOptions {
+): BabelTransformOptions {
   if (transformOptions.instrument) {
-    const copiedBabelOptions: TransformOptions = {...babelOptions};
+    const copiedBabelOptions: BabelTransformOptions = {...babelOptions};
     copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
     // Copied from jest-runtime transform.js
     copiedBabelOptions.plugins = [
@@ -106,7 +110,7 @@ function getCacheKeyFromConfig(
 function loadBabelConfig(
   cwd: string,
   filename: string,
-  transformOptions: TransformOptions,
+  transformOptions: BabelTransformOptions,
 ): PartialConfig {
   const babelConfig = loadPartialConfig(transformOptions);
 
@@ -118,7 +122,7 @@ function loadBabelConfig(
 async function loadBabelConfigAsync(
   cwd: string,
   filename: string,
-  transformOptions: TransformOptions,
+  transformOptions: BabelTransformOptions,
 ): Promise<PartialConfig> {
   const babelConfig = await loadPartialConfigAsync(transformOptions);
 
@@ -130,9 +134,9 @@ async function loadBabelConfigAsync(
 function loadBabelOptions(
   cwd: string,
   filename: string,
-  transformOptions: TransformOptions,
+  transformOptions: BabelTransformOptions,
   jestTransformOptions: JestTransformOptions,
-): TransformOptions {
+): BabelTransformOptions {
   const {options} = loadBabelConfig(cwd, filename, transformOptions);
 
   return addIstanbulInstrumentation(options, jestTransformOptions);
@@ -141,19 +145,19 @@ function loadBabelOptions(
 async function loadBabelOptionsAsync(
   cwd: string,
   filename: string,
-  transformOptions: TransformOptions,
+  transformOptions: BabelTransformOptions,
   jestTransformOptions: JestTransformOptions,
-): Promise<TransformOptions> {
+): Promise<BabelTransformOptions> {
   const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
 
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
 export const createTransformer: TransformerCreator<
-  SyncTransformer<TransformOptions>,
-  TransformOptions
-> = userOptions => {
-  const inputOptions = userOptions ?? {};
+  SyncTransformer<TransformerConfig>,
+  TransformerConfig
+> = transformerConfig => {
+  const {excludeJestPreset, ...inputOptions} = transformerConfig ?? {};
 
   const options = {
     ...inputOptions,
@@ -167,14 +171,17 @@ export const createTransformer: TransformerCreator<
     },
     compact: false,
     plugins: inputOptions.plugins ?? [],
-    presets: [...(inputOptions.presets ?? []), jestPresetPath],
+    presets: [
+      ...(inputOptions.presets ?? []),
+      ...(excludeJestPreset === true ? [] : [jestPresetPath]),
+    ],
     sourceMaps: 'both',
-  } satisfies TransformOptions;
+  } satisfies BabelTransformOptions;
 
   function mergeBabelTransformOptions(
     filename: string,
     transformOptions: JestTransformOptions,
-  ): TransformOptions {
+  ): BabelTransformOptions {
     const {cwd, rootDir} = transformOptions.config;
     // `cwd` and `root` first to allow incoming options to override it
     return {

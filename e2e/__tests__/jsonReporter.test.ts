@@ -46,28 +46,28 @@ describe('JSON Reporter', () => {
     expect(jsonResult.numPendingTests).toBe(1);
 
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'no ancestors',
+      item => item.title === 'no ancestors',
     );
     let expected = {ancestorTitles: [] as Array<string>};
     expect(noAncestors).toEqual(expect.objectContaining(expected));
     expect(noAncestors).toHaveProperty('duration', expect.any(Number));
 
     const addsNumbers = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'adds numbers',
+      item => item.title === 'adds numbers',
     );
     expected = {ancestorTitles: ['sum']};
     expect(addsNumbers).toEqual(expect.objectContaining(expected));
     expect(addsNumbers).toHaveProperty('duration', expect.any(Number));
 
     const failsTheTest = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'fails the test',
+      item => item.title === 'fails the test',
     );
     expected = {ancestorTitles: ['sum', 'failing tests']};
     expect(failsTheTest).toEqual(expect.objectContaining(expected));
     expect(failsTheTest).toHaveProperty('duration', expect.any(Number));
 
     const skipedTest = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'skipped test',
+      item => item.title === 'skipped test',
     );
     expect(skipedTest).toHaveProperty('duration', null);
   });
@@ -99,19 +99,19 @@ describe('JSON Reporter', () => {
     expect(jsonResult.numPendingTests).toBe(1);
 
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'no ancestors',
+      item => item.title === 'no ancestors',
     );
     let expected = {ancestorTitles: [] as Array<string>};
     expect(noAncestors).toEqual(expect.objectContaining(expected));
 
     const addsNumbers = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'adds numbers',
+      item => item.title === 'adds numbers',
     );
     expected = {ancestorTitles: ['sum']};
     expect(addsNumbers).toEqual(expect.objectContaining(expected));
 
     const failsTheTest = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'fails the test',
+      item => item.title === 'fails the test',
     );
     expected = {ancestorTitles: ['sum', 'failing tests']};
     expect(failsTheTest).toEqual(expect.objectContaining(expected));
