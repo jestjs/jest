@@ -64,7 +64,6 @@ describe('readInitialOptions', () => {
     expect(configPath).toEqual(configFile);
   });
 
-
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(
       'json-config',
@@ -84,13 +83,7 @@ describe('readInitialOptions', () => {
     });
     expect(configPath).toEqual(expectedConfigFile);
   });
-  test('should give an error when there is no loader defined in jest.config.ts', async () => {
-    const rootDir = resolveFixture('ts-config');
-    const error: Error = await proxyReadInitialOptions(undefined, {cwd:rootDir}).catch(
-      error => error,
-    );
-    expect(error.message).toContain('Jest: loader is required for the TypeScript configuration files (https://jestjs.io/docs/configuration)');
-  });
+
   test('should give an error when there are multiple config files', async () => {
     const cwd = resolveFixture('multiple-config-files');
     const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(

@@ -10,8 +10,8 @@ import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson = require('parse-json');
 import stripJsonComments = require('strip-json-comments');
+import type {Config} from '@jest/types';
 import {extract, parse} from 'jest-docblock';
-import {Config} from '@jest/types';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
@@ -94,14 +94,10 @@ const loadTSConfigFile = async (
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
   const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
-  const tsLoader = docblockPragmas['jest-config-loader'];
-  if(tsLoader===undefined){
-    throw new Error(
-       'Jest: loader is required for the TypeScript configuration files (https://jestjs.io/docs/configuration)'
-    );
-  }
+  const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
+
   if (Array.isArray(tsLoader)) {
-    throw new Error(
+    throw new TypeError(
       `Jest: You can only define a single loader through docblocks, got "${tsLoader.join(
         ', ',
       )}"`,
@@ -129,7 +125,8 @@ let registeredCompilerPromise: Promise<TsLoader>;
 
 function getRegisteredCompiler(loader: TsLoaderModule) {
   // Cache the promise to avoid multiple registrations
-  registeredCompilerPromise = registeredCompilerPromise ?? registerTsLoader(loader);
+  registeredCompilerPromise =
+    registeredCompilerPromise ?? registerTsLoader(loader);
   return registeredCompilerPromise;
 }
 
@@ -137,7 +134,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
   try {
     // Register TypeScript compiler instance
     if (loader === 'ts-node') {
-      const tsLoader = await import(/* webpackIgnore: true */'ts-node');
+      const tsLoader = await import(/* webpackIgnore: true */ 'ts-node');
       return tsLoader.register({
         compilerOptions: {
           module: 'CommonJS',
@@ -146,10 +143,12 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
           '**': 'cjs',
         },
         transpileOnly:
-        process.env.JEST_CONFIG_TRANSPILE_ONLY?.toLowerCase() === 'true',
+          process.env.JEST_CONFIG_TRANSPILE_ONLY?.toLowerCase() === 'true',
       });
     } else if (loader === 'esbuild-register') {
-      const tsLoader = await import(/* webpackIgnore: true */'esbuild-register/dist/node');
+      const tsLoader = await import(
+        /* webpackIgnore: true */ 'esbuild-register/dist/node'
+      );
       let instance: {unregister: () => void} | undefined;
       return {
         enabled: (bool: boolean) => {

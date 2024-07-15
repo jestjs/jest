@@ -7,10 +7,9 @@
  * @jest-config-loader esbuild-register
  */
 interface Config {
-    jestConfig: string;
-  }
-  
-  export default {
-    jestConfig: 'jest.config.ts',
-  } as Config;
-  
+  jestConfig: string;
+}
+
+export default {
+  jestConfig: 'jest.config.ts',
+} as Config;
