@@ -15,7 +15,7 @@ import {
 } from '../Utils';
 import {runContinuous} from '../runJest';
 
-const tempDir = path.resolve(tmpdir(), 'circular-inequality-test');
+const tempDir = path.resolve(tmpdir(), 'bigint-inequality-test');
 
 beforeEach(() => {
   createEmptyPackage(tempDir);
@@ -28,10 +28,7 @@ afterEach(() => {
 test('handles circular inequality properly', async () => {
   const testFileContent = `
     it('test', () => {
-      const foo = {};
-      foo.ref = foo;
-
-      expect(foo).toEqual({});
+      expect(BigInt(42)).toBe(BigInt(73));
     });
   `;
 

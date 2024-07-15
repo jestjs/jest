@@ -26,6 +26,7 @@ import {
   WorkerStates,
 } from '../types';
 import WorkerAbstract from './WorkerAbstract';
+import {unpackMessage} from './safeMessageTransferring';
 
 export default class ExperimentalWorker
   extends WorkerAbstract
@@ -177,7 +178,7 @@ export default class ExperimentalWorker
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        this._onProcessEnd(null, response[1]);
+        this._onProcessEnd(null, unpackMessage(response[1]));
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
@@ -213,7 +214,7 @@ export default class ExperimentalWorker
         break;
 
       case PARENT_MESSAGE_CUSTOM:
-        this._onCustomMessage(response[1]);
+        this._onCustomMessage(unpackMessage(response[1]));
         break;
 
       case PARENT_MESSAGE_MEM_USAGE:
