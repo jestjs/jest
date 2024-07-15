@@ -20,7 +20,7 @@
   },
   "peerDependencies": {
     "@types/node": "*",
-    "esbuild-register": ">=3.1.0",
+    "esbuild-register": ">=3.4.0",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
@@ -65,7 +65,7 @@
     "@types/micromatch": "^4.0.7",
     "@types/parse-json": "^4.0.0",
     "esbuild": "^0.15.0",
-    "esbuild-register": "^3.1.0",
+    "esbuild-register": "^3.4.0",
     "semver": "^7.5.3",
     "ts-node": "^10.5.0",
     "typescript": "^5.0.4"

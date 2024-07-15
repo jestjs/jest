@@ -97,7 +97,7 @@ const loadTSConfigFile = async (
   const tsLoader = docblockPragmas['jest-config-loader'];
   if(tsLoader===undefined){
     throw new Error(
-       'Jest: loader is required for the TypeScript configuration files.'
+       'Jest: loader is required for the TypeScript configuration files (https://jestjs.io/docs/configuration)'
     );
   }
   if (Array.isArray(tsLoader)) {

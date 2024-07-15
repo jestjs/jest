@@ -9605,7 +9605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-register@npm:^3.1.0":
+"esbuild-register@npm:^3.4.0":
   version: 3.5.0
   resolution: "esbuild-register@npm:3.5.0"
   dependencies:
@@ -13151,7 +13151,7 @@ __metadata:
     ci-info: ^4.0.0
     deepmerge: ^4.2.2
     esbuild: ^0.15.0
-    esbuild-register: ^3.1.0
+    esbuild-register: ^3.4.0
     glob: ^10.3.10
     graceful-fs: ^4.2.9
     jest-circus: "workspace:*"
@@ -13173,7 +13173,7 @@ __metadata:
     typescript: ^5.0.4
   peerDependencies:
     "@types/node": "*"
-    esbuild-register: ">=3.1.0"
+    esbuild-register: ">=3.4.0"
     ts-node: ">=9.0.0"
   peerDependenciesMeta:
     "@types/node":

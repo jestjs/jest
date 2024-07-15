@@ -6,6 +6,6 @@
  */
 module.exports = async function () {
   return {
-    jestConfig: 'async-config',
+    jestConfig: 'jest.config.js',
   };
 };
