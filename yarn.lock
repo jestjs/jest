@@ -13155,7 +13155,7 @@ __metadata:
     glob: ^10.3.10
     graceful-fs: ^4.2.9
     jest-circus: "workspace:*"
-    jest-docblock: "workspace:^"
+    jest-docblock: "workspace:*"
     jest-environment-node: "workspace:*"
     jest-get-type: "workspace:*"
     jest-regex-util: "workspace:*"
@@ -13198,7 +13198,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-docblock@workspace:*, jest-docblock@workspace:^, jest-docblock@workspace:packages/jest-docblock":
+"jest-docblock@workspace:*, jest-docblock@workspace:packages/jest-docblock":
   version: 0.0.0-use.local
   resolution: "jest-docblock@workspace:packages/jest-docblock"
   dependencies:

@@ -46,7 +46,7 @@
     "glob": "^10.3.10",
     "graceful-fs": "^4.2.9",
     "jest-circus": "workspace:*",
-    "jest-docblock": "workspace:^",
+    "jest-docblock": "workspace:*",
     "jest-environment-node": "workspace:*",
     "jest-get-type": "workspace:*",
     "jest-regex-util": "workspace:*",
