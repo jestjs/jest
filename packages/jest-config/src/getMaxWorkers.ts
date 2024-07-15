@@ -15,7 +15,7 @@ import type {Config} from '@jest/types';
 function getNumCpus(): number {
   return typeof availableParallelism === 'function'
     ? availableParallelism()
-    : cpus()?.length ?? 1;
+    : (cpus()?.length ?? 1);
 }
 
 export default function getMaxWorkers(
