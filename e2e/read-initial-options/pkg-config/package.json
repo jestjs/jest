@@ -1,5 +1,5 @@
 {
   "jest": {
-    "jestConfig": "package.json"
+    "jestConfig": "jest-config"
   }
 }

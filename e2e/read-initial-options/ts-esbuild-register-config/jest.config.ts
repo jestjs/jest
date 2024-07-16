@@ -10,5 +10,5 @@ interface Config {
 }
 
 export default {
-  jestConfig: 'jest.config.ts',
+  jestConfig: 'jest-config',
 } as Config;

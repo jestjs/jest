@@ -43,7 +43,7 @@ describe('readInitialOptions', () => {
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });
-    expect(config).toEqual({jestConfig: 'jest.config.js', rootDir});
+    expect(config).toEqual({jestConfig: 'jest-config', rootDir});
     expect(configPath).toEqual(configFile);
   });
   test.each([
@@ -60,7 +60,7 @@ describe('readInitialOptions', () => {
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });
-    expect(config).toEqual({jestConfig: filename, rootDir});
+    expect(config).toEqual({jestConfig: 'jest-config', rootDir});
     expect(configPath).toEqual(configFile);
   });
 
@@ -78,7 +78,7 @@ describe('readInitialOptions', () => {
     );
 
     expect(config).toEqual({
-      jestConfig: 'jest.config.json',
+      jestConfig: 'jest-config',
       rootDir: path.dirname(expectedConfigFile),
     });
     expect(configPath).toEqual(expectedConfigFile);
@@ -101,7 +101,7 @@ describe('readInitialOptions', () => {
       skipMultipleConfigError: true,
     });
     expect(config).toEqual({
-      jestConfig: 'jest.config.js',
+      jestConfig: 'jest-config',
       rootDir: resolveFixture('multiple-config-files'),
     });
     expect(configPath).toEqual(

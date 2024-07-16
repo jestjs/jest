@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 export default {
-  jestConfig: 'jest.config.mjs',
+  jestConfig: 'jest-config',
 };

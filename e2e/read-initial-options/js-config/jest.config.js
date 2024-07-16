@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 module.exports = {
-  jestConfig: 'jest.config.js',
+  jestConfig: 'jest-config',
 };
