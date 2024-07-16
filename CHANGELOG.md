@@ -2,12 +2,12 @@
 
 ### Features
 
-- `[jest-circus, jest-test-result]` Pass startedAt timestamp in `TestCaseResultObject` seen in `onTestCaseResult` ([#15145](https://github.com/jestjs/jest/pull/15145))
 - `[babel-jest]` Add option `excludeJestPreset` to allow opting out of `babel-preset-jest` ([#15164](https://github.com/jestjs/jest/pull/15164))
 - `[jest-circus, jest-cli, jest-config]` Add `waitNextEventLoopTurnForUnhandledRejectionEvents` flag to minimise performance impact of correct detection of unhandled promise rejections introduced in [#14315](https://github.com/jestjs/jest/pull/14315) ([#14681](https://github.com/jestjs/jest/pull/14681))
 - `[jest-circus]` Add a `waitBeforeRetry` option to `jest.retryTimes` ([#14738](https://github.com/jestjs/jest/pull/14738))
 - `[jest-circus]` Add a `retryImmediately` option to `jest.retryTimes` ([#14696](https://github.com/jestjs/jest/pull/14696))
 - `[jest-circus, jest-jasmine2]` Allow `setupFilesAfterEnv` to export an async function ([#10962](https://github.com/jestjs/jest/issues/10962))
+- `[jest-circus, jest-test-result]` Add `startedAt` timestamp in `TestCaseResultObject` within `onTestCaseResult` ([#15145](https://github.com/jestjs/jest/pull/15145))
 - `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/facebook/jest/pull/14369))
 - `[jest-config]` [**BREAKING**] Update `testMatch` and `testRegex` default option for supporting `mjs`, `cjs`, `mts`, and `cts` ([#14584](https://github.com/jestjs/jest/pull/14584))
 - `[jest-config]` Loads config file from provided path in `package.json` ([#14044](https://github.com/facebook/jest/pull/14044))
