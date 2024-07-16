@@ -43,7 +43,7 @@ describe('readInitialOptions', () => {
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });
-    expect(config).toEqual({jestConfig: 'jest-config', rootDir});
+    expect(config).toEqual({jestConfig: 'jest.config.js', rootDir});
     expect(configPath).toEqual(configFile);
   });
   test.each([
@@ -53,17 +53,24 @@ describe('readInitialOptions', () => {
     ['ts-esbuild-register-config', 'jest.config.ts'],
     ['mjs-config', 'jest.config.mjs'],
     ['json-config', 'jest.config.json'],
-    ['async-config', 'jest.config.js'],
   ])('should read %s/%s file', async (directory: string, filename: string) => {
     const configFile = resolveFixture(directory, filename);
     const rootDir = resolveFixture(directory);
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });
-    expect(config).toEqual({jestConfig: 'jest-config', rootDir});
+    expect(config).toEqual({jestConfig: filename, rootDir});
     expect(configPath).toEqual(configFile);
   });
-
+  test('should read a jest config exporting an async function', async () => {
+    const configFile = resolveFixture('async-config', 'jest.config.js');
+    const rootDir = resolveFixture('async-config');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd: rootDir,
+    });
+    expect(config).toEqual({jestConfig: 'async-config', rootDir});
+    expect(configPath).toEqual(configFile);
+  });
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(
       'json-config',
@@ -78,7 +85,7 @@ describe('readInitialOptions', () => {
     );
 
     expect(config).toEqual({
-      jestConfig: 'jest-config',
+      jestConfig: 'jest.config.json',
       rootDir: path.dirname(expectedConfigFile),
     });
     expect(configPath).toEqual(expectedConfigFile);
@@ -101,7 +108,7 @@ describe('readInitialOptions', () => {
       skipMultipleConfigError: true,
     });
     expect(config).toEqual({
-      jestConfig: 'jest-config',
+      jestConfig: 'jest.config.js',
       rootDir: resolveFixture('multiple-config-files'),
     });
     expect(configPath).toEqual(
