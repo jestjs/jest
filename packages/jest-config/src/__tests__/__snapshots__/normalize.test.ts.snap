@@ -367,7 +367,7 @@ exports[`preset throws when module was found but no "jest-preset.js" or "jest-pr
 exports[`preset throws when preset not found 1`] = `
 "<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
 <red></color>
-<red>  Preset <bold>doesnt-exist</intensity> not found.</color>
+<red>  Preset <bold>doesnt-exist</intensity> not found relative to rootDir <bold>/root/path/foo</intensity>.</color>
 <red></color>
 <red>  <bold>Configuration Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/configuration</color>
