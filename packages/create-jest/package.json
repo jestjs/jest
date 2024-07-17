@@ -23,11 +23,11 @@
   },
   "dependencies": {
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
     "jest-config": "workspace:*",
     "jest-util": "workspace:*",
+    "picocolors": "^1.0.1",
     "prompts": "^2.0.1"
   },
   "engines": {

@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
+import picocolors = require('picocolors');
 import prompts = require('prompts');
 import {constants} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
@@ -37,9 +37,9 @@ export async function runCLI(): Promise<void> {
     clearLine(process.stderr);
     clearLine(process.stdout);
     if (error instanceof Error && Boolean(error?.stack)) {
-      console.error(chalk.red(error.stack));
+      console.error(picocolors.red(error.stack));
     } else {
-      console.error(chalk.red(error));
+      console.error(picocolors.red(String(error)));
     }
 
     exit(1);
@@ -103,7 +103,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   // Start the init process
   console.log();
   console.log(
-    chalk.underline(
+    picocolors.underline(
       'The following questions will help Jest to create a suitable configuration for your project\n',
     ),
   );
@@ -146,7 +146,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
     fs.writeFileSync(projectPackageJsonPath, modifiedPackageJson);
 
     console.log('');
-    console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
+    console.log(`✏️  Modified ${picocolors.cyan(projectPackageJsonPath)}`);
   }
 
   const generatedConfig = generateConfigFile(
@@ -159,6 +159,6 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
 
   console.log('');
   console.log(
-    `📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`,
+    `📝  Configuration file created at ${picocolors.cyan(jestConfigPath)}`,
   );
 }
