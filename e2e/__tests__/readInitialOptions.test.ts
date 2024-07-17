@@ -47,30 +47,26 @@ describe('readInitialOptions', () => {
     expect(configPath).toEqual(configFile);
   });
   test.each([
-    ['js-config', 'jest.config.js'],
-    ['pkg-config', 'package.json'],
-    ['ts-node-config', 'jest.config.ts'],
-    ['ts-esbuild-register-config', 'jest.config.ts'],
-    ['mjs-config', 'jest.config.mjs'],
-    ['json-config', 'jest.config.json'],
-  ])('should read %s/%s file', async (directory: string, filename: string) => {
-    const configFile = resolveFixture(directory, filename);
-    const rootDir = resolveFixture(directory);
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: filename, rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest config exporting an async function', async () => {
-    const configFile = resolveFixture('async-config', 'jest.config.js');
-    const rootDir = resolveFixture('async-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'async-config', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
+    ['js-config', 'jest.config.js', 'jest.config.js'],
+    ['pkg-config', 'package.json', 'package.json'],
+    ['ts-node-config', 'jest.config.ts', 'jest.config.ts'],
+    ['ts-esbuild-register-config', 'jest.config.ts', 'jest.config.ts'],
+    ['mjs-config', 'jest.config.mjs', 'jest.config.mjs'],
+    ['json-config', 'jest.config.json', 'jest.config.json'],
+    ['async-config', 'jest.config.js', 'async-config'],
+  ])(
+    'should read %s/%s file',
+    async (directory: string, filename: string, configString: string) => {
+      const configFile = resolveFixture(directory, filename);
+      const rootDir = resolveFixture(directory);
+      const {config, configPath} = await proxyReadInitialOptions(undefined, {
+        cwd: rootDir,
+      });
+      expect(config).toEqual({jestConfig: configString, rootDir});
+      expect(configPath).toEqual(configFile);
+    },
+  );
+
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(
       'json-config',
