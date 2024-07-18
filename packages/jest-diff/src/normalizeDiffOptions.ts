@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {CompareKeys} from 'pretty-format';
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
@@ -15,14 +15,14 @@ const DIFF_CONTEXT_DEFAULT = 5;
 
 const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   aAnnotation: 'Expected',
-  aColor: chalk.green,
+  aColor: pico.green,
   aIndicator: '-',
   bAnnotation: 'Received',
-  bColor: chalk.red,
+  bColor: pico.red,
   bIndicator: '+',
-  changeColor: chalk.inverse,
+  changeColor: pico.inverse,
   changeLineTrailingSpaceColor: noColor,
-  commonColor: chalk.dim,
+  commonColor: pico.dim,
   commonIndicator: ' ',
   commonLineTrailingSpaceColor: noColor,
   compareKeys: undefined,
@@ -31,7 +31,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   expand: true,
   includeChangeCounts: false,
   omitAnnotationLines: false,
-  patchColor: chalk.yellow,
+  patchColor: pico.yellow,
 };
 
 const getCompareKeys = (compareKeys?: CompareKeys): CompareKeys =>
