@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import * as pico from 'picocolors';
 import slash = require('slash');
 import {ValidationError} from 'jest-validate';
 import {
@@ -88,9 +88,9 @@ const resolveConfigPathByTraversing = (
         if (!isFile(absolutePath)) {
           throw new ValidationError(
             `${BULLET}Validation Error`,
-            `  Configuration in ${chalk.bold(packageJson)} is not valid. ` +
+            `  Configuration in ${pico.bold(packageJson)} is not valid. ` +
               `Jest expects the string configuration to point to a file, but ${absolutePath} is not. ` +
-              `Please check your Jest configuration in ${chalk.bold(
+              `Please check your Jest configuration in ${pico.bold(
                 packageJson,
               )}.`,
             DOCUMENTATION_NOTE,
@@ -171,7 +171,7 @@ function extraIfPackageJson(configPath: string) {
 const makeMultipleConfigsErrorMessage = (
   configPaths: Array<string>,
 ): [string, string, string] => [
-  `${BULLET}${chalk.bold('Multiple configurations found')}`,
+  `${BULLET}${pico.bold('Multiple configurations found')}`,
   [
     ...configPaths.map(
       configPath =>
