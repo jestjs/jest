@@ -9,9 +9,9 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import {types} from 'util';
 import {codeFrameColumns} from '@babel/code-frame';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
+import * as pico from 'picocolors';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
@@ -58,8 +58,8 @@ const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
-const TITLE_BULLET = chalk.bold('\u25CF ');
-const STACK_TRACE_COLOR = chalk.dim;
+const TITLE_BULLET = pico.bold('\u25CF ');
+const STACK_TRACE_COLOR = pico.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(:\d*:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
@@ -111,10 +111,14 @@ function checkForCommonEnvironmentErrors(error: string) {
 
 function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   return (
-    chalk.bold.red(
-      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/configuration#testenvironment-string',
-      )}.\nConsider using the "${env}" test environment.\n\n`,
+    pico.bold(
+      pico.red(
+        `The error below may be caused by using the wrong test environment, see ${pico.dim(
+          pico.underline(
+            'https://jestjs.io/docs/configuration#testenvironment-string',
+          ),
+        )}.\nConsider using the "${env}" test environment.\n\n`,
+      ),
     ) + error
   );
 }
@@ -305,7 +309,7 @@ export const formatPath = (
       micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
-    filePath = chalk.reset.cyan(filePath);
+    filePath = pico.reset(pico.cyan(filePath));
   }
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
@@ -488,12 +492,14 @@ export const formatResultsErrors = (
         content,
       );
 
-      const title = `${chalk.bold.red(
-        TITLE_INDENT +
-          TITLE_BULLET +
-          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
-          result.title,
+      const title = `${pico.bold(
+        pico.red(
+          TITLE_INDENT +
+            TITLE_BULLET +
+            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+            (result.ancestorTitles.length > 0 ? ANCESTRY_SEPARATOR : '') +
+            result.title,
+        ),
       )}\n`;
 
       return `${title}\n${formatErrorStack(
