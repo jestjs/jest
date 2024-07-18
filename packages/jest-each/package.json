@@ -28,9 +28,9 @@
   "license": "MIT",
   "dependencies": {
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
     "jest-get-type": "workspace:*",
     "jest-util": "workspace:*",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*"
   },
   "engines": {
