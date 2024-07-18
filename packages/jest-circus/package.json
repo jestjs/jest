@@ -36,6 +36,7 @@
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "p-limit": "^3.1.0",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",
     "pure-rand": "^6.0.0",
     "slash": "^3.0.0",
