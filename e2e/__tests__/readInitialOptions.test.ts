@@ -86,7 +86,15 @@ describe('readInitialOptions', () => {
     });
     expect(configPath).toEqual(expectedConfigFile);
   });
-
+  test('should give an error when using unsupported loader', async () => {
+    const cwd = resolveFixture('ts-loader-config');
+    const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(
+      error => error,
+    );
+    expect(error.message).toContain(
+      "Jest: 'ts-loader' is not a valid TypeScript configuration loader.",
+    );
+  });
   test('should give an error when there are multiple config files', async () => {
     const cwd = resolveFixture('multiple-config-files');
     const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(

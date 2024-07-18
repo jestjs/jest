@@ -7,10 +7,10 @@
  * @jest-config-loader ts-node
  */
 
-interface Config {
-  jestConfig: string;
-}
+import type {Config} from 'jest';
 
-export default {
-  jestConfig: 'jest.config.ts',
-} as Config;
+const config: Config = {
+  displayName: 'PROJECT 2',
+};
+
+export default config;

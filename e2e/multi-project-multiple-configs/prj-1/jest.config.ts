@@ -4,13 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @jest-config-loader ts-node
+ * @jest-config-loader esbuild-register
  */
 
-interface Config {
-  jestConfig: string;
-}
+import type {Config} from 'jest';
 
-export default {
-  jestConfig: 'jest.config.ts',
-} as Config;
+const config: Config = {
+  displayName: 'PROJECT 1',
+};
+
+export default config;
