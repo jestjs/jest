@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import {
   type StackTraceConfig,
@@ -34,13 +34,13 @@ export default function getConsoleOutput(
     let noCodeFrame = true;
 
     if (type === 'warn') {
-      message = chalk.yellow(message);
-      typeMessage = chalk.yellow(typeMessage);
+      message = pico.yellow(message);
+      typeMessage = pico.yellow(typeMessage);
       noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     } else if (type === 'error') {
-      message = chalk.red(message);
-      typeMessage = chalk.red(typeMessage);
+      message = pico.red(message);
+      typeMessage = pico.red(typeMessage);
       noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     }
@@ -53,8 +53,8 @@ export default function getConsoleOutput(
     const formattedStackTrace = formatStackTrace(origin, config, options);
 
     return `${
-      output + TITLE_INDENT + chalk.dim(typeMessage)
-    }\n${message.trimEnd()}\n${chalk.dim(formattedStackTrace.trimEnd())}\n\n`;
+      output + TITLE_INDENT + pico.dim(typeMessage)
+    }\n${message.trimEnd()}\n${pico.dim(formattedStackTrace.trimEnd())}\n\n`;
   }, '');
 
   return `${logEntries.trimEnd()}\n`;
