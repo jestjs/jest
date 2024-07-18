@@ -13265,9 +13265,9 @@ __metadata:
   dependencies:
     "@jest/test-utils": "workspace:*"
     "@types/node": "*"
-    chalk: ^4.0.0
     jest-diff: "workspace:*"
     jest-get-type: "workspace:*"
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
