@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 
 export default function getNoTestFoundPassWithNoTests(): string {
-  return chalk.bold('No tests found, exiting with code 0');
+  return pico.bold('No tests found, exiting with code 0');
 }

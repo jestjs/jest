@@ -7,9 +7,9 @@
 
 import {performance} from 'perf_hooks';
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
+import * as pico from 'picocolors';
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -129,7 +129,7 @@ export async function runCLI(
     const openHandlesString = pluralize('open handle', formatted.length, 's');
 
     const message =
-      chalk.red(
+      pico.red(
         `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
       ) + formatted.join('\n\n');
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import getProjectDisplayName from './getProjectDisplayName';
 
@@ -29,7 +29,7 @@ export default function getProjectNamesMissingWarning(
   if (opts.ignoreProjects) {
     args.push('--ignoreProjects');
   }
-  return chalk.yellow(
+  return pico.yellow(
     `You provided values for ${args.join(' and ')} but ${
       numberOfProjectsWithoutAName === 1
         ? 'a project does not have a name'

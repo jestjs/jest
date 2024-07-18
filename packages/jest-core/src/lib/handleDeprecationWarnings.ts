@@ -6,7 +6,7 @@
  */
 
 import type {ReadStream, WriteStream} from 'tty';
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import {KEYS} from 'jest-watcher';
 
 export default function handleDeprecationWarnings(
@@ -16,9 +16,9 @@ export default function handleDeprecationWarnings(
   return new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
-        chalk.red('There are deprecation warnings.\n'),
-        `${chalk.dim(' \u203A Press ')}Enter${chalk.dim(' to continue.')}`,
-        `${chalk.dim(' \u203A Press ')}Esc${chalk.dim(' to exit.')}`,
+        pico.red('There are deprecation warnings.\n'),
+        `${pico.dim(' \u203A Press ')}Enter${pico.dim(' to continue.')}`,
+        `${pico.dim(' \u203A Press ')}Esc${pico.dim(' to exit.')}`,
       ];
 
       pipe.write(messages.join('\n'));

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import {isNonNullable} from 'jest-util';
 
@@ -15,16 +15,16 @@ const activeFilters = (globalConfig: Config.GlobalConfig): string => {
   if (testNamePattern || testPathPatterns.isSet()) {
     const filters = [
       testPathPatterns.isSet()
-        ? chalk.dim('filename ') + chalk.yellow(testPathPatterns.toPretty())
+        ? pico.dim('filename ') + pico.yellow(testPathPatterns.toPretty())
         : null,
       testNamePattern
-        ? chalk.dim('test name ') + chalk.yellow(`/${testNamePattern}/`)
+        ? pico.dim('test name ') + pico.yellow(`/${testNamePattern}/`)
         : null,
     ]
       .filter(isNonNullable)
       .join(', ');
 
-    const messages = `\n${chalk.bold('Active Filters: ')}${filters}`;
+    const messages = `\n${pico.bold('Active Filters: ')}${filters}`;
 
     return messages;
   }

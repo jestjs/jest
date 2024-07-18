@@ -6,7 +6,7 @@
  */
 
 import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';
@@ -16,10 +16,10 @@ type RunnerUpdateFunction = (failure?: AssertionLocation) => void;
 const {ARROW, CLEAR} = specialChars;
 
 function describeKey(key: string, description: string) {
-  return `${chalk.dim(`${ARROW}Press`)} ${key} ${chalk.dim(description)}`;
+  return `${pico.dim(`${ARROW}Press`)} ${key} ${pico.dim(description)}`;
 }
 
-const TestProgressLabel = chalk.bold('Interactive Test Progress');
+const TestProgressLabel = pico.bold('Interactive Test Progress');
 
 export default class FailedTestsInteractiveMode {
   private _isActive = false;
@@ -105,7 +105,7 @@ export default class FailedTestsInteractiveMode {
     this._pipe.write(CLEAR);
 
     const messages: Array<string> = [
-      chalk.bold('Watch Usage'),
+      pico.bold('Watch Usage'),
       describeKey('Enter', 'to return to watch mode.'),
     ];
 
@@ -118,8 +118,8 @@ export default class FailedTestsInteractiveMode {
     let stats = `${pluralize('test', this._countPaths)} reviewed`;
 
     if (this._skippedNum > 0) {
-      const skippedText = chalk.bold.yellow(
-        `${pluralize('test', this._skippedNum)} skipped`,
+      const skippedText = pico.bold(
+        pico.yellow(`${pluralize('test', this._skippedNum)} skipped`),
       );
 
       stats = `${stats}, ${skippedText}`;
@@ -129,7 +129,7 @@ export default class FailedTestsInteractiveMode {
       TestProgressLabel,
       `${ARROW}${stats}`,
       '\n',
-      chalk.bold('Watch Usage'),
+      pico.bold('Watch Usage'),
       describeKey('r', 'to restart Interactive Mode.'),
       describeKey('q', 'to quit Interactive Mode.'),
       describeKey('Enter', 'to return to watch mode.'),
@@ -146,8 +146,8 @@ export default class FailedTestsInteractiveMode {
     let stats = `${pluralize('test', numRemaining)} remaining`;
 
     if (this._skippedNum > 0) {
-      const skippedText = chalk.bold.yellow(
-        `${pluralize('test', this._skippedNum)} skipped`,
+      const skippedText = pico.bold(
+        pico.yellow(`${pluralize('test', this._skippedNum)} skipped`),
       );
 
       stats = `${stats}, ${skippedText}`;
@@ -157,7 +157,7 @@ export default class FailedTestsInteractiveMode {
       TestProgressLabel,
       `${ARROW}${stats}`,
       '\n',
-      chalk.bold('Watch Usage'),
+      pico.bold('Watch Usage'),
       describeKey('s', 'to skip the current test.'),
       describeKey('q', 'to quit Interactive Mode.'),
       describeKey('Enter', 'to return to watch mode.'),

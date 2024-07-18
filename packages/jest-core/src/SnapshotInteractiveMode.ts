@@ -6,7 +6,7 @@
  */
 
 import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';
@@ -48,37 +48,35 @@ export default class SnapshotInteractiveMode {
     const numPass = this._countPaths - this._testAssertions.length;
     const numRemaining = this._countPaths - numPass - this._skippedNum;
 
-    let stats = chalk.bold.dim(
-      `${pluralize('snapshot', numRemaining)} remaining`,
+    let stats = pico.bold(
+      pico.dim(`${pluralize('snapshot', numRemaining)} remaining`),
     );
     if (numPass) {
-      stats += `, ${chalk.bold.green(
-        `${pluralize('snapshot', numPass)} updated`,
+      stats += `, ${pico.bold(
+        pico.green(`${pluralize('snapshot', numPass)} updated`),
       )}`;
     }
     if (this._skippedNum) {
-      stats += `, ${chalk.bold.yellow(
-        `${pluralize('snapshot', this._skippedNum)} skipped`,
+      stats += `, ${pico.bold(
+        pico.yellow(`${pluralize('snapshot', this._skippedNum)} skipped`),
       )}`;
     }
     const messages = [
-      `\n${chalk.bold('Interactive Snapshot Progress')}`,
+      `\n${pico.bold('Interactive Snapshot Progress')}`,
       ARROW + stats,
-      `\n${chalk.bold('Watch Usage')}`,
+      `\n${pico.bold('Watch Usage')}`,
 
-      `${chalk.dim(`${ARROW}Press `)}u${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}u${pico.dim(
         ' to update failing snapshots for this test.',
       )}`,
 
-      `${chalk.dim(`${ARROW}Press `)}s${chalk.dim(
-        ' to skip the current test.',
-      )}`,
+      `${pico.dim(`${ARROW}Press `)}s${pico.dim(' to skip the current test.')}`,
 
-      `${chalk.dim(`${ARROW}Press `)}q${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}q${pico.dim(
         ' to quit Interactive Snapshot Mode.',
       )}`,
 
-      `${chalk.dim(`${ARROW}Press `)}Enter${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}Enter${pico.dim(
         ' to trigger a test run.',
       )}`,
     ];
@@ -90,29 +88,29 @@ export default class SnapshotInteractiveMode {
     this._pipe.write(CLEAR);
     const numPass = this._countPaths - this._testAssertions.length;
 
-    let stats = chalk.bold.dim(
-      `${pluralize('snapshot', this._countPaths)} reviewed`,
+    let stats = pico.bold(
+      pico.dim(`${pluralize('snapshot', this._countPaths)} reviewed`),
     );
     if (numPass) {
-      stats += `, ${chalk.bold.green(
-        `${pluralize('snapshot', numPass)} updated`,
+      stats += `, ${pico.bold(
+        pico.green(`${pluralize('snapshot', numPass)} updated`),
       )}`;
     }
     if (this._skippedNum) {
-      stats += `, ${chalk.bold.yellow(
-        `${pluralize('snapshot', this._skippedNum)} skipped`,
+      stats += `, ${pico.bold(
+        pico.yellow(`${pluralize('snapshot', this._skippedNum)} skipped`),
       )}`;
     }
     const messages = [
-      `\n${chalk.bold('Interactive Snapshot Result')}`,
+      `\n${pico.bold('Interactive Snapshot Result')}`,
       ARROW + stats,
-      `\n${chalk.bold('Watch Usage')}`,
+      `\n${pico.bold('Watch Usage')}`,
 
-      `${chalk.dim(`${ARROW}Press `)}r${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}r${pico.dim(
         ' to restart Interactive Snapshot Mode.',
       )}`,
 
-      `${chalk.dim(`${ARROW}Press `)}q${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}q${pico.dim(
         ' to quit Interactive Snapshot Mode.',
       )}`,
     ];
@@ -124,20 +122,20 @@ export default class SnapshotInteractiveMode {
     this._pipe.write(CLEAR);
     const numPass = this._countPaths - this._testAssertions.length;
 
-    let stats = chalk.bold.dim(
-      `${pluralize('snapshot', this._countPaths)} reviewed`,
+    let stats = pico.bold(
+      pico.dim(`${pluralize('snapshot', this._countPaths)} reviewed`),
     );
     if (numPass) {
-      stats += `, ${chalk.bold.green(
-        `${pluralize('snapshot', numPass)} updated`,
+      stats += `, ${pico.bold(
+        pico.green(`${pluralize('snapshot', numPass)} updated`),
       )}`;
     }
     const messages = [
-      `\n${chalk.bold('Interactive Snapshot Result')}`,
+      `\n${pico.bold('Interactive Snapshot Result')}`,
       ARROW + stats,
-      `\n${chalk.bold('Watch Usage')}`,
+      `\n${pico.bold('Watch Usage')}`,
 
-      `${chalk.dim(`${ARROW}Press `)}Enter${chalk.dim(
+      `${pico.dim(`${ARROW}Press `)}Enter${pico.dim(
         ' to return to watch mode.',
       )}`,
     ];
