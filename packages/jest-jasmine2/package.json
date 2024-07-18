@@ -25,7 +25,6 @@
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
     "co": "^4.6.0",
     "is-generator-fn": "^2.0.0",
     "jest-each": "workspace:*",
@@ -35,6 +34,7 @@
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "p-limit": "^3.1.0",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {

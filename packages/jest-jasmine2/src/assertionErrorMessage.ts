@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import {
   type DiffOptions,
   diff,
@@ -56,10 +56,10 @@ const operatorMessage = (operator: string | null) => {
 
 const assertThrowingMatcherHint = (operatorName: string) =>
   operatorName
-    ? chalk.dim('assert') +
-      chalk.dim(`.${operatorName}(`) +
-      chalk.red('function') +
-      chalk.dim(')')
+    ? pico.dim('assert') +
+      pico.dim(`.${operatorName}(`) +
+      pico.red('function') +
+      pico.dim(')')
     : '';
 
 const assertMatcherHint = (
@@ -71,18 +71,15 @@ const assertMatcherHint = (
 
   if (operator === '==' && expected === true) {
     message =
-      chalk.dim('assert') +
-      chalk.dim('(') +
-      chalk.red('received') +
-      chalk.dim(')');
+      pico.dim('assert') + pico.dim('(') + pico.red('received') + pico.dim(')');
   } else if (operatorName) {
     message =
-      chalk.dim('assert') +
-      chalk.dim(`.${operatorName}(`) +
-      chalk.red('received') +
-      chalk.dim(', ') +
-      chalk.green('expected') +
-      chalk.dim(')');
+      pico.dim('assert') +
+      pico.dim(`.${operatorName}(`) +
+      pico.red('received') +
+      pico.dim(', ') +
+      pico.green('expected') +
+      pico.dim(')');
   }
 
   return message;
@@ -103,9 +100,9 @@ function assertionErrorMessage(
   if (operatorName === 'doesNotThrow') {
     return `${
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset('Expected the function not to throw an error.\n') +
-      chalk.reset('Instead, it threw:\n')
-    }  ${printReceived(actual)}${chalk.reset(
+      pico.reset('Expected the function not to throw an error.\n') +
+      pico.reset('Instead, it threw:\n')
+    }  ${printReceived(actual)}${pico.reset(
       hasCustomMessage ? `\n\nMessage:\n  ${message}` : '',
     )}${trimmedStack}`;
   }
@@ -114,16 +111,16 @@ function assertionErrorMessage(
     if (error.generatedMessage) {
       return (
         buildHintString(assertThrowingMatcherHint(operatorName)) +
-        chalk.reset(error.message) +
-        chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        pico.reset(error.message) +
+        pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
         trimmedStack
       );
     }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset('Expected the function to throw an error.\n') +
-      chalk.reset("But it didn't throw anything.") +
-      chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+      pico.reset('Expected the function to throw an error.\n') +
+      pico.reset("But it didn't throw anything.") +
+      pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -131,17 +128,17 @@ function assertionErrorMessage(
   if (operatorName === 'fail') {
     return (
       buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-      chalk.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
+      pico.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
       trimmedStack
     );
   }
 
   return `${
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-    chalk.reset(`Expected value ${operatorMessage(operator)}`)
-  }  ${printExpected(expected)}\n${chalk.reset('Received:\n')}  ${printReceived(
+    pico.reset(`Expected value ${operatorMessage(operator)}`)
+  }  ${printExpected(expected)}\n${pico.reset('Received:\n')}  ${printReceived(
     actual,
-  )}${chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '')}${
+  )}${pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '')}${
     diffString ? `\n\nDifference:\n\n${diffString}` : ''
   }${trimmedStack}`;
 }
