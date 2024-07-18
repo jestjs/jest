@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import exit = require('exit');
+import * as pico from 'picocolors';
 import yargs = require('yargs');
 import {getVersion, runCLI} from '@jest/core';
 import type {AggregatedResult} from '@jest/test-result';
@@ -31,9 +31,9 @@ export async function run(
     clearLine(process.stderr);
     clearLine(process.stdout);
     if (error?.stack) {
-      console.error(chalk.red(error.stack));
+      console.error(pico.red(error.stack));
     } else {
-      console.error(chalk.red(error));
+      console.error(pico.red(error));
     }
 
     exit(1);
@@ -117,7 +117,7 @@ const readResultsAndExit = (
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
       console.warn(
-        `${chalk.bold(
+        `${pico.bold(
           'Force exiting Jest: ',
         )}Have you considered using \`--detectOpenHandles\` to detect ` +
           'async operations that kept running after all tests finished?',
@@ -132,12 +132,14 @@ const readResultsAndExit = (
     const timeout = globalConfig.openHandlesTimeout;
     setTimeout(() => {
       console.warn(
-        chalk.yellow.bold(
-          `Jest did not exit ${
-            timeout === 1000 ? 'one second' : `${timeout / 1000} seconds`
-          } after the test run has completed.\n\n'`,
+        pico.yellow(
+          pico.bold(
+            `Jest did not exit ${
+              timeout === 1000 ? 'one second' : `${timeout / 1000} seconds`
+            } after the test run has completed.\n\n'`,
+          ),
         ) +
-          chalk.yellow(
+          pico.yellow(
             'This usually means that there are asynchronous operations that ' +
               "weren't stopped in your tests. Consider running Jest with " +
               '`--detectOpenHandles` to troubleshoot this issue.',
