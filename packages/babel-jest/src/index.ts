@@ -14,7 +14,7 @@ import {
   transformAsync as babelTransformAsync,
 } from '@babel/core';
 import * as fs from 'graceful-fs';
-import picocolors = require('picocolors');
+import * as pico from 'picocolors';
 import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
@@ -38,9 +38,9 @@ function assertLoadedBabelConfig(
 ): asserts babelConfig {
   if (!babelConfig) {
     throw new Error(
-      `babel-jest: Babel ignores ${picocolors.bold(
+      `babel-jest: Babel ignores ${pico.bold(
         slash(path.relative(cwd, filename)),
-      )} - make sure to include the file in Jest's ${picocolors.bold(
+      )} - make sure to include the file in Jest's ${pico.bold(
         'transformIgnorePatterns',
       )} as well.`,
     );

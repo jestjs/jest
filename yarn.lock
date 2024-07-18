@@ -13016,7 +13016,6 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/stack-utils": ^2.0.0
-    chalk: ^4.0.0
     co: ^4.6.0
     dedent: ^1.0.0
     execa: ^5.0.0
@@ -13029,6 +13028,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     p-limit: ^3.1.0
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     pure-rand: ^6.0.0
     slash: ^3.0.0
