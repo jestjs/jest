@@ -19,7 +19,15 @@ type TransferringContainer = {
 export function packMessage(message: unknown): TransferringContainer {
   return {
     __STRUCTURED_CLONE_SERIALIZED__: true,
-    data: serialize(message),
+    /**
+     * Use the `json: true` option to avoid errors
+     * caused by `function` or `symbol` types.
+     * It's not ideal to lose `function` and `symbol` types,
+     * but reliability is more important. Additionally,
+     * information about issues with these types will be available
+     * in the error message.
+     */
+    data: serialize(message, {json: true}),
   };
 }
 
