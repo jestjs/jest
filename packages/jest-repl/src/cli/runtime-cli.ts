@@ -12,7 +12,7 @@ import {
 } from 'os';
 import * as path from 'path';
 import * as util from 'util';
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
@@ -142,7 +142,7 @@ export async function run(
     }
   } catch (error: any) {
     console.error(
-      chalk.red(util.types.isNativeError(error) ? error.stack : error),
+      pico.red(util.types.isNativeError(error) ? error.stack : error),
     );
     process.on('exit', () => {
       process.exitCode = 1;
