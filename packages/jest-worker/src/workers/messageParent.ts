@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'node:util';
 import {isMainThread, parentPort} from 'worker_threads';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 import {packMessage} from './safeMessageTransferring';
@@ -20,7 +21,7 @@ export default function messageParent(
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
     } catch (error: unknown) {
       if (
-        error instanceof Error &&
+        types.isNativeError(error) &&
         // if .send is a function, it's a serialization issue
         !error.message.includes('.send is not a function')
       ) {

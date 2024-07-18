@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'node:util';
 import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
@@ -102,7 +103,7 @@ function reportSuccess(result: unknown) {
     process.send([PARENT_MESSAGE_OK, result]);
   } catch (error: unknown) {
     if (
-      error instanceof Error &&
+      types.isNativeError(error) &&
       // if .send is a function, it's a serialization issue
       !error.message.includes('.send is not a function')
     ) {
