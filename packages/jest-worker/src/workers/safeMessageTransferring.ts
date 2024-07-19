@@ -23,9 +23,7 @@ export function packMessage(message: unknown): TransferringContainer {
      * Use the `json: true` option to avoid errors
      * caused by `function` or `symbol` types.
      * It's not ideal to lose `function` and `symbol` types,
-     * but reliability is more important. Additionally,
-     * information about issues with these types will be available
-     * in the error message.
+     * but reliability is more important.
      */
     data: serialize(message, {json: true}),
   };
