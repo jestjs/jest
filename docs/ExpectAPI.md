@@ -789,7 +789,7 @@ For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
-  if (flavor == 'octopus') {
+  if (flavor === 'octopus') {
     throw new DisgustingFlavorError('yuck, octopus flavor');
   }
   // Do some other stuff
@@ -827,7 +827,7 @@ For example, let's say you have a `drinkFlavor` function that throws whenever th
 
 ```js
 function drinkFlavor(flavor) {
-  if (flavor == 'octopus') {
+  if (flavor === 'octopus') {
     throw new DisgustingFlavorError('yuck, octopus flavor');
   }
   // Do some other stuff
@@ -1505,7 +1505,7 @@ expect.extend({
 expect.extend({
   async toBeDivisibleByExternalValue(received) {
     const externalValue = await getExternalValueFromRemoteSource();
-    const pass = received % externalValue == 0;
+    const pass = received % externalValue === 0;
     if (pass) {
       return {
         message: () =>

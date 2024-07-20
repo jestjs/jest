@@ -122,11 +122,11 @@ function comparePrimitive(
 }
 
 function sortMap(map: Map<unknown, unknown>) {
-  return new Map([...map.entries()].sort());
+  return new Map([...map].sort());
 }
 
 function sortSet(set: Set<unknown>) {
-  return new Set([...set.values()].sort());
+  return new Set([...set].sort());
 }
 
 function compareObjects(
