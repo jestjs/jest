@@ -301,20 +301,13 @@ export const callAsyncCircusFn = (
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
     resolve();
-  })
-    .then(() => {
-      completed = true;
-      // If timeout is not cleared/unrefed the node process won't exit until
-      // it's resolved.
-      timeoutID.unref?.();
-      clearTimeout(timeoutID);
-    })
-    .catch(error => {
-      completed = true;
-      timeoutID.unref?.();
-      clearTimeout(timeoutID);
-      throw error;
-    });
+  }).finally(() => {
+    completed = true;
+    // If timeout is not cleared/unrefed the node process won't exit until
+    // it's resolved.
+    timeoutID.unref?.();
+    clearTimeout(timeoutID);
+  });
 };
 
 export const getTestDuration = (test: Circus.TestEntry): number | null => {
