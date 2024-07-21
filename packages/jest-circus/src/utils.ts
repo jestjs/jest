@@ -161,7 +161,7 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
     }
     // 'beforeEach' hooks are executed from top to bottom, the opposite of the
     // way we traversed it.
-    result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
+    result.beforeEach.unshift(...beforeEachForCurrentBlock);
   } while ((block = block.parent));
   return result;
 };
