@@ -24,6 +24,7 @@ const filesToBuild = [
   'workers/processChild',
   'workers/threadChild',
   'workers/safeMessageTransferring',
+  'workers/isDataCloneError',
   'types',
 ];
 const writeDestination = join(__dirname, '__temp__');

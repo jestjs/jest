@@ -17,7 +17,10 @@ import {runContinuous} from '../runJest';
 
 const tempDir = path.resolve(tmpdir(), 'bigint-inequality-test');
 
-const testIn2Workers = async (testFileContent: string) => {
+const testIn2Workers = async (
+  testFileContent: string,
+  extraOptions: Array<string> = [],
+) => {
   writeFiles(tempDir, {
     '__tests__/test-1.js': testFileContent,
     '__tests__/test-2.js': testFileContent,
@@ -25,7 +28,7 @@ const testIn2Workers = async (testFileContent: string) => {
 
   const {end, waitUntil} = runContinuous(
     tempDir,
-    ['--no-watchman', '--watch-all'],
+    ['--no-watchman', '--watch-all'].concat(extraOptions),
     // timeout in case the `waitUntil` below doesn't fire
     {stripAnsi: true, timeout: 5000},
   );
@@ -45,50 +48,83 @@ afterEach(() => {
   cleanup(tempDir);
 });
 
-test('handles `Map`', async () => {
-  const {summary, rest} = await testIn2Workers(`
+describe.each([
+  {name: 'processChild'},
+  {extraOptions: ['--workerThreads'], name: 'workerThreads'},
+])('$name', ({extraOptions}) => {
+  test('handles circular inequality properly', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
+    it('test', () => {
+      const foo = {};
+      foo.ref = foo;
+
+      expect(foo).toEqual({});
+    });
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
+
+  test('handles `Map`', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
     it('test', () => {
       expect(new Map([[1, "2"]])).toEqual(new Map([[1, "3"]]));
     });
-  `);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-});
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
 
-test('handles `BigInt`', async () => {
-  const {summary, rest} = await testIn2Workers(`
+  test('handles `BigInt`', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
     it('test', () => {
       expect(BigInt(42)).toBe(BigInt(73));
     });
-  `);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-});
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
 
-test('handles `Symbol`', async () => {
-  const {summary, rest} = await testIn2Workers(`
+  test('handles `Symbol`', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
     it('test', () => {
       expect(Symbol('a')).toEqual(Symbol('b'));
     });
-  `);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-});
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
 
-test('handles functions', async () => {
-  const {summary, rest} = await testIn2Workers(`
+  test('handles functions', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
     it('test', () => {
       const fn1 = () => {};
       const fn2 = () => {};
       expect(fn1).toEqual(fn2);
     });
-  `);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-});
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
 
-test('handles mixed structure', async () => {
-  const {summary, rest} = await testIn2Workers(`
+  test('handles mixed structure', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
     it('test', () => {
       class Class {
         constructor() {
@@ -103,7 +139,10 @@ test('handles mixed structure', async () => {
       }
       expect(new Class()).toEqual(false);
     });
-  `);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
 });

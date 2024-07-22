@@ -8,6 +8,7 @@
 import {types} from 'node:util';
 import {isMainThread, parentPort} from 'worker_threads';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
+import {isDataCloneError} from './isDataCloneError';
 import {packMessage} from './safeMessageTransferring';
 
 export default function messageParent(
@@ -15,7 +16,17 @@ export default function messageParent(
   parentProcess = process,
 ): void {
   if (!isMainThread && parentPort != null) {
-    parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+    try {
+      parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+    } catch (error) {
+      // Try to handle https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeinternal
+      // for `symbols` and `functions`
+      if (isDataCloneError(error)) {
+        parentPort.postMessage([PARENT_MESSAGE_CUSTOM, packMessage(message)]);
+      } else {
+        throw error;
+      }
+    }
   } else if (typeof parentProcess.send === 'function') {
     try {
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
