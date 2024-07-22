@@ -19,7 +19,7 @@ export default function messageParent(
   } else if (typeof parentProcess.send === 'function') {
     try {
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
-    } catch (error: unknown) {
+    } catch (error) {
       if (
         types.isNativeError(error) &&
         // if .send is a function, it's a serialization issue

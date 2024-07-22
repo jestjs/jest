@@ -101,7 +101,7 @@ function reportSuccess(result: unknown) {
 
   try {
     process.send([PARENT_MESSAGE_OK, result]);
-  } catch (error: unknown) {
+  } catch (error) {
     if (
       types.isNativeError(error) &&
       // if .send is a function, it's a serialization issue
