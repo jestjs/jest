@@ -3306,7 +3306,6 @@ __metadata:
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
     "@types/node-notifier": ^8.0.0
-    chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0
     exit: ^0.1.2
     glob: ^10.3.10
