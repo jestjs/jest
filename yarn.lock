@@ -3322,6 +3322,7 @@ __metadata:
     jest-worker: "workspace:*"
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
+    picocolors: ^1.0.1
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
