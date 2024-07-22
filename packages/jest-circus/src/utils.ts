@@ -161,7 +161,7 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
     }
     // 'beforeEach' hooks are executed from top to bottom, the opposite of the
     // way we traversed it.
-    result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
+    result.beforeEach.unshift(...beforeEachForCurrentBlock);
   } while ((block = block.parent));
   return result;
 };
@@ -301,20 +301,13 @@ export const callAsyncCircusFn = (
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
     resolve();
-  })
-    .then(() => {
-      completed = true;
-      // If timeout is not cleared/unrefed the node process won't exit until
-      // it's resolved.
-      timeoutID.unref?.();
-      clearTimeout(timeoutID);
-    })
-    .catch(error => {
-      completed = true;
-      timeoutID.unref?.();
-      clearTimeout(timeoutID);
-      throw error;
-    });
+  }).finally(() => {
+    completed = true;
+    // If timeout is not cleared/unrefed the node process won't exit until
+    // it's resolved.
+    timeoutID.unref?.();
+    clearTimeout(timeoutID);
+  });
 };
 
 export const getTestDuration = (test: Circus.TestEntry): number | null => {
