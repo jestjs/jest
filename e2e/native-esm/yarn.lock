@@ -148,11 +148,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.14.10
-  resolution: "@types/node@npm:20.14.10"
+  version: 20.14.11
+  resolution: "@types/node@npm:20.14.11"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 2f397d393de8cddb126e0b7999402ea450215ac69d49666ddef4f730a73325054499ce7345f86095e7b935c55b2e02139f3b8b9afc72fb978ed29edf6bb956b0
+  checksum: 24396dea2bc803c2d2ebfdd31a3e6e93818ba1a5933d63cd0f64fad1e2955a8280ba09338a48ffe68cd84748eec8bee27135045f15661aa389656f67fe0b0924
   languageName: node
   linkType: hard
 
@@ -394,9 +394,9 @@ __metadata:
   linkType: hard
 
 "discord-api-types@npm:^0.37.3, discord-api-types@npm:^0.37.41":
-  version: 0.37.92
-  resolution: "discord-api-types@npm:0.37.92"
-  checksum: 0702645ff257a64402fc4201f2ddaf9db9f7a7647b71bf0402c5eea263a08f76be503c5b30febf46d403662b14608d987b4bf26c6154be4dc906646fd93ed5c5
+  version: 0.37.93
+  resolution: "discord-api-types@npm:0.37.93"
+  checksum: cfe21353c0d34af911b7763734dac6eaafed683aea2dd841c51146fcddc7f027f6b67f5b46b78a48c4955ce7ac735c57bcfef0c2de40d4c62fb207c0b3237de9
   languageName: node
   linkType: hard
 
@@ -996,10 +996,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"peek-readable@npm:^5.1.1":
-  version: 5.1.2
-  resolution: "peek-readable@npm:5.1.2"
-  checksum: e56b1a391b60df05bdcac41927d77a53cc32924dc7c2d851ebece3388a2c2767dc7e02d6fcc1660a899903d3af28266358b173d2daff59f17a107e0779dbc92a
+"peek-readable@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "peek-readable@npm:5.1.3"
+  checksum: 636f3a16cd88bd944e931525572f0c3a098d2a7108a45933e5c3d31544cc61df0cbf455d49164a66f1885a722f7511defbd4710c65a9bb57ed7d5cf96a64c539
   languageName: node
   linkType: hard
 
@@ -1130,11 +1130,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^7.3.5":
-  version: 7.6.2
-  resolution: "semver@npm:7.6.2"
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
   bin:
     semver: bin/semver.js
-  checksum: 40f6a95101e8d854357a644da1b8dd9d93ce786d5c6a77227bc69dbb17bea83d0d1d1d7c4cd5920a6df909f48e8bd8a5909869535007f90278289f2451d0292d
+  checksum: 4110ec5d015c9438f322257b1c51fe30276e5f766a3f64c09edd1d7ea7118ecbc3f379f3b69032bacf13116dc7abc4ad8ce0d7e2bd642e26b0d271b56b61a7d8
   languageName: node
   linkType: hard
 
@@ -1280,12 +1280,12 @@ __metadata:
   linkType: hard
 
 "strtok3@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "strtok3@npm:7.1.0"
+  version: 7.1.1
+  resolution: "strtok3@npm:7.1.1"
   dependencies:
     "@tokenizer/token": ^0.3.0
-    peek-readable: ^5.1.1
-  checksum: cded3aa66a62ef4a7b1947b099b39b7fd70aa3f9b1af9e51338898786f49f23ffc8900eb8a1ad96060ad0ee7d579378845e71d72bc4731a97a00d9c20a21bcb7
+    peek-readable: ^5.1.3
+  checksum: c19631df457e5152dacd896247e6c575ae4d9c39888645759ccaca2b47eecdb33b8a4ab28c43d7d4443bacab1598ca5193bbe583b2e10548e90c3eea4e91a557
   languageName: node
   linkType: hard
 
