@@ -20,7 +20,13 @@ import ThreadsWorker from '../NodeThreadsWorker';
 jest.setTimeout(10_000);
 
 const root = join('../../');
-const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
+const filesToBuild = [
+  'workers/processChild',
+  'workers/threadChild',
+  'workers/safeMessageTransferring',
+  'workers/isDataCloneError',
+  'types',
+];
 const writeDestination = join(__dirname, '__temp__');
 const processChildWorkerPath = join(
   writeDestination,

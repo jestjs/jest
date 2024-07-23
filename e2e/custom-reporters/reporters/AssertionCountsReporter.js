@@ -18,8 +18,12 @@ class AssertionCountsReporter {
     }
   }
   onTestCaseResult(test, testCaseResult) {
+    const difference = new Date(
+      Date.now() - testCaseResult.startedAt,
+    ).getDate();
     console.log(
       `onTestCaseResult: ${testCaseResult.title}, ` +
+        `started: ${difference === 1 ? 'today' : 'invalid'}, ` +
         `status: ${testCaseResult.status}, ` +
         `numExpectations: ${testCaseResult.numPassingAsserts}`,
     );

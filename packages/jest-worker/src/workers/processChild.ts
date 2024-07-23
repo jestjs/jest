@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'node:util';
 import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
@@ -21,6 +22,7 @@ import {
   PARENT_MESSAGE_SETUP_ERROR,
   type ParentMessageMemUsage,
 } from '../types';
+import {packMessage} from './safeMessageTransferring';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
@@ -97,7 +99,21 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  process.send([PARENT_MESSAGE_OK, result]);
+  try {
+    process.send([PARENT_MESSAGE_OK, result]);
+  } catch (error) {
+    if (
+      types.isNativeError(error) &&
+      // if .send is a function, it's a serialization issue
+      !error.message.includes('.send is not a function')
+    ) {
+      // Apply specific serialization only in error cases
+      // to avoid affecting performance in regular cases.
+      process.send([PARENT_MESSAGE_OK, packMessage(result)]);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function reportClientError(error: Error) {
