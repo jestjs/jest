@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 
-const BULLET: string = chalk.bold('\u25CF ');
-const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
+const BULLET: string = pico.bold('\u25CF ');
+const DOCUMENTATION_NOTE = `  ${pico.bold('Configuration Documentation:')}
   https://jestjs.io/docs/configuration
 `;
 
@@ -73,9 +73,9 @@ const resolveWithPrefix = (
   } catch {}
 
   throw createValidationError(
-    `  ${humanOptionName} ${chalk.bold(
+    `  ${humanOptionName} ${pico.bold(
       fileName,
-    )} cannot be found. Make sure the ${chalk.bold(
+    )} cannot be found. Make sure the ${pico.bold(
       optionName,
     )} configuration option points to an existing node module.`,
   );

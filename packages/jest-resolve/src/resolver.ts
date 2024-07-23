@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import slash = require('slash');
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
@@ -838,17 +838,17 @@ const createNoMappedModuleFoundError = (
     : mappedModuleName;
 
   const error = new Error(
-    chalk.red(`${chalk.bold('Configuration error')}:
+    pico.red(`${pico.bold('Configuration error')}:
 
-Could not locate module ${chalk.bold(moduleName)} mapped as:
-${chalk.bold(mappedAs)}.
+Could not locate module ${pico.bold(moduleName)} mapped as:
+${pico.bold(mappedAs)}.
 
 Please check your configuration for these entries:
 {
   "moduleNameMapper": {
-    "${regex.toString()}": "${chalk.bold(original)}"
+    "${regex.toString()}": "${pico.bold(original)}"
   },
-  "resolver": ${chalk.bold(String(resolver))}
+  "resolver": ${pico.bold(String(resolver))}
 }`),
   );
 
