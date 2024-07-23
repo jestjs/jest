@@ -34,3 +34,16 @@ test('multiple configs error can be suppressed by using --config', () => {
   );
   expect(exitCode).toBe(0);
 });
+
+test('should works correctly when using different loaders in different projects', () => {
+  const {exitCode, stdout, stderr} = runJest(
+    'multi-project-multiple-configs',
+    ['--projects', 'prj-1', 'prj-2'],
+    {
+      skipPkgJsonCheck: true,
+    },
+  );
+  expect(exitCode).toBe(0);
+  console.log(stdout);
+  console.log(stderr);
+});
