@@ -5902,6 +5902,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ungap__structured-clone@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@types/ungap__structured-clone@npm:1.2.0"
+  checksum: 5399cfc129ecae2986fbe223fdf8f443c27a628e0d24e1be0fd3d041d643e9a041be54d9b9511fdf36279e7a3cb4c9d72493f30d75fdcde52efa3ac9dc0ebb1e
+  languageName: node
+  linkType: hard
+
 "@types/unist@npm:*, @types/unist@npm:^3.0.0":
   version: 3.0.2
   resolution: "@types/unist@npm:3.0.2"
@@ -13711,6 +13718,8 @@ __metadata:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
+    "@types/ungap__structured-clone": ^1.2.0
+    "@ungap/structured-clone": ^1.2.0
     get-stream: ^6.0.0
     jest-leak-detector: "workspace:*"
     jest-util: "workspace:*"
