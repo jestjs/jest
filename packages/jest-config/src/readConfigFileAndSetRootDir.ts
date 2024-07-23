@@ -135,6 +135,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
     // Register TypeScript compiler instance
     if (loader === 'ts-node') {
       const tsLoader = await import(/* webpackIgnore: true */ 'ts-node');
+
       return tsLoader.register({
         compilerOptions: {
           module: 'CommonJS',
@@ -149,7 +150,9 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
       const tsLoader = await import(
         /* webpackIgnore: true */ 'esbuild-register/dist/node'
       );
+
       let instance: {unregister: () => void} | undefined;
+
       return {
         enabled: (bool: boolean) => {
           if (bool) {
@@ -162,6 +165,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
         },
       };
     }
+
     throw new Error(
       `Jest: '${loader}' is not a valid TypeScript configuration loader.`,
     );
