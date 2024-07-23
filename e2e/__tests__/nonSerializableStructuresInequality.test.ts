@@ -28,7 +28,7 @@ const testIn2Workers = async (
 
   const {end, waitUntil} = runContinuous(
     tempDir,
-    ['--no-watchman', '--watch-all'].concat(extraOptions),
+    ['--no-watchman', '--watch-all', ...extraOptions],
     // timeout in case the `waitUntil` below doesn't fire
     {stripAnsi: true, timeout: 5000},
   );
