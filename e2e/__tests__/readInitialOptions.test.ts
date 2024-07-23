@@ -46,6 +46,7 @@ describe('readInitialOptions', () => {
     expect(config).toEqual({jestConfig: 'jest.config.js', rootDir});
     expect(configPath).toEqual(configFile);
   });
+
   test.each([
     ['js-config', 'jest.config.js', 'jest.config.js'],
     ['pkg-config', 'package.json', 'package.json'],
@@ -86,6 +87,7 @@ describe('readInitialOptions', () => {
     });
     expect(configPath).toEqual(expectedConfigFile);
   });
+
   test('should give an error when using unsupported loader', async () => {
     const cwd = resolveFixture('ts-loader-config');
     const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(
@@ -95,6 +97,7 @@ describe('readInitialOptions', () => {
       "Jest: 'ts-loader' is not a valid TypeScript configuration loader.",
     );
   });
+
   test('should give an error when there are multiple config files', async () => {
     const cwd = resolveFixture('multiple-config-files');
     const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(
