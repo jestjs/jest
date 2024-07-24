@@ -56,7 +56,6 @@ const defaultOptions: Config.DefaultOptions = {
     'json',
     'node',
   ],
-  moduleNameMapper: [], // normalized default value
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,

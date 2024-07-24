@@ -175,7 +175,6 @@ export type DefaultOptions = {
   maxConcurrency: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;

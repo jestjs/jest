@@ -1067,7 +1067,9 @@ export default async function normalize(
   if (!newOptions.watchAll) {
     newOptions.watchAll = false;
   }
-
+  if (!newOptions.moduleNameMapper) {
+    newOptions.moduleNameMapper = [];
+  }
   if (argv.ci != null) {
     newOptions.ci = argv.ci;
   }
