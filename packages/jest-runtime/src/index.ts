@@ -112,7 +112,9 @@ type ModuleRegistry = Map<string, InitialModule | Module>;
 // users who require one of these modules in their tests will still get the module from inside the VM.
 // Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
 // e.g. because there are many require sites spread across the dependency graph.
-const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
+const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set([
+  'picocolors',
+]);
 const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
 );
