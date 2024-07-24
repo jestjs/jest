@@ -173,10 +173,9 @@ export type DefaultOptions = {
   injectGlobals: boolean;
   listTests: boolean;
   maxConcurrency: number;
-  maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Record<string, string | Array<string>>;
+  moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;
@@ -198,7 +197,7 @@ export type DefaultOptions = {
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
-  testFailureExitCode: string | number;
+  testFailureExitCode: number;
   testLocationInResults: boolean;
   testMatch: Array<string>;
   testPathIgnorePatterns: Array<string>;

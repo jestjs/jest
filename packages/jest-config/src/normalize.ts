@@ -556,10 +556,9 @@ export default async function normalize(
   }
 
   setupBabelJest(options);
-  // TODO: Type this properly
-  const newOptions = {
+  const newOptions: Partial<AllOptions> = {
     ...DEFAULT_CONFIG,
-  } as unknown as AllOptions;
+  };
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -983,7 +982,7 @@ export default async function normalize(
     );
   }
 
-  for (const [i, root] of newOptions.roots.entries()) {
+  for (const [i, root] of newOptions.roots!.entries()) {
     verifyDirectoryExists(root, `roots[${i}]`);
   }
 
@@ -1069,13 +1068,6 @@ export default async function normalize(
     newOptions.watchAll = false;
   }
 
-  // as unknown since it can happen. We really need to fix the types here
-  if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
-  ) {
-    newOptions.moduleNameMapper = [];
-  }
-
   if (argv.ci != null) {
     newOptions.ci = argv.ci;
   }
@@ -1094,14 +1086,14 @@ export default async function normalize(
   newOptions.maxWorkers = getMaxWorkers(argv, options);
   newOptions.runInBand = argv.runInBand || false;
 
-  if (newOptions.testRegex.length > 0 && options.testMatch) {
+  if (newOptions.testRegex!.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex.length > 0 && !options.testMatch) {
+  if (newOptions.testRegex!.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1134,7 +1126,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom,
+            newOptions.collectCoverageFrom!,
           ).length === 0
         ) {
           return patterns;
@@ -1174,6 +1166,6 @@ export default async function normalize(
 
   return {
     hasDeprecationWarnings,
-    options: newOptions,
+    options: newOptions as AllOptions,
   };
 }

@@ -43,7 +43,6 @@ const defaultOptions: Config.DefaultOptions = {
   injectGlobals: true,
   listTests: false,
   maxConcurrency: 5,
-  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',
@@ -57,7 +56,7 @@ const defaultOptions: Config.DefaultOptions = {
     'json',
     'node',
   ],
-  moduleNameMapper: {},
+  moduleNameMapper: [], // normalized default value
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,
