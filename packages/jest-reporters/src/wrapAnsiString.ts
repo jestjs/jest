@@ -32,7 +32,7 @@ export default function wrapAnsiString(
   }
 
   if (lastIndex !== string.length - 1) {
-    tokens.push(['string', string.slice(lastIndex, string.length)]);
+    tokens.push(['string', string.slice(lastIndex)]);
   }
 
   let lastLineLength = 0;
@@ -44,10 +44,7 @@ export default function wrapAnsiString(
           if (lastLineLength + token.length > terminalWidth) {
             while (token.length > 0) {
               const chunk = token.slice(0, terminalWidth - lastLineLength);
-              const remaining = token.slice(
-                terminalWidth - lastLineLength,
-                token.length,
-              );
+              const remaining = token.slice(terminalWidth - lastLineLength);
               lines[lines.length - 1] += chunk;
               lastLineLength += chunk.length;
               token = remaining;
