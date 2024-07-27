@@ -31,10 +31,7 @@ export default function trimAndFormatPath(
   const basenameLength = basename.length;
   if (basenameLength + 4 < maxLength) {
     const dirnameLength = maxLength - 4 - basenameLength;
-    dirname = `...${dirname.slice(
-      dirname.length - dirnameLength,
-      dirname.length,
-    )}`;
+    dirname = `...${dirname.slice(dirname.length - dirnameLength)}`;
     return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
@@ -44,8 +41,6 @@ export default function trimAndFormatPath(
 
   // can't fit dirname, but can fit trimmed basename
   return slash(
-    chalk.bold(
-      `...${basename.slice(basename.length - maxLength - 4, basename.length)}`,
-    ),
+    chalk.bold(`...${basename.slice(basename.length - maxLength - 4)}`),
   );
 }
