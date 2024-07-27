@@ -2910,9 +2910,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/jest@npm:^1.3.0":
-  version: 1.8.2
-  resolution: "@fast-check/jest@npm:1.8.2"
+"@fast-check/jest@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@fast-check/jest@npm:2.0.0"
   dependencies:
     fast-check: ^3.0.0
   peerDependencies:
@@ -2924,7 +2924,7 @@ __metadata:
       optional: true
     "@jest/expect":
       optional: true
-  checksum: 10ef89150c136d9c614a58907d7fe44b3ba56d388668bf532233dfb0b6ef25191a378953f7fb5317a65624e7b8235d65b9d886f98edf4780ac77d0297eeda0b1
+  checksum: 105827961cebf22b053b593993a176218d74a5175f40c43886a0f1180a0d1c8f80477a44297200f4e0131abd364bf60e0cf830eb2e7488cfb7bd94063591e6f2
   languageName: node
   linkType: hard
 
@@ -9309,7 +9309,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "diff-sequences@workspace:packages/diff-sequences"
   dependencies:
-    "@fast-check/jest": ^1.3.0
+    "@fast-check/jest": ^2.0.0
     benchmark: ^2.1.4
     diff: ^5.0.0
   languageName: unknown
@@ -10675,7 +10675,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
-    "@fast-check/jest": ^1.3.0
+    "@fast-check/jest": ^2.0.0
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
