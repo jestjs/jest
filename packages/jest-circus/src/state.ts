@@ -6,6 +6,7 @@
  */
 
 import type {Circus, Global} from '@jest/types';
+import {setGlobal, setNotShreddable} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 import {STATE_SYM} from './types';
@@ -39,16 +40,28 @@ const createState = (): Circus.State => {
 };
 
 /* eslint-disable no-restricted-globals */
+export const getState = (): Circus.State =>
+  (global as Global.Global)[STATE_SYM] as Circus.State;
+export const setState = (state: Circus.State): Circus.State => {
+  setGlobal(global, STATE_SYM, state);
+  setNotShreddable(state, [
+    'hasFocusedTests',
+    'hasStarted',
+    'includeTestLocationInResult',
+    'maxConcurrency',
+    'seed',
+    'testNamePattern',
+    'testTimeout',
+    'unhandledErrors',
+    'unhandledRejectionErrorByPromise',
+  ]);
+  return state;
+};
 export const resetState = (): void => {
-  (global as Global.Global)[STATE_SYM] = createState();
+  setState(createState());
 };
 
 resetState();
-
-export const getState = (): Circus.State =>
-  (global as Global.Global)[STATE_SYM] as Circus.State;
-export const setState = (state: Circus.State): Circus.State =>
-  ((global as Global.Global)[STATE_SYM] = state);
 /* eslint-enable */
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
