@@ -117,9 +117,9 @@ __metadata:
   linkType: hard
 
 "@sapphire/async-queue@npm:^1.5.0":
-  version: 1.5.2
-  resolution: "@sapphire/async-queue@npm:1.5.2"
-  checksum: 6252e72254f33c91da4887e324f17b59708b12c603216cc45f001460fd33265844301de47ab67c8caf8383ee280b39c8427ede242bd3b50b6ccdf13a386a5f1b
+  version: 1.5.3
+  resolution: "@sapphire/async-queue@npm:1.5.3"
+  checksum: e9d71249621a4e3763827ac45f1480f88e09db490c377e01a258cc23e4c2d442adda47f4aab8baa101a746f51f06dc96e748c5d327fc235b27c5fc018b795ef7
   languageName: node
   linkType: hard
 
@@ -148,11 +148,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.14.11
-  resolution: "@types/node@npm:20.14.11"
+  version: 22.0.0
+  resolution: "@types/node@npm:22.0.0"
   dependencies:
-    undici-types: ~5.26.4
-  checksum: 24396dea2bc803c2d2ebfdd31a3e6e93818ba1a5933d63cd0f64fad1e2955a8280ba09338a48ffe68cd84748eec8bee27135045f15661aa389656f67fe0b0924
+    undici-types: ~6.11.1
+  checksum: ef58d59bbffd9a79449ef632ea9a4f3b006496926cac2717368f80fdd152b1937e44093c17c9fac74650309c9d5387bb5c5bf4fd304adafebcbda1e6e4435fe4
   languageName: node
   linkType: hard
 
@@ -352,14 +352,14 @@ __metadata:
   linkType: hard
 
 "debug@npm:4, debug@npm:^4.3.4":
-  version: 4.3.5
-  resolution: "debug@npm:4.3.5"
+  version: 4.3.6
+  resolution: "debug@npm:4.3.6"
   dependencies:
     ms: 2.1.2
   peerDependenciesMeta:
     supports-color:
       optional: true
-  checksum: 7c002b51e256257f936dda09eb37167df952758c57badf6bf44bdc40b89a4bcb8e5a0a2e4c7b53f97c69e2970dd5272d33a757378a12c8f8e64ea7bf99e8e86e
+  checksum: 1630b748dea3c581295e02137a9f5cbe2c1d85fea35c1e6597a65ca2b16a6fce68cec61b299d480787ef310ba927dc8c92d3061faba0ad06c6a724672f66be7f
   languageName: node
   linkType: hard
 
@@ -1361,10 +1361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+"undici-types@npm:~6.11.1":
+  version: 6.11.1
+  resolution: "undici-types@npm:6.11.1"
+  checksum: d7fc11bded93bc55ef3b88464e856ab061a747cf50ef2eff5df5ba3be18b9fcafe60e1b36a8c99e28aac2eade12891d32a504f2a32422452c44662e598e3b188
   languageName: node
   linkType: hard
 
