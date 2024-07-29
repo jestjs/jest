@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`babel-plugin-jest-hoist 1. automatic react runtime: 1. automatic react runtime 1`] = `
 

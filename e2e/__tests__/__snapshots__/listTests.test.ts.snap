@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`--listTests flag --outputFile flag causes tests to be saved in the file as JSON 1`] = `"["/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/dummy.test.js","/MOCK_ABSOLUTE_PATH/e2e/list-tests/__tests__/other.test.js"]"`;
 
