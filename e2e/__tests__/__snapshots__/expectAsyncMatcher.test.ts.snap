@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`shows the correct errors in stderr when failing tests 1`] = `
 "FAIL __tests__/failure.test.js

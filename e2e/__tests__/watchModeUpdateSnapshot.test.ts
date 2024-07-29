@@ -23,7 +23,7 @@ expect.addSnapshotSerializer({
 
 const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
-    '__tests__/__snapshots__/bar.spec.js.snap': `// Jest Snapshot v1, https://goo.gl/fbAQLP
+    '__tests__/__snapshots__/bar.spec.js.snap': `// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[\`bar 1\`] = \`"foo"\`;
     `,

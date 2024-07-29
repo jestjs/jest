@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`prints stack trace pointing to process.exit call 1`] = `
 "  ●  process.exit called with "1"
