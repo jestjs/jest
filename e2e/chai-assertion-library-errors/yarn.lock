@@ -13,8 +13,8 @@ __metadata:
   linkType: hard
 
 "chai@npm:^4.2.0":
-  version: 4.4.1
-  resolution: "chai@npm:4.4.1"
+  version: 4.5.0
+  resolution: "chai@npm:4.5.0"
   dependencies:
     assertion-error: ^1.1.0
     check-error: ^1.0.3
@@ -22,8 +22,8 @@ __metadata:
     get-func-name: ^2.0.2
     loupe: ^2.3.6
     pathval: ^1.1.1
-    type-detect: ^4.0.8
-  checksum: 9ab84f36eb8e0b280c56c6c21ca4da5933132cd8a0c89c384f1497f77953640db0bc151edd47f81748240a9fab57b78f7d925edfeedc8e8fc98016d71f40c36e
+    type-detect: ^4.1.0
+  checksum: 70e5a8418a39e577e66a441cc0ce4f71fd551a650a71de30dd4e3e31e75ed1f5aa7119cf4baf4a2cb5e85c0c6befdb4d8a05811fad8738c1a6f3aa6a23803821
   languageName: node
   linkType: hard
 
@@ -76,9 +76,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"type-detect@npm:^4.0.0, type-detect@npm:^4.0.8":
-  version: 4.0.8
-  resolution: "type-detect@npm:4.0.8"
-  checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
+"type-detect@npm:^4.0.0, type-detect@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "type-detect@npm:4.1.0"
+  checksum: 3b32f873cd02bc7001b00a61502b7ddc4b49278aabe68d652f732e1b5d768c072de0bc734b427abf59d0520a5f19a2e07309ab921ef02018fa1cb4af155cdb37
   languageName: node
   linkType: hard
