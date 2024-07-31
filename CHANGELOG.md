@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-runtime, jest-matcher-utils, jest-fake-timers, diff-sequences, jest-circus, jest-reporters, jest-watcher, jest-transform, jest-pattern, jest-leak-detector, jest-haste-map, jest-snapshot-utils, jest-core, jest-snapshot, jest-message-util, jest-validate, pretty-format, jest-each, babel-plugin-jest-hoist, create-jest, jest-jasmine2, jest-diff, jest-resolve-dependencies, jest-config, expect]` Replace google short urls, since they will not work start of 25th August 2025 ([#15221](https://github.com/jestjs/jest/pull/15221))
 - `[babel-jest]` Add option `excludeJestPreset` to allow opting out of `babel-preset-jest` ([#15164](https://github.com/jestjs/jest/pull/15164))
 - `[jest-circus, jest-cli, jest-config]` Add `waitNextEventLoopTurnForUnhandledRejectionEvents` flag to minimise performance impact of correct detection of unhandled promise rejections introduced in [#14315](https://github.com/jestjs/jest/pull/14315) ([#14681](https://github.com/jestjs/jest/pull/14681))
 - `[jest-circus]` Add a `waitBeforeRetry` option to `jest.retryTimes` ([#14738](https://github.com/jestjs/jest/pull/14738))
