@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`.rejects fails for promise that resolves 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBe<d>()</>

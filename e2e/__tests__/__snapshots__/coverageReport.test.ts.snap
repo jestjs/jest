@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`collects coverage from duplicate files avoiding shared cache 1`] = `
 "---------------|---------|----------|---------|---------|-------------------

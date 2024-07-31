@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getSummary does not print seed value when showSeed is false 1`] = `
 "<bold>Test Suites: </intensity>0 total

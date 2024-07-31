@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`prints useful error for requires after test is done w/ \`waitNextEventLoopTurnForUnhandledRejectionEvents\` 1`] = `
 "    ReferenceError: You are trying to \`import\` a file outside of the scope of the test code.
