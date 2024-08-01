@@ -24,8 +24,7 @@
   "dependencies": {
     "@babel/template": "^7.3.3",
     "@babel/types": "^7.3.3",
-    "@types/babel__core": "^7.1.14",
-    "@types/babel__traverse": "^7.0.6"
+    "@types/babel__core": "^7.1.14"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -33,6 +32,7 @@
     "@babel/preset-typescript": "^7.0.0",
     "@prettier/sync": "^0.5.0",
     "@types/babel__template": "^7.0.2",
+    "@types/babel__traverse": "^7.0.6",
     "@types/node": "*",
     "babel-plugin-tester": "^11.0.2",
     "prettier": "^3.0.3"

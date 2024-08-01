@@ -1,0 +1,533 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processChild handles \`BigInt\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 73n
+    Received: 42n
+
+      1 | it('test', () => {
+    > 2 |   expect(BigInt(42)).toBe(BigInt(73));
+        |                      ^
+      3 | });
+
+      at Object.toBe (__tests__/test-1.js:2:22)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 73n
+    Received: 42n
+
+      1 | it('test', () => {
+    > 2 |   expect(BigInt(42)).toBe(BigInt(73));
+        |                      ^
+      3 | });
+
+      at Object.toBe (__tests__/test-2.js:2:22)"
+`;
+
+exports[`processChild handles \`BigInt\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`processChild handles \`Map\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Map {
+    -   1 => "3",
+    +   1 => "2",
+      }
+
+      1 | it('test', () => {
+    > 2 |   expect(new Map([[1, "2"]])).toEqual(new Map([[1, "3"]]));
+        |                               ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-1.js:2:31)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Map {
+    -   1 => "3",
+    +   1 => "2",
+      }
+
+      1 | it('test', () => {
+    > 2 |   expect(new Map([[1, "2"]])).toEqual(new Map([[1, "3"]]));
+        |                               ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-2.js:2:31)"
+`;
+
+exports[`processChild handles \`Map\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`processChild handles \`Symbol\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: Symbol(b)
+    Received: Symbol(a)
+
+      1 | it('test', () => {
+    > 2 |   expect(Symbol('a')).toEqual(Symbol('b'));
+        |                       ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-1.js:2:23)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: Symbol(b)
+    Received: Symbol(a)
+
+      1 | it('test', () => {
+    > 2 |   expect(Symbol('a')).toEqual(Symbol('b'));
+        |                       ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-2.js:2:23)"
+`;
+
+exports[`processChild handles \`Symbol\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`processChild handles circular inequality properly 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+
+      at Object.toEqual (__tests__/test-1.js:5:15)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+
+      at Object.toEqual (__tests__/test-2.js:5:15)"
+`;
+
+exports[`processChild handles circular inequality properly 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`processChild handles functions 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: [Function fn2]
+    Received: [Function fn1]
+
+      2 |   const fn1 = () => {};
+      3 |   const fn2 = () => {};
+    > 4 |   expect(fn1).toEqual(fn2);
+        |               ^
+      5 | });
+
+      at Object.toEqual (__tests__/test-1.js:4:15)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: [Function fn2]
+    Received: [Function fn1]
+
+      2 |   const fn1 = () => {};
+      3 |   const fn2 = () => {};
+    > 4 |   expect(fn1).toEqual(fn2);
+        |               ^
+      5 | });
+
+      at Object.toEqual (__tests__/test-2.js:4:15)"
+`;
+
+exports[`processChild handles functions 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`processChild handles mixed structure 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: false
+    Received: {"bigInt": 42n, "fn": [Function anonymous], "map": Map {1 => "2"}, "ref": [Circular], "symbol": Symbol(asd), Symbol(qwe): Symbol(zxc)}
+
+      11 |     method() {}
+      12 |   }
+    > 13 |   expect(new Class()).toEqual(false);
+         |                       ^
+      14 | });
+
+      at Object.toEqual (__tests__/test-1.js:13:23)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: false
+    Received: {"bigInt": 42n, "fn": [Function anonymous], "map": Map {1 => "2"}, "ref": [Circular], "symbol": Symbol(asd), Symbol(qwe): Symbol(zxc)}
+
+      11 |     method() {}
+      12 |   }
+    > 13 |   expect(new Class()).toEqual(false);
+         |                       ^
+      14 | });
+
+      at Object.toEqual (__tests__/test-2.js:13:23)"
+`;
+
+exports[`processChild handles mixed structure 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles \`BigInt\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 73n
+    Received: 42n
+
+      1 | it('test', () => {
+    > 2 |   expect(BigInt(42)).toBe(BigInt(73));
+        |                      ^
+      3 | });
+
+      at Object.toBe (__tests__/test-1.js:2:22)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 73n
+    Received: 42n
+
+      1 | it('test', () => {
+    > 2 |   expect(BigInt(42)).toBe(BigInt(73));
+        |                      ^
+      3 | });
+
+      at Object.toBe (__tests__/test-2.js:2:22)"
+`;
+
+exports[`workerThreads handles \`BigInt\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles \`Map\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Map {
+    -   1 => "3",
+    +   1 => "2",
+      }
+
+      1 | it('test', () => {
+    > 2 |   expect(new Map([[1, "2"]])).toEqual(new Map([[1, "3"]]));
+        |                               ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-1.js:2:31)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Map {
+    -   1 => "3",
+    +   1 => "2",
+      }
+
+      1 | it('test', () => {
+    > 2 |   expect(new Map([[1, "2"]])).toEqual(new Map([[1, "3"]]));
+        |                               ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-2.js:2:31)"
+`;
+
+exports[`workerThreads handles \`Map\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles \`Symbol\` 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: Symbol(b)
+    Received: Symbol(a)
+
+      1 | it('test', () => {
+    > 2 |   expect(Symbol('a')).toEqual(Symbol('b'));
+        |                       ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-1.js:2:23)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: Symbol(b)
+    Received: Symbol(a)
+
+      1 | it('test', () => {
+    > 2 |   expect(Symbol('a')).toEqual(Symbol('b'));
+        |                       ^
+      3 | });
+
+      at Object.toEqual (__tests__/test-2.js:2:23)"
+`;
+
+exports[`workerThreads handles \`Symbol\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles circular inequality properly 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+
+      at Object.toEqual (__tests__/test-1.js:5:15)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+
+      at Object.toEqual (__tests__/test-2.js:5:15)"
+`;
+
+exports[`workerThreads handles circular inequality properly 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles functions 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: [Function fn2]
+    Received: [Function fn1]
+
+      2 |   const fn1 = () => {};
+      3 |   const fn2 = () => {};
+    > 4 |   expect(fn1).toEqual(fn2);
+        |               ^
+      5 | });
+
+      at Object.toEqual (__tests__/test-1.js:4:15)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: [Function fn2]
+    Received: [Function fn1]
+
+      2 |   const fn1 = () => {};
+      3 |   const fn2 = () => {};
+    > 4 |   expect(fn1).toEqual(fn2);
+        |               ^
+      5 | });
+
+      at Object.toEqual (__tests__/test-2.js:4:15)"
+`;
+
+exports[`workerThreads handles functions 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles mixed structure 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: false
+    Received: {"bigInt": 42n, "fn": [Function anonymous], "map": Map {1 => "2"}, "ref": [Circular], "symbol": Symbol(asd), Symbol(qwe): Symbol(zxc)}
+
+      11 |     method() {}
+      12 |   }
+    > 13 |   expect(new Class()).toEqual(false);
+         |                       ^
+      14 | });
+
+      at Object.toEqual (__tests__/test-1.js:13:23)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: false
+    Received: {"bigInt": 42n, "fn": [Function anonymous], "map": Map {1 => "2"}, "ref": [Circular], "symbol": Symbol(asd), Symbol(qwe): Symbol(zxc)}
+
+      11 |     method() {}
+      12 |   }
+    > 13 |   expect(new Class()).toEqual(false);
+         |                       ^
+      14 | });
+
+      at Object.toEqual (__tests__/test-2.js:13:23)"
+`;
+
+exports[`workerThreads handles mixed structure 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;

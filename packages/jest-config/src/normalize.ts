@@ -168,7 +168,9 @@ const setupPreset = async (
             )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
           );
         }
-        throw createConfigError(`  Preset ${pico.bold(presetPath)} not found.`);
+        throw createConfigError(
+          `  Preset ${pico.bold(presetPath)} not found relative to rootDir ${pico.bold(options.rootDir)}.`,
+        );
       }
       throw createConfigError(
         `  Missing dependency in ${pico.bold(presetPath)}:\n\n  ${

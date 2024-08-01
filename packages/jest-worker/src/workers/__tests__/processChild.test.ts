@@ -41,6 +41,12 @@ beforeEach(() => {
       mockCount++;
 
       return {
+        fooCircularResult() {
+          const circular = {self: undefined as unknown};
+          circular.self = circular;
+          return {error: circular};
+        },
+
         fooPromiseThrows() {
           return new Promise((_resolve, reject) => {
             setTimeout(() => reject(mockError), 5);
@@ -336,6 +342,32 @@ it('returns results when it gets resolved if function is asynchronous', async ()
   ]);
 
   expect(spyProcessSend).toHaveBeenCalledTimes(2);
+});
+
+it('returns results with circular references', () => {
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
+
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooCircularResult',
+      [],
+    ],
+    null,
+  );
+
+  const processCallError = spyProcessSend.mock.calls[0][0][1].error;
+  expect(processCallError.self).toBe(processCallError.self.self);
 });
 
 it('calls the main module if the method call is "default"', () => {
