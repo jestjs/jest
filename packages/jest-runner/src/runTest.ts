@@ -6,6 +6,7 @@
  *
  */
 
+import {runInContext} from 'node:vm';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -208,6 +209,14 @@ async function runTestInternal(
   const tearDownEnv = async () => {
     if (!isTornDown) {
       runtime.teardown();
+
+      // source-map-support keeps memory leftovers in `Error.prepareStackTrace`
+      runInContext(
+        "Error.prepareStackTrace = () => '';",
+        environment.getVmContext()!,
+      );
+      sourcemapSupport.resetRetrieveHandlers();
+
       await environment.teardown();
       isTornDown = true;
     }
@@ -312,8 +321,12 @@ async function runTestInternal(
         sendMessageToJest,
       );
     } catch (error: any) {
-      // Access stack before uninstalling sourcemaps
-      error.stack;
+      // Access all stacks before uninstalling sourcemaps
+      let e = error;
+      while (typeof e === 'object' && e !== null && 'stack' in e) {
+        e.stack;
+        e = e?.cause;
+      }
 
       throw error;
     } finally {
@@ -377,8 +390,6 @@ async function runTestInternal(
     });
   } finally {
     await tearDownEnv();
-
-    sourcemapSupport.resetRetrieveHandlers();
   }
 }
 
