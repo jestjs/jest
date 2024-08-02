@@ -2023,7 +2023,7 @@ test('use jsdom and set the URL in this test file', () => {
 });
 ```
 
-### `testFailureExitCode` \[number]
+### `testFailureExitCode` \[number | string]
 
 Default: `1`
 
