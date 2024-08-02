@@ -556,8 +556,10 @@ export default async function normalize(
   }
 
   setupBabelJest(options);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {moduleNameMapper, ...rest} = DEFAULT_CONFIG;
   const newOptions: Partial<AllOptions> = {
-    ...DEFAULT_CONFIG,
+    ...rest,
   };
 
   if (options.resolver) {
