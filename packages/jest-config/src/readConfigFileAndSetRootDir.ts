@@ -10,7 +10,6 @@ import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson = require('parse-json');
 import stripJsonComments = require('strip-json-comments');
-import type {RegisterOptions} from 'ts-node';
 import type {Config} from '@jest/types';
 import {extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
@@ -90,7 +89,7 @@ export default async function readConfigFileAndSetRootDir(
 }
 
 // Load the TypeScript configuration
-let extraTSLoaderOptions: RegisterOptions;
+let extraTSLoaderOptions: Record<string, unknown>;
 
 const loadTSConfigFile = async (
   configPath: string,
@@ -150,8 +149,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
         moduleTypes: {
           '**': 'cjs',
         },
-        swc: extraTSLoaderOptions?.swc,
-        transpileOnly: extraTSLoaderOptions?.transpileOnly,
+        ...extraTSLoaderOptions,
       });
     } else if (loader === 'esbuild-register') {
       const tsLoader = await import(
@@ -165,6 +163,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
           if (bool) {
             instance = tsLoader.register({
               target: `node${process.version.slice(1)}`,
+              ...extraTSLoaderOptions,
             });
           } else {
             instance?.unregister();
