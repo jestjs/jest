@@ -9,7 +9,7 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-import chalk from 'chalk';
+import pico from 'picocolors';
 import webpack from 'webpack';
 import {createWebpackConfigs} from './buildUtils.mjs';
 
@@ -17,13 +17,13 @@ const compiler = webpack(createWebpackConfigs());
 
 let hasBuilt = false;
 
-console.log(chalk.inverse(' Bundling packages '));
+console.log(pico.inverse(' Bundling packages '));
 
 compiler.watch({}, (error, stats) => {
   if (!hasBuilt) {
     hasBuilt = true;
 
-    console.log(chalk.red('->'), chalk.cyan('Watching for changes…'));
+    console.log(pico.red('->'), pico.cyan('Watching for changes…'));
   }
 
   if (error) {
@@ -41,7 +41,7 @@ compiler.watch({}, (error, stats) => {
         console.warn('warning', warning.message);
       }
     } else {
-      console.log(chalk.red('->'), chalk.green('Rebuilt packages'));
+      console.log(pico.red('->'), pico.green('Rebuilt packages'));
     }
   }
 });

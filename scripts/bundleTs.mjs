@@ -13,10 +13,10 @@ import {
   Extractor,
   ExtractorConfig,
 } from '@microsoft/api-extractor';
-import chalk from 'chalk';
 import {ESLint} from 'eslint';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
+import pico from 'picocolors';
 import pkgDir from 'pkg-dir';
 import {rimraf} from 'rimraf';
 import {copyrightSnippet, getPackagesWithTsConfig} from './buildUtils.mjs';
@@ -32,7 +32,7 @@ const packagesToBundle = getPackagesWithTsConfig().filter(
   p => !excludedPackages.has(p.pkg.name),
 );
 
-console.log(chalk.inverse(' Extracting TypeScript definition files '));
+console.log(pico.inverse(' Extracting TypeScript definition files '));
 
 const sharedExtractorConfig = {
   $schema:
@@ -118,7 +118,6 @@ let compilerState;
 await Promise.all(
   packagesToBundle.map(async ({packageDir, pkg}) => {
     const configFile = path.resolve(packageDir, 'api-extractor.json');
-
     await fs.promises.writeFile(
       configFile,
       JSON.stringify(
@@ -151,7 +150,9 @@ await Promise.all(
 
     if (!extractorResult.succeeded || extractorResult.warningCount > 0) {
       console.error(
-        chalk.inverse.red(' Unable to extract TypeScript definition files '),
+        pico.inverse(
+          pico.red(' Unable to extract TypeScript definition files '),
+        ),
       );
       throw new Error(
         `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings`,
@@ -232,5 +233,7 @@ await Promise.all(
 );
 
 console.log(
-  chalk.inverse.green(' Successfully extracted TypeScript definition files '),
+  pico.inverse(
+    pico.green(' Successfully extracted TypeScript definition files '),
+  ),
 );
