@@ -101,7 +101,7 @@ const loadTSConfigFile = async (
 
   if (tsLoader === undefined) {
     throw new Error(
-      'Jest: loader is required for the TypeScript configuration files. See https://jestjs.io/docs/configuration',
+      'Jest: Loader is required for the TypeScript configuration files. See https://jestjs.io/docs/configuration',
     );
   }
   if (Array.isArray(tsLoader)) {
