@@ -19,6 +19,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from '@jest/types';
         const config: Config.InitialOptions = {displayName: 'ts-object-config', verbose: true};
         export default config;
@@ -37,6 +38,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from '@jest/types';
         async function getVerbose() {return true;}
         export default async (): Promise<Config.InitialOptions> => {
@@ -97,6 +99,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from '@jest/types';
         const config: Config.InitialOptions = {testTimeout: '10000'};
         export default config;
@@ -116,6 +119,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from '@jest/types';
         const config: Config.InitialOptions = {verbose: true};
         export default get config;
@@ -173,6 +177,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from '@jest/types';
           const config: Config.InitialOptions = {displayName: 'ts-esm-object-config', verbose: true};
           export default config;
@@ -191,6 +196,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+      /**@jest-config-loader ts-node */ 
       import type {Config} from '@jest/types';
       async function getVerbose() {return true;}
       export default async (): Promise<Config.InitialOptions> => {
@@ -251,6 +257,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from '@jest/types';
           const config: Config.InitialOptions = {testTimeout: '10000'};
           export default config;
@@ -270,6 +277,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from '@jest/types';
           const config: Config.InitialOptions = {verbose: true};
           export default get config;
@@ -329,6 +337,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from 'jest';
         const config: Config = {displayName: 'ts-object-config', verbose: true};
         export default config;
@@ -347,6 +356,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from 'jest';
         async function getVerbose() {return true;}
         export default async (): Promise<Config> => {
@@ -407,6 +417,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from 'jest';
         const config: Config = {testTimeout: '10000'};
         export default config;
@@ -426,6 +437,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from 'jest';
         const config: Config = {verbose: true};
         export default get config;
@@ -483,6 +495,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from 'jest';
           const config: Config = {displayName: 'ts-esm-object-config', verbose: true};
           export default config;
@@ -501,6 +514,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from 'jest';
           async function getVerbose() {return true;}
           export default async (): Promise<Config> => {
@@ -561,6 +575,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from 'jest';
           const config: Config = {testTimeout: '10000'};
           export default config;
@@ -580,6 +595,7 @@ describe('when `Config` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
+          /**@jest-config-loader ts-node */
           import type {Config} from 'jest';
           const config: Config = {verbose: true};
           export default get config;
