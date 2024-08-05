@@ -112,7 +112,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.ts(3,40): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -132,7 +132,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.ts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -152,7 +152,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.cts(3,40): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -172,7 +172,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.cts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -274,7 +274,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.ts(3,40): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -294,7 +294,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.ts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -314,7 +314,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.cts(3,40): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -334,7 +334,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.cts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -438,7 +438,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.ts(3,25): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -458,7 +458,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.ts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -478,7 +478,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.cts(3,25): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -498,7 +498,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.cts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -600,7 +600,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.ts(3,25): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -620,7 +620,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.ts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -640,7 +640,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.cts(3,25): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -660,7 +660,7 @@ describe('when `Config` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.cts(3,16): error TS2304: Cannot find name 'get'.",
+      "jest.config.cts(4,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
