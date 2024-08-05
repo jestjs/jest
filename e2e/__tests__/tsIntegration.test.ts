@@ -79,6 +79,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.cts': `
+        /**@jest-config-loader ts-node */
         import type {Config} from '@jest/types';
         async function getVerbose() {return true;}
         export default async (): Promise<Config.InitialOptions> => {

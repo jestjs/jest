@@ -76,8 +76,8 @@ export default config;
 You can also pass options to the loader, for instance to enable `transpileOnly`.
 
 ```ts title="jest.config.ts"
-/**   
- * @jest-config-loader ts-node 
+/**
+ * @jest-config-loader ts-node
  * @jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}
  */
 
