@@ -557,9 +557,9 @@ const matchers: MatchersObject = {
             : printReceived(received)
         }` +
         (!isNot &&
-        indexable.findIndex(item =>
+        indexable.some(item =>
           equals(item, expected, [...this.customTesters, iterableEquality]),
-        ) !== -1
+        )
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
           : '')
       );

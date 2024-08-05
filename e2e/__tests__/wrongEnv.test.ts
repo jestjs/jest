@@ -24,7 +24,8 @@ describe('Wrong globals for environment', () => {
     assertFailuresAndSnapshot(['node', '-t=document']);
   });
 
-  onNodeVersions('<21', () => {
+  // Node.js 18 is the last LTS version, which is missing the global 'navigator'
+  onNodeVersions('<=18', () => {
     it('print useful error for navigator', () => {
       assertFailuresAndSnapshot(['node', '-t=navigator']);
     });

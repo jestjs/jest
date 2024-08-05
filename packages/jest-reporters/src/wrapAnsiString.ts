@@ -24,15 +24,15 @@ export default function wrapAnsiString(
   while ((match = ANSI_REGEXP.exec(string))) {
     const ansi = match[0];
     const index = match.index;
-    if (index != lastIndex) {
+    if (index !== lastIndex) {
       tokens.push(['string', string.slice(lastIndex, index)]);
     }
     tokens.push(['ansi', ansi]);
     lastIndex = index + ansi.length;
   }
 
-  if (lastIndex != string.length - 1) {
-    tokens.push(['string', string.slice(lastIndex, string.length)]);
+  if (lastIndex !== string.length - 1) {
+    tokens.push(['string', string.slice(lastIndex)]);
   }
 
   let lastLineLength = 0;
@@ -44,10 +44,7 @@ export default function wrapAnsiString(
           if (lastLineLength + token.length > terminalWidth) {
             while (token.length > 0) {
               const chunk = token.slice(0, terminalWidth - lastLineLength);
-              const remaining = token.slice(
-                terminalWidth - lastLineLength,
-                token.length,
-              );
+              const remaining = token.slice(terminalWidth - lastLineLength);
               lines[lines.length - 1] += chunk;
               lastLineLength += chunk.length;
               token = remaining;

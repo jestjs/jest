@@ -6,11 +6,12 @@
  */
 
 import * as path from 'path';
+import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson = require('parse-json');
 import stripJsonComments = require('strip-json-comments');
-import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
+import {extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
@@ -19,6 +20,10 @@ import {
   PACKAGE_JSON,
 } from './constants';
 
+interface TsLoader {
+  enabled: (bool: boolean) => void;
+}
+type TsLoaderModule = 'ts-node' | 'esbuild-register';
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
@@ -84,12 +89,30 @@ export default async function readConfigFileAndSetRootDir(
 }
 
 // Load the TypeScript configuration
+let extraTSLoaderOptions: Record<string, unknown>;
+
 const loadTSConfigFile = async (
   configPath: string,
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
-  const registeredCompiler = await getRegisteredCompiler();
+  const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
+  const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
+  const docblockTSLoaderOptions = docblockPragmas['jest-config-loader-options'];
 
+  if (typeof docblockTSLoaderOptions === 'string') {
+    extraTSLoaderOptions = JSON.parse(docblockTSLoaderOptions);
+  }
+  if (Array.isArray(tsLoader)) {
+    throw new TypeError(
+      `Jest: You can only define a single loader through docblocks, got "${tsLoader.join(
+        ', ',
+      )}"`,
+    );
+  }
+
+  const registeredCompiler = await getRegisteredCompiler(
+    tsLoader as TsLoaderModule,
+  );
   registeredCompiler.enabled(true);
 
   let configObject = interopRequireDefault(require(configPath)).default;
@@ -104,31 +127,61 @@ const loadTSConfigFile = async (
   return configObject;
 };
 
-let registeredCompilerPromise: Promise<Service>;
+let registeredCompilerPromise: Promise<TsLoader>;
 
-function getRegisteredCompiler() {
+function getRegisteredCompiler(loader: TsLoaderModule) {
   // Cache the promise to avoid multiple registrations
-  registeredCompilerPromise = registeredCompilerPromise ?? registerTsNode();
+  registeredCompilerPromise =
+    registeredCompilerPromise ?? registerTsLoader(loader);
   return registeredCompilerPromise;
 }
 
-async function registerTsNode(): Promise<Service> {
+async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
   try {
     // Register TypeScript compiler instance
-    const tsNode = await import(/* webpackIgnore: true */ 'ts-node');
-    return tsNode.register({
-      compilerOptions: {
-        module: 'CommonJS',
-        moduleResolution: 'Node10',
-      },
-      moduleTypes: {
-        '**': 'cjs',
-      },
-    });
-  } catch (error: any) {
-    if (error.code === 'ERR_MODULE_NOT_FOUND') {
+    if (loader === 'ts-node') {
+      const tsLoader = await import(/* webpackIgnore: true */ 'ts-node');
+
+      return tsLoader.register({
+        compilerOptions: {
+          module: 'CommonJS',
+        },
+        moduleTypes: {
+          '**': 'cjs',
+        },
+        ...extraTSLoaderOptions,
+      });
+    } else if (loader === 'esbuild-register') {
+      const tsLoader = await import(
+        /* webpackIgnore: true */ 'esbuild-register/dist/node'
+      );
+
+      let instance: {unregister: () => void} | undefined;
+
+      return {
+        enabled: (bool: boolean) => {
+          if (bool) {
+            instance = tsLoader.register({
+              target: `node${process.version.slice(1)}`,
+              ...extraTSLoaderOptions,
+            });
+          } else {
+            instance?.unregister();
+          }
+        },
+      };
+    }
+
+    throw new Error(
+      `Jest: '${loader}' is not a valid TypeScript configuration loader.`,
+    );
+  } catch (error) {
+    if (
+      isNativeError(error) &&
+      (error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND'
+    ) {
       throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
+        `Jest: '${loader}' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
       );
     }
 

@@ -476,7 +476,7 @@ module.exports = {
     'constructor-super': 'error',
     'default-case': 'off',
     'dot-notation': 'off',
-    eqeqeq: ['off', 'allow-null'],
+    eqeqeq: ['error', 'smart'],
     'eslint-comments/disable-enable-pair': ['error', {allowWholeFile: true}],
     'eslint-comments/no-unused-disable': 'error',
     'func-names': 'off',

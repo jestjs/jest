@@ -173,7 +173,7 @@ export default class GitHubActionsReporter extends BaseReporter {
   private printFullResult(context: TestContext, results: TestResult): void {
     const rootDir = context.config.rootDir;
     let testDir = results.testFilePath.replace(rootDir, '');
-    testDir = testDir.slice(1, testDir.length);
+    testDir = testDir.slice(1);
     const resultTree = this.getResultTree(
       results.testResults,
       testDir,
@@ -409,7 +409,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     for (const result of results) {
       let testDir = result.testFilePath;
       testDir = testDir.replace(rootDir, '');
-      testDir = testDir.slice(1, testDir.length);
+      testDir = testDir.slice(1);
       if (result.failureMessage) {
         if (!written) {
           this.log('');

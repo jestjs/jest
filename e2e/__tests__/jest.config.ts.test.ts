@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -73,17 +74,41 @@ test('traverses directory tree up until it finds jest.config', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('it does type check the config', () => {
-  writeFiles(DIR, {
-    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-    'jest.config.ts': 'export default { testTimeout: "10000" }',
-    'package.json': '{}',
-  });
+const jestPath = require.resolve('jest');
+const jestTypesPath = jestPath.replace(/\.js$/, '.d.ts');
+const jestTypesExists = fs.existsSync(jestTypesPath);
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  expect(stderr).toMatch('must be of type');
-  expect(exitCode).toBe(1);
-});
+(jestTypesExists ? test : test.skip).each([true, false])(
+  'check the config disabled (skip type check: %p)',
+  skipTypeCheck => {
+    writeFiles(DIR, {
+      '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+      'jest.config.ts': `
+      /**@jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}*/
+      import {Config} from 'jest';
+      const config: Config = { testTimeout: "10000" };
+      export default config;
+    `,
+      'package.json': '{}',
+    });
+
+    const typeErrorString =
+      "TS2322: Type 'string' is not assignable to type 'number'.";
+    const runtimeErrorString = 'Option "testTimeout" must be of type:';
+
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+
+    if (skipTypeCheck) {
+      expect(stderr).not.toMatch(typeErrorString);
+      expect(stderr).toMatch(runtimeErrorString);
+    } else {
+      expect(stderr).toMatch(typeErrorString);
+      expect(stderr).not.toMatch(runtimeErrorString);
+    }
+
+    expect(exitCode).toBe(1);
+  },
+);
 
 test('invalid JS in jest.config.ts', () => {
   writeFiles(DIR, {

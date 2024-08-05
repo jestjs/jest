@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Custom Reporters Integration on jest-circus valid failing assertion counts for adding reporters 1`] = `
-"onTestCaseResult: adds fail, status: failed, numExpectations: 0
+"onTestCaseResult: adds fail, started: today, status: failed, numExpectations: 0
 onTestFileResult testCaseResult 0: adds fail, status: failed, numExpectations: 0"
 `;
 
 exports[`Custom Reporters Integration on jest-circus valid passing assertion counts for adding reporters 1`] = `
-"onTestCaseResult: adds ok, status: passed, numExpectations: 3
+"onTestCaseResult: adds ok, started: today, status: passed, numExpectations: 3
 onTestFileResult testCaseResult 0: adds ok, status: passed, numExpectations: 3"
 `;
 
 exports[`Custom Reporters Integration on jest-circus push test case results for todo tests 1`] = `
-"onTestCaseResult: sample, status: todo, numExpectations: 0
+"onTestCaseResult: sample, started: today, status: todo, numExpectations: 0
 onTestFileResult testCaseResult 0: sample, status: todo, numExpectations: 0"
 `;
 
