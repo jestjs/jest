@@ -88,7 +88,7 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.ts': `
       /**
-       * @jest-config-loader ts-node 
+       * @jest-config-loader ts-node
        * @jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}
        */
       import {Config} from 'jest';
