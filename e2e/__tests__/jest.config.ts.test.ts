@@ -84,6 +84,7 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.ts': `
+      /**@jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}*/
       import {Config} from 'jest';
       const config: Config = { testTimeout: "10000" };
       export default config;
@@ -95,11 +96,7 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
       "TS2322: Type 'string' is not assignable to type 'number'.";
     const runtimeErrorString = 'Option "testTimeout" must be of type:';
 
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
-      env: {
-        JEST_CONFIG_TRANSPILE_ONLY: skipTypeCheck ? 'true' : undefined,
-      },
-    });
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
 
     if (skipTypeCheck) {
       expect(stderr).not.toMatch(typeErrorString);

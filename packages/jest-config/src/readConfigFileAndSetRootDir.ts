@@ -89,13 +89,19 @@ export default async function readConfigFileAndSetRootDir(
 }
 
 // Load the TypeScript configuration
+let extraTSLoaderOptions: Record<string, unknown>;
+
 const loadTSConfigFile = async (
   configPath: string,
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
   const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
   const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
+  const docblockTSLoaderOptions = docblockPragmas['jest-config-loader-options'];
 
+  if (typeof docblockTSLoaderOptions === 'string') {
+    extraTSLoaderOptions = JSON.parse(docblockTSLoaderOptions);
+  }
   if (Array.isArray(tsLoader)) {
     throw new TypeError(
       `Jest: You can only define a single loader through docblocks, got "${tsLoader.join(
@@ -143,8 +149,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
         moduleTypes: {
           '**': 'cjs',
         },
-        transpileOnly:
-          process.env.JEST_CONFIG_TRANSPILE_ONLY?.toLowerCase() === 'true',
+        ...extraTSLoaderOptions,
       });
     } else if (loader === 'esbuild-register') {
       const tsLoader = await import(
@@ -158,6 +163,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
           if (bool) {
             instance = tsLoader.register({
               target: `node${process.version.slice(1)}`,
+              ...extraTSLoaderOptions,
             });
           } else {
             instance?.unregister();

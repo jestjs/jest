@@ -73,7 +73,20 @@ const config: Config = {
 export default config;
 ```
 
-If you are using `ts-node`, you can set `JEST_CONFIG_TRANSPILE_ONLY` environment variable to `true` (case insensitive) to read configuration files without typechecking.
+You can also pass options to the loader, for instance to enable `transpileOnly`.
+
+```ts title="jest.config.ts"
+/** @jest-config-loader ts-node */
+/** @jest-config-loader-options {"transpileOnly": true} */
+
+import type {Config} from 'jest';
+
+const config: Config = {
+  verbose: true,
+};
+
+export default config;
+```
 
 :::
 
