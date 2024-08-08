@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
