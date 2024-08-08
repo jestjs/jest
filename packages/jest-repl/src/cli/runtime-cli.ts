@@ -99,9 +99,9 @@ export async function run(
       },
       {console: customConsole, docblockPragmas: {}, testPath: filePath},
     );
-    setGlobal(environment.global, 'console', customConsole);
-    setGlobal(environment.global, 'jestProjectConfig', projectConfig);
-    setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
+    setGlobal(environment.global, 'console', customConsole, false);
+    setGlobal(environment.global, 'jestProjectConfig', projectConfig, false);
+    setGlobal(environment.global, 'jestGlobalConfig', globalConfig, false);
 
     const runtime = new Runtime(
       projectConfig,

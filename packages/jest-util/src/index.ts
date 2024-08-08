@@ -29,3 +29,4 @@ export {default as tryRealpath} from './tryRealpath';
 export {default as requireOrImportModule} from './requireOrImportModule';
 export {default as invariant} from './invariant';
 export {default as isNonNullable} from './isNonNullable';
+export {isShreddable, setNotShreddable, shred} from './shredder';

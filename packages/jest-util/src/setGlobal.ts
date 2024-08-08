@@ -6,12 +6,16 @@
  */
 
 import type {Global} from '@jest/types';
+import {isShreddable, setNotShreddable} from './shredder';
 
 export default function setGlobal(
   globalToMutate: typeof globalThis | Global.Global,
-  key: string,
+  key: string | symbol,
   value: unknown,
+  shredAfterTeardown = true,
 ): void {
-  // @ts-expect-error: no index
-  globalToMutate[key] = value;
+  Reflect.set(globalToMutate, key, value);
+  if (!shredAfterTeardown && isShreddable(value)) {
+    setNotShreddable(value);
+  }
 }
