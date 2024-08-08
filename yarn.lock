@@ -3502,7 +3502,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/schemas@workspace:packages/jest-schemas"
   dependencies:
-    "@sinclair/typebox": ^0.32.1
+    "@sinclair/typebox": ^0.33.0
   languageName: unknown
   linkType: soft
 
@@ -5003,10 +5003,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.32.1":
-  version: 0.32.35
-  resolution: "@sinclair/typebox@npm:0.32.35"
-  checksum: 9a5e5697ca5246837696302d9f14bb7139f3f46a039aa1ebed58a4c76c8593753282e64cfd0fb3c6149b35cd09f33ddef948afe85766d8a32da3c6d0a9d49060
+"@sinclair/typebox@npm:^0.33.0":
+  version: 0.33.0
+  resolution: "@sinclair/typebox@npm:0.33.0"
+  checksum: 57336b4fa1544ea0d3d8f2ad5a333f64536bb3b168b395cb0ec9a3bb2de0e310adee75ce59f816a9946fe4a0ed7bc93d3774db38b728f3af7250e5bbb439ba43
   languageName: node
   linkType: hard
 
