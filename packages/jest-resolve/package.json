@@ -19,12 +19,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "workspace:*",
     "jest-pnp-resolver": "^1.2.2",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
+    "picocolors": "^1.0.1",
     "resolve": "^1.20.0",
     "resolve.exports": "^2.0.0",
     "slash": "^3.0.0"

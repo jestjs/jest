@@ -6,14 +6,14 @@
  *
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 
 type TemplateData = Global.TemplateData;
 
-const EXPECTED_COLOR = chalk.green;
-const RECEIVED_COLOR = chalk.red;
+const EXPECTED_COLOR = pico.green;
+const RECEIVED_COLOR = pico.red;
 
 export const validateArrayTable = (table: unknown): void => {
   if (!Array.isArray(table)) {
