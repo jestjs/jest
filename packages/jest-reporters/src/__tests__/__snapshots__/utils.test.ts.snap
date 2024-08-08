@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`printDisplayName should correctly print the displayName when color and name are valid values 1`] = `"</><inverse><green> hello </color></inverse></>"`;
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`with custom equality testers toMatchObject error shows Book objects as equal 1`] = `
 "<dim>expect(</intensity><red>received</color><dim>).</intensity>toMatchObject<dim>(</intensity><green>expected</color><dim>)</intensity>
