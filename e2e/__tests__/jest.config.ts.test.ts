@@ -18,8 +18,9 @@ afterAll(() => cleanup(DIR));
 test('works with jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-    'jest.config.ts':
-      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
+    'jest.config.ts': `
+      /** @jest-config-loader ts-node */
+      export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
   });
 
@@ -33,8 +34,9 @@ test('works with jest.config.ts', () => {
 test('works with tsconfig.json', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-    'jest.config.ts':
-      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
+    'jest.config.ts': `
+      /**@jest-config-loader ts-node */
+      export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
     'tsconfig.json': '{ "compilerOptions": { "module": "esnext" } }',
   });
@@ -53,8 +55,9 @@ test('traverses directory tree up until it finds jest.config', () => {
     test('giraffe', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,
-    'jest.config.ts':
-      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
+    'jest.config.ts': `
+      /** @jest-config-loader ts-node */
+      export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
@@ -84,7 +87,10 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.ts': `
-      /**@jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}*/
+      /**
+       * @jest-config-loader ts-node
+       * @jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}
+       */
       import {Config} from 'jest';
       const config: Config = { testTimeout: "10000" };
       export default config;
@@ -113,7 +119,9 @@ const jestTypesExists = fs.existsSync(jestTypesPath);
 test('invalid JS in jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
-    'jest.config.ts': "export default i'll break this file yo",
+    'jest.config.ts': `
+    /**@jest-config-loader ts-node*/ 
+    export default i'll break this file yo`,
     'package.json': '{}',
   });
 

@@ -96,11 +96,13 @@ const loadTSConfigFile = async (
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
   const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
-  const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
+  const tsLoader = docblockPragmas['jest-config-loader'];
   const docblockTSLoaderOptions = docblockPragmas['jest-config-loader-options'];
 
-  if (typeof docblockTSLoaderOptions === 'string') {
-    extraTSLoaderOptions = JSON.parse(docblockTSLoaderOptions);
+  if (tsLoader === undefined) {
+    throw new Error(
+      'Jest: Loader is required for the TypeScript configuration files. See https://jestjs.io/docs/configuration',
+    );
   }
   if (Array.isArray(tsLoader)) {
     throw new TypeError(
@@ -108,6 +110,9 @@ const loadTSConfigFile = async (
         ', ',
       )}"`,
     );
+  }
+  if (typeof docblockTSLoaderOptions === 'string') {
+    extraTSLoaderOptions = JSON.parse(docblockTSLoaderOptions);
   }
 
   const registeredCompiler = await getRegisteredCompiler(

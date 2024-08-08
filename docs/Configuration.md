@@ -57,7 +57,7 @@ export default async (): Promise<Config> => {
 
 :::tip
 
-To read TypeScript configuration files Jest by default requires [`ts-node`](https://npmjs.com/package/ts-node). You can override this behavior by adding a `@jest-config-loader` docblock at the top of the file. Currently, [`ts-node`](https://npmjs.com/package/ts-node) and [`esbuild-register`](https://npmjs.com/package/esbuild-register) is supported. Make sure `ts-node` or the loader you specify is installed.
+To read TypeScript configuration files Jest requires a Loader. You can define it by adding a `@jest-config-loader` docblock at the top of the file. Currently, [`ts-node`](https://npmjs.com/package/ts-node) and [`esbuild-register`](https://npmjs.com/package/esbuild-register) is supported. Make sure `ts-node` or the loader you specify is installed.
 
 ```ts title="jest.config.ts"
 /** @jest-config-loader ts-node */
@@ -76,8 +76,10 @@ export default config;
 You can also pass options to the loader, for instance to enable `transpileOnly`.
 
 ```ts title="jest.config.ts"
-/** @jest-config-loader ts-node */
-/** @jest-config-loader-options {"transpileOnly": true} */
+/**
+ * @jest-config-loader ts-node
+ * @jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}
+ */
 
 import type {Config} from 'jest';
 
