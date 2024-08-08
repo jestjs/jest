@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as path from 'path';
+import * as path from 'path';
 import {
   TestPathPatterns,
   TestPathPatternsExecutor,
@@ -13,16 +13,36 @@ import {
 } from '../TestPathPatterns';
 
 const mockSep: jest.Mock<() => string> = jest.fn();
+const mockIsAbsolute: jest.Mock<(p: string) => boolean> = jest.fn();
+const mockRelative: jest.Mock<(from: string, to: string) => string> = jest.fn();
 jest.mock('path', () => {
+  const actualPath = jest.requireActual('path');
   return {
-    ...jest.requireActual('path'),
+    ...actualPath,
+    isAbsolute(p) {
+      return mockIsAbsolute(p) || actualPath.isAbsolute(p);
+    },
+    relative(from, to) {
+      return mockRelative(from, to) || actualPath.relative(from, to);
+    },
     get sep() {
-      return mockSep() || '/';
+      return mockSep() || actualPath.sep;
     },
   } as typeof path;
 });
+const forcePosix = () => {
+  mockSep.mockReturnValue(path.posix.sep);
+  mockIsAbsolute.mockImplementation(path.posix.isAbsolute);
+  mockRelative.mockImplementation(path.posix.relative);
+};
+const forceWindows = () => {
+  mockSep.mockReturnValue(path.win32.sep);
+  mockIsAbsolute.mockImplementation(path.win32.isAbsolute);
+  mockRelative.mockImplementation(path.win32.relative);
+};
 beforeEach(() => {
   jest.resetAllMocks();
+  forcePosix();
 });
 
 const config = {rootDir: ''};
@@ -124,6 +144,22 @@ describe('TestPathPatternsExecutor', () => {
       expect(testPathPatterns.isMatch('/a/b/c')).toBe(true);
     });
 
+    it('returns true for explicit relative path for Windows with ./', () => {
+      forceWindows();
+      const testPathPatterns = makeExecutor(['./b/c'], {
+        rootDir: 'C:\\a',
+      });
+      expect(testPathPatterns.isMatch('C:\\a\\b\\c')).toBe(true);
+    });
+
+    it('returns true for explicit relative path for Windows with .\\', () => {
+      forceWindows();
+      const testPathPatterns = makeExecutor(['.\\b\\c'], {
+        rootDir: 'C:\\a',
+      });
+      expect(testPathPatterns.isMatch('C:\\a\\b\\c')).toBe(true);
+    });
+
     it('returns true for partial file match', () => {
       const testPathPatterns = makeExecutor(['aaa'], config);
       expect(testPathPatterns.isMatch('/foo/..aaa..')).toBe(true);
@@ -158,10 +194,19 @@ describe('TestPathPatternsExecutor', () => {
     });
 
     it('matches absolute paths regardless of rootDir', () => {
+      forcePosix();
       const testPathPatterns = makeExecutor(['/a/b'], {
         rootDir: '/foo/bar',
       });
       expect(testPathPatterns.isMatch('/a/b')).toBe(true);
+    });
+
+    it('matches absolute paths for Windows', () => {
+      forceWindows();
+      const testPathPatterns = makeExecutor(['C:\\a\\b'], {
+        rootDir: 'C:\\foo\\bar',
+      });
+      expect(testPathPatterns.isMatch('C:\\a\\b')).toBe(true);
     });
 
     it('returns true if match any paths', () => {
@@ -175,15 +220,15 @@ describe('TestPathPatternsExecutor', () => {
     });
 
     it('does not normalize Windows paths on POSIX', () => {
-      mockSep.mockReturnValue('/');
+      forcePosix();
       const testPathPatterns = makeExecutor(['a\\z', 'a\\\\z'], config);
       expect(testPathPatterns.isMatch('/foo/a/z')).toBe(false);
     });
 
     it('normalizes paths for Windows', () => {
-      mockSep.mockReturnValue('\\');
+      forceWindows();
       const testPathPatterns = makeExecutor(['a/b'], config);
-      expect(testPathPatterns.isMatch('\\foo\\a\\b')).toBe(true);
+      expect(testPathPatterns.isMatch('C:\\foo\\a\\b')).toBe(true);
     });
   });
 });
