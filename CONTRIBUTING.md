@@ -109,6 +109,10 @@ Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
+##### Type tests
+
+Some of the packages within Jest have a `__typetests__` directory. This is where type tests reside in. If the scope of your work only requires a type test, this is where you will write it in. When you write any type test make sure you build the repository (or rebuild it after each change) to be able to see the type tests locally.
+
 ## Checking Constraints
 
 We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/jestjs/jest/blob/main/constraints.pro) and their purposes are documented with comments.
