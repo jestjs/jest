@@ -344,6 +344,18 @@ export default async function watch(
     }
   };
 
+  const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(usage =>
+    Number(usage.key).toString(16),
+  );
+  const interruptedKeys = new Set([
+    'q',
+    KEYS.ENTER,
+    'a',
+    'o',
+    'f',
+    ...pluginKeys,
+  ]);
+
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       if (typeof stdin.setRawMode === 'function') {
@@ -362,14 +374,7 @@ export default async function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
-      usage => Number(usage.key).toString(16),
-    );
-    if (
-      isRunning &&
-      testWatcher &&
-      ['q', KEYS.ENTER, 'a', 'o', 'f', ...pluginKeys].includes(key)
-    ) {
+    if (isRunning && testWatcher && interruptedKeys.has(key)) {
       testWatcher.setState({interrupted: true});
       return;
     }
