@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 1`] = `
 "Test Suites: 3 passed, 3 total

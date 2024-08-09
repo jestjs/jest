@@ -38,7 +38,7 @@ exports[`test snap 1`] = `
 After (no “test” prefix, better JSX rendering, version header):
 
 ```js
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`snap 1`] = `
 <header>
