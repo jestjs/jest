@@ -43,7 +43,7 @@ const defaultOptions: Config.DefaultOptions = {
   injectGlobals: true,
   listTests: false,
   maxConcurrency: 5,
-  maxWorkers: '50%',
+  maxWorkers: 2, //50%
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',
