@@ -18,6 +18,7 @@ import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
+import {replaceFunctionsWithStringReferences} from './helpers';
 import runTest from './runTest';
 import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 
@@ -96,7 +97,7 @@ export async function worker({
   context,
 }: WorkerData): Promise<TestResult> {
   try {
-    return await runTest(
+    const testResult = await runTest(
       path,
       globalConfig,
       config,
@@ -110,7 +111,28 @@ export async function worker({
       },
       sendMessageToJest,
     );
+    return makeSerializableTestResults(testResult);
   } catch (error: any) {
     throw formatError(error);
   }
+}
+
+function makeSerializableTestResults(result: TestResult): TestResult {
+  const {testResults} = result;
+  const serializableResults = testResults.map(resultItem => {
+    if (resultItem.failureDetails) {
+      return {
+        ...resultItem,
+        // Functions cause DataCloneError when passed between workers,
+        // therefore they are converted to string references
+        failureDetails: replaceFunctionsWithStringReferences(
+          resultItem.failureDetails,
+        ),
+      };
+    }
+
+    return resultItem;
+  });
+
+  return {...result, testResults: serializableResults};
 }
