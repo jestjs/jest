@@ -51,6 +51,7 @@ export type PropertyLikeKeys<T> = Exclude<
 export type MockedClass<T extends ClassLike> = MockInstance<
   (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
 > &
+  (new (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>) &
   MockedObject<T>;
 
 export type MockedFunction<T extends FunctionLike> = MockInstance<T> &

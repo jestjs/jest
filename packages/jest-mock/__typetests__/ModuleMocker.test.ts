@@ -46,6 +46,7 @@ const exampleModule = {
 const moduleMocker = new ModuleMocker(globalThis);
 
 const exampleMetadata = moduleMocker.getMetadata(exampleModule);
+const mockMetadata = moduleMocker.getMetadata(ExampleClass);
 
 test('getMetadata', () => {
   expect(exampleMetadata).type.toBe<MockMetadata<
@@ -56,6 +57,8 @@ test('getMetadata', () => {
 test('generateFromMetadata', () => {
   const exampleMock = moduleMocker.generateFromMetadata(exampleMetadata!);
 
+  const mockClass = moduleMocker.generateFromMetadata(mockMetadata!);
+  const mockedInstance = new mockClass();
   expect(exampleMock).type.toBe<Mocked<typeof exampleModule>>();
 
   expect(exampleMock.methodA.mock.calls).type.toBe<
@@ -67,6 +70,9 @@ test('generateFromMetadata', () => {
 
   expect(exampleMock.instance.memberA).type.toBe<Array<number>>();
   expect(exampleMock.instance.memberB.mock.calls).type.toBe<Array<[]>>();
+
+  expect(mockedInstance.memberB.mock.calls).type.toBe<Array<[]>>();
+  expect(mockedInstance.memberA).type.toBe<Array<number>>();
 
   expect(exampleMock.propertyA.one).type.toBeString();
   expect(exampleMock.propertyA.two.mock.calls).type.toBe<Array<[]>>();
