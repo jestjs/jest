@@ -321,7 +321,7 @@ export const RawInitialOptions = Type.Partial(
     errorOnDeprecated: Type.Boolean(),
     testEnvironment: Type.String(),
     testEnvironmentOptions: Type.Record(Type.String(), Type.Unknown()),
-    testFailureExitCode: Type.Union([Type.String(), Type.Integer()]),
+    testFailureExitCode: Type.Integer(),
     testLocationInResults: Type.Boolean(),
     testMatch: Type.Array(Type.String()),
     testNamePattern: Type.String(),
