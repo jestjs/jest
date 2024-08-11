@@ -49,7 +49,6 @@
 
 ### Fixes
 
-- `[jest-schemas,jest-types]` fix type of `testFailureExitCode` config option([#15232](https://github.com/jestjs/jest/pull/15232))
 - `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[expect]` Check error instance type for `toThrow/toThrowError` ([#14576](https://github.com/jestjs/jest/pull/14576))
 - `[expect]` Improve diff for failing `expect.objectContaining` ([#15038](https://github.com/jestjs/jest/pull/15038))
@@ -76,6 +75,7 @@
 - `[@jest/expect-utils]` Fix not addressing to Sets and Maps as objects without keys ([#14873](https://github.com/jestjs/jest/pull/14873))
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 - `[jest-runtime]` Properly handle re-exported native modules in ESM via CJS ([#14589](https://github.com/jestjs/jest/pull/14589))
+- `[jest-schemas, jest-types]` [**BREAKING**] Fix type of `testFailureExitCode` config option([#15232](https://github.com/jestjs/jest/pull/15232))
 - `[jest-util]` Make sure `isInteractive` works in a browser ([#14552](https://github.com/jestjs/jest/pull/14552))
 - `[pretty-format]` [**BREAKING**] Print `ArrayBuffer` and `DataView` correctly ([#14290](https://github.com/jestjs/jest/pull/14290))
 - `[pretty-format]` Fixed a bug where "anonymous custom elements" were not being printed as expected. ([#15138](https://github.com/jestjs/jest/pull/15138))
