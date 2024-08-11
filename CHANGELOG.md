@@ -49,6 +49,7 @@
 
 ### Fixes
 
+- `[jest-schemas,jest-types]` fix type of `testFailureExitCode` config option([#15232](https://github.com/jestjs/jest/pull/15232))
 - `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[expect]` Check error instance type for `toThrow/toThrowError` ([#14576](https://github.com/jestjs/jest/pull/14576))
 - `[expect]` Improve diff for failing `expect.objectContaining` ([#15038](https://github.com/jestjs/jest/pull/15038))
