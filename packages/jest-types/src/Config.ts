@@ -198,7 +198,7 @@ export type DefaultOptions = {
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
-  testFailureExitCode: string | number;
+  testFailureExitCode: number;
   testLocationInResults: boolean;
   testMatch: Array<string>;
   testPathIgnorePatterns: Array<string>;
