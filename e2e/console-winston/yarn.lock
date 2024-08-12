@@ -260,8 +260,8 @@ __metadata:
   linkType: hard
 
 "winston@npm:^3.2.1":
-  version: 3.13.1
-  resolution: "winston@npm:3.13.1"
+  version: 3.14.1
+  resolution: "winston@npm:3.14.1"
   dependencies:
     "@colors/colors": ^1.6.0
     "@dabh/diagnostics": ^2.0.2
@@ -274,6 +274,6 @@ __metadata:
     stack-trace: 0.0.x
     triple-beam: ^1.3.0
     winston-transport: ^4.7.0
-  checksum: 34fb3da9ed62fa6a5aded17692b7d4773744999c42efd0a15b866c1202391859b1aef922e94b532632a02738b30ed658429258cb32d5aec4563bb14f2168b888
+  checksum: 452083f1e6931a839ce208abf7cc99d06c4ae1339082f5981df212492c9ef86195665ca528c98e0e05eaa7c9bd8579555600cd85210f69d30765cb548aa0f2bd
   languageName: node
   linkType: hard
