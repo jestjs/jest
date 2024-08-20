@@ -42,19 +42,28 @@ function deepCyclicCopyObject<T>(
 
   cycles.set(object, newObject);
 
-  for (const key of Object.keys(descriptors)) {
+  for (const [key, descriptor] of Object.entries(descriptors)) {
     if (options.blacklist && options.blacklist.has(key)) {
       delete descriptors[key];
       continue;
     }
 
-    const descriptor = descriptors[key];
     if (descriptor.value !== undefined) {
       descriptor.value = deepCyclicCopy(
         descriptor.value,
         {blacklist: EMPTY, keepPrototype: options.keepPrototype},
         cycles,
       );
+    } else if (typeof descriptor.get === 'function') {
+      descriptor.get = () => {
+        const value: unknown = (object as any)[key];
+
+        return deepCyclicCopy(
+          value,
+          {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+          cycles,
+        );
+      };
     }
 
     descriptor.configurable = true;
