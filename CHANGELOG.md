@@ -119,7 +119,7 @@
 - `[docs]` Updated `.toHaveBeenCalled()` documentation to correctly reflect its functionality ([#14842](https://github.com/jestjs/jest/pull/14842))
 - `[docs]` Link NestJS documentation on testing with Jest ([#14940](https://github.com/jestjs/jest/pull/14940))
 - `[docs]` `Revised documentation for .toHaveBeenCalled()` to accurately depict its functionality. ([#14853](https://github.com/jestjs/jest/pull/14853))
-- `[docs]` Removed ExpressJS testing-frameworks personal reference guide after domain expired / dead link.
+- `[docs]` Removed ExpressJS from `testing-frameworks` reference pages after domain expired.
 
 ## 29.7.0
 
