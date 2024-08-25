@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@jest/types": "workspace:*",
-    "@sinonjs/fake-timers": "^11.1.0",
+    "@sinonjs/fake-timers": "^13.0.0",
     "@types/node": "*",
     "jest-message-util": "workspace:*",
     "jest-mock": "workspace:*",
