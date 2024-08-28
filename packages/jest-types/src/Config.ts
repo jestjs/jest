@@ -173,7 +173,7 @@ export type DefaultOptions = {
   injectGlobals: boolean;
   listTests: boolean;
   maxConcurrency: number;
-  maxWorkers: number | string;
+  maxWorkers: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleNameMapper: Record<string, string | Array<string>>;
