@@ -95,6 +95,7 @@
 
 ### Chore & Maintenance
 
+- `[*]` added info for type tests in `CONTRIBUTING.md` ([#15181](https://github.com/jestjs/jest/pull/15181))
 - `[*]` Increase version of `micromatch` to `^4.0.7` ([#15082](https://github.com/jestjs/jest/pull/15082))
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14, 19 and 21 ([#14460](https://github.com/jestjs/jest/pull/14460), [#15118](https://github.com/jestjs/jest/pull/15118))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.0` ([#14542](https://github.com/jestjs/jest/pull/14542))
