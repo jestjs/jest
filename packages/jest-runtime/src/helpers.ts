@@ -41,7 +41,9 @@ export const findSiblingsWithFileExtension = (
     try {
       const slashedDirname = slash(dirname);
 
-      const matches = globSync([`${pathToModule}.*`.replaceAll('\\', '/')])
+      const matches = globSync([`${pathToModule}.*`.replaceAll('\\', '/')], {
+        expandDirectories: false,
+      })
         .map(match => slash(match))
         .map(match => {
           const relativePath = path.posix.relative(slashedDirname, match);

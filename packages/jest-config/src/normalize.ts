@@ -752,7 +752,9 @@ export default async function normalize(
               // for the future resolution.
               const globMatches =
                 typeof project === 'string'
-                  ? globSync([project.replaceAll('\\', '/')])
+                  ? globSync([project.replaceAll('\\', '/')], {
+                      expandDirectories: false,
+                    })
                   : [];
               const projectEntry =
                 globMatches.length > 0 ? globMatches : project;
