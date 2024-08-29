@@ -9,12 +9,12 @@ import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk = require('chalk');
-import {glob} from 'glob';
 import * as fs from 'graceful-fs';
 import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
+import {globSync} from 'tinyglobby';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
@@ -297,9 +297,9 @@ export default class CoverageReporter extends BaseReporter {
           // (rather than recalculating it for each covered file) we save a tonne
           // of execution time.
           if (filesByGlob[absoluteThresholdGroup] === undefined) {
-            filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup, {windowsPathsNoEscape: true})
-              .map(filePath => path.resolve(filePath));
+            filesByGlob[absoluteThresholdGroup] = globSync([
+              absoluteThresholdGroup.replaceAll('\\', '/'),
+            ]).map(filePath => path.resolve(filePath));
           }
 
           if (filesByGlob[absoluteThresholdGroup].includes(file)) {
