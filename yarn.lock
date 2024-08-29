@@ -10742,6 +10742,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fdir@npm:^6.2.0":
+  version: 6.3.0
+  resolution: "fdir@npm:6.3.0"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: c0fe6ddd4aa0a315a55401d468974b582b1880908c8f7b1b1c40db4cd2feb2c04402d2fbdbd6ad049f6261e0d7cd6e629cc5ae678f8883f245ebc1f94b6ff9e6
+  languageName: node
+  linkType: hard
+
 "feed@npm:^4.2.2":
   version: 4.2.2
   resolution: "feed@npm:4.2.2"
@@ -13215,7 +13227,6 @@ __metadata:
     deepmerge: ^4.2.2
     esbuild: ^0.23.0
     esbuild-register: ^3.4.0
-    glob: ^10.3.10
     graceful-fs: ^4.2.9
     jest-circus: "workspace:*"
     jest-docblock: "workspace:*"
@@ -13232,6 +13243,7 @@ __metadata:
     semver: ^7.5.3
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
+    tinyglobby: ^0.2.5
     ts-node: ^10.5.0
     typescript: ^5.0.4
   peerDependencies:
@@ -17154,7 +17166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^4.0.0":
+"picomatch@npm:^4.0.0, picomatch@npm:^4.0.2":
   version: 4.0.2
   resolution: "picomatch@npm:4.0.2"
   checksum: a7a5188c954f82c6585720e9143297ccd0e35ad8072231608086ca950bee672d51b0ef676254af0788205e59bd4e4deb4e7708769226bed725bf13370a7d1464
@@ -20421,6 +20433,16 @@ __metadata:
   version: 1.0.3
   resolution: "tiny-warning@npm:1.0.3"
   checksum: da62c4acac565902f0624b123eed6dd3509bc9a8d30c06e017104bedcf5d35810da8ff72864400ad19c5c7806fc0a8323c68baf3e326af7cb7d969f846100d71
+  languageName: node
+  linkType: hard
+
+"tinyglobby@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "tinyglobby@npm:0.2.5"
+  dependencies:
+    fdir: ^6.2.0
+    picomatch: ^4.0.2
+  checksum: 04d01bb603c10a94d44045236bab6a5402c59ead6a02a7317f119647d31c250394189cee152fddbf13e80496697987b29d90d75786b12f76358a936cff307d35
   languageName: node
   linkType: hard
 
