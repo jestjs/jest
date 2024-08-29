@@ -13612,7 +13612,6 @@ __metadata:
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
-    glob: ^10.3.10
     graceful-fs: ^4.2.9
     jest-environment-node: "workspace:*"
     jest-haste-map: "workspace:*"
@@ -13624,6 +13623,7 @@ __metadata:
     jest-util: "workspace:*"
     slash: ^3.0.0
     strip-bom: ^4.0.0
+    tinyglobby: ^0.2.5
   languageName: unknown
   linkType: soft
 

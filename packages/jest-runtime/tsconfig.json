@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     // needed for WebAssembly, see https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/826
-    "lib": ["dom"],
+    "lib": ["dom", "es2021"],
     "rootDir": "src",
     "outDir": "build"
   },

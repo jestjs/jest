@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import {glob} from 'glob';
 import slash = require('slash');
+import {globSync} from 'tinyglobby';
 import type {Config} from '@jest/types';
 
 const OUTSIDE_JEST_VM_PROTOCOL = 'jest-main:';
@@ -41,8 +41,7 @@ export const findSiblingsWithFileExtension = (
     try {
       const slashedDirname = slash(dirname);
 
-      const matches = glob
-        .sync(`${pathToModule}.*`, {windowsPathsNoEscape: true})
+      const matches = globSync([`${pathToModule}.*`.replaceAll('\\', '/')])
         .map(match => slash(match))
         .map(match => {
           const relativePath = path.posix.relative(slashedDirname, match);
