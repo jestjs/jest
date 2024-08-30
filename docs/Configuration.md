@@ -1129,6 +1129,12 @@ Default: `1000`
 
 Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
 
+### `passWithNoTests` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--passWithNoTests`](CLI.md#--passwithnotests) flag allows the test suite to pass even when no test files are found.
+
 ### `preset` \[string]
 
 Default: `undefined`
