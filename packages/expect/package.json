@@ -18,7 +18,8 @@
     },
     "./package.json": "./package.json",
     "./build/matchers": "./build/matchers.js",
-    "./build/toThrowMatchers": "./build/toThrowMatchers.js"
+    "./build/toThrowMatchers": "./build/toThrowMatchers.js",
+    "./build/spyMatchers": "./build/spyMatchers.js"
   },
   "dependencies": {
     "@jest/expect-utils": "workspace:*",

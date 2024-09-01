@@ -92,6 +92,7 @@ function getPackages() {
           ? {
               './build/matchers': './build/matchers.js',
               './build/toThrowMatchers': './build/toThrowMatchers.js',
+              './build/spyMatchers': './build/spyMatchers.js',
             }
           : {}),
       },
