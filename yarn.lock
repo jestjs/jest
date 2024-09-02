@@ -9189,7 +9189,7 @@ __metadata:
   dependencies:
     "@fast-check/jest": ^2.0.0
     benchmark: ^2.1.4
-    diff: ^5.0.0
+    diff: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -9200,10 +9200,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "diff@npm:5.2.0"
-  checksum: 12b63ca9c36c72bafa3effa77121f0581b4015df18bc16bac1f8e263597735649f1a173c26f7eba17fb4162b073fee61788abe49610e6c70a2641fe1895443fd
+"diff@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "diff@npm:6.0.0"
+  checksum: fe94c8b1f38d5871bcdb4ec584fedce99ff7abf58b1fd7c3bef30c852c24dc6b93584c8c9334c2dc820de075d4d18b71487c1c77f49f00a622cb2496f4b5030b
   languageName: node
   linkType: hard
 
