@@ -91,8 +91,8 @@ function getPackages() {
         ...(pkg.name === 'expect'
           ? {
               './build/matchers': './build/matchers.js',
-              './build/toThrowMatchers': './build/toThrowMatchers.js',
               './build/spyMatchers': './build/spyMatchers.js',
+              './build/toThrowMatchers': './build/toThrowMatchers.js',
             }
           : {}),
       },
