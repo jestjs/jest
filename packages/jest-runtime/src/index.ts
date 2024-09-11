@@ -2407,6 +2407,17 @@ export default class Runtime {
           );
         }
       },
+      setAdvanceTimersAutomatically: (autoAdvance: boolean) => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          fakeTimers.setAdvanceTimersAutomatically(autoAdvance);
+        } else {
+          throw new TypeError(
+            '`jest.setAdvanceTimersAutomatically()` is not available when using legacy fake timers.',
+          );
+        }
+      },
       setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
       setSystemTime: now => {
         const fakeTimers = _getFakeTimers();

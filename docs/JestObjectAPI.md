@@ -1067,9 +1067,24 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 Returns the number of fake timers still left to run.
 
+### `jest.setAdvanceTimersAutomatically()`
+
+Configures whether timers advance automatically. When enabled, jest will advance the clock to the next timer in the queue after a macrotask. With automatically advancing timers enabled, tests can be written in a way that is independent from whether fake timers are installed. Tests can always be written to wait for timers to resolve, even when using fake timers.
+
+This feature differs from the `advanceTimers` in two key ways:
+
+1. The microtask queue is allowed to empty between each timer execution, as would be the case without fake timers installed.
+1. It advances as quickly and as far as necessary. If the next timer in the queue is at 1000ms, it will advance 1000ms immediately whereas `advanceTimers`, without manually advancing time in the test, would take `1000 / advanceTimersMs` real time to reach and execute the timer.
+
 ### `jest.now()`
 
 Returns the time in ms of the current clock. This is equivalent to `Date.now()` if real timers are in use, or if `Date` is mocked. In other cases (such as legacy timers) it may be useful for implementing custom mocks of `Date.now()`, `performance.now()`, etc.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
 
 ### `jest.setSystemTime(now?: number | Date)`
 

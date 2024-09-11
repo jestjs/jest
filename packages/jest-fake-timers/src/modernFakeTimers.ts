@@ -21,6 +21,10 @@ export default class FakeTimers {
   private _fakingTime: boolean;
   private readonly _global: typeof globalThis;
   private readonly _fakeTimers: FakeTimerWithContext;
+  private autoTickMode: {counter: number; mode: 'manual' | 'auto'} = {
+    counter: 0,
+    mode: 'manual',
+  };
 
   constructor({
     global,
@@ -142,6 +146,22 @@ export default class FakeTimers {
     this._fakingTime = true;
   }
 
+  setAdvanceTimersAutomatically(autoAdvance: boolean): void {
+    if (!this._checkFakeTimers()) {
+      return;
+    }
+
+    const newMode = autoAdvance ? 'auto' : 'manual';
+    if (newMode === this.autoTickMode.mode) {
+      return;
+    }
+
+    this.autoTickMode = {counter: this.autoTickMode.counter + 1, mode: newMode};
+    if (autoAdvance) {
+      this._advanceUntilModeChanges();
+    }
+  }
+
   reset(): void {
     if (this._checkFakeTimers()) {
       const {now} = this._clock;
@@ -223,5 +243,24 @@ export default class FakeTimers {
       shouldClearNativeTimers: true,
       toFake: [...toFake],
     };
+  }
+
+  /**
+   * Advances the Clock's time until the mode changes.
+   *
+   * The time is advanced asynchronously, giving microtasks and events a chance
+   * to run before each timer runs.
+   */
+  private async _advanceUntilModeChanges() {
+    if (!this._checkFakeTimers()) {
+      return;
+    }
+    const {counter} = this.autoTickMode;
+
+    while (this.autoTickMode.counter === counter && this._fakingTime) {
+      // nextAsync always resolves in a setTimeout, even when there are no timers.
+      // https://github.com/sinonjs/fake-timers/blob/710cafad25abe9465c807efd8ed9cf3a15985fb1/src/fake-timers-src.js#L1517-L1546
+      await this._clock.nextAsync();
+    }
   }
 }

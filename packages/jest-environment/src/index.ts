@@ -91,6 +91,16 @@ export interface Jest {
    */
   advanceTimersToNextTimerAsync(steps?: number): Promise<void>;
   /**
+   * Configures whether timers advance automatically. With automatically advancing
+   * timers enabled, tests can be written in a way that is independent from whether
+   * fake timers are installed. Tests can always be written to wait for timers to
+   * resolve, even when using fake timers.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  setAdvanceTimersAutomatically(autoAdvance: boolean): void;
+  /**
    * Disables automatic mocking in the module loader.
    */
   autoMockOff(): Jest;
