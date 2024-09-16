@@ -110,7 +110,9 @@ describe('dependencyExtractor', () => {
       } from 'inv8';
       import TheDefaultExport, {type foo, type bar} from 'inv9';
     `;
-    expect(extractor.extract(code)).toEqual(new Set(['inv5', 'inv6', 'inv7', 'inv8', 'inv9']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['inv5', 'inv6', 'inv7', 'inv8', 'inv9'])
+    );
   });
 
   it('should extract dependencies from `export` statements', () => {
