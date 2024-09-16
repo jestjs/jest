@@ -92,8 +92,12 @@ describe('dependencyExtractor', () => {
       // Bad
       import typeof {foo} from 'inv1';
       import type {foo} from 'inv2';
+      import {type foo, typeof bar} from 'inv3';
+      // Good
+      import {foo, typeof bar} from 'inv4';
+      import {type foo, bar} from 'inv5';
     `;
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set(['inv4', 'inv5']));
   });
 
   it('should extract dependencies from `export` statements', () => {
