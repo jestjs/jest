@@ -109,7 +109,7 @@ describe('dependencyExtractor', () => {
         bar
       } from 'inv8';
     `;
-    expect(extractor.extract(code)).toEqual(new Set(['inv4', 'inv5']));
+    expect(extractor.extract(code)).toEqual(new Set(['inv5', 'inv6', 'inv7', 'inv8']));
   });
 
   it('should extract dependencies from `export` statements', () => {
