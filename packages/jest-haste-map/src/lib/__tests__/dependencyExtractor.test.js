@@ -93,9 +93,21 @@ describe('dependencyExtractor', () => {
       import typeof {foo} from 'inv1';
       import type {foo} from 'inv2';
       import {type foo, typeof bar} from 'inv3';
+      import {
+        type foo,
+        typeof bar,
+      } from 'inv4'
       // Good
-      import {foo, typeof bar} from 'inv4';
-      import {type foo, bar} from 'inv5';
+      import {foo, typeof bar} from 'inv5';
+      import {type foo, bar} from 'inv6';
+      import {
+        foo,
+        typeof bar
+      } from 'inv7';
+      import {
+        type foo,
+        bar
+      } from 'inv8';
     `;
     expect(extractor.extract(code)).toEqual(new Set(['inv4', 'inv5']));
   });
