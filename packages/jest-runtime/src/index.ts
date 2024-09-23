@@ -2407,14 +2407,14 @@ export default class Runtime {
           );
         }
       },
-      setAdvanceTimersAutomatically: (autoAdvance: boolean) => {
+      setAdvanceTimers: config => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers === this._environment.fakeTimersModern) {
-          fakeTimers.setAdvanceTimersAutomatically(autoAdvance);
+          fakeTimers.setTickMode(config.mode);
         } else {
           throw new TypeError(
-            '`jest.setAdvanceTimersAutomatically()` is not available when using legacy fake timers.',
+            '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
           );
         }
       },

@@ -15,13 +15,16 @@ import {
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
 
+export type TimerTickMode = 'manual' | 'nextAsync' | 'interval';
+
 export default class FakeTimers {
   private _clock!: InstalledClock;
   private readonly _config: Config.ProjectConfig;
   private _fakingTime: boolean;
+  private _usingSinonAdvanceTime = false;
   private readonly _global: typeof globalThis;
   private readonly _fakeTimers: FakeTimerWithContext;
-  private autoTickMode: {counter: number; mode: 'manual' | 'auto'} = {
+  private tickMode: {counter: number; mode: TimerTickMode} = {
     counter: 0,
     mode: 'manual',
   };
@@ -144,20 +147,45 @@ export default class FakeTimers {
     );
 
     this._fakingTime = true;
+    if (
+      fakeTimersConfig &&
+      typeof fakeTimersConfig.advanceTimers === 'object'
+    ) {
+      this._setTickModeInternal(fakeTimersConfig.advanceTimers.mode);
+    }
   }
 
-  setAdvanceTimersAutomatically(autoAdvance: boolean): void {
+  setTickMode(newMode: 'nextAsync' | 'manual'): void {
     if (!this._checkFakeTimers()) {
       return;
     }
-
-    const newMode = autoAdvance ? 'auto' : 'manual';
-    if (newMode === this.autoTickMode.mode) {
+    if (this._usingSinonAdvanceTime) {
+      this._global.console.warn(
+        '`setTickMode` cannot be used when fake timers are configured to advance at an interval.' +
+          `\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
+      );
       return;
     }
 
-    this.autoTickMode = {counter: this.autoTickMode.counter + 1, mode: newMode};
-    if (autoAdvance) {
+    this._setTickModeInternal(newMode);
+  }
+
+  private _setTickModeInternal(newMode: TimerTickMode): void {
+    if (newMode === this.tickMode.mode) {
+      return;
+    }
+
+    this.tickMode = {
+      counter: this.tickMode.counter + 1,
+      mode: newMode,
+    };
+
+    if (newMode === 'nextAsync') {
       this._advanceUntilModeChanges();
     }
   }
@@ -221,10 +249,22 @@ export default class FakeTimers {
       ...fakeTimersConfig,
     } as Config.FakeTimersConfig;
 
-    const advanceTimeDelta =
-      typeof fakeTimersConfig.advanceTimers === 'number'
-        ? fakeTimersConfig.advanceTimers
-        : undefined;
+    let advanceTimeDelta: number | undefined = undefined;
+    let shouldAdvanceTime = false;
+    const advanceTimersConfig = fakeTimersConfig.advanceTimers;
+    if (typeof advanceTimersConfig === 'number') {
+      shouldAdvanceTime = true;
+      advanceTimeDelta = advanceTimersConfig;
+    } else if (typeof advanceTimersConfig === 'boolean') {
+      shouldAdvanceTime = advanceTimersConfig;
+    } else if (
+      typeof advanceTimersConfig === 'object' &&
+      advanceTimersConfig.mode === 'interval'
+    ) {
+      shouldAdvanceTime = true;
+      advanceTimeDelta = advanceTimersConfig.delta;
+    }
+    this._usingSinonAdvanceTime = shouldAdvanceTime;
 
     const toFake = new Set(
       Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
@@ -239,7 +279,7 @@ export default class FakeTimers {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
       now: fakeTimersConfig.now ?? Date.now(),
-      shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
+      shouldAdvanceTime,
       shouldClearNativeTimers: true,
       toFake: [...toFake],
     };
@@ -255,9 +295,9 @@ export default class FakeTimers {
     if (!this._checkFakeTimers()) {
       return;
     }
-    const {counter} = this.autoTickMode;
+    const {counter} = this.tickMode;
 
-    while (this.autoTickMode.counter === counter && this._fakingTime) {
+    while (this.tickMode.counter === counter && this._fakingTime) {
       // nextAsync always resolves in a setTimeout, even when there are no timers.
       // https://github.com/sinonjs/fake-timers/blob/710cafad25abe9465c807efd8ed9cf3a15985fb1/src/fake-timers-src.js#L1517-L1546
       await this._clock.nextAsync();

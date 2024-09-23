@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FakeTimers advanceTimers nextAsync warns when trying to set tick mode when already using interval 1`] = `"\`setTickMode\` cannot be used when fake timers are configured to advance at an interval."`;
+
 exports[`FakeTimers runAllTimers warns when trying to advance timers while real timers are used 1`] = `"A function to advance timers was called but the timers APIs are not replaced with fake timers. Call \`jest.useFakeTimers()\` in this test file or enable fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} in Jest configuration file."`;

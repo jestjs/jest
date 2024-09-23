@@ -1251,6 +1251,98 @@ describe('FakeTimers', () => {
     });
   });
 
+  describe('advanceTimers', () => {
+    let global: typeof globalThis;
+    let timers: FakeTimers;
+    beforeEach(() => {
+      global = {
+        Date,
+        Promise,
+        clearInterval,
+        clearTimeout,
+        console,
+        process,
+        setInterval,
+        setTimeout,
+      } as unknown as typeof globalThis;
+
+      timers = new FakeTimers({config: makeProjectConfig(), global});
+    });
+
+    afterEach(() => {
+      timers.dispose();
+    });
+
+    describe('nextAsync', () => {
+      beforeEach(() => {
+        timers.useFakeTimers({advanceTimers: {mode: 'nextAsync'}});
+      });
+
+      it('can always wait for a timer to execute', async () => {
+        const p = new Promise(resolve => {
+          global.setTimeout(resolve, 100);
+        });
+        await expect(p).resolves.toBeUndefined();
+      });
+
+      it('can mix promises inside timers', async () => {
+        const p = new Promise(resolve =>
+          global.setTimeout(async () => {
+            await Promise.resolve();
+            global.setTimeout(resolve, 100);
+          }, 100),
+        );
+        await expect(p).resolves.toBeUndefined();
+      });
+
+      it('automatically advances all timers', async () => {
+        const p1 = new Promise(resolve => global.setTimeout(resolve, 50));
+        const p2 = new Promise(resolve => global.setTimeout(resolve, 50));
+        const p3 = new Promise(resolve => global.setTimeout(resolve, 100));
+        await expect(Promise.all([p1, p2, p3])).resolves.toEqual([
+          undefined,
+          undefined,
+          undefined,
+        ]);
+      });
+
+      it('can turn off and on auto advancing of time', async () => {
+        let p2Resolved = false;
+        const p1 = new Promise(resolve => global.setTimeout(resolve, 50));
+        const p2 = new Promise(resolve => global.setTimeout(resolve, 51)).then(
+          () => (p2Resolved = true),
+        );
+        const p3 = new Promise(resolve => global.setTimeout(resolve, 52));
+
+        await expect(p1).resolves.toBeUndefined();
+
+        timers.setTickMode('manual');
+        await new Promise(resolve => setTimeout(resolve, 5));
+        expect(p2Resolved).toBe(false);
+
+        timers.setTickMode('nextAsync');
+        await new Promise(resolve => setTimeout(resolve, 5));
+        await expect(p2).resolves.toBe(true);
+        await expect(p3).resolves.toBeUndefined();
+        expect(p2Resolved).toBe(true);
+      });
+
+      it('warns when trying to set tick mode when already using interval', () => {
+        const consoleWarnSpy = jest
+          .spyOn(console, 'warn')
+          .mockImplementation(() => {
+            // nothing
+          });
+        timers.useFakeTimers({advanceTimers: {mode: 'interval'}});
+        timers.setTickMode('nextAsync');
+        expect(
+          consoleWarnSpy.mock.calls[0][0].split('\nStack Trace')[0],
+        ).toMatchSnapshot();
+        consoleWarnSpy.mockRestore();
+      });
+    });
+  });
+
   describe('runAllTimersAsync', () => {
     it('should advance the clock to the last scheduled timer', async () => {
       const global = {
@@ -1260,6 +1352,7 @@ describe('FakeTimers', () => {
         process,
         setTimeout,
       } as unknown as typeof globalThis;
+
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
       timers.setSystemTime(0);
@@ -1327,74 +1420,6 @@ describe('FakeTimers', () => {
 
       await timers.advanceTimersByTimeAsync(200);
       expect(spy).toHaveBeenCalled();
-    });
-  });
-
-  describe('setAdvanceTimersAutomatically', () => {
-    let global: typeof globalThis;
-    let timers: FakeTimers;
-    beforeEach(() => {
-      global = {
-        Date,
-        Promise,
-        clearTimeout,
-        process,
-        setTimeout,
-      } as unknown as typeof globalThis;
-
-      timers = new FakeTimers({config: makeProjectConfig(), global});
-
-      timers.useFakeTimers();
-      timers.setAdvanceTimersAutomatically(true);
-    });
-
-    it('can always wait for a timer to execute', async () => {
-      const p = new Promise(resolve => {
-        global.setTimeout(resolve, 100);
-      });
-      await expect(p).resolves.toBeUndefined();
-    });
-
-    it('can mix promises inside timers', async () => {
-      const p = new Promise(resolve =>
-        global.setTimeout(async () => {
-          await Promise.resolve();
-          global.setTimeout(resolve, 100);
-        }, 100),
-      );
-      await expect(p).resolves.toBeUndefined();
-    });
-
-    it('automatically advances all timers', async () => {
-      const p1 = new Promise(resolve => global.setTimeout(resolve, 50));
-      const p2 = new Promise(resolve => global.setTimeout(resolve, 50));
-      const p3 = new Promise(resolve => global.setTimeout(resolve, 100));
-      await expect(Promise.all([p1, p2, p3])).resolves.toEqual([
-        undefined,
-        undefined,
-        undefined,
-      ]);
-    });
-
-    it('can turn off and on auto advancing of time', async () => {
-      let p2Resolved = false;
-      const p1 = new Promise(resolve => global.setTimeout(resolve, 50));
-      const p2 = new Promise(resolve => global.setTimeout(resolve, 51)).then(
-        () => (p2Resolved = true),
-      );
-      const p3 = new Promise(resolve => global.setTimeout(resolve, 52));
-
-      await expect(p1).resolves.toBeUndefined();
-
-      timers.setAdvanceTimersAutomatically(false);
-      await new Promise(resolve => setTimeout(resolve, 5));
-      expect(p2Resolved).toBe(false);
-
-      timers.setAdvanceTimersAutomatically(true);
-      await new Promise(resolve => setTimeout(resolve, 5));
-      await expect(p2).resolves.toBe(true);
-      await expect(p3).resolves.toBeUndefined();
-      expect(p2Resolved).toBe(true);
     });
   });
 

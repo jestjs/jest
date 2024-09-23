@@ -142,12 +142,28 @@ const RawFakeableAPI = Type.Union([
 
 const RawFakeTimersConfig = Type.Partial(
   Type.Object({
-    advanceTimers: Type.Union([Type.Boolean(), Type.Number({minimum: 0})], {
-      description:
-        'If set to `true` all timers will be advanced automatically by 20 milliseconds every 20 milliseconds. A custom ' +
-        'time delta may be provided by passing a number.',
-      default: false,
-    }),
+    advanceTimers: Type.Union(
+      [
+        Type.Boolean(),
+        Type.Number({minimum: 0}),
+        Type.Partial(
+          Type.Object({
+            mode: Type.Union([
+              Type.Literal('nextAsync'),
+              Type.Literal('manual'),
+              Type.Literal('interval'),
+            ]),
+            delta: Type.Number({minimum: 0}),
+          }),
+        ),
+      ],
+      {
+        description:
+          "If set to `true` (equivalent to `{mode: 'interval'}`) all timers will be advanced automatically by 20 milliseconds every 20 milliseconds. A custom " +
+          "time delta may be provided by passing a number (equivalent to `{mode: 'interval', delta: myDelta}`).",
+        default: false,
+      },
+    ),
     doNotFake: Type.Array(RawFakeableAPI, {
       description:
         'List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`, `setTimeout()`) that should not be faked.' +
