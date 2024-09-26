@@ -1270,6 +1270,7 @@ describe('FakeTimers', () => {
     });
 
     afterEach(() => {
+      timers.clearAllTimers();
       timers.dispose();
     });
 
@@ -1308,21 +1309,29 @@ describe('FakeTimers', () => {
 
       it('can turn off and on auto advancing of time', async () => {
         let p2Resolved = false;
-        const p1 = new Promise(resolve => global.setTimeout(resolve, 50));
-        const p2 = new Promise(resolve => global.setTimeout(resolve, 51)).then(
-          () => (p2Resolved = true),
+        const p1 = new Promise(resolve => global.setTimeout(resolve, 1));
+        const p2 = new Promise<void>(resolve =>
+          global.setTimeout(() => {
+            p2Resolved = true;
+            resolve();
+          }, 2),
         );
-        const p3 = new Promise(resolve => global.setTimeout(resolve, 52));
+        const p3 = new Promise(resolve => global.setTimeout(resolve, 3));
 
         await expect(p1).resolves.toBeUndefined();
 
         timers.setTickMode('manual');
+        // wait real, unpatched time to ensure p2 doesn't resolve on its own
         await new Promise(resolve => setTimeout(resolve, 5));
         expect(p2Resolved).toBe(false);
 
+        // simply updating the tick mode should not result in time immediately advancing
         timers.setTickMode('nextAsync');
+        expect(p2Resolved).toBe(false);
+
+        // wait real, unpatched time and observe p2 and p3 resolve on their own
         await new Promise(resolve => setTimeout(resolve, 5));
-        await expect(p2).resolves.toBe(true);
+        await expect(p2).resolves.toBeUndefined();
         await expect(p3).resolves.toBeUndefined();
         expect(p2Resolved).toBe(true);
       });
@@ -1339,6 +1348,58 @@ describe('FakeTimers', () => {
           consoleWarnSpy.mock.calls[0][0].split('\nStack Trace')[0],
         ).toMatchSnapshot();
         consoleWarnSpy.mockRestore();
+      });
+
+      describe('works with manual calls to async tick functions', () => {
+        let timerLog: number[];
+        let allTimersDone: Promise<void>;
+        beforeEach(() => {
+          timerLog = [];
+          allTimersDone = new Promise<void>(resolve => {
+            global.setTimeout(() => timerLog.push(1), 1);
+            global.setTimeout(() => timerLog.push(2), 2);
+            global.setTimeout(() => timerLog.push(3), 3);
+            global.setTimeout(() => {
+              timerLog.push(4);
+              global.setTimeout(() => {
+                timerLog.push(5);
+                resolve();
+              }, 1);
+            }, 5);
+          });
+        });
+
+        afterEach(async () => {
+          await allTimersDone;
+          expect(timerLog).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it('runAllTimersAsync', async () => {
+          await timers.runAllTimersAsync();
+          expect(timerLog).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it('runOnlyPendingTimersAsync', async () => {
+          await timers.runOnlyPendingTimersAsync();
+          // 5 should not resolve because it wasn't queued when we called "only pending timers"
+          expect(timerLog).toEqual([1, 2, 3, 4]);
+        });
+
+        it('advanceTimersToNextTimerAsync', async () => {
+          await timers.advanceTimersToNextTimerAsync();
+          expect(timerLog).toEqual([1]);
+          await timers.advanceTimersToNextTimerAsync();
+          expect(timerLog).toEqual([1, 2]);
+          await timers.advanceTimersToNextTimerAsync();
+          expect(timerLog).toEqual([1, 2, 3]);
+        });
+
+        it('advanceTimersByTimeAsync', async () => {
+          await timers.advanceTimersByTimeAsync(2);
+          expect(timerLog).toEqual([1, 2]);
+          await timers.advanceTimersByTimeAsync(1);
+          expect(timerLog).toEqual([1, 2, 3]);
+        });
       });
     });
   });
