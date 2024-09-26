@@ -61,7 +61,7 @@
     "jest-watch-typeahead": "^2.2.0",
     "jquery": "^3.2.1",
     "js-yaml": "^4.1.0",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "mock-fs": "^5.1.2",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.0",
