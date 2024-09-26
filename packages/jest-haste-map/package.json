@@ -27,7 +27,7 @@
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "jest-worker": "workspace:*",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "walker": "^1.0.8"
   },
   "devDependencies": {
