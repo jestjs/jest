@@ -5610,12 +5610,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/merge-stream@npm:^1.1.2":
-  version: 1.1.5
-  resolution: "@types/merge-stream@npm:1.1.5"
+"@types/merge-stream@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@types/merge-stream@npm:2.0.0"
   dependencies:
     "@types/node": "*"
-  checksum: 79b4b10b9b887ddc3c28c88cc56527800153b257b7d7b97e7520f061ba3b6daf629e2f819cfb6ac65be1ce705bf61c7b8830d0f1adb93b3fd61c916bbf7252dd
+  checksum: a310412bbc6b4d99cc95cad0572b215e17cb6b75734e94deea8855058007bea9beea486f7c435683514574ccc84da54c75a3883562d1ebfaae3bb040ed8e8d90
   languageName: node
   linkType: hard
 
@@ -13836,7 +13836,7 @@ __metadata:
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
     "@babel/core": ^7.11.6
-    "@types/merge-stream": ^1.1.2
+    "@types/merge-stream": ^2.0.0
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
     "@types/ungap__structured-clone": ^1.2.0
