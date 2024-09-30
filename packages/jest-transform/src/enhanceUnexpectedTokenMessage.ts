@@ -50,7 +50,7 @@ ${DOT}If you are trying to use TypeScript, see ${chalk.underline(
 ${DOT}To have some of your "node_modules" files transformed, you can specify a custom ${chalk.bold(
     '"transformIgnorePatterns"',
   )} in your config.
-${DOT}If you need a custom transformation specify a ${chalk.bold(
+${DOT}If you need a custom transformation, specify a ${chalk.bold(
     '"transform"',
   )} option in your config.
 ${DOT}If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the ${chalk.bold(
