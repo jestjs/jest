@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -53,7 +53,7 @@
     "jest-runner": "workspace:*",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "parse-json": "^5.2.0",
     "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",

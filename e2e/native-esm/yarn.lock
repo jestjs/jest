@@ -148,11 +148,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 22.1.0
-  resolution: "@types/node@npm:22.1.0"
+  version: 22.4.0
+  resolution: "@types/node@npm:22.4.0"
   dependencies:
-    undici-types: ~6.13.0
-  checksum: 3544c35da06009790a2e07742a7dfa0ac0f0d64ec47d9e6d3edf0ff6dcfc1a7cc2efdc5e524e80f8ed80aa37154513b2c1c724f95146ff89fc5aefb8e33575f2
+    undici-types: ~6.19.2
+  checksum: 680303e9b2801f3e19453957df93f59e7ad95e2277a363ba3719e9a3e0c8949ed9bed2265a2a3444254c5e550170177c088bc2b2303eb79740fb8ee96b097ad3
   languageName: node
   linkType: hard
 
@@ -394,9 +394,9 @@ __metadata:
   linkType: hard
 
 "discord-api-types@npm:^0.37.3, discord-api-types@npm:^0.37.41":
-  version: 0.37.93
-  resolution: "discord-api-types@npm:0.37.93"
-  checksum: cfe21353c0d34af911b7763734dac6eaafed683aea2dd841c51146fcddc7f027f6b67f5b46b78a48c4955ce7ac735c57bcfef0c2de40d4c62fb207c0b3237de9
+  version: 0.37.94
+  resolution: "discord-api-types@npm:0.37.94"
+  checksum: 4346df01a0221a915e4d1c232b264007adab992014a433eb0bad8fb3eb9b53e60ee87d6e6f47f3a4938348d8a1e13705b0ff2984f5d944a09d1ccfa4eed17fc8
   languageName: node
   linkType: hard
 
@@ -512,12 +512,12 @@ __metadata:
   linkType: hard
 
 "foreground-child@npm:^3.1.0":
-  version: 3.2.1
-  resolution: "foreground-child@npm:3.2.1"
+  version: 3.3.0
+  resolution: "foreground-child@npm:3.3.0"
   dependencies:
     cross-spawn: ^7.0.0
     signal-exit: ^4.0.1
-  checksum: 3e2e844d6003c96d70affe8ae98d7eaaba269a868c14d997620c088340a8775cd5d2d9043e6ceebae1928d8d9a874911c4d664b9a267e8995945df20337aebc0
+  checksum: 1989698488f725b05b26bc9afc8a08f08ec41807cd7b92ad85d96004ddf8243fd3e79486b8348c64a3011ae5cc2c9f0936af989e1f28339805d8bc178a75b451
   languageName: node
   linkType: hard
 
@@ -997,9 +997,9 @@ __metadata:
   linkType: hard
 
 "peek-readable@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "peek-readable@npm:5.1.3"
-  checksum: 636f3a16cd88bd944e931525572f0c3a098d2a7108a45933e5c3d31544cc61df0cbf455d49164a66f1885a722f7511defbd4710c65a9bb57ed7d5cf96a64c539
+  version: 5.1.4
+  resolution: "peek-readable@npm:5.1.4"
+  checksum: ca95a75ad12b4f94ee482e6f0c7517211cd063d319b62e39ba2741c5ce87b7dfbc1dd3dea7979abe499d46fbbe51efbc8976daca553729ca7ed535569ac6a24d
   languageName: node
   linkType: hard
 
@@ -1361,10 +1361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.13.0":
-  version: 6.13.0
-  resolution: "undici-types@npm:6.13.0"
-  checksum: 9d0ef6bf58994bebbea6a4ab75f381c69a89a7ed151bfbae0d4ef95450d56502c9eccb323abf17b7d099c1d9c1cbae62e909e4dfeb8d204612d2f1fdada24707
+"undici-types@npm:~6.19.2":
+  version: 6.19.6
+  resolution: "undici-types@npm:6.19.6"
+  checksum: e66df2447b6d93a48b0605a54269d8c3f228edcd1e9563229f6de37e48ed53b3e49b4bc965733643ed9717e0e0fa1ee664c929db91d787c9f488fb3f9e17c533
   languageName: node
   linkType: hard
 

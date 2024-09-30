@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.6",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -38,7 +38,7 @@
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "jest-watcher": "workspace:*",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",

@@ -35,7 +35,7 @@
     "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^28.0.0",
-    "eslint-plugin-jsdoc": "^48.0.0",
+    "eslint-plugin-jsdoc": "^50.0.0",
     "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -60,7 +60,7 @@
     "jest-watch-typeahead": "^2.2.0",
     "jquery": "^3.2.1",
     "js-yaml": "^4.1.0",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "mock-fs": "^5.1.2",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.0",
@@ -204,5 +204,5 @@
     "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.8.4"
+  "packageManager": "yarn@3.8.5"
 }

@@ -1,6 +1,6 @@
 {
   "name": "jest-each",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.6",
   "description": "Parameterised tests for Jest",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

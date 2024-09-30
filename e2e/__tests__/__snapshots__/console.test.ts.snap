@@ -108,22 +108,22 @@ exports[`does not error out when using winston 2`] = `
     console.log
       {"level":"info","message":"Log message from winston"}
 
-      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
 
     console.log
       {"level":"info","message":"Info message from winston"}
 
-      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
 
     console.log
       {"level":"warn","message":"Warn message from winston"}
 
-      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
 
     console.log
       {"level":"error","message":"Error message from winston"}
 
-      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)"
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)"
 `;
 
 exports[`does not error out when using winston 3`] = `

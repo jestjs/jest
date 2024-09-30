@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-globals",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.6",
   "private": true,
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
