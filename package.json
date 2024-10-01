@@ -82,7 +82,7 @@
     "typescript": "^5.0.4",
     "webpack": "^5.68.0",
     "webpack-node-externals": "^3.0.0",
-    "which": "^4.0.0"
+    "which": "^5.0.0"
   },
   "scripts": {
     "build-clean": "rimraf --glob './packages/*/build' './packages/*/dist' './packages/*/tsconfig.tsbuildinfo' './packages/*/api-extractor.json' './api-extractor.json'",
