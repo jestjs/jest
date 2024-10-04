@@ -17,7 +17,7 @@ it('can assert on errors across nested event loops', () => {
     throw new Error('This should be caught.');
   });
   let caught = null;
-  window.addEventListener('error', e => {
+  globalThis.addEventListener('error', e => {
     caught = e.error;
   });
   expect(() => {

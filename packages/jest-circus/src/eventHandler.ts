@@ -216,8 +216,8 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_retry': {
       const logErrorsBeforeRetry: boolean =
-        // eslint-disable-next-line no-restricted-globals
-        ((global as Global.Global)[LOG_ERRORS_BEFORE_RETRY] as any) || false;
+        ((globalThis as Global.Global)[LOG_ERRORS_BEFORE_RETRY] as any) ||
+        false;
       if (logErrorsBeforeRetry) {
         event.test.retryReasons.push(...event.test.errors);
       }
@@ -226,13 +226,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'run_start': {
       state.hasStarted = true;
-      /* eslint-disable no-restricted-globals */
-      if ((global as Global.Global)[TEST_TIMEOUT_SYMBOL]) {
-        state.testTimeout = (global as Global.Global)[
+      if ((globalThis as Global.Global)[TEST_TIMEOUT_SYMBOL]) {
+        state.testTimeout = (globalThis as Global.Global)[
           TEST_TIMEOUT_SYMBOL
         ] as number;
       }
-      /* eslint-enable */
+
       break;
     }
     case 'run_finish': {

@@ -12,11 +12,11 @@
 /* eslint-env browser*/
 
 function exampleDispatch() {
-  window.dispatchEvent(new CustomEvent('event', {}));
+  globalThis.dispatchEvent(new CustomEvent('event', {}));
 }
 
 describe('spy on `dispatchEvent`', () => {
-  const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
+  const dispatchEventSpy = jest.spyOn(globalThis, 'dispatchEvent');
 
   it('should be called', () => {
     exampleDispatch();

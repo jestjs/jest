@@ -226,6 +226,7 @@ module.exports = {
         'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-number-properties': 'off',
         'unicorn/prefer-string-raw': 'off',
+        'unicorn/prefer-global-this': 'off',
       },
     },
     // demonstration of matchers usage
