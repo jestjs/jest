@@ -13,15 +13,15 @@ exports[`Wrong globals for environment on node <=18 print useful error for navig
 
     ReferenceError: navigator is not defined
 
-      30 |
-      31 | test('use navigator', () => {
-    > 32 |   const userAgent = navigator.userAgent;
+      31 |
+      32 | test('use navigator', () => {
+    > 33 |   const userAgent = navigator.userAgent;
          |                     ^
-      33 |
-      34 |   console.log(userAgent);
-      35 |
+      34 |
+      35 |   console.log(userAgent);
+      36 |
 
-      at Object.navigator (__tests__/node.js:32:21)"
+      at Object.navigator (__tests__/node.js:33:21)"
 `;
 
 exports[`Wrong globals for environment print useful error for document 1`] = `
