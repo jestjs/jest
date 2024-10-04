@@ -5,33 +5,33 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@babel/helper-plugin-utils@npm:^7.24.7":
-  version: 7.24.8
-  resolution: "@babel/helper-plugin-utils@npm:7.24.8"
-  checksum: 73b1a83ba8bcee21dc94de2eb7323207391715e4369fd55844bb15cf13e3df6f3d13a40786d990e6370bf0f571d94fc31f70dec96c1d1002058258c35ca3767a
+"@babel/helper-plugin-utils@npm:^7.25.7":
+  version: 7.25.7
+  resolution: "@babel/helper-plugin-utils@npm:7.25.7"
+  checksum: eef4450361e597f11247d252e69207324dfe0431df9b8bcecc8bef1204358e93fa7776a659c3c4f439e9ee71cd967aeca6c4d6034ebc17a7ae48143bbb580f2f
   languageName: node
   linkType: hard
 
 "@babel/plugin-proposal-explicit-resource-management@npm:^7.23.9":
-  version: 7.24.7
-  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.24.7"
+  version: 7.25.7
+  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.25.7"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.24.7
-    "@babel/plugin-syntax-explicit-resource-management": ^7.24.7
+    "@babel/helper-plugin-utils": ^7.25.7
+    "@babel/plugin-syntax-explicit-resource-management": ^7.25.7
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: c7fd06651467fb54a03b521e5bd8b0ed65c9c5d34987b4c6229ec1a6e8b58f49fd4a3953776108630c0028e5d897498e062d73c888906a5d26dc97f807cdc40b
+  checksum: 6b92c0e221f7bc8ce912958f806dff9d741e384fb80f800a92ab4aab11bb3393e24f1c8f84e2ec0cc2ef6b69339bbbebb8945fe70303f4fd6fb63371c4962f85
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-explicit-resource-management@npm:^7.24.7":
-  version: 7.24.7
-  resolution: "@babel/plugin-syntax-explicit-resource-management@npm:7.24.7"
+"@babel/plugin-syntax-explicit-resource-management@npm:^7.25.7":
+  version: 7.25.7
+  resolution: "@babel/plugin-syntax-explicit-resource-management@npm:7.25.7"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.24.7
+    "@babel/helper-plugin-utils": ^7.25.7
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 5ae9b11adb15e5ef1cb009492c6b10db27a452100178309689247f023982fd23d05c38c5e5f99c35c8e40f7f26e8d4e7ff077793d62bdce46b6b8bfc47b17815
+  checksum: 2bf187e200cbd6e09879f1a85fba839823ea92955bfe5d7c2f8898bc4a8077e36f7885f2f0e065ccd67248570a230cc8ff296a347fbaae9d4c85a10cac52ed15
   languageName: node
   linkType: hard
 
