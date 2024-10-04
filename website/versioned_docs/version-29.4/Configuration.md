@@ -1085,6 +1085,12 @@ Specifies notification mode. Requires `notify: true`.
 - `success-change`: send a notification when tests pass or once when it fails.
 - `failure-change`: send a notification when tests fail or once when it passes.
 
+### `passWithNoTests` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--passWithNoTests`](CLI.md#--passwithnotests) flag allows the test suite to pass even when no test files are found.
+
 ### `preset` \[string]
 
 Default: `undefined`
