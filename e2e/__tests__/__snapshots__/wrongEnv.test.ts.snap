@@ -83,15 +83,15 @@ exports[`Wrong globals for environment print useful error for window 1`] = `
 
     ReferenceError: window is not defined
 
-      22 |
       23 | test('use window', () => {
-    > 24 |   const location = window.location;
+      24 |   // eslint-disable-next-line unicorn/prefer-global-this
+    > 25 |   const location = window.location;
          |                    ^
-      25 |
-      26 |   console.log(location);
-      27 |
+      26 |
+      27 |   console.log(location);
+      28 |
 
-      at Object.window (__tests__/node.js:24:20)"
+      at Object.window (__tests__/node.js:25:20)"
 `;
 
 exports[`Wrong globals for environment print useful error when it explodes during evaluation 1`] = `
