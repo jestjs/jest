@@ -10,16 +10,16 @@
 'use strict';
 
 const mockPerformanceMark = jest.fn();
-window.performance.mark = mockPerformanceMark;
+globalThis.performance.mark = mockPerformanceMark;
 
 test('fakes all APIs', () => {
   jest.useFakeTimers();
 
-  expect(window.performance.mark).toBeUndefined();
+  expect(globalThis.performance.mark).toBeUndefined();
 });
 
 test('does not fake `performance` instance', () => {
   jest.useFakeTimers({doNotFake: ['performance']});
 
-  expect(window.performance.mark).toBe(mockPerformanceMark);
+  expect(globalThis.performance.mark).toBe(mockPerformanceMark);
 });
