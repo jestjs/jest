@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Tests are executed only once even in an MPR 1`] = `
 "PASS foo/folder/my-test-bar.js
