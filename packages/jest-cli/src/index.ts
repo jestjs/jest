@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {run} from './run';
+export {run, buildArgv} from './run';
 export {options as yargsOptions} from './args';
