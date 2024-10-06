@@ -34,6 +34,13 @@ it('does not execute getters/setters, but copies them', () => {
   expect(fn).not.toHaveBeenCalled();
 });
 
+test('keeps error stack getter', () => {
+  const obj = new Error('hello');
+  const copy = deepCyclicCopy(obj);
+
+  expect(obj.stack).toBe(copy.stack);
+});
+
 it('copies symbols', () => {
   const symbol = Symbol('foo');
   const obj = {[symbol]: 42};
