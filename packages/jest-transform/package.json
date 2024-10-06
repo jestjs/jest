@@ -33,7 +33,7 @@
     "micromatch": "^4.0.8",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
-    "write-file-atomic": "^5.0.0"
+    "write-file-atomic": "^6.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
