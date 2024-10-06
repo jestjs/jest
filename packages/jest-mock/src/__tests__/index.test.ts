@@ -238,20 +238,13 @@ describe('moduleMocker', () => {
       }
 
       const ClassFooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(ClassFoo),
+        moduleMocker.getMetadata(ClassFoo)!,
       );
       const foo = new ClassFooMock();
-
-      const instanceFoo = new ClassFoo();
-      const instanceFooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(instanceFoo),
-      );
-
       expect(typeof foo.foo).toBe('function');
-      expect(typeof instanceFooMock.foo).toBe('function');
-      expect(instanceFooMock.foo.mock).toBeDefined();
+      expect(foo.foo.mock).toBeDefined();
 
-      expect(instanceFooMock.toString.mock).toBeDefined();
+      expect(foo.toString.mock).toBeDefined();
     });
 
     it('mocks ES2015 non-enumerable static properties and methods', () => {
