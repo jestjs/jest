@@ -25,9 +25,9 @@
     "@babel/code-frame": "^7.12.13",
     "@jest/types": "workspace:*",
     "@types/stack-utils": "^2.0.0",
-    "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "micromatch": "^4.0.8",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.3"

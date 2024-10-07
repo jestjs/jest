@@ -23,9 +23,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "chalk": "^4.0.0",
     "jest-diff": "workspace:*",
     "jest-get-type": "workspace:*",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {

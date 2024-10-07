@@ -22,7 +22,6 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^4.0.0",
     "ci-info": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
@@ -40,6 +39,7 @@
     "jest-validate": "workspace:*",
     "jest-watcher": "workspace:*",
     "micromatch": "^4.0.8",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"

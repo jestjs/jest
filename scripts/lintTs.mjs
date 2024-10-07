@@ -10,9 +10,9 @@
 import * as os from 'os';
 import * as path from 'path';
 import * as url from 'url';
-import chalk from 'chalk';
 import {ESLint} from 'eslint';
 import pLimit from 'p-limit';
+import pico from 'picocolors';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
@@ -178,7 +178,7 @@ try {
   );
 } catch (error) {
   console.error(
-    chalk.inverse.red(' Unable to lint using TypeScript info files '),
+    pico.inverse(pico.red(' Unable to lint using TypeScript info files ')),
   );
 
   throw error;
@@ -192,12 +192,14 @@ if (allLintResults.length > 0) {
   console.error(resultText);
 
   console.error(
-    chalk.inverse.red(' Unable to lint using TypeScript info files '),
+    pico.inverse(pico.red(' Unable to lint using TypeScript info files ')),
   );
 
   process.exitCode = 1;
 } else {
   console.log(
-    chalk.inverse.green(' Successfully linted using TypeScript info files '),
+    pico.inverse(
+      pico.green(' Successfully linted using TypeScript info files '),
+    ),
   );
 }

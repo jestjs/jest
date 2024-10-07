@@ -6,9 +6,8 @@
  */
 
 import {createHash} from 'crypto';
-import type {ForegroundColor} from 'chalk';
 
-type Color = typeof ForegroundColor;
+type Color = 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white';
 
 const colors: Array<Color> = [
   'red',

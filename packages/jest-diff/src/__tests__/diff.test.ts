@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {diff} from '../';
@@ -718,7 +718,7 @@ describe('context', () => {
         expand: false,
       };
       if (!validContextLines) {
-        options.patchColor = chalk.dim;
+        options.patchColor = pico.dim;
       }
 
       const result = diff(
@@ -940,9 +940,9 @@ describe('options 7980', () => {
 
   const options = {
     aAnnotation: 'Original',
-    aColor: chalk.red,
+    aColor: pico.red,
     bAnnotation: 'Modified',
-    bColor: chalk.green,
+    bColor: pico.green,
   };
 
   test('diff', () => {
@@ -974,8 +974,8 @@ describe('options', () => {
 
   describe('change color', () => {
     const options = {
-      changeColor: chalk.bold,
-      commonColor: chalk.yellow,
+      changeColor: pico.bold,
+      commonColor: pico.yellow,
     };
 
     test('diffStringsUnified', () => {
@@ -1091,7 +1091,7 @@ describe('options', () => {
 
     test('diff yellowish common', () => {
       const options = {
-        commonLineTrailingSpaceColor: chalk.bgYellow,
+        commonLineTrailingSpaceColor: pico.bgYellow,
       };
 
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();

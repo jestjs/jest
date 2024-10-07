@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {DeprecatedOptions} from 'jest-validate';
 
 function formatDeprecation(message: string): string {
   const lines = [
-    message.replaceAll(/\*(.+?)\*/g, (_, s) => chalk.bold(`"${s}"`)),
+    message.replaceAll(/\*(.+?)\*/g, (_, s) => pico.bold(`"${s}"`)),
     '',
     'Please update your configuration.',
   ];
@@ -19,40 +19,40 @@ function formatDeprecation(message: string): string {
 
 const deprecatedOptions: DeprecatedOptions = {
   browser: () =>
-    `  Option ${chalk.bold(
+    `  Option ${pico.bold(
       '"browser"',
     )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
   collectCoverageOnlyFrom: (_options: {
     collectCoverageOnlyFrom?: Record<string, boolean>;
-  }) => `  Option ${chalk.bold(
+  }) => `  Option ${pico.bold(
     '"collectCoverageOnlyFrom"',
-  )} was replaced by ${chalk.bold('"collectCoverageFrom"')}.
+  )} was replaced by ${pico.bold('"collectCoverageFrom"')}.
 
     Please update your configuration.`,
 
-  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
+  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${pico.bold(
     '"extraGlobals"',
-  )} was replaced by ${chalk.bold('"sandboxInjectedGlobals"')}.
+  )} was replaced by ${pico.bold('"sandboxInjectedGlobals"')}.
 
   Please update your configuration.`,
 
   init: () =>
-    `  Option ${chalk.bold(
+    `  Option ${pico.bold(
       '"init"',
     )} has been deprecated. Please use "create-jest" package as shown in the documentation: https://jestjs.io/docs/getting-started#generate-a-basic-configuration-file`,
 
-  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
+  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${pico.bold(
     '"moduleLoader"',
-  )} was replaced by ${chalk.bold('"runtime"')}.
+  )} was replaced by ${pico.bold('"runtime"')}.
 
   Please update your configuration.`,
 
   preprocessorIgnorePatterns: (_options: {
     preprocessorIgnorePatterns?: Array<string>;
-  }) => `  Option ${chalk.bold(
+  }) => `  Option ${pico.bold(
     '"preprocessorIgnorePatterns"',
-  )} was replaced by ${chalk.bold(
+  )} was replaced by ${pico.bold(
     '"transformIgnorePatterns"',
   )}, which support multiple preprocessors.
 
@@ -60,9 +60,9 @@ const deprecatedOptions: DeprecatedOptions = {
 
   scriptPreprocessor: (_options: {
     scriptPreprocessor?: string;
-  }) => `  Option ${chalk.bold(
+  }) => `  Option ${pico.bold(
     '"scriptPreprocessor"',
-  )} was replaced by ${chalk.bold(
+  )} was replaced by ${pico.bold(
     '"transform"',
   )}, which support multiple preprocessors.
 
@@ -70,9 +70,9 @@ const deprecatedOptions: DeprecatedOptions = {
 
   setupTestFrameworkScriptFile: (_options: {
     setupTestFrameworkScriptFile?: string;
-  }) => `  Option ${chalk.bold(
+  }) => `  Option ${pico.bold(
     '"setupTestFrameworkScriptFile"',
-  )} was replaced by configuration ${chalk.bold(
+  )} was replaced by configuration ${pico.bold(
     '"setupFilesAfterEnv"',
   )}, which supports multiple paths.
 
@@ -80,7 +80,7 @@ const deprecatedOptions: DeprecatedOptions = {
 
   testPathDirs: (_options: {
     testPathDirs?: Array<string>;
-  }) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold(
+  }) => `  Option ${pico.bold('"testPathDirs"')} was replaced by ${pico.bold(
     '"roots"',
   )}.
 
@@ -92,17 +92,17 @@ const deprecatedOptions: DeprecatedOptions = {
       'Option *testPathPattern* was replaced by *testPathPatterns*.',
     ),
 
-  testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(
+  testURL: (_options: {testURL?: string}) => `  Option ${pico.bold(
     '"testURL"',
-  )} was replaced by passing the URL via ${chalk.bold(
+  )} was replaced by passing the URL via ${pico.bold(
     '"testEnvironmentOptions.url"',
   )}.
 
   Please update your configuration.`,
 
-  timers: (_options: {timers?: string}) => `  Option ${chalk.bold(
+  timers: (_options: {timers?: string}) => `  Option ${pico.bold(
     '"timers"',
-  )} was replaced by ${chalk.bold('"fakeTimers"')}.
+  )} was replaced by ${pico.bold('"fakeTimers"')}.
 
   Please update your configuration.`,
 };
