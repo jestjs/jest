@@ -101,6 +101,7 @@
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.mjs",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md",
+    "lint:fix": "eslint ./packages/expect/src/toThrowMatchers.ts --cache --fix",
     "lint:prettier-script": "prettier . \"!**/*.{js,jsx,cjs,mjs,ts,tsx}\" --cache",
     "lint:prettier": "yarn lint:prettier-script --write",
     "lint:prettier:ci": "yarn lint:prettier-script --check",
