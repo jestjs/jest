@@ -415,4 +415,23 @@ export interface Jest {
    * performance, time and timer APIs.
    */
   useRealTimers(): Jest;
+  /**
+   * Updates the mode of advancing timers when using fake timers.
+   *
+   * @param config The configuration to use for advancing timers
+   *
+   * When mode is 'nextAsync', configures whether timers advance automatically. With automatically advancing
+   * timers enabled, tests can be written in a way that is independent from whether
+   * fake timers are installed. Tests can always be written to wait for timers to
+   * resolve, even when using fake timers.
+   *
+   * When mode is 'manual' (the default), timers will not advance automatically. Instead,
+   * timers must be advanced using APIs such as `advanceTimersToNextTimer`, `advanceTimersByTime`, etc.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   * In addition, the mode can only be changed from 'nextAsync' to 'manual' or vice versa.
+   * It cannot currently be used with 'interval' from `AdvanceTimersConfig`.
+   */
+  setAdvanceTimers(config: {mode: 'manual' | 'nextAsync'}): void;
 }
