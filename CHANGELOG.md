@@ -120,6 +120,7 @@
 - `[docs]` Link NestJS documentation on testing with Jest ([#14940](https://github.com/jestjs/jest/pull/14940))
 - `[docs]` `Revised documentation for .toHaveBeenCalled()` to accurately depict its functionality. ([#14853](https://github.com/jestjs/jest/pull/14853))
 - `[docs]` Removed ExpressJS reference link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15270))
+- `[docs]` Added link to assertion count section in assertion page ([#15281](https://github.com/jestjs/jest/pull/15281))
 
 ## 29.7.0
 
