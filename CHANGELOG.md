@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-runtime][jest-environment][jest-environment-jsdom-abstract][jest-environment-node]` Allow more granular custom export conditions in test environment options; conditions can be defined both globally and for a set of modules (TBA)
+- `[jest-runtime][jest-environment][jest-environment-jsdom-abstract][jest-environment-node]` Allow more granular custom export conditions in test environment options; conditions can be defined both globally and for a set of modules ([#15340](https://github.com/jestjs/jest/pull/15340))
 - `[babel-jest]` Add option `excludeJestPreset` to allow opting out of `babel-preset-jest` ([#15164](https://github.com/jestjs/jest/pull/15164))
 - `[jest-circus, jest-cli, jest-config]` Add `waitNextEventLoopTurnForUnhandledRejectionEvents` flag to minimise performance impact of correct detection of unhandled promise rejections introduced in [#14315](https://github.com/jestjs/jest/pull/14315) ([#14681](https://github.com/jestjs/jest/pull/14681))
 - `[jest-circus]` Add a `waitBeforeRetry` option to `jest.retryTimes` ([#14738](https://github.com/jestjs/jest/pull/14738))
