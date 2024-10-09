@@ -37,6 +37,37 @@ export interface JestEnvironmentConfig {
   globalConfig: Config.GlobalConfig;
 }
 
+export type JestExportConditionsPerModules = {
+  modules: Array<string>;
+  conditions: Array<string>;
+};
+
+export function isSimpleExportConditionsItem(
+  item: string | JestExportConditionsPerModules,
+): item is string {
+  return typeof item === 'string';
+}
+
+export function isExportConditionsItemPerModules(
+  item: string | JestExportConditionsPerModules,
+): item is JestExportConditionsPerModules {
+  return typeof item !== 'string';
+}
+
+export function isExportConditions(
+  item: unknown,
+): item is string | JestExportConditionsPerModules {
+  return (
+    typeof item === 'string' ||
+    (typeof item === 'object' &&
+      item !== null &&
+      'modules' in item &&
+      'conditions' in item &&
+      Array.isArray((item as JestExportConditionsPerModules).modules) &&
+      Array.isArray((item as JestExportConditionsPerModules).conditions))
+  );
+}
+
 export declare class JestEnvironment<Timer = unknown> {
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext);
   global: Global.Global;
@@ -47,7 +78,7 @@ export declare class JestEnvironment<Timer = unknown> {
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
-  exportConditions?: () => Array<string>;
+  exportConditions?: () => Array<string | JestExportConditionsPerModules>;
 }
 
 export type Module = NodeModule;

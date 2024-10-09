@@ -2023,6 +2023,39 @@ const config: Config = {
 export default config;
 ```
 
+In case you need get specific `exports` for a library or set of libraries, you can define it this way:
+
+```js tab
+/** @type {import('jest').Config} */
+const config = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: [{
+      modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
+      conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
+    }],
+  },
+};
+
+module.exports = config;
+```
+
+```ts tab
+import type {Config} from 'jest';
+
+const config: Config = {
+  testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: [{
+      modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
+      conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
+    }],
+  },
+};
+
+export default config;
+```
+
 These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`:
 
 ```js
