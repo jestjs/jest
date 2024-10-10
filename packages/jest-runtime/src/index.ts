@@ -23,12 +23,15 @@ import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
-import type {
-  Jest,
-  JestEnvironment,
-  JestImportMeta,
-  Module,
-  ModuleWrapper,
+import {
+  type Jest,
+  type JestEnvironment,
+  type JestExportConditionsPerModules,
+  type JestImportMeta,
+  type Module,
+  type ModuleWrapper,
+  isExportConditionsItemPerModules,
+  isSimpleExportConditionsItem,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect, jest} from '@jest/globals';
@@ -212,8 +215,11 @@ export default class Runtime {
   private _moduleImplementation?: typeof nativeModule.Module;
   private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
+  private readonly esmConditions_base: Array<string>;
+  private readonly cjsConditions_base: Array<string>;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
+  private readonly envExportConditionsPerModules: Array<JestExportConditionsPerModules>;
   private isTornDown = false;
   private isInsideTestCode: boolean | undefined;
 
@@ -281,14 +287,22 @@ export default class Runtime {
       unmockRegExpCache.set(config, this._unmockList);
     }
 
-    const envExportConditions = this._environment.exportConditions?.() ?? [];
+    const envExportConditions = (
+      this._environment.exportConditions?.() ?? []
+    ).filter(isSimpleExportConditionsItem);
 
+    this.esmConditions_base = ['import', 'default'];
+    this.cjsConditions_base = ['require', 'default'];
     this.esmConditions = [
-      ...new Set(['import', 'default', ...envExportConditions]),
+      ...new Set([...this.esmConditions_base, ...envExportConditions]),
     ];
     this.cjsConditions = [
-      ...new Set(['require', 'default', ...envExportConditions]),
+      ...new Set([...this.cjsConditions_base, ...envExportConditions]),
     ];
+
+    this.envExportConditionsPerModules = (
+      this._environment.exportConditions?.() ?? []
+    ).filter(isExportConditionsItemPerModules);
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
@@ -532,7 +546,7 @@ export default class Runtime {
                 const resolvedPath = this._resolver.resolveModule(
                   parentPath,
                   specifier,
-                  {conditions: this.esmConditions},
+                  {conditions: this._getEsmConditions(specifier)},
                 );
 
                 return pathToFileURL(resolvedPath).href;
@@ -836,7 +850,7 @@ export default class Runtime {
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: this.esmConditions},
+      {conditions: this._getEsmConditions(moduleName)},
     );
 
     if (this._moduleMockRegistry.has(moduleID)) {
@@ -925,7 +939,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
+      {conditions: this._getCjsConditions(moduleName)},
     );
     let modulePath: string | undefined;
 
@@ -1043,7 +1057,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
+      {conditions: this._getCjsConditions(moduleName)},
     );
 
     if (this._isolatedMockRegistry?.has(moduleID)) {
@@ -1364,7 +1378,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
+      {conditions: this._getCjsConditions(moduleName)},
     );
     this._explicitShouldMock.set(moduleID, true);
     this._mockFactories.set(moduleID, mockFactory);
@@ -1385,7 +1399,7 @@ export default class Runtime {
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: this.esmConditions},
+      {conditions: this._getEsmConditions(moduleName)},
     );
     this._explicitShouldMockModule.set(moduleID, true);
     this._moduleMockFactories.set(moduleID, mockFactory);
@@ -1443,10 +1457,60 @@ export default class Runtime {
     this.isTornDown = true;
   }
 
+  private _matchesModuleName(moduleName: string, patterns: Array<string>) {
+    for (const pattern of patterns) {
+      if (!pattern.endsWith('/*') && moduleName === pattern) {
+        return true;
+      } else if (
+        pattern.endsWith('/*') &&
+        (moduleName === pattern.slice(0, -2) ||
+          moduleName.startsWith(pattern.slice(0, -1)))
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private _getConditions(
+    baseConditions: Array<string>,
+    mainConditions: Array<string>,
+    moduleName?: string,
+  ) {
+    if (moduleName === undefined) {
+      return mainConditions;
+    }
+
+    for (const {modules, conditions} of this.envExportConditionsPerModules) {
+      if (this._matchesModuleName(moduleName, modules)) {
+        return [...new Set([...baseConditions, ...conditions])];
+      }
+    }
+
+    return mainConditions;
+  }
+
+  private _getCjsConditions(moduleName?: string) {
+    return this._getConditions(
+      this.cjsConditions_base,
+      this.cjsConditions,
+      moduleName,
+    );
+  }
+
+  private _getEsmConditions(moduleName?: string) {
+    return this._getConditions(
+      this.esmConditions_base,
+      this.esmConditions,
+      moduleName,
+    );
+  }
+
   private _resolveCjsModule(from: string, to: string | undefined) {
     return to
       ? this._resolver.resolveModule(from, to, {
-          conditions: this.cjsConditions,
+          conditions: this._getCjsConditions(to),
         })
       : from;
   }
@@ -1454,7 +1518,7 @@ export default class Runtime {
   private _resolveModule(from: string, to: string | undefined) {
     return to
       ? this._resolver.resolveModuleAsync(from, to, {
-          conditions: this.esmConditions,
+          conditions: this._getEsmConditions(to),
         })
       : from;
   }
@@ -1474,7 +1538,7 @@ export default class Runtime {
       const module = this._resolver.resolveModuleFromDirIfExists(
         moduleName,
         moduleName,
-        {conditions: this.cjsConditions, paths: []},
+        {conditions: this._getCjsConditions(moduleName), paths: []},
       );
       if (module) {
         return module;
@@ -1486,7 +1550,10 @@ export default class Runtime {
           absolutePath,
           moduleName,
           // required to also resolve files without leading './' directly in the path
-          {conditions: this.cjsConditions, paths: [absolutePath]},
+          {
+            conditions: this._getCjsConditions(moduleName),
+            paths: [absolutePath],
+          },
         );
         if (module) {
           return module;
@@ -1941,7 +2008,9 @@ export default class Runtime {
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
   ): boolean {
-    const options: ResolveModuleConfig = {conditions: this.cjsConditions};
+    const options: ResolveModuleConfig = {
+      conditions: this._getCjsConditions(moduleName),
+    };
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -2012,7 +2081,9 @@ export default class Runtime {
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
   ): Promise<boolean> {
-    const options: ResolveModuleConfig = {conditions: this.esmConditions};
+    const options: ResolveModuleConfig = {
+      conditions: this._getEsmConditions(moduleName),
+    };
     const moduleID = await this._resolver.getModuleIDAsync(
       this._virtualMocks,
       from,
@@ -2153,7 +2224,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
+        {conditions: this._getCjsConditions(moduleName)},
       );
       this._explicitShouldMock.set(moduleID, false);
       return jestObject;
@@ -2163,7 +2234,7 @@ export default class Runtime {
         this._virtualModuleMocks,
         from,
         moduleName,
-        {conditions: this.esmConditions},
+        {conditions: this._getEsmConditions(moduleName)},
       );
       this._explicitShouldMockModule.set(moduleID, false);
       return jestObject;
@@ -2173,7 +2244,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
+        {conditions: this._getCjsConditions(moduleName)},
       );
       this._explicitShouldMock.set(moduleID, false);
       this._transitiveShouldMock.set(moduleID, false);
@@ -2188,7 +2259,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
+        {conditions: this._getCjsConditions(moduleName)},
       );
       this._explicitShouldMock.set(moduleID, true);
       return jestObject;

@@ -6,10 +6,12 @@
  */
 
 import {type Context, createContext, runInContext} from 'vm';
-import type {
-  EnvironmentContext,
-  JestEnvironment,
-  JestEnvironmentConfig,
+import {
+  type EnvironmentContext,
+  type JestEnvironment,
+  type JestEnvironmentConfig,
+  type JestExportConditionsPerModules,
+  isExportConditions,
 } from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
@@ -56,10 +58,6 @@ const nodeGlobals = new Map(
     }),
 );
 
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
 const timerIdToRef = (id: number) => ({
   id,
   ref() {
@@ -79,7 +77,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['node', 'node-addons'];
-  private readonly _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<
+    string | JestExportConditionsPerModules
+  >;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -168,12 +168,12 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
+        customExportConditions.every(isExportConditions)
       ) {
         this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
-          'Custom export conditions specified but they are not an array of strings',
+          'Custom export conditions specified but they are not an array of proper shape',
         );
       }
     }
@@ -211,7 +211,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     this.fakeTimersModern = null;
   }
 
-  exportConditions(): Array<string> {
+  exportConditions(): Array<string | JestExportConditionsPerModules> {
     return this._configuredExportConditions ?? this.customExportConditions;
   }
 
