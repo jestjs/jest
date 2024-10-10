@@ -2030,10 +2030,12 @@ In case you need get specific `exports` for a library or set of libraries, you c
 const config = {
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    customExportConditions: [{
-      modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
-      conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
-    }],
+    customExportConditions: [
+      {
+        modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
+        conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
+      },
+    ],
   },
 };
 
@@ -2046,10 +2048,12 @@ import type {Config} from 'jest';
 const config: Config = {
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    customExportConditions: [{
-      modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
-      conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
-    }],
+    customExportConditions: [
+      {
+        modules: ['msw', 'msw/node', '@mswjs/interceptors/*'],
+        conditions: [], // use only basic conditions depending on if it's in CJS/ESM context
+      },
+    ],
   },
 };
 
