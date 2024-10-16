@@ -108,7 +108,7 @@ const resolveConfigPathByTraversing = (
     throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
-  if (configFiles.length > 0 || packageJson) {
+  if (configFiles.length > 0) {
     return configFiles[0] ?? packageJson;
   }
 
