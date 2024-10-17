@@ -26,7 +26,7 @@
  * CHANGES by pedrottimark to diff_match_patch_uncompressed.ts file:
  *
  * 1. Delete anything not needed to use diff_cleanupSemantic method
- * 2. Convert from prototype properties to var declarations
+ * 2. Convert from prototype properties to let declarations
  * 3. Convert Diff to class from constructor and prototype
  * 4. Add type annotations for arguments and return values
  * 5. Add exports
@@ -37,9 +37,9 @@
  * [[DIFF_DELETE, 'Hello'], [DIFF_INSERT, 'Goodbye'], [DIFF_EQUAL, ' world.']]
  * which means: delete 'Hello', add 'Goodbye' and keep ' world.'
  */
-var DIFF_DELETE = -1;
-var DIFF_INSERT = 1;
-var DIFF_EQUAL = 0;
+const DIFF_DELETE = -1;
+const DIFF_INSERT = 1;
+const DIFF_EQUAL = 0;
 
 /**
  * Class representing one diff tuple.
@@ -66,17 +66,17 @@ class Diff {
  * @return {number} The number of characters common to the start of each
  *     string.
  */
-var diff_commonPrefix = function(text1: string, text2: string): number {
+let diff_commonPrefix = function(text1: string, text2: string): number {
   // Quick check for common null cases.
   if (!text1 || !text2 || text1.charAt(0) != text2.charAt(0)) {
     return 0;
   }
   // Binary search.
   // Performance analysis: https://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerstart = 0;
+  let pointermin = 0;
+  let pointermax = Math.min(text1.length, text2.length);
+  let pointermid = pointermax;
+  let pointerstart = 0;
   while (pointermin < pointermid) {
     if (text1.substring(pointerstart, pointermid) ==
         text2.substring(pointerstart, pointermid)) {
@@ -97,7 +97,7 @@ var diff_commonPrefix = function(text1: string, text2: string): number {
  * @param {string} text2 Second string.
  * @return {number} The number of characters common to the end of each string.
  */
-var diff_commonSuffix = function(text1: string, text2: string): number {
+let diff_commonSuffix = function(text1: string, text2: string): number {
   // Quick check for common null cases.
   if (!text1 || !text2 ||
       text1.charAt(text1.length - 1) != text2.charAt(text2.length - 1)) {
@@ -105,10 +105,10 @@ var diff_commonSuffix = function(text1: string, text2: string): number {
   }
   // Binary search.
   // Performance analysis: https://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerend = 0;
+  let pointermin = 0;
+  let pointermax = Math.min(text1.length, text2.length);
+  let pointermid = pointermax;
+  let pointerend = 0;
   while (pointermin < pointermid) {
     if (text1.substring(text1.length - pointermid, text1.length - pointerend) ==
         text2.substring(text2.length - pointermid, text2.length - pointerend)) {
@@ -131,10 +131,10 @@ var diff_commonSuffix = function(text1: string, text2: string): number {
  *     string and the start of the second string.
  * @private
  */
-var diff_commonOverlap_ = function(text1: string, text2: string): number {
+let diff_commonOverlap_ = function(text1: string, text2: string): number {
   // Cache the text lengths to prevent multiple calls.
-  var text1_length = text1.length;
-  var text2_length = text2.length;
+  let text1_length = text1.length;
+  let text2_length = text2.length;
   // Eliminate the null case.
   if (text1_length == 0 || text2_length == 0) {
     return 0;
@@ -145,7 +145,7 @@ var diff_commonOverlap_ = function(text1: string, text2: string): number {
   } else if (text1_length < text2_length) {
     text2 = text2.substring(0, text1_length);
   }
-  var text_length = Math.min(text1_length, text2_length);
+  let text_length = Math.min(text1_length, text2_length);
   // Quick check for the worst case.
   if (text1 == text2) {
     return text_length;
@@ -154,11 +154,11 @@ var diff_commonOverlap_ = function(text1: string, text2: string): number {
   // Start by looking for a single character match
   // and increase length until no match is found.
   // Performance analysis: https://neil.fraser.name/news/2010/11/04/
-  var best = 0;
-  var length = 1;
+  let best = 0;
+  let length = 1;
   while (true) {
-    var pattern = text1.substring(text_length - length);
-    var found = text2.indexOf(pattern);
+    let pattern = text1.substring(text_length - length);
+    let found = text2.indexOf(pattern);
     if (found == -1) {
       return best;
     }
@@ -174,22 +174,22 @@ var diff_commonOverlap_ = function(text1: string, text2: string): number {
 
 /**
  * Reduce the number of edits by eliminating semantically trivial equalities.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+ * @param {Array<Diff>} diffs Array of diff tuples.
  */
- var diff_cleanupSemantic = function(diffs: Array<Diff>) {
-  var changes = false;
-  var equalities = [];  // Stack of indices where equalities are found.
-  var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
+let diff_cleanupSemantic = function(diffs: Array<Diff>) {
+  let changes = false;
+  let equalities = [];  // Stack of indices where equalities are found.
+  let equalitiesLength = 0;  // Keeping our own length let is faster in JS.
   /** @type {?string} */
-  var lastEquality = null;
+  let lastEquality = null;
   // Always equal to diffs[equalities[equalitiesLength - 1]][1]
-  var pointer = 0;  // Index of current position.
+  let pointer = 0;  // Index of current position.
   // Number of characters that changed prior to the equality.
-  var length_insertions1 = 0;
-  var length_deletions1 = 0;
+  let length_insertions1 = 0;
+  let length_deletions1 = 0;
   // Number of characters that changed after the equality.
-  var length_insertions2 = 0;
-  var length_deletions2 = 0;
+  let length_insertions2 = 0;
+  let length_deletions2 = 0;
   while (pointer < diffs.length) {
     if (diffs[pointer][0] == DIFF_EQUAL) {  // Equality found.
       equalities[equalitiesLength++] = pointer;
@@ -247,10 +247,10 @@ var diff_commonOverlap_ = function(text1: string, text2: string): number {
   while (pointer < diffs.length) {
     if (diffs[pointer - 1][0] == DIFF_DELETE &&
         diffs[pointer][0] == DIFF_INSERT) {
-      var deletion = diffs[pointer - 1][1];
-      var insertion = diffs[pointer][1];
-      var overlap_length1 = diff_commonOverlap_(deletion, insertion);
-      var overlap_length2 = diff_commonOverlap_(insertion, deletion);
+      let deletion = diffs[pointer - 1][1];
+      let insertion = diffs[pointer][1];
+      let overlap_length1 = diff_commonOverlap_(deletion, insertion);
+      let overlap_length2 = diff_commonOverlap_(insertion, deletion);
       if (overlap_length1 >= overlap_length2) {
         if (overlap_length1 >= deletion.length / 2 ||
             overlap_length1 >= insertion.length / 2) {
@@ -291,7 +291,7 @@ var diff_commonOverlap_ = function(text1: string, text2: string): number {
  * e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  */
-var diff_cleanupSemanticLossless = function(diffs: Array<Diff>) {
+let diff_cleanupSemanticLossless = function(diffs: Array<Diff>) {
   /**
    * Given two strings, compute a score representing whether the internal
    * boundary falls on logical boundaries.
@@ -313,21 +313,21 @@ var diff_cleanupSemanticLossless = function(diffs: Array<Diff>) {
     // 'whitespace'.  Since this function's purpose is largely cosmetic,
     // the choice has been made to use each language's native features
     // rather than force total conformity.
-    var char1 = one.charAt(one.length - 1);
-    var char2 = two.charAt(0);
-    var nonAlphaNumeric1 = char1.match(nonAlphaNumericRegex_);
-    var nonAlphaNumeric2 = char2.match(nonAlphaNumericRegex_);
-    var whitespace1 = nonAlphaNumeric1 &&
+    let char1 = one.charAt(one.length - 1);
+    let char2 = two.charAt(0);
+    let nonAlphaNumeric1 = char1.match(nonAlphaNumericRegex_);
+    let nonAlphaNumeric2 = char2.match(nonAlphaNumericRegex_);
+    let whitespace1 = nonAlphaNumeric1 &&
         char1.match(whitespaceRegex_);
-    var whitespace2 = nonAlphaNumeric2 &&
+    let whitespace2 = nonAlphaNumeric2 &&
         char2.match(whitespaceRegex_);
-    var lineBreak1 = whitespace1 &&
+    let lineBreak1 = whitespace1 &&
         char1.match(linebreakRegex_);
-    var lineBreak2 = whitespace2 &&
+    let lineBreak2 = whitespace2 &&
         char2.match(linebreakRegex_);
-    var blankLine1 = lineBreak1 &&
+    let blankLine1 = lineBreak1 &&
         one.match(blanklineEndRegex_);
-    var blankLine2 = lineBreak2 &&
+    let blankLine2 = lineBreak2 &&
         two.match(blanklineStartRegex_);
 
     if (blankLine1 || blankLine2) {
@@ -349,36 +349,36 @@ var diff_cleanupSemanticLossless = function(diffs: Array<Diff>) {
     return 0;
   }
 
-  var pointer = 1;
+  let pointer = 1;
   // Intentionally ignore the first and last element (don't need checking).
   while (pointer < diffs.length - 1) {
     if (diffs[pointer - 1][0] == DIFF_EQUAL &&
         diffs[pointer + 1][0] == DIFF_EQUAL) {
       // This is a single edit surrounded by equalities.
-      var equality1 = diffs[pointer - 1][1];
-      var edit = diffs[pointer][1];
-      var equality2 = diffs[pointer + 1][1];
+      let equality1 = diffs[pointer - 1][1];
+      let edit = diffs[pointer][1];
+      let equality2 = diffs[pointer + 1][1];
 
       // First, shift the edit as far left as possible.
-      var commonOffset = diff_commonSuffix(equality1, edit);
+      let commonOffset = diff_commonSuffix(equality1, edit);
       if (commonOffset) {
-        var commonString = edit.substring(edit.length - commonOffset);
+        let commonString = edit.substring(edit.length - commonOffset);
         equality1 = equality1.substring(0, equality1.length - commonOffset);
         edit = commonString + edit.substring(0, edit.length - commonOffset);
         equality2 = commonString + equality2;
       }
 
       // Second, step character by character right, looking for the best fit.
-      var bestEquality1 = equality1;
-      var bestEdit = edit;
-      var bestEquality2 = equality2;
-      var bestScore = diff_cleanupSemanticScore_(equality1, edit) +
+      let bestEquality1 = equality1;
+      let bestEdit = edit;
+      let bestEquality2 = equality2;
+      let bestScore = diff_cleanupSemanticScore_(equality1, edit) +
           diff_cleanupSemanticScore_(edit, equality2);
       while (edit.charAt(0) === equality2.charAt(0)) {
         equality1 += edit.charAt(0);
         edit = edit.substring(1) + equality2.charAt(0);
         equality2 = equality2.substring(1);
-        var score = diff_cleanupSemanticScore_(equality1, edit) +
+        let score = diff_cleanupSemanticScore_(equality1, edit) +
             diff_cleanupSemanticScore_(edit, equality2);
         // The >= encourages trailing rather than leading whitespace on edits.
         if (score >= bestScore) {
@@ -424,15 +424,15 @@ var blanklineStartRegex_ = /^\r?\n\r?\n/;
  * Any edit section can move as long as it doesn't cross an equality.
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  */
-var diff_cleanupMerge = function(diffs: Array<Diff>) {
+let diff_cleanupMerge = function(diffs: Array<Diff>) {
   // Add a dummy entry at the end.
   diffs.push(new Diff(DIFF_EQUAL, ''));
-  var pointer = 0;
-  var count_delete = 0;
-  var count_insert = 0;
-  var text_delete = '';
-  var text_insert = '';
-  var commonlength;
+  let pointer = 0;
+  let count_delete = 0;
+  let count_insert = 0;
+  let text_delete = '';
+  let text_insert = '';
+  let commonlength;
   while (pointer < diffs.length) {
     switch (diffs[pointer][0]) {
       case DIFF_INSERT:
@@ -511,7 +511,7 @@ var diff_cleanupMerge = function(diffs: Array<Diff>) {
   // Second pass: look for single edits surrounded on both sides by equalities
   // which can be shifted sideways to eliminate an equality.
   // e.g: A<ins>BA</ins>C -> <ins>AB</ins>AC
-  var changes = false;
+  let changes = false;
   pointer = 1;
   // Intentionally ignore the first and last element (don't need checking).
   while (pointer < diffs.length - 1) {
