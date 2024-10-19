@@ -9,7 +9,7 @@ Today we are excited to announce Jest 23, our largest major release to date! Tog
 
 We would also like to welcome both [Babel](https://babeljs.io/) and [webpack](https://webpack.js.org/) to the Jest community! After converting from Mocha to Jest 23 Beta, webpack saw their total test suite time reduced 6x from over 13 minutes to 2 minutes 20 seconds. [#blazingmeansgood](https://twitter.com/search?q=%23blazingmeansgood)
 
-Here's are some of the Jest 23 highlights and breaking changes.
+Here are some of the Jest 23 highlights and breaking changes.
 
 <!--truncate-->
 
