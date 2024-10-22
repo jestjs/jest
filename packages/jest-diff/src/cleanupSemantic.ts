@@ -26,7 +26,7 @@
  * CHANGES by pedrottimark to diff_match_patch_uncompressed.ts file:
  *
  * 1. Delete anything not needed to use diff_cleanupSemantic method
- * 2. Convert from prototype properties to let declarations
+ * 2. Convert from prototype properties to variable declarations
  * 3. Convert Diff to class from constructor and prototype
  * 4. Add type annotations for arguments and return values
  * 5. Add exports
