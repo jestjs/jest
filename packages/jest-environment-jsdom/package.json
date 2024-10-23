@@ -23,7 +23,7 @@
     "@jest/environment-jsdom-abstract": "workspace:*",
     "@types/jsdom": "^21.1.1",
     "@types/node": "*",
-    "jsdom": "^22.0.0"
+    "jsdom": "^25.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*"
