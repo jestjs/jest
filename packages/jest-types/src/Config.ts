@@ -13,7 +13,7 @@ import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
 
 export type {InitialOptions} from '@jest/schemas';
 
-type CoverageProvider = 'babel' | 'v8';
+type CoverageProvider = 'babel' | 'v8' | 'odz';
 
 export type FakeableAPI =
   | 'Date'
