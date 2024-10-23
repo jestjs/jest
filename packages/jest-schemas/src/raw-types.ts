@@ -37,6 +37,7 @@ export const SnapshotFormat = Type.Partial(
 const CoverageProvider = Type.Union([
   Type.Literal('babel'),
   Type.Literal('v8'),
+  Type.Literal('odz'),
 ]);
 
 const CoverageThresholdValue = Type.Partial(

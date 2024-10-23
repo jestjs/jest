@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {fileURLToPath, pathToFileURL} from 'url';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk = require('chalk');
@@ -15,6 +16,11 @@ import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
+import {
+  type ProcessCoverage,
+  type SourceMap,
+  createOneDoubleZero,
+} from 'one-double-zero';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
@@ -70,7 +76,21 @@ export default class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ): Promise<void> {
     await this._addUntestedFiles(testContexts);
-    const {map, reportContext} = await this._getCoverageResult();
+
+    const sourceFiles: Array<string> = [];
+
+    for (const testContext of testContexts) {
+      for (const filePath of testContext.hasteFS.matchFilesWithGlob(
+        this._globalConfig.collectCoverageFrom,
+        testContext.config.rootDir,
+      )) {
+        if (!sourceFiles.includes(filePath)) {
+          sourceFiles.push(filePath);
+        }
+      }
+    }
+
+    const {map, reportContext} = await this._getCoverageResult(sourceFiles);
 
     try {
       const coverageReporters = this._globalConfig.coverageReporters || [];
@@ -432,7 +452,7 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  private async _getCoverageResult(): Promise<{
+  private async _getCoverageResult(sourceFiles: Array<string>): Promise<{
     map: istanbulCoverage.CoverageMap;
     reportContext: istanbulReport.Context;
   }> {
@@ -500,6 +520,111 @@ export default class CoverageReporter extends BaseReporter {
       });
 
       return {map, reportContext};
+    }
+
+    if (this._globalConfig.coverageProvider === 'odz') {
+      const mergedCoverages = mergeProcessCovs(
+        this._v8CoverageResults.map(coverageResult => {
+          return {
+            result: coverageResult.map(result => {
+              const wrapperLength =
+                result.codeTransformResult?.wrapperLength || 0;
+
+              return {
+                functions: result.result.functions.map(functionCoverage => {
+                  return {
+                    functionName: functionCoverage.functionName,
+                    isBlockCoverage: functionCoverage.isBlockCoverage,
+                    ranges: functionCoverage.ranges.map(rangeCoverage => {
+                      const startOffset = Math.max(
+                        0,
+                        rangeCoverage.startOffset - wrapperLength,
+                      );
+                      const endOffset = Math.max(
+                        0,
+                        rangeCoverage.endOffset - wrapperLength,
+                      );
+
+                      return {
+                        count: rangeCoverage.count,
+                        endOffset,
+                        startOffset,
+                      };
+                    }),
+                  };
+                }),
+                scriptId: result.result.scriptId,
+                url: result.result.url,
+              };
+            }),
+          };
+        }),
+      );
+
+      const fileTransforms = new Map<string, RuntimeTransformResult>();
+
+      for (const v8CoverageResult of this._v8CoverageResults) {
+        for (const entry of v8CoverageResult) {
+          if (
+            entry.codeTransformResult &&
+            !fileTransforms.has(entry.result.url)
+          ) {
+            fileTransforms.set(entry.result.url, entry.codeTransformResult);
+          }
+        }
+      }
+
+      const loadProcessCoverage = (): ProcessCoverage => {
+        const sourceMaps = new Map<string, SourceMap>();
+
+        for (const scriptCoverage of mergedCoverages.result) {
+          const fileTransform = fileTransforms.get(scriptCoverage.url);
+
+          // the v8 coverage collector is replacing the URLS with paths; we need to restore the original URLs.
+          scriptCoverage.url = pathToFileURL(scriptCoverage.url).href;
+
+          if (
+            fileTransform?.sourceMapPath &&
+            fs.existsSync(fileTransform.sourceMapPath)
+          ) {
+            const sourceMapContent = JSON.parse(
+              fs.readFileSync(fileTransform.sourceMapPath, 'utf8'),
+            ) as SourceMap;
+
+            const scriptFilePath = fileURLToPath(scriptCoverage.url);
+
+            sourceMaps.set(scriptCoverage.url, {
+              ...sourceMapContent,
+              file: scriptCoverage.url,
+              scriptContent: fileTransform.code,
+              sourceRoot: pathToFileURL(path.dirname(scriptFilePath)).href,
+            });
+          }
+        }
+
+        return {
+          scriptCoverages: mergedCoverages.result,
+          sourceMaps,
+        };
+      };
+
+      const oneDoubleZero = createOneDoubleZero(() => {
+        return;
+      }, fs.readFileSync);
+      const processCoverage = loadProcessCoverage();
+
+      return oneDoubleZero
+        .getCoverageMap(sourceFiles, processCoverage)
+        .then(coverageMap => {
+          return {
+            map: coverageMap,
+            reportContext: istanbulReport.createContext({
+              coverageMap,
+              dir: this._globalConfig.coverageDirectory,
+              watermarks: getWatermarks(this._globalConfig),
+            }),
+          };
+        });
     }
 
     const map = await this._sourceMapStore.transformCoverage(this._coverageMap);

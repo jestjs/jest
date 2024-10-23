@@ -224,11 +224,35 @@ Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-Jest ships with two coverage providers: `babel` (default) and `v8`. See the [`coverageProvider`](#coverageprovider-string) option for more details.
+Jest ships with three coverage providers: `babel` (default), `v8` and `odz`. See the [`coverageProvider`](#coverageprovider-string) option for more details.
 
 :::info
 
-The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/* c8 ignore next */` comments to exclude lines from coverage reports, respectively. For more information, you can view the [`istanbuljs` documentation](https://github.com/istanbuljs/nyc#parsing-hints-ignoring-lines) and the [`c8` documentation](https://github.com/bcoe/c8#ignoring-uncovered-lines-functions-and-blocks).
+The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/* c8 ignore next */` comments to exclude lines from coverage reports, respectively. For more information, you can view the [`istanbuljs` documentation](https://github.com/istanbuljs/nyc#parsing-hints-ignoring-lines) and the [`c8` documentation](https://github.com/bcoe/c8#ignoring-uncovered-lines-functions-and-blocks). The `odz` coverage provider doesn't support exclusion comment.
+
+The `v8` coverage provider comes with the following tradeoffs:
+
+- It is not a 1:1 replacement for Babel/Istanbul coverage
+
+  - Switching between the two will usually change the reported coverage statistics, which can change whether coverage thresholds are reached or not
+  - Switching between the two can cause regions of uncovered code to be discovered or ignored (This is mostly just an overall summary of the other points)
+
+- It works by taking a coverage report for output/transpiled code, and then using `v8-to-istanbul` and source maps to convert that report into an Istanbul-compatible format
+  - This is an inherently imprecise and heuristic-driven process, though in many cases it works well enough for practical purposes
+  - In some cases this can give confusing or misleading results, or fail to distinguish between user code and generated code (e.g. uncovered branches introduced by `__esModule` detection shims)
+  - Babel/Istanbul is able to be more precise because it usually operates directly on the user's original source code
+- It tracks “blocks”, not individual statements
+  - In particular, if you have a sequence of statements, and the middle statements always throw an exception, V8 coverage will mark the later statements as “covered” even though they never ran
+  - This is a deliberate tradeoff made by the V8 developers who implemented coverage
+  - Babel/Istanbul is able to be more precise because it explicitly instruments every source statement
+- It does not track the else branch of an if-statement without an explicit else
+
+  - So if a one-sided if-statement's condition is always true, V8 will not warn about an uncovered branch
+  - Babel/Istanbul is able to track these by artificially inserting an else with a branch counter
+
+- It does not respect the `collectCoverageFrom` Jest configuration: regardless of the value of `collectCoverageFrom`, it emits coverage report for whatever file that was encountered during the execution of the tests.
+
+The `odz` coverage provider also makes use of V8 coverage data, but doesn't come any of the `v8` provider tradeoffs because it operates at the AST level.
 
 :::
 
@@ -314,7 +338,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageProvider` \[string]
 
-Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default), `v8` and `odz`.
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 

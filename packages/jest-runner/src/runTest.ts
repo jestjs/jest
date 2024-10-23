@@ -297,7 +297,8 @@ async function runTestInternal(
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
     globalConfig.collectCoverage &&
-    globalConfig.coverageProvider === 'v8' &&
+    (globalConfig.coverageProvider === 'v8' ||
+      globalConfig.coverageProvider === 'odz') &&
     typeof environment.getVmContext === 'function';
 
   // Node's error-message stack size is limited at 10, but it's pretty useful
