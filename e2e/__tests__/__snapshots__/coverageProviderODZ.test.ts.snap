@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prints correct coverage report, if a CJS module is put under test without transformation 1`] = `
+"  console.log
+    this will print
+
+      at covered (module.js:11:11)
+
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |   59.37 |       60 |      50 |   59.37 |                   
+ module.js    |   79.16 |       75 |   66.66 |   79.16 | 14-16,19-20       
+ uncovered.js |       0 |        0 |       0 |       0 | 1-8               
+--------------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`prints correct coverage report, if a TS module is transpiled by Babel to CJS and put under test 1`] = `
+"  console.log
+    this will print
+
+      at log (module.ts:13:11)
+
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |      50 |       25 |      25 |      50 |                   
+ module.ts    |   80.76 |       50 |      50 |   80.76 | 16-18,21-22       
+ types.ts     |       0 |        0 |       0 |       0 | 1-8               
+ uncovered.ts |       0 |        0 |       0 |       0 | 1-8               
+--------------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test 1`] = `
+"  console.log
+    this will print
+
+      at covered (module.ts:13:11)
+
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |      50 |       25 |      25 |      50 |                   
+ module.ts    |   80.76 |       50 |      50 |   80.76 | 16-18,21-22       
+ types.ts     |       0 |        0 |       0 |       0 | 1-8               
+ uncovered.ts |       0 |        0 |       0 |       0 | 1-8               
+--------------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`prints correct coverage report, if an ESM module is put under test without transformation 1`] = `
+"  console.log
+    this will print
+
+      at covered (module.js:11:11)
+
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |   59.37 |       50 |   33.33 |   59.37 |                   
+ module.js    |   79.16 |    66.66 |      50 |   79.16 | 14-16,19-20       
+ uncovered.js |       0 |        0 |       0 |       0 | 1-8               
+--------------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`prints coverage with empty sourcemaps 1`] = `
+"----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------|---------|----------|---------|---------|-------------------
+All files |     100 |      100 |     100 |     100 |                   
+ types.ts |     100 |      100 |     100 |     100 |                   
+----------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`prints coverage with missing sourcemaps 1`] = `
+"  console.log
+    42
+
+      at Object.log (__tests__/Thing.test.js:10:9)
+
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------|---------|----------|---------|---------|-------------------
+All files |     100 |      100 |     100 |     100 |                   
+ Thing.js |     100 |      100 |     100 |     100 |                   
+ x.css    |     100 |      100 |     100 |     100 |                   
+----------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`reports coverage with \`resetModules\` 1`] = `
+"  console.log
+    this will print
+
+      at log (module.js:11:11)
+
+  console.log
+    this will print
+
+      at log (module.js:11:11)
+
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |   59.37 |    33.33 |   33.33 |   59.37 |                   
+ module.js    |   79.16 |       50 |      50 |   79.16 | 14-16,19-20       
+ uncovered.js |       0 |        0 |       0 |       0 | 1-8               
+--------------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`vm script coverage generator 1`] = `
+"-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------|---------|----------|---------|---------|-------------------
+All files    |   88.88 |      100 |   66.66 |   88.88 |                   
+ vmscript.js |   88.88 |      100 |   66.66 |   88.88 | 20-22             
+-------------|---------|----------|---------|---------|-------------------"
+`;
