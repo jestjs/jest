@@ -34,7 +34,7 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 
 ## GatsbyJS
 
-- [Unit Testing](https://www.gatsbyjs.org/docs/unit-testing/) by GatsbyJS docs
+- [Unit Testing](https://www.gatsbyjs.com/docs/how-to/testing/unit-testing/) by GatsbyJS docs
 
 ## Hapi.js
 
