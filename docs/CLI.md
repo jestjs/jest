@@ -447,9 +447,9 @@ Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednu
 
 Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boolean).
 
-### `--silent`
+### `--silent[=<boolean>]`
 
-Prevent tests from printing messages through the console.
+Prevent tests from printing messages through the console. Defaults to true. Disable using `--no-silent` or `--silent=false`.
 
 ### `--testEnvironmentOptions=<json string>`
 
