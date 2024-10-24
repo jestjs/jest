@@ -32,6 +32,10 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 
 - [Writing Tests](https://redux.js.org/recipes/writing-tests) by Redux docs
 
+## Express.js
+
+- [How to test Express.js with Jest and Supertest](https://www.albertgao.com/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao ([@albertgao](https://twitter.com/albertgao))
+
 ## GatsbyJS
 
 - [Unit Testing](https://www.gatsbyjs.com/docs/how-to/testing/unit-testing/) by GatsbyJS docs
