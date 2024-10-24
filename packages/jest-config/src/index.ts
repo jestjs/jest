@@ -152,6 +152,7 @@ const groupOptions = (
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
+    collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     coverageDirectory: options.coverageDirectory,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
