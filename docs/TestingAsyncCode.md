@@ -21,7 +21,7 @@ test('the data is peanut butter', () => {
 
 ## Async/Await
 
-Alternatively, you can use `async` and `await` in your tests. To write an async test, use the `async` keyword in front of the function passed to `test`. For example, the same `fetchData` scenario can be tested with:
+If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of [assertions](ExpectAPI.md#assertion-count) are called. Otherwise, a fulfilled promise would not fail the test.
 
 ```js
 test('the data is peanut butter', async () => {
@@ -59,7 +59,7 @@ Be sure to return (or `await`) the promise - if you omit the `return`/`await` st
 
 :::
 
-If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise, a fulfilled promise would not fail the test.
+If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of [assertions](ExpectAPI.md#assertion-count) are called. Otherwise, a fulfilled promise would not fail the test.
 
 ```js
 test('the fetch fails with an error', () => {

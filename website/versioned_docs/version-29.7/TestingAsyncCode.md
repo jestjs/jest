@@ -59,7 +59,7 @@ Be sure to return (or `await`) the promise - if you omit the `return`/`await` st
 
 :::
 
-If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise, a fulfilled promise would not fail the test.
+If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of [assertions](ExpectAPI.md#assertion-count) are called. Otherwise, a fulfilled promise would not fail the test.
 
 ```js
 test('the fetch fails with an error', () => {
