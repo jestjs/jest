@@ -7,10 +7,12 @@
 
 import type {Context} from 'vm';
 import type * as jsdom from 'jsdom';
-import type {
-  EnvironmentContext,
-  JestEnvironment,
-  JestEnvironmentConfig,
+import {
+  type EnvironmentContext,
+  type JestEnvironment,
+  type JestEnvironmentConfig,
+  type JestExportConditionsPerModules,
+  isExportConditions,
 } from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
@@ -26,10 +28,6 @@ type Win = Window &
     };
   };
 
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
 export default abstract class BaseJSDOMEnvironment
   implements JestEnvironment<number>
 {
@@ -40,7 +38,9 @@ export default abstract class BaseJSDOMEnvironment
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
-  private readonly _configuredExportConditions?: Array<string>;
+  private readonly _configuredExportConditions?: Array<
+    string | JestExportConditionsPerModules
+  >;
 
   protected constructor(
     config: JestEnvironmentConfig,
@@ -126,12 +126,12 @@ export default abstract class BaseJSDOMEnvironment
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
+        customExportConditions.every(isExportConditions)
       ) {
         this._configuredExportConditions = customExportConditions;
       } else {
         throw new Error(
-          'Custom export conditions specified but they are not an array of strings',
+          'Custom export conditions specified but they are not an array of proper shape',
         );
       }
     }
@@ -178,7 +178,7 @@ export default abstract class BaseJSDOMEnvironment
     this.fakeTimersModern = null;
   }
 
-  exportConditions(): Array<string> {
+  exportConditions(): Array<string | JestExportConditionsPerModules> {
     return this._configuredExportConditions ?? this.customExportConditions;
   }
 
