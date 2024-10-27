@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`counts todo tests when inside of a \`describe.only\` 1`] = `
 "PASS __tests__/only-todo.test.js

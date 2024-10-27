@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`printDiffOrStringify asymmetricMatcher array 1`] = `
 <g>- Expected  - 1</>

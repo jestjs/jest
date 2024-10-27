@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Runtime requireModule with no extension throws error pointing out file with extension 1`] = `
 "Cannot find module 'RegularModuleWithWrongExt' from 'root.js'
