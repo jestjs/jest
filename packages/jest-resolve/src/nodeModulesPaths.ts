@@ -81,7 +81,7 @@ function findGlobalPaths(): Array<string> {
   if (resolvePaths) {
     // the global paths start one after the root node_modules
     const rootIndex = resolvePaths.indexOf(globalPath);
-    return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
+    return rootIndex === -1 ? [] : resolvePaths.slice(rootIndex + 1);
   }
   return [];
 }

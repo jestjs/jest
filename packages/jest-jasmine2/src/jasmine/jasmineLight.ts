@@ -60,15 +60,13 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
     enumerable: true,
     get() {
       return (
-        // eslint-disable-next-line no-restricted-globals
-        (global as Global.Global)[testTimeoutSymbol] ||
+        (globalThis as Global.Global)[testTimeoutSymbol] ||
         createOptions.testTimeout ||
         5000
       );
     },
     set(value) {
-      // eslint-disable-next-line no-restricted-globals
-      (global as Global.Global)[testTimeoutSymbol] = value;
+      (globalThis as Global.Global)[testTimeoutSymbol] = value;
     },
   });
 

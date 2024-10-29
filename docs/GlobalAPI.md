@@ -251,7 +251,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
-    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
 - `fn`: `Function` the suite of tests to be run, this is the function that will receive the parameters in each row as function arguments.
@@ -305,7 +305,7 @@ describe.each([
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions, and `$#` for the index of the row.
-  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
 - `fn`: `Function` the suite of tests to be run, this is the function that will receive the test data object.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
@@ -574,7 +574,7 @@ test.concurrent.each([
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
-  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
 - `fn`: `Function` the test to be run, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 
@@ -697,7 +697,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
-    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
 - `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments.
@@ -731,7 +731,7 @@ test.each([
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
-  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
 - `fn`: `Function` the test to be run, this is the function that will receive the test data object.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. The default timeout is 5 seconds.
 

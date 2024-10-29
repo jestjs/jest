@@ -8,6 +8,7 @@
 
 const {isArrayBuffer} = require('util').types;
 const isJSDOM =
+  // eslint-disable-next-line unicorn/prefer-global-this
   typeof window !== 'undefined' && typeof document !== 'undefined';
 
 const skipTestJSDOM = isJSDOM ? test.skip : test;
