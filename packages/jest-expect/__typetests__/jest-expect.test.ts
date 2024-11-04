@@ -29,9 +29,9 @@ describe('JestExpect', () => {
   });
 
   test('is superset of `Expect`', () => {
-    expect<typeof jestExpect>().type.toBeAssignableTo<typeof _expect>();
+    expect(jestExpect).type.toBeAssignableTo(_expect);
 
-    expect<typeof _expect>().type.not.toBeAssignableTo<typeof jestExpect>();
+    expect(_expect).type.not.toBeAssignableTo(jestExpect);
   });
 
   test('allows type inference of the `actual` argument', () => {
