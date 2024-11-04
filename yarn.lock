@@ -3202,7 +3202,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
-    immutable: ^4.0.0
+    immutable: ^5.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
   languageName: unknown
@@ -10538,7 +10538,7 @@ __metadata:
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
-    immutable: ^4.0.0
+    immutable: ^5.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
@@ -12240,10 +12240,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:^4.0.0":
-  version: 4.3.7
-  resolution: "immutable@npm:4.3.7"
-  checksum: 1c50eb053bb300796551604afff554066f041aa8e15926cf98f6d11d9736b62ad12531c06515dd96375258653878b4736f8051cd20b640f5f976d09fa640e3ec
+"immutable@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "immutable@npm:5.0.0"
+  checksum: 9d524325591aec40b425fc85cf8dbe8a4cc672855feb4bdcebadf235a247cd69811e3fa265c3e829d2782074bce745391c78c4730766fcc052038f9073eac3ea
   languageName: node
   linkType: hard
 
@@ -17755,7 +17755,7 @@ __metadata:
     "@types/react-is": ^18.0.0
     "@types/react-test-renderer": ^18.0.1
     ansi-styles: ^5.0.0
-    immutable: ^4.0.0
+    immutable: ^5.0.0
     jest-util: "workspace:*"
     react: 18.2.0
     react-dom: 18.2.0
