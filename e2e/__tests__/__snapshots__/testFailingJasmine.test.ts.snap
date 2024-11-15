@@ -17,7 +17,7 @@ exports[`throws an error about unsupported modifier 1`] = `
       at Object.failing (__tests__/statuses.test.js:22:4)
 
 FAIL __tests__/worksWithConcurrentMode.test.js
-  ● block with concurrent › failing test
+  ● block with concurrent › test should fail
 
     expect(received).toBe(expected) // Object.is equality
 
@@ -25,12 +25,12 @@ FAIL __tests__/worksWithConcurrentMode.test.js
     Received: 10
 
        8 | describe('block with concurrent', () => {
-       9 |   it('failing test', () => {
+       9 |   it('test should fail', () => {
     > 10 |     expect(10).toBe(101);
          |                ^
       11 |   });
       12 |
-      13 |   it.concurrent.failing('failing passes = fails', () => {
+      13 |   it.concurrent.failing('.failing() should fail', () => {
 
       at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
 
@@ -40,7 +40,7 @@ FAIL __tests__/worksWithConcurrentMode.test.js
 
       11 |   });
       12 |
-    > 13 |   it.concurrent.failing('failing passes = fails', () => {
+    > 13 |   it.concurrent.failing('.failing() should fail', () => {
          |                 ^
       14 |     expect(10).toBe(10);
       15 |   });
@@ -64,7 +64,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
          |                ^
       11 |   });
       12 |
-      13 |   it.concurrent.only.failing('failing passes = fails', () => {
+      13 |   it.concurrent.only.failing('.only.failing() should fail', () => {
 
       at Object.toBe (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
 
@@ -74,7 +74,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
 
       11 |   });
       12 |
-    > 13 |   it.concurrent.only.failing('failing passes = fails', () => {
+    > 13 |   it.concurrent.only.failing('.only.failing() should fail', () => {
          |                      ^
       14 |     expect(10).toBe(10);
       15 |   });
