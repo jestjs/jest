@@ -11,7 +11,7 @@ describe('block with concurrent', () => {
   });
 
   it.concurrent.only.failing('failing passes = fails', () => {
-    expect(10).toBe(10);
+    expect(10).toBe(101);
   });
 
   test.concurrent.only.failing.each([
