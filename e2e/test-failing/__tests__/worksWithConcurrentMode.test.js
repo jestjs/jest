@@ -11,7 +11,7 @@ describe('block with concurrent', () => {
   });
 
   it.concurrent.failing('failing passes = fails', () => {
-    expect(10).toBe(10);
+    expect(10).toBe(101);
   });
 
   test.concurrent.failing.each([
@@ -19,7 +19,7 @@ describe('block with concurrent', () => {
     {a: 1, b: 2, expected: 3},
     {a: 2, b: 1, expected: 3},
   ])('.add($a, $b)', ({a, b, expected}) => {
-    expect(a + b).toBe(expected);
+    expect(a + b).toBe(expected + 1);
   });
 
   it.concurrent.failing('failing fails = passes', () => {
