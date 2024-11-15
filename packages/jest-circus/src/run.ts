@@ -82,7 +82,7 @@ const _runTestsForDescribeBlock = async (
   const retryImmediately: boolean =
     ((globalThis as Global.Global)[RETRY_IMMEDIATELY] as any) || false;
 
-  const deferredRetryTests = [];
+  const deferredRetryTests: Array<Circus.TestEntry> = [];
 
   if (rng) {
     describeBlock.children = shuffleArray(describeBlock.children, rng);
@@ -104,6 +104,27 @@ const _runTestsForDescribeBlock = async (
     }
   };
 
+  const handleRetry = async (
+    test: Circus.TestEntry,
+    hasErrorsBeforeTestRun: boolean,
+    hasRetryTimes: boolean,
+  ) => {
+    // no retry if the test passed or had errors before the test ran
+    if (test.errors.length === 0 || hasErrorsBeforeTestRun || !hasRetryTimes) {
+      return;
+    }
+
+    if (!retryImmediately) {
+      deferredRetryTests.push(test);
+      return;
+    }
+
+    // If immediate retry is set, we retry the test immediately after the first run
+    await rerunTest(test);
+  };
+
+  const concurrentTests = [];
+
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
@@ -114,31 +135,22 @@ const _runTestsForDescribeBlock = async (
         const hasErrorsBeforeTestRun = child.errors.length > 0;
         const hasRetryTimes = retryTimes > 0;
         if (child.concurrent) {
-          await (child as ConcurrentTestEntry).done;
+          concurrentTests.push(
+            (child as ConcurrentTestEntry).done.then(() =>
+              handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes),
+            ),
+          );
         } else {
           await _runTest(child, isSkipped);
-        }
-
-        // If immediate retry is set, we retry the test immediately after the first run
-        if (
-          retryImmediately &&
-          hasErrorsBeforeTestRun === false &&
-          hasRetryTimes
-        ) {
-          await rerunTest(child);
-        }
-
-        if (
-          hasErrorsBeforeTestRun === false &&
-          hasRetryTimes &&
-          !retryImmediately
-        ) {
-          deferredRetryTests.push(child);
+          await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
         }
         break;
       }
     }
   }
+
+  // wait for concurrent tests to finish
+  await Promise.all(concurrentTests);
 
   // Re-run failed tests n-times if configured
   for (const test of deferredRetryTests) {
@@ -160,18 +172,15 @@ function collectConcurrentTests(
   if (describeBlock.mode === 'skip') {
     return [];
   }
-  const {hasFocusedTests, testNamePattern} = getState();
   return describeBlock.children.flatMap(child => {
     switch (child.type) {
       case 'describeBlock':
         return collectConcurrentTests(child);
       case 'test':
-        const skip =
-          !child.concurrent ||
-          child.mode === 'skip' ||
-          (hasFocusedTests && child.mode !== 'only') ||
-          (testNamePattern && !testNamePattern.test(getTestID(child)));
-        return skip ? [] : [child as ConcurrentTestEntry];
+        if (child.concurrent) {
+          return [child as ConcurrentTestEntry];
+        }
+        return [];
     }
   });
 }
