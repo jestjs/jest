@@ -42,22 +42,22 @@ describe('level 1', () => {
   beforeEach(() => marker('beforeEach level 1'));
   afterEach(() => marker('afterEach level 1'));
 
-  it.concurrent('three', testFn('three', 70));
+  it.concurrent.skip('skipped three', testFn('three', 70));
 
   it.concurrent('four', testFn('four', 120));
 
   describe('level 2', () => {
     beforeEach(() => marker('beforeEach level 2'));
     afterEach(() => marker('afterEach level 2'));
-    it.concurrent('five', testFn('five', 160));
+    it.concurrent.skip('five (skipped)', testFn('five', 160));
 
-    it.concurrent('six', testFn('six', 100));
+    it.concurrent.skip('six (skipped)', testFn('six', 100));
   });
 
   it.concurrent('seven', testFn('seven', 100));
   it.concurrent('eight', testFn('eight', 120));
 });
 
-it.concurrent('nine', testFn('nine', 20));
+it.concurrent.skip('nine (skipped)', testFn('nine', 20));
 
 it.concurrent('ten', testFn('ten', 50));
