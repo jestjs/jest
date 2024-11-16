@@ -36,7 +36,7 @@ const testFn = (name, delay, fail) => {
 };
 
 it.concurrent('one', testFn('one', 85));
-it.concurrent('two', testFn('two', 100));
+it.concurrent('two', testFn('two', 100, true));
 
 describe('level 1', () => {
   beforeEach(() => marker('beforeEach level 1'));
@@ -44,20 +44,20 @@ describe('level 1', () => {
 
   it.concurrent('three', testFn('three', 70));
 
-  it.concurrent('four', testFn('four', 120));
+  it.concurrent.only('four', testFn('four', 120));
 
   describe('level 2', () => {
     beforeEach(() => marker('beforeEach level 2'));
     afterEach(() => marker('afterEach level 2'));
-    it.concurrent('five', testFn('five', 160));
+    it.concurrent('five', testFn('five', 160, true));
 
-    it.concurrent('six', testFn('six', 100));
+    it.concurrent.only('six', testFn('six', 100));
   });
 
   it.concurrent('seven', testFn('seven', 100));
   it.concurrent('eight', testFn('eight', 120));
 });
 
-it.concurrent('nine', testFn('nine', 20));
+it.concurrent.only('nine', testFn('nine', 20));
 
 it.concurrent('ten', testFn('ten', 50));
