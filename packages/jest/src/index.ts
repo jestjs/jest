@@ -14,6 +14,6 @@ export {
   runCLI,
 } from '@jest/core';
 
-export {run} from 'jest-cli';
+export {run, buildArgv} from 'jest-cli';
 
 export type Config = ConfigTypes.InitialOptions;
