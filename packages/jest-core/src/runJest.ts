@@ -35,6 +35,7 @@ import collectNodeHandles, {
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
+import serializeToJSON from './lib/serializeToJSON';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -111,20 +112,21 @@ const processResults = async (
     runResults = await processor(runResults);
   }
   if (isJSON) {
+    const jsonString = serializeToJSON(formatTestResults(runResults));
     if (outputFile) {
       const cwd = tryRealpath(process.cwd());
       const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(
         filePath,
-        `${JSON.stringify(formatTestResults(runResults))}\n`,
+        `${jsonString}\n`,
       );
       outputStream.write(
         `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
       process.stdout.write(
-        `${JSON.stringify(formatTestResults(runResults))}\n`,
+        `${jsonString}\n`,
       );
     }
   }
