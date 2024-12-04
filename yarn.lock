@@ -2837,15 +2837,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-plugin-eslint-comments@npm:^3.2.0":
-  version: 3.2.1
-  resolution: "@eslint-community/eslint-plugin-eslint-comments@npm:3.2.1"
+"@eslint-community/eslint-plugin-eslint-comments@npm:^4.0.0":
+  version: 4.4.1
+  resolution: "@eslint-community/eslint-plugin-eslint-comments@npm:4.4.1"
   dependencies:
-    escape-string-regexp: ^1.0.5
+    escape-string-regexp: ^4.0.0
     ignore: ^5.2.4
   peerDependencies:
-    eslint: ">=4.19.1"
-  checksum: 10d2162d0821a08ba0d133b8d97758011bab8db42387754d12a1d9fafee93c7249e5c557a8910929f90488b7d0465d5264f04447351368831919c2c8854ad406
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+  checksum: 32edb04a698c1b0f2d157c57d2c931811e804f9e5df4ffdcfa52334d7f170cf22a0d5531e008efcf21e22a36474e68036882c5bc25076fedc5755e3bdfe7b8e8
   languageName: node
   linkType: hard
 
@@ -3266,7 +3266,7 @@ __metadata:
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
     "@crowdin/cli": ^4.0.0
-    "@eslint-community/eslint-plugin-eslint-comments": ^3.2.0
+    "@eslint-community/eslint-plugin-eslint-comments": ^4.0.0
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@lerna-lite/cli": ^3.0.0
