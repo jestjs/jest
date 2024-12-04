@@ -17,7 +17,7 @@ Until now, Jest could only operate in one project at a time. This is often cumbe
 
 Jest is now collapsing the usage guide after the first test run to save vertical space in the terminal.
 
-Further, we completely overhauled how the configuration system works inside of Jest. You can now pass any configuration option through the CLI to overwrite the ones specified in your configuration file. Along with that, we changed Jest to look for a `jest.config.js` file by default which means you are now able to define a Jest configuration using JavaScript as well as being able to configure it through `package.json` like before. Through the addition of all these new features, you are now able to combine Jest in more powerful ways than ever before. For example, if you would like to find out which tests Jest would run given a set of changed files from a commit across multiple projects in a monorepo, you can combine cli arguments like this now:
+Further, we completely overhauled how the configuration system works inside of Jest. You can now pass any configuration option through the CLI to overwrite the ones specified in your configuration file. Along with that, we changed Jest to look for a `jest.config.js` file by default which means you are now able to define a Jest configuration using JavaScript as well as being able to configure it through `package.json` like before. Through the addition of all these new features, you are now able to combine Jest in more powerful ways than ever before. For example, if you would like to find out which tests Jest would run given a set of changed files from a commit across multiple projects in a monorepo, you can combine CLI arguments like this now:
 
 ```bash
 $ jest --projects projectA projectB --listTests --findRelatedTests projectA/banana.js projectB/kiwi.js
@@ -42,7 +42,7 @@ We made a number of additions and improvements to the testing APIs which will he
 - **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
 - **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
 
-Here is an example of all how all the new APIs together will make testing more delightful:
+Here is an example of how the new APIs will work together to make testing more delightful:
 
 ```js
 /**

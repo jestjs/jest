@@ -173,10 +173,11 @@ export default async function watch(
         'forbiddenOverwriteMessage' | 'key'
       > =
         RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) || {};
-      const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
-      if (!key) {
-        continue;
-      }
+        const { key } = reservedInfo;
+        const pluginKey = key || getPluginKey(plugin, globalConfig);
+        if (!pluginKey) {
+          continue;
+        }
       const {forbiddenOverwriteMessage} = reservedInfo;
       watchPluginKeys.set(key, {
         forbiddenOverwriteMessage,
