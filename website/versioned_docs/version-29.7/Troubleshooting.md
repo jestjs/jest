@@ -23,8 +23,7 @@ The Chrome Developer Tools will be displayed, and a breakpoint will be set at th
 
 :::note
 
-The `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
-
+The `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time. if --workerIdleMemoryLimit is set _before_ attempting to use the Node.js debugger, it's necessary to _unset_ it before attempting to use the Node.js debugger.
 :::
 
 ## Debugging in VS Code
