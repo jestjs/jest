@@ -6,7 +6,7 @@
  *
  */
 
-import exit = require('exit');
+import exit = require('exit-x');
 import type {
   SerializableError,
   TestFileEvent,

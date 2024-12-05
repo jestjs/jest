@@ -3125,14 +3125,13 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
-    "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.7
     "@types/node": "*"
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
     ci-info: ^4.0.0
-    exit: ^0.1.2
+    exit-x: ^0.2.2
     graceful-fs: ^4.2.9
     jest-changed-files: "workspace:*"
     jest-config: "workspace:*"
@@ -3363,7 +3362,6 @@ __metadata:
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@jridgewell/trace-mapping": ^0.3.18
-    "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-lib-instrument": ^1.7.2
@@ -3374,7 +3372,7 @@ __metadata:
     "@types/node-notifier": ^8.0.0
     chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0
-    exit: ^0.1.2
+    exit-x: ^0.2.2
     glob: ^10.3.10
     graceful-fs: ^4.2.9
     istanbul-lib-coverage: ^3.0.0
@@ -5412,15 +5410,6 @@ __metadata:
   version: 0.0.39
   resolution: "@types/estree@npm:0.0.39"
   checksum: 412fb5b9868f2c418126451821833414189b75cc6bf84361156feed733e3d92ec220b9d74a89e52722e03d5e241b2932732711b7497374a404fad49087adc248
-  languageName: node
-  linkType: hard
-
-"@types/exit@npm:^0.1.30":
-  version: 0.1.33
-  resolution: "@types/exit@npm:0.1.33"
-  dependencies:
-    "@types/node": "*"
-  checksum: 74e8e74ea3ce2c2a0ebc7dbf1ac06a93bc99a073872db203ced3de7b439985a932dce5bc63b6841b21f34929b1e2f5f7db28c11c39fe43c0b09c3d4fb6bb7eec
   languageName: node
   linkType: hard
 
@@ -8505,11 +8494,10 @@ __metadata:
   resolution: "create-jest@workspace:packages/create-jest"
   dependencies:
     "@jest/types": "workspace:*"
-    "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/prompts": ^2.0.1
     chalk: ^4.0.0
-    exit: ^0.1.2
+    exit-x: ^0.2.2
     graceful-fs: ^4.2.9
     jest-config: "workspace:*"
     jest-util: "workspace:*"
@@ -10523,10 +10511,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"exit@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "exit@npm:0.1.2"
-  checksum: abc407f07a875c3961e4781dfcb743b58d6c93de9ab263f4f8c9d23bb6da5f9b7764fc773f86b43dd88030444d5ab8abcb611cb680fba8ca075362b77114bba3
+"exit-x@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "exit-x@npm:0.2.2"
+  checksum: c62a8e0f77b1de00059c2976ddb774c41d06969a4262d984a58cd51995be1fc0ce962329ea68722bba0c254adb3930cc3625dabaf079fe8031cd03e91db1ba51
   languageName: node
   linkType: hard
 
@@ -13150,10 +13138,9 @@ __metadata:
     "@jest/core": "workspace:*"
     "@jest/test-result": "workspace:*"
     "@jest/types": "workspace:*"
-    "@types/exit": ^0.1.30
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    exit: ^0.1.2
+    exit-x: ^0.2.2
     import-local: ^3.0.2
     jest-config: "workspace:*"
     jest-util: "workspace:*"
@@ -13531,7 +13518,6 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
-    "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
