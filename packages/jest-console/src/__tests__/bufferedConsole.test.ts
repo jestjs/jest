@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import BufferedConsole from '../BufferedConsole';
 
 describe('CustomConsole', () => {
@@ -104,9 +104,9 @@ describe('CustomConsole', () => {
       _console.group('second');
       _console.log('there');
 
-      expect(stdout()).toBe(`  ${chalk.bold('first')}
+      expect(stdout()).toBe(`  ${pico.bold('first')}
   hey
-    ${chalk.bold('second')}
+    ${pico.bold('second')}
     there`);
     });
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import {
   type ChangedFilesPromise,
@@ -31,7 +31,7 @@ export default function getChangedFilesPromise(
         .filter(line => !line.includes('Command failed:'))
         .join('\n');
 
-      console.error(chalk.red(`\n\n${message}`));
+      console.error(pico.red(`\n\n${message}`));
 
       process.exit(1);
     });

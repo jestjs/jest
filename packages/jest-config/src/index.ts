@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 import * as constants from './constants';
@@ -228,16 +228,16 @@ const ensureNoDuplicateConfigs = (
     const {configPath} = config;
 
     if (configPathMap.has(configPath)) {
-      const message = `Whoops! Two projects resolved to the same config path: ${chalk.bold(
+      const message = `Whoops! Two projects resolved to the same config path: ${pico.bold(
         String(configPath),
       )}:
 
-  Project 1: ${chalk.bold(projects[parsedConfigs.indexOf(config)])}
-  Project 2: ${chalk.bold(
+  Project 1: ${pico.bold(projects[parsedConfigs.indexOf(config)])}
+  Project 2: ${pico.bold(
     projects[parsedConfigs.indexOf(configPathMap.get(configPath))],
   )}
 
-This usually means that your ${chalk.bold(
+This usually means that your ${pico.bold(
         '"projects"',
       )} config includes a directory that doesn't have any configuration recognizable by Jest. Please fix it.
 `;

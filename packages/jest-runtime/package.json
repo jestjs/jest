@@ -27,7 +27,6 @@
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
     "glob": "^10.3.10",
@@ -39,6 +38,7 @@
     "jest-resolve": "workspace:*",
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
+    "picocolors": "^1.0.1",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0"
   },

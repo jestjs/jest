@@ -25,7 +25,6 @@
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
     "emittery": "^0.13.1",
     "graceful-fs": "^4.2.9",
     "jest-docblock": "workspace:*",
@@ -39,6 +38,7 @@
     "jest-watcher": "workspace:*",
     "jest-worker": "workspace:*",
     "p-limit": "^3.1.0",
+    "picocolors": "^1.0.1",
     "source-map-support": "0.5.13"
   },
   "devDependencies": {

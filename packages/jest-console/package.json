@@ -21,9 +21,9 @@
   "dependencies": {
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
+    "picocolors": "^1.0.1",
     "slash": "^3.0.0"
   },
   "devDependencies": {
