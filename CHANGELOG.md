@@ -265,6 +265,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Stop printing errors for individual tests when beforeAll fails ([#13273](https://github.com/facebook/jest/pull/13273))
 - `[@jest/expect-utils]` `subsetEquality` should consider also an object's inherited string keys ([#13824](https://github.com/facebook/jest/pull/13824))
 - `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
 - `[jest-mock]` Prevent `mockImplementationOnce` and `mockReturnValueOnce` bleeding into `withImplementation` ([#13888](https://github.com/facebook/jest/pull/13888))
