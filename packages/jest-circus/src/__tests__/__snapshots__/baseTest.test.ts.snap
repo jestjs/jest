@@ -1,5 +1,77 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_start: two
+test_start: three
+test_started: one
+test_started: two
+test_started: three
+test_fn_start: one
+test_fn_start: two
+test_fn_start: three
+hello one
+hello two
+hello three
+test_fn_failure: one
+test_fn_success: two
+test_fn_success: three
+test_done: one
+test_done: two
+test_done: three
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`concurrent.each 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_start: two
+test_start: three
+test_started: one
+test_started: two
+test_started: three
+test_fn_start: one
+test_fn_start: two
+test_fn_start: three
+hello one
+hello two
+hello three
+test_fn_success: one
+test_fn_success: two
+test_fn_success: three
+test_done: one
+test_done: two
+test_done: three
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`failures 1`] = `
 "start_describe_definition: describe
 add_hook: beforeEach
