@@ -87,7 +87,7 @@ describe('jest.fn()', () => {
 
   test('models typings of mocked function', () => {
     // eslint-disable-next-line @typescript-eslint/ban-types
-    expect(fn()).type.toMatch<Function>();
+    expect(fn()).type.toBeAssignableTo<Function>();
 
     expect(fn()).type.toBe<Mock<(...args: Array<unknown>) => unknown>>();
     expect(fn(() => {})).type.toBe<Mock<() => void>>();
@@ -424,7 +424,7 @@ describe('jest.spyOn()', () => {
 
   test('models typings of spied object', () => {
     // eslint-disable-next-line @typescript-eslint/ban-types
-    expect(spy).type.not.toMatch<Function>();
+    expect(spy).type.not.toBeAssignableTo<Function>();
 
     expect(spy()).type.toRaiseError();
     expect(new spy()).type.toRaiseError();
