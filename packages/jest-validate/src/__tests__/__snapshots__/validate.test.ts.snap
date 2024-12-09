@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Repeated types within multiple valid examples are coalesced in error report 1`] = `
 "<red><bold><bold>●</intensity><bold> Validation Error</intensity>:</color>
