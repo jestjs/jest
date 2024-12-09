@@ -10,13 +10,13 @@ import type {PluginObj} from '@babel/core';
 import {statement} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
 import {
-  type Statement,
   type CallExpression,
   type Expression,
   type Identifier,
   type ImportDeclaration,
   type MemberExpression,
   type Node,
+  type Statement,
   type Super,
   type VariableDeclaration,
   type VariableDeclarator,
@@ -354,9 +354,9 @@ export default function jestHoist(): PluginObj<{
     },
     // in `post` to make sure we come after an import transform and can unshift above the `require`s
     post({path: program}) {
-      type Item = {calls: Statement[]; vars: Statement[]};
+      type Item = {calls: Array<Statement>; vars: Array<Statement>};
 
-      const stack: Item[] = [{calls: [], vars: []}];
+      const stack: Array<Item> = [{calls: [], vars: []}];
       program.traverse({
         BlockStatement: {
           enter() {
@@ -372,7 +372,7 @@ export default function jestHoist(): PluginObj<{
             const mockStmt = callExpr.getStatementParent();
 
             if (mockStmt?.parentPath.isBlock()) {
-              stack[stack.length - 1].calls.push(mockStmt.node);
+              stack.at(-1)!.calls.push(mockStmt.node);
               mockStmt.remove();
             }
           }
@@ -388,9 +388,7 @@ export default function jestHoist(): PluginObj<{
             } else {
               varDecl.remove();
             }
-            stack[stack.length - 1].vars.push(
-              variableDeclaration(kind, [varDecl.node]),
-            );
+            stack.at(-1)!.vars.push(variableDeclaration(kind, [varDecl.node]));
           }
         },
       });
