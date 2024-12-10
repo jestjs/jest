@@ -22,7 +22,7 @@
     "jest-get-type": "workspace:*"
   },
   "devDependencies": {
-    "immutable": "^4.0.0",
+    "immutable": "^5.0.0",
     "jest-matcher-utils": "workspace:*"
   },
   "engines": {
