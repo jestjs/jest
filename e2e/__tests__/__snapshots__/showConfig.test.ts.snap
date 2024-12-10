@@ -8,6 +8,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
+      "collectCoverage": false,
       "collectCoverageFrom": [],
       "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
       "coveragePathIgnorePatterns": [
