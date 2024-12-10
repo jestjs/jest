@@ -2837,6 +2837,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint-community/eslint-plugin-eslint-comments@npm:^4.0.0":
+  version: 4.4.1
+  resolution: "@eslint-community/eslint-plugin-eslint-comments@npm:4.4.1"
+  dependencies:
+    escape-string-regexp: ^4.0.0
+    ignore: ^5.2.4
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+  checksum: 32edb04a698c1b0f2d157c57d2c931811e804f9e5df4ffdcfa52334d7f170cf22a0d5531e008efcf21e22a36474e68036882c5bc25076fedc5755e3bdfe7b8e8
+  languageName: node
+  linkType: hard
+
 "@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
@@ -3254,6 +3266,7 @@ __metadata:
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
     "@crowdin/cli": ^4.0.0
+    "@eslint-community/eslint-plugin-eslint-comments": ^4.0.0
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@lerna-lite/cli": ^3.0.0
@@ -3277,7 +3290,6 @@ __metadata:
     eslint: ^8.8.0
     eslint-config-prettier: ^9.0.0
     eslint-import-resolver-typescript: ^3.2.5
-    eslint-plugin-eslint-comments: ^3.1.2
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^28.0.0
     eslint-plugin-jsdoc: ^50.0.0
@@ -8524,13 +8536,13 @@ __metadata:
   linkType: hard
 
 "cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "cross-spawn@npm:7.0.3"
+  version: 7.0.6
+  resolution: "cross-spawn@npm:7.0.6"
   dependencies:
     path-key: ^3.1.0
     shebang-command: ^2.0.0
     which: ^2.0.1
-  checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
+  checksum: 8d306efacaf6f3f60e0224c287664093fa9185680b2d195852ba9a863f85d02dcc737094c6e512175f8ee0161f9b87c73c6826034c2422e39de7d6569cf4503b
   languageName: node
   linkType: hard
 
@@ -9878,18 +9890,6 @@ __metadata:
     eslint:
       optional: true
   checksum: 3cecd99b6baf45ffc269167da0f95dcb75e5aa67b93d73a3bab63e2a7eedd9cdd6f188eed048e2f57c1b77db82c9cbf2adac20b512fa70e597d863dd3720170d
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-eslint-comments@npm:^3.1.2":
-  version: 3.2.0
-  resolution: "eslint-plugin-eslint-comments@npm:3.2.0"
-  dependencies:
-    escape-string-regexp: ^1.0.5
-    ignore: ^5.0.5
-  peerDependencies:
-    eslint: ">=4.19.1"
-  checksum: c9fe273dd56699abdf7e416cfad0344eb50aa01564a5a9133e72d982defb89310bc2e9b0b148ce19c5190d7ff641223b0ba9e667a194bc48467c3dd0d471e657
   languageName: node
   linkType: hard
 
@@ -12215,7 +12215,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.0.5, ignore@npm:^5.2.0, ignore@npm:^5.2.4":
+"ignore@npm:^5.2.0, ignore@npm:^5.2.4":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 2acfd32a573260ea522ea0bfeff880af426d68f6831f973129e2ba7363f422923cf53aab62f8369cbf4667c7b25b6f8a3761b34ecdb284ea18e87a5262a865be
