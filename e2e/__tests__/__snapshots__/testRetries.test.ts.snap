@@ -1,5 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Concurrent Test Retries with flag retryImmediately retry immediately after failed test 1`] = `
+"LOGGING RETRY ERRORS  retryable test 1
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 |
+
+      at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:17:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      15 |     expect(true).toBeTruthy();
+      16 |   } else {
+    > 17 |     expect(true).toBeFalsy();
+         |                  ^
+      18 |   }
+      19 | });
+      20 |
+
+      at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:17:18)
+          at async Promise.all (index 0)
+
+ LOGGING RETRY ERRORS  retryable test 2
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      26 |     expect(true).toBeTruthy();
+      27 |   } else {
+    > 28 |     expect(true).toBeFalsy();
+         |                  ^
+      29 |   }
+      30 | });
+      31 | it.concurrent('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:28:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      26 |     expect(true).toBeTruthy();
+      27 |   } else {
+    > 28 |     expect(true).toBeFalsy();
+         |                  ^
+      29 |   }
+      30 | });
+      31 | it.concurrent('truthy test', () => {
+
+      at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:28:18)
+          at async Promise.all (index 1)
+
+PASS __tests__/retryImmediatelyConcurrent.test.js
+  ✓ retryable test 1
+  ✓ retryable test 2
+  ✓ truthy test"
+`;
+
 exports[`Test Retries logs error(s) before retry 1`] = `
 "LOGGING RETRY ERRORS  retryTimes set
  RETRY 1 
