@@ -59,7 +59,7 @@ export default async function readConfigFileAndSetRootDir(
   }
 
   if (configPath.endsWith(PACKAGE_JSON)) {
-    // Event if there's no "jest" property in package.json we will still use
+    // Even if there's no "jest" property in package.json we will still use
     // an empty object.
     configObject = configObject.jest || {};
   }
