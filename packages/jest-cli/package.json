@@ -18,12 +18,12 @@
     "@jest/core": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "import-local": "^3.0.2",
     "jest-config": "workspace:*",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
+    "picocolors": "^1.0.1",
     "yargs": "^17.3.1"
   },
   "devDependencies": {

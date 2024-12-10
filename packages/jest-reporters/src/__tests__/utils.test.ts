@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import stripAnsi = require('strip-ansi');
 import {makeProjectConfig} from '@jest/test-utils';
 import printDisplayName from '../printDisplayName';
@@ -16,10 +16,10 @@ import wrapAnsiString from '../wrapAnsiString';
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
     const string =
-      `abcde ${chalk.red.bold('red-bold')} 1234456` +
-      `${chalk.dim('bcd')} ` +
+      `abcde ${pico.red(pico.bold('red-bold'))} 1234456` +
+      `${pico.dim('bcd')} ` +
       '123ttttttththththththththththththththththththththth' +
-      `tetetetetettetetetetetetetete${chalk.underline.bold('stnhsnthsnth')}` +
+      `tetetetetettetetetetetetetete${pico.underline(pico.bold('stnhsnthsnth'))}` +
       'ssot';
     expect(wrapAnsiString(string, 10)).toMatchSnapshot();
     expect(stripAnsi(wrapAnsiString(string, 10))).toMatchSnapshot();

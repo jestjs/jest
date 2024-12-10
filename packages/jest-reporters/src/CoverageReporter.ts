@@ -8,13 +8,13 @@
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
-import chalk = require('chalk');
 import {glob} from 'glob';
 import * as fs from 'graceful-fs';
 import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
+import * as pico from 'picocolors';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
@@ -32,9 +32,6 @@ import getWatermarks from './getWatermarks';
 import type {ReporterContext} from './types';
 
 type CoverageWorker = typeof import('./CoverageWorker');
-
-const FAIL_COLOR = chalk.bold.red;
-const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
@@ -93,7 +90,7 @@ export default class CoverageReporter extends BaseReporter {
       aggregatedResults.coverageMap = map;
     } catch (error: any) {
       console.error(
-        chalk.red(`
+        pico.red(`
         Failed to write coverage reports:
         ERROR: ${error.toString()}
         STACK: ${error.stack}
@@ -132,7 +129,7 @@ export default class CoverageReporter extends BaseReporter {
 
     if (isInteractive) {
       process.stderr.write(
-        RUNNING_TEST_COLOR('Running coverage on untested files...'),
+        pico.dim(pico.bold('Running coverage on untested files...')),
       );
     }
 
@@ -192,7 +189,7 @@ export default class CoverageReporter extends BaseReporter {
           }
         } catch (error: any) {
           console.error(
-            chalk.red(
+            pico.red(
               [
                 `Failed to collect coverage from ${filename}`,
                 `ERROR: ${error.message}`,
@@ -426,7 +423,7 @@ export default class CoverageReporter extends BaseReporter {
       );
 
       if (errors.length > 0) {
-        this.log(`${FAIL_COLOR(errors.join('\n'))}`);
+        this.log(`${pico.bold(pico.red(errors.join('\n')))}`);
         this._setError(new Error(errors.join('\n')));
       }
     }

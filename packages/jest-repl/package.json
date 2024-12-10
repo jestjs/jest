@@ -25,11 +25,11 @@
     "@jest/environment": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
     "jest-config": "workspace:*",
     "jest-runtime": "workspace:*",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
+    "picocolors": "^1.0.1",
     "repl": "^0.1.3",
     "yargs": "^17.3.1"
   },
