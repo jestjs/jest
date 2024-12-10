@@ -5770,12 +5770,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-is@npm:^18.0.0":
-  version: 18.3.0
-  resolution: "@types/react-is@npm:18.3.0"
+"@types/react-is@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@types/react-is@npm:19.0.0"
   dependencies:
     "@types/react": "*"
-  checksum: c7c9303a76902ecc2bd38a27047da8ffb9d5a19fe6e1f785e13698e7641e7afff0c6a49ddf1c22fb20b58f4fb689d83a887641f62db4ec2fdea3d04124a84023
+  checksum: c56e39e88558a71bc0b1deaa84cce9d5c84d6522057b73690d099b0763898203ec29a91563431e83b5086c49ac64a239fe993c50a4f008d6fbfc551587db5895
   languageName: node
   linkType: hard
 
@@ -17752,7 +17752,7 @@ __metadata:
   dependencies:
     "@jest/schemas": "workspace:*"
     "@types/react": ^18.2.0
-    "@types/react-is": ^18.0.0
+    "@types/react-is": ^19.0.0
     "@types/react-test-renderer": ^18.0.1
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
