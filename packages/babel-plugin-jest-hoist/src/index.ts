@@ -371,6 +371,7 @@ export default function jestHoist(): PluginObj<{
           if (hoistedJestGetters.has(callExpr.node)) {
             const mockStmt = callExpr.getStatementParent();
 
+            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
             if (mockStmt?.parentPath.isBlock()) {
               stack.at(-1)!.calls.push(mockStmt.node);
               mockStmt.remove();
