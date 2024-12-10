@@ -6,6 +6,14 @@
     "transform": {
       "\\.[jt]sx?$": "babel-jest",
       "\\.css$": "<rootDir>/cssTransform.js"
-    }
+    },
+    "moduleFileExtensions": [
+      "js",
+      "css"
+    ],
+    "collectCoverageFrom": [
+      "<rootDir>/Thing.js",
+      "<rootDir>/x.css"
+    ]
   }
 }
