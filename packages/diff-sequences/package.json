@@ -32,7 +32,7 @@
   "devDependencies": {
     "@fast-check/jest": "^2.0.0",
     "benchmark": "^2.1.4",
-    "diff": "^5.0.0"
+    "diff": "^7.0.0"
   },
   "publishConfig": {
     "access": "public"
