@@ -42,16 +42,45 @@ export type GlobalFakeTimersConfig = {
   enableGlobally?: boolean;
 };
 
+export type AdvanceTimersConfig =
+  | {
+      mode: 'manual' | 'nextAsync';
+    }
+  | {
+      mode: 'interval';
+      delta?: number;
+    };
+
 export type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically
    * by 20 milliseconds every 20 milliseconds. A custom time delta
    * may be provided by passing a number.
    *
+   * There are 3 different types of modes for advancing timers:
+   *
+   * - 'manual': Timers do not advance without explicit, manual calls to the tick
+   *      APIs (`jest.advanceTimersToNextTimer`, `jest.runAllTimers`, etc).
+   * - 'nextAsync': Jest will continuously await 'jest.advanceTimersToNextTimerAsync' until the mode changes.
+   *      With this mode, jest will advance the clock to the next timer in the queue after a macrotask.
+   *      As a result, tests can be written in a way that is independent from whether fake timers are installed.
+   *      Tests can always be written to wait for timers to resolve, even when using fake timers.
+   * - 'interval': In this mode, all timers will be advanced automatically
+   *      by the number of milliseconds provided in the delta. If the delta is
+   *      not specified, 20 will be used by default.
+   *
+   * The 'nextAsync' mode differs from `interval` in two key ways:
+   *  1. The microtask queue is allowed to empty between each timer execution,
+   *     as would be the case without fake timers installed.
+   *  1. It advances as quickly and as far as necessary. If the next timer in
+   *     the queue is at 1000ms, it will advance 1000ms immediately whereas interval,
+   *     without manually advancing time in the test, would take `1000 / advanceTimersMs`
+   *     real time to reach and execute the timer.
+   *
    * @defaultValue
-   * The default is `false`.
+   * The default mode is `'manual'` (equivalent to `false`).
    */
-  advanceTimers?: boolean | number;
+  advanceTimers?: boolean | number | AdvanceTimersConfig;
   /**
    * List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`,
    * `setTimeout()`) that should not be faked.

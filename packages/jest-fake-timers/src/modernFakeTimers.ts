@@ -15,12 +15,20 @@ import {
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
 
+export type TimerTickMode = 'manual' | 'nextAsync' | 'interval';
+
 export default class FakeTimers {
   private _clock!: InstalledClock;
+  private _nativeTimeout: typeof setTimeout;
   private readonly _config: Config.ProjectConfig;
   private _fakingTime: boolean;
+  private _usingSinonAdvanceTime = false;
   private readonly _global: typeof globalThis;
   private readonly _fakeTimers: FakeTimerWithContext;
+  private tickMode: {counter: number; mode: TimerTickMode} = {
+    counter: 0,
+    mode: 'manual',
+  };
 
   constructor({
     global,
@@ -31,6 +39,7 @@ export default class FakeTimers {
   }) {
     this._global = global;
     this._config = config;
+    this._nativeTimeout = global.setTimeout;
 
     this._fakingTime = false;
     this._fakeTimers = withGlobal(global);
@@ -54,7 +63,7 @@ export default class FakeTimers {
 
   async runAllTimersAsync(): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.runAllAsync();
+      await this._runWithoutNextAsyncTickMode(() => this._clock.runAllAsync());
     }
   }
 
@@ -66,7 +75,9 @@ export default class FakeTimers {
 
   async runOnlyPendingTimersAsync(): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.runToLastAsync();
+      await this._runWithoutNextAsyncTickMode(() =>
+        this._clock.runToLastAsync(),
+      );
     }
   }
 
@@ -87,9 +98,11 @@ export default class FakeTimers {
   async advanceTimersToNextTimerAsync(steps = 1): Promise<void> {
     if (this._checkFakeTimers()) {
       for (let i = steps; i > 0; i--) {
-        await this._clock.nextAsync();
-        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
-        await this._clock.tickAsync(0);
+        await this._runWithoutNextAsyncTickMode(async () => {
+          await this._clock.nextAsync();
+          // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
+          await this._clock.tickAsync(0);
+        });
 
         if (this._clock.countTimers() === 0) {
           break;
@@ -106,7 +119,9 @@ export default class FakeTimers {
 
   async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(msToRun);
+      await this._runWithoutNextAsyncTickMode(() =>
+        this._clock.tickAsync(msToRun),
+      );
     }
   }
 
@@ -140,6 +155,47 @@ export default class FakeTimers {
     );
 
     this._fakingTime = true;
+    if (
+      fakeTimersConfig &&
+      typeof fakeTimersConfig.advanceTimers === 'object'
+    ) {
+      this._setTickModeInternal(fakeTimersConfig.advanceTimers.mode);
+    }
+  }
+
+  setTickMode(newMode: 'nextAsync' | 'manual'): void {
+    if (!this._checkFakeTimers()) {
+      return;
+    }
+    if (this._usingSinonAdvanceTime) {
+      this._global.console.warn(
+        '`setTickMode` cannot be used when fake timers are configured to advance at an interval.' +
+          `\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
+      );
+      return;
+    }
+
+    this._setTickModeInternal(newMode);
+  }
+
+  private _setTickModeInternal(newMode: TimerTickMode): void {
+    if (newMode === this.tickMode.mode) {
+      return;
+    }
+
+    this.tickMode = {
+      counter: this.tickMode.counter + 1,
+      mode: newMode,
+    };
+
+    if (newMode === 'nextAsync') {
+      this._advanceUntilModeChanges();
+    }
   }
 
   reset(): void {
@@ -201,10 +257,22 @@ export default class FakeTimers {
       ...fakeTimersConfig,
     } as Config.FakeTimersConfig;
 
-    const advanceTimeDelta =
-      typeof fakeTimersConfig.advanceTimers === 'number'
-        ? fakeTimersConfig.advanceTimers
-        : undefined;
+    let advanceTimeDelta: number | undefined = undefined;
+    let shouldAdvanceTime = false;
+    const advanceTimersConfig = fakeTimersConfig.advanceTimers;
+    if (typeof advanceTimersConfig === 'number') {
+      shouldAdvanceTime = true;
+      advanceTimeDelta = advanceTimersConfig;
+    } else if (typeof advanceTimersConfig === 'boolean') {
+      shouldAdvanceTime = advanceTimersConfig;
+    } else if (
+      typeof advanceTimersConfig === 'object' &&
+      advanceTimersConfig.mode === 'interval'
+    ) {
+      shouldAdvanceTime = true;
+      advanceTimeDelta = advanceTimersConfig.delta;
+    }
+    this._usingSinonAdvanceTime = shouldAdvanceTime;
 
     const toFake = new Set(
       Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
@@ -219,9 +287,47 @@ export default class FakeTimers {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
       now: fakeTimersConfig.now ?? Date.now(),
-      shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
+      shouldAdvanceTime,
       shouldClearNativeTimers: true,
       toFake: [...toFake],
     };
+  }
+
+  /**
+   * Advances the Clock's time until the mode changes.
+   *
+   * The time is advanced asynchronously, giving microtasks and events a chance
+   * to run before each timer runs.
+   */
+  private async _advanceUntilModeChanges() {
+    if (!this._checkFakeTimers()) {
+      return;
+    }
+    const {counter} = this.tickMode;
+
+    // Wait a macrotask to prevent advancing time immediately when
+    await new Promise(resolve => void this._nativeTimeout(resolve));
+    while (this.tickMode.counter === counter && this._fakingTime) {
+      // nextAsync always resolves in a setTimeout, even when there are no timers.
+      // https://github.com/sinonjs/fake-timers/blob/710cafad25abe9465c807efd8ed9cf3a15985fb1/src/fake-timers-src.js#L1517-L1546
+      await this._clock.nextAsync();
+    }
+  }
+
+  /**
+   * Temporarily disables the `nextAsync` tick mode while the given function
+   * executes. Used to prevent the auto-advance from advancing while the
+   * user is waiting for a manually requested async tick.
+   */
+  private async _runWithoutNextAsyncTickMode(fn: () => Promise<unknown>) {
+    let resetModeToNextAsync = false;
+    if (this.tickMode.mode === 'nextAsync') {
+      this.setTickMode('manual');
+      resetModeToNextAsync = true;
+    }
+    await fn();
+    if (resetModeToNextAsync) {
+      this.setTickMode('nextAsync');
+    }
   }
 }
