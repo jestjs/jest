@@ -122,6 +122,12 @@
 - `[docs]` `Revised documentation for .toHaveBeenCalled()` to accurately depict its functionality. ([#14853](https://github.com/jestjs/jest/pull/14853))
 - `[docs]` Removed ExpressJS reference link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15270))
 
+## 29.7.1
+
+### Chore & Maintenance
+
+- `[docs]` Added example of `testSequencer` in typescript inside configuration.md file
+
 ## 29.7.0
 
 ### Features
