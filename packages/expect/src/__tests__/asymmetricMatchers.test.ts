@@ -12,7 +12,9 @@ import {
   any,
   anything,
   arrayContaining,
+  arrayEqualsWithoutOrder,
   arrayNotContaining,
+  arrayNotEqualsWithoutOrder,
   closeTo,
   notCloseTo,
   objectContaining,
@@ -135,6 +137,50 @@ test('Anything does not match null and undefined', () => {
 
 test('Anything.toAsymmetricMatcher()', () => {
   jestExpect(anything().toAsymmetricMatcher()).toBe('Anything');
+});
+
+test('ArrayEqualsWithoutOrder matches', () => {
+  for (const test of [
+    arrayEqualsWithoutOrder([]).asymmetricMatch('jest'),
+    arrayEqualsWithoutOrder(['foo']).asymmetricMatch(['foo']),
+    arrayEqualsWithoutOrder(['foo']).asymmetricMatch(['foo', 'bar']),
+    arrayEqualsWithoutOrder([]).asymmetricMatch({}),
+  ]) {
+    jestExpect(test).toEqual(true);
+  }
+});
+
+test('ArrayEqualsWithoutOrder does not match', () => {
+  jestExpect(arrayEqualsWithoutOrder(['foo']).asymmetricMatch(['bar'])).toBe(false);
+});
+
+test('ArrayEqualsWithoutOrder throws for non-arrays', () => {
+  jestExpect(() => {
+    // @ts-expect-error: Testing runtime error
+    arrayEqualsWithoutOrder('foo').asymmetricMatch([]);
+  }).toThrow("You must provide an array to ArrayEqualsWithoutOrder, not 'string'.");
+});
+
+test('ArrayNotEqualsWithoutOrder matches', () => {
+  jestExpect(arrayNotEqualsWithoutOrder(['foo']).asymmetricMatch(['bar'])).toBe(true);
+});
+
+test('ArrayNotEqualsWithoutOrder does not match', () => {
+  for (const test of [
+    arrayNotEqualsWithoutOrder([]).asymmetricMatch('jest'),
+    arrayNotEqualsWithoutOrder(['foo']).asymmetricMatch(['foo']),
+    arrayNotEqualsWithoutOrder(['foo']).asymmetricMatch(['foo', 'bar']),
+    arrayNotEqualsWithoutOrder([]).asymmetricMatch({}),
+  ]) {
+    jestExpect(test).toEqual(false);
+  }
+});
+
+test('ArrayNotEqualsWithoutOrder throws for non-arrays', () => {
+  jestExpect(() => {
+    // @ts-expect-error: Testing runtime error
+    arrayNotEqualsWithoutOrder('foo').asymmetricMatch([]);
+  }).toThrow("You must provide an array to ArrayNotEqualsWithoutOrder, not 'string'.");
 });
 
 test('ArrayContaining matches', () => {
