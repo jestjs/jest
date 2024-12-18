@@ -219,6 +219,46 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
+class ArrayEqualsWithoutOrder extends AsymmetricMatcher<Array<unknown>> {
+  constructor(sample: Array<unknown>, inverse = false) {
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    if (!Array.isArray(this.sample)) {
+      throw new TypeError(
+        `You must provide an array to ${this.toString()}, not '${typeof this
+          .sample}'.`,
+      );
+    }
+
+    const matcherContext = this.getMatcherContext();
+    const result =
+      this.sample.length === 0 ||
+      (Array.isArray(other) && 
+        this.sample.every(item =>
+          other.some(another =>
+            equals(item, another, matcherContext.customTesters),
+          ),
+        ) && 
+        other.every(item => 
+          this.sample.some(another => 
+            equals(item, another, matcherContext.customTesters),
+          ),
+        ));
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Array${this.inverse ? 'Not' : ''}Containing`;
+  }
+
+  override getExpectedType() {
+    return 'array';
+  }
+}
+
 class ObjectContaining extends AsymmetricMatcher<
   Record<string | symbol, unknown>
 > {
@@ -377,6 +417,10 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
+export const arrayEqualsWithoutOrder = (sample: Array<unknown>): ArrayEqualsWithoutOrder => 
+  new ArrayEqualsWithoutOrder(sample);
+export const arrayNotEqualsWithoutOrder = (sample: Array<unknown>): ArrayEqualsWithoutOrder => 
+  new ArrayEqualsWithoutOrder(sample, true);
 export const objectContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);
