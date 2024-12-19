@@ -122,7 +122,7 @@ const each = require('jest-each').default;
     - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
-    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
@@ -149,7 +149,7 @@ const each = require('jest-each').default;
     - `%$` - Number of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
-    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
@@ -381,7 +381,7 @@ each`
 ##### `.test`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
-  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
   - You can use `$#` to inject the index of the table row.
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
@@ -418,7 +418,7 @@ each`
 ##### `.describe`:
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
-  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properites](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value` (only works for ["own" properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty), e.g. `$variable.constructor.name` wouldn't work)
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage
