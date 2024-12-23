@@ -3334,7 +3334,7 @@ __metadata:
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
-    tstyche: ^3.2.0
+    tstyche: ^3.0.0
     typescript: ^5.0.4
     webpack: ^5.68.0
     webpack-node-externals: ^3.0.0
@@ -20584,7 +20584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^3.2.0":
+"tstyche@npm:^3.0.0":
   version: 3.2.0
   resolution: "tstyche@npm:3.2.0"
   peerDependencies:
