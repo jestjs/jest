@@ -136,4 +136,82 @@ describe('Runtime', () => {
       ).toBe(mockReference);
     });
   });
+
+  describe('jest.onGenerateMock', () => {
+    it('calls single callback and returns transformed value', async () => {
+      const runtime = await createRuntime(__filename);
+      const mockReference = {isMock: true};
+      const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
+      // Erase module registry because root.js requires most other modules.
+      root.jest.resetModules();
+
+      const onGenerateMock = jest.fn((moduleName, moduleMock) => mockReference);
+
+      root.jest.onGenerateMock(onGenerateMock);
+      root.jest.mock('RegularModule');
+      root.jest.mock('ManuallyMocked');
+
+      expect(
+        runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
+      ).toEqual(mockReference);
+      expect(onGenerateMock).toHaveBeenCalledWith(
+        'RegularModule',
+        expect.anything(),
+      );
+
+      onGenerateMock.mockReset();
+
+      expect(
+        runtime.requireModuleOrMock(runtime.__mockRootPath, 'ManuallyMocked'),
+      ).not.toEqual(mockReference);
+      expect(onGenerateMock).not.toHaveBeenCalled();
+    });
+
+    it('calls multiple callback and returns transformed value', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
+      // Erase module registry because root.js requires most other modules.
+      root.jest.resetModules();
+
+      const onGenerateMock1 = jest.fn((moduleName, moduleMock) => ({
+        isMock: true,
+        value: 1,
+      }));
+
+      const onGenerateMock2 = jest.fn((moduleName, moduleMock) => ({
+        ...moduleMock,
+        value: moduleMock.value + 1,
+      }));
+
+      const onGenerateMock3 = jest.fn((moduleName, moduleMock) => ({
+        ...moduleMock,
+        value: moduleMock.value ** 2,
+      }));
+
+      root.jest.onGenerateMock(onGenerateMock1);
+      root.jest.onGenerateMock(onGenerateMock2);
+      root.jest.onGenerateMock(onGenerateMock3);
+      root.jest.mock('RegularModule');
+      root.jest.mock('ManuallyMocked');
+
+      expect(
+        runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
+      ).toEqual({
+        isMock: true,
+        value: 4,
+      });
+      expect(onGenerateMock1).toHaveBeenCalledWith(
+        'RegularModule',
+        expect.anything(),
+      );
+      expect(onGenerateMock2).toHaveBeenCalledWith('RegularModule', {
+        isMock: true,
+        value: 1,
+      });
+      expect(onGenerateMock3).toHaveBeenCalledWith('RegularModule', {
+        isMock: true,
+        value: 2,
+      });
+    });
+  });
 });

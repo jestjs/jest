@@ -208,6 +208,18 @@ export interface Jest {
     options?: {virtual?: boolean},
   ): Jest;
   /**
+   * Registers a callback function that is invoked whenever a mock is generated for a module.
+   * This callback is passed the module name and the newly created mock object, and must return
+   * the (potentially modified) mock object.
+   *
+   * If multiple callbacks are registered, they will be called in the order they were added.
+   * Each callback receives the result of the previous callback as the `moduleMock` parameter,
+   * making it possible to apply sequential transformations.
+   *
+   * @param cb
+   */
+  onGenerateMock<T>(cb: (moduleName: string, moduleMock: T) => T): Jest;
+  /**
    * Mocks a module with the provided module factory when it is being imported.
    */
   unstable_mockModule<T = unknown>(
