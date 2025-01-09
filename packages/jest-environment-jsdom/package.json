@@ -29,7 +29,7 @@
     "@jest/test-utils": "workspace:*"
   },
   "peerDependencies": {
-    "canvas": "^2.5.0"
+    "canvas": "^3.0.0"
   },
   "peerDependenciesMeta": {
     "canvas": {

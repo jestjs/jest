@@ -31,7 +31,7 @@
     "jsdom": "^22.0.0"
   },
   "peerDependencies": {
-    "canvas": "^2.5.0",
+    "canvas": "^3.0.0",
     "jsdom": "*"
   },
   "peerDependenciesMeta": {
