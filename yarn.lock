@@ -3276,7 +3276,7 @@ __metadata:
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
-    "@types/node": ^16.10.0
+    "@types/node": ^22.0.0
     "@types/which": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^6.6.0
     "@typescript-eslint/parser": ^6.6.0
@@ -5681,10 +5681,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:~16.18.0":
-  version: 16.18.105
-  resolution: "@types/node@npm:16.18.105"
-  checksum: d4ee65479dceea89b660fe50c2508060c17c61f4128d2227c2852b04ca6b5587a200ae55b3eb0d0306ba256619d3ea9d6eb54e250086be8e93d8037f17b0a772
+"@types/node@npm:^22.0.0":
+  version: 22.10.6
+  resolution: "@types/node@npm:22.10.6"
+  dependencies:
+    undici-types: ~6.20.0
+  checksum: 3bf26c7df8b7f0085f7a53d1f4ee124f8af01c7e4c072c3c10ec0ba91a03611fce124fed279f512b1ff259835bee5589e02f1ba0914ca6b372a7f99aef5faa3c
   languageName: node
   linkType: hard
 
@@ -20817,6 +20819,13 @@ __metadata:
     has-symbols: ^1.0.3
     which-boxed-primitive: ^1.0.2
   checksum: b7a1cf5862b5e4b5deb091672ffa579aa274f648410009c81cca63fed3b62b610c4f3b773f912ce545bb4e31edc3138975b5bc777fc6e4817dca51affb6380e9
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.20.0":
+  version: 6.20.0
+  resolution: "undici-types@npm:6.20.0"
+  checksum: b7bc50f012dc6afbcce56c9fd62d7e86b20a62ff21f12b7b5cbf1973b9578d90f22a9c7fe50e638e96905d33893bf2f9f16d98929c4673c2480de05c6c96ea8b
   languageName: node
   linkType: hard
 
