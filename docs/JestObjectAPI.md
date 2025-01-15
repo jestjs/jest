@@ -528,6 +528,51 @@ getRandom(); // Always returns 10
 
 Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
 
+### `jest.onGenerateMock(cb)`
+
+Registers a callback function that is invoked whenever Jest generates a mock for a module. This callback allows you to modify the mock before it is returned to the rest of your tests.
+
+Parameters for callback:
+
+1. `moduleName: string` - The name of the module that is being mocked.
+2. `moduleMock: T` - The mock object that Jest has generated for the module. This object can be modified or replaced before returning.
+
+Behaviour:
+
+- If multiple callbacks are registered via consecutive `onGenerateMock` calls, they will be invoked **in the order they were added**.
+- Each callback receives the output of the previous callback as its `moduleMock`. This makes it possible to apply multiple layers of transformations to the same mock.
+
+```js
+jest.onGenerateMock((moduleName, moduleMock) => {
+  // Inspect the module name and decide how to transform the mock
+  if (moduleName.includes('Database')) {
+    // For demonstration, let's replace a method with our own custom mock
+    moduleMock.connect = jest.fn().mockImplementation(() => {
+      console.log('Connected to mock DB');
+    });
+  }
+
+  // Return the (potentially modified) mock
+  return moduleMock;
+});
+
+// Apply mock for module
+jest.mock('./Database');
+
+// Later in your tests
+import Database from './Database';
+// The `Database` mock now has any transformations applied by our callback
+```
+
+:::note
+
+The `onGenerateMock` callback is not called for manually created mocks, such as:
+
+- Mocks defined in a `__mocks__` folder
+- Explicit factories provided via `jest.mock('moduleName', () => { ... })`
+
+:::
+
 ### `jest.resetModules()`
 
 Resets the module registry - the cache of all required modules. This is useful to isolate modules where local state might conflict between tests.
