@@ -9,8 +9,8 @@ import {strict as assert} from 'assert';
 import {createRequire} from 'module';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
-import chalk from 'chalk';
 import fs from 'graceful-fs';
+import pico from 'picocolors';
 import {sync as readPkg} from 'read-pkg';
 import webpack from 'webpack';
 import nodeExternals from 'webpack-node-externals';
@@ -22,8 +22,8 @@ export const PACKAGES_DIR = path.resolve(
 );
 const require = createRequire(import.meta.url);
 
-export const OK = chalk.reset.inverse.bold.green(' DONE ');
-export const ERROR = chalk.reset.inverse.bold.red(' BOOM ');
+export const OK = pico.reset(pico.inverse(pico.bold(pico.green(' DONE '))));
+export const ERROR = pico.reset(pico.inverse(pico.bold(pico.red(' BOOM '))));
 
 export const typeOnlyPackages = new Set([
   'babel-preset-jest',

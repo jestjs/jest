@@ -6,7 +6,7 @@
  *
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
@@ -329,19 +329,19 @@ describe('matcherHint', () => {
       {expectedColor, secondArgument: '...expected'},
     );
 
-    const substringNegative = chalk.green(expectedArgument);
+    const substringNegative = pico.green(expectedArgument);
 
     expect(received).not.toMatch(substringNegative);
   });
 
   test('receivedColor', () => {
-    const receivedColor = chalk.cyan.bgAnsi256(158);
+    const receivedColor = (arg: string): string => pico.cyan(pico.bgBlue(arg));
     const receivedArgument = 'received';
     const received = matcherHint('toMatchSnapshot', receivedArgument, '', {
       receivedColor,
     });
 
-    const substringNegative = chalk.red(receivedArgument);
+    const substringNegative = pico.red(receivedArgument);
     const substringPositive = receivedColor(receivedArgument);
 
     expect(received).not.toMatch(substringNegative);
@@ -349,14 +349,14 @@ describe('matcherHint', () => {
   });
 
   test('secondArgumentColor', () => {
-    const secondArgumentColor = chalk.bold;
+    const secondArgumentColor = pico.bold;
     const secondArgument = 'hint';
     const received = matcherHint('toMatchSnapshot', undefined, 'properties', {
       secondArgument,
       secondArgumentColor,
     });
 
-    const substringNegative = chalk.green(secondArgument);
+    const substringNegative = pico.green(secondArgument);
     const substringPositive = secondArgumentColor(secondArgument);
 
     expect(received).not.toMatch(substringNegative);

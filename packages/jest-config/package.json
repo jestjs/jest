@@ -40,7 +40,6 @@
     "@jest/test-sequencer": "workspace:*",
     "@jest/types": "workspace:*",
     "babel-jest": "workspace:*",
-    "chalk": "^4.0.0",
     "ci-info": "^4.0.0",
     "deepmerge": "^4.2.2",
     "glob": "^10.3.10",
@@ -56,6 +55,7 @@
     "jest-validate": "workspace:*",
     "micromatch": "^4.0.8",
     "parse-json": "^5.2.0",
+    "picocolors": "^1.0.1",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "strip-json-comments": "^3.1.1"

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pico from 'picocolors';
 import type {Config} from '@jest/types';
 import {getType} from 'jest-get-type';
 import {ValidationError} from 'jest-validate';
@@ -28,9 +28,9 @@ export function createReporterError(
 ): ValidationError {
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
-    `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
+    `    ${pico.bold(pico.green(validReporterTypes.join(' or ')))}\n` +
     '  but instead received:\n' +
-    `    ${chalk.bold.red(getType(reporterValue))}`;
+    `    ${pico.bold(pico.red(getType(reporterValue)))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
@@ -47,12 +47,14 @@ export function createArrayReporterError(
     `  Unexpected value for ${valueName} ` +
     `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +
     '  Expected:\n' +
-    `    ${chalk.bold.red(expectedType)}\n` +
+    `    ${pico.bold(pico.red(expectedType))}\n` +
     '  Got:\n' +
-    `    ${chalk.bold.green(getType(value))}\n` +
+    `    ${pico.bold(pico.green(getType(value)))}\n` +
     '  Reporter configuration:\n' +
-    `    ${chalk.bold.green(
-      JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
+    `    ${pico.bold(
+      pico.green(
+        JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
+      ),
     )}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);

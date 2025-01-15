@@ -3106,9 +3106,9 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/node": "*"
-    chalk: ^4.0.0
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
+    picocolors: ^1.0.1
     slash: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -3130,7 +3130,6 @@ __metadata:
     "@types/micromatch": ^4.0.7
     "@types/node": "*"
     ansi-escapes: ^4.2.1
-    chalk: ^4.0.0
     ci-info: ^4.0.0
     exit: ^0.1.2
     graceful-fs: ^4.2.9
@@ -3148,6 +3147,7 @@ __metadata:
     jest-validate: "workspace:*"
     jest-watcher: "workspace:*"
     micromatch: ^4.0.8
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     slash: ^3.0.0
     strip-ansi: ^6.0.0
@@ -3285,7 +3285,6 @@ __metadata:
     babel-jest: "workspace:*"
     babel-loader: ^9.0.0
     camelcase: ^6.2.0
-    chalk: ^4.0.0
     dedent: ^1.0.0
     eslint: ^8.8.0
     eslint-config-prettier: ^10.0.0
@@ -3322,6 +3321,7 @@ __metadata:
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
     p-limit: ^3.1.0
+    picocolors: ^1.0.1
     pkg-dir: ^5.0.0
     prettier: ^3.0.3
     promise: ^8.0.2
@@ -3372,7 +3372,6 @@ __metadata:
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
     "@types/node-notifier": ^8.0.0
-    chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0
     exit: ^0.1.2
     glob: ^10.3.10
@@ -3388,6 +3387,7 @@ __metadata:
     jest-worker: "workspace:*"
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
+    picocolors: ^1.0.1
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -7057,8 +7057,8 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     babel-plugin-istanbul: ^7.0.0
     babel-preset-jest: "workspace:*"
-    chalk: ^4.0.0
     graceful-fs: ^4.2.9
+    picocolors: ^1.0.1
     slash: ^3.0.0
   peerDependencies:
     "@babel/core": ^7.11.0
@@ -8508,11 +8508,11 @@ __metadata:
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/prompts": ^2.0.1
-    chalk: ^4.0.0
     exit: ^0.1.2
     graceful-fs: ^4.2.9
     jest-config: "workspace:*"
     jest-util: "workspace:*"
+    picocolors: ^1.0.1
     prompts: ^2.0.1
   bin:
     create-jest: ./bin/create-jest.js
@@ -13135,6 +13135,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     p-limit: ^3.1.0
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     pure-rand: ^6.0.0
     slash: ^3.0.0
@@ -13152,12 +13153,12 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/exit": ^0.1.30
     "@types/yargs": ^17.0.8
-    chalk: ^4.0.0
     exit: ^0.1.2
     import-local: ^3.0.2
     jest-config: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
+    picocolors: ^1.0.1
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -13181,7 +13182,6 @@ __metadata:
     "@types/micromatch": ^4.0.7
     "@types/parse-json": ^4.0.0
     babel-jest: "workspace:*"
-    chalk: ^4.0.0
     ci-info: ^4.0.0
     deepmerge: ^4.2.2
     esbuild: ^0.24.0
@@ -13199,6 +13199,7 @@ __metadata:
     jest-validate: "workspace:*"
     micromatch: ^4.0.8
     parse-json: ^5.2.0
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     semver: ^7.5.3
     slash: ^3.0.0
@@ -13224,9 +13225,9 @@ __metadata:
   resolution: "jest-diff@workspace:packages/jest-diff"
   dependencies:
     "@jest/test-utils": "workspace:*"
-    chalk: ^4.0.0
     diff-sequences: "workspace:*"
     jest-get-type: "workspace:*"
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     strip-ansi: ^6.0.0
   languageName: unknown
@@ -13246,9 +13247,9 @@ __metadata:
   resolution: "jest-each@workspace:packages/jest-each"
   dependencies:
     "@jest/types": "workspace:*"
-    chalk: ^4.0.0
     jest-get-type: "workspace:*"
     jest-util: "workspace:*"
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13334,7 +13335,6 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/co": ^4.6.2
     "@types/node": "*"
-    chalk: ^4.0.0
     co: ^4.6.0
     is-generator-fn: ^2.0.0
     jest-each: "workspace:*"
@@ -13344,6 +13344,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     p-limit: ^3.1.0
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13376,9 +13377,9 @@ __metadata:
   dependencies:
     "@jest/test-utils": "workspace:*"
     "@types/node": "*"
-    chalk: ^4.0.0
     jest-diff: "workspace:*"
     jest-get-type: "workspace:*"
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13410,9 +13411,9 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.7
     "@types/stack-utils": ^2.0.0
-    chalk: ^4.0.0
     graceful-fs: ^4.2.9
     micromatch: ^4.0.8
+    picocolors: ^1.0.1
     pretty-format: "workspace:*"
     slash: ^3.0.0
     stack-utils: ^2.0.3
@@ -13474,12 +13475,12 @@ __metadata:
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/yargs": ^17.0.8
-    chalk: ^4.0.0
     execa: ^5.0.0
     jest-config: "workspace:*"
     jest-runtime: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
+    picocolors: ^1.0.1
     repl: ^0.1.3
     yargs: ^17.3.1
   bin:
@@ -13509,12 +13510,12 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/pnpapi": ^0.0.5
     "@types/resolve": ^1.20.2
-    chalk: ^4.0.0
     graceful-fs: ^4.2.9
     jest-haste-map: "workspace:*"
     jest-pnp-resolver: ^1.2.2
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
+    picocolors: ^1.0.1
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
     slash: ^3.0.0
@@ -13535,7 +13536,6 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
-    chalk: ^4.0.0
     emittery: ^0.13.1
     graceful-fs: ^4.2.9
     jest-docblock: "workspace:*"
@@ -13550,6 +13550,7 @@ __metadata:
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
     p-limit: ^3.1.0
+    picocolors: ^1.0.1
     source-map-support: 0.5.13
   languageName: unknown
   linkType: soft
@@ -13568,7 +13569,6 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
     glob: ^10.3.10
@@ -13581,6 +13581,7 @@ __metadata:
     jest-resolve: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
+    picocolors: ^1.0.1
     slash: ^3.0.0
     strip-bom: ^4.0.0
   languageName: unknown

@@ -8,11 +8,11 @@
 import {strict as assert} from 'assert';
 import * as os from 'os';
 import * as path from 'path';
-import chalk from 'chalk';
 import execa from 'execa';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
+import pico from 'picocolors';
 import stripJsonComments from 'strip-json-comments';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
@@ -102,7 +102,7 @@ for (const {packageDir, pkg} of packagesWithTs) {
 
   if (hasJestTestUtils) {
     throw new Error(
-      chalk.red(
+      pico.red(
         `Package '${pkg.name}' declares '@jest/test-utils' as dependency, but it must be declared as dev dependency`,
       ),
     );
@@ -129,7 +129,7 @@ for (const {packageDir, pkg} of packagesWithTs) {
 
   if (hasJestTestUtils && testUtilsReferences.length === 0) {
     throw new Error(
-      chalk.red(
+      pico.red(
         `Package '${
           pkg.name
         }' declares '@jest/test-utils' as dev dependency, but it is not referenced in:\n\n${tsConfigPaths.join(
@@ -141,7 +141,7 @@ for (const {packageDir, pkg} of packagesWithTs) {
 
   if (!hasJestTestUtils && testUtilsReferences.length > 0) {
     throw new Error(
-      chalk.red(
+      pico.red(
         `Package '${
           pkg.name
         }' does not declare '@jest/test-utils' as dev dependency, but it is referenced in:\n\n${testUtilsReferences.join(
@@ -159,21 +159,23 @@ const args = [
   ...process.argv.slice(2),
 ];
 
-console.log(chalk.inverse(' Building TypeScript definition files '));
+console.log(pico.inverse(' Building TypeScript definition files '));
 
 try {
   await execa('yarn', args, {stdio: 'inherit'});
   console.log(
-    chalk.inverse.green(' Successfully built TypeScript definition files '),
+    pico.inverse(
+      pico.green(' Successfully built TypeScript definition files '),
+    ),
   );
 } catch (error) {
   console.error(
-    chalk.inverse.red(' Unable to build TypeScript definition files '),
+    pico.inverse(pico.red(' Unable to build TypeScript definition files ')),
   );
   throw error;
 }
 
-console.log(chalk.inverse(' Validating TypeScript definition files '));
+console.log(pico.inverse(' Validating TypeScript definition files '));
 
 // we want to limit the number of processes we spawn
 const cpus = Math.max(
@@ -219,8 +221,8 @@ try {
           .filter(([, content]) => content.length > 0)
           .filter(hit => hit.length > 0)
           .map(([file, references]) =>
-            chalk.red(
-              `${chalk.bold(
+            pico.red(
+              `${pico.bold(
                 file,
               )} has the following non-node type references:\n\n${references}\n`,
             ),
@@ -251,12 +253,14 @@ try {
   );
 } catch (error) {
   console.error(
-    chalk.inverse.red(' Unable to validate TypeScript definition files '),
+    pico.inverse(pico.red(' Unable to validate TypeScript definition files ')),
   );
 
   throw error;
 }
 
 console.log(
-  chalk.inverse.green(' Successfully validated TypeScript definition files '),
+  pico.inverse(
+    pico.green(' Successfully validated TypeScript definition files '),
+  ),
 );
