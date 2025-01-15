@@ -51,6 +51,7 @@ export interface IHasteFS {
     globs: ReadonlyArray<string>,
     root: string | null,
   ): Set<string>;
+  getModuleName(file: string): string | null;
 }
 
 export interface IHasteMap {
