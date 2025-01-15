@@ -54,7 +54,7 @@
     "jest-changed-files": "workspace:*",
     "jest-junit": "^16.0.0",
     "jest-mock": "workspace:*",
-    "jest-serializer-ansi-escapes": "^3.0.0",
+    "jest-serializer-ansi-escapes": "^4.0.0",
     "jest-silent-reporter": "^0.6.0",
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
