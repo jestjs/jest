@@ -14481,7 +14481,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^10.0.1, lru-cache@npm:^10.2.0, lru-cache@npm:^10.2.2":
+"lru-cache@npm:10.4.3":
   version: 10.4.3
   resolution: "lru-cache@npm:10.4.3"
   checksum: 6476138d2125387a6d20f100608c2583d415a4f64a0fecf30c9e2dda976614f09cad4baa0842447bd37dd459a7bd27f57d9d8f8ce558805abd487c583f3d774a
@@ -14503,6 +14503,13 @@ __metadata:
   dependencies:
     yallist: ^4.0.0
   checksum: f97f499f898f23e4585742138a22f22526254fdba6d75d41a1c2526b3b6cc5747ef59c5612ba7375f42aca4f8461950e925ba08c991ead0651b4918b7c978297
+  languageName: node
+  linkType: hard
+
+"lru-cache@patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 10.4.3
+  resolution: "lru-cache@patch:lru-cache@npm%3A10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch::version=10.4.3&hash=e5e8aa&locator=%40jest%2Fmonorepo%40workspace%3A."
+  checksum: e233132d19d30ecb90091ab0f30dd6f97b933267c67356a5127975678e550b5ecc6418659bad88dc011f311065ae19bef36117328d5f8d9136d8ec4d61e36c02
   languageName: node
   linkType: hard
 
