@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isNativeError} from 'node:util/types';
+
 /**
  * When we're asked to give a JSON output with the --json flag or otherwise,
  * some data we need to return don't serialize well with a basic
@@ -21,7 +23,7 @@ export default function serializeToJSON(
     (_, value) => {
       // There might be more in Error, but pulling out just the message, name,
       // and stack should be good enough
-      if (value instanceof Error) {
+      if (isNativeError(value)) {
         return {
           message: value.message,
           name: value.name,
