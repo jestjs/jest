@@ -33,6 +33,7 @@ import collectNodeHandles, {
   type HandleCollectionResult,
 } from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
+import serializeToJSON from './lib/serializeToJSON';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
 
@@ -111,21 +112,17 @@ const processResults = async (
     runResults = await processor(runResults);
   }
   if (isJSON) {
+    const jsonString = serializeToJSON(formatTestResults(runResults));
     if (outputFile) {
       const cwd = tryRealpath(process.cwd());
       const filePath = path.resolve(cwd, outputFile);
 
-      fs.writeFileSync(
-        filePath,
-        `${JSON.stringify(formatTestResults(runResults))}\n`,
-      );
+      fs.writeFileSync(filePath, `${jsonString}\n`);
       outputStream.write(
         `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
-      process.stdout.write(
-        `${JSON.stringify(formatTestResults(runResults))}\n`,
-      );
+      process.stdout.write(`${jsonString}\n`);
     }
   }
 
