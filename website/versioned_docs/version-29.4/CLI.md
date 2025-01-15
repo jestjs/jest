@@ -358,6 +358,8 @@ jest --seed=1324
 
 If this option is not specified Jest will randomly generate the value. You can use the [`--showSeed`](#--showseed) flag to print the seed in the test report summary.
 
+Jest uses the seed internally for shuffling the order in which test suites are run. If the [`--randomize`](#--randomize) option is used, the seed is also used for shuffling the order of tests within each `describe` block. When dealing with flaky tests, rerunning with the same seed might help reproduce the failure.
+
 :::
 
 ### `--selectProjects <project1> ... <projectN>`

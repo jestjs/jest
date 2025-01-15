@@ -30,7 +30,7 @@
     "jest-haste-map": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
     "write-file-atomic": "^5.0.0"

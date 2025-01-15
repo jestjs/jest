@@ -164,7 +164,7 @@ const extendPathsF = (
   );
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
-  const nF = d < iMaxF ? d : iMaxF;
+  const nF = Math.min(d, iMaxF);
 
   // The diagonals kF are odd when d is odd and even when d is even.
   for (iF += 1, kF += 2; iF <= nF; iF += 1, kF += 2) {
@@ -217,7 +217,7 @@ const extendPathsR = (
   );
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
-  const nR = d < iMaxR ? d : iMaxR;
+  const nR = Math.min(d, iMaxR);
 
   // The diagonals kR are odd when d is odd and even when d is even.
   for (iR += 1, kR -= 2; iR <= nR; iR += 1, kR -= 2) {
@@ -278,7 +278,7 @@ const extendOverlappablePathsF = (
   let aIndexPrev1 = NOT_YET_SET; // prev value of [iF - 1] in next iteration
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
-  const nF = d < iMaxF ? d : iMaxF;
+  const nF = Math.min(d, iMaxF);
 
   // The diagonals kF = 2 * iF - d are odd when d is odd and even when d is even.
   for (let iF = 0, kF = -d; iF <= nF; iF += 1, kF += 2) {
@@ -411,7 +411,7 @@ const extendOverlappablePathsR = (
   let aIndexPrev1 = NOT_YET_SET; // prev value of [iR - 1] in next iteration
 
   // Optimization: skip diagonals in which paths cannot ever overlap.
-  const nR = d < iMaxR ? d : iMaxR;
+  const nR = Math.min(d, iMaxR);
 
   // The diagonals kR = d - 2 * iR are odd when d is odd and even when d is even.
   for (let iR = 0, kR = d; iR <= nR; iR += 1, kR -= 2) {
