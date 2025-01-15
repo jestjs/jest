@@ -38,18 +38,16 @@ const createState = (): Circus.State => {
   };
 };
 
-/* eslint-disable no-restricted-globals */
 export const resetState = (): void => {
-  (global as Global.Global)[STATE_SYM] = createState();
+  (globalThis as Global.Global)[STATE_SYM] = createState();
 };
 
 resetState();
 
 export const getState = (): Circus.State =>
-  (global as Global.Global)[STATE_SYM] as Circus.State;
+  (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State =>
-  ((global as Global.Global)[STATE_SYM] = state);
-/* eslint-enable */
+  ((globalThis as Global.Global)[STATE_SYM] = state);
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
   for (const handler of eventHandlers) {

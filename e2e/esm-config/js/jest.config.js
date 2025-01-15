@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const displayName = await Promise.resolve('Config from js file');
+
 export default {
-  displayName: 'Config from js file',
+  displayName,
   testEnvironment: 'node',
 };

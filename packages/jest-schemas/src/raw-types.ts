@@ -9,7 +9,7 @@
 
 import {type Static, Type} from '@sinclair/typebox';
 
-export const RawSnapshotFormat = Type.Partial(
+export const SnapshotFormat = Type.Partial(
   Type.Object({
     callToJSON: Type.Boolean(),
     compareKeys: Type.Null(),
@@ -34,12 +34,12 @@ export const RawSnapshotFormat = Type.Partial(
   }),
 );
 
-const RawCoverageProvider = Type.Union([
+const CoverageProvider = Type.Union([
   Type.Literal('babel'),
   Type.Literal('v8'),
 ]);
 
-const RawCoverageThresholdValue = Type.Partial(
+const CoverageThresholdValue = Type.Partial(
   Type.Object({
     branches: Type.Number({minimum: 0, maximum: 100}),
     functions: Type.Number({minimum: 0, maximum: 100}),
@@ -48,15 +48,15 @@ const RawCoverageThresholdValue = Type.Partial(
   }),
 );
 
-const RawCoverageThresholdBase = Type.Object(
-  {global: RawCoverageThresholdValue},
-  {additionalProperties: RawCoverageThresholdValue},
+const CoverageThresholdBase = Type.Object(
+  {global: CoverageThresholdValue},
+  {additionalProperties: CoverageThresholdValue},
 );
 
-const RawCoverageThreshold = Type.Unsafe<{
-  global: Static<typeof RawCoverageThresholdValue>;
-  [path: string]: Static<typeof RawCoverageThresholdValue>;
-}>(RawCoverageThresholdBase);
+const CoverageThreshold = Type.Unsafe<{
+  global: Static<typeof CoverageThresholdValue>;
+  [path: string]: Static<typeof CoverageThresholdValue>;
+}>(CoverageThresholdBase);
 
 // TODO: add type test that these are all the colors available in chalk.ForegroundColor
 export const ChalkForegroundColors = Type.Union([
@@ -80,13 +80,13 @@ export const ChalkForegroundColors = Type.Union([
   Type.Literal('whiteBright'),
 ]);
 
-const RawDisplayName = Type.Object({
+const DisplayName = Type.Object({
   name: Type.String(),
   color: ChalkForegroundColors,
 });
 
 // TODO: verify these are the names of istanbulReport.ReportOptions
-export const RawCoverageReporterNames = Type.Union([
+export const CoverageReporterNames = Type.Union([
   Type.Literal('clover'),
   Type.Literal('cobertura'),
   Type.Literal('html-spa'),
@@ -102,17 +102,17 @@ export const RawCoverageReporterNames = Type.Union([
   Type.Literal('text-summary'),
 ]);
 
-const RawCoverageReporters = Type.Array(
+const CoverageReporters = Type.Array(
   Type.Union([
-    RawCoverageReporterNames,
+    CoverageReporterNames,
     Type.Tuple([
-      RawCoverageReporterNames,
+      CoverageReporterNames,
       Type.Record(Type.String(), Type.Unknown()),
     ]),
   ]),
 );
 
-const RawGlobalFakeTimersConfig = Type.Partial(
+const GlobalFakeTimersConfig = Type.Partial(
   Type.Object({
     enableGlobally: Type.Boolean({
       description:
@@ -122,7 +122,7 @@ const RawGlobalFakeTimersConfig = Type.Partial(
   }),
 );
 
-const RawFakeableAPI = Type.Union([
+const FakeableAPI = Type.Union([
   Type.Literal('Date'),
   Type.Literal('hrtime'),
   Type.Literal('nextTick'),
@@ -140,7 +140,7 @@ const RawFakeableAPI = Type.Union([
   Type.Literal('clearTimeout'),
 ]);
 
-const RawFakeTimersConfig = Type.Partial(
+const FakeTimersConfig = Type.Partial(
   Type.Object({
     advanceTimers: Type.Union([Type.Boolean(), Type.Number({minimum: 0})], {
       description:
@@ -148,7 +148,7 @@ const RawFakeTimersConfig = Type.Partial(
         'time delta may be provided by passing a number.',
       default: false,
     }),
-    doNotFake: Type.Array(RawFakeableAPI, {
+    doNotFake: Type.Array(FakeableAPI, {
       description:
         'List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`, `setTimeout()`) that should not be faked.' +
         '\n\nThe default is `[]`, meaning all APIs are faked.',
@@ -173,7 +173,7 @@ const RawFakeTimersConfig = Type.Partial(
   }),
 );
 
-const RawLegacyFakeTimersConfig = Type.Partial(
+const LegacyFakeTimersConfig = Type.Partial(
   Type.Object({
     legacyFakeTimers: Type.Literal(true, {
       description:
@@ -183,12 +183,12 @@ const RawLegacyFakeTimersConfig = Type.Partial(
   }),
 );
 
-export const RawFakeTimers = Type.Intersect([
-  RawGlobalFakeTimersConfig,
-  Type.Union([RawFakeTimersConfig, RawLegacyFakeTimersConfig]),
+export const FakeTimers = Type.Intersect([
+  GlobalFakeTimersConfig,
+  Type.Union([FakeTimersConfig, LegacyFakeTimersConfig]),
 ]);
 
-const RawHasteConfig = Type.Partial(
+const HasteConfig = Type.Partial(
   Type.Object({
     computeSha1: Type.Boolean({
       description: 'Whether to hash files using SHA-1.',
@@ -225,7 +225,7 @@ const RawHasteConfig = Type.Partial(
   }),
 );
 
-export const RawInitialOptions = Type.Partial(
+export const InitialOptions = Type.Partial(
   Type.Object({
     automock: Type.Boolean(),
     bail: Type.Union([Type.Boolean(), Type.Number()]),
@@ -239,16 +239,16 @@ export const RawInitialOptions = Type.Partial(
     collectCoverageFrom: Type.Array(Type.String()),
     coverageDirectory: Type.String(),
     coveragePathIgnorePatterns: Type.Array(Type.String()),
-    coverageProvider: RawCoverageProvider,
-    coverageReporters: RawCoverageReporters,
-    coverageThreshold: RawCoverageThreshold,
+    coverageProvider: CoverageProvider,
+    coverageReporters: CoverageReporters,
+    coverageThreshold: CoverageThreshold,
     dependencyExtractor: Type.String(),
     detectLeaks: Type.Boolean(),
     detectOpenHandles: Type.Boolean(),
-    displayName: Type.Union([Type.String(), RawDisplayName]),
+    displayName: Type.Union([Type.String(), DisplayName]),
     expand: Type.Boolean(),
     extensionsToTreatAsEsm: Type.Array(Type.String()),
-    fakeTimers: RawFakeTimers,
+    fakeTimers: FakeTimers,
     filter: Type.String(),
     findRelatedTests: Type.Boolean(),
     forceCoverageMatch: Type.Array(Type.String()),
@@ -257,7 +257,7 @@ export const RawInitialOptions = Type.Partial(
     globals: Type.Record(Type.String(), Type.Unknown()),
     globalSetup: Type.Union([Type.String(), Type.Null()]),
     globalTeardown: Type.Union([Type.String(), Type.Null()]),
-    haste: RawHasteConfig,
+    haste: HasteConfig,
     id: Type.String(),
     injectGlobals: Type.Boolean(),
     reporters: Type.Array(
@@ -317,7 +317,7 @@ export const RawInitialOptions = Type.Partial(
     slowTestThreshold: Type.Number(),
     snapshotResolver: Type.String(),
     snapshotSerializers: Type.Array(Type.String()),
-    snapshotFormat: RawSnapshotFormat,
+    snapshotFormat: SnapshotFormat,
     errorOnDeprecated: Type.Boolean(),
     testEnvironment: Type.String(),
     testEnvironmentOptions: Type.Record(Type.String(), Type.Unknown()),
