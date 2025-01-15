@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@bcoe/v8-coverage": "^0.2.3",
+    "@bcoe/v8-coverage": "^1.0.0",
     "@jest/console": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",

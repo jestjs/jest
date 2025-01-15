@@ -1988,10 +1988,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bcoe/v8-coverage@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "@bcoe/v8-coverage@npm:0.2.3"
-  checksum: 850f9305536d0f2bd13e9e0881cb5f02e4f93fad1189f7b2d4bebf694e3206924eadee1068130d43c11b750efcc9405f88a8e42ef098b6d75239c0f047de1a27
+"@bcoe/v8-coverage@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@bcoe/v8-coverage@npm:1.0.1"
+  checksum: 93f7e0514eb8bab9dbb7481bece47b39caf114095ba1081e3e3fe48e5fd885ad6e3158f7ce8effa5eda4399c664c8afa60f3a51f7f2c6c3e3092122f428ca429
   languageName: node
   linkType: hard
 
@@ -3355,7 +3355,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
   dependencies:
-    "@bcoe/v8-coverage": ^0.2.3
+    "@bcoe/v8-coverage": ^1.0.0
     "@jest/console": "workspace:*"
     "@jest/pattern": "workspace:*"
     "@jest/test-result": "workspace:*"
