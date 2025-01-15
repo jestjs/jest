@@ -530,10 +530,10 @@ Returns a mock module instead of the actual module, bypassing all checks on whet
 
 ### `jest.onGenerateMock(cb)`
 
-Registers a callback function that is invoked whenever Jest generates a mock for a module.
-This callback allows you to modify the mock before it is returned to the rest of your tests.
+Registers a callback function that is invoked whenever Jest generates a mock for a module. This callback allows you to modify the mock before it is returned to the rest of your tests.
 
 Parameters for callback:
+
 1. `moduleName: string` - The name of the module that is being mocked.
 2. `moduleMock: T` - The mock object that Jest has generated for the module. This object can be modified or replaced before returning.
 
