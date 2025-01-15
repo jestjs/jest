@@ -196,7 +196,7 @@
   },
   "resolutions": {
     "@types/node": "~16.18.0",
-    "@types/react": "^18.2.21",
+    "@types/react": "^19.0.0",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
