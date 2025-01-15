@@ -9,17 +9,17 @@ import serializeToJSON from '../serializeToJSON';
 
 // populate an object with all basic JavaScript datatypes
 const object = {
-  species: 'capybara',
-  ok: true,
-  i: ['pull up'],
+  chillness: 100,
+  flaws: null,
   hopOut: {
     atThe: 'after party',
     when: new Date('2000-07-14'),
   },
-  chillness: 100,
-  weight: 9.5,
-  flaws: null,
+  i: ['pull up'],
   location: undefined,
+  ok: true,
+  species: 'capybara',
+  weight: 9.5,
 };
 
 it('serializes regular objects like JSON.stringify', () => {
@@ -36,9 +36,9 @@ it('serializes errors', () => {
 
   expect(withoutError).not.toEqual(withError);
 
-  expect(withError).toContain(`"message":"too cool"`);
-  expect(withError).toContain(`"name":"Error"`);
-  expect(withError).toContain(`"stack":"Error:`);
+  expect(withError).toContain('"message":"too cool"');
+  expect(withError).toContain('"name":"Error"');
+  expect(withError).toContain('"stack":"Error:');
 
   expect(JSON.parse(withError)).toMatchObject({
     error: {

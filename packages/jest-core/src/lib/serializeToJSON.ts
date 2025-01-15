@@ -13,7 +13,7 @@
  * This function handles the extended serialization wanted above.
  */
 export default function serializeToJSON(
-  value: any,
+  value: unknown,
   space?: string | number,
 ): string {
   return JSON.stringify(
