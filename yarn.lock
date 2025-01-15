@@ -17910,21 +17910,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "psl@npm:1.9.0"
-  checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
+"psl@npm:^1.1.33":
+  version: 1.15.0
+  resolution: "psl@npm:1.15.0"
+  dependencies:
+    punycode: ^2.3.1
+  checksum: 6f777d82eecfe1c2406dadbc15e77467b186fec13202ec887a45d0209a2c6fca530af94a462a477c3c4a767ad892ec9ede7c482d98f61f653dd838b50e89dc15
   languageName: node
   linkType: hard
 
-"psl@patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 1.9.0
-  resolution: "psl@patch:psl@npm%3A1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch::version=1.9.0&hash=b8389b&locator=%40jest%2Fmonorepo%40workspace%3A."
-  checksum: 8588b58db028e8d98cceb8cabcc07b1a03dca79a1a57fae4a7dbc16aa6872cdc7653405656b9659f4142f04965836453b5fe1ad79b6e1ce3d625253b055a0177
-  languageName: node
-  linkType: hard
-
-"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.0":
+"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.0, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: bb0a0ceedca4c3c57a9b981b90601579058903c62be23c5e8e843d2c2d4148a3ecf029d5133486fb0e1822b098ba8bba09e89d6b21742d02fa26bda6441a6fb2
