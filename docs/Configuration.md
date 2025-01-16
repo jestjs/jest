@@ -880,7 +880,7 @@ type HasteConfig = {
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
-  /** Whether to throw on error on module collision. */
+  /** Whether to throw an error on module collision. */
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;

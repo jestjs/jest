@@ -213,7 +213,7 @@ const HasteConfig = Type.Partial(
       description: "All platforms to target, e.g ['ios', 'android'].",
     }),
     throwOnModuleCollision: Type.Boolean({
-      description: 'Whether to throw on error on module collision.',
+      description: 'Whether to throw an error on module collision.',
     }),
     hasteMapModulePath: Type.String({
       description: 'Custom HasteMap module',
