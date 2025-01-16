@@ -9,7 +9,6 @@ import nativeModule = require('module');
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
-  Script,
   // @ts-expect-error: experimental, not added to the types
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
@@ -17,6 +16,7 @@ import {
   type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   type Module as VMModule,
+  compileFunction,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
@@ -144,10 +144,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 const isWasm = (modulePath: string): boolean => modulePath.endsWith('.wasm');
 
 const unmockRegExpCache = new WeakMap();
-
-const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
-
-type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -1593,21 +1589,10 @@ export default class Runtime {
 
     const transformedCode = this.transformFile(filename, options);
 
-    let compiledFunction: ModuleWrapper | null = null;
-
-    const script = this.createScriptFromCode(transformedCode, filename);
-
-    let runScript: RunScriptEvalResult | null = null;
-
-    const vmContext = this._environment.getVmContext();
-
-    if (vmContext) {
-      runScript = script.runInContext(vmContext, {filename});
-    }
-
-    if (runScript !== null) {
-      compiledFunction = runScript[EVAL_RESULT_VARIABLE];
-    }
+    const compiledFunction = this.createScriptFromCode(
+      transformedCode,
+      filename,
+    );
 
     if (compiledFunction === null) {
       this._logFormattedReferenceError(
@@ -1680,10 +1665,7 @@ export default class Runtime {
       source,
     );
 
-    this._fileTransforms.set(filename, {
-      ...transformedFile,
-      wrapperLength: this.constructModuleWrapperStart().length,
-    });
+    this._fileTransforms.set(filename, transformedFile);
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1708,10 +1690,7 @@ export default class Runtime {
     );
 
     if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
-      this._fileTransforms.set(filename, {
-        ...transformedFile,
-        wrapperLength: 0,
-      });
+      this._fileTransforms.set(filename, transformedFile);
     }
 
     if (transformedFile.sourceMapPath) {
@@ -1721,34 +1700,39 @@ export default class Runtime {
   }
 
   private createScriptFromCode(scriptSource: string, filename: string) {
+    const vmContext = this._environment.getVmContext();
+
+    if (vmContext == null) {
+      return null;
+    }
+
     try {
       const scriptFilename = this._resolver.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
-      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
-        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
-        displayErrors: true,
-        filename: scriptFilename,
-        // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: async (specifier: string) => {
-          invariant(
-            runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-          );
+      return compileFunction(
+        scriptSource,
+        this.constructInjectedModuleParameters(),
+        {
+          filename: scriptFilename,
+          // @ts-expect-error: Experimental ESM API
+          importModuleDynamically: async (specifier: string) => {
+            invariant(
+              runtimeSupportsVmModules,
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+            );
 
-          const context = this._environment.getVmContext?.();
+            const module = await this.resolveModule(
+              specifier,
+              scriptFilename,
+              vmContext,
+            );
 
-          invariant(context, 'Test environment has been torn down');
-
-          const module = await this.resolveModule(
-            specifier,
-            scriptFilename,
-            context,
-          );
-
-          return this.linkAndEvaluateModule(module);
+            return this.linkAndEvaluateModule(module);
+          },
+          parsingContext: vmContext,
         },
-      });
+      ) as ModuleWrapper;
     } catch (error: any) {
       throw handlePotentialSyntaxError(error);
     }
@@ -2464,16 +2448,6 @@ export default class Runtime {
         noStackTrace: false,
       })}`,
     );
-  }
-
-  private wrapCodeInModuleWrapper(content: string) {
-    return `${this.constructModuleWrapperStart() + content}\n}});`;
-  }
-
-  private constructModuleWrapperStart() {
-    const args = this.constructInjectedModuleParameters();
-
-    return `({"${EVAL_RESULT_VARIABLE}":function(${args.join(',')}){`;
   }
 
   private constructInjectedModuleParameters(): Array<string> {
