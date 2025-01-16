@@ -467,7 +467,7 @@ export default class CoverageReporter extends BaseReporter {
 
           const converter = v8toIstanbul(
             res.url,
-            fileTransform?.wrapperLength ?? 0,
+            0,
             fileTransform && sourcemapContent
               ? {
                   originalSource: fileTransform.originalCode,
