@@ -227,6 +227,8 @@ class ObjectContaining extends AsymmetricMatcher<
   }
 
   asymmetricMatch(other: any) {
+    
+    // Ensures that the argument passed to the objectContaining method is an object
     if (typeof this.sample !== 'object') {
       throw new TypeError(
         `You must provide an object to ${this.toString()}, not '${typeof this
@@ -234,6 +236,14 @@ class ObjectContaining extends AsymmetricMatcher<
       );
     }
 
+    // Ensures that the argument passed to the expect function is an object
+    // This is necessary to avoid matching of non-object values
+    // Arrays are a special type of object, but having a valid match with a standard object
+    // does not make sense, hence we do a simple array check
+    if (typeof other !== 'object' || Array.isArray(other)) {
+      return false;
+    }
+    
     let result = true;
 
     const matcherContext = this.getMatcherContext();
