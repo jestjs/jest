@@ -33,15 +33,12 @@ import type {
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import type {
-  RuntimeTransformResult,
-  TestContext,
-  V8CoverageResult,
-} from '@jest/test-result';
+import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
   type CallerTransformOptions,
   type ScriptTransformer,
   type ShouldInstrumentOptions,
+  type TransformResult,
   type TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
@@ -199,11 +196,11 @@ export default class Runtime {
   >;
   private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
-  private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
+  private readonly _fileTransforms: Map<string, TransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
-  private _v8CoverageSources: Map<string, RuntimeTransformResult> | undefined;
+  private _v8CoverageSources: Map<string, TransformResult> | undefined;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
   private readonly _virtualMocks: Map<string, boolean>;
