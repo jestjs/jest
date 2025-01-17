@@ -28,6 +28,6 @@
     "babel-plugin-istanbul": "^7.0.0"
   },
   "resolutions": {
-    "glob": "^11.0.1"
+    "glob": "^10.3.10"
   }
 }
