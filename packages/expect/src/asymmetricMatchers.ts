@@ -227,7 +227,6 @@ class ObjectContaining extends AsymmetricMatcher<
   }
 
   asymmetricMatch(other: any) {
-    
     // Ensures that the argument passed to the objectContaining method is an object
     if (typeof this.sample !== 'object') {
       throw new TypeError(
@@ -243,7 +242,7 @@ class ObjectContaining extends AsymmetricMatcher<
     if (typeof other !== 'object' || Array.isArray(other)) {
       return false;
     }
-    
+
     let result = true;
 
     const matcherContext = this.getMatcherContext();

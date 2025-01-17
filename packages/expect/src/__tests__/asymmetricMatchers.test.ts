@@ -227,7 +227,6 @@ test('ObjectContaining matches defined properties', () => {
 test('ObjectContaining matches prototype properties', () => {
   const prototypeObject = {foo: 'bar'};
   let obj;
-
   if (Object.create) {
     obj = Object.create(prototypeObject);
   } else {
@@ -248,7 +247,7 @@ test('ObjectContaining throws for non-objects', () => {
 
 test('ObjectContaining does not match when non-objects are passed to the expect function as arguments', () => {
   for (const test of [
-    objectContaining({}).asymmetricMatch("jest"),
+    objectContaining({}).asymmetricMatch('jest'),
     objectContaining({}).asymmetricMatch(10),
     objectContaining({}).asymmetricMatch(false),
     objectContaining({}).asymmetricMatch(undefined),
@@ -256,8 +255,7 @@ test('ObjectContaining does not match when non-objects are passed to the expect 
   ]) {
     jestExpect(test).toEqual(false);
   }
-  
-})
+});
 
 test('ObjectContaining does not mutate the sample', () => {
   const sample = {foo: {bar: {}}};
