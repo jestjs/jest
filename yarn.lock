@@ -1925,8 +1925,8 @@ __metadata:
   linkType: hard
 
 "@crowdin/cli@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "@crowdin/cli@npm:4.1.1"
+  version: 4.5.0
+  resolution: "@crowdin/cli@npm:4.5.0"
   dependencies:
     command-exists-promise: ^2.0.2
     node-fetch: 2.7.0
@@ -1935,7 +1935,7 @@ __metadata:
     yauzl: ^3.1.0
   bin:
     crowdin: jdeploy-bundle/jdeploy.js
-  checksum: 793ce4c229fec0f6d853ba4d74c7700f4ce6879245dffe6c1b897b1f7db993e48ab0073d5be6992c03fd92749eead1379c1fb788c5c4e3aa9dae59a0fde2538c
+  checksum: 5f0b91d2275891ab717b27585221614190aaceb59fe2434e9fc89946896c791ab90dba51d0d529dc7b9d973967896e146c5b1b35f211678d3534895f5aca9c75
   languageName: node
   linkType: hard
 
