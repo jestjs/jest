@@ -408,7 +408,7 @@ test('this house has my desired features', () => {
 
 Use `toBeCloseTo` to compare floating point numbers for approximate equality.
 
-The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. More precisely, it calculates an expected delta that is half of 10 raised to the negative power of `numDigits`: `Math.abs(expected - received) < 10 ** -{numDigits} / 2`. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
 
 Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:
 
