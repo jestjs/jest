@@ -93,7 +93,6 @@
 - `[jest-util]` Always load `mjs` files with `import` ([#15447](https://github.com/jestjs/jest/pull/15447))
 - `[jest-worker]` Properly handle a circular reference error when worker tries to send an assertion fails where either the expected or actual value is circular ([#15191](https://github.com/jestjs/jest/pull/15191))
 - `[jest-worker]` Properly handle a BigInt when worker tries to send an assertion fails where either the expected or actual value is BigInt ([#15191](https://github.com/jestjs/jest/pull/15191))
-- `[jest-worker]` Resolved an incorrect assertion in the unit tests of the `jest-worker` package. ([#15467](https://github.com/jestjs/jest/pull/15467))
 
 ### Performance
 
