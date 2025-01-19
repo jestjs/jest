@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) without snapshot 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>

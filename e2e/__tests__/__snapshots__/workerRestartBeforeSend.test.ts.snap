@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`all 3 test files should complete 1`] = `
 "Test Suites: 1 failed, 2 passed, 3 total

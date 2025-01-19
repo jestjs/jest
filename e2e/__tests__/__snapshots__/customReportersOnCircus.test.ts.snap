@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Custom Reporters Integration on jest-circus valid failing assertion counts for adding reporters 1`] = `
 "onTestCaseResult: adds fail, started: today, status: failed, numExpectations: 0

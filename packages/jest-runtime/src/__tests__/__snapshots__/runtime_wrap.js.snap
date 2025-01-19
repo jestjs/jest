@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Runtime wrapCodeInModuleWrapper generates the correct args for the module wrapper 1`] = `
 "({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){module.exports = "Hello!"
