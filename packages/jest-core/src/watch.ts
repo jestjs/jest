@@ -9,7 +9,7 @@ import * as path from 'path';
 import type {WriteStream} from 'tty';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
-import exit = require('exit');
+import exit = require('exit-x');
 import slash = require('slash');
 import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';

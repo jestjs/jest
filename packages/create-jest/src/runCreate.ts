@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import exit = require('exit');
+import exit = require('exit-x');
 import * as fs from 'graceful-fs';
 import prompts = require('prompts');
 import {constants} from 'jest-config';

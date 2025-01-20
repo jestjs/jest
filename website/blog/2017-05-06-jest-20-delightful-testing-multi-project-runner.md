@@ -1,8 +1,6 @@
 ---
 title: 'Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner'
-author: Christoph Nakazawa
-authorURL: http://twitter.com/cpojer
-authorFBID: 100000023028168
+authors: cpojer
 ---
 
 A few months ago we announced [Jest 19](/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements) which came with major new features and was the biggest Jest release until today. Jest 20 has twice the amount of changes compared to the previous version, features a complete rewrite of the test runner, adds new testing APIs. The new release enables a new level of customization and configuration for projects all while making it effortless to upgrade. Beyond Painless JavaScript Testing, we believe Jest is now delivering a **Delightful JavaScript Testing experience**. Let's take a look at the best new features and changes in depth:

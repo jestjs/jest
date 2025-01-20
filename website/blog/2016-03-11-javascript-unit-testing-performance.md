@@ -1,8 +1,5 @@
 ---
-title: JavaScript Unit Testing Performance
-author: Christoph Nakazawa
-authorURL: http://twitter.com/cpojer
-authorFBID: 100000023028168
+authors: cpojer
 ---
 
 Jest is running thousands of tests at Facebook at all times, either through continuous integration or invoked by engineers manually during development. This worked well for years even as the people working on Jest moved on to other projects within Facebook.

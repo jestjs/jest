@@ -10,6 +10,7 @@
     "@babel/preset-typescript": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@crowdin/cli": "^4.0.0",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.0.0",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
     "@lerna-lite/cli": "^3.0.0",
@@ -31,9 +32,8 @@
     "chalk": "^4.0.0",
     "dedent": "^1.0.0",
     "eslint": "^8.8.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
     "eslint-import-resolver-typescript": "^3.2.5",
-    "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^28.0.0",
     "eslint-plugin-jsdoc": "^50.0.0",
@@ -78,7 +78,7 @@
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
     "ts-node": "^10.5.0",
-    "tstyche": "^2.0.0",
+    "tstyche": "^3.0.0",
     "typescript": "^5.0.4",
     "webpack": "^5.68.0",
     "webpack-node-externals": "^3.0.0",
@@ -201,8 +201,10 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "psl": "patch:psl@npm:^1.9.0#./.yarn/patches/psl-npm-1.9.0-a546edad1a.patch",
+    "lru-cache@^10.0.1": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
+    "lru-cache@^10.2.0": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
+    "lru-cache@^10.2.2": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@3.8.5"
+  "packageManager": "yarn@3.8.7"
 }

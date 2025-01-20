@@ -1,8 +1,6 @@
 ---
 title: 'Jest 23: 🔥 Blazing Fast Delightful Testing'
-author: Rick Hanlon II
-authorURL: https://twitter.com/rickhanlonii
-authorFBID: 160800566
+authors: rickhanlonii
 ---
 
 Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.
