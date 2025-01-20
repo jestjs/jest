@@ -14,8 +14,10 @@ describe('FakeTimers', () => {
     it('installs setTimeout mock', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -26,8 +28,10 @@ describe('FakeTimers', () => {
     it('installs clearTimeout mock', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -38,8 +42,10 @@ describe('FakeTimers', () => {
     it('installs setInterval mock', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -50,8 +56,10 @@ describe('FakeTimers', () => {
     it('installs clearInterval mock', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -63,10 +71,12 @@ describe('FakeTimers', () => {
       const origNextTick = () => {};
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick: origNextTick,
         },
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -78,9 +88,11 @@ describe('FakeTimers', () => {
       const origSetImmediate = () => {};
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate: origSetImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -94,9 +106,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         clearImmediate: origClearImmediate,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate: origSetImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -107,8 +121,10 @@ describe('FakeTimers', () => {
     it('mocks requestAnimationFrame if it exists on global', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -120,7 +136,9 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
+        clearInterval,
         clearTimeout,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -133,10 +151,12 @@ describe('FakeTimers', () => {
     it('runs all ticks, in order', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick: () => {},
         },
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -164,10 +184,12 @@ describe('FakeTimers', () => {
       const nextTick = jest.fn();
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick,
         },
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -181,10 +203,12 @@ describe('FakeTimers', () => {
     it('only runs a scheduled callback once', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick: () => {},
         },
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -205,10 +229,12 @@ describe('FakeTimers', () => {
     it('throws before allowing infinite recursion', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick: () => {},
         },
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -235,8 +261,10 @@ describe('FakeTimers', () => {
     it('runs all timers in order', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -293,8 +321,10 @@ describe('FakeTimers', () => {
       const nativeSetTimeout = jest.fn();
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval: nativeSetTimeout,
         setTimeout: nativeSetTimeout,
       } as unknown as typeof globalThis;
 
@@ -306,8 +336,10 @@ describe('FakeTimers', () => {
     it('only runs a setTimeout callback once (ever)', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -327,8 +359,10 @@ describe('FakeTimers', () => {
     it('runs callbacks with arguments after the interval', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -347,8 +381,10 @@ describe('FakeTimers', () => {
 
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval: nativeSetTimeout,
         setTimeout: nativeSetTimeout,
       } as unknown as typeof globalThis;
 
@@ -369,8 +405,10 @@ describe('FakeTimers', () => {
     it('throws before allowing infinite recursion', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({
@@ -395,8 +433,10 @@ describe('FakeTimers', () => {
     it('also clears ticks', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -417,8 +457,10 @@ describe('FakeTimers', () => {
     it('runs timers in order', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -461,8 +503,10 @@ describe('FakeTimers', () => {
     it('does nothing when no timers have been scheduled', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -476,8 +520,10 @@ describe('FakeTimers', () => {
     it('runs timers in order', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -516,8 +562,10 @@ describe('FakeTimers', () => {
     it('run correct amount of steps', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -555,8 +603,10 @@ describe('FakeTimers', () => {
     it('setTimeout inside setTimeout', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -583,8 +633,10 @@ describe('FakeTimers', () => {
     it('does nothing when no timers have been scheduled', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -598,9 +650,11 @@ describe('FakeTimers', () => {
     it('runs scheduled animation frame callbacks in order', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -624,9 +678,11 @@ describe('FakeTimers', () => {
     it('should only run currently scheduled animation frame callbacks', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -657,9 +713,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -679,9 +737,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -713,9 +773,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -739,9 +801,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         cancelAnimationFrame: () => {},
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -769,10 +833,12 @@ describe('FakeTimers', () => {
     it('should call animation frame callbacks with the latest system time', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         performance,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -794,8 +860,10 @@ describe('FakeTimers', () => {
     it('resets all pending setTimeouts', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -812,8 +880,10 @@ describe('FakeTimers', () => {
     it('resets all pending setIntervals', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -830,11 +900,13 @@ describe('FakeTimers', () => {
     it('resets all pending ticks callbacks', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {
           nextTick: () => {},
         },
         setImmediate: () => {},
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -852,8 +924,10 @@ describe('FakeTimers', () => {
     it('resets current advanceTimersByTime time cursor', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -873,9 +947,11 @@ describe('FakeTimers', () => {
     it('resets all scheduled animation frames', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         requestAnimationFrame: () => -1,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -896,9 +972,11 @@ describe('FakeTimers', () => {
 
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
 
@@ -963,8 +1041,10 @@ describe('FakeTimers', () => {
     it('does not run timers that were cleared in another timer', () => {
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1019,8 +1099,10 @@ describe('FakeTimers', () => {
 
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {nextTick: nativeProcessNextTick},
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1042,9 +1124,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         clearImmediate: nativeClearImmediate,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1100,8 +1184,10 @@ describe('FakeTimers', () => {
 
       const global = {
         Date,
+        clearInterval,
         clearTimeout,
         process: {nextTick: nativeProcessNextTick},
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1123,9 +1209,11 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         clearImmediate: nativeClearImmediate,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate: nativeSetImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const fakeTimers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1149,9 +1237,11 @@ describe('FakeTimers', () => {
     beforeEach(() => {
       fakedGlobal = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
         setImmediate,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       timers = new FakeTimers({
@@ -1204,8 +1294,10 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         Promise,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1230,8 +1322,10 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         Promise,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1256,8 +1350,10 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         Promise,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1284,8 +1380,10 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         Promise,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1312,8 +1410,10 @@ describe('FakeTimers', () => {
       const global = {
         Date,
         Promise,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
@@ -1337,8 +1437,10 @@ describe('FakeTimers', () => {
     beforeEach(() => {
       fakedGlobal = {
         Date,
+        clearInterval,
         clearTimeout,
         process,
+        setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
       timers = new FakeTimers({
