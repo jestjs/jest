@@ -5286,7 +5286,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/commons@npm:^3.0.1":
+"@sinonjs/commons@npm:^3.0.0":
   version: 3.0.1
   resolution: "@sinonjs/commons@npm:3.0.1"
   dependencies:
@@ -5296,11 +5296,11 @@ __metadata:
   linkType: hard
 
 "@sinonjs/fake-timers@npm:^11.1.0":
-  version: 11.3.1
-  resolution: "@sinonjs/fake-timers@npm:11.3.1"
+  version: 11.2.2
+  resolution: "@sinonjs/fake-timers@npm:11.2.2"
   dependencies:
-    "@sinonjs/commons": ^3.0.1
-  checksum: 173376bb02e870467705829b003c996bcac958f34238875458961ac6483c6029cd9623950d20c68b648499635a0e6d04c26aac822e4f5c120cc7c217aeba6553
+    "@sinonjs/commons": ^3.0.0
+  checksum: 68c29b0e1856fdc280df03ddbf57c726420b78e9f943a241b471edc018fb14ff36fdc1daafd6026cba08c3c7f50c976fb7ae11b88ff44cd7f609692ca7d25158
   languageName: node
   linkType: hard
 
