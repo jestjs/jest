@@ -43,6 +43,7 @@ beforeEach(() => {
     },
     'non_covered_file.js': '',
     'relative_path_file.js': '',
+    'statement.js': 'const foo = 5;',
   };
   fileTree[`${process.cwd()}/path-test`] = {
     '100pc_coverage_file.js': '',
@@ -446,6 +447,66 @@ describe('onRunComplete', () => {
           projectRoot: './',
         });
         expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test('getLastError() returns an error when threshold is not met for global (odz)', () => {
+    const testReporter = new CoverageReporter({
+      collectCoverage: true,
+      coverageProvider: 'odz',
+      coverageThreshold: {
+        global: {
+          statements: 100,
+        },
+      },
+    });
+    /**
+     * @type {Array<V8CoverageResult>}
+     */
+    const v8CoverageResults = [
+      [
+        {
+          codeTransformResult: {
+            code: 'const foo = 5;',
+            originalCode: 'const foo = 5;',
+            sourceMapPath: '',
+            wrapperLength: 0,
+          },
+          result: {
+            functions: [
+              {
+                functionName: '',
+                isBlockCoverage: true,
+                ranges: [
+                  {
+                    count: 0,
+                    endOffset: 14,
+                    startOffset: 0,
+                  },
+                ],
+              },
+            ],
+            url: 'path-test-files/statement.js',
+          },
+        },
+      ],
+    ];
+
+    testReporter._v8CoverageResults = v8CoverageResults;
+    testReporter.log = jest.fn();
+
+    const testContext = {
+      config: {
+        rootDir: '.',
+      },
+      hasteFS: {
+        matchFilesWithGlob: () => ['path-test-files/statement.js'],
+      },
+    };
+    return testReporter
+      .onRunComplete(new Set([testContext]), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
       });
   });
 });

@@ -20,7 +20,7 @@ import {
   type ProcessCoverage,
   type SourceMap,
   createOneDoubleZero,
-} from 'one-double-zero';
+} from 'one-double-zero-core';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,

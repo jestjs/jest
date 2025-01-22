@@ -34,7 +34,7 @@
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
     "jest-worker": "workspace:*",
-    "one-double-zero": "1.0.0-beta.14",
+    "one-double-zero-core": "^1.0.0",
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
