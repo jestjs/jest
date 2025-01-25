@@ -756,12 +756,14 @@ export default async function normalize(
                   : [];
               const projectEntry =
                 globMatches.length > 0 ? globMatches : project;
-              return [
-                ...projects,
-                ...(Array.isArray(projectEntry)
-                  ? projectEntry
-                  : [projectEntry]),
-              ];
+
+              if (Array.isArray(projectEntry)) {
+                for (const entry of projectEntry) projects.push(entry);
+              } else {
+                projects.push(projectEntry);
+              }
+
+              return projects;
             },
             [],
           );
@@ -1139,7 +1141,8 @@ export default async function normalize(
         ) {
           return patterns;
         }
-        return [...patterns, filename];
+        patterns.push(filename);
+        return patterns;
       }, newOptions.collectCoverageFrom);
     }
 

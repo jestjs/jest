@@ -351,14 +351,16 @@ const groupSnapshotsBy =
     snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
       (object, inlineSnapshot) => {
         const key = createKey(inlineSnapshot);
-        return {
-          ...object,
-          [key]: [...(object[key] || []), inlineSnapshot],
-        };
+
+        if (!object[key]) {
+          object[key] = [];
+        }
+
+        object[key].push(inlineSnapshot);
+        return object;
       },
       {},
     );
-
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
     ? `${line}:${column - 1}`
