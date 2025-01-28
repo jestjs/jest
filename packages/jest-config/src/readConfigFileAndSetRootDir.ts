@@ -39,7 +39,7 @@ export default async function readConfigFileAndSetRootDir(
   let configObject;
 
   try {
-    if (isTS) {
+    if (isTS && !process.features.typescript) {
       configObject = await loadTSConfigFile(configPath);
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
