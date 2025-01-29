@@ -79,7 +79,7 @@ test('traverses directory tree up until it finds jest.config', () => {
   expect(summary).toMatchSnapshot();
 });
 
-onNodeVersions('<22.6', () => {
+onNodeVersions('<23.6', () => {
   const jestPath = require.resolve('jest');
   const jestTypesPath = jestPath.replace(/\.js$/, '.d.ts');
   const jestTypesExists = fs.existsSync(jestTypesPath);
@@ -129,7 +129,7 @@ onNodeVersions('<22.6', () => {
   });
 });
 
-onNodeVersions('>=22.6', () => {
+onNodeVersions('>=23.6', () => {
   test('invalid JS in jest.config.ts (node with native TS support)', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
