@@ -20,7 +20,7 @@ test('works with single typescript config that imports something', () => {
     '__tests__/mytest.alpha.js': "test('alpha', () => expect(1).toBe(1));",
     '__tests__/mytest.common.js': "test('common', () => expect(1).toBe(1));",
     'alpha.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common.ts';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.alpha.js' ]
     };`,
@@ -77,12 +77,12 @@ test('works with multiple typescript configs that import something', () => {
     '__tests__/mytest.beta.js': "test('beta', () => expect(1).toBe(1));",
     '__tests__/mytest.common.js': "test('common', () => expect(1).toBe(1));",
     'alpha.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common.ts';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.alpha.js' ]
     };`,
     'beta.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common.ts';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.beta.js' ]
     };`,
