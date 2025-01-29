@@ -144,7 +144,12 @@ onNodeVersions('>=22.6', () => {
       stderr
         // Remove the stack trace from the error message
         .slice(0, Math.max(0, stderr.indexOf('Caused by')))
-        .trim(),
+        .trim()
+        // Replace the path to the config file with a placeholder
+        .replace(
+          /(Error: Jest: Failed to parse the TypeScript config file).*$/m,
+          '$1 <<REPLACED>>',
+        ),
     ).toMatchSnapshot();
     expect(exitCode).toBe(1);
   });

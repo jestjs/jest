@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`on node >=22.6 invalid JS in jest.config.ts (node with native TS support) 1`] = `
-"Error: Jest: Failed to parse the TypeScript config file /Users/tronic/tmp/jest/e2e/jest-config-ts/jest.config.ts
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
   SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]:   x Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
    ,----
  1 | export default i'll break this file yo
