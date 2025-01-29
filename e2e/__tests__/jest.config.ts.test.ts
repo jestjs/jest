@@ -71,7 +71,12 @@ test('traverses directory tree up until it finds jest.config', () => {
   );
 
   // Snapshot the console.logged `process.cwd()` and make sure it stays the same
-  expect(stdout.replaceAll(/^\W+(.*)e2e/gm, '<<REPLACED>>')).toMatchSnapshot();
+  expect(
+    stdout
+      .replaceAll(/^\W+(.*)e2e/gm, '<<REPLACED>>')
+      // slightly different log in node versions >= 23
+      .replace('at Object.log', 'at Object.<anonymous>'),
+  ).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
   expect(exitCode).toBe(0);
