@@ -112,7 +112,7 @@ test('works with multiple typescript configs that import something', () => {
   expect(stdout).toBe('');
 });
 
-onNodeVersions('<=23.6', () => {
+onNodeVersions('<23.6', () => {
   test("works with single typescript config that does not import anything with project's moduleResolution set to Node16", () => {
     const {configs} = getConfig(
       'typescript-config/modern-module-resolution',
