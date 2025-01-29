@@ -8,6 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as semver from 'semver';
+import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
@@ -111,18 +112,20 @@ test('works with multiple typescript configs that import something', () => {
   expect(stdout).toBe('');
 });
 
-test("works with single typescript config that does not import anything with project's moduleResolution set to Node16", () => {
-  const {configs} = getConfig(
-    'typescript-config/modern-module-resolution',
-    [],
-    {
-      skipPkgJsonCheck: true,
-    },
-  );
+onNodeVersions('<=23.6', () => {
+  test("works with single typescript config that does not import anything with project's moduleResolution set to Node16", () => {
+    const {configs} = getConfig(
+      'typescript-config/modern-module-resolution',
+      [],
+      {
+        skipPkgJsonCheck: true,
+      },
+    );
 
-  expect(configs).toHaveLength(1);
-  expect(configs[0].displayName).toEqual({
-    color: 'white',
-    name: 'Config from modern ts file',
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
+      color: 'white',
+      name: 'Config from modern ts file',
+    });
   });
 });
