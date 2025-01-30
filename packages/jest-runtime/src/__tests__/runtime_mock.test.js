@@ -155,7 +155,7 @@ describe('Runtime', () => {
         runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
       ).toEqual(mockReference);
       expect(onGenerateMock).toHaveBeenCalledWith(
-        'RegularModule',
+        expect.stringMatching(/[/\\]test_root[/\\]RegularModule\.js$/),
         expect.anything(),
       );
 
@@ -201,17 +201,23 @@ describe('Runtime', () => {
         value: 4,
       });
       expect(onGenerateMock1).toHaveBeenCalledWith(
-        'RegularModule',
+        expect.stringMatching(/[/\\]test_root[/\\]RegularModule\.js$/),
         expect.anything(),
       );
-      expect(onGenerateMock2).toHaveBeenCalledWith('RegularModule', {
-        isMock: true,
-        value: 1,
-      });
-      expect(onGenerateMock3).toHaveBeenCalledWith('RegularModule', {
-        isMock: true,
-        value: 2,
-      });
+      expect(onGenerateMock2).toHaveBeenCalledWith(
+        expect.stringMatching(/[/\\]test_root[/\\]RegularModule\.js$/),
+        {
+          isMock: true,
+          value: 1,
+        },
+      );
+      expect(onGenerateMock3).toHaveBeenCalledWith(
+        expect.stringMatching(/[/\\]test_root[/\\]RegularModule\.js$/),
+        {
+          isMock: true,
+          value: 2,
+        },
+      );
     });
   });
 });

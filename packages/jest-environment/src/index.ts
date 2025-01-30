@@ -227,14 +227,14 @@ export interface Jest {
   now(): number;
   /**
    * Registers a callback function that is invoked whenever a mock is generated for a module.
-   * This callback is passed the module name and the newly created mock object, and must return
+   * This callback is passed the module path and the newly created mock object, and must return
    * the (potentially modified) mock object.
    *
    * If multiple callbacks are registered, they will be called in the order they were added.
    * Each callback receives the result of the previous callback as the `moduleMock` parameter,
    * making it possible to apply sequential transformations.
    */
-  onGenerateMock<T>(cb: (moduleName: string, moduleMock: T) => T): Jest;
+  onGenerateMock<T>(cb: (modulePath: string, moduleMock: T) => T): Jest;
   /**
    * Replaces property on an object with another value.
    *
