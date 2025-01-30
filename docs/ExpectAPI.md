@@ -1100,7 +1100,7 @@ test('doAsync calls both callbacks', () => {
     expect(data).toBeTruthy();
   }
 
-  doAsync(callback1, callback2);
+  return doAsync(callback1, callback2);
 });
 ```
 
