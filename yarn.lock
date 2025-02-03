@@ -3103,7 +3103,7 @@ __metadata:
     "@types/node": "*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     slash: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -3142,7 +3142,7 @@ __metadata:
     jest-validate: "workspace:*"
     jest-watcher: "workspace:*"
     micromatch: ^4.0.8
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
     slash: ^3.0.0
     strip-ansi: ^6.0.0
@@ -3316,7 +3316,7 @@ __metadata:
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
     p-limit: ^3.1.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pkg-dir: ^5.0.0
     prettier: ^3.0.3
     promise: ^8.0.2
@@ -3382,7 +3382,7 @@ __metadata:
     jest-worker: "workspace:*"
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -7053,7 +7053,7 @@ __metadata:
     babel-plugin-istanbul: ^7.0.0
     babel-preset-jest: "workspace:*"
     graceful-fs: ^4.2.9
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     slash: ^3.0.0
   peerDependencies:
     "@babel/core": ^7.11.0
@@ -8507,7 +8507,7 @@ __metadata:
     graceful-fs: ^4.2.9
     jest-config: "workspace:*"
     jest-util: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     prompts: ^2.0.1
   bin:
     create-jest: ./bin/create-jest.js
@@ -13151,7 +13151,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     p-limit: ^3.1.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
     pure-rand: ^6.0.0
     slash: ^3.0.0
@@ -13174,7 +13174,7 @@ __metadata:
     jest-config: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -13215,7 +13215,7 @@ __metadata:
     jest-validate: "workspace:*"
     micromatch: ^4.0.8
     parse-json: ^5.2.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
     semver: ^7.5.3
     slash: ^3.0.0
@@ -13243,7 +13243,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     diff-sequences: "workspace:*"
     jest-get-type: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
     strip-ansi: ^6.0.0
   languageName: unknown
@@ -13265,7 +13265,7 @@ __metadata:
     "@jest/types": "workspace:*"
     jest-get-type: "workspace:*"
     jest-util: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13360,7 +13360,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     p-limit: ^3.1.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13395,7 +13395,7 @@ __metadata:
     "@types/node": "*"
     jest-diff: "workspace:*"
     jest-get-type: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13429,7 +13429,7 @@ __metadata:
     "@types/stack-utils": ^2.0.0
     graceful-fs: ^4.2.9
     micromatch: ^4.0.8
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
     slash: ^3.0.0
     stack-utils: ^2.0.3
@@ -13496,7 +13496,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     repl: ^0.1.3
     yargs: ^17.3.1
   bin:
@@ -13531,7 +13531,7 @@ __metadata:
     jest-pnp-resolver: ^1.2.2
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     resolve: ^1.20.0
     resolve.exports: ^2.0.0
     slash: ^3.0.0
@@ -13566,7 +13566,7 @@ __metadata:
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
     p-limit: ^3.1.0
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     source-map-support: 0.5.13
   languageName: unknown
   linkType: soft
@@ -13597,7 +13597,7 @@ __metadata:
     jest-resolve: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    picocolors: ^1.0.1
+    picocolors: ^1.1.1
     slash: ^3.0.0
     strip-bom: ^4.0.0
   languageName: unknown
@@ -17132,6 +17132,13 @@ __metadata:
   version: 1.0.1
   resolution: "picocolors@npm:1.0.1"
   checksum: fa68166d1f56009fc02a34cdfd112b0dd3cf1ef57667ac57281f714065558c01828cdf4f18600ad6851cbe0093952ed0660b1e0156bddf2184b6aaf5817553a5
+  languageName: node
+  linkType: hard
+
+"picocolors@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "picocolors@npm:1.1.1"
+  checksum: e1cf46bf84886c79055fdfa9dcb3e4711ad259949e3565154b004b260cd356c5d54b31a1437ce9782624bf766272fe6b0154f5f0c744fb7af5d454d2b60db045
   languageName: node
   linkType: hard
 

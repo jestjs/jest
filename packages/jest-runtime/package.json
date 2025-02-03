@@ -38,7 +38,7 @@
     "jest-resolve": "workspace:*",
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0"
   },

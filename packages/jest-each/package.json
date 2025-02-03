@@ -30,7 +30,7 @@
     "@jest/types": "workspace:*",
     "jest-get-type": "workspace:*",
     "jest-util": "workspace:*",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "pretty-format": "workspace:*"
   },
   "engines": {

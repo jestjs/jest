@@ -33,7 +33,7 @@
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
     "jest-worker": "workspace:*",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",

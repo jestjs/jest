@@ -21,7 +21,7 @@
   "dependencies": {
     "diff-sequences": "workspace:*",
     "jest-get-type": "workspace:*",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {

@@ -25,7 +25,7 @@
     "babel-plugin-istanbul": "^7.0.0",
     "babel-preset-jest": "workspace:*",
     "graceful-fs": "^4.2.9",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "slash": "^3.0.0"
   },
   "devDependencies": {

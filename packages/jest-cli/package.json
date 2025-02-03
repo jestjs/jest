@@ -23,7 +23,7 @@
     "jest-config": "workspace:*",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "yargs": "^17.3.1"
   },
   "devDependencies": {
