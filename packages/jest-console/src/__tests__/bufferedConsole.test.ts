@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import BufferedConsole from '../BufferedConsole';
 
 describe('CustomConsole', () => {
@@ -104,9 +104,9 @@ describe('CustomConsole', () => {
       _console.group('second');
       _console.log('there');
 
-      expect(stdout()).toBe(`  ${pico.bold('first')}
+      expect(stdout()).toBe(`  ${pc.bold('first')}
   hey
-    ${pico.bold('second')}
+    ${pc.bold('second')}
     there`);
     });
 

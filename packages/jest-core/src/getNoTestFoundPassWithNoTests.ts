@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 
 export default function getNoTestFoundPassWithNoTests(): string {
-  return pico.bold('No tests found, exiting with code 0');
+  return pc.bold('No tests found, exiting with code 0');
 }

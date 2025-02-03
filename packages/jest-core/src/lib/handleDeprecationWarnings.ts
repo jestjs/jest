@@ -6,7 +6,7 @@
  */
 
 import type {ReadStream, WriteStream} from 'tty';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import {KEYS} from 'jest-watcher';
 
 export default function handleDeprecationWarnings(
@@ -16,9 +16,9 @@ export default function handleDeprecationWarnings(
   return new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
-        pico.red('There are deprecation warnings.\n'),
-        `${pico.dim(' \u203A Press ')}Enter${pico.dim(' to continue.')}`,
-        `${pico.dim(' \u203A Press ')}Esc${pico.dim(' to exit.')}`,
+        pc.red('There are deprecation warnings.\n'),
+        `${pc.dim(' \u203A Press ')}Enter${pc.dim(' to continue.')}`,
+        `${pc.dim(' \u203A Press ')}Esc${pc.dim(' to exit.')}`,
       ];
 
       pipe.write(messages.join('\n'));

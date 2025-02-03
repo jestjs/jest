@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 import {
   type StackTraceConfig,
@@ -34,13 +34,13 @@ export default function getConsoleOutput(
     let noCodeFrame = true;
 
     if (type === 'warn') {
-      message = pico.yellow(message);
-      typeMessage = pico.yellow(typeMessage);
+      message = pc.yellow(message);
+      typeMessage = pc.yellow(typeMessage);
       noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     } else if (type === 'error') {
-      message = pico.red(message);
-      typeMessage = pico.red(typeMessage);
+      message = pc.red(message);
+      typeMessage = pc.red(typeMessage);
       noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     }
@@ -53,8 +53,8 @@ export default function getConsoleOutput(
     const formattedStackTrace = formatStackTrace(origin, config, options);
 
     return `${
-      output + TITLE_INDENT + pico.dim(typeMessage)
-    }\n${message.trimEnd()}\n${pico.dim(formattedStackTrace.trimEnd())}\n\n`;
+      output + TITLE_INDENT + pc.dim(typeMessage)
+    }\n${message.trimEnd()}\n${pc.dim(formattedStackTrace.trimEnd())}\n\n`;
   }, '');
 
   return `${logEntries.trimEnd()}\n`;

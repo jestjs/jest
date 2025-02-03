@@ -12,7 +12,7 @@ import {
 } from 'os';
 import * as path from 'path';
 import * as util from 'util';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
@@ -142,7 +142,7 @@ export async function run(
     }
   } catch (error: any) {
     console.error(
-      pico.red(util.types.isNativeError(error) ? error.stack : error),
+      pc.red(util.types.isNativeError(error) ? error.stack : error),
     );
     process.on('exit', () => {
       process.exitCode = 1;

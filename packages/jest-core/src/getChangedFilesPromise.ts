@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 import {
   type ChangedFilesPromise,
@@ -31,7 +31,7 @@ export default function getChangedFilesPromise(
         .filter(line => !line.includes('Command failed:'))
         .join('\n');
 
-      console.error(pico.red(`\n\n${message}`));
+      console.error(pc.red(`\n\n${message}`));
 
       process.exit(1);
     });

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
@@ -17,10 +17,8 @@ type ResolveOptions = {
   optional?: boolean;
 };
 
-export const BULLET: string = pico.bold('\u25CF ');
-export const DOCUMENTATION_NOTE = `  ${pico.bold(
-  'Configuration Documentation:',
-)}
+export const BULLET: string = pc.bold('\u25CF ');
+export const DOCUMENTATION_NOTE = `  ${pc.bold('Configuration Documentation:')}
   https://jestjs.io/docs/configuration
 `;
 
@@ -41,10 +39,10 @@ export const resolve = (
 
   if (!module && !optional) {
     throw createValidationError(
-      `  Module ${pico.bold(filePath)} in the ${pico.bold(
+      `  Module ${pc.bold(filePath)} in the ${pc.bold(
         key,
       )} option was not found.
-         ${pico.bold('<rootDir>')} is: ${rootDir}`,
+         ${pc.bold('<rootDir>')} is: ${rootDir}`,
     );
   }
   /// can cast as string since nulls will be thrown

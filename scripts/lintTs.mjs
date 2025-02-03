@@ -12,7 +12,7 @@ import * as path from 'path';
 import * as url from 'url';
 import {ESLint} from 'eslint';
 import pLimit from 'p-limit';
-import pico from 'picocolors';
+import pc from 'picocolors';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
@@ -178,7 +178,7 @@ try {
   );
 } catch (error) {
   console.error(
-    pico.inverse(pico.red(' Unable to lint using TypeScript info files ')),
+    pc.inverse(pc.red(' Unable to lint using TypeScript info files ')),
   );
 
   throw error;
@@ -192,14 +192,12 @@ if (allLintResults.length > 0) {
   console.error(resultText);
 
   console.error(
-    pico.inverse(pico.red(' Unable to lint using TypeScript info files ')),
+    pc.inverse(pc.red(' Unable to lint using TypeScript info files ')),
   );
 
   process.exitCode = 1;
 } else {
   console.log(
-    pico.inverse(
-      pico.green(' Successfully linted using TypeScript info files '),
-    ),
+    pc.inverse(pc.green(' Successfully linted using TypeScript info files ')),
   );
 }

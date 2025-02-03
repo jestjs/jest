@@ -6,7 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Circus} from '@jest/types';
 import {
   type DiffOptions,
@@ -93,10 +93,10 @@ const operatorMessage = (operator: string | undefined) => {
 
 const assertThrowingMatcherHint = (operatorName: string) =>
   operatorName
-    ? pico.dim('assert') +
-      pico.dim(`.${operatorName}(`) +
-      pico.red('function') +
-      pico.dim(')')
+    ? pc.dim('assert') +
+      pc.dim(`.${operatorName}(`) +
+      pc.red('function') +
+      pc.dim(')')
     : '';
 
 const assertMatcherHint = (
@@ -107,16 +107,15 @@ const assertMatcherHint = (
   let message = '';
 
   if (operator === '==' && expected === true) {
-    message =
-      pico.dim('assert') + pico.dim('(') + pico.red('received') + pico.dim(')');
+    message = pc.dim('assert') + pc.dim('(') + pc.red('received') + pc.dim(')');
   } else if (operatorName) {
     message =
-      pico.dim('assert') +
-      pico.dim(`.${operatorName}(`) +
-      pico.red('received') +
-      pico.dim(', ') +
-      pico.green('expected') +
-      pico.dim(')');
+      pc.dim('assert') +
+      pc.dim(`.${operatorName}(`) +
+      pc.red('received') +
+      pc.dim(', ') +
+      pc.green('expected') +
+      pc.dim(')');
   }
 
   return message;
@@ -138,10 +137,10 @@ function assertionErrorMessage(
     return (
       // eslint-disable-next-line prefer-template
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      pico.reset('Expected the function not to throw an error.\n') +
-      pico.reset('Instead, it threw:\n') +
+      pc.reset('Expected the function not to throw an error.\n') +
+      pc.reset('Instead, it threw:\n') +
       `  ${printReceived(actual)}` +
-      pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+      pc.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -150,16 +149,16 @@ function assertionErrorMessage(
     if (error.generatedMessage) {
       return (
         buildHintString(assertThrowingMatcherHint(operatorName)) +
-        pico.reset(error.message) +
-        pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        pc.reset(error.message) +
+        pc.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
         trimmedStack
       );
     }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      pico.reset('Expected the function to throw an error.\n') +
-      pico.reset("But it didn't throw anything.") +
-      pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+      pc.reset('Expected the function to throw an error.\n') +
+      pc.reset("But it didn't throw anything.") +
+      pc.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -167,7 +166,7 @@ function assertionErrorMessage(
   if (operatorName === 'fail') {
     return (
       buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-      pico.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
+      pc.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -175,11 +174,11 @@ function assertionErrorMessage(
   return (
     // eslint-disable-next-line prefer-template
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-    pico.reset(`Expected value ${operatorMessage(operator)}`) +
+    pc.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
-    pico.reset('Received:\n') +
+    pc.reset('Received:\n') +
     `  ${printReceived(actual)}` +
-    pico.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+    pc.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
     trimmedStack
   );

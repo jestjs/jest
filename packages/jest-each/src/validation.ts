@@ -6,14 +6,14 @@
  *
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 
 type TemplateData = Global.TemplateData;
 
-const EXPECTED_COLOR = pico.green;
-const RECEIVED_COLOR = pico.red;
+const EXPECTED_COLOR = pc.green;
+const RECEIVED_COLOR = pc.red;
 
 export const validateArrayTable = (table: unknown): void => {
   if (!Array.isArray(table)) {

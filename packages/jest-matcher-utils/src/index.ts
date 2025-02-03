@@ -7,7 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -48,7 +48,7 @@ const PLUGINS = [
   AsymmetricMatcher,
 ];
 
-type MatcherHintColor = (arg: string) => string; // subset of pico type
+type MatcherHintColor = (arg: string) => string; // subset of pc type
 
 export type MatcherHintOptions = {
   comment?: string;
@@ -63,11 +63,11 @@ export type MatcherHintOptions = {
 
 export type DiffOptions = ImportDiffOptions;
 
-export const EXPECTED_COLOR = pico.green;
-export const RECEIVED_COLOR = pico.red;
-export const INVERTED_COLOR = pico.inverse;
-export const BOLD_WEIGHT = pico.bold;
-export const DIM_COLOR = pico.dim;
+export const EXPECTED_COLOR = pc.green;
+export const RECEIVED_COLOR = pc.red;
+export const INVERTED_COLOR = pc.inverse;
+export const BOLD_WEIGHT = pc.bold;
+export const DIM_COLOR = pc.dim;
 
 const MULTILINE_REGEXP = /\n/;
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot
@@ -89,7 +89,7 @@ const NUMBERS = [
   'thirteen',
 ];
 
-export const SUGGEST_TO_CONTAIN_EQUAL = pico.dim(
+export const SUGGEST_TO_CONTAIN_EQUAL = pc.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
 );
 
@@ -128,7 +128,7 @@ export const stringify = (
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
-  text.replaceAll(/\s+$/gm, pico.inverse('$&'));
+  text.replaceAll(/\s+$/gm, pc.inverse('$&'));
 
 // Instead of inverse highlight which now implies a change,
 // replace common spaces with middle dot at the end of any line.
@@ -339,8 +339,8 @@ export const printDiffOrStringify = (
       return diffStringsUnified(expected, received, {
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
-        changeLineTrailingSpaceColor: pico.bgYellow,
-        commonLineTrailingSpaceColor: pico.bgYellow,
+        changeLineTrailingSpaceColor: pc.bgYellow,
+        commonLineTrailingSpaceColor: pc.bgYellow,
         emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
         expand,
         includeChangeCounts: true,
@@ -516,7 +516,7 @@ export const matcherErrorMessage = (
   generic: string, // condition which correct value must fulfill
   specific?: string, // incorrect value returned from call to printWithType
 ): string =>
-  `${hint}\n\n${pico.bold('Matcher error')}: ${generic}${
+  `${hint}\n\n${pc.bold('Matcher error')}: ${generic}${
     typeof specific === 'string' ? `\n\n${specific}` : ''
   }`;
 

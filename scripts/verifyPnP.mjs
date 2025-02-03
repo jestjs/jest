@@ -11,7 +11,7 @@ import dedent from 'dedent';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import yaml from 'js-yaml';
-import pico from 'picocolors';
+import pc from 'picocolors';
 import tempy from 'tempy';
 
 const rootDirectory = path.resolve(
@@ -75,9 +75,7 @@ try {
   });
   execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
-  console.log(
-    pico.inverse(pico.green(' Successfully ran Jest with PnP linker ')),
-  );
+  console.log(pc.inverse(pc.green(' Successfully ran Jest with PnP linker ')));
 } finally {
   fs.rmSync(cwd, {force: true, recursive: true});
 }

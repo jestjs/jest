@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {CompareKeys} from 'pretty-format';
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
@@ -15,14 +15,14 @@ const DIFF_CONTEXT_DEFAULT = 5;
 
 const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   aAnnotation: 'Expected',
-  aColor: pico.green,
+  aColor: pc.green,
   aIndicator: '-',
   bAnnotation: 'Received',
-  bColor: pico.red,
+  bColor: pc.red,
   bIndicator: '+',
-  changeColor: pico.inverse,
+  changeColor: pc.inverse,
   changeLineTrailingSpaceColor: noColor,
-  commonColor: pico.dim,
+  commonColor: pc.dim,
   commonIndicator: ' ',
   commonLineTrailingSpaceColor: noColor,
   compareKeys: undefined,
@@ -31,7 +31,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   expand: true,
   includeChangeCounts: false,
   omitAnnotationLines: false,
-  patchColor: pico.yellow,
+  patchColor: pc.yellow,
 };
 
 const getCompareKeys = (compareKeys?: CompareKeys): CompareKeys =>

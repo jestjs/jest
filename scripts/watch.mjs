@@ -9,7 +9,7 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-import pico from 'picocolors';
+import pc from 'picocolors';
 import webpack from 'webpack';
 import {createWebpackConfigs} from './buildUtils.mjs';
 
@@ -17,13 +17,13 @@ const compiler = webpack(createWebpackConfigs());
 
 let hasBuilt = false;
 
-console.log(pico.inverse(' Bundling packages '));
+console.log(pc.inverse(' Bundling packages '));
 
 compiler.watch({}, (error, stats) => {
   if (!hasBuilt) {
     hasBuilt = true;
 
-    console.log(pico.red('->'), pico.cyan('Watching for changes…'));
+    console.log(pc.red('->'), pc.cyan('Watching for changes…'));
   }
 
   if (error) {
@@ -41,7 +41,7 @@ compiler.watch({}, (error, stats) => {
         console.warn('warning', warning.message);
       }
     } else {
-      console.log(pico.red('->'), pico.green('Rebuilt packages'));
+      console.log(pc.red('->'), pc.green('Rebuilt packages'));
     }
   }
 });

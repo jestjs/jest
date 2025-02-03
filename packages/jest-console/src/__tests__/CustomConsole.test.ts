@@ -7,7 +7,7 @@
 
 import {Writable} from 'stream';
 import type {WriteStream} from 'tty';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {
@@ -142,9 +142,9 @@ describe('CustomConsole', () => {
       _console.group('second');
       _console.log('there');
 
-      expect(_stdout).toBe(`  ${pico.bold('first')}
+      expect(_stdout).toBe(`  ${pc.bold('first')}
   hey
-    ${pico.bold('second')}
+    ${pc.bold('second')}
     there
 `);
     });

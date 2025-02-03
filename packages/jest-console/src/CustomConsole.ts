@@ -9,7 +9,7 @@ import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import type {WriteStream} from 'tty';
 import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
@@ -95,7 +95,7 @@ export default class CustomConsole extends Console {
     this._groupDepth++;
 
     if (title != null || args.length > 0) {
-      this._log('group', pico.bold(format(title, ...args)));
+      this._log('group', pc.bold(format(title, ...args)));
     }
   }
 
@@ -103,7 +103,7 @@ export default class CustomConsole extends Console {
     this._groupDepth++;
 
     if (title != null || args.length > 0) {
-      this._log('groupCollapsed', pico.bold(format(title, ...args)));
+      this._log('groupCollapsed', pc.bold(format(title, ...args)));
     }
   }
 

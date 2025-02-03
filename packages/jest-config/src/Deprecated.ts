@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {DeprecatedOptions} from 'jest-validate';
 
 function formatDeprecation(message: string): string {
   const lines = [
-    message.replaceAll(/\*(.+?)\*/g, (_, s) => pico.bold(`"${s}"`)),
+    message.replaceAll(/\*(.+?)\*/g, (_, s) => pc.bold(`"${s}"`)),
     '',
     'Please update your configuration.',
   ];
@@ -19,40 +19,40 @@ function formatDeprecation(message: string): string {
 
 const deprecatedOptions: DeprecatedOptions = {
   browser: () =>
-    `  Option ${pico.bold(
+    `  Option ${pc.bold(
       '"browser"',
     )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
   collectCoverageOnlyFrom: (_options: {
     collectCoverageOnlyFrom?: Record<string, boolean>;
-  }) => `  Option ${pico.bold(
+  }) => `  Option ${pc.bold(
     '"collectCoverageOnlyFrom"',
-  )} was replaced by ${pico.bold('"collectCoverageFrom"')}.
+  )} was replaced by ${pc.bold('"collectCoverageFrom"')}.
 
     Please update your configuration.`,
 
-  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${pico.bold(
+  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${pc.bold(
     '"extraGlobals"',
-  )} was replaced by ${pico.bold('"sandboxInjectedGlobals"')}.
+  )} was replaced by ${pc.bold('"sandboxInjectedGlobals"')}.
 
   Please update your configuration.`,
 
   init: () =>
-    `  Option ${pico.bold(
+    `  Option ${pc.bold(
       '"init"',
     )} has been deprecated. Please use "create-jest" package as shown in the documentation: https://jestjs.io/docs/getting-started#generate-a-basic-configuration-file`,
 
-  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${pico.bold(
+  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${pc.bold(
     '"moduleLoader"',
-  )} was replaced by ${pico.bold('"runtime"')}.
+  )} was replaced by ${pc.bold('"runtime"')}.
 
   Please update your configuration.`,
 
   preprocessorIgnorePatterns: (_options: {
     preprocessorIgnorePatterns?: Array<string>;
-  }) => `  Option ${pico.bold(
+  }) => `  Option ${pc.bold(
     '"preprocessorIgnorePatterns"',
-  )} was replaced by ${pico.bold(
+  )} was replaced by ${pc.bold(
     '"transformIgnorePatterns"',
   )}, which support multiple preprocessors.
 
@@ -60,9 +60,7 @@ const deprecatedOptions: DeprecatedOptions = {
 
   scriptPreprocessor: (_options: {
     scriptPreprocessor?: string;
-  }) => `  Option ${pico.bold(
-    '"scriptPreprocessor"',
-  )} was replaced by ${pico.bold(
+  }) => `  Option ${pc.bold('"scriptPreprocessor"')} was replaced by ${pc.bold(
     '"transform"',
   )}, which support multiple preprocessors.
 
@@ -70,9 +68,9 @@ const deprecatedOptions: DeprecatedOptions = {
 
   setupTestFrameworkScriptFile: (_options: {
     setupTestFrameworkScriptFile?: string;
-  }) => `  Option ${pico.bold(
+  }) => `  Option ${pc.bold(
     '"setupTestFrameworkScriptFile"',
-  )} was replaced by configuration ${pico.bold(
+  )} was replaced by configuration ${pc.bold(
     '"setupFilesAfterEnv"',
   )}, which supports multiple paths.
 
@@ -80,7 +78,7 @@ const deprecatedOptions: DeprecatedOptions = {
 
   testPathDirs: (_options: {
     testPathDirs?: Array<string>;
-  }) => `  Option ${pico.bold('"testPathDirs"')} was replaced by ${pico.bold(
+  }) => `  Option ${pc.bold('"testPathDirs"')} was replaced by ${pc.bold(
     '"roots"',
   )}.
 
@@ -92,17 +90,17 @@ const deprecatedOptions: DeprecatedOptions = {
       'Option *testPathPattern* was replaced by *testPathPatterns*.',
     ),
 
-  testURL: (_options: {testURL?: string}) => `  Option ${pico.bold(
+  testURL: (_options: {testURL?: string}) => `  Option ${pc.bold(
     '"testURL"',
-  )} was replaced by passing the URL via ${pico.bold(
+  )} was replaced by passing the URL via ${pc.bold(
     '"testEnvironmentOptions.url"',
   )}.
 
   Please update your configuration.`,
 
-  timers: (_options: {timers?: string}) => `  Option ${pico.bold(
+  timers: (_options: {timers?: string}) => `  Option ${pc.bold(
     '"timers"',
-  )} was replaced by ${pico.bold('"fakeTimers"')}.
+  )} was replaced by ${pc.bold('"fakeTimers"')}.
 
   Please update your configuration.`,
 };

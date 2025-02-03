@@ -11,7 +11,7 @@ import * as path from 'path';
 import util from 'util';
 import dedent from 'dedent';
 import fs from 'graceful-fs';
-import pico from 'picocolors';
+import pc from 'picocolors';
 import webpack from 'webpack';
 import {
   ERROR,
@@ -24,7 +24,7 @@ import {
 const require = createRequire(import.meta.url);
 
 async function buildNodePackages() {
-  process.stdout.write(pico.inverse(' Bundling packages \n'));
+  process.stdout.write(pc.inverse(' Bundling packages \n'));
 
   const buildConfigs = createBuildConfigs();
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';
 import type {Stats, TestRunData} from './types';
@@ -29,7 +29,7 @@ export default function getNoTestFoundVerbose(
             ? value.join(', ')
             : String(value);
           const matches = pluralize('match', stats[key] || 0, 'es');
-          return `  ${key}: ${pico.yellow(valueAsString)} - ${matches}`;
+          return `  ${key}: ${pc.yellow(valueAsString)} - ${matches}`;
         }
         return null;
       })
@@ -37,7 +37,7 @@ export default function getNoTestFoundVerbose(
       .join('\n');
 
     return testRun.matches.total
-      ? `In ${pico.bold(config.rootDir)}\n` +
+      ? `In ${pc.bold(config.rootDir)}\n` +
           `  ${pluralize(
             'file',
             testRun.matches.total || 0,
@@ -56,19 +56,19 @@ export default function getNoTestFoundVerbose(
       .map(p => `"${p}"`)
       .join(', ')}`;
   } else {
-    dataMessage = `Pattern: ${pico.yellow(
+    dataMessage = `Pattern: ${pc.yellow(
       globalConfig.testPathPatterns.toPretty(),
     )} - 0 matches`;
   }
 
   if (willExitWith0) {
-    return `${pico.bold(
+    return `${pc.bold(
       'No tests found, exiting with code 0',
     )}\n${individualResults.join('\n')}\n${dataMessage}`;
   }
 
   return (
-    `${pico.bold('No tests found, exiting with code 1')}\n` +
+    `${pc.bold('No tests found, exiting with code 1')}\n` +
     'Run with `--passWithNoTests` to exit with code 0' +
     `\n${individualResults.join('\n')}\n${dataMessage}`
   );

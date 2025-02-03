@@ -10,7 +10,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import execa from 'execa';
 import fs from 'graceful-fs';
-import pico from 'picocolors';
+import pc from 'picocolors';
 import stripJsonComments from 'strip-json-comments';
 /* eslint-disable import/order */
 import tempy from 'tempy';
@@ -73,8 +73,8 @@ function smoketest() {
     execa.sync('yarn', ['tsc', '--project', '.'], {cwd, stdio: 'inherit'});
 
     console.log(
-      pico.inverse(
-        pico.green(` Successfully compiled Jest with TypeScript ${tsVersion} `),
+      pc.inverse(
+        pc.green(` Successfully compiled Jest with TypeScript ${tsVersion} `),
       ),
     );
   } finally {
@@ -82,6 +82,6 @@ function smoketest() {
   }
 }
 
-console.log(pico.inverse(` Running smoketest using TypeScript@${tsVersion} `));
+console.log(pc.inverse(` Running smoketest using TypeScript@${tsVersion} `));
 smoketest();
-console.log(pico.inverse(pico.green(' Successfully ran smoketest ')));
+console.log(pc.inverse(pc.green(' Successfully ran smoketest ')));

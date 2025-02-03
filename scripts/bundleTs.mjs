@@ -16,7 +16,7 @@ import {
 import {ESLint} from 'eslint';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
-import pico from 'picocolors';
+import pc from 'picocolors';
 import pkgDir from 'pkg-dir';
 import {rimraf} from 'rimraf';
 import {copyrightSnippet, getPackagesWithTsConfig} from './buildUtils.mjs';
@@ -32,7 +32,7 @@ const packagesToBundle = getPackagesWithTsConfig().filter(
   p => !excludedPackages.has(p.pkg.name),
 );
 
-console.log(pico.inverse(' Extracting TypeScript definition files '));
+console.log(pc.inverse(' Extracting TypeScript definition files '));
 
 const sharedExtractorConfig = {
   $schema:
@@ -150,9 +150,7 @@ await Promise.all(
 
     if (!extractorResult.succeeded || extractorResult.warningCount > 0) {
       console.error(
-        pico.inverse(
-          pico.red(' Unable to extract TypeScript definition files '),
-        ),
+        pc.inverse(pc.red(' Unable to extract TypeScript definition files ')),
       );
       throw new Error(
         `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings`,
@@ -233,7 +231,5 @@ await Promise.all(
 );
 
 console.log(
-  pico.inverse(
-    pico.green(' Successfully extracted TypeScript definition files '),
-  ),
+  pc.inverse(pc.green(' Successfully extracted TypeScript definition files ')),
 );

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as pico from 'picocolors';
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 import {isNonNullable} from 'jest-util';
 
@@ -15,16 +15,16 @@ const activeFilters = (globalConfig: Config.GlobalConfig): string => {
   if (testNamePattern || testPathPatterns.isSet()) {
     const filters = [
       testPathPatterns.isSet()
-        ? pico.dim('filename ') + pico.yellow(testPathPatterns.toPretty())
+        ? pc.dim('filename ') + pc.yellow(testPathPatterns.toPretty())
         : null,
       testNamePattern
-        ? pico.dim('test name ') + pico.yellow(`/${testNamePattern}/`)
+        ? pc.dim('test name ') + pc.yellow(`/${testNamePattern}/`)
         : null,
     ]
       .filter(isNonNullable)
       .join(', ');
 
-    const messages = `\n${pico.bold('Active Filters: ')}${filters}`;
+    const messages = `\n${pc.bold('Active Filters: ')}${filters}`;
 
     return messages;
   }
