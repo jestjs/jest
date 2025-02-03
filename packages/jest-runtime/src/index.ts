@@ -173,6 +173,9 @@ export default class Runtime {
   private readonly _environment: JestEnvironment;
   private readonly _explicitShouldMock: Map<string, boolean>;
   private readonly _explicitShouldMockModule: Map<string, boolean>;
+  private readonly _onGenerateMock: Set<
+    (moduleName: string, moduleMock: any) => any
+  >;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
@@ -237,6 +240,7 @@ export default class Runtime {
     this._globalConfig = globalConfig;
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
+    this._onGenerateMock = new Set();
     this._internalModuleRegistry = new Map();
     this._isCurrentlyExecutingManualMock = null;
     this._mainModule = null;
@@ -1932,10 +1936,16 @@ export default class Runtime {
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
     }
-    return this._moduleMocker.generateFromMetadata<T>(
+    let moduleMock = this._moduleMocker.generateFromMetadata<T>(
       // added above if missing
       this._mockMetaDataCache.get(modulePath)!,
     );
+
+    for (const onGenerateMock of this._onGenerateMock) {
+      moduleMock = onGenerateMock(moduleName, moduleMock);
+    }
+
+    return moduleMock;
   }
 
   private _shouldMockCjs(
@@ -2195,6 +2205,12 @@ export default class Runtime {
       this._explicitShouldMock.set(moduleID, true);
       return jestObject;
     };
+    const onGenerateMock: Jest['onGenerateMock'] = <T>(
+      cb: (moduleName: string, moduleMock: T) => T,
+    ) => {
+      this._onGenerateMock.add(cb);
+      return jestObject;
+    };
     const setMockFactory = (
       moduleName: string,
       mockFactory: () => unknown,
@@ -2366,6 +2382,7 @@ export default class Runtime {
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
+      onGenerateMock,
       replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
       requireMock: moduleName => this.requireMock(from, moduleName),

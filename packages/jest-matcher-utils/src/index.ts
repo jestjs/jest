@@ -504,7 +504,7 @@ type PrintLabel = (string: string) => string;
 
 export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
   const maxLength = strings.reduce(
-    (max, string) => (string.length > max ? string.length : max),
+    (max, string) => Math.max(string.length, max),
     0,
   );
   return (string: string): string =>

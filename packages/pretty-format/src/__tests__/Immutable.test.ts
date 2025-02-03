@@ -944,7 +944,9 @@ describe('Immutable.Seq lazy entries', () => {
     expect(val).toPrettyPrintTo(expected);
   });
   test('from Immutable.Map entries', () => {
-    const val = Immutable.Seq(Immutable.Map(object)).filter(filterer);
+    const val = Immutable.Seq(Immutable.Map<string, string>(object)).filter(
+      filterer,
+    );
     expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });

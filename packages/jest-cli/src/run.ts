@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import exit = require('exit');
+import exit = require('exit-x');
 import * as pc from 'picocolors';
 import yargs = require('yargs');
 import {getVersion, runCLI} from '@jest/core';

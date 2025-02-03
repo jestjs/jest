@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import exit = require('exit');
+import exit = require('exit-x');
 import * as fs from 'graceful-fs';
 import picocolors = require('picocolors');
 import prompts = require('prompts');

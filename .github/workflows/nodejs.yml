@@ -213,7 +213,8 @@ jobs:
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         if: always()
         with:
           directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}

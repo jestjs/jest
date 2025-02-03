@@ -7,7 +7,7 @@
 
 import {performance} from 'perf_hooks';
 import type {WriteStream} from 'tty';
-import exit = require('exit');
+import exit = require('exit-x');
 import * as fs from 'graceful-fs';
 import * as pc from 'picocolors';
 import {CustomConsole} from '@jest/console';

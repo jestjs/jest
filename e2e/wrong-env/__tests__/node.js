@@ -21,6 +21,7 @@ test('use document', () => {
 });
 
 test('use window', () => {
+  // eslint-disable-next-line unicorn/prefer-global-this
   const location = window.location;
 
   console.log(location);

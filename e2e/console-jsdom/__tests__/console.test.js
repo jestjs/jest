@@ -30,11 +30,11 @@ test('can mock console.error calls from jsdom', () => {
 
   function onError(event) {}
 
-  window.addEventListener('error', onError);
+  globalThis.addEventListener('error', onError);
   fakeNode.addEventListener(evtType, callCallback, false);
   evt.initEvent(evtType, false, false);
   fakeNode.dispatchEvent(evt);
-  window.removeEventListener('error', onError);
+  globalThis.removeEventListener('error', onError);
 
   expect(console.error).toHaveBeenCalledTimes(1);
   expect(console.error).toHaveBeenCalledWith(
