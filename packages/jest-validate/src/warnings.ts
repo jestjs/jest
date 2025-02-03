@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import pc = require('picocolors');
 import type {ValidationOptions} from './types';
 import {
   WARNING,
@@ -25,9 +25,9 @@ export const unknownOptionWarning = (
     option,
     Object.keys(exampleConfig),
   );
-  const message = `  Unknown option ${chalk.bold(
+  const message = `  Unknown option ${pc.bold(
     `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
-  )} with value ${chalk.bold(format(config[option]))} was found.${
+  )} with value ${pc.bold(format(config[option]))} was found.${
     didYouMean && ` ${didYouMean}`
   }\n  This is probably a typing mistake. Fixing it will remove this message.`;
 
