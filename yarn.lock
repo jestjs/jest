@@ -3898,9 +3898,9 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
-    chalk: ^4.0.0
     graceful-fs: ^4.2.9
     natural-compare: ^1.4.0
+    picocolors: ^1.1.1
   languageName: unknown
   linkType: soft
 
