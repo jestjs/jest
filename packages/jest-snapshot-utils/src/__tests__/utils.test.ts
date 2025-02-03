@@ -11,8 +11,8 @@ jest.mock('graceful-fs', () => ({
 }));
 
 import * as path from 'path';
-import pc = require('picocolors');
 import * as fs from 'graceful-fs';
+import pc = require('picocolors');
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,

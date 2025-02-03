@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import pc = require('picocolors');
 import leven from 'leven';
+import pc = require('picocolors');
 import {format as prettyFormat} from 'pretty-format';
 
 const BULLET: string = pc.bold('\u25CF');
