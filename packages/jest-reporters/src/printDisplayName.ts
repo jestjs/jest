@@ -5,17 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 
 export default function printDisplayName(config: Config.ProjectConfig): string {
   const {displayName} = config;
-  const white = chalk.reset.inverse.white;
+  const white = (str: string) => pc.reset(pc.inverse(pc.white(str)));
   if (!displayName) {
     return '';
   }
 
   const {name, color} = displayName;
-  const chosenColor = chalk.reset.inverse[color] ?? white;
-  return chalk.supportsColor ? chosenColor(` ${name} `) : name;
+  const chosenColor = (str: string) =>
+    color ? pc.reset(pc.inverse(pc.createColors()[color](str))) : white(str);
+  return pc.isColorSupported ? chosenColor(` ${name} `) : name;
 }

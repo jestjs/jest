@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import slash = require('slash');
 import type {Config} from '@jest/types';
 import relativePath from './relativePath';
@@ -24,7 +24,7 @@ export default function trimAndFormatPath(
 
   // length is ok
   if ((dirname + path.sep + basename).length <= maxLength) {
-    return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
+    return slash(pc.dim(dirname + path.sep) + pc.bold(basename));
   }
 
   // we can fit trimmed dirname and full basename
@@ -32,15 +32,15 @@ export default function trimAndFormatPath(
   if (basenameLength + 4 < maxLength) {
     const dirnameLength = maxLength - 4 - basenameLength;
     dirname = `...${dirname.slice(dirname.length - dirnameLength)}`;
-    return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
+    return slash(pc.dim(dirname + path.sep) + pc.bold(basename));
   }
 
   if (basenameLength + 4 === maxLength) {
-    return slash(chalk.dim(`...${path.sep}`) + chalk.bold(basename));
+    return slash(pc.dim(`...${path.sep}`) + pc.bold(basename));
   }
 
   // can't fit dirname, but can fit trimmed basename
   return slash(
-    chalk.bold(`...${basename.slice(basename.length - maxLength - 4)}`),
+    pc.bold(`...${basename.slice(basename.length - maxLength - 4)}`),
   );
 }
