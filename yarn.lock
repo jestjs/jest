@@ -10900,7 +10900,6 @@ __metadata:
     "@fast-check/jest": ^2.0.0
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    chalk: ^4.0.0
     immutable: ^5.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
@@ -13492,7 +13491,6 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/stack-utils": ^2.0.0
-    chalk: ^4.0.0
     co: ^4.6.0
     dedent: ^1.0.0
     execa: ^5.0.0
