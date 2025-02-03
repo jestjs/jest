@@ -3994,7 +3994,6 @@ __metadata:
     "@types/micromatch": ^4.0.7
     "@types/write-file-atomic": ^4.0.0
     babel-plugin-istanbul: ^7.0.0
-    chalk: ^4.0.0
     convert-source-map: ^2.0.0
     dedent: ^1.0.0
     fast-json-stable-stringify: ^2.1.0
@@ -4003,6 +4002,7 @@ __metadata:
     jest-regex-util: "workspace:*"
     jest-util: "workspace:*"
     micromatch: ^4.0.8
+    picocolors: ^1.1.1
     pirates: ^4.0.4
     slash: ^3.0.0
     write-file-atomic: ^5.0.0

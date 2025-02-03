@@ -5,25 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import pc = require('picocolors');
 import slash = require('slash');
 
 const BULLET = '\u25CF ';
-const DOCUMENTATION_NOTE = `  ${chalk.bold(
-  'Code Transformation Documentation:',
-)}
+const DOCUMENTATION_NOTE = `  ${pc.bold('Code Transformation Documentation:')}
   https://jestjs.io/docs/code-transformation
 `;
-const UPGRADE_NOTE = `  ${chalk.bold(
+const UPGRADE_NOTE = `  ${pc.bold(
   'This error may be caused by a breaking change in Jest 28:',
 )}
   https://jest-archive-august-2023.netlify.app/docs/28.x/upgrading-to-jest28#transformer
 `;
 
 export const makeInvalidReturnValueError = (transformPath: string): string =>
-  chalk.red(
+  pc.red(
     [
-      chalk.bold(`${BULLET}Invalid return value:`),
+      pc.bold(`${BULLET}Invalid return value:`),
       '  `process()` or/and `processAsync()` method of code transformer found at ',
       `  "${slash(transformPath)}" `,
       '  should return an object or a Promise resolving to an object. The object ',
@@ -38,9 +36,9 @@ export const makeInvalidSourceMapWarning = (
   filename: string,
   transformPath: string,
 ): string =>
-  chalk.yellow(
+  pc.yellow(
     [
-      chalk.bold(`${BULLET}Invalid source map:`),
+      pc.bold(`${BULLET}Invalid source map:`),
       `  The source map for "${slash(filename)}" returned by "${slash(
         transformPath,
       )}" is invalid.`,
@@ -51,9 +49,9 @@ export const makeInvalidSourceMapWarning = (
 export const makeInvalidSyncTransformerError = (
   transformPath: string,
 ): string =>
-  chalk.red(
+  pc.red(
     [
-      chalk.bold(`${BULLET}Invalid synchronous transformer module:`),
+      pc.bold(`${BULLET}Invalid synchronous transformer module:`),
       `  "${slash(
         transformPath,
       )}" specified in the "transform" object of Jest configuration`,
@@ -63,9 +61,9 @@ export const makeInvalidSyncTransformerError = (
   );
 
 export const makeInvalidTransformerError = (transformPath: string): string =>
-  chalk.red(
+  pc.red(
     [
-      chalk.bold(`${BULLET}Invalid transformer module:`),
+      pc.bold(`${BULLET}Invalid transformer module:`),
       `  "${slash(
         transformPath,
       )}" specified in the "transform" object of Jest configuration`,
