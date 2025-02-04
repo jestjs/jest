@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import {GITHUB_ACTIONS} from 'ci-info';
-import exit = require('exit');
+import exit = require('exit-x');
 import {
   CoverageReporter,
   DefaultReporter,

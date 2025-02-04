@@ -5,33 +5,21 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@babel/helper-plugin-utils@npm:^7.24.7":
-  version: 7.24.8
-  resolution: "@babel/helper-plugin-utils@npm:7.24.8"
-  checksum: 73b1a83ba8bcee21dc94de2eb7323207391715e4369fd55844bb15cf13e3df6f3d13a40786d990e6370bf0f571d94fc31f70dec96c1d1002058258c35ca3767a
+"@babel/helper-plugin-utils@npm:^7.25.9":
+  version: 7.26.5
+  resolution: "@babel/helper-plugin-utils@npm:7.26.5"
+  checksum: 4771fbb1711c624c62d12deabc2ed7435a6e6994b6ce09d5ede1bc1bf19be59c3775461a1e693bdd596af865685e87bb2abc778f62ceadc1b2095a8e2aa74180
   languageName: node
   linkType: hard
 
 "@babel/plugin-proposal-explicit-resource-management@npm:^7.23.9":
-  version: 7.24.7
-  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.24.7"
+  version: 7.25.9
+  resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.25.9"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.24.7
-    "@babel/plugin-syntax-explicit-resource-management": ^7.24.7
+    "@babel/helper-plugin-utils": ^7.25.9
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: c7fd06651467fb54a03b521e5bd8b0ed65c9c5d34987b4c6229ec1a6e8b58f49fd4a3953776108630c0028e5d897498e062d73c888906a5d26dc97f807cdc40b
-  languageName: node
-  linkType: hard
-
-"@babel/plugin-syntax-explicit-resource-management@npm:^7.24.7":
-  version: 7.24.7
-  resolution: "@babel/plugin-syntax-explicit-resource-management@npm:7.24.7"
-  dependencies:
-    "@babel/helper-plugin-utils": ^7.24.7
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 5ae9b11adb15e5ef1cb009492c6b10db27a452100178309689247f023982fd23d05c38c5e5f99c35c8e40f7f26e8d4e7ff077793d62bdce46b6b8bfc47b17815
+  checksum: 4dd2b1751e4ec5c979d2b4481c24ee4fbefe6ff113dee6e14bb6429d5fa49836acdf2cd7800ab1847178dbba067f7b507e7fca62a06484b5271465a76cba2b45
   languageName: node
   linkType: hard
 

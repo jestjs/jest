@@ -111,6 +111,12 @@ try {
                   '@typescript-eslint/no-redundant-type-constituents': 'off',
                 },
               },
+              // {
+              //   files: ['packages/babel-plugin-jest-hoist/src/index.ts'],
+              //   rules: {
+              //     '@typescript-eslint/strict-boolean-expressions': 'off',
+              //   },
+              // },
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {
