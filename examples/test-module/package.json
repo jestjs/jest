@@ -1,0 +1,12 @@
+{
+  "name": "example-test-module",
+  "version": "1.0.0",
+  "description": "A test module with multiple exports",
+  "exports": {
+    ".": {
+      "browser": "./main.browser.js",
+      "require": "./main.cjs",
+      "import": "./main.mjs"
+    }
+  }
+}
