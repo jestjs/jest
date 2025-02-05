@@ -10802,7 +10802,6 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:*"
-    example-test-module: "workspace:*"
     jest: "workspace:*"
     jest-environment-jsdom: "workspace:*"
     react: 18.2.0
@@ -10821,12 +10820,6 @@ __metadata:
     jest: "workspace:*"
     react: 18.2.0
     react-test-renderer: 18.2.0
-  languageName: unknown
-  linkType: soft
-
-"example-test-module@workspace:*, example-test-module@workspace:examples/test-module":
-  version: 0.0.0-use.local
-  resolution: "example-test-module@workspace:examples/test-module"
   languageName: unknown
   linkType: soft
 

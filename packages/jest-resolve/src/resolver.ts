@@ -341,7 +341,7 @@ export default class Resolver {
   resolveModule(
     from: string,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): string {
     const dirname = path.dirname(from);
     const module =
@@ -485,7 +485,7 @@ export default class Resolver {
   getMockModule(
     from: string,
     name: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
@@ -548,7 +548,7 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: string,
     moduleName = '',
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): string {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
     const key = from + path.delimiter + moduleName + stringifiedOptions;
@@ -582,7 +582,7 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: string,
     moduleName = '',
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): Promise<string> {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
     const key = from + path.delimiter + moduleName + stringifiedOptions;
@@ -623,7 +623,7 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: string,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): string | null {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
@@ -640,7 +640,7 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: string,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): Promise<string | null> {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
@@ -651,6 +651,7 @@ export default class Resolver {
     const isModuleResolved = await this._isModuleResolvedAsync(
       from,
       moduleName,
+      options,
     );
     return isModuleResolved
       ? this.getModule(moduleName)
@@ -660,7 +661,7 @@ export default class Resolver {
   private _getMockPath(
     from: string,
     moduleName: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     return this.isCoreModule(moduleName)
       ? null
@@ -681,7 +682,7 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: string,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options: ResolveModuleConfig,
   ): string {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks.get(virtualMockPath)
@@ -708,7 +709,7 @@ export default class Resolver {
   private _isModuleResolved(
     from: string,
     moduleName: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): boolean {
     return !!(
       this.getModule(moduleName) ||
@@ -719,7 +720,7 @@ export default class Resolver {
   private async _isModuleResolvedAsync(
     from: string,
     moduleName: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<boolean> {
     return !!(
       this.getModule(moduleName) ||
@@ -730,7 +731,7 @@ export default class Resolver {
   resolveStubModuleName(
     from: string,
     moduleName: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     const dirname = path.dirname(from);
 
