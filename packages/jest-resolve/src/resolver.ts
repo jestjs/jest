@@ -502,7 +502,7 @@ export default class Resolver {
   async getMockModuleAsync(
     from: string,
     name: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
@@ -601,7 +601,7 @@ export default class Resolver {
       moduleName,
       options,
     );
-    const mockPath = await this._getMockPathAsync(from, moduleName);
+    const mockPath = await this._getMockPathAsync(from, moduleName, options);
 
     const sep = path.delimiter;
     const id =
@@ -671,7 +671,7 @@ export default class Resolver {
   private async _getMockPathAsync(
     from: string,
     moduleName: string,
-    options?: Pick<ResolveModuleConfig, 'conditions'>,
+    options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
     return this.isCoreModule(moduleName)
       ? null
