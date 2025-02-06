@@ -1,8 +1,6 @@
 ---
 title: 'Jest joins OpenJS Foundation'
-author: Ricky Hanlon
-authorURL: https://github.com/rickhanlonii
-authorImageURL: https://avatars.githubusercontent.com/u/2440089
+authors: rickhanlonii
 ---
 
 ![Banner image for Meta Open Source and OpenJS Foundation](/img/blog/openjs.png)

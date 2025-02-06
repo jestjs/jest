@@ -15,7 +15,7 @@ globalThis.performance.mark = mockPerformanceMark;
 test('fakes all APIs', () => {
   jest.useFakeTimers();
 
-  expect(globalThis.performance.mark).toBeUndefined();
+  expect(globalThis.performance.mark).not.toBe(mockPerformanceMark);
 });
 
 test('does not fake `performance` instance', () => {

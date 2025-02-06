@@ -1,8 +1,6 @@
 ---
 title: '🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements'
-author: Rogelio Guzman
-authorURL: http://twitter.com/rogeliog
-authorFBID: 511230566
+authors: rogeliog
 ---
 
 Today we are pleased to ship version 19 of the Jest testing platform. It's the biggest Jest release we have shipped so far and we are quite excited to show you what we've built over the last two months:

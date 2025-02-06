@@ -140,7 +140,7 @@ it('works with minimal options', () => {
   expect(WorkerPool).toHaveBeenCalledTimes(1);
   expect(typeof farm1.methodA).toBe('function');
   expect(typeof farm1.methodB).toBe('function');
-  expect(typeof farm1).toEqual(
+  expect(farm1).toEqual(
     expect.not.objectContaining({
       _shouldNotExist: expect.anything,
     }),
