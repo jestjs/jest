@@ -12,9 +12,9 @@ exports[`jest-each .describe throws error when there are additional words in fir
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .describe throws error when there are additional words in last column heading 1`] = `
@@ -24,9 +24,9 @@ exports[`jest-each .describe throws error when there are additional words in las
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .describe throws error when there are additional words in second column heading 1`] = `
@@ -36,9 +36,9 @@ exports[`jest-each .describe throws error when there are additional words in sec
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .describe throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -46,13 +46,13 @@ exports[`jest-each .describe throws error when there are fewer arguments than he
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -62,10 +62,10 @@ exports[`jest-each .describe throws error when there are fewer arguments than he
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -87,9 +87,9 @@ exports[`jest-each .describe.only throws error when there are additional words i
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .describe.only throws error when there are additional words in last column heading 1`] = `
@@ -99,9 +99,9 @@ exports[`jest-each .describe.only throws error when there are additional words i
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .describe.only throws error when there are additional words in second column heading 1`] = `
@@ -111,9 +111,9 @@ exports[`jest-each .describe.only throws error when there are additional words i
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .describe.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -121,13 +121,13 @@ exports[`jest-each .describe.only throws error when there are fewer arguments th
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -137,10 +137,10 @@ exports[`jest-each .describe.only throws error when there are fewer arguments th
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -162,9 +162,9 @@ exports[`jest-each .fdescribe throws error when there are additional words in fi
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .fdescribe throws error when there are additional words in last column heading 1`] = `
@@ -174,9 +174,9 @@ exports[`jest-each .fdescribe throws error when there are additional words in la
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .fdescribe throws error when there are additional words in second column heading 1`] = `
@@ -186,9 +186,9 @@ exports[`jest-each .fdescribe throws error when there are additional words in se
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .fdescribe throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -196,13 +196,13 @@ exports[`jest-each .fdescribe throws error when there are fewer arguments than h
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -212,10 +212,10 @@ exports[`jest-each .fdescribe throws error when there are fewer arguments than h
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -237,9 +237,9 @@ exports[`jest-each .fit throws error when there are additional words in first co
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .fit throws error when there are additional words in last column heading 1`] = `
@@ -249,9 +249,9 @@ exports[`jest-each .fit throws error when there are additional words in last col
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .fit throws error when there are additional words in second column heading 1`] = `
@@ -261,9 +261,9 @@ exports[`jest-each .fit throws error when there are additional words in second c
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .fit throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -271,13 +271,13 @@ exports[`jest-each .fit throws error when there are fewer arguments than heading
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -287,10 +287,10 @@ exports[`jest-each .fit throws error when there are fewer arguments than heading
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -312,9 +312,9 @@ exports[`jest-each .it throws error when there are additional words in first col
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .it throws error when there are additional words in last column heading 1`] = `
@@ -324,9 +324,9 @@ exports[`jest-each .it throws error when there are additional words in last colu
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .it throws error when there are additional words in second column heading 1`] = `
@@ -336,9 +336,9 @@ exports[`jest-each .it throws error when there are additional words in second co
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .it throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -346,13 +346,13 @@ exports[`jest-each .it throws error when there are fewer arguments than headings
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -362,10 +362,10 @@ exports[`jest-each .it throws error when there are fewer arguments than headings
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -387,9 +387,9 @@ exports[`jest-each .it.only throws error when there are additional words in firs
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .it.only throws error when there are additional words in last column heading 1`] = `
@@ -399,9 +399,9 @@ exports[`jest-each .it.only throws error when there are additional words in last
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .it.only throws error when there are additional words in second column heading 1`] = `
@@ -411,9 +411,9 @@ exports[`jest-each .it.only throws error when there are additional words in seco
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .it.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -421,13 +421,13 @@ exports[`jest-each .it.only throws error when there are fewer arguments than hea
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -437,10 +437,10 @@ exports[`jest-each .it.only throws error when there are fewer arguments than hea
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -462,9 +462,9 @@ exports[`jest-each .test throws error when there are additional words in first c
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .test throws error when there are additional words in last column heading 1`] = `
@@ -474,9 +474,9 @@ exports[`jest-each .test throws error when there are additional words in last co
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .test throws error when there are additional words in second column heading 1`] = `
@@ -486,9 +486,9 @@ exports[`jest-each .test throws error when there are additional words in second 
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .test throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -496,13 +496,13 @@ exports[`jest-each .test throws error when there are fewer arguments than headin
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -512,10 +512,10 @@ exports[`jest-each .test throws error when there are fewer arguments than headin
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -537,9 +537,9 @@ exports[`jest-each .test.concurrent throws error when there are additional words
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are additional words in last column heading 1`] = `
@@ -549,9 +549,9 @@ exports[`jest-each .test.concurrent throws error when there are additional words
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are additional words in second column heading 1`] = `
@@ -561,9 +561,9 @@ exports[`jest-each .test.concurrent throws error when there are additional words
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -571,13 +571,13 @@ exports[`jest-each .test.concurrent throws error when there are fewer arguments 
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -587,10 +587,10 @@ exports[`jest-each .test.concurrent throws error when there are fewer arguments 
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -612,9 +612,9 @@ exports[`jest-each .test.concurrent.only throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are additional words in last column heading 1`] = `
@@ -624,9 +624,9 @@ exports[`jest-each .test.concurrent.only throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are additional words in second column heading 1`] = `
@@ -636,9 +636,9 @@ exports[`jest-each .test.concurrent.only throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -646,13 +646,13 @@ exports[`jest-each .test.concurrent.only throws error when there are fewer argum
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -662,10 +662,10 @@ exports[`jest-each .test.concurrent.only throws error when there are fewer argum
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -687,9 +687,9 @@ exports[`jest-each .test.concurrent.skip throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are additional words in last column heading 1`] = `
@@ -699,9 +699,9 @@ exports[`jest-each .test.concurrent.skip throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are additional words in second column heading 1`] = `
@@ -711,9 +711,9 @@ exports[`jest-each .test.concurrent.skip throws error when there are additional 
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -721,13 +721,13 @@ exports[`jest-each .test.concurrent.skip throws error when there are fewer argum
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -737,10 +737,10 @@ exports[`jest-each .test.concurrent.skip throws error when there are fewer argum
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -762,9 +762,9 @@ exports[`jest-each .test.only throws error when there are additional words in fi
 
 Received:
 
-<red>"</color>
-<red>          a is the left | b    | expected</color>
-<red>          "</color>"
+<red>"
+          a is the left | b    | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.only throws error when there are additional words in last column heading 1`] = `
@@ -774,9 +774,9 @@ exports[`jest-each .test.only throws error when there are additional words in la
 
 Received:
 
-<red>"</color>
-<red>          a    | b    | expected value</color>
-<red>          "</color>"
+<red>"
+          a    | b    | expected value
+          "</color>"
 `;
 
 exports[`jest-each .test.only throws error when there are additional words in second column heading 1`] = `
@@ -786,9 +786,9 @@ exports[`jest-each .test.only throws error when there are additional words in se
 
 Received:
 
-<red>"</color>
-<red>          a    | b is the right | expected</color>
-<red>          "</color>"
+<red>"
+          a    | b is the right | expected
+          "</color>"
 `;
 
 exports[`jest-each .test.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -796,13 +796,13 @@ exports[`jest-each .test.only throws error when there are fewer arguments than h
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+  1,
+  1,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
@@ -812,10 +812,10 @@ exports[`jest-each .test.only throws error when there are fewer arguments than h
 <green>a | b | expected</color>
 
 Received:
-<red>Array [</color>
-<red>  0,</color>
-<red>  1,</color>
-<red>]</color>
+<red>Array [
+  0,
+  1,
+]</color>
 
 Missing <red>1</color> argument"
 `;
