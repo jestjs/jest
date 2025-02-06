@@ -13615,9 +13615,9 @@ __metadata:
   resolution: "jest-each@workspace:packages/jest-each"
   dependencies:
     "@jest/types": "workspace:*"
-    chalk: ^4.0.0
     jest-get-type: "workspace:*"
     jest-util: "workspace:*"
+    picocolors: ^1.1.1
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
