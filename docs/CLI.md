@@ -40,7 +40,7 @@ Run tests that match this spec name (match against the name in `describe` or `te
 jest --maxRelatedTestsDepth=5
 ```
 
-Used with `--findRelatedTests`, sets the maximum import depth that it will accept tests from. 
+Used with `--findRelatedTests`, sets the maximum import depth that it will accept tests from.
 
 ```bash
 jest -t name-of-spec
