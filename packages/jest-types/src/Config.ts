@@ -271,6 +271,7 @@ export type GlobalConfig = {
   expand: boolean;
   filter?: string;
   findRelatedTests: boolean;
+  maxRelatedTestsDepth: number;
   forceExit: boolean;
   json: boolean;
   globalSetup?: string;
@@ -424,6 +425,7 @@ export type Argv = Arguments<
     env: string;
     expand: boolean;
     findRelatedTests: boolean;
+    maxRelatedTestsDepth: number;
     forceExit: boolean;
     globals: string;
     globalSetup: string | null | undefined;

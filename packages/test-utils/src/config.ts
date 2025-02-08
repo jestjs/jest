@@ -33,6 +33,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   listTests: false,
   logHeapUsage: false,
   maxConcurrency: 5,
+  maxRelatedTestsDepth: Infinity,
   maxWorkers: 2,
   noSCM: undefined,
   noStackTrace: false,

@@ -37,6 +37,12 @@ jest --findRelatedTests path/to/fileA.js path/to/fileB.js
 Run tests that match this spec name (match against the name in `describe` or `test`, basically).
 
 ```bash
+jest --maxRelatedTestsDepth=5
+```
+
+Used with `--findRelatedTests`, sets the maximum import depth that it will accept tests from. 
+
+```bash
 jest -t name-of-spec
 ```
 
@@ -212,6 +218,10 @@ module.exports = testPaths => {
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
 Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary. Can be used together with `--coverage` to include a test coverage for the source files, no duplicate `--collectCoverageFrom` arguments needed.
+
+### `--maxRelatedTestsDepth=<number>`
+
+Used with `--findRelatedTests`, limits how deep Jest will traverse the dependency graph when finding related tests. A test at depth 1 directly imports the changed file, a test at depth 2 imports a file that imports the changed file, and so on. This is useful for large projects where you want to limit the scope of related test execution.
 
 ### `--forceExit`
 
