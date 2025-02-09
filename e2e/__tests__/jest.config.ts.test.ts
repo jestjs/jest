@@ -148,7 +148,7 @@ onNodeVersions('>=23.6', () => {
     expect(
       stderr
         // Remove the stack trace from the error message
-        .slice(0, Math.max(0, stderr.indexOf('Caused by')))
+        .slice(0, Math.max(0, stderr.indexOf('at readConfigFileAndSetRootDir')))
         .trim()
         // Replace the path to the config file with a placeholder
         .replace(
