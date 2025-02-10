@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import type {TestResult} from '@jest/test-result';
 import {pluralize} from 'jest-util';
 
 const ARROW = ' \u203A ';
 const DOT = ' \u2022 ';
-const FAIL_COLOR = chalk.bold.red;
-const SNAPSHOT_ADDED = chalk.bold.green;
-const SNAPSHOT_UPDATED = chalk.bold.green;
-const SNAPSHOT_OUTDATED = chalk.bold.yellow;
+const FAIL_COLOR = (str: string) => pc.bold(pc.red(str));
+const SNAPSHOT_ADDED = (str: string) => pc.bold(pc.green(str));
+const SNAPSHOT_UPDATED = (str: string) => pc.bold(pc.green(str));
+const SNAPSHOT_OUTDATED = (str: string) => pc.bold(pc.yellow(str));
 
 export default function getSnapshotStatus(
   snapshot: TestResult['snapshot'],

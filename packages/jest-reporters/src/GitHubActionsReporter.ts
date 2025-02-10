@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import stripAnsi = require('strip-ansi');
 import type {
   AggregatedResult,
@@ -314,15 +314,15 @@ export default class GitHubActionsReporter extends BaseReporter {
   private printResultTree(resultTree: ResultTree): void {
     let perfMs;
     if (resultTree.performanceInfo.slow) {
-      perfMs = ` (${chalk.red.inverse(
-        `${resultTree.performanceInfo.runtime} ms`,
+      perfMs = ` (${pc.red(
+        pc.inverse(`${resultTree.performanceInfo.runtime} ms`),
       )})`;
     } else {
       perfMs = ` (${resultTree.performanceInfo.runtime} ms)`;
     }
     if (resultTree.passed) {
       this.startGroup(
-        `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
+        `${pc.bold(pc.green(pc.inverse('PASS')))} ${resultTree.name}${perfMs}`,
       );
       for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, true, 1);
@@ -330,7 +330,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.endGroup();
     } else {
       this.log(
-        `  ${chalk.bold.red.inverse('FAIL')} ${resultTree.name}${perfMs}`,
+        `  ${pc.bold(pc.red(pc.inverse('FAIL')))} ${resultTree.name}${perfMs}`,
       );
       for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, false, 1);
@@ -355,17 +355,17 @@ export default class GitHubActionsReporter extends BaseReporter {
       let resultSymbol;
       switch (resultTree.status) {
         case 'passed':
-          resultSymbol = chalk.green(ICONS.success);
+          resultSymbol = pc.green(ICONS.success);
           break;
         case 'failed':
-          resultSymbol = chalk.red(ICONS.failed);
+          resultSymbol = pc.red(ICONS.failed);
           break;
         case 'todo':
-          resultSymbol = chalk.magenta(ICONS.todo);
+          resultSymbol = pc.magenta(ICONS.todo);
           break;
         case 'pending':
         case 'skipped':
-          resultSymbol = chalk.yellow(ICONS.pending);
+          resultSymbol = pc.yellow(ICONS.pending);
           break;
       }
       this.log(

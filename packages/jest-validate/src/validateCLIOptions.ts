@@ -6,7 +6,7 @@
  */
 
 import camelcase = require('camelcase');
-import chalk = require('chalk');
+import pc = require('picocolors');
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import type {
@@ -21,8 +21,8 @@ import {
   logValidationWarning,
 } from './utils';
 
-const BULLET: string = chalk.bold('\u25CF');
-export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
+const BULLET: string = pc.bold('\u25CF');
+export const DOCUMENTATION_NOTE = `  ${pc.bold('CLI Options Documentation:')}
   https://jestjs.io/docs/cli
 `;
 
@@ -33,7 +33,7 @@ const createCLIValidationError = (
   let title = `${BULLET} Unrecognized CLI Parameter`;
   let message;
   const comment =
-    `  ${chalk.bold('CLI Options Documentation')}:\n` +
+    `  ${pc.bold('CLI Options Documentation')}:\n` +
     '  https://jestjs.io/docs/cli\n';
 
   if (unrecognizedOptions.length === 1) {
@@ -42,14 +42,14 @@ const createCLIValidationError = (
       unrecognized.length > 1
         ? createDidYouMeanMessage(unrecognized, [...allowedOptions])
         : '';
-    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.${
+    message = `  Unrecognized option ${pc.bold(format(unrecognized))}.${
       didYouMeanMessage ? ` ${didYouMeanMessage}` : ''
     }`;
   } else {
     title += 's';
     message =
       '  Following options were not recognized:\n' +
-      `  ${chalk.bold(format(unrecognizedOptions))}`;
+      `  ${pc.bold(format(unrecognizedOptions))}`;
   }
 
   return new ValidationError(title, message, comment);

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import pc = require('picocolors');
 import colorize from './colorize';
 
 const DOTS = '...';
@@ -23,13 +23,13 @@ export default function formatTestNameByPattern(
   try {
     regexp = new RegExp(pattern, 'i');
   } catch {
-    return chalk.dim(inlineTestName);
+    return pc.dim(inlineTestName);
   }
 
   const match = inlineTestName.match(regexp);
 
   if (!match) {
-    return chalk.dim(inlineTestName);
+    return pc.dim(inlineTestName);
   }
 
   const startPatternIndex = Math.max(match.index ?? 0, 0);
@@ -57,5 +57,5 @@ export default function formatTestNameByPattern(
     }
   }
 
-  return `${chalk.dim(slicedTestName)}${chalk.reset(DOTS)}`;
+  return `${pc.dim(slicedTestName)}${pc.reset(DOTS)}`;
 }
