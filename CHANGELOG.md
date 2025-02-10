@@ -129,6 +129,7 @@
 - `[docs]` `Revised documentation for .toHaveBeenCalled()` to accurately depict its functionality. ([#14853](https://github.com/jestjs/jest/pull/14853))
 - `[docs]` Removed ExpressJS reference link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15270))
 - `[docs]` Removed `Running AngularJS Tests with Jest reference` link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15311))
+- `[jest-each]` Replaced `chalk` with `picocolors` ([#15490](https://github.com/jestjs/jest/pull/15490))
 
 ## 29.7.0
 
