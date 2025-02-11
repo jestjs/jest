@@ -742,7 +742,9 @@ describe('getMockModuleAsync', () => {
     } as ResolverConfig);
     const src = require.resolve('../');
 
-    await resolver.resolveModuleAsync(src, 'dependentModule');
+    await resolver.resolveModuleAsync(src, 'dependentModule', {
+      conditions: ['browser'],
+    });
 
     expect(mockUserResolverAsync.async).toHaveBeenCalled();
     expect(mockUserResolverAsync.async.mock.calls[0][0]).toBe(
@@ -751,6 +753,10 @@ describe('getMockModuleAsync', () => {
     expect(mockUserResolverAsync.async.mock.calls[0][1]).toHaveProperty(
       'basedir',
       path.dirname(src),
+    );
+    expect(mockUserResolverAsync.async.mock.calls[0][1]).toHaveProperty(
+      'conditions',
+      ['browser'],
     );
   });
 });
