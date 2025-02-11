@@ -102,6 +102,7 @@ exports[`prints the config object 1`] = `
     "listTests": false,
     "logHeapUsage": false,
     "maxConcurrency": 5,
+    "maxRelatedTestsDepth": Infinity,
     "maxWorkers": 2,
     "noStackTrace": false,
     "nonFlagArgs": [],

@@ -126,6 +126,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "listTests": false,
     "logHeapUsage": false,
     "maxConcurrency": 5,
+    "maxRelatedTestsDepth": Infinity,
     "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
     "nonFlagArgs": [],
