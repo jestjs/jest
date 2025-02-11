@@ -34,14 +34,13 @@ Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 jest --findRelatedTests path/to/fileA.js path/to/fileB.js
 ```
 
-Used with `--findRelatedTests`, sets the maximum import depth that it will accept tests from. 
+Used with `--findRelatedTests`, sets the maximum import depth that it will accept tests from.
 
 ```bash
 jest --maxRelatedTestsDepth=5
 ```
 
 Run tests that match this spec name (match against the name in `describe` or `test`, basically).
-
 
 ```bash
 jest -t name-of-spec

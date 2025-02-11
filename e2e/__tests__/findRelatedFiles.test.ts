@@ -273,30 +273,39 @@ describe('--findRelatedTests flag', () => {
     (depth, expectedTests) => {
       writeFiles(DIR, {
         '.watchmanconfig': '{}',
-        '__tests__/a.test.js': `const a = require('../a'); test('a', () => {expect(a).toBe("value")});`,
-        '__tests__/b.test.js': `const b = require('../b'); test('b', () => {expect(b).toBe("value")});`,
-        '__tests__/b2.test.js': `const b = require('../b2'); test('b', () => {expect(b).toBe("value")});`,
-        '__tests__/c.test.js': `const c = require('../c'); test('c', () => {expect(c).toBe("value")});`,
-        '__tests__/d.test.js': `const d = require('../d'); test('d', () => {expect(d).toBe("value")});`,
+        '__tests__/a.test.js':
+          "const a = require('../a'); test('a', () => {expect(a).toBe(\"value\")});",
+        '__tests__/b.test.js':
+          "const b = require('../b'); test('b', () => {expect(b).toBe(\"value\")});",
+        '__tests__/b2.test.js':
+          "const b = require('../b2'); test('b', () => {expect(b).toBe(\"value\")});",
+        '__tests__/c.test.js':
+          "const c = require('../c'); test('c', () => {expect(c).toBe(\"value\")});",
+        '__tests__/d.test.js':
+          "const d = require('../d'); test('d', () => {expect(d).toBe(\"value\")});",
         'a.js': 'module.exports = "value";',
         'b.js': 'module.exports = require("./a");',
         'b2.js': 'module.exports = require("./a");',
         'c.js': 'module.exports = require("./b");',
         'd.js': 'module.exports = require("./c");',
-        'package.json': JSON.stringify({ jest: { testEnvironment: 'node' } }),
+        'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
       });
-  
-      const { stderr } = runJest(DIR, [`--maxRelatedTestsDepth=${depth}`, '--findRelatedTests', 'a.js']);
-  
-      expectedTests.forEach((testFile) => {
+
+      const {stderr} = runJest(DIR, [
+        `--maxRelatedTestsDepth=${depth}`,
+        '--findRelatedTests',
+        'a.js',
+      ]);
+
+      for (const testFile of expectedTests) {
         expect(stderr).toMatch(`PASS __tests__/${testFile}.test.js`);
-      });
-  
-      ['a', 'b', 'b2', 'c', 'd'].forEach((testFile) => {
+      }
+
+      for (const testFile of ['a', 'b', 'b2', 'c', 'd']) {
         if (!expectedTests.includes(testFile)) {
           expect(stderr).not.toMatch(`PASS __tests__/${testFile}.test.js`);
         }
-      });
-    }
+      }
+    },
   );
 });
