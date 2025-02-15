@@ -3862,6 +3862,7 @@ __metadata:
     jest-worker: "workspace:*"
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
+    one-double-zero-core: ^1.0.0
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -13389,7 +13390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-coverage@npm:^3.0.0, istanbul-lib-coverage@npm:^3.2.0":
+"istanbul-lib-coverage@npm:^3.0.0, istanbul-lib-coverage@npm:^3.2.0, istanbul-lib-coverage@npm:^3.2.2":
   version: 3.2.2
   resolution: "istanbul-lib-coverage@npm:3.2.2"
   checksum: 2367407a8d13982d8f7a859a35e7f8dd5d8f75aae4bb5484ede3a9ea1b426dc245aff28b976a2af48ee759fdd9be374ce2bd2669b644f31e76c5f46a2e29a831
@@ -17004,6 +17005,16 @@ __metadata:
   dependencies:
     wrappy: 1
   checksum: cd0a88501333edd640d95f0d2700fbde6bff20b3d4d9bdc521bdd31af0656b5706570d6c6afe532045a20bb8dc0849f8332d6f2a416e0ba6d3d3b98806c7db68
+  languageName: node
+  linkType: hard
+
+"one-double-zero-core@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "one-double-zero-core@npm:1.0.0"
+  dependencies:
+    "@jridgewell/trace-mapping": ^0.3.25
+    istanbul-lib-coverage: ^3.2.2
+  checksum: 71c8b1d007cd6400efd4f19aa41ad725abec80eb9eb84cf76d7815e3787fa6aa718f6990a4689a289de886ff1c44da1d1983f70d8bd76a76ca8fd2b133b5c22b
   languageName: node
   linkType: hard
 
