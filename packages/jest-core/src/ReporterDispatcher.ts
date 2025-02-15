@@ -107,7 +107,8 @@ export default class ReporterDispatcher {
   getErrors(): Array<Error> {
     return this._reporters.reduce<Array<Error>>((list, reporter) => {
       const error = reporter.getLastError?.();
-      return error ? [...list, error] : list;
+      if (error) list.push(error);
+      return list;
     }, []);
   }
 
