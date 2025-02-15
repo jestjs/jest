@@ -34,7 +34,7 @@
 // Forward diagonals kF:
 // zero diagonal intersects top left corner
 // positive diagonals intersect top edge
-// negative diagonals insersect left edge
+// negative diagonals intersect left edge
 //
 // Reverse diagonals kR:
 // zero diagonal intersects bottom right corner
