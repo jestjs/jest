@@ -52,6 +52,7 @@ export const makeDescribe = (
     type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
     hooks: [],
+    childrenWithHooks: [],
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
@@ -105,27 +106,18 @@ const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
 };
 
 type DescribeHooks = {
-  beforeAll: Array<Circus.Hook>;
-  afterAll: Array<Circus.Hook>;
+  hooks: Array<Circus.Hook>;
 };
 
 export const getAllHooksForDescribe = (
   describe: Circus.DescribeBlock,
 ): DescribeHooks => {
-  const result: DescribeHooks = {
-    afterAll: [],
-    beforeAll: [],
-  };
+  const result: DescribeHooks = {hooks: []};
 
   if (hasEnabledTest(describe)) {
     for (const hook of describe.hooks) {
-      switch (hook.type) {
-        case 'beforeAll':
-          result.beforeAll.push(hook);
-          break;
-        case 'afterAll':
-          result.afterAll.push(hook);
-          break;
+      if (hook.type === 'beforeAll' || hook.type === 'afterAll') {
+        result.hooks.push(hook);
       }
     }
   }
@@ -134,35 +126,44 @@ export const getAllHooksForDescribe = (
 };
 
 type TestHooks = {
-  beforeEach: Array<Circus.Hook>;
-  afterEach: Array<Circus.Hook>;
+  hooks: Array<Circus.Hook>;
 };
 
 export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
-  const result: TestHooks = {afterEach: [], beforeEach: []};
+  const result: TestHooks = {hooks: []};
   if (test.concurrent) {
     // *Each hooks are not run for concurrent tests
     return result;
   }
 
+  // First collect hooks from all blocks in parent-first order
   let block: Circus.DescribeBlock | undefined | null = test.parent;
+  let current: Circus.TestEntry | Circus.DescribeBlock = test;
 
   do {
-    const beforeEachForCurrentBlock = [];
-    for (const hook of block.hooks) {
-      switch (hook.type) {
-        case 'beforeEach':
-          beforeEachForCurrentBlock.push(hook);
-          break;
-        case 'afterEach':
-          result.afterEach.push(hook);
-          break;
+    const currentIndexInBlock = block.childrenWithHooks.indexOf(current);
+
+    // Add hooks in their original order within each block
+    const hooksBeforeCurrent: Array<Circus.Hook> = [];
+
+    for (let i = 0; i < currentIndexInBlock; i++) {
+      const child = block?.childrenWithHooks[i];
+      if (child.type === 'beforeEach' || child.type === 'afterEach') {
+        hooksBeforeCurrent.push(child);
       }
     }
-    // 'beforeEach' hooks are executed from top to bottom, the opposite of the
-    // way we traversed it.
-    result.beforeEach.unshift(...beforeEachForCurrentBlock);
-  } while ((block = block.parent));
+
+    for (let i = currentIndexInBlock + 1; i < block?.children.length; i++) {
+      const child = block.childrenWithHooks[i];
+      if (child.type === 'beforeEach' || child?.type === 'afterEach') {
+        // Parent block hooks go at the start
+        result.hooks.push(child);
+      }
+    }
+
+    result.hooks.unshift(...hooksBeforeCurrent);
+  } while (((current = block), (block = block.parent)));
+
   return result;
 };
 
@@ -203,7 +204,7 @@ export const callAsyncCircusFn = (
   const {fn, asyncError} = testOrHook;
   const doneCallback = takesDoneCallback(fn);
 
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void | unknown>((resolve, reject) => {
     timeoutID = setTimeout(
       () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
       timeout,
@@ -260,7 +261,7 @@ export const callAsyncCircusFn = (
             throw errorAsErrorObject;
           }
 
-          return reason ? reject(errorAsErrorObject) : resolve();
+          return reason ? reject(errorAsErrorObject) : resolve(void undefined);
         });
       };
 
@@ -282,7 +283,10 @@ export const callAsyncCircusFn = (
     }
 
     if (isPromise(returnedValue)) {
-      returnedValue.then(() => resolve(), reject);
+      returnedValue.then(
+        result => (isHook ? resolve(result) : resolve(void undefined)),
+        reject,
+      );
       return;
     }
 
@@ -298,9 +302,13 @@ export const callAsyncCircusFn = (
       return;
     }
 
+    if (isHook) {
+      resolve(returnedValue);
+    }
+
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
-    resolve();
+    resolve(void undefined);
   }).finally(() => {
     completed = true;
     // If timeout is not cleared/unrefed the node process won't exit until
