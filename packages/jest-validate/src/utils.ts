@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import leven from 'leven';
+import pc = require('picocolors');
 import {format as prettyFormat} from 'pretty-format';
 
-const BULLET: string = chalk.bold('\u25CF');
+const BULLET: string = pc.bold('\u25CF');
 export const DEPRECATION = `${BULLET} Deprecation Warning`;
 export const ERROR = `${BULLET} Validation Error`;
 export const WARNING = `${BULLET} Validation Warning`;
@@ -34,7 +34,7 @@ export class ValidationError extends Error {
     super();
     comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
-    this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
+    this.message = pc.red(`${pc.bold(name)}:\n\n${message}${comment}`);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});
   }
@@ -46,7 +46,7 @@ export const logValidationWarning = (
   comment?: string | null,
 ): void => {
   comment = comment ? `\n\n${comment}` : '\n';
-  console.warn(chalk.yellow(`${chalk.bold(name)}:\n\n${message}${comment}`));
+  console.warn(pc.yellow(`${pc.bold(name)}:\n\n${message}${comment}`));
 };
 
 export const createDidYouMeanMessage = (
@@ -58,5 +58,5 @@ export const createDidYouMeanMessage = (
     return steps < 3;
   });
 
-  return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';
+  return suggestion ? `Did you mean ${pc.bold(format(suggestion))}?` : '';
 };

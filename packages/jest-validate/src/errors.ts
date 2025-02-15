@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import pc = require('picocolors');
 import {getType} from 'jest-get-type';
 import {getValues} from './condition';
 import type {ValidationOptions} from './types';
@@ -21,12 +21,12 @@ export const errorMessage = (
   const conditions = getValues(defaultValue);
   const validTypes: Array<string> = [...new Set(conditions.map(getType))];
 
-  const message = `  Option ${chalk.bold(
+  const message = `  Option ${pc.bold(
     `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
   )} must be of type:
-    ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
+    ${validTypes.map(e => pc.bold(pc.green(e))).join(' or ')}
   but instead received:
-    ${chalk.bold.red(getType(received))}
+    ${pc.bold(pc.red(getType(received)))}
 
   Example:
 ${formatExamples(option, conditions)}`;
@@ -40,7 +40,7 @@ ${formatExamples(option, conditions)}`;
 function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
     e => `  {
-    ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}
+    ${pc.bold(`"${option}"`)}: ${pc.bold(formatPrettyObject(e))}
   }`,
   ).join(`
 

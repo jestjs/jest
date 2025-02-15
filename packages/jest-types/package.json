@@ -26,7 +26,7 @@
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
     "@types/yargs": "^17.0.8",
-    "chalk": "^4.0.0"
+    "picocolors": "^1.1.1"
   },
   "publishConfig": {
     "access": "public"

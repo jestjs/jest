@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import chalk = require('chalk');
+import pc = require('picocolors');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const replacePathSepForRegex = (string: string) => {
@@ -127,15 +127,15 @@ const format = (value: string) =>
 
 export const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Record<string, unknown>) =>
-    `  Option ${chalk.bold(
+    `  Option ${pc.bold(
       'preprocessorIgnorePatterns',
-    )} was replaced by ${chalk.bold(
+    )} was replaced by ${pc.bold(
       'transformIgnorePatterns',
     )}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(
+    ${pc.bold('"transformIgnorePatterns"')}: ${pc.bold(
       `${format(config.preprocessorIgnorePatterns as string)}`,
     )}
   }
@@ -143,13 +143,13 @@ export const deprecatedConfig = {
   Please update your configuration.`,
 
   scriptPreprocessor: (config: Record<string, unknown>) =>
-    `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
+    `  Option ${pc.bold('scriptPreprocessor')} was replaced by ${pc.bold(
       'transform',
     )}, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transform"')}: ${chalk.bold(
+    ${pc.bold('"transform"')}: ${pc.bold(
       `{".*": ${format(config.scriptPreprocessor as string)}}`,
     )}
   }

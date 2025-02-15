@@ -18,9 +18,9 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^4.0.0",
     "emittery": "^0.13.1",
     "jest-util": "workspace:*",
+    "picocolors": "^1.1.1",
     "string-length": "^4.0.1"
   },
   "repository": {

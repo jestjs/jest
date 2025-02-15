@@ -8,9 +8,9 @@
 import * as path from 'path';
 import {performance} from 'perf_hooks';
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
 import exit = require('exit-x');
 import * as fs from 'graceful-fs';
+import * as pc from 'picocolors';
 import {CustomConsole} from '@jest/console';
 import {
   type AggregatedResult,
@@ -175,7 +175,7 @@ export default async function runJest({
     ).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
-        `\n${chalk.bold(
+        `\n${pc.bold(
           '--watch',
         )} is not supported without git/hg, please use --watchAll\n`,
       );

@@ -23,7 +23,6 @@
     "@jest/types": "workspace:*",
     "@jridgewell/trace-mapping": "^0.3.18",
     "babel-plugin-istanbul": "^7.0.0",
-    "chalk": "^4.0.0",
     "convert-source-map": "^2.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.9",
@@ -31,6 +30,7 @@
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "micromatch": "^4.0.8",
+    "picocolors": "^1.1.1",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
     "write-file-atomic": "^5.0.0"

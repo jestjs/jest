@@ -6,17 +6,17 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
+import pc = require('picocolors');
 import type {Config} from '@jest/types';
 import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
-export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
-  `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
+export const SNAPSHOT_VERSION_WARNING = pc.yellow(
+  `${pc.bold('Warning')}: Before you upgrade snapshots, ` +
     'we recommend that you revert any local changes to tests or other code, ' +
     'to ensure that you do not store invalid state.',
 );
@@ -30,8 +30,8 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 
   if (!version) {
     return new Error(
-      chalk.red(
-        `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
+      pc.red(
+        `${pc.bold('Outdated snapshot')}: No snapshot header found. ` +
           'Jest 19 introduced versioned snapshots to ensure all developers ' +
           'on a project are using the same version of Jest. ' +
           'Please update all snapshots during this upgrade of Jest.\n\n',
@@ -42,8 +42,8 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   if (version < SNAPSHOT_VERSION) {
     return new Error(
       // eslint-disable-next-line prefer-template
-      chalk.red(
-        `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
+      pc.red(
+        `${pc.red(pc.bold('Outdated snapshot'))}: The version of the snapshot ` +
           'file associated with this test is outdated. The snapshot file ' +
           'version ensures that all developers on a project are using ' +
           'the same version of Jest. ' +
@@ -59,8 +59,8 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   if (version > SNAPSHOT_VERSION) {
     return new Error(
       // eslint-disable-next-line prefer-template
-      chalk.red(
-        `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
+      pc.red(
+        `${pc.red(pc.bold('Outdated Jest version'))}: The version of this ` +
           'snapshot file indicates that this project is meant to be used ' +
           'with a newer version of Jest. The snapshot file version ensures ' +
           'that all developers on a project are using the same version of ' +

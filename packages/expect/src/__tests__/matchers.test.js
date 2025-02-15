@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const chalk = require('chalk');
 const Immutable = require('immutable');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {stringify} = require('jest-matcher-utils');
 const {expect: jestExpect} = require('../');
-const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -19,14 +17,6 @@ jestExpect.extend({
     const pass = fn === undefined || typeof fn === 'function';
     return {message: () => 'expect either a function or undefined', pass};
   },
-});
-
-beforeAll(() => {
-  chalk.enabled = true;
-});
-
-afterAll(() => {
-  chalk.enabled = chalkEnabled;
 });
 
 it('should throw if passed two arguments', () => {
