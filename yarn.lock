@@ -8188,10 +8188,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cjs-module-lexer@npm:^1.0.0":
-  version: 1.4.1
-  resolution: "cjs-module-lexer@npm:1.4.1"
-  checksum: 2556807a99aec1f9daac60741af96cd613a707f343174ae7967da46402c91dced411bf830d209f2e93be4cecea46fc75cecf1f17c799d7d8a9e1dd6204bfcd22
+"cjs-module-lexer@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "cjs-module-lexer@npm:2.0.0"
+  checksum: d5a11470657ab6820828561c499f12a745968184afbe176affd2fcf8063e6bffe87793780dcca18a57cd284a6444fd39527e1a2dee97cdf3c3a5fa52b9674569
   languageName: node
   linkType: hard
 
@@ -13937,7 +13937,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     chalk: ^4.0.0
-    cjs-module-lexer: ^1.0.0
+    cjs-module-lexer: ^2.0.0
     collect-v8-coverage: ^1.0.0
     glob: ^10.3.10
     graceful-fs: ^4.2.9
