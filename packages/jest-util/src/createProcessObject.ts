@@ -117,5 +117,11 @@ export default function createProcessObject(): typeof Process {
     },
   });
 
+  Object.defineProperty(newProcess, 'original', {
+    get() {
+      return process;
+    },
+  });
+
   return newProcess;
 }
