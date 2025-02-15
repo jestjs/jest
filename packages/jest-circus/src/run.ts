@@ -51,13 +51,30 @@ const _runTestsForDescribeBlock = async (
   isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
-  const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
+  const {hooks} = getAllHooksForDescribe(describeBlock);
+  const afterAll: Array<Circus.Hook> = [];
 
   const isSkipped = describeBlock.mode === 'skip';
 
   if (!isSkipped) {
-    for (const hook of beforeAll) {
-      await _callCircusHook({describeBlock, hook});
+    for (const hook of hooks) {
+      if (hook.type === 'beforeAll') {
+        const returnedValue = await _callCircusHook({describeBlock, hook});
+        if (typeof returnedValue === 'function') {
+          // Add cleanup function to run after this beforeAll
+          afterAll.push({
+            type: 'afterAll',
+            asyncError: hook.asyncError,
+            fn: returnedValue as Circus.TestFn,
+            parent: hook.parent,
+            seenDone: false,
+            timeout: hook.timeout,
+          });
+        }
+      } else {
+        // Add afterAll hook
+        afterAll.push(hook);
+      }
     }
   }
 
@@ -240,15 +257,34 @@ const _runTest = async (
 
   await dispatch({name: 'test_started', test});
 
-  const {afterEach, beforeEach} = getEachHooksForTest(test);
+  const {hooks} = getEachHooksForTest(test);
 
-  for (const hook of beforeEach) {
-    if (test.errors.length > 0) {
-      // If any of the before hooks failed already, we don't run any
-      // hooks after that.
-      break;
+  // Run hooks in order and collect cleanup functions
+  const afterEach: Array<Circus.Hook> = [];
+
+  for (const hook of hooks) {
+    if (hook.type === 'beforeEach') {
+      if (test.errors.length > 0) {
+        // If any of the before hooks failed already, we don't run any
+        // hooks after that.
+        break;
+      }
+      const returnedValue = await _callCircusHook({hook, test, testContext});
+      if (typeof returnedValue === 'function') {
+        // Add cleanup function to run after this beforeEach
+        afterEach.push({
+          type: 'afterEach',
+          asyncError: hook.asyncError,
+          fn: returnedValue as Circus.TestFn,
+          parent: hook.parent,
+          seenDone: false,
+          timeout: hook.timeout,
+        });
+      }
+    } else {
+      // Add afterEach hook
+      afterEach.push(hook);
     }
-    await _callCircusHook({hook, test, testContext});
   }
 
   await _callCircusTest(test, testContext);
@@ -273,16 +309,19 @@ const _callCircusHook = async ({
   describeBlock?: Circus.DescribeBlock;
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
-}): Promise<void> => {
+}): Promise<void | Circus.TestFn> => {
   await dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
 
   try {
-    await callAsyncCircusFn(hook, testContext, {
+    const result = await callAsyncCircusFn(hook, testContext, {
       isHook: true,
       timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
+    if (typeof result === 'function') {
+      return result as Circus.TestFn;
+    }
   } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
   }

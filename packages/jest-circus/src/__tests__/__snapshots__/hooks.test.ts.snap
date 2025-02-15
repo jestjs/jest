@@ -1,5 +1,104 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`async cleanup functions are properly awaited 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: test
+finish_describe_definition: describe
+start_describe_definition: describe with beforeAll
+add_hook: beforeAll
+add_hook: afterAll
+add_test: test
+finish_describe_definition: describe with beforeAll
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: test
+test_started: test
+hook_start: beforeEach
+> beforeEach value: <yellow>1</color>
+hook_success: beforeEach
+test_fn_start: test
+> test value: <yellow>1</color>
+test_fn_success: test
+hook_start: afterEach
+> cleanup value: <yellow>0</color>
+hook_success: afterEach
+hook_start: afterEach
+> afterEach value: <yellow>0</color>
+hook_success: afterEach
+test_done: test
+run_describe_finish: describe
+run_describe_start: describe with beforeAll
+hook_start: beforeAll
+> beforeAll value: <yellow>2</color>
+hook_success: beforeAll
+test_start: test
+test_started: test
+test_fn_start: test
+> test value: <yellow>2</color>
+test_fn_success: test
+test_done: test
+hook_start: afterAll
+> cleanup value: <yellow>0</color>
+hook_success: afterAll
+hook_start: afterAll
+> afterAll value: <yellow>0</color>
+hook_success: afterAll
+run_describe_finish: describe with beforeAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`beforeAll can return a cleanup function, run in the correct order relative to afterAll hooks 1`] = `
+"start_describe_definition: describe
+add_hook: afterAll
+add_hook: beforeAll
+add_hook: afterAll
+add_hook: beforeAll
+add_hook: afterAll
+add_test: test
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+> beforeAll 1
+hook_success: beforeAll
+hook_start: beforeAll
+> beforeAll 2
+hook_success: beforeAll
+test_start: test
+test_started: test
+test_fn_start: test
+> test
+test_fn_success: test
+test_done: test
+hook_start: afterAll
+> afterAll 1 (defined first)
+hook_success: afterAll
+hook_start: afterAll
+> cleanup 1
+hook_success: afterAll
+hook_start: afterAll
+> afterAll 2
+hook_success: afterAll
+hook_start: afterAll
+> cleanup 2
+hook_success: afterAll
+hook_start: afterAll
+> afterAll 3 (defined last)
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`beforeAll is exectued correctly 1`] = `
 "start_describe_definition: describe 1
 add_hook: beforeAll
@@ -40,6 +139,52 @@ test_fn_success: test 3
 test_done: test 3
 run_describe_finish: 2nd level describe
 run_describe_finish: describe 1
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`beforeEach can return a cleanup function, run in the correct order relative to afterEach hooks 1`] = `
+"start_describe_definition: describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterEach
+add_test: test
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: test
+test_started: test
+hook_start: beforeEach
+> beforeEach 1
+hook_success: beforeEach
+hook_start: beforeEach
+> beforeEach 2
+hook_success: beforeEach
+test_fn_start: test
+> test
+test_fn_success: test
+hook_start: afterEach
+> afterEach 1 (defined first)
+hook_success: afterEach
+hook_start: afterEach
+> cleanup 1
+hook_success: afterEach
+hook_start: afterEach
+> afterEach 2
+hook_success: afterEach
+hook_start: afterEach
+> cleanup 2
+hook_success: afterEach
+hook_start: afterEach
+> afterEach 3 (defined last)
+hook_success: afterEach
+test_done: test
+run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
@@ -130,6 +275,60 @@ hook_failure: beforeEach
 test_fn_start: 2nd describe test
 test_done: 2nd describe test
 run_describe_finish: 2nd describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`cleanup functions run in the correct order with nested describes 1`] = `
+"start_describe_definition: outer describe
+add_hook: afterAll
+add_hook: beforeAll
+add_hook: afterAll
+start_describe_definition: inner describe
+add_hook: afterAll
+add_hook: beforeAll
+add_hook: afterAll
+add_test: test
+finish_describe_definition: inner describe
+finish_describe_definition: outer describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: outer describe
+hook_start: beforeAll
+> outer beforeAll
+hook_success: beforeAll
+run_describe_start: inner describe
+hook_start: beforeAll
+> inner beforeAll
+hook_success: beforeAll
+test_start: test
+test_started: test
+test_fn_start: test
+> test
+test_fn_success: test
+test_done: test
+hook_start: afterAll
+> inner afterAll 1 (defined first)
+hook_success: afterAll
+hook_start: afterAll
+> inner cleanup
+hook_success: afterAll
+hook_start: afterAll
+> inner afterAll 2 (defined last)
+hook_success: afterAll
+run_describe_finish: inner describe
+hook_start: afterAll
+> outer afterAll 1 (defined first)
+hook_success: afterAll
+hook_start: afterAll
+> outer cleanup
+hook_success: afterAll
+hook_start: afterAll
+> outer afterAll 2 (defined last)
+hook_success: afterAll
+run_describe_finish: outer describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 

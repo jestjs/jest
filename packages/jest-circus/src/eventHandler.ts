@@ -45,6 +45,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
 
       const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
       currentDescribeBlock.children.push(describeBlock);
+      currentDescribeBlock.childrenWithHooks.push(describeBlock);
       state.currentDescribeBlock = describeBlock;
       break;
     }
@@ -110,14 +111,16 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       }
       const parent = currentDescribeBlock;
 
-      currentDescribeBlock.hooks.push({
+      const hook: Circus.Hook = {
         asyncError,
         fn,
         parent,
         seenDone: false,
         timeout,
         type,
-      });
+      }
+      currentDescribeBlock.hooks.push(hook);
+      currentDescribeBlock.childrenWithHooks.push(hook);
       break;
     }
     case 'add_test': {
@@ -162,6 +165,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);
+      currentDescribeBlock.childrenWithHooks.push(test);
       currentDescribeBlock.tests.push(test);
       break;
     }

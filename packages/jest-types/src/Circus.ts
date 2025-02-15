@@ -256,6 +256,11 @@ export type DescribeBlock = {
   type: 'describeBlock';
   children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
+  /**
+   * An array with both children and hooks in the original order.
+   * This is used to determine the relative order of beforeEach and afterEach hooks.
+   */
+  childrenWithHooks: Array<DescribeBlock | TestEntry | Hook>;
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;
