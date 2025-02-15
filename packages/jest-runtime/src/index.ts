@@ -1950,7 +1950,7 @@ export default class Runtime {
     );
 
     for (const onGenerateMock of this._onGenerateMock) {
-      moduleMock = onGenerateMock(moduleName, moduleMock);
+      moduleMock = onGenerateMock(modulePath, moduleMock);
     }
 
     return moduleMock;
