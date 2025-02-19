@@ -1,7 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "lockFileMaintenance": {"enabled": true, "automerge": false},
+  "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": false
+  },
   "rangeStrategy": "replace",
   "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [

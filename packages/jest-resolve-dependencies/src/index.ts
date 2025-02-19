@@ -36,6 +36,7 @@ export class DependencyResolver {
 
   resolve(file: string, options?: ResolveModuleConfig): Array<string> {
     const dependencies = this._hasteFS.getDependencies(file);
+    const fallbackOptions: ResolveModuleConfig = {conditions: undefined};
     if (!dependencies) {
       return [];
     }
@@ -51,11 +52,15 @@ export class DependencyResolver {
         resolvedDependency = this._resolver.resolveModule(
           file,
           dependency,
-          options,
+          options ?? fallbackOptions,
         );
       } catch {
         try {
-          resolvedDependency = this._resolver.getMockModule(file, dependency);
+          resolvedDependency = this._resolver.getMockModule(
+            file,
+            dependency,
+            options ?? fallbackOptions,
+          );
         } catch {
           // leave resolvedDependency as undefined if nothing can be found
         }
@@ -73,6 +78,7 @@ export class DependencyResolver {
         resolvedMockDependency = this._resolver.getMockModule(
           resolvedDependency,
           path.basename(dependency),
+          options ?? fallbackOptions,
         );
       } catch {
         // leave resolvedMockDependency as undefined if nothing can be found
