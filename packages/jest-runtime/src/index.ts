@@ -1782,13 +1782,15 @@ export default class Runtime {
 
   private _importCoreModule(moduleName: string, context: VMContext) {
     const required = this._requireCoreModule(moduleName, true);
+    const allExports = Object.entries(required);
+    const exportNames = allExports.map(([key]) => key);
 
     const module = new SyntheticModule(
-      ['default', ...Object.keys(required)],
+      ['default', ...exportNames],
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
-        for (const [key, value] of Object.entries(required)) {
+        for (const [key, value] of allExports) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         }
