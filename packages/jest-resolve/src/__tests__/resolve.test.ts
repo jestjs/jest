@@ -768,7 +768,7 @@ describe('nodeModulesPaths', () => {
     expect(result.at(-1)).toBe('./customFolder');
   });
 
-  it('provides custom module multy paths after node_modules', () => {
+  it('provides custom module multi paths after node_modules', () => {
     const src = require.resolve('../');
     const result = nodeModulesPaths(src, {
       paths: ['./customFolder', './customFolder2', './customFolder3'],
