@@ -3758,7 +3758,7 @@ __metadata:
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     babel-jest: "workspace:*"
-    babel-loader: ^9.0.0
+    babel-loader: ^10.0.0
     camelcase: ^6.2.0
     chalk: ^4.0.0
     dedent: ^1.0.0
@@ -7392,7 +7392,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"babel-loader@npm:^9.0.0, babel-loader@npm:^9.2.1":
+"babel-loader@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "babel-loader@npm:10.0.0"
+  dependencies:
+    find-up: ^5.0.0
+  peerDependencies:
+    "@babel/core": ^7.12.0
+    webpack: ">=5.61.0"
+  checksum: 8a9dbb8a93cd342832cc99f024f07a6fda67b29aa907fbc3087de17e7f7ff705cf17fa9aed9103b1de9dfff24427afe200ec99213d24f801a0b1f4fd94783f51
+  languageName: node
+  linkType: hard
+
+"babel-loader@npm:^9.2.1":
   version: 9.2.1
   resolution: "babel-loader@npm:9.2.1"
   dependencies:
