@@ -235,7 +235,7 @@ describe('Runtime requireModule', () => {
     expect(exports1).toBe(exports2);
   });
 
-  it('provides manual mock when real module doesnt exist', async () => {
+  it("provides manual mock when real module doesn't exist", async () => {
     const runtime = await createRuntime(__filename);
     const exports = runtime.requireModule(
       runtime.__mockRootPath,
