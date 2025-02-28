@@ -283,7 +283,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   const {testFailing = false} = context;
 
   if (!testFailing && context.dontThrow) {
-    // Supress errors while running tests
+    // Suppress errors while running tests
     context.dontThrow();
   }
 

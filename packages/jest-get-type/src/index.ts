@@ -41,16 +41,14 @@ export function getType(value: unknown): ValueType {
   } else if (typeof value === 'bigint') {
     return 'bigint';
   } else if (typeof value === 'object') {
-    if (value != null) {
-      if (value.constructor === RegExp) {
-        return 'regexp';
-      } else if (value.constructor === Map) {
-        return 'map';
-      } else if (value.constructor === Set) {
-        return 'set';
-      } else if (value.constructor === Date) {
-        return 'date';
-      }
+    if (value.constructor === RegExp) {
+      return 'regexp';
+    } else if (value.constructor === Map) {
+      return 'map';
+    } else if (value.constructor === Set) {
+      return 'set';
+    } else if (value.constructor === Date) {
+      return 'date';
     }
     return 'object';
   } else if (typeof value === 'symbol') {

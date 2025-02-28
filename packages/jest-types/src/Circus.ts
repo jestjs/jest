@@ -156,7 +156,7 @@ export type AsyncEvent =
       // test failure is defined by presence of errors in `test.errors`,
       // `test_done` indicates that the test and all its hooks were run,
       // and nothing else will change it's state in the future. (except third
-      // party extentions/plugins)
+      // party extensions/plugins)
       name: 'test_done';
       test: TestEntry;
     }
