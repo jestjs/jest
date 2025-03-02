@@ -213,8 +213,9 @@ export const options: {[key: string]: Options} = {
     type: 'array',
   },
   coverageProvider: {
-    choices: ['babel', 'v8'],
-    description: 'Select between Babel and V8 to collect coverage',
+    choices: ['babel', 'v8', 'odz'],
+    description:
+      'Select between Babel, V8 and One Double Zero to collect coverage',
     requiresArg: true,
   },
   coverageReporters: {
