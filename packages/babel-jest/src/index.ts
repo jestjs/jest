@@ -13,8 +13,8 @@ import {
   transformSync as babelTransform,
   transformAsync as babelTransformAsync,
 } from '@babel/core';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import * as pc from 'picocolors';
 import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
@@ -38,9 +38,9 @@ function assertLoadedBabelConfig(
 ): asserts babelConfig {
   if (!babelConfig) {
     throw new Error(
-      `babel-jest: Babel ignores ${chalk.bold(
+      `babel-jest: Babel ignores ${pc.bold(
         slash(path.relative(cwd, filename)),
-      )} - make sure to include the file in Jest's ${chalk.bold(
+      )} - make sure to include the file in Jest's ${pc.bold(
         'transformIgnorePatterns',
       )} as well.`,
     );

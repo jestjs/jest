@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import {getType} from 'jest-get-type';
 import {
   type PrettyFormatOptions,
@@ -85,8 +85,8 @@ export function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (expectedType !== getType(b)) {
     return (
       '  Comparing two different types of values.' +
-      ` Expected ${chalk.green(expectedType)} but ` +
-      `received ${chalk.red(getType(b))}.`
+      ` Expected ${pc.green(expectedType)} but ` +
+      `received ${pc.red(getType(b))}.`
     );
   }
 

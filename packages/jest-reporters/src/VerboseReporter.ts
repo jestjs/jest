@@ -6,7 +6,7 @@
  */
 
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import type {
   AggregatedResult,
   AssertionResult,
@@ -115,13 +115,13 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _getIcon(status: string) {
     if (status === 'failed') {
-      return chalk.red(ICONS.failed);
+      return pc.red(ICONS.failed);
     } else if (status === 'pending') {
-      return chalk.yellow(ICONS.pending);
+      return pc.yellow(ICONS.pending);
     } else if (status === 'todo') {
-      return chalk.magenta(ICONS.todo);
+      return pc.magenta(ICONS.todo);
     } else {
-      return chalk.green(ICONS.success);
+      return pc.green(ICONS.success);
     }
   }
 
@@ -130,7 +130,7 @@ export default class VerboseReporter extends DefaultReporter {
     const time = test.duration
       ? ` (${formatTime(Math.round(test.duration))})`
       : '';
-    this._logLine(`${status} ${chalk.dim(test.title + time)}`, indentLevel);
+    this._logLine(`${status} ${pc.dim(test.title + time)}`, indentLevel);
   }
 
   private _logTests(tests: Array<AssertionResult>, indentLevel: number) {
@@ -171,7 +171,7 @@ export default class VerboseReporter extends DefaultReporter {
       const printedTestStatus =
         test.status === 'pending' ? 'skipped' : test.status;
       const icon = this._getIcon(test.status);
-      const text = chalk.dim(`${printedTestStatus} ${test.title}`);
+      const text = pc.dim(`${printedTestStatus} ${test.title}`);
       this._logLine(`${icon} ${text}`, indentLevel);
     };
   }

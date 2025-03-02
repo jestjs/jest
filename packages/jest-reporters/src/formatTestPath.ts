@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import slash = require('slash');
 import type {Config} from '@jest/types';
 import relativePath from './relativePath';
@@ -16,5 +16,5 @@ export default function formatTestPath(
   testPath: string,
 ): string {
   const {dirname, basename} = relativePath(config, testPath);
-  return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
+  return slash(pc.dim(dirname + path.sep) + pc.bold(basename));
 }

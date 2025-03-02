@@ -12,8 +12,8 @@ describe('isBuiltinModule', () => {
     expect(isBuiltinModule('path')).toBe(true);
   });
 
-  it('should return false for the `chalk` module', () => {
-    expect(isBuiltinModule('chalk')).toBe(false);
+  it('should return false for the `picocolors` module', () => {
+    expect(isBuiltinModule('picocolors')).toBe(false);
   });
 
   it('should return true for the `_http_common` module', () => {

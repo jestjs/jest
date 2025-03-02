@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import stringLength = require('string-length');
 import type {
   AggregatedResult,
@@ -21,7 +21,7 @@ import type {ReporterOnStartOptions} from './types';
 import wrapAnsiString from './wrapAnsiString';
 
 const RUNNING_TEXT = ' RUNS ';
-const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;
+const RUNNING = `${pc.reset(pc.inverse(pc.yellow(pc.bold(RUNNING_TEXT))))} `;
 
 /**
  * This class is a perf optimization for sorting the list of currently

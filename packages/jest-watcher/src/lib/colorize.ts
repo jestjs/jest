@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import pc = require('picocolors');
 
 export default function colorize(
   str: string,
@@ -13,8 +13,8 @@ export default function colorize(
   end: number,
 ): string {
   return (
-    chalk.dim(str.slice(0, start)) +
-    chalk.reset(str.slice(start, end)) +
-    chalk.dim(str.slice(end))
+    pc.dim(str.slice(0, start)) +
+    pc.reset(str.slice(start, end)) +
+    pc.dim(str.slice(end))
   );
 }

@@ -11,8 +11,8 @@ jest.mock('graceful-fs', () => ({
 }));
 
 import * as path from 'path';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import pc = require('picocolors');
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
@@ -72,8 +72,8 @@ test('getSnapshotData() throws when no snapshot version', () => {
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrow(
-    chalk.red(
-      `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
+    pc.red(
+      `${pc.bold('Outdated snapshot')}: No snapshot header found. ` +
         'Jest 19 introduced versioned snapshots to ensure all developers on ' +
         'a project are using the same version of Jest. ' +
         'Please update all snapshots during this upgrade of Jest.\n\n',
@@ -92,8 +92,8 @@ test('getSnapshotData() throws for older snapshot version', () => {
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrow(
-    `${chalk.red(
-      `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
+    `${pc.red(
+      `${pc.red(pc.bold('Outdated snapshot'))}: The version of the snapshot ` +
         'file associated with this test is outdated. The snapshot file ' +
         'version ensures that all developers on a project are using ' +
         'the same version of Jest. ' +
@@ -114,8 +114,8 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrow(
-    `${chalk.red(
-      `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
+    `${pc.red(
+      `${pc.red(pc.bold('Outdated Jest version'))}: The version of this ` +
         'snapshot file indicates that this project is meant to be used ' +
         'with a newer version of Jest. ' +
         'The snapshot file version ensures that all developers on a project ' +

@@ -7,8 +7,8 @@
  */
 
 import {runInContext} from 'node:vm';
-import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import * as pc from 'picocolors';
 import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
@@ -46,8 +46,8 @@ function freezeConsole(
     message: LogMessage,
   ) {
     const error = new ErrorWithStack(
-      `${chalk.red(
-        `${chalk.bold(
+      `${pc.red(
+        `${pc.bold(
           'Cannot log after tests are done.',
         )} Did you forget to wait for something async in your test?`,
       )}\nAttempted to log "${message}".`,

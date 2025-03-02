@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import {fileURLToPath} from 'url';
-import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import yaml from 'js-yaml';
+import pc from 'picocolors';
 import tempy from 'tempy';
 
 const rootDirectory = path.resolve(
@@ -75,7 +75,7 @@ try {
   });
   execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
-  console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
+  console.log(pc.inverse(pc.green(' Successfully ran Jest with PnP linker ')));
 } finally {
   fs.rmSync(cwd, {force: true, recursive: true});
 }

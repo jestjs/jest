@@ -8,11 +8,11 @@
 import {createHash} from 'crypto';
 import {totalmem} from 'os';
 import * as path from 'path';
-import chalk = require('chalk');
 import merge = require('deepmerge');
 import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
+import * as pc from 'picocolors';
 import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -69,9 +69,7 @@ function verifyDirectoryExists(path: string, key: string) {
 
     if (!rootStat.isDirectory()) {
       throw createConfigError(
-        `  ${chalk.bold(path)} in the ${chalk.bold(
-          key,
-        )} option is not a directory.`,
+        `  ${pc.bold(path)} in the ${pc.bold(key)} option is not a directory.`,
       );
     }
   } catch (error: any) {
@@ -81,7 +79,7 @@ function verifyDirectoryExists(path: string, key: string) {
 
     if (error.code === 'ENOENT') {
       throw createConfigError(
-        `  Directory ${chalk.bold(path)} in the ${chalk.bold(
+        `  Directory ${pc.bold(path)} in the ${pc.bold(
           key,
         )} option was not found.`,
       );
@@ -89,7 +87,7 @@ function verifyDirectoryExists(path: string, key: string) {
 
     // Not sure in which cases `statSync` can throw, so let's just show the underlying error to the user
     throw createConfigError(
-      `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
+      `  Got an error trying to find ${pc.bold(path)} in the ${pc.bold(
         key,
       )} option.\n\n  Error was: ${error.message}`,
     );
@@ -149,7 +147,7 @@ const setupPreset = async (
   } catch (error: any) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
-        `  Preset ${chalk.bold(presetPath)} is invalid:\n\n  ${
+        `  Preset ${pc.bold(presetPath)} is invalid:\n\n  ${
           error.message
         }\n  ${error.stack}`,
       );
@@ -163,24 +161,24 @@ const setupPreset = async (
 
         if (preset) {
           throw createConfigError(
-            `  Module ${chalk.bold(
+            `  Module ${pc.bold(
               presetPath,
             )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${pc.bold(presetPath)} not found relative to rootDir ${pc.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
-        `  Missing dependency in ${chalk.bold(presetPath)}:\n\n  ${
+        `  Missing dependency in ${pc.bold(presetPath)}:\n\n  ${
           error.message
         }\n  ${error.stack}`,
       );
     }
 
     throw createConfigError(
-      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
+      `  An unknown error occurred in ${pc.bold(presetPath)}:\n\n  ${
         error.message
       }\n  ${error.stack}`,
     );
@@ -331,7 +329,7 @@ const normalizeRootDir = (
   // Assert that there *is* a rootDir
   if (!options.rootDir) {
     throw createConfigError(
-      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
+      `  Configuration option ${pc.bold('rootDir')} must be specified.`,
     );
   }
   options.rootDir = path.normalize(options.rootDir);
@@ -410,7 +408,7 @@ const buildTestPathPatterns = (argv: Config.Argv): TestPathPatterns => {
 
     // eslint-disable-next-line no-console
     console.log(
-      chalk.red(
+      pc.red(
         `  Invalid testPattern ${testPathPatterns.toPretty()} supplied. ` +
           'Running all tests instead.',
       ),
@@ -425,7 +423,7 @@ const buildTestPathPatterns = (argv: Config.Argv): TestPathPatterns => {
 function printConfig(opts: Array<string>) {
   const string = opts.map(ext => `'${ext}'`).join(', ');
 
-  return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  return pc.bold(`extensionsToTreatAsEsm: [${string}]`);
 }
 
 function validateExtensionsToTreatAsEsm(
@@ -443,9 +441,7 @@ function validateExtensionsToTreatAsEsm(
     throw createConfigError(
       `  Option: ${printConfig(
         extensionsToTreatAsEsm,
-      )} includes a string that does not start with a period (${chalk.bold(
-        '.',
-      )}).
+      )} includes a string that does not start with a period (${pc.bold('.')}).
   Please change your configuration to ${printConfig(
     extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
   )}.`,
@@ -454,17 +450,17 @@ function validateExtensionsToTreatAsEsm(
 
   if (extensionsToTreatAsEsm.includes('.js')) {
     throw createConfigError(
-      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${pc.bold(
         "'.js'",
-      )} which is always inferred based on ${chalk.bold(
+      )} which is always inferred based on ${pc.bold(
         'type',
-      )} in its nearest ${chalk.bold('package.json')}.`,
+      )} in its nearest ${pc.bold('package.json')}.`,
     );
   }
 
   if (extensionsToTreatAsEsm.includes('.cjs')) {
     throw createConfigError(
-      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${pc.bold(
         "'.cjs'",
       )} which is always treated as CommonJS.`,
     );
@@ -472,7 +468,7 @@ function validateExtensionsToTreatAsEsm(
 
   if (extensionsToTreatAsEsm.includes('.mjs')) {
     throw createConfigError(
-      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${pc.bold(
         "'.mjs'",
       )} which is always treated as an ECMAScript Module.`,
     );
@@ -805,7 +801,7 @@ export default async function normalize(
           const errorMessage =
             "  moduleFileExtensions must include 'js':\n" +
             '  but instead received:\n' +
-            `    ${chalk.bold.red(JSON.stringify(value))}`;
+            `    ${pc.bold(pc.red(JSON.stringify(value)))}`;
 
           // If `js` is not included, any dependency Jest itself injects into
           // the environment, like jasmine or sourcemap-support, will need to
@@ -852,7 +848,7 @@ export default async function normalize(
             typeof color !== 'string'
           ) {
             const errorMessage =
-              `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+              `  Option "${pc.bold('displayName')}" must be of type:\n\n` +
               '  {\n' +
               '    name: string;\n' +
               '    color: string;\n' +
@@ -871,7 +867,7 @@ export default async function normalize(
       case 'testTimeout': {
         if (oldOptions[key] < 0) {
           throw createConfigError(
-            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+            `  Option "${pc.bold('testTimeout')}" must be a natural number.`,
           );
         }
 
@@ -1096,8 +1092,8 @@ export default async function normalize(
 
   if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
-      `  Configuration options ${chalk.bold('testMatch')} and` +
-        ` ${chalk.bold('testRegex')} cannot be used together.`,
+      `  Configuration options ${pc.bold('testMatch')} and` +
+        ` ${pc.bold('testRegex')} cannot be used together.`,
     );
   }
 

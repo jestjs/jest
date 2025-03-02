@@ -6,14 +6,14 @@
  */
 
 import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import pc = require('picocolors');
 import stringLength = require('string-length');
 
 export function printPatternCaret(
   pattern: string,
   pipe: NodeJS.WritableStream,
 ): void {
-  const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+  const inputText = `${pc.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(ansiEscapes.eraseDown);
   pipe.write(inputText);
@@ -25,7 +25,7 @@ export function printRestoredPatternCaret(
   currentUsageRows: number,
   pipe: NodeJS.WritableStream,
 ): void {
-  const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+  const inputText = `${pc.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(
     ansiEscapes.cursorTo(stringLength(inputText), currentUsageRows - 1),

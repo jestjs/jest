@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import * as pc from 'picocolors';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';
 import type {TestRunData} from './types';
@@ -26,15 +26,15 @@ export default function getNoTestFound(
       .map(p => `"${p}"`)
       .join(', ')}`;
   } else {
-    dataMessage = `Pattern: ${chalk.yellow(
+    dataMessage = `Pattern: ${pc.yellow(
       globalConfig.testPathPatterns.toPretty(),
     )} - 0 matches`;
   }
 
   if (willExitWith0) {
     return (
-      `${chalk.bold('No tests found, exiting with code 0')}\n` +
-      `In ${chalk.bold(globalConfig.rootDir)}` +
+      `${pc.bold('No tests found, exiting with code 0')}\n` +
+      `In ${pc.bold(globalConfig.rootDir)}` +
       '\n' +
       `  ${pluralize('file', testFiles, 's')} checked across ${pluralize(
         'project',
@@ -46,10 +46,10 @@ export default function getNoTestFound(
   }
 
   return (
-    `${chalk.bold('No tests found, exiting with code 1')}\n` +
+    `${pc.bold('No tests found, exiting with code 1')}\n` +
     'Run with `--passWithNoTests` to exit with code 0' +
     '\n' +
-    `In ${chalk.bold(globalConfig.rootDir)}` +
+    `In ${pc.bold(globalConfig.rootDir)}` +
     '\n' +
     `  ${pluralize('file', testFiles, 's')} checked across ${pluralize(
       'project',
