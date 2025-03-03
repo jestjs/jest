@@ -74,8 +74,7 @@ const _validate = (
     ) {
       // skip validating unknown options inside blacklisted paths
     } else {
-      options.unknown &&
-        options.unknown(config, exampleConfig, key, options, path);
+      options.unknown?.(config, exampleConfig, key, options, path);
     }
 
     if (

@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,

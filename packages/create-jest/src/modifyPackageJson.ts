@@ -15,6 +15,7 @@ const modifyPackageJson = ({
   shouldModifyScripts: boolean;
 }): string => {
   if (shouldModifyScripts) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     projectPackageJson.scripts
       ? (projectPackageJson.scripts.test = 'jest')
       : (projectPackageJson.scripts = {test: 'jest'});

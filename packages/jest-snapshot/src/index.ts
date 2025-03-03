@@ -481,7 +481,7 @@ const _toThrowErrorMatchingSnapshot = (
   const {context, hint, inlineSnapshot, isInline, matcherName, received} =
     config;
 
-  context.dontThrow && context.dontThrow();
+  context.dontThrow?.();
 
   const {isNot, promise} = context;
 

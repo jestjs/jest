@@ -9,7 +9,7 @@
 
 /// <reference lib="dom" />
 
-/* eslint-env browser*/
+/* global document */
 
 import prettyFormat, {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';

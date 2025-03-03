@@ -589,7 +589,7 @@ export default class Runtime {
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
-      // @ts-expect-error - exiting
+      // @ts-expect-error -- exiting
       return;
     }
     if (this.isInsideTestCode === false) {
