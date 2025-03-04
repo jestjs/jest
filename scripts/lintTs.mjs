@@ -94,7 +94,7 @@ try {
               languageOptions: {
                 parserOptions: {
                   EXPERIMENTAL_useProjectService: true,
-                  project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
+                  project: true,
                   tsconfigRootDir: monorepoRoot,
                 },
               },
