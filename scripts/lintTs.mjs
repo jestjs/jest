@@ -94,7 +94,7 @@ try {
               languageOptions: {
                 parserOptions: {
                   EXPERIMENTAL_useProjectService: true,
-                  project: true,
+                  project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
                   tsconfigRootDir: monorepoRoot,
                 },
               },
@@ -143,6 +143,7 @@ try {
                 '@typescript-eslint/prefer-regexp-exec': 'off',
               },
             },
+
             {
               files: ['**/__tests__/**'],
               plugins: {jest: eslintPluginJest},
@@ -210,6 +211,7 @@ try {
                 '@typescript-eslint/strict-boolean-expressions': 'off',
               },
             },
+            {ignores: ['**/*.js', '**/*.cjs', '**/*.mjs']},
           ),
         });
 
