@@ -9,8 +9,6 @@
 
 /// <reference lib="dom" />
 
-/* eslint-env browser*/
-
 function exampleDispatch() {
   globalThis.dispatchEvent(new CustomEvent('event', {}));
 }

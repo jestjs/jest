@@ -73,7 +73,7 @@ export default class BufferedConsole extends Console {
 
   override assert(value: unknown, message?: string | Error): void {
     try {
-      assert(value, message);
+      assert.ok(value, message);
     } catch (error) {
       if (!(error instanceof AssertionError)) {
         throw error;

@@ -103,7 +103,7 @@ exports[`Wrong globals for environment print useful error when it explodes durin
 
     ReferenceError: document is not defined
 
-      11 | /* eslint-env browser */
+      11 | /* global document */
       12 |
     > 13 | const div = document.createElement('div');
          |             ^

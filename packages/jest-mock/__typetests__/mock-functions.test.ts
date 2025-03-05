@@ -86,7 +86,6 @@ describe('jest.fn()', () => {
   });
 
   test('models typings of mocked function', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     expect(fn()).type.toBeAssignableTo<Function>();
 
     expect(fn()).type.toBe<Mock<(...args: Array<unknown>) => unknown>>();
@@ -423,7 +422,6 @@ describe('jest.spyOn()', () => {
   const spy = spyOn(spiedObject, 'methodA');
 
   test('models typings of spied object', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     expect(spy).type.not.toBeAssignableTo<Function>();
 
     expect(spy()).type.toRaiseError();
@@ -469,10 +467,9 @@ describe('jest.spyOn()', () => {
     ).type.toBe<SpiedFunction<typeof Array.isArray>>();
     expect(spyOn(spiedArray, 'isArray')).type.toRaiseError();
 
-    expect(
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      spyOn(spiedFunction as unknown as Function, 'toString'),
-    ).type.toBe<SpiedFunction<typeof spiedFunction.toString>>();
+    expect(spyOn(spiedFunction as unknown as Function, 'toString')).type.toBe<
+      SpiedFunction<typeof spiedFunction.toString>
+    >();
     expect(spyOn(spiedFunction, 'toString')).type.toRaiseError();
 
     expect(spyOn(globalThis, 'Date')).type.toBe<SpiedClass<typeof Date>>();
