@@ -12,9 +12,7 @@ import type {Circus, Config, TestResult, TransformTypes} from '@jest/types';
 import type {IHasteFS, IModuleMap} from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
-export interface RuntimeTransformResult extends TransformTypes.TransformResult {
-  wrapperLength: number;
-}
+export type RuntimeTransformResult = TransformTypes.TransformResult;
 
 export type V8CoverageResult = Array<{
   codeTransformResult: RuntimeTransformResult | undefined;
