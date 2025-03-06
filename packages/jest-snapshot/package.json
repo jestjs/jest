@@ -51,7 +51,7 @@
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.5.3",
     "prettier-v2": "npm:prettier@^2.1.5"
   },
   "engines": {

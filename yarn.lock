@@ -7420,7 +7420,7 @@ __metadata:
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
     babel-plugin-tester: ^11.0.2
-    prettier: ^3.0.3
+    prettier: ^3.5.3
   languageName: unknown
   linkType: soft
 
@@ -13949,7 +13949,7 @@ __metadata:
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    prettier: ^3.0.3
+    prettier: ^3.5.3
     prettier-v2: "npm:prettier@^2.1.5"
     pretty-format: "workspace:*"
     semver: ^7.5.3
@@ -18417,7 +18417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.3, prettier@npm:^3.5.3":
+"prettier@npm:^3.5.3":
   version: 3.5.3
   resolution: "prettier@npm:3.5.3"
   bin:
