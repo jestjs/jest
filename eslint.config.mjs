@@ -11,11 +11,11 @@ import fs from 'fs';
 import path from 'path';
 import eslintJs from '@eslint/js';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginMarkdown from 'eslint-plugin-markdown';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
@@ -43,7 +43,7 @@ const config = typescriptEslint.config(
   eslintPluginEslintCommentsConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
   eslintPluginPromise.configs['flat/recommended'],
-  eslintPluginPrettierRecommended,
+  eslintConfigPrettier,
   {
     languageOptions: {globals: {...globals.builtins, console: 'readonly'}},
     plugins: {jsdoc: eslintPluginJsdoc, local: eslintPluginLocal},

@@ -28,6 +28,7 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Getting Started](#getting-started)
 - [Running from command line](#running-from-command-line)
 - [Additional Configuration](#additional-configuration)
@@ -36,7 +37,7 @@
   - [Using webpack](#using-webpack)
   - [Using Vite](#using-vite)
   - [Using Parcel](#using-parcel)
-  - [Using Typescript](#using-typescript)
+  - [Using TypeScript](#using-typescript)
 - [Documentation](#documentation)
 - [Badge](#badge)
 - [Contributing](#contributing)
