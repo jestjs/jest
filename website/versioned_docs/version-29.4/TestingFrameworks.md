@@ -17,6 +17,7 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 ## AngularJS
 
 - [Testing an AngularJS app with Jest](https://medium.com/aya-experience/testing-an-angularjs-app-with-jest-3029a613251) by Matthieu Lux ([@Swiip](https://twitter.com/Swiip))
+- [Running AngularJS Tests with Jest](https://benjaminbrandt.com/running-angularjs-tests-with-jest/) by Ben Brandt ([@benjaminbrandt](https://twitter.com/benjaminbrandt))
 - [AngularJS Unit Tests with Jest Actions (Traditional Chinese)](https://dwatow.github.io/2019/08-14-angularjs/angular-jest/?fbclid=IwAR2SrqYg_o6uvCQ79FdNPeOxs86dUqB6pPKgd9BgnHt1kuIDRyRM-ch11xg) by Chris Wang ([@dwatow](https://github.com/dwatow))
 
 ## Angular
@@ -33,11 +34,11 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 
 ## Express.js
 
-- [How to test Express.js with Jest and Supertest](https://www.albertgao.com/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao [@albertgao](https://x.com/albertgao)
+- [How to test Express.js with Jest and Supertest](https://www.albertgao.com/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao ([@albertgao](https://twitter.com/albertgao))
 
 ## GatsbyJS
 
-- [Unit Testing](https://www.gatsbyjs.org/docs/unit-testing/) by GatsbyJS docs
+- [Unit Testing](https://www.gatsbyjs.com/docs/how-to/testing/unit-testing/) by GatsbyJS docs
 
 ## Hapi.js
 
