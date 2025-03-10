@@ -534,7 +534,7 @@ Registers a callback function that is invoked whenever Jest generates a mock for
 
 Parameters for callback:
 
-1. `moduleName: string` - The name of the module that is being mocked.
+1. `modulePath: string` - The absolute path to the module that is being mocked.
 2. `moduleMock: T` - The mock object that Jest has generated for the module. This object can be modified or replaced before returning.
 
 Behaviour:
@@ -543,9 +543,9 @@ Behaviour:
 - Each callback receives the output of the previous callback as its `moduleMock`. This makes it possible to apply multiple layers of transformations to the same mock.
 
 ```js
-jest.onGenerateMock((moduleName, moduleMock) => {
+jest.onGenerateMock((modulePath, moduleMock) => {
   // Inspect the module name and decide how to transform the mock
-  if (moduleName.includes('Database')) {
+  if (modulePath.includes('Database')) {
     // For demonstration, let's replace a method with our own custom mock
     moduleMock.connect = jest.fn().mockImplementation(() => {
       console.log('Connected to mock DB');
