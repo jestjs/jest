@@ -92,6 +92,7 @@ exports[`toThrow error class did not throw at all 1`] = `
 Expected constructor: <g>Err</>
 
 Received function did not throw
+Returned: undefined
 `;
 
 exports[`toThrow error class threw, but class did not match (error) 1`] = `
@@ -230,6 +231,7 @@ exports[`toThrow regexp did not throw at all 1`] = `
 Expected pattern: <g>/apple/</>
 
 Received function did not throw
+Returned: undefined
 `;
 
 exports[`toThrow regexp threw, but message did not match (error) 1`] = `
@@ -271,7 +273,8 @@ exports[`toThrow substring did not throw at all 1`] = `
 
 Expected substring: <g>"apple"</>
 
-Received function did not throw
+Received function did not throw 
+Returned: undefined
 `;
 
 exports[`toThrow substring threw, but message did not match (error) 1`] = `
