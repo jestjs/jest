@@ -45,6 +45,24 @@ test("throws the error if tested function didn't throw error", () => {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received function did not throw');
+    expect(stderr).toMatch('Returned: undefined');
+    expect(exitCode).toBe(1);
+  }
+});
+
+test("reports stringified returned value if tested function didn't throw error", () => {
+  const filename = 'throws-if-tested-function-did-not-throw.test.js';
+  const template =
+    makeTemplate(`test('throws the error if tested function did not throw error', () => {
+      expect(() => { return { foo: 1, bar: { baz: "2", } };}).toThrowErrorMatchingSnapshot();
+    });
+    `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Received function did not throw');
+    expect(stderr).toMatch('Returned: {"bar": {"baz": "2"}, "foo": 1}');
     expect(exitCode).toBe(1);
   }
 });
