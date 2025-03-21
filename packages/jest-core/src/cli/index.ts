@@ -225,24 +225,26 @@ const _run10000 = async (
   );
   performance.mark('jest/buildContextsAndHasteMaps:end');
 
-  globalConfig.watch || globalConfig.watchAll
-    ? await runWatch(
-        contexts,
-        configs,
-        hasDeprecationWarnings,
-        globalConfig,
-        outputStream,
-        hasteMapInstances,
-        filter,
-      )
-    : await runWithoutWatch(
-        globalConfig,
-        contexts,
-        outputStream,
-        onComplete,
-        changedFilesPromise,
-        filter,
-      );
+  if (globalConfig.watch || globalConfig.watchAll) {
+    await runWatch(
+      contexts,
+      configs,
+      hasDeprecationWarnings,
+      globalConfig,
+      outputStream,
+      hasteMapInstances,
+      filter,
+    );
+  } else {
+    await runWithoutWatch(
+      globalConfig,
+      contexts,
+      outputStream,
+      onComplete,
+      changedFilesPromise,
+      filter,
+    );
+  }
 };
 
 const runWatch = async (

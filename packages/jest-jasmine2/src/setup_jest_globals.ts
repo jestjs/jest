@@ -79,7 +79,7 @@ const patchJasmine = () => {
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
           jestExpect.setState({currentTestName: context.getFullName()});
-          onStart && onStart.call(attr, context);
+          onStart?.call(attr, context);
         };
         super(attr);
       }
