@@ -231,7 +231,12 @@ export function createBuildConfigs() {
                   : pkg.name === 'jest-repl'
                     ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
                     : pkg.name === 'jest-snapshot'
-                      ? {worker: path.resolve(packageDir, './src/worker.ts')}
+                      ? {
+                          prettier: path.resolve(
+                            packageDir,
+                            './src/prettier.ts',
+                          ),
+                        }
                       : {};
 
     const extraEntryPoints =
