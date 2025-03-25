@@ -13977,7 +13977,7 @@ __metadata:
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    make-synchronized: ^0.3.1
+    make-synchronized: ^0.4.2
     prettier: ^3.0.3
     prettier-v2: "npm:prettier@^2.1.5"
     pretty-format: "workspace:*"
@@ -14935,10 +14935,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-synchronized@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "make-synchronized@npm:0.3.1"
-  checksum: 4459c2ecf1616e53f21afe391c0ce8759bcced658239c27b2756ef35ef25ef5851781d30a2a23cb739f8104416becf11528ce68fc870dfd6f84640f4ffa309d2
+"make-synchronized@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "make-synchronized@npm:0.4.2"
+  checksum: fb2f5432559a638e3e126c3b85c474d9dc95bcf3d4f6578f2eb040b2d52a8bd09565de846e2d820ca69ca1aa19838cea01adfec03fd8690c66342100f38e695b
   languageName: node
   linkType: hard
 
