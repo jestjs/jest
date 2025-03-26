@@ -218,19 +218,26 @@ npm install --save-dev @types/jest
 
 Jest can be used with ESLint without any further configuration as long as you import the [Jest global helpers](GlobalAPI.md) (`describe`, `it`, etc.) from `@jest/globals` before using them in your test file. This is necessary to avoid `no-undef` errors from ESLint, which doesn't know about the Jest globals.
 
-If you'd like to avoid these imports, you can configure your [ESLint environment](https://eslint.org/docs/latest/use/configure/language-options#specifying-environments) to support these globals by adding the `jest` environment:
+If you'd like to avoid these imports, you can configure your [ESLint Configurations](https://eslint.org/docs/latest/use/configure/language-options#predefined-global-variables) to support these globals by adding the `jest` globals:
 
-```json
-{
-  "overrides": [
-    {
-      "files": ["tests/**/*"],
-      "env": {
-        "jest": true
-      }
-    }
-  ]
-}
+```js
+import { defineConfig } from "eslint/config";
+import globals from "globals";
+
+export default defineConfig([
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      "no-unused-vars": "warn",
+      "no-undef": "warn",
+    },
+  },
+]);
 ```
 
 Or use [`eslint-plugin-jest`](https://github.com/jest-community/eslint-plugin-jest), which has a similar effect:
