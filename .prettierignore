@@ -1,13 +1,3 @@
-.idea
-.DS_STORE
-.eslintcache
-*.swp
-*~
-api-extractor.json
-coverage
-
-/packages/*/build
-/packages/*/dist
 /packages/jest-config/src/__tests__/jest-preset.json
 /packages/pretty-format/__benchmarks__/world.geo.json
 
@@ -17,10 +7,5 @@ coverage
 # Third-party script
 packages/jest-diff/src/cleanupSemantic.ts
 
-/website/.docusaurus
-/website/backers.json
-/website/build
 /website/versions.json
-
-**/.yarn
-**/.pnp.*
+e2e/transform-linked-modules/ignored/symlink.js
