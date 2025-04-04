@@ -4827,6 +4827,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pkgr/core@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@pkgr/core@npm:0.2.0"
+  checksum: b7e126161ecf59ceaa0a95ba4b937cc57bf29c42bd72dc129391e4c9ab06aac31e37379dde4f523a736aab9765b18c2494096eedcbe1f494df415998eef2b949
+  languageName: node
+  linkType: hard
+
 "@pnpm/config.env-replace@npm:^1.1.0":
   version: 1.1.0
   resolution: "@pnpm/config.env-replace@npm:1.1.0"
@@ -13981,7 +13988,7 @@ __metadata:
     prettier-v2: "npm:prettier@^2.1.5"
     pretty-format: "workspace:*"
     semver: ^7.5.3
-    synckit: ^0.9.0
+    synckit: ^0.11.0
   languageName: unknown
   linkType: soft
 
@@ -21045,7 +21052,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"synckit@npm:^0.9.0, synckit@npm:^0.9.1":
+"synckit@npm:^0.11.0":
+  version: 0.11.1
+  resolution: "synckit@npm:0.11.1"
+  dependencies:
+    "@pkgr/core": ^0.2.0
+    tslib: ^2.8.1
+  checksum: 190164e51f69a9f0485b447991ef7bb76c4a40f768f87865b9512e46bba7086b5527c664204370184aa00b2c591d6f60119b3f0a173113e0d25c33396a169fec
+  languageName: node
+  linkType: hard
+
+"synckit@npm:^0.9.1":
   version: 0.9.2
   resolution: "synckit@npm:0.9.2"
   dependencies:
@@ -21453,7 +21470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.2, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
