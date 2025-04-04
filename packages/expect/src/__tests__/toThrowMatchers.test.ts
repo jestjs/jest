@@ -50,6 +50,10 @@ describe('toThrow', () => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test('did not throw with a promise', async () => {
+      await jestExpect(Promise.resolve('banana')).resolves.not.toThrow('apple')
+    });
+
     test('threw, but message did not match (error)', () => {
       expect(() => {
         jestExpect(() => {
@@ -106,6 +110,10 @@ describe('toThrow', () => {
       expect(() =>
         jestExpect(() => {}).toThrow(/apple/),
       ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('did not throw at all with a promise', async () => {
+      await jestExpect(Promise.resolve('banana')).resolves.not.toThrow(/apple/)
     });
 
     test('threw, but message did not match (error)', () => {
@@ -185,6 +193,10 @@ describe('toThrow', () => {
       expect(() =>
         expect(() => {}).toThrow(Err),
       ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('did not throw at all with a promise', async () => {
+      await jestExpect(Promise.resolve()).resolves.not.toThrow(Err)
     });
 
     test('threw, but class did not match (error)', () => {
