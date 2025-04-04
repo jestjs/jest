@@ -251,6 +251,7 @@ export const InitialOptions = Type.Partial(
     fakeTimers: FakeTimers,
     filter: Type.String(),
     findRelatedTests: Type.Boolean(),
+    maxRelatedTestsDepth: Type.Number(),
     forceCoverageMatch: Type.Array(Type.String()),
     forceExit: Type.Boolean(),
     json: Type.Boolean(),
