@@ -473,7 +473,6 @@ const config = typescriptEslint.config(
 
   {
     files: [
-      'website/docusaurus.config.js',
       'website/fetchSupporters.js',
       'website/src/prism/themeLight.js',
       'website/src/prism/themeDark.js',
