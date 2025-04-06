@@ -32,7 +32,7 @@
     "dedent": "^1.0.0",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
-    "eslint-import-resolver-typescript": "^3.8.3",
+    "eslint-import-resolver-typescript": "^4.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.0.0",
