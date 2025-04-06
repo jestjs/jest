@@ -211,7 +211,7 @@ See [SECURITY.md](./SECURITY.md) for the safe disclosure of security bugs. With 
 
 This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
 
-<a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/jestjs/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 
