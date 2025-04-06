@@ -5917,11 +5917,11 @@ __metadata:
   linkType: hard
 
 "@types/fb-watchman@npm:^2.0.0":
-  version: 2.0.4
-  resolution: "@types/fb-watchman@npm:2.0.4"
+  version: 2.0.5
+  resolution: "@types/fb-watchman@npm:2.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 7d024396d0ab6609cd5825de7cccde17a8615257417caa93ee894df48312ec2dcba773a623b4102ffc7bdc77ae85275c5673b3e884eaeb9a052721731adab41b
+  checksum: 9cdb988edba2c254f1bb54f932829978577b6bdc9c783e8d5743cbcc6ce63bfd88da91becc3b336565af7ecd91a4ea8171d2b921e8ab909be9017852b930c204
   languageName: node
   linkType: hard
 
