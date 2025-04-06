@@ -2195,7 +2195,7 @@ Both `sort` and `shard` may optionally return a `Promise`.
 
 For example, you may sort test paths alphabetically:
 
-```js title="custom-sequencer.js"
+```js tab
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -2226,6 +2226,35 @@ class CustomSequencer extends Sequencer {
 }
 
 module.exports = CustomSequencer;
+```
+
+```ts tab
+import TestSequencer, { ShardOptions } from '@jest/test-sequencer'
+import { Test } from '@jest/test-result'
+
+export default class CustomSequencer extends TestSequencer {
+  /**
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
+   */
+  shard (tests: Test[], { shardIndex, shardCount }: ShardOptions): any[] {
+    const shardSize = Math.ceil(tests.length / shardCount)
+    const shardStart = shardSize * (shardIndex - 1)
+    const shardEnd = shardSize * shardIndex
+
+    return [...tests].sort((a, b) => (a.path > b.path ? 1 : -1)).slice(shardStart, shardEnd)
+  }
+
+  /**
+  * Sort test to determine order of execution
+  * Sorting is applied after sharding
+  */
+  sort (tests: Test[]): any[] {
+    const copyTests = [...tests]
+    return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1))
+  }
+}
+
 ```
 
 Add `custom-sequencer` to your Jest configuration:

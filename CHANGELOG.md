@@ -132,6 +132,12 @@
 - `[docs]` Removed ExpressJS reference link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15270))
 - `[docs]` Removed `Running AngularJS Tests with Jest reference` link from documentation due to dead link ([#15270](https://github.com/jestjs/jest/pull/15311))
 
+## 29.7.1
+
+### Chore & Maintenance
+
+- `[docs]` Added example of `testSequencer` in typescript inside configuration.md file
+
 ## 29.7.0
 
 ### Features
