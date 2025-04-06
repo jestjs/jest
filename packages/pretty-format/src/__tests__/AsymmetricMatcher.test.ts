@@ -78,6 +78,16 @@ test('arrayNotContaining()', () => {
 ]`);
 });
 
+test('arrayOf()', () => {
+  const result = prettyFormat(expect.arrayOf(expect.any(String)), options);
+  expect(result).toBe('ArrayOf Any<String>');
+});
+
+test('notArrayOf()', () => {
+  const result = prettyFormat(expect.not.arrayOf(expect.any(String)), options);
+  expect(result).toBe('NotArrayOf Any<String>');
+});
+
 test('objectContaining()', () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toBe(`ObjectContaining {
@@ -183,6 +193,11 @@ test('supports multiple nested asymmetric matchers', () => {
           d: expect.stringContaining('jest'),
           e: expect.stringMatching('jest'),
           f: expect.objectContaining({test: 'case'}),
+          g: expect.arrayOf(
+            expect.objectContaining({
+              nested: expect.any(Number),
+            }),
+          ),
         }),
       },
     },
@@ -200,6 +215,9 @@ test('supports multiple nested asymmetric matchers', () => {
       "e": StringMatching /jest/,
       "f": ObjectContaining {
         "test": "case",
+      },
+      "g": ArrayOf ObjectContaining {
+        "nested": Any<Number>,
       },
     },
   },

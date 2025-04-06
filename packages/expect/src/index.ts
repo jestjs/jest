@@ -16,7 +16,9 @@ import {
   anything,
   arrayContaining,
   arrayNotContaining,
+  arrayOf,
   closeTo,
+  notArrayOf,
   notCloseTo,
   objectContaining,
   objectNotContaining,
@@ -397,6 +399,7 @@ expect.any = any;
 
 expect.not = {
   arrayContaining: arrayNotContaining,
+  arrayOf: notArrayOf,
   closeTo: notCloseTo,
   objectContaining: objectNotContaining,
   stringContaining: stringNotContaining,
@@ -404,6 +407,7 @@ expect.not = {
 };
 
 expect.arrayContaining = arrayContaining;
+expect.arrayOf = arrayOf;
 expect.closeTo = closeTo;
 expect.objectContaining = objectContaining;
 expect.stringContaining = stringContaining;
