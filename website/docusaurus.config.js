@@ -10,16 +10,11 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-import path from 'path';
-import fs from 'graceful-fs';
-import yaml from 'js-yaml';
-// eslint-disable-next-line import/default
-import npm2YarnPlugin from '@docusaurus/remark-plugin-npm2yarn';
-import tabBlockPlugin from 'docusaurus-remark-plugin-tab-blocks';
-import i18n from './i18n.js';
-import ArchivedVersions from './archivedVersions.json';
-import theme from './src/prism/themeLight.js';
-import darkTheme from './src/prism/themeDark.js';
+const path = require('path');
+const fs = require('fs');
+const yaml = require('js-yaml');
+const i18n = require('./i18n');
+const ArchivedVersions = require('./archivedVersions.json');
 
 const JestThemeColor = '#15c213';
 
@@ -65,7 +60,10 @@ const config = {
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
-          remarkPlugins: [[npm2YarnPlugin, {sync: true}], tabBlockPlugin],
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+            require('docusaurus-remark-plugin-tab-blocks'),
+          ],
         },
         blog: {
           showReadingTime: true,
@@ -78,7 +76,7 @@ const config = {
             path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
-            import.meta.resolve(
+            require.resolve(
               'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
             ),
           ],
@@ -87,7 +85,9 @@ const config = {
           trackingID: 'UA-44373548-17',
         },
         pages: {
-          remarkPlugins: [[npm2YarnPlugin, {sync: true}]],
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+          ],
         },
       }),
     ],
@@ -224,8 +224,8 @@ const config = {
       image: 'img/opengraph.png',
       prism: {
         additionalLanguages: ['bash', 'diff', 'json'],
-        theme,
-        darkTheme,
+        theme: require('./src/prism/themeLight'),
+        darkTheme: require('./src/prism/themeDark'),
       },
       footer: {
         style: 'dark',
@@ -313,4 +313,4 @@ const config = {
     }),
 };
 
-export default config;
+module.exports = config;
