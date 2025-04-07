@@ -35,7 +35,7 @@
     "@types/babel__traverse": "^7.0.6",
     "@types/node": "*",
     "babel-plugin-tester": "^11.0.2",
-    "prettier": "^3.0.3"
+    "prettier": "^3.5.3"
   },
   "publishConfig": {
     "access": "public"
