@@ -954,14 +954,21 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
  * processes attempt to rename to the same target file at the same time.
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
+ * If the target does not exist we do not know if it is because it is still
+ * being written by another process or is being overwritten by another process.
  */
 const cacheWriteErrorSafeToIgnore = (
   e: NodeJS.ErrnoException,
   cachePath: string,
-) =>
-  process.platform === 'win32' &&
-  e.code === 'EPERM' &&
-  fs.existsSync(cachePath);
+) => {
+  if (process.platform !== 'win32' || e.code !== 'EPERM') {
+    return false;
+  }
+  if (!fs.existsSync(cachePath)) {
+    console.warn('Possible problem writing cache if this occurs many times', e);
+  }
+  return true;
+};
 
 const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {
