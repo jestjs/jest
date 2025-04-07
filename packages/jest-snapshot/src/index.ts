@@ -509,12 +509,13 @@ const _toThrowErrorMatchingSnapshot = (
   }
 
   let error;
+  let returnedValueOnNotThrow;
 
   if (fromPromise) {
     error = received;
   } else {
     try {
-      received();
+      returnedValueOnNotThrow = received();
     } catch (receivedError) {
       error = receivedError;
     }
@@ -523,7 +524,11 @@ const _toThrowErrorMatchingSnapshot = (
   if (error === undefined) {
     // Because the received value is a function, this is not a matcher error.
     throw new Error(
-      `${matcherHintFromConfig(config, false)}\n\n${DID_NOT_THROW}`,
+      `${matcherHintFromConfig(config, false)}\n\n${DID_NOT_THROW}${
+        typeof received === 'function'
+          ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+          : ''
+      }`,
     );
   }
 
