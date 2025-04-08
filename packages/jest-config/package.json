@@ -55,7 +55,7 @@
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "micromatch": "^4.0.8",
-    "parse-json": "^5.2.0",
+    "parse-json": "^8.2.0",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "strip-json-comments": "^3.1.1"
@@ -63,7 +63,6 @@
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3",
     "@types/micromatch": "^4.0.7",
-    "@types/parse-json": "^4.0.0",
     "esbuild": "^0.25.0",
     "esbuild-register": "^3.4.0",
     "semver": "^7.5.3",

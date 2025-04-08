@@ -350,7 +350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.0, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.22.13, @babel/code-frame@npm:^7.24.7, @babel/code-frame@npm:^7.26.2, @babel/code-frame@npm:^7.8.3":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.0, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.24.7, @babel/code-frame@npm:^7.26.2, @babel/code-frame@npm:^7.8.3":
   version: 7.26.2
   resolution: "@babel/code-frame@npm:7.26.2"
   dependencies:
@@ -12739,10 +12739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"index-to-position@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "index-to-position@npm:0.1.2"
-  checksum: ce0ab15544b154d6821b4f8b3fdb5dc410d560d20e43bcb0fb8ea2ccc5f93dc04caeee6b3ebd4abc7091e437156db4caaaef934ce20f05f079a1dbc73755f7e7
+"index-to-position@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "index-to-position@npm:1.0.0"
+  checksum: 56c812b08ea597d0a5387731a66cc9944dec73a24701182db26c01a2028c3107a4bcce830f9400a021eaa2212de5039602e6fccf4864576d6334d832ff1d60f6
   languageName: node
   linkType: hard
 
@@ -13629,7 +13629,6 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.7
-    "@types/parse-json": ^4.0.0
     babel-jest: "workspace:*"
     chalk: ^4.0.0
     ci-info: ^4.0.0
@@ -13648,7 +13647,7 @@ __metadata:
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     micromatch: ^4.0.8
-    parse-json: ^5.2.0
+    parse-json: ^8.2.0
     pretty-format: "workspace:*"
     semver: ^7.5.3
     slash: ^3.0.0
@@ -17424,14 +17423,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-json@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "parse-json@npm:8.1.0"
+"parse-json@npm:^8.0.0, parse-json@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "parse-json@npm:8.2.0"
   dependencies:
-    "@babel/code-frame": ^7.22.13
-    index-to-position: ^0.1.2
-    type-fest: ^4.7.1
-  checksum: efc4256c91e835b1340e2b4f535272247f174fcba85eead15ff938be23b3ca2d521a04c76e564d1dc2f61c0c9ebcb6157d5433d459c7e736c81d014b49577b31
+    "@babel/code-frame": ^7.26.2
+    index-to-position: ^1.0.0
+    type-fest: ^4.37.0
+  checksum: 7238fe443668b4e0c278b53d80863062c84a0ed326a79f40f2cdf6ba98a3f43f452ce4bae470cb8a859069daf457b2ae30f4e7560b61742442959157e22b5813
   languageName: node
   linkType: hard
 
@@ -21681,10 +21680,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.2.0, type-fest@npm:^4.23.0, type-fest@npm:^4.6.0, type-fest@npm:^4.7.1":
-  version: 4.32.0
-  resolution: "type-fest@npm:4.32.0"
-  checksum: 0010e2fbe040e46f9d3a76a97e8917e5f0c9a5d7883529a3916fac5c2d2638429864b7dfc083d2c7883894e3c8cee026f91d0301c64fa74c1c0c2dafb488e3c6
+"type-fest@npm:^4.2.0, type-fest@npm:^4.23.0, type-fest@npm:^4.37.0, type-fest@npm:^4.6.0":
+  version: 4.39.1
+  resolution: "type-fest@npm:4.39.1"
+  checksum: 71ce0e25822d5d984c8882e3243c42c741f089c003d89222dc361a133698d8ac021c18a9139ba3baf0fee2f523383422b8c5aaa390b1b3a98140f23dd0f44795
   languageName: node
   linkType: hard
 
