@@ -35,8 +35,8 @@ describe('JestExpect', () => {
   });
 
   test('allows type inference of the `actual` argument', () => {
-    expect(jestExpect(100).toTypedEqual(100)).type.toBeVoid();
-    expect(jestExpect(101).not.toTypedEqual(100)).type.toBeVoid();
+    expect(jestExpect(100).toTypedEqual(100)).type.toBe<void>();
+    expect(jestExpect(101).not.toTypedEqual(100)).type.toBe<void>();
 
     expect(jestExpect(100).toTypedEqual('three')).type.toRaiseError(
       "Argument of type 'string' is not assignable to parameter of type 'number'.",

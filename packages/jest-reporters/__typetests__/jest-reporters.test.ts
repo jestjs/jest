@@ -25,8 +25,8 @@ declare const testResult: TestResult;
 
 // utils.formatTestPath()
 
-expect(utils.formatTestPath(globalConfig, 'some/path')).type.toBeString();
-expect(utils.formatTestPath(projectConfig, 'some/path')).type.toBeString();
+expect(utils.formatTestPath(globalConfig, 'some/path')).type.toBe<string>();
+expect(utils.formatTestPath(projectConfig, 'some/path')).type.toBe<string>();
 expect(utils.formatTestPath()).type.toRaiseError();
 expect(utils.formatTestPath({}, 'some/path')).type.toRaiseError();
 expect(utils.formatTestPath(globalConfig, 123)).type.toRaiseError();
@@ -36,8 +36,8 @@ expect(utils.formatTestPath(projectConfig, 123)).type.toRaiseError();
 
 expect(
   utils.getResultHeader(testResult, globalConfig, projectConfig),
-).type.toBeString();
-expect(utils.getResultHeader(testResult, globalConfig)).type.toBeString();
+).type.toBe<string>();
+expect(utils.getResultHeader(testResult, globalConfig)).type.toBe<string>();
 expect(utils.getResultHeader()).type.toRaiseError();
 expect(utils.getResultHeader({}, globalConfig)).type.toRaiseError();
 expect(
@@ -71,15 +71,15 @@ expect(
 
 // utils.getSummary()
 
-expect(utils.getSummary(aggregatedResults, summaryOptions)).type.toBeString();
-expect(utils.getSummary(aggregatedResults)).type.toBeString();
+expect(utils.getSummary(aggregatedResults, summaryOptions)).type.toBe<string>();
+expect(utils.getSummary(aggregatedResults)).type.toBe<string>();
 expect(utils.getSummary()).type.toRaiseError();
 expect(utils.getSummary({})).type.toRaiseError();
 expect(utils.getSummary(aggregatedResults, true)).type.toRaiseError();
 
 // utils.printDisplayName()
 
-expect(utils.printDisplayName(projectConfig)).type.toBeString();
+expect(utils.printDisplayName(projectConfig)).type.toBe<string>();
 expect(utils.printDisplayName()).type.toRaiseError();
 expect(utils.printDisplayName({})).type.toRaiseError();
 
@@ -101,7 +101,7 @@ expect(utils.relativePath(projectConfig, true)).type.toRaiseError();
 
 expect(
   utils.trimAndFormatPath(2, globalConfig, 'some/path', 4),
-).type.toBeString();
+).type.toBe<string>();
 expect(utils.trimAndFormatPath()).type.toRaiseError();
 expect(
   utils.trimAndFormatPath(true, globalConfig, 'some/path', 4),
