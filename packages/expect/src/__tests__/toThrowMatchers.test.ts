@@ -307,6 +307,37 @@ describe('toThrow', () => {
           throw new Error('good', {cause: errorA});
         }).not.toThrow(expected);
       });
+
+      test('isNot false, compare Error with object', () => {
+        jestExpect(() => {
+          throw errorB;
+        }).toThrow({
+          cause: {
+            message: 'A',
+          },
+          message: 'B',
+        });
+      });
+
+      test('isNot false, cause is string', () => {
+        jestExpect(() => {
+          throw new Error('Message', {cause: 'line 123'});
+        }).toThrow({
+          cause: 'line 123',
+          message: 'Message',
+        });
+      });
+
+      test('isNot false, cause is object', () => {
+        jestExpect(() => {
+          throw new Error('Message', {
+            cause: {prop1: true, prop2: false, prop3: null, prop4: undefined},
+          });
+        }).toThrow({
+          cause: {prop1: true, prop2: false, prop3: null, prop4: undefined},
+          message: 'Message',
+        });
+      });
     });
 
     describe('fail', () => {

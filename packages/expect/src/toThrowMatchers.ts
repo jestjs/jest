@@ -465,22 +465,43 @@ const formatStack = (thrown: Thrown | null) =>
         },
       );
 
-function createMessageAndCauseMessage(error: Error): string {
-  if (error.cause instanceof Error) {
-    return `{ message: ${error.message}, cause: ${createMessageAndCauseMessage(
-      error.cause,
-    )}}`;
-  }
-
-  return `{ message: ${error.message} }`;
-}
-
 function createMessageAndCause(error: Error) {
-  if (error.cause instanceof Error) {
-    return createMessageAndCauseMessage(error);
+  if (error.cause) {
+    const seen = new WeakSet();
+    return JSON.stringify(buildSerializeError(error), (_, value) => {
+      if (isObject(value)) {
+        if (seen.has(value)) return;
+        seen.add(value); // stop circular references
+      }
+      return value === undefined ? String(undefined) : value;
+    });
   }
 
   return error.message;
+}
+
+function buildSerializeError(error: {[key: string]: any}) {
+  if (!isObject(error)) {
+    return error;
+  }
+
+  const result: {[key: string]: any} = {};
+  for (const name of Object.getOwnPropertyNames(error).sort()) {
+    if (['stack', 'fileName', 'lineNumber'].includes(name)) {
+      continue;
+    }
+    if (name === 'cause') {
+      result[name] = buildSerializeError(error['cause']);
+      continue;
+    }
+    result[name] = error[name];
+  }
+
+  return result;
+}
+
+function isObject(obj: unknown) {
+  return obj != null && typeof obj === 'object';
 }
 
 function messageAndCause(error: Error) {
