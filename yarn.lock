@@ -3455,6 +3455,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fast-check/jest@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@fast-check/jest@npm:2.1.1"
+  dependencies:
+    fast-check: ^3.0.0 || ^4.0.0
+  peerDependencies:
+    "@fast-check/worker": ">=0.0.7 <0.6.0"
+    "@jest/expect": ">=28.0.0"
+    "@jest/globals": ">=25.5.2"
+  peerDependenciesMeta:
+    "@fast-check/worker":
+      optional: true
+    "@jest/expect":
+      optional: true
+  checksum: 6e51c5d6f4d51a3a52d985262a383351a4f5506cd595f7639aad7fa8dd54aef8d49d156926a16a0d8bdc619b9ed2f6b9f6f9a27c87573307eee6bb7bb4576b72
+  languageName: node
+  linkType: hard
+
 "@graphql-typed-document-node/core@npm:^3.2.0":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
@@ -11032,10 +11050,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
-    "@fast-check/jest": ^2.0.0
+    "@fast-check/jest": ^2.1.1
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
+    fast-check: ^3.23.2
     immutable: ^5.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
@@ -11107,7 +11126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-check@npm:^3.0.0":
+"fast-check@npm:^3.0.0, fast-check@npm:^3.0.0 || ^4.0.0, fast-check@npm:^3.23.2":
   version: 3.23.2
   resolution: "fast-check@npm:3.23.2"
   dependencies:
