@@ -32,7 +32,7 @@
     "@fast-check/jest": "^2.1.1",
     "@jest/test-utils": "workspace:*",
     "chalk": "^4.0.0",
-    "fast-check": "^3.23.2",
+    "fast-check": "^4.0.0",
     "immutable": "^5.0.0"
   },
   "engines": {
