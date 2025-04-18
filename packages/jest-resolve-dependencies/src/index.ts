@@ -118,7 +118,10 @@ export class DependencyResolver {
     ) => {
       const visitedModules = new Set();
       const result: Array<ResolvedModule> = [];
-      while (changed.size > 0) {
+      let depth = 0;
+      const maxDepth = options?.maxDepth ?? Infinity;
+
+      while (changed.size > 0 && depth < maxDepth) {
         changed = new Set(
           moduleMap.reduce<Array<string>>((acc, module) => {
             if (
@@ -138,6 +141,7 @@ export class DependencyResolver {
             return acc;
           }, []),
         );
+        depth++;
       }
       return [
         ...result,
@@ -165,6 +169,7 @@ export class DependencyResolver {
         file,
       });
     }
+
     return collectModules(relatedPaths, modules, changed);
   }
 

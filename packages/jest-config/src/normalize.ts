@@ -900,6 +900,7 @@ export default async function normalize(
       case 'globals':
       case 'fakeTimers':
       case 'findRelatedTests':
+      case 'maxRelatedTestsDepth':
       case 'forceCoverageMatch':
       case 'forceExit':
       case 'injectGlobals':

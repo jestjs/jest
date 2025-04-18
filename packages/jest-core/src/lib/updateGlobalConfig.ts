@@ -70,6 +70,10 @@ export default function updateGlobalConfig(
     newConfig.findRelatedTests = options.findRelatedTests;
   }
 
+  if (options.maxRelatedTestsDepth !== undefined) {
+    newConfig.maxRelatedTestsDepth = options.maxRelatedTestsDepth;
+  }
+
   if (options.nonFlagArgs !== undefined) {
     newConfig.nonFlagArgs = options.nonFlagArgs;
   }

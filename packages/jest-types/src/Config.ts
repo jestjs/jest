@@ -173,6 +173,7 @@ export type DefaultOptions = {
   injectGlobals: boolean;
   listTests: boolean;
   maxConcurrency: number;
+  maxRelatedTestsDepth: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -271,6 +272,7 @@ export type GlobalConfig = {
   expand: boolean;
   filter?: string;
   findRelatedTests: boolean;
+  maxRelatedTestsDepth: number;
   forceExit: boolean;
   json: boolean;
   globalSetup?: string;
@@ -424,6 +426,7 @@ export type Argv = Arguments<
     env: string;
     expand: boolean;
     findRelatedTests: boolean;
+    maxRelatedTestsDepth: number;
     forceExit: boolean;
     globals: string;
     globalSetup: string | null | undefined;
