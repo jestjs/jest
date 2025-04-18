@@ -4424,8 +4424,8 @@ __metadata:
   linkType: hard
 
 "@microsoft/api-extractor@npm:^7.35.0":
-  version: 7.52.3
-  resolution: "@microsoft/api-extractor@npm:7.52.3"
+  version: 7.52.4
+  resolution: "@microsoft/api-extractor@npm:7.52.4"
   dependencies:
     "@microsoft/api-extractor-model": 7.30.5
     "@microsoft/tsdoc": ~0.15.1
@@ -4442,7 +4442,7 @@ __metadata:
     typescript: 5.8.2
   bin:
     api-extractor: bin/api-extractor
-  checksum: 43e818af7bc97bf0ffe168aaec611fe979d796ef5bc1262392c15644df2a39c861b5452e394903d8ec3509879b27ac43b43040c1f71fe8bb6d7649ada71278c1
+  checksum: 7e9ba5547f56e383ac0b98480e84e268730db4845d035237743901651f3b0fde67f8ced39d2847e70d186179bce01fbee2008972ec978a53af8f59df55a9865e
   languageName: node
   linkType: hard
 
@@ -12532,8 +12532,8 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^2.0.3":
-  version: 2.0.7
-  resolution: "http-proxy-middleware@npm:2.0.7"
+  version: 2.0.9
+  resolution: "http-proxy-middleware@npm:2.0.9"
   dependencies:
     "@types/http-proxy": ^1.17.8
     http-proxy: ^1.18.1
@@ -12545,7 +12545,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/express":
       optional: true
-  checksum: 18caa21145917aa1054740353916e8f03f5a3a93bede9106f1f44d84f7b174df17af1c72bf5fade5cc440c2058ee813f47cbb2bdd6ae6874af1cf33e0ac575f3
+  checksum: 0ea88609b9c13fa03b89f8e6b85bd5c537027ec6990005dd81a7fbb3e73fcf8d6a6e3db2b57b1c6cddbcda80965704584dc6291d0e721b2700198c4e59ee0d0b
   languageName: node
   linkType: hard
 
