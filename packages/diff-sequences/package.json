@@ -30,9 +30,10 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
-    "@fast-check/jest": "^2.0.0",
+    "@fast-check/jest": "^2.1.1",
     "benchmark": "^2.1.4",
-    "diff": "^7.0.0"
+    "diff": "^7.0.0",
+    "fast-check": "^3.23.2"
   },
   "publishConfig": {
     "access": "public"
