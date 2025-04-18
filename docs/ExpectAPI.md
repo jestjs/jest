@@ -958,6 +958,52 @@ describe('not.arrayContaining', () => {
 });
 ```
 
+### `expect.arrayOf(value)`
+
+`expect.arrayOf(value)` matches a received array whose elements match the provided value. This is useful for asserting that every item in an array satisfies a particular condition or type.
+
+**Example:**
+
+```js
+test('all elements in array are strings', () => {
+  expect(['apple', 'banana', 'cherry']).toEqual(
+    expect.arrayOf(expect.any(String)),
+  );
+});
+```
+
+This matcher is particularly useful for validating arrays containing complex structures:
+
+```js
+test('array of objects with specific properties', () => {
+  expect([
+    {id: 1, name: 'Alice'},
+    {id: 2, name: 'Bob'},
+  ]).toEqual(
+    expect.arrayOf(
+      expect.objectContaining({
+        id: expect.any(Number),
+        name: expect.any(String),
+      }),
+    ),
+  );
+});
+```
+
+### `expect.not.arrayOf(value)`
+
+`expect.not.arrayOf(value)` matches a received array where not all elements match the provided matcher.
+
+**Example:**
+
+```js
+test('not all elements in array are strings', () => {
+  expect(['apple', 123, 'cherry']).toEqual(
+    expect.not.arrayOf(expect.any(String)),
+  );
+});
+```
+
 ### `expect.closeTo(number, numDigits?)`
 
 `expect.closeTo(number, numDigits?)` is useful when comparing floating point numbers in object properties or array item. If you need to compare a number, please use `.toBeCloseTo` instead.
