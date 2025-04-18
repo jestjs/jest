@@ -29,20 +29,20 @@ const objectTable = [
 
 expect(
   test.each(list)('some test', (a, done) => {
-    expect(a).type.toBeNumber();
+    expect(a).type.toBe<number>();
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each(list)(
     'some test',
     a => {
-      expect(a).type.toBeNumber();
+      expect(a).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each(tupleList)('some test', (b, done) => {
@@ -50,7 +50,7 @@ expect(
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each(tupleList)(
     'some test',
@@ -59,7 +59,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each([3, 4, 'seven'])('some test', (c, done) => {
@@ -67,7 +67,7 @@ expect(
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each([3, 4, 'seven'])(
     'some test',
@@ -76,7 +76,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each(table)('some test', (a, b, expected) => {
@@ -84,7 +84,7 @@ expect(
     expect(b).type.toBe<string | number>();
     expect(expected).type.toBe<string | number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each(table)(
     'some test',
@@ -95,39 +95,39 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each(tupleTable)('some test', (a, b, expected, extra) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
     expect(extra).type.toBe<boolean | undefined>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each(tupleTable)(
     'some test',
     (a, b, expected, extra) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each([
     [1, 2, 'three'],
     [3, 4, 'seven'],
   ])('some test', (a, b, expected) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each([
     [1, 2, 'three'],
@@ -135,13 +135,13 @@ expect(
   ])(
     'some test',
     (a, b, expected) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each([
@@ -152,7 +152,7 @@ expect(
     expect(b).type.toBe<2 | 4>();
     expect(expected).type.toBe<'three' | 'seven'>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each([
     [1, 2, 'three'],
@@ -166,18 +166,18 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each(objectTable)('some test', ({a, b, expected, extra}, done) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
     expect(extra).type.toBe<boolean | undefined>();
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each([
     {a: 1, b: 2, expected: 'three', extra: true},
@@ -186,16 +186,16 @@ expect(
   ])(
     'some test',
     ({a, b, expected, extra}, done) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
 
       expect(done).type.toBe<(reason?: string | Error) => void>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each`
@@ -204,13 +204,13 @@ expect(
     ${1} | ${2} | ${3}
     ${2} | ${1} | ${3}
   `('some test', ({a, b, expected}, done) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeNumber();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<number>();
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each`
     item   | expected
@@ -220,19 +220,19 @@ expect(
     expect(item).type.toBe<string | boolean>();
     expect(expected).type.toBe<string | boolean>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each<{item: string; expected: boolean}>`
     item   | expected
     ${'a'} | ${true}
     ${'b'} | ${false}
   `('some test', ({item, expected}, done) => {
-    expect(item).type.toBeString();
-    expect(expected).type.toBeBoolean();
+    expect(item).type.toBe<string>();
+    expect(expected).type.toBe<boolean>();
 
     expect(done).type.toBe<(reason?: string | Error) => void>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each`
     a    | b    | expected
@@ -242,13 +242,13 @@ expect(
   `(
     'some test',
     ({a, b, expected}) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeNumber();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each`
     item   | expected
@@ -262,7 +262,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each<{item: string; expected: boolean}>`
     item   | expected
@@ -271,12 +271,12 @@ expect(
   `(
     'some test',
     ({item, expected}) => {
-      expect(item).type.toBeString();
-      expect(expected).type.toBeBoolean();
+      expect(item).type.toBe<string>();
+      expect(expected).type.toBe<boolean>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(test.each()).type.toRaiseError();
 expect(test.each('abc')).type.toRaiseError();
@@ -289,24 +289,24 @@ expect(test.skip.each).type.toBe(test.each);
 
 expect(
   test.concurrent.each(list)('some test', async a => {
-    expect(a).type.toBeNumber();
+    expect(a).type.toBe<number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each(list)(
     'some test',
     async a => {
-      expect(a).type.toBeNumber();
+      expect(a).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.concurrent.each(tupleList)('some test', async b => {
     expect(b).type.toBe<'one' | 'two' | 'three'>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each(tupleList)(
     'some test',
@@ -315,13 +315,13 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.concurrent.each([3, 4, 'seven'])('some test', async c => {
     expect(c).type.toBe<string | number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each([3, 4, 'seven'])(
     'some test',
@@ -330,7 +330,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.concurrent.each(table)('some test', async (a, b, expected) => {
@@ -338,7 +338,7 @@ expect(
     expect(b).type.toBe<string | number>();
     expect(expected).type.toBe<string | number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each(table)(
     'some test',
@@ -349,31 +349,31 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.concurrent.each(tupleTable)(
     'some test',
     async (a, b, expected, extra) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
     },
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each(tupleTable)(
     'some test',
     async (a, b, expected, extra) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.concurrent.each`
@@ -382,11 +382,11 @@ expect(
     ${1} | ${2} | ${3}
     ${2} | ${1} | ${3}
   `('some test', async ({a, b, expected}) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeNumber();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each`
     item   | expected
@@ -396,17 +396,17 @@ expect(
     expect(item).type.toBe<string | boolean>();
     expect(expected).type.toBe<string | boolean>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each<{item: string; expected: boolean}>`
     item   | expected
     ${'a'} | ${true}
     ${'b'} | ${false}
   `('some test', async ({item, expected}) => {
-    expect(item).type.toBeString();
-    expect(expected).type.toBeBoolean();
+    expect(item).type.toBe<string>();
+    expect(expected).type.toBe<boolean>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.concurrent.each`
     a    | b    | expected
@@ -416,13 +416,13 @@ expect(
   `(
     'some test',
     async ({a, b, expected}) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeNumber();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   test.each`
@@ -437,7 +437,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   test.each<{item: string; expected: boolean}>`
     item   | expected
@@ -446,12 +446,12 @@ expect(
   `(
     'some test',
     ({item, expected}) => {
-      expect(item).type.toBeString();
-      expect(expected).type.toBeBoolean();
+      expect(item).type.toBe<string>();
+      expect(expected).type.toBe<boolean>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(test.concurrent.each()).type.toRaiseError();
 expect(test.concurrent.each('abc')).type.toRaiseError();
@@ -464,24 +464,24 @@ expect(test.concurrent.skip.each).type.toBe(test.concurrent.each);
 
 expect(
   describe.each(list)('describe each', a => {
-    expect(a).type.toBeNumber();
+    expect(a).type.toBe<number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each(list)(
     'describe each',
     a => {
-      expect(a).type.toBeNumber();
+      expect(a).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each(tupleList)('describe each', b => {
     expect(b).type.toBe<'one' | 'two' | 'three'>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each(tupleList)(
     'describe each',
@@ -490,13 +490,13 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each([3, 4, 'seven'])('describe each', c => {
     expect(c).type.toBe<string | number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each([3, 4, 'seven'])(
     'describe each',
@@ -505,7 +505,7 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each(table)('describe each', (a, b, expected) => {
@@ -513,7 +513,7 @@ expect(
     expect(b).type.toBe<string | number>();
     expect(expected).type.toBe<string | number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each(table)(
     'describe each',
@@ -524,39 +524,39 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each(tupleTable)('describe each', (a, b, expected, extra) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
     expect(extra).type.toBe<boolean | undefined>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each(tupleTable)(
     'describe each',
     (a, b, expected, extra) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each([
     [1, 2, 'three'],
     [3, 4, 'seven'],
   ])('describe each', (a, b, expected) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each([
     [1, 2, 'three'],
@@ -564,13 +564,13 @@ expect(
   ])(
     'describe each',
     (a, b, expected) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each([
@@ -581,7 +581,7 @@ expect(
     expect(b).type.toBe<2 | 4>();
     expect(expected).type.toBe<'three' | 'seven'>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each([
     [1, 2, 'three'],
@@ -595,16 +595,16 @@ expect(
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each(objectTable)('describe each', ({a, b, expected, extra}) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
     expect(extra).type.toBe<boolean | undefined>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each([
     {a: 1, b: 2, expected: 'three', extra: true},
@@ -613,14 +613,14 @@ expect(
   ])(
     'describe each',
     ({a, b, expected, extra}) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
       expect(extra).type.toBe<boolean | undefined>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   describe.each`
@@ -629,11 +629,11 @@ expect(
     ${1} | ${2} | ${3}
     ${2} | ${1} | ${3}
   `('describe each', ({a, b, expected}) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeNumber();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<number>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each<{
     a: number;
@@ -645,11 +645,11 @@ expect(
     ${1} | ${2} | ${3}
     ${2} | ${1} | ${3}
   `('describe each', ({a, b, expected}) => {
-    expect(a).type.toBeNumber();
-    expect(b).type.toBeNumber();
-    expect(expected).type.toBeString();
+    expect(a).type.toBe<number>();
+    expect(b).type.toBe<number>();
+    expect(expected).type.toBe<string>();
   }),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each`
     a    | b    | expected
@@ -659,13 +659,13 @@ expect(
   `(
     'describe each',
     ({a, b, expected}) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeNumber();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<number>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   describe.each<{
     a: number;
@@ -679,13 +679,13 @@ expect(
   `(
     'describe each',
     ({a, b, expected}) => {
-      expect(a).type.toBeNumber();
-      expect(b).type.toBeNumber();
-      expect(expected).type.toBeString();
+      expect(a).type.toBe<number>();
+      expect(b).type.toBe<number>();
+      expect(expected).type.toBe<string>();
     },
     1000,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(describe.each()).type.toRaiseError();
 expect(describe.each('abc')).type.toRaiseError();

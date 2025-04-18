@@ -21,66 +21,66 @@ export function overloaded(n?: number, sOrB?: string | boolean): void {
 
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything()),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith(jestExpect.anything(true)),
 ).type.toRaiseError();
 
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBe<void>();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBe<void>();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBe<void>();
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith(123, 'value'),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith('value', 123),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenCalledWith(
     jestExpect.stringContaining('value'),
     123,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBeVoid();
-expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBeVoid();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith()).type.toBe<void>();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith(123)).type.toBe<void>();
+expect(jestExpect(jest.fn()).toHaveBeenCalledWith('value')).type.toBe<void>();
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith(123, 'value'),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn()).toHaveBeenCalledWith('value', 123),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(a: string, b: number) => void>()).toHaveBeenCalledWith(
     jestExpect.stringContaining('value'),
     123,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 
 expect(
   jestExpect(jest.fn<() => void>()).toHaveBeenCalledWith(),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<() => void>()).toHaveBeenCalledWith(123),
 ).type.toRaiseError();
 
-expect(jestExpect(() => {}).toHaveBeenCalledWith()).type.toBeVoid();
+expect(jestExpect(() => {}).toHaveBeenCalledWith()).type.toBe<void>();
 expect(jestExpect(() => {}).toHaveBeenCalledWith(123)).type.toRaiseError();
 
 expect(
   jestExpect(jest.fn<(n?: number) => void>()).toHaveBeenCalledWith(),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n?: number) => void>()).toHaveBeenCalledWith(123),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n?: number) => void>()).toHaveBeenCalledWith('value'),
 ).type.toRaiseError();
 
 expect(
   jestExpect(jest.fn<(n: number) => void>()).toHaveBeenCalledWith(123),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n: number) => void>()).toHaveBeenCalledWith(),
 ).type.toRaiseError();
@@ -88,10 +88,12 @@ expect(
   jestExpect(jest.fn<(n: number) => void>()).toHaveBeenCalledWith('value'),
 ).type.toRaiseError();
 
-expect(jestExpect((n: number) => {}).toHaveBeenCalledWith(123)).type.toBeVoid();
+expect(
+  jestExpect((n: number) => {}).toHaveBeenCalledWith(123),
+).type.toBe<void>();
 expect(
   jestExpect((n: number) => {}).toHaveBeenCalledWith(jestExpect.any(Number)),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect((n: number) => {}).toHaveBeenCalledWith(),
 ).type.toRaiseError();
@@ -101,7 +103,7 @@ expect(
 
 expect(
   jestExpect(jest.fn<(s: string) => void>()).toHaveBeenCalledWith('value'),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(s: string) => void>()).toHaveBeenCalledWith(),
 ).type.toRaiseError();
@@ -114,7 +116,7 @@ expect(
     123,
     'value',
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n: number, s: string) => void>()).toHaveBeenCalledWith(),
 ).type.toRaiseError();
@@ -147,12 +149,12 @@ expect(
     123,
     'value',
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n: number, s?: string) => void>()).toHaveBeenCalledWith(
     123,
   ),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<(n: number, s?: string) => void>()).toHaveBeenCalledWith(),
 ).type.toRaiseError();
@@ -182,16 +184,16 @@ expect(
 
 expect(
   jestExpect(jest.fn<typeof overloaded>()).toHaveBeenCalledWith(),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<typeof overloaded>()).toHaveBeenCalledWith(123),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<typeof overloaded>()).toHaveBeenCalledWith(123, 'value'),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<typeof overloaded>()).toHaveBeenCalledWith(123, true),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(jest.fn<typeof overloaded>()).toHaveBeenCalledWith(123, 123),
 ).type.toRaiseError();
@@ -218,17 +220,17 @@ expect(
     jestExpect.any(String),
     jestExpect.any(String),
   ]),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name?: [string, string]) => void>(),
   ).toHaveBeenCalledWith(jestExpect.any(Date), jestExpect.any(Array)),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name?: [string, string]) => void>(),
   ).toHaveBeenCalledWith(jestExpect.any(Date)),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name?: [string, string]) => void>(),
@@ -249,12 +251,12 @@ expect(
   jestExpect(
     jest.fn<(date: Date, name: {foo: string}) => void>(),
   ).toHaveBeenCalledWith(jestExpect.any(Date), {foo: jestExpect.any(String)}),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name: {foo: string}) => void>(),
   ).toHaveBeenCalledWith(jestExpect.any(Date), jestExpect.any(Object)),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name: {foo: string}) => void>(),
@@ -281,7 +283,7 @@ expect(
     jestExpect.any(String),
     [jestExpect.any(String)],
   ]),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name: [string, [string]]) => void>(),
@@ -289,7 +291,7 @@ expect(
     'value',
     [jestExpect.any(String)],
   ]),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name: [string, [string]]) => void>(),
@@ -297,9 +299,9 @@ expect(
     jestExpect.any(String),
     ['value'],
   ]),
-).type.toBeVoid();
+).type.toBe<void>();
 expect(
   jestExpect(
     jest.fn<(date: Date, name: [string, [string]]) => void>(),
   ).toHaveBeenCalledWith(jestExpect.any(Date), ['value', ['value']]),
-).type.toBeVoid();
+).type.toBe<void>();
