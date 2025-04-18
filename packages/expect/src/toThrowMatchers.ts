@@ -17,6 +17,7 @@ import {
   printExpected,
   printReceived,
   printWithType,
+  stringify,
 } from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
@@ -82,13 +83,14 @@ export const createMatcher = (
     };
 
     let thrown = null;
+    let returnedValueOnNotThrow;
 
     if (fromPromise && isError(received)) {
       thrown = getThrown(received);
     } else {
       if (typeof received === 'function') {
         try {
-          received();
+          returnedValueOnNotThrow = received();
         } catch (error) {
           thrown = getThrown(error);
         }
@@ -107,20 +109,61 @@ export const createMatcher = (
     }
 
     if (expected === undefined) {
-      return toThrow(matcherName, options, thrown);
+      return toThrow(
+        matcherName,
+        options,
+        thrown,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else if (typeof expected === 'function') {
-      return toThrowExpectedClass(matcherName, options, thrown, expected);
+      return toThrowExpectedClass(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else if (typeof expected === 'string') {
-      return toThrowExpectedString(matcherName, options, thrown, expected);
+      return toThrowExpectedString(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else if (expected !== null && typeof expected.test === 'function') {
-      return toThrowExpectedRegExp(matcherName, options, thrown, expected);
+      return toThrowExpectedRegExp(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else if (
       expected !== null &&
       typeof expected.asymmetricMatch === 'function'
     ) {
-      return toThrowExpectedAsymmetric(matcherName, options, thrown, expected);
+      return toThrowExpectedAsymmetric(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else if (expected !== null && typeof expected === 'object') {
-      return toThrowExpectedObject(matcherName, options, thrown, expected);
+      return toThrowExpectedObject(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        received,
+        returnedValueOnNotThrow,
+      );
     } else {
       throw new Error(
         matcherErrorMessage(
@@ -143,6 +186,8 @@ const toThrowExpectedRegExp = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: RegExp,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const pass = thrown !== null && expected.test(thrown.message);
 
@@ -166,7 +211,11 @@ const toThrowExpectedRegExp = (
         '\n\n' +
         formatExpected('Expected pattern: ', expected) +
         (thrown === null
-          ? `\n${DID_NOT_THROW}`
+          ? `\n${DID_NOT_THROW}${
+              typeof received === 'function'
+                ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+                : ''
+            }`
           : thrown.hasMessage
             ? formatReceived('Received message: ', thrown, 'message') +
               formatStack(thrown)
@@ -184,6 +233,8 @@ const toThrowExpectedAsymmetric = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: AsymmetricMatcher,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const pass = thrown !== null && expected.asymmetricMatch(thrown.value);
 
@@ -206,7 +257,11 @@ const toThrowExpectedAsymmetric = (
         formatExpected('Expected asymmetric matcher: ', expected) +
         '\n' +
         (thrown === null
-          ? DID_NOT_THROW
+          ? `${DID_NOT_THROW}${
+              typeof received === 'function'
+                ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+                : ''
+            }`
           : thrown.hasMessage
             ? formatReceived('Received name:    ', thrown, 'name') +
               formatReceived('Received message: ', thrown, 'message') +
@@ -221,6 +276,8 @@ const toThrowExpectedObject = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Error,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const expectedMessageAndCause = createMessageAndCause(expected);
   const thrownMessageAndCause =
@@ -260,7 +317,11 @@ const toThrowExpectedObject = (
               expectedMessageAndCause,
             ) +
             '\n' +
-            DID_NOT_THROW
+            `${DID_NOT_THROW}${
+              typeof received === 'function'
+                ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+                : ''
+            }`
           : thrown.hasMessage
             ? // eslint-disable-next-line prefer-template
               printDiffOrStringify(
@@ -285,6 +346,8 @@ const toThrowExpectedClass = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Function,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.value instanceof expected;
 
@@ -315,7 +378,11 @@ const toThrowExpectedClass = (
         '\n\n' +
         printExpectedConstructorName('Expected constructor', expected) +
         (thrown === null
-          ? `\n${DID_NOT_THROW}`
+          ? `\n${DID_NOT_THROW}${
+              typeof received === 'function'
+                ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+                : ''
+            }`
           : `${
               thrown.value != null &&
               typeof thrown.value.constructor === 'function'
@@ -339,6 +406,8 @@ const toThrowExpectedString = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: string,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message.includes(expected);
 
@@ -362,7 +431,11 @@ const toThrowExpectedString = (
         '\n\n' +
         formatExpected('Expected substring: ', expected) +
         (thrown === null
-          ? `\n${DID_NOT_THROW}`
+          ? `\n${DID_NOT_THROW} ${
+              typeof received === 'function'
+                ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+                : ''
+            }`
           : thrown.hasMessage
             ? formatReceived('Received message:   ', thrown, 'message') +
               formatStack(thrown)
@@ -375,6 +448,8 @@ const toThrow = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
+  received: unknown,
+  returnedValueOnNotThrow: unknown,
 ): SyncExpectationResult => {
   const pass = thrown !== null;
 
@@ -392,7 +467,10 @@ const toThrow = (
         // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        DID_NOT_THROW;
+        DID_NOT_THROW +
+        (typeof received === 'function'
+          ? `\nReturned: ${stringify(returnedValueOnNotThrow)}`
+          : '');
 
   return {message, pass};
 };

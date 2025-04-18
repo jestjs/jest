@@ -120,6 +120,7 @@ exports[`other error toThrowErrorMatchingSnapshot Received function did not thro
 <d>expect(</><r>received</><d>).</>toThrowErrorMatchingSnapshot<d>()</>
 
 Received function did not throw
+Returned: undefined
 `;
 
 exports[`pass false toMatchInlineSnapshot with properties equals false with snapshot 1`] = `
