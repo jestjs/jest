@@ -3437,7 +3437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/jest@npm:^2.1.1":
+"@fast-check/jest@npm:^2.0.0":
   version: 2.1.1
   resolution: "@fast-check/jest@npm:2.1.1"
   dependencies:
@@ -9651,10 +9651,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "diff-sequences@workspace:packages/diff-sequences"
   dependencies:
-    "@fast-check/jest": ^2.1.1
+    "@fast-check/jest": ^2.0.0
     benchmark: ^2.1.4
     diff: ^7.0.0
-    fast-check: ^3.23.2
   languageName: unknown
   linkType: soft
 
@@ -11033,11 +11032,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
-    "@fast-check/jest": ^2.1.1
+    "@fast-check/jest": ^2.0.0
     "@jest/expect-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
-    fast-check: ^3.23.2
     immutable: ^5.0.0
     jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
@@ -11109,12 +11107,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-check@npm:^3.0.0 || ^4.0.0, fast-check@npm:^3.23.2":
-  version: 3.23.2
-  resolution: "fast-check@npm:3.23.2"
+"fast-check@npm:^3.0.0 || ^4.0.0":
+  version: 4.1.1
+  resolution: "fast-check@npm:4.1.1"
   dependencies:
-    pure-rand: ^6.1.0
-  checksum: b815bd1a2bda33b8e1927a732368f94c3919d5c3b626065479e2389739dfbc6de885fdf48b7a576505edff4f8931798dc737c7bc7039a58b3412746f0d2e9b86
+    pure-rand: ^7.0.0
+  checksum: 775f1c1d64cfc49aa84dbf9e6f84faefc8c333103bab1e80e14e58d055c2f50f3e29126a5ff1a2740be4d573de9dd184416596da7f9d7fb536cdc60511dc68a1
   languageName: node
   linkType: hard
 
@@ -18857,10 +18855,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0, pure-rand@npm:^6.1.0":
+"pure-rand@npm:^6.0.0":
   version: 6.1.0
   resolution: "pure-rand@npm:6.1.0"
   checksum: 8d53bc02bed99eca0b65b505090152ee7e9bd67dd74f8ff32ba1c883b87234067c5bf68d2614759fb217d82594d7a92919e6df80f97885e7b12b42af4bd3316a
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "pure-rand@npm:7.0.1"
+  checksum: 4f543b97a487857a791b8e4c139aad54937397dc8177f1353f7da88556bfa40f5c32bfce3856843b1c3fc3a00b8472cceb22957c10b21c14e59e36a02ec9353b
   languageName: node
   linkType: hard
 
