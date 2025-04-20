@@ -3437,7 +3437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/jest@npm:^2.0.0, @fast-check/jest@npm:^2.1.1":
+"@fast-check/jest@npm:^2.0.0":
   version: 2.1.1
   resolution: "@fast-check/jest@npm:2.1.1"
   dependencies:
@@ -9651,7 +9651,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "diff-sequences@workspace:packages/diff-sequences"
   dependencies:
-    "@fast-check/jest": ^2.1.1
+    "@fast-check/jest": ^2.0.0
     benchmark: ^2.1.4
     diff: ^7.0.0
   languageName: unknown
