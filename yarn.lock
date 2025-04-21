@@ -16575,11 +16575,11 @@ __metadata:
   linkType: hard
 
 "napi-postinstall@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "napi-postinstall@npm:0.1.1"
+  version: 0.1.5
+  resolution: "napi-postinstall@npm:0.1.5"
   bin:
     napi-postinstall: lib/cli.js
-  checksum: 0886d74365c80b4f576f571fba514858d5af4c4b9b6423019974dd5d09b260706a9e1fb878902d155e4b94d8585b7dc45188249013c68a7129f73c5e63f41051
+  checksum: 42e8b384358c6cf6dd0146c8ae5712e6c662cb9f5aef4094f8e45fcd9b6fd3150425528c1b6629dd1a48fbc4273ed907ee908ec937044919cd39d709fdfca746
   languageName: node
   linkType: hard
 
