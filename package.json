@@ -39,7 +39,7 @@
     "eslint-plugin-markdown": "^5.1.0",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-unicorn": "^58.0.0",
+    "eslint-plugin-unicorn": "^59.0.0",
     "execa": "^5.0.0",
     "find-process": "^1.4.1",
     "glob": "^10.3.10",
