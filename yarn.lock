@@ -3871,7 +3871,7 @@ __metadata:
     eslint-plugin-markdown: ^5.1.0
     eslint-plugin-prettier: ^5.2.3
     eslint-plugin-promise: ^7.2.1
-    eslint-plugin-unicorn: ^58.0.0
+    eslint-plugin-unicorn: ^59.0.0
     execa: ^5.0.0
     find-process: ^1.4.1
     glob: ^10.3.10
@@ -10521,9 +10521,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unicorn@npm:^58.0.0":
-  version: 58.0.0
-  resolution: "eslint-plugin-unicorn@npm:58.0.0"
+"eslint-plugin-unicorn@npm:^59.0.0":
+  version: 59.0.0
+  resolution: "eslint-plugin-unicorn@npm:59.0.0"
   dependencies:
     "@babel/helper-validator-identifier": ^7.25.9
     "@eslint-community/eslint-utils": ^4.5.1
@@ -10532,19 +10532,19 @@ __metadata:
     clean-regexp: ^1.0.0
     core-js-compat: ^3.41.0
     esquery: ^1.6.0
+    find-up-simple: ^1.0.1
     globals: ^16.0.0
     indent-string: ^5.0.0
     is-builtin-module: ^5.0.0
     jsesc: ^3.1.0
     pluralize: ^8.0.0
-    read-package-up: ^11.0.0
     regexp-tree: ^0.1.27
     regjsparser: ^0.12.0
     semver: ^7.7.1
     strip-indent: ^4.0.0
   peerDependencies:
     eslint: ">=9.22.0"
-  checksum: 098e52a196d3d5a6379ec8482ea8e9cf664ebbcc822db071842bbcb967c1ad6d7e330014addaea338cc6387f07fcc805ba185766d2716e1fb63b5cdb7cefdb3d
+  checksum: e884a140708fbed32fc555de74e2248c57952341dbb8ce41c4b2ca98613d965fab568609ba4be8bf23327c05c5bfb15a3353316f1b74f25f9dee3b82ed91fae3
   languageName: node
   linkType: hard
 
@@ -11377,7 +11377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-up-simple@npm:^1.0.0":
+"find-up-simple@npm:^1.0.1":
   version: 1.0.1
   resolution: "find-up-simple@npm:1.0.1"
   checksum: 6e374bffda9f8425314eab47ef79752b6e77dcc95c0ad17d257aef48c32fe07bbc41bcafbd22941c25bb94fffaaaa8e178d928867d844c58100c7fe19ec82f72
@@ -19294,17 +19294,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read-package-up@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "read-package-up@npm:11.0.0"
-  dependencies:
-    find-up-simple: ^1.0.0
-    read-pkg: ^9.0.0
-    type-fest: ^4.6.0
-  checksum: 535b7554d47fae5fb5c2e7aceebd48b5de4142cdfe7b21f942fa9a0f56db03d3b53cce298e19438e1149292279c285e6ba6722eca741d590fd242519c4bdbc17
-  languageName: node
-  linkType: hard
-
 "read-pkg-up@npm:^10.0.0":
   version: 10.1.0
   resolution: "read-pkg-up@npm:10.1.0"
@@ -19340,7 +19329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read-pkg@npm:^9.0.0, read-pkg@npm:^9.0.1":
+"read-pkg@npm:^9.0.1":
   version: 9.0.1
   resolution: "read-pkg@npm:9.0.1"
   dependencies:
