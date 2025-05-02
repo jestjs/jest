@@ -57,6 +57,7 @@ export type AllowedConfigOptions = Partial<
     | 'coverageDirectory'
     | 'coverageReporters'
     | 'findRelatedTests'
+    | 'maxRelatedTestsDepth'
     | 'nonFlagArgs'
     | 'notify'
     | 'notifyMode'
