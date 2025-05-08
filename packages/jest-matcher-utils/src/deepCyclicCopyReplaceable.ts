@@ -28,6 +28,10 @@ if (typeof Buffer !== 'undefined') {
   builtInObject.push(Buffer);
 }
 
+if (typeof Window !== 'undefined') {
+  builtInObject.push(Window);
+}
+
 export const SERIALIZABLE_PROPERTIES = Symbol.for(
   '@jest/serializableProperties',
 );
