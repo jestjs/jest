@@ -1009,6 +1009,20 @@ describe('.toEqual()', () => {
     expect(actual).toEqual({x: 3});
   });
 
+  test('objectContaining sample can be used multiple times', () => {
+    // This mimics what happens when there are multiple calls to a function:
+    //   expect(mockFn).toHaveBeenCalledWith(expect.objectContaining(...))
+    const expected = expect.objectContaining({b: 7});
+    expect({a: 1, b: 2}).not.toEqual(expected);
+    expect({a: 3, b: 7}).toEqual(expected);
+  });
+
+  test('inverse objectContaining sample can be used multiple times', () => {
+    const expected = expect.not.objectContaining({b: 7});
+    expect({a: 1, b: 2}).toEqual(expected);
+    expect({a: 3, b: 7}).not.toEqual(expected);
+  });
+
   describe('cyclic object equality', () => {
     test('properties with the same circularity are equal', () => {
       const a = {};
