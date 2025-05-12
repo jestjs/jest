@@ -13,7 +13,7 @@ See [changelog](https://github.com/jestjs/jest/blob/main/CHANGELOG.md#2900) for 
 
 :::note
 
-Upgrading from an older version? You can see the upgrade guide from v27 to v28 [here](/docs/28.x/upgrading-to-jest28).
+Upgrading from an older version? You can see the upgrade guide from v27 to v28 [here](https://jest-archive-august-2023.netlify.app/docs/28.x/upgrading-to-jest28).
 
 :::
 
