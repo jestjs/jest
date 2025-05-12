@@ -41,7 +41,10 @@ export default async function generateEmptyCoverage(
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;
   if (shouldInstrument(filename, coverageOptions, config)) {
-    if (coverageOptions.coverageProvider === 'v8') {
+    if (
+      coverageOptions.coverageProvider === 'v8' ||
+      coverageOptions.coverageProvider === 'odz'
+    ) {
       const stat = fs.statSync(filename);
       return {
         kind: 'V8Coverage',
