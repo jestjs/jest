@@ -52,7 +52,7 @@ export default class CustomConsole extends Console {
 
   override assert(value: unknown, message?: string | Error): asserts value {
     try {
-      assert(value, message);
+      assert.ok(value, message);
     } catch (error) {
       if (!(error instanceof AssertionError)) {
         throw error;

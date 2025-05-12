@@ -69,7 +69,7 @@ class CustomCallbackRunner implements CallbackTestRunnerInterface {
     options: TestRunnerOptions,
   ): Promise<void> {
     expect(this.#globalConfig).type.toBe<Config.GlobalConfig>();
-    expect(this.#maxConcurrency).type.toBeNumber();
+    expect(this.#maxConcurrency).type.toBe<number>();
 
     return;
   }
@@ -120,7 +120,7 @@ class CustomEmittingRunner implements EmittingTestRunnerInterface {
     options: TestRunnerOptions,
   ): Promise<void> {
     expect(this.#globalConfig).type.toBe<Config.GlobalConfig>();
-    expect(this.#maxConcurrency).type.toBeNumber();
+    expect(this.#maxConcurrency).type.toBe<number>();
 
     return;
   }

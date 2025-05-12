@@ -324,6 +324,7 @@ async function runTestInternal(
       // Access all stacks before uninstalling sourcemaps
       let e = error;
       while (typeof e === 'object' && e !== null && 'stack' in e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         e.stack;
         e = e?.cause;
       }

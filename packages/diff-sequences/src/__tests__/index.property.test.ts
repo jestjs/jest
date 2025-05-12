@@ -9,6 +9,9 @@
 import {fc, it} from '@fast-check/jest';
 import diff from '../';
 
+const char = () =>
+  fc.string({maxLength: 1, minLength: 1, unit: 'grapheme-ascii'});
+
 const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
   const array: Array<string> = [];
   diff(
@@ -55,11 +58,11 @@ const isSubsequenceOf = (
   return iSub === subsequence.length;
 };
 
-it.prop([fc.array(fc.char())])('should be reflexive', a => {
+it.prop([fc.array(char())])('should be reflexive', a => {
   expect(findCommonItems(a, a)).toEqual(a);
 });
 
-it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+it.prop([fc.array(char()), fc.array(char())])(
   'should find the same number of common items when switching the inputs',
   // findCommonItems is not symmetric as:
   // > findCommonItems(["Z"," "], [" ","Z"]) = [" "]
@@ -71,7 +74,7 @@ it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   },
 );
 
-it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+it.prop([fc.array(char()), fc.array(char())])(
   'should have at most the length of its inputs',
   (a, b) => {
     const commonItems = findCommonItems(a, b);
@@ -80,7 +83,7 @@ it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   },
 );
 
-it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+it.prop([fc.array(char()), fc.array(char())])(
   'should have at most the same number of each character as its inputs',
   (a, b) => {
     const commonItems = findCommonItems(a, b);
@@ -93,7 +96,7 @@ it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   },
 );
 
-it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+it.prop([fc.array(char()), fc.array(char())])(
   'should be a subsequence of its inputs',
   (a, b) => {
     const commonItems = findCommonItems(a, b);
@@ -102,7 +105,7 @@ it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   },
 );
 
-it.prop([fc.array(fc.char()), fc.array(fc.char())])(
+it.prop([fc.array(char()), fc.array(char())])(
   'should be no-op when passing common items',
   (a, b) => {
     const commonItems = findCommonItems(a, b);
@@ -111,7 +114,7 @@ it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   },
 );
 
-it.prop([fc.array(fc.array(fc.char()))])(
+it.prop([fc.array(fc.array(char()))])(
   'should find the exact common items when one array is subarray of the other',
   data => {
     const allData = flatten(data); // [...data[0], ...data[1], ...data[2], ...data[3], ...]

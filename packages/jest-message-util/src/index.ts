@@ -140,7 +140,7 @@ export const formatExecError = (
   const subErrors = [];
 
   if (typeof error === 'string' || !error) {
-    error || (error = 'EMPTY ERROR');
+    error ||= 'EMPTY ERROR';
     message = '';
     stack = error;
   } else {

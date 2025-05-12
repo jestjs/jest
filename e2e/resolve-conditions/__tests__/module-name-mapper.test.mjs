@@ -3,14 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @jest-environment jest-environment-jsdom
  */
 
-/* global HTMLDivElement */
+import {fn} from 'fake-dual-dep2';
 
-'use strict';
-
-const div = require('../fake-pkg');
-
-test('dummy test', () => {
-  expect(div).toBeInstanceOf(HTMLDivElement);
+test('returns correct message', () => {
+  expect(fn()).toBe('from browser');
 });
