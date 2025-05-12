@@ -41,8 +41,8 @@ describe('Matchers', () => {
 describe('Expect', () => {
   test('.addEqualityTesters()', () => {
     const tester1: Tester = function (a, b, customTesters) {
-      expect(a).type.toBeAny();
-      expect(b).type.toBeAny();
+      expect(a).type.toBe<any>();
+      expect(b).type.toBe<any>();
       expect(customTesters).type.toBe<Array<Tester>>();
       expect(this).type.toBe<TesterContext>();
       expect(this.equals).type.toBe<EqualsFunction>();
@@ -55,17 +55,17 @@ describe('Expect', () => {
         tester1,
 
         (a, b, customTesters) => {
-          expect(a).type.toBeAny();
-          expect(b).type.toBeAny();
+          expect(a).type.toBe<any>();
+          expect(b).type.toBe<any>();
           expect(customTesters).type.toBe<Array<Tester>>();
-          expect(this).type.toBeUndefined();
+          expect(this).type.toBe<undefined>();
 
           return true;
         },
 
         function anotherTester(a, b, customTesters) {
-          expect(a).type.toBeAny();
-          expect(b).type.toBeAny();
+          expect(a).type.toBe<any>();
+          expect(b).type.toBe<any>();
           expect(customTesters).type.toBe<Array<Tester>>();
           expect(this).type.toBe<TesterContext>();
           expect(this.equals).type.toBe<EqualsFunction>();
@@ -73,7 +73,7 @@ describe('Expect', () => {
           return undefined;
         },
       ]),
-    ).type.toBeVoid();
+    ).type.toBe<void>();
   });
 
   test('.extend()', () => {
@@ -86,7 +86,7 @@ describe('Expect', () => {
       jestExpect.extend({
         // TODO `actual` should be allowed to have only `unknown` type
         toBeWithinRange(actual: number, floor: number, ceiling: number) {
-          expect(this.assertionCalls).type.toBeNumber();
+          expect(this.assertionCalls).type.toBe<number>();
           expect(this.currentTestName).type.toBe<string | undefined>();
           expect(this.customTesters).type.toBe<Array<Tester>>();
           expect(this.dontThrow).type.toBe<() => void>();
@@ -97,12 +97,12 @@ describe('Expect', () => {
           expect(this.expectedAssertionsNumberError).type.toBe<
             Error | undefined
           >();
-          expect(this.isExpectingAssertions).type.toBeBoolean();
+          expect(this.isExpectingAssertions).type.toBe<boolean>();
           expect(this.isExpectingAssertionsError).type.toBe<
             Error | undefined
           >();
           expect(this.isNot).type.toBe<boolean | undefined>();
-          expect(this.numPassingAsserts).type.toBeNumber();
+          expect(this.numPassingAsserts).type.toBe<number>();
           expect(this.promise).type.toBe<string | undefined>();
           expect(this.suppressedErrors).type.toBe<Array<Error>>();
           expect(this.testPath).type.toBe<string | undefined>();
@@ -124,17 +124,17 @@ describe('Expect', () => {
           }
         },
       }),
-    ).type.toBeVoid();
+    ).type.toBe<void>();
 
-    expect(jestExpect(100).toBeWithinRange(90, 110)).type.toBeVoid();
-    expect(jestExpect(101).not.toBeWithinRange(0, 100)).type.toBeVoid();
+    expect(jestExpect(100).toBeWithinRange(90, 110)).type.toBe<void>();
+    expect(jestExpect(101).not.toBeWithinRange(0, 100)).type.toBe<void>();
 
     expect(
       jestExpect({apples: 6, bananas: 3}).toEqual({
         apples: jestExpect.toBeWithinRange(1, 10),
         bananas: jestExpect.not.toBeWithinRange(11, 20),
       }),
-    ).type.toBeVoid();
+    ).type.toBe<void>();
   });
 
   test('does not define the `.toMatchSnapshot()` matcher', () => {
@@ -246,7 +246,7 @@ describe('MatcherFunction', () => {
       ...expected: Array<unknown>
     ) {
       expect(this).type.toBe<CustomContext>();
-      expect(this.customMethod()).type.toBeVoid();
+      expect(this.customMethod()).type.toBe<void>();
 
       if (expected.length > 0) {
         throw new Error('This matcher does not take any expected argument.');
@@ -275,7 +275,7 @@ describe('MatcherFunction', () => {
       [count: number]
     > = function (actual: unknown, count: unknown) {
       expect(this).type.toBe<CustomContext>();
-      expect(this.customMethod()).type.toBeVoid();
+      expect(this.customMethod()).type.toBe<void>();
 
       return {
         message: () => `count: ${count}`,

@@ -9,21 +9,21 @@ import {expect, test} from 'tstyche';
 import {isA} from '@jest/expect-utils';
 
 test('isA', () => {
-  expect(isA('String', 'default')).type.toBeBoolean();
-  expect(isA<number>('Number', 123)).type.toBeBoolean();
+  expect(isA('String', 'default')).type.toBe<boolean>();
+  expect(isA<number>('Number', 123)).type.toBe<boolean>();
 
   const sample = {} as unknown;
 
   if (isA('String', sample)) {
-    expect(sample).type.toBeUnknown();
+    expect(sample).type.toBe<unknown>();
   }
 
   if (isA<string>('String', sample)) {
-    expect(sample).type.toBeString();
+    expect(sample).type.toBe<string>();
   }
 
   if (isA<number>('Number', sample)) {
-    expect(sample).type.toBeNumber();
+    expect(sample).type.toBe<number>();
   }
 
   if (isA<Map<unknown, unknown>>('Map', sample)) {

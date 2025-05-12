@@ -6,7 +6,7 @@
  *
  */
 
-/* eslint-env browser */
+/* global document */
 
 test('use toBe compare two div', () => {
   const div1 = document.createElement('div');

@@ -86,7 +86,6 @@ describe('jest.fn()', () => {
   });
 
   test('models typings of mocked function', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     expect(fn()).type.toBeAssignableTo<Function>();
 
     expect(fn()).type.toBe<Mock<(...args: Array<unknown>) => unknown>>();
@@ -104,7 +103,7 @@ describe('jest.fn()', () => {
   });
 
   test('infers argument and return types of mocked function', () => {
-    expect(mockFn('one', 2)).type.toBeBoolean();
+    expect(mockFn('one', 2)).type.toBe<boolean>();
     expect(mockAsyncFn(false)).type.toBe<Promise<string>>();
 
     expect(mockFn()).type.toRaiseError();
@@ -129,18 +128,18 @@ describe('jest.fn()', () => {
   });
 
   test('.getMockName()', () => {
-    expect(mockFn.getMockName()).type.toBeString();
+    expect(mockFn.getMockName()).type.toBe<string>();
 
     expect(mockFn.getMockName('some-mock')).type.toRaiseError();
   });
 
   test('.mock', () => {
-    expect(mockFn.mock.calls.length).type.toBeNumber();
+    expect(mockFn.mock.calls.length).type.toBe<number>();
 
-    expect(mockFn.mock.calls[0][0]).type.toBeString();
+    expect(mockFn.mock.calls[0][0]).type.toBe<string>();
     expect(mockFn.mock.calls[0][1]).type.toBe<number | undefined>();
 
-    expect(mockFn.mock.calls[1][0]).type.toBeString();
+    expect(mockFn.mock.calls[1][0]).type.toBe<string>();
     expect(mockFn.mock.calls[1][1]).type.toBe<number | undefined>();
 
     expect(mockFn.mock.contexts).type.toBe<Array<Date>>();
@@ -161,18 +160,18 @@ describe('jest.fn()', () => {
     const returnValue = mockFn.mock.results[0];
 
     expect(returnValue.type).type.toBe<'incomplete' | 'return' | 'throw'>();
-    expect(returnValue.value).type.toBeUnknown();
+    expect(returnValue.value).type.toBe<unknown>();
 
     if (returnValue.type === 'incomplete') {
-      expect(returnValue.value).type.toBeUndefined();
+      expect(returnValue.value).type.toBe<undefined>();
     }
 
     if (returnValue.type === 'return') {
-      expect(returnValue.value).type.toBeBoolean();
+      expect(returnValue.value).type.toBe<boolean>();
     }
 
     if (returnValue.type === 'throw') {
-      expect(returnValue.value).type.toBeUnknown();
+      expect(returnValue.value).type.toBe<unknown>();
     }
   });
 
@@ -193,7 +192,7 @@ describe('jest.fn()', () => {
   });
 
   test('.mockRestore()', () => {
-    expect(mockFn.mockRestore()).type.toBeVoid();
+    expect(mockFn.mockRestore()).type.toBe<void>();
 
     expect(mockFn.mockRestore('some-mock')).type.toRaiseError();
   });
@@ -201,7 +200,7 @@ describe('jest.fn()', () => {
   test('.mockImplementation()', () => {
     expect(
       mockFn.mockImplementation((a, b) => {
-        expect(a).type.toBeString();
+        expect(a).type.toBe<string>();
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
@@ -213,7 +212,7 @@ describe('jest.fn()', () => {
 
     expect(
       mockAsyncFn.mockImplementation(async a => {
-        expect(a).type.toBeBoolean();
+        expect(a).type.toBe<boolean>();
         return 'mock value';
       }),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
@@ -226,7 +225,7 @@ describe('jest.fn()', () => {
   test('.mockImplementationOnce()', () => {
     expect(
       mockFn.mockImplementationOnce((a, b) => {
-        expect(a).type.toBeString();
+        expect(a).type.toBe<string>();
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
@@ -240,7 +239,7 @@ describe('jest.fn()', () => {
 
     expect(
       mockAsyncFn.mockImplementationOnce(async a => {
-        expect(a).type.toBeBoolean();
+        expect(a).type.toBe<boolean>();
         return 'mock value';
       }),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
@@ -355,7 +354,7 @@ describe('jest.fn()', () => {
   });
 
   test('.withImplementation()', () => {
-    expect(mockFn.withImplementation(mockFnImpl, () => {})).type.toBeVoid();
+    expect(mockFn.withImplementation(mockFnImpl, () => {})).type.toBe<void>();
     expect(mockFn.withImplementation(mockFnImpl, async () => {})).type.toBe<
       Promise<void>
     >();
@@ -423,7 +422,6 @@ describe('jest.spyOn()', () => {
   const spy = spyOn(spiedObject, 'methodA');
 
   test('models typings of spied object', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     expect(spy).type.not.toBeAssignableTo<Function>();
 
     expect(spy()).type.toRaiseError();
@@ -469,10 +467,9 @@ describe('jest.spyOn()', () => {
     ).type.toBe<SpiedFunction<typeof Array.isArray>>();
     expect(spyOn(spiedArray, 'isArray')).type.toRaiseError();
 
-    expect(
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      spyOn(spiedFunction as unknown as Function, 'toString'),
-    ).type.toBe<SpiedFunction<typeof spiedFunction.toString>>();
+    expect(spyOn(spiedFunction as unknown as Function, 'toString')).type.toBe<
+      SpiedFunction<typeof spiedFunction.toString>
+    >();
     expect(spyOn(spiedFunction, 'toString')).type.toRaiseError();
 
     expect(spyOn(globalThis, 'Date')).type.toBe<SpiedClass<typeof Date>>();
@@ -628,7 +625,7 @@ describe('jest.replaceProperty()', () => {
     >();
     expect(
       replaceProperty(replaceObject, 'property', 1).replaceValue(1).restore(),
-    ).type.toBeVoid();
+    ).type.toBe<void>();
 
     expect(replaceProperty(replaceObject, 'invalid', 1)).type.toRaiseError();
     expect(

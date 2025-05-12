@@ -8,7 +8,7 @@
  *
  */
 
-/* eslint-env browser */
+/* global document */
 
 const div = document.createElement('div');
 

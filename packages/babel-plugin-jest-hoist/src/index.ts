@@ -371,7 +371,7 @@ export default function jestHoist(): PluginObj<{
           if (hoistedJestGetters.has(callExpr.node)) {
             const mockStmt = callExpr.getStatementParent();
 
-            if (mockStmt && mockStmt.parentPath.isBlock()) {
+            if (mockStmt?.parentPath.isBlock()) {
               stack.at(-1)!.calls.push(mockStmt.node);
               mockStmt.remove();
             }
