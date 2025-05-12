@@ -220,17 +220,24 @@ Jest can be used with ESLint without any further configuration as long as you im
 
 If you'd like to avoid these imports, you can configure your [ESLint environment](https://eslint.org/docs/latest/use/configure/language-options#specifying-environments) to support these globals by adding the `jest` environment:
 
-```json
-{
-  "overrides": [
-    {
-      "files": ["tests/**/*"],
-      "env": {
-        "jest": true
-      }
-    }
-  ]
-}
+```js
+import {defineConfig} from 'eslint/config';
+import globals from 'globals';
+
+export default defineConfig([
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      'no-unused-vars': 'warn',
+      'no-undef': 'warn',
+    },
+  },
+]);
 ```
 
 Or use [`eslint-plugin-jest`](https://github.com/jest-community/eslint-plugin-jest), which has a similar effect:
