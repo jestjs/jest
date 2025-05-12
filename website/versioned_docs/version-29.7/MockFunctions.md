@@ -316,7 +316,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual([
 ]);
 
 // The first arg of the last call to the mock function was `42`
-// (note that there is no sugar helper for this specific of an assertion)
+// (note that there is no sugar helper for this specific assertion)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 
 // A snapshot will check that a mock was invoked the same number of times,
