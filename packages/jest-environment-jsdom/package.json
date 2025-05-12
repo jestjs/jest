@@ -21,15 +21,15 @@
   "dependencies": {
     "@jest/environment": "workspace:*",
     "@jest/environment-jsdom-abstract": "workspace:*",
-    "@types/jsdom": "^21.1.1",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "*",
-    "jsdom": "^22.0.0"
+    "jsdom": "^26.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*"
   },
   "peerDependencies": {
-    "canvas": "^2.5.0"
+    "canvas": "^3.0.0"
   },
   "peerDependenciesMeta": {
     "canvas": {
