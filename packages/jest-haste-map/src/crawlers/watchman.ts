@@ -125,6 +125,7 @@ export async function watchmanCrawl(options: CrawlerOptions): Promise<{
 
   const cmd = <T>(...args: Array<any>): Promise<T> =>
     new Promise((resolve, reject) =>
+      // @ts-expect-error: client is typed strictly, but incomplete
       client.command(args, (error, result) =>
         error ? reject(watchmanError(error)) : resolve(result),
       ),

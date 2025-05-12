@@ -68,14 +68,14 @@ test('generateFromMetadata', () => {
   expect(exampleMock.instance.memberA).type.toBe<Array<number>>();
   expect(exampleMock.instance.memberB.mock.calls).type.toBe<Array<[]>>();
 
-  expect(exampleMock.propertyA.one).type.toBeString();
+  expect(exampleMock.propertyA.one).type.toBe<string>();
   expect(exampleMock.propertyA.two.mock.calls).type.toBe<Array<[]>>();
-  expect(exampleMock.propertyA.three.nine).type.toBeNumber();
+  expect(exampleMock.propertyA.three.nine).type.toBe<number>();
   expect(exampleMock.propertyA.three.ten).type.toBe<Array<number>>();
 
   expect(exampleMock.propertyB).type.toBe<Array<number>>();
-  expect(exampleMock.propertyC).type.toBeNumber();
-  expect(exampleMock.propertyD).type.toBeString();
-  expect(exampleMock.propertyE).type.toBeBoolean();
-  expect(exampleMock.propertyF).type.toBeSymbol();
+  expect(exampleMock.propertyC).type.toBe<number>();
+  expect(exampleMock.propertyD).type.toBe<string>();
+  expect(exampleMock.propertyE).type.toBe<boolean>();
+  expect(exampleMock.propertyF).type.toBe<symbol>();
 });

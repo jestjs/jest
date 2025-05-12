@@ -11,7 +11,7 @@ import * as path from 'path';
 import anymatch, {type Matcher} from 'anymatch';
 import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
-// @ts-expect-error no types
+// @ts-expect-error -- no types
 import walker from 'walker';
 
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment

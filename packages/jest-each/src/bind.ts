@@ -52,18 +52,20 @@ export default function bind<EachCallback extends Global.TestCallback>(
           : buildTemplateTests(title, table, taggedTemplateData);
 
         for (const row of tests) {
-          needsEachError
-            ? cb(
-                row.title,
-                applyArguments(supportsDone, row.arguments, test),
-                timeout,
-                errorWithStack,
-              )
-            : cb(
-                row.title,
-                applyArguments(supportsDone, row.arguments, test),
-                timeout,
-              );
+          if (needsEachError) {
+            cb(
+              row.title,
+              applyArguments(supportsDone, row.arguments, test),
+              timeout,
+              errorWithStack,
+            );
+          } else {
+            cb(
+              row.title,
+              applyArguments(supportsDone, row.arguments, test),
+              timeout,
+            );
+          }
         }
 
         return;

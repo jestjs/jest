@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import * as asyncHooks from 'async_hooks';
 import {promisify} from 'util';
 import * as v8 from 'v8';
@@ -77,6 +75,7 @@ export default function collectHandles(): HandleCollectionResult {
       asyncId,
       type,
       triggerAsyncId,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       resource: {} | NodeJS.Timeout,
     ) {
       // Skip resources that should not generally prevent the process from

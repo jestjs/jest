@@ -15,9 +15,11 @@ const modifyPackageJson = ({
   shouldModifyScripts: boolean;
 }): string => {
   if (shouldModifyScripts) {
-    projectPackageJson.scripts
-      ? (projectPackageJson.scripts.test = 'jest')
-      : (projectPackageJson.scripts = {test: 'jest'});
+    if (projectPackageJson.scripts) {
+      projectPackageJson.scripts.test = 'jest';
+    } else {
+      projectPackageJson.scripts = {test: 'jest'};
+    }
   }
 
   delete projectPackageJson.jest;

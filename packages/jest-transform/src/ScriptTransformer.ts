@@ -426,7 +426,7 @@ class ScriptTransformer {
     // That means that the transform has a custom instrumentation
     // logic and will handle it based on `config.collectCoverage` option
     const transformWillInstrument =
-      shouldCallTransform && transformer && transformer.canInstrument;
+      shouldCallTransform && transformer?.canInstrument;
 
     // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
     let map = transformed.map;

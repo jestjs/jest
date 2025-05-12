@@ -68,7 +68,7 @@ const someModule = {
   propertyB: 'B',
 };
 
-expect(jest.createMockFromModule('moduleName')).type.toBeUnknown();
+expect(jest.createMockFromModule('moduleName')).type.toBe<unknown>();
 expect(jest.createMockFromModule<typeof someModule>('moduleName')).type.toBe<
   Mocked<typeof someModule>
 >();
@@ -163,13 +163,13 @@ expect(
   ),
 ).type.toRaiseError();
 
-expect(jest.requireActual('./pathToModule')).type.toBeUnknown();
+expect(jest.requireActual('./pathToModule')).type.toBe<unknown>();
 expect(jest.requireActual<{some: 'module'}>('./pathToModule')).type.toBe<{
   some: 'module';
 }>();
 expect(jest.requireActual()).type.toRaiseError();
 
-expect(jest.requireMock('./pathToModule')).type.toBeUnknown();
+expect(jest.requireMock('./pathToModule')).type.toBe<unknown>();
 expect(jest.requireMock<{some: 'module'}>('./pathToModule')).type.toBe<{
   some: 'module';
 }>();
@@ -198,7 +198,7 @@ expect(jest.resetAllMocks(true)).type.toRaiseError();
 expect(jest.restoreAllMocks()).type.toBe<typeof jest>();
 expect(jest.restoreAllMocks(false)).type.toRaiseError();
 
-expect(jest.isMockFunction(() => {})).type.toBeBoolean();
+expect(jest.isMockFunction(() => {})).type.toBe<boolean>();
 expect(jest.isMockFunction()).type.toRaiseError();
 
 const maybeMock = (a: string, b: number) => true;
@@ -224,7 +224,7 @@ if (jest.isMockFunction(surelyMock)) {
 }
 
 if (!jest.isMockFunction(surelyMock)) {
-  expect(surelyMock).type.toBeNever();
+  expect(surelyMock).type.toBe<never>();
 }
 
 const spiedObject = {
@@ -245,7 +245,7 @@ if (jest.isMockFunction(surelySpy)) {
 }
 
 if (!jest.isMockFunction(surelySpy)) {
-  expect(surelySpy).type.toBeNever();
+  expect(surelySpy).type.toBe<never>();
 }
 
 declare const stringMaybeMock: string;
@@ -257,7 +257,7 @@ if (jest.isMockFunction(stringMaybeMock)) {
 }
 
 if (!jest.isMockFunction(stringMaybeMock)) {
-  expect(stringMaybeMock).type.toBeString();
+  expect(stringMaybeMock).type.toBe<string>();
 }
 
 declare const anyMaybeMock: any;
@@ -267,7 +267,7 @@ if (jest.isMockFunction(anyMaybeMock)) {
 }
 
 if (!jest.isMockFunction(anyMaybeMock)) {
-  expect(anyMaybeMock).type.toBeAny();
+  expect(anyMaybeMock).type.toBe<any>();
 }
 
 declare const unknownMaybeMock: unknown;
@@ -279,7 +279,7 @@ if (jest.isMockFunction(unknownMaybeMock)) {
 }
 
 if (!jest.isMockFunction(unknownMaybeMock)) {
-  expect(unknownMaybeMock).type.toBeUnknown();
+  expect(unknownMaybeMock).type.toBe<unknown>();
 }
 
 expect(jest.fn).type.toBe<ModuleMocker['fn']>();
@@ -535,58 +535,58 @@ expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableWith(
 
 // Mock Timers
 
-expect(jest.advanceTimersByTime(6000)).type.toBeVoid();
+expect(jest.advanceTimersByTime(6000)).type.toBe<void>();
 expect(jest.advanceTimersByTime()).type.toRaiseError();
 
 expect(jest.advanceTimersByTimeAsync(6000)).type.toBe<Promise<void>>();
 expect(jest.advanceTimersByTimeAsync()).type.toRaiseError();
 
-expect(jest.advanceTimersToNextTimer()).type.toBeVoid();
-expect(jest.advanceTimersToNextTimer(2)).type.toBeVoid();
+expect(jest.advanceTimersToNextTimer()).type.toBe<void>();
+expect(jest.advanceTimersToNextTimer(2)).type.toBe<void>();
 expect(jest.advanceTimersToNextTimer('2')).type.toRaiseError();
 
 expect(jest.advanceTimersToNextTimerAsync()).type.toBe<Promise<void>>();
 expect(jest.advanceTimersToNextTimerAsync(2)).type.toBe<Promise<void>>();
 expect(jest.advanceTimersToNextTimerAsync('2')).type.toRaiseError();
 
-expect(jest.clearAllTimers()).type.toBeVoid();
+expect(jest.clearAllTimers()).type.toBe<void>();
 expect(jest.clearAllTimers(false)).type.toRaiseError();
 
-expect(jest.getTimerCount()).type.toBeNumber();
+expect(jest.getTimerCount()).type.toBe<number>();
 expect(jest.getTimerCount(true)).type.toRaiseError();
 
-expect(jest.now()).type.toBeNumber();
+expect(jest.now()).type.toBe<number>();
 expect(jest.now('1995-12-17T03:24:00')).type.toRaiseError();
 
-expect(jest.getRealSystemTime()).type.toBeNumber();
+expect(jest.getRealSystemTime()).type.toBe<number>();
 expect(jest.getRealSystemTime(true)).type.toRaiseError();
 
-expect(jest.runAllImmediates()).type.toBeVoid();
+expect(jest.runAllImmediates()).type.toBe<void>();
 expect(jest.runAllImmediates(true)).type.toRaiseError();
 
-expect(jest.runAllTicks()).type.toBeVoid();
+expect(jest.runAllTicks()).type.toBe<void>();
 expect(jest.runAllTicks(true)).type.toRaiseError();
 
-expect(jest.runAllTimers()).type.toBeVoid();
+expect(jest.runAllTimers()).type.toBe<void>();
 expect(jest.runAllTimers(false)).type.toRaiseError();
 
 expect(jest.runAllTimersAsync()).type.toBe<Promise<void>>();
 expect(jest.runAllTimersAsync(false)).type.toRaiseError();
 
-expect(jest.runOnlyPendingTimers()).type.toBeVoid();
+expect(jest.runOnlyPendingTimers()).type.toBe<void>();
 expect(jest.runOnlyPendingTimers(true)).type.toRaiseError();
 
 expect(jest.runOnlyPendingTimersAsync()).type.toBe<Promise<void>>();
 expect(jest.runOnlyPendingTimersAsync(true)).type.toRaiseError();
 
-expect(jest.advanceTimersToNextFrame()).type.toBeVoid();
+expect(jest.advanceTimersToNextFrame()).type.toBe<void>();
 expect(jest.advanceTimersToNextFrame(true)).type.toRaiseError();
 expect(jest.advanceTimersToNextFrame(100)).type.toRaiseError();
 
-expect(jest.setSystemTime()).type.toBeVoid();
-expect(jest.setSystemTime(1_483_228_800_000)).type.toBeVoid();
-expect(jest.setSystemTime(Date.now())).type.toBeVoid();
-expect(jest.setSystemTime(new Date(1995, 11, 17))).type.toBeVoid();
+expect(jest.setSystemTime()).type.toBe<void>();
+expect(jest.setSystemTime(1_483_228_800_000)).type.toBe<void>();
+expect(jest.setSystemTime(Date.now())).type.toBe<void>();
+expect(jest.setSystemTime(new Date(1995, 11, 17))).type.toBe<void>();
 expect(jest.setSystemTime('1995-12-17T03:24:00')).type.toRaiseError();
 
 expect(jest.useFakeTimers()).type.toBe<typeof jest>();
@@ -670,8 +670,8 @@ expect(jest.retryTimes()).type.toRaiseError();
 expect(jest.setTimeout(6000)).type.toBe<typeof jest>();
 expect(jest.setTimeout()).type.toRaiseError();
 
-expect(jest.getSeed()).type.toBeNumber();
+expect(jest.getSeed()).type.toBe<number>();
 expect(jest.getSeed(123)).type.toRaiseError();
 
-expect(jest.isEnvironmentTornDown()).type.toBeBoolean();
+expect(jest.isEnvironmentTornDown()).type.toBe<boolean>();
 expect(jest.isEnvironmentTornDown(123)).type.toRaiseError();

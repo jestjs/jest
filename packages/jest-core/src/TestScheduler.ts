@@ -351,15 +351,18 @@ class TestScheduler {
       switch (reporter) {
         case 'default':
           summaryOptions = options;
-          verbose
-            ? this.addReporter(new VerboseReporter(this._globalConfig))
-            : this.addReporter(new DefaultReporter(this._globalConfig));
+          this.addReporter(
+            verbose
+              ? new VerboseReporter(this._globalConfig)
+              : new DefaultReporter(this._globalConfig),
+          );
           break;
         case 'github-actions':
-          GITHUB_ACTIONS &&
+          if (GITHUB_ACTIONS) {
             this.addReporter(
               new GitHubActionsReporter(this._globalConfig, options),
             );
+          }
           break;
         case 'summary':
           summaryOptions = options;

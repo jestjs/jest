@@ -66,7 +66,9 @@ export default class ReporterDispatcher {
     options: ReporterOnStartOptions,
   ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onRunStart && (await reporter.onRunStart(results, options));
+      if (reporter.onRunStart) {
+        await reporter.onRunStart(results, options);
+      }
     }
   }
 

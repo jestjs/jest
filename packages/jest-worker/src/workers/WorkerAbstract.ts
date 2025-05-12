@@ -125,6 +125,7 @@ export default abstract class WorkerAbstract
    * killed off.
    */
   protected _shutdown(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.state === WorkerStates.SHUT_DOWN;
 
     // End the permanent stream so the merged stream end too

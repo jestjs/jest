@@ -61,7 +61,7 @@ test('handles functions that close over outside variables', async () => {
   expect(rest).toMatchSnapshot();
 });
 
-test.skip('handles errors with BigInt', async () => {
+test('handles errors with BigInt', async () => {
   const testFileContent = `
     test('dummy', () => {
       expect(1n).toEqual(2n);

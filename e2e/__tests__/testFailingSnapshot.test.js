@@ -18,7 +18,7 @@ describe('test.failing', () => {
       expect('0').toMatchSnapshot();
     });
 
-    test.failing('snapshot doesnt exist', () => {
+    test.failing("snapshot doesn't exist", () => {
       expect('0').toMatchSnapshot();
     });
 

@@ -255,7 +255,7 @@ export default class SnapshotState {
     // These are the conditions on when to write snapshots:
     //  * There's no snapshot file in a non-CI environment.
     //  * There is a snapshot file and we decided to update the snapshot.
-    //  * There is a snapshot file, but it doesn't have this snaphsot.
+    //  * There is a snapshot file, but it doesn't have this snapshot.
     // These are the conditions on when not to write snapshots:
     //  * The update flag is set to 'none'.
     //  * There's no snapshot file or a file without this snapshot on a CI environment.

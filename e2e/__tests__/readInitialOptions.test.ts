@@ -6,6 +6,7 @@
  */
 import path = require('path');
 import execa = require('execa');
+import {onNodeVersions} from '@jest/test-utils';
 import type {ReadJestConfigOptions, readInitialOptions} from 'jest-config';
 
 function resolveFixture(...pathSegments: Array<string>) {
@@ -88,14 +89,16 @@ describe('readInitialOptions', () => {
     expect(configPath).toEqual(expectedConfigFile);
   });
 
-  test('should give an error when using unsupported loader', async () => {
-    const cwd = resolveFixture('ts-loader-config');
-    const error: Error = await proxyReadInitialOptions(undefined, {cwd}).catch(
-      error => error,
-    );
-    expect(error.message).toContain(
-      "Jest: 'ts-loader' is not a valid TypeScript configuration loader.",
-    );
+  onNodeVersions('<22.6', () => {
+    test('should give an error when using unsupported loader', async () => {
+      const cwd = resolveFixture('ts-loader-config');
+      const error: Error = await proxyReadInitialOptions(undefined, {
+        cwd,
+      }).catch(error => error);
+      expect(error.message).toContain(
+        "Jest: 'ts-loader' is not a valid TypeScript configuration loader.",
+      );
+    });
   });
 
   test('should give an error when there are multiple config files', async () => {

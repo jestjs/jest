@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`on node >=23.6 invalid JS in jest.config.ts (node with native TS support) 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]:   x Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
+   ,----
+ 1 | export default i'll break this file yo
+   :                 ^^^^^^^^^^^^^^^^^^^^^^
+   \`----
+  x Unterminated string constant
+   ,----
+ 1 | export default i'll break this file yo
+   :                 ^^^^^^^^^^^^^^^^^^^^^^
+   \`----"
+`;
+
 exports[`traverses directory tree up until it finds jest.config 1`] = `
 "  console.log
 <<REPLACED>>/jest-config-ts/some/nested/directory

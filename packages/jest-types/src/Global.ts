@@ -25,7 +25,6 @@ export type GeneratorReturningTestFn = (
   this: TestContext,
 ) => TestReturnValueGenerator;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type NameLike = number | Function;
 
 export type TestName = string;

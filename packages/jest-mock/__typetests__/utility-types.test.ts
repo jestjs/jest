@@ -17,6 +17,7 @@ import type {
 class SomeClass {
   propertyB = 123;
   private _propertyC: undefined;
+  // eslint-disable-next-line no-unused-private-class-members
   #propertyD = 'abc';
 
   constructor(public propertyA: string) {}
@@ -42,6 +43,7 @@ class IndexClass {
 
   propertyB = {b: 123};
   private _propertyC = {c: undefined};
+  // eslint-disable-next-line no-unused-private-class-members
   #propertyD = 'abc';
 
   constructor(public propertyA: {a: string}) {}

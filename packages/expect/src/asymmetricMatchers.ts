@@ -97,26 +97,32 @@ class Any extends AsymmetricMatcher<any> {
 
   asymmetricMatch(other: unknown) {
     if (this.sample === String) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'string' || other instanceof String;
     }
 
     if (this.sample === Number) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'number' || other instanceof Number;
     }
 
     if (this.sample === Function) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'function' || other instanceof Function;
     }
 
     if (this.sample === Boolean) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'boolean' || other instanceof Boolean;
     }
 
     if (this.sample === BigInt) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'bigint' || other instanceof BigInt;
     }
 
     if (this.sample === Symbol) {
+      // eslint-disable-next-line unicorn/no-instanceof-builtins
       return typeof other === 'symbol' || other instanceof Symbol;
     }
 

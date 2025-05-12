@@ -7,7 +7,7 @@
 
 /// <reference lib="ESNext.Disposable" preserve="true" />
 
-/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable local/prefer-rest-params-eventually */
 
 import {isPromise} from 'jest-util';
 

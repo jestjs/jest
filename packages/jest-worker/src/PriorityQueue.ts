@@ -133,7 +133,6 @@ class MinHeap<TItem extends HeapItem> {
     nodes[0] = lastElement ?? null;
     const element = nodes[0]!;
 
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       let swapIndex = null;
       const rightChildIndex = (index + 1) * 2;

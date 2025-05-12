@@ -61,9 +61,9 @@ expect<AsyncResolver>().type.toBeAssignableWith(customAsyncResolver);
 // AsyncResolver
 
 const asyncResolver: AsyncResolver = async (path, options) => {
-  expect(path).type.toBeString();
+  expect(path).type.toBe<string>();
 
-  expect(options.basedir).type.toBeString();
+  expect(options.basedir).type.toBe<string>();
   expect(options.conditions).type.toBe<Array<string> | undefined>();
   expect(options.defaultResolver).type.toBe<SyncResolver>();
   expect(options.extensions).type.toBe<Array<string> | undefined>();
@@ -84,9 +84,9 @@ expect<AsyncResolver>().type.not.toBeAssignableWith(
 // SyncResolver
 
 const syncResolver: SyncResolver = (path, options) => {
-  expect(path).type.toBeString();
+  expect(path).type.toBe<string>();
 
-  expect(options.basedir).type.toBeString();
+  expect(options.basedir).type.toBe<string>();
   expect(options.conditions).type.toBe<Array<string> | undefined>();
   expect(options.defaultResolver).type.toBe<SyncResolver>();
   expect(options.extensions).type.toBe<Array<string> | undefined>();
