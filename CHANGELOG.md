@@ -82,6 +82,7 @@
 - `[@jest/expect-utils]` Check `Symbol` properties in equality ([#14688](https://github.com/jestjs/jest/pull/14688))
 - `[@jest/expect-utils]` Catch circular references within arrays when matching objects ([#14894](https://github.com/jestjs/jest/pull/14894))
 - `[@jest/expect-utils]` Fix not addressing to Sets and Maps as objects without keys ([#14873](https://github.com/jestjs/jest/pull/14873))
+- `[jest-haste-map]` Fix errors or clobbering with multiple `hasteImplModulePath`s ([#15522](https://github.com/jestjs/jest/pull/15522))
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 - `[jest-runtime]` Properly handle re-exported native modules in ESM via CJS ([#14589](https://github.com/jestjs/jest/pull/14589))
 - `[jest-runtime]` Refactor `_importCoreModel` so required core module is consistent if modified while loading ([#15077](https://github.com/jestjs/jest/issues/15077))
