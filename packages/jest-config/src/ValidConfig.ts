@@ -94,6 +94,7 @@ export const initialOptions: Config.InitialOptions = {
   listTests: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxRelatedTestsDepth: Infinity,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [

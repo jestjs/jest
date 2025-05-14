@@ -105,6 +105,7 @@ const groupOptions = (
     listTests: options.listTests,
     logHeapUsage: options.logHeapUsage,
     maxConcurrency: options.maxConcurrency,
+    maxRelatedTestsDepth: options.maxRelatedTestsDepth,
     maxWorkers: options.maxWorkers,
     noSCM: undefined,
     noStackTrace: options.noStackTrace,
