@@ -43,7 +43,7 @@ expect(
   ),
 ).type.toBe<ExpectationResult>();
 
-expect(toMatchSnapshot({received: 'value'})).type.toRaiseError();
+expect(toMatchSnapshot).type.not.toBeCallableWith({received: 'value'});
 
 // toMatchInlineSnapshot
 
@@ -76,7 +76,7 @@ expect(
   ),
 ).type.toBe<ExpectationResult>();
 
-expect(toMatchInlineSnapshot({received: 'value'})).type.toRaiseError();
+expect(toMatchInlineSnapshot).type.not.toBeCallableWith({received: 'value'});
 
 // toThrowErrorMatchingSnapshot
 
@@ -110,7 +110,9 @@ expect(
   ),
 ).type.toBe<ExpectationResult>();
 
-expect(toThrowErrorMatchingSnapshot({received: 'value'})).type.toRaiseError();
+expect(toThrowErrorMatchingSnapshot).type.not.toBeCallableWith({
+  received: 'value',
+});
 
 // toThrowErrorMatchingInlineSnapshot
 
@@ -144,6 +146,6 @@ expect(
   ),
 ).type.toBe<ExpectationResult>();
 
-expect(
-  toThrowErrorMatchingInlineSnapshot({received: 'value'}),
-).type.toRaiseError();
+expect(toThrowErrorMatchingInlineSnapshot).type.not.toBeCallableWith({
+  received: 'value',
+});
