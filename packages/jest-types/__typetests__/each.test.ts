@@ -278,9 +278,9 @@ expect(
   ),
 ).type.toBe<void>();
 
-expect(test.each()).type.toRaiseError();
-expect(test.each('abc')).type.toRaiseError();
-expect(test.each(() => {})).type.toRaiseError();
+expect(test.each).type.not.toBeCallableWith();
+expect(test.each).type.not.toBeCallableWith('abc');
+expect(test.each).type.not.toBeCallableWith(() => {});
 
 expect(test.only.each).type.toBe(test.each);
 expect(test.skip.each).type.toBe(test.each);
@@ -453,9 +453,9 @@ expect(
   ),
 ).type.toBe<void>();
 
-expect(test.concurrent.each()).type.toRaiseError();
-expect(test.concurrent.each('abc')).type.toRaiseError();
-expect(test.concurrent.each(() => {})).type.toRaiseError();
+expect(test.concurrent.each).type.not.toBeCallableWith();
+expect(test.concurrent.each).type.not.toBeCallableWith('abc');
+expect(test.concurrent.each).type.not.toBeCallableWith(() => {});
 
 expect(test.concurrent.only.each).type.toBe(test.concurrent.each);
 expect(test.concurrent.skip.each).type.toBe(test.concurrent.each);
@@ -687,9 +687,9 @@ expect(
   ),
 ).type.toBe<void>();
 
-expect(describe.each()).type.toRaiseError();
-expect(describe.each('abc')).type.toRaiseError();
-expect(describe.each(() => {})).type.toRaiseError();
+expect(describe.each).type.not.toBeCallableWith();
+expect(describe.each).type.not.toBeCallableWith('abc');
+expect(describe.each).type.not.toBeCallableWith(() => {});
 
 expect(describe.only.each).type.toBe(describe.each);
 expect(describe.skip.each).type.toBe(describe.each);

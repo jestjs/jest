@@ -52,12 +52,12 @@ test('inferred JestWorkerFarm', () => {
   expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
   expect(inferredWorkerFarm.doSomethingAsync()).type.toBe<Promise<void>>();
 
-  expect(inferredWorkerFarm.runTest()).type.toRaiseError();
-  expect(inferredWorkerFarm.runTest('abc')).type.toRaiseError();
-  expect(inferredWorkerFarm.runTestAsync()).type.toRaiseError();
-  expect(inferredWorkerFarm.runTestAsync(123)).type.toRaiseError();
-  expect(inferredWorkerFarm.doSomething(123)).type.toRaiseError();
-  expect(inferredWorkerFarm.doSomethingAsync('abc')).type.toRaiseError();
+  expect(inferredWorkerFarm.runTest).type.not.toBeCallableWith();
+  expect(inferredWorkerFarm.runTest).type.not.toBeCallableWith('abc');
+  expect(inferredWorkerFarm.runTestAsync).type.not.toBeCallableWith();
+  expect(inferredWorkerFarm.runTestAsync).type.not.toBeCallableWith(123);
+  expect(inferredWorkerFarm.doSomething).type.not.toBeCallableWith(123);
+  expect(inferredWorkerFarm.doSomethingAsync).type.not.toBeCallableWith('abc');
 
   expect(inferredWorkerFarm).type.not.toHaveProperty('getResult');
   expect(inferredWorkerFarm).type.not.toHaveProperty('isResult');
@@ -78,9 +78,9 @@ test('typed JestWorkerFarm', () => {
   expect(typedWorkerFarm.runTest('abc', 123)).type.toBe<Promise<void>>();
   expect(typedWorkerFarm.doSomething()).type.toBe<Promise<void>>();
 
-  expect(typedWorkerFarm.runTest()).type.toRaiseError();
-  expect(typedWorkerFarm.runTest('abc')).type.toRaiseError();
-  expect(typedWorkerFarm.doSomething('abc')).type.toRaiseError();
+  expect(typedWorkerFarm.runTest).type.not.toBeCallableWith();
+  expect(typedWorkerFarm.runTest).type.not.toBeCallableWith('abc');
+  expect(typedWorkerFarm.doSomething).type.not.toBeCallableWith('abc');
 
   expect(typedWorkerFarm).type.not.toHaveProperty('isResult');
   expect(typedWorkerFarm).type.not.toHaveProperty('runTestAsync');

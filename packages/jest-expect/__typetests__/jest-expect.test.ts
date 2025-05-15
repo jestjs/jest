@@ -38,8 +38,6 @@ describe('JestExpect', () => {
     expect(jestExpect(100).toTypedEqual(100)).type.toBe<void>();
     expect(jestExpect(101).not.toTypedEqual(100)).type.toBe<void>();
 
-    expect(jestExpect(100).toTypedEqual('three')).type.toRaiseError(
-      "Argument of type 'string' is not assignable to parameter of type 'number'.",
-    );
+    expect(jestExpect(100).toTypedEqual).type.not.toBeCallableWith('three');
   });
 });

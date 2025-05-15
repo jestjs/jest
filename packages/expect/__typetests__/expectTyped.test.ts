@@ -19,8 +19,6 @@ describe('Expect', () => {
     expect(_expect(100).toTypedEqual(100)).type.toBe<void>();
     expect(_expect(101).not.toTypedEqual(100)).type.toBe<void>();
 
-    expect(_expect(100).toTypedEqual('three')).type.toRaiseError(
-      "Argument of type 'string' is not assignable to parameter of type 'number'.",
-    );
+    expect(_expect(100).toTypedEqual).type.not.toBeCallableWith('three');
   });
 });

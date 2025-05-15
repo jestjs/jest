@@ -33,15 +33,13 @@ describe('Mocked', () => {
     >();
 
     expect(
-      MockSomeClass.prototype.methodA.mockReturnValue('true'),
-    ).type.toRaiseError();
+      MockSomeClass.prototype.methodA.mockReturnValue,
+    ).type.not.toBeCallableWith('true');
     expect(
-      MockSomeClass.prototype.methodB.mockImplementation(
-        (a: string, b?: string) => {
-          return;
-        },
-      ),
-    ).type.toRaiseError();
+      MockSomeClass.prototype.methodB.mockImplementation,
+    ).type.not.toBeCallableWith((a: string, b?: string) => {
+      return;
+    });
 
     expect(MockSomeClass.mock.instances[0].methodA.mock.calls[0]).type.toBe<
       []
@@ -59,14 +57,14 @@ describe('Mocked', () => {
       [a: string, b?: number]
     >();
 
+    expect(mockSomeInstance.methodA.mockReturnValue).type.not.toBeCallableWith(
+      'true',
+    );
     expect(
-      mockSomeInstance.methodA.mockReturnValue('true'),
-    ).type.toRaiseError();
-    expect(
-      mockSomeInstance.methodB.mockImplementation((a: string, b?: string) => {
-        return;
-      }),
-    ).type.toRaiseError();
+      mockSomeInstance.methodB.mockImplementation,
+    ).type.not.toBeCallableWith((a: string, b?: string) => {
+      return;
+    });
 
     expect(new SomeClass('sample')).type.toBeAssignableWith(mockSomeInstance);
   });
@@ -80,10 +78,10 @@ describe('Mocked', () => {
 
     expect(mockFunction.mock.calls[0]).type.toBe<[a: string, b?: number]>();
 
-    expect(mockFunction.mockReturnValue(123)).type.toRaiseError();
-    expect(
-      mockFunction.mockImplementation((a: boolean, b?: number) => true),
-    ).type.toRaiseError();
+    expect(mockFunction.mockReturnValue).type.not.toBeCallableWith(123);
+    expect(mockFunction.mockImplementation).type.not.toBeCallableWith(
+      (a: boolean, b?: number) => true,
+    );
 
     expect(someFunction).type.toBeAssignableWith(mockFunction);
   });
@@ -99,12 +97,10 @@ describe('Mocked', () => {
 
     expect(mockAsyncFunction.mock.calls[0]).type.toBe<[Array<boolean>]>();
 
-    expect(mockAsyncFunction.mockResolvedValue(123)).type.toRaiseError();
-    expect(
-      mockAsyncFunction.mockImplementation((a: Array<boolean>) =>
-        Promise.resolve(true),
-      ),
-    ).type.toRaiseError();
+    expect(mockAsyncFunction.mockResolvedValue).type.not.toBeCallableWith(123);
+    expect(mockAsyncFunction.mockImplementation).type.not.toBeCallableWith(
+      (a: Array<boolean>) => Promise.resolve(true),
+    );
 
     expect(someAsyncFunction).type.toBeAssignableWith(mockAsyncFunction);
   });
@@ -130,23 +126,23 @@ describe('Mocked', () => {
       [a: number, b?: string]
     >();
 
-    expect(mockFunctionObject.mockReturnValue(123)).type.toRaiseError();
-    expect(
-      mockFunctionObject.mockImplementation(() => true),
-    ).type.toRaiseError();
+    expect(mockFunctionObject.mockReturnValue).type.not.toBeCallableWith(123);
+    expect(mockFunctionObject.mockImplementation).type.not.toBeCallableWith(
+      () => true,
+    );
 
     expect(mockFunctionObject.one.more.time.mock.calls[0]).type.toBe<
       [time: number]
     >();
 
     expect(
-      mockFunctionObject.one.more.time.mockReturnValue(123),
-    ).type.toRaiseError();
+      mockFunctionObject.one.more.time.mockReturnValue,
+    ).type.not.toBeCallableWith(123);
     expect(
-      mockFunctionObject.one.more.time.mockImplementation((time: string) => {
-        return;
-      }),
-    ).type.toRaiseError();
+      mockFunctionObject.one.more.time.mockImplementation,
+    ).type.not.toBeCallableWith((time: string) => {
+      return;
+    });
 
     expect(someFunctionObject).type.toBeAssignableWith(mockFunctionObject);
   });
@@ -211,57 +207,51 @@ describe('Mocked', () => {
       [a: string, b?: number]
     >();
 
-    expect(mockObject.methodA.mockReturnValue(123)).type.toRaiseError();
-    expect(
-      mockObject.methodA.mockImplementation((a: number) => 123),
-    ).type.toRaiseError();
-    expect(mockObject.methodB.mockReturnValue(123)).type.toRaiseError();
-    expect(
-      mockObject.methodB.mockImplementation((b: number) => 123),
-    ).type.toRaiseError();
-    expect(mockObject.methodC.mockReturnValue(123)).type.toRaiseError();
-    expect(
-      mockObject.methodC.mockImplementation((c: number) => 123),
-    ).type.toRaiseError();
+    expect(mockObject.methodA.mockReturnValue).type.not.toBeCallableWith(123);
+    expect(mockObject.methodA.mockImplementation).type.not.toBeCallableWith(
+      (a: number) => 123,
+    );
+    expect(mockObject.methodB.mockReturnValue).type.not.toBeCallableWith(123);
+    expect(mockObject.methodB.mockImplementation).type.not.toBeCallableWith(
+      (b: number) => 123,
+    );
+    expect(mockObject.methodC.mockReturnValue).type.not.toBeCallableWith(123);
+    expect(mockObject.methodC.mockImplementation).type.not.toBeCallableWith(
+      (c: number) => 123,
+    );
 
-    expect(mockObject.one.more.time.mockReturnValue(123)).type.toRaiseError();
+    expect(mockObject.one.more.time.mockReturnValue).type.not.toBeCallableWith(
+      123,
+    );
     expect(
-      mockObject.one.more.time.mockImplementation((t: boolean) => 123),
-    ).type.toRaiseError();
-
-    expect(
-      mockObject.SomeClass.prototype.methodA.mockReturnValue(123),
-    ).type.toRaiseError();
-    expect(
-      mockObject.SomeClass.prototype.methodA.mockImplementation(
-        (a: number) => 123,
-      ),
-    ).type.toRaiseError();
-    expect(
-      mockObject.SomeClass.prototype.methodB.mockReturnValue(123),
-    ).type.toRaiseError();
-    expect(
-      mockObject.SomeClass.prototype.methodB.mockImplementation(
-        (a: number) => 123,
-      ),
-    ).type.toRaiseError();
+      mockObject.one.more.time.mockImplementation,
+    ).type.not.toBeCallableWith((t: boolean) => 123);
 
     expect(
-      mockObject.someClassInstance.methodA.mockReturnValue(123),
-    ).type.toRaiseError();
+      mockObject.SomeClass.prototype.methodA.mockReturnValue,
+    ).type.not.toBeCallableWith(123);
     expect(
-      mockObject.someClassInstance.methodA.mockImplementation(
-        (a: number) => 123,
-      ),
-    ).type.toRaiseError();
+      mockObject.SomeClass.prototype.methodA.mockImplementation,
+    ).type.not.toBeCallableWith((a: number) => 123);
     expect(
-      mockObject.someClassInstance.methodB.mockReturnValue(123),
-    ).type.toRaiseError();
+      mockObject.SomeClass.prototype.methodB.mockReturnValue,
+    ).type.not.toBeCallableWith(123);
     expect(
-      mockObject.someClassInstance.methodB.mockImplementation(
-        (a: number) => 123,
-      ),
-    ).type.toRaiseError();
+      mockObject.SomeClass.prototype.methodB.mockImplementation,
+    ).type.not.toBeCallableWith((a: number) => 123);
+
+    expect(
+      mockObject.someClassInstance.methodA.mockReturnValue,
+    ).type.not.toBeCallableWith(123);
+    expect(
+      mockObject.someClassInstance.methodA.mockImplementation,
+    ).type.not.toBeCallableWith((a: number) => 123);
+    expect(
+      mockObject.someClassInstance.methodB.mockReturnValue,
+    ).type.not.toBeCallableWith(123);
+    expect(
+      mockObject.someClassInstance.methodB.mockImplementation,
+    ).type.not.toBeCallableWith((a: number) => 123);
 
     expect(someObject).type.toBeAssignableWith(mockObject);
   });

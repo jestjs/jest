@@ -49,12 +49,12 @@ describe('jest.fn()', () => {
         .mockReturnValueOnce('value'),
     ).type.toBe<Mock<() => string>>();
 
-    expect(
-      fn(() => 'value').mockReturnValue(Promise.resolve('value')),
-    ).type.toRaiseError();
-    expect(
-      fn(() => 'value').mockReturnValueOnce(Promise.resolve('value')),
-    ).type.toRaiseError();
+    expect(fn(() => 'value').mockReturnValue).type.not.toBeCallableWith(
+      Promise.resolve('value'),
+    );
+    expect(fn(() => 'value').mockReturnValueOnce).type.not.toBeCallableWith(
+      Promise.resolve('value'),
+    );
   });
 
   test('when async function is provided, returned object can be chained', () => {
@@ -74,15 +74,19 @@ describe('jest.fn()', () => {
         .mockReturnValueOnce(Promise.resolve('value')),
     ).type.toBe<Mock<() => Promise<string>>>();
 
-    expect(fn(() => 'value').mockResolvedValue('value')).type.toRaiseError();
-    expect(
-      fn(() => 'value').mockResolvedValueOnce('value'),
-    ).type.toRaiseError();
+    expect(fn(() => 'value').mockResolvedValue).type.not.toBeCallableWith(
+      'value',
+    );
+    expect(fn(() => 'value').mockResolvedValueOnce).type.not.toBeCallableWith(
+      'value',
+    );
 
-    expect(fn(() => 'value').mockRejectedValue('error')).type.toRaiseError();
-    expect(
-      fn(() => 'value').mockRejectedValueOnce('error'),
-    ).type.toRaiseError();
+    expect(fn(() => 'value').mockRejectedValue).type.not.toBeCallableWith(
+      'error',
+    );
+    expect(fn(() => 'value').mockRejectedValueOnce).type.not.toBeCallableWith(
+      'error',
+    );
   });
 
   test('models typings of mocked function', () => {
@@ -99,15 +103,15 @@ describe('jest.fn()', () => {
       }),
     ).type.toBe<Mock<(e: any) => never>>();
 
-    expect(fn('moduleName')).type.toRaiseError();
+    expect(fn).type.not.toBeCallableWith('moduleName');
   });
 
   test('infers argument and return types of mocked function', () => {
     expect(mockFn('one', 2)).type.toBe<boolean>();
     expect(mockAsyncFn(false)).type.toBe<Promise<string>>();
 
-    expect(mockFn()).type.toRaiseError();
-    expect(mockAsyncFn()).type.toRaiseError();
+    expect(mockFn).type.not.toBeCallableWith();
+    expect(mockAsyncFn).type.not.toBeCallableWith();
   });
 
   test('infers argument and return types of mocked object', () => {
@@ -116,7 +120,7 @@ describe('jest.fn()', () => {
       disconnect(): void;
     }>();
 
-    expect(new MockObject()).type.toRaiseError();
+    expect(MockObject).type.not.toBeConstructableWith();
   });
 
   test('.getMockImplementation()', () => {
@@ -124,13 +128,13 @@ describe('jest.fn()', () => {
       ((a: string, b?: number | undefined) => boolean) | undefined
     >();
 
-    expect(mockFn.getMockImplementation('some-mock')).type.toRaiseError();
+    expect(mockFn.getMockImplementation).type.not.toBeCallableWith('some-mock');
   });
 
   test('.getMockName()', () => {
     expect(mockFn.getMockName()).type.toBe<string>();
 
-    expect(mockFn.getMockName('some-mock')).type.toRaiseError();
+    expect(mockFn.getMockName).type.not.toBeCallableWith('some-mock');
   });
 
   test('.mock', () => {
@@ -180,7 +184,7 @@ describe('jest.fn()', () => {
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
 
-    expect(mockFn.mockClear('some-mock')).type.toRaiseError();
+    expect(mockFn.mockClear).type.not.toBeCallableWith('some-mock');
   });
 
   test('.mockReset()', () => {
@@ -188,13 +192,13 @@ describe('jest.fn()', () => {
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
 
-    expect(mockFn.mockReset('some-mock')).type.toRaiseError();
+    expect(mockFn.mockReset).type.not.toBeCallableWith('some-mock');
   });
 
   test('.mockRestore()', () => {
     expect(mockFn.mockRestore()).type.toBe<void>();
 
-    expect(mockFn.mockRestore('some-mock')).type.toRaiseError();
+    expect(mockFn.mockRestore).type.not.toBeCallableWith('some-mock');
   });
 
   test('.mockImplementation()', () => {
@@ -206,9 +210,11 @@ describe('jest.fn()', () => {
       }),
     ).type.toBe<Mock<(a: string, b?: number | undefined) => boolean>>();
 
-    expect(mockFn.mockImplementation((a: number) => false)).type.toRaiseError();
-    expect(mockFn.mockImplementation(a => 'false')).type.toRaiseError();
-    expect(mockFn.mockImplementation()).type.toRaiseError();
+    expect(mockFn.mockImplementation).type.not.toBeCallableWith(
+      (a: number) => false,
+    );
+    expect(mockFn.mockImplementation).type.not.toBeCallableWith(() => 'false');
+    expect(mockFn.mockImplementation).type.not.toBeCallableWith();
 
     expect(
       mockAsyncFn.mockImplementation(async a => {
@@ -217,9 +223,9 @@ describe('jest.fn()', () => {
       }),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
 
-    expect(
-      mockAsyncFn.mockImplementation(a => 'mock value'),
-    ).type.toRaiseError();
+    expect(mockAsyncFn.mockImplementation).type.not.toBeCallableWith(
+      () => 'mock value',
+    );
   });
 
   test('.mockImplementationOnce()', () => {
@@ -231,11 +237,13 @@ describe('jest.fn()', () => {
       }),
     ).type.toBe<Mock<(a: string, b?: number | undefined) => boolean>>();
 
-    expect(
-      mockFn.mockImplementationOnce((a: number) => false),
-    ).type.toRaiseError();
-    expect(mockFn.mockImplementationOnce(a => 'false')).type.toRaiseError();
-    expect(mockFn.mockImplementationOnce()).type.toRaiseError();
+    expect(mockFn.mockImplementationOnce).type.not.toBeCallableWith(
+      (a: number) => false,
+    );
+    expect(mockFn.mockImplementationOnce).type.not.toBeCallableWith(
+      () => 'false',
+    );
+    expect(mockFn.mockImplementationOnce).type.not.toBeCallableWith();
 
     expect(
       mockAsyncFn.mockImplementationOnce(async a => {
@@ -243,9 +251,9 @@ describe('jest.fn()', () => {
         return 'mock value';
       }),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
-    expect(
-      mockAsyncFn.mockImplementationOnce(a => 'mock value'),
-    ).type.toRaiseError();
+    expect(mockAsyncFn.mockImplementationOnce).type.not.toBeCallableWith(
+      () => 'mock value',
+    );
   });
 
   test('.mockName()', () => {
@@ -253,8 +261,8 @@ describe('jest.fn()', () => {
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
 
-    expect(mockFn.mockName(123)).type.toRaiseError();
-    expect(mockFn.mockName()).type.toRaiseError();
+    expect(mockFn.mockName).type.not.toBeCallableWith(123);
+    expect(mockFn.mockName).type.not.toBeCallableWith();
   });
 
   test('.mockReturnThis()', () => {
@@ -262,7 +270,7 @@ describe('jest.fn()', () => {
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
 
-    expect(mockFn.mockReturnThis('this')).type.toRaiseError();
+    expect(mockFn.mockReturnThis).type.not.toBeCallableWith('this');
   });
 
   test('.mockReturnValue()', () => {
@@ -270,33 +278,33 @@ describe('jest.fn()', () => {
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
 
-    expect(mockFn.mockReturnValue('true')).type.toRaiseError();
-    expect(mockFn.mockReturnValue()).type.toRaiseError();
+    expect(mockFn.mockReturnValue).type.not.toBeCallableWith('true');
+    expect(mockFn.mockReturnValue).type.not.toBeCallableWith();
 
     expect(
       mockAsyncFn.mockReturnValue(Promise.resolve('mock value')),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
 
-    expect(
-      mockAsyncFn.mockReturnValue(Promise.resolve(true)),
-    ).type.toRaiseError();
+    expect(mockAsyncFn.mockReturnValue).type.not.toBeCallableWith(
+      Promise.resolve(true),
+    );
   });
 
   test('.mockReturnValueOnce()', () => {
     expect(mockFn.mockReturnValueOnce(false)).type.toBe<
       Mock<(a: string, b?: number | undefined) => boolean>
     >();
-    expect(mockFn.mockReturnValueOnce('true')).type.toRaiseError();
+    expect(mockFn.mockReturnValueOnce).type.not.toBeCallableWith('true');
 
-    expect(mockFn.mockReturnValueOnce()).type.toRaiseError();
+    expect(mockFn.mockReturnValueOnce).type.not.toBeCallableWith();
 
     expect(
       mockAsyncFn.mockReturnValueOnce(Promise.resolve('mock value')),
     ).type.toBe<Mock<(p: boolean) => Promise<string>>>();
 
-    expect(
-      mockAsyncFn.mockReturnValueOnce(Promise.resolve(true)),
-    ).type.toRaiseError();
+    expect(mockAsyncFn.mockReturnValueOnce).type.not.toBeCallableWith(
+      Promise.resolve(true),
+    );
   });
 
   test('.mockResolvedValue()', () => {
@@ -305,11 +313,11 @@ describe('jest.fn()', () => {
     ).type.toBe<Mock<() => Promise<string>>>();
 
     expect(
-      fn(() => Promise.resolve('')).mockResolvedValue(123),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockResolvedValue,
+    ).type.not.toBeCallableWith(123);
     expect(
-      fn(() => Promise.resolve('')).mockResolvedValue(),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockResolvedValue,
+    ).type.not.toBeCallableWith();
   });
 
   test('.mockResolvedValueOnce()', () => {
@@ -318,11 +326,11 @@ describe('jest.fn()', () => {
     ).type.toBe<Mock<() => Promise<string>>>();
 
     expect(
-      fn(() => Promise.resolve('')).mockResolvedValueOnce(123),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockResolvedValueOnce,
+    ).type.not.toBeCallableWith(123);
     expect(
-      fn(() => Promise.resolve('')).mockResolvedValueOnce(),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockResolvedValueOnce,
+    ).type.not.toBeCallableWith();
   });
 
   test('.mockRejectedValue()', () => {
@@ -334,8 +342,8 @@ describe('jest.fn()', () => {
     ).type.toBe<Mock<() => Promise<string>>>();
 
     expect(
-      fn(() => Promise.resolve('')).mockRejectedValue(),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockRejectedValue,
+    ).type.not.toBeCallableWith();
   });
 
   test('.mockRejectedValueOnce()', () => {
@@ -349,8 +357,8 @@ describe('jest.fn()', () => {
     ).type.toBe<Mock<() => Promise<string>>>();
 
     expect(
-      fn(() => Promise.resolve('')).mockRejectedValueOnce(),
-    ).type.toRaiseError();
+      fn(() => Promise.resolve('')).mockRejectedValueOnce,
+    ).type.not.toBeCallableWith();
   });
 
   test('.withImplementation()', () => {
@@ -359,7 +367,7 @@ describe('jest.fn()', () => {
       Promise<void>
     >();
 
-    expect(mockFn.withImplementation(mockFnImpl)).type.toRaiseError();
+    expect(mockFn.withImplementation).type.not.toBeCallableWith(mockFnImpl);
   });
 });
 
@@ -424,8 +432,10 @@ describe('jest.spyOn()', () => {
   test('models typings of spied object', () => {
     expect(spy).type.not.toBeAssignableTo<Function>();
 
-    expect(spy()).type.toRaiseError();
-    expect(new spy()).type.toRaiseError();
+    expect(spy()).type.toRaiseError('This expression is not callable.');
+    expect(new spy()).type.toRaiseError(
+      'This expression is not constructable.',
+    );
 
     expect(spyOn(spiedObject, 'methodA')).type.toBe<
       SpiedFunction<typeof spiedObject.methodA>
@@ -443,9 +453,9 @@ describe('jest.spyOn()', () => {
     expect(spyOn(spiedObject, 'propertyB', 'set')).type.toBe<
       SpiedSetter<typeof spiedObject.propertyB>
     >();
-    expect(spyOn(spiedObject, 'propertyB')).type.toRaiseError();
-    expect(spyOn(spiedObject, 'methodB', 'get')).type.toRaiseError();
-    expect(spyOn(spiedObject, 'methodB', 'set')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(spiedObject, 'propertyB');
+    expect(spyOn).type.not.toBeCallableWith(spiedObject, 'methodB', 'get');
+    expect(spyOn).type.not.toBeCallableWith(spiedObject, 'methodB', 'set');
 
     expect(spyOn(spiedObject, 'propertyA', 'get')).type.toBe<
       SpiedGetter<typeof spiedObject.propertyA>
@@ -453,24 +463,24 @@ describe('jest.spyOn()', () => {
     expect(spyOn(spiedObject, 'propertyA', 'set')).type.toBe<
       SpiedSetter<typeof spiedObject.propertyA>
     >();
-    expect(spyOn(spiedObject, 'propertyA')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(spiedObject, 'propertyA');
 
-    expect(spyOn(spiedObject, 'notThere')).type.toRaiseError();
-    expect(spyOn('abc', 'methodA')).type.toRaiseError();
-    expect(spyOn(123, 'methodA')).type.toRaiseError();
-    expect(spyOn(true, 'methodA')).type.toRaiseError();
-    expect(spyOn(spiedObject)).type.toRaiseError();
-    expect(spyOn()).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(spiedObject, 'notThere');
+    expect(spyOn).type.not.toBeCallableWith('abc', 'methodA');
+    expect(spyOn).type.not.toBeCallableWith(123, 'methodA');
+    expect(spyOn).type.not.toBeCallableWith(true, 'methodA');
+    expect(spyOn).type.not.toBeCallableWith(spiedObject);
+    expect(spyOn).type.not.toBeCallableWith();
 
     expect(
       spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
     ).type.toBe<SpiedFunction<typeof Array.isArray>>();
-    expect(spyOn(spiedArray, 'isArray')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(spiedArray, 'isArray');
 
     expect(spyOn(spiedFunction as unknown as Function, 'toString')).type.toBe<
       SpiedFunction<typeof spiedFunction.toString>
     >();
-    expect(spyOn(spiedFunction, 'toString')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(spiedFunction, 'toString');
 
     expect(spyOn(globalThis, 'Date')).type.toBe<SpiedClass<typeof Date>>();
     expect(spyOn(Date, 'now')).type.toBe<SpiedFunction<typeof Date.now>>();
@@ -496,9 +506,9 @@ describe('jest.spyOn()', () => {
     expect(spyOn(indexSpiedObject, 'propertyA', 'set')).type.toBe<
       SpiedSetter<typeof indexSpiedObject.propertyA>
     >();
-    expect(spyOn(indexSpiedObject, 'propertyA')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(indexSpiedObject, 'propertyA');
 
-    expect(spyOn(indexSpiedObject, 'notThere')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(indexSpiedObject, 'notThere');
   });
 
   test('handles interface with optional properties', () => {
@@ -535,12 +545,16 @@ describe('jest.spyOn()', () => {
       SpiedClass<typeof optionalSpiedObject.constructorB>
     >();
 
-    expect(
-      spyOn(optionalSpiedObject, 'constructorA', 'get'),
-    ).type.toRaiseError();
-    expect(
-      spyOn(optionalSpiedObject, 'constructorA', 'set'),
-    ).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(
+      optionalSpiedObject,
+      'constructorA',
+      'get',
+    );
+    expect(spyOn).type.not.toBeCallableWith(
+      optionalSpiedObject,
+      'constructorA',
+      'set',
+    );
 
     expect(spyOn(optionalSpiedObject, 'methodA')).type.toBe<
       SpiedFunction<NonNullable<typeof optionalSpiedObject.methodA>>
@@ -549,8 +563,16 @@ describe('jest.spyOn()', () => {
       SpiedFunction<typeof optionalSpiedObject.methodB>
     >();
 
-    expect(spyOn(optionalSpiedObject, 'methodA', 'get')).type.toRaiseError();
-    expect(spyOn(optionalSpiedObject, 'methodA', 'set')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(
+      optionalSpiedObject,
+      'methodA',
+      'get',
+    );
+    expect(spyOn).type.not.toBeCallableWith(
+      optionalSpiedObject,
+      'methodA',
+      'set',
+    );
 
     expect(spyOn(optionalSpiedObject, 'propertyA', 'get')).type.toBe<
       SpiedGetter<NonNullable<typeof optionalSpiedObject.propertyA>>
@@ -577,8 +599,8 @@ describe('jest.spyOn()', () => {
       SpiedSetter<typeof optionalSpiedObject.propertyD>
     >();
 
-    expect(spyOn(optionalSpiedObject, 'propertyA')).type.toRaiseError();
-    expect(spyOn(optionalSpiedObject, 'propertyB')).type.toRaiseError();
+    expect(spyOn).type.not.toBeCallableWith(optionalSpiedObject, 'propertyA');
+    expect(spyOn).type.not.toBeCallableWith(optionalSpiedObject, 'propertyB');
   });
 
   test('handles properties of `prototype`', () => {
@@ -589,10 +611,8 @@ describe('jest.spyOn()', () => {
     ).type.toBe<SpiedFunction<(key: string, value: string) => void>>();
 
     expect(
-      spyOn(Storage.prototype, 'setItem').mockImplementation(
-        (key: string, value: number) => {},
-      ),
-    ).type.toRaiseError();
+      spyOn(Storage.prototype, 'setItem').mockImplementation,
+    ).type.not.toBeCallableWith((key: string, value: number) => {});
   });
 });
 
@@ -627,16 +647,20 @@ describe('jest.replaceProperty()', () => {
       replaceProperty(replaceObject, 'property', 1).replaceValue(1).restore(),
     ).type.toBe<void>();
 
-    expect(replaceProperty(replaceObject, 'invalid', 1)).type.toRaiseError();
-    expect(
-      replaceProperty(replaceObject, 'property', 'not a number'),
-    ).type.toRaiseError();
+    expect(replaceProperty).type.not.toBeCallableWith(
+      replaceObject,
+      'invalid',
+      1,
+    );
+    expect(replaceProperty).type.not.toBeCallableWith(
+      replaceObject,
+      'property',
+      'not a number',
+    );
 
     expect(
-      replaceProperty(replaceObject, 'property', 1).replaceValue(
-        'not a number',
-      ),
-    ).type.toRaiseError();
+      replaceProperty(replaceObject, 'property', 1).replaceValue,
+    ).type.not.toBeCallableWith('not a number');
 
     expect(
       replaceProperty(complexObject, 'numberOrUndefined', undefined),
@@ -645,13 +669,11 @@ describe('jest.replaceProperty()', () => {
       Replaced<number | undefined>
     >();
 
-    expect(
-      replaceProperty(
-        complexObject,
-        'numberOrUndefined',
-        'string is not valid TypeScript type',
-      ),
-    ).type.toRaiseError();
+    expect(replaceProperty).type.not.toBeCallableWith(
+      complexObject,
+      'numberOrUndefined',
+      'string is not valid TypeScript type',
+    );
 
     expect(replaceProperty(complexObject, 'optionalString', 'foo')).type.toBe<
       Replaced<string | undefined>
@@ -663,13 +685,17 @@ describe('jest.replaceProperty()', () => {
     expect(
       replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', true),
     ).type.toBe<Replaced<boolean>>();
-    expect(
-      replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', undefined),
-    ).type.toRaiseError();
+    expect(replaceProperty).type.not.toBeCallableWith(
+      objectWithDynamicProperties,
+      'dynamic prop 1',
+      undefined,
+    );
 
-    expect(
-      replaceProperty(complexObject, 'not a property', undefined),
-    ).type.toRaiseError();
+    expect(replaceProperty).type.not.toBeCallableWith(
+      complexObject,
+      'not a property',
+      undefined,
+    );
 
     expect(
       replaceProperty(complexObject, 'multipleTypes', 1)
