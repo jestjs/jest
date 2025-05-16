@@ -82,7 +82,7 @@ export interface Jest {
    */
   advanceTimersToNextTimer(steps?: number): void;
   /**
-   * Advances the clock to the the moment of the first scheduled timer, firing it.
+   * Advances the clock to the moment of the first scheduled timer, firing it.
    * Optionally, you can provide steps, so it will run steps amount of
    * next timeouts/intervals.
    *

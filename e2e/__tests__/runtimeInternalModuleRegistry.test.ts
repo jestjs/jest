@@ -13,7 +13,7 @@ describe('Runtime Internal Module Registry', () => {
   // wouldn't re-require it and thus ignored any mocks that the module may have
   // used.
   //
-  // This test verifies that that behavior doesn't happen anymore, and correctly
+  // This test verifies that behavior doesn't happen anymore, and correctly
   // uses two module registries: an internal registry that's used specifically by
   // Jest to require any internal modules used when setting up the test
   // environment, and a "normal" module registry that's used by the actual test
