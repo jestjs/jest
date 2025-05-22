@@ -363,6 +363,36 @@ describe('toThrow', () => {
     });
   });
 
+  describe('aggregate-errors', () => {
+    const fetchFromApi1 = Promise.reject(new Error('API 1 failed'));
+    const fetchFromApi2 = Promise.reject(new Error('API 2 failed'));
+    const promiseAny = Promise.any([fetchFromApi1, fetchFromApi2]);
+
+    test('string', () => {
+      jestExpect(promiseAny).rejects.toThrow('All promises were rejected');
+    });
+
+    test('undefined', () => {
+      jestExpect(promiseAny).rejects.toThrow();
+    });
+
+    test('asymmetricMatch', () => {
+      jestExpect(promiseAny).rejects.toThrow(
+        expect.objectContaining({
+          message: 'All promises were rejected',
+        }),
+      );
+    });
+
+    test('regexp', () => {
+      jestExpect(promiseAny).rejects.toThrow(/All promises were rejected/);
+    });
+
+    test('class', () => {
+      jestExpect(promiseAny).rejects.toThrow(AggregateError);
+    });
+  });
+
   describe('asymmetric', () => {
     describe('any-Class', () => {
       describe('pass', () => {

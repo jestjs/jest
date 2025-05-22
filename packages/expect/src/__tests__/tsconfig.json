@@ -1,7 +1,7 @@
 {
   "extends": "../../../../tsconfig.test.json",
   "compilerOptions": {
-    "lib": ["es2022.error"],
+    "lib": ["es2022.error", "es2021.promise"],
     "types": ["node", "@jest/test-globals"]
   },
   "include": ["./**/*"],

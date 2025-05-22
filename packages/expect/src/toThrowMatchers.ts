@@ -18,7 +18,11 @@ import {
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {
+  formatExecError,
+  formatStackTrace,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
@@ -451,19 +455,28 @@ const formatReceived = (
   return '';
 };
 
-const formatStack = (thrown: Thrown | null) =>
-  thrown === null || !thrown.isError
-    ? ''
-    : formatStackTrace(
+const formatStack = (thrown: Thrown | null) => {
+  if (thrown === null || !thrown.isError) {
+    return '';
+  } else {
+    const config = {
+      rootDir: process.cwd(),
+      testMatch: [],
+    };
+    const options = {
+      noStackTrace: false,
+    };
+    if (thrown.value instanceof AggregateError) {
+      return formatExecError(thrown.value, config, options);
+    } else {
+      return formatStackTrace(
         separateMessageFromStack(thrown.value.stack!).stack,
-        {
-          rootDir: process.cwd(),
-          testMatch: [],
-        },
-        {
-          noStackTrace: false,
-        },
+        config,
+        options,
       );
+    }
+  }
+};
 
 function createMessageAndCause(error: Error) {
   if (error.cause) {
