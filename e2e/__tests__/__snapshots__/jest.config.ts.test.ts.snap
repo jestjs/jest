@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`on node >=23.6 invalid JS in jest.config.ts (node with native TS support) 1`] = `
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>

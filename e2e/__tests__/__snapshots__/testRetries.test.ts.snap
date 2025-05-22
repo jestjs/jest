@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Concurrent Test Retries with flag retryImmediately retry immediately after failed test 1`] = `
 "LOGGING RETRY ERRORS  retryable test 1
