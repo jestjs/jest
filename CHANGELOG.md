@@ -105,6 +105,7 @@
   - Adds a `conditional/check` to ensure the argument passed to `expect` is an object.
   - Add unit tests for new `ObjectContaining` behavior.
   - Remove `invalid/wrong` test case assertions for `ObjectContaining`.
+- `[jest-worker]` Addresses incorrect state on exit ([#15610](https://github.com/jestjs/jest/pull/15610))
 
 ### Performance
 
