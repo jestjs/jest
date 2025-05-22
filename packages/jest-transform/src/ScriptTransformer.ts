@@ -964,15 +964,7 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
 const cacheWriteErrorSafeToIgnore = (
   e: NodeJS.ErrnoException,
   cachePath: string,
-) => {
-  if (process.platform !== 'win32' || e.code !== 'EPERM') {
-    return false;
-  }
-  if (!fs.existsSync(cachePath)) {
-    console.warn('Possible problem writing cache if this occurs many times', e);
-  }
-  return true;
-};
+) => process.platform === 'win32' && e.code === 'EPERM';
 
 const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {
