@@ -42,3 +42,44 @@ test('failures', () => {
 
   expect(stdout).toMatchSnapshot();
 });
+
+test('concurrent', () => {
+  const {stdout} = runTest(`
+    describe('describe', () => {
+      beforeEach(() => {});
+      afterEach(() => { throw new Error('banana')});
+      test.concurrent('one', () => { 
+        console.log('hello one');
+        throw new Error('kentucky')
+      });
+      test.concurrent('two', () => {
+        console.log('hello two');
+      });
+      test.concurrent('three', async () => { 
+        console.log('hello three');
+        await Promise.resolve(); 
+      });
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('concurrent.each', () => {
+  const {stdout} = runTest(`
+    describe('describe', () => {
+      beforeEach(() => {});
+      afterEach(() => { throw new Error('banana')});
+      test.concurrent.each([
+        ['one'],
+        ['two'],
+        ['three'],
+      ])('%s', async (name) => {
+        console.log('hello %s', name);
+        await Promise.resolve(); 
+      });
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});

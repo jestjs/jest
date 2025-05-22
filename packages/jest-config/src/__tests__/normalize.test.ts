@@ -26,6 +26,23 @@ jest
       ...realFs,
       statSync: () => ({isDirectory: () => true}),
     };
+  })
+  .mock('jest-util', () => {
+    const realUtil =
+      jest.requireActual<typeof import('jest-util')>('jest-util');
+
+    return {
+      ...realUtil,
+      requireOrImportModule: (filePath: string, interop = true) => {
+        const result = require(filePath);
+
+        if (interop) {
+          return realUtil.interopRequireDefault(result).default;
+        }
+
+        return result;
+      },
+    };
   });
 
 let root: string;

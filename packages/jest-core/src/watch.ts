@@ -9,7 +9,7 @@ import * as path from 'path';
 import type {WriteStream} from 'tty';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
-import exit = require('exit');
+import exit = require('exit-x');
 import slash = require('slash');
 import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';
@@ -287,7 +287,9 @@ export default async function watch(
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    isInteractive && outputStream.write(specialChars.CLEAR);
+    if (isInteractive) {
+      outputStream.write(specialChars.CLEAR);
+    }
     preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);

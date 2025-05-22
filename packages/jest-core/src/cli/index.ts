@@ -8,7 +8,7 @@
 import {performance} from 'perf_hooks';
 import type {WriteStream} from 'tty';
 import chalk = require('chalk');
-import exit = require('exit');
+import exit = require('exit-x');
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
@@ -225,24 +225,26 @@ const _run10000 = async (
   );
   performance.mark('jest/buildContextsAndHasteMaps:end');
 
-  globalConfig.watch || globalConfig.watchAll
-    ? await runWatch(
-        contexts,
-        configs,
-        hasDeprecationWarnings,
-        globalConfig,
-        outputStream,
-        hasteMapInstances,
-        filter,
-      )
-    : await runWithoutWatch(
-        globalConfig,
-        contexts,
-        outputStream,
-        onComplete,
-        changedFilesPromise,
-        filter,
-      );
+  if (globalConfig.watch || globalConfig.watchAll) {
+    await runWatch(
+      contexts,
+      configs,
+      hasDeprecationWarnings,
+      globalConfig,
+      outputStream,
+      hasteMapInstances,
+      filter,
+    );
+  } else {
+    await runWithoutWatch(
+      globalConfig,
+      contexts,
+      outputStream,
+      onComplete,
+      changedFilesPromise,
+      filter,
+    );
+  }
 };
 
 const runWatch = async (

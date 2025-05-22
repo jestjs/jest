@@ -48,6 +48,6 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     steps:
-      - uses: jayqi/failed-build-issue-action@v1
+      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # v1.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -171,6 +171,9 @@ export default class Runtime {
   private readonly _environment: JestEnvironment;
   private readonly _explicitShouldMock: Map<string, boolean>;
   private readonly _explicitShouldMockModule: Map<string, boolean>;
+  private readonly _onGenerateMock: Set<
+    (moduleName: string, moduleMock: any) => any
+  >;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
@@ -235,6 +238,7 @@ export default class Runtime {
     this._globalConfig = globalConfig;
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
+    this._onGenerateMock = new Set();
     this._internalModuleRegistry = new Map();
     this._isCurrentlyExecutingManualMock = null;
     this._mainModule = null;
@@ -585,7 +589,7 @@ export default class Runtime {
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
-      // @ts-expect-error - exiting
+      // @ts-expect-error -- exiting
       return;
     }
     if (this.isInsideTestCode === false) {
@@ -921,11 +925,12 @@ export default class Runtime {
     isRequireActual = false,
   ): T {
     const isInternal = options?.isInternalModule ?? false;
+    const resolveModuleOptions = {conditions: this.cjsConditions};
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
+      resolveModuleOptions,
     );
     let modulePath: string | undefined;
 
@@ -933,7 +938,8 @@ export default class Runtime {
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
     const manualMock =
-      moduleName && this._resolver.getMockModule(from, moduleName);
+      moduleName &&
+      this._resolver.getMockModule(from, moduleName, resolveModuleOptions);
     if (
       !options?.isInternalModule &&
       !isRequireActual &&
@@ -1039,11 +1045,12 @@ export default class Runtime {
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
+    const options = {conditions: this.cjsConditions};
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
+      options,
     );
 
     if (this._isolatedMockRegistry?.has(moduleID)) {
@@ -1061,15 +1068,19 @@ export default class Runtime {
       return module as T;
     }
 
-    const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
+    const manualMockOrStub = this._resolver.getMockModule(
+      from,
+      moduleName,
+      options,
+    );
 
     let modulePath =
-      this._resolver.getMockModule(from, moduleName) ||
+      this._resolver.getMockModule(from, moduleName, options) ||
       this._resolveCjsModule(from, moduleName);
 
     let isManualMock =
       manualMockOrStub &&
-      !this._resolver.resolveStubModuleName(from, moduleName);
+      !this._resolver.resolveStubModuleName(from, moduleName, options);
     if (!isManualMock) {
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file.
@@ -1503,7 +1514,9 @@ export default class Runtime {
     try {
       return this._resolveCjsModule(from, moduleName);
     } catch (error) {
-      const module = this._resolver.getMockModule(from, moduleName);
+      const module = this._resolver.getMockModule(from, moduleName, {
+        conditions: this.cjsConditions,
+      });
 
       if (module) {
         return module;
@@ -1769,13 +1782,15 @@ export default class Runtime {
 
   private _importCoreModule(moduleName: string, context: VMContext) {
     const required = this._requireCoreModule(moduleName, true);
+    const allExports = Object.entries(required);
+    const exportNames = allExports.map(([key]) => key);
 
     const module = new SyntheticModule(
-      ['default', ...Object.keys(required)],
+      ['default', ...exportNames],
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
-        for (const [key, value] of Object.entries(required)) {
+        for (const [key, value] of allExports) {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         }
@@ -1895,8 +1910,9 @@ export default class Runtime {
 
   private _generateMock<T>(from: string, moduleName: string) {
     const modulePath =
-      this._resolver.resolveStubModuleName(from, moduleName) ||
-      this._resolveCjsModule(from, moduleName);
+      this._resolver.resolveStubModuleName(from, moduleName, {
+        conditions: this.cjsConditions,
+      }) || this._resolveCjsModule(from, moduleName);
     if (!this._mockMetaDataCache.has(modulePath)) {
       // This allows us to handle circular dependencies while generating an
       // automock
@@ -1930,10 +1946,16 @@ export default class Runtime {
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
     }
-    return this._moduleMocker.generateFromMetadata<T>(
+    let moduleMock = this._moduleMocker.generateFromMetadata<T>(
       // added above if missing
       this._mockMetaDataCache.get(modulePath)!,
     );
+
+    for (const onGenerateMock of this._onGenerateMock) {
+      moduleMock = onGenerateMock(modulePath, moduleMock);
+    }
+
+    return moduleMock;
   }
 
   private _shouldMockCjs(
@@ -1972,7 +1994,11 @@ export default class Runtime {
     try {
       modulePath = this._resolveCjsModule(from, moduleName);
     } catch (error) {
-      const manualMock = this._resolver.getMockModule(from, moduleName);
+      const manualMock = this._resolver.getMockModule(
+        from,
+        moduleName,
+        options,
+      );
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
@@ -2046,6 +2072,7 @@ export default class Runtime {
       const manualMock = await this._resolver.getMockModuleAsync(
         from,
         moduleName,
+        options,
       );
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
@@ -2191,6 +2218,12 @@ export default class Runtime {
         {conditions: this.cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, true);
+      return jestObject;
+    };
+    const onGenerateMock: Jest['onGenerateMock'] = <T>(
+      cb: (moduleName: string, moduleMock: T) => T,
+    ) => {
+      this._onGenerateMock.add(cb);
       return jestObject;
     };
     const setMockFactory = (
@@ -2364,6 +2397,7 @@ export default class Runtime {
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
+      onGenerateMock,
       replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
       requireMock: moduleName => this.requireMock(from, moduleName),

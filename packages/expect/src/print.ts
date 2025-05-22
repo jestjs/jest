@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {
   EXPECTED_COLOR,
   INVERTED_COLOR,

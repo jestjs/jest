@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type Static, Type} from '@sinclair/typebox';
-import {RawFakeTimers, RawInitialOptions, RawSnapshotFormat} from './raw-types';
+import type {Static} from '@sinclair/typebox';
+import * as types from './raw-types';
 
-export const SnapshotFormat = Type.Strict(RawSnapshotFormat);
-export type SnapshotFormat = Static<typeof RawSnapshotFormat>;
+export const SnapshotFormat = types.SnapshotFormat;
+export type SnapshotFormat = Static<typeof SnapshotFormat>;
 
-export const InitialOptions = Type.Strict(RawInitialOptions);
-export type InitialOptions = Static<typeof RawInitialOptions>;
+export const InitialOptions = types.InitialOptions;
+export type InitialOptions = Static<typeof InitialOptions>;
 
-export const FakeTimers = Type.Strict(RawFakeTimers);
-export type FakeTimers = Static<typeof RawFakeTimers>;
+export const FakeTimers = types.FakeTimers;
+export type FakeTimers = Static<typeof FakeTimers>;

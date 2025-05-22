@@ -283,7 +283,7 @@ Disables stack trace in test results output.
 
 ### `--notify`
 
-Activates notifications for test results. Good for when you don't want your consciousness to be able to focus on anything except JavaScript testing.
+Activates native OS notifications for test results. Good for when you don't want your consciousness to be able to focus on anything except JavaScript testing. To display the notifications Jest needs the [`node-notifier`](https://github.com/mikaelbr/node-notifier) package, which must be installed separately.
 
 ### `--onlyChanged`
 

@@ -6,7 +6,7 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable local/prefer-rest-params-eventually */
 
 import * as util from 'util';
 import {type Context, createContext, runInContext, runInNewContext} from 'vm';
