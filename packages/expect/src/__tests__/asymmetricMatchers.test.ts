@@ -184,7 +184,6 @@ test('ArrayNotContaining throws for non-arrays', () => {
 test('ObjectContaining matches', () => {
   const foo = Symbol('foo');
   for (const test of [
-    objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
@@ -247,6 +246,18 @@ test('ObjectContaining throws for non-objects', () => {
   );
 });
 
+test('ObjectContaining does not match when non-objects are passed to the expect function as arguments', () => {
+  for (const test of [
+    objectContaining({}).asymmetricMatch('jest'),
+    objectContaining({}).asymmetricMatch(10),
+    objectContaining({}).asymmetricMatch(false),
+    objectContaining({}).asymmetricMatch(undefined),
+    objectContaining({}).asymmetricMatch([]),
+  ]) {
+    jestExpect(test).toEqual(false);
+  }
+});
+
 test('ObjectContaining does not mutate the sample', () => {
   const sample = {foo: {bar: {}}};
   const sample_json = JSON.stringify(sample);
@@ -259,8 +270,6 @@ test('ObjectNotContaining matches', () => {
   const foo = Symbol('foo');
   const bar = Symbol('bar');
   for (const test of [
-    objectContaining({}).asymmetricMatch(null),
-    objectContaining({}).asymmetricMatch(undefined),
     objectNotContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
