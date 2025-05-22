@@ -225,6 +225,27 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
+class ArrayOf extends AsymmetricMatcher<unknown> {
+  asymmetricMatch(other: unknown) {
+    const matcherContext = this.getMatcherContext();
+    const result =
+      Array.isArray(other) &&
+      other.every(item =>
+        equals(this.sample, item, matcherContext.customTesters),
+      );
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `${this.inverse ? 'Not' : ''}ArrayOf`;
+  }
+
+  override getExpectedType() {
+    return 'array';
+  }
+}
+
 class ObjectContaining extends AsymmetricMatcher<
   Record<string | symbol, unknown>
 > {
@@ -384,6 +405,9 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
+export const arrayOf = (sample: unknown): ArrayOf => new ArrayOf(sample);
+export const notArrayOf = (sample: unknown): ArrayOf =>
+  new ArrayOf(sample, true);
 export const objectContaining = (
   sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);

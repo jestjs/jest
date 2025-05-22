@@ -80,6 +80,19 @@ export const serialize: NewPlugin['serialize'] = (
     );
   }
 
+  if (stringedValue === 'ArrayOf' || stringedValue === 'NotArrayOf') {
+    if (++depth > config.maxDepth) {
+      return `[${stringedValue}]`;
+    }
+    return `${stringedValue + SPACE}${printer(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+    )}`;
+  }
+
   if (typeof val.toAsymmetricMatcher !== 'function') {
     throw new TypeError(
       `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
