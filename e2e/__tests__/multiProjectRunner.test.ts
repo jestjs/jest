@@ -360,7 +360,7 @@ test('resolves projects and their <rootDir> properly', () => {
     'project2/project2.conf.json': JSON.stringify({
       id: 'project2',
       rootDir: '../', // root dir is set to the top level
-      setupFiles: ['<rootDir>/project2/project2_setup.js'], // rootDir shold be of the
+      setupFiles: ['<rootDir>/project2/project2_setup.js'], // rootDir should be of the
       testEnvironment: 'node',
       testPathIgnorePatterns: ['project1'],
     }),

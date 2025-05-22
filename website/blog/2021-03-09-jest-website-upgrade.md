@@ -1,9 +1,6 @@
 ---
 title: 'Jest Website Upgrade'
-author: Sébastien Lorber
-authorTitle: Docusaurus maintainer
-authorURL: https://sebastienlorber.com
-authorImageURL: https://github.com/slorber.png
+authors: slorber
 ---
 
 We are excited to present the **new Jest website**!

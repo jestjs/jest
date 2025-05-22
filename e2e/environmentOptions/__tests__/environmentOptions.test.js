@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 'use strict';
-/*eslint-env browser */
 
 test('found url jestjs.io', () => {
   expect(globalThis.location.href).toBe('https://jestjs.io/');

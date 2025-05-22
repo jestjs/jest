@@ -21,24 +21,14 @@ import type {
 
 const PACKAGE_JSON = `${path.sep}package.json`;
 
-let hasteImpl: HasteImpl | null = null;
-let hasteImplModulePath: string | null = null;
-
 function sha1hex(content: string | Buffer): string {
   return createHash('sha1').update(content).digest('hex');
 }
 
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
-  if (
-    data.hasteImplModulePath &&
-    data.hasteImplModulePath !== hasteImplModulePath
-  ) {
-    if (hasteImpl) {
-      throw new Error('jest-haste-map: hasteImplModulePath changed');
-    }
-    hasteImplModulePath = data.hasteImplModulePath;
-    hasteImpl = require(hasteImplModulePath);
-  }
+  const hasteImpl: HasteImpl | null = data.hasteImplModulePath
+    ? require(data.hasteImplModulePath)
+    : null;
 
   let content: string | undefined;
   let dependencies: WorkerMetadata['dependencies'];

@@ -1,8 +1,6 @@
 ---
 title: A Great Developer Experience
-author: Héctor Ramos
-authorURL: http://twitter.com/hectorramos
-authorFBID: 121800083
+authors: hramos
 ---
 
 We strongly believe that great documentation is crucial to providing a great developer experience. The docs should be clear, concise, and useful to new users and veterans alike. With that in mind, we recently took some time to overhaul the Jest website.
