@@ -143,9 +143,7 @@ By default the `jest-react-native` preset only processes the project's own sourc
 
 ```json
 {
-  "transformIgnorePatterns": [
-    "node_modules/(?!(react-native|my-project|react-native-button)/)"
-  ]
+  "transformIgnorePatterns": ["node_modules/(?!((@)?react-native|my-project)/)"]
 }
 ```
 
