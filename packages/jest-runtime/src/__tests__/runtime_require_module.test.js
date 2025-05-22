@@ -268,69 +268,52 @@ describe('Runtime requireModule', () => {
   });
 
   it('resolves platform extensions based on the default platform', async () => {
-    await Promise.all([
-      createRuntime(__filename).then(runtime => {
-        const exports = runtime.requireModule(
-          runtime.__mockRootPath,
-          'Platform',
-        );
+    await createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'Platform');
 
-        expect(exports.platform).toBe('default');
-      }),
-      createRuntime(__filename, {
-        haste: {
-          defaultPlatform: 'ios',
-          platforms: ['ios', 'android'],
-        },
-      }).then(runtime => {
-        const exports = runtime.requireModule(
-          runtime.__mockRootPath,
-          'Platform',
-        );
+      expect(exports.platform).toBe('default');
+    });
+    await createRuntime(__filename, {
+      haste: {
+        defaultPlatform: 'ios',
+        platforms: ['ios', 'android'],
+      },
+    }).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'Platform');
 
-        expect(exports.platform).toBe('ios');
-      }),
-      createRuntime(__filename, {
-        haste: {
-          platforms: ['ios', 'android'],
-        },
-      }).then(runtime => {
-        const exports = runtime.requireModule(
-          runtime.__mockRootPath,
-          'Platform',
-        );
+      expect(exports.platform).toBe('ios');
+    });
+    await createRuntime(__filename, {
+      haste: {
+        platforms: ['ios', 'android'],
+      },
+    }).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'Platform');
 
-        expect(exports.platform).toBe('default');
-      }),
-      createRuntime(__filename, {
-        haste: {
-          defaultPlatform: 'android',
-          platforms: ['ios', 'android'],
-        },
-      }).then(runtime => {
-        const exports = runtime.requireModule(
-          runtime.__mockRootPath,
-          'Platform',
-        );
+      expect(exports.platform).toBe('default');
+    });
+    await createRuntime(__filename, {
+      haste: {
+        defaultPlatform: 'android',
+        platforms: ['ios', 'android'],
+      },
+    }).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'Platform');
 
-        expect(exports.platform).toBe('android');
-      }),
-      createRuntime(__filename, {
-        haste: {
-          defaultPlatform: 'windows',
-          platforms: ['ios', 'android', 'native', 'windows'],
-        },
-      }).then(runtime => {
-        const exports = runtime.requireModule(
-          runtime.__mockRootPath,
-          'Platform',
-        );
+      expect(exports.platform).toBe('android');
+    });
+    await createRuntime(__filename, {
+      haste: {
+        defaultPlatform: 'windows',
+        platforms: ['ios', 'android', 'native', 'windows'],
+      },
+    }).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'Platform');
 
-        // We prefer `native` over the default module if the default one
-        // cannot be found.
-        expect(exports.platform).toBe('native');
-      }),
-    ]);
+      // We prefer `native` over the default module if the default one
+      // cannot be found.
+      expect(exports.platform).toBe('native');
+    });
   });
 
   it('finds modules encoded in UTF-8 *with BOM*', async () => {

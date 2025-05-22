@@ -939,7 +939,7 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
     if (!(error instanceof Error)) {
       throw error;
     }
-    if (cacheWriteErrorSafeToIgnore(error, cachePath)) {
+    if (cacheWriteErrorSafeToIgnore(error)) {
       return;
     }
 
@@ -957,10 +957,8 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
  * If the target does not exist we do not know if it is because it is still
  * being written by another process or is being overwritten by another process.
  */
-const cacheWriteErrorSafeToIgnore = (
-  e: NodeJS.ErrnoException,
-  cachePath: string,
-) => process.platform === 'win32' && e.code === 'EPERM';
+const cacheWriteErrorSafeToIgnore = (e: NodeJS.ErrnoException) =>
+  process.platform === 'win32' && e.code === 'EPERM';
 
 const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {

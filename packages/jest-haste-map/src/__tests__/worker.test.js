@@ -110,6 +110,7 @@ describe('worker', () => {
       await worker({
         computeDependencies: true,
         filePath: path.join('/project', 'fruits', 'Strawberry.js'),
+        hasteImplModulePath: require.resolve('./haste_impl.js'),
         rootDir,
       }),
     ).toEqual({

@@ -60,16 +60,17 @@ module.exports = async function createRuntime(filename, projectConfig) {
   projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
     cwd,
-    haste: {
-      hasteImplModulePath: require.resolve(
-        '../../../jest-haste-map/src/__tests__/haste_impl.js',
-      ),
-    },
     id: `Runtime-${filename.replace(/\W/, '-')}.tests`,
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
     rootDir,
     ...projectConfig,
+    haste: {
+      ...projectConfig?.haste,
+      hasteImplModulePath: require.resolve(
+        '../../../jest-haste-map/src/__tests__/haste_impl.js',
+      ),
+    },
     moduleNameMapper,
     transform,
   });
