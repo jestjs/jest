@@ -22,7 +22,7 @@ export function forEach(items, callback) {
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
 ```js title="forEach.test.js"
-import { forEach } from './forEach';
+import {forEach} from './forEach';
 
 const mockCallback = jest.fn(x => 42 + x);
 
