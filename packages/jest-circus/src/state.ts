@@ -14,9 +14,8 @@ import {makeDescribe} from './utils';
 
 const handlers: Array<Circus.EventHandler> = ((globalThis as Global.Global)[
   EVENT_HANDLERS
-] = ((globalThis as Global.Global)[
-  EVENT_HANDLERS
-] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors]);
+] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors];
+setGlobal(globalThis, EVENT_HANDLERS, handlers, 'retain');
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
