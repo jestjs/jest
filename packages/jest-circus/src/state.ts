@@ -6,6 +6,7 @@
  */
 
 import type {Circus, Global} from '@jest/types';
+import {protectProperties, setGlobal} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 import {EVENT_HANDLERS, STATE_SYM} from './types';
@@ -13,9 +14,8 @@ import {makeDescribe} from './utils';
 
 const handlers: Array<Circus.EventHandler> = ((globalThis as Global.Global)[
   EVENT_HANDLERS
-] = ((globalThis as Global.Global)[
-  EVENT_HANDLERS
-] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors]);
+] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors];
+setGlobal(globalThis, EVENT_HANDLERS, handlers, 'retain');
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
@@ -39,16 +39,28 @@ const createState = (): Circus.State => {
   };
 };
 
+export const getState = (): Circus.State =>
+  (globalThis as Global.Global)[STATE_SYM] as Circus.State;
+export const setState = (state: Circus.State): Circus.State => {
+  setGlobal(globalThis, STATE_SYM, state);
+  protectProperties(state, [
+    'hasFocusedTests',
+    'hasStarted',
+    'includeTestLocationInResult',
+    'maxConcurrency',
+    'seed',
+    'testNamePattern',
+    'testTimeout',
+    'unhandledErrors',
+    'unhandledRejectionErrorByPromise',
+  ]);
+  return state;
+};
 export const resetState = (): void => {
-  (globalThis as Global.Global)[STATE_SYM] = createState();
+  setState(createState());
 };
 
 resetState();
-
-export const getState = (): Circus.State =>
-  (globalThis as Global.Global)[STATE_SYM] as Circus.State;
-export const setState = (state: Circus.State): Circus.State =>
-  ((globalThis as Global.Global)[STATE_SYM] = state);
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
   for (const handler of handlers) {
