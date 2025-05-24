@@ -7,9 +7,8 @@
  */
 
 import * as path from 'path';
-import {fileURLToPath, pathToFileURL} from 'url';
+import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
-import {sync as resolveSync} from 'resolve';
 import {type IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
@@ -17,27 +16,29 @@ import defaultResolver, {type PackageFilter} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
+import type {MockInstance} from 'jest-mock';
 
 jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
-// Do not fully mock `resolve` because it is used by Jest. Doing it will crash
+let mockResolveSync: MockInstance<
+  import('unrs-resolver').ResolverFactory['sync']
+>;
+
+// Do not fully mock `unrs-resolver` because it is used by Jest. Doing it will crash
 // in very strange ways. Instead, just spy on it and its `sync` method.
-jest.mock('resolve', () => {
-  const originalModule =
-    jest.requireActual<typeof import('resolve')>('resolve');
+jest.mock('unrs-resolver', () => {
+  const originalResolverFactory =
+    jest.requireActual<typeof import('unrs-resolver')>(
+      'unrs-resolver',
+    ).ResolverFactory;
 
-  const m = jest.fn<typeof import('resolve')>((...args) =>
-    originalModule(...args),
-  );
-  Object.assign(m, originalModule);
-  m.sync = jest.spyOn(originalModule, 'sync');
-
+  const m = jest.fn<import('unrs-resolver').ResolverFactory['sync']>();
+  mockResolveSync = jest.spyOn(originalResolverFactory.prototype, 'sync');
   return m;
 });
 
 const mockUserResolver = jest.mocked(userResolver);
 const mockUserResolverAsync = jest.mocked(userResolverAsync);
-const mockResolveSync = jest.mocked(resolveSync);
 
 beforeEach(() => {
   mockUserResolver.mockClear();

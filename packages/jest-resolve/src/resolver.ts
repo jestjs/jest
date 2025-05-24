@@ -126,7 +126,6 @@ export default class Resolver {
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
       });
     } catch (error) {
       // we always wanna throw if it's an internal import
@@ -169,7 +168,6 @@ export default class Resolver {
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? [...(nodePaths || []), ...paths] : nodePaths,
-        rootDir: options.rootDir,
       });
       return result;
     } catch (error: unknown) {
@@ -341,7 +339,7 @@ export default class Resolver {
   resolveModule(
     from: string,
     moduleName: string,
-    options: ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): string {
     const dirname = path.dirname(from);
     const module =
@@ -485,7 +483,7 @@ export default class Resolver {
   getMockModule(
     from: string,
     name: string,
-    options: Pick<ResolveModuleConfig, 'conditions'>,
+    options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
@@ -731,7 +729,7 @@ export default class Resolver {
   resolveStubModuleName(
     from: string,
     moduleName: string,
-    options: Pick<ResolveModuleConfig, 'conditions'>,
+    options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
     const dirname = path.dirname(from);
 
