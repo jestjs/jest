@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@types/merge-stream": "^1.1.2",
+    "@types/merge-stream": "^2.0.0",
     "@types/supports-color": "^8.1.0",
     "@types/ungap__structured-clone": "^1.2.0",
     "get-stream": "^6.0.0",

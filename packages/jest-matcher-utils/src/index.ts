@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import chalk = require('chalk');
 import {
   DIFF_DELETE,
@@ -504,7 +502,7 @@ type PrintLabel = (string: string) => string;
 
 export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
   const maxLength = strings.reduce(
-    (max, string) => (string.length > max ? string.length : max),
+    (max, string) => Math.max(string.length, max),
     0,
   );
   return (string: string): string =>

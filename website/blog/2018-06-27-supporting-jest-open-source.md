@@ -1,8 +1,6 @@
 ---
 title: Supporting Jest Open Source
-author: Rick Hanlon II
-authorURL: https://twitter.com/rickhanlonii
-authorFBID: 160800566
+authors: rickhanlonii
 ---
 
 Jest is maintained by a community of open source contributors and Facebook employees.

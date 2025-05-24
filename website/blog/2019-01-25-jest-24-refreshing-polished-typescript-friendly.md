@@ -1,8 +1,6 @@
 ---
 title: 'Jest 24: 💅 Refreshing, Polished, TypeScript-friendly'
-author: Simen Bekkhus
-authorURL: https://github.com/SimenB
-authorFBID: 100003004880942
+authors: simenb
 ---
 
 Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long-standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨

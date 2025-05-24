@@ -1,3 +1,3 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`FakeTimers runAllTimers warns when trying to advance timers while real timers are used 1`] = `"A function to advance timers was called but the timers APIs are not mocked with fake timers. Call \`jest.useFakeTimers({legacyFakeTimers: true})\` in this test file or enable fake timers for all tests by setting {'enableGlobally': true, 'legacyFakeTimers': true} in Jest configuration file."`;

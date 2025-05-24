@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import style = require('ansi-styles');
 import {
   printIteratorEntries,
@@ -63,6 +61,7 @@ const getConstructorName = (val: new (...args: Array<any>) => unknown) =>
 /* global window */
 /** Is val is equal to global window object? Works even if it does not exist :) */
 const isWindow = (val: unknown) =>
+  // eslint-disable-next-line unicorn/prefer-global-this
   typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;

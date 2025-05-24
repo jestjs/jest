@@ -7,7 +7,7 @@
  * @jest-environment jsdom
  */
 'use strict';
-/* eslint-env browser*/
+/* global document */
 
 test('stub', () => {
   const element = document.createElement('div');

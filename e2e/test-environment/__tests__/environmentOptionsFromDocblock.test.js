@@ -8,8 +8,7 @@
  * @jest-environment-options {"url": "https://jestjs.io/"}
  */
 'use strict';
-/*eslint-env browser */
 
 test('use jsdom and set the URL in this test file', () => {
-  expect(window.location.href).toBe('https://jestjs.io/');
+  expect(globalThis.location.href).toBe('https://jestjs.io/');
 });

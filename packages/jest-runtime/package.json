@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "30.0.0-alpha.5",
+  "version": "30.0.0-alpha.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -28,7 +28,7 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "cjs-module-lexer": "^1.0.0",
+    "cjs-module-lexer": "^2.0.0",
     "collect-v8-coverage": "^1.0.0",
     "glob": "^10.3.10",
     "graceful-fs": "^4.2.9",

@@ -12,13 +12,13 @@ import type {SnapshotResolver} from 'jest-snapshot';
 
 const snapshotResolver: SnapshotResolver = {
   resolveSnapshotPath: (testPath, snapshotExtension) => {
-    expect(testPath).type.toBeString();
+    expect(testPath).type.toBe<string>();
     expect(snapshotExtension).type.toBe<string | undefined>();
     return 'snapshot/path';
   },
 
   resolveTestPath: (snapshotPath, snapshotExtension) => {
-    expect(snapshotPath).type.toBeString();
+    expect(snapshotPath).type.toBe<string>();
     expect(snapshotExtension).type.toBe<string | undefined>();
     return 'test/path';
   },

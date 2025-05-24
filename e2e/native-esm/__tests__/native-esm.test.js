@@ -18,7 +18,7 @@ import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
-/* eslint-disable import/no-duplicates */
+/* eslint-disable import-x/no-duplicates */
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';

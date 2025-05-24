@@ -13,7 +13,9 @@ import {
   anything,
   arrayContaining,
   arrayNotContaining,
+  arrayOf,
   closeTo,
+  notArrayOf,
   notCloseTo,
   objectContaining,
   objectNotContaining,
@@ -184,7 +186,6 @@ test('ArrayNotContaining throws for non-arrays', () => {
 test('ObjectContaining matches', () => {
   const foo = Symbol('foo');
   for (const test of [
-    objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
@@ -247,6 +248,18 @@ test('ObjectContaining throws for non-objects', () => {
   );
 });
 
+test('ObjectContaining does not match when non-objects are passed to the expect function as arguments', () => {
+  for (const test of [
+    objectContaining({}).asymmetricMatch('jest'),
+    objectContaining({}).asymmetricMatch(10),
+    objectContaining({}).asymmetricMatch(false),
+    objectContaining({}).asymmetricMatch(undefined),
+    objectContaining({}).asymmetricMatch([]),
+  ]) {
+    jestExpect(test).toEqual(false);
+  }
+});
+
 test('ObjectContaining does not mutate the sample', () => {
   const sample = {foo: {bar: {}}};
   const sample_json = JSON.stringify(sample);
@@ -259,8 +272,6 @@ test('ObjectNotContaining matches', () => {
   const foo = Symbol('foo');
   const bar = Symbol('bar');
   for (const test of [
-    objectContaining({}).asymmetricMatch(null),
-    objectContaining({}).asymmetricMatch(undefined),
     objectNotContaining({[foo]: 'foo'}).asymmetricMatch({[bar]: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
@@ -513,4 +524,63 @@ describe('closeTo', () => {
   test('notCloseTo return false if received is not number', () => {
     jestExpect(notCloseTo(1).asymmetricMatch('a')).toBe(false);
   });
+});
+
+test('ArrayOf matches', () => {
+  for (const test of [
+    arrayOf(1).asymmetricMatch([1]),
+    arrayOf(1).asymmetricMatch([1, 1, 1]),
+    arrayOf({a: 1}).asymmetricMatch([{a: 1}, {a: 1}]),
+    arrayOf(undefined).asymmetricMatch([undefined]),
+    arrayOf(null).asymmetricMatch([null]),
+    arrayOf([]).asymmetricMatch([[], []]),
+    arrayOf(any(String)).asymmetricMatch(['a', 'b', 'c']),
+  ]) {
+    jestExpect(test).toEqual(true);
+  }
+});
+
+test('ArrayOf does not match', () => {
+  for (const test of [
+    arrayOf(1).asymmetricMatch([2]),
+    arrayOf(1).asymmetricMatch([1, 2]),
+    arrayOf({a: 1}).asymmetricMatch([{a: 2}]),
+    arrayOf(undefined).asymmetricMatch([null]),
+    arrayOf(null).asymmetricMatch([undefined]),
+    arrayOf([]).asymmetricMatch([{}]),
+    arrayOf(1).asymmetricMatch(1),
+    arrayOf(1).asymmetricMatch('not an array'),
+    arrayOf(1).asymmetricMatch({}),
+    arrayOf(any(String)).asymmetricMatch([1, 2]),
+  ]) {
+    jestExpect(test).toEqual(false);
+  }
+});
+
+test('NotArrayOf matches', () => {
+  for (const test of [
+    notArrayOf(1).asymmetricMatch([2]),
+    notArrayOf(1).asymmetricMatch([1, 2]),
+    notArrayOf({a: 1}).asymmetricMatch([{a: 2}]),
+    notArrayOf(1).asymmetricMatch(1),
+    notArrayOf(1).asymmetricMatch('not an array'),
+    notArrayOf(1).asymmetricMatch({}),
+    notArrayOf(any(Number)).asymmetricMatch(['a', 'b']),
+  ]) {
+    jestExpect(test).toEqual(true);
+  }
+});
+
+test('NotArrayOf does not match', () => {
+  for (const test of [
+    notArrayOf(1).asymmetricMatch([1]),
+    notArrayOf(1).asymmetricMatch([1, 1, 1]),
+    notArrayOf({a: 1}).asymmetricMatch([{a: 1}, {a: 1}]),
+    notArrayOf(undefined).asymmetricMatch([undefined]),
+    notArrayOf(null).asymmetricMatch([null]),
+    notArrayOf([]).asymmetricMatch([[], []]),
+    notArrayOf(any(String)).asymmetricMatch(['a', 'b', 'c']),
+  ]) {
+    jestExpect(test).toEqual(false);
+  }
 });

@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
+import * as path from 'path';
+import {replacePathSepForRegex} from 'jest-regex-util';
 
 export class TestPathPatterns {
   constructor(readonly patterns: Array<string>) {}
@@ -58,45 +59,13 @@ export type TestPathPatternsExecutorOptions = {
 };
 
 export class TestPathPatternsExecutor {
-  private _regexString: string | null = null;
-
   constructor(
     readonly patterns: TestPathPatterns,
     private readonly options: TestPathPatternsExecutorOptions,
   ) {}
 
-  private get regexString(): string {
-    if (this._regexString !== null) {
-      return this._regexString;
-    }
-
-    const rootDir = this.options.rootDir.replace(/\/*$/, '/');
-    const rootDirRegex = escapePathForRegex(rootDir);
-
-    const regexString = this.patterns.patterns
-      .map(p => {
-        // absolute paths passed on command line should stay same
-        if (p.startsWith('/')) {
-          return p;
-        }
-
-        // explicit relative paths should resolve against rootDir
-        if (p.startsWith('./')) {
-          return p.replace(/^\.\//, rootDirRegex);
-        }
-
-        // all other patterns should only match the relative part of the test
-        return `${rootDirRegex}(.*)?${p}`;
-      })
-      .map(replacePathSepForRegex)
-      .join('|');
-
-    this._regexString = regexString;
-    return regexString;
-  }
-
-  private toRegex(): RegExp {
-    return new RegExp(this.regexString, 'i');
+  private toRegex(s: string): RegExp {
+    return new RegExp(s, 'i');
   }
 
   /**
@@ -111,7 +80,9 @@ export class TestPathPatternsExecutor {
    */
   isValid(): boolean {
     try {
-      this.toRegex();
+      for (const p of this.patterns.patterns) {
+        this.toRegex(p);
+      }
       return true;
     } catch {
       return false;
@@ -123,8 +94,29 @@ export class TestPathPatternsExecutor {
    *
    * Throws an error if the patterns form an invalid regex (see `validate`).
    */
-  isMatch(path: string): boolean {
-    return this.toRegex().test(path);
+  isMatch(absPath: string): boolean {
+    const relPath = path.relative(this.options.rootDir || '/', absPath);
+
+    if (this.patterns.patterns.length === 0) {
+      return true;
+    }
+
+    for (const p of this.patterns.patterns) {
+      const pathToTest = path.isAbsolute(p) ? absPath : relPath;
+
+      // special case: ./foo.spec.js (and .\foo.spec.js on Windows) should
+      // match /^foo.spec.js/ after stripping root dir
+      let regexStr = p.replace(/^\.\//, '^');
+      if (path.sep === '\\') {
+        regexStr = regexStr.replace(/^\.\\/, '^');
+      }
+
+      regexStr = replacePathSepForRegex(regexStr);
+      if (this.toRegex(regexStr).test(pathToTest)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

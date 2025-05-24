@@ -73,7 +73,20 @@ const config: Config = {
 export default config;
 ```
 
-If you are using `ts-node`, you can set `JEST_CONFIG_TRANSPILE_ONLY` environment variable to `true` (case insensitive) to read configuration files without typechecking.
+You can also pass options to the loader, for instance to enable `transpileOnly`.
+
+```ts title="jest.config.ts"
+/** @jest-config-loader ts-node */
+/** @jest-config-loader-options {"transpileOnly": true} */
+
+import type {Config} from 'jest';
+
+const config: Config = {
+  verbose: true,
+};
+
+export default config;
+```
 
 :::
 
@@ -867,7 +880,7 @@ type HasteConfig = {
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
-  /** Whether to throw on error on module collision. */
+  /** Whether to throw an error on module collision. */
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;

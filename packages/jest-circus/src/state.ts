@@ -9,13 +9,14 @@ import type {Circus, Global} from '@jest/types';
 import {setGlobal, setNotShreddable} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
-import {STATE_SYM} from './types';
+import {EVENT_HANDLERS, STATE_SYM} from './types';
 import {makeDescribe} from './utils';
 
-const eventHandlers: Array<Circus.EventHandler> = [
-  eventHandler,
-  formatNodeAssertErrors,
-];
+const handlers: Array<Circus.EventHandler> = ((globalThis as Global.Global)[
+  EVENT_HANDLERS
+] = ((globalThis as Global.Global)[
+  EVENT_HANDLERS
+] as Array<Circus.EventHandler>) || [eventHandler, formatNodeAssertErrors]);
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
@@ -39,11 +40,10 @@ const createState = (): Circus.State => {
   };
 };
 
-/* eslint-disable no-restricted-globals */
 export const getState = (): Circus.State =>
-  (global as Global.Global)[STATE_SYM] as Circus.State;
+  (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State => {
-  setGlobal(global, STATE_SYM, state);
+  setGlobal(globalThis, STATE_SYM, state);
   setNotShreddable(state, [
     'hasFocusedTests',
     'hasStarted',
@@ -62,20 +62,26 @@ export const resetState = (): void => {
 };
 
 resetState();
-/* eslint-enable */
 
 export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
-  for (const handler of eventHandlers) {
+  for (const handler of handlers) {
     await handler(event, getState());
   }
 };
 
 export const dispatchSync = (event: Circus.SyncEvent): void => {
-  for (const handler of eventHandlers) {
+  for (const handler of handlers) {
     handler(event, getState());
   }
 };
 
 export const addEventHandler = (handler: Circus.EventHandler): void => {
-  eventHandlers.push(handler);
+  handlers.push(handler);
+};
+
+export const removeEventHandler = (handler: Circus.EventHandler): void => {
+  const index = handlers.lastIndexOf(handler);
+  if (index !== -1) {
+    handlers.splice(index, 1);
+  }
 };

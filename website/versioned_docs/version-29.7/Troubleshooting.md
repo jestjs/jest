@@ -142,7 +142,7 @@ Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files 
 If a promise doesn't resolve at all, this error might be thrown:
 
 ```bash
-- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
+- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.
 ```
 
 Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `globalThis.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.

@@ -411,10 +411,10 @@ const traverseAst = (
       [],
     );
 
-    if (snapshotIndex > -1) {
-      args[snapshotIndex] = replacementNode;
-    } else {
+    if (snapshotIndex === -1) {
       args.push(replacementNode);
+    } else {
+      args[snapshotIndex] = replacementNode;
     }
   });
 

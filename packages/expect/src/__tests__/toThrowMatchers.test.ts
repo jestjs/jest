@@ -307,6 +307,37 @@ describe('toThrow', () => {
           throw new Error('good', {cause: errorA});
         }).not.toThrow(expected);
       });
+
+      test('isNot false, compare Error with object', () => {
+        jestExpect(() => {
+          throw errorB;
+        }).toThrow({
+          cause: {
+            message: 'A',
+          },
+          message: 'B',
+        });
+      });
+
+      test('isNot false, cause is string', () => {
+        jestExpect(() => {
+          throw new Error('Message', {cause: 'line 123'});
+        }).toThrow({
+          cause: 'line 123',
+          message: 'Message',
+        });
+      });
+
+      test('isNot false, cause is object', () => {
+        jestExpect(() => {
+          throw new Error('Message', {
+            cause: {prop1: true, prop2: false, prop3: null, prop4: undefined},
+          });
+        }).toThrow({
+          cause: {prop1: true, prop2: false, prop3: null, prop4: undefined},
+          message: 'Message',
+        });
+      });
     });
 
     describe('fail', () => {
@@ -329,6 +360,36 @@ describe('toThrow', () => {
           /^(?=.*Expected message and cause: ).*Received message and cause: /s,
         );
       });
+    });
+  });
+
+  describe('aggregate-errors', () => {
+    const fetchFromApi1 = Promise.reject(new Error('API 1 failed'));
+    const fetchFromApi2 = Promise.reject(new Error('API 2 failed'));
+    const promiseAny = Promise.any([fetchFromApi1, fetchFromApi2]);
+
+    test('string', () => {
+      jestExpect(promiseAny).rejects.toThrow('All promises were rejected');
+    });
+
+    test('undefined', () => {
+      jestExpect(promiseAny).rejects.toThrow();
+    });
+
+    test('asymmetricMatch', () => {
+      jestExpect(promiseAny).rejects.toThrow(
+        expect.objectContaining({
+          message: 'All promises were rejected',
+        }),
+      );
+    });
+
+    test('regexp', () => {
+      jestExpect(promiseAny).rejects.toThrow(/All promises were rejected/);
+    });
+
+    test('class', () => {
+      jestExpect(promiseAny).rejects.toThrow(AggregateError);
     });
   });
 

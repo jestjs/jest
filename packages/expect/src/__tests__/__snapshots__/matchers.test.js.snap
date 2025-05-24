@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`.rejects fails for promise that resolves 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBe<d>()</>
@@ -2176,13 +2176,13 @@ exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContain
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 <g>- Expected  - 2</>
-<r>+ Received  + 2</>
+<r>+ Received  + 3</>
 
 <g>- ObjectContaining {</>
 <g>-   "a": 2,</>
 <r>+ Object {</>
 <r>+   "a": 1,</>
-<d>    "b": 2,</>
+<r>+   "b": 2,</>
 <d>  }</>
 `;
 

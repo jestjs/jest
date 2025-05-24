@@ -1,7 +1,5 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
-/* global document */
-
 'use strict';
 
 jest.mock('../fetchCurrentUser.js');

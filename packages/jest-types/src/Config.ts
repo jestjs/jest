@@ -121,7 +121,7 @@ export type HasteConfig = {
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
-  /** Whether to throw on error on module collision. */
+  /** Whether to throw an error on module collision. */
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;
@@ -198,7 +198,7 @@ export type DefaultOptions = {
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
-  testFailureExitCode: string | number;
+  testFailureExitCode: number;
   testLocationInResults: boolean;
   testMatch: Array<string>;
   testPathIgnorePatterns: Array<string>;

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toHaveBeenCalled<d>()</>
@@ -361,6 +361,38 @@ Received
 Number of calls: <r>3</>
 `;
 
+exports[`toHaveBeenCalledWith works with objectContaining 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>ObjectContaining {"b": 3}</>
+Received
+       1: <r>{"a": 1, "b": 2, "c": 4}</>
+       2: <r>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
+exports[`toHaveBeenCalledWith works with objectContaining 2`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>ObjectContaining {"b": 7}</>
+Received
+       2:     <d>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
+exports[`toHaveBeenCalledWith works with objectContaining 3`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>ObjectNotContaining {"c": 4}</>
+Received
+       1: <r>{"a": 1, "b": 2, "c": 4}</>
+       2: <r>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
 exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -550,6 +582,28 @@ Received
 ->     3: <d>"foo"</>, <r>"bar3"</>
 
 Number of calls: <r>3</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with objectContaining 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>ObjectContaining {"b": 3}</>
+Received
+       1: <r>{"a": 1, "b": 2, "c": 4}</>
+->     2: <r>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with objectContaining 2`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>ObjectContaining {"b": 7}</>
+Received
+       1:     <r>{"a": 1, "b": 2, "c": 4}</>
+->     2:     <d>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
 `;
 
 exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = `
@@ -760,6 +814,42 @@ Expected: not <g>Any<String></>, <g>Any<String></>
 Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with objectContaining 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>ObjectContaining {"b": 7}</>
+Received
+->     1: <r>{"a": 1, "b": 2, "c": 4}</>
+       2: <d>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with objectContaining 2`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>ObjectContaining {"b": 2}</>
+Received
+->     1:     <d>{"a": 1, "b": 2, "c": 4}</>
+       2:     <r>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with objectContaining 3`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>ObjectNotContaining {"b": 2}</>
+Received
+->     1: <r>{"a": 1, "b": 2, "c": 4}</>
+       2: <d>{"a": 3, "b": 7, "c": 4}</>
+
+Number of calls: <r>2</>
 `;
 
 exports[`toHaveBeenNthCalledWith works with three calls 1`] = `

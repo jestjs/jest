@@ -20,12 +20,10 @@ const addSourceMapConsumer = (
   let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
-    if (!position) {
-      position = originalPositionFor(tracer, {
-        column: getColumnNumber() ?? -1,
-        line: getLineNumber() ?? -1,
-      });
-    }
+    position ??= originalPositionFor(tracer, {
+      column: getColumnNumber() ?? -1,
+      line: getLineNumber() ?? -1,
+    });
 
     return position;
   }

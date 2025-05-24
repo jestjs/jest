@@ -233,7 +233,8 @@ export default class ChildProcessWorker
       ) {
         if (
           this.state === WorkerStates.OK ||
-          this.state === WorkerStates.STARTING
+          this.state === WorkerStates.STARTING ||
+          this.state === WorkerStates.SHUT_DOWN
         ) {
           this.state = WorkerStates.OUT_OF_MEMORY;
         }

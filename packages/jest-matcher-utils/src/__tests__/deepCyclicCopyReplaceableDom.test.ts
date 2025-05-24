@@ -9,7 +9,7 @@
 
 /// <reference lib="dom" />
 
-/* eslint-env browser*/
+/* global document */
 
 import deepCyclicCopyReplaceable from '../deepCyclicCopyReplaceable';
 
@@ -30,4 +30,9 @@ test('should copy complex element', () => {
   expect(copied).toEqual(div);
   expect(div === copied).toBe(false); //assert reference is not the same
   expect(div.children[0] === copied.children[0]).toBe(false); //assert reference is not the same
+});
+
+test('should ignore window', () => {
+  // eslint-disable-next-line unicorn/prefer-global-this
+  expect(deepCyclicCopyReplaceable(window)).toBe(window);
 });

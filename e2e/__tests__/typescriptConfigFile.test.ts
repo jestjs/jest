@@ -7,10 +7,14 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import * as semver from 'semver';
+import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'typescript-config-file');
+const useNativeTypeScript = semver.satisfies(process.versions.node, '>=23.6.0');
+const importFileExtension = useNativeTypeScript ? '.ts' : '';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -20,7 +24,7 @@ test('works with single typescript config that imports something', () => {
     '__tests__/mytest.alpha.js': "test('alpha', () => expect(1).toBe(1));",
     '__tests__/mytest.common.js': "test('common', () => expect(1).toBe(1));",
     'alpha.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common${importFileExtension}';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.alpha.js' ]
     };`,
@@ -77,12 +81,12 @@ test('works with multiple typescript configs that import something', () => {
     '__tests__/mytest.beta.js': "test('beta', () => expect(1).toBe(1));",
     '__tests__/mytest.common.js': "test('common', () => expect(1).toBe(1));",
     'alpha.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common${importFileExtension}';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.alpha.js' ]
     };`,
     'beta.config.ts': `
-    import commonRegex from './common';
+    import commonRegex from './common${importFileExtension}';
     export default {
       testRegex: [ commonRegex, '__tests__/mytest.beta.js' ]
     };`,
@@ -108,18 +112,20 @@ test('works with multiple typescript configs that import something', () => {
   expect(stdout).toBe('');
 });
 
-test("works with single typescript config that does not import anything with project's moduleResolution set to Node16", () => {
-  const {configs} = getConfig(
-    'typescript-config/modern-module-resolution',
-    [],
-    {
-      skipPkgJsonCheck: true,
-    },
-  );
+onNodeVersions('<23.6', () => {
+  test("works with single typescript config that does not import anything with project's moduleResolution set to Node16", () => {
+    const {configs} = getConfig(
+      'typescript-config/modern-module-resolution',
+      [],
+      {
+        skipPkgJsonCheck: true,
+      },
+    );
 
-  expect(configs).toHaveLength(1);
-  expect(configs[0].displayName).toEqual({
-    color: 'white',
-    name: 'Config from modern ts file',
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
+      color: 'white',
+      name: 'Config from modern ts file',
+    });
   });
 });

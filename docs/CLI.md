@@ -283,7 +283,7 @@ Disables stack trace in test results output.
 
 ### `--notify`
 
-Activates notifications for test results. Good for when you don't want your consciousness to be able to focus on anything except JavaScript testing.
+Activates native OS notifications for test results. Good for when you don't want your consciousness to be able to focus on anything except JavaScript testing. To display the notifications Jest needs the [`node-notifier`](https://github.com/mikaelbr/node-notifier) package, which must be installed separately.
 
 ### `--onlyChanged`
 
@@ -406,6 +406,8 @@ jest --seed=1324
 :::tip
 
 If this option is not specified Jest will randomly generate the value. You can use the [`--showSeed`](#--showseed) flag to print the seed in the test report summary.
+
+Jest uses the seed internally for shuffling the order in which test suites are run. If the [`--randomize`](#--randomize) option is used, the seed is also used for shuffling the order of tests within each `describe` block. When dealing with flaky tests, rerunning with the same seed might help reproduce the failure.
 
 :::
 

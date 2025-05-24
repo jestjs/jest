@@ -9,7 +9,7 @@
 
 /// <reference lib="dom" />
 
-/* eslint-env browser*/
+/* global document */
 
 import prettyFormat, {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
@@ -21,7 +21,7 @@ setPrettyPrint([DOMElement]);
 describe('pretty-format', () => {
   // Test is not related to plugin but is related to jsdom testing environment.
   it('prints global window as constructor name alone', () => {
-    expect(prettyFormat(window)).toBe('[Window]');
+    expect(prettyFormat(globalThis)).toBe('[Window]');
   });
 });
 
