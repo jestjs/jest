@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: use babel to transpile actual import-x/export in Jest 26
+// TODO: use babel to transpile actual import/export in Jest 26
 Object.defineProperty(exports, '__esModule', {
   value: true,
 });
