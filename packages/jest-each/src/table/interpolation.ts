@@ -32,7 +32,7 @@ export const interpolateVariables = (
     )
     .replace('$#', `${index}`);
 
-/* eslint import/export: 0*/
+/* eslint import-x/export: 0*/
 export function getPath<
   Obj extends Template,
   A extends keyof Obj,

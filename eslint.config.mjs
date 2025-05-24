@@ -11,7 +11,8 @@ import fs from 'fs';
 import path from 'path';
 import eslintJs from '@eslint/js';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import eslintPluginImport from 'eslint-plugin-import';
+import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
+import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginMarkdown from 'eslint-plugin-markdown';
@@ -39,7 +40,7 @@ function getPackages() {
 const config = typescriptEslint.config(
   eslintJs.configs.recommended,
   eslintPluginMarkdown.configs.recommended,
-  eslintPluginImport.flatConfigs.errors,
+  eslintPluginImportX.flatConfigs.errors,
   eslintPluginEslintCommentsConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
   eslintPluginPromise.configs['flat/recommended'],
@@ -48,16 +49,14 @@ const config = typescriptEslint.config(
     languageOptions: {globals: {...globals.builtins, console: 'readonly'}},
     plugins: {jsdoc: eslintPluginJsdoc, local: eslintPluginLocal},
     settings: {
-      'import/ignore': ['react-native'],
+      'import-x/ignore': ['react-native'],
       // using `new RegExp` makes sure to escape `/`
-      'import/internal-regex': new RegExp(
+      'import-x/internal-regex': new RegExp(
         getPackages()
           .map(pkg => `^${pkg}$`)
           .join('|'),
       ).source,
-      'import/resolver': {
-        typescript: {},
-      },
+      'import-x/resolver-next': createTypeScriptImportResolver(),
     },
     rules: {
       'accessor-pairs': ['warn', {setWithoutGet: true}],
@@ -83,8 +82,8 @@ const config = typescriptEslint.config(
       'handle-callback-err': 'off',
       'id-length': 'off',
       'id-match': 'off',
-      'import/no-duplicates': 'error',
-      'import/no-extraneous-dependencies': [
+      'import-x/no-duplicates': 'error',
+      'import-x/no-extraneous-dependencies': [
         'error',
         {
           devDependencies: [
@@ -99,8 +98,8 @@ const config = typescriptEslint.config(
           ],
         },
       ],
-      'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-      'import/order': [
+      'import-x/no-unresolved': ['error', {ignore: ['fsevents']}],
+      'import-x/order': [
         'error',
         {
           alphabetize: {
@@ -317,7 +316,7 @@ const config = typescriptEslint.config(
     typescriptEslint.configs.eslintRecommended,
     typescriptEslint.configs.strict,
     typescriptEslint.configs.stylistic,
-    eslintPluginImport.flatConfigs.typescript,
+    eslintPluginImportX.flatConfigs.typescript,
     {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
@@ -346,11 +345,11 @@ const config = typescriptEslint.config(
         '@typescript-eslint/no-invalid-void-type': 'off',
         '@typescript-eslint/consistent-type-definitions': 'off',
         '@typescript-eslint/no-require-imports': 'off',
-        'import/no-unresolved': 'off',
+        'import-x/no-unresolved': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',
 
         // not needed to be enforced for TS
-        'import/namespace': 'off',
+        'import-x/namespace': 'off',
       },
     },
   ]
@@ -448,7 +447,7 @@ const config = typescriptEslint.config(
       'jest/no-identical-title': 'error',
       'jest/require-to-throw-message': 'error',
       'jest/valid-expect': 'error',
-      'import/order': 'off',
+      'import-x/order': 'off',
     },
   },
 
@@ -506,9 +505,9 @@ const config = typescriptEslint.config(
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-empty-interface': 'off',
       'consistent-return': 'off',
-      'import/export': 'off',
-      'import/no-extraneous-dependencies': 'off',
-      'import/no-unresolved': 'off',
+      'import-x/export': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
+      'import-x/no-unresolved': 'off',
       'jest/no-focused-tests': 'off',
       'jest/require-to-throw-message': 'off',
       'no-console': 'off',
@@ -527,7 +526,7 @@ const config = typescriptEslint.config(
       // The following disabled when upgrade ESLint to v9, some of them make sense to enable
       'prefer-template': 'off',
       '@typescript-eslint/no-require-imports': 'off',
-      'import/default': 'off',
+      'import-x/default': 'off',
       'jest/prefer-to-have-length': 'off',
       'unicorn/prefer-at': 'off',
       'unicorn/numeric-separators-style': 'off',
@@ -582,8 +581,8 @@ const config = typescriptEslint.config(
     files: ['docs/**/*', 'website/**/*'],
     rules: {
       'no-redeclare': 'off',
-      'import/order': 'off',
-      'import/sort-keys': 'off',
+      'import-x/order': 'off',
+      'import-x/sort-keys': 'off',
       'no-restricted-globals': ['off'],
       'sort-keys': 'off',
     },
@@ -608,7 +607,7 @@ const config = typescriptEslint.config(
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',
-      'import/no-anonymous-default-export': [
+      'import-x/no-anonymous-default-export': [
         'error',
         {
           allowAnonymousClass: false,
@@ -683,7 +682,7 @@ const config = typescriptEslint.config(
       '.eslintplugin/**',
     ],
     rules: {
-      'import/no-extraneous-dependencies': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/error-message': 'off',
     },
@@ -724,7 +723,7 @@ const config = typescriptEslint.config(
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
-      'import/no-unresolved': 'off',
+      'import-x/no-unresolved': 'off',
       'no-console': 'off',
       'no-unused-vars': 'off',
       'unicorn/no-anonymous-default-export': 'off',
@@ -755,8 +754,8 @@ const config = typescriptEslint.config(
       'e2e/transform/babel-jest-async/__tests__/babelJest.test.js',
     ],
     rules: {
-      'import/namespace': 'off',
-      'import/default': 'off',
+      'import-x/namespace': 'off',
+      'import-x/default': 'off',
     },
   },
   {
