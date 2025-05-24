@@ -48,8 +48,8 @@ jobs:
       - name: ts integration
         run: yarn test-ts --selectProjects ts-integration
       - name: type tests
-        run: yarn test-types --target 5.0,current
-      - name: verify TypeScript@5.0 compatibility
+        run: yarn test-types --target 5.4,current
+      - name: verify TypeScript@5.4 compatibility
         run: yarn verify-old-ts
       - name: run ESLint with type info
         run: yarn lint-ts-files

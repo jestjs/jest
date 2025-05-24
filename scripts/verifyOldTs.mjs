@@ -41,7 +41,7 @@ const tsConfig = {
 };
 /* eslint-enable sort-keys */
 
-const tsVersion = '5.0';
+const tsVersion = '5.4';
 
 function smoketest() {
   const jestDirectory = path.resolve(
