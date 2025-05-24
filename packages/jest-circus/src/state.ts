@@ -6,7 +6,7 @@
  */
 
 import type {Circus, Global} from '@jest/types';
-import {setGlobal, setNotShreddable} from 'jest-util';
+import {protectProperties, setGlobal} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 import {EVENT_HANDLERS, STATE_SYM} from './types';
@@ -44,7 +44,7 @@ export const getState = (): Circus.State =>
   (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State => {
   setGlobal(globalThis, STATE_SYM, state);
-  setNotShreddable(state, [
+  protectProperties(state, [
     'hasFocusedTests',
     'hasStarted',
     'includeTestLocationInResult',

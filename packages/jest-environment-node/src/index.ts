@@ -15,10 +15,10 @@ import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {
+  canDeleteProperties,
+  deleteProperties,
   installCommonGlobals,
-  isShreddable,
-  setNotShreddable,
-  shred,
+  protectProperties,
 } from 'jest-util';
 
 type Timer = {
@@ -235,8 +235,8 @@ export const TestEnvironment = NodeEnvironment;
  * Creates a new empty global object and wraps it with a {@link Proxy}.
  *
  * The purpose is to register any property set on the global object,
- * and {@link #shred} them at environment teardown, to clean up memory and
- * prevent leaks.
+ * and {@link #deleteProperties} on them at environment teardown,
+ * to clean up memory and prevent leaks.
  */
 class GlobalProxy implements ProxyHandler<typeof globalThis> {
   private global: typeof globalThis = Object.create(
@@ -257,16 +257,16 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
 
   /**
    * Marks that the environment setup has completed, and properties set on
-   * the global object from now on should be shredded at teardown.
+   * the global object from now on should be deleted at teardown.
    */
   envSetupCompleted(): void {
     this.isEnvSetup = true;
   }
 
   /**
-   * Shreds any property that was set on the global object, except for:
+   * Deletes any property that was set on the global object, except for:
    * 1. Properties that were set before {@link #envSetupCompleted} was invoked.
-   * 2. Properties protected by {@link #setNotShreddable}.
+   * 2. Properties protected by {@link #protectProperties}.
    */
   clear(): void {
     for (const {property, value} of [
@@ -278,10 +278,10 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
     ]) {
       /*
        * react-native invoke its custom `performance` property after env teardown.
-       * its setup file should use `setNotShreddable` to prevent this.
+       * its setup file should use `protectProperties` to prevent this.
        */
       if (property !== 'performance') {
-        shred(value);
+        deleteProperties(value);
       }
     }
     this.propertyToValue.clear();
@@ -332,8 +332,8 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
   private register(property: string | symbol, value: unknown) {
     const currentValue = this.propertyToValue.get(property);
     if (value !== currentValue) {
-      if (!this.isEnvSetup && isShreddable(value)) {
-        setNotShreddable(value);
+      if (!this.isEnvSetup && canDeleteProperties(value)) {
+        protectProperties(value);
       }
       if (currentValue) {
         this.leftovers.push({property, value: currentValue});

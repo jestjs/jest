@@ -6,16 +6,19 @@
  */
 
 import type {Global} from '@jest/types';
-import {isShreddable, setNotShreddable} from './shredder';
+import {
+  canDeleteProperties,
+  protectProperties,
+} from './garbage-collection-utils';
 
 export default function setGlobal(
   globalToMutate: typeof globalThis | Global.Global,
   key: string | symbol,
   value: unknown,
-  shredAfterTeardown = true,
+  afterTeardown: 'clean' | 'retain' = 'clean',
 ): void {
   Reflect.set(globalToMutate, key, value);
-  if (!shredAfterTeardown && isShreddable(value)) {
-    setNotShreddable(value);
+  if (afterTeardown === 'retain' && canDeleteProperties(value)) {
+    protectProperties(value);
   }
 }
