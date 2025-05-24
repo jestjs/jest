@@ -10,12 +10,12 @@
 import fs from 'fs';
 import path from 'path';
 import eslintJs from '@eslint/js';
+import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
 import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
-import eslintPluginMarkdown from 'eslint-plugin-markdown';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
@@ -39,7 +39,8 @@ function getPackages() {
 
 const config = typescriptEslint.config(
   eslintJs.configs.recommended,
-  eslintPluginMarkdown.configs.recommended,
+  eslintMarkdown.configs.recommended,
+  ...eslintMarkdown.configs.processor,
   eslintPluginImportX.flatConfigs.errors,
   eslintPluginEslintCommentsConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
