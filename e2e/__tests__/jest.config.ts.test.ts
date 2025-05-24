@@ -95,12 +95,13 @@ onNodeVersions('<23.6', () => {
       writeFiles(DIR, {
         '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
         'jest.config.ts': `
-        /**@jest-config-loader-options {"transpileOnly":${!!skipTypeCheck}}*/
+        /**@jest-config-loader-options {"transpileOnly":${skipTypeCheck}}*/
         import {Config} from 'jest';
         const config: Config = { testTimeout: "10000" };
         export default config;
       `,
         'package.json': '{}',
+        'tsconfig.json': '{}',
       });
 
       const typeErrorString =
