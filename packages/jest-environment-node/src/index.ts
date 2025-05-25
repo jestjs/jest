@@ -277,8 +277,8 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
       ...this.leftovers,
     ]) {
       /*
-       * react-native invoke its custom `performance` property after env teardown.
-       * its setup file should use `protectProperties` to prevent this.
+       * React Native's test setup invokes their custom `performance` property after env teardown.
+       * Once they start using `protectProperties`, we can get rid of this.
        */
       if (property !== 'performance') {
         deleteProperties(value);

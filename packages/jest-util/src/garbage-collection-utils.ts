@@ -50,5 +50,10 @@ export function protectProperties<T extends object>(
  * @param value The given value.
  */
 export function canDeleteProperties(value: unknown): value is object {
-  return value !== null && ['object', 'function'].includes(typeof value);
+  if (value !== null) {
+    const type = typeof value;
+    return type === 'object' || type === 'function';
+  }
+
+  return false;
 }
