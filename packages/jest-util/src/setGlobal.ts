@@ -6,12 +6,19 @@
  */
 
 import type {Global} from '@jest/types';
+import {
+  canDeleteProperties,
+  protectProperties,
+} from './garbage-collection-utils';
 
 export default function setGlobal(
   globalToMutate: typeof globalThis | Global.Global,
-  key: string,
+  key: string | symbol,
   value: unknown,
+  afterTeardown: 'clean' | 'retain' = 'clean',
 ): void {
-  // @ts-expect-error: no index
-  globalToMutate[key] = value;
+  Reflect.set(globalToMutate, key, value);
+  if (afterTeardown === 'retain' && canDeleteProperties(value)) {
+    protectProperties(value);
+  }
 }
