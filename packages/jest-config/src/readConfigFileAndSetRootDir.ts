@@ -36,14 +36,11 @@ export default async function readConfigFileAndSetRootDir(
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
     configPath.endsWith(JEST_CONFIG_EXT_CTS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
-  // type assertion can be removed once @types/node is updated
-  // https://nodejs.org/api/process.html#processfeaturestypescript
-  const supportsTS = (process.features as {typescript?: boolean | string})
-    .typescript;
   let configObject;
 
   try {
-    if (isTS && !supportsTS) {
+    // @ts-expect-error: type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+    if (isTS && !process.features.typescript) {
       configObject = await loadTSConfigFile(configPath);
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');

@@ -18,11 +18,11 @@
     "@lerna-lite/cli": "^3.0.0",
     "@lerna-lite/publish": "^3.0.0",
     "@microsoft/api-extractor": "^7.35.0",
-    "@tsconfig/node16": "^16.1.0",
+    "@tsconfig/node18": "^18.2.4",
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
-    "@types/node": "^16.10.0",
+    "@types/node": "^18.14",
     "@types/which": "^3.0.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
@@ -192,10 +192,10 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
+    "node": "^18.14.0 || ^20.0.0 || >=22.0.0"
   },
   "resolutions": {
-    "@types/node": "~16.18.0",
+    "@types/node": "~18.14",
     "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:*",
@@ -204,7 +204,8 @@
     "lru-cache@^10.0.1": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "lru-cache@^10.2.0": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "lru-cache@^10.2.2": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
-    "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
+    "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch",
+    "typescript": "~5.5.4"
   },
   "packageManager": "yarn@3.8.7"
 }
