@@ -24,7 +24,7 @@ jobs:
           days-before-issue-close: 30
           days-before-pr-close: 30
           exempt-all-milestones: true
-          exempt-issue-labels: Pinned
+          exempt-issue-labels: Pinned,"Needs Triage"
           exempt-pr-labels: Pinned
           exempt-draft-pr: true
           operations-per-run: 1750
