@@ -391,22 +391,22 @@ type FailedResults = Array<{
 }>;
 
 function getCauseFromErrorOrStack(
-  errorOrStack: Error | string
+  errorOrStack: Error | string,
 ): Error | string | null {
-  if (typeof errorOrStack === "string" || !("cause" in errorOrStack)) {
+  if (typeof errorOrStack === 'string' || !('cause' in errorOrStack)) {
     return null;
   }
 
-  let cause = errorOrStack.cause;
-  if (
-    typeof cause === "string" ||
+  let cause =
+    errorOrStack.cause instanceof Function
+      ? errorOrStack.cause()
+      : errorOrStack.cause;
+
+  return typeof cause === 'string' ||
     types.isNativeError(cause) ||
     cause instanceof Error
-  ) {
-    return cause;
-  } else {
-    return null;
-  }
+    ? cause
+    : null;
 }
 
 function formatErrorStack(
@@ -432,12 +432,7 @@ function formatErrorStack(
   let cause = '';
   let causeError = getCauseFromErrorOrStack(errorOrStack);
   if (causeError) {
-    const nestedCause = formatErrorStack(
-      causeError,
-      config,
-      options,
-      testPath,
-    );
+    const nestedCause = formatErrorStack(causeError, config, options, testPath);
     cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
   }
 
