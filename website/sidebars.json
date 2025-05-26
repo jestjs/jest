@@ -34,7 +34,8 @@
       "testing-frameworks"
     ],
     "Upgrade Guides": [
-      "upgrading-to-jest29"
+      "upgrading-to-jest29",
+      "upgrading-to-jest30"
     ]
   },
   "api": [
