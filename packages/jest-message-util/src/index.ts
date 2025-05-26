@@ -390,16 +390,23 @@ type FailedResults = Array<{
   result: TestResult.AssertionResult;
 }>;
 
-function isErrorOrStackWithCause(
-  errorOrStack: Error | string,
-): errorOrStack is Error & {cause: Error | string} {
-  return (
-    typeof errorOrStack !== 'string' &&
-    'cause' in errorOrStack &&
-    (typeof errorOrStack.cause === 'string' ||
-      types.isNativeError(errorOrStack.cause) ||
-      errorOrStack.cause instanceof Error)
-  );
+function getCauseFromErrorOrStack(
+  errorOrStack: Error | string
+): Error | string | null {
+  if (typeof errorOrStack === "string" || !("cause" in errorOrStack)) {
+    return null;
+  }
+
+  let cause = errorOrStack.cause;
+  if (
+    typeof cause === "string" ||
+    types.isNativeError(cause) ||
+    cause instanceof Error
+  ) {
+    return cause;
+  } else {
+    return null;
+  }
 }
 
 function formatErrorStack(
@@ -423,9 +430,10 @@ function formatErrorStack(
   message = indentAllLines(message);
 
   let cause = '';
-  if (isErrorOrStackWithCause(errorOrStack)) {
+  let causeError = getCauseFromErrorOrStack(errorOrStack);
+  if (causeError) {
     const nestedCause = formatErrorStack(
-      errorOrStack.cause,
+      causeError,
       config,
       options,
       testPath,
