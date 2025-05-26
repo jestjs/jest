@@ -176,12 +176,7 @@ try {
 console.log(chalk.inverse(' Validating TypeScript definition files '));
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(
-  1,
-  (typeof os.availableParallelism === 'function'
-    ? os.availableParallelism()
-    : os.cpus().length) - 1,
-);
+const cpus = Math.max(1, os.availableParallelism() - 1);
 
 const typesReferenceDirective = '/// <reference types';
 const typesNodeReferenceDirective = `${typesReferenceDirective}="node" />`;

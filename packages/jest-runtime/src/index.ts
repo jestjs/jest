@@ -530,6 +530,7 @@ export default class Runtime {
               // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
               meta.dirname = path.dirname(modulePath);
 
+              // @ts-expect-error: todo fixme
               meta.resolve = (specifier, parent = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
 

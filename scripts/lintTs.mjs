@@ -18,12 +18,7 @@ import typescriptEslint from 'typescript-eslint';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(
-  1,
-  (typeof os.availableParallelism === 'function'
-    ? os.availableParallelism()
-    : os.cpus().length) - 1,
-);
+const cpus = Math.max(1, os.availableParallelism() - 1);
 
 const mutex = pLimit(cpus);
 

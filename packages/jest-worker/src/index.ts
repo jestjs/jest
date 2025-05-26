@@ -5,11 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  // @ts-expect-error - added in Node 19.4.0
-  availableParallelism,
-  cpus,
-} from 'os';
+import {availableParallelism} from 'os';
 import {isAbsolute} from 'path';
 import {fileURLToPath} from 'url';
 import Farm from './Farm';
@@ -57,12 +53,6 @@ function getExposedMethods(
   }
 
   return exposedMethods;
-}
-
-function getNumberOfCpus(): number {
-  return typeof availableParallelism === 'function'
-    ? availableParallelism()
-    : cpus().length;
 }
 
 /**
@@ -116,7 +106,7 @@ export class Worker {
       idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
       numWorkers:
-        this._options.numWorkers ?? Math.max(getNumberOfCpus() - 1, 1),
+        this._options.numWorkers ?? Math.max(availableParallelism() - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
     };
