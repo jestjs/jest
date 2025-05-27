@@ -1062,20 +1062,28 @@ export default class Runtime {
       return module as T;
     }
 
-    const manualMockOrStub = this._resolver.getMockModule(
-      from,
-      moduleName,
-      options,
-    );
+    /** Resolved mock module path from (potentially aliased) module name. */
+    const manualMockPath: string | null = (() => {
+      // Attempt to get manual mock path when moduleName is a:
 
-    let modulePath =
-      this._resolver.getMockModule(from, moduleName, options) ||
-      this._resolveCjsModule(from, moduleName);
+      // A. Core module specifier i.e. ['fs', 'node:fs']:
+      // Normalize then check for a root manual mock '<rootDir>/__mocks__/'
+      if (this._resolver.isCoreModule(moduleName)) {
+        const moduleWithoutNodePrefix =
+          this._resolver.normalizeCoreModuleSpecifier(moduleName);
+        return this._resolver.getMockModule(
+          from,
+          moduleWithoutNodePrefix,
+          options,
+        );
+      }
 
-    let isManualMock =
-      manualMockOrStub &&
-      !this._resolver.resolveStubModuleName(from, moduleName, options);
-    if (!isManualMock) {
+      // B. Node module specifier i.e. ['jest', 'react']:
+      // Look for root manual mock
+      const rootMock = this._resolver.getMockModule(from, moduleName, options);
+      if (rootMock) return rootMock;
+
+      // C. Relative/Absolute path:
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file.
       //
@@ -1087,7 +1095,7 @@ export default class Runtime {
       // Where some other module does a relative require into each of the
       // respective subDir{1,2} directories and expects a manual mock
       // corresponding to that particular my_module.js file.
-
+      const modulePath = this._resolveCjsModule(from, moduleName);
       const moduleDir = path.dirname(modulePath);
       const moduleFileName = path.basename(modulePath);
       const potentialManualMock = path.join(
@@ -1096,26 +1104,28 @@ export default class Runtime {
         moduleFileName,
       );
       if (fs.existsSync(potentialManualMock)) {
-        isManualMock = true;
-        modulePath = potentialManualMock;
+        return potentialManualMock;
       }
-    }
-    if (isManualMock) {
+
+      return null;
+    })();
+
+    if (manualMockPath) {
       const localModule: InitialModule = {
         children: [],
         exports: {},
-        filename: modulePath,
-        id: modulePath,
+        filename: manualMockPath,
+        id: manualMockPath,
         isPreloading: false,
         loaded: false,
-        path: path.dirname(modulePath),
+        path: path.dirname(manualMockPath),
       };
 
       this._loadModule(
         localModule,
         from,
         moduleName,
-        modulePath,
+        manualMockPath,
         undefined,
         mockRegistry,
       );
@@ -1747,9 +1757,7 @@ export default class Runtime {
 
   private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
     const moduleWithoutNodePrefix =
-      supportPrefix && moduleName.startsWith('node:')
-        ? moduleName.slice('node:'.length)
-        : moduleName;
+      supportPrefix && this._resolver.normalizeCoreModuleSpecifier(moduleName);
 
     if (moduleWithoutNodePrefix === 'process') {
       return this._environment.global.process;

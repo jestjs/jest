@@ -459,6 +459,12 @@ export default class Resolver {
     );
   }
 
+  normalizeCoreModuleSpecifier(specifier: string): string {
+    return specifier.startsWith('node:')
+      ? specifier.slice('node:'.length)
+      : specifier;
+  }
+
   getModule(name: string): string | null {
     return this._moduleMap.getModule(
       name,
@@ -491,9 +497,9 @@ export default class Resolver {
     if (mock) {
       return mock;
     } else {
-      const moduleName = this.resolveStubModuleName(from, name, options);
-      if (moduleName) {
-        return this.getModule(moduleName) || moduleName;
+      const resolvedName = this.resolveStubModuleName(from, name, options);
+      if (resolvedName) {
+        return this._moduleMap.getMockModule(resolvedName) ?? null;
       }
     }
     return null;
@@ -508,13 +514,13 @@ export default class Resolver {
     if (mock) {
       return mock;
     } else {
-      const moduleName = await this.resolveStubModuleNameAsync(
+      const resolvedName = await this.resolveStubModuleNameAsync(
         from,
         name,
         options,
       );
-      if (moduleName) {
-        return this.getModule(moduleName) || moduleName;
+      if (resolvedName) {
+        return this._moduleMap.getMockModule(resolvedName) ?? null;
       }
     }
     return null;
@@ -626,7 +632,7 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): string | null {
     if (this.isCoreModule(moduleName)) {
-      return moduleName;
+      return this.normalizeCoreModuleSpecifier(moduleName);
     }
     if (moduleName.startsWith('data:')) {
       return moduleName;
@@ -793,6 +799,11 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
+    // Strip node URL scheme from core modules imported using it
+    if (this.isCoreModule(moduleName)) {
+      return this.normalizeCoreModuleSpecifier(moduleName);
+    }
+
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
