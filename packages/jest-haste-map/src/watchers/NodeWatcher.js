@@ -129,8 +129,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     const dir = path.dirname(fullpath);
     return (
       this.dirRegistry[fullpath] ||
-      (this.dirRegistry[dir] &&
-        this.dirRegistry[dir][path.basename(fullpath)])
+      (this.dirRegistry[dir] && this.dirRegistry[dir][path.basename(fullpath)])
     );
   }
 
