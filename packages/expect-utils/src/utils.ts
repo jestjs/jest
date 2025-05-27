@@ -6,7 +6,7 @@
  *
  */
 
-import {isPrimitive} from 'jest-get-type';
+import {isPrimitive} from '@jest/get-type';
 import {
   isImmutableList,
   isImmutableOrderedKeyed,

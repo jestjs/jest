@@ -100,7 +100,7 @@ type Division = {
   bStartFollowing: number;
 };
 
-const pkg = 'diff-sequences'; // for error messages
+const pkg = '@jest/diff-sequences'; // for error messages
 const NOT_YET_SET = 0; // small int instead of undefined to avoid deopt in V8
 
 // Return the number of common items that follow in forward direction.

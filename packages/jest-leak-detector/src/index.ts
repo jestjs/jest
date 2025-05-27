@@ -9,7 +9,7 @@
 import {promisify} from 'util';
 import {getHeapSnapshot, setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import {isPrimitive} from 'jest-get-type';
+import {isPrimitive} from '@jest/get-type';
 import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);

@@ -6,7 +6,7 @@
  */
 
 import chalk = require('chalk');
-import {getType} from 'jest-get-type';
+import {getType} from '@jest/get-type';
 import {
   type PrettyFormatOptions,
   format as prettyFormat,

@@ -3809,6 +3809,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/diff-sequences@workspace:*, @jest/diff-sequences@workspace:packages/diff-sequences":
+  version: 0.0.0-use.local
+  resolution: "@jest/diff-sequences@workspace:packages/diff-sequences"
+  dependencies:
+    "@fast-check/jest": ^2.0.0
+    benchmark: ^2.1.4
+    diff: ^7.0.0
+  languageName: unknown
+  linkType: soft
+
 "@jest/environment-jsdom-abstract@workspace:*, @jest/environment-jsdom-abstract@workspace:packages/jest-environment-jsdom-abstract":
   version: 0.0.0-use.local
   resolution: "@jest/environment-jsdom-abstract@workspace:packages/jest-environment-jsdom-abstract"
@@ -3845,8 +3855,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
+    "@jest/get-type": "workspace:*"
     immutable: ^5.0.0
-    jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -3872,6 +3882,12 @@ __metadata:
     jest-message-util: "workspace:*"
     jest-mock: "workspace:*"
     jest-util: "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@jest/get-type@workspace:*, @jest/get-type@workspace:packages/jest-get-type":
+  version: 0.0.0-use.local
+  resolution: "@jest/get-type@workspace:packages/jest-get-type"
   languageName: unknown
   linkType: soft
 
@@ -9586,16 +9602,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff-sequences@workspace:*, diff-sequences@workspace:packages/diff-sequences":
-  version: 0.0.0-use.local
-  resolution: "diff-sequences@workspace:packages/diff-sequences"
-  dependencies:
-    "@fast-check/jest": ^2.0.0
-    benchmark: ^2.1.4
-    diff: ^7.0.0
-  languageName: unknown
-  linkType: soft
-
 "diff@npm:^4.0.1":
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
@@ -10937,10 +10943,10 @@ __metadata:
   dependencies:
     "@fast-check/jest": ^2.0.0
     "@jest/expect-utils": "workspace:*"
+    "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
     immutable: ^5.0.0
-    jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-mock: "workspace:*"
@@ -13510,6 +13516,7 @@ __metadata:
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
     "@babel/core": ^7.11.6
+    "@jest/get-type": "workspace:*"
     "@jest/pattern": "workspace:*"
     "@jest/test-sequencer": "workspace:*"
     "@jest/types": "workspace:*"
@@ -13527,7 +13534,6 @@ __metadata:
     jest-circus: "workspace:*"
     jest-docblock: "workspace:*"
     jest-environment-node: "workspace:*"
-    jest-get-type: "workspace:*"
     jest-regex-util: "workspace:*"
     jest-resolve: "workspace:*"
     jest-runner: "workspace:*"
@@ -13559,10 +13565,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-diff@workspace:packages/jest-diff"
   dependencies:
+    "@jest/diff-sequences": "workspace:*"
+    "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
-    diff-sequences: "workspace:*"
-    jest-get-type: "workspace:*"
     pretty-format: "workspace:*"
     strip-ansi: ^6.0.0
   languageName: unknown
@@ -13581,9 +13587,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-each@workspace:packages/jest-each"
   dependencies:
+    "@jest/get-type": "workspace:*"
     "@jest/types": "workspace:*"
     chalk: ^4.0.0
-    jest-get-type: "workspace:*"
     jest-util: "workspace:*"
     pretty-format: "workspace:*"
   languageName: unknown
@@ -13627,12 +13633,6 @@ __metadata:
   checksum: 88ac9102d4679d768accae29f1e75f592b760b44277df288ad76ce5bf038c3f5ce3719dea8aa0f035dac30e9eb034b848ce716b9183ad7cc222d029f03e92205
   languageName: node
   linkType: hard
-
-"jest-get-type@workspace:*, jest-get-type@workspace:packages/jest-get-type":
-  version: 0.0.0-use.local
-  resolution: "jest-get-type@workspace:packages/jest-get-type"
-  languageName: unknown
-  linkType: soft
 
 "jest-haste-map@workspace:*, jest-haste-map@workspace:packages/jest-haste-map":
   version: 0.0.0-use.local
@@ -13700,8 +13700,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-leak-detector@workspace:packages/jest-leak-detector"
   dependencies:
+    "@jest/get-type": "workspace:*"
     "@types/node": "*"
-    jest-get-type: "workspace:*"
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13710,11 +13710,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-matcher-utils@workspace:packages/jest-matcher-utils"
   dependencies:
+    "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@types/node": "*"
     chalk: ^4.0.0
     jest-diff: "workspace:*"
-    jest-get-type: "workspace:*"
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -13952,6 +13952,7 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     "@babel/types": ^7.3.3
     "@jest/expect-utils": "workspace:*"
+    "@jest/get-type": "workspace:*"
     "@jest/snapshot-utils": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
@@ -13967,7 +13968,6 @@ __metadata:
     expect: "workspace:*"
     graceful-fs: ^4.2.9
     jest-diff: "workspace:*"
-    jest-get-type: "workspace:*"
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
@@ -14040,11 +14040,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-validate@workspace:packages/jest-validate"
   dependencies:
+    "@jest/get-type": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/yargs": ^17.0.8
     camelcase: ^6.2.0
     chalk: ^4.0.0
-    jest-get-type: "workspace:*"
     leven: ^3.1.0
     pretty-format: "workspace:*"
   languageName: unknown

@@ -27,9 +27,9 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
+    "@jest/get-type": "workspace:*",
     "@jest/types": "workspace:*",
     "chalk": "^4.0.0",
-    "jest-get-type": "workspace:*",
     "jest-util": "workspace:*",
     "pretty-format": "workspace:*"
   },

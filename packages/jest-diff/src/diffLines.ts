@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff from 'diff-sequences';
+import diff from '@jest/diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {
   joinAlignedDiffsExpand,

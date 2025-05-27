@@ -19,9 +19,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@jest/diff-sequences": "workspace:*",
+    "@jest/get-type": "workspace:*",
     "chalk": "^4.0.0",
-    "diff-sequences": "workspace:*",
-    "jest-get-type": "workspace:*",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {
