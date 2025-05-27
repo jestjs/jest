@@ -16,6 +16,7 @@
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
     "@lerna-lite/cli": "^3.0.0",
+    "@lerna-lite/exec": "^4.2.0",
     "@lerna-lite/publish": "^3.0.0",
     "@microsoft/api-extractor": "^7.35.0",
     "@tsconfig/node18": "^18.2.4",
