@@ -1004,7 +1004,7 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('warns of unparseable inlined source maps from the preprocessor', async () => {
+  it('warns of unparsable inlined source maps from the preprocessor', async () => {
     const warn = console.warn;
     console.warn = jest.fn();
 
@@ -1048,7 +1048,7 @@ describe('ScriptTransformer', () => {
     console.warn = warn;
   });
 
-  it('in async mode, warns of unparseable inlined source maps from the preprocessor', async () => {
+  it('in async mode, warns of unparsable inlined source maps from the preprocessor', async () => {
     const warn = console.warn;
     console.warn = jest.fn();
 
@@ -1092,7 +1092,7 @@ describe('ScriptTransformer', () => {
     console.warn = warn;
   });
 
-  it('warns of unparseable inlined source maps from the async preprocessor', async () => {
+  it('warns of unparsable inlined source maps from the async preprocessor', async () => {
     const warn = console.warn;
     console.warn = jest.fn();
 

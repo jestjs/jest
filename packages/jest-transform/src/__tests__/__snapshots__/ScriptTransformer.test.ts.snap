@@ -154,7 +154,7 @@ exports[`ScriptTransformer in async mode, uses the supplied preprocessor 1`] = `
 
 exports[`ScriptTransformer in async mode, uses the supplied preprocessor 2`] = `"module.exports = "react";"`;
 
-exports[`ScriptTransformer in async mode, warns of unparseable inlined source maps from the preprocessor 1`] = `
+exports[`ScriptTransformer in async mode, warns of unparsable inlined source maps from the preprocessor 1`] = `
 "<yellow><bold>● Invalid source map:</intensity></color>
 <yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</color>
 <yellow>  Proceeding without source mapping for that file.</color>"
@@ -866,13 +866,13 @@ exports[`ScriptTransformer uses the supplied preprocessor 1`] = `
 
 exports[`ScriptTransformer uses the supplied preprocessor 2`] = `"module.exports = "react";"`;
 
-exports[`ScriptTransformer warns of unparseable inlined source maps from the async preprocessor 1`] = `
+exports[`ScriptTransformer warns of unparsable inlined source maps from the async preprocessor 1`] = `
 "<yellow><bold>● Invalid source map:</intensity></color>
 <yellow>  The source map for "/fruits/banana.js" returned by "async-preprocessor-with-sourcemaps" is invalid.</color>
 <yellow>  Proceeding without source mapping for that file.</color>"
 `;
 
-exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `
+exports[`ScriptTransformer warns of unparsable inlined source maps from the preprocessor 1`] = `
 "<yellow><bold>● Invalid source map:</intensity></color>
 <yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</color>
 <yellow>  Proceeding without source mapping for that file.</color>"
