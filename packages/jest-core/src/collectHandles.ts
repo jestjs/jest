@@ -6,10 +6,9 @@
  */
 
 import * as asyncHooks from 'async_hooks';
-import {promisify} from 'util';
+import {promisify, stripVTControlCharacters as stripAnsi} from 'util';
 import * as v8 from 'v8';
 import * as vm from 'vm';
-import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';

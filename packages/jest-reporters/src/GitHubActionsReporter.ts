@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {stripVTControlCharacters as stripAnsi} from 'util';
 import chalk = require('chalk');
-import stripAnsi = require('strip-ansi');
 import type {
   AggregatedResult,
   AssertionResult,
