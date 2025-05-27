@@ -38,7 +38,7 @@
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
     "pretty-format": "workspace:*",
-    "semver": "^7.5.3",
+    "semver": "^7.7.2",
     "synckit": "^0.11.0"
   },
   "devDependencies": {

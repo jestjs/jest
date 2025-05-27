@@ -23,7 +23,7 @@
     "@ungap/structured-clone": "^1.2.0",
     "jest-util": "workspace:*",
     "merge-stream": "^2.0.0",
-    "supports-color": "^8.0.0"
+    "supports-color": "^8.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -32,7 +32,7 @@
     "@types/ungap__structured-clone": "^1.2.0",
     "get-stream": "^6.0.0",
     "jest-leak-detector": "workspace:*",
-    "worker-farm": "^1.6.0"
+    "worker-farm": "^1.7.0"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || >=22.0.0"
