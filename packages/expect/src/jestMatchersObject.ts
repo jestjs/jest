@@ -6,8 +6,8 @@
  *
  */
 
-import {getType} from '@jest/get-type';
 import type {Tester} from '@jest/expect-utils';
+import {getType} from '@jest/get-type';
 import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
   Expect,

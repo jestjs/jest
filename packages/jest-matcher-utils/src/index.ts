@@ -6,6 +6,7 @@
  */
 
 import chalk = require('chalk');
+import {getType, isPrimitive} from '@jest/get-type';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -16,7 +17,6 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import {getType, isPrimitive} from '@jest/get-type';
 import {
   format as prettyFormat,
   plugins as prettyFormatPlugins,
