@@ -17,7 +17,7 @@
   "dependencies": {
     "@jest/core": "workspace:*",
     "@jest/types": "workspace:*",
-    "import-local": "^3.0.2",
+    "import-local": "^3.2.0",
     "jest-cli": "workspace:*"
   },
   "peerDependencies": {

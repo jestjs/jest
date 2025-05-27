@@ -39,7 +39,7 @@
     "pretty-format": "workspace:*",
     "pure-rand": "^7.0.0",
     "slash": "^3.0.0",
-    "stack-utils": "^2.0.3"
+    "stack-utils": "^2.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -49,7 +49,7 @@
     "@types/stack-utils": "^2.0.0",
     "execa": "^5.0.0",
     "graceful-fs": "^4.2.9",
-    "tempy": "^1.0.0"
+    "tempy": "^1.0.1"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || >=22.0.0"

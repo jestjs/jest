@@ -3781,7 +3781,7 @@ __metadata:
     micromatch: ^4.0.8
     pretty-format: "workspace:*"
     slash: ^3.0.0
-    strip-ansi: ^6.0.0
+    strip-ansi: ^6.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -3830,7 +3830,7 @@ __metadata:
     "@types/node": "*"
     jest-mock: "workspace:*"
     jest-util: "workspace:*"
-    jsdom: ^26.0.0
+    jsdom: ^26.1.0
   peerDependencies:
     canvas: ^3.0.0
     jsdom: "*"
@@ -3948,7 +3948,7 @@ __metadata:
     glob: ^10.3.10
     globals: ^16.0.0
     graceful-fs: ^4.2.9
-    isbinaryfile: ^5.0.0
+    isbinaryfile: ^5.0.4
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.3
@@ -3960,7 +3960,7 @@ __metadata:
     jest-silent-reporter: ^0.6.0
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    jest-watch-typeahead: ^2.2.0
+    jest-watch-typeahead: ^2.2.2
     jquery: ^3.2.1
     js-yaml: ^4.1.0
     micromatch: ^4.0.8
@@ -3973,16 +3973,16 @@ __metadata:
     promise: ^8.0.2
     read-pkg: ^5.2.0
     resolve: ^1.20.0
-    rimraf: ^5.0.0
-    semver: ^7.5.3
+    rimraf: ^5.0.10
+    semver: ^7.7.2
     slash: ^3.0.0
-    strip-ansi: ^6.0.0
+    strip-ansi: ^6.0.1
     strip-json-comments: ^3.1.1
-    tempy: ^1.0.0
+    tempy: ^1.0.1
     ts-node: ^10.5.0
-    tstyche: ^4.0.0-rc.0
+    tstyche: ^4.0.0-rc.1
     typescript: ^5.0.4
-    typescript-eslint: ^8.26.0
+    typescript-eslint: ^8.32.1
     webpack: ^5.68.0
     webpack-node-externals: ^3.0.0
     which: ^4.0.0
@@ -4035,8 +4035,8 @@ __metadata:
     mock-fs: ^5.1.2
     node-notifier: ^10.0.0
     slash: ^3.0.0
-    string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    string-length: ^4.0.2
+    strip-ansi: ^6.0.1
     v8-to-istanbul: ^9.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -4148,7 +4148,7 @@ __metadata:
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     pretty-format: "workspace:*"
-    semver: ^7.5.3
+    semver: ^7.7.2
   languageName: unknown
   linkType: soft
 
@@ -4177,7 +4177,7 @@ __metadata:
     micromatch: ^4.0.8
     pirates: ^4.0.4
     slash: ^3.0.0
-    write-file-atomic: ^5.0.0
+    write-file-atomic: ^5.0.1
   languageName: unknown
   linkType: soft
 
@@ -7233,10 +7233,10 @@ __metadata:
     jest: "workspace:*"
     jest-environment-jsdom: "workspace:*"
     jest-zone-patch: "*"
-    rxjs: ^7.5.5
+    rxjs: ^7.8.2
     tslib: ^2.0.0
     typescript: ^5.0.4
-    zone.js: ~0.11.3
+    zone.js: ~0.11.8
   languageName: unknown
   linkType: soft
 
@@ -11924,7 +11924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.3.0":
+"graphql@npm:^16.11.0":
   version: 16.11.0
   resolution: "graphql@npm:16.11.0"
   checksum: 65bc206edbe980f2759a8e4cf324873f75a66ab48263961472716e50127ae446739be20f926bb7f036a8d199bd4de072f684fd147c285bd6ba965d98cebb6200
@@ -12628,7 +12628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-local@npm:^3.0.2, import-local@npm:^3.2.0":
+"import-local@npm:^3.2.0":
   version: 3.2.0
   resolution: "import-local@npm:3.2.0"
   dependencies:
@@ -13334,7 +13334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isbinaryfile@npm:^5.0.0":
+"isbinaryfile@npm:^5.0.4":
   version: 5.0.4
   resolution: "isbinaryfile@npm:5.0.4"
   checksum: d88982a889369d83a5937b4b4d2288ed3b3dbbcee8fc74db40058f3c089a2c7beb9e5305b7177e82d87ff38fb62be8d60960f7a2d669ca08240ef31c1435b884
@@ -13481,8 +13481,8 @@ __metadata:
     pretty-format: "workspace:*"
     pure-rand: ^7.0.0
     slash: ^3.0.0
-    stack-utils: ^2.0.3
-    tempy: ^1.0.0
+    stack-utils: ^2.0.6
+    tempy: ^1.0.1
   languageName: unknown
   linkType: soft
 
@@ -13496,11 +13496,11 @@ __metadata:
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
     exit-x: ^0.2.2
-    import-local: ^3.0.2
+    import-local: ^3.2.0
     jest-config: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    yargs: ^17.3.1
+    yargs: ^17.7.2
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -13542,7 +13542,7 @@ __metadata:
     micromatch: ^4.0.8
     parse-json: ^5.2.0
     pretty-format: "workspace:*"
-    semver: ^7.5.3
+    semver: ^7.7.2
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
@@ -13570,7 +13570,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     chalk: ^4.0.0
     pretty-format: "workspace:*"
-    strip-ansi: ^6.0.0
+    strip-ansi: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -13604,7 +13604,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@types/jsdom": ^21.1.7
     "@types/node": "*"
-    jsdom: ^26.0.0
+    jsdom: ^26.1.0
   peerDependencies:
     canvas: ^3.0.0
   peerDependenciesMeta:
@@ -13751,8 +13751,8 @@ __metadata:
     micromatch: ^4.0.8
     pretty-format: "workspace:*"
     slash: ^3.0.0
-    stack-utils: ^2.0.3
-    tempy: ^1.0.0
+    stack-utils: ^2.0.6
+    tempy: ^1.0.1
   languageName: unknown
   linkType: soft
 
@@ -13774,7 +13774,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-pnp-resolver@npm:^1.2.2":
+"jest-pnp-resolver@npm:^1.2.3":
   version: 1.2.3
   resolution: "jest-pnp-resolver@npm:1.2.3"
   peerDependencies:
@@ -13817,7 +13817,7 @@ __metadata:
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     repl: ^0.1.3
-    yargs: ^17.3.1
+    yargs: ^17.7.2
   bin:
     jest-repl: ./bin/jest-repl.js
     jest-runtime: ./bin/jest-runtime-cli.js
@@ -13848,7 +13848,7 @@ __metadata:
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
     jest-haste-map: "workspace:*"
-    jest-pnp-resolver: ^1.2.2
+    jest-pnp-resolver: ^1.2.3
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     resolve: ^1.20.0
@@ -13974,7 +13974,7 @@ __metadata:
     prettier: ^3.0.3
     prettier-v2: "npm:prettier@^2.1.5"
     pretty-format: "workspace:*"
-    semver: ^7.5.3
+    semver: ^7.7.2
     synckit: ^0.11.0
   languageName: unknown
   linkType: soft
@@ -14050,7 +14050,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-watch-typeahead@npm:^2.2.0":
+"jest-watch-typeahead@npm:^2.2.2":
   version: 2.2.2
   resolution: "jest-watch-typeahead@npm:2.2.2"
   dependencies:
@@ -14094,7 +14094,7 @@ __metadata:
     chalk: ^4.0.0
     emittery: ^0.13.1
     jest-util: "workspace:*"
-    string-length: ^4.0.1
+    string-length: ^4.0.2
   languageName: unknown
   linkType: soft
 
@@ -14114,7 +14114,7 @@ __metadata:
     "@types/react": ^18.2.0
     clsx: ^2.0.0
     docusaurus-remark-plugin-tab-blocks: ^3.0.0
-    graphql: ^16.3.0
+    graphql: ^16.11.0
     graphql-request: ^6.0.0
     js-yaml: ^4.1.0
     prism-react-renderer: ^2.1.0
@@ -14164,8 +14164,8 @@ __metadata:
     jest-leak-detector: "workspace:*"
     jest-util: "workspace:*"
     merge-stream: ^2.0.0
-    supports-color: ^8.0.0
-    worker-farm: ^1.6.0
+    supports-color: ^8.1.1
+    worker-farm: ^1.7.0
   languageName: unknown
   linkType: soft
 
@@ -14184,7 +14184,7 @@ __metadata:
   dependencies:
     "@jest/core": "workspace:*"
     "@jest/types": "workspace:*"
-    import-local: ^3.0.2
+    import-local: ^3.2.0
     jest-cli: "workspace:*"
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -14321,7 +14321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^26.0.0":
+"jsdom@npm:^26.1.0":
   version: 26.1.0
   resolution: "jsdom@npm:26.1.0"
   dependencies:
@@ -19619,7 +19619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^5.0.0":
+"rimraf@npm:^5.0.10":
   version: 5.0.10
   resolution: "rimraf@npm:5.0.10"
   dependencies:
@@ -19685,7 +19685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
+"rxjs@npm:^7.8.2":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
@@ -20501,7 +20501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stack-utils@npm:^2.0.3":
+"stack-utils@npm:^2.0.3, stack-utils@npm:^2.0.6":
   version: 2.0.6
   resolution: "stack-utils@npm:2.0.6"
   dependencies:
@@ -20564,7 +20564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-length@npm:^4.0.1":
+"string-length@npm:^4.0.1, string-length@npm:^4.0.2":
   version: 4.0.2
   resolution: "string-length@npm:4.0.2"
   dependencies:
@@ -20852,7 +20852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^8.0.0, supports-color@npm:~8.1.1":
+"supports-color@npm:^8.0.0, supports-color@npm:^8.1.1, supports-color@npm:~8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
@@ -20985,7 +20985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tempy@npm:^1.0.0":
+"tempy@npm:^1.0.1":
   version: 1.0.1
   resolution: "tempy@npm:1.0.1"
   dependencies:
@@ -21306,7 +21306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^4.0.0-rc.0":
+"tstyche@npm:^4.0.0-rc.1":
   version: 4.0.0-rc.1
   resolution: "tstyche@npm:4.0.0-rc.1"
   peerDependencies:
@@ -21468,7 +21468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.26.0":
+"typescript-eslint@npm:^8.32.1":
   version: 8.32.1
   resolution: "typescript-eslint@npm:8.32.1"
   dependencies:
@@ -22646,7 +22646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"worker-farm@npm:^1.6.0":
+"worker-farm@npm:^1.7.0":
   version: 1.7.0
   resolution: "worker-farm@npm:1.7.0"
   dependencies:
@@ -22882,7 +22882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.3.1, yargs@npm:^17.6.2, yargs@npm:^17.7.2":
+"yargs@npm:^17.6.2, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
@@ -22935,7 +22935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zone.js@npm:~0.11.3":
+"zone.js@npm:~0.11.8":
   version: 0.11.8
   resolution: "zone.js@npm:0.11.8"
   dependencies:

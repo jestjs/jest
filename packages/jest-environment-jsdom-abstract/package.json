@@ -28,7 +28,7 @@
     "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "jsdom": "^26.0.0"
+    "jsdom": "^26.1.0"
   },
   "peerDependencies": {
     "canvas": "^3.0.0",
