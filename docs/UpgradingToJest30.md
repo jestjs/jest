@@ -21,7 +21,7 @@ Upgrading from an older version? You can see the upgrade guide from v28 to v29 [
 
 - Jest 30 drops support for Node 14, 16, 19, and 21. The minimum supported Node versions are now 18.x. Ensure your environment is using a compatible Node release before upgrading.
 - The minimum TypeScript version is now 5.0. Support for TypeScript 4.3 and below has been removed. Update your TypeScript dependency to v5+ if you use TypeScript with Jest.
-- The `jest-environment-jsdom` package now uses JSDOM v22. This upgrade may introduce behavior changes in the DOM environment. If you encounter differences in DOM behavior or new warnings, refer to the JSDOM release notes for [v21–22](https://github.com/jsdom/jsdom/compare/21.0.0...22.0.0).
+- The `jest-environment-jsdom` package now uses JSDOM v26. This update may introduce behavior changes in the DOM environment. If you encounter differences in DOM behavior or new warnings, refer to the JSDOM release notes for [v21–26](https://github.com/jsdom/jsdom/compare/21.0.0...26.0.0).
 
 ## Jest Expect & Matchers
 
