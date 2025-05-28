@@ -36,7 +36,7 @@ module.exports = class NodeWatcher extends EventEmitter {
 
     this.watched = Object.create(null);
     this.changeTimers = Object.create(null);
-    this.dirRegistery = Object.create(null);
+    this.dirRegistry = Object.create(null);
     this.root = path.resolve(dir);
     this.watchdir = this.watchdir.bind(this);
     this.register = this.register.bind(this);
@@ -57,7 +57,7 @@ module.exports = class NodeWatcher extends EventEmitter {
    * Register files that matches our globs to know what to type of event to
    * emit in the future.
    *
-   * Registery looks like the following:
+   * Registry looks like the following:
    *
    *  dirRegister => Map {
    *    dirpath => Map {
@@ -79,18 +79,18 @@ module.exports = class NodeWatcher extends EventEmitter {
     }
 
     const dir = path.dirname(filepath);
-    if (!this.dirRegistery[dir]) {
-      this.dirRegistery[dir] = Object.create(null);
+    if (!this.dirRegistry[dir]) {
+      this.dirRegistry[dir] = Object.create(null);
     }
 
     const filename = path.basename(filepath);
-    this.dirRegistery[dir][filename] = true;
+    this.dirRegistry[dir][filename] = true;
 
     return true;
   }
 
   /**
-   * Removes a file from the registery.
+   * Removes a file from the registry.
    *
    * @param {string} filepath
    * @private
@@ -98,27 +98,27 @@ module.exports = class NodeWatcher extends EventEmitter {
 
   unregister(filepath) {
     const dir = path.dirname(filepath);
-    if (this.dirRegistery[dir]) {
+    if (this.dirRegistry[dir]) {
       const filename = path.basename(filepath);
-      delete this.dirRegistery[dir][filename];
+      delete this.dirRegistry[dir][filename];
     }
   }
 
   /**
-   * Removes a dir from the registery.
+   * Removes a dir from the registry.
    *
    * @param {string} dirpath
    * @private
    */
 
   unregisterDir(dirpath) {
-    if (this.dirRegistery[dirpath]) {
-      delete this.dirRegistery[dirpath];
+    if (this.dirRegistry[dirpath]) {
+      delete this.dirRegistry[dirpath];
     }
   }
 
   /**
-   * Checks if a file or directory exists in the registery.
+   * Checks if a file or directory exists in the registry.
    *
    * @param {string} fullpath
    * @return {boolean}
@@ -128,9 +128,8 @@ module.exports = class NodeWatcher extends EventEmitter {
   registered(fullpath) {
     const dir = path.dirname(fullpath);
     return (
-      this.dirRegistery[fullpath] ||
-      (this.dirRegistery[dir] &&
-        this.dirRegistery[dir][path.basename(fullpath)])
+      this.dirRegistry[fullpath] ||
+      (this.dirRegistry[dir] && this.dirRegistry[dir][path.basename(fullpath)])
     );
   }
 
@@ -211,7 +210,7 @@ module.exports = class NodeWatcher extends EventEmitter {
    */
 
   detectChangedFile(dir, event, callback) {
-    if (!this.dirRegistery[dir]) {
+    if (!this.dirRegistry[dir]) {
       return;
     }
 
@@ -219,7 +218,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     let closest = {mtime: 0};
     let c = 0;
     // eslint-disable-next-line unicorn/no-array-for-each
-    Object.keys(this.dirRegistery[dir]).forEach((file, i, arr) => {
+    Object.keys(this.dirRegistry[dir]).forEach((file, i, arr) => {
       fs.lstat(path.join(dir, file), (error, stat) => {
         if (found) {
           return;
