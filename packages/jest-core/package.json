@@ -41,8 +41,7 @@
     "jest-watcher": "workspace:*",
     "micromatch": "^4.0.8",
     "pretty-format": "workspace:*",
-    "slash": "^3.0.0",
-    "strip-ansi": "^6.0.1"
+    "slash": "^3.0.0"
   },
   "devDependencies": {
     "@jest/test-sequencer": "workspace:*",

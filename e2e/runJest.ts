@@ -8,10 +8,10 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
+import {stripVTControlCharacters as stripAnsi} from 'util';
 import dedent from 'dedent';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
-import stripAnsi = require('strip-ansi');
 import {TestPathPatterns} from '@jest/pattern';
 import type {FormattedTestResults} from '@jest/test-result';
 import {normalizeIcons} from '@jest/test-utils';

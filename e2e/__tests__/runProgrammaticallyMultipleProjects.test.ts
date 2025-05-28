@@ -6,7 +6,7 @@
  */
 
 import {resolve} from 'path';
-import stripAnsi = require('strip-ansi');
+import {stripVTControlCharacters as stripAnsi} from 'util';
 import {extractSummary, run} from '../Utils';
 
 const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
