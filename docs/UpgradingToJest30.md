@@ -194,11 +194,17 @@ Some TypeScript types related to mock functions have been removed from the publi
 - `MockFunctionMetadataType`
 - `SpyInstance`
 
-If you were using `jest.SpyInstance` in your TypeScript code (for instance, to annotate the return of `jest.spyOn`), you should update to using `jest.Mock` or the more specific `jest.MockedFunction` types.
+If you were using `jest.SpyInstance` (for instance, to annotate the return of `jest.spyOn`), you should update to using [`jest.Spied`](./MockFunctionAPI.md#jestspiedsource).
 
-:::note
+:::info
 
-These type removals do not affect runtime behavior – they are only relevant for TypeScript users. JavaScript users or tests will not notice any difference.
+The type changes are only applicable if you explicitly import Jest APIs:
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+```
+
+Consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
 
 :::
 
