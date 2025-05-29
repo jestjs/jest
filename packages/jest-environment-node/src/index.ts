@@ -102,6 +102,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       Object.getOwnPropertyNames(global) as GlobalProperties,
     );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
+      protectProperties(globalThis[nodeGlobalsKey]);
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (descriptor.configurable) {
           Object.defineProperty(global, nodeGlobalsKey, {
