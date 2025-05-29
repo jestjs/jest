@@ -188,19 +188,23 @@ const mockFs = jest.createMockFromModule('fs');
 
 ### Removed Mock Function Types
 
+:::info
+
+The type changes are only applicable if you explicitly import Jest APIs:
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+```
+
+:::
+
 Some TypeScript types related to mock functions have been removed from the public API.
 
 - `MockFunctionMetadata`
 - `MockFunctionMetadataType`
 - `SpyInstance`
 
-If you were using `jest.SpyInstance` in your TypeScript code (for instance, to annotate the return of `jest.spyOn`), you should update to using `jest.Mock` or the more specific `jest.MockedFunction` types.
-
-:::note
-
-These type removals do not affect runtime behavior – they are only relevant for TypeScript users. JavaScript users or tests will not notice any difference.
-
-:::
+If you were using `jest.SpyInstance` (for instance, to annotate the return of `jest.spyOn`), you should update to using [`jest.Spied`](./MockFunctionAPI.md#jestspiedsource).
 
 ## Module & Runtime Changes
 
