@@ -1,9 +1,6 @@
 version: 2.1
 
 aliases:
-  - &filter-ignore-gh-pages
-    branches:
-      ignore: gh-pages
   - &install
     pkg-manager: yarn
     override-ci-command: yarn install --immutable && yarn build:js
@@ -58,5 +55,5 @@ workflows:
           name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: ['18', '20', '22', '23', '24']
+              node-version: ['18', '20', '22', '24']
       - test-jest-jasmine
