@@ -196,8 +196,6 @@ The type changes are only applicable if you explicitly import Jest APIs:
 import {expect, jest, test} from '@jest/globals';
 ```
 
-Consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
-
 :::
 
 Some TypeScript types related to mock functions have been removed from the public API.
