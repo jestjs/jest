@@ -55,6 +55,7 @@ import {
   deepCyclicCopy,
   invariant,
   isNonNullable,
+  protectProperties,
 } from 'jest-util';
 import {
   createOutsideJestVmPath,
@@ -1767,7 +1768,9 @@ export default class Runtime {
       return this._getMockedNativeModule();
     }
 
-    return require(moduleName);
+    const coreModule = require(moduleName);
+    protectProperties(coreModule);
+    return coreModule;
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {

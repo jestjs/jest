@@ -27,7 +27,8 @@
     "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:*"
+    "@jest/test-utils": "workspace:*",
+    "clsx": "^2.0.0"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
