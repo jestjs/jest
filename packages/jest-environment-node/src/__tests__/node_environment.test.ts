@@ -8,6 +8,8 @@
 import type {EnvironmentContext} from '@jest/environment';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import NodeEnvironment from '../';
+import {AsyncLocalStorage, createHook} from 'async_hooks';
+import {clsx} from 'clsx';
 
 const context: EnvironmentContext = {
   console,
@@ -90,5 +92,14 @@ describe('NodeEnvironment', () => {
 
   test('dispatch event', () => {
     new EventTarget().dispatchEvent(new Event('foo'));
+  });
+
+  test('set modules on global', () => {
+    (globalThis as any).AsyncLocalStorage = require('async_hooks');
+    (globalThis as any).createHook = require('async_hooks').createHook;
+    (globalThis as any).clsx = require('clsx');
+    expect(AsyncLocalStorage).toBeDefined();
+    expect(createHook).toBeDefined();
+    expect(clsx).toBeDefined();
   });
 });
