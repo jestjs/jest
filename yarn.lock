@@ -13869,6 +13869,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/node": "*"
+    clsx: ^2.0.0
     jest-mock: "workspace:*"
     jest-util: "workspace:*"
   languageName: unknown

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const PROTECT_PROPERTY = Symbol.for('$$jest-protect-from-deletion');
+const PROTECT_SYMBOL = Symbol.for('$$jest-protect-from-deletion');
 
 /**
  * Deletes all the properties from the given value (if it's an object),
@@ -15,12 +15,13 @@ const PROTECT_PROPERTY = Symbol.for('$$jest-protect-from-deletion');
  */
 export function deleteProperties(value: unknown): void {
   if (canDeleteProperties(value)) {
-    const protectedProperties = Reflect.get(value, PROTECT_PROPERTY);
-    if (!Array.isArray(protectedProperties) || protectedProperties.length > 0) {
-      for (const key of Reflect.ownKeys(value)) {
-        if (!protectedProperties?.includes(key)) {
-          Reflect.deleteProperty(value, key);
-        }
+    const protectedKeys = getProtectedKeys(
+      value,
+      Reflect.get(value, PROTECT_SYMBOL),
+    );
+    for (const key of Reflect.ownKeys(value)) {
+      if (!protectedKeys.includes(key) && key !== PROTECT_SYMBOL) {
+        Reflect.deleteProperty(value, key);
       }
     }
   }
@@ -31,15 +32,40 @@ export function deleteProperties(value: unknown): void {
  *
  * @param value The given value.
  * @param properties If the array contains any property,
- * then only these properties will not be deleted; otherwise if the array is empty,
- * all properties will not be deleted.
+ * then only these properties will be protected; otherwise if the array is empty,
+ * all properties will be protected.
+ * @param depth Determines how "deep" the protection should be.
+ * A value of 0 means that only the top-most properties will be protected,
+ * while a value larger than 0 means that deeper levels of nesting will be protected as well.
  */
-export function protectProperties<T extends object>(
+export function protectProperties<T>(
   value: T,
   properties: Array<keyof T> = [],
+  depth = 2,
 ): boolean {
-  if (canDeleteProperties(value)) {
-    return Reflect.set(value, PROTECT_PROPERTY, properties);
+  if (
+    depth >= 0 &&
+    canDeleteProperties(value) &&
+    !Reflect.has(value, PROTECT_SYMBOL)
+  ) {
+    const result = Reflect.set(value, PROTECT_SYMBOL, properties);
+    for (const key of getProtectedKeys(value, properties)) {
+      const originalEmitWarning = process.emitWarning;
+      try {
+        // Reflect.get may cause deprecation warnings, so we disable them temporarily
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        process.emitWarning = () => {};
+
+        const nested = Reflect.get(value, key);
+        protectProperties(nested, [], depth - 1);
+      } catch {
+        // Reflect.get might fail in certain edge-cases
+        // Instead of failing the entire process, we will skip the property.
+      } finally {
+        process.emitWarning = originalEmitWarning;
+      }
+    }
+    return result;
   }
   return false;
 }
@@ -56,4 +82,16 @@ export function canDeleteProperties(value: unknown): value is object {
   }
 
   return false;
+}
+
+function getProtectedKeys<T extends object>(
+  value: T,
+  properties: Array<keyof T> | undefined,
+): Array<string | symbol | number> {
+  if (properties === undefined) {
+    return [];
+  }
+  const protectedKeys =
+    properties.length > 0 ? properties : Reflect.ownKeys(value);
+  return protectedKeys.filter(key => PROTECT_SYMBOL !== key);
 }

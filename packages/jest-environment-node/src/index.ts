@@ -270,20 +270,14 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
    * 2. Properties protected by {@link #protectProperties}.
    */
   clear(): void {
-    for (const {property, value} of [
+    for (const {value} of [
       ...[...this.propertyToValue.entries()].map(([property, value]) => ({
         property,
         value,
       })),
       ...this.leftovers,
     ]) {
-      /*
-       * React Native's test setup invokes their custom `performance` property after env teardown.
-       * Once they start using `protectProperties`, we can get rid of this.
-       */
-      if (property !== 'performance') {
-        deleteProperties(value);
-      }
+      deleteProperties(value);
     }
     this.propertyToValue.clear();
     this.leftovers = [];
