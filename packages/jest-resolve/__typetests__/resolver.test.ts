@@ -9,9 +9,7 @@ import {expect} from 'tstyche';
 import type {
   AsyncResolver,
   JestResolver,
-  PackageFilter,
   PackageJSON,
-  PathFilter,
   ResolverOptions,
   SyncResolver,
 } from 'jest-resolve';
@@ -29,19 +27,6 @@ expect<PackageJSON>().type.toBeAssignableWith({
 expect<PackageJSON>().type.not.toBeAssignableWith({
   filter: () => {},
 });
-
-// PackageFilter
-
-const packageFilter = (pkg: PackageJSON, file: string, dir: string) => pkg;
-
-expect<PackageFilter>().type.toBeAssignableWith(packageFilter);
-
-// PathFilter
-
-const pathFilter = (pkg: PackageJSON, path: string, relativePath: string) =>
-  relativePath;
-
-expect<PathFilter>().type.toBeAssignableWith(pathFilter);
 
 // ResolverOptions
 
@@ -68,8 +53,6 @@ const asyncResolver: AsyncResolver = async (path, options) => {
   expect(options.defaultResolver).type.toBe<SyncResolver>();
   expect(options.extensions).type.toBe<Array<string> | undefined>();
   expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
-  expect(options.packageFilter).type.toBe<PackageFilter | undefined>();
-  expect(options.pathFilter).type.toBe<PathFilter | undefined>();
   expect(options.paths).type.toBe<Array<string> | undefined>();
   expect(options.rootDir).type.toBe<string | undefined>();
 
@@ -91,8 +74,6 @@ const syncResolver: SyncResolver = (path, options) => {
   expect(options.defaultResolver).type.toBe<SyncResolver>();
   expect(options.extensions).type.toBe<Array<string> | undefined>();
   expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
-  expect(options.packageFilter).type.toBe<PackageFilter | undefined>();
-  expect(options.pathFilter).type.toBe<PathFilter | undefined>();
   expect(options.paths).type.toBe<Array<string> | undefined>();
   expect(options.rootDir).type.toBe<string | undefined>();
 

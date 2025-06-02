@@ -13958,6 +13958,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"jest-pnp-resolver@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "jest-pnp-resolver@npm:1.2.3"
+  peerDependencies:
+    jest-resolve: "*"
+  peerDependenciesMeta:
+    jest-resolve:
+      optional: true
+  checksum: db1a8ab2cb97ca19c01b1cfa9a9c8c69a143fde833c14df1fab0766f411b1148ff0df878adea09007ac6a2085ec116ba9a996a6ad104b1e58c20adbf88eed9b2
+  languageName: node
+  linkType: hard
+
 "jest-regex-util@npm:^29.0.0":
   version: 29.6.3
   resolution: "jest-regex-util@npm:29.6.3"
@@ -14018,6 +14030,7 @@ __metadata:
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
     jest-haste-map: "workspace:*"
+    jest-pnp-resolver: ^1.2.3
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     slash: ^3.0.0

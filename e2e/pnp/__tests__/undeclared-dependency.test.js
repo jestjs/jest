@@ -9,5 +9,5 @@
 it('should surface pnp errors', () => {
   expect(() => {
     require('undeclared');
-  }).toThrow("Cannot find module 'unesitent_module__'");
+  }).toThrow(expect.objectContaining({code: 'MODULE_NOT_FOUND'}));
 });

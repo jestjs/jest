@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {resolve} from 'path';
 import {fileURLToPath} from 'url';
+import pnpResolver from 'jest-pnp-resolver';
 import {
   ResolverFactory,
   type NapiResolveOptions as UpstreamResolveOptions,
@@ -34,6 +36,12 @@ export interface ResolverOptions extends UpstreamResolveOptions {
   paths?: Array<string>;
   /** Current root directory. */
   rootDir?: string;
+
+  /**
+   * @internal Whether to allow the `jest-pnp-resolver` to be used.
+   * @see https://github.com/arcanis/jest-pnp-resolver/blob/ae8e3992349f3b43d1476572e9315e14358e8944/index.js#L49
+   */
+  allowPnp?: boolean;
 }
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
@@ -44,9 +52,17 @@ export type AsyncResolver = (
 
 export type Resolver = SyncResolver | AsyncResolver;
 
-const defaultResolver: SyncResolver = (
-  path,
-  {
+const defaultResolver: SyncResolver = (path, options) => {
+  if (process.versions.pnp && options.allowPnp !== false) {
+    return pnpResolver(path, options);
+  }
+
+  if (path.startsWith('file://')) {
+    path = fileURLToPath(path);
+  }
+
+  /* eslint-disable prefer-const */
+  let {
     basedir,
     conditions,
     conditionNames,
@@ -56,11 +72,11 @@ const defaultResolver: SyncResolver = (
     roots,
     rootDir,
     ...rest
-  },
-) => {
-  if (path.startsWith('file://')) {
-    path = fileURLToPath(path);
-  }
+    /* eslint-enable prefer-const */
+  } = options;
+
+  // make sure that `basedir` is an absolute path
+  basedir = resolve(basedir);
 
   modules = modules || moduleDirectory;
 
