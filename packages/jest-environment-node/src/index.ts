@@ -86,6 +86,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   customExportConditions = ['node', 'node-addons'];
   private readonly _configuredExportConditions?: Array<string>;
   private _globalProxy: GlobalProxy;
+  private _clearGlobalsAtShutdown: boolean;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -203,6 +204,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
 
     this._globalProxy.envSetupCompleted();
+    this._clearGlobalsAtShutdown = ![true, 'true'].includes(
+      projectConfig.testEnvironmentOptions['disableGlobalsCleanup'] as any,
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -218,7 +222,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-    this._globalProxy.clear();
+    if (this._clearGlobalsAtShutdown) {
+      this._globalProxy.clear();
+    }
   }
 
   exportConditions(): Array<string> {
