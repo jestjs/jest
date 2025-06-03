@@ -102,7 +102,6 @@ test('resolves no inverse dependencies for set of non-existent paths', () => {
 test('resolves inverse dependencies for existing path', () => {
   const paths = new Set([path.resolve(__dirname, '__fixtures__/file.js')]);
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  console.log('resolved', resolved);
   expect(resolved).toEqual([
     expect.stringContaining(
       path.join('__tests__', '__fixtures__', 'file.test.js'),
