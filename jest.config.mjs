@@ -37,6 +37,9 @@ export default {
     printBasicPrototype: true,
   },
   snapshotSerializers: [require.resolve('jest-serializer-ansi-escapes')],
+  testEnvironmentOptions: {
+    globalsCleanupMode: 'hard',
+  },
   testPathIgnorePatterns: [
     '/__arbitraries__/',
     '/__benchmarks__/',

@@ -15,11 +15,13 @@ import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {
+  type DeletionMode,
   canDeleteProperties,
   deleteProperties,
   installCommonGlobals,
   protectProperties,
 } from 'jest-util';
+import {logValidationWarning} from 'jest-validate';
 
 type Timer = {
   id: number;
@@ -86,6 +88,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   customExportConditions = ['node', 'node-addons'];
   private readonly _configuredExportConditions?: Array<string>;
   private _globalProxy: GlobalProxy;
+  private _globalsCleanupMode: 'off' | DeletionMode;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -203,6 +206,27 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
 
     this._globalProxy.envSetupCompleted();
+    this._globalsCleanupMode = (() => {
+      const rawConfig =
+        projectConfig.testEnvironmentOptions['globalsCleanupMode'];
+      const config = rawConfig?.toString()?.toLowerCase();
+      switch (config) {
+        case 'hard':
+        case 'soft':
+        case 'off':
+          return config;
+        default: {
+          if (config !== undefined) {
+            logValidationWarning(
+              'testEnvironmentOptions.globalsCleanupMode',
+              `Unknown value given: ${rawConfig}`,
+              'Available options are: [hard, soft, off]',
+            );
+          }
+          return 'soft';
+        }
+      }
+    })();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -218,7 +242,9 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-    this._globalProxy.clear();
+    if (this._globalsCleanupMode !== 'off') {
+      this._globalProxy.clear(this._globalsCleanupMode);
+    }
   }
 
   exportConditions(): Array<string> {
@@ -268,22 +294,18 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
    * Deletes any property that was set on the global object, except for:
    * 1. Properties that were set before {@link #envSetupCompleted} was invoked.
    * 2. Properties protected by {@link #protectProperties}.
+   *
+   * @param mode determines whether to soft or hard delete the properties.
    */
-  clear(): void {
-    for (const {property, value} of [
+  clear(mode: DeletionMode): void {
+    for (const {value} of [
       ...[...this.propertyToValue.entries()].map(([property, value]) => ({
         property,
         value,
       })),
       ...this.leftovers,
     ]) {
-      /*
-       * React Native's test setup invokes their custom `performance` property after env teardown.
-       * Once they start using `protectProperties`, we can get rid of this.
-       */
-      if (property !== 'performance') {
-        deleteProperties(value);
-      }
+      deleteProperties(value, mode);
     }
     this.propertyToValue.clear();
     this.leftovers = [];

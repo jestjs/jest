@@ -10,4 +10,7 @@ const displayName = await Promise.resolve('Config from js file');
 export default {
   displayName,
   testEnvironment: 'node',
+  testEnvironmentOptions: {
+    globalsCleanupMode: 'hard',
+  },
 };

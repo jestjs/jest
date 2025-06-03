@@ -10,5 +10,8 @@ require('./stdout-spy');
 
 module.exports = {
   testEnvironment: 'node',
+  testEnvironmentOptions: {
+    globalsCleanupMode: 'hard',
+  },
   verbose: true,
 };
