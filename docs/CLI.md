@@ -170,7 +170,7 @@ The directory where Jest should output its coverage files.
 
 ### `--coverageProvider=<provider>`
 
-Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default), `v8` or `odz`.
 
 ### `--debug`
 
