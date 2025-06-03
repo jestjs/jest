@@ -10,8 +10,6 @@ import Resolver from './resolver';
 export type {
   AsyncResolver,
   SyncResolver,
-  PackageFilter,
-  PathFilter,
   ResolverOptions,
 } from './defaultResolver';
 export type {
