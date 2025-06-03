@@ -24,7 +24,8 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "jest-mock": "workspace:*",
-    "jest-util": "workspace:*"
+    "jest-util": "workspace:*",
+    "jest-validate": "workspace:*"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",

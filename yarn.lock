@@ -13872,6 +13872,7 @@ __metadata:
     clsx: ^2.0.0
     jest-mock: "workspace:*"
     jest-util: "workspace:*"
+    jest-validate: "workspace:*"
   languageName: unknown
   linkType: soft
 
