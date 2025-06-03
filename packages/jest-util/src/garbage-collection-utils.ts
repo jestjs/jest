@@ -58,7 +58,11 @@ export function protectProperties<T>(
       canDeleteProperties(value) &&
       !Reflect.has(value, PROTECT_SYMBOL)
     ) {
-      const result = Reflect.set(value, PROTECT_SYMBOL, properties);
+      const result = Reflect.defineProperty(value, PROTECT_SYMBOL, {
+        configurable: true,
+        enumerable: false,
+        value: properties,
+      });
       for (const key of getProtectedKeys(value, properties)) {
         try {
           const nested = Reflect.get(value, key);
