@@ -761,7 +761,7 @@ If your codebase is set up to transpile the ["explicit resource management"](htt
 
 ```js
 test('logs a warning', () => {
-  using spy = jest.spyOn(console.warn);
+  using spy = jest.spyOn(console, 'warn');
   doSomeThingWarnWorthy();
   expect(spy).toHaveBeenCalled();
 });
@@ -773,7 +773,7 @@ That code is semantically equal to
 test('logs a warning', () => {
   let spy;
   try {
-    spy = jest.spyOn(console.warn);
+    spy = jest.spyOn(console, 'warn');
     doSomeThingWarnWorthy();
     expect(spy).toHaveBeenCalled();
   } finally {
@@ -789,7 +789,7 @@ You can even go a step further and use a code block to restrict your mock to onl
 ```js
 test('testing something', () => {
   {
-    using spy = jest.spyOn(console.warn);
+    using spy = jest.spyOn(console, 'warn');
     setupStepThatWillLogAWarning();
   }
   // here, console.warn is already restored to the original value
