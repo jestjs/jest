@@ -16,6 +16,7 @@ import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
+import {createOverrideProxy} from './create-override-proxy';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
@@ -75,6 +76,12 @@ export default abstract class BaseJSDOMEnvironment
         ...projectConfig.testEnvironmentOptions,
       },
     );
+    if (projectConfig.testEnvironmentOptions.unstable_allowJsdomMutations) {
+      console.warn(
+        '`unstable_allowJsdomMutations` is experimental. If you have any problems, please file an issue:\n\thttps://github.com/jestjs/jest/issues/new?template=bug.yml.',
+      );
+      this.dom = createOverrideProxy(this.dom);
+    }
     const global = (this.global = this.dom.window as unknown as Win);
 
     if (global == null) {

@@ -7,6 +7,72 @@
 
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import JSDomEnvironment from '../';
+import type {
+  ConstructorLikeKeys,
+  MethodLikeKeys,
+  PropertyLikeKeys,
+} from 'jest-mock';
+
+function testOverrides<
+  T extends object,
+  K extends PropertyLikeKeys<T>,
+  V extends Required<T>[K],
+  A extends 'get' | 'set' | 'property',
+>(object: T, methodKey: K, value: V, accessType: A): void;
+
+function testOverrides<
+  T extends object,
+  K extends ConstructorLikeKeys<T> | MethodLikeKeys<T>,
+  V extends Required<T>[K],
+>(
+  object: T,
+  methodKey: K,
+  value: V extends () => unknown ? ReturnType<V> : never,
+): void;
+
+function testOverrides<T extends object, K extends keyof T>(
+  object: T,
+  methodKey: K,
+  value: T[K],
+  accessType?: 'get' | 'set' | 'property',
+): void {
+  const originalValue = object[methodKey];
+
+  let restore: () => void;
+  let spiedValue: T[K];
+
+  if (!accessType) {
+    const spy = jest
+      // @ts-expect-error
+      .spyOn(object, methodKey)
+      // @ts-expect-error
+      .mockReturnValue(value);
+
+    restore = () => spy.mockRestore();
+    // @ts-expect-error
+    spiedValue = object[methodKey]();
+  } else if (accessType === 'property') {
+    const replaced = jest.replaceProperty(object, methodKey, value);
+
+    restore = () => replaced.restore();
+    spiedValue = object[methodKey];
+  } else {
+    const spy = jest
+      // @ts-expect-error
+      .spyOn(object, methodKey, accessType)
+      // @ts-expect-error
+      .mockReturnValue(value);
+
+    restore = () => spy.mockRestore();
+    spiedValue = object[methodKey];
+  }
+
+  expect(spiedValue).toBe(value);
+
+  restore();
+
+  expect(object[methodKey]).toBe(originalValue);
+}
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {
@@ -108,6 +174,7 @@ describe('JSDomEnvironment', () => {
 
     // define a custom element
     const {HTMLElement} = env.global;
+
     class MyCustomElement extends HTMLElement {
       disconnectedCallback() {
         hasDisconnected = true;
@@ -144,5 +211,23 @@ describe('JSDomEnvironment', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(loadHandler).not.toHaveBeenCalled();
+  });
+
+  it('should have ability to spy on internals', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig({
+          testEnvironmentOptions: {
+            unstable_allowJsdomMutations: true,
+          },
+        }),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    testOverrides(env.global.location, 'href', 'https://test.com/', 'get');
+    testOverrides(env.global, 'location', {} as any, 'property');
+    testOverrides(env.global, 'scrollTo', undefined);
   });
 });
