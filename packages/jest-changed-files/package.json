@@ -19,7 +19,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "execa": "^5.0.0",
+    "execa": "^5.1.1",
     "jest-util": "workspace:*",
     "p-limit": "^3.1.0"
   },

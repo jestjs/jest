@@ -18,7 +18,7 @@
     "@jest/core": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "exit-x": "^0.2.2",
     "import-local": "^3.2.0",
     "jest-config": "workspace:*",
@@ -27,7 +27,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/yargs": "^17.0.8"
+    "@types/yargs": "^17.0.33"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"

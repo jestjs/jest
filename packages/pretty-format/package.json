@@ -22,18 +22,18 @@
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "@jest/schemas": "workspace:*",
-    "ansi-styles": "^5.0.0",
-    "react-is": "^18.0.0"
+    "ansi-styles": "^5.2.0",
+    "react-is": "^18.3.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-is": "^18.0.0",
-    "@types/react-test-renderer": "^18.0.1",
-    "immutable": "^5.0.0",
+    "@types/react": "^18.3.23",
+    "@types/react-is": "^18.3.1",
+    "@types/react-test-renderer": "^18.3.1",
+    "immutable": "^5.1.2",
     "jest-util": "workspace:*",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-test-renderer": "18.2.0"
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-test-renderer": "18.3.1"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"

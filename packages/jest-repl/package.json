@@ -25,7 +25,7 @@
     "@jest/environment": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "jest-config": "workspace:*",
     "jest-runtime": "workspace:*",
     "jest-util": "workspace:*",
@@ -34,8 +34,8 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/yargs": "^17.0.8",
-    "execa": "^5.0.0"
+    "@types/yargs": "^17.0.33",
+    "execa": "^5.1.1"
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js",

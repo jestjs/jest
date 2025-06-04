@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "name": "example-expect-extend",
   "devDependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
-    "@babel/preset-typescript": "^7.0.0",
+    "@babel/preset-typescript": "^7.27.1",
     "@jest/globals": "workspace:*",
     "babel-jest": "workspace:*",
     "expect": "workspace:*",

@@ -19,12 +19,12 @@
     "@jest/types": "workspace:*",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
-    "ansi-styles": "^5.0.0",
+    "ansi-styles": "^5.2.0",
     "pretty-format": "workspace:*",
     "semver": "^7.7.2"
   },
   "devDependencies": {
-    "@types/semver": "^7.1.0"
+    "@types/semver": "^7.7.0"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"

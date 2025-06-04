@@ -27,11 +27,11 @@
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
-    "cjs-module-lexer": "^2.0.0",
-    "collect-v8-coverage": "^1.0.0",
+    "chalk": "^4.1.2",
+    "cjs-module-lexer": "^2.1.0",
+    "collect-v8-coverage": "^1.0.2",
     "glob": "^10.3.10",
-    "graceful-fs": "^4.2.9",
+    "graceful-fs": "^4.2.11",
     "jest-haste-map": "workspace:*",
     "jest-message-util": "workspace:*",
     "jest-mock": "workspace:*",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
-    "@types/graceful-fs": "^4.1.3",
+    "@types/graceful-fs": "^4.1.9",
     "jest-environment-node": "workspace:*"
   },
   "engines": {

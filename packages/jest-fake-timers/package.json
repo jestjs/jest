@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
-    "@types/sinonjs__fake-timers": "^8.1.2"
+    "@types/sinonjs__fake-timers": "^8.1.5"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"

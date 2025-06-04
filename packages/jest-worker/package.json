@@ -20,15 +20,15 @@
   },
   "dependencies": {
     "@types/node": "*",
-    "@ungap/structured-clone": "^1.2.0",
+    "@ungap/structured-clone": "^1.3.0",
     "jest-util": "workspace:*",
     "merge-stream": "^2.0.0",
     "supports-color": "^8.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.27.4",
     "@types/merge-stream": "^2.0.0",
-    "@types/supports-color": "^8.1.0",
+    "@types/supports-color": "^8.1.3",
     "@types/ungap__structured-clone": "^1.2.0",
     "get-stream": "^6.0.0",
     "jest-leak-detector": "workspace:*",

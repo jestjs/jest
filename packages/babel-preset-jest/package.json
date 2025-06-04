@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "babel-plugin-jest-hoist": "workspace:*",
-    "babel-preset-current-node-syntax": "^1.0.0"
+    "babel-preset-current-node-syntax": "^1.1.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.11.0"

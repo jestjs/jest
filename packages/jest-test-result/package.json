@@ -21,8 +21,8 @@
   "dependencies": {
     "@jest/console": "workspace:*",
     "@jest/types": "workspace:*",
-    "@types/istanbul-lib-coverage": "^2.0.0",
-    "collect-v8-coverage": "^1.0.0"
+    "@types/istanbul-lib-coverage": "^2.0.6",
+    "collect-v8-coverage": "^1.0.2"
   },
   "devDependencies": {
     "jest-haste-map": "workspace:*",

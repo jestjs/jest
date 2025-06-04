@@ -21,7 +21,7 @@
   "dependencies": {
     "@jest/diff-sequences": "workspace:*",
     "@jest/get-type": "workspace:*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {

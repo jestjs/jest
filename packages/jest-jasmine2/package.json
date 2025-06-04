@@ -25,9 +25,9 @@
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "co": "^4.6.0",
-    "is-generator-fn": "^2.0.0",
+    "is-generator-fn": "^2.1.0",
     "jest-each": "workspace:*",
     "jest-matcher-utils": "workspace:*",
     "jest-message-util": "workspace:*",
@@ -38,7 +38,7 @@
     "pretty-format": "workspace:*"
   },
   "devDependencies": {
-    "@types/co": "^4.6.2"
+    "@types/co": "^4.6.6"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"

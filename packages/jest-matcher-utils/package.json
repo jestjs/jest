@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@jest/get-type": "workspace:*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "jest-diff": "workspace:*",
     "pretty-format": "workspace:*"
   },
