@@ -115,6 +115,10 @@ export class TestPathPatternsExecutor {
       if (this.toRegex(regexStr).test(pathToTest)) {
         return true;
       }
+
+      if (this.toRegex(regexStr).test(absPath)) {
+        return true;
+      }
     }
     return false;
   }
