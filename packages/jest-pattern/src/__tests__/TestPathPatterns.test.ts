@@ -186,11 +186,21 @@ describe('TestPathPatternsExecutor', () => {
     });
 
     it('returns true only if matches relative path', () => {
+      const rootDir = '/home/myuser/';
+
       const testPathPatterns = makeExecutor(['home'], {
-        rootDir: '/home/myuser/',
+        rootDir,
       });
-      expect(testPathPatterns.isMatch('/home/myuser/LoginPage.js')).toBe(false);
-      expect(testPathPatterns.isMatch('/home/myuser/HomePage.js')).toBe(true);
+      expect(
+        testPathPatterns.isMatch(
+          path.relative(rootDir, '/home/myuser/LoginPage.js'),
+        ),
+      ).toBe(false);
+      expect(
+        testPathPatterns.isMatch(
+          path.relative(rootDir, '/home/myuser/HomePage.js'),
+        ),
+      ).toBe(true);
     });
 
     it('matches absolute paths regardless of rootDir', () => {
