@@ -285,7 +285,7 @@ export default class Runtime {
       ...new Set(['import', 'default', ...envExportConditions]),
     ];
     this.cjsConditions = [
-      ...new Set(['require', 'default', ...envExportConditions]),
+      ...new Set(['require', 'node', 'default', ...envExportConditions]),
     ];
 
     if (config.automock) {
