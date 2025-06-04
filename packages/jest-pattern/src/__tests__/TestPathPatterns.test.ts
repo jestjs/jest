@@ -230,5 +230,20 @@ describe('TestPathPatternsExecutor', () => {
       const testPathPatterns = makeExecutor(['a/b'], config);
       expect(testPathPatterns.isMatch('C:\\foo\\a\\b')).toBe(true);
     });
+
+    it('matches absolute path with absPath', () => {
+      const pattern = '^/home/app/';
+      const rootDir = '/home/app';
+      const absolutePath = '/home/app/packages/';
+
+      const testPathPatterns = makeExecutor([pattern], {
+        rootDir,
+      });
+
+      const relativePath = path.relative(rootDir, absolutePath);
+
+      expect(testPathPatterns.isMatch(relativePath)).toBe(false);
+      expect(testPathPatterns.isMatch(absolutePath)).toBe(true);
+    });
   });
 });
