@@ -23,8 +23,12 @@ runAsWorker(
     sourceFileWithSnapshots: string,
     snapshotMatcherNames: Array<string>,
   ) => {
-    // @ts-expect-error requireOutside
-    prettier ??= requireOutside(/*webpackIgnore: true*/ prettierPath);
+    prettier ??= require(
+      /*webpackIgnore: true*/
+      require.resolve(prettierPath, {
+        [Symbol.for('jest-resolve-outside-vm-option')]: true,
+      }),
+    );
 
     const config = await prettier.resolveConfig(filepath, {
       editorconfig: true,

@@ -169,14 +169,20 @@ const indent = (
     .join('\n');
 };
 
-const generate = // @ts-expect-error requireOutside Babel transform
-  (requireOutside('@babel/generator') as typeof import('@babel/generator'))
-    .default;
+const generate = (
+  require(
+    require.resolve('@babel/generator', {
+      [Symbol.for('jest-resolve-outside-vm-option')]: true,
+    }),
+  ) as typeof import('@babel/generator')
+).default;
 
-// @ts-expect-error requireOutside Babel transform
-const {parseSync, types} = requireOutside(
-  '@babel/core',
+const {parseSync, types} = require(
+  require.resolve('@babel/core', {
+    [Symbol.for('jest-resolve-outside-vm-option')]: true,
+  }),
 ) as typeof import('@babel/core');
+
 const {
   isAwaitExpression,
   templateElement,

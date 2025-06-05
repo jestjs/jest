@@ -44,9 +44,12 @@ export function saveInlineSnapshots(
     : undefined;
   if (prettierPath && !prettier) {
     try {
-      prettier =
-        // @ts-expect-error requireOutside
-        requireOutside(prettierPath) as Prettier;
+      prettier = require(
+        require.resolve(prettierPath, {
+          [Symbol.for('jest-resolve-outside-vm-option')]: true,
+        }),
+      ) as Prettier;
+
       cachedPrettier.set(`module|${prettierPath}`, prettier);
 
       if (semver.gte(prettier.version, '3.0.0')) {
