@@ -173,7 +173,7 @@ describe('findNodeModule', () => {
       );
     });
 
-    test('respects order in conditions over package.json', () => {
+    test('respects order in package.json, not conditions', () => {
       const resultImport = Resolver.findNodeModule('exports', {
         basedir: conditionsRoot,
         conditions: ['import', 'require'],
@@ -183,7 +183,7 @@ describe('findNodeModule', () => {
         conditions: ['require', 'import'],
       });
 
-      expect(resultImport).not.toEqual(resultRequire);
+      expect(resultImport).toEqual(resultRequire);
     });
 
     test('supports nested paths', () => {
