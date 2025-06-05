@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style = require('ansi-styles');
+import style from 'ansi-styles';
 import {
   printIteratorEntries,
   printIteratorValues,

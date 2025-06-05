@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import mergeStream = require('merge-stream');
+import mergeStream from 'merge-stream';
 import {
   CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,

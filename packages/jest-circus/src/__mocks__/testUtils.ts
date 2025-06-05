@@ -7,7 +7,7 @@
 
 import {sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
-import tempy = require('tempy');
+import tempy from 'tempy';
 
 const CIRCUS_PATH = require.resolve('../').replaceAll('\\', '\\\\');
 const CIRCUS_RUN_PATH = require.resolve('../run').replaceAll('\\', '\\\\');

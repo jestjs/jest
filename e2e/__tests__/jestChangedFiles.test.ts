@@ -8,8 +8,8 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import semver = require('semver');
-import slash = require('slash');
+import * as semver from 'semver';
+import slash from 'slash';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {
   cleanup,

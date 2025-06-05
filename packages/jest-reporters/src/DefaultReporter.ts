@@ -6,7 +6,7 @@
  */
 
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,

@@ -6,7 +6,7 @@
  *
  */
 
-import pLimit = require('p-limit');
+import pLimit from 'p-limit';
 import {isNonNullable} from 'jest-util';
 import git from './git';
 import hg from './hg';

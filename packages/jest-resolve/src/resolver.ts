@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
-import slash = require('slash');
+import chalk from 'chalk';
+import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';

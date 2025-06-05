@@ -7,7 +7,7 @@
 
 import {Writable} from 'stream';
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {

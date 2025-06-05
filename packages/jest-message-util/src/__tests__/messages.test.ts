@@ -7,8 +7,8 @@
  */
 
 import {readFileSync} from 'graceful-fs';
-import slash = require('slash');
-import tempy = require('tempy');
+import slash from 'slash';
+import tempy from 'tempy';
 import {
   formatExecError,
   formatResultsErrors,

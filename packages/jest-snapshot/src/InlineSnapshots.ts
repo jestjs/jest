@@ -12,7 +12,7 @@ import type {
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier-v2';
-import semver = require('semver');
+import * as semver from 'semver';
 import {createSyncFn} from 'synckit';
 import type {InlineSnapshot} from './types';
 import {

@@ -8,8 +8,8 @@
 import {availableParallelism} from 'os';
 import * as path from 'path';
 import * as util from 'util';
-import chalk = require('chalk');
-import yargs = require('yargs');
+import chalk from 'chalk';
+import yargs from 'yargs';
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import {createScriptTransformer} from '@jest/transform';
@@ -29,17 +29,17 @@ export async function run(
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs
+    argv = (await yargs(process.argv.slice(2))
       .usage(args.usage)
       .help(false)
       .version(false)
-      .options(args.options).argv as Config.Argv;
+      .options(args.options).argv) as Config.Argv;
 
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 
   if (argv.help === true) {
-    yargs.showHelp();
+    yargs().showHelp();
     process.on('exit', () => (process.exitCode = 1));
     return;
   }

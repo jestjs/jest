@@ -6,7 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {Circus} from '@jest/types';
 import {
   type DiffOptions,

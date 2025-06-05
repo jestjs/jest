@@ -6,10 +6,10 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
-import exit = require('exit-x');
+import chalk from 'chalk';
+import exit from 'exit-x';
 import * as fs from 'graceful-fs';
-import prompts = require('prompts');
+import prompts from 'prompts';
 import {constants} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';

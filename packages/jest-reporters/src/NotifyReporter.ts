@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import exit = require('exit-x');
+import exit from 'exit-x';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';

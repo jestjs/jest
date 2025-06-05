@@ -8,8 +8,8 @@
 import * as path from 'path';
 import {performance} from 'perf_hooks';
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
-import exit = require('exit-x');
+import chalk from 'chalk';
+import exit from 'exit-x';
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import {

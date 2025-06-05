@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
-import slash = require('slash');
+import chalk from 'chalk';
+import slash from 'slash';
 import type {Config} from '@jest/types';
 import relativePath from './relativePath';
 

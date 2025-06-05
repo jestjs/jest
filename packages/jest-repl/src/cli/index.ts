@@ -7,7 +7,7 @@
  *
  */
 
-import yargs = require('yargs');
+import yargs from 'yargs';
 import type {Config} from '@jest/types';
 import {deprecationEntries} from 'jest-config';
 import {validateCLIOptions} from 'jest-validate';
@@ -17,9 +17,10 @@ import {VERSION} from './version';
 
 const REPL_SCRIPT = require.resolve('./repl');
 
-export function run(): Promise<void> {
-  const argv = yargs.usage(args.usage).options(args.options)
-    .argv as Config.Argv;
+export async function run(): Promise<void> {
+  const argv = (await yargs(process.argv.slice(2))
+    .usage(args.usage)
+    .options(args.options).argv) as Config.Argv;
 
   validateCLIOptions(argv, {...args.options, deprecationEntries});
 

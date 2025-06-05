@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
-import exit = require('exit-x');
-import yargs = require('yargs');
+import chalk from 'chalk';
+import exit from 'exit-x';
+import yargs from 'yargs';
 import {getVersion, runCLI} from '@jest/core';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';

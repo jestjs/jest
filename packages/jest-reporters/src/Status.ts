@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import stringLength = require('string-length');
+import chalk from 'chalk';
+import stringLength from 'string-length';
 import type {
   AggregatedResult,
   Test,

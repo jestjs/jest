@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import module = require('module');
+import module from 'module';
 
 const BUILTIN_MODULES = new Set(module.builtinModules);
 

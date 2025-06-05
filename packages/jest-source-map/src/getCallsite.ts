@@ -6,7 +6,7 @@
  */
 
 import {TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
-import callsites = require('callsites');
+import callsites from 'callsites';
 import {readFileSync} from 'graceful-fs';
 import type {SourceMapRegistry} from './types';
 

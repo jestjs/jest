@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import slash = require('slash');
+import slash from 'slash';
 
 export default class ModuleNotFoundError extends Error {
   public code = 'MODULE_NOT_FOUND';

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import picomatch = require('picomatch');
+import picomatch from 'picomatch';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
 type Matcher = (str: string) => boolean;

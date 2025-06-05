@@ -27,6 +27,7 @@
     "@types/node": "*",
     "chalk": "^4.1.2",
     "emittery": "^0.13.1",
+    "exit-x": "^0.2.2",
     "graceful-fs": "^4.2.11",
     "jest-docblock": "workspace:*",
     "jest-environment-node": "workspace:*",
