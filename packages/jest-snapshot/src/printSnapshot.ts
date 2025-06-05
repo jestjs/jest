@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {getObjectSubset} from '@jest/expect-utils';
 import {getType, isPrimitive} from '@jest/get-type';
 import {

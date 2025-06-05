@@ -7,7 +7,7 @@
 
 import {totalmem} from 'os';
 import {Worker} from 'worker_threads';
-import mergeStream = require('merge-stream');
+import mergeStream from 'merge-stream';
 import {
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,

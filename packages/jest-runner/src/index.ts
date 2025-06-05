@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import Emittery = require('emittery');
-import pLimit = require('p-limit');
+import chalk from 'chalk';
+import Emittery from 'emittery';
+import pLimit from 'p-limit';
 import type {
   Test,
   TestEvents,

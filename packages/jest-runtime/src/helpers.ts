@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {glob} from 'glob';
-import slash = require('slash');
+import slash from 'slash';
 import type {Config} from '@jest/types';
 
 const OUTSIDE_JEST_VM_PROTOCOL = 'jest-main:';

@@ -9,7 +9,7 @@ import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import type {WriteStream} from 'tty';
 import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 

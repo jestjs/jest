@@ -7,7 +7,7 @@
  */
 
 import * as path from 'path';
-import execa = require('execa');
+import execa from 'execa';
 import type {SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};

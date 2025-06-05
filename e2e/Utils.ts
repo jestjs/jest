@@ -15,7 +15,7 @@ import {
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';
-import which = require('which');
+import which from 'which';
 import type {Config} from '@jest/types';
 
 const dedent = dedentBase.withOptions({escapeSpecialCharacters: true});

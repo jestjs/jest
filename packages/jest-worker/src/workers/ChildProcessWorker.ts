@@ -7,7 +7,7 @@
 
 import {type ChildProcess, type ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
-import mergeStream = require('merge-stream');
+import mergeStream from 'merge-stream';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,

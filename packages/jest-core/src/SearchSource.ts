@@ -7,7 +7,7 @@
 
 import * as os from 'os';
 import * as path from 'path';
-import micromatch = require('micromatch');
+import micromatch from 'micromatch';
 import type {TestPathPatternsExecutor} from '@jest/pattern';
 import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';

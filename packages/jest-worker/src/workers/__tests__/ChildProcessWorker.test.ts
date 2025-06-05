@@ -7,7 +7,7 @@
 
 import {EventEmitter} from 'events';
 import {PassThrough} from 'stream';
-import getStream = require('get-stream');
+import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,

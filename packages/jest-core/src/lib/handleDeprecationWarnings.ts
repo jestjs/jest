@@ -6,7 +6,7 @@
  */
 
 import type {ReadStream, WriteStream} from 'tty';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {KEYS} from 'jest-watcher';
 
 export default function handleDeprecationWarnings(

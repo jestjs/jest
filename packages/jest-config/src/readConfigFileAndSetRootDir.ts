@@ -8,8 +8,8 @@
 import * as path from 'path';
 import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
-import parseJson = require('parse-json');
-import stripJsonComments = require('strip-json-comments');
+import parseJson from 'parse-json';
+import stripJsonComments from 'strip-json-comments';
 import type {Config} from '@jest/types';
 import {extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';

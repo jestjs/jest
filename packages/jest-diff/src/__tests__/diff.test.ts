@@ -6,7 +6,7 @@
  */
 
 import {stripVTControlCharacters as stripAnsi} from 'util';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {diff} from '../';
 import {NO_DIFF_MESSAGE} from '../constants';

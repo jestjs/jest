@@ -8,7 +8,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import semver = require('semver');
+import * as semver from 'semver';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';

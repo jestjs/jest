@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk, {type Chalk} from 'chalk';
 import {getType, isPrimitive} from '@jest/get-type';
 import {
   DIFF_DELETE,
@@ -61,11 +61,11 @@ export type MatcherHintOptions = {
 
 export type DiffOptions = ImportDiffOptions;
 
-export const EXPECTED_COLOR = chalk.green;
-export const RECEIVED_COLOR = chalk.red;
-export const INVERTED_COLOR = chalk.inverse;
-export const BOLD_WEIGHT = chalk.bold;
-export const DIM_COLOR = chalk.dim;
+export const EXPECTED_COLOR: Chalk = chalk.green;
+export const RECEIVED_COLOR: Chalk = chalk.red;
+export const INVERTED_COLOR: Chalk = chalk.inverse;
+export const BOLD_WEIGHT: Chalk = chalk.bold;
+export const DIM_COLOR: Chalk = chalk.dim;
 
 const MULTILINE_REGEXP = /\n/;
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot

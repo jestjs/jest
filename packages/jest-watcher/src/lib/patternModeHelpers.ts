@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
-import stringLength = require('string-length');
+import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
+import stringLength from 'string-length';
 
 export function printPatternCaret(
   pattern: string,

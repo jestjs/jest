@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import slash = require('slash');
+import chalk from 'chalk';
+import slash from 'slash';
 
 const BULLET = '\u25CF ';
 const DOCUMENTATION_NOTE = `  ${chalk.bold(

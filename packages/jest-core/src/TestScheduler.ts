@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {GITHUB_ACTIONS} from 'ci-info';
-import exit = require('exit-x');
+import exit from 'exit-x';
 import {
   CoverageReporter,
   DefaultReporter,

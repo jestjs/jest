@@ -6,7 +6,7 @@
  */
 
 import {stripVTControlCharacters as stripAnsi} from 'util';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {
   AggregatedResult,
   AssertionResult,

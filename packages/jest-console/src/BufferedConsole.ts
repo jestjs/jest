@@ -8,7 +8,7 @@
 import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {
   ConsoleBuffer,

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';

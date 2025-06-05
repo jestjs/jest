@@ -7,7 +7,7 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-import semver = require('semver');
+import * as semver from 'semver';
 import {describe, test} from '@jest/globals';
 
 export function isJestJasmineRun(): boolean {

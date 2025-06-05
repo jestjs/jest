@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import naturalCompare = require('natural-compare');
+import naturalCompare from 'natural-compare';
 import type {Config} from '@jest/types';
 import type {SnapshotData} from './types';
 

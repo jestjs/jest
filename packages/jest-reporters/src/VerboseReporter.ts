@@ -6,7 +6,7 @@
  */
 
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {
   AggregatedResult,
   AssertionResult,

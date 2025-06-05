@@ -10,7 +10,7 @@ import {EventEmitter} from 'events';
 import * as path from 'path';
 import anymatch, {type Matcher} from 'anymatch';
 import * as fs from 'graceful-fs';
-import micromatch = require('micromatch');
+import micromatch from 'micromatch';
 // @ts-expect-error -- no types
 import walker from 'walker';
 

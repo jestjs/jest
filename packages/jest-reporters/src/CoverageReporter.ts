@@ -8,14 +8,16 @@
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {glob} from 'glob';
 import * as fs from 'graceful-fs';
-import istanbulCoverage = require('istanbul-lib-coverage');
-import istanbulReport = require('istanbul-lib-report');
-import libSourceMaps = require('istanbul-lib-source-maps');
-import istanbulReports = require('istanbul-reports');
-import v8toIstanbul = require('v8-to-istanbul');
+/* eslint-disable import-x/default */
+import istanbulCoverage from 'istanbul-lib-coverage';
+import istanbulReport from 'istanbul-lib-report';
+import libSourceMaps from 'istanbul-lib-source-maps';
+import istanbulReports from 'istanbul-reports';
+/* eslint-enable import-x/default */
+import v8toIstanbul from 'v8-to-istanbul';
 import type {
   AggregatedResult,
   RuntimeTransformResult,

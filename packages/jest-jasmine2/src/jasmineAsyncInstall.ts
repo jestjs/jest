@@ -12,7 +12,7 @@
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import pLimit = require('p-limit');
+import pLimit from 'p-limit';
 import type {Config, Global} from '@jest/types';
 import {isPromise} from 'jest-util';
 import isError from './isError';
