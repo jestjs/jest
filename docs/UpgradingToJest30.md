@@ -77,41 +77,19 @@ If your project contains files with these extensions that are **not** intended t
 
 :::
 
-### `testPathPattern` Renamed to `testPathPatterns`
+### `--testPathPattern` Renamed to `--testPathPatterns`
 
-If you filter tests by path, note that the configuration option and CLI flag have changed:
+If you filter tests by path, note that the CLI flag has changed: The `--testPathPattern` flag is now `--testPathPatterns`. You can pass multiple patterns by separating them with spaces or by repeating the flag. For example:
 
-- **Configuration:** The `testPathPattern` option (singular) has been replaced by `testPathPatterns` (plural). Instead of a single regex string, this option now takes an array of patterns. For example:
+```bash
+# Old (Jest 29)
+jest --testPathPattern="unit/.*"
 
-  Jest 29 configuration:
+# New (Jest 30)
+jest --testPathPatterns "unit/.*" "integration/.*"
+```
 
-  ```js
-  export default {
-    testPathPattern: 'e2e/.*\\.spec\\.js',
-  };
-  ```
-
-  Jest 30 configuration:
-
-  ```js
-  export default {
-    testPathPatterns: ['e2e/.*\\.spec\\.js'],
-  };
-  ```
-
-  Each pattern in the array is treated as a regex or glob to match test file paths.
-
-- **CLI usage:** The `--testPathPattern` flag is now `--testPathPatterns`. You can pass multiple patterns by separating them with spaces or by repeating the flag. For example:
-
-  ```bash
-  # Old (Jest 29)
-  jest --testPathPattern="unit/.*"
-
-  # New (Jest 30)
-  jest --testPathPatterns "unit/.*" "integration/.*"
-  ```
-
-  Internally, Jest consolidates these patterns into a `TestPathPatterns` object. If you were programmatically calling Jest’s watch mode with a `testPathPattern`, you must now construct a `TestPathPatterns` instance instead.
+Internally, Jest consolidates these patterns into a `TestPathPatterns` object. If you were programmatically calling Jest’s watch mode with a `testPathPattern`, you must now construct a `TestPathPatterns` instance instead.
 
 ### Removed `--init` Command
 
