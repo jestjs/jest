@@ -56,4 +56,14 @@ workflows:
           matrix:
             parameters:
               node-version: ['18', '20', '22', '24']
-      - test-jest-jasmine
+          filters:
+            branches:
+              only: main
+            pull_requests:
+              ignore: /.*/
+      - test-jest-jasmine:
+          filters:
+            branches:
+              only: main
+            pull_requests:
+              ignore: /.*/
