@@ -15,6 +15,8 @@ import type {
   WorkerOptions,
   WorkerPoolInterface,
 } from './types';
+import ChildProcessWorker from './workers/ChildProcessWorker';
+import NodeThreadsWorker from './workers/NodeThreadsWorker';
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
@@ -31,9 +33,9 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   override createWorker(workerOptions: WorkerOptions): WorkerInterface {
     let Worker;
     if (this._options.enableWorkerThreads) {
-      Worker = require('./workers/NodeThreadsWorker').default;
+      Worker = NodeThreadsWorker;
     } else {
-      Worker = require('./workers/ChildProcessWorker').default;
+      Worker = ChildProcessWorker;
     }
 
     return new Worker(workerOptions);
