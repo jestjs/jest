@@ -12,6 +12,7 @@ import {
   ResolverFactory,
   type NapiResolveOptions as UpstreamResolveOptions,
 } from 'unrs-resolver';
+import {getResolver, setResolver} from './fileWalkers';
 
 export interface ResolverOptions extends UpstreamResolveOptions {
   /** Directory to begin resolving from. */
@@ -88,7 +89,15 @@ const defaultResolver: SyncResolver = (path, options) => {
     ...rest,
   };
 
-  let unrsResolver = new ResolverFactory(resolveOptions);
+  let unrsResolver = getResolver();
+
+  if (unrsResolver) {
+    unrsResolver = unrsResolver.cloneWithOptions(resolveOptions);
+  } else {
+    unrsResolver = new ResolverFactory(resolveOptions);
+  }
+
+  setResolver(unrsResolver);
 
   let result = unrsResolver.sync(basedir, path);
 
