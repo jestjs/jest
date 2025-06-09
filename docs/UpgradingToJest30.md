@@ -77,7 +77,7 @@ If your project contains files with these extensions that are **not** intended t
 
 :::
 
-### `--testPathPattern` Renamed to `--testPathPatterns`
+### `--testPathPattern` was renamed to `--testPathPatterns`
 
 If you filter tests by path, note that the CLI flag has changed: The `--testPathPattern` flag is now `--testPathPatterns`. You can pass multiple patterns by separating them with spaces or by repeating the flag. For example:
 
