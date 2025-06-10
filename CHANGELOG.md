@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus, jest-cli]` Support literal string test name matching via `@:` prefix in `testNamePattern` (Fixes [#15574](https://github.com/jestjs/jest/issues/15574)) ([#15667](https://github.com/jestjs/jest/pull/15667))
 - `[expect]` Add `ArrayOf` asymmetric matcher for validating array elements. ([#15567](https://github.com/jestjs/jest/pull/15567))
 - `[babel-jest]` Add option `excludeJestPreset` to allow opting out of `babel-preset-jest` ([#15164](https://github.com/jestjs/jest/pull/15164))
 - `[expect]` Revert [#15038](https://github.com/jestjs/jest/pull/15038) to fix `expect(fn).toHaveBeenCalledWith(expect.objectContaining(...))` when there are multiple calls ([#15508](https://github.com/jestjs/jest/pull/15508))
