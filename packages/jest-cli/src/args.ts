@@ -640,7 +640,9 @@ export const options: {[key: string]: Options} = {
   },
   testNamePattern: {
     alias: 't',
-    description: 'Run only tests with a name that matches the regex pattern.',
+    description:
+      'Run only tests with a name that matches the regex pattern. ' +
+      'Prefix with "@:" to match literal string instead of regex.',
     requiresArg: true,
     type: 'string',
   },
