@@ -1,5 +1,7 @@
 ## main
 
+## 30.0.0
+
 ### Features
 
 - `[*]` Renamed `globalsCleanupMode` to `globalsCleanup` and `--waitNextEventLoopTurnForUnhandledRejectionEvents` to `--waitForUnhandledRejections`
