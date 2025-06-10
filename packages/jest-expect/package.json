@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect",
-  "version": "30.0.0-rc.1",
+  "version": "30.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
