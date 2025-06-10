@@ -11,7 +11,7 @@ require('./stdout-spy');
 module.exports = {
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    globalsCleanupMode: 'hard',
+    globalsCleanup: 'on',
   },
   verbose: true,
 };

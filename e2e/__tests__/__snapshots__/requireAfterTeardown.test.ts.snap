@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`prints useful error for requires after test is done w/ \`waitNextEventLoopTurnForUnhandledRejectionEvents\` 1`] = `
+exports[`prints useful error for requires after test is done w/ \`waitForUnhandledRejections\` 1`] = `
 "    ReferenceError: You are trying to \`import\` a file outside of the scope of the test code.
 
        9 | test('require after done', () => {
@@ -12,7 +12,7 @@ exports[`prints useful error for requires after test is done w/ \`waitNextEventL
       14 |   }, 0);"
 `;
 
-exports[`prints useful error for requires after test is done w/o \`waitNextEventLoopTurnForUnhandledRejectionEvents\` 1`] = `
+exports[`prints useful error for requires after test is done w/o \`waitForUnhandledRejections\` 1`] = `
 "ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
        9 | test('require after done', () => {

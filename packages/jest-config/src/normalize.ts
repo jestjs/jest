@@ -936,7 +936,7 @@ export default async function normalize(
       case 'testNamePattern':
       case 'useStderr':
       case 'verbose':
-      case 'waitNextEventLoopTurnForUnhandledRejectionEvents':
+      case 'waitForUnhandledRejections':
       case 'watch':
       case 'watchAll':
       case 'watchman':

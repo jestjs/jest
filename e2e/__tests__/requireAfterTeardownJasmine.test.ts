@@ -13,7 +13,7 @@ skipSuiteOnJestCircus();
 test.each`
   jestArgs
   ${[]}
-  ${['--waitNextEventLoopTurnForUnhandledRejectionEvents']}
+  ${['--waitForUnhandledRejections']}
 `('prints useful error for requires after test is done', ({jestArgs}) => {
   const {stderr} = runJest('require-after-teardown', jestArgs);
 

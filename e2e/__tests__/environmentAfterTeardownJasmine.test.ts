@@ -13,7 +13,7 @@ skipSuiteOnJestCircus();
 test.each`
   jestArgs
   ${[]}
-  ${['--waitNextEventLoopTurnForUnhandledRejectionEvents']}
+  ${['--waitForUnhandledRejections']}
 `(
   'prints useful error for environment methods after test is done',
   ({jestArgs}) => {

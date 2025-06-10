@@ -9,6 +9,6 @@ module.exports = {
   displayName: 'Config from cjs file',
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    globalsCleanupMode: 'hard',
+    globalsCleanup: 'on',
   },
 };

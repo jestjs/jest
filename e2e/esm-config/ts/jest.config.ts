@@ -11,7 +11,7 @@ type DummyConfig = {
   displayName: string;
   testEnvironment: string;
   testEnvironmentOptions?: {
-    globalsCleanupMode: 'hard' | 'soft' | 'off';
+    globalsCleanup: 'on' | 'soft' | 'off';
   };
 };
 
@@ -19,7 +19,7 @@ const config: DummyConfig = {
   displayName: 'Config from ts file',
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    globalsCleanupMode: 'hard',
+    globalsCleanup: 'on',
   },
 };
 

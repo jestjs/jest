@@ -7,7 +7,7 @@
 
 const PROTECT_SYMBOL = Symbol.for('$$jest-protect-from-deletion');
 
-export type DeletionMode = 'soft' | 'hard';
+export type DeletionMode = 'soft' | 'off' | 'on';
 
 /**
  * Deletes all the properties from the given value (if it's an object),
@@ -115,7 +115,7 @@ function deleteProperty(
     return false;
   }
 
-  if (mode === 'hard') {
+  if (mode === 'on') {
     return Reflect.deleteProperty(obj, key);
   }
 

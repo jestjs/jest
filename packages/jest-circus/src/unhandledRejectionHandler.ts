@@ -22,7 +22,7 @@ const untilNextEventLoopTurn = async () => {
 
 export const unhandledRejectionHandler = (
   runtime: Runtime,
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean,
+  waitForUnhandledRejections: boolean,
 ): Circus.EventHandler => {
   return async (event, state) => {
     if (event.name === 'hook_start') {
@@ -30,7 +30,7 @@ export const unhandledRejectionHandler = (
     } else if (event.name === 'hook_success' || event.name === 'hook_failure') {
       runtime.leaveTestCode();
 
-      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+      if (waitForUnhandledRejections) {
         // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
         await untilNextEventLoopTurn();
       }
@@ -63,7 +63,7 @@ export const unhandledRejectionHandler = (
     ) {
       runtime.leaveTestCode();
 
-      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+      if (waitForUnhandledRejections) {
         // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
         await untilNextEventLoopTurn();
       }
@@ -75,7 +75,7 @@ export const unhandledRejectionHandler = (
         test.errors.push([error, event.test.asyncError]);
       }
     } else if (event.name === 'teardown') {
-      if (waitNextEventLoopTurnForUnhandledRejectionEvents) {
+      if (waitForUnhandledRejections) {
         // We need to give event loop the time to actually execute `rejectionHandled`, `uncaughtException` or `unhandledRejection` events
         await untilNextEventLoopTurn();
       }
