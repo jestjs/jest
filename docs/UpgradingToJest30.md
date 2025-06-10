@@ -116,7 +116,7 @@ Jest includes a fix to properly handle promises that are rejected and later caug
 
 :::info
 
-You should see fewer false positives for unhandled promise rejections. Tests that previously failed due to async handled rejections should now pass. However, this change can slightly slow down test completion, especially in tests that intentionally reject promises. To mitigate performance impact, a new configuration flag `waitNextEventLoopTurnForUnhandledRejectionEvents` was introduced. This flag, when disabled, can restore the previous behavior (not waiting) if absolutely needed. Most users should not need to change this – the default now favors correctness by preventing false failures.
+You should see fewer false positives for unhandled promise rejections. Tests that previously failed due to async handled rejections should now pass. However, this change can slightly slow down test completion, especially in tests that intentionally reject promises. To mitigate performance impact, a new configuration flag `waitForUnhandledRejections` was introduced. This flag, when disabled, can restore the previous behavior (not waiting) if absolutely needed. Most users should not need to change this – the default now favors correctness by preventing false failures.
 
 :::
 

@@ -341,7 +341,7 @@ export const InitialOptions = Type.Partial(
     updateSnapshot: Type.Boolean(),
     useStderr: Type.Boolean(),
     verbose: Type.Boolean(),
-    waitNextEventLoopTurnForUnhandledRejectionEvents: Type.Boolean(),
+    waitForUnhandledRejections: Type.Boolean(),
     watch: Type.Boolean(),
     watchAll: Type.Boolean(),
     watchman: Type.Boolean(),

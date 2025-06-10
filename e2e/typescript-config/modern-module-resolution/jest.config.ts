@@ -9,7 +9,7 @@ const config = {
   displayName: 'Config from modern ts file',
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    globalsCleanupMode: 'hard',
+    globalsCleanup: 'on',
   },
 };
 export default config;

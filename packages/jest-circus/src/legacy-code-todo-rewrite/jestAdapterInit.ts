@@ -133,10 +133,7 @@ export const initialize = async ({
   }
 
   addEventHandler(
-    unhandledRejectionHandler(
-      runtime,
-      globalConfig.waitNextEventLoopTurnForUnhandledRejectionEvents,
-    ),
+    unhandledRejectionHandler(runtime, globalConfig.waitForUnhandledRejections),
   );
 
   // Return it back to the outer scope (test runner outside the VM).

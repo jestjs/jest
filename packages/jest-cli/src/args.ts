@@ -739,7 +739,7 @@ export const options: {[key: string]: Options} = {
       'Display individual test results with the test suite hierarchy.',
     type: 'boolean',
   },
-  waitNextEventLoopTurnForUnhandledRejectionEvents: {
+  waitForUnhandledRejections: {
     description:
       'Gives one event loop turn to handle `rejectionHandled`, ' +
       '`uncaughtException` or `unhandledRejection`.',

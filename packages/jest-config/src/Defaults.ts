@@ -91,7 +91,7 @@ const defaultOptions: Config.DefaultOptions = {
   testSequencer: '@jest/test-sequencer',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
-  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
+  waitForUnhandledRejections: false,
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,

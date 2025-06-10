@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[*]` Renamed `globalsCleanupMode` to `globalsCleanup` and `--waitNextEventLoopTurnForUnhandledRejectionEvents` to `--waitForUnhandledRejections`
 - `[expect]` Add `ArrayOf` asymmetric matcher for validating array elements. ([#15567](https://github.com/jestjs/jest/pull/15567))
 - `[babel-jest]` Add option `excludeJestPreset` to allow opting out of `babel-preset-jest` ([#15164](https://github.com/jestjs/jest/pull/15164))
 - `[expect]` Revert [#15038](https://github.com/jestjs/jest/pull/15038) to fix `expect(fn).toHaveBeenCalledWith(expect.objectContaining(...))` when there are multiple calls ([#15508](https://github.com/jestjs/jest/pull/15508))

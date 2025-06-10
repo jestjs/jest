@@ -11,6 +11,6 @@ export default {
   displayName,
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    globalsCleanupMode: 'hard',
+    globalsCleanup: 'on',
   },
 };

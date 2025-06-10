@@ -207,7 +207,7 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -313,7 +313,7 @@ export type GlobalConfig = {
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -389,7 +389,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   workerIdleMemoryLimit?: number;
 };
 

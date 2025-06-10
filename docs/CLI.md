@@ -524,7 +524,7 @@ Display individual test results with the test suite hierarchy.
 
 Alias: `-v`. Print the version and exit.
 
-### `--waitNextEventLoopTurnForUnhandledRejectionEvents`
+### `--waitForUnhandledRejections`
 
 Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
 

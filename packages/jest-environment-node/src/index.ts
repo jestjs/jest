@@ -88,7 +88,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   customExportConditions = ['node', 'node-addons'];
   private readonly _configuredExportConditions?: Array<string>;
   private _globalProxy: GlobalProxy;
-  private _globalsCleanupMode: 'off' | DeletionMode;
+  private _globalsCleanup: DeletionMode;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -206,21 +206,20 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
 
     this._globalProxy.envSetupCompleted();
-    this._globalsCleanupMode = (() => {
-      const rawConfig =
-        projectConfig.testEnvironmentOptions['globalsCleanupMode'];
+    this._globalsCleanup = (() => {
+      const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
       const config = rawConfig?.toString()?.toLowerCase();
       switch (config) {
-        case 'hard':
-        case 'soft':
         case 'off':
+        case 'on':
+        case 'soft':
           return config;
         default: {
           if (config !== undefined) {
             logValidationWarning(
-              'testEnvironmentOptions.globalsCleanupMode',
+              'testEnvironmentOptions.globalsCleanup',
               `Unknown value given: ${rawConfig}`,
-              'Available options are: [hard, soft, off]',
+              'Available options are: [on, soft, off]',
             );
           }
           return 'soft';
@@ -242,8 +241,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-    if (this._globalsCleanupMode !== 'off') {
-      this._globalProxy.clear(this._globalsCleanupMode);
+    if (this._globalsCleanup !== 'off') {
+      this._globalProxy.clear(this._globalsCleanup);
     }
   }
 

@@ -97,7 +97,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/",
         "<<REPLACED_PNP_PATH>>"
       ],
-      "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+      "waitForUnhandledRejections": false,
       "watchPathIgnorePatterns": []
     }
   ],
@@ -150,7 +150,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "none",
     "useStderr": false,
-    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+    "waitForUnhandledRejections": false,
     "watch": false,
     "watchAll": false,
     "watchman": true,

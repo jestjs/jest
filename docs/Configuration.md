@@ -2413,7 +2413,7 @@ Default: `false` or `true` if there is only one test file to run
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
-### `waitNextEventLoopTurnForUnhandledRejectionEvents` \[boolean]
+### `waitForUnhandledRejections` \[boolean]
 
 Gives one event loop turn to handle `rejectionHandled`, `uncaughtException` or `unhandledRejection`.
 
