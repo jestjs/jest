@@ -2204,8 +2204,8 @@ class CustomSequencer extends Sequencer {
     const shardStart = shardSize * (shardIndex - 1);
     const shardEnd = shardSize * shardIndex;
 
-    return [...tests]
-      .sort((a, b) => (a.path > b.path ? 1 : -1))
+    return tests
+      .toSorted((a, b) => (a.path > b.path ? 1 : -1))
       .slice(shardStart, shardEnd);
   }
 
@@ -2216,8 +2216,7 @@ class CustomSequencer extends Sequencer {
   sort(tests) {
     // Test structure information
     // https://github.com/jestjs/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
-    const copyTests = [...tests];
-    return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
+    return tests.toSorted((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
 }
 
