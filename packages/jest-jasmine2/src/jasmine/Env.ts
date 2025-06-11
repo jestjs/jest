@@ -183,12 +183,12 @@ export default function jasmineEnv(j$: Jasmine) {
 
       const beforeAndAfterFns = function (suite: Suite) {
         return function () {
-          let afters: Array<QueueableFn> = [];
-          let befores: Array<QueueableFn> = [];
+          const afters: Array<QueueableFn> = [];
+          const befores: Array<QueueableFn> = [];
 
           while (suite) {
-            befores = befores.concat(suite.beforeFns);
-            afters = afters.concat(suite.afterFns);
+            befores.push(...suite.beforeFns);
+            afters.push(...suite.afterFns);
 
             suite = suite.parentSuite!;
           }
