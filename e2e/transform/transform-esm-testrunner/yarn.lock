@@ -2,7 +2,8 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 6
+  version: 8
+  cacheKey: 10
 
 "@jest/test-result@link:../../../packages/jest-test-result::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.0-use.local
