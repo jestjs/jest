@@ -50,7 +50,6 @@ const packagesNotToTest = [
   'jest-pattern',
   'jest-phabricator',
   'jest-regex-util',
-  'jest-repl',
   'jest-reporters',
   'jest-resolve',
   'jest-runner',

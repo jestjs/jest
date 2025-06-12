@@ -105,7 +105,7 @@
 - `[jest-util]` Always load `mjs` files with `import` ([#15447](https://github.com/jestjs/jest/pull/15447))
 - `[jest-worker]` Properly handle a circular reference error when worker tries to send an assertion fails where either the expected or actual value is circular ([#15191](https://github.com/jestjs/jest/pull/15191))
 - `[jest-worker]` Properly handle a BigInt when worker tries to send an assertion fails where either the expected or actual value is BigInt ([#15191](https://github.com/jestjs/jest/pull/15191))
-- `[expect]` Resolve issue where `ObjectContaining` matched non-object values. ([#15463])(https://github.com/jestjs/jest/pull/15463).
+- `[expect]` Resolve issue where `ObjectContaining` matched non-object values. ([#15463])(<https://github.com/jestjs/jest/pull/15463>).
   - Adds a `conditional/check` to ensure the argument passed to `expect` is an object.
   - Add unit tests for new `ObjectContaining` behavior.
   - Remove `invalid/wrong` test case assertions for `ObjectContaining`.
@@ -2453,7 +2453,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 
 - `[jest-snapshot]` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
 - `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
-- `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
+- `[jest-config]` Update default config for testURL from 'about:blank' to '<http://localhost>' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
 - `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
 - `[jest-cli]` Don't report promises as open handles ([#6716](https://github.com/facebook/jest/pull/6716))
 - `[jest-each]` Add timeout support to parameterised tests ([#6660](https://github.com/facebook/jest/pull/6660))
