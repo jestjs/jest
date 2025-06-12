@@ -13760,29 +13760,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-repl@workspace:packages/jest-repl":
-  version: 0.0.0-use.local
-  resolution: "jest-repl@workspace:packages/jest-repl"
-  dependencies:
-    "@jest/console": "workspace:*"
-    "@jest/environment": "workspace:*"
-    "@jest/transform": "workspace:*"
-    "@jest/types": "workspace:*"
-    "@types/yargs": ^17.0.33
-    chalk: ^4.1.2
-    execa: ^5.1.1
-    jest-config: "workspace:*"
-    jest-runtime: "workspace:*"
-    jest-util: "workspace:*"
-    jest-validate: "workspace:*"
-    repl: ^0.1.3
-    yargs: ^17.7.2
-  bin:
-    jest-repl: ./bin/jest-repl.js
-    jest-runtime: ./bin/jest-runtime-cli.js
-  languageName: unknown
-  linkType: soft
-
 "jest-resolve-dependencies@workspace:*, jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies":
   version: 0.0.0-use.local
   resolution: "jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies"
@@ -19264,13 +19241,6 @@ __metadata:
   version: 1.6.1
   resolution: "repeat-string@npm:1.6.1"
   checksum: 1b809fc6db97decdc68f5b12c4d1a671c8e3f65ec4a40c238bc5200e44e85bcc52a54f78268ab9c29fcf5fe4f1343e805420056d1f30fa9a9ee4c2d93e3cc6c0
-  languageName: node
-  linkType: hard
-
-"repl@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "repl@npm:0.1.3"
-  checksum: 3223b4f7ac600aba7776655339ed95cccfc7e4676769984186a314a5ba91c51696ed96183e7d63e2f58187339dc39e940b487d7e0a1e159c30844cc79d1d64e0
   languageName: node
   linkType: hard
 
