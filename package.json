@@ -25,6 +25,7 @@
     "@types/babel__template": "^7.4.4",
     "@types/node": "^18.14",
     "@types/which": "^3.0.4",
+    "@yarnpkg/types": "^4.0.1",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.2.0",
     "babel-jest": "workspace:*",

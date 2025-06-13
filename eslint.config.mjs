@@ -96,6 +96,7 @@ const config = typescriptEslint.config(
             'babel.config.js',
             'testSetupFile.js',
             'eslint.config.mjs',
+            'yarn.config.cjs',
           ],
         },
       ],

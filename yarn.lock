@@ -3954,6 +3954,7 @@ __metadata:
     "@types/babel__template": "npm:^7.4.4"
     "@types/node": "npm:^18.14"
     "@types/which": "npm:^3.0.4"
+    "@yarnpkg/types": "npm:^4.0.1"
     ansi-regex: "npm:^5.0.1"
     ansi-styles: "npm:^5.2.0"
     babel-jest: "workspace:*"
@@ -7059,6 +7060,15 @@ __metadata:
   version: 4.2.2
   resolution: "@xtuc/long@npm:4.2.2"
   checksum: 10/7217bae9fe240e0d804969e7b2af11cb04ec608837c78b56ca88831991b287e232a0b7fce8d548beaff42aaf0197ffa471d81be6ac4c4e53b0148025a2c076ec
+  languageName: node
+  linkType: hard
+
+"@yarnpkg/types@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@yarnpkg/types@npm:4.0.1"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/f391763cd955356e9aad551b29e8de7bbf68a6c8992af7cdc950ccf53f8aff6695ad81aa4c8a8e7c582786a840a4f30617732e2cb49f4109b971a9242c31c9fc
   languageName: node
   linkType: hard
 
