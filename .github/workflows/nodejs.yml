@@ -118,6 +118,8 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+      - name: install
+        run: yarn --immutable
       - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
         run: yarn constraints
       - name: 'Check for duplicate dependencies (fix w/ "yarn dedupe")'
