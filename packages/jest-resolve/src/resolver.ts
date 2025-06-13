@@ -15,6 +15,7 @@ import defaultResolver, {
   type AsyncResolver,
   type Resolver as ResolverInterface,
   type SyncResolver,
+  defaultAsyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
@@ -122,6 +123,7 @@ export default class Resolver {
       return resolver(path, {
         basedir: options.basedir,
         conditions: options.conditions,
+        defaultAsyncResolver,
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
@@ -142,7 +144,7 @@ export default class Resolver {
     options: FindNodeModuleConfig,
   ): Promise<string | null> {
     const resolverModule = loadResolver(options.resolver);
-    let resolver: ResolverInterface = defaultResolver;
+    let resolver: ResolverInterface = defaultAsyncResolver;
 
     if (typeof resolverModule === 'function') {
       resolver = resolverModule;
@@ -165,6 +167,7 @@ export default class Resolver {
       const result = await resolver(path, {
         basedir: options.basedir,
         conditions: options.conditions,
+        defaultAsyncResolver,
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
