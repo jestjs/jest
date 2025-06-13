@@ -19,10 +19,12 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   DependencyType2 \= 'peerDependencies',
   % A list of exception to same version rule
   \+ member(DependencyIdent, [
-    % @types/node in the root need to stay on ~14.14.45
+    % @types/node in the root need to stay on 18.x
     '@types/node',
     % upgrading the entire repository is a breaking change
-    'glob'
+    'glob',
+    % https://github.com/jestjs/jest/pull/15675#issuecomment-2969226238
+    'fsevents'
   ]).
 
 % Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
