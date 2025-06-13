@@ -23,7 +23,7 @@ import {
 interface TsLoader {
   enabled: (bool: boolean) => void;
 }
-type TsLoaderModule = 'ts-node' | 'esbuild-register';
+type TsLoaderModule = 'ts-node' | 'esbuild-register' | 'tsx';
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
@@ -166,6 +166,20 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
               target: `node${process.version.slice(1)}`,
               ...extraTSLoaderOptions,
             });
+          } else {
+            instance?.unregister();
+          }
+        },
+      };
+    } else if (loader === 'tsx') {
+      const tsxLoader = await import(/* webpackIgnore: true */ 'tsx/esm/api');
+
+      let instance: {unregister: () => void} | undefined;
+
+      return {
+        enabled: (bool: boolean) => {
+          if (bool) {
+            tsxLoader.register(extraTSLoaderOptions);
           } else {
             instance?.unregister();
           }

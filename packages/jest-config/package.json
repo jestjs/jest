@@ -68,6 +68,7 @@
     "esbuild-register": "^3.6.0",
     "semver": "^7.7.2",
     "ts-node": "^10.5.0",
+    "tsx": "^4.20.2",
     "typescript": "^5.0.4"
   },
   "engines": {
