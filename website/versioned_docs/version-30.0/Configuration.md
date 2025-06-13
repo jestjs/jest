@@ -1477,7 +1477,10 @@ type ResolverOptions = {
   /** Instance of default resolver. */
   defaultResolver: (path: string, options: ResolverOptions) => string;
   /** Instance of default async resolver. */
-  defaultAsyncResolver: (path: string, options: ResolverOptions) => Promise<string>;
+  defaultAsyncResolver: (
+    path: string,
+    options: ResolverOptions,
+  ) => Promise<string>;
   /** List of file extensions to search in order. */
   extensions?: Array<string>;
   /** List of directory names to be looked up for modules recursively. */
