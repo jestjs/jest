@@ -2,13 +2,13 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 6
-  cacheKey: 8
+  version: 8
+  cacheKey: 10
 
 "@babel/helper-plugin-utils@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/helper-plugin-utils@npm:7.27.1"
-  checksum: 5d715055301badab62bdb2336075a77f8dc8bd290cad2bc1b37ea3bf1b3efc40594d308082229f239deb4d6b5b80b0a73bce000e595ea74416e0339c11037047
+  checksum: 10/96136c2428888e620e2ec493c25888f9ceb4a21099dcf3dd4508ea64b58cdedbd5a9fb6c7b352546de84d6c24edafe482318646932a22c449ebd16d16c22d864
   languageName: node
   linkType: hard
 
@@ -16,10 +16,10 @@ __metadata:
   version: 7.27.1
   resolution: "@babel/plugin-proposal-explicit-resource-management@npm:7.27.1"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.27.1
+    "@babel/helper-plugin-utils": "npm:^7.27.1"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 9e25b4e9e82d0ff456872f78bd83544059b264a71813f3c1d102dbce4eb62a2a9dbe40f9265f43947d622d6f0ffe655760d73886e14e0f9aa01354ed8af3aef7
+  checksum: 10/5844b9455a281c94426164ac331a589f56a2e95541cd74b8c5494049c10932e1cb607c92223cf9e8d9f22639e017d563767adab0b7012facff2e845dd3c5069c
   languageName: node
   linkType: hard
 
@@ -27,6 +27,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@babel/plugin-proposal-explicit-resource-management": ^7.23.9
+    "@babel/plugin-proposal-explicit-resource-management": "npm:^7.23.9"
   languageName: unknown
   linkType: soft

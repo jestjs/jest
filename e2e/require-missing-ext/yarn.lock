@@ -2,13 +2,13 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 6
-  cacheKey: 8
+  version: 8
+  cacheKey: 10
 
 "async-limiter@npm:~1.0.0":
   version: 1.0.1
   resolution: "async-limiter@npm:1.0.1"
-  checksum: 2b849695b465d93ad44c116220dee29a5aeb63adac16c1088983c339b0de57d76e82533e8e364a93a9f997f28bbfc6a92948cefc120652bd07f3b59f8d75cf2b
+  checksum: 10/2b849695b465d93ad44c116220dee29a5aeb63adac16c1088983c339b0de57d76e82533e8e364a93a9f997f28bbfc6a92948cefc120652bd07f3b59f8d75cf2b
   languageName: node
   linkType: hard
 
@@ -16,11 +16,11 @@ __metadata:
   version: 11.5.1
   resolution: "discord.js@npm:11.5.1"
   dependencies:
-    long: ^4.0.0
-    prism-media: ^0.0.3
-    snekfetch: ^3.6.4
-    tweetnacl: ^1.0.0
-    ws: ^6.0.0
+    long: "npm:^4.0.0"
+    prism-media: "npm:^0.0.3"
+    snekfetch: "npm:^3.6.4"
+    tweetnacl: "npm:^1.0.0"
+    ws: "npm:^6.0.0"
   peerDependencies:
     "@discordjs/uws": ^10.149.0
     bufferutil: ^4.0.0
@@ -44,21 +44,21 @@ __metadata:
       optional: true
     uws:
       optional: true
-  checksum: fdd210b1a63bff6d39eae8c79beb2f1035d16b029a361142f9148e3ba6819e685872af2435e8cfef0b71b4871f14d4bcb7a4ce9f4c957c7a4aca1a347b3229f0
+  checksum: 10/a195bf6c9f4ca3db2b330b8df6b1cd64ecf128a9a57a3c889c864ff661624ce08e2553ede75178dca258df0a078b2f0c67615b937ed913007f12e8067cca5d84
   languageName: node
   linkType: hard
 
 "long@npm:^4.0.0":
   version: 4.0.0
   resolution: "long@npm:4.0.0"
-  checksum: 16afbe8f749c7c849db1f4de4e2e6a31ac6e617cead3bdc4f9605cb703cd20e1e9fc1a7baba674ffcca57d660a6e5b53a9e236d7b25a295d3855cca79cc06744
+  checksum: 10/8296e2ba7bab30f9cfabb81ebccff89c819af6a7a78b4bb5a70ea411aa764ee0532f7441381549dfa6a1a98d72abe9138bfcf99f4fa41238629849bc035b845b
   languageName: node
   linkType: hard
 
 "prism-media@npm:^0.0.3":
   version: 0.0.3
   resolution: "prism-media@npm:0.0.3"
-  checksum: 45d56138bd48616d78ec2f09b77e3700c88a4e08fb159949ee0b47fe5ce9db2d68ceac4729faebada4a23b640a9f984e7dd9b4bc72b2f52666307ca9d559fcfb
+  checksum: 10/725ea611acf00aa06d08f746db7c5090d727ba5bc55c3c57433d17e97a6ca9a4e3b3222e48b4c60f1c94e1c3b9c0015020bbcdc224bc69bc59eaabc3780d353c
   languageName: node
   linkType: hard
 
@@ -66,21 +66,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    discord.js: 11.5.1
+    discord.js: "npm:11.5.1"
   languageName: unknown
   linkType: soft
 
 "snekfetch@npm:^3.6.4":
   version: 3.6.4
   resolution: "snekfetch@npm:3.6.4"
-  checksum: e64b383a19ced759f061ecd43bc9a75bcc9b996d1909f9b94e6aaf66b6579024340c904af05aeba6261a8dd4ad9f71763f47e134c8089707d4be10fcfc682ed9
+  checksum: 10/c89f5aece67e2823364cccff00962302c7c69267ac3542fd4199ce749814d0be23ef84321b95bed5733dac461f56667004d4d427ad955478726336a6c601794e
   languageName: node
   linkType: hard
 
 "tweetnacl@npm:^1.0.0":
   version: 1.0.3
   resolution: "tweetnacl@npm:1.0.3"
-  checksum: e4a57cac188f0c53f24c7a33279e223618a2bfb5fea426231991652a13247bea06b081fd745d71291fcae0f4428d29beba1b984b1f1ce6f66b06a6d1ab90645c
+  checksum: 10/ca122c2f86631f3c0f6d28efb44af2a301d4a557a62a3e2460286b08e97567b258c2212e4ad1cfa22bd6a57edcdc54ba76ebe946847450ab0999e6d48ccae332
   languageName: node
   linkType: hard
 
@@ -88,7 +88,7 @@ __metadata:
   version: 6.2.3
   resolution: "ws@npm:6.2.3"
   dependencies:
-    async-limiter: ~1.0.0
-  checksum: bbc96ff5628832d80669a88fd117487bf070492dfaa50df77fa442a2b119792e772f4365521e0a8e025c0d51173c54fa91adab165c11b8e0674685fdd36844a5
+    async-limiter: "npm:~1.0.0"
+  checksum: 10/19f8d1608317f4c98f63da6eebaa85260a6fe1ba459cbfedd83ebe436368177fb1e2944761e2392c6b7321cbb7a375c8a81f9e1be35d555b6b4647eb61eadd46
   languageName: node
   linkType: hard
