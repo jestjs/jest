@@ -19,6 +19,7 @@ import {
   makeDescribe,
   makeTest,
 } from './utils';
+import {escapeStrForRegex} from 'jest-regex-util';
 
 const eventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
@@ -250,7 +251,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         state.parentProcess,
       );
       if (event.testNamePattern) {
-        state.testNamePattern = new RegExp(event.testNamePattern, 'i');
+        if (event.testNamePattern.startsWith('@:')) {
+          const raw = event.testNamePattern.slice(2);
+          state.testNamePattern = new RegExp(escapeStrForRegex(raw), 'i');
+        } else {
+          state.testNamePattern = new RegExp(event.testNamePattern, 'i');
+        }
       }
       break;
     }
