@@ -1476,6 +1476,11 @@ type ResolverOptions = {
   conditions?: Array<string>;
   /** Instance of default resolver. */
   defaultResolver: (path: string, options: ResolverOptions) => string;
+  /** Instance of default async resolver. */
+  defaultAsyncResolver: (
+    path: string,
+    options: ResolverOptions,
+  ) => Promise<string>;
   /** List of file extensions to search in order. */
   extensions?: Array<string>;
   /** List of directory names to be looked up for modules recursively. */
@@ -1490,6 +1495,8 @@ type ResolverOptions = {
 :::tip
 
 The `defaultResolver` passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom synchronous one, e.g. `(path, options)` and returns a string or throws.
+
+Similarly, the `defaultAsyncResolver` is the default async resolver which takes the same arguments and returns a promise that resolves with a string or rejects with an error.
 
 :::
 
@@ -1520,25 +1527,6 @@ const config: Config = {
 };
 
 export default config;
-```
-
-By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
-
-```js
-module.exports = (path, options) => {
-  // Call the defaultResolver, so we leverage its cache, error handling, etc.
-  return options.defaultResolver(path, {
-    ...options,
-    // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
-    packageFilter: pkg => {
-      return {
-        ...pkg,
-        // Alter the value of `main` before resolving the package
-        main: pkg.module || pkg.main,
-      };
-    },
-  });
-};
 ```
 
 ### `restoreMocks` \[boolean]
