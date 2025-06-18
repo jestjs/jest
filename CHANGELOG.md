@@ -11,6 +11,7 @@
 ### Chore & Maintenance
 
 - `[*]` Remove and deprecate `jest-repl` package ([#15673](https://github.com/jestjs/jest/pull/15673))
+- `[jest-resolver]` Replace custom `isBuiltinModule` with node's `isBuiltin` ([#15685](https://github.com/jestjs/jest/pull/15685))
 
 ## 30.0.0
 
