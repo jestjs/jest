@@ -9,7 +9,7 @@ import {AsyncLocalStorage, createHook} from 'async_hooks';
 import {clsx} from 'clsx';
 import {onNodeVersions} from '@jest/test-utils';
 
-describe('NodeEnvironment 2', () => {
+describe('Globals Cleanup 2', () => {
   test('dispatch event', () => {
     new EventTarget().dispatchEvent(new Event('foo'));
   });

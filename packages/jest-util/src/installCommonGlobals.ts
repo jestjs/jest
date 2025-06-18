@@ -9,12 +9,17 @@ import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
+import {
+  type DeletionMode,
+  initializeGarbageCollectionUtils,
+} from './garbage-collection-utils';
 
 const DTRACE = Object.keys(globalThis).filter(key => key.startsWith('DTRACE'));
 
 export default function installCommonGlobals(
   globalObject: typeof globalThis,
   globals: Config.ConfigGlobals,
+  garbageCollectionDeletionMode?: DeletionMode,
 ): typeof globalThis & Config.ConfigGlobals {
   globalObject.process = createProcessObject();
 
@@ -60,6 +65,13 @@ export default function installCommonGlobals(
       // @ts-expect-error: no index
       return globalThis[dtrace].apply(this, args);
     };
+  }
+
+  if (garbageCollectionDeletionMode) {
+    initializeGarbageCollectionUtils(
+      globalObject,
+      garbageCollectionDeletionMode,
+    );
   }
 
   return Object.assign(globalObject, deepCyclicCopy(globals));

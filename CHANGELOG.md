@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-resolver]` Resolve builtin modules correctly ([#15683](https://github.com/jestjs/jest/pull/15683))
+- `[jest-environment-node, jest-util]` Avoid setting globals cleanup protection symbol when feature is off ([#15684](https://github.com/jestjs/jest/pull/15684))
 
 ### Chore & Maintenance
 
