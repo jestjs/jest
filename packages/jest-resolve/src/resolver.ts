@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isBuiltin} from 'module';
 import * as path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
@@ -18,7 +19,6 @@ import defaultResolver, {
   defaultAsyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
-import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
@@ -457,7 +457,7 @@ export default class Resolver {
   isCoreModule(moduleName: string): boolean {
     return (
       this._options.hasCoreModules &&
-      (isBuiltinModule(moduleName) || moduleName.startsWith('node:')) &&
+      isBuiltin(moduleName) &&
       !this._isAliasModule(moduleName)
     );
   }
