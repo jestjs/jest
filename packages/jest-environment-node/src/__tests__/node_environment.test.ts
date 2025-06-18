@@ -6,14 +6,8 @@
  */
 
 import type {EnvironmentContext} from '@jest/environment';
-import {
-  makeGlobalConfig,
-  makeProjectConfig,
-  onNodeVersions,
-} from '@jest/test-utils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import NodeEnvironment from '../';
-import {AsyncLocalStorage, createHook} from 'async_hooks';
-import {clsx} from 'clsx';
 
 const context: EnvironmentContext = {
   console,
@@ -92,29 +86,5 @@ describe('NodeEnvironment', () => {
 
   test('TextEncoder references the same global Uint8Array constructor', () => {
     expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
-  });
-
-  test('dispatch event', () => {
-    new EventTarget().dispatchEvent(new Event('foo'));
-  });
-
-  test('set modules on global', () => {
-    (globalThis as any).async_hooks = require('async_hooks');
-    (globalThis as any).AsyncLocalStorage =
-      require('async_hooks').AsyncLocalStorage;
-    (globalThis as any).createHook = require('async_hooks').createHook;
-    (globalThis as any).clsx = require('clsx');
-    expect(AsyncLocalStorage).toBeDefined();
-    expect(clsx).toBeDefined();
-    expect(createHook).toBeDefined();
-    expect(createHook({})).toBeDefined();
-    expect(clsx()).toBeDefined();
-  });
-
-  onNodeVersions('>=19.8.0', () => {
-    test('use static function from core module set on global', () => {
-      expect(AsyncLocalStorage.snapshot).toBeDefined();
-      expect(AsyncLocalStorage.snapshot()).toBeDefined();
-    });
   });
 });

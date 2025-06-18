@@ -31,6 +31,13 @@
     "@jest/test-utils": "workspace:*",
     "clsx": "^2.1.1"
   },
+  "scripts": {
+    "test:base": "echo GLOBALS_CLEANUP=$GLOBALS_CLEANUP && yarn --cwd='../.' jest --runInBand packages/jest-environment-node/src/__tests__",
+    "test:globals-cleanup-off": "GLOBALS_CLEANUP=off yarn test:base",
+    "test:globals-cleanup-soft": "GLOBALS_CLEANUP=soft yarn test:base",
+    "test:globals-cleanup-on": "GLOBALS_CLEANUP=on yarn test:base",
+    "test": "yarn test:globals-cleanup-off && yarn test:globals-cleanup-soft && yarn test:globals-cleanup-on"
+  },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },

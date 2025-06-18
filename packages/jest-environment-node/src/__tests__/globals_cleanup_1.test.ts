@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AsyncLocalStorage, createHook} from 'async_hooks';
-import {clsx} from 'clsx';
-import {onNodeVersions} from '@jest/test-utils';
+import { AsyncLocalStorage, createHook } from "async_hooks";
+import { clsx } from "clsx";
+import { onNodeVersions } from "@jest/test-utils";
 
-describe('NodeEnvironment 2', () => {
+describe('Globals Cleanup 1', () => {
   test('dispatch event', () => {
     new EventTarget().dispatchEvent(new Event('foo'));
   });

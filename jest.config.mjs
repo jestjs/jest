@@ -38,7 +38,7 @@ export default {
   },
   snapshotSerializers: [require.resolve('jest-serializer-ansi-escapes')],
   testEnvironmentOptions: {
-    globalsCleanup: 'on',
+    globalsCleanup: process.env.GLOBALS_CLEANUP ?? 'on',
   },
   testPathIgnorePatterns: [
     '/__arbitraries__/',
