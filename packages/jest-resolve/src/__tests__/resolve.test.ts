@@ -84,6 +84,24 @@ describe('isCoreModule', () => {
 });
 
 describe('findNodeModule', () => {
+  it('should resolve builtin modules as-is', () => {
+    expect(
+      Resolver.findNodeModule('url', {
+        basedir: __dirname,
+      }),
+    ).toBe('url');
+    expect(
+      Resolver.findNodeModule('node:url', {
+        basedir: __dirname,
+      }),
+    ).toBe('node:url');
+    expect(
+      Resolver.findNodeModule('url/', {
+        basedir: __dirname,
+      }),
+    ).toBe(path.resolve('node_modules/url/url.js'));
+  });
+
   it('is possible to override the default resolver', () => {
     const cwd = process.cwd();
     const resolvedCwd = fs.realpathSync(cwd) || cwd;
