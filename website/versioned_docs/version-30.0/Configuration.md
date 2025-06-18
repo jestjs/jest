@@ -1529,6 +1529,19 @@ const config: Config = {
 export default config;
 ```
 
+Jest's `jest-resolve` relies on `unrs-resolver`. We can pass additional options, for example modifying `mainFields` for resolution. For example, for React Native projects, you might want to use this config:
+
+```js
+module.exports = (path, options) => {
+  // Call the defaultResolver, so we leverage its cache, error handling, etc.
+  return options.defaultResolver(path, {
+    ...options,
+    // See this `unrs-resolver` option: from https://github.com/unrs/unrs-resolver?tab=readme-ov-file#main-field
+    mainFields: ['react-native', 'main'],
+  });
+};
+```
+
 ### `restoreMocks` \[boolean]
 
 Default: `false`
