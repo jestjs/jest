@@ -1529,6 +1529,20 @@ const config: Config = {
 export default config;
 ```
 
+Based on the fact that `jest-resolve` uses `unrs-resolver` and passes additional options to it, we can modify the configuration of `mainFields`. For example, for React Native projects, you might use this config:
+
+```js
+module.exports = (path, options) => {
+  // Call the defaultResolver, so we leverage its cache, error handling, etc.
+  return options.defaultResolver(path, {
+    ...options,
+    // This is option from unrs-resolver from https://github.com/unrs/unrs-resolver?tab=readme-ov-file#main-field
+    // We use the fact that jest-resolve just passes extra options to unrs-resolver
+    mainFields: ['react-native', 'main'],
+  });
+};
+```
+
 ### `restoreMocks` \[boolean]
 
 Default: `false`
