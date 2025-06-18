@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isBuiltin} from 'module';
 import {fileURLToPath} from 'url';
 import pnpResolver from 'jest-pnp-resolver';
 import {
@@ -73,6 +74,12 @@ function baseResolver(
   options: ResolverOptions,
   async?: true,
 ): string | Promise<string> {
+  // https://github.com/oxc-project/oxc-resolver/issues/565
+  // https://github.com/jestjs/jest/issues/15676
+  if (isBuiltin(path)) {
+    return path;
+  }
+
   if (process.versions.pnp && options.allowPnp !== false) {
     return pnpResolver(path, options);
   }
@@ -111,13 +118,12 @@ function baseResolver(
     unrsResolver = unrsResolver.cloneWithOptions(resolveOptions);
   } else {
     unrsResolver = new ResolverFactory(resolveOptions);
-    setResolver(unrsResolver);
   }
 
+  setResolver(unrsResolver);
+
   const finalResolver = (
-    resolve: (
-      resolver: ResolverFactory,
-    ) => ResolveResult | Promise<ResolveResult>,
+    resolve: () => ResolveResult | Promise<ResolveResult>,
   ) => {
     const resolveWithPathsFallback = (result: ResolveResult) => {
       if (!result.path && paths?.length) {
@@ -131,12 +137,13 @@ function baseResolver(
             ...resolveOptions,
             modules: paths,
           });
-          return resolve(unrsResolver);
+          setResolver(unrsResolver);
+          return resolve();
         }
       }
       return result;
     };
-    const result = resolve(unrsResolver!);
+    const result = resolve();
     if ('then' in result) {
       return result.then(resolveWithPathsFallback).then(handleResolveResult);
     }
@@ -145,8 +152,10 @@ function baseResolver(
     );
   };
 
-  return finalResolver((resolver: ResolverFactory) =>
-    async ? resolver.async(basedir, path) : resolver.sync(basedir, path),
+  return finalResolver(() =>
+    async
+      ? unrsResolver!.async(basedir, path)
+      : unrsResolver!.sync(basedir, path),
   );
 }
 
