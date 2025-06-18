@@ -1,5 +1,7 @@
 ## main
 
+## 30.0.1
+
 ### Features
 
 - `[jest-resolver]` Implement the `defaultAsyncResolver` ([#15679](https://github.com/jestjs/jest/pull/15679))
