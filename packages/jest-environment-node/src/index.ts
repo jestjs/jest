@@ -12,12 +12,13 @@ import type {
   JestEnvironmentConfig,
 } from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {Global} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {
   type DeletionMode,
   canDeleteProperties,
   deleteProperties,
+  initializeGarbageCollectionUtils,
   installCommonGlobals,
   protectProperties,
 } from 'jest-util';
@@ -88,11 +89,14 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   customExportConditions = ['node', 'node-addons'];
   private readonly _configuredExportConditions?: Array<string>;
   private _globalProxy: GlobalProxy;
-  private _globalsCleanup: DeletionMode;
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
+
+    const globalsCleanupMode = readGlobalsCleanupConfig(projectConfig);
+    initializeGarbageCollectionUtils(globalThis, globalsCleanupMode);
+
     this._globalProxy = new GlobalProxy();
     this.context = createContext(this._globalProxy.proxy());
     const global = runInContext(
@@ -160,7 +164,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     // same constructor is referenced by both.
     global.Uint8Array = Uint8Array;
 
-    installCommonGlobals(global, projectConfig.globals);
+    installCommonGlobals(global, projectConfig.globals, globalsCleanupMode);
 
     if ('asyncDispose' in Symbol && !('asyncDispose' in global.Symbol)) {
       const globalSymbol = global.Symbol as unknown as SymbolConstructor;
@@ -206,26 +210,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
 
     this._globalProxy.envSetupCompleted();
-    this._globalsCleanup = (() => {
-      const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
-      const config = rawConfig?.toString()?.toLowerCase();
-      switch (config) {
-        case 'off':
-        case 'on':
-        case 'soft':
-          return config;
-        default: {
-          if (config !== undefined) {
-            logValidationWarning(
-              'testEnvironmentOptions.globalsCleanup',
-              `Unknown value given: ${rawConfig}`,
-              'Available options are: [on, soft, off]',
-            );
-          }
-          return 'soft';
-        }
-      }
-    })();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -241,9 +225,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-    if (this._globalsCleanup !== 'off') {
-      this._globalProxy.clear(this._globalsCleanup);
-    }
+    this._globalProxy.clear();
   }
 
   exportConditions(): Array<string> {
@@ -293,10 +275,8 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
    * Deletes any property that was set on the global object, except for:
    * 1. Properties that were set before {@link #envSetupCompleted} was invoked.
    * 2. Properties protected by {@link #protectProperties}.
-   *
-   * @param mode determines whether to soft or hard delete the properties.
    */
-  clear(mode: DeletionMode): void {
+  clear(): void {
     for (const {value} of [
       ...[...this.propertyToValue.entries()].map(([property, value]) => ({
         property,
@@ -304,7 +284,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
       })),
       ...this.leftovers,
     ]) {
-      deleteProperties(value, mode);
+      deleteProperties(value);
     }
     this.propertyToValue.clear();
     this.leftovers = [];
@@ -362,6 +342,29 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
       }
 
       this.propertyToValue.set(property, value);
+    }
+  }
+}
+
+function readGlobalsCleanupConfig(
+  projectConfig: Config.ProjectConfig,
+): DeletionMode {
+  const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
+  const config = rawConfig?.toString()?.toLowerCase();
+  switch (config) {
+    case 'off':
+    case 'on':
+    case 'soft':
+      return config;
+    default: {
+      if (config !== undefined) {
+        logValidationWarning(
+          'testEnvironmentOptions.globalsCleanup',
+          `Unknown value given: ${rawConfig}`,
+          'Available options are: [on, soft, off]',
+        );
+      }
+      return 'soft';
     }
   }
 }
