@@ -1,5 +1,7 @@
 ## main
 
+## 30.0.2
+
 ### Fixes
 
 - `[jest-matcher-utils]` Make 'deepCyclicCopyObject' safer by setting descriptors to a null-prototype object ([#15689](https://github.com/jestjs/jest/pull/15689))
