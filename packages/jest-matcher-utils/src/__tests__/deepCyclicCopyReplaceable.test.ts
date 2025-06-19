@@ -174,3 +174,13 @@ test('should only copy the properties mapped to be serializable', () => {
     foo: {configurable: true, enumerable: true, value: 'foo', writable: true},
   });
 });
+
+test('json from Response', async () => {
+  const response = () => new Response(JSON.stringify({}));
+
+  const text = JSON.parse(await response().text());
+  deepCyclicCopyReplaceable(text);
+
+  const json = await response().json();
+  deepCyclicCopyReplaceable(json);
+});

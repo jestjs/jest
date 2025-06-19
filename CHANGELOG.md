@@ -1,5 +1,10 @@
 ## main
 
+### Fixes
+
+- `[jest-matcher-utils]` Make 'deepCyclicCopyObject' safer by setting descriptors to a null-prototype object ([#15689](https://github.com/jestjs/jest/pull/15689))
+- `[jest-util]` Make garbage collection protection property writable ([#15689](https://github.com/jestjs/jest/pull/15689))
+
 ## 30.0.1
 
 ### Features
