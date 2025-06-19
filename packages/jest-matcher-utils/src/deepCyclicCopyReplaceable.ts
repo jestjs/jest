@@ -72,7 +72,7 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
 
     if (serializableProperties === undefined) {
       descriptors = Object.assign(
-        {},
+        Object.create(null),
         Object.getOwnPropertyDescriptors(obj),
         descriptors,
       );
@@ -115,7 +115,7 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
       };
       return newDescriptors;
     },
-    {},
+    Object.create(null),
   );
   //@ts-expect-error because typescript do not support symbol key in object
   //https://github.com/microsoft/TypeScript/issues/1863
