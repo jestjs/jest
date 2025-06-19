@@ -107,6 +107,7 @@ export function protectProperties<T>(
         configurable: true,
         enumerable: false,
         value: properties,
+        writable: true,
       });
       for (const key of getProtectedKeys(value, properties)) {
         try {
