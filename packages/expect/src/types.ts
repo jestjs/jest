@@ -22,23 +22,17 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
-  Expected extends
-    Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
-> = (
-  this: Context,
-  actual: unknown,
-  ...expected: Expected
-) => ExpectationResult;
+  Expected extends Array<unknown> = [],
+> = (this: Context, actual: any, ...expected: Expected) => ExpectationResult;
 
 export type MatcherFunction<Expected extends Array<unknown> = []> =
   MatcherFunctionWithContext<MatcherContext, Expected>;
 
-// TODO should be replaced with `MatcherFunctionWithContext`
-export type RawMatcherFn<Context extends MatcherContext = MatcherContext> = {
-  (this: Context, actual: any, ...expected: Array<any>): ExpectationResult;
-  /** @internal */
-  [INTERNAL_MATCHER_FLAG]?: boolean;
-};
+export type RawMatcherFn<Context extends MatcherContext = MatcherContext> =
+  MatcherFunctionWithContext<Context, Array<any>> & {
+    /** @internal */
+    [INTERNAL_MATCHER_FLAG]?: boolean;
+  };
 
 export type MatchersObject = {
   [name: string]: RawMatcherFn;
