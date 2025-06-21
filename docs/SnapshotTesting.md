@@ -312,7 +312,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### Does snapshot testing only work with React components?
 
-[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/jestjs/jest/blob/main/e2e/__tests__/console.test.ts) in the Jest repo.
+[React](TestingFrameworks.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/jestjs/jest/blob/main/e2e/__tests__/console.test.ts) in the Jest repo.
 
 ### What's the difference between snapshot testing and visual regression testing?
 
