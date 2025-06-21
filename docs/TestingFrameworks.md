@@ -46,7 +46,7 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 
 ## Next.js
 
-- [Jest and React Testing Library](https://nextjs.org/docs/pages/building-your-application/testing/jest) by Next.js docs
+- [How to set up Jest with Next.js](https://nextjs.org/docs/app/guides/testing/jest) by Next.js docs
 
 ## NestJS
 
