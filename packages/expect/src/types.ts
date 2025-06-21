@@ -23,11 +23,7 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
   Expected extends Array<unknown> = [],
-> = (
-  this: Context,
-  actual: unknown,
-  ...expected: Expected
-) => ExpectationResult;
+> = (this: Context, actual: any, ...expected: Expected) => ExpectationResult;
 
 export type MatcherFunction<Expected extends Array<unknown> = []> =
   MatcherFunctionWithContext<MatcherContext, Expected>;
