@@ -1,7 +1,9 @@
 ## main
 
 ## 30.0.2
+
 ### Features
+
 - `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/facebook/jest/pull/15696))
 
 ### Fixes
