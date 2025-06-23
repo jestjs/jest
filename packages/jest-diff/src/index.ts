@@ -15,6 +15,7 @@ import {
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
+import {escapeControlCharacters} from './escapeControlCharacters';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import type {DiffOptions} from './types';
@@ -96,7 +97,11 @@ export function diff(a: any, b: any, options?: DiffOptions): string | null {
 
   switch (aType) {
     case 'string':
-      return diffLinesUnified(a.split('\n'), b.split('\n'), options);
+      return diffLinesUnified(
+        escapeControlCharacters(a).split('\n'),
+        escapeControlCharacters(b).split('\n'),
+        options,
+      );
     case 'boolean':
     case 'number':
       return comparePrimitive(a, b, options);
