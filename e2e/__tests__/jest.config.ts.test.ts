@@ -33,6 +33,23 @@ test('works with jest.config.ts', () => {
   expect(summary).toMatchSnapshot();
 });
 
+test('falls back to a loader if we encounter a ESM TS config file in a CommonJs project', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts':
+      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
+    'package.json': '{"type":"commonjs"}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
+    nodeOptions: '--no-warnings',
+  });
+  const {rest, summary} = extractSummary(stderr);
+  expect(exitCode).toBe(0);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
 test('works with tsconfig.json', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",

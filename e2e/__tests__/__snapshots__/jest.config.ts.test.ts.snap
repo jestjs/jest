@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`on node >=24 invalid JS in jest.config.ts (node with native TS support) 1`] = `
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
@@ -47,6 +47,19 @@ exports[`works with jest.config.ts 1`] = `
 `;
 
 exports[`works with jest.config.ts 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`works with jest.config.ts with cjs contents 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`works with jest.config.ts with cjs contents 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
