@@ -1,5 +1,7 @@
 ## main
 
+## 30.0.3
+
 ### Fixes
 
 - `[jest-config]` Fix ESM TS config loading in a CJS project ([#15694](https://github.com/jestjs/jest/pull/15694))
