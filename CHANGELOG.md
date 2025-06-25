@@ -2,6 +2,10 @@
 
 ## 30.0.2
 
+### Features
+
+- `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/facebook/jest/pull/15696))
+
 ### Fixes
 
 - `[jest-matcher-utils]` Make 'deepCyclicCopyObject' safer by setting descriptors to a null-prototype object ([#15689](https://github.com/jestjs/jest/pull/15689))
