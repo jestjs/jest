@@ -58,7 +58,7 @@ export default async function readConfigFileAndSetRootDir(
           }
         }
       }
-      // fall back to `ts-node` etc. if this cannot be natively parsed/executed
+      // Fall back to `ts-node` etc. if this cannot be natively parsed/executed.
       if (!configObject) {
         configObject = await loadTSConfigFile(configPath);
       }
