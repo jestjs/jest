@@ -43,7 +43,7 @@ export default async function readConfigFileAndSetRootDir(
       // @ts-expect-error: type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
       if (process.features.typescript) {
         try {
-          // try native node TypeScript support first
+          // Try native node TypeScript support first.
           configObject = await requireOrImportModule<any>(configPath);
         } catch (error) {
           if (
