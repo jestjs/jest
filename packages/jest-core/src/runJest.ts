@@ -216,6 +216,14 @@ export default async function runJest({
 
   allTests = await sequencer.sort(allTests);
 
+  if (globalConfig.onlyFailures) {
+    if (failedTestsCache) {
+      allTests = failedTestsCache.filterTests(allTests);
+    } else {
+      allTests = await sequencer.allFailedTests(allTests);
+    }
+  }
+
   if (globalConfig.listTests) {
     const testsPaths = [...new Set(allTests.map(test => test.path))];
     let testsListOutput;
@@ -236,14 +244,6 @@ export default async function runJest({
 
     onComplete?.(makeEmptyAggregatedTestResult());
     return;
-  }
-
-  if (globalConfig.onlyFailures) {
-    if (failedTestsCache) {
-      allTests = failedTestsCache.filterTests(allTests);
-    } else {
-      allTests = await sequencer.allFailedTests(allTests);
-    }
   }
 
   const hasTests = allTests.length > 0;
