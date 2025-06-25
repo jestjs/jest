@@ -49,8 +49,8 @@ export default async function readConfigFileAndSetRootDir(
           if (
             !(
               error instanceof SyntaxError &&
-              // likely ESM in a file interpreted as CJS, which means it needs to be
-              // transpiled - we ignore the error and try to load it with a loader
+              // Likely ESM in a file interpreted as CJS, which means it needs to be
+              // compiled. We ignore the error and try to load it with a loader.
               error.message.match(/Unexpected token '(export|import)'/)
             )
           ) {
