@@ -7,6 +7,7 @@
 
 import diff from '@jest/diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {escapeControlCharacters} from './escapeControlCharacters';
 import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,
@@ -101,8 +102,8 @@ export const diffLinesUnified = (
 ): string =>
   printDiffLines(
     diffLinesRaw(
-      isEmptyString(aLines) ? [] : aLines,
-      isEmptyString(bLines) ? [] : bLines,
+      isEmptyString(aLines) ? [] : aLines.map(escapeControlCharacters),
+      isEmptyString(bLines) ? [] : bLines.map(escapeControlCharacters),
     ),
     normalizeDiffOptions(options),
   );

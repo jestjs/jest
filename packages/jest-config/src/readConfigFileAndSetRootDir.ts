@@ -39,9 +39,29 @@ export default async function readConfigFileAndSetRootDir(
   let configObject;
 
   try {
-    // @ts-expect-error: type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
-    if (isTS && !process.features.typescript) {
-      configObject = await loadTSConfigFile(configPath);
+    if (isTS) {
+      // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+      if (process.features.typescript) {
+        try {
+          // Try native node TypeScript support first.
+          configObject = await requireOrImportModule<any>(configPath);
+        } catch (error) {
+          if (
+            !(
+              error instanceof SyntaxError &&
+              // Likely ESM in a file interpreted as CJS, which means it needs to be
+              // compiled. We ignore the error and try to load it with a loader.
+              error.message.match(/Unexpected token '(export|import)'/)
+            )
+          ) {
+            throw error;
+          }
+        }
+      }
+      // Fall back to `ts-node` etc. if this cannot be natively parsed/executed.
+      if (!configObject) {
+        configObject = await loadTSConfigFile(configPath);
+      }
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
       configObject = parseJson(stripJsonComments(fileContent), configPath);
