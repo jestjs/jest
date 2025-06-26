@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[expect]` Have `Inverse` exportable ([#15704](https://github.com/jestjs/jest/pull/15704))
+
 ## 30.0.3
 
 ### Fixes
