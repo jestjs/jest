@@ -67,7 +67,6 @@ describe('Jest Worker Process Integration', () => {
 
   it('calls a single method from the worker', async () => {
     const farm = new WorkerFarm('/tmp/baz.js', {
-      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     }) as JestWorkerFarm<{foo(): void}>;
@@ -81,7 +80,6 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes sequential calls across child processes', async () => {
     const farm = new WorkerFarm('/tmp/baz.js', {
-      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     }) as JestWorkerFarm<{foo(a: unknown): void}>;
@@ -152,7 +150,6 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes concurrent calls across child processes', async () => {
     const farm = new WorkerFarm('/tmp/baz.js', {
-      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     }) as JestWorkerFarm<{foo(a: unknown): void}>;
@@ -181,7 +178,6 @@ describe('Jest Worker Process Integration', () => {
   it('sticks parallel calls to children', async () => {
     const farm = new WorkerFarm('/tmp/baz.js', {
       computeWorkerKey: () => '1234567890abcdef',
-      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     }) as JestWorkerFarm<{foo(a: unknown): void}>;
