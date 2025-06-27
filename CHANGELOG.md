@@ -9,6 +9,7 @@
 ### Fixes
 
 - `[jest-config]` Fix ESM TS config loading in a CJS project ([#15694](https://github.com/jestjs/jest/pull/15694))
+- `[jest-core]` jest --onlyFailures --listTests now correctly lists only failed tests([#15700](https://github.com/jestjs/jest/pull/15700))
 
 ### Features
 
