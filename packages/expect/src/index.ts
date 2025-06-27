@@ -63,6 +63,7 @@ export type {
   BaseExpect,
   Expect,
   ExpectationResult,
+  Inverse,
   MatcherContext,
   MatcherFunction,
   MatcherFunctionWithContext,

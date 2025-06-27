@@ -106,7 +106,7 @@ export type Expect = (<T = unknown>(
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
 
-type Inverse<Matchers> = {
+export type Inverse<Matchers> = {
   /**
    * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
    */
