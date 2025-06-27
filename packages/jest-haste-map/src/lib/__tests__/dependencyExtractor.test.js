@@ -87,13 +87,32 @@ describe('dependencyExtractor', () => {
     );
   });
 
-  it('should not extract dependencies from `import type/typeof` statements', () => {
+  it('should not extract dependencies from `import type/typeof` statements, or type-only imports', () => {
     const code = `
       // Bad
       import typeof {foo} from 'inv1';
       import type {foo} from 'inv2';
+      import {type foo, typeof bar} from 'inv3';
+      import {
+        type foo,
+        typeof bar,
+      } from 'inv4'
+      // Good
+      import {foo, typeof bar} from 'inv5';
+      import {type foo, bar} from 'inv6';
+      import {
+        foo,
+        typeof bar
+      } from 'inv7';
+      import {
+        type foo,
+        bar
+      } from 'inv8';
+      import TheDefaultExport, {type foo, type bar} from 'inv9';
     `;
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['inv5', 'inv6', 'inv7', 'inv8', 'inv9']),
+    );
   });
 
   it('should extract dependencies from `export` statements', () => {
