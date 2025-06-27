@@ -486,7 +486,12 @@ function createMessageAndCause(error: Error) {
         if (seen.has(value)) return;
         seen.add(value); // stop circular references
       }
-      return value === undefined ? String(undefined) : value;
+      if (typeof value === 'bigint') {
+        return Number(value);
+      } else if (value === undefined) {
+        return String(undefined);
+      }
+      return value;
     });
   }
 
