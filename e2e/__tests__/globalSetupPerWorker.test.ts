@@ -67,15 +67,50 @@ afterAll(() => {
 test('globalSetupPerWorker is triggered once before all test suites per worker', () => {
   const setupPath = path.join(e2eDir, 'setup.js');
   const result = runWithJson(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--globalSetupPerWorker=${setupPath}`,
     '--testPathPatterns=__tests__',
   ]);
 
   expect(result.exitCode).toBe(0);
   const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(1);
-  const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
-  expect(setup).toBe('setup');
+  expect(files).toHaveLength(2);
+  const content = files.map(file => {
+    const data = fs.readFileSync(path.join(DIR, file), 'utf8');
+    return data.split('\n');
+  });
+  for (const [firstLine] of content) {
+    expect(firstLine).toBe('setup-per-worker');
+  }
+  const secondLines = content.map(([, secondLine]) => secondLine);
+  secondLines.sort();
+  expect(secondLines).toEqual(['1', '2']);
+});
+
+test('globalSetupPerWorker with worker threads', () => {
+  const setupPath = path.join(e2eDir, 'setup.js');
+  const result = runWithJson(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalSetupPerWorker=${setupPath}`,
+    '--testPathPatterns=__tests__',
+    '--workerThreads',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+  const files = fs.readdirSync(DIR);
+  expect(files).toHaveLength(2);
+  const content = files.map(file => {
+    const data = fs.readFileSync(path.join(DIR, file), 'utf8');
+    return data.split('\n');
+  });
+  for (const [firstLine] of content) {
+    expect(firstLine).toBe('setup-per-worker');
+  }
+  const secondLines = content.map(([, secondLine]) => secondLine);
+  secondLines.sort();
+  expect(secondLines).toEqual(['1', '2']);
 });
 
 test('jest throws an error when globalSetupPerWorker does not export a function', () => {
@@ -84,6 +119,8 @@ test('jest throws an error when globalSetupPerWorker does not export a function'
     '../global-setup-per-worker/invalidSetup.js',
   );
   const {exitCode, stderr} = runJest(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--globalSetupPerWorker=${setupPath}`,
     '--testPathPatterns=__tests__',
   ]);
@@ -99,18 +136,25 @@ test('globalSetupPerWorker function gets global config object and project config
   const setupPath = path.resolve(e2eDir, 'setupWithConfig.js');
 
   const result = runJest(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--globalSetupPerWorker=${setupPath}`,
     '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
+  const expected = ["[ 'pass' ]", 'true', "[ 'pass' ]", 'true'].join('\n');
+  expect(result.stdout).toBe(expected);
 });
 
 test('should call globalSetupPerWorker function of multiple projects', () => {
   const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
-  const result = runWithJson(e2eDir, [`--config=${configPath}`]);
+  const result = runWithJson(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--config=${configPath}`,
+  ]);
 
   expect(result.exitCode).toBe(0);
 
@@ -123,6 +167,8 @@ test('should not call a globalSetupPerWorker of a project if there are no tests 
   const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--config=${configPath}`,
     '--testPathPatterns=setup1',
   ]);
@@ -138,6 +184,8 @@ test('should not call any globalSetupPerWorker if there are no tests to run', ()
   const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--config=${configPath}`,
     '--onlyChanged',
   ]);
@@ -153,18 +201,23 @@ test('globalSetupPerWorker works with default export', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithDefaultExport.js');
 
   const result = runJest(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--globalSetupPerWorker=${setupPath}`,
     '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
+  const expected = ["[ 'pass' ]", 'true', "[ 'pass' ]", 'true'].join('\n');
+  expect(result.stdout).toBe(expected);
 });
 
 test('globalSetupPerWorker throws with named export', () => {
   const setupPath = path.resolve(e2eDir, 'invalidSetupWithNamedExport.js');
 
   const {exitCode, stderr} = runJest(e2eDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--globalSetupPerWorker=${setupPath}`,
     '--testPathPatterns=__tests__',
   ]);
@@ -178,6 +231,8 @@ test('globalSetupPerWorker throws with named export', () => {
 
 test('should not transpile the transformer', () => {
   const {exitCode} = runJest('global-setup-per-worker-custom-transform', [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     '--no-cache',
   ]);
 
@@ -186,6 +241,8 @@ test('should not transpile the transformer', () => {
 
 test('should transform node_modules if configured by transformIgnorePatterns', () => {
   const {exitCode} = runJest('global-setup-per-worker-node-modules', [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     '--no-cache',
   ]);
 
@@ -207,7 +264,11 @@ test('properly handle rejections', () => {
     `,
   });
 
-  const {exitCode, stderr} = runJest(rejectionDir, ['--no-cache']);
+  const {exitCode, stderr} = runJest(rejectionDir, [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    '--no-cache',
+  ]);
 
   expect(exitCode).toBe(1);
   expect(stderr).toContain(
@@ -217,9 +278,13 @@ test('properly handle rejections', () => {
 });
 
 test('globalSetupPerWorker works with ESM modules', () => {
-  const {exitCode} = runJest('global-setup-per-worker-esm', ['--no-cache'], {
-    nodeOptions: '--experimental-vm-modules --no-warnings',
-  });
+  const {exitCode} = runJest(
+    'global-setup-per-worker-esm',
+    ['--maxWorkers=2', '--workerIdleMemoryLimit=100MB', '--no-cache'],
+    {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    },
+  );
 
   expect(exitCode).toBe(0);
 });

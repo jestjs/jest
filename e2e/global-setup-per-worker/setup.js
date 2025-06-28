@@ -17,7 +17,8 @@ module.exports = function () {
   return new Promise((resolve, reject) => {
     createDirectory(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');
-    fs.writeFileSync(path.join(DIR, fileId), 'setup');
+    const data = ['setup-per-worker', process.env.JEST_WORKER_ID].join('\n');
+    fs.writeFileSync(path.join(DIR, fileId), data);
     resolve();
   });
 };

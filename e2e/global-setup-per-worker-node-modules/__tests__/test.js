@@ -14,7 +14,19 @@ const DIR = path.join(os.tmpdir(), 'jest-global-setup-per-worker-node-modules');
 
 test('should exist setup file', () => {
   const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(1);
-  const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
-  expect(setup).toBe('hello world!');
+  expect(files).toHaveLength(2);
+
+  const content = files.map(file => {
+    const data = fs.readFileSync(path.join(DIR, file), 'utf8');
+    return data.split('\n');
+  });
+  for (const [firstLine] of content) {
+    expect(firstLine).toBe('setup-per-worker');
+  }
+  const secondLines = content.map(([, secondLine]) => secondLine);
+  secondLines.sort();
+  expect(secondLines).toEqual(['1', '2']);
+  expect(secondLines).toEqual(
+    expect.arrayContaining([process.env.JEST_WORKER_ID]),
+  );
 });
