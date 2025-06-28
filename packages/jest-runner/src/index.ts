@@ -193,6 +193,22 @@ export default class TestRunner extends EmittingTestRunner {
     );
 
     const cleanup = async () => {
+      if (tests.length > 0) {
+        performance.mark('jest/globalTeardownPerWorker:start');
+        try {
+          await worker.runInAllWorkers('runGlobal', {
+            allTests: tests,
+            globalConfig: this._globalConfig,
+            moduleName: 'globalTeardownPerWorker',
+          });
+        } catch (error) {
+          console.error(
+            chalk.yellow('Running globalTeardownPerWorker failed.'),
+            error,
+          );
+        }
+        performance.mark('jest/globalTeardownPerWorker:end');
+      }
       const {forceExited} = await worker.end();
       if (forceExited) {
         console.error(
