@@ -44,6 +44,7 @@ export type {
   JestTestRunner,
   UnsubscribeFn,
 } from './types';
+export {default as runGlobalHook} from './runGlobalHook';
 
 type TestWorker = typeof import('./testWorker');
 

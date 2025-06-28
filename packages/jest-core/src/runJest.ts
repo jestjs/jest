@@ -24,6 +24,7 @@ import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
+import {runGlobalHook} from 'jest-runner';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, type JestHookEmitter, type TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
@@ -34,7 +35,6 @@ import collectNodeHandles, {
 } from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import serializeToJSON from './lib/serializeToJSON';
-import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
