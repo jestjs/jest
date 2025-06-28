@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "globalSetupPerWorker": "<rootDir>/setup.js",
+    "transformIgnorePatterns": []
+  }
+}
