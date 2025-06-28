@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {performance} from 'perf_hooks';
 import chalk from 'chalk';
 import Emittery from 'emittery';
 import pLimit from 'p-limit';
@@ -170,6 +171,16 @@ export default class TestRunner extends EmittingTestRunner {
         }
       });
     });
+
+    if (tests.length > 0) {
+      performance.mark('jest/globalSetupPerWorker:start');
+      await worker.runInAllWorkers('runGlobal', {
+        allTests: tests,
+        globalConfig: this._globalConfig,
+        moduleName: 'globalSetupPerWorker',
+      });
+      performance.mark('jest/globalSetupPerWorker:end');
+    }
 
     const runAllTests = Promise.all(
       tests.map(test =>
