@@ -74,7 +74,9 @@ export const initialOptions: Config.InitialOptions = {
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
   globalSetup: 'setup.js',
+  globalSetupPerWorker: 'setup-per-worker.js',
   globalTeardown: 'teardown.js',
+  globalTeardownPerWorker: 'teardown-per-worker.js',
   globals: {__DEV__: true},
   haste: {
     computeSha1: true,
@@ -245,7 +247,9 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
   globalSetup: 'setup.js',
+  globalSetupPerWorker: 'setup-per-worker.js',
   globalTeardown: 'teardown.js',
+  globalTeardownPerWorker: 'teardown-per-worker.js',
   globals: {__DEV__: true},
   haste: {
     computeSha1: true,

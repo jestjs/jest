@@ -651,7 +651,9 @@ describe('Watch mode flows', () => {
     ${'✔︎'} | ${'findRelatedTests'}
     ${'✖︎'} | ${'forceExit'}
     ${'✖︎'} | ${'globalSetup'}
+    ${'✖︎'} | ${'globalSetupPerWorker'}
     ${'✖︎'} | ${'globalTeardown'}
+    ${'✖︎'} | ${'globalTeardownPerWorker'}
     ${'✖︎'} | ${'json'}
     ${'✖︎'} | ${'lastCommit'}
     ${'✖︎'} | ${'listTests'}

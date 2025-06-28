@@ -274,7 +274,9 @@ export type GlobalConfig = {
   forceExit: boolean;
   json: boolean;
   globalSetup?: string;
+  globalSetupPerWorker?: string;
   globalTeardown?: string;
+  globalTeardownPerWorker?: string;
   lastCommit: boolean;
   logHeapUsage: boolean;
   listTests: boolean;
@@ -346,7 +348,9 @@ export type ProjectConfig = {
   filter?: string;
   forceCoverageMatch: Array<string>;
   globalSetup?: string;
+  globalSetupPerWorker?: string;
   globalTeardown?: string;
+  globalTeardownPerWorker?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
   id: string;
@@ -427,7 +431,9 @@ export type Argv = Arguments<
     forceExit: boolean;
     globals: string;
     globalSetup: string | null | undefined;
+    globalSetupPerWorker: string | null | undefined;
     globalTeardown: string | null | undefined;
+    globalTeardownPerWorker: string | null | undefined;
     haste: string;
     ignoreProjects: Array<string>;
     injectGlobals: boolean;

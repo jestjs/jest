@@ -216,9 +216,21 @@ describe('shouldInstrument', () => {
       });
     });
 
+    it('if file is a globalSetupPerWorker file', () => {
+      testShouldInstrument('globalSetupPerWorker.js', defaultOptions, {
+        globalSetupPerWorker: 'globalSetupPerWorker.js',
+      });
+    });
+
     it('if file is globalTeardown file', () => {
       testShouldInstrument('globalTeardown.js', defaultOptions, {
         globalTeardown: 'globalTeardown.js',
+      });
+    });
+
+    it('if file is globalTeardownPerWorker file', () => {
+      testShouldInstrument('globalTeardownPerWorker.js', defaultOptions, {
+        globalTeardownPerWorker: 'globalTeardownPerWorker.js',
       });
     });
 

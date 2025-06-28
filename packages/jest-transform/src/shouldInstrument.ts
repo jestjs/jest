@@ -91,7 +91,15 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (config.globalSetupPerWorker === filename) {
+    return false;
+  }
+
   if (config.globalTeardown === filename) {
+    return false;
+  }
+
+  if (config.globalTeardownPerWorker === filename) {
     return false;
   }
 
