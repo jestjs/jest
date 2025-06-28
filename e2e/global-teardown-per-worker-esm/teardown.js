@@ -13,10 +13,11 @@ import {createDirectory} from 'jest-util';
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown-per-worker-esm');
 
 export default function () {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     createDirectory(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');
-    fs.writeFileSync(path.join(DIR, fileId), 'teardown');
+    const data = ['teardown-per-worker', process.env.JEST_WORKER_ID].join('\n');
+    fs.writeFileSync(path.join(DIR, fileId), data);
     resolve();
   });
 }

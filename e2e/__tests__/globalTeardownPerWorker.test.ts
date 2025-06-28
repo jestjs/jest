@@ -45,28 +45,66 @@ test('globalTeardownPerWorker is triggered once after all test suites per worker
   createDirectory(DIR);
   const teardownPath = path.resolve(e2eDir, 'teardown.js');
   const result = runWithJson('global-teardown-per-worker', [
-    `--globalTeardown=${teardownPath}`,
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
     '--testPathPatterns=__tests__',
   ]);
 
   expect(result.exitCode).toBe(0);
   const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(1);
-  const teardown = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
-  expect(teardown).toBe('teardown');
+  expect(files).toHaveLength(2);
+  const content = files.map(file => {
+    const data = fs.readFileSync(path.join(DIR, file), 'utf8');
+    return data.split('\n');
+  });
+  for (const [firstLine] of content) {
+    expect(firstLine).toBe('teardown-per-worker');
+  }
+  const secondLines = content.map(([, secondLine]) => secondLine);
+  secondLines.sort();
+  expect(secondLines).toEqual(['1', '2']);
+});
+
+test('globalTeardownPerWorker with worker threads', () => {
+  createDirectory(DIR);
+  const teardownPath = path.resolve(e2eDir, 'teardown.js');
+  const result = runWithJson('global-teardown-per-worker', [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
+    '--testPathPatterns=__tests__',
+    '--workerThreads',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+  const files = fs.readdirSync(DIR);
+  expect(files).toHaveLength(2);
+  const content = files.map(file => {
+    const data = fs.readFileSync(path.join(DIR, file), 'utf8');
+    return data.split('\n');
+  });
+  for (const [firstLine] of content) {
+    expect(firstLine).toBe('teardown-per-worker');
+  }
+  const secondLines = content.map(([, secondLine]) => secondLine);
+  secondLines.sort();
+  expect(secondLines).toEqual(['1', '2']);
 });
 
 test('jest throws an error when globalTeardownPerWorker does not export a function', () => {
   const teardownPath = path.resolve(e2eDir, 'invalidTeardown.js');
   const {exitCode, stderr} = runJest(e2eDir, [
-    `--globalTeardown=${teardownPath}`,
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
     '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain('Jest: Got error running globalTeardownPerWorker');
   expect(stderr).toContain(
-    `globalTeardown file must export a function at ${teardownPath}`,
+    `globalTeardownPerWorker file must export a function at ${teardownPath}`,
   );
 });
 
@@ -74,18 +112,23 @@ test('globalTeardownPerWorker function gets global config object and project con
   const teardownPath = path.resolve(e2eDir, 'teardownWithConfig.js');
 
   const result = runJest(e2eDir, [
-    `--globalTeardown=${teardownPath}`,
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
     '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
+  const expected = ["[ 'pass' ]", 'true', "[ 'pass' ]", 'true'].join('\n');
+  expect(result.stdout).toBe(expected);
 });
 
 test('should call globalTeardownPerWorker function of multiple projects', () => {
   const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson('global-teardown-per-worker', [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--config=${configPath}`,
   ]);
 
@@ -100,6 +143,8 @@ test('should not call a globalTeardownPerWorker of a project if there are no tes
   const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson('global-teardown-per-worker', [
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
     `--config=${configPath}`,
     '--testPathPatterns=teardown1',
   ]);
@@ -115,12 +160,15 @@ test('globalTeardownPerWorker works with default export', () => {
   const teardownPath = path.resolve(e2eDir, 'teardownWithDefaultExport.js');
 
   const result = runJest(e2eDir, [
-    `--globalTeardown=${teardownPath}`,
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
     '--testPathPatterns=pass',
     '--cache=true',
   ]);
 
-  expect(result.stdout).toBe("[ 'pass' ]\ntrue");
+  const expected = ["[ 'pass' ]", 'true', "[ 'pass' ]", 'true'].join('\n');
+  expect(result.stdout).toBe(expected);
 });
 
 test('globalTeardownPerWorker throws with named export', () => {
@@ -130,21 +178,27 @@ test('globalTeardownPerWorker throws with named export', () => {
   );
 
   const {exitCode, stderr} = runJest(e2eDir, [
-    `--globalTeardown=${teardownPath}`,
+    '--maxWorkers=2',
+    '--workerIdleMemoryLimit=100MB',
+    `--globalTeardownPerWorker=${teardownPath}`,
     '--testPathPatterns=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain('Jest: Got error running globalTeardownPerWorker');
   expect(stderr).toContain(
-    `globalTeardown file must export a function at ${teardownPath}`,
+    `globalTeardownPerWorker file must export a function at ${teardownPath}`,
   );
 });
 
 test('globalTeardownPerWorker works with ESM modules', () => {
-  const {exitCode} = runJest('global-teardown-per-worker-esm', ['--no-cache'], {
-    nodeOptions: '--experimental-vm-modules --no-warnings',
-  });
+  const {exitCode} = runJest(
+    'global-teardown-per-worker-esm',
+    ['--maxWorkers=2', '--workerIdleMemoryLimit=100MB', '--no-cache'],
+    {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    },
+  );
 
   expect(exitCode).toBe(0);
 });

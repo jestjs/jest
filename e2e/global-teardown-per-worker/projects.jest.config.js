@@ -12,14 +12,14 @@ module.exports = {
   projects: [
     {
       displayName: 'project-1',
-      globalTeardown: '<rootDir>/teardown.js',
+      globalTeardownPerWorker: '<rootDir>/teardown.js',
       rootDir: path.resolve(__dirname, './project-1'),
       testMatch: ['<rootDir>/**/*.test.js'],
       transformIgnorePatterns: ['/node_modules/', '/packages/'],
     },
     {
       displayName: 'project-2',
-      globalTeardown: '<rootDir>/teardown.js',
+      globalTeardownPerWorker: '<rootDir>/teardown.js',
       rootDir: path.resolve(__dirname, './project-2'),
       testMatch: ['<rootDir>/**/*.test.js'],
       transformIgnorePatterns: ['/node_modules/', '/packages/'],
