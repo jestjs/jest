@@ -292,12 +292,7 @@ Expected: <g>"cde"</>
 Received: <r>"abc"</>
 `;
 
-exports[`.toBe() fails for: "four
-4
-line
-string" and "3
-line
-string" 1`] = `
+exports[`.toBe() fails for: "four\\n4\\nline\\nstring" and "3\\nline\\nstring" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
 <g>- Expected  - 1</>
@@ -317,8 +312,7 @@ Expected: <g>"<i>delightful</i> JavaScript testing"</>
 Received: <r>"<i>painless</i> JavaScript testing"</>
 `;
 
-exports[`.toBe() fails for: "with 
-trailing space" and "without trailing space" 1`] = `
+exports[`.toBe() fails for: "with \\ntrailing space" and "without trailing space" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
 <g>- Expected  - 1</>
@@ -2050,9 +2044,7 @@ Expected: <g>"apple"</>
 Received: <r>"banana"</>
 `;
 
-exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function ? \\"function\\" : \\"object\\";").toEqual("type TypeName<T> = T extends Function
-? \\"function\\"
-: \\"object\\";") 1`] = `
+exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function ? \\"function\\" : \\"object\\";").toEqual("type TypeName<T> = T extends Function\\n? \\"function\\"\\n: \\"object\\";") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 <g>- Expected  - 3</>
@@ -3533,11 +3525,7 @@ Expected value: <g>"\\"That <i>cat </i>cartoon\\""</>
 Received value: <r>"\\"That cartoon\\""</>
 `;
 
-exports[`.toHaveProperty() {pass: false} expect({"children": ["Roses are red.
-Violets are blue.
-Testing with Jest is good for you."], "props": null, "type": "pre"}).toHaveProperty('children,0', "Roses are red, violets are blue.
-Testing with Jest
-Is good for you.") 1`] = `
+exports[`.toHaveProperty() {pass: false} expect({"children": ["Roses are red.\\nViolets are blue.\\nTesting with Jest is good for you."], "props": null, "type": "pre"}).toHaveProperty('children,0', "Roses are red, violets are blue.\\nTesting with Jest\\nIs good for you.") 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
 
 Expected path: <g>["children", 0]</>
