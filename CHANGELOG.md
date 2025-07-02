@@ -3,7 +3,7 @@
 ### Features
 
 - `[expect]` Have `Inverse` exportable ([#15714](https://github.com/jestjs/jest/pull/15714))
-- `[expect]` feat: support async functions in toThrow ([#15704](https://github.com/jestjs/jest/pull/15704))
+- `[expect]` feat: support `async functions` in `toBe` ([#15704](https://github.com/jestjs/jest/pull/15704))
 
 ## 30.0.3
 
