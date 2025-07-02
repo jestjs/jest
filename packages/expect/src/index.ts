@@ -6,8 +6,7 @@
  *
  */
 
-/* eslint-disable local/prefer-spread-eventually */
-
+import type {ChalkFunction} from 'chalk';
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {ErrorWithStack, isPromise} from 'jest-util';
@@ -156,19 +155,18 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
   return expectation;
 };
 
-const getMessage = (message?: () => string) =>
+const getMessage = (receivedColor: ChalkFunction, message?: () => string) =>
   (message && message()) ||
-  matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
+  receivedColor('No message was specified for this matcher.');
 
-const makeResolveMatcher =
-  (
-    matcherName: string,
-    matcher: RawMatcherFn,
-    isNot: boolean,
-    actual: Promise<any>,
-    outerErr: JestAssertionError,
-  ): PromiseMatcherFn =>
-  (...args) => {
+const makeResolveMatcher = (
+  matcherName: string,
+  matcher: RawMatcherFn,
+  isNot: boolean,
+  actual: Promise<any>,
+  outerErr: JestAssertionError,
+): PromiseMatcherFn =>
+  function (...args) {
     const options = {
       isNot,
       promise: 'resolves',
@@ -176,13 +174,13 @@ const makeResolveMatcher =
 
     if (!isPromise(actual)) {
       throw new JestAssertionError(
-        matcherUtils.matcherErrorMessage(
-          matcherUtils.matcherHint(matcherName, undefined, '', options),
-          `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
-          matcherUtils.printWithType(
+        this.utils.matcherErrorMessage(
+          this.utils.matcherHint(matcherName, undefined, '', options),
+          `${this.utils.RECEIVED_COLOR('received')} value must be a promise`,
+          this.utils.printWithType(
             'Received',
             actual,
-            matcherUtils.printReceived,
+            this.utils.printReceived,
           ),
         ),
       );
@@ -193,33 +191,27 @@ const makeResolveMatcher =
     return actual.then(
       result =>
         makeThrowingMatcher(matcher, isNot, 'resolves', result, innerErr).apply(
-          null,
+          this,
           args,
         ),
       error => {
         outerErr.message =
-          `${matcherUtils.matcherHint(
-            matcherName,
-            undefined,
-            '',
-            options,
-          )}\n\n` +
+          `${this.utils.matcherHint(matcherName, undefined, '', options)}\n\n` +
           'Received promise rejected instead of resolved\n' +
-          `Rejected to value: ${matcherUtils.printReceived(error)}`;
+          `Rejected to value: ${this.utils.printReceived(error)}`;
         throw outerErr;
       },
     );
   };
 
-const makeRejectMatcher =
-  (
-    matcherName: string,
-    matcher: RawMatcherFn,
-    isNot: boolean,
-    actual: Promise<any> | (() => Promise<any>),
-    outerErr: JestAssertionError,
-  ): PromiseMatcherFn =>
-  (...args) => {
+const makeRejectMatcher = (
+  matcherName: string,
+  matcher: RawMatcherFn,
+  isNot: boolean,
+  actual: Promise<any> | (() => Promise<any>),
+  outerErr: JestAssertionError,
+): PromiseMatcherFn =>
+  function (...args) {
     const options = {
       isNot,
       promise: 'rejects',
@@ -230,15 +222,15 @@ const makeRejectMatcher =
 
     if (!isPromise(actualWrapper)) {
       throw new JestAssertionError(
-        matcherUtils.matcherErrorMessage(
-          matcherUtils.matcherHint(matcherName, undefined, '', options),
-          `${matcherUtils.RECEIVED_COLOR(
+        this.utils.matcherErrorMessage(
+          this.utils.matcherHint(matcherName, undefined, '', options),
+          `${this.utils.RECEIVED_COLOR(
             'received',
           )} value must be a promise or a function returning a promise`,
-          matcherUtils.printWithType(
+          this.utils.printWithType(
             'Received',
             actual,
-            matcherUtils.printReceived,
+            this.utils.printReceived,
           ),
         ),
       );
@@ -249,23 +241,24 @@ const makeRejectMatcher =
     return actualWrapper.then(
       result => {
         outerErr.message =
-          `${matcherUtils.matcherHint(
-            matcherName,
-            undefined,
-            '',
-            options,
-          )}\n\n` +
+          `${this.utils.matcherHint(matcherName, undefined, '', options)}\n\n` +
           'Received promise resolved instead of rejected\n' +
-          `Resolved to value: ${matcherUtils.printReceived(result)}`;
+          `Resolved to value: ${this.utils.printReceived(result)}`;
         throw outerErr;
       },
       error =>
         makeThrowingMatcher(matcher, isNot, 'rejects', error, innerErr).apply(
-          null,
+          this,
           args,
         ),
     );
   };
+
+const utils: MatcherUtils['utils'] = Object.freeze({
+  ...matcherUtils,
+  iterableEquality,
+  subsetEquality,
+});
 
 const makeThrowingMatcher = (
   matcher: RawMatcherFn,
@@ -276,11 +269,6 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils: MatcherUtils['utils'] = {
-      ...matcherUtils,
-      iterableEquality,
-      subsetEquality,
-    };
 
     const matcherUtilsThing: MatcherUtils = {
       customTesters: getCustomEqualityTesters(),
@@ -306,7 +294,7 @@ const makeThrowingMatcher = (
       result: SyncExpectationResult,
       asyncError?: JestAssertionError,
     ) => {
-      _validateResult(result);
+      _validateResult(this.utils.stringify, result);
 
       getState().assertionCalls++;
 
@@ -414,7 +402,10 @@ expect.objectContaining = objectContaining;
 expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 
-const _validateResult = (result: any) => {
+const _validateResult = (
+  stringify: (typeof matcherUtils)['stringify'],
+  result: any,
+) => {
   if (
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
@@ -427,7 +418,7 @@ const _validateResult = (result: any) => {
         'Matcher functions should ' +
         'return an object in the following format:\n' +
         '  {message?: string | function, pass: boolean}\n' +
-        `'${matcherUtils.stringify(result)}' was returned`,
+        `'${stringify(result)}' was returned`,
     );
   }
 };

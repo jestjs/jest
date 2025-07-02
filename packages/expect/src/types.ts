@@ -44,8 +44,11 @@ export type MatchersObject = {
   [name: string]: RawMatcherFn;
 };
 
-export type ThrowingMatcherFn = (actual: any) => void;
-export type PromiseMatcherFn = (actual: any) => Promise<void>;
+export type ThrowingMatcherFn = (this: MatcherContext, actual: any) => void;
+export type PromiseMatcherFn = (
+  this: MatcherContext,
+  actual: any,
+) => Promise<void>;
 
 export interface MatcherUtils {
   customTesters: Array<Tester>;
