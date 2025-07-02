@@ -3,6 +3,7 @@
 ### Features
 
 - `[expect]` Have `Inverse` exportable ([#15704](https://github.com/jestjs/jest/pull/15704))
+- `[jest-snapshot]` Handle line endings in snapshots ([#15708](https://github.com/jestjs/jest/pull/15708))
 
 ## 30.0.3
 
