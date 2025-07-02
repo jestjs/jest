@@ -87,7 +87,7 @@ Rejected to value: <r>4</>
 exports[`.resolves fails non-promise value "a" 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -96,7 +96,7 @@ Received has value: <r>"a"</>
 exports[`.resolves fails non-promise value "a" synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -105,7 +105,7 @@ Received has value: <r>"a"</>
 exports[`.resolves fails non-promise value [1] 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -114,7 +114,7 @@ Received has value: <r>[1]</>
 exports[`.resolves fails non-promise value [1] synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -123,7 +123,7 @@ Received has value: <r>[1]</>
 exports[`.resolves fails non-promise value [Function anonymous] 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -132,7 +132,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -141,7 +141,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -150,7 +150,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -159,7 +159,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.resolves fails non-promise value 4 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -168,7 +168,7 @@ Received has value: <r>4</>
 exports[`.resolves fails non-promise value 4 synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -177,7 +177,7 @@ Received has value: <r>4</>
 exports[`.resolves fails non-promise value null 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -185,7 +185,7 @@ Received has value: <r>null</>
 exports[`.resolves fails non-promise value null synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -193,7 +193,7 @@ Received has value: <r>null</>
 exports[`.resolves fails non-promise value true 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -202,7 +202,7 @@ Received has value: <r>true</>
 exports[`.resolves fails non-promise value true synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -211,7 +211,7 @@ Received has value: <r>true</>
 exports[`.resolves fails non-promise value undefined 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
@@ -219,7 +219,7 @@ Received has value: <r>undefined</>
 exports[`.resolves fails non-promise value undefined synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
