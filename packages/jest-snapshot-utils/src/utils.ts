@@ -75,15 +75,43 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
+const normalizeTestNameForKey = (testName: string): string =>
+  testName.replaceAll(/\r\n|\r|\n/g, match => {
+    switch (match) {
+      case '\r\n':
+        return '\\r\\n';
+      case '\r':
+        return '\\r';
+      case '\n':
+        return '\\n';
+      default:
+        return match;
+    }
+  });
+
+const denormalizeTestNameFromKey = (key: string): string =>
+  key.replaceAll(/\\r\\n|\\r|\\n/g, match => {
+    switch (match) {
+      case '\\r\\n':
+        return '\r\n';
+      case '\\r':
+        return '\r';
+      case '\\n':
+        return '\n';
+      default:
+        return match;
+    }
+  });
+
 export const testNameToKey = (testName: string, count: number): string =>
-  `${testName} ${count}`;
+  `${normalizeTestNameForKey(testName)} ${count}`;
 
 export const keyToTestName = (key: string): string => {
   if (!/ \d+$/.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
-
-  return key.replace(/ \d+$/, '');
+  const testNameWithoutCount = key.replace(/ \d+$/, '');
+  return denormalizeTestNameFromKey(testNameWithoutCount);
 };
 
 export const getSnapshotData = (

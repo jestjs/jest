@@ -26,6 +26,9 @@ import {
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
   expect(keyToTestName('abc cde   12')).toBe('abc cde  ');
+  expect(keyToTestName('test with\\r\\nCRLF 1')).toBe('test with\r\nCRLF');
+  expect(keyToTestName('test with\\rCR 1')).toBe('test with\rCR');
+  expect(keyToTestName('test with\\nLF 1')).toBe('test with\nLF');
   expect(() => keyToTestName('abc cde')).toThrow(
     'Snapshot keys must end with a number.',
   );
@@ -34,6 +37,35 @@ test('keyToTestName()', () => {
 test('testNameToKey', () => {
   expect(testNameToKey('abc cde', 1)).toBe('abc cde 1');
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
+});
+
+test('testNameToKey escapes line endings to prevent collisions', () => {
+  expect(testNameToKey('test with\r\nCRLF', 1)).toBe('test with\\r\\nCRLF 1');
+  expect(testNameToKey('test with\rCR', 1)).toBe('test with\\rCR 1');
+  expect(testNameToKey('test with\nLF', 1)).toBe('test with\\nLF 1');
+
+  expect(testNameToKey('test\r\n', 1)).not.toBe(testNameToKey('test\r', 1));
+  expect(testNameToKey('test\r\n', 1)).not.toBe(testNameToKey('test\n', 1));
+  expect(testNameToKey('test\r', 1)).not.toBe(testNameToKey('test\n', 1));
+});
+
+test('keyToTestName reverses testNameToKey transformation', () => {
+  const testCases = [
+    'simple test',
+    'test with\r\nCRLF',
+    'test with\rCR only',
+    'test with\nLF only',
+    'mixed\r\nline\rendings\n',
+    'test\r',
+    'test\r\n',
+    'test\n',
+  ];
+
+  for (const testName of testCases) {
+    const key = testNameToKey(testName, 1);
+    const recovered = keyToTestName(key);
+    expect(recovered).toBe(testName);
+  }
 });
 
 test('saveSnapshotFile() works with \r\n', () => {
