@@ -75,27 +75,33 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
-const LINE_ENDING_MAPPINGS = [
-  ['\r\n', '\\r\\n'],
-  ['\r', '\\r'],
-  ['\n', '\\n'],
-] as const;
+const normalizeTestNameForKey = (testName: string): string =>
+  testName.replaceAll(/\r\n|\r|\n/g, match => {
+    switch (match) {
+      case '\r\n':
+        return '\\r\\n';
+      case '\r':
+        return '\\r';
+      case '\n':
+        return '\\n';
+      default:
+        return match;
+    }
+  });
 
-const normalizeTestNameForKey = (testName: string): string => {
-  let result = testName;
-  for (const [original, escaped] of LINE_ENDING_MAPPINGS) {
-    result = result.replaceAll(original, escaped);
-  }
-  return result;
-};
-
-const denormalizeTestNameFromKey = (key: string): string => {
-  let result = key;
-  for (const [original, escaped] of LINE_ENDING_MAPPINGS) {
-    result = result.replaceAll(escaped, original);
-  }
-  return result;
-};
+const denormalizeTestNameFromKey = (key: string): string =>
+  key.replaceAll(/\\r\\n|\\r|\\n/g, match => {
+    switch (match) {
+      case '\\r\\n':
+        return '\r\n';
+      case '\\r':
+        return '\r';
+      case '\\n':
+        return '\n';
+      default:
+        return match;
+    }
+  });
 
 export const testNameToKey = (testName: string, count: number): string =>
   `${normalizeTestNameForKey(testName)} ${count}`;
