@@ -1,9 +1,15 @@
 ## main
 
+## 30.0.4
+
 ### Features
 
-- `[expect]` Have `Inverse` exportable ([#15714](https://github.com/jestjs/jest/pull/15714))
+- `[expect]` The `Inverse` type is now exported ([#15714](https://github.com/jestjs/jest/pull/15714))
 - `[expect]` feat: support `async functions` in `toBe` ([#15704](https://github.com/jestjs/jest/pull/15704))
+
+### Fixes
+
+- `[jest]` jest --onlyFailures --listTests now correctly lists only failed tests (#15700)
 - `[jest-snapshot]` Handle line endings in snapshots ([#15708](https://github.com/jestjs/jest/pull/15708))
 
 ## 30.0.3
