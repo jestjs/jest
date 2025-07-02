@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "30.0.3",
+  "version": "30.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
