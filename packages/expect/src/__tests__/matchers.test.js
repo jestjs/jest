@@ -143,6 +143,17 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
+  it('should resolve async function', async () => {
+    async function fn() {
+      return 'Test';
+    }
+    await jestExpect(fn).resolves.toBe('Test');
+  });
+
+  it('should resolve function returning promise', async () => {
+    await jestExpect(() => Promise.resolve('Test')).resolves.toBe('Test');
+  });
+
   for (const value of ['a', [1], () => {}, {a: 1}]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
