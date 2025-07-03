@@ -328,6 +328,15 @@ describe('toThrow', () => {
         });
       });
 
+      test('isNot false, cause is bigint', () => {
+        jestExpect(() => {
+          throw new Error('Message', {cause: 0n});
+        }).toThrow({
+          cause: 0n,
+          message: 'Message',
+        });
+      });
+
       test('isNot false, cause is object', () => {
         jestExpect(() => {
           throw new Error('Message', {

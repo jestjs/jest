@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[expect]` Fix `bigint` error ([#15702](https://github.com/jestjs/jest/pull/15702))
+
 ## 30.0.4
 
 ### Features
