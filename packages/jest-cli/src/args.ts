@@ -286,8 +286,18 @@ export const options: {[key: string]: Options} = {
     requiresArg: true,
     type: 'string',
   },
+  globalSetupPerWorker: {
+    description: 'The path to a module that runs before All Tests in a worker',
+    requiresArg: true,
+    type: 'string',
+  },
   globalTeardown: {
     description: 'The path to a module that runs after All Tests.',
+    requiresArg: true,
+    type: 'string',
+  },
+  globalTeardownPerWorker: {
+    description: 'The path to a module that runs after All Tests in a worker',
     requiresArg: true,
     type: 'string',
   },

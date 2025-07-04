@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {performance} from 'perf_hooks';
 import chalk from 'chalk';
 import Emittery from 'emittery';
 import pLimit from 'p-limit';
@@ -44,6 +45,7 @@ export type {
   JestTestRunner,
   UnsubscribeFn,
 } from './types';
+export {default as runGlobalHook} from './runGlobalHook';
 
 type TestWorker = typeof import('./testWorker');
 
@@ -170,6 +172,16 @@ export default class TestRunner extends EmittingTestRunner {
       });
     });
 
+    if (tests.length > 0) {
+      performance.mark('jest/globalSetupPerWorker:start');
+      await worker.runInAllWorkers('runGlobal', {
+        allTests: tests,
+        globalConfig: this._globalConfig,
+        moduleName: 'globalSetupPerWorker',
+      });
+      performance.mark('jest/globalSetupPerWorker:end');
+    }
+
     const runAllTests = Promise.all(
       tests.map(test =>
         runTestInWorker(test).then(
@@ -181,6 +193,22 @@ export default class TestRunner extends EmittingTestRunner {
     );
 
     const cleanup = async () => {
+      if (tests.length > 0) {
+        performance.mark('jest/globalTeardownPerWorker:start');
+        try {
+          await worker.runInAllWorkers('runGlobal', {
+            allTests: tests,
+            globalConfig: this._globalConfig,
+            moduleName: 'globalTeardownPerWorker',
+          });
+        } catch (error) {
+          console.error(
+            chalk.yellow('Running globalTeardownPerWorker failed.'),
+            error,
+          );
+        }
+        performance.mark('jest/globalTeardownPerWorker:end');
+      }
       const {forceExited} = await worker.end();
       if (forceExited) {
         console.error(
