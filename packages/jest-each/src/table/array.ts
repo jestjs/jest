@@ -17,7 +17,7 @@ const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 const NUMBER_PLACEHOLDER = '%$';
 const PLACEHOLDER_PREFIX = '%';
-const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
+const ESCAPED_PLACEHOLDER_PREFIX = '%%';
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
 export default function array(
@@ -77,17 +77,11 @@ const formatTitle = (
         rowIndex,
       ),
     )
-    .replaceAll(
-      new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'),
-      PLACEHOLDER_PREFIX,
-    );
+    .replaceAll(JEST_EACH_PLACEHOLDER_ESCAPE, PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>
   typeof value === 'string'
-    ? value.replaceAll(
-        new RegExp(PLACEHOLDER_PREFIX, 'g'),
-        JEST_EACH_PLACEHOLDER_ESCAPE,
-      )
+    ? value.replaceAll(PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE)
     : value;
 
 const getMatchingPlaceholders = (title: string) =>
