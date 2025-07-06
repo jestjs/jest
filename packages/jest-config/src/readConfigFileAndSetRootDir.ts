@@ -45,21 +45,29 @@ export default async function readConfigFileAndSetRootDir(
         try {
           // Try native node TypeScript support first.
           configObject = await requireOrImportModule<any>(configPath);
-        } catch (error) {
-          if (
-            !(
-              error instanceof SyntaxError &&
-              // Likely ESM in a file interpreted as CJS, which means it needs to be
-              // compiled. We ignore the error and try to load it with a loader.
-              /Unexpected token '(export|import)'/.test(error.message)
-            )
-          ) {
-            throw error;
+        } catch (requireOrImportModuleError) {
+          if (!(requireOrImportModuleError instanceof SyntaxError)) {
+            throw requireOrImportModuleError;
+          }
+          try {
+            // Likely ESM in a file interpreted as CJS, which means it needs to be
+            // compiled. We ignore the error and try to load it with a loader.
+            configObject = await loadTSConfigFile(configPath);
+          } catch (loadTSConfigFileError) {
+            // If we still encounter an error, we throw both messages combined.
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              // Preamble text is added further down:
+              // Jest: Failed to parse the TypeScript config file ${configPath}\n
+              '  both with the native node TypeScript support and configured TypeScript loaders.\n' +
+              '    Errors were:\n' +
+              `    - ${requireOrImportModuleError}\n` +
+              `    - ${loadTSConfigFileError}`
+            );
           }
         }
-      }
-      // Fall back to `ts-node` etc. if this cannot be natively parsed/executed.
-      if (!configObject) {
+      } else {
         configObject = await loadTSConfigFile(configPath);
       }
     } else if (isJSON) {
