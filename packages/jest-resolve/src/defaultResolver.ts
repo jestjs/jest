@@ -6,8 +6,6 @@
  */
 
 import {isBuiltin} from 'node:module';
-import {fileURLToPath} from 'node:url';
-import pnpResolver from 'jest-pnp-resolver';
 import {
   type ResolveResult,
   ResolverFactory,
@@ -45,12 +43,6 @@ export interface ResolverOptions extends Omit<
   paths?: ReadonlyArray<string>;
   /** Current root directory. */
   rootDir?: string;
-
-  /**
-   * @internal Whether to allow the `jest-pnp-resolver` to be used.
-   * @see https://github.com/arcanis/jest-pnp-resolver/blob/ae8e3992349f3b43d1476572e9315e14358e8944/index.js#L49
-   */
-  allowPnp?: boolean;
 }
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
@@ -79,21 +71,9 @@ function baseResolver(
   options: ResolverOptions,
   async?: true,
 ): string | Promise<string> {
-  // https://github.com/oxc-project/oxc-resolver/issues/565
-  // https://github.com/jestjs/jest/issues/15676
+  // `builtins` in `unrs-resolver` is static which could be wrong at runtime.
   if (isBuiltin(path)) {
     return path;
-  }
-
-  if (process.versions.pnp && options.allowPnp !== false) {
-    return pnpResolver(path, {
-      ...options,
-      extensions: options.extensions as Array<string> | undefined,
-    });
-  }
-
-  if (path.startsWith('file://')) {
-    path = fileURLToPath(path);
   }
 
   /* eslint-disable prefer-const */
