@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as ReactIs from 'react-is';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
+import * as ReactIs from './lib/ReactIs';
 import {
   printChildren,
   printElement,
