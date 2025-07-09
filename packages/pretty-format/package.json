@@ -22,12 +22,10 @@
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "@jest/schemas": "workspace:*",
-    "ansi-styles": "^5.2.0",
-    "react-is": "^18.3.1"
+    "ansi-styles": "^5.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
-    "@types/react-is": "^18.3.1",
     "@types/react-test-renderer": "^18.3.1",
     "immutable": "^5.1.2",
     "jest-util": "workspace:*",

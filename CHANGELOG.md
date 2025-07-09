@@ -3,6 +3,7 @@
 ### Fixes
 
 - `[expect]` Fix `bigint` error ([#15702](https://github.com/jestjs/jest/pull/15702))
+- `[pretty-format]` Fix support for React 19 ([#15729](https://github.com/jestjs/jest/pull/15729))
 
 ## 30.0.4
 
