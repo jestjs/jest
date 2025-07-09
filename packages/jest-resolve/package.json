@@ -22,11 +22,10 @@
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
     "jest-haste-map": "workspace:*",
-    "jest-pnp-resolver": "^1.2.3",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "slash": "^3.0.0",
-    "unrs-resolver": "^1.7.11"
+    "unrs-resolver": "^1.11.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.9",

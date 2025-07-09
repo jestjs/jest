@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[resolve]` Bump `unrs-resolver` to 1.11.0, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
+
 ### Fixes
 
 - `[expect]` Fix `bigint` error ([#15702](https://github.com/jestjs/jest/pull/15702))
