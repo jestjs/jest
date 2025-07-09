@@ -637,7 +637,9 @@ export default async function normalize(
         break;
       case 'dependencyExtractor':
       case 'globalSetup':
+      case 'globalSetupPerWorker':
       case 'globalTeardown':
+      case 'globalTeardownPerWorker':
       case 'runtime':
       case 'snapshotResolver':
       case 'testResultsProcessor':

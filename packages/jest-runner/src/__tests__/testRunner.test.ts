@@ -20,6 +20,7 @@ jest.mock('jest-worker', () => ({
         end: jest.fn().mockResolvedValue({forceExited: false}),
         getStderr: jest.fn(),
         getStdout: jest.fn(),
+        runInAllWorkers: jest.fn(),
         worker: jest.fn((data, callback) => require(worker)(data, callback)),
       }),
   ),
