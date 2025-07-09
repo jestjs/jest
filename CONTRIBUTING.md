@@ -111,7 +111,7 @@ Ran all test suites.
 
 ## Checking Constraints
 
-We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/jestjs/jest/blob/main/constraints.pro) and their purposes are documented with comments.
+We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`yarn.config.cjs` file](https://github.com/jestjs/jest/blob/main/yarn.config.cjs) and their purposes are documented with comments.
 
 Constraints can be checked with `yarn constraints`, and fixed with `yarn constraints --fix`. Generally speaking:
 
