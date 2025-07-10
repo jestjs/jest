@@ -769,9 +769,11 @@ export default async function normalize(
       case 'moduleDirectories':
       case 'testMatch':
         {
+          const option = oldOptions[key];
+          const rawValue = Array.isArray(option) ? option : [option];
           const replacedRootDirTags = _replaceRootDirTags(
             escapeGlobCharacters(options.rootDir),
-            oldOptions[key],
+            rawValue,
           );
 
           if (replacedRootDirTags) {
