@@ -1,0 +1,26 @@
+.idea
+.DS_STORE
+.eslintcache
+*.swp
+*~
+api-extractor.json
+coverage
+
+/packages/*/build
+/packages/*/dist
+/packages/jest-config/src/__tests__/jest-preset.json
+/packages/pretty-format/__benchmarks__/world.geo.json
+
+# Breaks tests
+/e2e/coverage-handlebars/greet.hbs
+
+# Third-party script
+packages/jest-diff/src/cleanupSemantic.ts
+
+/website/.docusaurus
+/website/backers.json
+/website/build
+/website/versions.json
+
+**/.yarn
+**/.pnp.*

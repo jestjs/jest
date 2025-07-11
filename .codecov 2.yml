@@ -1,0 +1,13 @@
+codecov:
+  require_ci_to_pass: false
+
+comment: false
+
+coverage:
+  status:
+    patch:
+      default:
+        target: auto
+    project:
+      default:
+        target: auto

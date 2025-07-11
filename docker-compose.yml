@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  jest:
+    build: .
+    volumes:
+      - .:/app
+      - jest_node_modules:/app/node_modules
+    working_dir: /app
+    command: yarn test
+
+volumes:
+  jest_node_modules:
