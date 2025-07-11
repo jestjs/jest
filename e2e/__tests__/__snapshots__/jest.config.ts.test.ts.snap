@@ -15,12 +15,20 @@ Ran all test suites."
 
 exports[`on node >=24 invalid JS in jest.config.ts (node with native TS support) 1`] = `
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
-  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'"
+    both with the native node TypeScript support and configured TypeScript loaders.
+    Errors were:
+    - SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
+    - TSError: ⨯ Unable to compile TypeScript:
+jest.config.ts(1,16): error TS2304: Cannot find name 'i'.
+jest.config.ts(1,17): error TS1005: ';' expected.
+jest.config.ts(1,39): error TS1002: Unterminated string literal."
 `;
 
 exports[`on node ^23.6 invalid JS in jest.config.ts (node with native TS support) 1`] = `
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
-  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]:   x Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
+    both with the native node TypeScript support and configured TypeScript loaders.
+    Errors were:
+    - SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]:   x Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
    ,----
  1 | export default i'll break this file yo
    :                 ^^^^^^^^^^^^^^^^^^^^^^
@@ -29,7 +37,12 @@ exports[`on node ^23.6 invalid JS in jest.config.ts (node with native TS support
    ,----
  1 | export default i'll break this file yo
    :                 ^^^^^^^^^^^^^^^^^^^^^^
-   \`----"
+   \`----
+
+    - TSError: ⨯ Unable to compile TypeScript:
+jest.config.ts(1,16): error TS2304: Cannot find name 'i'.
+jest.config.ts(1,17): error TS1005: ';' expected.
+jest.config.ts(1,39): error TS1002: Unterminated string literal."
 `;
 
 exports[`traverses directory tree up until it finds jest.config 1`] = `

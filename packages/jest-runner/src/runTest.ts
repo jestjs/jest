@@ -217,8 +217,11 @@ async function runTestInternal(
       );
       sourcemapSupport.resetRetrieveHandlers();
 
-      await environment.teardown();
-      isTornDown = true;
+      try {
+        await environment.teardown();
+      } finally {
+        isTornDown = true;
+      }
     }
   };
 
