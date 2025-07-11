@@ -954,7 +954,7 @@ describe('testMatch', () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('normalizes testMatch', async () => {
+  it('normalizes testMatch root directory', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
@@ -964,6 +964,18 @@ describe('testMatch', () => {
     );
 
     expect(options.testMatch).toEqual(['/root/**/*.js']);
+  });
+
+  it('normalizes testMatch to array', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testMatch: '**/*.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testMatch).toEqual(['**/*.js']);
   });
 });
 

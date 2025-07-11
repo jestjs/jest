@@ -156,10 +156,13 @@ export const initialOptions: Config.InitialOptions = {
   },
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: [
-    '**/__tests__/**/*.?([mc])[jt]s?(x)',
-    '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
-  ],
+  testMatch: multipleValidOptions(
+    '**/__tests__/**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+    [
+      '**/__tests__/**/*.?([mc])[jt]s?(x)',
+      '**/?(*.)+(spec|test).?([mc])[jt]s?(x)',
+    ],
+  ),
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: multipleValidOptions(

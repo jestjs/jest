@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-config]` Allow `testMatch` to take a string value
+
 ### Fixes
 
 - `[expect]` Fix `bigint` error ([#15702](https://github.com/jestjs/jest/pull/15702))

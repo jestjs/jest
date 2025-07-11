@@ -470,7 +470,7 @@ export type Argv = Arguments<
     testEnvironment: string;
     testEnvironmentOptions: string;
     testFailureExitCode: string | null | undefined;
-    testMatch: Array<string>;
+    testMatch: string | Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
     testPathPatterns: Array<string>;
