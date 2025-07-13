@@ -323,7 +323,7 @@ export const InitialOptions = Type.Partial(
     testEnvironmentOptions: Type.Record(Type.String(), Type.Unknown()),
     testFailureExitCode: Type.Integer(),
     testLocationInResults: Type.Boolean(),
-    testMatch: Type.Array(Type.String()),
+    testMatch: Type.Union([Type.String(), Type.Array(Type.String())]),
     testNamePattern: Type.String(),
     testPathIgnorePatterns: Type.Array(Type.String()),
     testRegex: Type.Union([Type.String(), Type.Array(Type.String())]),
