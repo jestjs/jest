@@ -56,8 +56,8 @@ jobs:
       - name: Run tests depending on type information
         run: yarn test-with-type-info
 
-  typecheck:
-    name: Typecheck Examples and Tests
+  static-checks:
+    name: Static Checks (Lint, Typecheck, Yarn Validate)
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache-ubuntu
 
@@ -71,30 +71,14 @@ jobs:
           cache: yarn
       - name: install
         run: yarn --immutable
-      - name: build
+      - name: build TypeScript
         run: yarn build:ts
+      - name: build JavaScript
+        run: yarn build:js
       - name: typecheck examples
         run: yarn typecheck:examples
       - name: typecheck tests
         run: yarn typecheck:tests
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    needs: prepare-yarn-cache-ubuntu
-
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: install
-        run: yarn --immutable
-      - name: build
-        run: yarn build:js
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
       - name: run eslint
@@ -105,21 +89,6 @@ jobs:
         run: yarn check-changelog
       - name: check copyright headers
         run: yarn check-copyright-headers
-
-  yarn-validate:
-    name: Validate Yarn dependencies and constraints
-    runs-on: ubuntu-latest
-    needs: prepare-yarn-cache-ubuntu
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: install
-        run: yarn --immutable
       - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
         run: yarn constraints
       - name: 'Check for duplicate dependencies (fix w/ "yarn dedupe")'
