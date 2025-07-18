@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-config]` Allow `testMatch` to take a string value
+- `[jest-worker]` Let `workerIdleMemoryLimit` accept 0 to always restart worker child processes
 
 ### Fixes
 

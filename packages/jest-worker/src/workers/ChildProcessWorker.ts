@@ -90,7 +90,7 @@ export default class ChildProcessWorker
     this._stdout = null;
     this._stderr = null;
     this._childIdleMemoryUsage = null;
-    this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
+    this._childIdleMemoryUsageLimit = options.idleMemoryLimit ?? null;
 
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
@@ -342,11 +342,14 @@ export default class ChildProcessWorker
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this.state = WorkerStates.RESTARTING;
-
-        this.killChild();
+        this._restart();
       }
     }
+  }
+
+  private _restart(): void {
+    this.state = WorkerStates.RESTARTING;
+    this.killChild();
   }
 
   private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
@@ -440,11 +443,16 @@ export default class ChildProcessWorker
       this._request = null;
 
       if (
-        this._childIdleMemoryUsageLimit &&
+        this._childIdleMemoryUsageLimit !== null &&
         this._child.connected &&
         hasRequest
       ) {
-        this.checkMemoryUsage();
+        if (this._childIdleMemoryUsageLimit === 0) {
+          // Special case: idleMemoryLimit of 0 means always restart
+          this._restart();
+        } else {
+          this.checkMemoryUsage();
+        }
       }
 
       return onProcessEnd(...args);
@@ -542,17 +550,17 @@ export default class ChildProcessWorker
    * Gets updated memory usage and restarts if required
    */
   checkMemoryUsage(): void {
-    if (this._childIdleMemoryUsageLimit) {
+    if (this._childIdleMemoryUsageLimit === null) {
+      console.warn(
+        'Memory usage of workers can only be checked if a limit is set',
+      );
+    } else {
       this._memoryUsageCheck = true;
       this._child.send([CHILD_MESSAGE_MEM_USAGE], err => {
         if (err) {
           console.error('Unable to check memory usage', err);
         }
       });
-    } else {
-      console.warn(
-        'Memory usage of workers can only be checked if a limit is set',
-      );
     }
   }
 

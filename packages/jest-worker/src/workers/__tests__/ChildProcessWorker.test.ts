@@ -19,6 +19,7 @@ import {
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   type WorkerOptions,
+  WorkerStates,
 } from '../../types';
 
 jest.useFakeTimers();
@@ -672,5 +673,41 @@ it('should check for memory limits and restart if above absolute limit', async (
   ]);
 
   expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+it('should restart immediately when limit is 0 without checking memory', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    idleMemoryLimit: 0,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  } as WorkerOptions);
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'test', []] as ChildMessageCall,
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  forkInterface.emit('message', [PARENT_MESSAGE_OK]);
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.send).not.toHaveBeenCalledWith(
+    [CHILD_MESSAGE_MEM_USAGE],
+    expect.any(Function),
+  );
+  expect(worker.state).toBe(WorkerStates.RESTARTING);
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
 });
