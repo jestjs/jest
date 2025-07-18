@@ -68,7 +68,9 @@ function stringToBytes(
   }
 
   if (typeof input === 'number') {
-    if (input <= 1 && input > 0) {
+    if (input === 0) {
+      return 0;
+    } else if (input <= 1 && input > 0) {
       if (percentageReference) {
         return Math.floor(input * percentageReference);
       } else {

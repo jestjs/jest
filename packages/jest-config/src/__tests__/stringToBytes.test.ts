@@ -8,6 +8,10 @@
 import stringToBytes from '../stringToBytes';
 
 describe('numeric input', () => {
+  test('0 should be 0', () => {
+    expect(stringToBytes(0)).toBe(0);
+  });
+
   test('> 1 represents bytes', () => {
     expect(stringToBytes(50.8)).toBe(50);
   });
@@ -33,6 +37,10 @@ describe('numeric input', () => {
 
 describe('string input', () => {
   describe('numeric passthrough', () => {
+    test('0 should be 0', () => {
+      expect(stringToBytes('0')).toBe(0);
+    });
+
     test('> 1 represents bytes', () => {
       expect(stringToBytes('50.8')).toBe(50);
     });
@@ -55,10 +63,8 @@ describe('string input', () => {
   });
 
   describe('parsing', () => {
-    test('0% should throw an error', () => {
-      expect(() => stringToBytes('0%', 51)).toThrow(
-        'Unexpected numerical input',
-      );
+    test('0%', () => {
+      expect(stringToBytes('0%', 51)).toBe(0);
     });
 
     test('30%', () => {
