@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "globalSetupPerWorker": "<rootDir>/setup.js",
+    "transform": {}
+  }
+}
