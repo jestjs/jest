@@ -448,7 +448,7 @@ export default class ChildProcessWorker
         hasRequest
       ) {
         if (this._childIdleMemoryUsageLimit === 0) {
-          // Special case: idleMemoryLimit of 0 means always restart
+          // Special case: `idleMemoryLimit` of `0` means always restart.
           this._restart();
         } else {
           this.checkMemoryUsage();
