@@ -1,5 +1,7 @@
 ## main
 
+## 30.0.5
+
 ### Features
 
 - `[jest-config]` Allow `testMatch` to take a string value
@@ -8,7 +10,6 @@
 ### Fixes
 
 - `[expect]` Fix `bigint` error ([#15702](https://github.com/jestjs/jest/pull/15702))
-- `[ci]` Deduplicate static checks in CI workflow by combining typecheck, lint, and yarn-validate jobs
 
 ## 30.0.4
 
