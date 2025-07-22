@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "30.0.4",
+  "version": "30.0.5",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
