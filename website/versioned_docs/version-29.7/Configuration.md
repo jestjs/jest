@@ -2463,6 +2463,7 @@ Specifies the memory limit for workers before they are recycled and is primarily
 
 After the worker has executed a test the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. The limit can be specified in a number of different ways and whatever the result is `Math.floor` is used to turn it into an integer value:
 
+- `0` - Always restart the worker between tests.
 - `<= 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
 - `\> 1` - Assumed to be a fixed byte value. Because of the previous rule if you wanted a value of 1 byte (I don't know why) you could use `1.1`.
 - With units
