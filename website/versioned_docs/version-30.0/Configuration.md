@@ -1536,9 +1536,28 @@ module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(path, {
     ...options,
-    // See this `unrs-resolver` option: from https://github.com/unrs/unrs-resolver?tab=readme-ov-file#main-field
+    // `unrs-resolver` option: https://github.com/unrs/unrs-resolver#main-field
     mainFields: ['react-native', 'main'],
   });
+};
+```
+
+You can also use `defaultResolver` to implement a "pre-processor" that allows us to change how the default resolver will resolve modules. For example, suppose a TypeScript project needs to reference `.js` files at runtime but runs Jest on the `.ts` files.
+
+```js
+module.exports = (path, options) => {
+  // Dynamic imports within our codebase that reference .js need to reference
+  // .ts during tests.
+  if (
+    !options.basedir.includes('node_modules') &&
+    path.endsWith('.js') &&
+    (path.startsWith('../') || path.startsWith('./'))
+  ) {
+    path = path.replace(/\.js$/, '.ts');
+  }
+
+  // Call the defaultResolver, so we leverage its cache, error handling, etc.
+  return options.defaultResolver(path, options);
 };
 ```
 
