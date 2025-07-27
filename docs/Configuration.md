@@ -1522,21 +1522,14 @@ const config: Config = {
 export default config;
 ```
 
-By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
+By passing a `mainFields` option to `defaultResolver` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
 
 ```js
 module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(path, {
     ...options,
-    // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
-    packageFilter: pkg => {
-      return {
-        ...pkg,
-        // Alter the value of `main` before resolving the package
-        main: pkg.module || pkg.main,
-      };
-    },
+    mainFields: ['module', 'main'],
   });
 };
 ```
