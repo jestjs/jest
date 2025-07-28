@@ -29,7 +29,7 @@
     "@jest/snapshot-utils": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
-    "babel-preset-current-node-syntax": "^1.1.0",
+    "babel-preset-current-node-syntax": "^1.2.0",
     "chalk": "^4.1.2",
     "expect": "workspace:*",
     "graceful-fs": "^4.2.11",

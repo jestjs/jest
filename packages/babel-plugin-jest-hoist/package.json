@@ -22,14 +22,16 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/template": "^7.27.2",
-    "@babel/types": "^7.27.3",
     "@types/babel__core": "^7.20.5"
   },
   "devDependencies": {
+    "@babel-8/core": "npm:@babel/core@8.0.0-beta.1",
+    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-beta.1",
+    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-beta.1",
     "@babel/core": "^7.27.4",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@babel/types": "^7.27.3",
     "@prettier/sync": "^0.5.5",
     "@types/babel__template": "^7.4.4",
     "@types/babel__traverse": "^7.20.7",

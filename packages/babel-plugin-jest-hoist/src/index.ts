@@ -7,22 +7,19 @@
  */
 
 import type {PluginObj} from '@babel/core';
-import {statement} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
-import {
-  type CallExpression,
-  type Expression,
-  type Identifier,
-  type ImportDeclaration,
-  type MemberExpression,
-  type Node,
-  type Statement,
-  type Super,
-  type VariableDeclaration,
-  type VariableDeclarator,
-  callExpression,
-  isIdentifier,
-  variableDeclaration,
+import type {
+  CallExpression,
+  Expression,
+  Identifier,
+  ImportDeclaration,
+  MemberExpression,
+  Node,
+  Statement,
+  StringLiteral,
+  Super,
+  VariableDeclaration,
+  VariableDeclarator,
 } from '@babel/types';
 
 const JEST_GLOBAL_NAME = 'jest';
@@ -170,10 +167,12 @@ FUNCTIONS.mock = args => {
           } else if (binding?.path.isImportSpecifier()) {
             const importDecl = binding.path
               .parentPath as NodePath<ImportDeclaration>;
-            const imported = binding.path.node.imported;
+            const imported = binding.path.get('imported');
             if (
               importDecl.node.source.value === JEST_GLOBALS_MODULE_NAME &&
-              (isIdentifier(imported) ? imported.name : imported.value) ===
+              (imported.isIdentifier()
+                ? imported.node.name
+                : (imported.node as StringLiteral).value) ===
                 JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
             ) {
               isAllowedIdentifier = true;
@@ -207,14 +206,6 @@ FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
-
-const createJestObjectGetter = statement`
-function GETTER_NAME() {
-  const { JEST_GLOBALS_MODULE_JEST_EXPORT_NAME } = require("JEST_GLOBALS_MODULE_NAME");
-  GETTER_NAME = () => JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
-  return JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
-}
-`;
 
 const isJestObject = (
   expression: NodePath<Expression | Super>,
@@ -310,10 +301,22 @@ const extractJestObjExprIfHoistable = (expr: NodePath): JestObjInfo | null => {
 };
 
 /* eslint-disable sort-keys */
-export default function jestHoist(): PluginObj<{
+export default function jestHoist(
+  babel: typeof import('@babel/core'),
+): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
 }> {
+  const {template, types: t} = babel;
+
+  const createJestObjectGetter = template.statement`
+    function GETTER_NAME() {
+      const { JEST_GLOBALS_MODULE_JEST_EXPORT_NAME } = require("JEST_GLOBALS_MODULE_NAME");
+      GETTER_NAME = () => JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
+      return JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
+    }
+  `;
+
   return {
     pre({path: program}) {
       this.declareJestObjGetterIdentifier = () => {
@@ -341,7 +344,7 @@ export default function jestHoist(): PluginObj<{
           exprStmt.get('expression'),
         );
         if (jestObjInfo) {
-          const jestCallExpr = callExpression(
+          const jestCallExpr = t.callExpression(
             this.declareJestObjGetterIdentifier(),
             [],
           );
@@ -388,7 +391,9 @@ export default function jestHoist(): PluginObj<{
             } else {
               varDecl.remove();
             }
-            stack.at(-1)!.vars.push(variableDeclaration(kind, [varDecl.node]));
+            stack
+              .at(-1)!
+              .vars.push(t.variableDeclaration(kind, [varDecl.node]));
           }
         },
       });
