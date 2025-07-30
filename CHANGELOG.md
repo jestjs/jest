@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-mock]` Add `mockThrowValue` and `mockThrowValueOnce` methods to `jest.fn()` for synchronous error throwing
+
 ## 30.0.5
 
 ### Features
