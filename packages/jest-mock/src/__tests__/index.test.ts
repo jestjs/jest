@@ -729,6 +729,25 @@ describe('moduleMocker', () => {
       ]);
     });
 
+    it('supports mocking functions that throw', () => {
+      const err = new Error('thrown');
+      const fn = moduleMocker.fn();
+      fn.mockThrowValue(err);
+
+      expect(() => fn()).toThrow(err);
+    });
+
+    it('supports mocking functions that throw only once', () => {
+      const defaultErr = new Error('default thrown');
+      const err = new Error('thrown');
+      const fn = moduleMocker.fn();
+      fn.mockThrowValue(defaultErr);
+      fn.mockThrowValueOnce(err);
+
+      expect(() => fn()).toThrow(err);
+      expect(() => fn()).toThrow(defaultErr);
+    });
+
     describe('return values', () => {
       it('tracks return values', () => {
         const fn = moduleMocker.fn(x => x * 2);

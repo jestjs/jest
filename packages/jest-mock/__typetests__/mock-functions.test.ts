@@ -361,6 +361,28 @@ describe('jest.fn()', () => {
     ).type.not.toBeCallableWith();
   });
 
+  test('.mockThrowValue()', () => {
+    expect(
+      fn(() => 'string').mockThrowValue(new Error('Mock error')),
+    ).type.toBe<Mock<() => string>>();
+    expect(fn(() => 'string').mockThrowValue('Mock error')).type.toBe<
+      Mock<() => string>
+    >();
+
+    expect(fn(() => 'string').mockThrowValue).type.not.toBeCallableWith();
+  });
+
+  test('.mockThrowValueOnce()', () => {
+    expect(
+      fn(() => 'string').mockThrowValueOnce(new Error('Mock error')),
+    ).type.toBe<Mock<() => string>>();
+    expect(fn(() => 'string').mockThrowValueOnce('Mock error')).type.toBe<
+      Mock<() => string>
+    >();
+
+    expect(fn(() => 'string').mockThrowValueOnce).type.not.toBeCallableWith();
+  });
+
   test('.withImplementation()', () => {
     expect(mockFn.withImplementation(mockFnImpl, () => {})).type.toBe<void>();
     expect(mockFn.withImplementation(mockFnImpl, async () => {})).type.toBe<

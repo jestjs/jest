@@ -513,6 +513,76 @@ test('async test', async () => {
 });
 ```
 
+### `mockFn.mockThrowValue(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementation(() => {
+  throw value;
+});
+```
+
+Useful to create mock functions that will always throw:
+
+```js tab
+test('sync test', () => {
+  const mockFn = jest.fn().mockThrowValue(new Error('Sync error message'));
+
+  expect(() => mockFn()).toThrow('Sync error message');
+});
+```
+
+```ts tab
+import {jest, test} from '@jest/globals';
+
+test('sync test', () => {
+  const mockFn = jest
+    .fn<() => never>()
+    .mockThrowValue(new Error('Sync error message'));
+
+  expect(() => mockFn()).toThrow('Sync error message');
+});
+```
+
+### `mockFn.mockThrowValueOnce(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementationOnce(() => {
+  throw value;
+});
+```
+
+Useful together with `.mockReturnValueOnce()` or to throw different exceptions over multiple calls:
+
+```js tab
+test('sync test', () => {
+  const mockFn = jest
+    .fn()
+    .mockReturnValueOnce('first call')
+    .mockThrowValueOnce(new Error('Sync error message'));
+
+  expect(mockFn()).toBe('first call');
+  expect(() => mockFn()).toThrow('Sync error message');
+});
+```
+
+```ts tab
+import {jest, test} from '@jest/globals';
+
+test('sync test', () => {
+  const mockFn = jest
+    .fn<() => string>()
+    .mockReturnValueOnce('first call')
+    .mockThrowValueOnce(new Error('Sync error message'));
+
+  expect(mockFn()).toBe('first call');
+  expect(() => mockFn()).toThrow('Sync error message');
+});
+```
+
 ### `mockFn.withImplementation(fn, callback)`
 
 Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
