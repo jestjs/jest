@@ -9,6 +9,7 @@ import nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
+  Script,
   // @ts-expect-error: experimental, not added to the types
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
@@ -16,7 +17,6 @@ import {
   type Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   type Module as VMModule,
-  compileFunction,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
@@ -33,12 +33,15 @@ import type {
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import type {TestContext, V8CoverageResult} from '@jest/test-result';
+import type {
+  RuntimeTransformResult,
+  TestContext,
+  V8CoverageResult,
+} from '@jest/test-result';
 import {
   type CallerTransformOptions,
   type ScriptTransformer,
   type ShouldInstrumentOptions,
-  type TransformResult,
   type TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
@@ -143,6 +146,10 @@ const isWasm = (modulePath: string): boolean => modulePath.endsWith('.wasm');
 
 const unmockRegExpCache = new WeakMap();
 
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
+type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
+
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 const supportsNodeColonModulePrefixInRequire = (() => {
@@ -197,11 +204,11 @@ export default class Runtime {
   >;
   private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
-  private readonly _fileTransforms: Map<string, TransformResult>;
+  private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
-  private _v8CoverageSources: Map<string, TransformResult> | undefined;
+  private _v8CoverageSources: Map<string, RuntimeTransformResult> | undefined;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
   private readonly _virtualMocks: Map<string, boolean>;
@@ -1599,10 +1606,21 @@ export default class Runtime {
 
     const transformedCode = this.transformFile(filename, options);
 
-    const compiledFunction = this.createScriptFromCode(
-      transformedCode,
-      filename,
-    );
+    let compiledFunction: ModuleWrapper | null = null;
+
+    const script = this.createScriptFromCode(transformedCode, filename);
+
+    let runScript: RunScriptEvalResult | null = null;
+
+    const vmContext = this._environment.getVmContext();
+
+    if (vmContext) {
+      runScript = script.runInContext(vmContext, {filename});
+    }
+
+    if (runScript !== null) {
+      compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+    }
 
     if (compiledFunction === null) {
       this._logFormattedReferenceError(
@@ -1675,7 +1693,10 @@ export default class Runtime {
       source,
     );
 
-    this._fileTransforms.set(filename, transformedFile);
+    this._fileTransforms.set(filename, {
+      ...transformedFile,
+      wrapperLength: this.constructModuleWrapperStart().length,
+    });
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1700,7 +1721,10 @@ export default class Runtime {
     );
 
     if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
-      this._fileTransforms.set(filename, transformedFile);
+      this._fileTransforms.set(filename, {
+        ...transformedFile,
+        wrapperLength: 0,
+      });
     }
 
     if (transformedFile.sourceMapPath) {
@@ -1710,39 +1734,34 @@ export default class Runtime {
   }
 
   private createScriptFromCode(scriptSource: string, filename: string) {
-    const vmContext = this._environment.getVmContext();
-
-    if (vmContext == null) {
-      return null;
-    }
-
     try {
       const scriptFilename = this._resolver.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
-      return compileFunction(
-        scriptSource,
-        this.constructInjectedModuleParameters(),
-        {
-          filename: scriptFilename,
-          // @ts-expect-error: Experimental ESM API
-          importModuleDynamically: async (specifier: string) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
+      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        columnOffset: this._fileTransforms.get(filename)?.wrapperLength,
+        displayErrors: true,
+        filename: scriptFilename,
+        // @ts-expect-error: Experimental ESM API
+        importModuleDynamically: async (specifier: string) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+          );
 
-            const module = await this.resolveModule(
-              specifier,
-              scriptFilename,
-              vmContext,
-            );
+          const context = this._environment.getVmContext?.();
 
-            return this.linkAndEvaluateModule(module);
-          },
-          parsingContext: vmContext,
+          invariant(context, 'Test environment has been torn down');
+
+          const module = await this.resolveModule(
+            specifier,
+            scriptFilename,
+            context,
+          );
+
+          return this.linkAndEvaluateModule(module);
         },
-      ) as ModuleWrapper;
+      });
     } catch (error: any) {
       throw handlePotentialSyntaxError(error);
     }
@@ -2466,6 +2485,16 @@ export default class Runtime {
         noStackTrace: false,
       })}`,
     );
+  }
+
+  private wrapCodeInModuleWrapper(content: string) {
+    return `${this.constructModuleWrapperStart() + content}\n}});`;
+  }
+
+  private constructModuleWrapperStart() {
+    const args = this.constructInjectedModuleParameters();
+
+    return `({"${EVAL_RESULT_VARIABLE}":function(${args.join(',')}){`;
   }
 
   private constructInjectedModuleParameters(): Array<string> {
