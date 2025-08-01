@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
+
 ## 30.0.5
 
 ### Features
