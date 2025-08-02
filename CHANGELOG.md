@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-core]` Include test modules that failed to load when --onlyFailures is active
+
 ## 30.0.5
 
 ### Features
