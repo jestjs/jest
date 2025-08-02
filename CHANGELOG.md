@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-circus]` Fix `it.concurrent` not working with `describe.skip` ([#15765](https://github.com/jestjs/jest/pull/15765))
+
 ## 30.0.5
 
 ### Features
