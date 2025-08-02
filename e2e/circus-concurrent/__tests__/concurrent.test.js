@@ -22,10 +22,12 @@ afterAll(() => marker('afterAll'));
 beforeEach(() => marker('beforeEach'));
 afterEach(() => marker('afterEach'));
 
+const DELAY_FACTOR = 10;
+
 const testFn = (name, delay, fail) => {
   return async () => {
     marker(`START "${name}"`);
-    await setTimeout(delay);
+    await setTimeout(delay * DELAY_FACTOR);
     if (fail) {
       throw new Error(`${name} failed`);
     }
