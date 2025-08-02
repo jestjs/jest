@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-runtime]` Reduce redundant ReferenceError messages
+
 ## 30.0.5
 
 ### Features
