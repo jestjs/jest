@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
+
 ## 30.0.5
 
 ### Features
