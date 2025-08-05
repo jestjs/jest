@@ -8210,6 +8210,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "chalk@npm:5.5.0"
+  checksum: 10/19f6905b47b628541976a534e2f39c3779f7f9276ff9693cb8f7cdb3e3e09ee5dee16e0c3768632fbb41c2a1f1653ee0041ea7730428b804068945eb0bab09c4
+  languageName: node
+  linkType: hard
+
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -10971,8 +10978,8 @@ __metadata:
     "@jest/expect-utils": "workspace:*"
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    chalk: "npm:^4.1.2"
-    immutable: "npm:^5.1.2"
+    chalk: "npm:^5.5.0"
+    immutable: "npm:^5.1.3"
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
     jest-mock: "workspace:*"
@@ -12593,6 +12600,13 @@ __metadata:
   version: 5.1.2
   resolution: "immutable@npm:5.1.2"
   checksum: 10/2d538ccf97c3e573a351d7d8a0554791d7a6527029cafd9d22507ce16ff7cb90bd8f1294e7c5166d9d471f8bbc0861989c4fb05caf96d6e7ee42975482bec2a7
+  languageName: node
+  linkType: hard
+
+"immutable@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "immutable@npm:5.1.3"
+  checksum: 10/6d29b29036143e7ea1e7f7be581c71bca873ea77c175d33c6c839bf4017265a58c41ec269e3ffcd7b483797fc7fa9c928b4ed3d6edfeeb1b5711d84f60d04090
   languageName: node
   linkType: hard
 
