@@ -6,10 +6,16 @@
  */
 
 import Chalk from 'chalk';
-import Immutable from 'immutable';
-import { alignedAnsiStyleSerializer } from '@jest/test-utils';
-import { stringify } from 'jest-matcher-utils';
-import { JestAssertionError, expect as jestExpect } from '..';
+import {
+  Map as ImmutableMap,
+  Set as ImmutableSet,
+  List,
+  OrderedMap,
+  OrderedSet,
+} from 'immutable';
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import {stringify} from 'jest-matcher-utils';
+import {type JestAssertionError, expect as jestExpect} from '..';
 
 const defaultChalkLevel = Chalk.level;
 
@@ -221,7 +227,7 @@ describe('.toBe()', () => {
     jestExpect(null).not.toBe(undefined);
     jestExpect(null).toBe(null);
     jestExpect(undefined).toBe(undefined);
-    jestExpect(NaN).toBe(NaN);
+    jestExpect(Number.NaN).toBe(Number.NaN);
     jestExpect(BigInt(1)).not.toBe(BigInt(2));
     jestExpect(BigInt(1)).not.toBe(1);
     jestExpect(BigInt(1)).toBe(BigInt(1));
@@ -335,12 +341,14 @@ describe('.toStrictEqual()', () => {
   }
 
   const TestClassC = class Child extends TestClassA {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(a: number, b: number) {
       super(a, b);
     }
   };
 
   const TestClassD = class Child extends TestClassB {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(a: number, b: number) {
       super(a, b);
     }
@@ -529,7 +537,7 @@ describe('.toEqual()', () => {
     [Object.freeze({foo: {bar: 1}}), {foo: {}}],
     [
       {
-        get getterAndSetter(): {} {
+        get getterAndSetter(): any {
           return {};
         },
         set getterAndSetter(_: any) {
@@ -540,7 +548,7 @@ describe('.toEqual()', () => {
     ],
     [
       Object.freeze({
-        get frozenGetterAndSetter(): {} {
+        get frozenGetterAndSetter(): any {
           return {};
         },
         set frozenGetterAndSetter(_: any) {
@@ -595,8 +603,8 @@ describe('.toEqual()', () => {
       [1, 2],
       [2, 1],
     ],
-    [Immutable.List([1]), Immutable.List([2])],
-    [Immutable.List([1, 2]), Immutable.List([2, 1])],
+    [List([1]), List([2])],
+    [List([1, 2]), List([2, 1])],
     [new Map(), new Set()],
     [new Set([1, 2]), new Set()],
     [new Set([1, 2]), new Set([1, 2, 3])],
@@ -606,9 +614,9 @@ describe('.toEqual()', () => {
       new Set([new Set([1]), new Set([2])]),
       new Set([new Set([1]), new Set([3])]),
     ],
-    [Immutable.Set([1, 2]), Immutable.Set()],
-    [Immutable.Set([1, 2]), Immutable.Set([1, 2, 3])],
-    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([2, 1])],
+    [ImmutableSet([1, 2]), ImmutableSet()],
+    [ImmutableSet([1, 2]), ImmutableSet([1, 2, 3])],
+    [OrderedSet([1, 2]), OrderedSet([2, 1])],
     [
       new Map([
         [1, 'one'],
@@ -623,15 +631,15 @@ describe('.toEqual()', () => {
       new Map([[[1], new Map([[[1], 'one']])]]),
       new Map([[[1], new Map([[[1], 'two']])]]),
     ],
-    [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
-    [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
+    [ImmutableMap({a: 0}), ImmutableMap({b: 0})],
+    [ImmutableMap({v: 1}), ImmutableMap({v: 2})],
     [
-      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
-      Immutable.OrderedMap().set(2, 'two').set(1, 'one'),
+      OrderedMap().set(1, 'one').set(2, 'two'),
+      OrderedMap().set(2, 'two').set(1, 'one'),
     ],
     [
-      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
-      Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
+      ImmutableMap({1: ImmutableMap({2: {a: 99}})}),
+      ImmutableMap({1: ImmutableMap({2: {a: 11}})}),
     ],
     [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 100])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
@@ -732,7 +740,7 @@ describe('.toEqual()', () => {
   for (const [a, b] of [
     [true, true],
     [1, 1],
-    [NaN, NaN],
+    [Number.NaN, Number.NaN],
     [0, Number(0)],
     [Number(0), 0],
     [new Number(0), new Number(0)],
@@ -744,8 +752,8 @@ describe('.toEqual()', () => {
       [1, 2],
       [1, 2],
     ],
-    [Immutable.List([1]), Immutable.List([1])],
-    [Immutable.List([1, 2]), Immutable.List([1, 2])],
+    [List([1]), List([1])],
+    [List([1, 2]), List([1, 2])],
     [{}, {}],
     [{a: 99}, {a: 99}],
     [new Set(), new Set()],
@@ -758,11 +766,11 @@ describe('.toEqual()', () => {
     ],
     [new Set([[1], [2], [3], [3]]), new Set([[3], [3], [2], [1]])],
     [new Set([{a: 1}, {b: 2}]), new Set([{b: 2}, {a: 1}])],
-    [Immutable.Set(), Immutable.Set()],
-    [Immutable.Set([1, 2]), Immutable.Set([1, 2])],
-    [Immutable.Set([1, 2]), Immutable.Set([2, 1])],
-    [Immutable.OrderedSet(), Immutable.OrderedSet()],
-    [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([1, 2])],
+    [ImmutableSet(), ImmutableSet()],
+    [ImmutableSet([1, 2]), ImmutableSet([1, 2])],
+    [ImmutableSet([1, 2]), ImmutableSet([2, 1])],
+    [OrderedSet(), OrderedSet()],
+    [OrderedSet([1, 2]), OrderedSet([1, 2])],
     [new Map(), new Map()],
     [
       new Map([
@@ -838,22 +846,22 @@ describe('.toEqual()', () => {
         [1, ['one']],
       ]),
     ],
-    [Immutable.Map(), Immutable.Map()],
+    [ImmutableMap(), ImmutableMap()],
     [
-      Immutable.Map().set(1, 'one').set(2, 'two'),
-      Immutable.Map().set(1, 'one').set(2, 'two'),
+      ImmutableMap().set(1, 'one').set(2, 'two'),
+      ImmutableMap().set(1, 'one').set(2, 'two'),
     ],
     [
-      Immutable.Map().set(1, 'one').set(2, 'two'),
-      Immutable.Map().set(2, 'two').set(1, 'one'),
+      ImmutableMap().set(1, 'one').set(2, 'two'),
+      ImmutableMap().set(2, 'two').set(1, 'one'),
     ],
     [
-      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
-      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      OrderedMap().set(1, 'one').set(2, 'two'),
+      OrderedMap().set(1, 'one').set(2, 'two'),
     ],
     [
-      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
-      Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
+      ImmutableMap({1: ImmutableMap({2: {a: 99}})}),
+      ImmutableMap({1: ImmutableMap({2: {a: 99}})}),
     ],
     [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 99])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
@@ -970,7 +978,7 @@ describe('.toEqual()', () => {
       [BigInt(1), 2],
       [BigInt(1), 2],
     ],
-    [Immutable.List([BigInt(1)]), Immutable.List([BigInt(1)])],
+    [List([BigInt(1)]), List([BigInt(1)])],
     [{a: BigInt(99)}, {a: BigInt(99)}],
     [new Set([BigInt(1), BigInt(2)]), new Set([BigInt(1), BigInt(2)])],
   ]) {
@@ -1111,6 +1119,7 @@ describe('.toBeInstanceOf()', () => {
   class E extends D {}
 
   class SubHasStaticNameMethod extends B {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor() {
       super();
     }
@@ -1118,6 +1127,7 @@ describe('.toBeInstanceOf()', () => {
   }
 
   class HasStaticNameMethod {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor() {}
     static name() {}
   }
@@ -1214,7 +1224,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     });
   }
 
-  for (const v of [false, null, NaN, 0, '', undefined]) {
+  for (const v of [false, null, Number.NaN, 0, '', undefined]) {
     test(`'${stringify(v)}' is falsy`, () => {
       jestExpect(v).toBeFalsy();
       jestExpect(v).not.toBeTruthy();
@@ -1241,7 +1251,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
 
 describe('.toBeNaN()', () => {
   it('{pass: true} expect(NaN).toBeNaN()', () => {
-    for (const v of [NaN, Math.sqrt(-1), Infinity - Infinity, 0 / 0]) {
+    for (const v of [Number.NaN, Math.sqrt(-1), Infinity - Infinity, 0 / 0]) {
       jestExpect(v).toBeNaN();
 
       expect(() => jestExpect(v).not.toBeNaN()).toThrowErrorMatchingSnapshot();
@@ -1835,7 +1845,9 @@ describe('.toMatch()', () => {
       'throws if non String actual value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
-        expect(() => jestExpect(n1).toMatch(n2 as string)).toThrowErrorMatchingSnapshot();
+        expect(() =>
+          jestExpect(n1).toMatch(n2 as string),
+        ).toThrowErrorMatchingSnapshot();
       },
     );
   }
@@ -1934,7 +1946,7 @@ describe('.toHaveLength', () => {
     });
 
     test('number NaN', () => {
-      const expected = NaN;
+      const expected = Number.NaN;
       const received = Promise.reject('abc');
       return expect(
         jestExpect(received).rejects.not.toHaveLength(expected),
@@ -1961,7 +1973,7 @@ describe('.toHaveLength', () => {
 
 describe('.toHaveProperty()', () => {
   class Foo {
-    private val: any
+    private val: any;
     get a() {
       return undefined;
     }
@@ -1992,7 +2004,7 @@ describe('.toHaveProperty()', () => {
   }
   E.prototype.nodeType = 1;
 
-  const memoized: { memo: []} = function () {};
+  const memoized: {memo: []} = function () {};
   memoized.memo = [];
 
   const pathDiff = ['children', 0];
@@ -2164,7 +2176,7 @@ describe('toMatchObject()', () => {
     return obj;
   };
 
-  const testNotToMatchSnapshots = (tuples: [any, any][]) => {
+  const testNotToMatchSnapshots = (tuples: Array<[any, any]>) => {
     for (const [n1, n2] of tuples) {
       it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
@@ -2177,7 +2189,7 @@ describe('toMatchObject()', () => {
     }
   };
 
-  const testToMatchSnapshots = (tuples: [any, any][]) => {
+  const testToMatchSnapshots = (tuples: Array<[any, any]>) => {
     for (const [n1, n2] of tuples) {
       it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
