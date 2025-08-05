@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const chalk = require('chalk');
-const Immutable = require('immutable');
-const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const {stringify} = require('jest-matcher-utils');
-const {expect: jestExpect} = require('../');
-const chalkEnabled = chalk.enabled;
+import Chalk from 'chalk';
+import Immutable from 'immutable';
+import { alignedAnsiStyleSerializer } from '@jest/test-utils';
+import { stringify } from 'jest-matcher-utils';
+import { JestAssertionError, expect as jestExpect } from '..';
+
+const defaultChalkLevel = Chalk.level;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -22,14 +23,15 @@ jestExpect.extend({
 });
 
 beforeAll(() => {
-  chalk.enabled = true;
+  Chalk.level = 3;
 });
 
 afterAll(() => {
-  chalk.enabled = chalkEnabled;
+  Chalk.level = defaultChalkLevel;
 });
 
 it('should throw if passed two arguments', () => {
+  // @ts-expect-error ts(2554): Testing purpose
   expect(() => jestExpect('foo', 'bar')).toThrow(
     new Error('Expect takes at most one argument.'),
   );
@@ -85,7 +87,7 @@ describe('.rejects', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
   }
 
@@ -108,7 +110,7 @@ describe('.rejects', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
   }
 
@@ -120,7 +122,7 @@ describe('.rejects', () => {
       error = error_;
     }
     expect(error).toBeDefined();
-    expect(error.message).toMatchSnapshot();
+    expect((error as Error).message).toMatchSnapshot();
   });
 });
 
@@ -159,7 +161,7 @@ describe('.resolves', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
 
     it(`fails non-promise value ${stringify(value)}`, async () => {
@@ -170,7 +172,7 @@ describe('.resolves', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
   }
 
@@ -183,7 +185,7 @@ describe('.resolves', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
 
     it(`fails non-promise value ${stringify(value)}`, async () => {
@@ -194,7 +196,7 @@ describe('.resolves', () => {
         error = rejectedError;
       }
       expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      expect((error as Error).message).toMatchSnapshot();
     });
   }
 
@@ -206,7 +208,7 @@ describe('.resolves', () => {
       error = error_;
     }
     expect(error).toBeDefined();
-    expect(error.message).toMatchSnapshot();
+    expect((error as Error).message).toMatchSnapshot();
   });
 });
 
@@ -278,7 +280,7 @@ describe('.toBe()', () => {
   }
 
   it('does not crash on circular references', () => {
-    const obj = {};
+    const obj: any = {};
     obj.circular = obj;
 
     expect(() => jestExpect(obj).toBe({})).toThrowErrorMatchingSnapshot();
@@ -290,7 +292,7 @@ describe('.toBe()', () => {
     try {
       jestExpect(actual).toBe(expected);
     } catch (error) {
-      expect(error.matcherResult).toEqual(
+      expect((error as JestAssertionError).matcherResult).toEqual(
         expect.objectContaining({
           actual,
           expected,
@@ -303,27 +305,43 @@ describe('.toBe()', () => {
 
 describe('.toStrictEqual()', () => {
   class TestClassA {
-    constructor(a, b) {
-      this.a = a;
-      this.b = b;
+    private _a: number;
+    private _b: number;
+    constructor(a: number, b: number) {
+      this._a = a;
+      this._b = b;
+    }
+    get a() {
+      return this._a;
+    }
+    get b() {
+      return this._b;
     }
   }
 
   class TestClassB {
-    constructor(a, b) {
-      this.a = a;
-      this.b = b;
+    private _a: number;
+    private _b: number;
+    constructor(a: number, b: number) {
+      this._a = a;
+      this._b = b;
+    }
+    get a() {
+      return this._a;
+    }
+    get b() {
+      return this._b;
     }
   }
 
   const TestClassC = class Child extends TestClassA {
-    constructor(a, b) {
+    constructor(a: number, b: number) {
       super(a, b);
     }
   };
 
   const TestClassD = class Child extends TestClassB {
-    constructor(a, b) {
+    constructor(a: number, b: number) {
       super(a, b);
     }
   };
@@ -511,10 +529,10 @@ describe('.toEqual()', () => {
     [Object.freeze({foo: {bar: 1}}), {foo: {}}],
     [
       {
-        get getterAndSetter() {
+        get getterAndSetter(): {} {
           return {};
         },
-        set getterAndSetter(value) {
+        set getterAndSetter(_: any) {
           throw new Error('noo');
         },
       },
@@ -522,10 +540,10 @@ describe('.toEqual()', () => {
     ],
     [
       Object.freeze({
-        get frozenGetterAndSetter() {
+        get frozenGetterAndSetter(): {} {
           return {};
         },
-        set frozenGetterAndSetter(value) {
+        set frozenGetterAndSetter(_: any) {
           throw new Error('noo');
         },
       }),
@@ -550,7 +568,7 @@ describe('.toEqual()', () => {
     [
       {
         // eslint-disable-next-line accessor-pairs
-        set setter(value) {
+        set setter(_: any) {
           throw new Error('noo');
         },
       },
@@ -559,7 +577,7 @@ describe('.toEqual()', () => {
     [
       Object.freeze({
         // eslint-disable-next-line accessor-pairs
-        set frozenSetter(value) {
+        set frozenSetter(_: any) {
           throw new Error('noo');
         },
       }),
@@ -627,7 +645,7 @@ describe('.toEqual()', () => {
     [
       'Eve',
       {
-        asymmetricMatch: function asymmetricMatch(who) {
+        asymmetricMatch: function asymmetricMatch(who: string) {
           return who === 'Alice' || who === 'Bob';
         },
       },
@@ -859,7 +877,7 @@ describe('.toEqual()', () => {
     [
       'Alice',
       {
-        asymmetricMatch: function asymmetricMatch(who) {
+        asymmetricMatch: function asymmetricMatch(who: string) {
           return who === 'Alice' || who === 'Bob';
         },
       },
@@ -970,7 +988,7 @@ describe('.toEqual()', () => {
     try {
       jestExpect(actual).toEqual(expected);
     } catch (error) {
-      expect(error.matcherResult).toEqual(
+      expect((error as JestAssertionError).matcherResult).toEqual(
         expect.objectContaining({
           actual,
           expected,
@@ -982,11 +1000,11 @@ describe('.toEqual()', () => {
 
   test('symbol based keys in arrays are processed correctly', () => {
     const mySymbol = Symbol('test');
-    const actual1 = [];
+    const actual1: any = [];
     actual1[mySymbol] = 3;
-    const actual2 = [];
+    const actual2: any = [];
     actual2[mySymbol] = 4;
-    const expected = [];
+    const expected: any = [];
     expected[mySymbol] = 3;
 
     expect(actual1).toEqual(expected);
@@ -1032,51 +1050,51 @@ describe('.toEqual()', () => {
 
   describe('cyclic object equality', () => {
     test('properties with the same circularity are equal', () => {
-      const a = {};
+      const a: any = {};
       a.x = a;
-      const b = {};
+      const b: any = {};
       b.x = b;
       expect(a).toEqual(b);
       expect(b).toEqual(a);
 
-      const c = {};
+      const c: any = {};
       c.x = a;
-      const d = {};
+      const d: any = {};
       d.x = b;
       expect(c).toEqual(d);
       expect(d).toEqual(c);
     });
 
     test('properties with different circularity are not equal', () => {
-      const a = {};
+      const a: any = {};
       a.x = {y: a};
-      const b = {};
-      const bx = {};
+      const b: any = {};
+      const bx: any = {};
       b.x = bx;
       bx.y = bx;
       expect(a).not.toEqual(b);
       expect(b).not.toEqual(a);
 
-      const c = {};
+      const c: any = {};
       c.x = a;
-      const d = {};
+      const d: any = {};
       d.x = b;
       expect(c).not.toEqual(d);
       expect(d).not.toEqual(c);
     });
 
     test('are not equal if circularity is not on the same property', () => {
-      const a = {};
-      const b = {};
+      const a: any = {};
+      const b: any = {};
       a.a = a;
       b.a = {};
       b.a.a = a;
       expect(a).not.toEqual(b);
       expect(b).not.toEqual(a);
 
-      const c = {};
+      const c: any = {};
       c.x = {x: c};
-      const d = {};
+      const d: any = {};
       d.x = d;
       expect(c).not.toEqual(d);
       expect(d).not.toEqual(c);
@@ -1096,7 +1114,7 @@ describe('.toBeInstanceOf()', () => {
     constructor() {
       super();
     }
-    static name() {}
+    static override name() {}
   }
 
   class HasStaticNameMethod {
@@ -1111,6 +1129,7 @@ describe('.toBeInstanceOf()', () => {
     value: '',
     writable: true,
   });
+  // @ts-expect-error ts(2507): Testing purpose
   class SubHasNameProp extends DefinesNameProp {}
 
   for (const [a, b] of [
@@ -1141,6 +1160,7 @@ describe('.toBeInstanceOf()', () => {
     [undefined, String],
     [null, String],
     [/\w+/, function () {}],
+    // @ts-expect-error ts(7009): Testing purpose
     [new DefinesNameProp(), RegExp],
   ]) {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
@@ -1161,9 +1181,11 @@ describe('.toBeInstanceOf()', () => {
 
 describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
+    // @ts-expect-error ts(2554): Testing purpose
     expect(() => jestExpect(0).toBeTruthy(null)).toThrowErrorMatchingSnapshot();
 
     expect(() =>
+      // @ts-expect-error ts(2554): Testing purpose
       jestExpect(0).not.toBeFalsy(null),
     ).toThrowErrorMatchingSnapshot();
   });
@@ -1735,12 +1757,13 @@ describe('.toBeCloseTo', () => {
       const received = 0.1;
       // expected is undefined
       expect(() => {
+        // @ts-expect-error ts(2554): Testing purpose
         jestExpect(received).not.toBeCloseTo();
       }).toThrowErrorMatchingSnapshot();
     });
 
     test('promise rejects isNot false expected', () => {
-      const expected = '0';
+      const expected = 0;
       const received = Promise.reject(0.01);
       return expect(
         jestExpect(received).rejects.toBeCloseTo(expected),
@@ -1769,6 +1792,7 @@ describe('.toBeCloseTo', () => {
       const expected = null;
       const received = Promise.resolve(0.1);
       return expect(
+        // @ts-expect-error ts(2345): Testing purpose
         jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
@@ -1811,7 +1835,7 @@ describe('.toMatch()', () => {
       'throws if non String actual value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
-        expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
+        expect(() => jestExpect(n1).toMatch(n2 as string)).toThrowErrorMatchingSnapshot();
       },
     );
   }
@@ -1828,6 +1852,7 @@ describe('.toMatch()', () => {
       'throws if non String/RegExp expected value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
+        // @ts-expect-error ts(2345): Testing purpose
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
       },
     );
@@ -1857,9 +1882,9 @@ describe('.toHaveLength', () => {
     test(`{pass: true} expect(${stringify(
       received,
     )}).toHaveLength(${length})`, () => {
-      jestExpect(received).toHaveLength(length);
+      jestExpect(received).toHaveLength(length as number);
       expect(() =>
-        jestExpect(received).not.toHaveLength(length),
+        jestExpect(received).not.toHaveLength(length as number),
       ).toThrowErrorMatchingSnapshot();
     });
   }
@@ -1874,9 +1899,9 @@ describe('.toHaveLength', () => {
     test(`{pass: false} expect(${stringify(
       received,
     )}).toHaveLength(${length})`, () => {
-      jestExpect(received).not.toHaveLength(length);
+      jestExpect(received).not.toHaveLength(length as number);
       expect(() =>
-        jestExpect(received).toHaveLength(length),
+        jestExpect(received).toHaveLength(length as number),
       ).toThrowErrorMatchingSnapshot();
     });
   }
@@ -1893,7 +1918,7 @@ describe('.toHaveLength', () => {
 
   describe('matcher error expected length', () => {
     test('not number', () => {
-      const expected = '3';
+      const expected = 3;
       const received = 'abc';
       expect(() => {
         jestExpect(received).not.toHaveLength(expected);
@@ -1936,6 +1961,7 @@ describe('.toHaveLength', () => {
 
 describe('.toHaveProperty()', () => {
   class Foo {
+    private val: any
     get a() {
       return undefined;
     }
@@ -1943,8 +1969,12 @@ describe('.toHaveProperty()', () => {
       return 'b';
     }
     // eslint-disable-next-line accessor-pairs
-    set setter(val) {
+    set setter(val: any) {
       this.val = val;
+    }
+
+    get _val() {
+      return this.val;
     }
   }
 
@@ -1956,12 +1986,13 @@ describe('.toHaveProperty()', () => {
   const foo2 = new Foo2();
   foo2.setter = true;
 
-  function E(nodeName) {
+  function E(nodeName: string) {
+    // @ts-expect-error ts(2683): Testing purpose
     this.nodeName = nodeName.toUpperCase();
   }
   E.prototype.nodeType = 1;
 
-  const memoized = function () {};
+  const memoized: { memo: []} = function () {};
   memoized.memo = [];
 
   const pathDiff = ['children', 0];
@@ -2002,6 +2033,7 @@ describe('.toHaveProperty()', () => {
     [foo2, 'a', undefined],
     [foo2, 'c', 'c'],
     [foo2, 'val', true],
+    // @ts-expect-error ts(7009): Testing purpose
     [new E('div'), 'nodeType', 1],
     ['', 'length', 0],
     [memoized, 'memo', []],
@@ -2040,9 +2072,9 @@ describe('.toHaveProperty()', () => {
       obj,
     )}).toHaveProperty('${keyPath}', ${stringify(value)})`, () => {
       expect(() =>
-        jestExpect(obj).toHaveProperty(keyPath, value),
+        jestExpect(obj).toHaveProperty(keyPath as string, value),
       ).toThrowErrorMatchingSnapshot();
-      jestExpect(obj).not.toHaveProperty(keyPath, value);
+      jestExpect(obj).not.toHaveProperty(keyPath as string, value);
     });
   }
 
@@ -2057,9 +2089,9 @@ describe('.toHaveProperty()', () => {
     test(`{pass: true} expect(${stringify(
       obj,
     )}).toHaveProperty('${keyPath}')`, () => {
-      jestExpect(obj).toHaveProperty(keyPath);
+      jestExpect(obj).toHaveProperty(keyPath as string);
       expect(() =>
-        jestExpect(obj).not.toHaveProperty(keyPath),
+        jestExpect(obj).not.toHaveProperty(keyPath as string),
       ).toThrowErrorMatchingSnapshot();
     });
   }
@@ -2099,6 +2131,7 @@ describe('.toHaveProperty()', () => {
       obj,
     )}).toHaveProperty('${keyPath}')`, () => {
       expect(() =>
+        // @ts-expect-error ts(2345): Testing purpose
         jestExpect(obj).toHaveProperty(keyPath),
       ).toThrowErrorMatchingSnapshot();
     });
@@ -2121,7 +2154,7 @@ describe('toMatchObject()', () => {
     }
   }
 
-  const withDefineProperty = (obj, key, val) => {
+  const withDefineProperty = (obj: Sub, key: string, val: number) => {
     Object.defineProperty(obj, key, {
       get() {
         return val;
@@ -2131,7 +2164,7 @@ describe('toMatchObject()', () => {
     return obj;
   };
 
-  const testNotToMatchSnapshots = tuples => {
+  const testNotToMatchSnapshots = (tuples: [any, any][]) => {
     for (const [n1, n2] of tuples) {
       it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
@@ -2144,7 +2177,7 @@ describe('toMatchObject()', () => {
     }
   };
 
-  const testToMatchSnapshots = tuples => {
+  const testToMatchSnapshots = (tuples: [any, any][]) => {
     for (const [n1, n2] of tuples) {
       it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
         n2,
@@ -2159,16 +2192,16 @@ describe('toMatchObject()', () => {
 
   describe('circular references', () => {
     describe('simple circular references', () => {
-      const circularObjA1 = {a: 'hello'};
+      const circularObjA1: any = {a: 'hello'};
       circularObjA1.ref = circularObjA1;
 
-      const circularObjB = {a: 'world'};
+      const circularObjB: any = {a: 'world'};
       circularObjB.ref = circularObjB;
 
-      const circularObjA2 = {a: 'hello'};
+      const circularObjA2: any = {a: 'hello'};
       circularObjA2.ref = circularObjA2;
 
-      const primitiveInsteadOfRef = {};
+      const primitiveInsteadOfRef: any = {};
       primitiveInsteadOfRef.ref = 'not a ref';
 
       testNotToMatchSnapshots([
@@ -2184,20 +2217,20 @@ describe('toMatchObject()', () => {
     });
 
     describe('transitive circular references', () => {
-      const transitiveCircularObjA1 = {a: 'hello'};
+      const transitiveCircularObjA1: any = {a: 'hello'};
       transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
 
-      const transitiveCircularObjA2 = {a: 'hello'};
+      const transitiveCircularObjA2: any = {a: 'hello'};
       transitiveCircularObjA2.nestedObj = {
         parentObj: transitiveCircularObjA2,
       };
 
-      const transitiveCircularObjB = {a: 'world'};
+      const transitiveCircularObjB: any = {a: 'world'};
       transitiveCircularObjB.nestedObj = {
         parentObj: transitiveCircularObjB,
       };
 
-      const primitiveInsteadOfRef = {};
+      const primitiveInsteadOfRef: any = {};
       primitiveInsteadOfRef.nestedObj = {
         parentObj: 'not the parent ref',
       };
@@ -2327,19 +2360,20 @@ describe('toMatchObject()', () => {
       n2,
     )})`, () => {
       expect(() =>
+        // @ts-expect-error ts(2345): Testing purpose
         jestExpect(n1).toMatchObject(n2),
       ).toThrowErrorMatchingSnapshot();
     });
   }
 
   it('does not match properties up in the prototype chain', () => {
-    const a = {};
+    const a: any = {};
     a.ref = a;
 
     const b = Object.create(a);
     b.other = 'child';
 
-    const matcher = {other: 'child'};
+    const matcher: any = {other: 'child'};
     matcher.ref = matcher;
 
     jestExpect(b).not.toMatchObject(matcher);
@@ -2352,17 +2386,17 @@ describe('toMatchObject()', () => {
     // issue 13638
     const sym = Symbol('foo');
     const sym2 = Symbol('foo2');
-    jestExpect({}).not.toMatchObject({[sym]: true});
-    jestExpect({[sym]: true}).not.toMatchObject({[sym2]: true});
-    jestExpect({[sym]: true}).not.toMatchObject({[sym]: false});
+    jestExpect({}).not.toMatchObject({[sym]: true} as any);
+    jestExpect({[sym]: true}).not.toMatchObject({[sym2]: true} as any);
+    jestExpect({[sym]: true}).not.toMatchObject({[sym]: false} as any);
     jestExpect({example: 10, [sym]: true}).not.toMatchObject({
       example: 12,
       [sym]: true,
-    });
-    jestExpect({[sym]: true}).toMatchObject({[sym]: true});
+    } as any);
+    jestExpect({[sym]: true}).toMatchObject({[sym]: true} as any);
     jestExpect({example: 10, [sym]: true}).toMatchObject({
       example: 10,
       [sym]: true,
-    });
+    } as any);
   });
 });
