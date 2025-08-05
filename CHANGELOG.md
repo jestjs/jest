@@ -1,5 +1,9 @@
 ## main
 
+### Chore & Maintenance
+
+- `[expect]` Refactor `matchers.test` to Typescript ([#15775](https://github.com/jestjs/jest/pull/15775))
+
 ## 30.0.5
 
 ### Features
