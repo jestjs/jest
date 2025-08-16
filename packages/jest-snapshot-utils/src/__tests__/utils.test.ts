@@ -171,9 +171,9 @@ test('getSnapshotData() throws for deprecated snapshot guide link', () => {
   expect(() => getSnapshotData(filename, update)).toThrow(
     `${chalk.red(
       `${chalk.red.bold('Outdated guide link')}: The guide link of this ` +
-          'snapshot file indicates that this project used deprecated Jest ' +
-          'snapshot guide link. ' +
-          'Please update all snapshots during this upgrade of Jest',
+        'snapshot file indicates that this project used deprecated Jest ' +
+        'snapshot guide link. ' +
+        'Please update all snapshots during this upgrade of Jest',
     )}\n\nExpected: ${SNAPSHOT_GUIDE_LINK}\n` +
       `Received: ${deprecatedGuideLink}`,
   );

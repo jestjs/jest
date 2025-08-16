@@ -26,8 +26,8 @@ const writeSnapshotVersion = () =>
 
 const validateSnapshotHeader = (snapshotContents: string) => {
   const headerTest = SNAPSHOT_HEADER_REGEXP.exec(snapshotContents);
-  const version = headerTest && headerTest[1]
-  const guideLink = headerTest && headerTest[2]
+  const version = headerTest && headerTest[1];
+  const guideLink = headerTest && headerTest[2];
 
   if (!version) {
     return new Error(
@@ -73,7 +73,7 @@ const validateSnapshotHeader = (snapshotContents: string) => {
     );
   }
 
-  if (guideLink != SNAPSHOT_GUIDE_LINK) {
+  if (guideLink !== SNAPSHOT_GUIDE_LINK) {
     return new Error(
       // eslint-disable-next-line prefer-template
       chalk.red(
@@ -87,7 +87,7 @@ const validateSnapshotHeader = (snapshotContents: string) => {
         `Received: ${guideLink}`,
     );
   }
-  
+
   return null;
 };
 
