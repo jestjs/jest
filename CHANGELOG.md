@@ -7,6 +7,7 @@
 
 ### Fixes
 
+- `[jest-snapshot-utils] Fix deprecated goo.gl snapshot guide link not getting replaced with fully canonical URL ([#15787](https://github.com/jestjs/jest/pull/15787))
 - `[jest-circus]` Fix `it.concurrent` not working with `describe.skip` ([#15765](https://github.com/jestjs/jest/pull/15765))
 - `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
 - `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
