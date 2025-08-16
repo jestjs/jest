@@ -28,38 +28,8 @@ const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 
 // TODO: remove this list at some point and run against all packages
 const packagesNotToTest = [
-  'expect',
-  'expect-utils',
   'jest-circus',
-  'jest-cli',
-  'jest-config',
-  'jest-core',
-  'jest-create-cache-key-function',
-  'jest-diff',
-  'jest-each',
-  'jest-environment-jsdom',
-  'jest-environment-node',
-  'jest-fake-timers',
-  'jest-get-type',
-  'jest-haste-map',
   'jest-jasmine2',
-  'jest-leak-detector',
-  'jest-matcher-utils',
-  'jest-message-util',
-  'jest-mock',
-  'jest-pattern',
-  'jest-phabricator',
-  'jest-regex-util',
-  'jest-reporters',
-  'jest-resolve',
-  'jest-runner',
-  'jest-runtime',
-  'jest-snapshot',
-  'jest-snapshot-utils',
-  'jest-util',
-  'jest-validate',
-  'jest-worker',
-  'pretty-format',
 ];
 
 const packagesWithTs = getPackagesWithTsConfig()
