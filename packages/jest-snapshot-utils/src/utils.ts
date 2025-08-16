@@ -13,7 +13,7 @@ import type {Config} from '@jest/types';
 import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
-const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
+const SNAPSHOT_HEADER_REGEXP = /^\/\/ Jest Snapshot v(.+), (.+)\n/;
 export const SNAPSHOT_GUIDE_LINK = 'https://jestjs.io/docs/snapshot-testing';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
@@ -24,9 +24,10 @@ export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
-const validateSnapshotVersion = (snapshotContents: string) => {
-  const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = versionTest && versionTest[1];
+const validateSnapshotHeader = (snapshotContents: string) => {
+  const headerTest = SNAPSHOT_HEADER_REGEXP.exec(snapshotContents);
+  const version = headerTest && headerTest[1]
+  const guideLink = headerTest && headerTest[2]
 
   if (!version) {
     return new Error(
@@ -72,6 +73,21 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     );
   }
 
+  if (guideLink != SNAPSHOT_GUIDE_LINK) {
+    return new Error(
+      // eslint-disable-next-line prefer-template
+      chalk.red(
+        `${chalk.red.bold('Outdated guide link')}: The guide link of this ` +
+          'snapshot file indicates that this project used deprecated Jest ' +
+          'snapshot guide link. ' +
+          'Please update all snapshots during this upgrade of Jest',
+      ) +
+        '\n\n' +
+        `Expected: ${SNAPSHOT_GUIDE_LINK}\n` +
+        `Received: ${guideLink}`,
+    );
+  }
+  
   return null;
 };
 
@@ -134,7 +150,7 @@ export const getSnapshotData = (
     } catch {}
   }
 
-  const validationResult = validateSnapshotVersion(snapshotContents);
+  const validationResult = validateSnapshotHeader(snapshotContents);
   const isInvalid = snapshotContents && validationResult;
 
   if (update === 'none' && isInvalid) {
