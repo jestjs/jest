@@ -1,5 +1,9 @@
 ## main
 
+## Features
+
+- `[jest-leak-detector]` Configurable GC aggressiveness regarding to V8 heap snapshot generation ([#15793](https://github.com/jestjs/jest/pull/15793/)) 
+
 ## 30.0.5
 
 ### Features
