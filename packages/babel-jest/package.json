@@ -24,8 +24,8 @@
     "@types/babel__core": "^7.20.5",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-preset-jest": "workspace:*",
-    "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
+    "picocolors": "^1.1.1",
     "slash": "^3.0.0"
   },
   "devDependencies": {

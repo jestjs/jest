@@ -7606,8 +7606,8 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     babel-plugin-istanbul: "npm:^7.0.0"
     babel-preset-jest: "workspace:*"
-    chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
+    picocolors: "npm:^1.1.1"
     slash: "npm:^3.0.0"
   peerDependencies:
     "@babel/core": ^7.11.0
