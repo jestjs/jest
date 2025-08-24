@@ -13,6 +13,7 @@ export const PACKAGE_JSON = 'package.json';
 export const JEST_CONFIG_BASE_NAME = 'jest.config';
 export const JEST_CONFIG_EXT_CJS = '.cjs';
 export const JEST_CONFIG_EXT_MJS = '.mjs';
+export const JEST_CONFIG_EXT_MTS = '.mts';
 export const JEST_CONFIG_EXT_JS = '.js';
 export const JEST_CONFIG_EXT_TS = '.ts';
 export const JEST_CONFIG_EXT_CTS = '.cts';
@@ -21,6 +22,7 @@ export const JEST_CONFIG_EXT_ORDER = Object.freeze([
   JEST_CONFIG_EXT_JS,
   JEST_CONFIG_EXT_TS,
   JEST_CONFIG_EXT_MJS,
+  JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_CJS,
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
