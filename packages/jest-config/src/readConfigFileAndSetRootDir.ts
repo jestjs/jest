@@ -75,18 +75,32 @@ export default async function readConfigFileAndSetRootDir(
       } else {
         if (isMTS) {
           // TODO: remove this once dropping Node 20/22 support.
-          const mtsSupportVersionRange = '^20.19.0 || >=22.12.0';
-          if (!satisfies(process.versions.node, mtsSupportVersionRange)) {
+          const mtsExtSupportVersionRange = '^20.19.0 || >=22.12.0';
+          if (!satisfies(process.versions.node, mtsExtSupportVersionRange)) {
             // Likely Node version not yet supports require(esm)
             // This string is caught further down and merged into a new error message.
             // eslint-disable-next-line no-throw-literal
             throw (
               `  Current Node version ${process.versions.node} does not support loading .mts Jest config.\n` +
-              `    Please upgrade to the range of ${mtsSupportVersionRange}`
+              `    Please upgrade to ${mtsExtSupportVersionRange}`
             );
           }
           // Relies on import(.mts) before falling back to require(.mts)
-          configObject = await requireOrImportModule<any>(configPath);
+          try {
+            configObject = await requireOrImportModule<any>(configPath);
+          } catch (requireOrImportModuleError) {
+            if (!(requireOrImportModuleError instanceof SyntaxError)) {
+              throw requireOrImportModuleError;
+            }
+            // Likely Node version does not support type stripping when require(esm).
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              `  Current Node version ${process.versions.node} does not support loading typed .mts Jest config.\n` +
+              '    Please upgrade to ^23.6\n' +
+              `    Error: ${requireOrImportModuleError}\n`
+            );
+          }
         } else {
           configObject = await loadTSConfigFile(configPath);
         }
