@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-config]` Supports Jest config file with `.mts` extension ([#15796](https://github.com/jestjs/jest/pull/15796))  
+
 ## 30.0.5
 
 ### Features
