@@ -11,8 +11,6 @@ Internally creates a weak reference to the object, and forces garbage collection
   let reference = {};
   let isLeaking;
 
-  // Second argument is to configure LeakDetector's runtime behavior
-  // Currently supports controlling whether to generate V8 heap snapshot, default to be true
   const detector = new LeakDetector(reference, {
     shouldGenerateV8HeapSnapshot: true,
   });
