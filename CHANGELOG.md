@@ -1,6 +1,5 @@
 ## main
 
-
 ### Features
 
 - `[jest-runtime]` Reduce redundant ReferenceError messages
@@ -8,6 +7,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Fix `it.concurrent` not working with `describe.skip` ([#15765](https://github.com/jestjs/jest/pull/15765))
 - `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
 - `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
 
