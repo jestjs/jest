@@ -652,7 +652,7 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): Promise<string | null> {
     if (this.isCoreModule(moduleName)) {
-      return this.normalizeCoreModuleSpecifier(moduleName);
+      return moduleName;
     }
     if (moduleName.startsWith('data:')) {
       return moduleName;
@@ -742,11 +742,6 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
-    // Strip core module scheme if necessary.
-    if (this.isCoreModule(moduleName)) {
-      return this.normalizeCoreModuleSpecifier(moduleName);
-    }
-
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(

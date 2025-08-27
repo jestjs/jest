@@ -30,15 +30,6 @@ test('can mock transitive module', async () => {
   expect(importedMock.foo).toBe('bar');
 });
 
-test('can mock transitive builtin module', async () => {
-  jestObject.unstable_mockModule('node:fs', () => ({foo: 'bar'}));
-
-  const importedMock = await import('../fsReexport.js');
-
-  expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toBe('bar');
-});
-
 test('can unmock module', async () => {
   jestObject.unstable_mockModule('../index.js', () => ({
     double: () => 1000,
