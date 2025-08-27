@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
+
 # Chore
 
 - `[expect]` Update docblock for `toContain()` to display info on substring check ([#15789](https://github.com/jestjs/jest/pull/15789))
