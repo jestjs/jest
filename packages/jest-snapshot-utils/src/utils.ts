@@ -13,7 +13,7 @@ import type {Config} from '@jest/types';
 import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
-const SNAPSHOT_HEADER_REGEXP = /^\/\/ Jest Snapshot v(.+), (.+)\n/;
+const SNAPSHOT_HEADER_REGEXP = /^\/\/ Jest Snapshot v(.+), (.+)\r?\n/;
 export const SNAPSHOT_GUIDE_LINK = 'https://jestjs.io/docs/snapshot-testing';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
@@ -77,7 +77,9 @@ const validateSnapshotHeader = (snapshotContents: string) => {
     return new Error(
       // eslint-disable-next-line prefer-template
       chalk.red(
-        `${chalk.red.bold('Outdated guide link')}: The snapshot guide link is outdated.` +
+        `${chalk.red.bold(
+          'Outdated guide link',
+        )}: The snapshot guide link is outdated.` +
           'Please update all snapshots while upgrading of Jest',
       ) +
         '\n\n' +
