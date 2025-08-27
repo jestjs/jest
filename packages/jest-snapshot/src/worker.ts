@@ -49,13 +49,14 @@ runAsWorker(
       parser: inferredParser,
     });
 
-    // @ts-expect-error private API
-    const {ast} = await prettier.__debug.parse(sourceFileWithSnapshots, {
-      ...config,
-      filepath,
-      originalText: sourceFileWithSnapshots,
-      parser: inferredParser,
-    });
+    const {ast, text: parsedSourceFileWithSnapshots} =
+      // @ts-expect-error private API
+      await prettier.__debug.parse(sourceFileWithSnapshots, {
+        ...config,
+        filepath,
+        originalText: sourceFileWithSnapshots,
+        parser: inferredParser,
+      });
     processPrettierAst(ast, config, snapshotMatcherNames, true);
     // Snapshots have now been inserted. Run prettier to make sure that the code is
     // formatted, except snapshot indentation. Snapshots cannot be formatted until
@@ -66,7 +67,7 @@ runAsWorker(
     const formatAST = await prettier.__debug.formatAST(ast, {
       ...config,
       filepath,
-      originalText: sourceFileWithSnapshots,
+      originalText: parsedSourceFileWithSnapshots,
       parser: inferredParser,
     });
     return formatAST.formatted;
