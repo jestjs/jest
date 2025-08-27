@@ -10,7 +10,7 @@ import {color} from '../entry';
 import type {Color} from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-jest.mock('some-module', () => ({}) as Partial<{}>, {virtual: true});
+jest.mock('some-module', () => ({} as Partial<{}>), {virtual: true});
 
 jest.mock('../entry', () => {
   const color: Color = 'blue';

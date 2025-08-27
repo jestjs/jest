@@ -2466,7 +2466,9 @@ export default class Runtime {
     const stackTrace = formatStackTrace(stack, this._config, {
       noStackTrace: false,
     });
-    const formattedMessage = `\n${message}${stackTrace ? `\n${stackTrace}` : ''}`;
+    const formattedMessage = `\n${message}${
+      stackTrace ? `\n${stackTrace}` : ''
+    }`;
     if (!this.loggedReferenceErrors.has(formattedMessage)) {
       console.error(formattedMessage);
       this.loggedReferenceErrors.add(formattedMessage);

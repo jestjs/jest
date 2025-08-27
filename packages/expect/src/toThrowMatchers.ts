@@ -172,9 +172,9 @@ const toThrowExpectedRegExp = (
         (thrown === null
           ? `\n${DID_NOT_THROW}`
           : thrown.hasMessage
-            ? formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Received value:   ', thrown, 'value'));
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -212,10 +212,10 @@ const toThrowExpectedAsymmetric = (
         (thrown === null
           ? DID_NOT_THROW
           : thrown.hasMessage
-            ? formatReceived('Received name:    ', thrown, 'name') +
-              formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Thrown value: ', thrown, 'value'));
+          ? formatReceived('Received name:    ', thrown, 'name') +
+            formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -266,20 +266,20 @@ const toThrowExpectedObject = (
             '\n' +
             DID_NOT_THROW
           : thrown.hasMessage
-            ? // eslint-disable-next-line prefer-template
-              printDiffOrStringify(
-                expectedMessageAndCause,
-                thrownMessageAndCause,
-                `Expected ${messageAndCause(expected)}`,
-                `Received ${messageAndCause(thrown.value)}`,
-                true,
-              ) +
-              '\n' +
-              formatStack(thrown)
-            : formatExpected(
-                `Expected ${messageAndCause(expected)}: `,
-                expectedMessageAndCause,
-              ) + formatReceived('Received value:   ', thrown, 'value'));
+          ? // eslint-disable-next-line prefer-template
+            printDiffOrStringify(
+              expectedMessageAndCause,
+              thrownMessageAndCause,
+              `Expected ${messageAndCause(expected)}`,
+              `Received ${messageAndCause(thrown.value)}`,
+              true,
+            ) +
+            '\n' +
+            formatStack(thrown)
+          : formatExpected(
+              `Expected ${messageAndCause(expected)}: `,
+              expectedMessageAndCause,
+            ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -368,9 +368,9 @@ const toThrowExpectedString = (
         (thrown === null
           ? `\n${DID_NOT_THROW}`
           : thrown.hasMessage
-            ? formatReceived('Received message:   ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Received value:     ', thrown, 'value'));
+          ? formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:     ', thrown, 'value'));
 
   return {message, pass};
 };

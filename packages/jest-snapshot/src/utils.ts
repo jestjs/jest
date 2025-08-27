@@ -170,18 +170,14 @@ const indent = (
 };
 
 const generate = (
-  require(
-    require.resolve('@babel/generator', {
-      [Symbol.for('jest-resolve-outside-vm-option')]: true,
-    }),
-  ) as typeof import('@babel/generator')
+  require(require.resolve('@babel/generator', {
+    [Symbol.for('jest-resolve-outside-vm-option')]: true,
+  })) as typeof import('@babel/generator')
 ).default;
 
-const {parseSync, types} = require(
-  require.resolve('@babel/core', {
-    [Symbol.for('jest-resolve-outside-vm-option')]: true,
-  }),
-) as typeof import('@babel/core');
+const {parseSync, types} = require(require.resolve('@babel/core', {
+  [Symbol.for('jest-resolve-outside-vm-option')]: true,
+})) as typeof import('@babel/core');
 
 const {
   isAwaitExpression,

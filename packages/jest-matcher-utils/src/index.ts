@@ -265,10 +265,10 @@ const getCommonAndChangedSubstrings = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op
-          ? hasCommonDiff
-            ? INVERTED_COLOR(diff[1])
-            : diff[1]
-          : ''),
+        ? hasCommonDiff
+          ? INVERTED_COLOR(diff[1])
+          : diff[1]
+        : ''),
     '',
   );
 

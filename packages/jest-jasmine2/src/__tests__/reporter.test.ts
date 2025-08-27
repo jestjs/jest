@@ -24,7 +24,7 @@ describe('Jasmine2Reporter', () => {
         description: 'description',
         failedExpectations: [],
         fullName: name,
-      }) as any as SpecResult;
+      } as any as SpecResult);
     reporter.suiteStarted({description: 'parent'} as SuiteResult);
     reporter.suiteStarted({description: 'child'} as SuiteResult);
     reporter.specDone(makeSpec('spec 1'));

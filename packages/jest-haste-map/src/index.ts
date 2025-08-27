@@ -821,8 +821,8 @@ class HasteMap extends EventEmitter implements IHasteMap {
     const Watcher = (await this._shouldUseWatchman())
       ? WatchmanWatcher
       : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
+      ? FSEventsWatcher
+      : NodeWatcher;
 
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;

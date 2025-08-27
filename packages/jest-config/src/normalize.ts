@@ -169,7 +169,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -1087,8 +1089,8 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,

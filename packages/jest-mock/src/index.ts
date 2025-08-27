@@ -62,35 +62,35 @@ export type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-      ? MockedFunction<T[K]>
-      : T[K] extends object
-        ? MockedObject<T[K]>
-        : T[K];
+    ? MockedFunction<T[K]>
+    : T[K] extends object
+    ? MockedObject<T[K]>
+    : T[K];
 } & T;
 
 type MockedObjectShallow<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
-      ? MockedFunctionShallow<T[K]>
-      : T[K];
+    ? MockedFunctionShallow<T[K]>
+    : T[K];
 } & T;
 
 export type Mocked<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-    ? MockedFunction<T>
-    : T extends object
-      ? MockedObject<T>
-      : T;
+  ? MockedFunction<T>
+  : T extends object
+  ? MockedObject<T>
+  : T;
 
 export type MockedShallow<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
-    ? MockedFunctionShallow<T>
-    : T extends object
-      ? MockedObjectShallow<T>
-      : T;
+  ? MockedFunctionShallow<T>
+  : T extends object
+  ? MockedObjectShallow<T>
+  : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 export type UnknownClass = new (...args: Array<unknown>) => unknown;
@@ -109,8 +109,8 @@ export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
   ? SpiedClass<T>
   : T extends FunctionLike
-    ? SpiedFunction<T>
-    : never;
+  ? SpiedFunction<T>
+  : never;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -127,11 +127,15 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type ResolveType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<infer U> ? U : never;
+type ResolveType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<
+  infer U
+>
+  ? U
+  : never;
 
-type RejectType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<any> ? unknown : never;
+type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
+  ? unknown
+  : never;
 
 export interface MockInstance<T extends FunctionLike = UnknownFunction>
   extends Disposable {
@@ -727,7 +731,8 @@ export class ModuleMocker {
         }
 
         return finalReturnValue;
-      }, metadata.length || 0);
+      },
+      metadata.length || 0);
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
@@ -1103,8 +1108,8 @@ export class ModuleMocker {
   ): A extends 'get'
     ? SpiedGetter<V>
     : A extends 'set'
-      ? SpiedSetter<V>
-      : never;
+    ? SpiedSetter<V>
+    : never;
 
   spyOn<
     T extends object,

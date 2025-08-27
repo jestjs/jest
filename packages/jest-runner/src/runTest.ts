@@ -262,9 +262,9 @@ async function runTestInternal(
 
   // For tests
   runtime
-    .requireInternalModule<
-      typeof import('source-map-support')
-    >(require.resolve('source-map-support'))
+    .requireInternalModule<typeof import('source-map-support')>(
+      require.resolve('source-map-support'),
+    )
     .install(sourcemapOptions);
 
   // For runtime errors

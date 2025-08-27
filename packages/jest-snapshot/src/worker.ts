@@ -23,12 +23,10 @@ runAsWorker(
     sourceFileWithSnapshots: string,
     snapshotMatcherNames: Array<string>,
   ) => {
-    prettier ??= require(
-      /*webpackIgnore: true*/
-      require.resolve(prettierPath, {
-        [Symbol.for('jest-resolve-outside-vm-option')]: true,
-      }),
-    );
+    prettier ??= require(/*webpackIgnore: true*/
+    require.resolve(prettierPath, {
+      [Symbol.for('jest-resolve-outside-vm-option')]: true,
+    }));
 
     const config = await prettier.resolveConfig(filepath, {
       editorconfig: true,

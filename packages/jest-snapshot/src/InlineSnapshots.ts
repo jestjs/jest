@@ -44,11 +44,9 @@ export function saveInlineSnapshots(
     : undefined;
   if (prettierPath && !prettier) {
     try {
-      prettier = require(
-        require.resolve(prettierPath, {
-          [Symbol.for('jest-resolve-outside-vm-option')]: true,
-        }),
-      ) as Prettier;
+      prettier = require(require.resolve(prettierPath, {
+        [Symbol.for('jest-resolve-outside-vm-option')]: true,
+      })) as Prettier;
 
       cachedPrettier.set(`module|${prettierPath}`, prettier);
 

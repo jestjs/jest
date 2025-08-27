@@ -22,8 +22,7 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
-  Expected extends
-    Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
+  Expected extends Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
 > = (
   this: Context,
   actual: unknown,
@@ -364,10 +363,9 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
  * MockParameters<boolean> // Array<unknown>
  * ```
  */
-type MockParameters<M> =
-  M extends MockInstance<infer F>
-    ? FunctionParameters<F>
-    : FunctionParameters<M>;
+type MockParameters<M> = M extends MockInstance<infer F>
+  ? FunctionParameters<F>
+  : FunctionParameters<M>;
 
 /**
  * A wrapper over `FunctionParametersInternal` which converts `never` evaluations to `Array<unknown>`.
@@ -387,10 +385,9 @@ type MockParameters<M> =
  * so all that's left is converting `never` to `Array<unknown>` for the case of `UnknownFunction`,
  * as it needs to accept _any_ combination of parameters.
  */
-type FunctionParameters<F> =
-  FunctionParametersInternal<F> extends never
-    ? Array<unknown>
-    : FunctionParametersInternal<F>;
+type FunctionParameters<F> = FunctionParametersInternal<F> extends never
+  ? Array<unknown>
+  : FunctionParametersInternal<F>;
 
 /**
  * 1. If the function is overloaded or has no parameters -> overloaded form (union of tuples).
@@ -431,16 +428,15 @@ type FunctionParametersInternal<F> = F extends {
       | WithAsymmetricMatchers<P14>
       | WithAsymmetricMatchers<P15>
   : F extends (...args: infer P) => any
-    ? WithAsymmetricMatchers<P>
-    : never;
+  ? WithAsymmetricMatchers<P>
+  : never;
 
 /**
  * @see FunctionParameters
  */
-type WithAsymmetricMatchers<P extends Array<any>> =
-  Array<unknown> extends P
-    ? never
-    : {[K in keyof P]: DeepAsymmetricMatcher<P[K]>};
+type WithAsymmetricMatchers<P extends Array<any>> = Array<unknown> extends P
+  ? never
+  : {[K in keyof P]: DeepAsymmetricMatcher<P[K]>};
 
 /**
  * Replaces `T` with `T | AsymmetricMatcher`.

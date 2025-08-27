@@ -23,8 +23,8 @@ export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
     : value === undefined
-      ? 'undefined'
-      : JSON.stringify(value, null, 2).split('\n').join('\n    ');
+    ? 'undefined'
+    : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
   override name: string;

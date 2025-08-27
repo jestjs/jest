@@ -107,8 +107,9 @@ const processResults = async (
   }
 
   if (testResultsProcessor) {
-    const processor =
-      await requireOrImportModule<TestResultsProcessor>(testResultsProcessor);
+    const processor = await requireOrImportModule<TestResultsProcessor>(
+      testResultsProcessor,
+    );
     runResults = await processor(runResults);
   }
   if (isJSON) {

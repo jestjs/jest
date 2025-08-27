@@ -391,7 +391,10 @@ describe('findNodeModule', () => {
           conditions: [],
         });
       }).toThrow(
-        `Package import specifier "#something-else" is not defined in package ${path.join(importsRoot, 'foo-import/package.json')}`,
+        `Package import specifier "#something-else" is not defined in package ${path.join(
+          importsRoot,
+          'foo-import/package.json',
+        )}`,
       );
     });
   });

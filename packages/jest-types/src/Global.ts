@@ -56,36 +56,28 @@ export type EachTestFn<EachCallback extends TestCallback> = (
 
 interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is an array of object literals
-  <T extends Record<string, unknown>>(
-    table: ReadonlyArray<T>,
-  ): (
+  <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
   // when the table is an array of tuples
-  <T extends readonly [unknown, ...Array<unknown>]>(
-    table: ReadonlyArray<T>,
-  ): (
+  <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (...args: [...T]) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
   // when the table is an array of arrays
-  <T extends ReadonlyArray<unknown>>(
-    table: ReadonlyArray<T>,
-  ): (
+  <T extends ReadonlyArray<unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (...args: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
   // when the table is a tuple or array
-  <T>(
-    table: ReadonlyArray<T>,
-  ): (
+  <T>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,

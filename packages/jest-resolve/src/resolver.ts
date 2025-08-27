@@ -697,8 +697,8 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-        ? this.resolveModule(from, moduleName, options)
-        : from;
+      ? this.resolveModule(from, moduleName, options)
+      : from;
   }
 
   private async _getVirtualMockPathAsync(
@@ -711,8 +711,8 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-        ? this.resolveModuleAsync(from, moduleName, options)
-        : from;
+      ? this.resolveModuleAsync(from, moduleName, options)
+      : from;
   }
 
   private _isModuleResolved(

@@ -32,7 +32,9 @@ module.exports = defineConfig({
       if (uniqueRanges.length > 1) {
         for (const d of allDeps) {
           d.error(
-            `Dependency \`${ident}\` should have the same version across all workspaces (found: ${uniqueRanges.join(', ')})`,
+            `Dependency \`${ident}\` should have the same version across all workspaces (found: ${uniqueRanges.join(
+              ', ',
+            )})`,
           );
         }
       }

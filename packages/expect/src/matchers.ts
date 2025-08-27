@@ -335,11 +335,11 @@ const matchers: MatchersObject = {
                 received,
               )}`
             : typeof received.constructor === 'function'
-              ? printReceivedConstructorName(
-                  'Received constructor',
-                  received.constructor,
-                )
-              : `\nReceived value: ${printReceived(received)}`);
+            ? printReceivedConstructorName(
+                'Received constructor',
+                received.constructor,
+              )
+            : `\nReceived value: ${printReceived(received)}`);
 
     return {message, pass};
   },

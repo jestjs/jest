@@ -126,8 +126,8 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   const jestConfigFileExt = results.useTypescript
     ? JEST_CONFIG_EXT_TS
     : projectPackageJson.type === 'module'
-      ? JEST_CONFIG_EXT_MJS
-      : JEST_CONFIG_EXT_JS;
+    ? JEST_CONFIG_EXT_MJS
+    : JEST_CONFIG_EXT_JS;
 
   // Determine Jest config path
   const jestConfigPath =

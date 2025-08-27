@@ -284,8 +284,9 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
-            transformer =
-              await transformer.createTransformer(transformerConfig);
+            transformer = await transformer.createTransformer(
+              transformerConfig,
+            );
           }
           if (
             typeof transformer.process !== 'function' &&

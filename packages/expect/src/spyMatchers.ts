@@ -314,10 +314,10 @@ const printResult = (result: any, expected: unknown) =>
   result.type === 'throw'
     ? 'function call threw an error'
     : result.type === 'incomplete'
-      ? 'function call has not returned yet'
-      : isEqualValue(expected, result.value)
-        ? printCommon(result.value)
-        : printReceived(result.value);
+    ? 'function call has not returned yet'
+    : isEqualValue(expected, result.value)
+    ? printCommon(result.value)
+    : printReceived(result.value);
 
 type IndexedResult = [number, any];
 

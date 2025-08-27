@@ -23,8 +23,8 @@ const concatenateRelevantDiffs = (
       (diff[0] === DIFF_EQUAL
         ? diff[1]
         : diff[0] === op && diff[1].length > 0 // empty if change is newline
-          ? changeColor(diff[1])
-          : ''),
+        ? changeColor(diff[1])
+        : ''),
     '',
   );
 
