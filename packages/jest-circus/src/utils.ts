@@ -439,7 +439,9 @@ const _getError = (
 };
 
 const getErrorStack = (error: Error): string =>
-  typeof error.stack === 'string' ? error.stack : error.message;
+  typeof error.stack === 'string' && error.stack !== ''
+    ? error.stack
+    : error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,

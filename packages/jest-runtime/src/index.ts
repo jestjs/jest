@@ -589,13 +589,14 @@ export default class Runtime {
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
-      const fromCache = registry.get('@jest/globals');
+      const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
+      const fromCache = registry.get(globalsIdentifier);
 
       if (fromCache) {
         return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      registry.set('@jest/globals', globals);
+      registry.set(globalsIdentifier, globals);
 
       return globals;
     }

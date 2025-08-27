@@ -468,18 +468,12 @@ export const formatResultsErrors = (
   options: StackTraceOptions,
   testPath?: string,
 ): string | null => {
-  const failedResults: FailedResults = testResults.reduce<FailedResults>(
-    (errors, result) => {
-      for (const [index, item] of result.failureMessages.entries()) {
-        errors.push({
-          content: item,
-          failureDetails: result.failureDetails[index],
-          result,
-        });
-      }
-      return errors;
-    },
-    [],
+  const failedResults: FailedResults = testResults.flatMap(result =>
+    result.failureMessages.map((item, index) => ({
+      content: item,
+      failureDetails: result.failureDetails[index],
+      result,
+    }))
   );
 
   if (failedResults.length === 0) {
