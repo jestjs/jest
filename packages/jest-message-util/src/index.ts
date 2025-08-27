@@ -242,6 +242,10 @@ const removeInternalStackEntries = (
   let pathCounter = 0;
 
   return lines.filter(line => {
+    if (!line) {
+      return false;
+    }
+
     if (ANONYMOUS_FN_IGNORE.test(line)) {
       return false;
     }
@@ -368,17 +372,18 @@ export function formatStackTrace(
     }
   }
 
-  const stacktrace = lines
-    .filter(Boolean)
-    .map(
-      line =>
-        STACK_INDENT + formatPath(trimPaths(line), config, relativeTestPath),
-    )
-    .join('\n');
+  const stacktrace =
+    lines.length === 0
+      ? ''
+      : `\n${lines
+          .map(
+            line =>
+              STACK_INDENT +
+              formatPath(trimPaths(line), config, relativeTestPath),
+          )
+          .join('\n')}`;
 
-  return renderedCallsite
-    ? `${renderedCallsite}\n${stacktrace}`
-    : `\n${stacktrace}`;
+  return renderedCallsite + stacktrace;
 }
 
 type FailedResults = Array<{

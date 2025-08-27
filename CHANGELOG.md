@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-runtime]` Reduce redundant ReferenceError messages
 - `[jest-core]` Include test modules that failed to load when --onlyFailures is active
 
 ### Fixes
