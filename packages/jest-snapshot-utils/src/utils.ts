@@ -77,10 +77,8 @@ const validateSnapshotHeader = (snapshotContents: string) => {
     return new Error(
       // eslint-disable-next-line prefer-template
       chalk.red(
-        `${chalk.red.bold('Outdated guide link')}: The guide link of this ` +
-          'snapshot file indicates that this project used deprecated Jest ' +
-          'snapshot guide link. ' +
-          'Please update all snapshots during this upgrade of Jest',
+        `${chalk.red.bold('Outdated guide link')}: The snapshot guide link is outdated.` +
+          'Please update all snapshots while upgrading of Jest',
       ) +
         '\n\n' +
         `Expected: ${SNAPSHOT_GUIDE_LINK}\n` +
