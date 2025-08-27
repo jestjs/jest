@@ -157,6 +157,26 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   );
 });
 
+test('getSnapshotData() throws for deprecated snapshot guide link', () => {
+  const deprecatedGuideLink = 'https://goo.gl/fbAQLP';
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  jest
+    .mocked(fs.readFileSync)
+    .mockReturnValue(
+      `// Jest Snapshot v1, ${deprecatedGuideLink}\n\n` +
+        'exports[`myKey`] = `<div>\n</div>`;\n',
+    );
+  const update = 'none';
+
+  expect(() => getSnapshotData(filename, update)).toThrow(
+    `${chalk.red(
+      `${chalk.red.bold('Outdated guide link')}: The snapshot guide link is outdated.` +
+        'Please update all snapshots while upgrading of Jest',
+    )}\n\nExpected: ${SNAPSHOT_GUIDE_LINK}\n` +
+      `Received: ${deprecatedGuideLink}`,
+  );
+});
+
 test('getSnapshotData() does not throw for when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
