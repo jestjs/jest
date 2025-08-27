@@ -1,5 +1,9 @@
 ## main
 
+# Chore
+
+- `[expect]` Update docblock for `toContain()` to display info on substring check ([#15789](https://github.com/jestjs/jest/pull/15789))
+
 ## 30.0.5
 
 ### Features
