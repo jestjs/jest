@@ -16,9 +16,11 @@ import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
+import {satisfies} from 'semver';
 
 interface TsLoader {
   enabled: (bool: boolean) => void;
@@ -32,9 +34,12 @@ type TsLoaderModule = 'ts-node' | 'esbuild-register';
 export default async function readConfigFileAndSetRootDir(
   configPath: string,
 ): Promise<Config.InitialOptions> {
+  const isMTS = configPath.endsWith(JEST_CONFIG_EXT_MTS);
   const isTS =
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
-    configPath.endsWith(JEST_CONFIG_EXT_CTS);
+    configPath.endsWith(JEST_CONFIG_EXT_CTS) ||
+    configPath.endsWith(JEST_CONFIG_EXT_CTS) ||
+    isMTS;
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
@@ -68,7 +73,37 @@ export default async function readConfigFileAndSetRootDir(
           }
         }
       } else {
-        configObject = await loadTSConfigFile(configPath);
+        if (isMTS) {
+          // TODO: remove this once dropping Node 20/22 support.
+          const mtsExtSupportVersionRange = '^20.19.0 || >=22.12.0';
+          if (!satisfies(process.versions.node, mtsExtSupportVersionRange)) {
+            // Likely Node version not yet supports require(esm)
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              `  Current Node version ${process.versions.node} does not support loading .mts Jest config.\n` +
+              `    Please upgrade to ${mtsExtSupportVersionRange}`
+            );
+          }
+          // Relies on import(.mts) before falling back to require(.mts)
+          try {
+            configObject = await requireOrImportModule<any>(configPath);
+          } catch (requireOrImportModuleError) {
+            if (!(requireOrImportModuleError instanceof SyntaxError)) {
+              throw requireOrImportModuleError;
+            }
+            // Likely Node version does not support type stripping when require(esm).
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              `  Current Node version ${process.versions.node} does not support loading typed .mts Jest config.\n` +
+              '    Please upgrade to ^23.6\n' +
+              `    Error: ${requireOrImportModuleError}\n`
+            );
+          }
+        } else {
+          configObject = await loadTSConfigFile(configPath);
+        }
       }
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
