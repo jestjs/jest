@@ -35,6 +35,12 @@ describe('FailedTestsCache', () => {
           {fullName: 'test 6', status: 'passed'},
         ],
       },
+      {
+        numFailingTests: 0,
+        testExecError: new Error('Cannot find module'),
+        testFilePath: '/path/to/failed_exec.js',
+        testResults: [],
+      },
     ]);
 
     const result = failedTestsCache.filterTests([
@@ -48,6 +54,9 @@ describe('FailedTestsCache', () => {
         path: '/path/to/failed_2.js',
       },
       {
+        path: '/path/to/failed_exec.js',
+      },
+      {
         path: '/path/to/unknown.js',
       },
     ]);
@@ -57,6 +66,9 @@ describe('FailedTestsCache', () => {
       },
       {
         path: '/path/to/failed_2.js',
+      },
+      {
+        path: '/path/to/failed_exec.js',
       },
     ]);
   });

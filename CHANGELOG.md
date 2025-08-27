@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-core]` Include test modules that failed to load when --onlyFailures is active
+
 ### Fixes
 
 - `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
