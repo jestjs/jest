@@ -742,7 +742,7 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
-    // Strip node URL scheme from core modules imported using it
+    // Strip core module scheme if necessary.
     if (this.isCoreModule(moduleName)) {
       return this.normalizeCoreModuleSpecifier(moduleName);
     }
