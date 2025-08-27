@@ -1,7 +1,8 @@
 ## main
 
-### Features
+## Features
 
+- `[jest-leak-detector]` Configurable GC aggressiveness regarding to V8 heap snapshot generation ([#15793](https://github.com/jestjs/jest/pull/15793/)) 
 - `[jest-runtime]` Reduce redundant ReferenceError messages
 - `[jest-core]` Include test modules that failed to load when --onlyFailures is active
 
