@@ -561,10 +561,9 @@ it('getTopFrame should return a path for mjs files', () => {
 });
 
 it('should return the error cause if there is one', () => {
-  const error = new Error('Test exception');
-  // TODO pass `cause` to the `Error` constructor when lowest supported Node version is 16.9.0 and above
-  // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V16.md#error-cause
-  error.cause = new Error('Cause Error');
+  const error = new Error('Test exception', {
+    cause: new Error('Cause Error'),
+  });
   const message = formatExecError(
     error,
     {
