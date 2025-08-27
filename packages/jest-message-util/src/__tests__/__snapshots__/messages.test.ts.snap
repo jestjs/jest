@@ -75,8 +75,7 @@ exports[`formatStackTrace should properly handle string causes 1`] = `
 
     Cause:
     string cause
-<dim></intensity>
-<dim></intensity>
+
 "
 `;
 

@@ -18,12 +18,16 @@ export default class FailedTestsCache {
     if (!enabledTestsMap) {
       return tests;
     }
-    return tests.filter(testResult => enabledTestsMap[testResult.path]);
+    return tests.filter(test => enabledTestsMap[test.path]);
   }
 
   setTestResults(testResults: Array<TestResult>): void {
     this._enabledTestsMap = (testResults || []).reduce<TestMap>(
       (suiteMap, testResult) => {
+        if (testResult.testExecError) {
+          suiteMap[testResult.testFilePath] = {};
+          return suiteMap;
+        }
         if (!testResult.numFailingTests) {
           return suiteMap;
         }

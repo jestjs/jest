@@ -7,12 +7,16 @@
 
 import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
-import runJest, {getConfig} from '../runJest';
+import runJest, {getConfig, useNativeTypeScript} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../ts-node-integration');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
+
+// Node.js's builtin TypeScript support doesn't do type checking, so skip tests
+// that validate type-checking behavior.
+const testIfTsLoader = useNativeTypeScript ? test.skip : test;
 
 describe('when `Config` type is imported from "@jest/types"', () => {
   test('with object config exported from TS file', () => {
@@ -93,7 +97,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     expect(globalConfig.verbose).toBe(true);
   });
 
-  test('throws if type errors are encountered', () => {
+  testIfTsLoader('throws if type errors are encountered', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
@@ -247,24 +251,27 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     expect(globalConfig.verbose).toBe(true);
   });
 
-  test('throws if type errors are encountered when package.json#type=module', () => {
-    writeFiles(DIR, {
-      '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
-      'jest.config.ts': `
+  testIfTsLoader(
+    'throws if type errors are encountered when package.json#type=module',
+    () => {
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
+        'jest.config.ts': `
           import type {Config} from '@jest/types';
           const config: Config.InitialOptions = {testTimeout: '10000'};
           export default config;
           `,
-      'package.json': '{"type": "module"}',
-    });
+        'package.json': '{"type": "module"}',
+      });
 
-    const {stderr, exitCode} = runJest(DIR);
+      const {stderr, exitCode} = runJest(DIR);
 
-    expect(stderr).toMatch(
-      "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
-    );
-    expect(exitCode).toBe(1);
-  });
+      expect(stderr).toMatch(
+        "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      );
+      expect(exitCode).toBe(1);
+    },
+  );
 
   test('throws if syntax errors are encountered when package.json#type=module', () => {
     writeFiles(DIR, {
@@ -403,7 +410,7 @@ describe('when `Config` type is imported from "jest"', () => {
     expect(globalConfig.verbose).toBe(true);
   });
 
-  test('throws if type errors are encountered', () => {
+  testIfTsLoader('throws if type errors are encountered', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
@@ -557,24 +564,27 @@ describe('when `Config` type is imported from "jest"', () => {
     expect(globalConfig.verbose).toBe(true);
   });
 
-  test('throws if type errors are encountered when package.json#type=module', () => {
-    writeFiles(DIR, {
-      '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
-      'jest.config.ts': `
+  testIfTsLoader(
+    'throws if type errors are encountered when package.json#type=module',
+    () => {
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
+        'jest.config.ts': `
           import type {Config} from 'jest';
           const config: Config = {testTimeout: '10000'};
           export default config;
           `,
-      'package.json': '{"type": "module"}',
-    });
+        'package.json': '{"type": "module"}',
+      });
 
-    const {stderr, exitCode} = runJest(DIR);
+      const {stderr, exitCode} = runJest(DIR);
 
-    expect(stderr).toMatch(
-      "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
-    );
-    expect(exitCode).toBe(1);
-  });
+      expect(stderr).toMatch(
+        "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
+      );
+      expect(exitCode).toBe(1);
+    },
+  );
 
   test('throws if syntax errors are encountered when package.json#type=module', () => {
     writeFiles(DIR, {
