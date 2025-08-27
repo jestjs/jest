@@ -38,7 +38,6 @@ export default async function readConfigFileAndSetRootDir(
   const isTS =
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
     configPath.endsWith(JEST_CONFIG_EXT_CTS) ||
-    configPath.endsWith(JEST_CONFIG_EXT_CTS) ||
     isMTS;
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
