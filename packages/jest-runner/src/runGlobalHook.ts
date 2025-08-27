@@ -18,7 +18,11 @@ export default async function runGlobalHook({
 }: {
   allTests: Array<Test>;
   globalConfig: Config.GlobalConfig;
-  moduleName: 'globalSetup' | 'globalTeardown';
+  moduleName:
+    | 'globalSetup'
+    | 'globalSetupPerWorker'
+    | 'globalTeardown'
+    | 'globalTeardownPerWorker';
 }): Promise<void> {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
