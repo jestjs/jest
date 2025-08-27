@@ -242,6 +242,10 @@ const removeInternalStackEntries = (
   let pathCounter = 0;
 
   return lines.filter(line => {
+    if (!line) {
+      return false;
+    }
+
     if (ANONYMOUS_FN_IGNORE.test(line)) {
       return false;
     }
@@ -368,17 +372,18 @@ export function formatStackTrace(
     }
   }
 
-  const stacktrace = lines
-    .filter(Boolean)
-    .map(
-      line =>
-        STACK_INDENT + formatPath(trimPaths(line), config, relativeTestPath),
-    )
-    .join('\n');
+  const stacktrace =
+    lines.length === 0
+      ? ''
+      : `\n${lines
+          .map(
+            line =>
+              STACK_INDENT +
+              formatPath(trimPaths(line), config, relativeTestPath),
+          )
+          .join('\n')}`;
 
-  return renderedCallsite
-    ? `${renderedCallsite}\n${stacktrace}`
-    : `\n${stacktrace}`;
+  return renderedCallsite + stacktrace;
 }
 
 type FailedResults = Array<{
@@ -463,18 +468,12 @@ export const formatResultsErrors = (
   options: StackTraceOptions,
   testPath?: string,
 ): string | null => {
-  const failedResults: FailedResults = testResults.reduce<FailedResults>(
-    (errors, result) => {
-      for (const [index, item] of result.failureMessages.entries()) {
-        errors.push({
-          content: item,
-          failureDetails: result.failureDetails[index],
-          result,
-        });
-      }
-      return errors;
-    },
-    [],
+  const failedResults: FailedResults = testResults.flatMap(result =>
+    result.failureMessages.map((item, index) => ({
+      content: item,
+      failureDetails: result.failureDetails[index],
+      result,
+    }))
   );
 
   if (failedResults.length === 0) {

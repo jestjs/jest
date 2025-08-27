@@ -133,7 +133,7 @@ Jest is not supported by Vite due to incompatibilities with the Vite [plugin sys
 
 There are examples for Jest integration with Vite in the [vite-jest](https://github.com/sodatea/vite-jest) library. However, this library is not compatible with versions of Vite later than 2.4.2.
 
-One alternative is [Vitest](https://vitest.dev/) which has an API compatible Jest.
+One alternative is [Vitest](https://vitest.dev/) which has an API that is compatible with Jest.
 
 ### Using Parcel
 

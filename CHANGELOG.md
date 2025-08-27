@@ -1,8 +1,19 @@
 ## main
 
+
+### Features
+
+- `[jest-runtime]` Reduce redundant ReferenceError messages
+- `[jest-core]` Include test modules that failed to load when --onlyFailures is active
+
 ### Fixes
 
 - `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
+- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
+
+# Chore
+
+- `[expect]` Update docblock for `toContain()` to display info on substring check ([#15789](https://github.com/jestjs/jest/pull/15789))
 
 ## 30.0.5
 
