@@ -55,6 +55,6 @@
     "graphql": "^16.11.0",
     "graphql-request": "^6.1.0",
     "js-yaml": "^4.1.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.8.3"
   }
 }
