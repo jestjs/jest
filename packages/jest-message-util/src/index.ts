@@ -473,7 +473,7 @@ export const formatResultsErrors = (
       content: item,
       failureDetails: result.failureDetails[index],
       result,
-    }))
+    })),
   );
 
   if (failedResults.length === 0) {
