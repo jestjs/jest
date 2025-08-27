@@ -58,9 +58,9 @@ export default class LeakDetector {
 
     if (this._isReferenceBeingHeld) {
       if (this._shouldGenerateV8HeapSnapshot) {
-        // triggering a heap snapshot is more aggressive than just `global.gc()`,
-        // but it's also quite slow, so only do it if we still think we're leaking.
-        // https://github.com/nodejs/node/pull/48510#issuecomment-1719289759
+        // Triggering a heap snapshot is more aggressive than just calling `global.gc()`,
+        // but it's also quite slow. Only do it if we still think we're leaking.
+        // See: https://github.com/nodejs/node/pull/48510#issuecomment-1719289759
         getHeapSnapshot();
       }
 
