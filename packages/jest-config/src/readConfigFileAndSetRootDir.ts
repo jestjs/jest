@@ -10,6 +10,7 @@ import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
 import stripJsonComments from 'strip-json-comments';
+import * as ts from 'typescript';
 import type {Config} from '@jest/types';
 import {extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
@@ -173,8 +174,9 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
 
       return tsLoader.register({
         compilerOptions: {
-          module: 'CommonJS',
-        },
+          module: ts.server.protocol.ModuleKind.CommonJS,
+          moduleResolution: ts.server.protocol.ModuleResolutionKind.Node10,
+        } satisfies ts.server.protocol.CompilerOptions,
         moduleTypes: {
           '**': 'cjs',
         },
