@@ -10,7 +10,6 @@ import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
 import stripJsonComments from 'strip-json-comments';
-import * as ts from 'typescript';
 import type {Config} from '@jest/types';
 import {extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
@@ -174,9 +173,15 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
 
       return tsLoader.register({
         compilerOptions: {
-          module: ts.server.protocol.ModuleKind.CommonJS,
-          moduleResolution: ts.server.protocol.ModuleResolutionKind.Node10,
-        } satisfies ts.server.protocol.CompilerOptions,
+          /**
+           * Define both `module` and `moduleResolution` at the same time!
+           * We're overriding user's tsconfig here, so if we only specify
+           * `module` without the `moduleResolution`, we can get an incompatible
+           * pair that causes a TypeScript compiler configuration error.
+           */
+          module: 'commonjs',
+          moduleResolution: 'node10',
+        },
         moduleTypes: {
           '**': 'cjs',
         },
