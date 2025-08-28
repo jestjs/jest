@@ -173,7 +173,14 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
 
       return tsLoader.register({
         compilerOptions: {
-          module: 'CommonJS',
+          /**
+           * Define both `module` and `moduleResolution` at the same time!
+           * We're overriding user's tsconfig here, so if we only specify
+           * `module` without the `moduleResolution`, we can get an incompatible
+           * pair that causes a TypeScript compiler configuration error.
+           */
+          module: 'commonjs',
+          moduleResolution: 'node10',
         },
         moduleTypes: {
           '**': 'cjs',
