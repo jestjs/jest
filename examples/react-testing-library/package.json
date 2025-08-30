@@ -10,7 +10,7 @@
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.3.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-jsdom": "workspace:*"
