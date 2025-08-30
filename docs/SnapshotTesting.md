@@ -12,12 +12,12 @@ A typical snapshot test case renders a UI component, takes a snapshot, then comp
 A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React component. Consider this [example test](https://github.com/jestjs/jest/blob/main/examples/snapshot/__tests__/link.test.js) for a [Link component](https://github.com/jestjs/jest/blob/main/examples/snapshot/Link.js):
 
 ```tsx
-import { render } from '@testing-library/react';
+import {render} from '@testing-library/react';
 import Link from '../Link';
 
 it('renders correctly', () => {
-  const { container } = render(
-    <Link page="http://www.facebook.com">Facebook</Link>
+  const {container} = render(
+    <Link page="http://www.facebook.com">Facebook</Link>,
   );
   expect(container.firstChild).toMatchSnapshot();
 });
@@ -60,8 +60,8 @@ One such situation can arise if we intentionally change the address the Link com
 ```tsx
 // Updated test case with a Link to a different address
 it('renders correctly', () => {
-  const { container } = render(
-    <Link page="http://www.instagram.com">Instagram</Link>
+  const {container} = render(
+    <Link page="http://www.instagram.com">Instagram</Link>,
   );
   expect(container.firstChild).toMatchSnapshot();
 });
@@ -111,8 +111,8 @@ First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 
 ```tsx
 it('renders correctly', () => {
-  const { container } = render(
-    <Link page="https://example.com">Example Site</Link>
+  const {container} = render(
+    <Link page="https://example.com">Example Site</Link>,
   );
   expect(container.firstChild).toMatchInlineSnapshot();
 });
@@ -122,8 +122,8 @@ The next time you run Jest, `tree` will be evaluated, and a snapshot will be wri
 
 ```tsx
 it('renders correctly', () => {
-  const { container} = render(
-    <Link page="https://example.com">Example Site</Link>
+  const {container} = render(
+    <Link page="https://example.com">Example Site</Link>,
   );
   expect(container.firstChild).toMatchInlineSnapshot(`
     <a
