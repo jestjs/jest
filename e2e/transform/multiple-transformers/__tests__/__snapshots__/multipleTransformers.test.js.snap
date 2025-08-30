@@ -2,14 +2,14 @@
 
 exports[`generates a snapshot with correctly transformed dependencies 1`] = `
 <div
-  className="App-root"
+  class="App-root"
 >
   <div
-    className="App-header"
+    class="App-header"
   >
     <img
       alt="logo"
-      className="App-logo"
+      class="App-logo"
       src="logo.svg"
     />
     <h2>
@@ -17,7 +17,7 @@ exports[`generates a snapshot with correctly transformed dependencies 1`] = `
     </h2>
   </div>
   <p
-    className="App-intro"
+    class="App-intro"
   >
     To get started, edit 
     <code>

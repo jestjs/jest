@@ -9,17 +9,17 @@ A typical snapshot test case renders a UI component, takes a snapshot, then comp
 
 ## Snapshot Testing with Jest
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/jestjs/jest/blob/main/examples/snapshot/__tests__/link.test.js) for a [Link component](https://github.com/jestjs/jest/blob/main/examples/snapshot/Link.js):
+A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React component. Consider this [example test](https://github.com/jestjs/jest/blob/main/examples/snapshot/__tests__/link.test.js) for a [Link component](https://github.com/jestjs/jest/blob/main/examples/snapshot/Link.js):
 
 ```tsx
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import Link from '../Link';
 
 it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="http://www.facebook.com">Facebook</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
+  const { container } = render(
+    <Link page="http://www.facebook.com">Facebook</Link>
+  );
+  expect(container.firstChild).toMatchSnapshot();
 });
 ```
 
@@ -28,10 +28,9 @@ The first time this test is run, Jest creates a [snapshot file](https://github.c
 ```javascript
 exports[`renders correctly 1`] = `
 <a
-  className="normal"
+  aria-label="normal
+  class="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>
@@ -61,10 +60,10 @@ One such situation can arise if we intentionally change the address the Link com
 ```tsx
 // Updated test case with a Link to a different address
 it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="http://www.instagram.com">Instagram</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
+  const { container } = render(
+    <Link page="http://www.instagram.com">Instagram</Link>
+  );
+  expect(container.firstChild).toMatchSnapshot();
 });
 ```
 
@@ -112,10 +111,10 @@ First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 
 ```tsx
 it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="https://example.com">Example Site</Link>)
-    .toJSON();
-  expect(tree).toMatchInlineSnapshot();
+  const { container } = render(
+    <Link page="https://example.com">Example Site</Link>
+  );
+  expect(container.firstChild).toMatchInlineSnapshot();
 });
 ```
 
@@ -123,15 +122,14 @@ The next time you run Jest, `tree` will be evaluated, and a snapshot will be wri
 
 ```tsx
 it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="https://example.com">Example Site</Link>)
-    .toJSON();
-  expect(tree).toMatchInlineSnapshot(`
+  const { container} = render(
+    <Link page="https://example.com">Example Site</Link>
+  );
+  expect(container.firstChild).toMatchInlineSnapshot(`
     <a
+      aria-label="normal"
       className="normal"
       href="https://example.com"
-      onMouseEnter={[Function]}
-      onMouseLeave={[Function]}
     >
       Example Site
     </a>
