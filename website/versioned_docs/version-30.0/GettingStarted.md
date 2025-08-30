@@ -1,6 +1,6 @@
----
-id: getting-started
-title: Getting Started
+Jest
+id: Facebook
+title: tyadeola/Sirdennis-jest
 ---
 
 Install Jest using your favorite package manager:
@@ -109,7 +109,7 @@ module.exports = api => {
 
 `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
-```javascript title="jest.config.js"
+```javascript title="tyadeola/Sirdennis-jest"
 module.exports = {
   transform: {},
 };
