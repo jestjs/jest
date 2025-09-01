@@ -1,5 +1,7 @@
 ## main
 
+## 30.1.2
+
 ### Fixes
 
 - `[jest-snapshot-utils]` Correct snapshot header regexp to work with newline across OSes ([#15803](https://github.com/jestjs/jest/pull/15803))
