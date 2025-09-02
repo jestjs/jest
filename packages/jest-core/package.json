@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "30.1.2",
+  "version": "30.1.3",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
