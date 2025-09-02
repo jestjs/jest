@@ -463,9 +463,7 @@ export default class Resolver {
   }
 
   normalizeCoreModuleSpecifier(specifier: string): string {
-    return specifier.startsWith('node:')
-      ? specifier.slice('node:'.length)
-      : specifier;
+    return specifier.startsWith('node:') ? specifier.slice(5) : specifier;
   }
 
   getModule(name: string): string | null {
@@ -742,11 +740,6 @@ export default class Resolver {
     moduleName: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
-    // Strip core module scheme if necessary.
-    if (this.isCoreModule(moduleName)) {
-      return this.normalizeCoreModuleSpecifier(moduleName);
-    }
-
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(

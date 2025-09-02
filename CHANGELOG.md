@@ -1,5 +1,11 @@
 ## main
 
+## 30.1.3
+
+### Fixes
+
+- Fix `unstable_mockModule` with `node:` prefixed core modules.
+
 ## 30.1.2
 
 ### Fixes
