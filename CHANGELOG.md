@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-diff]` Fix `diffStrings()` to not break apart surrogate pairs ([#15812](https://github.com/jestjs/jest/pull/15812))
+
 ## 30.1.3
 
 ### Fixes

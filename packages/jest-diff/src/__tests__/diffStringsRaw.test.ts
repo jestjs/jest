@@ -31,4 +31,40 @@ describe('diffStringsRaw', () => {
 
     expect(received).toEqual(expected);
   });
+
+  describe('unicode', () => {
+    test('surrogate pairs', () => {
+      const expected: Array<Diff> = [
+        new Diff(DIFF_DELETE, '😞'),
+        new Diff(DIFF_INSERT, '😄'),
+      ];
+      const received = diffStringsRaw('😞', '😄', false);
+
+      expect(received).toEqual(expected);
+    });
+    test('grapheme clusters', () => {
+      const expected: Array<Diff> = [
+        new Diff(DIFF_DELETE, '👩‍👩‍'),
+        new Diff(DIFF_EQUAL, '👧'),
+        new Diff(DIFF_DELETE, '‍👦'),
+        new Diff(DIFF_EQUAL, ' 🇺'),
+        new Diff(DIFF_DELETE, '🇸'),
+        new Diff(DIFF_INSERT, '🇦'),
+      ];
+      const received = diffStringsRaw('👩‍👩‍👧‍👦 🇺🇸', '👧 🇺🇦', false);
+
+      expect(received).toEqual(expected);
+    });
+    test('normalization', () => {
+      const expected: Array<Diff> = [
+        new Diff(DIFF_EQUAL, 'ma'),
+        new Diff(DIFF_DELETE, 'n\u0303'),
+        new Diff(DIFF_INSERT, 'ñ'),
+        new Diff(DIFF_EQUAL, 'ana'),
+      ];
+      const received = diffStringsRaw('man\u0303ana', 'mañana', false);
+
+      expect(received).toEqual(expected);
+    });
+  });
 });
