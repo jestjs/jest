@@ -71,7 +71,7 @@ if (Number.parseInt(process.versions.node, 10) >= 20) {
   });
 } else {
   // eslint-disable-next-line jest/no-identical-title
-  describe('babel 8', () => {
+  describe.skip('babel 8', () => {
     defineTests({babel: null as unknown as typeof import('@babel-8/core')});
   });
 }
