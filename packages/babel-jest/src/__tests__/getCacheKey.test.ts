@@ -14,6 +14,7 @@ import babelJest from '../index';
 // written in ESM and we don't support require(esm) yet.
 import Module from 'node:module';
 import {pathToFileURL} from 'node:url';
+import {onNodeVersions} from '@jest/test-utils';
 const createOriginalNodeRequire = Object.getPrototypeOf(Module).createRequire;
 const originalNodeRequire = createOriginalNodeRequire(
   pathToFileURL(__filename),
@@ -44,24 +45,28 @@ afterEach(() => {
 });
 
 describe('babel 7', () => {
-  defineTests({babel: require('@babel/core')});
+  defineTests({getBabel: () => require('@babel/core')});
 });
 
-if (Number.parseInt(process.versions.node, 10) >= 20) {
-  describe('babel 8', () => {
+describe('babel 8', () => {
+  onNodeVersions('>=20', () => {
     defineTests({
-      babel: originalNodeRequire('@babel-8/core'),
+      getBabel: () => originalNodeRequire('@babel-8/core'),
     });
   });
-} else {
-  // eslint-disable-next-line jest/no-identical-title
-  describe.skip('babel 8', () => {
-    defineTests({babel: null as unknown as typeof import('@babel-8/core')});
-  });
-}
+});
 
-function defineTests({babel}: {babel: typeof import('@babel-8/core')}) {
+function defineTests({
+  getBabel,
+}: {
+  getBabel: () => typeof import('@babel-8/core');
+}) {
   describe('getCacheKey', () => {
+    let babel: typeof import('@babel-8/core');
+    beforeAll(() => {
+      babel = getBabel();
+    });
+
     const sourceText = 'mock source';
     const sourcePath = 'mock-source-path.js';
 

@@ -9,7 +9,7 @@ import type {
   BabelFileResult,
   TransformOptions as BabelTransformOptions,
 } from '@babel/core';
-import {makeProjectConfig} from '@jest/test-utils';
+import {makeProjectConfig, onNodeVersions} from '@jest/test-utils';
 import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
 
@@ -60,23 +60,27 @@ customMultiply({a: 32, dummy: "test"}, 2);
 `;
 
 describe('babel 7', () => {
-  defineTests({babel: require('@babel/core')});
+  defineTests({getBabel: () => require('@babel/core')});
 });
 
-if (Number.parseInt(process.versions.node, 10) >= 20) {
-  describe('babel 8', () => {
+describe('babel 8', () => {
+  onNodeVersions('>=20', () => {
     defineTests({
-      babel: originalNodeRequire('@babel-8/core'),
+      getBabel: () => originalNodeRequire('@babel-8/core'),
     });
   });
-} else {
-  // eslint-disable-next-line jest/no-identical-title
-  describe.skip('babel 8', () => {
-    defineTests({babel: null as unknown as typeof import('@babel-8/core')});
-  });
-}
+});
 
-function defineTests({babel}: {babel: BabelCore}) {
+function defineTests({
+  getBabel,
+}: {
+  getBabel: () => typeof import('@babel-8/core');
+}) {
+  let babel: typeof import('@babel-8/core');
+  beforeAll(() => {
+    babel = getBabel();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
 
