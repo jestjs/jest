@@ -12,16 +12,6 @@ import pluginTester from 'babel-plugin-tester';
 import type {Options} from 'prettier';
 import babelPluginJestHoist from '..';
 
-// We need to use the Node.js implementation of `require` to load Babel 8
-// packages, instead of our sandboxed implementation, because Babel 8 is
-// written in ESM and we don't support require(esm) yet.
-import Module from 'node:module';
-import {pathToFileURL} from 'node:url';
-const createOriginalNodeRequire = Object.getPrototypeOf(Module).createRequire;
-const originalNodeRequire = createOriginalNodeRequire(
-  pathToFileURL(__filename),
-);
-
 const prettierOptions: Options = {
   ...resolveConfig(__filename),
   filepath: __filename,
@@ -38,26 +28,7 @@ describe('babel 7', () => {
   });
 });
 
-if (Number.parseInt(process.versions.node, 10) >= 20) {
-  describe('babel 8', () => {
-    defineTests({
-      babel: originalNodeRequire('@babel-8/core'),
-      presetReact: originalNodeRequire('@babel-8/preset-react'),
-      presetTypescript: originalNodeRequire('@babel-8/preset-typescript'),
-    });
-  });
-} else {
-  // eslint-disable-next-line jest/no-identical-title
-  describe.skip('babel 8', () => {
-    defineTests({
-      babel: null as any,
-      presetReact: null,
-      presetTypescript: null,
-    });
-  });
-}
-
-function defineTests({
+export function defineTests({
   babel,
   presetReact,
   presetTypescript,
