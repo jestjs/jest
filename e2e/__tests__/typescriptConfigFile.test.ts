@@ -7,13 +7,11 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import * as semver from 'semver';
 import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
-import runJest, {getConfig} from '../runJest';
+import runJest, {getConfig, useNativeTypeScript} from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'typescript-config-file');
-const useNativeTypeScript = semver.satisfies(process.versions.node, '>=23.6.0');
 const importFileExtension = useNativeTypeScript ? '.ts' : '';
 
 beforeEach(() => cleanup(DIR));

@@ -463,9 +463,7 @@ export default class Resolver {
   }
 
   normalizeCoreModuleSpecifier(specifier: string): string {
-    return specifier.startsWith('node:')
-      ? specifier.slice('node:'.length)
-      : specifier;
+    return specifier.startsWith('node:') ? specifier.slice(5) : specifier;
   }
 
   getModule(name: string): string | null {
@@ -652,7 +650,7 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): Promise<string | null> {
     if (this.isCoreModule(moduleName)) {
-      return moduleName;
+      return this.normalizeCoreModuleSpecifier(moduleName);
     }
     if (moduleName.startsWith('data:')) {
       return moduleName;

@@ -72,6 +72,54 @@ run_finish
 unhandledErrors: 0"
 `;
 
+exports[`describe.skip + concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_start: two
+test_start: three
+test_skip
+test_skip
+test_skip
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe.skip + concurrent.each 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_start: two
+test_start: three
+test_skip
+test_skip
+test_skip
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`failures 1`] = `
 "start_describe_definition: describe
 add_hook: beforeEach
@@ -120,6 +168,32 @@ test_fn_start: One
 test_fn_success: One
 test_done: One
 run_describe_finish: describer
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`nested describe.skip + concurrent 1`] = `
+"start_describe_definition: describe
+start_describe_definition: nested
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: nested
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+test_start: two
+test_start: three
+run_describe_start: nested
+test_skip
+test_skip
+test_skip
+run_describe_finish: nested
+run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 

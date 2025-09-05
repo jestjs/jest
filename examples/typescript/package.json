@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",

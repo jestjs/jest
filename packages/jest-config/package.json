@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "30.0.5",
+  "version": "30.1.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -68,7 +68,7 @@
     "esbuild-register": "^3.6.0",
     "semver": "^7.7.2",
     "ts-node": "^10.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"

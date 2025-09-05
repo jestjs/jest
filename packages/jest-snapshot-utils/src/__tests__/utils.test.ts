@@ -135,25 +135,53 @@ test('getSnapshotData() throws for older snapshot version', () => {
   );
 });
 
-test('getSnapshotData() throws for newer snapshot version', () => {
+test.each([
+  ['Linux', '\n'],
+  ['Windows', '\r\n'],
+])(
+  'getSnapshotData() throws for newer snapshot version with %s line endings',
+  (_: string, fileEol: string) => {
+    const filename = path.join(__dirname, 'old-snapshot.snap');
+    jest
+      .mocked(fs.readFileSync)
+      .mockReturnValue(
+        `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}${fileEol}${fileEol}` +
+          `exports[\`myKey\`] = \`<div>${fileEol}</div>\`;${fileEol}`,
+      );
+    const update = 'none';
+
+    expect(() => getSnapshotData(filename, update)).toThrow(
+      `${chalk.red(
+        `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
+          'snapshot file indicates that this project is meant to be used ' +
+          'with a newer version of Jest. ' +
+          'The snapshot file version ensures that all developers on a project ' +
+          'are using the same version of Jest. ' +
+          'Please update your version of Jest and re-run the tests.',
+      )}\n\nExpected: v${SNAPSHOT_VERSION}\nReceived: v2`,
+    );
+  },
+);
+
+test('getSnapshotData() throws for deprecated snapshot guide link', () => {
+  const deprecatedGuideLink = 'https://goo.gl/fbAQLP';
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
     .mockReturnValue(
-      `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+      `// Jest Snapshot v1, ${deprecatedGuideLink}\n\n` +
         'exports[`myKey`] = `<div>\n</div>`;\n',
     );
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrow(
     `${chalk.red(
-      `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
-        'snapshot file indicates that this project is meant to be used ' +
-        'with a newer version of Jest. ' +
-        'The snapshot file version ensures that all developers on a project ' +
-        'are using the same version of Jest. ' +
-        'Please update your version of Jest and re-run the tests.',
-    )}\n\nExpected: v${SNAPSHOT_VERSION}\nReceived: v2`,
+      `${chalk.red.bold(
+        'Outdated guide link',
+      )}: The snapshot guide link is outdated.` +
+        'Please update all snapshots while upgrading of Jest',
+    )}\n\nExpected: ${SNAPSHOT_GUIDE_LINK}\n` +
+      `Received: ${deprecatedGuideLink}`,
   );
 });
 

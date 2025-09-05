@@ -169,9 +169,6 @@ const _runTestsForDescribeBlock = async (
 function collectConcurrentTests(
   describeBlock: Circus.DescribeBlock,
 ): Array<ConcurrentTestEntry> {
-  if (describeBlock.mode === 'skip') {
-    return [];
-  }
   return describeBlock.children.flatMap(child => {
     switch (child.type) {
       case 'describeBlock':
