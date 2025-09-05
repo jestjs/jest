@@ -22,7 +22,7 @@
   "dependencies": {
     "@jest/transform": "workspace:*",
     "@types/babel__core": "^7.20.5",
-    "babel-plugin-istanbul": "^7.0.0",
+    "babel-plugin-istanbul": "^7.0.1",
     "babel-preset-jest": "workspace:*",
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
