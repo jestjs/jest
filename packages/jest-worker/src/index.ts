@@ -10,12 +10,15 @@ import {isAbsolute} from 'path';
 import {fileURLToPath} from 'url';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
-import type {
-  PoolExitResult,
-  WorkerFarmOptions,
-  WorkerModule,
-  WorkerPoolInterface,
-  WorkerPoolOptions,
+import {
+  CHILD_MESSAGE_CALL,
+  type ChildMessageCall,
+  type OnEnd,
+  type PoolExitResult,
+  type WorkerFarmOptions,
+  type WorkerModule,
+  type WorkerPoolInterface,
+  type WorkerPoolOptions,
 } from './types';
 
 export {default as PriorityQueue} from './PriorityQueue';
@@ -171,6 +174,39 @@ export class Worker {
     return this._workerPool.getStdout();
   }
 
+  async runInAllWorkers(
+    method: string,
+    ...args: Array<unknown>
+  ): Promise<Array<unknown>> {
+    const promises = this._workerPool.getWorkers().map(
+      worker =>
+        new Promise((resolve, reject) => {
+          const request: ChildMessageCall = [
+            CHILD_MESSAGE_CALL,
+            false,
+            method,
+            args,
+          ];
+
+          const onStart = noop;
+
+          const onEnd: OnEnd = (error: Error | null, result: unknown) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          };
+
+          const onCustomMessage = noop;
+
+          worker.send(request, onStart, onEnd, onCustomMessage);
+        }),
+    );
+
+    return await Promise.all(promises);
+  }
+
   async start(): Promise<void> {
     await this._workerPool.start();
   }
@@ -183,4 +219,8 @@ export class Worker {
 
     return this._workerPool.end();
   }
+}
+
+function noop(): void {
+  // noop
 }
