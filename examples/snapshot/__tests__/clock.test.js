@@ -2,17 +2,16 @@
 
 'use strict';
 
-import renderer from 'react-test-renderer';
+import {cleanup, render} from '@testing-library/react';
 import Clock from '../Clock';
 
 jest.useFakeTimers().setSystemTime(1_482_363_367_071);
 
 it('renders correctly', () => {
-  const testRenderer = renderer.create(<Clock />);
-
+  const {container} = render(<Clock />);
   try {
-    expect(testRenderer.toJSON()).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   } finally {
-    testRenderer.unmount();
+    cleanup();
   }
 });
