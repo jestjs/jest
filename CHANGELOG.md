@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
+
 ## 30.1.3
 
 ### Fixes

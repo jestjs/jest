@@ -23,7 +23,7 @@ import type {
 } from '@jest/transform';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
-interface TransformerConfig extends BabelTransformOptions {
+export interface TransformerConfig extends BabelTransformOptions {
   excludeJestPreset?: boolean;
 }
 
