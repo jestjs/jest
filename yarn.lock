@@ -8047,6 +8047,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@babel/types": "npm:^7.27.3"
+    "@jest/test-utils": "workspace:*"
     "@prettier/sync": "npm:^0.5.5"
     "@types/babel__core": "npm:^7.20.5"
     "@types/babel__template": "npm:^7.4.4"

@@ -32,16 +32,16 @@ export function skipSuiteOnJestCircus(): void {
 
 export function onNodeVersions(
   versionRange: string,
-  testBody: () => void,
+  testBody: (skipped: boolean) => void,
 ): void {
   const description = `on node ${versionRange}`;
   if (semver.satisfies(process.versions.node, versionRange)) {
     describe(description, () => {
-      testBody();
+      testBody(false);
     });
   } else {
     describe.skip(description, () => {
-      testBody();
+      testBody(true);
     });
   }
 }

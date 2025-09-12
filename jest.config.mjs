@@ -68,9 +68,6 @@ export default {
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
-    Number.parseInt(process.versions.node, 10) >= 20
-      ? '/.*\\.nodejs18\\..*'
-      : '/.*\\.nodejs20plus\\..*',
   ],
   testTimeout: 70_000,
   transform: {

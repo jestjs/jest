@@ -32,6 +32,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@babel/types": "^7.27.3",
+    "@jest/test-utils": "workspace:*",
     "@prettier/sync": "^0.5.5",
     "@types/babel__template": "^7.4.4",
     "@types/babel__traverse": "^7.20.7",
