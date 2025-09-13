@@ -3158,6 +3158,18 @@ Expected: not <g>true</>
 
 `;
 
+exports[`.toEqual() should not cause infinite recursion with getters that return new instances 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  MyClass {</>
+<g>-   "value": "def",</>
+<r>+   "value": "abc",</>
+<d>  }</>
+`;
+
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveLength<d>(</><g>expected</><d>)</>
 

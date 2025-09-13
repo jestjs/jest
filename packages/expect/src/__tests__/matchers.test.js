@@ -699,6 +699,23 @@ describe('.toEqual()', () => {
     });
   }
 
+  test('should not cause infinite recursion with getters that return new instances', () => {
+    class MyClass {
+      constructor(value) {
+        this.value = value;
+      }
+
+      get toLowerCase() {
+        return new MyClass(this.value.toLowerCase());
+      }
+    }
+
+    // This should not cause infinite recursion - should produce normal comparison error
+    expect(() =>
+      jestExpect(new MyClass('abc')).toEqual(new MyClass('def')),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   for (const [a, b] of [
     [BigInt(1), BigInt(2)],
     [BigInt(1), 1],
