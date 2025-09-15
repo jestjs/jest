@@ -173,16 +173,12 @@ test('describe + {before,after}All + concurrent', () => {
     const {setTimeout} = require('timers/promises')
 
     describe('describe', () => {
-      beforeAll(async () => {
-        console.log('In describe')
-        await setTimeout(100);
-      });
-      afterAll(async () => {
-        console.log('In describe')
-        await setTimeout(100);
-      });
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
       test.concurrent('one', () => {
-        console.log('hello one');
+        throw new Error('kentucky')
+      });
+      test.concurrent('two', () => {
         throw new Error('kentucky')
       });
     })
@@ -196,31 +192,20 @@ test('describe + {before,after}All + concurrent multiple times', () => {
     const {setTimeout} = require('timers/promises')
 
     describe('describe1', () => {
-      beforeAll(async () => {
-        console.log('In describe1')
-        await setTimeout(100);
-      });
-      afterAll(async () => {
-        console.log('In describe1')
-        await setTimeout(100);
-      });
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
       test.concurrent('one', () => {
-        console.log('hello one');
         throw new Error('kentucky')
       });
+      test.concurrent('two', () => {});
     })
     describe('describe2', () => {
-      beforeAll(async () => {
-        console.log('In describe2')
-        await setTimeout(100);
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+      test.concurrent('one', () => {
+        throw new Error('kentucky')
       });
-      afterAll(async () => {
-        console.log('In describe2')
-        await setTimeout(100);
-      });
-      test.concurrent('two', () => {
-        console.log('hello two');
-      });
+      test.concurrent('two', () => {});
     })
   `);
 

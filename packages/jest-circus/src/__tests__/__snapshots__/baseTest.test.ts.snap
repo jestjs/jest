@@ -99,21 +99,24 @@ exports[`describe + {before,after}All + concurrent 1`] = `
 add_hook: describe > beforeAll
 add_hook: describe > afterAll
 add_test: describe > one
+add_test: describe > two
 finish_describe_definition: describe
 run_start
 run_describe_start: 
 run_describe_start: describe
 test_start: describe > one
+test_start: describe > two
 hook_start: describe > beforeAll
 test_started: describe > one
-In describe
+test_started: describe > two
 test_fn_start: describe > one
-hello one
+test_fn_start: describe > two
 test_fn_failure: describe > one
+test_fn_failure: describe > two
 test_done: describe > one
+test_done: describe > two
 hook_success: describe > beforeAll
 hook_start: describe > afterAll
-In describe
 hook_success: describe > afterAll
 run_describe_finish: describe
 run_describe_finish: 
@@ -127,40 +130,46 @@ exports[`describe + {before,after}All + concurrent multiple times 1`] = `
 add_hook: describe1 > beforeAll
 add_hook: describe1 > afterAll
 add_test: describe1 > one
+add_test: describe1 > two
 finish_describe_definition: describe1
 start_describe_definition: describe2
 add_hook: describe2 > beforeAll
 add_hook: describe2 > afterAll
+add_test: describe2 > one
 add_test: describe2 > two
 finish_describe_definition: describe2
 run_start
 run_describe_start: 
 run_describe_start: describe1
 test_start: describe1 > one
+test_start: describe1 > two
+test_start: describe2 > one
 test_start: describe2 > two
 hook_start: describe1 > beforeAll
 test_started: describe1 > one
+test_started: describe1 > two
+test_started: describe2 > one
 test_started: describe2 > two
-In describe1
 test_fn_start: describe1 > one
+test_fn_start: describe1 > two
+test_fn_start: describe2 > one
 test_fn_start: describe2 > two
-hello one
-hello two
 test_fn_failure: describe1 > one
+test_fn_success: describe1 > two
+test_fn_failure: describe2 > one
 test_fn_success: describe2 > two
 test_done: describe1 > one
+test_done: describe1 > two
+test_done: describe2 > one
 test_done: describe2 > two
 hook_success: describe1 > beforeAll
 hook_start: describe1 > afterAll
-In describe1
 hook_success: describe1 > afterAll
 run_describe_finish: describe1
 run_describe_start: describe2
 hook_start: describe2 > beforeAll
-In describe2
 hook_success: describe2 > beforeAll
 hook_start: describe2 > afterAll
-In describe2
 hook_success: describe2 > afterAll
 run_describe_finish: describe2
 run_describe_finish: 
