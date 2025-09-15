@@ -6,48 +6,94 @@
  */
 
 import type {Circus} from '@jest/types';
+import {ROOT_DESCRIBE_BLOCK_NAME} from '../state';
+
+const getDescribeBlockPath = (block: Circus.DescribeBlock) => {
+  const blockPath = [];
+  while (block.name !== ROOT_DESCRIBE_BLOCK_NAME) {
+    if (!block.parent) {
+      throw new Error('Unexpected block without parent');
+    }
+    blockPath.unshift(block.name);
+    block = block.parent;
+  }
+  return blockPath;
+};
+
+const formatEventPath = (block: Circus.DescribeBlock, name?: string) => {
+  const eventPath = getDescribeBlockPath(block);
+  if (name) {
+    eventPath.push(name);
+  }
+  return eventPath.join(' > ');
+};
 
 const testEventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
-    case 'start_describe_definition':
+    case 'start_describe_definition': {
+      console.log(
+        `${event.name}:`,
+        formatEventPath(state.currentDescribeBlock),
+      );
+      break;
+    }
     case 'finish_describe_definition': {
-      console.log(`${event.name}:`, event.blockName);
+      console.log(
+        `${event.name}:`,
+        formatEventPath(state.currentDescribeBlock, event.blockName),
+      );
       break;
     }
     case 'run_describe_start':
     case 'run_describe_finish': {
-      console.log(`${event.name}:`, event.describeBlock.name);
+      console.log(`${event.name}:`, formatEventPath(event.describeBlock));
       break;
     }
     case 'test_start':
     case 'test_started':
     case 'test_retry':
-    case 'test_done': {
-      console.log(`${event.name}:`, event.test.name);
+    case 'test_done':
+    case 'test_skip': {
+      console.log(
+        `${event.name}:`,
+        formatEventPath(event.test.parent, event.test.name),
+      );
       break;
     }
 
     case 'add_test': {
-      console.log(`${event.name}:`, event.testName);
+      console.log(
+        `${event.name}:`,
+        formatEventPath(state.currentDescribeBlock, event.testName),
+      );
       break;
     }
 
     case 'test_fn_start':
     case 'test_fn_success':
     case 'test_fn_failure': {
-      console.log(`${event.name}:`, event.test.name);
+      console.log(
+        `${event.name}:`,
+        formatEventPath(event.test.parent, event.test.name),
+      );
       break;
     }
 
     case 'add_hook': {
-      console.log(`${event.name}:`, event.hookType);
+      console.log(
+        `${event.name}:`,
+        formatEventPath(state.currentDescribeBlock, event.hookType),
+      );
       break;
     }
 
     case 'hook_start':
     case 'hook_success':
     case 'hook_failure': {
-      console.log(`${event.name}:`, event.hook.type);
+      console.log(
+        `${event.name}:`,
+        formatEventPath(event.hook.parent, event.hook.type),
+      );
       break;
     }
 
