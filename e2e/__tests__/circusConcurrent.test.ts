@@ -18,8 +18,8 @@ describe('all passing', () => {
     ]);
 
     expect(exitCode).toBe(0);
-    expect(json.numTotalTests).toBe(10);
-    expect(json.numPassedTests).toBe(10);
+    expect(json.numTotalTests).toBe(12);
+    expect(json.numPassedTests).toBe(12);
     expect(json.numFailedTests).toBe(0);
     expect(json.numPendingTests).toBe(0);
   });

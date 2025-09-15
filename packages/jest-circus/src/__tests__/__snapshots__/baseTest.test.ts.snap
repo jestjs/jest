@@ -1,5 +1,27 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`{before,after}All + concurrent 1`] = `
+"add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+hook_start: beforeAll
+hook_success: beforeAll
+test_start: one
+test_started: one
+test_fn_start: one
+hello one
+test_fn_failure: one
+test_done: one
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`concurrent 1`] = `
 "start_describe_definition: describe
 add_hook: beforeEach
@@ -66,6 +88,81 @@ test_done: one
 test_done: two
 test_done: three
 run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + {before,after}All + concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+test_start: one
+hook_start: beforeAll
+test_started: one
+In describe
+test_fn_start: one
+hello one
+test_fn_failure: one
+test_done: one
+hook_success: beforeAll
+hook_start: afterAll
+In describe
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + {before,after}All + concurrent multiple times 1`] = `
+"start_describe_definition: describe1
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+finish_describe_definition: describe1
+start_describe_definition: describe2
+add_hook: beforeAll
+add_hook: afterAll
+add_test: two
+finish_describe_definition: describe2
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe1
+test_start: one
+test_start: two
+hook_start: beforeAll
+test_started: one
+test_started: two
+In describe1
+test_fn_start: one
+test_fn_start: two
+hello one
+hello two
+test_fn_failure: one
+test_fn_success: two
+test_done: one
+test_done: two
+hook_success: beforeAll
+hook_start: afterAll
+In describe1
+hook_success: afterAll
+run_describe_finish: describe1
+run_describe_start: describe2
+hook_start: beforeAll
+In describe2
+hook_success: beforeAll
+hook_start: afterAll
+In describe2
+hook_success: afterAll
+run_describe_finish: describe2
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 

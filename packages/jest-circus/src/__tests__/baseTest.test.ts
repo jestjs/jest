@@ -48,16 +48,16 @@ test('concurrent', () => {
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => { throw new Error('banana')});
-      test.concurrent('one', () => { 
+      test.concurrent('one', () => {
         console.log('hello one');
         throw new Error('kentucky')
       });
       test.concurrent('two', () => {
         console.log('hello two');
       });
-      test.concurrent('three', async () => { 
+      test.concurrent('three', async () => {
         console.log('hello three');
-        await Promise.resolve(); 
+        await Promise.resolve();
       });
     })
   `);
@@ -76,7 +76,7 @@ test('concurrent.each', () => {
         ['three'],
       ])('%s', async (name) => {
         console.log('hello %s', name);
-        await Promise.resolve(); 
+        await Promise.resolve();
       });
     })
   `);
@@ -149,6 +149,80 @@ test('nested describe.skip + concurrent', () => {
   `);
 
   expect(stdout).not.toEqual(expect.stringContaining('hello'));
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('{before,after}All + concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    beforeAll(async () => await setTimeout(100));
+    afterAll(async () => await setTimeout(100));
+    test.concurrent('one', () => {
+      console.log('hello one');
+      throw new Error('kentucky')
+    });
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('describe + {before,after}All + concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe', () => {
+      beforeAll(async () => {
+        console.log('In describe')
+        await setTimeout(100);
+      });
+      afterAll(async () => {
+        console.log('In describe')
+        await setTimeout(100);
+      });
+      test.concurrent('one', () => {
+        console.log('hello one');
+        throw new Error('kentucky')
+      });
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('describe + {before,after}All + concurrent multiple times', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe1', () => {
+      beforeAll(async () => {
+        console.log('In describe1')
+        await setTimeout(100);
+      });
+      afterAll(async () => {
+        console.log('In describe1')
+        await setTimeout(100);
+      });
+      test.concurrent('one', () => {
+        console.log('hello one');
+        throw new Error('kentucky')
+      });
+    })
+    describe('describe2', () => {
+      beforeAll(async () => {
+        console.log('In describe2')
+        await setTimeout(100);
+      });
+      afterAll(async () => {
+        console.log('In describe2')
+        await setTimeout(100);
+      });
+      test.concurrent('two', () => {
+        console.log('hello two');
+      });
+    })
+  `);
 
   expect(stdout).toMatchSnapshot();
 });
