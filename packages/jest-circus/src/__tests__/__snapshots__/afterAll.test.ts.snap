@@ -2,17 +2,17 @@
 
 exports[`child tests marked with only should not run if describe block is skipped 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterAll
-add_hook: describe > beforeAll
-add_test: describe > my test
+add_hook: afterAll
+add_hook: beforeAll
+add_test: my test
 finish_describe_definition: describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
-test_start: describe > my test
-test_skip: describe > my test
+test_start: my test
+test_skip
 run_describe_finish: describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 0"
@@ -20,17 +20,17 @@ unhandledErrors: 0"
 
 exports[`child tests marked with todo should not run if describe block is skipped 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterAll
-add_hook: describe > beforeAll
-add_test: describe > my test
+add_hook: afterAll
+add_hook: beforeAll
+add_test: my test
 finish_describe_definition: describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
-test_start: describe > my test
-test_skip: describe > my test
+test_start: my test
+test_skip
 run_describe_finish: describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 0"
@@ -38,39 +38,39 @@ unhandledErrors: 0"
 
 exports[`describe block _can_ have hooks if a child describe block has tests 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterEach
-add_hook: describe > beforeEach
-add_hook: describe > afterAll
-add_hook: describe > beforeAll
-start_describe_definition: describe > child describe
-add_test: describe > child describe > my test
-finish_describe_definition: describe > child describe
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
+start_describe_definition: child describe
+add_test: my test
+finish_describe_definition: child describe
 finish_describe_definition: describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
-hook_start: describe > beforeAll
+hook_start: beforeAll
 > beforeAll
-hook_success: describe > beforeAll
-run_describe_start: describe > child describe
-test_start: describe > child describe > my test
-test_started: describe > child describe > my test
-hook_start: describe > beforeEach
+hook_success: beforeAll
+run_describe_start: child describe
+test_start: my test
+test_started: my test
+hook_start: beforeEach
 > beforeEach
-hook_success: describe > beforeEach
-test_fn_start: describe > child describe > my test
+hook_success: beforeEach
+test_fn_start: my test
 > my test
-test_fn_success: describe > child describe > my test
-hook_start: describe > afterEach
+test_fn_success: my test
+hook_start: afterEach
 > afterEach
-hook_success: describe > afterEach
-test_done: describe > child describe > my test
-run_describe_finish: describe > child describe
-hook_start: describe > afterAll
+hook_success: afterEach
+test_done: my test
+run_describe_finish: child describe
+hook_start: afterAll
 > afterAll
-hook_success: describe > afterAll
+hook_success: afterAll
 run_describe_finish: describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 0"
@@ -78,16 +78,16 @@ unhandledErrors: 0"
 
 exports[`describe block cannot have hooks and no tests 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterEach
-add_hook: describe > beforeEach
-add_hook: describe > afterAll
-add_hook: describe > beforeAll
+add_hook: afterEach
+add_hook: beforeEach
+add_hook: afterAll
+add_hook: beforeAll
 finish_describe_definition: describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 run_describe_finish: describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 4"
@@ -95,17 +95,17 @@ unhandledErrors: 4"
 
 exports[`describe block hooks must not run if describe block is skipped 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterAll
-add_hook: describe > beforeAll
-add_test: describe > my test
+add_hook: afterAll
+add_hook: beforeAll
+add_test: my test
 finish_describe_definition: describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
-test_start: describe > my test
-test_skip: describe > my test
+test_start: my test
+test_skip
 run_describe_finish: describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 0"
@@ -113,69 +113,69 @@ unhandledErrors: 0"
 
 exports[`tests are not marked done until their parent afterAll runs 1`] = `
 "start_describe_definition: describe
-add_hook: describe > afterAll
-add_test: describe > one
-add_test: describe > two
-start_describe_definition: describe > 2nd level describe
-add_hook: describe > 2nd level describe > afterAll
-add_test: describe > 2nd level describe > 2nd level test
-start_describe_definition: describe > 2nd level describe > 3rd level describe
-add_test: describe > 2nd level describe > 3rd level describe > 3rd level test
-add_test: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-finish_describe_definition: describe > 2nd level describe > 3rd level describe
-finish_describe_definition: describe > 2nd level describe
+add_hook: afterAll
+add_test: one
+add_test: two
+start_describe_definition: 2nd level describe
+add_hook: afterAll
+add_test: 2nd level test
+start_describe_definition: 3rd level describe
+add_test: 3rd level test
+add_test: 3rd level test#2
+finish_describe_definition: 3rd level describe
+finish_describe_definition: 2nd level describe
 finish_describe_definition: describe
 start_describe_definition: 2nd describe
-add_hook: 2nd describe > afterAll
-add_test: 2nd describe > 2nd describe test
+add_hook: afterAll
+add_test: 2nd describe test
 finish_describe_definition: 2nd describe
 run_start
-run_describe_start: 
+run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
-test_start: describe > one
-test_started: describe > one
-test_fn_start: describe > one
-test_fn_success: describe > one
-test_done: describe > one
-test_start: describe > two
-test_started: describe > two
-test_fn_start: describe > two
-test_fn_success: describe > two
-test_done: describe > two
-run_describe_start: describe > 2nd level describe
-test_start: describe > 2nd level describe > 2nd level test
-test_started: describe > 2nd level describe > 2nd level test
-test_fn_start: describe > 2nd level describe > 2nd level test
-test_fn_success: describe > 2nd level describe > 2nd level test
-test_done: describe > 2nd level describe > 2nd level test
-run_describe_start: describe > 2nd level describe > 3rd level describe
-test_start: describe > 2nd level describe > 3rd level describe > 3rd level test
-test_started: describe > 2nd level describe > 3rd level describe > 3rd level test
-test_fn_start: describe > 2nd level describe > 3rd level describe > 3rd level test
-test_fn_success: describe > 2nd level describe > 3rd level describe > 3rd level test
-test_done: describe > 2nd level describe > 3rd level describe > 3rd level test
-test_start: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-test_started: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-test_fn_start: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-test_fn_success: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-test_done: describe > 2nd level describe > 3rd level describe > 3rd level test#2
-run_describe_finish: describe > 2nd level describe > 3rd level describe
-hook_start: describe > 2nd level describe > afterAll
-hook_success: describe > 2nd level describe > afterAll
-run_describe_finish: describe > 2nd level describe
-hook_start: describe > afterAll
-hook_success: describe > afterAll
+test_start: one
+test_started: one
+test_fn_start: one
+test_fn_success: one
+test_done: one
+test_start: two
+test_started: two
+test_fn_start: two
+test_fn_success: two
+test_done: two
+run_describe_start: 2nd level describe
+test_start: 2nd level test
+test_started: 2nd level test
+test_fn_start: 2nd level test
+test_fn_success: 2nd level test
+test_done: 2nd level test
+run_describe_start: 3rd level describe
+test_start: 3rd level test
+test_started: 3rd level test
+test_fn_start: 3rd level test
+test_fn_success: 3rd level test
+test_done: 3rd level test
+test_start: 3rd level test#2
+test_started: 3rd level test#2
+test_fn_start: 3rd level test#2
+test_fn_success: 3rd level test#2
+test_done: 3rd level test#2
+run_describe_finish: 3rd level describe
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: 2nd level describe
+hook_start: afterAll
+hook_success: afterAll
 run_describe_finish: describe
 run_describe_start: 2nd describe
-test_start: 2nd describe > 2nd describe test
-test_started: 2nd describe > 2nd describe test
-test_fn_start: 2nd describe > 2nd describe test
-test_fn_success: 2nd describe > 2nd describe test
-test_done: 2nd describe > 2nd describe test
-hook_start: 2nd describe > afterAll
-hook_failure: 2nd describe > afterAll
+test_start: 2nd describe test
+test_started: 2nd describe test
+test_fn_start: 2nd describe test
+test_fn_success: 2nd describe test
+test_done: 2nd describe test
+hook_start: afterAll
+hook_failure: afterAll
 run_describe_finish: 2nd describe
-run_describe_finish: 
+run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
 unhandledErrors: 1"
