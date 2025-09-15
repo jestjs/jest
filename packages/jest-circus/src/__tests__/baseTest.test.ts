@@ -211,3 +211,28 @@ test('describe + {before,after}All + concurrent multiple times', () => {
 
   expect(stdout).toMatchSnapshot();
 });
+
+test('describe + concurrent & non concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe', () => {
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+
+      test.concurrent('one', () => {});
+      test.concurrent('two', () => {});
+
+      test('three', () => {});
+
+      test.concurrent('four', () => {});
+
+      test('five', () => {});
+
+      test.concurrent('six', () => {});
+      test.concurrent('seven', () => {});
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});

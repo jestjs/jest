@@ -13446,7 +13446,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
+    p-queue: "npm:^3.1.0"
     pretty-format: "workspace:*"
     pure-rand: "npm:^7.0.0"
     slash: "npm:^3.0.0"
@@ -16868,6 +16868,13 @@ __metadata:
   version: 4.0.0
   resolution: "p-pipe@npm:4.0.0"
   checksum: 10/d2638c08e15e049e37835f3d999f0063ecd063ccac45a90925701c604f342ca376c8373ecf945e322f5112cc630644ef99ec55084e4eeb70c90cff9237b89296
+  languageName: node
+  linkType: hard
+
+"p-queue@npm:^3.1.0":
+  version: 3.2.0
+  resolution: "p-queue@npm:3.2.0"
+  checksum: 10/32144d842dbe733b18f5d100a1bcec776d16756a8384afe5b3fc749be1b67915745b63a08bef6f88ae69434bc3af6d2f719c9df338c3f63147733141659e5f56
   languageName: node
   linkType: hard
 

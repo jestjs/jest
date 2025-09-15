@@ -104,9 +104,10 @@ finish_describe_definition: describe
 run_start
 run_describe_start: 
 run_describe_start: describe
+hook_start: describe > beforeAll
+hook_success: describe > beforeAll
 test_start: describe > one
 test_start: describe > two
-hook_start: describe > beforeAll
 test_started: describe > one
 test_started: describe > two
 test_fn_start: describe > one
@@ -115,7 +116,6 @@ test_fn_failure: describe > one
 test_fn_failure: describe > two
 test_done: describe > one
 test_done: describe > two
-hook_success: describe > beforeAll
 hook_start: describe > afterAll
 hook_success: describe > afterAll
 run_describe_finish: describe
@@ -141,37 +141,98 @@ finish_describe_definition: describe2
 run_start
 run_describe_start: 
 run_describe_start: describe1
+hook_start: describe1 > beforeAll
+hook_success: describe1 > beforeAll
 test_start: describe1 > one
 test_start: describe1 > two
-test_start: describe2 > one
-test_start: describe2 > two
-hook_start: describe1 > beforeAll
 test_started: describe1 > one
 test_started: describe1 > two
-test_started: describe2 > one
-test_started: describe2 > two
 test_fn_start: describe1 > one
 test_fn_start: describe1 > two
-test_fn_start: describe2 > one
-test_fn_start: describe2 > two
 test_fn_failure: describe1 > one
 test_fn_success: describe1 > two
-test_fn_failure: describe2 > one
-test_fn_success: describe2 > two
 test_done: describe1 > one
 test_done: describe1 > two
-test_done: describe2 > one
-test_done: describe2 > two
-hook_success: describe1 > beforeAll
 hook_start: describe1 > afterAll
 hook_success: describe1 > afterAll
 run_describe_finish: describe1
 run_describe_start: describe2
 hook_start: describe2 > beforeAll
 hook_success: describe2 > beforeAll
+test_start: describe2 > one
+test_start: describe2 > two
+test_started: describe2 > one
+test_started: describe2 > two
+test_fn_start: describe2 > one
+test_fn_start: describe2 > two
+test_fn_failure: describe2 > one
+test_fn_success: describe2 > two
+test_done: describe2 > one
+test_done: describe2 > two
 hook_start: describe2 > afterAll
 hook_success: describe2 > afterAll
 run_describe_finish: describe2
+run_describe_finish: 
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + concurrent & non concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: describe > beforeAll
+add_hook: describe > afterAll
+add_test: describe > one
+add_test: describe > two
+add_test: describe > three
+add_test: describe > four
+add_test: describe > five
+add_test: describe > six
+add_test: describe > seven
+finish_describe_definition: describe
+run_start
+run_describe_start: 
+run_describe_start: describe
+hook_start: describe > beforeAll
+hook_success: describe > beforeAll
+test_start: describe > one
+test_start: describe > two
+test_started: describe > one
+test_started: describe > two
+test_fn_start: describe > one
+test_fn_start: describe > two
+test_fn_success: describe > one
+test_fn_success: describe > two
+test_done: describe > one
+test_done: describe > two
+test_start: describe > three
+test_started: describe > three
+test_fn_start: describe > three
+test_fn_success: describe > three
+test_done: describe > three
+test_start: describe > four
+test_started: describe > four
+test_fn_start: describe > four
+test_fn_success: describe > four
+test_done: describe > four
+test_start: describe > five
+test_started: describe > five
+test_fn_start: describe > five
+test_fn_success: describe > five
+test_done: describe > five
+test_start: describe > six
+test_start: describe > seven
+test_started: describe > six
+test_started: describe > seven
+test_fn_start: describe > six
+test_fn_start: describe > seven
+test_fn_success: describe > six
+test_fn_success: describe > seven
+test_done: describe > six
+test_done: describe > seven
+hook_start: describe > afterAll
+hook_success: describe > afterAll
+run_describe_finish: describe
 run_describe_finish: 
 run_finish
 
@@ -291,10 +352,10 @@ finish_describe_definition: describe
 run_start
 run_describe_start: 
 run_describe_start: describe
+run_describe_start: describe > nested
 test_start: describe > nested > one
 test_start: describe > nested > two
 test_start: describe > nested > three
-run_describe_start: describe > nested
 test_skip: describe > nested > one
 test_skip: describe > nested > two
 test_skip: describe > nested > three
