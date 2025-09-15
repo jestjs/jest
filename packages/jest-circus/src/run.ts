@@ -52,7 +52,6 @@ const _runTestsForDescribeBlock = async (
   rng: RandomNumberGenerator | undefined,
   concurrencyQueue: PQueue,
 ) => {
-  // console.dir(describeBlock, {colors: true, depth: 8});
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
