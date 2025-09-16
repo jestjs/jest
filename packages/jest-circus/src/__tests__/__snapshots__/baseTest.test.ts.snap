@@ -8,12 +8,14 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 hook_start: beforeAll
 hook_success: beforeAll
+concurrent_tests_start
 test_start: one
 test_started: one
 test_fn_start: one
 hello one
 test_fn_failure: one
 test_done: one
+concurrent_tests_end
 hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
@@ -33,6 +35,7 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
@@ -51,6 +54,7 @@ test_fn_success: three
 test_done: one
 test_done: two
 test_done: three
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -69,6 +73,7 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
@@ -87,6 +92,7 @@ test_fn_success: three
 test_done: one
 test_done: two
 test_done: three
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -106,6 +112,7 @@ run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 hook_start: beforeAll
 hook_success: beforeAll
+concurrent_tests_start
 test_start: one
 test_start: two
 test_started: one
@@ -116,6 +123,7 @@ test_fn_failure: one
 test_fn_failure: two
 test_done: one
 test_done: two
+concurrent_tests_end
 hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: describe
@@ -143,6 +151,7 @@ run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe1
 hook_start: beforeAll
 hook_success: beforeAll
+concurrent_tests_start
 test_start: one
 test_start: two
 test_started: one
@@ -153,12 +162,14 @@ test_fn_failure: one
 test_fn_success: two
 test_done: one
 test_done: two
+concurrent_tests_end
 hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: describe1
 run_describe_start: describe2
 hook_start: beforeAll
 hook_success: beforeAll
+concurrent_tests_start
 test_start: one
 test_start: two
 test_started: one
@@ -169,6 +180,7 @@ test_fn_failure: one
 test_fn_success: two
 test_done: one
 test_done: two
+concurrent_tests_end
 hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: describe2
@@ -195,41 +207,43 @@ run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 hook_start: beforeAll
 hook_success: beforeAll
+concurrent_tests_start
 test_start: one
 test_start: two
+test_start: four
+test_start: six
+test_start: seven
 test_started: one
 test_started: two
+test_started: four
+test_started: six
+test_started: seven
 test_fn_start: one
 test_fn_start: two
+test_fn_start: four
+test_fn_start: six
+test_fn_start: seven
 test_fn_success: one
 test_fn_success: two
+test_fn_success: four
+test_fn_success: six
+test_fn_success: seven
 test_done: one
 test_done: two
+test_done: four
+test_done: six
+test_done: seven
+concurrent_tests_end
 test_start: three
 test_started: three
 test_fn_start: three
 test_fn_success: three
 test_done: three
-test_start: four
-test_started: four
-test_fn_start: four
-test_fn_success: four
-test_done: four
 test_start: five
 test_started: five
 test_fn_start: five
 test_fn_success: five
 test_done: five
-test_start: six
-test_start: seven
-test_started: six
-test_started: seven
-test_fn_start: six
-test_fn_start: seven
-test_fn_success: six
-test_fn_success: seven
-test_done: six
-test_done: seven
 hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: describe
@@ -250,12 +264,14 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
 test_skip
 test_skip
 test_skip
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -274,12 +290,14 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
 test_skip
 test_skip
 test_skip
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -353,12 +371,14 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 run_describe_start: nested
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
 test_skip
 test_skip
 test_skip
+concurrent_tests_end
 run_describe_finish: nested
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK

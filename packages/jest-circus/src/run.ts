@@ -6,7 +6,7 @@
  */
 
 import {AsyncLocalStorage} from 'async_hooks';
-import PQueue from 'p-queue';
+import pLimit from 'p-limit';
 import {jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
@@ -36,10 +36,8 @@ const run = async (): Promise<Circus.RunResult> => {
     currentConcurrentTestName: () => testNameStorage.getStore(),
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
-  const concurrencyQueue = new PQueue({concurrency: getState().maxConcurrency});
   await dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock, rng, concurrencyQueue);
-  await concurrencyQueue.onEmpty();
+  await _runTestsForDescribeBlock(rootDescribeBlock, rng);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -47,10 +45,35 @@ const run = async (): Promise<Circus.RunResult> => {
   );
 };
 
+function* regroupConcurrentChildren(
+  children: Array<Circus.DescribeBlock | Circus.TestEntry>,
+) {
+  const concurrentTests = children.filter(
+    (child): child is Circus.TestEntry =>
+      child.type === 'test' && child.concurrent,
+  );
+  if (concurrentTests.length === 0) {
+    yield* children;
+    return;
+  }
+  let collectedConcurrent = false;
+  for (const child of children) {
+    if (child.type === 'describeBlock') {
+      yield child;
+    } else if (child.concurrent) {
+      if (!collectedConcurrent) {
+        collectedConcurrent = true;
+        yield {tests: concurrentTests, type: 'test-concurrent' as const};
+      }
+    } else {
+      yield child;
+    }
+  }
+}
+
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
   rng: RandomNumberGenerator | undefined,
-  concurrencyQueue: PQueue,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
@@ -67,6 +90,7 @@ const _runTestsForDescribeBlock = async (
   const retryTimes =
     Number.parseInt((globalThis as Global.Global)[RETRY_TIMES] as string, 10) ||
     0;
+  const hasRetryTimes = retryTimes > 0;
 
   const waitBeforeRetry =
     Number.parseInt(
@@ -82,8 +106,8 @@ const _runTestsForDescribeBlock = async (
   if (rng) {
     describeBlock.children = shuffleArray(describeBlock.children, rng);
   }
-
-  const ownQueuedTasks = new Map<Circus.TestEntry, Promise<void>>();
+  // Regroup concurrent tests as a single "sequential" unit
+  const children = regroupConcurrentChildren(describeBlock.children);
 
   const rerunTest = async (test: Circus.TestEntry) => {
     let numRetriesAvailable = retryTimes;
@@ -119,51 +143,44 @@ const _runTestsForDescribeBlock = async (
     // If immediate retry is set, we retry the test immediately after the first run
     await rerunTest(test);
   };
-  const runTestWithContext = async (
-    child: Circus.TestEntry,
-    hasErrorsBeforeTestRun: boolean,
-    hasRetryTimes: boolean,
-  ) =>
-    testNameStorage.run(getTestID(child), async () => {
+  const runTestWithContext = async (child: Circus.TestEntry) => {
+    const hasErrorsBeforeTestRun = child.errors.length > 0;
+    return testNameStorage.run(getTestID(child), async () => {
       await _runTest(child, isSkipped);
       await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
     });
+  };
 
-  for (const child of describeBlock.children) {
+  for (const child of children) {
     switch (child.type) {
       case 'describeBlock': {
-        await _runTestsForDescribeBlock(child, rng, concurrencyQueue);
+        await _runTestsForDescribeBlock(child, rng);
         break;
       }
       case 'test': {
-        const hasErrorsBeforeTestRun = child.errors.length > 0;
-        const hasRetryTimes = retryTimes > 0;
-        if (child.concurrent) {
-          ownQueuedTasks.set(
-            child,
-            concurrencyQueue.add(() =>
-              runTestWithContext(
-                child,
-                hasErrorsBeforeTestRun,
-                hasRetryTimes,
-              ).finally(() => ownQueuedTasks.delete(child)),
-            ),
-          );
-        } else {
-          // Non-concurrent tests wait for the concurrent ones to finish
-          await concurrencyQueue.onIdle();
-          await runTestWithContext(
-            child,
-            hasErrorsBeforeTestRun,
-            hasRetryTimes,
-          );
-        }
+        await runTestWithContext(child);
+        break;
+      }
+      case 'test-concurrent': {
+        await dispatch({
+          describeBlock,
+          name: 'concurrent_tests_start',
+          tests: child.tests,
+        });
+        const concurrencyLimiter = pLimit(getState().maxConcurrency);
+        const tasks = child.tests.map(concurrentTest =>
+          concurrencyLimiter(() => runTestWithContext(concurrentTest)),
+        );
+        await Promise.all(tasks);
+        await dispatch({
+          describeBlock,
+          name: 'concurrent_tests_end',
+          tests: child.tests,
+        });
         break;
       }
     }
   }
-
-  await Promise.all(ownQueuedTasks.values());
 
   // Re-run failed tests n-times if configured
   for (const test of deferredRetryTests) {
