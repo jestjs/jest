@@ -1,5 +1,89 @@
 import {runTest} from '../__mocks__/testUtils';
 
+test('{before,after}All + concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    beforeAll(async () => await setTimeout(100));
+    afterAll(async () => await setTimeout(100));
+    test.concurrent('one', () => {
+      console.log('hello one');
+      throw new Error('kentucky')
+    });
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('describe + {before,after}All + concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe', () => {
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+      test.concurrent('one', () => {
+        throw new Error('kentucky')
+      });
+      test.concurrent('two', () => {
+        throw new Error('kentucky')
+      });
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('describe + {before,after}All + concurrent multiple times', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe1', () => {
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+      test.concurrent('one', () => {
+        throw new Error('kentucky')
+      });
+      test.concurrent('two', () => {});
+    })
+    describe('describe2', () => {
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+      test.concurrent('one', () => {
+        throw new Error('kentucky')
+      });
+      test.concurrent('two', () => {});
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('describe + concurrent & non concurrent', () => {
+  const {stdout} = runTest(`
+    const {setTimeout} = require('timers/promises')
+
+    describe('describe', () => {
+      beforeAll(async () => await setTimeout(100));
+      afterAll(async () => await setTimeout(100));
+
+      test.concurrent('one', () => {});
+      test.concurrent('two', () => {});
+
+      test('three', () => {});
+
+      test.concurrent('four', () => {});
+
+      test('five', () => {});
+
+      test.concurrent('six', () => {});
+      test.concurrent('seven', () => {});
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
 test('Execute concurrent as a single sequential unit in each describe', () => {
   const {stdout} = runTest(`
     describe('foo', () => {
