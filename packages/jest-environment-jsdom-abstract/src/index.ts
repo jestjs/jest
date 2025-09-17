@@ -52,7 +52,7 @@ export default abstract class BaseJSDOMEnvironment
     const {JSDOM, ResourceLoader, VirtualConsole} = jsdomModule;
 
     const virtualConsole = new VirtualConsole();
-    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    virtualConsole.forwardTo(context.console, { jsdomErrors: "none" });
     virtualConsole.on('jsdomError', error => {
       context.console.error(error);
     });

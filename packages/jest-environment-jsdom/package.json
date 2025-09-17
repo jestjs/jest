@@ -23,7 +23,7 @@
     "@jest/environment-jsdom-abstract": "workspace:*",
     "@types/jsdom": "^21.1.7",
     "@types/node": "*",
-    "jsdom": "^26.1.0"
+    "jsdom": "^27.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*"
@@ -37,7 +37,7 @@
     }
   },
   "engines": {
-    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"
