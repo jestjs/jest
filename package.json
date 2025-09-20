@@ -59,7 +59,7 @@
     "jest-silent-reporter": "^0.6.0",
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
-    "jest-watch-typeahead": "^2.2.2",
+    "jest-watch-typeahead": "^3.0.1",
     "jquery": "^3.2.1",
     "js-yaml": "^4.1.0",
     "micromatch": "^4.0.8",
