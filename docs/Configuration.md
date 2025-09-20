@@ -1135,7 +1135,7 @@ Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json`, `jest-preset.js`, `jest-preset.cjs` or `jest-preset.mjs` file at the root.
 
-For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
+For example, this preset `foo-bar/jest-preset.js` will be used as follows:
 
 ```js tab
 /** @type {import('jest').Config} */
