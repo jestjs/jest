@@ -1,6 +1,7 @@
 ## main
 
 ### Chore & Maintenance
+
 - `[*]` Update `jest-watch-typeahead` to v3 ([#15830](https://github.com/jestjs/jest/pull/15830))
 
 ## 30.1.3
