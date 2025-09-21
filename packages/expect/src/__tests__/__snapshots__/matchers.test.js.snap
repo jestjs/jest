@@ -4595,6 +4595,19 @@ Expected: not <g>Set {2, 1}</>
 Received:     <r>Set {1, 2}</>
 `;
 
+exports[`toMatchObject() circular references getter circular references handles self-referential getter without infinite recursion 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
+
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<g>- TestClass {</>
+<g>-   "value": "def",</>
+<r>+ Object {</>
+<r>+   "value": "abc",</>
+<d>  }</>
+`;
+
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 

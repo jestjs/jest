@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-matcher-utils]` Fix infinite recursion with self-referential getters in `deepCyclicCopyReplaceable` ([#15831](https://github.com/jestjs/jest/pull/15831))
+
 ## 30.1.3
 
 ### Fixes
