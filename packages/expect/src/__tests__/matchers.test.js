@@ -699,23 +699,6 @@ describe('.toEqual()', () => {
     });
   }
 
-  test('should not cause infinite recursion with getters that return new instances', () => {
-    class MyClass {
-      constructor(value) {
-        this.value = value;
-      }
-
-      get toLowerCase() {
-        return new MyClass(this.value.toLowerCase());
-      }
-    }
-
-    // This should not cause infinite recursion - should produce normal comparison error
-    expect(() =>
-      jestExpect(new MyClass('abc')).toEqual(new MyClass('def')),
-    ).toThrowErrorMatchingSnapshot();
-  });
-
   for (const [a, b] of [
     [BigInt(1), BigInt(2)],
     [BigInt(1), 1],
@@ -2229,6 +2212,30 @@ describe('toMatchObject()', () => {
         [transitiveCircularObjB, transitiveCircularObjA1],
         [primitiveInsteadOfRef, transitiveCircularObjA1],
       ]);
+    });
+
+    describe('getter circular references', () => {
+      test('handles self-referential getter without infinite recursion', () => {
+        class TestClass {
+          constructor(value) {
+            this.value = value;
+          }
+
+          get selfRef() {
+            return new TestClass(this.value.toLowerCase());
+          }
+        }
+
+        const abc = new TestClass('abc');
+        const def = new TestClass('def');
+
+        jestExpect(abc).toMatchObject(abc);
+        jestExpect(abc).not.toMatchObject(def);
+
+        expect(() =>
+          jestExpect(abc).toMatchObject(def),
+        ).toThrowErrorMatchingSnapshot();
+      });
     });
   });
 

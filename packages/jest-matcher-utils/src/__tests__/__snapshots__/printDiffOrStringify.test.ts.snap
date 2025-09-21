@@ -184,6 +184,16 @@ Expected: <g>"multi</>
 Received: <r>""</>
 `;
 
+exports[`printDiffOrStringify getters handles self-referential getters without infinite recursion 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  TestClass {</>
+<g>-   "value": "hello",</>
+<r>+   "value": "world",</>
+<d>  }</>
+`;
+
 exports[`printDiffOrStringify has no common after clean up chaff multiline 1`] = `
 <g>- Expected  - 2</>
 <r>+ Received  + 2</>
