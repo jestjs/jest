@@ -5,9 +5,10 @@ title: Testing React Native Apps
 
 At Facebook, we use Jest to test [React Native](https://reactnative.dev/) applications.
 
-Get a deeper insight into testing a working React Native app example by reading the following series: 
+Get a deeper insight into testing a working React Native app example by reading the following series:
+
 - [Part 1: Jest – Snapshot come into play](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/)
--  [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/).
+- [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/).
 
 ## Setup
 
