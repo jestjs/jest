@@ -58,9 +58,7 @@ function* regroupConcurrentChildren(
   }
   let collectedConcurrent = false;
   for (const child of children) {
-    if (child.type === 'describeBlock') {
-      yield child;
-    } else if (child.concurrent) {
+    if (child.type === 'test' && child.concurrent) {
       if (!collectedConcurrent) {
         collectedConcurrent = true;
         yield {tests: concurrentTests, type: 'test-concurrent' as const};
