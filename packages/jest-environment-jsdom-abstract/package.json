@@ -28,6 +28,7 @@
     "jest-util": "workspace:*"
   },
   "devDependencies": {
+    "@jest/test-utils": "workspace:*",
     "jsdom": "^26.1.0"
   },
   "peerDependencies": {
