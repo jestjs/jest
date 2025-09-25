@@ -7,11 +7,9 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {
-  type TransformOptions as BabelTransformOptions,
-  type PartialConfig,
-  transformSync as babelTransform,
-  transformAsync as babelTransformAsync,
+import type {
+  TransformOptions as BabelTransformOptions,
+  PartialConfig,
 } from '@babel/core';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
@@ -21,7 +19,12 @@ import type {
   SyncTransformer,
   TransformerCreator,
 } from '@jest/transform';
-import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
+import {
+  transformSync as babelTransform,
+  transformAsync as babelTransformAsync,
+  loadPartialConfigAsync,
+  loadPartialConfigSync,
+} from './babel';
 
 export interface TransformerConfig extends BabelTransformOptions {
   excludeJestPreset?: boolean;
@@ -112,7 +115,7 @@ function loadBabelConfig(
   filename: string,
   transformOptions: BabelTransformOptions,
 ): PartialConfig {
-  const babelConfig = loadPartialConfig(transformOptions);
+  const babelConfig = loadPartialConfigSync(transformOptions);
 
   assertLoadedBabelConfig(babelConfig, cwd, filename);
 
