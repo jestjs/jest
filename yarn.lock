@@ -3851,6 +3851,7 @@ __metadata:
   dependencies:
     "@jest/environment": "workspace:*"
     "@jest/fake-timers": "workspace:*"
+    "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/jsdom": "npm:^21.1.7"
     "@types/node": "npm:*"
