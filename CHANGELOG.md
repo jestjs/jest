@@ -4,6 +4,10 @@
 
 - `[jest-environment-jsdom-abstract]` Add support for JSDOM v27 ([#15834](https://github.com/jestjs/jest/pull/15834))
 
+### Fixes
+
+- `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
+
 ## 30.1.3
 
 ### Fixes
