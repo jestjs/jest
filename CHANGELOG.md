@@ -25,6 +25,7 @@
 ### Fixes
 
 - `[jest-snapshot-utils]` Fix deprecated goo.gl snapshot warning not handling Windows end-of-line sequences ([#15800](https://github.com/jestjs/jest/pull/15800))
+- `[jest-snapshot-utils]` Improve messaging about goo.gl snapshot link change ([#15821](https://github.com/jestjs/jest/pull/15821))
 
 ## 30.1.0
 
