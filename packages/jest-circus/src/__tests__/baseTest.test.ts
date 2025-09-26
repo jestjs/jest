@@ -48,16 +48,16 @@ test('concurrent', () => {
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => { throw new Error('banana')});
-      test.concurrent('one', () => { 
+      test.concurrent('one', () => {
         console.log('hello one');
         throw new Error('kentucky')
       });
       test.concurrent('two', () => {
         console.log('hello two');
       });
-      test.concurrent('three', async () => { 
+      test.concurrent('three', async () => {
         console.log('hello three');
-        await Promise.resolve(); 
+        await Promise.resolve();
       });
     })
   `);
@@ -76,7 +76,7 @@ test('concurrent.each', () => {
         ['three'],
       ])('%s', async (name) => {
         console.log('hello %s', name);
-        await Promise.resolve(); 
+        await Promise.resolve();
       });
     })
   `);

@@ -161,6 +161,16 @@ export type AsyncEvent =
       test: TestEntry;
     }
   | {
+      name: 'concurrent_tests_start';
+      tests: Array<TestEntry>;
+      describeBlock: DescribeBlock;
+    }
+  | {
+      name: 'concurrent_tests_end';
+      tests: Array<TestEntry>;
+      describeBlock: DescribeBlock;
+    }
+  | {
       name: 'run_describe_start';
       describeBlock: DescribeBlock;
     }

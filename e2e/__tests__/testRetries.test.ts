@@ -205,13 +205,11 @@ describe('Concurrent Test Retries', () => {
     SECOND TRUTHY TEST
 
       at Object.log (__tests__/retryImmediatelyConcurrent.test.js:14:13)
-          at async Promise.all (index 0)
 
   console.log
     THIRD TRUTHY TEST
 
-      at Object.log (__tests__/retryImmediatelyConcurrent.test.js:25:13)
-          at async Promise.all (index 1)`;
+      at Object.log (__tests__/retryImmediatelyConcurrent.test.js:25:13)`;
 
     const result = runJest('test-retries', [
       'retryImmediatelyConcurrent.test.js',

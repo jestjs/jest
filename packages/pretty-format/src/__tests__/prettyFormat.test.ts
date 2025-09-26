@@ -482,6 +482,11 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toBe('WeakSet {}');
   });
 
+  it('prints a Promise', () => {
+    const val = Promise.resolve();
+    expect(prettyFormat(val)).toBe('Promise {}');
+  });
+
   it('prints deeply nested objects', () => {
     const val = {prop: {prop: {prop: 'value'}}};
     expect(prettyFormat(val)).toBe(
