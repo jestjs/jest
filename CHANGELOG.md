@@ -1,5 +1,8 @@
 ## main
 
+### Chore & Maintenance
+
+- `[*]` Update `jest-watch-typeahead` to v3 ([#15830](https://github.com/jestjs/jest/pull/15830))
 ## Features
 
 - `[jest-environment-jsdom-abstract]` Add support for JSDOM v27 ([#15834](https://github.com/jestjs/jest/pull/15834))
