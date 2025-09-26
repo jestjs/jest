@@ -79,8 +79,8 @@ const validateSnapshotHeader = (snapshotContents: string) => {
       chalk.red(
         `${chalk.red.bold(
           'Outdated guide link',
-        )}: The snapshot guide link is outdated.` +
-          'Please update all snapshots while upgrading of Jest',
+        )}: The snapshot guide link at the top of this snapshot is outdated. ` +
+          'Please update all snapshots during this upgrade of Jest.',
       ) +
         '\n\n' +
         `Expected: ${SNAPSHOT_GUIDE_LINK}\n` +
