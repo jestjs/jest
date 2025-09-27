@@ -1787,16 +1787,32 @@ A list of paths to snapshot serializer modules Jest should use for snapshot test
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more information.
 
-```js title="custom-serializer.js"
+```js tab title="custom-serializer.js"
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return `Pretty foo: ${printer(val.foo)}`;
+    return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
   },
 
   test(val) {
     return val && Object.prototype.hasOwnProperty.call(val, 'foo');
   },
 };
+```
+
+```ts tab title="custom-serializer.ts"
+import type {Plugin} from 'pretty-format';
+
+const plugin: Plugin = {
+  serialize(val, config, indentation, depth, refs, printer): string {
+    return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
+  },
+
+  test(val): boolean {
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
+  }
+};
+
+export default plugin;
 ```
 
 `printer` is a function that serializes a value using existing plugins.
@@ -1816,7 +1832,7 @@ module.exports = config;
 import type {Config} from 'jest';
 
 const config: Config = {
-  snapshotSerializers: ['path/to/custom-serializer.js'],
+  snapshotSerializers: ['path/to/custom-serializer.ts'],
 };
 
 export default config;
