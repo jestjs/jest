@@ -8,7 +8,7 @@
 import {EOL} from 'os';
 import detectNewline from 'detect-newline';
 
-type Pragmas = Record<string, string | Array<string>>;
+export type Pragmas = Record<string, string | Array<string>>;
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*?/;
