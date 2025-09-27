@@ -12,6 +12,7 @@
 ### Fixes
 
 - `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
+- `[jest-config]` Fix `jest.config.ts` with TS loader specified in docblock pragma ([#15839](https://github.com/jestjs/jest/pull/15839))
 
 ## 30.1.3
 

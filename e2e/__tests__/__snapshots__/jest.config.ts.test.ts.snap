@@ -45,6 +45,19 @@ jest.config.ts(1,17): error TS1005: ';' expected.
 jest.config.ts(1,39): error TS1002: Unterminated string literal."
 `;
 
+exports[`on node ^23.6 load typed jest.config.ts with TS loader specified in docblock pragma 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`on node ^23.6 load typed jest.config.ts with TS loader specified in docblock pragma 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
 exports[`traverses directory tree up until it finds jest.config 1`] = `
 "  console.log
 <<REPLACED>>/jest-config-ts/some/nested/directory
