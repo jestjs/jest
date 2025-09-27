@@ -75,8 +75,7 @@ exports[`formatStackTrace should properly handle string causes 1`] = `
 
     Cause:
     string cause
-<dim></intensity>
-<dim></intensity>
+
 "
 `;
 
@@ -163,7 +162,7 @@ exports[`should return the error cause if there is one 1`] = `
     Cause:
      Cause Error
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:567:17)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:565:12)</intensity>
 
 "
 `;
@@ -173,16 +172,16 @@ exports[`should return the inner errors of an AggregateError 1`] = `
 
     AggregateError:
 
-      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:583:20)</intensity>
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:20)</intensity>
 
     Errors contained in AggregateError:
      Err 1
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:583:40)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:40)</intensity>
 
      Err 2
 
-          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:583:60)</intensity>
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:60)</intensity>
 
 "
 `;

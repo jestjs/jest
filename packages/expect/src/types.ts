@@ -209,6 +209,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Used when you want to check that an item is in a list.
    * For testing the items in the list, this uses `===`, a strict equality check.
+   * `.toContain` can also check whether a string is a substring of another string.
    */
   toContain(expected: unknown): R;
   /**

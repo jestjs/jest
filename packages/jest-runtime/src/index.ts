@@ -213,6 +213,7 @@ export default class Runtime {
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
   private isInsideTestCode: boolean | undefined;
+  private readonly loggedReferenceErrors = new Set<string>();
 
   constructor(
     config: Config.ProjectConfig,
@@ -588,13 +589,14 @@ export default class Runtime {
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
     if (specifier === '@jest/globals') {
-      const fromCache = registry.get('@jest/globals');
+      const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
+      const fromCache = registry.get(globalsIdentifier);
 
       if (fromCache) {
         return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      registry.set('@jest/globals', globals);
+      registry.set(globalsIdentifier, globals);
 
       return globals;
     }
@@ -2461,11 +2463,14 @@ export default class Runtime {
 
     const {message, stack} = separateMessageFromStack(originalStack);
 
-    console.error(
-      `\n${message}\n${formatStackTrace(stack, this._config, {
-        noStackTrace: false,
-      })}`,
-    );
+    const stackTrace = formatStackTrace(stack, this._config, {
+      noStackTrace: false,
+    });
+    const formattedMessage = `\n${message}${stackTrace ? `\n${stackTrace}` : ''}`;
+    if (!this.loggedReferenceErrors.has(formattedMessage)) {
+      console.error(formattedMessage);
+      this.loggedReferenceErrors.add(formattedMessage);
+    }
   }
 
   private constructInjectedModuleParameters(): Array<string> {

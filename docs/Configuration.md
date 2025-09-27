@@ -1135,7 +1135,7 @@ Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json`, `jest-preset.js`, `jest-preset.cjs` or `jest-preset.mjs` file at the root.
 
-For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
+For example, this preset `foo-bar/jest-preset.js` will be used as follows:
 
 ```js tab
 /** @type {import('jest').Config} */
@@ -2472,7 +2472,7 @@ This option allows you to use custom watch plugins. Read more about watch plugin
 Examples of watch plugins include:
 
 - [`jest-watch-master`](https://github.com/rickhanlonii/jest-watch-master)
-- [`jest-watch-select-projects`](https://github.com/rogeliog/jest-watch-select-projects)
+- [`jest-watch-select-projects`](https://github.com/jest-community/jest-watch-select-projects)
 - [`jest-watch-suspend`](https://github.com/unional/jest-watch-suspend)
 - [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)

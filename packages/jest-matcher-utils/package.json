@@ -1,7 +1,7 @@
 {
   "name": "jest-matcher-utils",
   "description": "A set of utility functions for expect and related packages",
-  "version": "30.0.5",
+  "version": "30.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",

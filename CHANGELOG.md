@@ -1,8 +1,56 @@
 ## main
 
-### Features
+### Chore & Maintenance
 
-- `[jest-config]` Supports Jest config file with `.mts` extension ([#15796](https://github.com/jestjs/jest/pull/15796))  
+- `[*]` Update example repo for testing React Native projects ([#15832](https://github.com/jestjs/jest/pull/15832))
+- `[*]` Update `jest-watch-typeahead` to v3 ([#15830](https://github.com/jestjs/jest/pull/15830))
+
+## Features
+
+- `[jest-environment-jsdom-abstract]` Add support for JSDOM v27 ([#15834](https://github.com/jestjs/jest/pull/15834))
+- `[jest-config]` Supports Jest config file with `.mts` extension ([#15796](https://github.com/jestjs/jest/pull/15796))
+
+### Fixes
+
+- `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
+
+## 30.1.3
+
+### Fixes
+
+- Fix `unstable_mockModule` with `node:` prefixed core modules.
+
+## 30.1.2
+
+### Fixes
+
+- `[jest-snapshot-utils]` Correct snapshot header regexp to work with newline across OSes ([#15803](https://github.com/jestjs/jest/pull/15803))
+
+## 30.1.1
+
+### Fixes
+
+- `[jest-snapshot-utils]` Fix deprecated goo.gl snapshot warning not handling Windows end-of-line sequences ([#15800](https://github.com/jestjs/jest/pull/15800))
+- `[jest-snapshot-utils]` Improve messaging about goo.gl snapshot link change ([#15821](https://github.com/jestjs/jest/pull/15821))
+
+## 30.1.0
+
+## Features
+
+- `[jest-leak-detector]` Configurable GC aggressiveness regarding to V8 heap snapshot generation ([#15793](https://github.com/jestjs/jest/pull/15793/))
+- `[jest-runtime]` Reduce redundant ReferenceError messages
+- `[jest-core]` Include test modules that failed to load when --onlyFailures is active
+
+### Fixes
+
+- `[jest-snapshot-utils]` Fix deprecated goo.gl snapshot guide link not getting replaced with fully canonical URL ([#15787](https://github.com/jestjs/jest/pull/15787))
+- `[jest-circus]` Fix `it.concurrent` not working with `describe.skip` ([#15765](https://github.com/jestjs/jest/pull/15765))
+- `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
+- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
+
+# Chore
+
+- `[expect]` Update docblock for `toContain()` to display info on substring check ([#15789](https://github.com/jestjs/jest/pull/15789))
 
 ## 30.0.5
 
