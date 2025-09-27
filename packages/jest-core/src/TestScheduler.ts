@@ -41,6 +41,7 @@ import {
 import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
+import runGlobalHook from './runGlobalHook';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 export type ReporterConstructor = new (
@@ -150,7 +151,12 @@ class TestScheduler {
         testResult,
         aggregatedResults,
       );
-      return this._bailIfNeeded(testContexts, aggregatedResults, watcher);
+      return this._bailIfNeeded(
+        testContexts,
+        aggregatedResults,
+        watcher,
+        tests,
+      );
     };
 
     const onFailure = async (test: Test, error: SerializableError) => {
@@ -408,6 +414,7 @@ class TestScheduler {
     testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
+    allTests: Array<Test>,
   ): Promise<void> {
     if (
       this._globalConfig.bail !== 0 &&
@@ -421,8 +428,17 @@ class TestScheduler {
       try {
         await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
       } finally {
-        const exitCode = this._globalConfig.testFailureExitCode;
-        exit(exitCode);
+        // Perform global teardown if client configures `bail`
+        if (allTests.length > 0) {
+          performance.mark('jest/globalTeardown:start');
+          await runGlobalHook({
+            allTests,
+            globalConfig: this._globalConfig,
+            moduleName: 'globalTeardown',
+          });
+          performance.mark('jest/globalTeardown:end');
+          exit(this._globalConfig.testFailureExitCode);
+        }
       }
     }
   }
