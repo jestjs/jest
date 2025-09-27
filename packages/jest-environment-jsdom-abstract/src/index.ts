@@ -52,7 +52,26 @@ export default abstract class BaseJSDOMEnvironment
     const {JSDOM, ResourceLoader, VirtualConsole} = jsdomModule;
 
     const virtualConsole = new VirtualConsole();
-    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+
+    if (
+      'forwardTo' in virtualConsole &&
+      typeof virtualConsole.forwardTo === 'function'
+    ) {
+      // JSDOM 27+ uses `forwardTo`
+      virtualConsole.forwardTo(context.console);
+    } else if (
+      'sendTo' in virtualConsole &&
+      typeof virtualConsole.sendTo === 'function'
+    ) {
+      // JSDOM 26 uses `sendTo`
+      virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    } else {
+      // Fallback for unexpected API changes
+      throw new TypeError(
+        'Unable to forward JSDOM console output - neither sendTo nor forwardTo methods are available',
+      );
+    }
+
     virtualConsole.on('jsdomError', error => {
       context.console.error(error);
     });
