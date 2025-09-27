@@ -96,7 +96,7 @@ export default async function readConfigFileAndSetRootDir(
             // eslint-disable-next-line no-throw-literal
             throw (
               `  Current Node version ${process.versions.node} does not support loading typed .mts Jest config.\n` +
-              '    Please upgrade to ^23.6\n' +
+              '    Please upgrade to >=22.18.0 || ^23.6\n' +
               `    Error: ${requireOrImportModuleError}\n`
             );
           }

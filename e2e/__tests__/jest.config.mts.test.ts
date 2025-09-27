@@ -44,7 +44,7 @@ onNodeVersions('<20.19.0', () => {
   });
 });
 
-onNodeVersions('^20.19.0 || >=22.12.0 <23.6.0', () => {
+onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
   test('work with untyped jest.config.mts', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
@@ -105,7 +105,7 @@ onNodeVersions('^20.19.0 || >=22.12.0 <23.6.0', () => {
   });
 });
 
-onNodeVersions('^23.6', () => {
+onNodeVersions('>=22.18.0 || ^23.6', () => {
   test('work with untyped jest.config.mts', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
