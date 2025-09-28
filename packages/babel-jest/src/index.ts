@@ -26,7 +26,7 @@ import {
   loadPartialConfigSync,
 } from './babel';
 
-interface TransformerConfig extends BabelTransformOptions {
+export interface TransformerConfig extends BabelTransformOptions {
   excludeJestPreset?: boolean;
 }
 
