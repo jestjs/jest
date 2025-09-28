@@ -14,3 +14,8 @@ test('test double', () => {
 test('test import.meta', () => {
   expect(typeof import.meta.url).toBe('string');
 });
+
+// Source: https://github.com/jestjs/jest/issues/15823
+test('test double with dynamic import', () => {
+  expect(double(2)).toBe(4);
+});
