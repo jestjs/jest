@@ -1826,7 +1826,7 @@ const plugin: Plugin = {
 
   test(val): boolean {
     return val && Object.prototype.hasOwnProperty.call(val, 'foo');
-  }
+  },
 };
 
 export default plugin;
