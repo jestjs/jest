@@ -2,48 +2,41 @@
 
 'use strict';
 
-import renderer from 'react-test-renderer';
 import Link from '../Link';
+import {cleanup, render} from '@testing-library/react';
+import {screen} from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
+
+afterEach(() => cleanup());
 
 it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="http://www.facebook.com">Facebook</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
+  const {container} = render(
+    <Link page="http://www.facebook.com">Facebook</Link>,
+  );
+  expect(container.firstChild).toMatchSnapshot();
 });
 
 it('renders as an anchor when no page is set', () => {
-  const tree = renderer.create(<Link>Facebook</Link>).toJSON();
-  expect(tree).toMatchSnapshot();
+  const {container} = render(<Link>Facebook</Link>);
+  expect(container.firstChild).toMatchSnapshot();
 });
 
 it('properly escapes quotes', () => {
-  const tree = renderer
-    .create(<Link>{"\"Facebook\" \\'is \\ 'awesome'"}</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
+  const {container} = render(<Link>{"\"Facebook\" \\'is \\ 'awesome'"}</Link>);
+  expect(container.firstChild).toMatchSnapshot();
 });
 
-it('changes the class when hovered', () => {
-  const component = renderer.create(
+it('changes the class when hovered', async () => {
+  const {container, rerender} = render(
     <Link page="http://www.facebook.com">Facebook</Link>,
   );
-  let tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  expect(container.firstChild).toMatchSnapshot();
 
-  // manually trigger the callback
-  renderer.act(() => {
-    tree.props.onMouseEnter();
-  });
-  // re-rendering
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  // hover the link
+  userEvent.hover(container.firstChild);
+  expect(await screen.findByLabelText('hovered')).toMatchSnapshot();
 
-  // manually trigger the callback
-  renderer.act(() => {
-    tree.props.onMouseLeave();
-  });
-  // re-rendering
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  // unhover the link
+  userEvent.unhover(container.firstChild);
+  expect(await screen.findByLabelText('normal')).toMatchSnapshot();
 });
