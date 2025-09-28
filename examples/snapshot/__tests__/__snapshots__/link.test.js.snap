@@ -2,10 +2,9 @@
 
 exports[`changes the class when hovered 1`] = `
 <a
-  className="normal"
+  aria-label="normal"
+  class="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>
@@ -13,10 +12,9 @@ exports[`changes the class when hovered 1`] = `
 
 exports[`changes the class when hovered 2`] = `
 <a
-  className="hovered"
+  aria-label="hovered"
+  class="hovered"
   href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>
@@ -24,10 +22,9 @@ exports[`changes the class when hovered 2`] = `
 
 exports[`changes the class when hovered 3`] = `
 <a
-  className="normal"
+  aria-label="normal"
+  class="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>
@@ -35,10 +32,9 @@ exports[`changes the class when hovered 3`] = `
 
 exports[`properly escapes quotes 1`] = `
 <a
-  className="normal"
+  aria-label="normal"
+  class="normal"
   href="#"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   "Facebook" \\'is \\ 'awesome'
 </a>
@@ -46,10 +42,9 @@ exports[`properly escapes quotes 1`] = `
 
 exports[`renders as an anchor when no page is set 1`] = `
 <a
-  className="normal"
+  aria-label="normal"
+  class="normal"
   href="#"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>
@@ -57,10 +52,9 @@ exports[`renders as an anchor when no page is set 1`] = `
 
 exports[`renders correctly 1`] = `
 <a
-  className="normal"
+  aria-label="normal"
+  class="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
 >
   Facebook
 </a>

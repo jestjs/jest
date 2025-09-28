@@ -11,7 +11,7 @@ import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
 import stripJsonComments from 'strip-json-comments';
 import type {Config} from '@jest/types';
-import {extract, parse} from 'jest-docblock';
+import {type Pragmas, extract, parse} from 'jest-docblock';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
@@ -51,10 +51,15 @@ export default async function readConfigFileAndSetRootDir(
           configObject = await requireOrImportModule<any>(configPath);
         } catch (requireOrImportModuleError) {
           if (!(requireOrImportModuleError instanceof SyntaxError)) {
-            throw requireOrImportModuleError;
+            if (!hasTsLoaderExplicitlyConfigured(configPath)) {
+              throw requireOrImportModuleError;
+            }
           }
           try {
-            // Likely ESM in a file interpreted as CJS, which means it needs to be
+            // There are various reasons of failed loadout of Jest config in Typescript:
+            // 1. User has specified a TypeScript loader in the docblock and
+            // desire non-native compilation (https://github.com/jestjs/jest/issues/15837)
+            // 2. Likely ESM in a file interpreted as CJS, which means it needs to be
             // compiled. We ignore the error and try to load it with a loader.
             configObject = await loadTSConfigFile(configPath);
           } catch (loadTSConfigFileError) {
@@ -154,11 +159,22 @@ export default async function readConfigFileAndSetRootDir(
 // Load the TypeScript configuration
 let extraTSLoaderOptions: Record<string, unknown>;
 
+const hasTsLoaderExplicitlyConfigured = (configPath: string): boolean => {
+  const docblockPragmas = loadDocblockPragmasInConfig(configPath);
+  const tsLoader = docblockPragmas['jest-config-loader'];
+  return !Array.isArray(tsLoader) && (tsLoader ?? '').trim() !== '';
+};
+
+const loadDocblockPragmasInConfig = (configPath: string): Pragmas => {
+  const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
+  return docblockPragmas;
+};
+
 const loadTSConfigFile = async (
   configPath: string,
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
-  const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
+  const docblockPragmas = loadDocblockPragmasInConfig(configPath);
   const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
   const docblockTSLoaderOptions = docblockPragmas['jest-config-loader-options'];
 
