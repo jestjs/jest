@@ -28,16 +28,16 @@ import {
 // the original values in the variables before we require any files.
 const {setTimeout} = globalThis;
 
-type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
-  fn: Circus.ConcurrentTestFn;
-  done: Promise<void>;
-};
+const testNameStorage = new AsyncLocalStorage<string>();
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
+  jestExpect.setState({
+    currentConcurrentTestName: () => testNameStorage.getStore(),
+  });
   const rng = randomize ? rngBuilder(seed) : undefined;
   await dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
+  await _runTestsForDescribeBlock(rootDescribeBlock, rng);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -45,10 +45,33 @@ const run = async (): Promise<Circus.RunResult> => {
   );
 };
 
+function* regroupConcurrentChildren(
+  children: Array<Circus.DescribeBlock | Circus.TestEntry>,
+) {
+  const concurrentTests = children.filter(
+    (child): child is Circus.TestEntry =>
+      child.type === 'test' && child.concurrent,
+  );
+  if (concurrentTests.length === 0) {
+    yield* children;
+    return;
+  }
+  let collectedConcurrent = false;
+  for (const child of children) {
+    if (child.type === 'test' && child.concurrent) {
+      if (!collectedConcurrent) {
+        collectedConcurrent = true;
+        yield {tests: concurrentTests, type: 'test-concurrent' as const};
+      }
+    } else {
+      yield child;
+    }
+  }
+}
+
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
   rng: RandomNumberGenerator | undefined,
-  isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
@@ -61,17 +84,11 @@ const _runTestsForDescribeBlock = async (
     }
   }
 
-  if (isRootBlock) {
-    const concurrentTests = collectConcurrentTests(describeBlock);
-    if (concurrentTests.length > 0) {
-      startTestsConcurrently(concurrentTests, isSkipped);
-    }
-  }
-
   // Tests that fail and are retried we run after other tests
   const retryTimes =
     Number.parseInt((globalThis as Global.Global)[RETRY_TIMES] as string, 10) ||
     0;
+  const hasRetryTimes = retryTimes > 0;
 
   const waitBeforeRetry =
     Number.parseInt(
@@ -87,6 +104,8 @@ const _runTestsForDescribeBlock = async (
   if (rng) {
     describeBlock.children = shuffleArray(describeBlock.children, rng);
   }
+  // Regroup concurrent tests as a single "sequential" unit
+  const children = regroupConcurrentChildren(describeBlock.children);
 
   const rerunTest = async (test: Circus.TestEntry) => {
     let numRetriesAvailable = retryTimes;
@@ -122,35 +141,44 @@ const _runTestsForDescribeBlock = async (
     // If immediate retry is set, we retry the test immediately after the first run
     await rerunTest(test);
   };
+  const runTestWithContext = async (child: Circus.TestEntry) => {
+    const hasErrorsBeforeTestRun = child.errors.length > 0;
+    return testNameStorage.run(getTestID(child), async () => {
+      await _runTest(child, isSkipped);
+      await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
+    });
+  };
 
-  const concurrentTests = [];
-
-  for (const child of describeBlock.children) {
+  for (const child of children) {
     switch (child.type) {
       case 'describeBlock': {
         await _runTestsForDescribeBlock(child, rng);
         break;
       }
       case 'test': {
-        const hasErrorsBeforeTestRun = child.errors.length > 0;
-        const hasRetryTimes = retryTimes > 0;
-        if (child.concurrent) {
-          concurrentTests.push(
-            (child as ConcurrentTestEntry).done.then(() =>
-              handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes),
-            ),
-          );
-        } else {
-          await _runTest(child, isSkipped);
-          await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
-        }
+        await runTestWithContext(child);
+        break;
+      }
+      case 'test-concurrent': {
+        await dispatch({
+          describeBlock,
+          name: 'concurrent_tests_start',
+          tests: child.tests,
+        });
+        const concurrencyLimiter = pLimit(getState().maxConcurrency);
+        const tasks = child.tests.map(concurrentTest =>
+          concurrencyLimiter(() => runTestWithContext(concurrentTest)),
+        );
+        await Promise.all(tasks);
+        await dispatch({
+          describeBlock,
+          name: 'concurrent_tests_end',
+          tests: child.tests,
+        });
         break;
       }
     }
   }
-
-  // wait for concurrent tests to finish
-  await Promise.all(concurrentTests);
 
   // Re-run failed tests n-times if configured
   for (const test of deferredRetryTests) {
@@ -165,51 +193,6 @@ const _runTestsForDescribeBlock = async (
 
   await dispatch({describeBlock, name: 'run_describe_finish'});
 };
-
-function collectConcurrentTests(
-  describeBlock: Circus.DescribeBlock,
-): Array<ConcurrentTestEntry> {
-  return describeBlock.children.flatMap(child => {
-    switch (child.type) {
-      case 'describeBlock':
-        return collectConcurrentTests(child);
-      case 'test':
-        if (child.concurrent) {
-          return [child as ConcurrentTestEntry];
-        }
-        return [];
-    }
-  });
-}
-
-function startTestsConcurrently(
-  concurrentTests: Array<ConcurrentTestEntry>,
-  parentSkipped: boolean,
-) {
-  const mutex = pLimit(getState().maxConcurrency);
-  const testNameStorage = new AsyncLocalStorage<string>();
-  jestExpect.setState({
-    currentConcurrentTestName: () => testNameStorage.getStore(),
-  });
-  for (const test of concurrentTests) {
-    try {
-      const promise = mutex(() =>
-        testNameStorage.run(getTestID(test), () =>
-          _runTest(test, parentSkipped),
-        ),
-      );
-      // Avoid triggering the uncaught promise rejection handler in case the
-      // test fails before being awaited on.
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      promise.catch(() => {});
-      test.done = promise;
-    } catch (error) {
-      test.fn = () => {
-        throw error;
-      };
-    }
-  }
-}
 
 const _runTest = async (
   test: Circus.TestEntry,
