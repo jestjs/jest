@@ -13588,6 +13588,7 @@ __metadata:
     "@jest/get-type": "workspace:*"
     "@jest/pattern": "workspace:*"
     "@jest/test-sequencer": "workspace:*"
+    "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/micromatch": "npm:^4.0.9"
