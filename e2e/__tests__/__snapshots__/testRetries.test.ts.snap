@@ -33,7 +33,6 @@ exports[`Concurrent Test Retries with flag retryImmediately retry immediately af
       20 |
 
       at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:17:18)
-          at async Promise.all (index 0)
 
  LOGGING RETRY ERRORS  retryable test 2
  RETRY 1 
@@ -67,7 +66,6 @@ exports[`Concurrent Test Retries with flag retryImmediately retry immediately af
       31 | it.concurrent('truthy test', () => {
 
       at Object.toBeFalsy (__tests__/retryImmediatelyConcurrent.test.js:28:18)
-          at async Promise.all (index 1)
 
 PASS __tests__/retryImmediatelyConcurrent.test.js
   ✓ retryable test 1

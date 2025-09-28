@@ -4,6 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+'use strict';
 
-// this is a separate file so it can be mocked in tests
-export {loadPartialConfig, loadPartialConfigAsync} from '@babel/core';
+console.log(globalThis.window ? 'WINDOW' : 'NO WINDOW');
+
+test('stub', () => expect(1).toBe(1));

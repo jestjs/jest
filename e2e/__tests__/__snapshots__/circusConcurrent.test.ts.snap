@@ -17,6 +17,36 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
+    START "eleven"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START "twelve"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "eleven"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "twelve"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "one"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "two"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
     START "three"
 
       at log (__tests__/concurrent.test.js:15:11)
@@ -27,52 +57,7 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    START "five"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    END: "three"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    START "six"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    END: "one"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    START "seven"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    END: "two"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    START "eight"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    END: "four"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
     START "nine"
-
-      at log (__tests__/concurrent.test.js:15:11)
-
-  console.log
-    END: "nine"
 
       at log (__tests__/concurrent.test.js:15:11)
 
@@ -82,17 +67,17 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    END: "five"
+    END: "three"
 
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    END: "six"
+    END: "nine"
 
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    END: "seven"
+    END: "four"
 
       at log (__tests__/concurrent.test.js:15:11)
 
@@ -102,7 +87,82 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
+    START hook "beforeAll level 2, group 1"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END hook: "beforeAll level 2, group 1"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START "five"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START "six"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "six"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "five"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START hook "afterAll level 2, group 1"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END hook: "afterAll level 2, group 1"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START hook "beforeAll level 2, group 2"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END hook: "beforeAll level 2, group 2"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START "seven"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START "eight"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
     END: "eight"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END: "seven"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    START hook "afterAll level 2, group 2"
+
+      at log (__tests__/concurrent.test.js:15:11)
+
+  console.log
+    END hook: "afterAll level 2, group 2"
 
       at log (__tests__/concurrent.test.js:15:11)
 
@@ -120,16 +180,6 @@ exports[`with only runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-only.test.js:15:11)
 
   console.log
-    START "four"
-
-      at log (__tests__/concurrent-only.test.js:15:11)
-
-  console.log
-    START "six"
-
-      at log (__tests__/concurrent-only.test.js:15:11)
-
-  console.log
     START "nine"
 
       at log (__tests__/concurrent-only.test.js:15:11)
@@ -140,12 +190,22 @@ exports[`with only runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-only.test.js:15:11)
 
   console.log
-    END: "six"
+    START "four"
 
       at log (__tests__/concurrent-only.test.js:15:11)
 
   console.log
     END: "four"
+
+      at log (__tests__/concurrent-only.test.js:15:11)
+
+  console.log
+    START "six"
+
+      at log (__tests__/concurrent-only.test.js:15:11)
+
+  console.log
+    END: "six"
 
       at log (__tests__/concurrent-only.test.js:15:11)
 
@@ -173,6 +233,26 @@ exports[`with skip runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-skip.test.js:15:11)
 
   console.log
+    START "ten"
+
+      at log (__tests__/concurrent-skip.test.js:15:11)
+
+  console.log
+    END: "ten"
+
+      at log (__tests__/concurrent-skip.test.js:15:11)
+
+  console.log
+    END: "one"
+
+      at log (__tests__/concurrent-skip.test.js:15:11)
+
+  console.log
+    END: "two"
+
+      at log (__tests__/concurrent-skip.test.js:15:11)
+
+  console.log
     START "four"
 
       at log (__tests__/concurrent-skip.test.js:15:11)
@@ -188,21 +268,6 @@ exports[`with skip runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-skip.test.js:15:11)
 
   console.log
-    END: "one"
-
-      at log (__tests__/concurrent-skip.test.js:15:11)
-
-  console.log
-    START "ten"
-
-      at log (__tests__/concurrent-skip.test.js:15:11)
-
-  console.log
-    END: "two"
-
-      at log (__tests__/concurrent-skip.test.js:15:11)
-
-  console.log
     END: "seven"
 
       at log (__tests__/concurrent-skip.test.js:15:11)
@@ -214,11 +279,6 @@ exports[`with skip runs the tests in the correct order 1`] = `
 
   console.log
     END: "eight"
-
-      at log (__tests__/concurrent-skip.test.js:15:11)
-
-  console.log
-    END: "ten"
 
       at log (__tests__/concurrent-skip.test.js:15:11)
 

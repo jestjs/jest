@@ -1,8 +1,19 @@
 ## main
 
+### Chore & Maintenance
+
+- `[*]` Update example repo for testing React Native projects ([#15832](https://github.com/jestjs/jest/pull/15832))
+- `[*]` Update `jest-watch-typeahead` to v3 ([#15830](https://github.com/jestjs/jest/pull/15830))
+
+## Features
+
+- `[jest-environment-jsdom-abstract]` Add support for JSDOM v27 ([#15834](https://github.com/jestjs/jest/pull/15834))
+
 ### Fixes
 
 - `[jest-matcher-utils]` Fix infinite recursion with self-referential getters in `deepCyclicCopyReplaceable` ([#15831](https://github.com/jestjs/jest/pull/15831))
+- `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
+- `[jest-config]` Fix `jest.config.ts` with TS loader specified in docblock pragma ([#15839](https://github.com/jestjs/jest/pull/15839))
 
 ## 30.1.3
 
@@ -21,6 +32,7 @@
 ### Fixes
 
 - `[jest-snapshot-utils]` Fix deprecated goo.gl snapshot warning not handling Windows end-of-line sequences ([#15800](https://github.com/jestjs/jest/pull/15800))
+- `[jest-snapshot-utils]` Improve messaging about goo.gl snapshot link change ([#15821](https://github.com/jestjs/jest/pull/15821))
 
 ## 30.1.0
 

@@ -27,13 +27,15 @@ const babelConfig = {
 
 const pkg: PackageJson = {
   dependencies: {
-    react: '^17.0.0',
+    react: '^18.0.0',
+    'react-dom': '^18.0.0',
   },
   devDependencies: {
     '@babel/core': '^7.14.4',
     '@babel/preset-env': '^7.14.4',
     '@babel/preset-react': '^7.13.13',
-    'react-test-renderer': '^17.0.2',
+    '@testing-library/dom': '^10.4.1',
+    '@testing-library/react': '^16.3.0',
   },
   jest: {
     testEnvironment: 'jsdom',
@@ -48,10 +50,10 @@ beforeEach(() => {
   writeFiles(DIR, {
     '__tests__/MismatchingSnapshot.test.js': `
       import React from 'react';
-      import renderer from 'react-test-renderer';
+      import {render} from '@testing-library/react';
 
       test('<div>x</div>', () => {
-        expect(renderer.create(<div>x</div>).toJSON()).toMatchInlineSnapshot(\`
+        expect(render(<div>x</div>).container.firstChild).toMatchInlineSnapshot(\`
           <div>
             y
           </div>
@@ -94,13 +96,13 @@ it('successfully runs the tests with external babel config', () => {
 
           3 |
           4 | test('<div>x</div>', () => {
-        > 5 |   expect(renderer.create(<div>x</div>).toJSON()).toMatchInlineSnapshot(\`
-            |                                                  ^
+        > 5 |   expect(render(<div>x</div>).container.firstChild).toMatchInlineSnapshot(\`
+            |                                                     ^
           6 |     <div>
           7 |       y
           8 |     </div>
 
-          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:50)
+          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:53)
     "
   `);
 
@@ -143,13 +145,13 @@ it('successfully runs the tests with inline babel config', () => {
 
           3 |
           4 | test('<div>x</div>', () => {
-        > 5 |   expect(renderer.create(<div>x</div>).toJSON()).toMatchInlineSnapshot(\`
-            |                                                  ^
+        > 5 |   expect(render(<div>x</div>).container.firstChild).toMatchInlineSnapshot(\`
+            |                                                     ^
           6 |     <div>
           7 |       y
           8 |     </div>
 
-          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:50)
+          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:53)
     "
   `);
 
