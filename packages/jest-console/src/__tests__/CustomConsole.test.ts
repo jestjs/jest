@@ -79,7 +79,7 @@ describe('CustomConsole', () => {
       expect(_stderr).toMatch('AssertionError');
       expect(_stderr).toMatch(
         // The message may differ across Node versions
-        /(false == true)|(The expression evaluated to a falsy value:)/,
+        /(false == true)|(The expression evaluated to a falsy value)/,
       );
     });
 
