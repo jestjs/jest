@@ -181,8 +181,7 @@ onNodeVersions('^23.6', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'foo.ts': 'export const a = () => {};',
-      'jest.config.ts':
-      `
+      'jest.config.ts': `
         /** @jest-config-loader ts-node */
         import { a } from './foo'
         a();
@@ -191,7 +190,7 @@ onNodeVersions('^23.6', () => {
         export default config;
       `,
       'package.json': '{}',
-    }); 
+    });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
       nodeOptions: '--no-warnings',
     });
@@ -199,7 +198,7 @@ onNodeVersions('^23.6', () => {
     expect(exitCode).toBe(0);
     expect(rest).toMatchSnapshot();
     expect(summary).toMatchSnapshot();
-  })
+  });
 });
 
 onNodeVersions('>=24', () => {

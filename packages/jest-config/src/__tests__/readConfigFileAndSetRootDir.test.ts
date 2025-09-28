@@ -167,3 +167,21 @@ describe('readConfigFileAndSetRootDir', () => {
     });
   });
 });
+
+describe('TypeScript file', () => {
+  test('reaches into 2nd loadout by TS loader if specified in docblock', async () => {
+    jest
+      .mocked(requireOrImportModule)
+      .mockRejectedValueOnce(new Error('Module not found'));
+    jest.mocked(fs.readFileSync).mockReturnValue(`
+      /** @jest-config-loader tsx */
+      export { testTimeout: 1_000 }
+    `);
+    const rootDir = path.resolve('some', 'path', 'to');
+    expect(
+      readConfigFileAndSetRootDir(path.join(rootDir, 'jest.config.ts')),
+    ).rejects.toThrow(
+      /Module not found\n.*'tsx' is not a valid TypeScript configuration loader./,
+    );
+  });
+});
