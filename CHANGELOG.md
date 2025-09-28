@@ -1,5 +1,7 @@
 ## main
 
+## 30.2.0
+
 ### Chore & Maintenance
 
 - `[*]` Update example repo for testing React Native projects ([#15832](https://github.com/jestjs/jest/pull/15832))
