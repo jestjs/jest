@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+
 ## 30.2.0
 
 ### Chore & Maintenance

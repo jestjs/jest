@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import chalk from 'chalk';
+import deepMerge from 'deepmerge';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
@@ -30,6 +31,51 @@ type ReadConfig = {
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
 };
+
+type JestTestConfigObject = Config.InitialOptions;
+
+type UserConfigFnObject = () => JestTestConfigObject;
+type UserConfigFnPromise = () => Promise<JestTestConfigObject>;
+type UserConfigFn = () => JestTestConfigObject | Promise<JestTestConfigObject>;
+type UserConfigExport =
+  | JestTestConfigObject
+  | Promise<JestTestConfigObject>
+  | UserConfigFnObject
+  | UserConfigFnPromise
+  | UserConfigFn;
+
+/**
+ * Type helper to make it easier to use Jest config accepts a direct JestTestConfigObject object, or a function that returns it. The function receives a JestTestConfigObject object.
+ */
+export function defineConfig(
+  config: JestTestConfigObject,
+): JestTestConfigObject;
+export function defineConfig(
+  config: Promise<JestTestConfigObject>,
+): Promise<JestTestConfigObject>;
+export function defineConfig(config: UserConfigFnObject): UserConfigFnObject;
+export function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
+export function defineConfig(config: UserConfigFn): UserConfigFn;
+export function defineConfig(config: UserConfigExport): UserConfigExport {
+  return config;
+}
+
+/**
+ * Merges two configuration objects, where the second object takes precedence over the first one.
+ */
+export function mergeConfig<
+  D extends UserConfigExport,
+  O extends UserConfigExport,
+>(
+  defaults: D extends Function ? never : D,
+  overrides: O extends Function ? never : O,
+): JestTestConfigObject {
+  if (typeof defaults === 'function' || typeof overrides === 'function') {
+    throw new TypeError('Cannot merge config in form of callback');
+  }
+
+  return deepMerge.all([defaults, overrides]);
+}
 
 export async function readConfig(
   argv: Config.Argv,
