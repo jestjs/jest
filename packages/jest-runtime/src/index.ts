@@ -64,6 +64,7 @@ import {
 } from './helpers';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
+const supportsDynamicImport = esmIsAvailable;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -580,7 +581,7 @@ export default class Runtime {
       // @ts-expect-error -- exiting
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -742,7 +743,7 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -1563,7 +1564,7 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -2466,7 +2467,9 @@ export default class Runtime {
     const stackTrace = formatStackTrace(stack, this._config, {
       noStackTrace: false,
     });
-    const formattedMessage = `\n${message}${stackTrace ? `\n${stackTrace}` : ''}`;
+    const formattedMessage = `\n${message}${
+      stackTrace ? `\n${stackTrace}` : ''
+    }`;
     if (!this.loggedReferenceErrors.has(formattedMessage)) {
       console.error(formattedMessage);
       this.loggedReferenceErrors.add(formattedMessage);
