@@ -101,16 +101,30 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
     //https://github.com/microsoft/TypeScript/issues/1863
     (newDescriptors: {[x: string]: PropertyDescriptor}, key: string) => {
       const enumerable = descriptors[key].enumerable;
+      const descriptor = descriptors[key];
+
+      let value;
+
+      if (descriptor.get) {
+        const getterRes = (object as Record<string | symbol, unknown>)[key];
+        const isSelfReferential =
+          getterRes?.constructor === (object as any).constructor &&
+          getterRes?.constructor !== Object;
+
+        value = isSelfReferential
+          ? '[Getter]'
+          : deepCyclicCopyReplaceable(getterRes, cycles);
+      } else {
+        value = deepCyclicCopyReplaceable(
+          (object as Record<string | symbol, unknown>)[key],
+          cycles,
+        );
+      }
 
       newDescriptors[key] = {
         configurable: true,
         enumerable,
-        value: deepCyclicCopyReplaceable(
-          // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
-          // it has the side effect of invoking the getter here though, rather than copying it over
-          (object as Record<string | symbol, unknown>)[key],
-          cycles,
-        ),
+        value,
         writable: true,
       };
       return newDescriptors;
