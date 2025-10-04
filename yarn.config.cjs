@@ -91,7 +91,7 @@ module.exports = defineConfig({
       if (workspace.manifest.private !== true) {
         workspace.set(
           ['engines', 'node'],
-          '^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0',
+          '^20.0.0 || ^22.0.0 || >=24.0.0',
         );
       }
     }

@@ -4,6 +4,10 @@
 
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
 
+## Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for end-of-life Node.js version 18 ([#14460](https://github.com/jestjs/jest/pull/14460))
+
 ## 30.2.0
 
 ### Chore & Maintenance
