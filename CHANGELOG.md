@@ -6,7 +6,7 @@
 
 ## Chore & Maintenance
 
-- `[*]` [**BREAKING**] Drop support for end-of-life Node.js version 18 ([#14460](https://github.com/jestjs/jest/pull/14460))
+- `[*]` [**BREAKING**] Drop support for end-of-life Node.js version 18 ([#15850](https://github.com/jestjs/jest/pull/15850))
 
 ## 30.2.0
 
