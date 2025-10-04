@@ -18,7 +18,6 @@ afterEach(() => cleanup(DIR));
 
 const failedTestContents = [
   {
-    name: 'failed test logic from bar != foo',
     content: {
       '__tests__/a.js': `
     test('bar', () => { expect('bar').toBe('foo'); });
@@ -32,9 +31,9 @@ const failedTestContents = [
         },
       }),
     },
+    name: 'failed test logic from bar != foo',
   },
   {
-    name: 'failed test compilation from SyntaxError',
     content: {
       '__tests__/a.js': `
     tes('bar', () => { expect('bar').toBe('foo'); });
@@ -48,6 +47,7 @@ const failedTestContents = [
         },
       }),
     },
+    name: 'failed test compilation from SyntaxError',
   },
 ];
 

@@ -170,8 +170,8 @@ test('writes the cache based on results without existing cache', async () => {
       },
       {
         numFailingTests: 0,
-        testExecError: {message: 'SyntaxError'} as SerializableError,
         perfStats: {end: 2, runtime: 1, start: 1},
+        testExecError: {message: 'SyntaxError'} as SerializableError,
         testFilePath: '/test-d.js',
       },
     ],
@@ -237,8 +237,8 @@ test('writes the cache based on the results', async () => {
       },
       {
         numFailingTests: 0,
-        testExecError: {message: 'SyntaxError'} as SerializableError,
         perfStats: {end: 2, runtime: 1, start: 1},
+        testExecError: {message: 'SyntaxError'} as SerializableError,
         testFilePath: '/test-d.js',
       },
     ],
