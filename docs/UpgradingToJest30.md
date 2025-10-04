@@ -191,13 +191,13 @@ If you were using `jest.SpyInstance` (for instance, to annotate the return of `j
 Old code (Jest 29):
 
 ```js
-jest.mock('./path/to/FILENAME.js') # This works EVEN when you only have `filename.js`
+jest.mock('./path/to/FILENAME.js'); // This works EVEN when you only have `filename.js`
 ```
 
 New code (Jest 30):
 
 ```js
-jest.mock('./path/to/filename.js') # This strictly works when you ONLY have `filename.js`
+jest.mock('./path/to/filename.js'); // This strictly works when you ONLY have `filename.js`
 ```
 
 ## Module & Runtime Changes
