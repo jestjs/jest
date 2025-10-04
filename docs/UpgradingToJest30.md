@@ -184,6 +184,22 @@ Some TypeScript types related to mock functions have been removed from the publi
 
 If you were using `jest.SpyInstance` (for instance, to annotate the return of `jest.spyOn`), you should update to using [`jest.Spied`](./MockFunctionAPI.md#jestspiedsource).
 
+### `jest.mock` only works with case-sensitive module path
+
+`jest.mock()` will only work case-sensitive module path from now on. At best, this is an edge case since most users would follow OS filename pattern behavior. We recommend to use correctly named module path to avoid similar breakages in the future.
+
+Old code (Jest 29):
+
+```js
+jest.mock('./path/to/FILENAME.js'); // This works EVEN when you only have `filename.js`
+```
+
+New code (Jest 30):
+
+```js
+jest.mock('./path/to/filename.js'); // This strictly works when you ONLY have `filename.js`
+```
+
 ## Module & Runtime Changes
 
 ### ESM Module Support and Internal Restructuring
