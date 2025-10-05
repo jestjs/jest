@@ -183,22 +183,30 @@ describe('Custom Reporters Integration', () => {
   test('supports custom reporter stored in legacy module path, i.e. $HOME/.node_libraries', () => {
     writeFiles(DIR, {
       '__tests__/test.test.js': "test('test', () => {});",
+      'fakeHome/.node_libraries/@org/custom-reporter/index.js': `
+        'use strict';
+        module.exports = class Reporter {
+          onRunStart() {
+            throw new Error('ON_RUN_START_ERROR');
+          }
+        };
       'package.json': JSON.stringify({
         jest: {
           reporters: ['@org/custom-reporter'],
         },
       }),
-      'fakeHome/.node_libraries/@org/custom-reporter/index.js': `
-        export default class Reporter {
-          onRunStart() {
-            throw new Error('ON_RUN_START_ERROR');
-          }
-        };
       `,
     });
 
     const {stderr, exitCode} = runJest(DIR, undefined, {
-      env: {HOME: path.resolve(DIR, 'fakeHome')},
+      env: {
+        HOME: path.resolve(DIR, 'fakeHome'),
+        // For Windows testing
+        USERPROFILE:
+          process.platform === 'win32'
+            ? path.resolve(DIR, 'fakeHome')
+            : undefined,
+      },
     });
     expect(stderr).toMatch(/ON_RUN_START_ERROR/);
     expect(exitCode).toBe(1);

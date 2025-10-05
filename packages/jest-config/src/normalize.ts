@@ -26,8 +26,8 @@ import {
   clearLine,
   replacePathSepForGlob,
   requireOrImportModule,
-  tryRealpath,
   specialChars,
+  tryRealpath,
 } from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
@@ -1099,8 +1099,8 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-      ? 'all'
-      : 'new';
+        ? 'all'
+        : 'new';
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
