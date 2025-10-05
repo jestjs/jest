@@ -27,6 +27,7 @@ import {
   replacePathSepForGlob,
   requireOrImportModule,
   tryRealpath,
+  specialChars,
 } from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
@@ -169,7 +170,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -378,8 +381,17 @@ const normalizeReporters = ({
     );
 
     if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
+      // There's a chance that users store custom reporter in legacy module paths
+      // such as $HOME/.node_libraries
+      const homeDir = specialChars.isWindows
+        ? process.env.USERPROFILE
+        : process.env.HOME;
+      const legacyModulePaths = homeDir
+        ? [path.resolve(homeDir, '.node_libraries')]
+        : undefined;
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: rootDir,
+        paths: legacyModulePaths,
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
@@ -1087,8 +1099,8 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
