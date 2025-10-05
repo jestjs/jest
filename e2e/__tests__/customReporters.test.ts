@@ -190,12 +190,12 @@ describe('Custom Reporters Integration', () => {
             throw new Error('ON_RUN_START_ERROR');
           }
         };
+      `,
       'package.json': JSON.stringify({
         jest: {
           reporters: ['@org/custom-reporter'],
         },
       }),
-      `,
     });
 
     const {stderr, exitCode} = runJest(DIR, undefined, {
