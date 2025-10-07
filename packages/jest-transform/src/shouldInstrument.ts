@@ -37,7 +37,10 @@ export default function shouldInstrument(
   loadedFilenames?: Array<string>,
 ): boolean {
   // Do not instrument when `collectCoverage` is toggled off global or project-wide
-  if (!options.collectCoverage || (typeof config.collectCoverage === 'boolean' && !config.collectCoverage)) {
+  if (
+    !options.collectCoverage ||
+    (typeof config.collectCoverage === 'boolean' && !config.collectCoverage)
+  ) {
     return false;
   }
 
