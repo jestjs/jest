@@ -208,6 +208,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   clearMocks: false,
+  collectCoverage: false,
   collectCoverageFrom: ['src', '!public'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],

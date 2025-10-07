@@ -317,6 +317,7 @@ describe('ScriptTransformer', () => {
       id: 'test',
       rootDir: '/',
       transformIgnorePatterns: ['/node_modules/'],
+      collectCoverage: undefined
     });
 
     createScriptTransformer = (
