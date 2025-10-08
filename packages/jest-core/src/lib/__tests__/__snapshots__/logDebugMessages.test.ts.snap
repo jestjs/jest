@@ -7,7 +7,6 @@ exports[`prints the config object 1`] = `
     "cache": false,
     "cacheDirectory": "/test_cache_dir/",
     "clearMocks": false,
-    "collectCoverage": false,
     "collectCoverageFrom": [
       "src",
       "!public"
