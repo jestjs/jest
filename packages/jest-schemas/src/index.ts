@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Static} from '@sinclair/typebox';
+import type {Static} from 'typebox';
 import * as types from './raw-types';
 
 export const SnapshotFormat = types.SnapshotFormat;

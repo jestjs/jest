@@ -7,7 +7,7 @@
 
 /* eslint-disable sort-keys */
 
-import {type Static, Type} from '@sinclair/typebox';
+import {type Static, Type} from 'typebox';
 
 export const SnapshotFormat = Type.Partial(
   Type.Object({

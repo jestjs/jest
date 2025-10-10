@@ -4421,7 +4421,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/schemas@workspace:packages/jest-schemas"
   dependencies:
-    "@sinclair/typebox": "npm:^0.34.0"
+    typebox: "npm:^1.0.32"
   languageName: unknown
   linkType: soft
 
@@ -5775,13 +5775,6 @@ __metadata:
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
   checksum: 10/297f95ff77c82c54de8c9907f186076e715ff2621c5222ba50b8d40a170661c0c5242c763cba2a4791f0f91cb1d8ffa53ea1d7294570cf8cd4694c0e383e484d
-  languageName: node
-  linkType: hard
-
-"@sinclair/typebox@npm:^0.34.0":
-  version: 0.34.33
-  resolution: "@sinclair/typebox@npm:0.34.33"
-  checksum: 10/7948758249860cb6d6d093bea5902ab2e8cfd5095f4882d5a709773f69e4678a6e8f2b384d3116c021c4ebc11727e033882b791d146691a7d388dd78f36e611d
   languageName: node
   linkType: hard
 
@@ -21075,6 +21068,13 @@ __metadata:
     media-typer: "npm:0.3.0"
     mime-types: "npm:~2.1.24"
   checksum: 10/0bd9eeae5efd27d98fd63519f999908c009e148039d8e7179a074f105362d4fcc214c38b24f6cda79c87e563cbd12083a4691381ed28559220d4a10c2047bed4
+  languageName: node
+  linkType: hard
+
+"typebox@npm:^1.0.32":
+  version: 1.0.32
+  resolution: "typebox@npm:1.0.32"
+  checksum: 10/d02b4d0496ef5fa47c7e04cdcbf72794a4cd76d4028095535744ba8dc39f0e5d7b14cde332c932f75283d52913fe284277ed31e144aa564bd0f79ac9389cc13e
   languageName: node
   linkType: hard
 
