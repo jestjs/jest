@@ -800,8 +800,8 @@ export class ModuleMocker {
       };
 
       f.withImplementation = withImplementation.bind(this);
-      if (Symbol.dispose) {
-        f[Symbol.dispose] = f.mockRestore;
+      if (this._environmentGlobal.Symbol.dispose) {
+        f[this._environmentGlobal.Symbol.dispose] = f.mockRestore;
       }
 
       function withImplementation(fn: T, callback: () => void): void;
