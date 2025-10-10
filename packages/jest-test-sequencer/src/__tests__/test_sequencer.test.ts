@@ -365,7 +365,7 @@ test('returns expected 100/10 shards', async () => {
   const allTests = toTests(Array.from({length: 100}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    Array.from({length: 10}).map((_, i) =>
+    Array.from({length: 10}).map(async (_, i) =>
       sequencer.shard(allTests, {
         shardCount: 10,
         shardIndex: i + 1,
@@ -382,7 +382,7 @@ test('returns expected 100/8 shards', async () => {
   const allTests = toTests(Array.from({length: 100}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    Array.from({length: 8}).map((_, i) =>
+    Array.from({length: 8}).map(async (_, i) =>
       sequencer.shard(allTests, {
         shardCount: 8,
         shardIndex: i + 1,
@@ -399,7 +399,7 @@ test('returns expected 55/12 shards', async () => {
   const allTests = toTests(Array.from({length: 55}).map((_, i) => `/${i}.js`));
 
   const shards = await Promise.all(
-    Array.from({length: 12}).map((_, i) =>
+    Array.from({length: 12}).map(async (_, i) =>
       sequencer.shard(allTests, {
         shardCount: 12,
         shardIndex: i + 1,
