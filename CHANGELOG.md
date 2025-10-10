@@ -2,6 +2,7 @@
 
 ## Fixes
 
+- `[jest-config]` Update from `@sinclair/typebox@0.24` to `typebox@1` ([#15859](https://github.com/jestjs/jest/pull/15859))
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
 
 ## 30.2.0
