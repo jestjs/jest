@@ -9,6 +9,7 @@
 import exit from 'exit-x';
 import type {
   SerializableError,
+  Test,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
@@ -18,6 +19,7 @@ import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
+import runGlobalHook from './runGlobalHook';
 import runTest from './runTest';
 import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 
@@ -113,4 +115,12 @@ export async function worker({
   } catch (error: any) {
     throw formatError(error);
   }
+}
+
+export async function runGlobal(args: {
+  allTests: Array<Test>;
+  globalConfig: Config.GlobalConfig;
+  moduleName: 'globalSetupPerWorker' | 'globalTeardownPerWorker';
+}): Promise<void> {
+  return await runGlobalHook(args);
 }

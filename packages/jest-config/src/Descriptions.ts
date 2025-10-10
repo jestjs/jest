@@ -36,8 +36,12 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
     'A path to a module which exports an async function that is triggered once before all test suites',
+  globalSetupPerWorker:
+    'A path to a module which exports an async function that is triggered once before all test suites in a worker',
   globalTeardown:
     'A path to a module which exports an async function that is triggered once after all test suites',
+  globalTeardownPerWorker:
+    'A path to a module which exports an async function that is triggered once after all test suites in a worker',
   globals:
     'A set of global variables that need to be available in all test environments',
   maxWorkers:
