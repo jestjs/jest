@@ -75,3 +75,48 @@ test('negated flags override previous flags', () => {
 
   expect(globalConfig.silent).toBe(true);
 });
+
+test('should work with define config function taking in config object', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.config.ts',
+    '__tests__/simple.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with define config function taking in callback', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.callback.config.ts',
+    '__tests__/simple.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config of 2 config objects', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config of one config object with a define function config', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge-with-define.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config as callback for define function config', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge-with-callback.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
