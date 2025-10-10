@@ -4491,7 +4491,7 @@ __metadata:
     tempy: "npm:^1.0.1"
     ts-node: "npm:^10.5.0"
     tstyche: "npm:^4.0.0"
-    typescript: "npm:^5.9.3"
+    typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.38.0"
     webpack: "npm:^5.68.0"
     webpack-node-externals: "npm:^3.0.0"
@@ -21559,7 +21559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.8.3, typescript@npm:^5.9.3":
+"typescript@npm:^5.8.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -21579,7 +21579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:

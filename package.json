@@ -79,7 +79,7 @@
     "tempy": "^1.0.1",
     "ts-node": "^10.5.0",
     "tstyche": "^4.0.0",
-    "typescript": "^5.9.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "webpack": "^5.68.0",
     "webpack-node-externals": "^3.0.0",
