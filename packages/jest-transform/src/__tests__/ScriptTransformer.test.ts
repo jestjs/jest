@@ -314,7 +314,7 @@ describe('ScriptTransformer', () => {
     config = makeProjectConfig({
       cache: true,
       cacheDirectory: '/cache/',
-      collectCoverage: undefined,
+      collectCoverage: false,
       id: 'test',
       rootDir: '/',
       transformIgnorePatterns: ['/node_modules/'],

@@ -106,6 +106,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "changedFilesWithAncestor": false,
     "ci": true,
     "collectCoverageFrom": [],
+    "collectCoverage": false,
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
     "coverageProvider": "babel",
     "coverageReporters": [

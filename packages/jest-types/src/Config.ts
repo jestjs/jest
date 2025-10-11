@@ -331,7 +331,7 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
-  collectCoverage?: boolean;
+  collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;

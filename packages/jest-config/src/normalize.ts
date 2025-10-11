@@ -554,9 +554,6 @@ export default async function normalize(
   if (!options.coverageDirectory) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
-  if (!Object.hasOwn(options, 'collectCoverage')) {
-    options.collectCoverage = undefined;
-  }
 
   setupBabelJest(options);
   // TODO: Type this properly
