@@ -93,7 +93,7 @@ exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 does not work wit
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
     Current Node version <<REPLACED>> does not support loading typed .mts Jest config.
     Please upgrade to >=22.18.0 || ^23.6
-    Error: SyntaxError: Missing initializer in const declaration"
+    Error: SyntaxError: Unexpected token '{'"
 `;
 
 exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 work with untyped jest.config.mts for Node versions without default type stripping 1`] = `
