@@ -39,12 +39,12 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
-exports[`on node >=22.18.0 || ^23.6 work with untyped jest.config.mts 1`] = `
+exports[`on node >=22.18.0 || ^23.6 work with untyped jest.config.mts for Node versions with default type stripping 1`] = `
 "PASS __tests__/a-giraffe.js
   ✓ giraffe"
 `;
 
-exports[`on node >=22.18.0 || ^23.6 work with untyped jest.config.mts 2`] = `
+exports[`on node >=22.18.0 || ^23.6 work with untyped jest.config.mts for Node versions with default type stripping 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
@@ -96,12 +96,12 @@ exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 does not work wit
     Error: SyntaxError: Missing initializer in const declaration"
 `;
 
-exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 work with untyped jest.config.mts 1`] = `
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 work with untyped jest.config.mts for Node versions without default type stripping 1`] = `
 "PASS __tests__/a-giraffe.js
   ✓ giraffe"
 `;
 
-exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 work with untyped jest.config.mts 2`] = `
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0 work with untyped jest.config.mts for Node versions without default type stripping 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
