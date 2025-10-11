@@ -45,7 +45,7 @@ onNodeVersions('<20.19.0', () => {
 });
 
 onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
-  test('work with untyped jest.config.mts', () => {
+  test('work with untyped jest.config.mts for Node versions without default type stripping', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.mts':
@@ -106,7 +106,7 @@ onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
 });
 
 onNodeVersions('>=22.18.0 || ^23.6', () => {
-  test('work with untyped jest.config.mts', () => {
+  test('work with untyped jest.config.mts for Node versions with default type stripping', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.mts':

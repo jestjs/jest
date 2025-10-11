@@ -9,6 +9,7 @@ import * as path from 'path';
 import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
+import {satisfies} from 'semver';
 import stripJsonComments from 'strip-json-comments';
 import type {Config} from '@jest/types';
 import {type Pragmas, extract, parse} from 'jest-docblock';
@@ -20,7 +21,6 @@ import {
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
-import {satisfies} from 'semver';
 
 interface TsLoader {
   enabled: (bool: boolean) => void;
