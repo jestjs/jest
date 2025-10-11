@@ -6,7 +6,6 @@
  */
 
 import {dirname, extname} from 'path';
-// @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
 import {findClosestPackageJson, readPackageCached} from './fileWalkers';
 
