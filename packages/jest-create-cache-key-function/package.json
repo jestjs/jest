@@ -14,7 +14,7 @@
     "jest-util": "workspace:*"
   },
   "engines": {
-    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",

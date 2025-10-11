@@ -13,6 +13,10 @@
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
 
+## Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for end-of-life Node.js version 18 ([#15850](https://github.com/jestjs/jest/pull/15850))
+
 ## 30.2.0
 
 ### Chore & Maintenance
