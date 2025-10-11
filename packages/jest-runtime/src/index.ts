@@ -9,12 +9,9 @@ import nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
-  // @ts-expect-error: experimental, not added to the types
   SourceTextModule,
-  // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
   type Context as VMContext,
-  // @ts-expect-error: experimental, not added to the types
   type Module as VMModule,
   compileFunction,
 } from 'vm';
@@ -64,6 +61,7 @@ import {
 } from './helpers';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
+const supportsDynamicImport = esmIsAvailable;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -98,7 +96,7 @@ const defaultTransformOptions: InternalModuleOptions = {
 };
 
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
-type ModuleRegistry = Map<string, InitialModule | Module>;
+type ModuleRegistry = Map<string, InitialModule | Module | JestModule>;
 
 // These are modules that we know
 // * are safe to require from the outside (not stateful, not prone to errors passing in instances from different realms), and
@@ -155,9 +153,12 @@ const supportsNodeColonModulePrefixInRequire = (() => {
   }
 })();
 
+type ESModule = VMModule | SyntheticModule;
+type JestModule = ESModule | Promise<ESModule>;
+
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
-  private readonly _cacheFSBuffer = new Map<string, Buffer>();
+  private readonly _cacheFSBuffer = new Map<string, BufferSource>();
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
@@ -179,14 +180,14 @@ export default class Runtime {
   private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private readonly _moduleMockRegistry: Map<string, VMModule>;
+  private readonly _moduleMockRegistry: Map<string, JestModule>;
   private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private readonly _esmoduleRegistry: Map<string, VMModule>;
+  private readonly _esmoduleRegistry: Map<string, JestModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
-  private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
+  private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -412,7 +413,7 @@ export default class Runtime {
   private async loadEsmModule(
     modulePath: string,
     query = '',
-  ): Promise<VMModule> {
+  ): Promise<ESModule> {
     const cacheKey = modulePath + query;
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
 
@@ -483,7 +484,6 @@ export default class Runtime {
             ['default'],
             function () {
               const obj = JSON.parse(transformedCode);
-              // @ts-expect-error: TS doesn't know what `this` is
               this.setExport('default', obj);
             },
             {context, identifier: modulePath},
@@ -492,15 +492,12 @@ export default class Runtime {
           module = new SourceTextModule(transformedCode, {
             context,
             identifier: modulePath,
-            importModuleDynamically: async (
-              specifier: string,
-              referencingModule: VMModule,
-            ) => {
+            importModuleDynamically: async (specifier, referencingModule) => {
               invariant(
                 runtimeSupportsVmModules,
                 'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
               );
-              const module = await this.resolveModule(
+              const module = await this.resolveModule<VMModule>(
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
@@ -508,17 +505,16 @@ export default class Runtime {
 
               return this.linkAndEvaluateModule(module);
             },
-            initializeImportMeta: (meta: JestImportMeta) => {
+            initializeImportMeta: meta => {
               const metaUrl = pathToFileURL(modulePath).href;
               meta.url = metaUrl;
 
-              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
               meta.filename = modulePath;
-              // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+              // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
               meta.dirname = path.dirname(modulePath);
 
-              // @ts-expect-error: todo fixme
-              meta.resolve = (specifier, parent = metaUrl) => {
+              meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
 
                 const resolvedPath = this._resolver.resolveModule(
@@ -538,7 +534,7 @@ export default class Runtime {
                 this.jestObjectCaches.set(modulePath, jest);
               }
 
-              meta.jest = jest;
+              (meta as JestImportMeta).jest = jest;
             },
           });
         }
@@ -564,7 +560,7 @@ export default class Runtime {
       'Module cache does not contain module. This is a bug in Jest, please open up an issue',
     );
 
-    return module;
+    return module as ESModule;
   }
 
   private async resolveModule<T = unknown>(
@@ -580,7 +576,7 @@ export default class Runtime {
       // @ts-expect-error -- exiting
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -593,12 +589,12 @@ export default class Runtime {
       const fromCache = registry.get(globalsIdentifier);
 
       if (fromCache) {
-        return fromCache;
+        return fromCache as T;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
       registry.set(globalsIdentifier, globals);
 
-      return globals;
+      return globals as T;
     }
 
     if (specifier.startsWith('data:')) {
@@ -615,7 +611,7 @@ export default class Runtime {
       const fromCache = registry.get(specifier);
 
       if (fromCache) {
-        return fromCache;
+        return fromCache as T;
       }
 
       const match = specifier.match(dataURIRegex);
@@ -655,7 +651,6 @@ export default class Runtime {
             ['default'],
             function () {
               const obj = JSON.parse(code);
-              // @ts-expect-error: TS doesn't know what `this` is
               this.setExport('default', obj);
             },
             {context, identifier: specifier},
@@ -664,15 +659,12 @@ export default class Runtime {
           module = new SourceTextModule(code, {
             context,
             identifier: specifier,
-            importModuleDynamically: async (
-              specifier: string,
-              referencingModule: VMModule,
-            ) => {
+            importModuleDynamically: async (specifier, referencingModule) => {
               invariant(
                 runtimeSupportsVmModules,
                 'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
               );
-              const module = await this.resolveModule(
+              const module = await this.resolveModule<ESModule>(
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
@@ -680,14 +672,14 @@ export default class Runtime {
 
               return this.linkAndEvaluateModule(module);
             },
-            initializeImportMeta(meta: ImportMeta) {
+            initializeImportMeta(meta) {
               // no `jest` here as it's not loaded in a file
               meta.url = specifier;
 
               if (meta.url.startsWith('file://')) {
-                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
                 meta.filename = fileURLToPath(meta.url);
-                // @ts-expect-error Jest uses @types/node@16. Will be fixed when updated to @types/node@20.11.0
+                // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
                 meta.dirname = path.dirname(meta.filename);
               }
             },
@@ -696,7 +688,7 @@ export default class Runtime {
       }
 
       registry.set(specifier, module);
-      return module;
+      return module as T;
     }
 
     if (specifier.startsWith('file://')) {
@@ -726,23 +718,22 @@ export default class Runtime {
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query);
+      return this.loadEsmModule(resolved, query) as T;
     }
 
-    return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
+    return this.loadCjsAsEsm(referencingIdentifier, resolved, context) as T;
   }
 
-  private async linkAndEvaluateModule(
-    module: VMModule,
-  ): Promise<VMModule | void> {
+  private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
+      // @ts-expect-error: exiting early
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -811,7 +802,6 @@ export default class Runtime {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
         }
-        // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
       {context, identifier: modulePath},
@@ -833,7 +823,7 @@ export default class Runtime {
     );
 
     if (this._moduleMockRegistry.has(moduleID)) {
-      return this._moduleMockRegistry.get(moduleID);
+      return this._moduleMockRegistry.get(moduleID) as T;
     }
 
     if (this._moduleMockFactories.has(moduleID)) {
@@ -846,7 +836,6 @@ export default class Runtime {
         Object.keys(invokedFactory),
         function () {
           for (const [key, value] of Object.entries(invokedFactory)) {
-            // @ts-expect-error: TS doesn't know what `this` is
             this.setExport(key, value);
           }
         },
@@ -855,7 +844,7 @@ export default class Runtime {
 
       this._moduleMockRegistry.set(moduleID, module);
 
-      return evaluateSyntheticModule(module);
+      return evaluateSyntheticModule(module) as T;
     }
 
     throw new Error('Attempting to import a mock without a factory');
@@ -974,7 +963,7 @@ export default class Runtime {
 
     const module = moduleRegistry.get(modulePath);
     if (module) {
-      return module.exports;
+      return (module as Module).exports;
     }
 
     // We must register the pre-allocated module object first so that any
@@ -1563,7 +1552,7 @@ export default class Runtime {
       process.exitCode = 1;
       return;
     }
-    if (this.isInsideTestCode === false) {
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -1727,14 +1716,13 @@ export default class Runtime {
         this.constructInjectedModuleParameters(),
         {
           filename: scriptFilename,
-          // @ts-expect-error: Experimental ESM API
-          importModuleDynamically: async (specifier: string) => {
+          importModuleDynamically: async specifier => {
             invariant(
               runtimeSupportsVmModules,
               'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
 
-            const module = await this.resolveModule(
+            const module = await this.resolveModule<VMModule>(
               specifier,
               scriptFilename,
               vmContext,
@@ -1775,10 +1763,8 @@ export default class Runtime {
     const module = new SyntheticModule(
       ['default', ...exportNames],
       function () {
-        // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
         for (const [key, value] of allExports) {
-          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         }
       },
@@ -1790,7 +1776,7 @@ export default class Runtime {
   }
 
   private async _importWasmModule(
-    source: Buffer,
+    source: BufferSource,
     identifier: string,
     context: VMContext,
   ) {
@@ -1802,7 +1788,7 @@ export default class Runtime {
     const moduleLookup: Record<string, VMModule> = {};
     for (const {module} of imports) {
       if (moduleLookup[module] === undefined) {
-        const resolvedModule = await this.resolveModule(
+        const resolvedModule = await this.resolveModule<VMModule>(
           module,
           identifier,
           context,
@@ -1820,14 +1806,15 @@ export default class Runtime {
           if (!importsObject[module]) {
             importsObject[module] = {};
           }
-          importsObject[module][name] = moduleLookup[module].namespace[name];
+
+          const {namespace} = moduleLookup[module];
+          importsObject[module][name] = (namespace as any)[name];
         }
         const wasmInstance = new WebAssembly.Instance(
           wasmModule,
           importsObject,
         );
         for (const {name} of exports) {
-          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(name, wasmInstance.exports[name]);
         }
       },
@@ -2098,7 +2085,7 @@ export default class Runtime {
   private _createRequireImplementation(
     from: InitialModule,
     options?: InternalModuleOptions,
-  ): NodeRequire {
+  ): NodeJS.Require {
     const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
       const resolved = this._requireResolve(
         from.filename,
@@ -2121,7 +2108,7 @@ export default class Runtime {
         ? (moduleName: string) =>
             this.requireInternalModule(from.filename, moduleName)
         : this.requireModuleOrMock.bind(this, from.filename)
-    ) as NodeRequire;
+    ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
@@ -2466,7 +2453,9 @@ export default class Runtime {
     const stackTrace = formatStackTrace(stack, this._config, {
       noStackTrace: false,
     });
-    const formattedMessage = `\n${message}${stackTrace ? `\n${stackTrace}` : ''}`;
+    const formattedMessage = `\n${message}${
+      stackTrace ? `\n${stackTrace}` : ''
+    }`;
     if (!this.loggedReferenceErrors.has(formattedMessage)) {
       console.error(formattedMessage);
       this.loggedReferenceErrors.add(formattedMessage);
@@ -2532,7 +2521,6 @@ export default class Runtime {
       Object.keys(globals),
       function () {
         for (const [key, value] of Object.entries(globals)) {
-          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         }
       },
@@ -2564,7 +2552,7 @@ export default class Runtime {
     };
   }
 
-  private readFileBuffer(filename: string): Buffer {
+  private readFileBuffer(filename: string) {
     let source = this._cacheFSBuffer.get(filename);
 
     if (!source) {
@@ -2581,7 +2569,7 @@ export default class Runtime {
 
     if (!source) {
       const buffer = this.readFileBuffer(filename);
-      source = buffer.toString('utf8');
+      source = buffer.toString();
 
       this._cacheFS.set(filename, source);
     }

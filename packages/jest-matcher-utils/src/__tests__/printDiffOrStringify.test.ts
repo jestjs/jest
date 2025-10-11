@@ -269,4 +269,21 @@ describe('printDiffOrStringify', () => {
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
   });
+
+  describe('getters', () => {
+    test('handles self-referential getters without infinite recursion', () => {
+      class TestClass {
+        constructor(public value: string) {}
+
+        get selfRef() {
+          return new TestClass(`${this.value}_ref`);
+        }
+      }
+
+      const expected = new TestClass('hello');
+      const received = new TestClass('world');
+
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+  });
 });

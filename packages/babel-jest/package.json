@@ -1,7 +1,7 @@
 {
   "name": "babel-jest",
   "description": "Jest plugin to use babel for transformation.",
-  "version": "30.1.2",
+  "version": "30.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -29,7 +29,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel-8/core": "npm:@babel/core@8.0.0-beta.1",
+    "@babel-8/core": "npm:@babel/core@8.0.0-beta.2",
     "@babel/core": "^7.27.4",
     "@jest/test-utils": "workspace:*",
     "@types/graceful-fs": "^4.1.9"

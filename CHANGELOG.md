@@ -1,5 +1,20 @@
 ## main
 
+### Features
+
+- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+
+### Fixes
+
+- `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
+- `[jest-test-sequencer]` Fix issue where failed tests due to compilation errors not getting re-executed even with `--onlyFailures` CLI option ([#15851](https://github.com/jestjs/jest/pull/15851))
+
+### Chore & Maintenance
+
+- `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
+
+## 30.2.0
+
 ### Chore & Maintenance
 
 - `[*]` Update example repo for testing React Native projects ([#15832](https://github.com/jestjs/jest/pull/15832))
@@ -12,6 +27,7 @@
 
 ### Fixes
 
+- `[jest-matcher-utils]` Fix infinite recursion with self-referential getters in `deepCyclicCopyReplaceable` ([#15831](https://github.com/jestjs/jest/pull/15831))
 - `[babel-jest]` Export the `TransformerConfig` interface ([#15820](https://github.com/jestjs/jest/pull/15820))
 - `[jest-config]` Fix `jest.config.ts` with TS loader specified in docblock pragma ([#15839](https://github.com/jestjs/jest/pull/15839))
 

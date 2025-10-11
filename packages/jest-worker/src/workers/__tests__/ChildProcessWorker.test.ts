@@ -6,7 +6,7 @@
  */
 
 import {EventEmitter} from 'events';
-import {PassThrough} from 'stream';
+import {PassThrough, type Stream} from 'stream';
 import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
@@ -174,8 +174,12 @@ it('provides stdout and stderr from the child processes', async () => {
   (forkInterface.stderr as PassThrough).end('Workers!', 'utf8');
   forkInterface.emit('exit', 0);
 
-  await expect(getStream(stdout)).resolves.toBe('Hello World!');
-  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
+  await expect(getStream(stdout as unknown as Stream)).resolves.toBe(
+    'Hello World!',
+  );
+  await expect(getStream(stderr as unknown as Stream)).resolves.toBe(
+    'Jest Workers!',
+  );
 });
 
 it('sends the task to the child process', () => {

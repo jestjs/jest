@@ -158,6 +158,9 @@ function printBasicValue(
 
   const toStringed = toString.call(val);
 
+  if (toStringed === '[object Promise]') {
+    return 'Promise {}';
+  }
   if (toStringed === '[object WeakMap]') {
     return 'WeakMap {}';
   }

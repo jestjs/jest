@@ -184,3 +184,76 @@ test('json from Response', async () => {
   const json = await response().json();
   deepCyclicCopyReplaceable(json);
 });
+
+test('handles self-referential getters without infinite recursion', () => {
+  class TestClass {
+    constructor(public value: string) {}
+
+    get selfRef() {
+      return new TestClass(this.value.toLowerCase());
+    }
+  }
+
+  const obj = new TestClass('HELLO');
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(copy.value).toBe('HELLO');
+  expect(copy.selfRef).toBe('[Getter]');
+});
+
+test('handles getters returning different class instances', () => {
+  class OtherClass {
+    constructor(public value: string) {}
+  }
+
+  class WithGetter {
+    constructor(public value: string) {}
+
+    get other() {
+      return new OtherClass(this.value.toLowerCase());
+    }
+  }
+
+  const obj = new WithGetter('HELLO');
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(copy.value).toBe('HELLO');
+  expect(copy.other).toEqual({value: 'hello'});
+  expect(copy.other.constructor).toBe(OtherClass);
+});
+
+test('handles nested objects with self-referential getters', () => {
+  class InnerClass {
+    constructor(public value: string) {}
+
+    get self() {
+      return new InnerClass(`${this.value}_self`);
+    }
+  }
+
+  class OuterClass {
+    constructor(public inner: InnerClass) {}
+  }
+
+  const obj = new OuterClass(new InnerClass('test'));
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(copy.inner.value).toBe('test');
+  expect(copy.inner.self).toBe('[Getter]');
+});
+
+test('handles getters returning primitive values', () => {
+  class TestClass {
+    constructor(public value: string) {}
+
+    get upperCase() {
+      return this.value.toUpperCase();
+    }
+  }
+
+  const obj = new TestClass('hello');
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(copy.value).toBe('hello');
+  expect(copy.upperCase).toBe('HELLO');
+});

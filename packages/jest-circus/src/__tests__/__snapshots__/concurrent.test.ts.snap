@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`{before,after}All + concurrent 1`] = `
+"add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: one
+test_started: one
+test_fn_start: one
+hello one
+test_fn_failure: one
+test_done: one
+concurrent_tests_end
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`Execute concurrent as a single sequential unit in each describe 1`] = `
+"start_describe_definition: foo
+add_hook: beforeAll
+add_hook: afterAll
+add_test: A
+add_test: B
+add_test: C
+start_describe_definition: bar
+add_hook: beforeAll
+add_hook: afterAll
+add_test: D
+add_test: E
+add_test: F
+finish_describe_definition: bar
+start_describe_definition: qux
+add_hook: beforeAll
+add_hook: afterAll
+add_test: G
+add_test: H
+add_test: I
+finish_describe_definition: qux
+finish_describe_definition: foo
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: foo
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: A
+test_start: B
+test_started: A
+test_started: B
+test_fn_start: A
+test_fn_start: B
+test_fn_success: A
+test_fn_success: B
+test_done: A
+test_done: B
+concurrent_tests_end
+test_start: C
+test_started: C
+test_fn_start: C
+test_fn_success: C
+test_done: C
+run_describe_start: bar
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: D
+test_start: E
+test_started: D
+test_started: E
+test_fn_start: D
+test_fn_start: E
+test_fn_success: D
+test_fn_success: E
+test_done: D
+test_done: E
+concurrent_tests_end
+test_start: F
+test_started: F
+test_fn_start: F
+test_fn_success: F
+test_done: F
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: bar
+run_describe_start: qux
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: G
+test_start: H
+test_started: G
+test_started: H
+test_fn_start: G
+test_fn_start: H
+test_fn_success: G
+test_fn_success: H
+test_done: G
+test_done: H
+concurrent_tests_end
+test_start: I
+test_started: I
+test_fn_start: I
+test_fn_success: I
+test_done: I
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: qux
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: foo
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + {before,after}All + concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+add_test: two
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: one
+test_start: two
+test_started: one
+test_started: two
+test_fn_start: one
+test_fn_start: two
+test_fn_failure: one
+test_fn_failure: two
+test_done: one
+test_done: two
+concurrent_tests_end
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + {before,after}All + concurrent multiple times 1`] = `
+"start_describe_definition: describe1
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+add_test: two
+finish_describe_definition: describe1
+start_describe_definition: describe2
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+add_test: two
+finish_describe_definition: describe2
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe1
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: one
+test_start: two
+test_started: one
+test_started: two
+test_fn_start: one
+test_fn_start: two
+test_fn_failure: one
+test_fn_success: two
+test_done: one
+test_done: two
+concurrent_tests_end
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe1
+run_describe_start: describe2
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: one
+test_start: two
+test_started: one
+test_started: two
+test_fn_start: one
+test_fn_start: two
+test_fn_failure: one
+test_fn_success: two
+test_done: one
+test_done: two
+concurrent_tests_end
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe2
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe + concurrent & non concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeAll
+add_hook: afterAll
+add_test: one
+add_test: two
+add_test: three
+add_test: four
+add_test: five
+add_test: six
+add_test: seven
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+hook_start: beforeAll
+hook_success: beforeAll
+concurrent_tests_start
+test_start: one
+test_start: two
+test_start: four
+test_start: six
+test_start: seven
+test_started: one
+test_started: two
+test_started: four
+test_started: six
+test_started: seven
+test_fn_start: one
+test_fn_start: two
+test_fn_start: four
+test_fn_start: six
+test_fn_start: seven
+test_fn_success: one
+test_fn_success: two
+test_fn_success: four
+test_fn_success: six
+test_fn_success: seven
+test_done: one
+test_done: two
+test_done: four
+test_done: six
+test_done: seven
+concurrent_tests_end
+test_start: three
+test_started: three
+test_fn_start: three
+test_fn_success: three
+test_done: three
+test_start: five
+test_started: five
+test_fn_start: five
+test_fn_success: five
+test_done: five
+hook_start: afterAll
+hook_success: afterAll
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;

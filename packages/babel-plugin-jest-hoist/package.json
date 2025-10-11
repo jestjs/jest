@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "30.0.1",
+  "version": "30.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -25,9 +25,9 @@
     "@types/babel__core": "^7.20.5"
   },
   "devDependencies": {
-    "@babel-8/core": "npm:@babel/core@8.0.0-beta.1",
-    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-beta.1",
-    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-beta.1",
+    "@babel-8/core": "npm:@babel/core@8.0.0-beta.2",
+    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-beta.2",
+    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-beta.2",
     "@babel/core": "^7.27.4",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
