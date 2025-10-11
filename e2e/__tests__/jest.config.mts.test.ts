@@ -66,7 +66,7 @@ onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.mts': `
-        import {Config} from 'jest';
+        import type {Config} from 'jest';
         const config: Config = {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js' };
         export default config;
       `,
@@ -127,7 +127,7 @@ onNodeVersions('>=22.18.0 || ^23.6', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
       'jest.config.mts': `
-        import {Config} from 'jest';
+        import type {Config} from 'jest';
         const config: Config = {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js' };
         export default config;
       `,
