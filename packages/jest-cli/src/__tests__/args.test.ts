@@ -89,13 +89,16 @@ describe('check', () => {
 
   it('raises an exception if config is not a valid JSON string', () => {
     expect(() => check(argv({config: 'x:1'}))).toThrow(
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .cts, .json',
+      `The --config option requires a JSON string literal, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(
+        ', ',
+      )}`,
     );
   });
 
   it('raises an exception if config is not a supported file type', () => {
-    const message =
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .cts, .json';
+    const message = `The --config option requires a JSON string literal, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(
+      ', ',
+    )}`;
 
     expect(() => check(argv({config: 'jest.configjs'}))).toThrow(message);
     expect(() => check(argv({config: 'jest.config.exe'}))).toThrow(message);
