@@ -7,6 +7,7 @@
 
 import {stripVTControlCharacters as stripAnsi} from 'util';
 import chalk from 'chalk';
+import {type ConsoleBuffer, getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,
   AssertionResult,
@@ -24,7 +25,6 @@ import {
 } from 'jest-message-util';
 import {specialChars} from 'jest-util';
 import BaseReporter from './BaseReporter';
-import {ConsoleBuffer, getConsoleOutput} from '@jest/console';
 
 type AnnotationOptions = {
   file?: string;
