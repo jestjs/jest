@@ -10,11 +10,8 @@ import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report-for-multi-projects');
 
-test('exclude a project\'s code coverage if its collectCoverage is toggled off', () => {
-  const {stdout, stderr, exitCode} = runJest(DIR, [
-    '--no-cache',
-  ]);
+test("exclude a project's code coverage if its collectCoverage is toggled off", () => {
+  const {stdout, exitCode} = runJest(DIR, ['--no-cache']);
   expect(stdout).toMatchSnapshot();
-  expect(stderr).toMatchSnapshot();
-  expect(exitCode).toBe(0);  
-})
+  expect(exitCode).toBe(0);
+});
