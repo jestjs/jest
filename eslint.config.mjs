@@ -12,6 +12,7 @@ import path from 'path';
 import eslintJs from '@eslint/js';
 import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import {defineConfig} from 'eslint/config';
 import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
 import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
@@ -37,7 +38,7 @@ function getPackages() {
   });
 }
 
-const config = typescriptEslint.config(
+const config = defineConfig(
   eslintJs.configs.recommended,
   eslintMarkdown.configs.recommended,
   ...eslintMarkdown.configs.processor,
