@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`exclude a project's code coverage if its collectCoverage is toggled off 1`] = `
+"-----------|---------|----------|---------|---------|-------------------
+File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------|---------|----------|---------|---------|-------------------
+All files  |     100 |      100 |     100 |     100 |                   
+ package-1 |     100 |      100 |     100 |     100 |                   
+  index.js |     100 |      100 |     100 |     100 |                   
+ package-2 |     100 |      100 |     100 |     100 |                   
+  index.js |     100 |      100 |     100 |     100 |                   
+-----------|---------|----------|---------|---------|-------------------"
+`;
+
+exports[`exclude a project's code coverage if its collectCoverage is toggled off 2`] = `
+"PASS Package 3 packages/package-3/test-e2e/example.e2e.js
+PASS Package 2 packages/package-2/test-e2e/example.e2e.js
+PASS Package 1 packages/package-1/test-e2e/example.e2e.js
+
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.554 s
+Ran all test suites in 3 projects."
+`;
