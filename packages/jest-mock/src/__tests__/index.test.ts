@@ -1262,11 +1262,9 @@ describe('moduleMocker', () => {
 
   test('mockReset should be called on dispose', () => {
     const mock = jest.fn();
-    {
-      using _mock = mock;
-      mock('first');
-      mock('last', 'call');
-    }
+    mock('first');
+    mock('last', 'call');
+    mock[Symbol.dispose]();
     expect(mock.mock.calls).toEqual([]);
     expect(mock.mock).not.toHaveProperty('lastCall');
   });
