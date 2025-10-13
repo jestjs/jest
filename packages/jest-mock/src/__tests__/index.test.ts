@@ -1261,8 +1261,9 @@ describe('moduleMocker', () => {
   });
 
   test('mockReset should be called on dispose', () => {
+    const mock = jest.fn();
     {
-      using mock = jest.fn();
+      using _mock = mock;
       mock('first');
       mock('last', 'call');
     }
