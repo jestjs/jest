@@ -78,7 +78,9 @@ export default async function readConfigFileAndSetRootDir(
         configObject = await loadTSConfigFile(configPath);
       }
     } else if (isMTS) {
-      if (!hasTsLoaderExplicitlyConfigured(configPath)) {
+      if (hasTsLoaderExplicitlyConfigured(configPath)) {
+        configObject = await loadTSConfigFile(configPath);
+      } else {
         // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
         if (!process.features.require_module) {
           // Likely JS runtime does not yet support require(esm) yet.
@@ -86,7 +88,7 @@ export default async function readConfigFileAndSetRootDir(
           // eslint-disable-next-line no-throw-literal
           throw (
             `  Current JS runtime version ${process.versions.node} does not support loading .mts Jest config.\n` +
-            `    Please upgrade your JS runtime to support process.features.require_module`
+            '    Please upgrade your JS runtime to support process.features.require_module'
           );
         }
 
@@ -108,8 +110,6 @@ export default async function readConfigFileAndSetRootDir(
           // Encounter unknown errors, thrown to users for further debugging.
           throw requireOrImportModuleError;
         }
-      } else {
-        configObject = await loadTSConfigFile(configPath);
       }
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
