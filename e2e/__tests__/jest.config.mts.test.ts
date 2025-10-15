@@ -24,7 +24,7 @@ test('work with typed jest.config.mts when TS loader is used', () => {
         const config: Config = {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js' };
         export default config;
       `,
-    'package.json': '{"type": "commonjs"}',
+    'package.json': '{}',
   });
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
