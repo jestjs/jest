@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+- `[jest-config]` Supports Jest config file with `.mts` extension ([#15796](https://github.com/jestjs/jest/pull/15796))
 
 ### Fixes
 
@@ -23,7 +24,6 @@
 ## Features
 
 - `[jest-environment-jsdom-abstract]` Add support for JSDOM v27 ([#15834](https://github.com/jestjs/jest/pull/15834))
-- `[jest-config]` Supports Jest config file with `.mts` extension ([#15796](https://github.com/jestjs/jest/pull/15796))
 
 ### Fixes
 
