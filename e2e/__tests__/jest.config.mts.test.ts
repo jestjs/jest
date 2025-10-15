@@ -15,7 +15,28 @@ const DIR = path.resolve(__dirname, '../jest-config-ts');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-onNodeVersions('<20.19.0', () => {
+test('work with typed jest.config.mts when TS loader is used', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.mts': `
+        /** @jest-config-loader ts-node */
+        import type {Config} from 'jest';
+        const config: Config = {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js' };
+        export default config;
+      `,
+    'package.json': '{"type": "commonjs"}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
+    nodeOptions: '--no-warnings',
+  });
+  const {rest, summary} = extractSummary(stderr);
+  expect(exitCode).toBe(0);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0', () => {
   test('does not work with jest.config.mts when require(esm) is not supported', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
@@ -25,7 +46,7 @@ onNodeVersions('<20.19.0', () => {
     });
 
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
-      nodeOptions: '--no-warnings',
+      nodeOptions: '--no-warnings --no-experimental-require-module',
     });
     expect(
       stderr
@@ -37,14 +58,12 @@ onNodeVersions('<20.19.0', () => {
           /(Error: Jest: Failed to parse the TypeScript config file).*$/m,
           '$1 <<REPLACED>>',
         )
-        // Replace Node version with
-        .replace(/(Current Node version) (.+?) /m, '$1 <<REPLACED>> '),
+        // Replace Node version with placeholder
+        .replace(/(Current JS runtime version) (.+?) /m, '$1 <<REPLACED>> '),
     ).toMatchSnapshot();
     expect(exitCode).toBe(1);
   });
-});
 
-onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
   test('work with untyped jest.config.mts for Node versions without default type stripping', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
@@ -87,7 +106,7 @@ onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
           '$1 <<REPLACED>>',
         )
         // Replace Node version with
-        .replace(/(Current Node version) (.+?) /m, '$1 <<REPLACED>> '),
+        .replace(/(Current JS runtime version) (.+?) /m, '$1 <<REPLACED>> '),
     ).toMatchSnapshot();
     expect(exitCode).toBe(1);
   });
@@ -100,12 +119,15 @@ onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0 || 23 - 23.6.0', () => {
     });
 
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-    expect(stderr).toMatch('SyntaxError: Invalid or unexpected token');
+    expect(stderr).toMatch('does not support loading typed .mts Jest config');
+    expect(stderr).toMatch(
+      'Please upgrade your JS runtime to support process.features.typescript',
+    );
     expect(exitCode).toBe(1);
   });
 });
 
-onNodeVersions('>=22.18.0 || ^23.6', () => {
+onNodeVersions('>=22.18.0', () => {
   test('work with untyped jest.config.mts for Node versions with default type stripping', () => {
     writeFiles(DIR, {
       '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
