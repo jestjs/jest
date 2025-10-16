@@ -54,7 +54,10 @@ it('overrides process.features.require_module to false when present', () => {
 
   // Some Node versions may not expose the flag; only assert if present
   const features = (myGlobal.process as any).features;
-  if (features && Object.prototype.hasOwnProperty.call(features, 'require_module')) {
+  if (
+    features &&
+    Object.prototype.hasOwnProperty.call(features, 'require_module')
+  ) {
     expect(features.require_module).toBe(false);
   }
 });
