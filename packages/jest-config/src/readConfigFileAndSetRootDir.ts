@@ -78,10 +78,17 @@ export default async function readConfigFileAndSetRootDir(
         configObject = await loadTSConfigFile(configPath);
       }
     } else if (isMTS) {
+      // JS runtime's support for Typescript is mature enough that we should
+      // guide users towards native usage instead of possibly un-maintained
+      // external loader.
       if (hasTsLoaderExplicitlyConfigured(configPath)) {
-        configObject = await loadTSConfigFile(configPath);
+        // eslint-disable-next-line no-throw-literal
+        throw (
+          '  Loading .mts Jest config with external loaders is discouraged.\n' +
+          '    Please use a JS runtime that supports process.features.require_module and process.features.typescript'
+        );
       } else {
-        // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+        // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturesrequire_module
         if (!process.features.require_module) {
           // Likely JS runtime does not yet support require(esm) yet.
           // This string is caught further down and merged into a new error message.

@@ -15,11 +15,11 @@ const DIR = path.resolve(__dirname, '../jest-config-ts');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('work with typed jest.config.mts when TS loader is used', () => {
+test('do not work with jest.config.mts when TS loader is used', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
     'jest.config.mts': `
-        /** @jest-config-loader ts-node */
+        /** @jest-config-loader esbuild-register */
         import type {Config} from 'jest';
         const config: Config = {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js' };
         export default config;
@@ -30,10 +30,18 @@ test('work with typed jest.config.mts when TS loader is used', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false'], {
     nodeOptions: '--no-warnings',
   });
-  const {rest, summary} = extractSummary(stderr);
-  expect(exitCode).toBe(0);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(
+    stderr
+      // Remove the stack trace from the error message
+      .slice(0, Math.max(0, stderr.indexOf('at readConfigFileAndSetRootDir')))
+      .trim()
+      // Replace the path to the config file with a placeholder
+      .replace(
+        /(Error: Jest: Failed to parse the TypeScript config file).*$/m,
+        '$1 <<REPLACED>>',
+      ),
+  ).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 onNodeVersions('^20.19.0 || >=22.12.0 <22.18.0', () => {
