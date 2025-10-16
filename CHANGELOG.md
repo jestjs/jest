@@ -12,6 +12,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
+- Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 
 ## 30.2.0
 
