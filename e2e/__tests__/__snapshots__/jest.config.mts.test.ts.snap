@@ -3,7 +3,7 @@
 exports[`do not work with jest.config.mts when TS loader is used 1`] = `
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
     Loading .mts Jest config with external loaders is discouraged.
-    Please use a JS runtime that supports process.features.require_module and process.features.typescript."
+    Please use a JS runtime that supports process.features.require_module and process.features.typescript"
 `;
 
 exports[`on node >=22.18.0 invalid JS in jest.config.mts (node with native TS support) 1`] = `
