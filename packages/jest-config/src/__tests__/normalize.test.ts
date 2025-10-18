@@ -14,7 +14,7 @@ import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
 import normalize, {type AllOptions} from '../normalize';
-import {FindNodeModuleConfig} from 'jest-resolve';
+import type {FindNodeModuleConfig} from 'jest-resolve';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
@@ -303,7 +303,7 @@ describe('roots', () => {
 
 describe('reporters', () => {
   let Resolver: typeof import('jest-resolve').default;
-  let spiedFindNodeModuleFunction = jest.fn(
+  const spiedFindNodeModuleFunction = jest.fn(
     (name: string, _: FindNodeModuleConfig) => name,
   );
 
