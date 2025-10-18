@@ -14,6 +14,7 @@ import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
 import normalize, {type AllOptions} from '../normalize';
+import {FindNodeModuleConfig} from 'jest-resolve';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
@@ -83,7 +84,16 @@ beforeEach(() => {
   jest.spyOn(console, 'warn');
 });
 
+const oldUserProfile = process.env.USERPROFILE;
+const originalPlatform = process.platform;
+
 afterEach(() => {
+  // Restore the original process.* value after each test.
+  process.env.USERPROFILE = oldUserProfile;
+  Object.defineProperty(process, 'platform', {
+    value: originalPlatform,
+  });
+
   jest.mocked(console.warn).mockRestore();
 });
 
@@ -293,10 +303,14 @@ describe('roots', () => {
 
 describe('reporters', () => {
   let Resolver: typeof import('jest-resolve').default;
+  let spiedFindNodeModuleFunction = jest.fn(
+    (name: string, _: FindNodeModuleConfig) => name,
+  );
+
   beforeEach(() => {
     Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
       .default;
-    Resolver.findNodeModule = jest.fn((name: string) => name);
+    Resolver.findNodeModule = spiedFindNodeModuleFunction;
   });
 
   it('allows empty list', async () => {
@@ -389,6 +403,29 @@ describe('reporters', () => {
         {} as Config.Argv,
       ),
     ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('normalizes the path and options object for custom reporter on Windows', async () => {
+    // Simulate running in Windows env with USERPROFILE env var undefined.
+    process.env.USERPROFILE = undefined;
+    Object.defineProperty(process, 'platform', {
+      value: 'win32',
+    });
+
+    const {options} = await normalize(
+      {
+        reporters: [
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+    ]);
+    expect(spiedFindNodeModuleFunction.mock.calls[0][1].paths).toBeUndefined();
   });
 });
 
