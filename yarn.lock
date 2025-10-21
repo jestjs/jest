@@ -4385,9 +4385,9 @@ __metadata:
   dependencies:
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
-    "@sinonjs/fake-timers": "npm:^13.0.0"
+    "@sinonjs/fake-timers": "npm:^15.0.0"
     "@types/node": "npm:*"
-    "@types/sinonjs__fake-timers": "npm:^8.1.5"
+    "@types/sinonjs__fake-timers": "npm:15.0.0"
     jest-message-util: "workspace:*"
     jest-mock: "workspace:*"
     jest-util: "workspace:*"
@@ -6061,12 +6061,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^13.0.0":
-  version: 13.0.5
-  resolution: "@sinonjs/fake-timers@npm:13.0.5"
+"@sinonjs/fake-timers@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@sinonjs/fake-timers@npm:15.0.0"
   dependencies:
     "@sinonjs/commons": "npm:^3.0.1"
-  checksum: 10/11ee417968fc4dce1896ab332ac13f353866075a9d2a88ed1f6258f17cc4f7d93e66031b51fcddb8c203aa4d53fd980b0ae18aba06269f4682164878a992ec3f
+  checksum: 10/ae9e6fc11ec9e053d4658e276d8b5fac3204b62870f1610feb837baf86d73c604d1464004668e385093d46c22b54eb7f1db6c64593216fadf8c9c501fc2537d4
   languageName: node
   linkType: hard
 
@@ -7038,10 +7038,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinonjs__fake-timers@npm:^8.1.5":
-  version: 8.1.5
-  resolution: "@types/sinonjs__fake-timers@npm:8.1.5"
-  checksum: 10/3a0b285fcb8e1eca435266faa27ffff206608b69041022a42857274e44d9305822e85af5e7a43a9fae78d2ab7dc0fcb49f3ae3bda1fa81f0203064dbf5afd4f6
+"@types/sinonjs__fake-timers@npm:15.0.0":
+  version: 15.0.0
+  resolution: "@types/sinonjs__fake-timers@npm:15.0.0"
+  checksum: 10/ca16587fdeed07c9fab84cbca54b844763046f6a2e21de3664ea75c417b372a3288ad339d396119fd167cd9e42ada90758ce9a5b372124261886e69749cdf223
   languageName: node
   linkType: hard
 
