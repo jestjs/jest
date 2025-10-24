@@ -565,3 +565,17 @@ Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_t
 This is **experimental feature**. See the [`workerThreads` configuration option](Configuration.md#workerthreads) for more details.
 
 :::
+
+## Watch Mode Tips
+
+When using Jest in watch mode (`--watch` or `--watchAll`), here are some best practices to maximize productivity:
+
+- **Use `--testNamePattern` (`-t`)** in combination with `--watch` to focus on specific tests while developing.
+- **Press `o` in watch mode** to only run tests related to changed files instead of all tests.
+- **Press `f` in watch mode** to run only the tests that failed in the previous run.
+- **Press `p` in watch mode** to filter tests by filename pattern interactively.
+- **Set `--maxWorkers`** if watch mode is consuming too much memory or CPU on your machine.
+- **Use `--bail`** (`-x`) to stop after the first test failure, useful for TDD workflows.
+- **Clear cache** with `jest --clearCache` if you encounter stale cache issues during long watch sessions.
+
+For more details, see the [Configuration](Configuration.md) page and run `jest --help` for all available options.
