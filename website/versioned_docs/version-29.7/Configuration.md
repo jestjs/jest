@@ -1579,6 +1579,54 @@ By default, `roots` has a single entry `<rootDir>` but there are cases where you
 
 :::
 
+### `runtime` \[string]
+
+Default: `"jest-runtime"`
+
+This option allows the use of a custom runtime to execute test files. A custom runtime can be provided by specifying a path to a runtime implementation.
+
+The runtime module must export a class that extends Jest's default `Runtime` class or implements a compatible interface with the same constructor signature and methods.
+
+:::warning
+
+Creating a custom runtime is an advanced use case. Most users should not need to customize the runtime. Consider whether your use case might be better addressed with custom [transformers](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object), [test environments](Configuration.md#testenvironment-string), or [module mocks](ManualMocks.md).
+
+:::
+
+Example:
+
+```js title="custom-runtime.js"
+const {default: Runtime} = require('jest-runtime');
+
+class CustomRuntime extends Runtime {
+  //...custom logic
+}
+
+module.exports = CustomRuntime;
+```
+
+```ts title="custom-runtime.ts"
+import Runtime from 'jest-runtime';
+
+export default class CustomRuntime extends Runtime {
+  //...custom logic
+}
+```
+
+Add the custom runtime to your Jest configuration:
+
+```js tab title="jest.config.js"
+module.exports = {
+  runtime: './custom-runtime.js',
+};
+```
+
+```ts tab title="jest.config.ts"
+export default {
+  runtime: './custom-runtime.ts',
+};
+```
+
 ### `runner` \[string]
 
 Default: `"jest-runner"`
