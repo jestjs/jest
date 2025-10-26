@@ -8,6 +8,7 @@
 
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
 - `[jest-test-sequencer]` Fix issue where failed tests due to compilation errors not getting re-executed even with `--onlyFailures` CLI option ([#15851](https://github.com/jestjs/jest/pull/15851))
+- `[jest-config]` Fix issue where Jest test deps `@jest/test-sequencer` and `jest-environment-node` cannot be resolved correctly when used in `pnpm`-based monorepo ([#15877](https://github.com/jestjs/jest/pull/15877))
 
 ### Chore & Maintenance
 
