@@ -16,6 +16,7 @@ import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
@@ -32,6 +33,7 @@ type TsLoaderModule = 'ts-node' | 'esbuild-register';
 export default async function readConfigFileAndSetRootDir(
   configPath: string,
 ): Promise<Config.InitialOptions> {
+  const isMTS = configPath.endsWith(JEST_CONFIG_EXT_MTS);
   const isTS =
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
     configPath.endsWith(JEST_CONFIG_EXT_CTS);
@@ -75,6 +77,47 @@ export default async function readConfigFileAndSetRootDir(
       } else {
         configObject = await loadTSConfigFile(configPath);
       }
+    } else if (isMTS) {
+      // JS runtime's support for Typescript is mature enough that we should
+      // guide users towards native usage instead of possibly un-maintained
+      // external loader.
+      if (hasTsLoaderExplicitlyConfigured(configPath)) {
+        // eslint-disable-next-line no-throw-literal
+        throw (
+          '  Loading .mts Jest config with external loaders is discouraged.\n' +
+          '    Please use a JS runtime that supports process.features.require_module and process.features.typescript'
+        );
+      } else {
+        // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturesrequire_module
+        if (!process.features.require_module) {
+          // Likely JS runtime does not yet support require(esm) yet.
+          // This string is caught further down and merged into a new error message.
+          // eslint-disable-next-line no-throw-literal
+          throw (
+            `  Current JS runtime version ${process.versions.node} does not support loading .mts Jest config.\n` +
+            '    Please upgrade your JS runtime to support process.features.require_module'
+          );
+        }
+
+        // Relies on import(.mts) before falling back to require(.mts)
+        try {
+          configObject = await requireOrImportModule<any>(configPath);
+        } catch (requireOrImportModuleError) {
+          // Likely JS runtime does not support type stripping when require(esm).
+          // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+          if (!process.features.typescript) {
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              `  Current JS runtime version ${process.versions.node} does not support loading typed .mts Jest config.\n` +
+              '    Please upgrade your JS runtime to support process.features.typescript \n' +
+              `    Error: ${requireOrImportModuleError}\n`
+            );
+          }
+          // Encounter unknown errors, thrown to users for further debugging.
+          throw requireOrImportModuleError;
+        }
+      }
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
       configObject = parseJson(stripJsonComments(fileContent), configPath);
@@ -82,7 +125,7 @@ export default async function readConfigFileAndSetRootDir(
       configObject = await requireOrImportModule<any>(configPath);
     }
   } catch (error) {
-    if (isTS) {
+    if (isTS || isMTS) {
       throw new Error(
         `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
           `  ${error}`,

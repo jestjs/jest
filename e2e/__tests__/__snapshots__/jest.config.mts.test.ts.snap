@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`do not work with jest.config.mts when TS loader is used 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+    Loading .mts Jest config with external loaders is discouraged.
+    Please use a JS runtime that supports process.features.require_module and process.features.typescript"
+`;
+
+exports[`on node >=22.18.0 invalid JS in jest.config.mts (node with native TS support) 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'"
+`;
+
+exports[`on node >=22.18.0 traverses directory tree up until it finds jest.config 1`] = `
+"  console.log
+<<REPLACED>>/jest-config-ts/some/nested/directory
+
+      at Object.<anonymous> (__tests__/a-giraffe.js:3:27)
+"
+`;
+
+exports[`on node >=22.18.0 traverses directory tree up until it finds jest.config 2`] = `
+"PASS ../../../__tests__/a-giraffe.js
+  ✓ giraffe
+  ✓ abc"
+`;
+
+exports[`on node >=22.18.0 traverses directory tree up until it finds jest.config 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`on node >=22.18.0 work with untyped jest.config.mts for Node versions with default type stripping 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`on node >=22.18.0 work with untyped jest.config.mts for Node versions with default type stripping 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`on node >=22.18.0 works with tsconfig.json 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`on node >=22.18.0 works with tsconfig.json 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`on node >=22.18.0 works with typed jest.config.mts 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`on node >=22.18.0 works with typed jest.config.mts 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`on node >=24 invalid JS in jest.config.mts (node with native TS support) 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+  SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'"
+`;
+
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 does not work with jest.config.mts when require(esm) is not supported 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+    Current JS runtime version <<REPLACED>> does not support loading .mts Jest config.
+    Please upgrade your JS runtime to support process.features.require_module"
+`;
+
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 does not work with typed jest.config.ts 1`] = `
+"Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
+    Current JS runtime version <<REPLACED>> does not support loading typed .mts Jest config.
+    Please upgrade your JS runtime to support process.features.typescript 
+    Error: SyntaxError: Unexpected token '{'"
+`;
+
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 work with untyped jest.config.mts for Node versions without default type stripping 1`] = `
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
+`;
+
+exports[`on node ^20.19.0 || >=22.12.0 <22.18.0 work with untyped jest.config.mts for Node versions without default type stripping 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
