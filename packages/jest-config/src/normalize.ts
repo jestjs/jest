@@ -49,6 +49,7 @@ import {
   escapeGlobCharacters,
   replaceRootDirInPath,
   resolve,
+  useSpecificPackageManager,
 } from './utils';
 
 const ERROR = `${BULLET}Validation Error`;
@@ -169,7 +170,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -518,12 +521,20 @@ export default async function normalize(
     options.setupFilesAfterEnv = [];
   }
 
+  // For default Jest test env, let's use native resolution mechanism
+  // of JS runtime instead of resorting to third-party ones.
+  let testEnvironment = options.testEnvironment;
+  if (
+    `jest-environment-${testEnvironment}` === DEFAULT_CONFIG.testEnvironment &&
+    useSpecificPackageManager('pnpm')
+  ) {
+    testEnvironment = require.resolve(DEFAULT_CONFIG.testEnvironment);
+  }
   options.testEnvironment = resolveTestEnvironment({
     requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
     testEnvironment:
-      options.testEnvironment ||
-      require.resolve(DEFAULT_CONFIG.testEnvironment),
+      testEnvironment || require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
 
   if (!options.roots) {
@@ -997,9 +1008,17 @@ export default async function normalize(
     // ignored
   }
 
+  // For default Jest test sequencer, let's use native resolution mechanism
+  // of JS runtime instead of resorting to third-party ones.
+  let testSequencer = options.testSequencer;
+  if (
+    options.testSequencer === DEFAULT_CONFIG.testSequencer &&
+    useSpecificPackageManager('pnpm')
+  ) {
+    testSequencer = require.resolve(DEFAULT_CONFIG.testSequencer);
+  }
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
-    filePath:
-      options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
+    filePath: testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
     requireResolveFunction: requireResolve,
     rootDir: options.rootDir,
   });
@@ -1087,8 +1106,8 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,

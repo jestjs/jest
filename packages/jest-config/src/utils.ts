@@ -119,3 +119,6 @@ export const isJSONString = (text?: JSONString | string): text is JSONString =>
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');
+
+export const useSpecificPackageManager = (identifier: string): boolean =>
+  !!process.env.npm_config_user_agent?.includes(identifier);
