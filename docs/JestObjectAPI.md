@@ -1126,6 +1126,29 @@ This function is not available when using legacy fake timers implementation.
 
 :::
 
+### `jest.setTimerTickMode(mode)`
+
+Allows configuring how fake timers advance time.
+
+Configuration options:
+
+```ts
+type TimerTickMode =
+  | {mode: 'manual'}
+  | {mode: 'nextAsync'}
+  | {mode: 'interval'; delta?: number};
+```
+
+- `manual`: Timers do not advance without explicit, manual calls to the tick APIs (`jest.advanceTimersByTime(ms)`, `jest.runAllTimers()`, etc).
+- `nextAsync`: The clock will continuously break the event loop, then run the next timer until the mode changes.
+- `interval`: This is the same as specifying `advanceTimers: true` with an `advanceTimeDelta`. If the delta is not specified, 20 will be used by default.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
 ### `jest.getRealSystemTime()`
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
