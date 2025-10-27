@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+- `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
 
 ### Fixes
 
@@ -12,6 +13,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
+- `[deps]` Update to sinon/fake-timers v15
 
 ## 30.2.0
 

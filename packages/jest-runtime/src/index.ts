@@ -1161,10 +1161,7 @@ export default class Runtime {
   private _getFullTransformationOptions(
     options: InternalModuleOptions = defaultTransformOptions,
   ): TransformationOptions {
-    return {
-      ...options,
-      ...this._coverageOptions,
-    };
+    return {...options, ...this._coverageOptions};
   }
 
   requireModuleOrMock<T = unknown>(from: string, moduleName: string): T {
@@ -1337,10 +1334,7 @@ export default class Runtime {
       .map(result => {
         const transformedFile = this._v8CoverageSources!.get(result.url);
 
-        return {
-          codeTransformResult: transformedFile,
-          result,
-        };
+        return {codeTransformResult: transformedFile, result};
       });
   }
 
@@ -1444,9 +1438,7 @@ export default class Runtime {
 
   private _resolveCjsModule(from: string, to: string | undefined) {
     return to
-      ? this._resolver.resolveModule(from, to, {
-          conditions: this.cjsConditions,
-        })
+      ? this._resolver.resolveModule(from, to, {conditions: this.cjsConditions})
       : from;
   }
 
@@ -2120,10 +2112,7 @@ export default class Runtime {
         get: (_target, key) =>
           typeof key === 'string' ? this._moduleRegistry.get(key) : undefined,
         getOwnPropertyDescriptor() {
-          return {
-            configurable: true,
-            enumerable: true,
-          };
+          return {configurable: true, enumerable: true};
         },
         has: (_target, key) =>
           typeof key === 'string' && this._moduleRegistry.has(key),
@@ -2428,6 +2417,21 @@ export default class Runtime {
         }
       },
       setTimeout,
+      setTimerTickMode: (
+        mode:
+          | {mode: 'manual' | 'nextAsync'}
+          | {mode: 'interval'; delta?: number},
+      ) => {
+        const fakeTimers = _getFakeTimers();
+        if (fakeTimers === this._environment.fakeTimersModern) {
+          fakeTimers.setTimerTickMode(mode);
+        } else {
+          throw new TypeError(
+            '`jest.setTimerTickMode()` is not available when using legacy fake timers.',
+          );
+        }
+        return jestObject;
+      },
       spyOn,
       unmock,
       unstable_mockModule: mockModule,
