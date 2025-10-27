@@ -206,7 +206,9 @@ export default class DefaultReporter extends BaseReporter {
       const testRetryReasons = testResult.retryReasons;
       if (testRetryReasons && testRetryReasons.length > 0) {
         this.log(
-          `${chalk.reset.inverse.bold.yellow(' LOGGING RETRY ERRORS ')} ${chalk.bold(testResult.fullName)}`,
+          `${chalk.reset.inverse.bold.yellow(
+            ' LOGGING RETRY ERRORS ',
+          )} ${chalk.bold(testResult.fullName)}`,
         );
         for (const [index, retryReasons] of testRetryReasons.entries()) {
           let {message, stack} = separateMessageFromStack(retryReasons);
@@ -229,7 +231,11 @@ export default class DefaultReporter extends BaseReporter {
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
-        `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(result.console, config, this._globalConfig)}`,
+        `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(
+          result.console,
+          config,
+          this._globalConfig,
+        )}`,
       );
     }
   }

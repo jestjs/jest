@@ -20,7 +20,7 @@ export default function getConsoleOutput(
   globalConfig: Config.GlobalConfig,
 ): string {
   const TITLE_INDENT =
-    globalConfig?.verbose === true ? ' '.repeat(2) : ' '.repeat(4);
+    globalConfig.verbose === true ? ' '.repeat(2) : ' '.repeat(4);
   const CONSOLE_INDENT = TITLE_INDENT + ' '.repeat(2);
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {

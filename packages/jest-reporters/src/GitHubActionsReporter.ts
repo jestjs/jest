@@ -70,10 +70,10 @@ export default class GitHubActionsReporter extends BaseReporter {
   private readonly globalConfig: Config.GlobalConfig;
 
   constructor(
-globalConfig: Config.GlobalConfig,
-reporterOptions: {silent?: boolean} = {},
-) {
-super();
+    globalConfig: Config.GlobalConfig,
+    reporterOptions: {silent?: boolean} = {},
+  ) {
+    super();
     this.globalConfig = globalConfig;
     this.options = {
       silent:

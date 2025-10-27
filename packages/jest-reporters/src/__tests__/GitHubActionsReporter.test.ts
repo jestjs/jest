@@ -13,7 +13,7 @@ import type {
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
-import {normalizeIcons} from '@jest/test-utils';
+import {makeGlobalConfig, normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import BaseGitHubActionsReporter from '../GitHubActionsReporter';
 
@@ -726,7 +726,7 @@ describe('logs', () => {
         numTotalTestSuites: 3,
         testResults: [mockTestResult],
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();
@@ -777,7 +777,7 @@ describe('logs', () => {
         numTotalTestSuites: 1,
         testResults: [mockTestResult],
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();
