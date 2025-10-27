@@ -73,9 +73,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick: origNextTick,
-        },
+        process: {nextTick: origNextTick},
         setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
@@ -153,9 +151,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick: () => {},
-        },
+        process: {nextTick: () => {}},
         setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
@@ -186,9 +182,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick,
-        },
+        process: {nextTick},
         setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
@@ -205,9 +199,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick: () => {},
-        },
+        process: {nextTick: () => {}},
         setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
@@ -231,9 +223,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick: () => {},
-        },
+        process: {nextTick: () => {}},
         setInterval,
         setTimeout,
       } as unknown as typeof globalThis;
@@ -902,9 +892,7 @@ describe('FakeTimers', () => {
         Date,
         clearInterval,
         clearTimeout,
-        process: {
-          nextTick: () => {},
-        },
+        process: {nextTick: () => {}},
         setImmediate: () => {},
         setInterval,
         setTimeout,
@@ -1426,6 +1414,48 @@ describe('FakeTimers', () => {
       }, 100);
 
       await timers.advanceTimersByTimeAsync(200);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('setTimerTickMode', () => {
+    let global: typeof globalThis;
+    let timers: FakeTimers;
+    const realSetTimeout = setTimeout;
+    beforeEach(() => {
+      global = {
+        Date,
+        Promise,
+        clearInterval,
+        clearTimeout,
+        process,
+        setInterval,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      timers = new FakeTimers({config: makeProjectConfig(), global});
+      timers.useFakeTimers();
+    });
+
+    afterEach(() => {
+      timers.useRealTimers();
+    });
+
+    it('should advance the clock to next timer with nextAsync', async () => {
+      timers.setTimerTickMode({mode: 'nextAsync'});
+      await new Promise(resolve => global.setTimeout(resolve, 5000));
+      await new Promise(resolve => global.setTimeout(resolve, 5000));
+      await new Promise(resolve => global.setTimeout(resolve, 5000));
+      await new Promise(resolve => global.setTimeout(resolve, 5000));
+      // test should not time out
+    });
+
+    it('should advance the clock in real time with delta', async () => {
+      timers.setTimerTickMode({delta: 10, mode: 'interval'});
+      const spy = jest.fn();
+      global.setTimeout(spy, 10);
+      await new Promise(resolve => realSetTimeout(resolve, 5));
+      expect(spy).not.toHaveBeenCalled();
+      await new Promise(resolve => realSetTimeout(resolve, 5));
       expect(spy).toHaveBeenCalled();
     });
   });

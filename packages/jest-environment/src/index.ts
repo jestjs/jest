@@ -425,4 +425,25 @@ export interface Jest {
    * performance, time and timer APIs.
    */
   useRealTimers(): Jest;
+  /**
+   * Updates the mode of advancing timers when using fake timers.
+   *
+   * @param config The configuration to use for advancing timers
+   *
+   * When the mode is 'interval', timers will be advanced automatically by the [delta]
+   * milliseconds every [delta] milliseconds of real time. The default delta is 20 milliseconds.
+   *
+   * When mode is 'nextAsync', configures whether timers advance automatically to the next timer in the queue after each macrotask.
+   * This mode differs from 'interval' in that it advances all the way to the next timer, regardless
+   * of how far in the future that timer is scheduled (e.g. advanceTimersToNextTimerAsync).
+   *
+   * When mode is 'manual' (the default), timers will not advance automatically. Instead,
+   * timers must be advanced using APIs such as `advanceTimersToNextTimer`, `advanceTimersByTime`, etc.
+   *
+   * @remarks
+   * Not available when using legacy fake timers implementation.
+   */
+  setTimerTickMode(
+    config: {mode: 'manual' | 'nextAsync'} | {mode: 'interval'; delta?: number},
+  ): Jest;
 }
