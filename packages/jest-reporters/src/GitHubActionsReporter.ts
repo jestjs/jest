@@ -67,7 +67,7 @@ type ResultTree = {
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
   private readonly options: {silent: boolean};
-  protected globalConfig: Config.GlobalConfig;
+  private readonly globalConfig: Config.GlobalConfig;
 
   constructor(
 globalConfig: Config.GlobalConfig,
