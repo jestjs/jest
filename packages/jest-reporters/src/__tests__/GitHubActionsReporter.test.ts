@@ -14,7 +14,6 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import {makeGlobalConfig, normalizeIcons} from '@jest/test-utils';
-import type {Config} from '@jest/types';
 import BaseGitHubActionsReporter from '../GitHubActionsReporter';
 
 afterEach(() => {
@@ -32,7 +31,7 @@ const mockedStderrWrite = jest
   .mockImplementation(() => true);
 
 describe('annotations', () => {
-  const reporter = new GitHubActionsReporter({} as Config.GlobalConfig);
+  const reporter = new GitHubActionsReporter(makeGlobalConfig());
 
   const testMeta = {
     context: {config: {rootDir: '/user/project'}},
@@ -155,7 +154,7 @@ describe('annotations', () => {
 
 describe('logs', () => {
   test('can be instantiated', () => {
-    const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+    const gha = new GitHubActionsReporter(makeGlobalConfig());
     expect(gha).toBeTruthy();
     expect(gha).toBeInstanceOf(GitHubActionsReporter);
   });
@@ -194,7 +193,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -237,7 +236,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -286,7 +285,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -335,7 +334,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -396,7 +395,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -427,7 +426,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -455,7 +454,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -489,7 +488,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -523,7 +522,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -557,7 +556,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -591,7 +590,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -630,7 +629,7 @@ describe('logs', () => {
         numPassedTestSuites: 1,
         numTotalTestSuites: 3,
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();
@@ -674,7 +673,7 @@ describe('logs', () => {
         numTotalTestSuites: 3,
         testResults: [mockTestResult],
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();

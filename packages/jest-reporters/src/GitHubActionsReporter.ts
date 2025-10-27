@@ -317,7 +317,7 @@ export default class GitHubActionsReporter extends BaseReporter {
   private printResultTree(
     resultTree: ResultTree,
     config: Config.ProjectConfig,
-    consoleLog?: ConsoleBuffer,
+    consoleLog: ConsoleBuffer | undefined,
   ): void {
     let perfMs;
     if (resultTree.performanceInfo.slow) {
