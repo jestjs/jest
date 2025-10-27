@@ -13,8 +13,7 @@ import type {
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
-import {normalizeIcons} from '@jest/test-utils';
-import type {Config} from '@jest/types';
+import {makeGlobalConfig, normalizeIcons} from '@jest/test-utils';
 import BaseGitHubActionsReporter from '../GitHubActionsReporter';
 
 afterEach(() => {
@@ -32,7 +31,7 @@ const mockedStderrWrite = jest
   .mockImplementation(() => true);
 
 describe('annotations', () => {
-  const reporter = new GitHubActionsReporter({} as Config.GlobalConfig);
+  const reporter = new GitHubActionsReporter(makeGlobalConfig());
 
   const testMeta = {
     context: {config: {rootDir: '/user/project'}},
@@ -155,7 +154,7 @@ describe('annotations', () => {
 
 describe('logs', () => {
   test('can be instantiated', () => {
-    const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+    const gha = new GitHubActionsReporter(makeGlobalConfig());
     expect(gha).toBeTruthy();
     expect(gha).toBeInstanceOf(GitHubActionsReporter);
   });
@@ -194,7 +193,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -237,7 +236,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -286,7 +285,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -335,7 +334,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -396,7 +395,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -427,7 +426,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -455,7 +454,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -489,7 +488,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -523,7 +522,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -557,7 +556,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -591,7 +590,7 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
 
@@ -630,7 +629,7 @@ describe('logs', () => {
         numPassedTestSuites: 1,
         numTotalTestSuites: 3,
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();
@@ -674,7 +673,110 @@ describe('logs', () => {
         numTotalTestSuites: 3,
         testResults: [mockTestResult],
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
+        silent: false,
+      });
+      gha.generateAnnotations = jest.fn();
+
+      gha.onTestResult(
+        mockTest as Test,
+        mockTestResult as unknown as TestResult,
+        mockResults as unknown as AggregatedResult,
+      );
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
+    test('onTestResult last with console output for failed test', () => {
+      const mockTest = {
+        context: {
+          config: {
+            rootDir: '/testDir',
+          },
+        },
+      };
+      const mockTestResult = {
+        console: [
+          {
+            message: 'bar',
+            origin:
+              '    at Object.log (/tmp/jest-test/a.test.js:2:13)\n    at Promise.finally.completed (/github.com/jestjs/jest/packages/jest-circus/build/jestAdapterInit.js:1557:28)',
+            type: 'log',
+          },
+        ],
+        failureMessage: 'Failure message',
+        perfStats: {
+          runtime: 20,
+          slow: false,
+        },
+        testFilePath: '/testDir/test1.js',
+        testResults: [
+          {
+            ancestorTitles: [],
+            duration: 10,
+            status: 'passed',
+            title: 'test1',
+          },
+        ],
+      };
+      const mockResults = {
+        numFailedTestSuites: 1,
+        numPassedTestSuites: 2,
+        numTotalTestSuites: 3,
+        testResults: [mockTestResult],
+      };
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
+        silent: false,
+      });
+      gha.generateAnnotations = jest.fn();
+
+      gha.onTestResult(
+        mockTest as Test,
+        mockTestResult as unknown as TestResult,
+        mockResults as unknown as AggregatedResult,
+      );
+
+      expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
+    });
+
+    test('onTestResult last with console output for success test', () => {
+      const mockTest = {
+        context: {
+          config: {
+            rootDir: '/testDir',
+          },
+        },
+      };
+      const mockTestResult = {
+        console: [
+          {
+            message: 'bar',
+            origin:
+              '    at Object.log (/tmp/jest-test/a.test.js:2:13)\n    at Promise.finally.completed (/github.com/jestjs/jest/packages/jest-circus/build/jestAdapterInit.js:1557:28)',
+            type: 'log',
+          },
+        ],
+        perfStats: {
+          runtime: 20,
+          slow: false,
+        },
+        testFilePath: '/testDir/test1.js',
+        testResults: [
+          {
+            ancestorTitles: [],
+            duration: 10,
+            status: 'passed',
+            title: 'test1',
+          },
+        ],
+      };
+      const mockResults = {
+        numFailedTestSuites: 0,
+        numPassedTestSuites: 1,
+        numTotalTestSuites: 1,
+        testResults: [mockTestResult],
+      };
+      const gha = new GitHubActionsReporter(makeGlobalConfig(), {
         silent: false,
       });
       gha.generateAnnotations = jest.fn();
