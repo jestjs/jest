@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ]
+}
