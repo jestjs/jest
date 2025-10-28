@@ -117,5 +117,32 @@ export default function createProcessObject(): typeof Process {
     },
   });
 
+  // Ensure feature flags reflect Jest's capabilities inside the VM.
+  // Node may expose `process.features.require_module` which signals that
+  // requiring ESM via `require()` is supported. Jest's runtime does not
+  // support requiring ESM modules through CJS `require`, so we override
+  // the flag to false to allow defensive code paths to behave correctly.
+  //
+  const features: unknown = (newProcess as any).features;
+  if (features && typeof features === 'object') {
+    // Only override if the host process exposes the flag
+    if ('require_module' in (features as Record<string, unknown>)) {
+      try {
+        Object.defineProperty(features as object, 'require_module', {
+          configurable: true,
+          enumerable: true,
+          get: () => false,
+        });
+      } catch {
+        // If redefining fails for any reason, fall back to direct assignment
+        try {
+          (features as any).require_module = false;
+        } catch {
+          // ignore if we cannot override
+        }
+      }
+    }
+  }
+
   return newProcess;
 }
