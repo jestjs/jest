@@ -309,7 +309,9 @@ describe('onRunComplete', () => {
             statements: 100,
           },
           global: {
-            statements: 100,
+            // All files matched by path thresholds → globalFiles empty → fallback to coveredFiles
+            // Aggregate coverage ~50.5%, so threshold ≤50% passes
+            statements: 50,
           },
         },
       },
@@ -322,6 +324,37 @@ describe('onRunComplete', () => {
     await testReporter.onRunComplete(new Set(), {}, mockAggResults);
 
     expect(testReporter.getLastError()).toBeUndefined();
+  });
+
+  test(`getLastError() returns error when global threshold group
+   is empty because PATH and GLOB threshold groups have matched all the
+    files but global threshold exceeds aggregate coverage.`, async () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/': {
+            statements: 50,
+          },
+          './path-test/': {
+            statements: 100,
+          },
+          global: {
+            // All files matched by path thresholds → globalFiles empty → fallback to coveredFiles
+            // Aggregate coverage ~50.5% < 100% → error
+            statements: 100,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+
+    await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+    expect(testReporter.getLastError()).toBeDefined();
   });
 
   test('getLastError() returns undefined when file and directory path threshold groups overlap', async () => {
