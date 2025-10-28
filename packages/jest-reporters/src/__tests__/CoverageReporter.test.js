@@ -135,7 +135,7 @@ describe('onRunComplete', () => {
     }));
   });
 
-  test('getLastError() returns an error when threshold is not met for global', () => {
+  test('getLastError() returns an error when threshold is not met for global', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -150,14 +150,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
-  test('getLastError() returns an error when threshold is not met for file', () => {
+  test('getLastError() returns an error when threshold is not met for file', async () => {
     const covThreshold = {};
     const paths = [
       'global',
@@ -179,14 +178,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(5);
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(5);
   });
 
-  test('getLastError() returns `undefined` when threshold is met', () => {
+  test('getLastError() returns `undefined` when threshold is met', async () => {
     const covThreshold = {};
     const paths = [
       'global',
@@ -208,14 +206,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError()).toBeUndefined();
   });
 
-  test('getLastError() returns an error when threshold is not met for non-covered file', () => {
+  test('getLastError() returns an error when threshold is not met for non-covered file', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -230,14 +227,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
-  test('getLastError() returns an error when threshold is not met for directory', () => {
+  test('getLastError() returns an error when threshold is not met for directory', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -252,14 +248,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
-  test('getLastError() returns `undefined` when threshold is met for directory', () => {
+  test('getLastError() returns `undefined` when threshold is met for directory', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -274,14 +269,13 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError()).toBeUndefined();
   });
 
-  test('getLastError() returns an error when there is no coverage data for a threshold', () => {
+  test('getLastError() returns an error when there is no coverage data for a threshold', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -296,16 +290,15 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
-  test(`getLastError() returns 'undefined' when global threshold group
-   is empty because PATH and GLOB threshold groups have matched all the
-    files in the coverage data.`, () => {
+  test(`getLastError() returns an error when global threshold is not
+met by other non matched PATH and GLOB files, even when PATH and GLOB threshold
+groups have matched all the files in the coverage data.`, async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -326,15 +319,16 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    // With new behavior, global threshold applies to ALL files
+    // Total coverage is ~50.5%, which fails the 100% threshold
+    expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
   });
 
   test(`getLastError() returns 'undefined' when file and directory path
-  threshold groups overlap`, () => {
+threshold groups overlap`, async () => {
     const covThreshold = {};
     for (const path of [
       './path-test-files/',
@@ -360,16 +354,15 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError()).toBeUndefined();
   });
 
-  test(`that if globs or paths are specified alongside global, coverage
-  data for matching paths will be subtracted from overall coverage
-  and thresholds will be applied independently`, () => {
+  test(`that if globs or paths are specified alongside global, global
+threshold applies to all files while path/glob thresholds
+are applied independently`, async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -390,13 +383,11 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    // 100% coverage file is removed from overall coverage so
-    // coverage drops to < 50%
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
-      });
+    // With new behavior, global threshold checks ALL files
+    // Total coverage is ~50.5%, which passes the 50% threshold
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(testReporter.getLastError()).toBeUndefined();
   });
 
   test('that files are matched by all matching threshold groups', () => {
@@ -423,29 +414,26 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+    return testReporter.onRunComplete(new Set(), mockAggResults).then(() => {
+      expect(testReporter.getLastError()).toBeUndefined();
+    });
   });
 
-  test('that it passes custom options when creating reporters', () => {
+  test('that it passes custom options when creating reporters', async () => {
     const testReporter = new CoverageReporter({
       coverageReporters: ['json', ['lcov', {maxCols: 10, projectRoot: './'}]],
     });
     testReporter.log = jest.fn();
-    return testReporter
-      .onRunComplete(new Set(), {}, mockAggResults)
-      .then(() => {
-        expect(istanbulReports.create).toHaveBeenCalledWith('json', {
-          maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
-        });
-        expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
-          maxCols: 10,
-          projectRoot: './',
-        });
-        expect(testReporter.getLastError()).toBeUndefined();
-      });
+
+    await testReporter.onRunComplete(new Set(), mockAggResults);
+
+    expect(istanbulReports.create).toHaveBeenCalledWith('json', {
+      maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
+    });
+    expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
+      maxCols: 10,
+      projectRoot: './',
+    });
+    expect(testReporter.getLastError()).toBeUndefined();
   });
 });

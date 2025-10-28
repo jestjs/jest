@@ -392,7 +392,11 @@ For more information about the options object shape refer to `CoverageReporterWi
 
 Default: `undefined`
 
-This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as `global`, as a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.
+This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as `global`, as a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or file path. If thresholds aren't met, jest will fail.
+
+- If a threshold is set to a **positive** number, it will be interpreted as the **minimum** percentage of coverage required.
+
+- If a threshold is set to a **negative** number, it will be treated as the **maximum** number of uncovered items allowed.
 
 For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:
 
@@ -402,9 +406,13 @@ const {defineConfig} = require('jest');
 module.exports = defineConfig({
   coverageThreshold: {
     global: {
+      // Requires 80% branch coverage
       branches: 80,
+      // Requires 80% function coverage
       functions: 80,
+      // Requires 80% line coverage
       lines: 80,
+      // Require that no more than 10 statements are uncovered
       statements: -10,
     },
   },
@@ -417,18 +425,48 @@ import {defineConfig} from 'jest';
 export default defineConfig({
   coverageThreshold: {
     global: {
+      // Requires 80% branch coverage
       branches: 80,
+      // Requires 80% function coverage
       functions: 80,
+      // Requires 80% line coverage
       lines: 80,
+      // Require that no more than 10 statements are uncovered
       statements: -10,
     },
   },
 });
 ```
 
-If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, an error is returned.
+#### coverageThreshold.global.lines [number]
 
-For example, with the following configuration:
+Global threshold for lines.
+
+#### coverageThreshold.global.functions [number]
+
+Global threshold for functions.
+
+#### coverageThreshold.global.statements [number]
+
+Global threshold for statements.
+
+#### coverageThreshold.global.branches [number]
+
+Global threshold for branches.
+
+#### coverageThreshold[glob-pattern] \[object]
+
+Default: `undefined`
+
+Sets thresholds for files matching the [glob](https://github.com/isaacs/node-glob#glob-primer) pattern. This allows you to enforce a high global standard while also setting specific thresholds for critical files or directories.
+
+:::info
+
+When globs or paths are defined together with a global threshold, Jest applies each threshold independently — specific patterns use their own limits, while the global threshold applies only to files not matched by any pattern.
+
+If the file specified by path is not found, an error is returned.
+
+:::
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -488,10 +526,10 @@ export default defineConfig({
 
 Jest will fail if:
 
-- The `./src/components` directory has less than 40% branch or statement coverage.
+- The `./src/components` directory has less than 40% branch/statement coverage.
 - One of the files matching the `./src/reducers/**/*.js` glob has less than 90% statement coverage.
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
-- Every remaining file combined has less than 50% coverage (`global`).
+- All files that are not matched with `./src/components`, `./src/reducers/**/*.js`, `'./src/api/very-important-module.js'` has less than 50% coverage (`global`).
 
 ### `dependencyExtractor` \[string]
 
