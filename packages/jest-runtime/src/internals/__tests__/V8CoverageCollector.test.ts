@@ -193,6 +193,53 @@ describe('V8CoverageCollector', () => {
     expect(collector.getResult()).toEqual([]);
   });
 
+  test('getResult() uses globalRootDir to filter URLs when set', async () => {
+    const globalRoot = path.resolve('/global-root');
+    const projectRoot = path.join(globalRoot, 'packages', 'project-a');
+    const filePath = path.join(globalRoot, 'packages', 'project-b', 'b.js');
+    const fileUrl = pathToFileURL(filePath).href;
+
+    mockStopInstrumenting.mockResolvedValue([
+      {functions: [], scriptId: '1', url: fileUrl},
+    ]);
+
+    const projectConfig = makeProjectConfig({rootDir: projectRoot});
+    const optionsWithGlobalRoot: ShouldInstrumentOptions = {
+      collectCoverage: true,
+      collectCoverageFrom: [],
+      coverageProvider: 'v8',
+      globalRootDir: globalRoot,
+    };
+
+    const {cache, entries} = makeTransformCache();
+    entries.set(filePath, transform('b'));
+    const collector = new V8CoverageCollector(
+      optionsWithGlobalRoot,
+      projectConfig,
+      cache,
+    );
+    await collector.start();
+    await collector.stop();
+
+    const result = collector.getResult();
+    expect(result).toHaveLength(1);
+    expect(result[0].result.url).toBe(filePath);
+  });
+
+  test('getResult() falls back to config.rootDir when globalRootDir is not set', async () => {
+    mockStopInstrumenting.mockResolvedValue([
+      {functions: [], scriptId: '1', url: outsideUrl},
+    ]);
+
+    const {cache, entries} = makeTransformCache();
+    entries.set(outsidePath, transform('x'));
+    const collector = new V8CoverageCollector(v8Options, config, cache);
+    await collector.start();
+    await collector.stop();
+
+    expect(collector.getResult()).toHaveLength(0);
+  });
+
   test('reset() drops sources and produces an empty result', async () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},

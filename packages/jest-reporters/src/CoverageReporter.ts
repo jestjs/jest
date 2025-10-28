@@ -119,7 +119,7 @@ export default class CoverageReporter extends BaseReporter {
       ) {
         for (const filePath of context.hasteFS.matchFilesWithGlob(
           this._globalConfig.collectCoverageFrom,
-          config.rootDir,
+          this._globalConfig.rootDir,
         ))
           files.push({
             config,

@@ -32,6 +32,7 @@
 - `[jest-config]` Project config validator now emits "is not supported in an individual project configuration" instead of "probably a typing mistake" for known global-only options ([#16132](https://github.com/jestjs/jest/pull/16132))
 - `[jest-environment-node]` Fix `--localstorage-file` warning on Node 25+ ([#16086](https://github.com/jestjs/jest/pull/16086))
 - `[jest-reporters]` Apply global coverage threshold to unmatched pattern files in addition to glob/path thresholds ([#16137](https://github.com/jestjs/jest/pull/16137))
+- `[jest-reporters, jest-runner, jest-runtime, jest-transform]` Fix coverage report not showing correct code coverage when using `projects` config option ([#16140](https://github.com/jestjs/jest/pull/16140))
 - `[jest-runtime]` Resolve `expect` and `@jest/expect` from the internal module registry so test-file imports share the same `JestAssertionError` as the global `expect` ([#16130](https://github.com/jestjs/jest/pull/16130))
 - `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
 - `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))

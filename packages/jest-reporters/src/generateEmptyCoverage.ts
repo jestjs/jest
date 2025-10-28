@@ -37,6 +37,7 @@ export default async function generateEmptyCoverage(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     coverageProvider: globalConfig.coverageProvider,
+    globalRootDir: globalConfig.rootDir,
     sourcesRelatedToTestsInChangedFiles,
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;
