@@ -73,7 +73,9 @@ export default function shouldInstrument(
     // still cover if `only` is specified
     options.collectCoverageFrom.length > 0 &&
     !globsToMatcher(options.collectCoverageFrom)(
-      replacePathSepForGlob(path.relative(config.rootDir, filename)),
+      replacePathSepForGlob(
+        path.relative(options.globalRootDir ?? config.rootDir, filename),
+      ),
     )
   ) {
     return false;

@@ -125,6 +125,28 @@ describe('shouldInstrument', () => {
         forceCoverageMatch: ['**/do/**/*.json'],
       });
     });
+
+    it('when using projects with globalRootDir and file matches collectCoverageFrom', () => {
+      testShouldInstrument(
+        '/root/packages/server/server.js',
+        {
+          collectCoverageFrom: ['server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/server'},
+      );
+    });
+
+    it('when using projects with globalRootDir and file matches collectCoverageFrom with multiple patterns', () => {
+      testShouldInstrument(
+        '/root/packages/client/client.js',
+        {
+          collectCoverageFrom: ['client/**/*.js', 'server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/client'},
+      );
+    });
   });
 
   describe('should return false', () => {
@@ -257,6 +279,17 @@ describe('shouldInstrument', () => {
         'dont/collect/coverage.json',
         defaultOptions,
         defaultConfig,
+      );
+    });
+
+    it('when using projects with globalRootDir and file does not match collectCoverageFrom', () => {
+      testShouldInstrument(
+        '/root/packages/utils/utils.js',
+        {
+          collectCoverageFrom: ['client/**/*.js', 'server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/utils'},
       );
     });
   });
