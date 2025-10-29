@@ -15,6 +15,7 @@ import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
 import normalize, {type AllOptions} from '../normalize';
 
+const env = {...process.env};
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
@@ -85,6 +86,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.mocked(console.warn).mockRestore();
+  process.env = env;
 });
 
 it('picks an id based on the rootDir', async () => {
@@ -805,6 +807,21 @@ describe('testEnvironment', () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testEnvironment).toEqual(
+      require.resolve('jest-environment-node'),
+    );
+  });
+
+  it('resolves to node environment if given arg matches with default value', async () => {
+    process.env.npm_config_user_agent = 'pnpm';
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testEnvironment: 'node',
       },
       {} as Config.Argv,
     );
@@ -2202,5 +2219,22 @@ describe('runInBand', () => {
       runInBand: true,
     } as Config.Argv);
     expect(options.runInBand).toBe(true);
+  });
+});
+
+describe('testSequencer', () => {
+  it('resolves to @jest/test-sequencer if given arg matches with default value and pnpm is used', async () => {
+    process.env.npm_config_user_agent = 'pnpm';
+    const {options} = await normalize(
+      {
+        rootDir: '/root/path/foo',
+        testSequencer: '@jest/test-sequencer',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testSequencer).toMatch(
+      require.resolve('@jest/test-sequencer'),
+    );
   });
 });
