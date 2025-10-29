@@ -526,7 +526,7 @@ export default async function normalize(
   let testEnvironment = options.testEnvironment;
   if (
     `jest-environment-${testEnvironment}` === DEFAULT_CONFIG.testEnvironment &&
-    useSpecificPackageManager('pnpm')
+    useSpecificPackageManager('pnpm', options.rootDir)
   ) {
     testEnvironment = require.resolve(DEFAULT_CONFIG.testEnvironment);
   }
@@ -1013,7 +1013,7 @@ export default async function normalize(
   let testSequencer = options.testSequencer;
   if (
     options.testSequencer === DEFAULT_CONFIG.testSequencer &&
-    useSpecificPackageManager('pnpm')
+    useSpecificPackageManager('pnpm', options.rootDir)
   ) {
     testSequencer = require.resolve(DEFAULT_CONFIG.testSequencer);
   }

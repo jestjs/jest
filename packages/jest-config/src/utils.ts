@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import chalk from 'chalk';
+import {existsSync} from 'graceful-fs';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
@@ -120,5 +121,15 @@ export const isJSONString = (text?: JSONString | string): text is JSONString =>
   text.startsWith('{') &&
   text.endsWith('}');
 
-export const useSpecificPackageManager = (identifier: string): boolean =>
-  !!process.env.npm_config_user_agent?.includes(identifier);
+export const useSpecificPackageManager = (
+  identifier: string,
+  rootDir: string,
+): boolean => {
+  let checkLockFile = false;
+  if (identifier === 'pnpm') {
+    checkLockFile = existsSync(path.join(rootDir, 'pnpm-lock.yaml'));
+  }
+  return (
+    checkLockFile || !!process.env.npm_config_user_agent?.includes(identifier)
+  );
+};
