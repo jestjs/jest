@@ -15,6 +15,7 @@
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
 - `[deps]` Update to sinon/fake-timers v15
+- `[docs]` Removed deprecated create react app reference ([#15883](https://github.com/jestjs/jest/pull/15883))
 
 ## 30.2.0
 
