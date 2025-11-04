@@ -52,6 +52,11 @@ export interface RequireAndTranspileModuleOptions
   applyInteropRequireDefault: boolean;
 }
 
+export type ImportAndTranspileModuleOptions = Pick<
+  Config.GlobalConfig,
+  'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
+>;
+
 export type StringMap = Map<string, string>;
 
 export interface TransformOptions<TransformerConfig = unknown>

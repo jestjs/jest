@@ -6,11 +6,46 @@
  */
 
 import {resolve} from 'path';
-import runJest from '../runJest';
+import {json as runJestJson} from '../runJest';
 
-it('support test environment written in ESM', () => {
-  const DIR = resolve(__dirname, '../test-environment-esm');
-  const {exitCode} = runJest(DIR);
+const DIR = resolve(__dirname, '../test-environment-esm');
+
+it('support test environment written in ESM with `.ts` extension', () => {
+  const {exitCode, json} = runJestJson(DIR, ['testUsingTsEnv.test.js'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
+  });
 
   expect(exitCode).toBe(0);
+  expect(json.numTotalTests).toBe(1);
+  expect(json.numPassedTests).toBe(1);
+});
+
+it('support test environment written in ESM with `.mts` extension', () => {
+  const {exitCode, json} = runJestJson(DIR, ['testUsingMtsEnv.test.js'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
+  });
+
+  expect(exitCode).toBe(0);
+  expect(json.numTotalTests).toBe(1);
+  expect(json.numPassedTests).toBe(1);
+});
+
+it('support test environment written in ESM with `.js` extension', () => {
+  const {exitCode, json} = runJestJson(DIR, ['testUsingJsEnv.test.js'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
+  });
+
+  expect(exitCode).toBe(0);
+  expect(json.numTotalTests).toBe(1);
+  expect(json.numPassedTests).toBe(1);
+});
+
+it('support test environment written in ESM with `.mjs` extension', () => {
+  const {exitCode, json} = runJestJson(DIR, ['testUsingMjsEnv.test.js'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
+  });
+
+  expect(exitCode).toBe(0);
+  expect(json.numTotalTests).toBe(1);
+  expect(json.numPassedTests).toBe(1);
 });

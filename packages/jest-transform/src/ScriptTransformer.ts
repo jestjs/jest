@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -35,6 +35,7 @@ import {
 import shouldInstrument from './shouldInstrument';
 import type {
   FixedRawSourceMap,
+  ImportAndTranspileModuleOptions,
   Options,
   ReducedTransformOptions,
   RequireAndTranspileModuleOptions,
@@ -80,6 +81,32 @@ function isTransformerFactory<X extends Transformer>(
   t: Transformer | TransformerFactory<X>,
 ): t is TransformerFactory<X> {
   return typeof (t as TransformerFactory<X>).createTransformer === 'function';
+}
+
+async function loadEsmModule<ModuleType = unknown>(
+  filePath: string,
+  callback?: (module: ModuleType) => void | Promise<void>,
+): Promise<ModuleType> {
+  const moduleType: object = await requireOrImportModule(filePath);
+  const esmModule = (
+    'default' in moduleType ? moduleType.default : moduleType
+  ) as ModuleType;
+
+  if (callback) {
+    const cbResult = callback(esmModule);
+    if (isPromise(cbResult)) {
+      await cbResult;
+    }
+  }
+
+  return esmModule;
+}
+
+function getEsmCacheExtension(ext: string): string {
+  if (ext === '.mts' || ext === '.mtsx') return '.mjs';
+  if (ext === '.ts' || ext === '.tsx') return '.js';
+
+  return ext;
 }
 
 class ScriptTransformer {
@@ -842,6 +869,58 @@ class ScriptTransformer {
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
     return this._config.transform.length > 0 && !isIgnored;
+  }
+
+  /**
+   * Transforms and imports an ES module.
+   * Unlike {@link requireAndTranspileModule} this method first attempts to import
+   * the file via {@link requireOrImportModule} and fallback to transform files and
+   * then imports it again.
+   *
+   * The fallback case is necessary for TypeScript files in ESM format
+   */
+  async importAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void | Promise<void>,
+    options?: ImportAndTranspileModuleOptions,
+  ): Promise<ModuleType> {
+    const transformOptions: Options = {
+      collectCoverage: options?.collectCoverage ?? false,
+      collectCoverageFrom: options?.collectCoverageFrom ?? [],
+      coverageProvider: options?.coverageProvider ?? 'v8',
+      isInternalModule: false,
+      supportsDynamicImport: true,
+      supportsExportNamespaceFrom: true,
+      supportsStaticESM: true,
+      supportsTopLevelAwait: true,
+      ...options,
+    };
+    try {
+      return await loadEsmModule(moduleName, callback);
+    } catch {
+      const transformResult = await this.transformAsync(
+        moduleName,
+        transformOptions,
+      );
+      const fileExt = path.extname(moduleName);
+      const targetExt = getEsmCacheExtension(fileExt);
+      const tempTransformedPath = moduleName.replace(
+        fileExt,
+        `.jest-esm-transform-${Date.now()}${targetExt}`,
+      );
+
+      fs.writeFileSync(tempTransformedPath, transformResult.code, 'utf8');
+
+      try {
+        return await loadEsmModule(tempTransformedPath, callback);
+      } finally {
+        try {
+          fs.unlinkSync(tempTransformedPath);
+        } catch {
+          // Ignore cleanup errors
+        }
+      }
+    }
   }
 }
 
