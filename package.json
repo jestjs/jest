@@ -61,7 +61,7 @@
     "jest-util": "workspace:*",
     "jest-watch-typeahead": "^3.0.1",
     "jquery": "^3.2.1",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "micromatch": "^4.0.8",
     "mock-fs": "^5.5.0",
     "netlify-plugin-cache": "^1.0.3",
