@@ -23,7 +23,7 @@ jobs:
       - name: Use Node.js nightly build
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 23-nightly
+          node-version: 26-nightly
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -57,7 +57,7 @@ jobs:
       - name: Use Node.js nightly build
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 23-nightly
+          node-version: 26-nightly
           cache: yarn
       - name: install
         run: yarn --immutable
