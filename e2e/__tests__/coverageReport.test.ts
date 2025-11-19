@@ -189,3 +189,13 @@ test('generates coverage when using the testRegex config param ', () => {
   expect(stdout).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
+
+test('outputs coverage report with projects option', () => {
+  const projectDir = path.resolve(__dirname, '../coverage-with-projects');
+  const {stdout, exitCode} = runJest(projectDir, ['--no-cache', '--coverage'], {
+    stripAnsi: true,
+  });
+
+  expect(stdout).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
