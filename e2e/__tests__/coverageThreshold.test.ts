@@ -129,38 +129,100 @@ test('exits with 0 if global threshold group is not found in coverage data', () 
   expect(stdout).toMatchSnapshot('stdout');
 });
 
-test('excludes tests matched by path threshold groups from global group', () => {
+test('exists with 1 if coverage threshold of the rest of non matched paths is not met', () => {
   const pkgJson = {
     jest: {
       collectCoverage: true,
       collectCoverageFrom: ['**/*.js'],
       coverageThreshold: {
-        'banana.js': {
-          lines: 100,
+        '**/*.js': {
+          branches: 50,
+          functions: 50,
+          lines: 50,
+          statements: 50,
         },
         global: {
-          lines: 100,
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
         },
       },
+      testRegex: '.*\\.test\\.js$',
     },
   };
-
   writeFiles(DIR, {
-    '__tests__/banana.test.js': `
-      const banana = require('../banana.js');
-      test('banana', () => expect(banana()).toBe(3));
-    `,
-    'apple.js': `
-      module.exports = () => {
-        return 1 + 2;
-      };
-    `,
-    'banana.js': `
-      module.exports = () => {
-        return 1 + 2;
-      };
-    `,
     'package.json': JSON.stringify(pkgJson, null, 2),
+    'product.js': `
+      function product(a, b) {
+      // let's simulate a 50% code coverage
+        if (a > 0) {
+          return a * b;
+        } else {
+          return a * b;
+        }
+      }
+
+      module.exports = product;
+    `,
+    'product.test.js': `
+      test('multiplies 2 * 3 to equal 6', () => {
+        const sum = require('./product');
+        expect(sum(2, 3)).toBe(6);
+      });
+    `,
+    'sum-01.js': `
+      function sum(a, b) {
+        return a + b;
+      }
+
+      module.exports = sum;
+    `,
+    'sum-01.test.js': `
+      test('adds 1 + 2 to equal 3', () => {
+        const sum = require('./sum-01');
+        expect(sum(1, 2)).toBe(3);
+      });
+    `,
+    'sum-02.js': `
+      function sum(a, b) {
+        return a + b;
+      }
+
+      module.exports = sum;
+    `,
+    'sum-02.test.js': `
+      test('adds 1 + 2 to equal 3', () => {
+        const sum = require('./sum-02');
+        expect(sum(1, 2)).toBe(3);
+      });
+    `,
+    'sum-03.js': `
+      function sum(a, b) {
+        return a + b;
+      }
+
+      module.exports = sum;
+    `,
+    'sum-03.test.js': `
+      test('adds 1 + 2 to equal 3', () => {
+        const sum = require('./sum-03');
+        expect(sum(1, 2)).toBe(3);
+      });
+    `,
+    'sum-04.js': `
+      function sum(a, b) {
+        return a + b;
+      }
+
+      module.exports = sum;
+    `,
+    'sum-04.test.js': `
+      test('adds 1 + 2 to equal 3', () => {
+        const sum = require('./sum-04');
+        expect(sum(1, 2)).toBe(3);
+      });
+    `,
   });
 
   const {stdout, stderr, exitCode} = runJest(
@@ -168,10 +230,59 @@ test('excludes tests matched by path threshold groups from global group', () => 
     ['--coverage', '--ci=false'],
     {stripAnsi: true},
   );
-  const {rest, summary} = extractSummary(stderr);
+  const {summary} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot('stdout');
+});
+
+test('exists with 1 if coverage threshold of matched paths is not met independently from global threshold', () => {
+  const pkgJson = {
+    jest: {
+      collectCoverage: true,
+      collectCoverageFrom: ['**/*.js'],
+      coverageThreshold: {
+        global: {
+          lines: 70,
+        },
+        'product.js': {
+          lines: 80,
+        },
+      },
+      testRegex: '.*\\.test\\.js$',
+    },
+  };
+  writeFiles(DIR, {
+    'package.json': JSON.stringify(pkgJson, null, 2),
+    'product.js': `
+      function product(a, b) {
+      // let's simulate a 50% code coverage
+        if (a > 0) {
+          return a * b;
+        } else {
+          return a * b;
+        }
+      }
+
+      module.exports = product;
+    `,
+    'product.test.js': `
+      test('multiplies 2 * 3 to equal 6', () => {
+        const sum = require('./product');
+        expect(sum(2, 3)).toBe(6);
+      });
+    `,
+  });
+
+  const {stdout, stderr, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {stripAnsi: true},
+  );
+  const {summary} = extractSummary(stderr);
+
+  expect(exitCode).toBe(1);
   expect(summary).toMatchSnapshot();
   expect(stdout).toMatchSnapshot('stdout');
 });
