@@ -1,7 +1,17 @@
 {
   "type": "module",
   "jest": {
-    "testEnvironment": "<rootDir>/EnvESM.js",
-    "transform": {}
+    "transform": {
+      "^.+\\.(ts|mts)$": "babel-jest"
+    },
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".mts"
+    ]
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "jest-environment-node": "file:../../packages/jest-environment-node"
   }
 }

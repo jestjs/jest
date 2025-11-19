@@ -2072,6 +2072,183 @@ describe('ScriptTransformer', () => {
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });
+
+  it('importAndTranspileModule should load ESM module directly if possible', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      extensionsToTreatAsEsm: ['.mjs'],
+      transform: [['\\.mjs$', 'test_async_preprocessor', {}]],
+    });
+    mockFs['/fruits/banana.mjs'] = 'export default class Banana {}';
+    class MockBanana {}
+    const mockRequireOrImportModule = jest.fn((_fileName: string) =>
+      Promise.resolve({
+        default: MockBanana,
+      }),
+    );
+    jest
+      .spyOn(
+        require('jest-util') as typeof import('jest-util'),
+        'requireOrImportModule',
+      )
+      .mockImplementation(mockRequireOrImportModule);
+
+    const result =
+      await scriptTransformer.importAndTranspileModule('/fruits/banana.mjs');
+
+    expect(result).toStrictEqual(MockBanana);
+    expect(mockRequireOrImportModule).toHaveBeenCalledWith(
+      '/fruits/banana.mjs',
+    );
+  });
+
+  it('should use module as-is when no default export', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      extensionsToTreatAsEsm: ['.mts'],
+      transform: [['\\.mts$', 'test_async_preprocessor', {}]],
+    });
+    mockFs['/fruits/banana.mts'] = 'export const banana = "yellow";';
+    const mockModule = {banana: 'yellow'};
+    jest
+      .spyOn(
+        require('jest-util') as typeof import('jest-util'),
+        'requireOrImportModule',
+      )
+      .mockImplementation(() => Promise.resolve(mockModule));
+
+    const result =
+      await scriptTransformer.importAndTranspileModule('/fruits/banana.mts');
+
+    expect(result).toStrictEqual(mockModule);
+  });
+
+  it('importAndTranspileModule should transform and create temp file when direct load fails', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      extensionsToTreatAsEsm: ['.ts'],
+      transform: [['\\.ts$', 'test_async_preprocessor', {}]],
+    });
+    mockFs['/fruits/banana.ts'] = 'export default class Banana {}';
+    class MockBanana {}
+    let callCount = 0;
+    const mockRequireOrImportModule = jest.fn(() => {
+      callCount++;
+      if (callCount === 1) {
+        // First call (direct load) fails
+        throw new Error('Cannot load untransformed TypeScript');
+      }
+
+      // Second call (after transformation) succeeds
+      return Promise.resolve({default: MockBanana});
+    });
+    jest
+      .spyOn(
+        require('jest-util') as typeof import('jest-util'),
+        'requireOrImportModule',
+      )
+      .mockImplementation(mockRequireOrImportModule);
+
+    const result =
+      await scriptTransformer.importAndTranspileModule('/fruits/banana.ts');
+
+    expect(result).toStrictEqual(MockBanana);
+    // Should be called twice: once for direct load, once for transformed file
+    expect(mockRequireOrImportModule).toHaveBeenCalledTimes(2);
+
+    // Check that writeFileSync was called with a temp file path
+    const writeFileCalls = (fs.writeFileSync as jest.Mock).mock.calls;
+    const tempFileCalls = writeFileCalls.filter(
+      call =>
+        typeof call[0] === 'string' && call[0].includes('.jest-esm-transform-'),
+    );
+
+    expect(tempFileCalls.length).toBeGreaterThan(0);
+    // Verify the temp file path doesn't overwrite the original
+    const tempFilePath = tempFileCalls[0][0];
+    expect(tempFilePath).not.toBe('/fruits/banana.ts');
+    expect(tempFilePath).toMatch(/\.jest-esm-transform-\d+\.js$/);
+  });
+
+  it.each(['/fruits/banana.mts', '/fruits/banana.ts'])(
+    'importAndTranspileModule should create temp file with correct extension for TypeScript files',
+    async fileName => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        extensionsToTreatAsEsm: ['ts', '.mts'],
+        transform: [['\\.(mts|ts)$', 'test_async_preprocessor', {}]],
+      });
+      mockFs[fileName] = 'export default class Banana {}';
+      class MockBanana {}
+      let callCount = 0;
+      const mockRequireOrImportModule = jest.fn(() => {
+        callCount++;
+        if (callCount === 1) {
+          throw new Error('Cannot load untransformed TypeScript');
+        }
+        return Promise.resolve({default: MockBanana});
+      });
+
+      jest
+        .spyOn(
+          require('jest-util') as typeof import('jest-util'),
+          'requireOrImportModule',
+        )
+        .mockImplementation(mockRequireOrImportModule);
+
+      await scriptTransformer.importAndTranspileModule(fileName);
+
+      // Check that writeFileSync was called with a temp file path
+      const writeFileCalls = (fs.writeFileSync as jest.Mock).mock.calls;
+      const tempFileCalls = writeFileCalls.filter(
+        call =>
+          typeof call[0] === 'string' &&
+          call[0].includes('.jest-esm-transform-'),
+      );
+
+      expect(tempFileCalls.length).toBeGreaterThan(0);
+      // Verify the temp file path doesn't overwrite the original
+      const tempFilePath = tempFileCalls[0][0];
+      expect(tempFilePath).not.toBe(fileName);
+      expect(tempFilePath).toMatch(/\.jest-esm-transform-\d+\.(mjs|js)$/);
+    },
+  );
+
+  it('importAndTranspileModule should cleanup temp file after transformation', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      extensionsToTreatAsEsm: ['.mts'],
+      transform: [['\\.mts$', 'test_async_preprocessor', {}]],
+    });
+    mockFs['/fruits/banana.mts'] = 'export default class Banana {}';
+    class MockBanana {}
+    let callCount = 0;
+    const mockRequireOrImportModule = jest.fn(() => {
+      callCount++;
+      if (callCount === 1) {
+        throw new Error('Cannot load untransformed TypeScript');
+      }
+
+      return Promise.resolve({default: MockBanana});
+    });
+
+    jest
+      .spyOn(
+        require('jest-util') as typeof import('jest-util'),
+        'requireOrImportModule',
+      )
+      .mockImplementation(mockRequireOrImportModule);
+
+    await scriptTransformer.importAndTranspileModule('/fruits/banana.mts');
+
+    expect(fs.unlinkSync).toHaveBeenCalled();
+    const unlinkCalls = (fs.unlinkSync as jest.Mock).mock.calls;
+    const tempFileUnlinks = unlinkCalls.filter(
+      call =>
+        typeof call[0] === 'string' && call[0].includes('.jest-esm-transform-'),
+    );
+    expect(tempFileUnlinks.length).toBeGreaterThan(0);
+  });
 });
 
 function getTransformOptions(instrument: boolean): ReducedTransformOptions {
