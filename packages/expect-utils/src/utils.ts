@@ -144,9 +144,11 @@ export const getObjectSubset = (
     const trimmed: any = {};
     seenReferences.set(object, trimmed);
 
-    for (const key of getObjectKeys(object).filter(key =>
-      hasPropertyInObject(subset, key),
-    )) {
+    for (const key of getObjectKeys(object)) {
+      if (!hasPropertyInObject(subset, key)) {
+        continue;
+      }
+
       trimmed[key] = seenReferences.has(object[key])
         ? seenReferences.get(object[key])
         : getObjectSubset(
