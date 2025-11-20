@@ -7,17 +7,7 @@ At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
-### Setup with Create React App
-
-If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
-
-Run
-
-```bash npm2yarn
-npm install --save-dev react-test-renderer
-```
-
-### Setup without Create React App
+### Setup for React app
 
 If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](GettingStarted.md#using-babel).
 
