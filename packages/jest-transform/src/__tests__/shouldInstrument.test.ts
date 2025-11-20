@@ -18,7 +18,10 @@ describe('shouldInstrument', () => {
     }),
     changedFiles: undefined,
   };
-  const defaultConfig = makeProjectConfig({rootDir: '/'});
+  const defaultConfig = makeProjectConfig({
+    collectCoverage: undefined,
+    rootDir: '/',
+  });
   describe('should return true', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
