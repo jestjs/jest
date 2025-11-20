@@ -89,10 +89,7 @@ module.exports = defineConfig({
     // 6. Enforce engines.node for public workspaces
     for (const workspace of Yarn.workspaces()) {
       if (workspace.manifest.private !== true) {
-        workspace.set(
-          ['engines', 'node'],
-          '^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0',
-        );
+        workspace.set(['engines', 'node'], '^20.0.0 || ^22.0.0 || >=24.0.0');
       }
     }
 

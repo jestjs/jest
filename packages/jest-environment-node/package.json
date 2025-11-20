@@ -39,7 +39,7 @@
     "test": "yarn test:globals-cleanup-off && yarn test:globals-cleanup-soft && yarn test:globals-cleanup-on"
   },
   "engines": {
-    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"
