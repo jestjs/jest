@@ -123,13 +123,21 @@ export interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
-const nodeNumberWarning = /\(node:\d+\) Warning: `--localstorage-file`/g;
-const nodeNumberReplacement = '(node: line) Warning: `--localstorage-file`';
+// https://github.com/nodejs/node/issues/60704
+function removeLocalStorageWarning(stream: string): string {
+  const nodeNumberWarning = /\(node:\d+\) Warning: `--localstorage-file`/g;
+  const nodeNumberReplacement = '(node: line) Warning: `--localstorage-file`';
 
-const localStorageWarning =
-  `${nodeNumberReplacement} was provided without a valid path\n` +
-  '(Use `node --trace-warnings ...` to show where the warning was created)';
-const localStorageWarningWithNewlines = `\n\n${localStorageWarning}`;
+  const localStorageWarning =
+    `${nodeNumberReplacement} was provided without a valid path\n` +
+    '(Use `node --trace-warnings ...` to show where the warning was created)';
+  const localStorageWarningWithNewlines = `\n\n${localStorageWarning}`;
+
+  return stream
+    .replaceAll(nodeNumberWarning, nodeNumberReplacement)
+    .replaceAll(localStorageWarningWithNewlines, '')
+    .replaceAll(localStorageWarning, '');
+}
 
 function normalizeStreamString(
   stream: string,
@@ -137,10 +145,7 @@ function normalizeStreamString(
 ): string {
   if (options.stripAnsi) stream = stripAnsi(stream);
   stream = normalizeIcons(stream);
-
-  stream = stream.replaceAll(nodeNumberWarning, nodeNumberReplacement);
-  stream = stream.replaceAll(localStorageWarningWithNewlines, '');
-  stream = stream.replaceAll(localStorageWarning, '');
+  stream = removeLocalStorageWarning(stream);
 
   return stream;
 }
