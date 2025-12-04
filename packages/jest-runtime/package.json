@@ -18,6 +18,11 @@
     },
     "./package.json": "./package.json"
   },
+  "scripts": {
+  "build": "tsc -p tsconfig.json",
+  "test": "jest",
+  "lint": "eslint src --ext .ts,.js"
+  }
   "dependencies": {
     "@jest/environment": "workspace:*",
     "@jest/fake-timers": "workspace:*",
