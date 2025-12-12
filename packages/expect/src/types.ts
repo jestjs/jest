@@ -22,8 +22,8 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
-  Expected extends
-    Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
+  Expected extends Array<any> =
+    [] /** TODO should be: extends Array<unknown> = [] */,
 > = (
   this: Context,
   actual: unknown,

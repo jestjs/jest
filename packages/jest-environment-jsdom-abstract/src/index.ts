@@ -30,9 +30,7 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
-export default abstract class BaseJSDOMEnvironment
-  implements JestEnvironment<number>
-{
+export default abstract class BaseJSDOMEnvironment implements JestEnvironment<number> {
   dom: jsdom.JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;

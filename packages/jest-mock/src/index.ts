@@ -121,8 +121,7 @@ export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
  * is provided, its typings are inferred correctly.
  */
 export interface Mock<T extends FunctionLike = UnknownFunction>
-  extends Function,
-    MockInstance<T> {
+  extends Function, MockInstance<T> {
   new (...args: Parameters<T>): ReturnType<T>;
   (...args: Parameters<T>): ReturnType<T>;
 }
@@ -133,8 +132,9 @@ type ResolveType<T extends FunctionLike> =
 type RejectType<T extends FunctionLike> =
   ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
-export interface MockInstance<T extends FunctionLike = UnknownFunction>
-  extends Disposable {
+export interface MockInstance<
+  T extends FunctionLike = UnknownFunction,
+> extends Disposable {
   _isMockFunction: true;
   _protoImpl: Function;
   getMockImplementation(): T | undefined;
