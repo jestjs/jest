@@ -16,7 +16,7 @@
     "diff"
   ],
   "engines": {
-    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
