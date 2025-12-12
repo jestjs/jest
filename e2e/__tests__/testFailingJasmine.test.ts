@@ -18,5 +18,10 @@ test('throws an error about unsupported modifier', () => {
   const result = runJest(dir);
   expect(result.exitCode).toBe(1);
   const {rest} = extractSortedSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+  expect(
+    rest.replaceAll(
+      'at Function.failing (../../packages/jest-jasmine2/',
+      'at concurrentFn.failing (../../packages/jest-jasmine2/',
+    ),
+  ).toMatchSnapshot();
 });

@@ -651,6 +651,11 @@ expect(jest.useFakeTimers('modern')).type.toRaiseError();
 expect(jest.useRealTimers()).type.toBe<typeof jest>();
 expect(jest.useRealTimers(true)).type.toRaiseError();
 
+expect(jest.setTimerTickMode('manual')).type.toRaiseError();
+expect(jest.setTimerTickMode({mode: 'interval'})).type.toBe<typeof jest>();
+expect(jest.setTimerTickMode({mode: 'manual'})).type.toBe<typeof jest>();
+expect(jest.setTimerTickMode({mode: 'nextAsync'})).type.toBe<typeof jest>();
+
 // Misc
 
 expect(jest.retryTimes(3)).type.toBe<typeof jest>();

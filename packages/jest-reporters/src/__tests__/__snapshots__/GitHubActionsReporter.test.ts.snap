@@ -72,6 +72,80 @@ Array [
 ]
 `;
 
+exports[`logs Reporter interface onTestResult last with console output for failed test 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> test1.js (20 ms)
+",
+  ],
+  Array [
+    "    <dim>console.log</intensity>
+      bar
+<dim></intensity>
+<dim>      <dim>at Object.log (</intensity><dim>../tmp/jest-test/a.test.js<dim>:2:13)</intensity><dim></intensity>
+
+",
+  ],
+  Array [
+    "  <green>✓</color> test1 (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+  Array [
+    "
+",
+  ],
+  Array [
+    "::group::Errors thrown in test1.js
+",
+  ],
+  Array [
+    "    <dim>console.log</intensity>
+      bar
+<dim></intensity>
+<dim>      <dim>at Object.log (</intensity><dim>../tmp/jest-test/a.test.js<dim>:2:13)</intensity><dim></intensity>
+
+",
+  ],
+  Array [
+    "Failure message
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Reporter interface onTestResult last with console output for success test 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> test1.js (20 ms)
+",
+  ],
+  Array [
+    "    <dim>console.log</intensity>
+      bar
+<dim></intensity>
+<dim>      <dim>at Object.log (</intensity><dim>../tmp/jest-test/a.test.js<dim>:2:13)</intensity><dim></intensity>
+
+",
+  ],
+  Array [
+    "  <green>✓</color> test1 (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
 exports[`logs Reporter interface onTestResult not last 1`] = `
 Array [
   Array [

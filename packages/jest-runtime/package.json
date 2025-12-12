@@ -30,7 +30,7 @@
     "chalk": "^4.1.2",
     "cjs-module-lexer": "^2.1.0",
     "collect-v8-coverage": "^1.0.2",
-    "glob": "^10.3.10",
+    "glob": "^10.5.0",
     "graceful-fs": "^4.2.11",
     "jest-haste-map": "workspace:*",
     "jest-message-util": "workspace:*",

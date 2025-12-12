@@ -52,7 +52,7 @@
     "@types/react": "^18.3.23",
     "graphql": "^16.11.0",
     "graphql-request": "^6.1.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "typescript": "^5.8.3"
   }
 }

@@ -118,7 +118,7 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error - doesn't exist?
+      // @ts-expect-error needs an upstream fix: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/73943
       this._clock.runMicrotasks();
     }
   }
@@ -153,6 +153,15 @@ export default class FakeTimers {
   setSystemTime(now?: number | Date): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(now);
+    }
+  }
+
+  setTimerTickMode(tickModeConfig: {
+    mode: 'interval' | 'manual' | 'nextAsync';
+    delta?: number;
+  }): void {
+    if (this._checkFakeTimers()) {
+      this._clock.setTickMode(tickModeConfig);
     }
   }
 
