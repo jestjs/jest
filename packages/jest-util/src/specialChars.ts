@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const isWindows = process.platform === 'win32';
+export const isWindows = process.platform === 'win32';
 
 export const ARROW = ' \u203A ';
 export const ICONS = {
