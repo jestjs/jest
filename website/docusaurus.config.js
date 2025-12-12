@@ -76,9 +76,7 @@ const config = {
             path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
-            require.resolve(
-              'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
-            ),
+            require.resolve('react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'),
           ],
         },
         gtag: {

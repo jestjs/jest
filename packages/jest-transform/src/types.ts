@@ -8,18 +8,16 @@
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Config, TransformTypes} from '@jest/types';
 
-export interface ShouldInstrumentOptions
-  extends Pick<
-    Config.GlobalConfig,
-    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
-  > {
+export interface ShouldInstrumentOptions extends Pick<
+  Config.GlobalConfig,
+  'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
+> {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
 }
 
 export interface Options
-  extends ShouldInstrumentOptions,
-    CallerTransformOptions {
+  extends ShouldInstrumentOptions, CallerTransformOptions {
   isInternalModule?: boolean;
 }
 
@@ -47,15 +45,15 @@ export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
-export interface RequireAndTranspileModuleOptions
-  extends ReducedTransformOptions {
+export interface RequireAndTranspileModuleOptions extends ReducedTransformOptions {
   applyInteropRequireDefault: boolean;
 }
 
 export type StringMap = Map<string, string>;
 
-export interface TransformOptions<TransformerConfig = unknown>
-  extends ReducedTransformOptions {
+export interface TransformOptions<
+  TransformerConfig = unknown,
+> extends ReducedTransformOptions {
   /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: StringMap;
   /** Jest configuration of currently running project. */
