@@ -207,5 +207,5 @@
     "lru-cache@^10.2.2": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@4.10.3"
+  "packageManager": "yarn@4.12.0"
 }
