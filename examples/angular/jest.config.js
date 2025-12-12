@@ -1,8 +1,13 @@
+// eslint-disable-next-line import-x/no-extraneous-dependencies
+const {createCjsPreset} = require('jest-preset-angular/presets');
+
 module.exports = {
-  moduleFileExtensions: ['ts', 'html', 'js', 'json'],
+  ...createCjsPreset({
+    diagnostics: {
+      // https://github.com/kulshekhar/ts-jest/issues/3820
+      ignoreCodes: [151_001],
+    },
+    tsconfig: '<rootDir>/tsconfig.json',
+  }),
   setupFilesAfterEnv: ['<rootDir>/setupJest.js'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '\\.[tj]s$': ['babel-jest', {configFile: require.resolve('./.babelrc')}],
-  },
 };
