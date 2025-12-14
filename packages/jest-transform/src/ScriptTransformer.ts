@@ -845,21 +845,13 @@ class ScriptTransformer {
   }
 }
 
-// TODO: do we need to define the generics twice?
-export async function createTranspilingRequire(
-  config: Config.ProjectConfig,
-): Promise<
-  <TModuleType = unknown>(
-    resolverPath: string,
-    applyInteropRequireDefault?: boolean,
-  ) => Promise<TModuleType>
-> {
+export async function createTranspilingRequire(config: Config.ProjectConfig) {
   const transformer = await createScriptTransformer(config);
 
   return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
     applyInteropRequireDefault = false,
-  ) {
+  ): Promise<TModuleType> {
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
         resolverPath,
