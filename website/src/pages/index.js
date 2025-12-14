@@ -31,6 +31,7 @@ function TwitterButton() {
     <a
       href="https://twitter.com/intent/follow?screen_name=jestjs_&region=follow_link"
       target="_blank"
+      rel="nofollow noopener"
       className={styles['twitter-follow-button']}
     >
       <div className={styles['twitter-follow-button--icon']} />
