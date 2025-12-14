@@ -1110,8 +1110,9 @@ export default async function normalize(
     newOptions.testMatch = [];
   }
 
-  // If argv.json is set, coverageReporters shouldn't print a text report.
-  if (argv.json) {
+  // If argv.json is set without an outputFile, coverageReporters shouldn't print
+  // a text report to avoid polluting the JSON written to stdout.
+  if (argv.json && !argv.outputFile) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );

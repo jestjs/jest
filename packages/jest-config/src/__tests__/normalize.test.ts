@@ -174,6 +174,20 @@ it('sets coverageReporters correctly when argv.json is set', async () => {
   expect(options.coverageReporters).toEqual(['json', 'lcov', 'clover']);
 });
 
+it('keeps text coverage reporter when argv.json and outputFile are set', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/path/foo',
+    },
+    {
+      json: true,
+      outputFile: 'results.json',
+    } as Config.Argv,
+  );
+
+  expect(options.coverageReporters).toEqual(['json', 'text', 'lcov', 'clover']);
+});
+
 describe('rootDir', () => {
   it('throws if the options is missing a rootDir property', async () => {
     expect.assertions(1);
