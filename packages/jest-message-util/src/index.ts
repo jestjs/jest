@@ -11,7 +11,7 @@ import {types} from 'util';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import micromatch from 'micromatch';
+import picomatch from 'picomatch';
 import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Config, TestResult} from '@jest/types';
@@ -306,7 +306,7 @@ export const formatPath = (
   if (
     (config.testMatch &&
       config.testMatch.length > 0 &&
-      micromatch([filePath], config.testMatch).length > 0) ||
+      picomatch(config.testMatch)(filePath)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);

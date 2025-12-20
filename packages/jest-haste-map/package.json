@@ -27,13 +27,13 @@
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "jest-worker": "workspace:*",
-    "micromatch": "^4.0.8",
+    "picomatch": "^4.0.3",
     "walker": "^1.0.8"
   },
   "devDependencies": {
     "@types/fb-watchman": "^2.0.5",
     "@types/graceful-fs": "^4.1.9",
-    "@types/micromatch": "^4.0.9",
+    "@types/picomatch": "^4.0.0",
     "slash": "^3.0.0"
   },
   "optionalDependencies": {

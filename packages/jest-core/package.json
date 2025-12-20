@@ -39,15 +39,13 @@
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
     "jest-watcher": "workspace:*",
-    "micromatch": "^4.0.8",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0"
   },
   "devDependencies": {
     "@jest/test-sequencer": "workspace:*",
     "@jest/test-utils": "workspace:*",
-    "@types/graceful-fs": "^4.1.9",
-    "@types/micromatch": "^4.0.9"
+    "@types/graceful-fs": "^4.1.9"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"

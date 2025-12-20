@@ -12,7 +12,6 @@ import chalk from 'chalk';
 import merge from 'deepmerge';
 import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
-import micromatch from 'micromatch';
 import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -24,6 +23,7 @@ import Resolver, {
 } from 'jest-resolve';
 import {
   clearLine,
+  globsToMatcher,
   replacePathSepForGlob,
   requireOrImportModule,
   tryRealpath,
@@ -1135,10 +1135,9 @@ export default async function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          micromatch(
-            [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom,
-          ).length === 0
+          !globsToMatcher(newOptions.collectCoverageFrom)(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
+          )
         ) {
           return patterns;
         }
