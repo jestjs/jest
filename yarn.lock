@@ -4260,7 +4260,6 @@ __metadata:
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
     "@types/node": "npm:*"
     ansi-escapes: "npm:^4.3.2"
     chalk: "npm:^4.1.2"
@@ -4280,7 +4279,6 @@ __metadata:
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     jest-watcher: "workspace:*"
-    micromatch: "npm:^4.0.8"
     pretty-format: "workspace:*"
     slash: "npm:^3.0.0"
   peerDependencies:
@@ -6775,15 +6773,6 @@ __metadata:
   dependencies:
     "@types/braces": "npm:*"
   checksum: 10/192b53ffb6c74349c91bdc4d8a38de3d240e919a69525c12415f658d9844e413550e6e676f42e3cd787679c200f4250a746044c8d81d0b716eeaefbb60d120c8
-  languageName: node
-  linkType: hard
-
-"@types/micromatch@npm:^4.0.9":
-  version: 4.0.9
-  resolution: "@types/micromatch@npm:4.0.9"
-  dependencies:
-    "@types/braces": "npm:*"
-  checksum: 10/324f4bcb4a7caa2048bdd650f442d2c24b5bf6bc95e4d63d4741bd234fdcf3cde140217bd477b2c02c7fb0034c7293037fd7b61429ace84e997dd3b4d3b2b2f7
   languageName: node
   linkType: hard
 
