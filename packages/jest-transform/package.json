@@ -30,7 +30,6 @@
     "jest-haste-map": "workspace:*",
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
-    "micromatch": "^4.0.8",
     "pirates": "^4.0.7",
     "slash": "^3.0.0",
     "write-file-atomic": "^5.0.1"
@@ -40,7 +39,6 @@
     "@types/babel__core": "^7.20.5",
     "@types/convert-source-map": "^2.0.3",
     "@types/graceful-fs": "^4.1.9",
-    "@types/micromatch": "^4.0.9",
     "@types/write-file-atomic": "^4.0.3",
     "dedent": "^1.6.0"
   },
