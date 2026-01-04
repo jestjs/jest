@@ -94,10 +94,6 @@ export default abstract class BaseJSDOMEnvironment implements JestEnvironment<nu
     );
     const global = (this.global = this.dom.window as unknown as Win);
 
-    if (global == null) {
-      throw new Error('JSDOM did not return a Window object');
-    }
-
     // TODO: remove at some point - for "universal" code (code should use `globalThis`)
     global.global = global;
 
