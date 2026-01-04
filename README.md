@@ -18,11 +18,11 @@
 
 <h2 align="center">🃏 Delightful JavaScript Testing</h2>
 
-**👩🏻‍💻 Developer Ready**: A comprehensive JavaScript testing solution. Works out of the box for most JavaScript projects.
+**👩🏻‍💻 Developer Ready**: A comprehensive JavaScript testing solution that works out of the box for most JavaScript projects.
 
-**🏃🏽 Instant Feedback**: Fast, interactive watch mode only runs test files related to changed files.
+**🏃🏽 Instant Feedback**: The fast, interactive watch mode that only runs test files related to changed files.
 
-**📸 Snapshot Testing**: Capture snapshots of large objects to simplify testing and to analyze how they change over time.
+**📸 Snapshot Testing**: Capture snapshots of large objects to simplify testing and analyze how they change over time.
 
 <p align="right"><em>See more on <a href="https://jestjs.io">jestjs.io</a></em></p>
 
@@ -96,7 +96,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm test` and Jest will print this message:
+Finally, run `yarn test` or `npm test`, and Jest will print the following message:
 
 ```bash
 PASS  ./sum.test.js
