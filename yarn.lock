@@ -4483,7 +4483,7 @@ __metadata:
     strip-json-comments: "npm:^3.1.1"
     tempy: "npm:^1.0.1"
     ts-node: "npm:^10.5.0"
-    tstyche: "npm:^4.0.0"
+    tstyche: "npm:^5.0.0"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.38.0"
     webpack: "npm:^5.68.0"
@@ -21463,17 +21463,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "tstyche@npm:4.0.0"
+"tstyche@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "tstyche@npm:5.0.2"
   peerDependencies:
-    typescript: ">=4.7"
+    typescript: ">=5.0"
   peerDependenciesMeta:
     typescript:
       optional: true
   bin:
     tstyche: ./build/bin.js
-  checksum: 10/3ad68c8db11c70ae2b9450bed1c721c7f9f2892c4b2ac24a684a2fd9813bc6105925aea7564bacf949b7b372b282f3f024e38e981761a47bff75777c38f3d594
+  checksum: 10/bbc11c2f7c5c1cbf4f848a9af1eef947cf9b2643491a59fb7dbaa903bb15bba620dad24904c3db6279f206a23599d97d47f9d9e00473c54f6bb9375a7dc26178
   languageName: node
   linkType: hard
 
