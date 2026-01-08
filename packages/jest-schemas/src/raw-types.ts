@@ -34,6 +34,12 @@ export const SnapshotFormat = Type.Partial(
   }),
 );
 
+export const DiffFormat = Type.Partial(
+  Type.Object({
+    printBasicPrototype: Type.Boolean(),
+  }),
+);
+
 const CoverageProvider = Type.Union([
   Type.Literal('babel'),
   Type.Literal('v8'),
