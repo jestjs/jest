@@ -323,6 +323,7 @@ export const InitialOptions = Type.Partial(
     slowTestThreshold: Type.Number(),
     snapshotResolver: Type.String(),
     snapshotSerializers: Type.Array(Type.String()),
+    diffFormat: DiffFormat,
     snapshotFormat: SnapshotFormat,
     errorOnDeprecated: Type.Boolean(),
     testEnvironment: Type.String(),

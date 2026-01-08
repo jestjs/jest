@@ -881,6 +881,11 @@ export default async function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'diffFormat': {
+        value = {...DEFAULT_CONFIG.diffFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'snapshotFormat': {
         value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
 
