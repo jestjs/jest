@@ -13,12 +13,12 @@ import type {JasmineMatchersObject} from './types';
 
 export default function jestExpectAdapter(config: {
   expand: boolean;
-  diffFormat: {printBasicPrototype?: boolean};
+  diffFormat?: {printBasicPrototype?: boolean};
 }): void {
   (globalThis as Global.Global).expect = jestExpect;
   jestExpect.setState({
     expand: config.expand,
-    printBasicPrototype: config.diffFormat.printBasicPrototype,
+    printBasicPrototype: config.diffFormat?.printBasicPrototype,
   });
 
   const jasmine = (globalThis as Global.Global).jasmine;

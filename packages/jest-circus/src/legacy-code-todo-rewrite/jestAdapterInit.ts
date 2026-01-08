@@ -89,7 +89,7 @@ export const initialize = async ({
 
   jestExpect.setState({
     expand: globalConfig.expand,
-    printBasicPrototype: globalConfig.diffFormat.printBasicPrototype,
+    printBasicPrototype: globalConfig.diffFormat?.printBasicPrototype,
   });
 
   const runtimeGlobals: RuntimeGlobals = {
