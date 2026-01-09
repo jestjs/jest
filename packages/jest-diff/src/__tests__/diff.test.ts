@@ -1162,4 +1162,49 @@ describe('options', () => {
       expect(diff(a, b, {...optionsBe, compareKeys})).toBe(expected);
     });
   });
+
+  describe('printBasicPrototype', () => {
+    const a = {items: [{id: 1, name: 'Alice'}]};
+    const b = {items: [{id: 1, name: 'Bob'}]};
+
+    test('shows type annotations when printBasicPrototype is true (default)', () => {
+      const expected = [
+        '  Object {',
+        '    "items": Array [',
+        '      Object {',
+        '        "id": 1,',
+        '-       "name": "Alice",',
+        '+       "name": "Bob",',
+        '      },',
+        '    ],',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, {...optionsBe, printBasicPrototype: true})).toBe(
+        expected,
+      );
+    });
+
+    test('hides type annotations when printBasicPrototype is false', () => {
+      const expected = [
+        '  {',
+        '    "items": [',
+        '      {',
+        '        "id": 1,',
+        '-       "name": "Alice",',
+        '+       "name": "Bob",',
+        '      },',
+        '    ],',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, {...optionsBe, printBasicPrototype: false})).toBe(
+        expected,
+      );
+    });
+
+    test('uses default value of true when not specified', () => {
+      const result = diff(a, b, optionsBe);
+      expect(result).toContain('Object {');
+      expect(result).toContain('Array [');
+    });
+  });
 });
