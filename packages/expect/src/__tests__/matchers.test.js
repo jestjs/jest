@@ -2406,8 +2406,8 @@ describe('printBasicPrototype state', () => {
     let error;
     try {
       jestExpect(received).toEqual(expected);
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
 
     expect(error).toBeDefined();
@@ -2428,8 +2428,8 @@ describe('printBasicPrototype state', () => {
     let error;
     try {
       jestExpect(received).toEqual(expected);
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
 
     expect(error).toBeDefined();
@@ -2447,8 +2447,8 @@ describe('printBasicPrototype state', () => {
     let error;
     try {
       jestExpect(received).toStrictEqual(expected);
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
 
     expect(error).toBeDefined();
