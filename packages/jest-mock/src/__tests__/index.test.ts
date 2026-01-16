@@ -1260,6 +1260,15 @@ describe('moduleMocker', () => {
     expect(mock.mock).not.toHaveProperty('lastCall');
   });
 
+  test('mockReset should be called on dispose', () => {
+    const mock = jest.fn();
+    mock('first');
+    mock('last', 'call');
+    mock[Symbol.dispose]();
+    expect(mock.mock.calls).toEqual([]);
+    expect(mock.mock).not.toHaveProperty('lastCall');
+  });
+
   test('mockName gets reset by mockReset', () => {
     const fn = jest.fn();
     expect(fn.getMockName()).toBe('jest.fn()');

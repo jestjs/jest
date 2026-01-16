@@ -7,6 +7,7 @@
 
 import {stripVTControlCharacters as stripAnsi} from 'util';
 import chalk from 'chalk';
+import {type ConsoleBuffer, getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,
   AssertionResult,
@@ -66,12 +67,14 @@ type ResultTree = {
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
   private readonly options: {silent: boolean};
+  private readonly globalConfig: Config.GlobalConfig;
 
   constructor(
-    _globalConfig: Config.GlobalConfig,
+    globalConfig: Config.GlobalConfig,
     reporterOptions: {silent?: boolean} = {},
   ) {
     super();
+    this.globalConfig = globalConfig;
     this.options = {
       silent:
         typeof reporterOptions.silent === 'boolean'
@@ -90,7 +93,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.printFullResult(test.context, testResult);
     }
     if (this.isLastTestSuite(aggregatedResults)) {
-      this.printFailedTestLogs(test, aggregatedResults);
+      this.printFailedTestLogs(test, testResult.console, aggregatedResults);
     }
   }
 
@@ -179,7 +182,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       testDir,
       results.perfStats,
     );
-    this.printResultTree(resultTree);
+    this.printResultTree(resultTree, context.config, results.console);
   }
 
   private arrayEqual(a1: Array<any>, a2: Array<any>): boolean {
@@ -311,7 +314,11 @@ export default class GitHubActionsReporter extends BaseReporter {
     return node;
   }
 
-  private printResultTree(resultTree: ResultTree): void {
+  private printResultTree(
+    resultTree: ResultTree,
+    config: Config.ProjectConfig,
+    consoleLog: ConsoleBuffer | undefined,
+  ): void {
     let perfMs;
     if (resultTree.performanceInfo.slow) {
       perfMs = ` (${chalk.red.inverse(
@@ -324,6 +331,9 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.startGroup(
         `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
       );
+      if (consoleLog && !this.options.silent) {
+        this.log(getConsoleOutput(consoleLog, config, this.globalConfig));
+      }
       for (const child of resultTree.children) {
         this.recursivePrintResultTree(child, true, 1);
       }
@@ -401,6 +411,7 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   private printFailedTestLogs(
     context: Test,
+    consoleLog: ConsoleBuffer | undefined,
     testResults: AggregatedResult,
   ): boolean {
     const rootDir = context.context.config.rootDir;
@@ -416,6 +427,15 @@ export default class GitHubActionsReporter extends BaseReporter {
           written = true;
         }
         this.startGroup(`Errors thrown in ${testDir}`);
+        if (consoleLog && !this.options.silent) {
+          this.log(
+            getConsoleOutput(
+              consoleLog,
+              context.context.config,
+              this.globalConfig,
+            ),
+          );
+        }
         this.log(result.failureMessage);
         this.endGroup();
       }

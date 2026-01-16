@@ -1,33 +1,26 @@
 {
-  "name": "angular",
+  "name": "example-angular",
   "version": "0.0.1",
   "scripts": {
     "test": "jest"
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^12.0.0",
-    "@angular/compiler": "^12.0.0",
-    "@angular/core": "^12.0.0",
-    "@angular/forms": "^12.0.0",
-    "@angular/platform-browser": "^12.0.0",
-    "@angular/platform-browser-dynamic": "^12.0.0",
-    "core-js": "^3.2.1",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
     "rxjs": "^7.8.2",
     "tslib": "^2.0.0",
     "typescript": "^5.8.3",
-    "zone.js": "~0.11.8"
+    "zone.js": "~0.16.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/plugin-proposal-decorators": "^7.27.1",
-    "@babel/preset-env": "^7.27.2",
-    "@babel/preset-typescript": "^7.27.1",
     "@jest/globals": "workspace:*",
-    "babel-jest": "workspace:*",
-    "babel-plugin-transform-typescript-metadata": "*",
     "jest": "workspace:*",
-    "jest-environment-jsdom": "workspace:*",
-    "jest-zone-patch": "*"
+    "jest-preset-angular": "^16.0.0",
+    "jsdom": "^26.1.0"
   }
 }

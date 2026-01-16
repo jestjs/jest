@@ -5,11 +5,9 @@ import {DataService} from './shared/data.service';
 
 const title = 'Test';
 const getTitleFn = jest.fn(() => title);
-const dataServiceSpy = jest.fn(
-  (): Partial<DataService> => ({
-    getTitle: getTitleFn,
-  }),
-);
+const dataServiceMock: Partial<DataService> = {
+  getTitle: getTitleFn,
+};
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -17,8 +15,8 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      providers: [{provide: DataService, useClass: dataServiceSpy}],
+      imports: [AppComponent],
+      providers: [{provide: DataService, useValue: dataServiceMock}],
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     app = fixture.debugElement.componentInstance;
