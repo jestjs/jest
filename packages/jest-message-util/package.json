@@ -27,7 +27,7 @@
     "@types/stack-utils": "^2.0.3",
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
-    "micromatch": "^4.0.8",
+    "picomatch": "^4.0.3",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.6"
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.6",
     "@types/graceful-fs": "^4.1.9",
-    "@types/micromatch": "^4.0.9",
+    "@types/picomatch": "^4.0.0",
     "tempy": "^1.0.1"
   },
   "publishConfig": {

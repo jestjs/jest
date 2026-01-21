@@ -341,21 +341,21 @@ __metadata:
   linkType: hard
 
 "@angular/compiler@npm:^21.0.0":
-  version: 21.0.5
-  resolution: "@angular/compiler@npm:21.0.5"
+  version: 21.0.8
+  resolution: "@angular/compiler@npm:21.0.8"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/43c0f2cb55cc7871de16ed1ed7d98f29583419a1228b6c8f4e135e9f086c532f362e59a7bd73bee8b0fdf709a35c1e39875404704fd325b06910482f16095d4c
+  checksum: 10/966788d3ec3a413d5be1ad478d0f302bef8675429b7be7c6a8bacc4d9386f2030ca00bfd98dc6bda8ad4ab9403440d5d8f9b613745d7a5660c64b27aac4e71c4
   languageName: node
   linkType: hard
 
 "@angular/core@npm:^21.0.0":
-  version: 21.0.5
-  resolution: "@angular/core@npm:21.0.5"
+  version: 21.0.8
+  resolution: "@angular/core@npm:21.0.8"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/compiler": 21.0.5
+    "@angular/compiler": 21.0.8
     rxjs: ^6.5.3 || ^7.4.0
     zone.js: ~0.15.0 || ~0.16.0
   peerDependenciesMeta:
@@ -363,7 +363,7 @@ __metadata:
       optional: true
     zone.js:
       optional: true
-  checksum: 10/ebabfb9830ea2677c9fd9efcb85e90311c3e61f12a2ba54eae85f7695a8bc2dea6f3f7185292da30192ed469ab38c707cfe50923d27440cc00df6c4a00d02931
+  checksum: 10/4a7657ec53b4f348baf14ed1cb5e9eec6403e313f6a90be69f4a4147f01252ddfa4ae91a2cd68d90ab819546f1dbb4419f7fb084cc4f554a0d50bd6473ba979d
   languageName: node
   linkType: hard
 
@@ -4260,7 +4260,6 @@ __metadata:
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
     "@types/node": "npm:*"
     ansi-escapes: "npm:^4.3.2"
     chalk: "npm:^4.1.2"
@@ -4280,7 +4279,6 @@ __metadata:
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
     jest-watcher: "workspace:*"
-    micromatch: "npm:^4.0.8"
     pretty-format: "workspace:*"
     slash: "npm:^3.0.0"
   peerDependencies:
@@ -4316,7 +4314,7 @@ __metadata:
   dependencies:
     "@fast-check/jest": "npm:^2.1.1"
     benchmark: "npm:^2.1.4"
-    diff: "npm:^7.0.0"
+    diff: "npm:^8.0.3"
   languageName: unknown
   linkType: soft
 
@@ -4467,7 +4465,6 @@ __metadata:
     jest-watch-typeahead: "npm:^3.0.1"
     jquery: "npm:^3.2.1"
     js-yaml: "npm:^4.1.1"
-    micromatch: "npm:^4.0.8"
     mock-fs: "npm:^5.5.0"
     netlify-plugin-cache: "npm:^1.0.3"
     node-notifier: "npm:^10.0.1"
@@ -4483,7 +4480,7 @@ __metadata:
     strip-json-comments: "npm:^3.1.1"
     tempy: "npm:^1.0.1"
     ts-node: "npm:^10.5.0"
-    tstyche: "npm:^4.0.0"
+    tstyche: "npm:^5.0.0"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.38.0"
     webpack: "npm:^5.68.0"
@@ -4653,7 +4650,6 @@ __metadata:
     "@types/babel__core": "npm:^7.20.5"
     "@types/convert-source-map": "npm:^2.0.3"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
     "@types/write-file-atomic": "npm:^4.0.3"
     babel-plugin-istanbul: "npm:^7.0.1"
     chalk: "npm:^4.1.2"
@@ -4664,7 +4660,6 @@ __metadata:
     jest-haste-map: "workspace:*"
     jest-regex-util: "workspace:*"
     jest-util: "workspace:*"
-    micromatch: "npm:^4.0.8"
     pirates: "npm:^4.0.7"
     slash: "npm:^3.0.0"
     write-file-atomic: "npm:^5.0.1"
@@ -6772,12 +6767,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/micromatch@npm:^4.0.9":
-  version: 4.0.9
-  resolution: "@types/micromatch@npm:4.0.9"
+"@types/micromatch@npm:^4.0.10":
+  version: 4.0.10
+  resolution: "@types/micromatch@npm:4.0.10"
   dependencies:
     "@types/braces": "npm:*"
-  checksum: 10/324f4bcb4a7caa2048bdd650f442d2c24b5bf6bc95e4d63d4741bd234fdcf3cde140217bd477b2c02c7fb0034c7293037fd7b61429ace84e997dd3b4d3b2b2f7
+  checksum: 10/192b53ffb6c74349c91bdc4d8a38de3d240e919a69525c12415f658d9844e413550e6e676f42e3cd787679c200f4250a746044c8d81d0b716eeaefbb60d120c8
   languageName: node
   linkType: hard
 
@@ -10106,10 +10101,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "diff@npm:7.0.0"
-  checksum: 10/e9b8e48d054c9c0c093c65ce8e2637af94b35f2427001607b14e5e0589e534ea3413a7f91ebe6d7c5a1494ace49cb7c7c3972f442ddd96a4767ff091999a082e
+"diff@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "diff@npm:8.0.3"
+  checksum: 10/52f957e1fa53db4616ff5f4811b92b22b97a160c12a2f86f22debd4181227b0f6751aa8fd711d6a8fcf4618acb13b86bc702e6d9d6d6ed82acfd00c9cb26ace2
   languageName: node
   linkType: hard
 
@@ -13951,7 +13946,6 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
     "@types/parse-json": "npm:^4.0.2"
     babel-jest: "workspace:*"
     chalk: "npm:^4.1.2"
@@ -13969,7 +13963,6 @@ __metadata:
     jest-runner: "workspace:*"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    micromatch: "npm:^4.0.8"
     parse-json: "npm:^5.2.0"
     pretty-format: "workspace:*"
     semver: "npm:^7.7.2"
@@ -14031,8 +14024,6 @@ __metadata:
     "@jest/environment": "workspace:*"
     "@jest/environment-jsdom-abstract": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    "@types/jsdom": "npm:^21.1.7"
-    "@types/node": "npm:*"
     jsdom: "npm:^26.1.0"
   peerDependencies:
     canvas: ^3.0.0
@@ -14072,8 +14063,8 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/fb-watchman": "npm:^2.0.5"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
     "@types/node": "npm:*"
+    "@types/picomatch": "npm:^4.0.0"
     anymatch: "npm:^3.1.3"
     fb-watchman: "npm:^2.0.2"
     fsevents: "npm:^2.3.3"
@@ -14081,7 +14072,7 @@ __metadata:
     jest-regex-util: "workspace:*"
     jest-util: "workspace:*"
     jest-worker: "workspace:*"
-    micromatch: "npm:^4.0.8"
+    picomatch: "npm:^4.0.3"
     slash: "npm:^3.0.0"
     walker: "npm:^1.0.8"
   dependenciesMeta:
@@ -14158,11 +14149,11 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/babel__code-frame": "npm:^7.0.6"
     "@types/graceful-fs": "npm:^4.1.9"
-    "@types/micromatch": "npm:^4.0.9"
+    "@types/picomatch": "npm:^4.0.0"
     "@types/stack-utils": "npm:^2.0.3"
     chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
-    micromatch: "npm:^4.0.8"
+    picomatch: "npm:^4.0.3"
     pretty-format: "workspace:*"
     slash: "npm:^3.0.0"
     stack-utils: "npm:^2.0.6"
@@ -14422,13 +14413,15 @@ __metadata:
   dependencies:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
+    "@types/micromatch": "npm:^4.0.10"
     "@types/node": "npm:*"
     "@types/picomatch": "npm:^4.0.0"
     chalk: "npm:^4.1.2"
     ci-info: "npm:^4.2.0"
     graceful-fs: "npm:^4.2.11"
     lodash: "npm:^4.17.19"
-    picomatch: "npm:^4.0.2"
+    micromatch: "npm:^4.0.8"
+    picomatch: "npm:^4.0.3"
   languageName: unknown
   linkType: soft
 
@@ -17659,10 +17652,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "picomatch@npm:4.0.2"
-  checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
+"picomatch@npm:^4.0.2, picomatch@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "picomatch@npm:4.0.3"
+  checksum: 10/57b99055f40b16798f2802916d9c17e9744e620a0db136554af01d19598b96e45e2f00014c91d1b8b13874b80caa8c295b3d589a3f72373ec4aaf54baa5962d5
   languageName: node
   linkType: hard
 
@@ -21462,17 +21455,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tstyche@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "tstyche@npm:4.0.0"
+"tstyche@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "tstyche@npm:5.0.2"
   peerDependencies:
-    typescript: ">=4.7"
+    typescript: ">=5.0"
   peerDependenciesMeta:
     typescript:
       optional: true
   bin:
     tstyche: ./build/bin.js
-  checksum: 10/3ad68c8db11c70ae2b9450bed1c721c7f9f2892c4b2ac24a684a2fd9813bc6105925aea7564bacf949b7b372b282f3f024e38e981761a47bff75777c38f3d594
+  checksum: 10/bbc11c2f7c5c1cbf4f848a9af1eef947cf9b2643491a59fb7dbaa903bb15bba620dad24904c3db6279f206a23599d97d47f9d9e00473c54f6bb9375a7dc26178
   languageName: node
   linkType: hard
 

@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import micromatch from 'micromatch';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
@@ -42,7 +41,7 @@ export default function shouldInstrument(
 
   if (
     config.forceCoverageMatch.length > 0 &&
-    micromatch.any(filename, config.forceCoverageMatch)
+    globsToMatcher(config.forceCoverageMatch)(filename)
   ) {
     return true;
   }

@@ -108,29 +108,29 @@ type IndexObject = {
 };
 
 test('ClassLike', () => {
-  expect<ClassLike>().type.toBeAssignableWith(SomeClass);
+  expect<ClassLike>().type.toBeAssignableFrom(SomeClass);
 
-  expect<ClassLike>().type.not.toBeAssignableWith(() => {});
-  expect<ClassLike>().type.not.toBeAssignableWith(function abc() {
+  expect<ClassLike>().type.not.toBeAssignableFrom(() => {});
+  expect<ClassLike>().type.not.toBeAssignableFrom(function abc() {
     return;
   });
-  expect<ClassLike>().type.not.toBeAssignableWith('abc');
-  expect<ClassLike>().type.not.toBeAssignableWith(123);
-  expect<ClassLike>().type.not.toBeAssignableWith(false);
-  expect<ClassLike>().type.not.toBeAssignableWith(someObject);
+  expect<ClassLike>().type.not.toBeAssignableFrom('abc');
+  expect<ClassLike>().type.not.toBeAssignableFrom(123);
+  expect<ClassLike>().type.not.toBeAssignableFrom(false);
+  expect<ClassLike>().type.not.toBeAssignableFrom(someObject);
 });
 
 test('FunctionLike', () => {
-  expect<FunctionLike>().type.toBeAssignableWith(() => {});
-  expect<FunctionLike>().type.toBeAssignableWith(function abc() {
+  expect<FunctionLike>().type.toBeAssignableFrom(() => {});
+  expect<FunctionLike>().type.toBeAssignableFrom(function abc() {
     return;
   });
 
-  expect<FunctionLike>().type.not.toBeAssignableWith('abc');
-  expect<FunctionLike>().type.not.toBeAssignableWith(123);
-  expect<FunctionLike>().type.not.toBeAssignableWith(false);
-  expect<FunctionLike>().type.not.toBeAssignableWith(SomeClass);
-  expect<FunctionLike>().type.not.toBeAssignableWith(someObject);
+  expect<FunctionLike>().type.not.toBeAssignableFrom('abc');
+  expect<FunctionLike>().type.not.toBeAssignableFrom(123);
+  expect<FunctionLike>().type.not.toBeAssignableFrom(false);
+  expect<FunctionLike>().type.not.toBeAssignableFrom(SomeClass);
+  expect<FunctionLike>().type.not.toBeAssignableFrom(someObject);
 });
 
 test('ConstructorKeys', () => {
