@@ -17,6 +17,7 @@
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
 - `[deps]` Update to sinon/fake-timers v15
+- `[*]` Replace remaining micromatch uses with picomatch
 
 ## 30.2.0
 
