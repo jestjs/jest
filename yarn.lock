@@ -4316,7 +4316,7 @@ __metadata:
   dependencies:
     "@fast-check/jest": "npm:^2.1.1"
     benchmark: "npm:^2.1.4"
-    diff: "npm:^7.0.0"
+    diff: "npm:^8.0.3"
   languageName: unknown
   linkType: soft
 
@@ -10106,10 +10106,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "diff@npm:7.0.0"
-  checksum: 10/e9b8e48d054c9c0c093c65ce8e2637af94b35f2427001607b14e5e0589e534ea3413a7f91ebe6d7c5a1494ace49cb7c7c3972f442ddd96a4767ff091999a082e
+"diff@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "diff@npm:8.0.3"
+  checksum: 10/52f957e1fa53db4616ff5f4811b92b22b97a160c12a2f86f22debd4181227b0f6751aa8fd711d6a8fcf4618acb13b86bc702e6d9d6d6ed82acfd00c9cb26ace2
   languageName: node
   linkType: hard
 
