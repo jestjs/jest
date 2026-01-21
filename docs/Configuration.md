@@ -930,8 +930,8 @@ Specifies the maximum number of workers the worker-pool will spawn for running t
 
 The `maxWorkers` option can be set via (in order of priority):
 
-1. Configuration file option
-2. Command-line argument `--maxWorkers`
+1. Command-line argument `--maxWorkers`
+2. Configuration file option
 3. Environment variable `JEST_MAX_WORKERS`
 4. Default behavior based on CPU cores
 
