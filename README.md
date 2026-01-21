@@ -103,6 +103,62 @@ PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 ```
 
+Or:
+
+Let's get started with `TypeScript`
+Create a `sum.ts` file:
+
+```typescript
+export function sum(a: number, b: number): number {
+  return a + b;
+}
+```
+Then, create a file named sum.test.ts. This will contain our actual test:
+
+```typescript
+import { sum } from './sum';
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3);
+});
+```
+
+Add the following section to your package.json:
+
+```json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+```
+
+Make sure you have ts-jest installed and configured:
+
+```shell
+yarn add --dev jest ts-jest @types/jest typescript
+```
+
+Initialize a basic Jest config for TypeScript:
+
+```shell
+npx ts-jest config:init
+```
+
+Finally, run:
+
+```shell
+yarn test
+```
+
+Jest will run your TypeScript test and print:
+
+```txt
+PASS  ./sum.test.ts
+
+✓ adds 1 + 2 to equal 3 (5ms)
+```
+
 **You just successfully wrote your first test using Jest!**
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://jestjs.io/docs/using-matchers).
