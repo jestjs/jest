@@ -928,6 +928,19 @@ A number limiting the number of tests that are allowed to run at the same time w
 
 Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
 
+The `maxWorkers` option can be set via (in order of priority):
+
+1. Configuration file option
+2. Command-line argument `--maxWorkers`
+3. Environment variable `JEST_MAX_WORKERS`
+4. Default behavior based on CPU cores
+
+The `JEST_MAX_WORKERS` environment variable is useful for CI environments where you want to control worker count without modifying configuration files:
+
+```bash
+JEST_MAX_WORKERS=4 jest
+```
+
 For environments with variable CPUs available, you can use percentage based configuration:
 
 ```js tab title="jest.config.js"
