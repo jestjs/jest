@@ -48,7 +48,7 @@ jobs:
       - name: ts integration
         run: yarn test-ts --selectProjects ts-integration
       - name: type tests
-        run: yarn test-types --target '>=5.4' # For documentation, see: https://tstyche.org/guide/typescript-versions
+        run: yarn test-types --target '>=5.4' # For documentation, see: https://tstyche.org/guides/typescript-versions
       - name: verify TypeScript@5.4 compatibility
         run: yarn verify-old-ts
       - name: run ESLint with type info

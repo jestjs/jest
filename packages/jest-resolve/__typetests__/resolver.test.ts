@@ -16,7 +16,7 @@ import type {
 
 // PackageJSON
 
-expect<PackageJSON>().type.toBeAssignableWith({
+expect<PackageJSON>().type.toBeAssignableFrom({
   caption: 'test',
   count: 100,
   isTest: true,
@@ -24,7 +24,7 @@ expect<PackageJSON>().type.toBeAssignableWith({
   values: [0, 10, 20, {x: 1, y: 2}, true, 'test', ['a', 'b']],
 });
 
-expect<PackageJSON>().type.not.toBeAssignableWith({
+expect<PackageJSON>().type.not.toBeAssignableFrom({
   filter: () => {},
 });
 
@@ -33,7 +33,7 @@ expect<PackageJSON>().type.not.toBeAssignableWith({
 function customSyncResolver(path: string, options: ResolverOptions): string {
   return path;
 }
-expect<SyncResolver>().type.toBeAssignableWith(customSyncResolver);
+expect<SyncResolver>().type.toBeAssignableFrom(customSyncResolver);
 
 async function customAsyncResolver(
   path: string,
@@ -41,7 +41,7 @@ async function customAsyncResolver(
 ): Promise<string> {
   return path;
 }
-expect<AsyncResolver>().type.toBeAssignableWith(customAsyncResolver);
+expect<AsyncResolver>().type.toBeAssignableFrom(customAsyncResolver);
 
 // AsyncResolver
 
@@ -60,7 +60,7 @@ const asyncResolver: AsyncResolver = async (path, options) => {
 };
 
 const notReturningAsyncResolver = async () => {};
-expect<AsyncResolver>().type.not.toBeAssignableWith(
+expect<AsyncResolver>().type.not.toBeAssignableFrom(
   notReturningAsyncResolver(),
 );
 
@@ -81,14 +81,14 @@ const syncResolver: SyncResolver = (path, options) => {
 };
 
 const notReturningSyncResolver = () => {};
-expect<SyncResolver>().type.not.toBeAssignableWith(notReturningSyncResolver());
+expect<SyncResolver>().type.not.toBeAssignableFrom(notReturningSyncResolver());
 
 // JestResolver
 
-expect<JestResolver>().type.toBeAssignableWith({async: asyncResolver});
-expect<JestResolver>().type.toBeAssignableWith({sync: syncResolver});
-expect<JestResolver>().type.toBeAssignableWith({
+expect<JestResolver>().type.toBeAssignableFrom({async: asyncResolver});
+expect<JestResolver>().type.toBeAssignableFrom({sync: syncResolver});
+expect<JestResolver>().type.toBeAssignableFrom({
   async: asyncResolver,
   sync: syncResolver,
 });
-expect<JestResolver>().type.not.toBeAssignableWith({});
+expect<JestResolver>().type.not.toBeAssignableFrom({});

@@ -67,9 +67,8 @@ module.exports = async function createRuntime(filename, projectConfig) {
     ...projectConfig,
     haste: {
       ...projectConfig?.haste,
-      hasteImplModulePath: require.resolve(
-        '../../../jest-haste-map/src/__tests__/haste_impl.js',
-      ),
+      hasteImplModulePath:
+        require.resolve('../../../jest-haste-map/src/__tests__/haste_impl.js'),
     },
     moduleNameMapper,
     transform,

@@ -10,9 +10,9 @@ import {EventEmitter} from 'events';
 import * as path from 'path';
 import anymatch, {type Matcher} from 'anymatch';
 import * as fs from 'graceful-fs';
-import micromatch from 'micromatch';
 // @ts-expect-error -- no types
 import walker from 'walker';
+import {globsToMatcher} from 'jest-util';
 
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
 // @ts-ignore: this is for CI which runs linux and might not have this
@@ -141,8 +141,8 @@ export class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length > 0
-      ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
-      : this.dot || micromatch([relativePath], '**/*').length > 0;
+      ? globsToMatcher(this.glob, {dot: this.dot})(relativePath)
+      : this.dot || globsToMatcher(['**/*'])(relativePath);
   }
 
   private handleEvent(filepath: string) {

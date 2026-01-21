@@ -5,19 +5,19 @@ import {SubService} from './sub.service';
 
 const title = 'SubTest';
 const getTitleFn = jest.fn().mockReturnValue(title);
-const subServiceSpy = jest.fn().mockImplementation(() => ({
+const subServiceMock: Partial<SubService> = {
   getTitle: getTitleFn,
-}));
+};
 
 describe('Service: DataService', () => {
   let service: DataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [DataService, {provide: SubService, useClass: subServiceSpy}],
+      providers: [DataService, {provide: SubService, useValue: subServiceMock}],
     });
 
-    service = TestBed.get(DataService);
+    service = TestBed.inject(DataService);
   });
 
   it('should create service', () => {

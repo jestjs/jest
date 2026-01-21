@@ -162,7 +162,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<ToBeWithinRange>().type.toBeAssignableWith(toBeWithinRange);
+    expect<ToBeWithinRange>().type.toBeAssignableFrom(toBeWithinRange);
   });
 
   test('requires the `actual` argument to be of type `unknown`', () => {
@@ -173,7 +173,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignableWith(actualMustBeUnknown);
+    expect<MatcherFunction>().type.not.toBeAssignableFrom(actualMustBeUnknown);
   });
 
   test('allows omitting the `expected` argument', () => {
@@ -193,7 +193,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<AllowOmittingExpected>().type.toBeAssignableWith(
+    expect<AllowOmittingExpected>().type.toBeAssignableFrom(
       allowOmittingExpected,
     );
   });
@@ -205,7 +205,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksMessage);
+    expect<MatcherFunction>().type.not.toBeAssignableFrom(lacksMessage);
   });
 
   test('the `pass` property is required in the return type', () => {
@@ -215,7 +215,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<MatcherFunction>().type.not.toBeAssignableWith(lacksPass);
+    expect<MatcherFunction>().type.not.toBeAssignableFrom(lacksPass);
   });
 
   test('context is defined inside a matcher function', () => {
@@ -283,7 +283,7 @@ describe('MatcherFunction', () => {
       };
     };
 
-    expect<CustomStateAndExpected>().type.toBeAssignableWith(
+    expect<CustomStateAndExpected>().type.toBeAssignableFrom(
       customContextAndExpected,
     );
   });

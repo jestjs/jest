@@ -20,18 +20,18 @@ function isObjectLiteral(source: unknown): source is Record<string, unknown> {
 export function isImmutableUnorderedKeyed(source: unknown): boolean {
   return Boolean(
     source &&
-      isObjectLiteral(source) &&
-      source[IS_KEYED_SENTINEL] &&
-      !source[IS_ORDERED_SENTINEL],
+    isObjectLiteral(source) &&
+    source[IS_KEYED_SENTINEL] &&
+    !source[IS_ORDERED_SENTINEL],
   );
 }
 
 export function isImmutableUnorderedSet(source: unknown): boolean {
   return Boolean(
     source &&
-      isObjectLiteral(source) &&
-      source[IS_SET_SENTINEL] &&
-      !source[IS_ORDERED_SENTINEL],
+    isObjectLiteral(source) &&
+    source[IS_SET_SENTINEL] &&
+    !source[IS_ORDERED_SENTINEL],
   );
 }
 
@@ -42,18 +42,18 @@ export function isImmutableList(source: unknown): boolean {
 export function isImmutableOrderedKeyed(source: unknown): boolean {
   return Boolean(
     source &&
-      isObjectLiteral(source) &&
-      source[IS_KEYED_SENTINEL] &&
-      source[IS_ORDERED_SENTINEL],
+    isObjectLiteral(source) &&
+    source[IS_KEYED_SENTINEL] &&
+    source[IS_ORDERED_SENTINEL],
   );
 }
 
 export function isImmutableOrderedSet(source: unknown): boolean {
   return Boolean(
     source &&
-      isObjectLiteral(source) &&
-      source[IS_SET_SENTINEL] &&
-      source[IS_ORDERED_SENTINEL],
+    isObjectLiteral(source) &&
+    source[IS_SET_SENTINEL] &&
+    source[IS_ORDERED_SENTINEL],
   );
 }
 
