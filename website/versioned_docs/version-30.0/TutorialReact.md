@@ -7,12 +7,6 @@ At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
-:::caution
-The **Create React App (CRA)** project is no longer actively maintained. For starting a new React project, we recommend using modern tools such as **[Vite](https://vitejs.dev/)** or **[Next.js](https://nextjs.org/)**, which often include their own recommended Jest setup. Please refer to their documentation for the most current configuration instructions.
-:::
-
-### Manual Setup
-
 If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](GettingStarted.md#using-babel).
 
 Run
