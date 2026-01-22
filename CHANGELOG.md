@@ -10,6 +10,7 @@
 - `[jest-mock]` Use `Symbol` from test environment ([#15858](https://github.com/jestjs/jest/pull/15858))
 - `[jest-reporters]` Fix issue where console output not displayed for GHA reporter even with `silent: false` option ([#15864](https://github.com/jestjs/jest/pull/15864))
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
+- `[jest-config]` Fix issue where user cannot toggle `collectCoverage` at project level ([#15588](https://github.com/jestjs/jest/issues/15588))
 - `[jest-test-sequencer]` Fix issue where failed tests due to compilation errors not getting re-executed even with `--onlyFailures` CLI option ([#15851](https://github.com/jestjs/jest/pull/15851))
 - `[jest-util]` Make sure `process.features.require_module` is `false` ([#15867](https://github.com/jestjs/jest/pull/15867))
 - `[jest-config]` Keep CLI coverage output when using `--json` with `--outputFile` ([#15918](https://github.com/jestjs/jest/pull/15918))

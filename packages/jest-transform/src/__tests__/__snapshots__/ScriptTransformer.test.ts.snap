@@ -26,6 +26,7 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
           "cache": true,
           "cacheDirectory": "/cache/",
           "clearMocks": false,
+          "collectCoverage": undefined,
           "collectCoverageFrom": Array [
             "src",
             "!public",
@@ -177,6 +178,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
           "cache": true,
           "cacheDirectory": "/cache/",
           "clearMocks": false,
+          "collectCoverage": undefined,
           "collectCoverageFrom": Array [
             "src",
             "!public",
@@ -302,6 +304,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
           "cache": true,
           "cacheDirectory": "/cache/",
           "clearMocks": false,
+          "collectCoverage": undefined,
           "collectCoverageFrom": Array [
             "src",
             "!public",

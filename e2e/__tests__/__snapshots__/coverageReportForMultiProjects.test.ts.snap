@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`exclude a project's code coverage if its collectCoverage is toggled off 1`] = `
+"-----------|---------|----------|---------|---------|-------------------
+File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------|---------|----------|---------|---------|-------------------
+All files  |     100 |      100 |     100 |     100 |                   
+ package-1 |     100 |      100 |     100 |     100 |                   
+  index.js |     100 |      100 |     100 |     100 |                   
+ package-2 |     100 |      100 |     100 |     100 |                   
+  index.js |     100 |      100 |     100 |     100 |                   
+-----------|---------|----------|---------|---------|-------------------"
+`;
