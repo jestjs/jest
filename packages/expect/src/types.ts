@@ -69,6 +69,7 @@ export interface MatcherState {
   isExpectingAssertionsError?: Error;
   isNot?: boolean;
   numPassingAsserts: number;
+  printBasicPrototype?: boolean;
   promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;

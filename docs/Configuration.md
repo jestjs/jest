@@ -522,6 +522,78 @@ The `extract` function should return an iterable (`Array`, `Set`, etc.) with the
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
+### `diffFormat` \[object]
+
+Default: `{printBasicPrototype: true}`
+
+Allows overriding specific diff formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). This controls how differences are displayed when a test assertion fails. For example, this config would hide type annotations like `Array [` and `Object {` from diff output:
+
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  diffFormat: {
+    printBasicPrototype: false,
+  },
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  diffFormat: {
+    printBasicPrototype: false,
+  },
+});
+```
+
+```js title="example.test.js"
+test('shows clean diff without type annotations', () => {
+  const received = {
+    items: [{id: 1, name: 'Alice'}],
+  };
+  const expected = {
+    items: [{id: 1, name: 'Bob'}],
+  };
+  expect(received).toEqual(expected);
+});
+```
+
+With `printBasicPrototype: false`, the diff output will be cleaner:
+
+```diff
+- Expected
++ Received
+
+  {
+    "items": [
+      {
+        "id": 1,
+-       "name": "Bob",
++       "name": "Alice",
+      },
+    ],
+  }
+```
+
+Instead of showing type annotations like `Object {` and `Array [`:
+
+```diff
+- Expected
++ Received
+
+  Object {
+    "items": Array [
+      Object {
+        "id": 1,
+-       "name": "Bob",
++       "name": "Alice",
+      },
+    ],
+  }
+```
+
 ### `displayName` \[string, object]
 
 default: `undefined`

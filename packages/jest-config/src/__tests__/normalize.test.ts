@@ -2218,3 +2218,32 @@ describe('runInBand', () => {
     expect(options.runInBand).toBe(true);
   });
 });
+
+describe('diffFormat', () => {
+  test('returns default diffFormat when not provided', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.diffFormat).toEqual({printBasicPrototype: true});
+  });
+
+  test('merges user diffFormat with defaults', async () => {
+    const {options} = await normalize(
+      {
+        diffFormat: {printBasicPrototype: false},
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+    expect(options.diffFormat).toEqual({printBasicPrototype: false});
+  });
+
+  test('preserves default when partial diffFormat is provided', async () => {
+    const {options} = await normalize(
+      {
+        diffFormat: {},
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+    expect(options.diffFormat).toEqual({printBasicPrototype: true});
+  });
+});

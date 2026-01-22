@@ -34,6 +34,12 @@ export const SnapshotFormat = Type.Partial(
   }),
 );
 
+export const DiffFormat = Type.Partial(
+  Type.Object({
+    printBasicPrototype: Type.Boolean(),
+  }),
+);
+
 const CoverageProvider = Type.Union([
   Type.Literal('babel'),
   Type.Literal('v8'),
@@ -317,6 +323,7 @@ export const InitialOptions = Type.Partial(
     slowTestThreshold: Type.Number(),
     snapshotResolver: Type.String(),
     snapshotSerializers: Type.Array(Type.String()),
+    diffFormat: DiffFormat,
     snapshotFormat: SnapshotFormat,
     errorOnDeprecated: Type.Boolean(),
     testEnvironment: Type.String(),
