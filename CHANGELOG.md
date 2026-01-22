@@ -21,6 +21,10 @@
 - Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 - `[*]` Replace remaining micromatch uses with picomatch
 
+## Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for end-of-life Node.js version 18 ([#15850](https://github.com/jestjs/jest/pull/15850))
+
 ## 30.2.0
 
 ### Chore & Maintenance
