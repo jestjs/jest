@@ -125,7 +125,7 @@ describe('jest.fn()', () => {
 
   test('.getMockImplementation()', () => {
     expect(mockFn.getMockImplementation()).type.toBe<
-      ((a: string, b?: number | undefined) => boolean) | undefined
+      ((this: Date, a: string, b?: number | undefined) => boolean) | undefined
     >();
 
     expect(mockFn.getMockImplementation).type.not.toBeCallableWith('some-mock');
@@ -181,7 +181,7 @@ describe('jest.fn()', () => {
 
   test('.mockClear()', () => {
     expect(mockFn.mockClear()).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
 
     expect(mockFn.mockClear).type.not.toBeCallableWith('some-mock');
@@ -189,7 +189,7 @@ describe('jest.fn()', () => {
 
   test('.mockReset()', () => {
     expect(mockFn.mockReset()).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
 
     expect(mockFn.mockReset).type.not.toBeCallableWith('some-mock');
@@ -208,7 +208,7 @@ describe('jest.fn()', () => {
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
-    ).type.toBe<Mock<(a: string, b?: number | undefined) => boolean>>();
+    ).type.toBe<Mock<(this: Date, a: string, b?: number | undefined) => boolean>>();
 
     expect(mockFn.mockImplementation).type.not.toBeCallableWith(
       (a: number) => false,
@@ -235,7 +235,7 @@ describe('jest.fn()', () => {
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
-    ).type.toBe<Mock<(a: string, b?: number | undefined) => boolean>>();
+    ).type.toBe<Mock<(this: Date, a: string, b?: number | undefined) => boolean>>();
 
     expect(mockFn.mockImplementationOnce).type.not.toBeCallableWith(
       (a: number) => false,
@@ -258,7 +258,7 @@ describe('jest.fn()', () => {
 
   test('.mockName()', () => {
     expect(mockFn.mockName('mockedFunction')).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
 
     expect(mockFn.mockName).type.not.toBeCallableWith(123);
@@ -267,7 +267,7 @@ describe('jest.fn()', () => {
 
   test('.mockReturnThis()', () => {
     expect(mockFn.mockReturnThis()).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
 
     expect(mockFn.mockReturnThis).type.not.toBeCallableWith('this');
@@ -275,7 +275,7 @@ describe('jest.fn()', () => {
 
   test('.mockReturnValue()', () => {
     expect(mockFn.mockReturnValue(false)).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
 
     expect(mockFn.mockReturnValue).type.not.toBeCallableWith('true');
@@ -292,7 +292,7 @@ describe('jest.fn()', () => {
 
   test('.mockReturnValueOnce()', () => {
     expect(mockFn.mockReturnValueOnce(false)).type.toBe<
-      Mock<(a: string, b?: number | undefined) => boolean>
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
     >();
     expect(mockFn.mockReturnValueOnce).type.not.toBeCallableWith('true');
 

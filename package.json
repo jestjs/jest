@@ -77,7 +77,7 @@
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.1",
     "ts-node": "^10.5.0",
-    "tstyche": "^5.0.0",
+    "tstyche": "^6.0.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "webpack": "^5.68.0",
