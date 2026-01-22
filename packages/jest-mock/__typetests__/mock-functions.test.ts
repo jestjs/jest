@@ -208,7 +208,9 @@ describe('jest.fn()', () => {
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
-    ).type.toBe<Mock<(this: Date, a: string, b?: number | undefined) => boolean>>();
+    ).type.toBe<
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
+    >();
 
     expect(mockFn.mockImplementation).type.not.toBeCallableWith(
       (a: number) => false,
@@ -235,7 +237,9 @@ describe('jest.fn()', () => {
         expect(b).type.toBe<number | undefined>();
         return false;
       }),
-    ).type.toBe<Mock<(this: Date, a: string, b?: number | undefined) => boolean>>();
+    ).type.toBe<
+      Mock<(this: Date, a: string, b?: number | undefined) => boolean>
+    >();
 
     expect(mockFn.mockImplementationOnce).type.not.toBeCallableWith(
       (a: number) => false,
