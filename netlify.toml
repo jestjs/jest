@@ -15,6 +15,10 @@
   YARN_CACHE_FOLDER = "/opt/buildhome/.yarn_cache"
   YARN_VERSION = "3.6.4"
 
+[context.production]
+  # Do not build the site if there's no site-related changes
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- website/ docs/ netlify.toml"
+
 # deploy preview build (faster config)
 [context.deploy-preview]
   command = "yarn workspace jest-website netlify:ci:deployPreview"
