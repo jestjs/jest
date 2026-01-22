@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        node-version: [18.x, 20.x, 22.x, 24.x, 25.x]
     name: Node v${{ matrix.node-version }}
     runs-on: ${{ inputs.os }}
 
