@@ -208,120 +208,120 @@ export const iterableEquality = (
   aStack.push(a);
   bStack.push(b);
 
-  const iterableEqualityWithStack = (a: any, b: any) =>
+  // Replace any instance of iterableEquality with the new iterableEqualityWithStack
+  // so we can do circular detection.
+  const iterableEqualityWithStack = (aInner: any, bInner: any) =>
     iterableEquality(
-      a,
-      b,
+      aInner,
+      bInner,
       [...filteredCustomTesters],
       [...aStack],
       [...bStack],
     );
 
-  // Replace any instance of iterableEquality with the new
-  // iterableEqualityWithStack so we can do circular detection
   const filteredCustomTesters: Array<Tester> = [
     ...customTesters.filter(t => t !== iterableEquality),
     iterableEqualityWithStack,
   ];
 
-  if (a.size !== undefined) {
-    if (a.size !== b.size) {
-      return false;
-    } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
-      let allFound = true;
-      for (const aValue of a) {
-        if (!b.has(aValue)) {
-          let has = false;
-          for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, filteredCustomTesters);
-            if (isEqual === true) {
-              has = true;
+  try {
+    if (a.size !== undefined) {
+      if (a.size !== b.size) {
+        return false;
+      } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
+        let allFound = true;
+        for (const aValue of a) {
+          if (!b.has(aValue)) {
+            let has = false;
+            for (const bValue of b) {
+              const isEqual = equals(aValue, bValue, filteredCustomTesters);
+              if (isEqual === true) {
+                has = true;
+              }
+            }
+
+            if (has === false) {
+              allFound = false;
+              break;
             }
           }
-
-          if (has === false) {
-            allFound = false;
-            break;
-          }
         }
-      }
-      // Remove the first value from the stack of traversed values.
-      aStack.pop();
-      bStack.pop();
-      return allFound;
-    } else if (
-      isA<Map<unknown, unknown>>('Map', a) ||
-      isImmutableUnorderedKeyed(a)
-    ) {
-      let allFound = true;
-      for (const aEntry of a) {
-        if (
-          !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
-        ) {
-          let has = false;
-          for (const bEntry of b) {
-            const matchedKey = equals(
-              aEntry[0],
-              bEntry[0],
-              filteredCustomTesters,
-            );
-
-            let matchedValue = false;
-            if (matchedKey === true) {
-              matchedValue = equals(
-                aEntry[1],
-                bEntry[1],
+        return allFound;
+      } else if (
+        isA<Map<unknown, unknown>>('Map', a) ||
+        isImmutableUnorderedKeyed(a)
+      ) {
+        let allFound = true;
+        for (const aEntry of a) {
+          if (
+            !b.has(aEntry[0]) ||
+            !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
+          ) {
+            let has = false;
+            for (const bEntry of b) {
+              const matchedKey = equals(
+                aEntry[0],
+                bEntry[0],
                 filteredCustomTesters,
               );
-            }
-            if (matchedValue === true) {
-              has = true;
-            }
-          }
 
-          if (has === false) {
-            allFound = false;
-            break;
+              let matchedValue = false;
+              if (matchedKey === true) {
+                matchedValue = equals(
+                  aEntry[1],
+                  bEntry[1],
+                  filteredCustomTesters,
+                );
+              }
+              if (matchedValue === true) {
+                has = true;
+              }
+            }
+
+            if (has === false) {
+              allFound = false;
+              break;
+            }
           }
         }
+        return allFound;
       }
-      // Remove the first value from the stack of traversed values.
-      aStack.pop();
-      bStack.pop();
-      return allFound;
     }
-  }
 
-  const bIterator = b[IteratorSymbol]();
+    const bIterator = b[IteratorSymbol]();
 
-  for (const aValue of a) {
-    const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, filteredCustomTesters)) {
+    for (const aValue of a) {
+      const nextB = bIterator.next();
+      if (nextB.done || !equals(aValue, nextB.value, filteredCustomTesters)) {
+        return false;
+      }
+    }
+    if (!bIterator.next().done) {
       return false;
     }
-  }
-  if (!bIterator.next().done) {
+
+    if (
+      !isImmutableList(a) &&
+      !isImmutableOrderedKeyed(a) &&
+      !isImmutableOrderedSet(a) &&
+      !isImmutableRecord(a)
+    ) {
+      const aEntries = entries(a);
+      const bEntries = entries(b);
+      if (!equals(aEntries, bEntries)) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch {
+    // If an exotic iterator/getter throws (DOM objects, proxies, host objects),
+    // treat it as "not equal" rather than crashing the matcher.
     return false;
+  } finally {
+    aStack.pop();
+    bStack.pop();
   }
-
-  if (
-    !isImmutableList(a) &&
-    !isImmutableOrderedKeyed(a) &&
-    !isImmutableOrderedSet(a) &&
-    !isImmutableRecord(a)
-  ) {
-    const aEntries = entries(a);
-    const bEntries = entries(b);
-    if (!equals(aEntries, bEntries)) {
-      return false;
-    }
-  }
-
-  // Remove the first value from the stack of traversed values.
-  aStack.pop();
-  bStack.pop();
-  return true;
 };
 
 const entries = (obj: any) => {
