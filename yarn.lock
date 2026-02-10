@@ -4176,6 +4176,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@isaacs/brace-expansion@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@isaacs/brace-expansion@npm:5.0.1"
+  dependencies:
+    "@isaacs/balanced-match": "npm:^4.0.1"
+  checksum: 10/aec226065bc4285436a27379e08cc35bf94ef59f5098ac1c026495c9ba4ab33d851964082d3648d56d63eb90f2642867bd15a3e1b810b98beb1a8c14efce6a94
+  languageName: node
+  linkType: hard
+
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -4447,7 +4456,7 @@ __metadata:
     eslint-plugin-unicorn: "npm:^59.0.1"
     execa: "npm:^5.1.1"
     find-process: "npm:^1.4.10"
-    glob: "npm:^10.5.0"
+    glob: "npm:^13.0.1"
     globals: "npm:^16.2.0"
     graceful-fs: "npm:^4.2.11"
     isbinaryfile: "npm:^5.0.4"
@@ -4521,7 +4530,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     collect-v8-coverage: "npm:^1.0.2"
     exit-x: "npm:^0.2.2"
-    glob: "npm:^10.5.0"
+    glob: "npm:^13.0.1"
     graceful-fs: "npm:^4.2.11"
     istanbul-lib-coverage: "npm:^3.0.0"
     istanbul-lib-instrument: "npm:^6.0.0"
@@ -12206,7 +12215,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2, glob@npm:^10.3.7, glob@npm:^10.5.0":
+"glob@npm:^10.2.2, glob@npm:^10.3.7":
   version: 10.5.0
   resolution: "glob@npm:10.5.0"
   dependencies:
@@ -12219,6 +12228,17 @@ __metadata:
   bin:
     glob: dist/esm/bin.mjs
   checksum: 10/ab3bccfefcc0afaedbd1f480cd0c4a2c0e322eb3f0aa7ceaa31b3f00b825069f17cf0f1fc8b6f256795074b903f37c0ade37ddda6a176aa57f1c2bbfe7240653
+  languageName: node
+  linkType: hard
+
+"glob@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "glob@npm:13.0.1"
+  dependencies:
+    minimatch: "npm:^10.1.2"
+    minipass: "npm:^7.1.2"
+    path-scurry: "npm:^2.0.0"
+  checksum: 10/465e8cc269ab88d7415a3906cdc0f4543a2ae54df99207204af5bc28a944396d8d893822f546a8056a78ec714e608ab4f3502532c4d6b9cc5e113adf0fe5109e
   languageName: node
   linkType: hard
 
@@ -13953,7 +13973,7 @@ __metadata:
     deepmerge: "npm:^4.3.1"
     esbuild: "npm:^0.25.5"
     esbuild-register: "npm:^3.6.0"
-    glob: "npm:^10.5.0"
+    glob: "npm:^13.0.1"
     graceful-fs: "npm:^4.2.11"
     jest-circus: "workspace:*"
     jest-docblock: "workspace:*"
@@ -14306,7 +14326,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     cjs-module-lexer: "npm:^2.1.0"
     collect-v8-coverage: "npm:^1.0.2"
-    glob: "npm:^10.5.0"
+    glob: "npm:^13.0.1"
     graceful-fs: "npm:^4.2.11"
     jest-environment-node: "workspace:*"
     jest-haste-map: "workspace:*"
@@ -15097,6 +15117,13 @@ __metadata:
   version: 10.4.3
   resolution: "lru-cache@npm:10.4.3"
   checksum: 10/e6e90267360476720fa8e83cc168aa2bf0311f3f2eea20a6ba78b90a885ae72071d9db132f40fda4129c803e7dcec3a6b6a6fbb44ca90b081630b810b5d6a41a
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.0.0":
+  version: 11.2.5
+  resolution: "lru-cache@npm:11.2.5"
+  checksum: 10/be50f66c6e23afeaab9c7eefafa06344dd13cde7b3528809c2660c4ad70d93b9ba537366634623cbb2eb411671f526b5a4af2c602507b9258aead0fa8d713f6c
   languageName: node
   linkType: hard
 
@@ -16443,6 +16470,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "minimatch@npm:10.1.2"
+  dependencies:
+    "@isaacs/brace-expansion": "npm:^5.0.1"
+  checksum: 10/6f0ef975463739207144e411bdd54f7205ce38770b162fa3bc4c9be4987a16cb20d0962a82f26c2372598cfba90faa97b327239d303b529b774f17681c163b46
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^5.0.1":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
@@ -17589,6 +17625,16 @@ __metadata:
     lru-cache: "npm:^10.2.0"
     minipass: "npm:^5.0.0 || ^6.0.2 || ^7.0.0"
   checksum: 10/5e8845c159261adda6f09814d7725683257fcc85a18f329880ab4d7cc1d12830967eae5d5894e453f341710d5484b8fdbbd4d75181b4d6e1eb2f4dc7aeadc434
+  languageName: node
+  linkType: hard
+
+"path-scurry@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "path-scurry@npm:2.0.1"
+  dependencies:
+    lru-cache: "npm:^11.0.0"
+    minipass: "npm:^7.1.2"
+  checksum: 10/1e9c74e9ccf94d7c16056a5cb2dba9fa23eec1bc221ab15c44765486b9b9975b4cd9a4d55da15b96eadf67d5202e9a2f1cec9023fbb35fe7d9ccd0ff1891f88b
   languageName: node
   linkType: hard
 
