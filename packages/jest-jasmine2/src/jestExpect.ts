@@ -11,9 +11,15 @@ import {jestExpect} from '@jest/expect';
 import type {Global} from '@jest/types';
 import type {JasmineMatchersObject} from './types';
 
-export default function jestExpectAdapter(config: {expand: boolean}): void {
+export default function jestExpectAdapter(config: {
+  expand: boolean;
+  diffFormat?: {printBasicPrototype?: boolean};
+}): void {
   (globalThis as Global.Global).expect = jestExpect;
-  jestExpect.setState({expand: config.expand});
+  jestExpect.setState({
+    expand: config.expand,
+    printBasicPrototype: config.diffFormat?.printBasicPrototype,
+  });
 
   const jasmine = (globalThis as Global.Global).jasmine;
   jasmine.anything = jestExpect.anything;

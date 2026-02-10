@@ -73,6 +73,7 @@ const defaultOptions: Config.DefaultOptions = {
   runner: 'jest-runner',
   setupFiles: [],
   setupFilesAfterEnv: [],
+  diffFormat: {printBasicPrototype: true},
   skipFilter: false,
   slowTestThreshold: 5,
   snapshotFormat: {escapeString: false, printBasicPrototype: false},

@@ -43,6 +43,7 @@ export const initialOptions: Config.InitialOptions = {
     color: 'blue',
     name: 'test-config',
   } as const),
+  diffFormat: {printBasicPrototype: true},
   errorOnDeprecated: false,
   expand: false,
   extensionsToTreatAsEsm: [],
@@ -219,6 +220,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     color: 'blue',
     name: 'test-config',
   } as const),
+  diffFormat: {printBasicPrototype: true},
   errorOnDeprecated: false,
   extensionsToTreatAsEsm: [],
   fakeTimers: {
