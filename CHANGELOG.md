@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#14011](https://github.com/jestjs/jest/issues/14011))
+
 ## 30.3.0
 
 ### Features
