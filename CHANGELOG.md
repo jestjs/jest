@@ -20,7 +20,7 @@
 - `[deps]` Update to sinon/fake-timers v15
 - Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 - `[*]` Replace remaining micromatch uses with picomatch
- - `[deps]` Upgrade `glob` to `^13.0.1` in root and affected packages (`jest-config`, `jest-reporters`, `jest-runtime`)
+- `[deps]` Upgrade `glob` to `^13.0.1` in root and affected packages (`jest-config`, `jest-reporters`, `jest-runtime`)
 
 ## 30.2.0
 
