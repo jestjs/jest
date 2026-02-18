@@ -126,9 +126,9 @@ const setupPreset = async (
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.startsWith('.')
+    presetPath.startsWith('.') || path.isAbsolute(presetPath)
       ? presetPath
-      : path.join(presetPath, PRESET_NAME),
+      : `${presetPath}/${PRESET_NAME}`,
     {
       basedir: options.rootDir,
       extensions: PRESET_EXTENSIONS,
