@@ -7,6 +7,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   prepare-yarn-cache:
     name: Prepare yarn cache for ${{ inputs.os }}
