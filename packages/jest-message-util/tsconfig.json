@@ -6,5 +6,9 @@
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
-  "references": [{"path": "../jest-types"}, {"path": "../jest-util"}, {"path": "../pretty-format"}]
+  "references": [
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../pretty-format"}
+  ]
 }
