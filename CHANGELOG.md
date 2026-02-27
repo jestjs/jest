@@ -18,7 +18,7 @@
 
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
 - `[deps]` Update to sinon/fake-timers v15
-- `[jest-util]` Replace `slash` package with inline implementation ([#XXXXX](https://github.com/jestjs/jest/pull/XXXXX))
+- `[jest-util]` Replace `slash` package with inline implementation ([#15971](https://github.com/jestjs/jest/pull/15971))
 - Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 - `[*]` Replace remaining micromatch uses with picomatch
 
