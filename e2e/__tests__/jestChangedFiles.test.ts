@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import * as semver from 'semver';
-import slash from 'slash';
+import {slash} from 'jest-util';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {
   cleanup,

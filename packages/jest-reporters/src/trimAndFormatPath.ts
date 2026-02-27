@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import chalk from 'chalk';
-import slash from 'slash';
 import type {Config} from '@jest/types';
+import {slash} from 'jest-util';
 import relativePath from './relativePath';
 
 export default function trimAndFormatPath(

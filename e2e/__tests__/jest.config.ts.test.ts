@@ -71,7 +71,7 @@ test('works with tsconfig.json', () => {
 test('traverses directory tree up until it finds jest.config', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `
-    const slash = require('slash');
+    const slash = p => p.replaceAll('\\\\', '/');
     test('giraffe', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,

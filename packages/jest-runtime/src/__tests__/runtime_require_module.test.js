@@ -11,7 +11,7 @@
 import {builtinModules, createRequire} from 'module';
 import * as path from 'path';
 import {pathToFileURL} from 'url';
-import slash from 'slash';
+import {slash} from 'jest-util';
 
 let createRuntime;
 

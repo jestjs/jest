@@ -25,7 +25,6 @@
     "jest-pnp-resolver": "^1.2.3",
     "jest-util": "workspace:*",
     "jest-validate": "workspace:*",
-    "slash": "^3.0.0",
     "unrs-resolver": "^1.7.11"
   },
   "devDependencies": {

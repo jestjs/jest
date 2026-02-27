@@ -33,8 +33,7 @@
   "devDependencies": {
     "@types/fb-watchman": "^2.0.5",
     "@types/graceful-fs": "^4.1.9",
-    "@types/picomatch": "^4.0.0",
-    "slash": "^3.0.0"
+    "@types/picomatch": "^4.0.0"
   },
   "optionalDependencies": {
     "fsevents": "^2.3.3"

@@ -8,9 +8,8 @@
 import {isBuiltin} from 'module';
 import * as path from 'path';
 import chalk from 'chalk';
-import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
-import {tryRealpath} from 'jest-util';
+import {slash, tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
   type AsyncResolver,

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import slash from 'slash';
+import {slash} from 'jest-util';
 
 export default class ModuleNotFoundError extends Error {
   public code = 'MODULE_NOT_FOUND';

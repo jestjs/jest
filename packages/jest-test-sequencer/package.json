@@ -22,7 +22,7 @@
     "@jest/test-result": "workspace:*",
     "graceful-fs": "^4.2.11",
     "jest-haste-map": "workspace:*",
-    "slash": "^3.0.0"
+    "jest-util": "workspace:*"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",

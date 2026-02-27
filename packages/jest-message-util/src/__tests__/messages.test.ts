@@ -7,7 +7,7 @@
  */
 
 import {readFileSync} from 'graceful-fs';
-import slash from 'slash';
+import {slash} from 'jest-util';
 import tempy from 'tempy';
 import {
   formatExecError,

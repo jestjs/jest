@@ -13,12 +13,12 @@ import type {
 } from '@babel/core';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import slash from 'slash';
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
   TransformerCreator,
 } from '@jest/transform';
+import {slash} from 'jest-util';
 import {
   transformSync as babelTransform,
   transformAsync as babelTransformAsync,
