@@ -13871,7 +13871,6 @@ __metadata:
   dependencies:
     execa: "npm:^5.1.1"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
 
@@ -13901,7 +13900,6 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
     pretty-format: "workspace:*"
     pure-rand: "npm:^7.0.0"
     slash: "npm:^3.0.0"
@@ -14101,7 +14099,6 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14284,7 +14281,6 @@ __metadata:
     jest-util: "workspace:*"
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
-    p-limit: "npm:^3.1.0"
     source-map-support: "npm:0.5.13"
   languageName: unknown
   linkType: soft

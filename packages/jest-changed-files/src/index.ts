@@ -6,8 +6,7 @@
  *
  */
 
-import pLimit from 'p-limit';
-import {isNonNullable} from 'jest-util';
+import {isNonNullable, pLimit} from 'jest-util';
 import git from './git';
 import hg from './hg';
 import sl from './sl';

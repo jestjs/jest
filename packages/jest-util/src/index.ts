@@ -29,6 +29,8 @@ export {default as tryRealpath} from './tryRealpath';
 export {default as requireOrImportModule} from './requireOrImportModule';
 export {default as invariant} from './invariant';
 export {default as isNonNullable} from './isNonNullable';
+export {default as pLimit} from './pLimit';
+export type {LimitFunction} from './pLimit';
 export {
   type DeletionMode,
   canDeleteProperties,
