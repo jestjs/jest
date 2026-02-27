@@ -13869,7 +13869,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
-    execa: "npm:^5.1.1"
     jest-util: "workspace:*"
     p-limit: "npm:^3.1.0"
   languageName: unknown

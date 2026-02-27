@@ -6,9 +6,14 @@
  *
  */
 
+import {execFile as execFileCb, spawn} from 'node:child_process';
+import {promisify} from 'node:util';
 import * as path from 'path';
-import execa from 'execa';
 import type {SCMAdapter} from './types';
+
+const execFile = promisify(execFileCb);
+
+const MAX_BUFFER = 100 * 1024 * 1024;
 
 /**
  * Disable any configuration settings that might change Sapling's default output.
@@ -36,9 +41,14 @@ const adapter: SCMAdapter = {
     }
     args.push(...includePaths);
 
-    const result = await execa('sl', args, {cwd, env});
+    const result = await execFile('sl', args, {
+      cwd,
+      env,
+      maxBuffer: MAX_BUFFER,
+    });
 
     return result.stdout
+      .trimEnd()
       .split('\n')
       .filter(s => s !== '')
       .map(changedPath => path.resolve(cwd, changedPath));
@@ -50,21 +60,41 @@ const adapter: SCMAdapter = {
     }
 
     try {
-      const subprocess = execa('sl', ['root'], {cwd, env});
+      const result = await new Promise<{killed: boolean; stdout: string}>(
+        (resolve, reject) => {
+          const subprocess = spawn('sl', ['root'], {cwd, env});
+          let firstChunk = true;
+          let stdout = '';
 
-      // Check if we're calling sl (steam locomotive) instead of sl (sapling)
-      // by looking for the escape character in the first chunk of data.
-      if (subprocess.stdout) {
-        subprocess.stdout.once('data', (data: Buffer | string) => {
-          data = Buffer.isBuffer(data) ? data.toString() : data;
-          if (data.codePointAt(0) === 27) {
-            subprocess.cancel();
-            isSteamLocomotive = true;
-          }
-        });
-      }
+          subprocess.stdout.on('data', (data: Buffer) => {
+            const str = data.toString();
 
-      const result = await subprocess;
+            // Check if we're calling sl (steam locomotive) instead of
+            // sl (sapling) by looking for the escape character in the
+            // first chunk of data.
+            if (firstChunk) {
+              firstChunk = false;
+              if (str.codePointAt(0) === 27) {
+                subprocess.kill();
+                isSteamLocomotive = true;
+              }
+            }
+
+            stdout += str;
+          });
+
+          subprocess.on('close', code => {
+            if (code !== 0 && !subprocess.killed) {
+              reject(new Error(`Process sl exited with code ${code}`));
+            } else {
+              resolve({killed: subprocess.killed, stdout: stdout.trimEnd()});
+            }
+          });
+
+          subprocess.on('error', reject);
+        },
+      );
+
       if (result.killed && isSteamLocomotive) {
         return null;
       }

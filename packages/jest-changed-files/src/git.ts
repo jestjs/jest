@@ -6,17 +6,23 @@
  *
  */
 
+import {execFile as execFileCb} from 'node:child_process';
+import {promisify} from 'node:util';
 import * as path from 'path';
-import execa from 'execa';
 import type {SCMAdapter} from './types';
+
+const execFile = promisify(execFileCb);
+
+const MAX_BUFFER = 100 * 1024 * 1024;
 
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: string,
 ): Promise<Array<string>> => {
-  const result = await execa('git', args, {cwd});
+  const result = await execFile('git', args, {cwd, maxBuffer: MAX_BUFFER});
 
   return result.stdout
+    .trimEnd()
     .split('\n')
     .filter(s => s !== '')
     .map(changedPath => path.resolve(cwd, changedPath));
@@ -98,9 +104,12 @@ const adapter: SCMAdapter = {
     const options = ['rev-parse', '--show-cdup'];
 
     try {
-      const result = await execa('git', options, {cwd});
+      const result = await execFile('git', options, {
+        cwd,
+        maxBuffer: MAX_BUFFER,
+      });
 
-      return path.resolve(cwd, result.stdout);
+      return path.resolve(cwd, result.stdout.trimEnd());
     } catch {
       return null;
     }
