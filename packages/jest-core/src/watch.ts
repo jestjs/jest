@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import type {WriteStream} from 'tty';
-import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit-x';
 import slash from 'slash';
@@ -17,6 +16,7 @@ import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
+  ansiEscapes,
   isInteractive,
   preRunMessage,
   requireOrImportModule,

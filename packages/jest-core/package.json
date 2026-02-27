@@ -21,7 +21,6 @@
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "ansi-escapes": "^4.3.2",
     "chalk": "^4.1.2",
     "ci-info": "^4.2.0",
     "exit-x": "^0.2.2",

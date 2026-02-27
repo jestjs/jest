@@ -17,7 +17,6 @@
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "ansi-escapes": "^4.3.2",
     "chalk": "^4.1.2",
     "emittery": "^0.13.1",
     "jest-util": "workspace:*",
