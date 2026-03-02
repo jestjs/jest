@@ -774,6 +774,14 @@ export const options: {[key: string]: Options} = {
       '--no-watchman.',
     type: 'boolean',
   },
+  workerGracefulExitTimeout: {
+    description:
+      'Timeout in milliseconds for worker processes to exit gracefully ' +
+      'after tests complete. Workers that do not exit in time are ' +
+      'force-killed. Default: 500.',
+    requiresArg: true,
+    type: 'number',
+  },
   workerThreads: {
     description:
       'Whether to use worker threads for parallelization. Child processes ' +

@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config, jest-runner, jest-worker]` Add `workerGracefulExitTimeout` config option to control how long workers are given to exit before being force-killed ([#XXXX](https://github.com/jestjs/jest/pull/XXXX))
 - `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
 - `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
 

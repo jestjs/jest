@@ -16,10 +16,6 @@ import {
   WorkerStates,
 } from '../types';
 
-// How long to wait for the child process to terminate
-// after CHILD_MESSAGE_END before sending force exiting.
-const FORCE_EXIT_DELAY = 500;
-
 /* istanbul ignore next */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
@@ -149,7 +145,7 @@ export default class BaseWorkerPool {
       const forceExitTimeout = setTimeout(() => {
         worker.forceExit();
         forceExited = true;
-      }, FORCE_EXIT_DELAY);
+      }, this._options.workerGracefulExitTimeout ?? 500);
 
       await worker.waitForExit();
       // Worker ideally exited gracefully, don't send force exit then
