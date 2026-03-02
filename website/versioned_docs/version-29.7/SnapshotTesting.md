@@ -1,4 +1,25 @@
----
+exports[`<UserName /> should render null`] = `
+<div>
+  Alan Turing
+</div>
+`;
+
+exports[`<UserName /> should render Alan Turing`] = `null`;exports[`<UserName /> should render null`] = `null`;
+
+exports[`<UserName /> should render Alan Turing`] = `
+<div>
+  Alan Turing
+</div>
+`;exports[`<UserName /> should handle some test case`] = `null`;
+
+exports[`<UserName /> should handle some other test case`] = `
+<div>
+  Alan Turing
+</div>
+`;Date.now = jest.fn(() => 1_482_363_367_071);const randomNumber = Math.round(Math.random() * 100);
+const stringWithRandomData = `<div id="${randomNumber}">Lorem ipsum</div>`;
+const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
+expect(stringWithConstantData).toMatchSnapshot();Date.now---
 id: snapshot-testing
 title: Snapshot Testing
 ---
