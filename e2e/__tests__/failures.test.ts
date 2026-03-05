@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {extractSummary, runYarnInstall} from '../Utils';
-import runJest from '../runJest';
+import runJest, {json as runJestJson} from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
@@ -111,6 +111,21 @@ test('works with error with cause thrown outside tests', () => {
     // the comparison when the stack starts to be reported
     sanitizedSummary.slice(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
+});
+
+test('includes error causes in JSON failureMessages', () => {
+  // Stderr cause coverage is handled by snapshot tests above; this assertion
+  // targets the structured JSON payload consumed by reporters and integrations.
+  const {json} = runJestJson(dir, ['errorWithCause.test.js']);
+
+  const result = json.testResults[0];
+  const failureMessages =
+    result.assertionResults.flatMap(result => result.failureMessages) ?? [];
+  const failureOutput = failureMessages.join('\n');
+
+  expect(failureMessages).toHaveLength(3);
+  expect(failureOutput).toContain('[cause]: Error: error during g');
+  expect(failureOutput).toContain('[cause]: here is the cause');
 });
 
 test('errors after test has completed', () => {

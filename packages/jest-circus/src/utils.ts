@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'node:util';
 import * as path from 'path';
 import co from 'co';
 import dedent from 'dedent';
@@ -438,10 +439,40 @@ const _getError = (
   return asyncError;
 };
 
+const isErrorOrStackWithCause = (
+  errorOrStack: Error | string,
+): errorOrStack is Error & {cause: Error | string} =>
+  typeof errorOrStack !== 'string' &&
+  'cause' in errorOrStack &&
+  (typeof errorOrStack.cause === 'string' ||
+    types.isNativeError(errorOrStack.cause) ||
+    errorOrStack.cause instanceof Error);
+
+const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
+  const stack =
+    typeof error.stack === 'string' && error.stack !== ''
+      ? error.stack
+      : error.message;
+
+  if (!isErrorOrStackWithCause(error)) {
+    return stack;
+  }
+
+  let cause: string;
+  if (typeof error.cause === 'string') {
+    cause = error.cause;
+  } else if (seen.has(error.cause)) {
+    cause = '[Circular cause]';
+  } else {
+    seen.add(error);
+    cause = formatErrorStackWithCause(error.cause, seen);
+  }
+
+  return `${stack}\n\n[cause]: ${cause}`;
+};
+
 const getErrorStack = (error: Error): string =>
-  typeof error.stack === 'string' && error.stack !== ''
-    ? error.stack
-    : error.message;
+  formatErrorStackWithCause(error, new Set());
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
