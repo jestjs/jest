@@ -7,14 +7,13 @@
 
 import chalk from 'chalk';
 import Emittery from 'emittery';
-import pLimit from 'p-limit';
 import type {
   Test,
   TestEvents,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
-import {deepCyclicCopy} from 'jest-util';
+import {deepCyclicCopy, pLimit} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {
   type JestWorkerFarm,

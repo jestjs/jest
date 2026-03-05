@@ -12,9 +12,8 @@
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import pLimit from 'p-limit';
 import type {Config, Global} from '@jest/types';
-import {isPromise} from 'jest-util';
+import {type LimitFunction, isPromise, pLimit} from 'jest-util';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
@@ -197,7 +196,7 @@ function makeConcurrent(
     timeout?: number,
   ) => Spec,
   env: Jasmine['currentEnv_'],
-  mutex: ReturnType<typeof pLimit>,
+  mutex: LimitFunction,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
     specName: Global.TestNameLike,
