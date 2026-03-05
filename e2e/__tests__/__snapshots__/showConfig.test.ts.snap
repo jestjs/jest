@@ -154,6 +154,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "watch": false,
     "watchAll": false,
     "watchman": true,
+    "workerGracefulExitTimeout": 500,
     "workerThreads": false
   },
   "version": "[version]"

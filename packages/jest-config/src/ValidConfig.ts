@@ -199,6 +199,7 @@ export const initialOptions: Config.InitialOptions = {
     ],
   ],
   watchman: true,
+  workerGracefulExitTimeout: 500,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
   workerThreads: true,
 };
