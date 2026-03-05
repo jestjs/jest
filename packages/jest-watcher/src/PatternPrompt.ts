@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
-import {specialChars} from 'jest-util';
+import {ansiEscapes, specialChars} from 'jest-util';
 import type Prompt from './lib/Prompt';
 import type {ScrollOptions} from './types';
 

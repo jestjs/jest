@@ -4261,7 +4261,6 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
-    ansi-escapes: "npm:^4.3.2"
     chalk: "npm:^4.1.2"
     ci-info: "npm:^4.2.0"
     exit-x: "npm:^0.2.2"
@@ -14486,7 +14485,6 @@ __metadata:
     "@jest/test-result": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/node": "npm:*"
-    ansi-escapes: "npm:^4.3.2"
     chalk: "npm:^4.1.2"
     emittery: "npm:^0.13.1"
     jest-util: "workspace:*"
@@ -21520,6 +21518,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^0.21.3":
+  version: 0.21.3
+  resolution: "type-fest@npm:0.21.3"
+  checksum: 10/f4254070d9c3d83a6e573bcb95173008d73474ceadbbf620dd32d273940ca18734dff39c2b2480282df9afe5d1675ebed5499a00d791758748ea81f61a38961f
+  languageName: node
+  linkType: hard
+
 "type-fest@npm:^0.6.0":
   version: 0.6.0
   resolution: "type-fest@npm:0.6.0"
@@ -21541,7 +21546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^2.0.0, type-fest@npm:^2.13.0, type-fest@npm:^2.5.0, type-fest@npm:^2.5.1":
+"type-fest@npm:^2.13.0, type-fest@npm:^2.5.0, type-fest@npm:^2.5.1":
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: 10/7bf9e8fdf34f92c8bb364c0af14ca875fac7e0183f2985498b77be129dc1b3b1ad0a6b3281580f19e48c6105c037fb966ad9934520c69c6434d17fd0af4eed78
