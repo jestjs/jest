@@ -6,9 +6,14 @@
  *
  */
 
+import {execFile as execFileCb} from 'node:child_process';
+import {promisify} from 'node:util';
 import * as path from 'path';
-import execa from 'execa';
 import type {SCMAdapter} from './types';
+
+const execFile = promisify(execFileCb);
+
+const MAX_BUFFER = 100 * 1024 * 1024;
 
 const env = {...process.env, HGPLAIN: '1'};
 
@@ -29,9 +34,14 @@ const adapter: SCMAdapter = {
     }
     args.push(...includePaths);
 
-    const result = await execa('hg', args, {cwd, env});
+    const result = await execFile('hg', args, {
+      cwd,
+      env,
+      maxBuffer: MAX_BUFFER,
+    });
 
     return result.stdout
+      .trimEnd()
       .split('\n')
       .filter(s => s !== '')
       .map(changedPath => path.resolve(cwd, changedPath));
@@ -39,9 +49,13 @@ const adapter: SCMAdapter = {
 
   getRoot: async cwd => {
     try {
-      const result = await execa('hg', ['root'], {cwd, env});
+      const result = await execFile('hg', ['root'], {
+        cwd,
+        env,
+        maxBuffer: MAX_BUFFER,
+      });
 
-      return result.stdout;
+      return result.stdout.trimEnd();
     } catch {
       return null;
     }
