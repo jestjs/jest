@@ -652,6 +652,15 @@ describe('iterableEquality', () => {
 
     expect(iterableEquality(a, b)).toBe(false);
   });
+
+  test('does not throw when iterating an object with a TypedArray iterator', () => {
+    const badIterable = {
+      [Symbol.iterator]: Uint8Array.prototype[Symbol.iterator],
+    };
+
+    expect(() => iterableEquality(badIterable, badIterable)).not.toThrow();
+    expect(iterableEquality(badIterable, badIterable)).toBe(false);
+  });
 });
 
 describe('typeEquality', () => {
