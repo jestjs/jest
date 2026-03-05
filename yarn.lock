@@ -4243,7 +4243,6 @@ __metadata:
     chalk: "npm:^4.1.2"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
-    slash: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 
@@ -4280,7 +4279,6 @@ __metadata:
     jest-validate: "workspace:*"
     jest-watcher: "workspace:*"
     pretty-format: "workspace:*"
-    slash: "npm:^3.0.0"
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -4476,7 +4474,6 @@ __metadata:
     resolve: "npm:^1.20.0"
     rimraf: "npm:^5.0.10"
     semver: "npm:^7.7.2"
-    slash: "npm:^3.0.0"
     strip-json-comments: "npm:^3.1.1"
     tempy: "npm:^1.0.1"
     ts-node: "npm:^10.5.0"
@@ -4534,7 +4531,6 @@ __metadata:
     jest-worker: "workspace:*"
     mock-fs: "npm:^5.5.0"
     node-notifier: "npm:^10.0.1"
-    slash: "npm:^3.0.0"
     string-length: "npm:^4.0.2"
     v8-to-istanbul: "npm:^9.0.1"
   peerDependencies:
@@ -4619,7 +4615,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     graceful-fs: "npm:^4.2.11"
     jest-haste-map: "workspace:*"
-    slash: "npm:^3.0.0"
+    jest-util: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -4661,7 +4657,6 @@ __metadata:
     jest-regex-util: "workspace:*"
     jest-util: "workspace:*"
     pirates: "npm:^4.0.7"
-    slash: "npm:^3.0.0"
     write-file-atomic: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -8125,7 +8120,7 @@ __metadata:
     babel-preset-jest: "workspace:*"
     chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
-    slash: "npm:^3.0.0"
+    jest-util: "workspace:*"
   peerDependencies:
     "@babel/core": ^7.11.0 || ^8.0.0-0
   languageName: unknown
@@ -13913,7 +13908,6 @@ __metadata:
     p-limit: "npm:^3.1.0"
     pretty-format: "workspace:*"
     pure-rand: "npm:^7.0.0"
-    slash: "npm:^3.0.0"
     stack-utils: "npm:^2.0.6"
     tempy: "npm:^1.0.1"
   languageName: unknown
@@ -13975,7 +13969,6 @@ __metadata:
     parse-json: "npm:^5.2.0"
     pretty-format: "workspace:*"
     semver: "npm:^7.7.2"
-    slash: "npm:^3.0.0"
     strip-json-comments: "npm:^3.1.1"
     ts-node: "npm:^10.5.0"
     typescript: "npm:^5.8.3"
@@ -14082,7 +14075,6 @@ __metadata:
     jest-util: "workspace:*"
     jest-worker: "workspace:*"
     picomatch: "npm:^4.0.3"
-    slash: "npm:^3.0.0"
     walker: "npm:^1.0.8"
   dependenciesMeta:
     fsevents:
@@ -14162,9 +14154,9 @@ __metadata:
     "@types/stack-utils": "npm:^2.0.3"
     chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
+    jest-util: "workspace:*"
     picomatch: "npm:^4.0.3"
     pretty-format: "workspace:*"
-    slash: "npm:^3.0.0"
     stack-utils: "npm:^2.0.6"
     tempy: "npm:^1.0.1"
   languageName: unknown
@@ -14259,7 +14251,6 @@ __metadata:
     jest-pnp-resolver: "npm:^1.2.3"
     jest-util: "workspace:*"
     jest-validate: "workspace:*"
-    slash: "npm:^3.0.0"
     unrs-resolver: "npm:^1.7.11"
     url: "npm:^0.11.4"
   languageName: unknown
@@ -14325,7 +14316,6 @@ __metadata:
     jest-resolve: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    slash: "npm:^3.0.0"
     strip-bom: "npm:^4.0.0"
   languageName: unknown
   linkType: soft

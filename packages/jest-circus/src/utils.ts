@@ -9,7 +9,6 @@ import * as path from 'path';
 import co from 'co';
 import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
-import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Status, TestCaseResult} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
@@ -19,6 +18,7 @@ import {
   formatTime,
   invariant,
   isPromise,
+  slash,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';

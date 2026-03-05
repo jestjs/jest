@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import slash from 'slash';
+import {slash} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
   JEST_CONFIG_BASE_NAME,

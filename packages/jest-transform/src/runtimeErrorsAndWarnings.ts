@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import slash from 'slash';
+import {slash} from 'jest-util';
 
 const BULLET = '\u25CF ';
 const DOCUMENTATION_NOTE = `  ${chalk.bold(

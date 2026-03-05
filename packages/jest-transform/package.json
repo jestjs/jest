@@ -31,7 +31,6 @@
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "pirates": "^4.0.7",
-    "slash": "^3.0.0",
     "write-file-atomic": "^5.0.1"
   },
   "devDependencies": {

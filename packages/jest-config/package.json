@@ -56,7 +56,6 @@
     "jest-validate": "workspace:*",
     "parse-json": "^5.2.0",
     "pretty-format": "workspace:*",
-    "slash": "^3.0.0",
     "strip-json-comments": "^3.1.1"
   },
   "devDependencies": {

@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import {glob} from 'glob';
-import slash from 'slash';
 import type {Config} from '@jest/types';
+import {slash} from 'jest-util';
 
 const OUTSIDE_JEST_VM_PROTOCOL = 'jest-main:';
 // String manipulation is easier here, fileURLToPath is only in newer Nodes,

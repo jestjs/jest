@@ -10,7 +10,6 @@ import type {WriteStream} from 'tty';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit-x';
-import slash from 'slash';
 import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -20,6 +19,7 @@ import {
   isInteractive,
   preRunMessage,
   requireOrImportModule,
+  slash,
   specialChars,
 } from 'jest-util';
 import {ValidationError} from 'jest-validate';

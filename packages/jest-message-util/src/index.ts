@@ -12,9 +12,9 @@ import {codeFrameColumns} from '@babel/code-frame';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
 import picomatch from 'picomatch';
-import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Config, TestResult} from '@jest/types';
+import {slash} from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 

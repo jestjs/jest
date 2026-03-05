@@ -18,7 +18,6 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import slash from 'slash';
 import stripBOM from 'strip-bom';
 import type {
   Jest,
@@ -53,6 +52,7 @@ import {
   invariant,
   isNonNullable,
   protectProperties,
+  slash,
 } from 'jest-util';
 import {
   createOutsideJestVmPath,

@@ -31,7 +31,7 @@ test('works with jest.config.js', () => {
 test('traverses directory tree up until it finds jest.config', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
-    const slash = require('slash');
+    const slash = p => p.replaceAll('\\\\', '/');
     test('banana', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,

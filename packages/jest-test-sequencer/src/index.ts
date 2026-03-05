@@ -8,10 +8,10 @@
 import * as crypto from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import slash from 'slash';
 import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
+import {slash} from 'jest-util';
 
 const FAIL = 0;
 const SUCCESS = 1;

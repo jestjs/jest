@@ -14,7 +14,6 @@ import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import stableStringify from 'fast-json-stable-stringify';
 import * as fs from 'graceful-fs';
 import {addHook} from 'pirates';
-import slash from 'slash';
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
@@ -23,6 +22,7 @@ import {
   invariant,
   isPromise,
   requireOrImportModule,
+  slash,
   tryRealpath,
 } from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';

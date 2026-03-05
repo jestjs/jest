@@ -35,7 +35,7 @@ jest.mock('child_process', () => ({
 }));
 
 jest.mock('graceful-fs', () => {
-  const slash = require('slash');
+  const slash = p => p.replaceAll('\\', '/');
   let mtime = 32;
   const size = 42;
   const stat = (path, callback) => {

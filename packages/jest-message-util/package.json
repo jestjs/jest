@@ -27,9 +27,9 @@
     "@types/stack-utils": "^2.0.3",
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
+    "jest-util": "workspace:*",
     "picomatch": "^4.0.3",
     "pretty-format": "workspace:*",
-    "slash": "^3.0.0",
     "stack-utils": "^2.0.6"
   },
   "devDependencies": {
