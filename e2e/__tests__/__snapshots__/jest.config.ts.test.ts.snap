@@ -17,7 +17,7 @@ exports[`on node >=24 invalid JS in jest.config.ts (node with native TS support)
 "Error: Jest: Failed to parse the TypeScript config file <<REPLACED>>
     both with the native node TypeScript support and configured TypeScript loaders.
     Errors were:
-    - SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal (ll break this file yo, 'll break this file yo)'
+    - SyntaxError [ERR_INVALID_TYPESCRIPT_SYNTAX]: Expected ';', got 'string literal'
     - TSError: ⨯ Unable to compile TypeScript:
 jest.config.ts(1,16): error TS2304: Cannot find name 'i'.
 jest.config.ts(1,17): error TS1005: ';' expected.
