@@ -44,9 +44,7 @@ describe('Jasmine2Reporter', () => {
     });
   });
 
-  it('serializes Error.cause in failure messages', () => {
-    const nestedCause = new Error('error during g');
-    const error = new Error('error during f', {cause: nestedCause});
+  const extractFailureMessage = (error: Error) => {
     const spec = {
       description: 'description',
       failedExpectations: [
@@ -72,8 +70,31 @@ describe('Jasmine2Reporter', () => {
       }
     )._extractSpecResults(spec, []);
 
-    expect(extracted.failureMessages[0]).toContain(
-      '[cause]: Error: error during g',
+    return extracted.failureMessages[0];
+  };
+
+  it('serializes nested Error.cause in failure messages', () => {
+    const message = extractFailureMessage(
+      new Error('error during f', {cause: new Error('error during g')}),
     );
+
+    expect(message).toContain('[cause]: Error: error during g');
+  });
+
+  it('serializes string Error.cause in failure messages', () => {
+    const message = extractFailureMessage(
+      new Error('error during f', {cause: 'here is the cause'}),
+    );
+
+    expect(message).toContain('[cause]: here is the cause');
+  });
+
+  it('protects against circular Error.cause in failure messages', () => {
+    const error = new Error('error during f') as Error & {cause?: unknown};
+    error.cause = error;
+
+    const message = extractFailureMessage(error);
+
+    expect(message).toContain('[Circular cause]');
   });
 });
