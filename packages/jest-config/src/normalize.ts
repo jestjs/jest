@@ -377,7 +377,9 @@ const normalizeReporters = ({
       normalizedReporterConfig[0],
     );
 
-    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
+    if (
+      !['agent', 'default', 'github-actions', 'summary'].includes(reporterPath)
+    ) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: rootDir,
       });

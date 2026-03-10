@@ -7,6 +7,7 @@
  */
 
 import {
+  AgentReporter,
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
@@ -22,6 +23,11 @@ import * as runGlobalHook from '../runGlobalHook';
 
 jest
   .mock('ci-info', () => ({GITHUB_ACTIONS: true}))
+  .mock('std-env', () => ({
+    get isAgent() {
+      return globalThis.__TEST_IS_AGENT__ || false;
+    },
+  }))
   .mock('@jest/reporters')
   .mock(
     '/custom-reporter.js',
@@ -86,6 +92,25 @@ describe('reporters', () => {
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
     expect(CoverageReporter).toHaveBeenCalledTimes(0);
     expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('uses agent reporter when AI agent is detected', async () => {
+    globalThis.__TEST_IS_AGENT__ = true;
+    try {
+      await createTestScheduler(
+        makeGlobalConfig({
+          reporters: undefined,
+        }),
+        {},
+        {},
+      );
+
+      expect(AgentReporter).toHaveBeenCalledTimes(1);
+      expect(DefaultReporter).toHaveBeenCalledTimes(0);
+      expect(SummaryReporter).toHaveBeenCalledTimes(1);
+    } finally {
+      globalThis.__TEST_IS_AGENT__ = false;
+    }
   });
 
   test('does not enable any reporters, if empty list is passed', async () => {

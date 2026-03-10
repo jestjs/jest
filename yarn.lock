@@ -4281,6 +4281,7 @@ __metadata:
     jest-watcher: "workspace:*"
     pretty-format: "workspace:*"
     slash: "npm:^3.0.0"
+    std-env: "npm:^4.0.0-rc.1"
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -20666,6 +20667,13 @@ __metadata:
   version: 3.9.0
   resolution: "std-env@npm:3.9.0"
   checksum: 10/3044b2c54a74be4f460db56725571241ab3ac89a91f39c7709519bc90fa37148784bc4cd7d3a301aa735f43bd174496f263563f76703ce3e81370466ab7c235b
+  languageName: node
+  linkType: hard
+
+"std-env@npm:^4.0.0-rc.1":
+  version: 4.0.0-rc.1
+  resolution: "std-env@npm:4.0.0-rc.1"
+  checksum: 10/e3bdb5ca4a2d17e9ef402524b0f781557dd5ad3aa917676249a3b8bf961b75dfeaf287017a0826f1049eb8550ed87f7135d26e06cdca09ba50bc3959b1b70211
   languageName: node
   linkType: hard
 

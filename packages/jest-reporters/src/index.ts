@@ -23,6 +23,7 @@ export type {
   TestResult,
 } from '@jest/test-result';
 export type {Config} from '@jest/types';
+export {default as AgentReporter} from './AgentReporter';
 export {default as BaseReporter} from './BaseReporter';
 export {default as CoverageReporter} from './CoverageReporter';
 export {default as DefaultReporter} from './DefaultReporter';

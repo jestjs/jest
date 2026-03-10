@@ -8,7 +8,9 @@
 import chalk from 'chalk';
 import {GITHUB_ACTIONS} from 'ci-info';
 import exit from 'exit-x';
+import {isAgent} from 'std-env';
 import {
+  AgentReporter,
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
@@ -350,11 +352,17 @@ class TestScheduler {
 
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
-    const reporters = this._globalConfig.reporters || [['default', {}]];
+    const reporters = this._globalConfig.reporters || [
+      [isAgent ? 'agent' : 'default', {}],
+    ];
     let summaryOptions: SummaryReporterOptions | null = null;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {
+        case 'agent':
+          summaryOptions = options;
+          this.addReporter(new AgentReporter(this._globalConfig));
+          break;
         case 'default':
           summaryOptions = options;
           this.addReporter(

@@ -74,8 +74,9 @@ export default {
   ],
   testTimeout: 70_000,
   transform: {
-    '\\.[jt]sx?$': require.resolve('babel-jest'),
+    '\\.[cm]?[jt]sx?$': require.resolve('babel-jest'),
   },
+  transformIgnorePatterns: ['/node_modules/(?!std-env/)'],
   watchPathIgnorePatterns: [
     'coverage',
     '<rootDir>/packages/jest-worker/src/workers/__tests__/__temp__',
