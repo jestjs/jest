@@ -4,6 +4,7 @@
 
 ### Features
 
+- `[jest-config, jest-runner, jest-worker]` Add `workerGracefulExitTimeout` config option to control how long workers are given to exit before being force-killed ([#XXXX](https://github.com/jestjs/jest/pull/XXXX))
 - `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
 - `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
 - `[*]` Reduce token usage when run through LLMs ([`3f17932`](https://github.com/jestjs/jest/commit/3f17932061c0203999451e5852664093de876709))

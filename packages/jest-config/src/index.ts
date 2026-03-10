@@ -189,6 +189,7 @@ const groupOptions = (
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
+    workerGracefulExitTimeout: options.workerGracefulExitTimeout,
     workerIdleMemoryLimit: options.workerIdleMemoryLimit,
     workerThreads: options.workerThreads,
   }),

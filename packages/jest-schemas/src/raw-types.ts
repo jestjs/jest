@@ -350,5 +350,9 @@ export const InitialOptions = Type.Partial(
     ),
     workerIdleMemoryLimit: Type.Union([Type.Number(), Type.String()]),
     workerThreads: Type.Boolean(),
+    workerGracefulExitTimeout: Type.Number({
+      description:
+        'Timeout in milliseconds for worker processes to exit gracefully after tests complete. Workers that do not exit in time are force-killed. Default: 500.',
+    }),
   }),
 );

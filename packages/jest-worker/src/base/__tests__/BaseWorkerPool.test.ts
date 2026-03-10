@@ -241,6 +241,89 @@ describe('BaseWorkerPool', () => {
       expect(await pool.end()).toEqual({forceExited: false});
     });
 
+    it('uses workerGracefulExitTimeout option for force exit delay', async () => {
+      jest.useFakeTimers();
+
+      try {
+        let worker0Exited: (a?: unknown) => void;
+        const mockForceExit = jest.fn(() => {
+          worker0Exited();
+        });
+        Worker.mockImplementation(
+          () =>
+            ({
+              forceExit: mockForceExit,
+              getStderr: () => null,
+              getStdout: () => null,
+              send: jest.fn(),
+              waitForExit: () =>
+                new Promise(resolve => (worker0Exited = resolve)),
+            }) as unknown as WorkerInterface,
+        );
+
+        const pool = new MockWorkerPool('/tmp/baz.js', {
+          forkOptions: {execArgv: []},
+          maxRetries: 6,
+          numWorkers: 1,
+          setupArgs: [],
+          workerGracefulExitTimeout: 2000,
+        } as unknown as WorkerPoolOptions);
+
+        const endPromise = pool.end();
+
+        // At 500ms (default), forceExit should NOT have been called
+        jest.advanceTimersByTime(500);
+        expect(mockForceExit).not.toHaveBeenCalled();
+
+        // At 2000ms (custom timeout), forceExit SHOULD be called
+        jest.advanceTimersByTime(1500);
+        expect(await endPromise).toEqual({forceExited: true});
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('defaults to 500ms when workerGracefulExitTimeout is not set', async () => {
+      jest.useFakeTimers();
+
+      try {
+        let worker0Exited: (a?: unknown) => void;
+        const mockForceExit = jest.fn(() => {
+          worker0Exited();
+        });
+        Worker.mockImplementation(
+          () =>
+            ({
+              forceExit: mockForceExit,
+              getStderr: () => null,
+              getStdout: () => null,
+              send: jest.fn(),
+              waitForExit: () =>
+                new Promise(resolve => (worker0Exited = resolve)),
+            }) as unknown as WorkerInterface,
+        );
+
+        const pool = new MockWorkerPool('/tmp/baz.js', {
+          forkOptions: {execArgv: []},
+          maxRetries: 6,
+          numWorkers: 1,
+          setupArgs: [],
+        } as unknown as WorkerPoolOptions);
+
+        const endPromise = pool.end();
+
+        // At 499ms, forceExit should NOT have been called
+        jest.advanceTimersByTime(499);
+        expect(mockForceExit).not.toHaveBeenCalled();
+
+        // At 500ms (default), forceExit SHOULD be called
+        jest.advanceTimersByTime(1);
+        expect(await endPromise).toEqual({forceExited: true});
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
     it('force exits workers that do not exit gracefully and resolves with forceExited=true', async () => {
       // Set it up so that the first worker does not resolve waitForExit immediately,
       // but only when forceExit() is called
