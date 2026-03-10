@@ -18,6 +18,7 @@ import babelJest, {createTransformer} from '../index';
 // written in ESM and we don't support require(esm) yet.
 import Module from 'node:module';
 import {pathToFileURL} from 'node:url';
+
 const createOriginalNodeRequire = Object.getPrototypeOf(Module).createRequire;
 const originalNodeRequire = createOriginalNodeRequire(
   pathToFileURL(__filename),
@@ -246,5 +247,33 @@ function defineTests({
     expect(mockedBabel.loadPartialConfigSync).toHaveBeenCalledWith(
       expect.objectContaining({presets: []}),
     );
+  });
+
+  describe('instrument', () => {
+    test('adds the babel istanbul plugin', async () => {
+      defaultBabelJestTransformer.process(sourceString, 'dummy_path.mjs', {
+        cacheFS: new Map<string, string>(),
+        config: makeProjectConfig(),
+        configString: JSON.stringify(makeProjectConfig()),
+        instrument: true,
+        transformerConfig: {},
+      } as TransformOptions<BabelTransformOptions>);
+
+      expect(mockedBabel.transformSync).toHaveBeenCalledTimes(1);
+      expect(mockedBabel.transformSync).toHaveBeenCalledWith(
+        sourceString,
+        expect.any(Object),
+      );
+      expect(mockedBabel.transformSync.mock.calls[0][1]?.plugins).toEqual([
+        [
+          require.resolve('babel-plugin-istanbul'),
+          {
+            cwd: '/test_root_dir/',
+            exclude: [],
+            extension: ['.mjs'],
+          },
+        ],
+      ]);
+    });
   });
 }
