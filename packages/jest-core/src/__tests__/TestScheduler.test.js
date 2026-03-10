@@ -23,11 +23,6 @@ import * as runGlobalHook from '../runGlobalHook';
 
 jest
   .mock('ci-info', () => ({GITHUB_ACTIONS: true}))
-  .mock('std-env', () => ({
-    get isAgent() {
-      return globalThis.__TEST_IS_AGENT__ || false;
-    },
-  }))
   .mock('@jest/reporters')
   .mock(
     '/custom-reporter.js',
@@ -70,11 +65,40 @@ beforeEach(() => {
   spyRunGlobalHook.mockClear();
 });
 
+const AGENT_ENV_VARS = [
+  'AI_AGENT',
+  'AUGMENT_AGENT',
+  'CLAUDE_CODE',
+  'CLAUDECODE',
+  'CODEX_SANDBOX',
+  'CODEX_THREAD_ID',
+  'CURSOR_AGENT',
+  'GEMINI_CLI',
+  'GOOSE_PROVIDER',
+  'OPENCODE',
+  'REPL_ID',
+];
+
 describe('reporters', () => {
   const CustomReporter = require('/custom-reporter.js');
+  const savedAgentEnv = {};
+
+  beforeEach(() => {
+    for (const key of AGENT_ENV_VARS) {
+      savedAgentEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
+    for (const key of AGENT_ENV_VARS) {
+      if (savedAgentEnv[key] === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = savedAgentEnv[key];
+      }
+    }
   });
 
   test('works with default value', async () => {
@@ -95,7 +119,7 @@ describe('reporters', () => {
   });
 
   test('uses agent reporter when AI agent is detected', async () => {
-    globalThis.__TEST_IS_AGENT__ = true;
+    process.env.AI_AGENT = '1';
     try {
       await createTestScheduler(
         makeGlobalConfig({
@@ -109,7 +133,7 @@ describe('reporters', () => {
       expect(DefaultReporter).toHaveBeenCalledTimes(0);
       expect(SummaryReporter).toHaveBeenCalledTimes(1);
     } finally {
-      globalThis.__TEST_IS_AGENT__ = false;
+      delete process.env.AI_AGENT;
     }
   });
 
