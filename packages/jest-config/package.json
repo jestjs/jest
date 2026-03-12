@@ -63,7 +63,7 @@
     "@jest/test-utils": "workspace:*",
     "@types/graceful-fs": "^4.1.9",
     "@types/parse-json": "^4.0.2",
-    "esbuild": "^0.25.5",
+    "esbuild": "^0.27.0",
     "esbuild-register": "^3.6.0",
     "semver": "^7.7.2",
     "ts-node": "^10.5.0",
