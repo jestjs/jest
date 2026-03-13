@@ -323,6 +323,7 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  printBasicPrototype?: boolean, // DiffFormat options
 ): string => {
   if (
     typeof expected === 'string' &&
@@ -342,6 +343,7 @@ export const printDiffOrStringify = (
         emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
         expand,
         includeChangeCounts: true,
+        printBasicPrototype,
       });
     }
 
@@ -371,6 +373,7 @@ export const printDiffOrStringify = (
       bAnnotation: receivedLabel,
       expand,
       includeChangeCounts: true,
+      printBasicPrototype,
     });
 
     if (

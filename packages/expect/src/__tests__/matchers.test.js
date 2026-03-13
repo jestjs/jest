@@ -2390,3 +2390,68 @@ describe('toMatchObject()', () => {
     });
   });
 });
+
+describe('printBasicPrototype state', () => {
+  afterEach(() => {
+    // Reset state after each test to avoid affecting other tests
+    jestExpect.setState({printBasicPrototype: undefined});
+  });
+
+  it('respects printBasicPrototype: false in matcher state', () => {
+    jestExpect.setState({printBasicPrototype: false});
+
+    const received = {items: [{id: 1, name: 'Alice'}]};
+    const expected = {items: [{id: 1, name: 'Bob'}]};
+
+    let error;
+    try {
+      jestExpect(received).toEqual(expected);
+    } catch (error_) {
+      error = error_;
+    }
+
+    expect(error).toBeDefined();
+    // Diff should not contain type annotations like "Object {" or "Array ["
+    expect(error.message).not.toContain('Object {');
+    expect(error.message).not.toContain('Array [');
+    // But should still contain the diff
+    expect(error.message).toContain('"items"');
+    expect(error.message).toContain('"name"');
+  });
+
+  it('respects printBasicPrototype: true in matcher state (default)', () => {
+    jestExpect.setState({printBasicPrototype: true});
+
+    const received = {items: [{id: 1, name: 'Alice'}]};
+    const expected = {items: [{id: 1, name: 'Bob'}]};
+
+    let error;
+    try {
+      jestExpect(received).toEqual(expected);
+    } catch (error_) {
+      error = error_;
+    }
+
+    expect(error).toBeDefined();
+    // Diff should contain type annotations
+    expect(error.message).toContain('Object {');
+    expect(error.message).toContain('Array [');
+  });
+
+  it('works with toStrictEqual matcher', () => {
+    jestExpect.setState({printBasicPrototype: false});
+
+    const received = {data: {value: 1}};
+    const expected = {data: {value: 2}};
+
+    let error;
+    try {
+      jestExpect(received).toStrictEqual(expected);
+    } catch (error_) {
+      error = error_;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.message).not.toContain('Object {');
+  });
+});

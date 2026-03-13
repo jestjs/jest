@@ -129,6 +129,7 @@ const matchers: MatchersObject = {
               EXPECTED_LABEL,
               RECEIVED_LABEL,
               isExpand(this.expand),
+              this.printBasicPrototype,
             )
           );
         };
@@ -645,6 +646,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            this.printBasicPrototype,
           );
 
     // Passing the actual and expected objects so that a custom reporter
@@ -799,6 +801,7 @@ const matchers: MatchersObject = {
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
                 isExpand(this.expand),
+                this.printBasicPrototype,
               )}`
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
@@ -943,6 +946,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            this.printBasicPrototype,
           );
 
     return {message, pass};
@@ -982,6 +986,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            this.printBasicPrototype,
           );
 
     // Passing the actual and expected objects so that a custom reporter
