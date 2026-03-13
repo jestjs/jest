@@ -5548,14 +5548,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prettier/sync@npm:^0.5.5":
-  version: 0.5.5
-  resolution: "@prettier/sync@npm:0.5.5"
+"@prettier/sync@npm:^0.6.0":
+  version: 0.6.1
+  resolution: "@prettier/sync@npm:0.6.1"
   dependencies:
-    make-synchronized: "npm:^0.4.2"
+    make-synchronized: "npm:^0.8.0"
   peerDependencies:
     prettier: "*"
-  checksum: 10/82d620af71028d0ea2d60f1349102ffac86bc5a8fca574d4049772341e76151b6ba477f2657e55eae18d4b37d604b73f8cb15b41c7f6427ada8ab2668f940320
+  checksum: 10/2c53cd4ee718e2ebd2fb31aa5ec4773f743b9c29fcc6db6794dc3553bc87aa8fe7db47b51add6809cab655520b7550329d1cce2ca837f6f4643991eff44abad1
   languageName: node
   linkType: hard
 
@@ -8177,7 +8177,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@babel/types": "npm:^7.27.3"
-    "@prettier/sync": "npm:^0.5.5"
+    "@prettier/sync": "npm:^0.6.0"
     "@types/babel__core": "npm:^7.20.5"
     "@types/babel__template": "npm:^7.4.4"
     "@types/babel__traverse": "npm:^7.20.7"
@@ -15204,10 +15204,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-synchronized@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "make-synchronized@npm:0.4.2"
-  checksum: 10/0d7a2c8b140f821aecc360cb175fd1575170fe1b06727162fe47133ae5e37a8a33844f6f53825125525ab64e581930bdbb9593b92033c4fc9a0b5fcb47217e26
+"make-synchronized@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "make-synchronized@npm:0.8.0"
+  checksum: 10/e744bafcd61ee1ecabe6fb2c295ecb4b06a7bfe4e844222b80b7a5ae80a4d27ba657abc4892d1c702fa2f6ae568d8505e801c1498fe1379dd824ded5483d978c
   languageName: node
   linkType: hard
 
