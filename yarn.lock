@@ -4422,7 +4422,7 @@ __metadata:
     "@lerna-lite/exec": "npm:^4.3.0"
     "@lerna-lite/publish": "npm:^4.3.0"
     "@microsoft/api-extractor": "npm:^7.35.0"
-    "@tsconfig/node18": "npm:^18.2.4"
+    "@tsconfig/node20": "npm:^20.1.0"
     "@types/babel__core": "npm:^7.20.5"
     "@types/babel__generator": "npm:^7.27.0"
     "@types/babel__template": "npm:^7.4.4"
@@ -6326,10 +6326,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node18@npm:^18.2.4":
-  version: 18.2.4
-  resolution: "@tsconfig/node18@npm:18.2.4"
-  checksum: 10/80623cb9c129c78d51fe6c4a256ba986f12f02ff02dc2a1e5b33dd13a7983f767b6792cfcd51b3dd1c8256ea105f1fea31f64a2070564e37787ab3d9a1a1e7e3
+"@tsconfig/node20@npm:^20.1.0":
+  version: 20.1.9
+  resolution: "@tsconfig/node20@npm:20.1.9"
+  checksum: 10/3d66cd9942175e477cb6b68d06d9523089fca32de8e63ef09433e2dc89fb737276b196700ee48e5991396a0ee35ba527a86599cf3c80310d6c569312ff79205e
   languageName: node
   linkType: hard
 
