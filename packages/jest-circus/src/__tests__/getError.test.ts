@@ -6,13 +6,16 @@
  */
 
 
-import {_getError} from '../utils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('handles plain object error with undefined asyncError', () => {
-  const errors = [{status: 403, message: 'Forbidden'}, undefined] as any;
+  const code = `
+    test('throws plain object', () => {
+      throw {status: 403, message: 'Forbidden'};
+    });
+  `;
 
-  const result = _getError(errors);
+  const {stderr} = runTest(code);
 
-  expect(result).toBeInstanceOf(Error);
-  expect(result.message).toContain('Forbidden');
+  expect(stderr).toContain('Forbidden');
 });
