@@ -8,14 +8,14 @@
 
 import {runTest} from '../__mocks__/testUtils';
 
-test('handles plain object error with undefined asyncError', () => {
+test('handles plain object throw without crashing', () => {
   const code = `
-    test('throws plain object', () => {
+    test('plain object error', () => {
       throw {status: 403, message: 'Forbidden'};
     });
   `;
 
-  const {stderr} = runTest(code);
+  const {stdout, stderr} = runTest(code);
 
   expect(stderr).toContain('Forbidden');
 });
