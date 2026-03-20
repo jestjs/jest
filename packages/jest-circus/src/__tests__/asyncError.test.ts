@@ -5,7 +5,7 @@ describe('async error handling', () => {
     test('inner test', (innerDone: any) => {
       // simulate async error path (where asyncError can be undefined)
       Promise.resolve().then(() => {
-        throw {status: 403, message: 'Forbidden'};
+        throw Object.assign(new Error('Forbidden'), {status: 403});
       });
 
       innerDone();
