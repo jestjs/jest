@@ -438,9 +438,7 @@ const _getError = (
     return asyncError;
   }
 
-  return new Error(
-    `thrown: ${prettyFormat(error, {maxDepth: 3})}`,
-  );
+  return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
 };
 
 const getErrorStack = (error: Error): string =>
