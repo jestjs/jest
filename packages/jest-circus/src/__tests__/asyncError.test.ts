@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
 describe('async error handling', () => {
   it('does not crash when asyncError is undefined and a plain object is thrown', done => {
     const {test} = require('../');
