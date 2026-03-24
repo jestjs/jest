@@ -101,19 +101,19 @@ describe('when `Config` type is imported from "@jest/types"', () => {
   testIfNativeTypeScript(
     'with object config exported from MTS file when package.json#type=commonjs',
     () => {
-    writeFiles(DIR, {
-      '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
-      'jest.config.mts': `
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
+        'jest.config.mts': `
         import type {Config} from '@jest/types';
         const config: Config.InitialOptions = {displayName: 'ts-mts-object-config', verbose: true};
         export default config;
       `,
-      'package.json': '{"type": "commonjs"}',
-    });
+        'package.json': '{"type": "commonjs"}',
+      });
 
-    const {configs, globalConfig} = getConfig(path.join(DIR));
+      const {configs, globalConfig} = getConfig(path.join(DIR));
 
-    expect(configs).toHaveLength(1);
+      expect(configs).toHaveLength(1);
       expect(configs[0].displayName?.name).toBe('ts-mts-object-config');
       expect(globalConfig.verbose).toBe(true);
     },
