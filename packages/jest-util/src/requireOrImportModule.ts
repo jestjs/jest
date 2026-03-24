@@ -52,7 +52,7 @@ export default async function requireOrImportModule<T>(
     );
   }
   try {
-    if (filePath.endsWith('.mjs')) {
+    if (filePath.endsWith('.mjs') || filePath.endsWith('.mts')) {
       return importModule(filePath, applyInteropRequireDefault);
     }
 

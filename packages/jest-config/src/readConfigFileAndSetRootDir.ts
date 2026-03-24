@@ -16,6 +16,7 @@ import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
@@ -26,7 +27,8 @@ interface TsLoader {
 type TsLoaderModule = 'ts-node' | 'esbuild-register';
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
+// 2. If it's a `jest.config.ts`/`jest.config.cts`/`jest.config.mts` file,
+//    we use native TypeScript support when possible, otherwise a TS loader.
 // 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
@@ -34,19 +36,22 @@ export default async function readConfigFileAndSetRootDir(
 ): Promise<Config.InitialOptions> {
   const isTS =
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
+    configPath.endsWith(JEST_CONFIG_EXT_MTS) ||
     configPath.endsWith(JEST_CONFIG_EXT_CTS);
+  const isMTS = configPath.endsWith(JEST_CONFIG_EXT_MTS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
     if (isTS) {
+      // .mts is always ESM, so attempt import-based loading first.
       // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
-      if (process.features.typescript) {
+      if (isMTS || process.features.typescript) {
         try {
           // Try native node TypeScript support first.
           configObject = await requireOrImportModule<any>(configPath);
         } catch (requireOrImportModuleError) {
-          if (!(requireOrImportModuleError instanceof SyntaxError)) {
+          if (!(requireOrImportModuleError instanceof SyntaxError) && !isMTS) {
             if (!hasTsLoaderExplicitlyConfigured(configPath)) {
               throw requireOrImportModuleError;
             }

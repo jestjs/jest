@@ -14,6 +14,19 @@ import {onNodeVersions} from '@jest/test-utils';
 jest.mock('graceful-fs').mock('jest-util');
 
 describe('readConfigFileAndSetRootDir', () => {
+  describe('TypeScript ESM file', () => {
+    test('reads .mts config and sets `rootDir`', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest.config.mts'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+  });
+
   describe('JavaScript file', () => {
     test('reads config and sets `rootDir`', async () => {
       jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});

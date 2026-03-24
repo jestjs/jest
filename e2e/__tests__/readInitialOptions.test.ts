@@ -53,6 +53,7 @@ describe('readInitialOptions', () => {
     ['pkg-config', 'package.json', 'package.json'],
     ['ts-node-config', 'jest.config.ts', 'jest.config.ts'],
     ['ts-esbuild-register-config', 'jest.config.ts', 'jest.config.ts'],
+    ['mts-config', 'jest.config.mts', 'jest.config.mts'],
     ['mjs-config', 'jest.config.mjs', 'jest.config.mjs'],
     ['json-config', 'jest.config.json', 'jest.config.json'],
     ['async-config', 'jest.config.js', 'async-config'],
