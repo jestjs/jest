@@ -102,7 +102,8 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     'with object config exported from MTS file when package.json#type=commonjs',
     () => {
       writeFiles(DIR, {
-        '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
+        '__tests__/dummy.test.js':
+          "test('dummy', () => expect(123).toBe(123));",
         'jest.config.mts': `
         import type {Config} from '@jest/types';
         const config: Config.InitialOptions = {displayName: 'ts-mts-object-config', verbose: true};
