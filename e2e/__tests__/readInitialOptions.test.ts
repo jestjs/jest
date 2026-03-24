@@ -53,7 +53,6 @@ describe('readInitialOptions', () => {
     ['pkg-config', 'package.json', 'package.json'],
     ['ts-node-config', 'jest.config.ts', 'jest.config.ts'],
     ['ts-esbuild-register-config', 'jest.config.ts', 'jest.config.ts'],
-    ['mts-config', 'jest.config.mts', 'jest.config.mts'],
     ['mjs-config', 'jest.config.mjs', 'jest.config.mjs'],
     ['json-config', 'jest.config.json', 'jest.config.json'],
     ['async-config', 'jest.config.js', 'async-config'],
@@ -69,6 +68,18 @@ describe('readInitialOptions', () => {
       expect(configPath).toEqual(configFile);
     },
   );
+
+  onNodeVersions('^22.18 || >=23.6', () => {
+    test('should read mts-config/jest.config.mts file', async () => {
+      const configFile = resolveFixture('mts-config', 'jest.config.mts');
+      const rootDir = resolveFixture('mts-config');
+      const {config, configPath} = await proxyReadInitialOptions(undefined, {
+        cwd: rootDir,
+      });
+      expect(config).toEqual({jestConfig: 'jest.config.mts', rootDir});
+      expect(configPath).toEqual(configFile);
+    });
+  });
 
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(
