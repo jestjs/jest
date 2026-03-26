@@ -23,6 +23,8 @@
 - `[deps]` Update to sinon/fake-timers v15
 - `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
 - Updated Twitter icon to match the latest brand guidelines ([#15869](https://github.com/jestjs/jest/pull/15869))
+ - `[deps]` Upgrade `glob` to `^13.0.1` in root and affected packages (`jest-config`, `jest-reporters`, `jest-runtime`)
+- `[deps]` Upgrade `glob` to `^13.0.1` in root and affected packages (`jest-config`, `jest-reporters`, `jest-runtime`)
 
 ## 30.2.0
 
