@@ -1,7 +1,7 @@
 codecov:
   require_ci_to_pass: false
 
-comment: false seeee
+comment: false se
 
 coverage:
   status:
