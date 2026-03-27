@@ -15,18 +15,24 @@ jest
   .mock('istanbul-reports', () => ({
     ...jest.createMockFromModule('istanbul-reports'),
     create: jest.fn(() => ({execute: jest.fn()})),
+  }))
+  .mock('../CoverageWorker', () => ({
+    worker: jest.fn(),
   }));
 
 let libCoverage;
 let libSourceMaps;
 let CoverageReporter;
+let CoverageWorker;
 let istanbulReports;
 
 import * as path from 'path';
 import mock from 'mock-fs';
 
 beforeEach(() => {
+  jest.clearAllMocks();
   CoverageReporter = require('../CoverageReporter').default;
+  CoverageWorker = require('../CoverageWorker');
   libCoverage = require('istanbul-lib-coverage');
   libSourceMaps = require('istanbul-lib-source-maps');
   istanbulReports = require('istanbul-reports');
@@ -111,6 +117,8 @@ describe('onRunComplete', () => {
       }, {});
 
       return {
+        addFileCoverage: jest.fn(),
+        data: {},
         fileCoverageFor(path) {
           if (fileCoverage[path]) {
             return {
@@ -445,6 +453,90 @@ describe('onRunComplete', () => {
           maxCols: 10,
           projectRoot: './',
         });
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test('collects untested files from project config when running multiple projects', () => {
+    const projectConfig = {
+      collectCoverageFrom: ['src/**/*.js'],
+      rootDir: '/project-a',
+    };
+    const hasteFS = {
+      matchFilesWithGlob: jest
+        .fn()
+        .mockReturnValue(new Set(['/project-a/src/untested.js'])),
+    };
+    CoverageWorker.worker.mockResolvedValue(undefined);
+
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        collectCoverageFrom: [],
+        coverageReporters: [],
+        maxWorkers: 1,
+      },
+      {},
+    );
+
+    return testReporter
+      .onRunComplete(
+        new Set([{config: projectConfig, hasteFS}]),
+        mockAggResults,
+      )
+      .then(() => {
+        expect(hasteFS.matchFilesWithGlob).toHaveBeenCalledWith(
+          projectConfig.collectCoverageFrom,
+          projectConfig.rootDir,
+        );
+        expect(CoverageWorker.worker).toHaveBeenCalledWith(
+          expect.objectContaining({
+            config: projectConfig,
+            globalConfig: expect.objectContaining({collectCoverageFrom: []}),
+            path: '/project-a/src/untested.js',
+          }),
+        );
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test('deduplicates untested files matched by global and project coverage globs', () => {
+    const collectCoverageFrom = ['src/**/*.js'];
+    const projectConfig = {
+      collectCoverageFrom,
+      rootDir: '/project-a',
+    };
+    const hasteFS = {
+      matchFilesWithGlob: jest
+        .fn()
+        .mockReturnValue(new Set(['/project-a/src/untested.js'])),
+    };
+    CoverageWorker.worker.mockResolvedValue(undefined);
+
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        collectCoverageFrom,
+        coverageReporters: [],
+        maxWorkers: 1,
+      },
+      {},
+    );
+
+    return testReporter
+      .onRunComplete(
+        new Set([{config: projectConfig, hasteFS}]),
+        mockAggResults,
+      )
+      .then(() => {
+        expect(hasteFS.matchFilesWithGlob).toHaveBeenCalledTimes(2);
+        expect(CoverageWorker.worker).toHaveBeenCalledTimes(1);
+        expect(CoverageWorker.worker).toHaveBeenCalledWith(
+          expect.objectContaining({
+            config: projectConfig,
+            path: '/project-a/src/untested.js',
+          }),
+        );
         expect(testReporter.getLastError()).toBeUndefined();
       });
   });
