@@ -22,7 +22,7 @@ describe('Test Retries', () => {
   );
   const logErrorsBeforeRetryErrorMessage = 'LOGGING RETRY ERRORS';
 
-  afterAll(() => {
+  after all(() => {
     fs.unlinkSync(outputFilePath);
   });
 
@@ -183,7 +183,7 @@ describe('Concurrent Test Retries', () => {
   );
   const logErrorsBeforeRetryErrorMessage = 'LOGGING RETRY ERRORS';
 
-  afterAll(() => {
+  after all(() => {
     fs.unlinkSync(outputFilePath);
   });
 

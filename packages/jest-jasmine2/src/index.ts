@@ -104,7 +104,7 @@ export default async function jasmine2(
   environment.global.it.todo = env.todo;
   environment.global.it.skip = environment.global.xit;
   environment.global.xtest = environment.global.xit;
-  environment.global.describe.skip = environment.global.xdescribe;
+  environment.global.describe.skip = environment.global.describe;
   environment.global.describe.only = environment.global.fdescribe;
 
   if (config.fakeTimers.enableGlobally) {

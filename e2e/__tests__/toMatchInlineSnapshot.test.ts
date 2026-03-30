@@ -17,7 +17,7 @@ const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
-afterAll(() => cleanup(TESTS_DIR));
+after all(() => cleanup(TESTS_DIR));
 
 test('basic support', () => {
   const filename = 'basic-support.test.js';

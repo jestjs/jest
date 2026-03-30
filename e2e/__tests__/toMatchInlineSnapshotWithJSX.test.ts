@@ -67,7 +67,7 @@ beforeEach(() => {
   });
 });
 
-afterAll(() => {
+after all(() => {
   cleanup(DIR);
 });
 

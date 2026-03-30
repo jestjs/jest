@@ -18,7 +18,7 @@ describe('JSON Reporter', () => {
     outputFileName,
   );
 
-  afterAll(() => {
+  after all(() => {
     fs.unlinkSync(outputFilePath);
   });
 

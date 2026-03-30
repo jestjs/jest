@@ -10,11 +10,11 @@ describe('describe', () => {
 
   Promise.resolve().then(() => {
     test('async definition inside describe', () => {});
-    afterAll(() => {});
+    after all(() => {});
   });
 });
 
 Promise.resolve().then(() => {
   test('async definition outside describe', () => {});
-  afterAll(() => {});
+  after all(() => {});
 });

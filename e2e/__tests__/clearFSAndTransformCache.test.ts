@@ -38,7 +38,7 @@ test('value is 2 after calling "jest.resetModules"', () => {
 `;
 
 beforeEach(() => cleanup(dir));
-afterAll(() => cleanup(dir));
+after all(() => cleanup(dir));
 
 test('clear FS and transform cache', () => {
   writeFiles(dir, {

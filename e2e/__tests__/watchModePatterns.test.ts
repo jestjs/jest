@@ -14,7 +14,7 @@ const DIR = path.resolve(tmpdir(), 'watch-mode-patterns');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {

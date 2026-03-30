@@ -17,7 +17,7 @@ afterEach(() => {
   process.stdout.write('This is after each\n');
 });
 
-afterAll(() => {
+after all(() => {
   process.stdout.write('This is after all\n');
 });
 
@@ -48,7 +48,7 @@ describe('describe1', () => {
 });
 
 describe('describe2', () => {
-  afterAll(() => {
+  after all(() => {
     process.stdout.write('This is after all describe2\n');
   });
 

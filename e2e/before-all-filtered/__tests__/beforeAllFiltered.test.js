@@ -15,7 +15,7 @@ describe('test_1', () => {
   afterEach(() => {
     console.log('afterEach 1');
   });
-  afterAll(() => {
+  after all(() => {
     console.log('afterAll 1');
   });
   it('foo', () => {
@@ -33,7 +33,7 @@ describe('test_2', () => {
   afterEach(() => {
     console.log('afterEach 2');
   });
-  afterAll(() => {
+  after all(() => {
     console.log('afterAll 2');
   });
   it('foo', () => {

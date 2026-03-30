@@ -12,7 +12,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('CLI accepts exact file names if matchers matched', () => {
   writeFiles(DIR, {

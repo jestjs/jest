@@ -13,7 +13,7 @@ const DIR = path.resolve(__dirname, '../to-match-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));
-afterAll(() => cleanup(TESTS_DIR));
+after all(() => cleanup(TESTS_DIR));
 
 test('basic support', () => {
   const filename = 'basic-support.test.js';

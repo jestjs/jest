@@ -17,7 +17,7 @@ const pkgJsonOutputFilePath = path.join(
   'e2e/setup-files-after-env-config/package.json',
 );
 
-afterAll(() => {
+after all(() => {
   fs.unlinkSync(pkgJsonOutputFilePath);
 });
 

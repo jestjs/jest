@@ -79,7 +79,7 @@ Object {
     >  9 |   beforeEach(() => {});
          |   ^
       10 |   afterEach(() => {});
-      11 |   afterAll(() => {});
+      11 |   after all(() => {});
       12 |   beforeAll(() => {});
 
       at beforeEach (__tests__/multipleHooksInEmptyDescribe.test.js:9:3)
@@ -93,7 +93,7 @@ Object {
        9 |   beforeEach(() => {});
     > 10 |   afterEach(() => {});
          |   ^
-      11 |   afterAll(() => {});
+      11 |   after all(() => {});
       12 |   beforeAll(() => {});
       13 | });
 
@@ -102,17 +102,17 @@ Object {
 
   ● Test suite failed to run
 
-    Invalid: afterAll() may not be used in a describe block containing no tests.
+    Invalid: after all() may not be used in a describe block containing no tests.
 
        9 |   beforeEach(() => {});
       10 |   afterEach(() => {});
-    > 11 |   afterAll(() => {});
+    > 11 |   after all(() => {});
          |   ^
       12 |   beforeAll(() => {});
       13 | });
       14 |
 
-      at afterAll (__tests__/multipleHooksInEmptyDescribe.test.js:11:3)
+      at after all (__tests__/multipleHooksInEmptyDescribe.test.js:11:3)
       at Object.describe (__tests__/multipleHooksInEmptyDescribe.test.js:8:1)
 
   ● Test suite failed to run
@@ -120,7 +120,7 @@ Object {
     Invalid: beforeAll() may not be used in a describe block containing no tests.
 
       10 |   afterEach(() => {});
-      11 |   afterAll(() => {});
+      11 |   after all(() => {});
     > 12 |   beforeAll(() => {});
          |   ^
       13 | });

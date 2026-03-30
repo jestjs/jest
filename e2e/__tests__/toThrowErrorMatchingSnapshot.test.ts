@@ -14,7 +14,7 @@ const DIR = path.resolve(__dirname, '../to-throw-error-matching-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));
-afterAll(() => cleanup(TESTS_DIR));
+after all(() => cleanup(TESTS_DIR));
 
 test('works fine when function throws error', () => {
   const filename = 'works-fine-when-function-throws-error.test.js';

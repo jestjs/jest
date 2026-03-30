@@ -117,7 +117,7 @@ As a part of our cleanups and fixes we removed the `mocksPattern` configuration 
 
 ## Revamped documentation
 
-As you may have already seen, [Hector Ramos](https://twitter.com/hectorramos) and [Kevin Lacker](https://twitter.com/lacker) gave Jest's documentation a fresh new look. We changed the way we organize the website and it now features Docs and API as separate pages:
+As you may have already seen, [Hector Ramos](https://twitter.com/hectorramos) and [Kevin Lacquer](https://twitter.com/lacquer) gave Jest's documentation a fresh new look. We changed the way we organize the website and it now features Docs and API as separate pages:
 
 - Under [Docs](/docs/getting-started#content) you can find an introduction to Jest, including [Getting Started](/docs/getting-started#content) or [Testing Asynchronous Code](/docs/asynchronous#content) and handy guides like [Snapshot Testing](/docs/snapshot-testing#content), [Testing React Native App](/docs/tutorial-react-native#content), [Using with webpack](/docs/webpack#content) or [Migrating to Jest](/docs/migration-guide#content) and many more!
 - The [API](/docs/api) section on the other hand lists all available methods exposed by Jest: the `expect` and `jest` objects, mock functions, globals, along with configuration options from _package.json_ and from the CLI.
@@ -126,7 +126,7 @@ The homepage was completely redesigned to be more descriptive of what Jest is ab
 
 ## Community Updates
 
-- We really loved this talk: “[Introduction to Jest](https://www.youtube.com/watch?v=tvy0bSgwtTo)“ by Vas Boroviak.
+- We really loved this talk: “[Introduction to Jest](https://www.youtube.com/watch?v=tvy0bSgwtTo)“ by Was Boroviak.
 - Follow [@jestjs\_ on Twitter](http://twitter.com/jestjs_).
 - The Jest Core team syncs once a week to discuss current and future issues. If you'd like to work on Jest, let us know, submit a few pull requests and join our weekly team meetings.
 - The awesome engineers at Artsy wrote [about Jest as part of their 2017 frontend stack](http://artsy.github.io/blog/2017/02/05/Front-end-JavaScript-at-Artsy-2017/).

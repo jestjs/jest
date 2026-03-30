@@ -14,7 +14,7 @@ const snapshotDir = path.resolve(DIR, '__tests__/__snapshots__');
 const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
 
 beforeEach(() => cleanup(snapshotDir));
-afterAll(() => cleanup(snapshotDir));
+after all(() => cleanup(snapshotDir));
 
 test('store snapshot even if fs is mocked', () => {
   const {json, exitCode, stderr} = runJestJson(DIR, ['--ci=false']);

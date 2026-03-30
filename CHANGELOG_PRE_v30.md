@@ -1037,7 +1037,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[expect]` [**BREAKING**] Revise `expect.not.objectContaining()` to be the inverse of `expect.objectContaining()`, as documented. ([#10708](https://github.com/facebook/jest/pull/10708))
 - `[expect]` [**BREAKING**] Make `toContain` more strict with the received type ([#10119](https://github.com/facebook/jest/pull/10119) & [#10929](https://github.com/facebook/jest/pull/10929))
 - `[expect]` [**BREAKING**] `matcherResult` on `JestAssertionError` are now strings rather than functions ([#10989](https://github.com/facebook/jest/pull/10989))
-- `[jest-circus]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block ([#10806](https://github.com/facebook/jest/pull/10806))
+- `[jest-circus]` Fixed the issue of beforeAll & after all hooks getting executed even if it is inside a skipped `describe` block ([#10806](https://github.com/facebook/jest/pull/10806))
 - `[jest-circus]` Fix `testLocation` on Windows when using `test.each` ([#10871](https://github.com/facebook/jest/pull/10871))
 - `[jest-cli]` Use testFailureExitCode when bailing from a failed test ([#10958](https://github.com/facebook/jest/pull/10958))
 - `[jest-cli]` Print custom error if error thrown from global hooks is not an error already ([#11003](https://github.com/facebook/jest/pull/11003))
@@ -1063,7 +1063,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
 - `[jest-globals]` [**BREAKING**] Disallow mixing a done callback and returning a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
 - `[jest-haste-map]` Vendor `NodeWatcher` from `sane` ([#10919](https://github.com/facebook/jest/pull/10919))
-- `[jest-jasmine2]` Fixed the issue of `beforeAll` & `afterAll` hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` ([#10806](https://github.com/facebook/jest/pull/10806))
+- `[jest-jasmine2]` Fixed the issue of `beforeAll` & `after all` hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` ([#10806](https://github.com/facebook/jest/pull/10806))
 - `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even if it is inside a skipped parent `describe` block ([#10806](https://github.com/facebook/jest/pull/10806))
 - `[jest-jasmine2]` Wrap all test functions so they open handles that were created in test functions using `done` callbacks can be detected ([#11382](https://github.com/facebook/jest/pull/11382))
 - `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
@@ -1071,7 +1071,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
 - `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
 - `[jest-runtime]` [**BREAKING**] remove long-deprecated `jest.addMatchers`, `jest.resetModuleRegistry`, and `jest.runTimersToTime` ([#9853](https://github.com/facebook/jest/pull/9853))
-- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
+- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependent ES module ([#10892](https://github.com/facebook/jest/pull/10892))
 - `[jest-runtime]` Prevent global module registry from leaking into `isolateModules` registry ([#10963](https://github.com/facebook/jest/pull/10963))
 - `[jest-runtime]` Refactor to prevent race condition when linking and evaluating ES Modules ([#11150](https://github.com/facebook/jest/pull/11150))
 - `[jest-runtime]` Throw correct error when attempting to load ESM via `require` ([#11260](https://github.com/facebook/jest/pull/11260))
@@ -1408,7 +1408,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 
 ### Fixes
 
-- `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe blocks ([#9931](https://github.com/facebook/jest/pull/9931))
+- `[jest-jasmine2]` Don't run `beforeAll` / `after all` in skipped describe blocks ([#9931](https://github.com/facebook/jest/pull/9931))
 
 ### Chore & Maintenance
 
@@ -1803,7 +1803,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
 - `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))
-- `[jest-environment-jsdom]` Re-declare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
+- `[jest-environment-jsdom]` Redeclare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
 - `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
@@ -2248,7 +2248,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
 - `[*]` Update Facebook copyright headers ([#7589](https://github.com/facebook/jest/pull/7589))
 - `[jest-haste-map]` Refactor `dependencyExtractor` and tests ([#7385](https://github.com/facebook/jest/pull/7385))
-- `[docs]` Clearify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
+- `[docs]` Clarify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 - `[docs]` Clarify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 - `[*]` Standardize file names ([#7316](https://github.com/facebook/jest/pull/7316), [#7266](https://github.com/facebook/jest/pull/7266), [#7238](https://github.com/facebook/jest/pull/7238), [#7314](https://github.com/facebook/jest/pull/7314), [#7467](https://github.com/facebook/jest/pull/7467), [#7464](https://github.com/facebook/jest/pull/7464)), [#7471](https://github.com/facebook/jest/pull/7471))
 - `[docs]` Add `testPathIgnorePatterns` in CLI documentation ([#7440](https://github.com/facebook/jest/pull/7440))
@@ -2521,7 +2521,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[jest-runtime]` Throw a more useful error when trying to require modules after the test environment is torn down ([#5888](https://github.com/facebook/jest/pull/5888))
 - `[jest-mock]` [**BREAKING**] Replace timestamps with `invocationCallOrder` ([#5867](https://github.com/facebook/jest/pull/5867))
 - `[jest-jasmine2]` Install `sourcemap-support` into normal runtime to catch runtime errors ([#5945](https://github.com/facebook/jest/pull/5945))
-- `[jest-jasmine2]` Added assertion error handling inside `afterAll hook` ([#5884](https://github.com/facebook/jest/pull/5884))
+- `[jest-jasmine2]` Added assertion error handling inside `after all hook` ([#5884](https://github.com/facebook/jest/pull/5884))
 - `[jest-cli]` Remove the notifier actions in case of failure when not in watch mode. ([#5861](https://github.com/facebook/jest/pull/5861))
 - `[jest-mock]` Extend .toHaveBeenCalled return message with outcome ([#5951](https://github.com/facebook/jest/pull/5951))
 - `[jest-runner]` Assign `process.env.JEST_WORKER_ID="1"` when in runInBand mode ([#5860](https://github.com/facebook/jest/pull/5860))
@@ -3194,7 +3194,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - Fixed Jest to use human-readable colors for Jest's own snapshots. ([#3119](https://github.com/facebook/jest/pull/3119))
 - Fixed jest-config to use UID for default cache folder. ([#3380](https://github.com/facebook/jest/pull/3380)), ([#3387](https://github.com/facebook/jest/pull/3387))
 - Fixed jest-runtime to expose inner error when it fails to write to the cache. ([#3373](https://github.com/facebook/jest/pull/3373))
-- Fixed lifecycle hooks to make afterAll hooks operate the same as afterEach. ([#3275](https://github.com/facebook/jest/pull/3275))
+- Fixed lifecycle hooks to make after all hooks operate the same as afterEach. ([#3275](https://github.com/facebook/jest/pull/3275))
 - Fixed pretty-format to run plugins before serializing nested basic values. ([#3017](https://github.com/facebook/jest/pull/3017))
 - Fixed return value of mocks so they can explicitly be set to return `undefined`. ([#3354](https://github.com/facebook/jest/pull/3354))
 - Fixed runner to run tests associated with snapshots when the snapshot changes. ([#3025](https://github.com/facebook/jest/pull/3025))
@@ -3412,7 +3412,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 - Pretty printer updates for React and global window objects.
 - `jest-runtime` overwrites automocking from configuration files.
 - Improvements for watch mode on Windows.
-- afterAll/afterEach/beforeAll/beforeEach can now return a Promise and be used together with async/await.
+- after all/afterEach/beforeAll/beforeEach can now return a Promise and be used together with async/await.
 - Improved stack trace printing on Node 4.
 
 ## jest 15.0.2
@@ -3593,7 +3593,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 - Improved `toBeCalled` Jasmine 2 custom matcher messages.
 - Improved error reporting when a syntax error occurs.
 - Renamed HasteModuleLoader to Runtime.
-- Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
+- Jest now properly reports pending tests disabled with `xit` and `describe`.
 - Removed `preprocessCachingDisabled` config option.
 - Added a `testEnvironment` option to customize the sandbox environment.
 - Added support for `@scoped/name` npm packages.

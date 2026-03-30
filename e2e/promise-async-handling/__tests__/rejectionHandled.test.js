@@ -33,7 +33,7 @@ afterEach(async () => {
   await expect(promise).rejects.toThrow(/REJECTED/);
 });
 
-afterAll(async () => {
+after all(async () => {
   const promise = Promise.reject(new Error('REJECTED'));
 
   await promisify(setTimeout)(0);

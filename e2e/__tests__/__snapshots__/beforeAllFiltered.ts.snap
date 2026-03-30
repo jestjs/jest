@@ -22,7 +22,7 @@ exports[`Correct BeforeAll run ensures the BeforeAll of ignored suite is not run
       at log (__tests__/beforeAllFiltered.test.js:16:13)
 
   console.log
-    afterAll 1
+    after all 1
 
       at log (__tests__/beforeAllFiltered.test.js:19:13)
 "

@@ -17,7 +17,7 @@ beforeEach(() => {
   createEmptyPackage(DIR);
 });
 
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('works with mocks', () => {
   writeFiles(DIR, {

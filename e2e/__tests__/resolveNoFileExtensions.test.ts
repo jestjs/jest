@@ -12,7 +12,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('show error message with matching files', () => {
   const {exitCode, stderr} = runJest('resolve-no-extensions');

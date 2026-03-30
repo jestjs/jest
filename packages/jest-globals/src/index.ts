@@ -33,12 +33,12 @@ export declare const fit: Global.GlobalAdditions['fit'];
 export declare const xit: Global.GlobalAdditions['xit'];
 export declare const xtest: Global.GlobalAdditions['xtest'];
 export declare const describe: Global.GlobalAdditions['describe'];
-export declare const xdescribe: Global.GlobalAdditions['xdescribe'];
+export declare const describe: Global.GlobalAdditions['describe'];
 export declare const fdescribe: Global.GlobalAdditions['fdescribe'];
 export declare const beforeAll: Global.GlobalAdditions['beforeAll'];
 export declare const beforeEach: Global.GlobalAdditions['beforeEach'];
 export declare const afterEach: Global.GlobalAdditions['afterEach'];
-export declare const afterAll: Global.GlobalAdditions['afterAll'];
+export declare const after all: Global.GlobalAdditions['after all'];
 
 declare const jest: Jest;
 

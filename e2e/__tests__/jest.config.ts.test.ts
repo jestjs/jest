@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../jest-config-ts');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('works with jest.config.ts', () => {
   writeFiles(DIR, {

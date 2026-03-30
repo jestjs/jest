@@ -25,7 +25,7 @@ beforeAll(() => {
   chalk.enabled = true;
 });
 
-afterAll(() => {
+after all(() => {
   chalk.enabled = chalkEnabled;
 });
 

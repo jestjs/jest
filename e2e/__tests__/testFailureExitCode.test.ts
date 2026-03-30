@@ -13,7 +13,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'test-failure-exit-code-test');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('exits with a specified code when test fail', () => {
   writeFiles(DIR, {

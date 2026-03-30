@@ -29,7 +29,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
 - `.describe.only` to only run the parameterised suite of tests
   - Also under the aliases: `.fdescribe`
 - `.describe.skip` to skip the parameterised suite of tests
-  - Also under the aliases: `.xdescribe`
+  - Also under the aliases: `.describe`
 - Asynchronous tests with `done`
 - Unique test titles with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
   - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -340,7 +340,7 @@ each([
 
 #### `.describe.skip(name, fn)`
 
-Aliases: `.xdescribe(name, fn)`
+Aliases: `.describe(name, fn)`
 
 ```js
 each([
@@ -531,7 +531,7 @@ each`
 
 #### `.describe.skip(name, fn)`
 
-Aliases: `.xdescribe(name, fn)`
+Aliases: `.describe(name, fn)`
 
 ```js
 each`

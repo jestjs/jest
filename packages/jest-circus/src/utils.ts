@@ -106,14 +106,14 @@ const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
 
 type DescribeHooks = {
   beforeAll: Array<Circus.Hook>;
-  afterAll: Array<Circus.Hook>;
+  after all: Array<Circus.Hook>;
 };
 
 export const getAllHooksForDescribe = (
   describe: Circus.DescribeBlock,
 ): DescribeHooks => {
   const result: DescribeHooks = {
-    afterAll: [],
+    after all: [],
     beforeAll: [],
   };
 
@@ -124,7 +124,7 @@ export const getAllHooksForDescribe = (
           result.beforeAll.push(hook);
           break;
         case 'afterAll':
-          result.afterAll.push(hook);
+          result.after all.push(hook);
           break;
       }
     }

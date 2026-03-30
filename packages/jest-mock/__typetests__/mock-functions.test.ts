@@ -405,7 +405,7 @@ describe('jest.spyOn()', () => {
     methodA(): boolean;
     methodB(a: string, b: number): void;
     methodC: (c: number) => boolean;
-    methodE: (e: any) => never;
+    method: (e: any) => never;
 
     propertyA: {a: string};
   };
@@ -420,7 +420,7 @@ describe('jest.spyOn()', () => {
     methodC(c: number) {
       return true;
     },
-    methodE(e: any) {
+    method(e: any) {
       throw new Error();
     },
 
@@ -497,7 +497,7 @@ describe('jest.spyOn()', () => {
       SpiedFunction<typeof indexSpiedObject.methodC>
     >();
     expect(spyOn(indexSpiedObject, 'methodE')).type.toBe<
-      SpiedFunction<typeof indexSpiedObject.methodE>
+      SpiedFunction<typeof indexSpiedObject.method>
     >();
 
     expect(spyOn(indexSpiedObject, 'propertyA', 'get')).type.toBe<

@@ -28,7 +28,7 @@ beforeEach(() => {
   cleanup(project2DIR);
   cleanup(esmTmpDir);
 });
-afterAll(() => {
+after all(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);

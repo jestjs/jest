@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-afterAll(() => {
+after all(() => {
   throw new Error('afterAll just failed!');
 });
 test('one', () => {});

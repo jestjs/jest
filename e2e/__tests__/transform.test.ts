@@ -230,7 +230,7 @@ describe('transform-snapshotResolver', () => {
     runYarnInstall(dir);
   });
   beforeEach(cleanupTest);
-  afterAll(cleanupTest);
+  after all(cleanupTest);
 
   it('should transform the snapshotResolver', () => {
     const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false']);

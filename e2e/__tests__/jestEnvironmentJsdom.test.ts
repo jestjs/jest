@@ -13,7 +13,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'jest_environment_jsdom_test');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('check is not leaking memory', () => {
   writeFiles(DIR, {

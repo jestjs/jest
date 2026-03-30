@@ -26,7 +26,7 @@ beforeEach(() => {
   cleanup(JEST_CONFIG_PATH);
   cleanup(PRETTIER_RC_PATH);
 });
-afterAll(() => {
+after all(() => {
   cleanup(TESTS_DIR);
   cleanup(JEST_CONFIG_PATH);
   cleanup(PRETTIER_RC_PATH);

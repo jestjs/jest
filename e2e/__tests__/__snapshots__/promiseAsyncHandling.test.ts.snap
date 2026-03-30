@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`fails because of unhandled promise rejection in afterAll hook 1`] = `
+exports[`fails because of unhandled promise rejection in after all hook 1`] = `
 Object {
   "rest": "FAIL __tests__/unhandledRejectionAfterAll.test.js
 
@@ -10,7 +10,7 @@ Object {
     REJECTED
 
       11 |
-      12 | afterAll(async () => {
+      12 | after all(async () => {
     > 13 |   Promise.reject(new Error('REJECTED'));
          |                  ^
       14 |

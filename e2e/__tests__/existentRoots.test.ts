@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'existent-roots');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 function writeConfig(rootDir: string, roots?: Array<string>) {
   writeFiles(DIR, {

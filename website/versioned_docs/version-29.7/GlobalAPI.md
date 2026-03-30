@@ -19,7 +19,7 @@ import TOCInline from '@theme/TOCInline';
 
 ## Reference
 
-### `afterAll(fn, timeout)`
+### `after all(fn, timeout)`
 
 Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
@@ -36,7 +36,7 @@ function cleanUpDatabase(db) {
   db.cleanUp();
 }
 
-afterAll(() => {
+after all(() => {
   cleanUpDatabase(globalDatabase);
 });
 
@@ -53,9 +53,9 @@ test('can insert a thing', () => {
 });
 ```
 
-Here the `afterAll` ensures that `cleanUpDatabase` is called after all tests run.
+Here the `after all` ensures that `cleanUpDatabase` is called after all tests run.
 
-If `afterAll` is inside a `describe` block, it runs at the end of the describe block.
+If `after all` is inside a `describe` block, it runs at the end of the describe block.
 
 If you want to run some cleanup after every test instead of after all tests, use `afterEach` instead.
 
@@ -97,7 +97,7 @@ Here the `afterEach` ensures that `cleanUpDatabase` is called after each test ru
 
 If `afterEach` is inside a `describe` block, it only runs after the tests that are inside this describe block.
 
-If you want to run some cleanup just once, after all of the tests run, use `afterAll` instead.
+If you want to run some cleanup just once, after all of the tests run, use `after all` instead.
 
 ### `beforeAll(fn, timeout)`
 
@@ -400,7 +400,7 @@ test('will not be run', () => {
 
 ### `describe.skip(name, fn)`
 
-Also under the alias: `xdescribe(name, fn)`
+Also under the alias: `describe(name, fn)`
 
 You can use `describe.skip` if you do not want to run the tests of a particular `describe` block:
 
@@ -424,7 +424,7 @@ Using `describe.skip` is often a cleaner alternative to temporarily commenting o
 
 ### `describe.skip.each(table)(name, fn)`
 
-Also under the aliases: `xdescribe.each(table)(name, fn)` and ``xdescribe.each`table`(name, fn)``
+Also under the aliases: `describe.each(table)(name, fn)` and ``describe.each`table`(name, fn)``
 
 Use `describe.skip.each` if you want to stop running a suite of data driven tests.
 

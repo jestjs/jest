@@ -23,7 +23,7 @@ it('retries', () => {
   expect(tries).toBe(3);
 });
 
-afterAll(() => {
+after all(() => {
   // cleanup
   fs.unlinkSync(countPath);
 });

@@ -13,7 +13,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'jest-require-mock-test');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('understands dependencies using jest.requireMock', () => {
   writeFiles(DIR, {

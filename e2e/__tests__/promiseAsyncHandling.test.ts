@@ -52,7 +52,7 @@ test('fails because of unhandled promise rejection in afterEach hook', () => {
   expect(sortedSummary).toMatchSnapshot();
 });
 
-test('fails because of unhandled promise rejection in afterAll hook', () => {
+test('fails because of unhandled promise rejection in after all hook', () => {
   const {stderr, exitCode} = runJest(dir, [
     'unhandledRejectionAfterAll.test.js',
   ]);

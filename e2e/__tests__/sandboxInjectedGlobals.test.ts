@@ -17,7 +17,7 @@ beforeEach(() => {
   createEmptyPackage(DIR, {jest: {sandboxInjectedGlobals: ['Math']}});
 });
 
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('works with injected globals', () => {
   writeFiles(DIR, {

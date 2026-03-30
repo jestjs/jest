@@ -12,7 +12,7 @@ import runJest, {getConfig, useNativeTypeScript} from '../runJest';
 const DIR = path.resolve(__dirname, '../ts-node-integration');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 // Node.js's builtin TypeScript support doesn't do type checking, so skip tests
 // that validate type-checking behavior.

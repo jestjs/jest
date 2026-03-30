@@ -12,7 +12,7 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       11 |   Promise.resolve().then(() => {
     > 12 |     test('async definition inside describe', () => {});
          |     ^
-      13 |     afterAll(() => {});
+      13 |     after all(() => {});
       14 |   });
       15 | });
 
@@ -25,14 +25,14 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
 
       11 |   Promise.resolve().then(() => {
       12 |     test('async definition inside describe', () => {});
-    > 13 |     afterAll(() => {});
+    > 13 |     after all(() => {});
          |     ^
       14 |   });
       15 | });
       16 |
 
       at eventHandler (../../packages/jest-circus/build/jestAdapterInit.js:114:38)
-      at afterAll (__tests__/asyncDefinition.test.js:13:5)
+      at after all (__tests__/asyncDefinition.test.js:13:5)
 
   ● Test suite failed to run
 
@@ -42,7 +42,7 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       17 | Promise.resolve().then(() => {
     > 18 |   test('async definition outside describe', () => {});
          |   ^
-      19 |   afterAll(() => {});
+      19 |   after all(() => {});
       20 | });
       21 |
 
@@ -55,11 +55,11 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
 
       17 | Promise.resolve().then(() => {
       18 |   test('async definition outside describe', () => {});
-    > 19 |   afterAll(() => {});
+    > 19 |   after all(() => {});
          |   ^
       20 | });
       21 |
 
       at eventHandler (../../packages/jest-circus/build/jestAdapterInit.js:114:38)
-      at afterAll (__tests__/asyncDefinition.test.js:19:3)"
+      at after all (__tests__/asyncDefinition.test.js:19:3)"
 `;

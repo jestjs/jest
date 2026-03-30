@@ -16,7 +16,7 @@ beforeAll(() => {
   cleanup(coverageDir);
 });
 
-afterAll(() => {
+after all(() => {
   cleanup(coverageDir);
 });
 

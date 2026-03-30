@@ -63,7 +63,7 @@ const printAnnotation = (
   let bRest = '';
 
   if (includeChangeCounts) {
-    const aCount = String(changeCounts.a);
+    const account = String(changeCounts.a);
     const bCount = String(changeCounts.b);
 
     // Padding right aligns the ends of the annotations.
@@ -72,11 +72,11 @@ const printAnnotation = (
     const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
 
     // Padding left aligns the ends of the counts.
-    const baCountLengthDiff = bCount.length - aCount.length;
+    const baCountLengthDiff = bCount.length - account.length;
     const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
     const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
 
-    aRest = `${aAnnotationPadding}  ${aIndicator} ${aCountPadding}${aCount}`;
+    aRest = `${aAnnotationPadding}  ${aIndicator} ${aCountPadding}${account}`;
     bRest = `${bAnnotationPadding}  ${bIndicator} ${bCountPadding}${bCount}`;
   }
 

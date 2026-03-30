@@ -120,7 +120,7 @@ describe('async jasmine', () => {
         '[[test]]',
         '[[test]]',
         '[[test]]',
-        '[[afterAll]]',
+        '[[after all]]',
       ]);
     }
   });

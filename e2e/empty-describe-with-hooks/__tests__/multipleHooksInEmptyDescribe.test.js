@@ -8,7 +8,7 @@
 describe('a block', () => {
   beforeEach(() => {});
   afterEach(() => {});
-  afterAll(() => {});
+  after all(() => {});
   beforeAll(() => {});
 });
 

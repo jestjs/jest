@@ -39,7 +39,7 @@ beforeEach(() => {
 
 ## One-Time Setup
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` hooks to handle this situation.
+In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `after all` hooks to handle this situation.
 
 For example, if both `initializeCityDatabase()` and `clearCityDatabase()` returned promises, and the city database could be reused between tests, we could change our test code to:
 
@@ -48,7 +48,7 @@ beforeAll(() => {
   return initializeCityDatabase();
 });
 
-afterAll(() => {
+after all(() => {
   return clearCityDatabase();
 });
 
@@ -101,7 +101,7 @@ Note that the top-level `beforeEach` is executed before the `beforeEach` inside 
 
 ```js
 beforeAll(() => console.log('1 - beforeAll'));
-afterAll(() => console.log('1 - afterAll'));
+after all(() => console.log('1 - after all'));
 beforeEach(() => console.log('1 - beforeEach'));
 afterEach(() => console.log('1 - afterEach'));
 
@@ -109,7 +109,7 @@ test('', () => console.log('1 - test'));
 
 describe('Scoped / Nested block', () => {
   beforeAll(() => console.log('2 - beforeAll'));
-  afterAll(() => console.log('2 - afterAll'));
+  after all(() => console.log('2 - after all'));
   beforeEach(() => console.log('2 - beforeEach'));
   afterEach(() => console.log('2 - afterEach'));
 
@@ -126,8 +126,8 @@ describe('Scoped / Nested block', () => {
 // 2 - test
 // 2 - afterEach
 // 1 - afterEach
-// 2 - afterAll
-// 1 - afterAll
+// 2 - after all
+// 1 - after all
 ```
 
 ## Order of Execution

@@ -29,7 +29,7 @@ beforeEach(() => {
   createEmptyPackage(DIR);
 });
 
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('basic test constructs', () => {
   const filename = 'basic.testConstructs.test.js';
@@ -99,7 +99,7 @@ test('skips', () => {
     it.skip('it.skip', () => {});
     test.skip('test.skip', () => {});
 
-    xdescribe('xdescribe', () => {
+    describe('describe', () => {
       it('it', () => {});
       test('test', () => {});
     });
@@ -194,7 +194,7 @@ test('skips with expand arg', () => {
     it.skip('it.skip', () => {});
     test.skip('test.skip', () => {});
 
-    xdescribe('xdescribe', () => {
+    describe('describe', () => {
       it('it', () => {});
       test('test', () => {});
     });

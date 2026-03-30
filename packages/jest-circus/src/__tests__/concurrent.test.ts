@@ -12,7 +12,7 @@ test('{before,after}All + concurrent', () => {
     const {setTimeout} = require('timers/promises')
 
     beforeAll(async () => await setTimeout(100));
-    afterAll(async () => await setTimeout(100));
+    after all(async () => await setTimeout(100));
     test.concurrent('one', () => {
       console.log('hello one');
       throw new Error('kentucky')
@@ -28,7 +28,7 @@ test('describe + {before,after}All + concurrent', () => {
 
     describe('describe', () => {
       beforeAll(async () => await setTimeout(100));
-      afterAll(async () => await setTimeout(100));
+      after all(async () => await setTimeout(100));
       test.concurrent('one', () => {
         throw new Error('kentucky')
       });
@@ -47,7 +47,7 @@ test('describe + {before,after}All + concurrent multiple times', () => {
 
     describe('describe1', () => {
       beforeAll(async () => await setTimeout(100));
-      afterAll(async () => await setTimeout(100));
+      after all(async () => await setTimeout(100));
       test.concurrent('one', () => {
         throw new Error('kentucky')
       });
@@ -55,7 +55,7 @@ test('describe + {before,after}All + concurrent multiple times', () => {
     })
     describe('describe2', () => {
       beforeAll(async () => await setTimeout(100));
-      afterAll(async () => await setTimeout(100));
+      after all(async () => await setTimeout(100));
       test.concurrent('one', () => {
         throw new Error('kentucky')
       });
@@ -72,7 +72,7 @@ test('describe + concurrent & non concurrent', () => {
 
     describe('describe', () => {
       beforeAll(async () => await setTimeout(100));
-      afterAll(async () => await setTimeout(100));
+      after all(async () => await setTimeout(100));
 
       test.concurrent('one', () => {});
       test.concurrent('two', () => {});
@@ -95,20 +95,20 @@ test('Execute concurrent as a single sequential unit in each describe', () => {
   const {stdout} = runTest(`
     describe('foo', () => {
       beforeAll(() => {});
-      afterAll(() => {});
+      after all(() => {});
       test.concurrent('A', () => {});
       test.concurrent('B', () => {});
       test('C', () => {});
       describe('bar', () => {
         beforeAll(() => {});
-        afterAll(() => {});
+        after all(() => {});
         test.concurrent('D', () => {});
         test.concurrent('E', () => {});
         test('F', () => {});
       });
       describe('qux', () => {
         beforeAll(() => {});
-        afterAll(() => {});
+        after all(() => {});
         test.concurrent('G', () => {});
         test.concurrent('H', () => {});
         test('I', () => {});

@@ -42,7 +42,7 @@ describe('--listTests flag', () => {
 
   describe('--outputFile flag', () => {
     const outputFilePath = path.resolve('.', 'test-lists.json');
-    afterAll(() => {
+    after all(() => {
       fs.unlinkSync(outputFilePath);
     });
     it('causes tests to be saved in the file as JSON', () => {

@@ -62,7 +62,7 @@ beforeAll(async () => {
   }
 });
 
-afterAll(async () => {
+after all(async () => {
   await rm(writeDestination, {force: true, recursive: true});
 });
 
@@ -194,7 +194,7 @@ describe.each([
       } as unknown as WorkerOptions);
     });
 
-    afterAll(async () => {
+    after all(async () => {
       if (worker) {
         worker.forceExit();
         await worker.waitForExit();
@@ -286,7 +286,7 @@ describe.each([
       worker = new workerClass(options);
     });
 
-    afterAll(async () => {
+    after all(async () => {
       await new Promise<void>(resolve => {
         setTimeout(async () => {
           if (worker) {
@@ -361,7 +361,7 @@ describe.each([
       } as unknown as WorkerOptions);
     });
 
-    afterAll(async () => {
+    after all(async () => {
       if (worker) {
         worker.forceExit();
         await worker.waitForExit();

@@ -40,7 +40,7 @@ describe('insert', () => {
     db = await connection.db(globalThis.__MONGO_DB_NAME__);
   });
 
-  afterAll(async () => {
+  after all(async () => {
     await connection.close();
   });
 

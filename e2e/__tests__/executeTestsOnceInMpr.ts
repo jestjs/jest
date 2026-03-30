@@ -12,7 +12,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../execute-tests-once-in-mpr');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+after all(() => cleanup(DIR));
 
 test('Tests are executed only once even in an MPR', () => {
   // Make a global config that ignores all sub-projects.

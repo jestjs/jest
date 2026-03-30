@@ -50,7 +50,7 @@ export type Attributes = {
   getTestPath: () => string;
   queueableFn: QueueableFn;
   beforeAndAfterFns: () => {
-    befores: Array<QueueableFn>;
+    before: Array<QueueableFn>;
     afters: Array<QueueableFn>;
   };
   userContext: () => unknown;
@@ -81,7 +81,7 @@ export default class Spec {
   resultCallback: (result: SpecResult) => void;
   queueableFn: QueueableFn;
   beforeAndAfterFns: () => {
-    befores: Array<QueueableFn>;
+    before: Array<QueueableFn>;
     afters: Array<QueueableFn>;
   };
   userContext: () => unknown;
@@ -115,7 +115,7 @@ export default class Spec {
     this.beforeAndAfterFns =
       attrs.beforeAndAfterFns ||
       function () {
-        return {befores: [], afters: []};
+        return {before: [], afters: []};
       };
     this.userContext =
       attrs.userContext ||
@@ -190,7 +190,7 @@ export default class Spec {
     }
 
     const fns = this.beforeAndAfterFns();
-    const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
+    const allFns = fns.before.concat(this.queueableFn).concat(fns.afters);
 
     this.currentRun = this.queueRunnerFactory({
       queueableFns: allFns,

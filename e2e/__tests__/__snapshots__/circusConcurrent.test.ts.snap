@@ -117,12 +117,12 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    START hook "afterAll level 2, group 1"
+    START hook "after all level 2, group 1"
 
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    END hook: "afterAll level 2, group 1"
+    END hook: "after all level 2, group 1"
 
       at log (__tests__/concurrent.test.js:15:11)
 
@@ -157,17 +157,17 @@ exports[`all passing runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    START hook "afterAll level 2, group 2"
+    START hook "after all level 2, group 2"
 
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    END hook: "afterAll level 2, group 2"
+    END hook: "after all level 2, group 2"
 
       at log (__tests__/concurrent.test.js:15:11)
 
   console.log
-    afterAll
+    after all
 
       at log (__tests__/concurrent.test.js:15:11)
 "
@@ -210,7 +210,7 @@ exports[`with only runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-only.test.js:15:11)
 
   console.log
-    afterAll
+    after all
 
       at log (__tests__/concurrent-only.test.js:15:11)
 "
@@ -283,7 +283,7 @@ exports[`with skip runs the tests in the correct order 1`] = `
       at log (__tests__/concurrent-skip.test.js:15:11)
 
   console.log
-    afterAll
+    after all
 
       at log (__tests__/concurrent-skip.test.js:15:11)
 "

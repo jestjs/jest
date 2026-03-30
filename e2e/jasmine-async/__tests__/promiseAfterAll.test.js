@@ -9,7 +9,7 @@
 
 describe('promise afterAll', () => {
   let localFlag = true;
-  afterAll(() => {
+  after all(() => {
     this.flag = 1;
     localFlag = false;
     return new Promise(resolve => {
@@ -21,12 +21,12 @@ describe('promise afterAll', () => {
   });
 
   // passing tests
-  it('runs afterAll after all tests', () => {
+  it('runs after all after all tests', () => {
     expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(true);
   });
 
-  it('waits for afterAll to asynchronously complete before each test', () => {
+  it('waits for after all to asynchronously complete before each test', () => {
     expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(true);
   });
