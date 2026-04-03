@@ -128,7 +128,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: 40,
       loopLimit: 2000,
-      now: new Date('1995-12-17'),
+      now: new Date('1995-12-17').getTime(),
       shouldAdvanceTime: true,
       shouldClearNativeTimers: true,
       toFake: [
