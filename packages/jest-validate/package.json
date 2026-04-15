@@ -23,7 +23,7 @@
     "@jest/types": "workspace:*",
     "camelcase": "^6.3.0",
     "chalk": "^4.1.2",
-    "leven": "^3.1.0",
+    "turbo-leven": "^1.0.0",
     "pretty-format": "workspace:*"
   },
   "devDependencies": {
