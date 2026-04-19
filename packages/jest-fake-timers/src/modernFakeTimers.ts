@@ -152,7 +152,7 @@ export default class FakeTimers {
 
   setSystemTime(now?: number | Date): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now);
+      this._clock.setSystemTime(now instanceof Date ? now.getTime() : now);
     }
   }
 
