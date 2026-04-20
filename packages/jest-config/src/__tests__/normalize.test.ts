@@ -1780,7 +1780,7 @@ describe('Defaults', () => {
 describe('displayName', () => {
   test.each<{displayName: Config.DisplayName; description: string}>`
     displayName             | description
-    ${{}}                   | ${'is an empty object'}
+    ${{}}                   | ${'an empty object'}
     ${{name: 'hello'}}      | ${'missing color'}
     ${{color: 'green'}}     | ${'missing name'}
     ${{color: 2, name: []}} | ${'using invalid values'}
