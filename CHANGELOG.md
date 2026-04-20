@@ -1,5 +1,9 @@
 ## main
 
+### Chore & Maintenance
+
+- `[jest-config]` Fix duplicate "is" wording in `displayName` validation test description
+
 ## 30.3.0
 
 ### Features
