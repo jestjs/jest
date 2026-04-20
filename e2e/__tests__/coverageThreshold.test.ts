@@ -12,7 +12,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('exits with 1 if coverage threshold is not met', () => {
   const pkgJson = {

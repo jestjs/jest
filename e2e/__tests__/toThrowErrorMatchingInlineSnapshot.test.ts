@@ -20,7 +20,7 @@ const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
-after all(() => cleanup(TESTS_DIR));
+afterAll(() => cleanup(TESTS_DIR));
 
 test('works fine when function throws error', () => {
   const filename = 'works-fine-when-function-throws-error.test.js';

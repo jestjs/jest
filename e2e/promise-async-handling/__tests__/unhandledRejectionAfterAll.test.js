@@ -9,7 +9,7 @@
 
 const {promisify} = require('util');
 
-after all(async () => {
+afterAll(async () => {
   Promise.reject(new Error('REJECTED'));
 
   await promisify(setTimeout)(0);

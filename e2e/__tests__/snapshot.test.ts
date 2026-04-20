@@ -94,7 +94,7 @@ describe('Snapshot', () => {
   };
 
   beforeEach(cleanup);
-  after all(cleanup);
+  afterAll(cleanup);
 
   it('stores new snapshots on the first run', () => {
     const {exitCode, json, stderr} = runWithJson('snapshot', [

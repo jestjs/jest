@@ -29,7 +29,7 @@ beforeEach(() => {
   createEmptyPackage(DIR);
 });
 
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('basic test constructs', () => {
   const filename = 'basic.testConstructs.test.js';

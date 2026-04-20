@@ -20,7 +20,7 @@ const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
-after all(() => cleanup(TESTS_DIR));
+afterAll(() => cleanup(TESTS_DIR));
 
 // Because the not written error might include Received,
 // match Snapshot as either diff annotation or concise label.

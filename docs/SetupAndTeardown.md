@@ -9,7 +9,7 @@ Often while writing tests you have some setup work that needs to happen before t
 
 If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach` hooks.
 
-For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
+For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called beforeEach of these tests, and a method `clearCityDatabase()` that must be called afterEach of these tests. You can do this with:
 
 ```js
 beforeEach(() => {
@@ -39,7 +39,7 @@ beforeEach(() => {
 
 ## One-Time Setup
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `after all` hooks to handle this situation.
+In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` hooks to handle this situation.
 
 For example, if both `initializeCityDatabase()` and `clearCityDatabase()` returned promises, and the city database could be reused between tests, we could change our test code to:
 
@@ -48,7 +48,7 @@ beforeAll(() => {
   return initializeCityDatabase();
 });
 
-after all(() => {
+afterAll(() => {
   return clearCityDatabase();
 });
 
@@ -101,7 +101,7 @@ Note that the top-level `beforeEach` is executed before the `beforeEach` inside 
 
 ```js
 beforeAll(() => console.log('1 - beforeAll'));
-after all(() => console.log('1 - after all'));
+afterAll(() => console.log('1 - afterAll'));
 beforeEach(() => console.log('1 - beforeEach'));
 afterEach(() => console.log('1 - afterEach'));
 
@@ -109,7 +109,7 @@ test('', () => console.log('1 - test'));
 
 describe('Scoped / Nested block', () => {
   beforeAll(() => console.log('2 - beforeAll'));
-  after all(() => console.log('2 - after all'));
+  afterAll(() => console.log('2 - afterAll'));
   beforeEach(() => console.log('2 - beforeEach'));
   afterEach(() => console.log('2 - afterEach'));
 
@@ -126,8 +126,8 @@ describe('Scoped / Nested block', () => {
 // 2 - test
 // 2 - afterEach
 // 1 - afterEach
-// 2 - after all
-// 1 - after all
+// 2 - afterAll
+// 1 - afterAll
 ```
 
 ## Order of Execution

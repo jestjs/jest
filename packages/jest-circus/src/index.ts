@@ -115,8 +115,8 @@ const beforeAll: THook = (fn, timeout) =>
   _addHook(fn, 'beforeAll', beforeAll, timeout);
 const afterEach: THook = (fn, timeout) =>
   _addHook(fn, 'afterEach', afterEach, timeout);
-const after all: THook = (fn, timeout) =>
-  _addHook(fn, 'after all', after all, timeout);
+const afterAll: THook = (fn, timeout) =>
+  _addHook(fn, 'afterAll', afterAll, timeout);
 
 const test: Global.It = (() => {
   const test = (
@@ -251,9 +251,9 @@ const it: Global.It = test;
 
 export type Event = Circus.Event;
 export type State = Circus.State;
-export {after all, afterEach, beforeAll, beforeEach, describe, it, test};
+export {afterAll, afterEach, beforeAll, beforeEach, describe, it, test};
 export default {
-  after all,
+  afterAll,
   afterEach,
   beforeAll,
   beforeEach,

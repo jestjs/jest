@@ -17,7 +17,7 @@ const marker = s => {
 };
 
 beforeAll(() => marker('beforeAll'));
-after all(() => marker('after all'));
+afterAll(() => marker('afterAll'));
 
 beforeEach(() => marker('beforeEach'));
 afterEach(() => marker('afterEach'));
@@ -54,7 +54,7 @@ describe('level 1', () => {
 
   describe('level 2, group 1', () => {
     beforeAll(hookFn('beforeAll level 2, group 1', 85));
-    after all(hookFn('after all level 2, group 1', 85));
+    afterAll(hookFn('afterAll level 2, group 1', 85));
 
     beforeEach(hookFn('beforeEach level 2, group 1', 85));
     afterEach(hookFn('afterEach level 2, group 1', 85));
@@ -64,7 +64,7 @@ describe('level 1', () => {
   });
   describe('level 2, group 2', () => {
     beforeAll(hookFn('beforeAll level 2, group 2', 85));
-    after all(hookFn('after all level 2, group 2', 85));
+    afterAll(hookFn('afterAll level 2, group 2', 85));
 
     beforeEach(hookFn('beforeEach level 2, group 2', 85));
     afterEach(hookFn('afterEach level 2, group 2', 85));

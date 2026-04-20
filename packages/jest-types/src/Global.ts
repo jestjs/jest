@@ -168,7 +168,7 @@ export interface TestFrameworkGlobals {
   beforeAll: HookBase;
   beforeEach: HookBase;
   afterEach: HookBase;
-  after all: HookBase;
+  afterAll: HookBase;
 }
 
 export interface GlobalAdditions extends TestFrameworkGlobals {

@@ -7,7 +7,7 @@
 
 import {expect} from 'tstyche';
 import {
-  after all,
+  afterAll,
   afterEach,
   beforeAll,
   beforeEach,
@@ -118,36 +118,36 @@ expect(
   }),
 ).type.toRaiseError();
 
-// after all
+// afterAll
 
-expect(after all(fn)).type.toBe<void>();
-expect(after all(asyncFn)).type.toBe<void>();
-expect(after all(genFn)).type.toBe<void>();
+expect(afterAll(fn)).type.toBe<void>();
+expect(afterAll(asyncFn)).type.toBe<void>();
+expect(afterAll(genFn)).type.toBe<void>();
 expect(
-  after all(done => {
+  afterAll(done => {
     expect(done).type.toBe<Global.DoneFn>();
   }),
 ).type.toBe<void>();
 
-expect(after all(fn, timeout)).type.toBe<void>();
-expect(after all(asyncFn, timeout)).type.toBe<void>();
-expect(after all(genFn, timeout)).type.toBe<void>();
+expect(afterAll(fn, timeout)).type.toBe<void>();
+expect(afterAll(asyncFn, timeout)).type.toBe<void>();
+expect(afterAll(genFn, timeout)).type.toBe<void>();
 expect(
-  after all(done => {
+  afterAll(done => {
     expect(done).type.toBe<Global.DoneFn>();
   }, timeout),
 ).type.toBe<void>();
 
-expect(after all()).type.toRaiseError();
-expect(after all('abc')).type.toRaiseError();
+expect(afterAll()).type.toRaiseError();
+expect(afterAll('abc')).type.toRaiseError();
 
 expect(
-  after all(async done => {
+  afterAll(async done => {
     done();
   }),
 ).type.toRaiseError();
 expect(
-  after all(function* (done) {
+  afterAll(function* (done) {
     done();
   }),
 ).type.toRaiseError();

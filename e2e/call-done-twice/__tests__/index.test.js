@@ -54,7 +54,7 @@ describe('multiple `done()` inside beforeAll', () => {
 });
 
 describe('multiple `done()` inside afterAll', () => {
-  after all(done => {
+  afterAll(done => {
     done();
     done();
   });

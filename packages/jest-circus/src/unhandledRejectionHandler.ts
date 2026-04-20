@@ -44,7 +44,7 @@ export const unhandledRejectionHandler = (
           addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
         }
       } else if (type === 'afterAll') {
-        // Attaching `after all` errors to each test makes execution flow
+        // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         for (const error of state.unhandledRejectionErrorByPromise.values()) {
           state.unhandledErrors.push([error, asyncError]);

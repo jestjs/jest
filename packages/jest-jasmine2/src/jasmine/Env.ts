@@ -59,7 +59,7 @@ export default function jasmineEnv(j$: Jasmine) {
     topSuite: () => Suite;
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
-    after all: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
+    afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
     fit: (
       description: Circus.TestNameLike,
       fn: QueueableFn['fn'],
@@ -656,8 +656,8 @@ export default function jasmineEnv(j$: Jasmine) {
         });
       };
 
-      this.after all = function (afterAllFunction, timeout) {
-        currentDeclarationSuite.after all({
+      this.afterAll = function (afterAllFunction, timeout) {
+        currentDeclarationSuite.afterAll({
           fn: afterAllFunction,
           timeout() {
             return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;

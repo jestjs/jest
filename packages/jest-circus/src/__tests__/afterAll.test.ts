@@ -7,14 +7,14 @@
 
 import {runTest} from '../__mocks__/testUtils';
 
-test('tests are not marked done until their parent after all runs', () => {
+test('tests are not marked done until their parent afterAll runs', () => {
   const {stdout} = runTest(`
     describe('describe', () => {
-      after all(() => {});
+      afterAll(() => {});
       test('one', () => {});
       test('two', () => {});
       describe('2nd level describe', () => {
-        after all(() => {});
+        afterAll(() => {});
         test('2nd level test', () => {});
 
         describe('3rd level describe', () => {
@@ -25,7 +25,7 @@ test('tests are not marked done until their parent after all runs', () => {
     })
 
     describe('2nd describe', () => {
-      after all(() => { throw new Error('alabama'); });
+      afterAll(() => { throw new Error('alabama'); });
       test('2nd describe test', () => {});
     })
   `);
@@ -38,7 +38,7 @@ test('describe block cannot have hooks and no tests', () => {
     describe('describe', () => {
       afterEach(() => {});
       beforeEach(() => {});
-      after all(() => {});
+      afterAll(() => {});
       beforeAll(() => {});
     })
   `);
@@ -51,7 +51,7 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
     describe('describe', () => {
       afterEach(() => console.log('> afterEach'));
       beforeEach(() => console.log('> beforeEach'));
-      after all(() => console.log('> after all'));
+      afterAll(() => console.log('> afterAll'));
       beforeAll(() => console.log('> beforeAll'));
       describe('child describe', () => {
         test('my test', () => console.log('> my test'));
@@ -64,7 +64,7 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
 test('describe block hooks must not run if describe block is skipped', () => {
   const result = runTest(`
     describe.skip('describe', () => {
-      after all(() => console.log('> after all'));
+      afterAll(() => console.log('> afterAll'));
       beforeAll(() => console.log('> beforeAll'));
       test('my test', () => console.log('> my test'));
     })
@@ -75,7 +75,7 @@ test('describe block hooks must not run if describe block is skipped', () => {
 test('child tests marked with todo should not run if describe block is skipped', () => {
   const result = runTest(`
     describe.skip('describe', () => {
-      after all(() => console.log('> after all'));
+      afterAll(() => console.log('> afterAll'));
       beforeAll(() => console.log('> beforeAll'));
       test.todo('my test');
     })
@@ -86,7 +86,7 @@ test('child tests marked with todo should not run if describe block is skipped',
 test('child tests marked with only should not run if describe block is skipped', () => {
   const result = runTest(`
     describe.skip('describe', () => {
-      after all(() => console.log('> after all'));
+      afterAll(() => console.log('> afterAll'));
       beforeAll(() => console.log('> beforeAll'));
       test.only('my test', () => console.log('> my test'));
     })

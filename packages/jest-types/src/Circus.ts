@@ -79,7 +79,7 @@ export type SyncEvent =
     }
   | {
       // Any unhandled error that happened outside of test/hooks (unless it is
-      // an `after all` hook)
+      // an `afterAll` hook)
       name: 'error';
       error: Exception;
       promise?: Promise<unknown>;

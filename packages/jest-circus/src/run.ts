@@ -74,7 +74,7 @@ const _runTestsForDescribeBlock = async (
   rng: RandomNumberGenerator | undefined,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
-  const {beforeAll, after all} = getAllHooksForDescribe(describeBlock);
+  const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   const isSkipped = describeBlock.mode === 'skip';
 
@@ -186,7 +186,7 @@ const _runTestsForDescribeBlock = async (
   }
 
   if (!isSkipped) {
-    for (const hook of after all) {
+    for (const hook of afterAll) {
       await _callCircusHook({describeBlock, hook});
     }
   }
@@ -237,8 +237,8 @@ const _runTest = async (
     await _callCircusHook({hook, test, testContext});
   }
 
-  // `after all` hooks should not affect test status (pass or fail), because if
-  // we had a global `after all` hook it would block all existing tests until
+  // `afterAll` hooks should not affect test status (pass or fail), because if
+  // we had a global `afterAll` hook it would block all existing tests until
   // this hook is executed. So we dispatch `test_done` right away.
   await dispatch({name: 'test_done', test});
 };

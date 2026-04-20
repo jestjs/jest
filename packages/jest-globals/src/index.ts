@@ -38,7 +38,7 @@ export declare const fdescribe: Global.GlobalAdditions['fdescribe'];
 export declare const beforeAll: Global.GlobalAdditions['beforeAll'];
 export declare const beforeEach: Global.GlobalAdditions['beforeEach'];
 export declare const afterEach: Global.GlobalAdditions['afterEach'];
-export declare const after all: Global.GlobalAdditions['after all'];
+export declare const afterAll: Global.GlobalAdditions['afterAll'];
 
 declare const jest: Jest;
 

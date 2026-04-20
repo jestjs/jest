@@ -273,7 +273,7 @@ export default function jasmineAsyncInstall(
     return concurrent;
   })(env);
   global.fit.concurrent = makeConcurrent(env.fit, env, mutex);
-  env.after all = promisifyLifeCycleFunction(env.after all, env);
+  env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
   env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);

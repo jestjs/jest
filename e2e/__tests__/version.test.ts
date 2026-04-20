@@ -13,7 +13,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'version-test');
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('works with jest.config.js', () => {
   writeFiles(DIR, {

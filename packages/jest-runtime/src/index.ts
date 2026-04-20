@@ -2540,7 +2540,7 @@ export default class Runtime {
     }
 
     return {
-      after all: this._environment.global.after all,
+      afterAll: this._environment.global.afterAll,
       afterEach: this._environment.global.afterEach,
       beforeAll: this._environment.global.beforeAll,
       beforeEach: this._environment.global.beforeEach,

@@ -18,7 +18,7 @@ const sleep = (time: number) =>
   new Promise(resolve => setTimeout(resolve, time));
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 const setupFiles = () => {
   writeFiles(DIR, {

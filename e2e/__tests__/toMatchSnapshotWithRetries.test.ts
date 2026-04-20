@@ -14,7 +14,7 @@ const DIR = path.resolve(__dirname, '../to-match-snapshot-with-retries');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));
-after all(() => cleanup(TESTS_DIR));
+afterAll(() => cleanup(TESTS_DIR));
 
 skipSuiteOnJasmine();
 

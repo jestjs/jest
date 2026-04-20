@@ -17,7 +17,7 @@ const marker = s => {
 };
 
 beforeAll(() => marker('beforeAll'));
-after all(() => marker('after all'));
+afterAll(() => marker('afterAll'));
 
 beforeEach(() => marker('beforeEach'));
 afterEach(() => marker('afterEach'));

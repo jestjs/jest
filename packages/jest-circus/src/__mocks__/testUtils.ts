@@ -33,7 +33,7 @@ export const runTest = (
     global.beforeEach = circus.beforeEach;
     global.afterEach = circus.afterEach;
     global.beforeAll = circus.beforeAll;
-    global.after all = circus.after all;
+    global.afterAll = circus.afterAll;
 
     const testEventHandler = require('${TEST_EVENT_HANDLER_PATH}').default;
     const {addEventHandler, removeEventHandler, getState} = require('${CIRCUS_STATE_PATH}');

@@ -126,7 +126,7 @@ export default class Suite {
   afterEach(fn: QueueableFn) {
     this.afterFns.unshift(fn);
   }
-  after all(fn: QueueableFn) {
+  afterAll(fn: QueueableFn) {
     this.afterAllFns.unshift(fn);
   }
 

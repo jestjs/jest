@@ -1417,7 +1417,7 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'] as const)(
       );
     });
 
-    after all(() => {
+    afterAll(() => {
       jest.dontMock('/node_modules/react-foo/jest-preset');
     });
 

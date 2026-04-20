@@ -23,7 +23,7 @@ beforeEach(() => {
   cleanup(TESTS_DIR);
   cleanup(JEST_CONFIG_PATH);
 });
-after all(() => {
+afterAll(() => {
   cleanup(TESTS_DIR);
   cleanup(JEST_CONFIG_PATH);
 });

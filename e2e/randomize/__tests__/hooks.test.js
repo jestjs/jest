@@ -6,19 +6,19 @@
  */
 
 beforeAll(() => {
-  process.stdout.write('This is before all\n');
+  process.stdout.write('This is beforeAll\n');
 });
 
 beforeEach(() => {
-  process.stdout.write('This is before each\n');
+  process.stdout.write('This is beforeEach\n');
 });
 
 afterEach(() => {
-  process.stdout.write('This is after each\n');
+  process.stdout.write('This is afterEach\n');
 });
 
-after all(() => {
-  process.stdout.write('This is after all\n');
+afterAll(() => {
+  process.stdout.write('This is afterAll\n');
 });
 
 it('test1', () => {
@@ -48,8 +48,8 @@ describe('describe1', () => {
 });
 
 describe('describe2', () => {
-  after all(() => {
-    process.stdout.write('This is after all describe2\n');
+  afterAll(() => {
+    process.stdout.write('This is afterAll describe2\n');
   });
 
   it('test7', () => {
@@ -67,7 +67,7 @@ describe('describe2', () => {
 
 describe('describe3', () => {
   beforeEach(() => {
-    process.stdout.write('This is before each describe3\n');
+    process.stdout.write('This is beforeEach describe3\n');
   });
 
   it('test10', () => {

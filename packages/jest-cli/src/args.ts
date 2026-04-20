@@ -158,7 +158,7 @@ export const options: {[key: string]: Options} = {
   clearMocks: {
     description:
       'Automatically clear mock calls, instances, contexts and results before every test. ' +
-      'Equivalent to calling jest.clearAllMocks() before each test.',
+      'Equivalent to calling jest.clearAllMocks() beforeEach test.',
     type: 'boolean',
   },
   collectCoverage: {
@@ -276,7 +276,7 @@ export const options: {[key: string]: Options} = {
   },
   forceExit: {
     description:
-      'Force Jest to exit after all tests have completed running. ' +
+      'Force Jest to exit afterAll tests have completed running. ' +
       'This is useful when resources set up by test code cannot be ' +
       'adequately cleaned up.',
     type: 'boolean',
@@ -486,7 +486,7 @@ export const options: {[key: string]: Options} = {
   resetMocks: {
     description:
       'Automatically reset mock state before every test. ' +
-      'Equivalent to calling jest.resetAllMocks() before each test.',
+      'Equivalent to calling jest.resetAllMocks() beforeEach test.',
     type: 'boolean',
   },
   resetModules: {
@@ -503,7 +503,7 @@ export const options: {[key: string]: Options} = {
   restoreMocks: {
     description:
       'Automatically restore mock state and implementation before every test. ' +
-      'Equivalent to calling jest.restoreAllMocks() before each test.',
+      'Equivalent to calling jest.restoreAllMocks() beforeEach test.',
     type: 'boolean',
   },
   rootDir: {
@@ -560,7 +560,7 @@ export const options: {[key: string]: Options} = {
   setupFiles: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing environment before each test.',
+      'set up the testing environment beforeEach test.',
     requiresArg: true,
     string: true,
     type: 'array',
@@ -568,7 +568,7 @@ export const options: {[key: string]: Options} = {
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing framework before each test',
+      'set up the testing framework beforeEach test',
     requiresArg: true,
     string: true,
     type: 'array',

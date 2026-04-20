@@ -120,7 +120,7 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
 }
 
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
+// `before/afterEach` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
   error: Error | TestResult.SerializableError | string | number | undefined,

@@ -142,13 +142,13 @@ export const _interface = function (jasmine: Jasmine, env: any) {
       return env.beforeAll.apply(env, arguments);
     },
 
-    after all() {
+    afterAll() {
       if (typeof arguments[0] !== 'function') {
         throw new TypeError(
           'Invalid first argument. It must be a callback function.',
         );
       }
-      return env.after all.apply(env, arguments);
+      return env.afterAll.apply(env, arguments);
     },
 
     pending() {

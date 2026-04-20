@@ -94,7 +94,7 @@ beforeAll(() => {
   jest.spyOn(process, 'on').mockImplementation(() => {});
 });
 
-after all(() => {
+afterAll(() => {
   jest.restoreAllMocks();
 });
 

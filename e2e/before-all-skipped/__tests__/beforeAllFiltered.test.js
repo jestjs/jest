@@ -14,7 +14,7 @@ describe.skip('in describe.skip', () => {
       hasBeforeAllRun = true;
     });
 
-    after all(() => {
+    afterAll(() => {
       hasAfterAllRun = true;
     });
 
@@ -47,7 +47,7 @@ describe('in describe', () => {
     hasBeforeAllRun2 = true;
   });
 
-  after all(() => {
+  afterAll(() => {
     hasAfterAllRun2 = true;
   });
 

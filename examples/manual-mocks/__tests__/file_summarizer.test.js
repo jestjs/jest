@@ -11,7 +11,7 @@ describe('listFilesInDirectorySync', () => {
   };
 
   beforeEach(() => {
-    // Set up some mocked out file info before each test
+    // Set up some mocked out file info beforeEach test
     require('fs').__setMockFiles(MOCK_FILE_INFO);
   });
 

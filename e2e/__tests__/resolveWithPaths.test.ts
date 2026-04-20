@@ -22,7 +22,7 @@ beforeAll(() => {
   });
 });
 
-after all(() => {
+afterAll(() => {
   cleanup(workdirNodeModules);
 });
 

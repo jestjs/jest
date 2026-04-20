@@ -120,7 +120,7 @@ const readResultsAndExit = (
         `${chalk.bold(
           'Force exiting Jest: ',
         )}Have you considered using \`--detectOpenHandles\` to detect ` +
-          'async operations that kept running after all tests finished?',
+          'async operations that kept running afterAll tests finished?',
       );
     }
 

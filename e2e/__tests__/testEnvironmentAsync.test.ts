@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const DIR = `${tmpdir()}/jest-test-environment`;
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 it('triggers setup/teardown hooks', () => {
   const testDir = path.resolve(

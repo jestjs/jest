@@ -13,7 +13,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(tmpdir(), 'log_heap_usage_test');
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('logs memory usage', () => {
   writeFiles(DIR, {

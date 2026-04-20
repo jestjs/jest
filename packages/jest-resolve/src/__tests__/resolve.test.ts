@@ -767,7 +767,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     }));
   });
 
-  after all(() => {
+  afterAll(() => {
     jest.resetModules();
     jest.dontMock('path');
   });

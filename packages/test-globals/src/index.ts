@@ -29,7 +29,7 @@ declare global {
   const beforeEach: Global.TestFrameworkGlobals['beforeEach'];
 
   const afterEach: Global.TestFrameworkGlobals['afterEach'];
-  const after all: Global.TestFrameworkGlobals['after all'];
+  const afterAll: Global.TestFrameworkGlobals['afterAll'];
 
   const describe: Global.TestFrameworkGlobals['describe'];
   const fdescribe: Global.TestFrameworkGlobals['fdescribe'];

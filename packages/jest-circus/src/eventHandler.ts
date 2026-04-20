@@ -173,7 +173,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         invariant(describeBlock, 'always present for `*All` hooks');
         addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
       } else if (type === 'afterAll') {
-        // Attaching `after all` errors to each test makes execution flow
+        // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         state.unhandledErrors.push([error, asyncError]);
       } else {

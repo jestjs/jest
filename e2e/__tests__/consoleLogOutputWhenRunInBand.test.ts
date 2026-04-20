@@ -12,7 +12,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../console-log-output-when-run-in-band');
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('prints console.logs when run with forceExit', () => {
   writeFiles(DIR, {

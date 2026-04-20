@@ -187,10 +187,10 @@ const config: Config = {
   // Force coverage collection from ignored files using an array of glob patterns
   // forceCoverageMatch: [],
 
-  // A path to a module which exports an async function that is triggered once before all test suites
+  // A path to a module which exports an async function that is triggered once beforeAll test suites
   // globalSetup: undefined,
 
-  // A path to a module which exports an async function that is triggered once after all test suites
+  // A path to a module which exports an async function that is triggered once afterAll test suites
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
@@ -262,10 +262,10 @@ const config: Config = {
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
-  // The paths to modules that run some code to configure or set up the testing environment before each test
+  // The paths to modules that run some code to configure or set up the testing environment beforeEach test
   // setupFiles: [],
 
-  // A list of paths to modules that run some code to configure or set up the testing framework before each test
+  // A list of paths to modules that run some code to configure or set up the testing framework beforeEach test
   // setupFilesAfterEnv: [],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
@@ -391,10 +391,10 @@ const config = {
   // Force coverage collection from ignored files using an array of glob patterns
   // forceCoverageMatch: [],
 
-  // A path to a module which exports an async function that is triggered once before all test suites
+  // A path to a module which exports an async function that is triggered once beforeAll test suites
   // globalSetup: undefined,
 
-  // A path to a module which exports an async function that is triggered once after all test suites
+  // A path to a module which exports an async function that is triggered once afterAll test suites
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
@@ -466,10 +466,10 @@ const config = {
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
-  // The paths to modules that run some code to configure or set up the testing environment before each test
+  // The paths to modules that run some code to configure or set up the testing environment beforeEach test
   // setupFiles: [],
 
-  // A list of paths to modules that run some code to configure or set up the testing framework before each test
+  // A list of paths to modules that run some code to configure or set up the testing framework beforeEach test
   // setupFilesAfterEnv: [],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
@@ -595,10 +595,10 @@ const config = {
   // Force coverage collection from ignored files using an array of glob patterns
   // forceCoverageMatch: [],
 
-  // A path to a module which exports an async function that is triggered once before all test suites
+  // A path to a module which exports an async function that is triggered once beforeAll test suites
   // globalSetup: undefined,
 
-  // A path to a module which exports an async function that is triggered once after all test suites
+  // A path to a module which exports an async function that is triggered once afterAll test suites
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
@@ -670,10 +670,10 @@ const config = {
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
-  // The paths to modules that run some code to configure or set up the testing environment before each test
+  // The paths to modules that run some code to configure or set up the testing environment beforeEach test
   // setupFiles: [],
 
-  // A list of paths to modules that run some code to configure or set up the testing framework before each test
+  // A list of paths to modules that run some code to configure or set up the testing framework beforeEach test
   // setupFilesAfterEnv: [],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.

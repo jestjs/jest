@@ -77,7 +77,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
 
     Expected done to be called once, but it was called multiple times.
 
-      57 |   after all(done => {
+      57 |   afterAll(done => {
       58 |     done();
     > 59 |     done();
          |     ^

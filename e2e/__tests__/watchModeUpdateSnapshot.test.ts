@@ -14,7 +14,7 @@ const DIR = path.resolve(tmpdir(), 'watch-mode-update-snapshot');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
   print: val => (val as string).replaceAll('[s[u', '\n'),

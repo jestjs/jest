@@ -39,7 +39,7 @@ beforeEach(() => {
   writeFiles(TEST_DIR, {'test.js': content});
 });
 
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test.each`
   configSource | args

@@ -19,7 +19,7 @@ const DIR = path.resolve(__dirname, '../timeouts-legacy');
 skipSuiteOnJestCircus();
 
 beforeEach(() => cleanup(DIR));
-after all(() => cleanup(DIR));
+afterAll(() => cleanup(DIR));
 
 test('exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
   writeFiles(DIR, {
