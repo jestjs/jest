@@ -19,6 +19,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/parser": "^7.0.0",
+    "@babel/types": "^7.0.0",
     "@jest/environment": "workspace:*",
     "@jest/fake-timers": "workspace:*",
     "@jest/globals": "workspace:*",

@@ -15,6 +15,9 @@ import {
   type Module as VMModule,
   compileFunction,
 } from 'vm';
+import {traverse as babelTraverse} from '@babel/core';
+import {parse as babelParse} from '@babel/parser';
+import * as babelTypes from '@babel/types';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
@@ -60,6 +63,8 @@ import {
   findSiblingsWithFileExtension,
 } from './helpers';
 
+// eslint-disable-next-line no-debugger
+debugger;
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
 
@@ -188,6 +193,12 @@ export default class Runtime {
   private readonly _esmoduleRegistry: Map<string, JestModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
+  private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
+  // All evaluate() promises currently in-flight across every concurrent
+  // _preloadEsmDependencies call.  Drained before CJS code executes so that a
+  // module that entered 'evaluating' via Node's cascade (not via our explicit
+  // evaluate() call) doesn't get missed.
+  private readonly _pendingEsmEvaluations: Set<Promise<void>>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -253,6 +264,8 @@ export default class Runtime {
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
     this._esmModuleLinkingMap = new WeakMap();
+    this._esmModuleEvaluatingMap = new WeakMap();
+    this._pendingEsmEvaluations = new Set();
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = transformer;
@@ -721,7 +734,11 @@ export default class Runtime {
       return this.loadEsmModule(resolved, query) as T;
     }
 
-    return this.loadCjsAsEsm(referencingIdentifier, resolved, context) as T;
+    return (await this.loadCjsAsEsm(
+      referencingIdentifier,
+      resolved,
+      context,
+    )) as T;
   }
 
   private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
@@ -754,11 +771,32 @@ export default class Runtime {
       );
     }
 
-    await this._esmModuleLinkingMap.get(module);
+    const linkPromise = this._esmModuleLinkingMap.get(module);
+    if (linkPromise != null) {
+      await linkPromise;
+    } else if (module.status === 'linking') {
+      // Module entered 'linking' via Node's cascade (a parent's link() recursed
+      // into this dep without going through our code). We have no promise to
+      // await, so yield via setImmediate — which lets all pending microtasks
+      // (including Node's internal linker chain) drain — until linking finishes.
+      while (module.status === 'linking') {
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
+    }
 
     if (module.status === 'linked') {
-      await module.evaluate();
+      // Store the evaluate promise so concurrent callers that find the module
+      // in 'evaluating' state can await the same promise instead of skipping.
+      const evalPromise = module.evaluate() as Promise<void>;
+      this._esmModuleEvaluatingMap.set(module, evalPromise);
+      this._pendingEsmEvaluations.add(evalPromise);
+      void evalPromise.then(
+        () => this._pendingEsmEvaluations.delete(evalPromise),
+        () => this._pendingEsmEvaluations.delete(evalPromise),
+      );
     }
+
+    await this._esmModuleEvaluatingMap.get(module);
 
     return module;
   }
@@ -781,13 +819,29 @@ export default class Runtime {
     return this.linkAndEvaluateModule(module);
   }
 
-  private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {
+  private async loadCjsAsEsm(
+    from: string,
+    modulePath: string,
+    context: VMContext,
+  ) {
+    // Pre-load all ESM modules in the static dependency graph so that
+    // require() calls inside the CJS module resolve synchronously from cache.
+    await this._preloadEsmDependencies(modulePath);
+
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
     const parsedExports = this.getExportsOfCjs(modulePath);
 
-    const cjsExports = [...parsedExports].filter(exportName => {
+    // Merge static analysis with runtime keys: cjs-module-lexer can't detect
+    // all export patterns (e.g. Object.assign-style). Since we've already
+    // required the module, Object.keys() gives the ground truth.
+    const allCandidates = new Set([
+      ...parsedExports,
+      ...Object.keys(cjs as Record<string, unknown>),
+    ]);
+
+    const cjsExports = [...allCandidates].filter(exportName => {
       // we don't wanna respect any exports _named_ default as a named export
       if (exportName === 'default') {
         return false;
@@ -880,7 +934,8 @@ export default class Runtime {
       if (this._resolver.isCoreModule(reexport)) {
         const exports = this.requireModule(modulePath, reexport);
         if (exports !== null && typeof exports === 'object') {
-          for (const e of Object.keys(exports)) namedExports.add(e);
+          for (const e of Object.keys(exports as Record<string, unknown>))
+            namedExports.add(e);
         }
       } else {
         const resolved = this._resolveCjsModule(modulePath, reexport);
@@ -941,13 +996,21 @@ export default class Runtime {
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
-      // Node includes more info in the message
+      const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+      const cached = registry.get(modulePath);
+      if (
+        cached != null &&
+        !(cached instanceof Promise) &&
+        (cached as VMModule).status === 'evaluated'
+      ) {
+        return (cached as ESModule).namespace as T;
+      }
+      // eslint-disable-next-line no-debugger
+      debugger;
       const error: NodeJS.ErrnoException = new Error(
         `Must use import to load ES Module: ${modulePath}`,
       );
-
       error.code = 'ERR_REQUIRE_ESM';
-
       throw error;
     }
 
@@ -1123,6 +1186,141 @@ export default class Runtime {
     return mockRegistry.get(moduleID);
   }
 
+  /**
+   * Walk the static import/require graph starting from a CJS entry point and
+   * pre-load every ESM module it transitively depends on into the ESM registry.
+   * After this returns, require() calls inside the CJS module can look up those
+   * modules synchronously via the cache in requireModule().
+   */
+  private async _preloadEsmDependencies(entryPath: string): Promise<void> {
+    const inStack = new Set<string>();
+    const done = new Set<string>();
+    // ESM module paths in post-order (leaves first = valid topological order).
+    const topoList: Array<string> = [];
+
+    const visit = async (modulePath: string, isEsm: boolean): Promise<void> => {
+      if (done.has(modulePath) || inStack.has(modulePath)) return;
+      inStack.add(modulePath);
+
+      for (const specifier of this._extractStaticSpecifiers(
+        modulePath,
+        isEsm,
+      )) {
+        let resolvedPath: string;
+        try {
+          resolvedPath = isEsm
+            ? this._resolver.resolveModule(modulePath, specifier, {
+                conditions: this.esmConditions,
+              })
+            : this._resolveCjsModule(modulePath, specifier);
+        } catch {
+          continue;
+        }
+
+        await visit(resolvedPath, this.unstable_shouldLoadAsEsm(resolvedPath));
+      }
+
+      inStack.delete(modulePath);
+      done.add(modulePath);
+
+      if (isEsm) {
+        const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+        if (!registry.has(modulePath)) {
+          await this.loadEsmModule(modulePath);
+        }
+        topoList.push(modulePath);
+      }
+    };
+
+    await visit(entryPath, false);
+
+    // Phase 2: evaluate every discovered ESM module in topological order.
+    // By the time linkAndEvaluateModule(X) fires X's linker callbacks, all of
+    // X's ESM deps (direct and via CJS chains) are already 'evaluated', so
+    // Node's VM never races against our nested _preloadEsmDependencies calls.
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    for (const modulePath of topoList) {
+      const mod = registry.get(modulePath);
+      if (
+        mod != null &&
+        !(mod instanceof Promise) &&
+        (mod as VMModule).status !== 'evaluated'
+      ) {
+        await this.linkAndEvaluateModule(mod as VMModule);
+      }
+    }
+
+    // Drain evaluations started by concurrent _preloadEsmDependencies calls.
+    // A module can enter 'evaluating' via Node's cascade (when a parent's
+    // evaluate() fires) without our code calling evaluate() directly — so
+    // _esmModuleEvaluatingMap has no entry and linkAndEvaluateModule fast-exits.
+    // Waiting here ensures every ESM module is 'evaluated' before CJS code runs.
+    while (this._pendingEsmEvaluations.size > 0) {
+      await Promise.all(this._pendingEsmEvaluations);
+    }
+  }
+
+  /**
+   * Parse a source file with Babel and return all statically-known import /
+   * require specifiers.  Dynamic import() calls are intentionally excluded.
+   */
+  private _extractStaticSpecifiers(
+    modulePath: string,
+    isEsm: boolean,
+  ): Array<string> {
+    const ext = path.extname(modulePath).toLowerCase();
+    if (ext === '.json' || ext === '.node') return [];
+
+    let source: string;
+    try {
+      source = this.readFile(modulePath);
+    } catch {
+      return [];
+    }
+
+    let ast: ReturnType<typeof babelParse>;
+    try {
+      ast = babelParse(source, {
+        errorRecovery: true,
+        plugins: ['typescript', 'jsx'],
+        sourceType: isEsm ? 'module' : 'unambiguous',
+      });
+    } catch {
+      return [];
+    }
+
+    const specifiers: Array<string> = [];
+
+    babelTraverse(ast, {
+      // CJS: require('…') — only direct string-literal calls, not dynamic
+      CallExpression({node}) {
+        if (
+          babelTypes.isIdentifier(node.callee, {name: 'require'}) &&
+          node.arguments.length === 1 &&
+          babelTypes.isStringLiteral(node.arguments[0])
+        ) {
+          specifiers.push(
+            (node.arguments[0] as babelTypes.StringLiteral).value,
+          );
+        }
+      },
+      // export * from '…'
+      ExportAllDeclaration({node}) {
+        specifiers.push(node.source.value);
+      },
+      // export { foo } from '…'
+      ExportNamedDeclaration({node}) {
+        if (node.source) specifiers.push(node.source.value);
+      },
+      // ESM static imports: import '…' / import { } from '…'
+      ImportDeclaration({node}) {
+        specifiers.push(node.source.value);
+      },
+    });
+
+    return specifiers;
+  }
+
   private _loadModule(
     localModule: InitialModule,
     from: string,
@@ -1247,6 +1445,7 @@ export default class Runtime {
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
     this._fileTransformsMutex.clear();
+    this._pendingEsmEvaluations.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
