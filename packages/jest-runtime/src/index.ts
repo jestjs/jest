@@ -2010,7 +2010,14 @@ export default class Runtime {
           context,
         );
 
-        moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
+        // Do NOT call linkAndEvaluateModule here: we are executing inside the
+        // linker callback for the parent module, so Node's cascade may already
+        // be linking resolvedModule. Calling linkAndEvaluateModule would spin-
+        // wait via setImmediate, but the cascade can't finish until this linker
+        // returns — deadlock. The SyntheticModule's evaluate function below
+        // accesses namespace only after Node has fully evaluated all deps in
+        // topological order, so the module will be ready by then.
+        moduleLookup[module] = resolvedModule;
       }
     }
 
