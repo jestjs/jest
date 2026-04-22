@@ -995,6 +995,11 @@ export default class Runtime {
       ) {
         return (cached as ESModule).namespace as T;
       }
+
+      // The only way to get to this point is, that we didn't cover some import path
+      //  or some importing scenario (report a bug).
+      //  so we probably should output better error message here
+
       // Node includes more info in the message
       const error: NodeJS.ErrnoException = new Error(
         `Must use import to load ES Module: ${modulePath}`,
@@ -1176,11 +1181,15 @@ export default class Runtime {
   }
 
   private async _preloadEsmDependencies(entryPath: string): Promise<void> {
+    // CJS modules loaded via `import` may call require() on ESM deps at runtime.
+    // Pre-evaluate those ESM modules in two phases so require() finds them in cache.
+
     const inStack = new Set<string>();
     const done = new Set<string>();
-    // ESM module paths in post-order (leaves first = valid topological order).
+    // ESM module paths in post-order (leaves first = topological order).
     const topoList: Array<string> = [];
 
+    // Phase 1: walk the static dep graph and register all reachable ESM modules.
     const visit = async (modulePath: string, isEsm: boolean): Promise<void> => {
       if (done.has(modulePath) || inStack.has(modulePath)) return;
       inStack.add(modulePath);
@@ -1217,10 +1226,8 @@ export default class Runtime {
 
     await visit(entryPath, false);
 
-    // Phase 2: evaluate every discovered ESM module in topological order.
-    // By the time linkAndEvaluateModule(X) fires X's linker callbacks, all of
-    // X's ESM deps (direct and via CJS chains) are already 'evaluated', so
-    // Node's VM never races against our nested _preloadEsmDependencies calls.
+    // Phase 2: evaluate in topological order so each module's deps are already
+    // 'evaluated' when its own linker fires.
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
     for (const modulePath of topoList) {
       const mod = registry.get(modulePath);
@@ -1233,11 +1240,7 @@ export default class Runtime {
       }
     }
 
-    // Drain evaluations started by concurrent _preloadEsmDependencies calls.
-    // A module can enter 'evaluating' via Node's cascade (when a parent's
-    // evaluate() fires) without our code calling evaluate() directly — so
-    // _esmModuleEvaluatingMap has no entry and linkAndEvaluateModule fast-exits.
-    // Waiting here ensures every ESM module is 'evaluated' before CJS code runs.
+    // Drain any cascade evaluations Phase 2 triggered but didn't explicitly await.
     while (this._pendingEsmEvaluations.size > 0) {
       await Promise.all(this._pendingEsmEvaluations);
     }
