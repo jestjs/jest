@@ -931,6 +931,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/parser@npm:^7.27.4":
+  version: 7.29.2
+  resolution: "@babel/parser@npm:7.29.2"
+  dependencies:
+    "@babel/types": "npm:^7.29.0"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 10/45d050bf75aa5194b3255f156173e8553d615ff5a2434674cc4a10cdc7c261931befb8618c996a1c449b87f0ef32a3407879af2ac967d95dc7b4fdbae7037efa
+  languageName: node
+  linkType: hard
+
 "@babel/parser@npm:^8.0.0-beta.2":
   version: 8.0.0-beta.2
   resolution: "@babel/parser@npm:8.0.0-beta.2"
@@ -14302,6 +14313,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-runtime@workspace:packages/jest-runtime"
   dependencies:
+    "@babel/core": "npm:^7.27.4"
+    "@babel/parser": "npm:^7.27.4"
+    "@babel/types": "npm:^7.27.3"
     "@jest/environment": "workspace:*"
     "@jest/fake-timers": "workspace:*"
     "@jest/globals": "workspace:*"
