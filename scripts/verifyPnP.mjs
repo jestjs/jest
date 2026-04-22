@@ -32,6 +32,8 @@ try {
     dedent`
       enableGlobalCache: true
 
+      enableScripts: false
+
       yarnPath: ${path.resolve(rootDirectory, yarnConfig.yarnPath)}
     `,
   );
