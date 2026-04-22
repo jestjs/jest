@@ -197,6 +197,10 @@ export default class Runtime {
   // module that entered 'evaluating' via Node's cascade (not via our explicit
   // evaluate() call) doesn't get missed.
   private readonly _pendingEsmEvaluations: Set<Promise<void>>;
+  // True only while requireModuleOrMock executes inside loadCjsAsEsm, so that
+  // requireModule can serve pre-evaluated ESM modules from cache instead of
+  // throwing ERR_REQUIRE_ESM.
+  private _resolvingCjsAsEsm = false;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -819,7 +823,13 @@ export default class Runtime {
     await this._preloadEsmDependencies(modulePath);
 
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
-    const cjs = this.requireModuleOrMock(from, modulePath);
+    this._resolvingCjsAsEsm = true;
+    let cjs: unknown;
+    try {
+      cjs = this.requireModuleOrMock(from, modulePath);
+    } finally {
+      this._resolvingCjsAsEsm = false;
+    }
 
     const parsedExports = this.getExportsOfCjs(modulePath);
 
@@ -986,19 +996,21 @@ export default class Runtime {
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
-      const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
-      const cached = registry.get(modulePath);
-      if (
-        cached != null &&
-        !(cached instanceof Promise) &&
-        (cached as VMModule).status === 'evaluated'
-      ) {
-        return (cached as ESModule).namespace as T;
+      // Allow require() of ESM modules only when called from inside loadCjsAsEsm,
+      // where _preloadEsmDependencies has already evaluated the module.
+      if (this._resolvingCjsAsEsm) {
+        const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+        const cached = registry.get(modulePath);
+        if (
+          cached != null &&
+          !(cached instanceof Promise) &&
+          (cached as VMModule).status === 'evaluated'
+        ) {
+          return (cached as ESModule).namespace as T;
+        }
+        // Getting here means _preloadEsmDependencies did not cover this ESM dep —
+        // likely an unhandled import syntax or resolution edge case (please report a bug).
       }
-
-      // The only way to get to this point is, that we didn't cover some import path
-      //  or some importing scenario (report a bug).
-      //  so we probably should output better error message here
 
       // Node includes more info in the message
       const error: NodeJS.ErrnoException = new Error(
