@@ -63,8 +63,6 @@ import {
   findSiblingsWithFileExtension,
 } from './helpers';
 
-// eslint-disable-next-line no-debugger
-debugger;
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
 
@@ -774,14 +772,6 @@ export default class Runtime {
     const linkPromise = this._esmModuleLinkingMap.get(module);
     if (linkPromise != null) {
       await linkPromise;
-    } else if (module.status === 'linking') {
-      // Module entered 'linking' via Node's cascade (a parent's link() recursed
-      // into this dep without going through our code). We have no promise to
-      // await, so yield via setImmediate — which lets all pending microtasks
-      // (including Node's internal linker chain) drain — until linking finishes.
-      while (module.status === 'linking') {
-        await new Promise<void>(resolve => setImmediate(resolve));
-      }
     }
 
     if (module.status === 'linked') {
@@ -1005,8 +995,7 @@ export default class Runtime {
       ) {
         return (cached as ESModule).namespace as T;
       }
-      // eslint-disable-next-line no-debugger
-      debugger;
+      // Node includes more info in the message
       const error: NodeJS.ErrnoException = new Error(
         `Must use import to load ES Module: ${modulePath}`,
       );
@@ -1186,12 +1175,6 @@ export default class Runtime {
     return mockRegistry.get(moduleID);
   }
 
-  /**
-   * Walk the static import/require graph starting from a CJS entry point and
-   * pre-load every ESM module it transitively depends on into the ESM registry.
-   * After this returns, require() calls inside the CJS module can look up those
-   * modules synchronously via the cache in requireModule().
-   */
   private async _preloadEsmDependencies(entryPath: string): Promise<void> {
     const inStack = new Set<string>();
     const done = new Set<string>();
@@ -1260,10 +1243,6 @@ export default class Runtime {
     }
   }
 
-  /**
-   * Parse a source file with Babel and return all statically-known import /
-   * require specifiers.  Dynamic import() calls are intentionally excluded.
-   */
   private _extractStaticSpecifiers(
     modulePath: string,
     isEsm: boolean,
