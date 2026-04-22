@@ -24,3 +24,17 @@ test('runs fixture where a CJS module loaded via import synchronously requires a
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
+
+// Covers __esModule interop, plain-CJS default, and CJS-as-ESM caching.
+test('runs ESM/CJS interop fixture (__esModule unwrapping, named exports, singleton caching)', () => {
+  const {exitCode, stderr} = runJest(
+    DIR,
+    ['--testPathPatterns', 'cjs-esm-interop'],
+    {nodeOptions: '--experimental-vm-modules --no-warnings'},
+  );
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});

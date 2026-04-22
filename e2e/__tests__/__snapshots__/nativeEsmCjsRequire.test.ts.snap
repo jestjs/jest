@@ -1,8 +1,16 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`runs fixture where a CJS module loaded via import synchronously requires an ESM dependency 1`] = `
+exports[`runs ESM/CJS interop fixture (__esModule unwrapping, named exports, singleton caching) 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching cjs-esm-interop."
+`;
+
+exports[`runs fixture where a CJS module loaded via import synchronously requires an ESM dependency 1`] = `
+"Test Suites: 2 passed, 2 total
+Tests:       7 passed, 7 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."
