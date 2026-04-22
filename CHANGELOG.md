@@ -1,5 +1,9 @@
 ## main
 
+### Fixes
+
+- `[jest-runtime]` Fix CJS modules loaded via `import` failing when they transitively `require()` ESM dependencies
+
 ## 30.3.0
 
 ### Features
