@@ -6,9 +6,9 @@
  */
 
 import greet, {helper} from '../babel-style-default.cjs';
-import plainDefault, {value, multiply} from '../plain-cjs.cjs';
-import {increment as incA, getCount as countA} from '../importer-a.mjs';
-import {increment as incB, getCount as countB} from '../importer-b.mjs';
+import plainDefault, {multiply, value} from '../plain-cjs.cjs';
+import {getCount as countA, increment as incA} from '../importer-a.mjs';
+import {getCount as countB, increment as incB} from '../importer-b.mjs';
 
 // ── __esModule interop ────────────────────────────────────────────────────────
 
@@ -30,7 +30,7 @@ test('__esModule key is not exposed as a named export', async () => {
 // ── plain CJS (no __esModule flag) ───────────────────────────────────────────
 
 test('default import of plain CJS is the whole module.exports object', () => {
-  expect(plainDefault).toEqual({value: 99, multiply: expect.any(Function)});
+  expect(plainDefault).toEqual({multiply: expect.any(Function), value: 99});
 });
 
 test('named imports from plain CJS work', () => {

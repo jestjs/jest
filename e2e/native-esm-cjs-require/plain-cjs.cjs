@@ -7,9 +7,10 @@
 
 // Plain CJS without __esModule — default export should be the whole module.exports.
 'use strict';
+
 module.exports = {
-  value: 99,
   multiply(a, b) {
     return a * b;
   },
+  value: 99,
 };
