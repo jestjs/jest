@@ -776,6 +776,21 @@ export default class Runtime {
     const linkPromise = this._esmModuleLinkingMap.get(module);
     if (linkPromise != null) {
       await linkPromise;
+    } else if (module.status === 'linking') {
+      // Module entered 'linking' via Node's cascade (a parent's link() recursed
+      // into this dep without going through our code). We have no promise to
+      // await, so yield via setImmediate — which lets all pending microtasks
+      // (including Node's internal linker chain) drain — until linking finishes.
+      const deadline = Date.now() + 5000; // sanity check to prevent infinite loop
+      while (module.status === 'linking') {
+        if (Date.now() > deadline) {
+          throw new Error(
+            `Jest: module ${module.identifier} is stuck in 'linking' state after 5 s — ` +
+              'this is likely a bug in Jest (please report it).',
+          );
+        }
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
     }
 
     if (module.status === 'linked') {
