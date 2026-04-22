@@ -833,6 +833,11 @@ export default class Runtime {
     modulePath: string,
     context: VMContext,
   ) {
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    if (registry.has(modulePath)) {
+      return registry.get(modulePath) as SyntheticModule;
+    }
+
     // Pre-load all ESM modules in the static dependency graph so that
     // require() calls inside the CJS module resolve synchronously from cache.
     await this._preloadEsmDependencies(modulePath);
@@ -858,11 +863,21 @@ export default class Runtime {
 
     const cjsExports = [...allCandidates].filter(exportName => {
       // we don't wanna respect any exports _named_ default as a named export
-      if (exportName === 'default') {
+      // __esModule is a Babel/Webpack metadata flag, not a real export
+      if (exportName === 'default' || exportName === '__esModule') {
         return false;
       }
       return Object.hasOwnProperty.call(cjs, exportName);
     });
+
+    // Unwrap Babel/Webpack __esModule convention: if the CJS file signals it was
+    // originally ESM (transpiled), use cjs.default as the ESM default export.
+    const cjsRecord =
+      typeof cjs === 'object' && cjs !== null
+        ? (cjs as Record<string, unknown>)
+        : null;
+    const defaultExport =
+      cjsRecord?.__esModule === true ? cjsRecord.default : cjs;
 
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
@@ -871,11 +886,12 @@ export default class Runtime {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
         }
-        this.setExport('default', cjs);
+        this.setExport('default', defaultExport);
       },
       {context, identifier: modulePath},
     );
 
+    registry.set(modulePath, module);
     return evaluateSyntheticModule(module);
   }
 
