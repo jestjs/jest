@@ -8,6 +8,9 @@
   },
   "javascript.validate.enable": false,
   "jest.jestCommandLine": "yarn jest",
+  "jest.env": {
+    "NODE_OPTIONS": "--experimental-vm-modules --no-warnings"
+  },
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "typescript.format.semicolons": "insert",
   "typescript.tsdk": "node_modules/typescript/lib"
