@@ -1130,21 +1130,35 @@ export default class Runtime {
   // Like requireModule but async-safe: pre-loads ESM transitive dependencies
   // before executing the CJS module so that require() calls inside it that
   // resolve to ESM files succeed (they are served from the ESM cache).
-  async requireModuleWithEsmPreload<T = unknown>(
-    from: string,
-    moduleName?: string,
-  ): Promise<T> {
+  // Preload all ESM deps reachable from the given CJS entry and arm the
+  // CJS-as-ESM flag so a subsequent synchronous requireModule() can serve
+  // those deps from the ESM registry.  Must be paired with leaveCjsEsmContext()
+  // once requireModule returns.  This two-step API lets callers (e.g.
+  // jestAdapter) put the await *before* the test file is loaded, preserving
+  // jest-circus's async-definition detection (which relies on no microtask
+  // flush happening between requireModule() and run_start being dispatched).
+  async enterCjsEsmContext(from: string, moduleName?: string): Promise<void> {
     if (runtimeSupportsVmModules) {
       const modulePath = this._resolveCjsModule(from, moduleName);
       await this._preloadEsmDependencies(modulePath);
       this._resolvingCjsAsEsm = true;
-      try {
-        return this.requireModule<T>(from, moduleName);
-      } finally {
-        this._resolvingCjsAsEsm = false;
-      }
     }
-    return this.requireModule<T>(from, moduleName);
+  }
+
+  leaveCjsEsmContext(): void {
+    this._resolvingCjsAsEsm = false;
+  }
+
+  async requireModuleWithEsmPreload<T = unknown>(
+    from: string,
+    moduleName?: string,
+  ): Promise<T> {
+    await this.enterCjsEsmContext(from, moduleName);
+    try {
+      return this.requireModule<T>(from, moduleName);
+    } finally {
+      this.leaveCjsEsmContext();
+    }
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {

@@ -196,7 +196,14 @@ export default async function jasmine2(
   if (esm) {
     await runtime.unstable_importModule(testPath);
   } else {
-    await runtime.requireModuleWithEsmPreload(testPath);
+    // Await the ESM preload *before* loading the test file so that
+    // requireModule() stays synchronous (same timing rationale as jestAdapter).
+    await runtime.enterCjsEsmContext(testPath);
+    try {
+      runtime.requireModule(testPath);
+    } finally {
+      runtime.leaveCjsEsmContext();
+    }
   }
 
   await env.execute();

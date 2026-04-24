@@ -93,7 +93,17 @@ const jestAdapter = async (
   if (esm) {
     await runtime.unstable_importModule(testPath);
   } else {
-    await runtime.requireModuleWithEsmPreload(testPath);
+    // Await the ESM preload *before* loading the test file so that
+    // requireModule() stays synchronous.  This preserves jest-circus's
+    // async-definition detection: microtasks queued by the test file
+    // (e.g. Promise.resolve().then(() => test(...))) must not flush
+    // until after run_start has set hasStarted=true.
+    await runtime.enterCjsEsmContext(testPath);
+    try {
+      runtime.requireModule(testPath);
+    } finally {
+      runtime.leaveCjsEsmContext();
+    }
   }
 
   const setupAfterEnvPerfStats = {

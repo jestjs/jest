@@ -114,17 +114,14 @@ describe('Runtime requireModuleWithEsmPreload', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm(
-    'allows a CJS entry file to require() an .mjs dependency',
-    async () => {
-      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      const exports = (await runtime.requireModuleWithEsmPreload(
-        FROM,
-        './cjs-requires-esm-dep.cjs',
-      )) as any;
-      expect(exports.esmValue).toBe(99);
-    },
-  );
+  itVm('allows a CJS entry file to require() an .mjs dependency', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+    const exports = (await runtime.requireModuleWithEsmPreload(
+      FROM,
+      './cjs-requires-esm-dep.cjs',
+    )) as any;
+    expect(exports.esmValue).toBe(99);
+  });
 });
 
 describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
