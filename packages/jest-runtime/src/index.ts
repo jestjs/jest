@@ -845,10 +845,25 @@ export default class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     this._resolvingCjsAsEsm = true;
     let cjs: unknown;
+    let hasSyntaxError = false;
     try {
       cjs = this.requireModuleOrMock(from, modulePath);
+    } catch (error) {
+      // Use .name check instead of instanceof: the error comes from vm.compileFunction
+      // with a sandbox parsingContext, so its prototype may cross context boundaries.
+      if ((error as Error).name === 'SyntaxError') {
+        // The .js file contains ESM syntax but has no ESM markers (.mjs /
+        // "type":"module") — load it as a native ESM module instead.
+        hasSyntaxError = true;
+      } else {
+        throw error;
+      }
     } finally {
       this._resolvingCjsAsEsm = false;
+    }
+
+    if (hasSyntaxError) {
+      return this.loadEsmModule(modulePath);
     }
 
     const parsedExports = this.getExportsOfCjs(modulePath);
@@ -1026,6 +1041,21 @@ export default class Runtime {
       modulePath = this._resolveCjsModule(from, moduleName);
     }
 
+    if (this._resolvingCjsAsEsm && !this.unstable_shouldLoadAsEsm(modulePath)) {
+      // .js files without "type":"module" may still be ESM (e.g. rxjs/dist/esm5/).
+      // If loadCjsAsEsm already loaded them as ESM via the SyntaxError retry path,
+      // return from cache rather than failing again with createScriptFromCode.
+      const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+      const cached = registry.get(modulePath);
+      if (
+        cached != null &&
+        !(cached instanceof Promise) &&
+        (cached as VMModule).status === 'evaluated'
+      ) {
+        return (cached as ESModule).namespace as T;
+      }
+    }
+
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
       // Allow require() of ESM modules only when called from inside loadCjsAsEsm,
       // where _preloadEsmDependencies has already evaluated the module.
@@ -1095,6 +1125,26 @@ export default class Runtime {
     }
 
     return localModule.exports;
+  }
+
+  // Like requireModule but async-safe: pre-loads ESM transitive dependencies
+  // before executing the CJS module so that require() calls inside it that
+  // resolve to ESM files succeed (they are served from the ESM cache).
+  async requireModuleWithEsmPreload<T = unknown>(
+    from: string,
+    moduleName?: string,
+  ): Promise<T> {
+    if (runtimeSupportsVmModules) {
+      const modulePath = this._resolveCjsModule(from, moduleName);
+      await this._preloadEsmDependencies(modulePath);
+      this._resolvingCjsAsEsm = true;
+      try {
+        return this.requireModule<T>(from, moduleName);
+      } finally {
+        this._resolvingCjsAsEsm = false;
+      }
+    }
+    return this.requireModule<T>(from, moduleName);
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {

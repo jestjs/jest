@@ -81,7 +81,7 @@ const jestAdapter = async (
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      const setupFile = runtime.requireModule(path);
+      const setupFile = await runtime.requireModuleWithEsmPreload(path);
       if (typeof setupFile === 'function') {
         await setupFile();
       }
@@ -93,7 +93,7 @@ const jestAdapter = async (
   if (esm) {
     await runtime.unstable_importModule(testPath);
   } else {
-    runtime.requireModule(testPath);
+    await runtime.requireModuleWithEsmPreload(testPath);
   }
 
   const setupAfterEnvPerfStats = {
