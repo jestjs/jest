@@ -9,6 +9,7 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
+import {equals} from '@jest/expect-utils';
 import {isPromise} from 'jest-util';
 
 export type MockMetadataType =
@@ -155,6 +156,7 @@ export interface MockInstance<
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
+  whenCalledWith(...args: Parameters<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -233,10 +235,16 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
   results: Array<MockFunctionResult<T>>;
 };
 
+type WhenCalledWithRegistration = {
+  matchers: ReadonlyArray<unknown>;
+  subMock: Function;
+};
+
 type MockFunctionConfig = {
   mockImpl: Function | undefined;
   mockName: string;
   specificMockImpls: Array<Function>;
+  whenCalledWithRegistrations: Array<WhenCalledWithRegistration>;
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
@@ -575,6 +583,7 @@ export class ModuleMocker {
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
+      whenCalledWithRegistrations: [],
     };
   }
 
@@ -839,6 +848,37 @@ export class ModuleMocker {
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;
         return f;
+      };
+
+      f.whenCalledWith = (...args: Parameters<T>) => {
+        const mockConfig = this._ensureMockConfig(f);
+        const existing = mockConfig.whenCalledWithRegistrations.find(
+          registration => equals(registration.matchers, args),
+        );
+        if (existing) {
+          return existing.subMock as Mock<T>;
+        }
+        const subMock = this._makeComponent({type: 'function'}) as Mock<T>;
+        const previousImpl = mockConfig.mockImpl;
+        const ensureSubConfig = () => this._ensureMockConfig(subMock);
+        mockConfig.mockImpl = function (
+          this: unknown,
+          ...callArgs: Parameters<T>
+        ) {
+          if (!equals(callArgs, args)) {
+            return previousImpl?.apply(this, callArgs);
+          }
+          const subConfig = ensureSubConfig();
+          if (
+            subConfig.specificMockImpls.length === 0 &&
+            subConfig.mockImpl === undefined
+          ) {
+            return previousImpl?.apply(this, callArgs);
+          }
+          return subMock.apply(this, callArgs);
+        } as T;
+        mockConfig.whenCalledWithRegistrations.push({matchers: args, subMock});
+        return subMock as Mock<T>;
       };
 
       f.mockReturnThis = () =>

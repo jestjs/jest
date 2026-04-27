@@ -7,5 +7,9 @@
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
-  "references": [{"path": "../jest-types"}, {"path": "../jest-util"}]
+  "references": [
+    {"path": "../expect-utils"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"}
+  ]
 }
