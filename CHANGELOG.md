@@ -1,5 +1,10 @@
 ## main
 
+### Features
+
+- `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support
+- `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`)
+
 ### Fixes
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))

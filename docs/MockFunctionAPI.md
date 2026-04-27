@@ -539,6 +539,76 @@ test('async test', async () => {
 });
 ```
 
+### `mockFn.whenCalledWith(...args)`
+
+Configures a return value or implementation that only fires when the mock is called with arguments matching `...args`. Useful when a single mock needs to behave differently for different argument lists, without writing branching logic inside `mockImplementation`.
+
+The returned object is itself a full mock that supports `mockReturnValue`, `mockReturnValueOnce`, `mockResolvedValue`, `mockRejectedValue`, `mockImplementation`, etc. Each matched call routes to that sub-mock; non-matching calls fall through to the base mock's implementation.
+
+Each `args` slot accepts a literal value or any [asymmetric matcher](ExpectAPI.md#expectanyconstructor) (`expect.any(...)`, `expect.objectContaining(...)`, etc.). Argument matching uses the same equality semantics as [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-).
+
+```js tab
+test('different return values per arg list', () => {
+  const fn = jest.fn();
+  fn.mockReturnValue('default');
+  fn.whenCalledWith('apple').mockReturnValue('red');
+  fn.whenCalledWith('banana').mockReturnValue('yellow');
+
+  expect(fn('apple')).toBe('red');
+  expect(fn('banana')).toBe('yellow');
+  expect(fn('grape')).toBe('default');
+});
+```
+
+```ts tab
+import {expect, jest, test} from '@jest/globals';
+
+test('different return values per arg list', () => {
+  const fn = jest.fn<(fruit: string) => string>();
+  fn.mockReturnValue('default');
+  fn.whenCalledWith('apple').mockReturnValue('red');
+  fn.whenCalledWith('banana').mockReturnValue('yellow');
+
+  expect(fn('apple')).toBe('red');
+  expect(fn('banana')).toBe('yellow');
+  expect(fn('grape')).toBe('default');
+});
+```
+
+Asymmetric matchers and `mockReturnValueOnce` work as you'd expect:
+
+```js
+test('matchers + once', () => {
+  const fn = jest.fn();
+  fn.whenCalledWith(expect.any(Number))
+    .mockReturnValueOnce('first')
+    .mockReturnValue('rest');
+
+  expect(fn(1)).toBe('first');
+  expect(fn(2)).toBe('rest');
+  expect(fn(3)).toBe('rest');
+});
+```
+
+Repeat registrations on the same matchers update the existing branch rather than shadowing it, so the order of `mockReturnValueOnce` and `mockReturnValue` does not matter:
+
+```js
+test('once-then-persistent regardless of declaration order', () => {
+  const fn = jest.fn();
+  fn.whenCalledWith('x').mockReturnValueOnce('A');
+  fn.whenCalledWith('x').mockReturnValue('B');
+
+  expect(fn('x')).toBe('A');
+  expect(fn('x')).toBe('B');
+});
+```
+
+Once a matched branch's queued behavior is exhausted (for example, after a `*Once` is consumed) the call falls through to the base mock instead of returning `undefined`.
+
+`whenCalledWith` works on spies created with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname), in which case non-matching calls fall through to the original method. `mockReset()` on the parent clears every `whenCalledWith` registration; calling it on a sub-mock returned by `whenCalledWith(...)` clears only that branch.
+
+Precedence note: `whenCalledWith` and the base mock's implementation follow last-registered-wins semantics. Register the base mock first, then layer `whenCalledWith` overrides on top.
+
 ### `mockFn.withImplementation(fn, callback)`
 
 Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
