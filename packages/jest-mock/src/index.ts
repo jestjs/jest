@@ -9,7 +9,7 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import {equals} from '@jest/expect-utils';
+import {type FunctionParameters, equals} from '@jest/expect-utils';
 import {isPromise} from 'jest-util';
 
 export type MockMetadataType =
@@ -156,7 +156,7 @@ export interface MockInstance<
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
-  whenCalledWith(...args: Parameters<T>): this;
+  whenCalledWith(...args: FunctionParameters<T>): this;
 }
 
 export interface Replaced<T = unknown> {
@@ -850,7 +850,7 @@ export class ModuleMocker {
         return f;
       };
 
-      f.whenCalledWith = (...args: Parameters<T>) => {
+      f.whenCalledWith = (...args: FunctionParameters<T>) => {
         const mockConfig = this._ensureMockConfig(f);
         const existing = mockConfig.whenCalledWithRegistrations.find(
           registration => equals(registration.matchers, args),

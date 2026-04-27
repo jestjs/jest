@@ -61,11 +61,11 @@ describe('whenCalledWith', () => {
   });
 
   it('passes matched call args to mockImplementation on the sub-mock', () => {
-    const fn = moduleMocker.fn();
+    const fn = moduleMocker.fn<(a: number, b: number) => number>();
     fn.whenCalledWith(
       expect.any(Number),
       expect.any(Number),
-    ).mockImplementation((a: number, b: number) => a + b);
+    ).mockImplementation((a, b) => a + b);
     expect(fn(2, 3)).toBe(5);
     expect(fn(10, 20)).toBe(30);
   });
@@ -164,7 +164,7 @@ describe('whenCalledWith', () => {
   });
 
   it('supports mockResolvedValue and mockRejectedValue on the sub-mock', async () => {
-    const fn = moduleMocker.fn();
+    const fn = moduleMocker.fn<(arg: string) => Promise<string>>();
     fn.whenCalledWith('ok').mockResolvedValue('resolved');
     fn.whenCalledWith('boom').mockRejectedValue(new Error('rejected'));
     await expect(fn('ok')).resolves.toBe('resolved');

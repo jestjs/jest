@@ -8,6 +8,7 @@
 /// <reference lib="dom" />
 
 import {describe, expect, test} from 'tstyche';
+import type {AsymmetricMatcher} from '@jest/expect-utils';
 import {
   type Mock,
   type Replaced,
@@ -87,6 +88,170 @@ describe('jest.fn()', () => {
     expect(fn(() => 'value').mockRejectedValueOnce).type.not.toBeCallableWith(
       'error',
     );
+  });
+
+  test('.whenCalledWith() constrains args by Parameters<T>', () => {
+    const typedFn = fn((a: string, b: number) => true);
+    const asymMatcher = {} as AsymmetricMatcher;
+
+    expect(typedFn.whenCalledWith).type.toBeCallableWith('foo', 42);
+    expect(typedFn.whenCalledWith).type.toBeCallableWith(asymMatcher, 42);
+    expect(typedFn.whenCalledWith).type.toBeCallableWith('foo', asymMatcher);
+    expect(typedFn.whenCalledWith).type.toBeCallableWith(
+      asymMatcher,
+      asymMatcher,
+    );
+
+    expect(typedFn.whenCalledWith).type.not.toBeCallableWith(42, 'foo');
+    expect(typedFn.whenCalledWith).type.not.toBeCallableWith('foo');
+    expect(typedFn.whenCalledWith).type.not.toBeCallableWith(
+      'foo',
+      42,
+      'extra',
+    );
+  });
+
+  test('.whenCalledWith() chained .mockReturnValue is constrained by ReturnType<T>', () => {
+    const typedFn = fn((a: string) => true);
+
+    expect(typedFn.whenCalledWith('foo').mockReturnValue).type.toBeCallableWith(
+      true,
+    );
+    expect(
+      typedFn.whenCalledWith('foo').mockReturnValue,
+    ).type.not.toBeCallableWith('not-a-boolean');
+  });
+
+  test('.whenCalledWith() chained .mockResolvedValue works on async mocks', () => {
+    const asyncFn = fn(async (id: number) => 'data');
+
+    expect(asyncFn.whenCalledWith(1).mockResolvedValue).type.toBeCallableWith(
+      'data',
+    );
+    expect(
+      asyncFn.whenCalledWith(1).mockResolvedValueOnce,
+    ).type.toBeCallableWith('data');
+    expect(asyncFn.whenCalledWith(1).mockRejectedValue).type.toBeCallableWith(
+      new Error('boom'),
+    );
+  });
+
+  test('.whenCalledWith() return type preserves T for further chaining', () => {
+    const typedFn = fn((a: string) => true);
+
+    expect(
+      typedFn
+        .whenCalledWith('foo')
+        .mockReturnValueOnce(true)
+        .mockReturnValue(false),
+    ).type.toBe<Mock<(a: string) => boolean>>();
+  });
+
+  test('.whenCalledWith() on UnknownFunction default accepts any args', () => {
+    const looseFn = fn();
+
+    expect(looseFn.whenCalledWith).type.toBeCallableWith();
+    expect(looseFn.whenCalledWith).type.toBeCallableWith('anything');
+    expect(looseFn.whenCalledWith).type.toBeCallableWith(1, 'two', {three: 3});
+  });
+
+  test('.whenCalledWith() handles optional args', () => {
+    const optionalFn = fn((a: string, b?: boolean) => 1);
+
+    expect(optionalFn.whenCalledWith).type.toBeCallableWith('x');
+    expect(optionalFn.whenCalledWith).type.toBeCallableWith('x', true);
+    expect(optionalFn.whenCalledWith).type.toBeCallableWith('x', undefined);
+
+    expect(optionalFn.whenCalledWith).type.not.toBeCallableWith();
+    expect(optionalFn.whenCalledWith).type.not.toBeCallableWith('x', 'true');
+    expect(optionalFn.whenCalledWith).type.not.toBeCallableWith(
+      'x',
+      true,
+      false,
+    );
+  });
+
+  test('.whenCalledWith() handles void return types', () => {
+    const voidFn = fn(() => {});
+    const asyncVoidFn = fn(async () => {});
+
+    expect(voidFn.whenCalledWith().mockReturnValue).type.toBeCallableWith();
+    expect(voidFn.whenCalledWith().mockReturnValue).type.toBeCallableWith(
+      undefined,
+    );
+    expect(voidFn.whenCalledWith().mockReturnValue).type.not.toBeCallableWith(
+      'value',
+    );
+
+    expect(
+      asyncVoidFn.whenCalledWith().mockResolvedValue,
+    ).type.toBeCallableWith();
+    expect(
+      asyncVoidFn.whenCalledWith().mockResolvedValue,
+    ).type.toBeCallableWith(undefined);
+    expect(
+      asyncVoidFn.whenCalledWith().mockResolvedValue,
+    ).type.not.toBeCallableWith('value');
+  });
+
+  test('.whenCalledWith() handles variadic / rest args', () => {
+    const allStrings = fn((...args: Array<string>) => 1);
+    const headTail = fn((head: string, ...tail: Array<number>) => 1);
+
+    expect(allStrings.whenCalledWith).type.toBeCallableWith();
+    expect(allStrings.whenCalledWith).type.toBeCallableWith('a');
+    expect(allStrings.whenCalledWith).type.toBeCallableWith('a', 'b', 'c');
+    expect(allStrings.whenCalledWith).type.not.toBeCallableWith('a', 1);
+
+    expect(headTail.whenCalledWith).type.toBeCallableWith('a');
+    expect(headTail.whenCalledWith).type.toBeCallableWith('a', 1);
+    expect(headTail.whenCalledWith).type.toBeCallableWith('a', 1, 2, 3);
+    expect(headTail.whenCalledWith).type.not.toBeCallableWith();
+    expect(headTail.whenCalledWith).type.not.toBeCallableWith(1);
+    expect(headTail.whenCalledWith).type.not.toBeCallableWith('a', 1, 'b');
+  });
+
+  test('.whenCalledWith() preserves generics with conditional return types', () => {
+    type ArrayLike = Array<string | number>;
+    type ScalarLike = string | number;
+    type GenericFn = <T extends Record<string, ArrayLike | ScalarLike>>(
+      fields?: T,
+    ) => {
+      [K in keyof T]: T[K] extends ArrayLike ? Array<string> : string;
+    };
+    const generic = fn() as unknown as Mock<GenericFn>;
+
+    expect(
+      generic.whenCalledWith({a: 1, b: [2, 3]}).mockReturnValue,
+    ).type.toBeCallableWith({a: '1', b: ['2', '3']});
+  });
+
+  test('.whenCalledWith() preserves generics through identity functions', () => {
+    const identity = fn() as unknown as Mock<<T>(x: T) => T>;
+
+    expect(identity.whenCalledWith(42).mockReturnValue).type.toBeCallableWith(
+      42,
+    );
+    expect(
+      identity.whenCalledWith(42).mockReturnValue,
+    ).type.not.toBeCallableWith('hello');
+    expect(
+      identity.whenCalledWith('hello').mockReturnValue,
+    ).type.toBeCallableWith('hello');
+  });
+
+  test('.whenCalledWith() chained .mockImplementation infers T', () => {
+    const typedFn = fn((a: string) => true);
+
+    expect(
+      typedFn.whenCalledWith('foo').mockImplementation,
+    ).type.toBeCallableWith((a: string) => true);
+    expect(
+      typedFn.whenCalledWith('foo').mockImplementation,
+    ).type.not.toBeCallableWith((a: string) => 'wrong-return');
+    expect(
+      typedFn.whenCalledWith('foo').mockImplementation,
+    ).type.not.toBeCallableWith((a: number) => true);
   });
 
   test('models typings of mocked function', () => {

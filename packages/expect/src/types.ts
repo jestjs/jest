@@ -6,7 +6,12 @@
  *
  */
 
-import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {
+  AsymmetricMatcher,
+  EqualsFunction,
+  FunctionParameters,
+  Tester,
+} from '@jest/expect-utils';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import type {MockInstance} from 'jest-mock';
 import type {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
@@ -76,12 +81,7 @@ export interface MatcherState {
 
 export type MatcherContext = MatcherUtils & Readonly<MatcherState>;
 
-export type AsymmetricMatcher = {
-  asymmetricMatch(other: unknown): boolean;
-  toString(): string;
-  getExpectedType?(): string;
-  toAsymmetricMatcher?(): string;
-};
+export type {AsymmetricMatcher};
 
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
@@ -368,90 +368,3 @@ type MockParameters<M> =
   M extends MockInstance<infer F>
     ? FunctionParameters<F>
     : FunctionParameters<M>;
-
-/**
- * A wrapper over `FunctionParametersInternal` which converts `never` evaluations to `Array<unknown>`.
- *
- * This is only necessary for Typescript versions prior to 5.3.
- *
- * In those versions, a function without parameters (`() => any`) is interpreted the same as an overloaded function,
- * causing `FunctionParametersInternal` to evaluate it to `[] | Array<unknown>`, which is incorrect.
- *
- * The workaround is to "catch" this edge-case in `WithAsymmetricMatchers` and interpret it as `never`.
- * However, this also affects {@link UnknownFunction} (the default generic type of `MockInstance`):
- * ```ts
- * FunctionParametersInternal<() => any> // [] | never --> [] --> correct
- * FunctionParametersInternal<UnknownFunction> // never --> incorrect
- * ```
- * An empty array is the expected type for a function without parameters,
- * so all that's left is converting `never` to `Array<unknown>` for the case of `UnknownFunction`,
- * as it needs to accept _any_ combination of parameters.
- */
-type FunctionParameters<F> =
-  FunctionParametersInternal<F> extends never
-    ? Array<unknown>
-    : FunctionParametersInternal<F>;
-
-/**
- * 1. If the function is overloaded or has no parameters -> overloaded form (union of tuples).
- * 2. If the function has parameters -> simple form.
- * 3. else -> `never`.
- */
-type FunctionParametersInternal<F> = F extends {
-  (...args: infer P1): any;
-  (...args: infer P2): any;
-  (...args: infer P3): any;
-  (...args: infer P4): any;
-  (...args: infer P5): any;
-  (...args: infer P6): any;
-  (...args: infer P7): any;
-  (...args: infer P8): any;
-  (...args: infer P9): any;
-  (...args: infer P10): any;
-  (...args: infer P11): any;
-  (...args: infer P12): any;
-  (...args: infer P13): any;
-  (...args: infer P14): any;
-  (...args: infer P15): any;
-}
-  ?
-      | WithAsymmetricMatchers<P1>
-      | WithAsymmetricMatchers<P2>
-      | WithAsymmetricMatchers<P3>
-      | WithAsymmetricMatchers<P4>
-      | WithAsymmetricMatchers<P5>
-      | WithAsymmetricMatchers<P6>
-      | WithAsymmetricMatchers<P7>
-      | WithAsymmetricMatchers<P8>
-      | WithAsymmetricMatchers<P9>
-      | WithAsymmetricMatchers<P10>
-      | WithAsymmetricMatchers<P11>
-      | WithAsymmetricMatchers<P12>
-      | WithAsymmetricMatchers<P13>
-      | WithAsymmetricMatchers<P14>
-      | WithAsymmetricMatchers<P15>
-  : F extends (...args: infer P) => any
-    ? WithAsymmetricMatchers<P>
-    : never;
-
-/**
- * @see FunctionParameters
- */
-type WithAsymmetricMatchers<P extends Array<any>> =
-  Array<unknown> extends P
-    ? never
-    : {[K in keyof P]: DeepAsymmetricMatcher<P[K]>};
-
-/**
- * Replaces `T` with `T | AsymmetricMatcher`.
- *
- * If `T` is an object or an array, recursively replaces all nested types with the same logic:
- * ```ts
- * type DeepAsymmetricMatcher<boolean>; // AsymmetricMatcher | boolean
- * type DeepAsymmetricMatcher<{ foo: number }>; // AsymmetricMatcher | { foo: AsymmetricMatcher | number }
- * type DeepAsymmetricMatcher<[string]>; // AsymmetricMatcher | [AsymmetricMatcher | string]
- * ```
- */
-type DeepAsymmetricMatcher<T> = T extends object
-  ? AsymmetricMatcher | {[K in keyof T]: DeepAsymmetricMatcher<T[K]>}
-  : AsymmetricMatcher | T;
