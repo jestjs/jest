@@ -633,6 +633,17 @@ export class ModuleMocker {
     return [...slots];
   }
 
+  // Without this, sub-mock references the user kept via `whenCalledWith(...)`
+  // would silently retain their prior impl and queued onces after the parent
+  // is reset.
+  private _resetWhenCalledWithSubMocks(f: Mock): void {
+    const config = this._mockConfigRegistry.get(f);
+    if (!config) return;
+    for (const branch of config.whenCalledWithRegistrations) {
+      (branch.subMock as Mock).mockReset();
+    }
+  }
+
   private _makeWhenDispatcherImpl<T extends FunctionLike>(
     f: Mock<T>,
   ): Function {
@@ -901,15 +912,7 @@ export class ModuleMocker {
 
       f.mockReset = () => {
         f.mockClear();
-        // Cascade to any sub-mocks the user holds via whenCalledWith — without
-        // this, references they captured would silently retain their prior
-        // impl and queued onces.
-        const config = this._mockConfigRegistry.get(f);
-        if (config) {
-          for (const branch of config.whenCalledWithRegistrations) {
-            (branch.subMock as Mock).mockReset();
-          }
-        }
+        this._resetWhenCalledWithSubMocks(f);
         this._mockConfigRegistry.delete(f);
         return f;
       };
