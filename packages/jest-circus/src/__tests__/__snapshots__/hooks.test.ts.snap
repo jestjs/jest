@@ -46,7 +46,7 @@ run_finish
 unhandledErrors: 0"
 `;
 
-exports[`beforeEach is executed before each test in current/child describe blocks 1`] = `
+exports[`beforeEach is executed beforeEach test in current/child describe blocks 1`] = `
 "start_describe_definition: describe
 add_hook: beforeEach
 add_test: one
@@ -136,7 +136,7 @@ run_finish
 unhandledErrors: 0"
 `;
 
-exports[`multiple before each hooks in one describe are executed in the right order 1`] = `
+exports[`multiple beforeEach hooks in one describe are executed in the right order 1`] = `
 "start_describe_definition: describe 1
 add_hook: beforeEach
 add_hook: beforeEach
@@ -151,10 +151,10 @@ run_describe_start: 2nd level describe
 test_start: test
 test_started: test
 hook_start: beforeEach
-before each 1
+beforeEach 1
 hook_success: beforeEach
 hook_start: beforeEach
-before each 2
+beforeEach 2
 hook_success: beforeEach
 test_fn_start: test
 test_fn_success: test

@@ -51,9 +51,9 @@ exports[`getAlignedDiffs newline delete only 1`] = `
 `;
 
 exports[`getAlignedDiffs newline delete with adjacent change 1`] = `
-- preced<i>ing</i>
+- precede<i>ing</i>
 - following
-+ preced<i>ed</i>following
++ precede<i>ed</i>following
 `;
 
 exports[`getAlignedDiffs newline insert only 1`] = `
@@ -63,8 +63,8 @@ exports[`getAlignedDiffs newline insert only 1`] = `
 `;
 
 exports[`getAlignedDiffs newline insert with adjacent changes 1`] = `
-- preced<i>edf</i>ollowing
-+ preced<i>ing</i>
+- precede<i>edf</i>ollowing
++ precede<i>ing</i>
 + <i>F</i>ollowing
 `;
 
@@ -73,7 +73,7 @@ exports[`getAlignedDiffs strings change at start and delete or insert at end 1`]
 + <i>next</i> change common
   unchanged
 - <i>expect</i>ed change common
-+ <i>receiv</i>ed change common<i> insert</i>
++ <i>receive</i>ed change common<i> insert</i>
 `;
 
 exports[`getAlignedDiffs strings delete or insert at start and change at end 1`] = `
@@ -128,21 +128,21 @@ exports[`getAlignedDiffs substrings last is empty in insert at end 1`] = `
 exports[`getAlignedDiffs substrings last is non-empty in common not at end 1`] = `
   common first
 - last <i>expect</i>ed
-+ last <i>receiv</i>ed
++ last <i>receive</i>ed
 `;
 
 exports[`getAlignedDiffs substrings middle is empty in delete between common 1`] = `
 - common at start precedes <i>delete</i>
 -
 - <i>expect</i>ed common at end
-+ common at start precedes <i>receiv</i>ed common at end
++ common at start precedes <i>receive</i>ed common at end
 `;
 
 exports[`getAlignedDiffs substrings middle is empty in insert at start 1`] = `
 - <i>expect</i>ed common at end
 + insert line
 +
-+ <i>receiv</i>ed common at end
++ <i>receive</i>ed common at end
 `;
 
 exports[`getAlignedDiffs substrings middle is non-empty in delete at end 1`] = `
@@ -156,5 +156,5 @@ exports[`getAlignedDiffs substrings middle is non-empty in insert between common
 - common at start precedes <i>delete expect</i>ed
 + common at start precedes <i>insert</i>
 + non-empty
-+ <i>receiv</i>ed
++ <i>receive</i>ed
 `;

@@ -22,7 +22,7 @@ afterAll(() => {
 });
 
 describe('setupFilesAfterEnv', () => {
-  it('requires multiple setup files before each file in the suite', () => {
+  it('requires multiple setup files beforeEach file in the suite', () => {
     const pkgJson = {
       jest: {
         setupFilesAfterEnv: ['./setup1.js', './setup2.js'],

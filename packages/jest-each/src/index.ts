@@ -61,9 +61,9 @@ const install = (
   describe.skip = bind(g.describe.skip, false)(table, ...data);
   describe.only = bind(g.describe.only, false)(table, ...data);
   const fdescribe = bind(g.fdescribe, false)(table, ...data);
-  const xdescribe = bind(g.xdescribe, false)(table, ...data);
+  const describe = bind(g.describe, false)(table, ...data);
 
-  return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
+  return {describe, fdescribe, fit, it, test, describe, xit, xtest};
 };
 
 const each = (

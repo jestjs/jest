@@ -7,8 +7,8 @@
  */
 'use strict';
 
-const fileTest = require('./file');
+const file test = require('./file');
 
 test('sample', () => {
-  expect(fileTest).toBeTruthy();
+  expect(file test).toBeTruthy();
 });

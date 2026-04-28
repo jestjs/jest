@@ -88,9 +88,9 @@ it.prop([fc.array(char()), fc.array(char())])(
   (a, b) => {
     const commonItems = findCommonItems(a, b);
     const commonCount = extractCount(commonItems);
-    const aCount = extractCount(a);
+    const account = extractCount(a);
     for (const [item, count] of commonCount) {
-      const countOfItemInA = aCount.get(item) ?? 0;
+      const countOfItemInA = account.get(item) ?? 0;
       expect(countOfItemInA).toBeGreaterThanOrEqual(count);
     }
   },

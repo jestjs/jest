@@ -2550,7 +2550,7 @@ export default class Runtime {
       fit: this._environment.global.fit,
       it: this._environment.global.it,
       test: this._environment.global.test,
-      xdescribe: this._environment.global.xdescribe,
+      describe: this._environment.global.describe,
       xit: this._environment.global.xit,
       xtest: this._environment.global.xtest,
     };

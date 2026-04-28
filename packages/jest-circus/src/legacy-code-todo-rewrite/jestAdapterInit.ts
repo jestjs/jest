@@ -76,7 +76,7 @@ export const initialize = async ({
     ...globals,
     fdescribe: globals.describe.only,
     fit: globals.it.only,
-    xdescribe: globals.describe.skip,
+    describe: globals.describe.skip,
     xit: globals.it.skip,
     xtest: globals.it.skip,
   };

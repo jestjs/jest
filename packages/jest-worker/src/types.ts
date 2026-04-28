@@ -176,7 +176,7 @@ export type WorkerOptions = {
    * limit of 50MB. The latter will only trigger if after a job has completed the
    * memory usage hasn't returned back down under 50MB.
    *
-   * Special case: setting this to 0 will restart the worker process after each
+   * Special case: setting this to 0 will restart the worker process afterEach
    * job completes, providing complete process isolation between test files
    * regardless of memory usage.
    */

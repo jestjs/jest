@@ -5049,7 +5049,7 @@ __metadata:
     "@types/mdx": "npm:^2.0.0"
     acorn: "npm:^8.0.0"
     collapse-white-space: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-is-identifier-name: "npm:^3.0.0"
     estree-util-scope: "npm:^1.0.0"
     estree-walker: "npm:^3.0.0"
@@ -7830,9 +7830,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"anser@npm:^1.4.9":
+"answer@npm:^1.4.9":
   version: 1.4.10
-  resolution: "anser@npm:1.4.10"
+  resolution: "answer@npm:1.4.10"
   checksum: 10/a5a6658ccb2ca8271b25cfb29f53ff7cd042800d8e3daa472cdbde0da99392547baaac6be33cbfe41eb76c48a2e4f1fc6647a8636b33f663ac7dd1ba72e0a199
   languageName: node
   linkType: hard
@@ -10094,9 +10094,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devlop@npm:^1.0.0, devlop@npm:^1.1.0":
+"develop@npm:^1.0.0, develop@npm:^1.1.0":
   version: 1.1.0
-  resolution: "devlop@npm:1.1.0"
+  resolution: "develop@npm:1.1.0"
   dependencies:
     dequal: "npm:^2.0.0"
   checksum: 10/3cc5f903d02d279d6dc4aa71ab6ed9898b9f4d1f861cc5421ce7357893c21b9520de78afb203c92bd650a6977ad0ca98195453a0707a39958cf5fea3b0a8ddd8
@@ -10588,7 +10588,7 @@ __metadata:
   resolution: "esast-util-from-estree@npm:2.0.0"
   dependencies:
     "@types/estree-jsx": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-visit: "npm:^2.0.0"
     unist-util-position-from-estree: "npm:^2.0.0"
   checksum: 10/b11a13df70e51e0306a8097d691eb2dbde52388bb4d29f89c080fccd00c9fb22a624fad8683ca2ce01761cbf289d3fd480852aec8f5e5a3f0a2abd30aa8dfbe7
@@ -11085,7 +11085,7 @@ __metadata:
   resolution: "estree-util-build-jsx@npm:3.0.1"
   dependencies:
     "@types/estree-jsx": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-is-identifier-name: "npm:^3.0.0"
     estree-walker: "npm:^3.0.0"
   checksum: 10/08b43edd1d97ecbaa8e3be891b75bdab426734e68a9520bafd67ee61d04dc1680a6a7cb331b61b3b323952016cce7d947562bf3ed51d7ec6701a4463a3bacdb5
@@ -11104,7 +11104,7 @@ __metadata:
   resolution: "estree-util-scope@npm:1.0.0"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
   checksum: 10/7807aaaf8651150fefee19cb60a670884f677959cc05513369c0b9646a329b132bccc9d6bbf19411a8a55a0840530f4e93cef5bba92ae9f347ac7c2ceef37cdd
   languageName: node
   linkType: hard
@@ -12501,7 +12501,7 @@ __metadata:
   dependencies:
     "@types/hast": "npm:^3.0.0"
     "@types/unist": "npm:^3.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     hastscript: "npm:^9.0.0"
     property-information: "npm:^7.0.0"
     vfile: "npm:^6.0.0"
@@ -12549,7 +12549,7 @@ __metadata:
     "@types/estree-jsx": "npm:^1.0.0"
     "@types/hast": "npm:^3.0.0"
     comma-separated-tokens: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-attach-comments: "npm:^3.0.0"
     estree-util-is-identifier-name: "npm:^3.0.0"
     hast-util-whitespace: "npm:^3.0.0"
@@ -12573,7 +12573,7 @@ __metadata:
     "@types/hast": "npm:^3.0.0"
     "@types/unist": "npm:^3.0.0"
     comma-separated-tokens: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-is-identifier-name: "npm:^3.0.0"
     hast-util-whitespace: "npm:^3.0.0"
     mdast-util-mdx-expression: "npm:^2.0.0"
@@ -12594,7 +12594,7 @@ __metadata:
   dependencies:
     "@types/hast": "npm:^3.0.0"
     comma-separated-tokens: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     property-information: "npm:^6.0.0"
     space-separated-tokens: "npm:^2.0.0"
     web-namespaces: "npm:^2.0.0"
@@ -15273,7 +15273,7 @@ __metadata:
     "@types/mdast": "npm:^4.0.0"
     "@types/unist": "npm:^3.0.0"
     ccount: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
     parse-entities: "npm:^4.0.0"
@@ -15302,7 +15302,7 @@ __metadata:
     "@types/mdast": "npm:^4.0.0"
     "@types/unist": "npm:^3.0.0"
     decode-named-character-reference: "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-to-string: "npm:^4.0.0"
     micromark: "npm:^4.0.0"
     micromark-util-decode-numeric-character-reference: "npm:^2.0.0"
@@ -15320,7 +15320,7 @@ __metadata:
   resolution: "mdast-util-frontmatter@npm:2.0.1"
   dependencies:
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     escape-string-regexp: "npm:^5.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
@@ -15335,7 +15335,7 @@ __metadata:
   dependencies:
     "@types/mdast": "npm:^4.0.0"
     ccount: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-find-and-replace: "npm:^3.0.0"
     micromark-util-character: "npm:^2.0.0"
   checksum: 10/d933b42feb126bd094d4be4a4955326c4a9e727a5d0dbe3c824534a19d831996fcf16f67df3dd29550a7d2ac4ac568c80485bee380151ebb42c62848ab20dfa6
@@ -15347,7 +15347,7 @@ __metadata:
   resolution: "mdast-util-gfm-footnote@npm:2.1.0"
   dependencies:
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.1.0"
+    develop: "npm:^1.1.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
     micromark-util-normalize-identifier: "npm:^2.0.0"
@@ -15371,7 +15371,7 @@ __metadata:
   resolution: "mdast-util-gfm-table@npm:2.0.0"
   dependencies:
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     markdown-table: "npm:^3.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
@@ -15384,7 +15384,7 @@ __metadata:
   resolution: "mdast-util-gfm-task-list-item@npm:2.0.0"
   dependencies:
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
   checksum: 10/679a3ff09b52015c0088cd0616ccecc7cc9d250d56a8762aafdffc640f3f607bbd9fe047d3e7e7078e6a996e83f677be3bfcad7ac7260563825fa80a04f8e09d
@@ -15413,7 +15413,7 @@ __metadata:
     "@types/estree-jsx": "npm:^1.0.0"
     "@types/hast": "npm:^3.0.0"
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
   checksum: 10/70e860f8ee22c4f478449942750055d649d4380bf43b235d0710af510189d285fb057e401d20b59596d9789f4e270fce08ca892dc849676f9e3383b991d52485
@@ -15429,7 +15429,7 @@ __metadata:
     "@types/mdast": "npm:^4.0.0"
     "@types/unist": "npm:^3.0.0"
     ccount: "npm:^2.0.0"
-    devlop: "npm:^1.1.0"
+    develop: "npm:^1.1.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
     parse-entities: "npm:^4.0.0"
@@ -15460,7 +15460,7 @@ __metadata:
     "@types/estree-jsx": "npm:^1.0.0"
     "@types/hast": "npm:^3.0.0"
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     mdast-util-from-markdown: "npm:^2.0.0"
     mdast-util-to-markdown: "npm:^2.0.0"
   checksum: 10/05474226e163a3f407fccb5780b0d8585a95e548e5da4a85227df43f281b940c7941a9a9d4af1be4f885fe554731647addb057a728e87aa1f503ff9cc72c9163
@@ -15484,7 +15484,7 @@ __metadata:
     "@types/hast": "npm:^3.0.0"
     "@types/mdast": "npm:^4.0.0"
     "@ungap/structured-clone": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-util-sanitize-uri: "npm:^2.0.0"
     trim-lines: "npm:^3.0.0"
     unist-util-position: "npm:^5.0.0"
@@ -15827,7 +15827,7 @@ __metadata:
   resolution: "micromark-core-commonmark@npm:2.0.3"
   dependencies:
     decode-named-character-reference: "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-destination: "npm:^2.0.0"
     micromark-factory-label: "npm:^2.0.0"
     micromark-factory-space: "npm:^2.0.0"
@@ -15850,7 +15850,7 @@ __metadata:
   version: 3.0.2
   resolution: "micromark-extension-directive@npm:3.0.2"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-factory-whitespace: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
@@ -15889,7 +15889,7 @@ __metadata:
   version: 2.1.0
   resolution: "micromark-extension-gfm-footnote@npm:2.1.0"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-core-commonmark: "npm:^2.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
@@ -15905,7 +15905,7 @@ __metadata:
   version: 2.1.0
   resolution: "micromark-extension-gfm-strikethrough@npm:2.1.0"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-util-chunked: "npm:^2.0.0"
     micromark-util-classify-character: "npm:^2.0.0"
     micromark-util-resolve-all: "npm:^2.0.0"
@@ -15919,7 +15919,7 @@ __metadata:
   version: 2.1.1
   resolution: "micromark-extension-gfm-table@npm:2.1.1"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
     micromark-util-symbol: "npm:^2.0.0"
@@ -15941,7 +15941,7 @@ __metadata:
   version: 2.1.0
   resolution: "micromark-extension-gfm-task-list-item@npm:2.1.0"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
     micromark-util-symbol: "npm:^2.0.0"
@@ -15971,7 +15971,7 @@ __metadata:
   resolution: "micromark-extension-mdx-expression@npm:3.0.1"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-mdx-expression: "npm:^2.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
@@ -15987,7 +15987,7 @@ __metadata:
   resolution: "micromark-extension-mdx-jsx@npm:3.0.2"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-is-identifier-name: "npm:^3.0.0"
     micromark-factory-mdx-expression: "npm:^2.0.0"
     micromark-factory-space: "npm:^2.0.0"
@@ -16014,7 +16014,7 @@ __metadata:
   resolution: "micromark-extension-mdxjs-esm@npm:3.0.0"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-core-commonmark: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
     micromark-util-events-to-acorn: "npm:^2.0.0"
@@ -16057,7 +16057,7 @@ __metadata:
   version: 2.0.1
   resolution: "micromark-factory-label@npm:2.0.1"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-util-character: "npm:^2.0.0"
     micromark-util-symbol: "npm:^2.0.0"
     micromark-util-types: "npm:^2.0.0"
@@ -16070,7 +16070,7 @@ __metadata:
   resolution: "micromark-factory-mdx-expression@npm:2.0.3"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
     micromark-util-events-to-acorn: "npm:^2.0.0"
@@ -16210,7 +16210,7 @@ __metadata:
   dependencies:
     "@types/estree": "npm:^1.0.0"
     "@types/unist": "npm:^3.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     estree-util-visit: "npm:^2.0.0"
     micromark-util-symbol: "npm:^2.0.0"
     micromark-util-types: "npm:^2.0.0"
@@ -16259,7 +16259,7 @@ __metadata:
   version: 2.1.0
   resolution: "micromark-util-subtokenize@npm:2.1.0"
   dependencies:
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-util-chunked: "npm:^2.0.0"
     micromark-util-symbol: "npm:^2.0.0"
     micromark-util-types: "npm:^2.0.0"
@@ -16302,7 +16302,7 @@ __metadata:
     "@types/debug": "npm:^4.0.0"
     debug: "npm:^4.0.0"
     decode-named-character-reference: "npm:^1.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     micromark-core-commonmark: "npm:^2.0.0"
     micromark-factory-space: "npm:^2.0.0"
     micromark-util-character: "npm:^2.0.0"
@@ -19074,7 +19074,7 @@ __metadata:
   dependencies:
     "@types/hast": "npm:^3.0.0"
     "@types/mdast": "npm:^4.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     hast-util-to-jsx-runtime: "npm:^2.0.0"
     html-url-attributes: "npm:^3.0.0"
     mdast-util-to-hast: "npm:^13.0.0"
@@ -19103,7 +19103,7 @@ __metadata:
     "@react-native/normalize-colors": "npm:0.81.4"
     "@react-native/virtualized-lists": "npm:0.81.4"
     abort-controller: "npm:^3.0.0"
-    anser: "npm:^1.4.9"
+    answer: "npm:^1.4.9"
     ansi-regex: "npm:^5.0.0"
     babel-jest: "npm:^29.7.0"
     babel-plugin-syntax-hermes-parser: "npm:0.29.1"
@@ -21333,9 +21333,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trough@npm:^2.0.0":
+"through@npm:^2.0.0":
   version: 2.2.0
-  resolution: "trough@npm:2.2.0"
+  resolution: "through@npm:2.2.0"
   checksum: 10/999c1cb3db6ec63e1663f911146a90125065da37f66ba342b031d53edb22a62f56c1f934bbc61a55b2b29dd74207544cfd78875b414665c1ffadcd9a9a009eeb
   languageName: node
   linkType: hard
@@ -21768,10 +21768,10 @@ __metadata:
   dependencies:
     "@types/unist": "npm:^3.0.0"
     bail: "npm:^2.0.0"
-    devlop: "npm:^1.0.0"
+    develop: "npm:^1.0.0"
     extend: "npm:^3.0.0"
     is-plain-obj: "npm:^4.0.0"
-    trough: "npm:^2.0.0"
+    through: "npm:^2.0.0"
     vfile: "npm:^6.0.0"
   checksum: 10/d9e6e88900a075f391b6bbf06f34062d41fa6257798110d1647753cfc2c6a6e2c1d016434e8ee35706c50485f9fb9ae4707a6a4790bd8dc461ec7e7315ed908b
   languageName: node

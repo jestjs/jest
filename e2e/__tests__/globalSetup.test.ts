@@ -52,7 +52,7 @@ afterAll(() => {
   cleanup(esmTmpDir);
 });
 
-test('globalSetup is triggered once before all test suites', () => {
+test('globalSetup is triggered once beforeAll test suites', () => {
   const setupPath = path.join(e2eDir, 'setup.js');
   const result = runWithJson(e2eDir, [
     `--globalSetup=${setupPath}`,

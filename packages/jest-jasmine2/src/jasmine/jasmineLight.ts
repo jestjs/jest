@@ -95,8 +95,8 @@ export const _interface = function (jasmine: Jasmine, env: any) {
       return env.describe(description, specDefinitions);
     },
 
-    xdescribe(description: string, specDefinitions: SpecDefinitionsFn) {
-      return env.xdescribe(description, specDefinitions);
+    describe(description: string, specDefinitions: SpecDefinitionsFn) {
+      return env.describe(description, specDefinitions);
     },
 
     fdescribe(description: string, specDefinitions: SpecDefinitionsFn) {

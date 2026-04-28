@@ -218,7 +218,7 @@ describe('FakeTimers', () => {
       expect(mock1).toHaveBeenCalledTimes(1);
     });
 
-    it('throws before allowing infinite recursion', () => {
+    it('throws beforeAllowing infinite recursion', () => {
       const global = {
         Date,
         clearInterval,
@@ -392,7 +392,7 @@ describe('FakeTimers', () => {
       expect(nativeSetTimeout).toHaveBeenCalledTimes(0);
     });
 
-    it('throws before allowing infinite recursion', () => {
+    it('throws beforeAllowing infinite recursion', () => {
       const global = {
         Date,
         clearInterval,

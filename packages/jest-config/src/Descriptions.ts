@@ -35,9 +35,9 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   forceCoverageMatch:
     'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
-    'A path to a module which exports an async function that is triggered once before all test suites',
+    'A path to a module which exports an async function that is triggered once beforeAll test suites',
   globalTeardown:
-    'A path to a module which exports an async function that is triggered once after all test suites',
+    'A path to a module which exports an async function that is triggered once afterAll test suites',
   globals:
     'A set of global variables that need to be available in all test environments',
   maxWorkers:
@@ -67,9 +67,9 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   runner:
     "Allows you to use a custom runner instead of Jest's default test runner",
   setupFiles:
-    'The paths to modules that run some code to configure or set up the testing environment before each test',
+    'The paths to modules that run some code to configure or set up the testing environment beforeEach test',
   setupFilesAfterEnv:
-    'A list of paths to modules that run some code to configure or set up the testing framework before each test',
+    'A list of paths to modules that run some code to configure or set up the testing framework beforeEach test',
   slowTestThreshold:
     'The number of seconds after which a test is considered as slow and reported as such in the results.',
   snapshotSerializers:

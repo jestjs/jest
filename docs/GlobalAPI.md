@@ -21,7 +21,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `afterAll(fn, timeout)`
 
-Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
+Runs a function afterAll the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
@@ -53,15 +53,15 @@ test('can insert a thing', () => {
 });
 ```
 
-Here the `afterAll` ensures that `cleanUpDatabase` is called after all tests run.
+Here the `afterAll` ensures that `cleanUpDatabase` is called afterAll tests run.
 
 If `afterAll` is inside a `describe` block, it runs at the end of the describe block.
 
-If you want to run some cleanup after every test instead of after all tests, use `afterEach` instead.
+If you want to run some cleanup after every test instead of afterAll tests, use `afterEach` instead.
 
 ### `afterEach(fn, timeout)`
 
-Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
+Runs a function afterEach one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
@@ -93,11 +93,11 @@ test('can insert a thing', () => {
 });
 ```
 
-Here the `afterEach` ensures that `cleanUpDatabase` is called after each test runs.
+Here the `afterEach` ensures that `cleanUpDatabase` is called afterEach test runs.
 
 If `afterEach` is inside a `describe` block, it only runs after the tests that are inside this describe block.
 
-If you want to run some cleanup just once, after all of the tests run, use `afterAll` instead.
+If you want to run some cleanup just once, afterAll of the tests run, use `afterAll` instead.
 
 ### `beforeAll(fn, timeout)`
 
@@ -137,7 +137,7 @@ If you want to run something before every test instead of before any test runs, 
 
 ### `beforeEach(fn, timeout)`
 
-Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.
+Runs a function beforeEach of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
@@ -401,7 +401,7 @@ test('will not be run', () => {
 
 ### `describe.skip(name, fn)`
 
-Also under the alias: `xdescribe(name, fn)`
+Also under the alias: `describe(name, fn)`
 
 You can use `describe.skip` if you do not want to run the tests of a particular `describe` block:
 
@@ -425,7 +425,7 @@ Using `describe.skip` is often a cleaner alternative to temporarily commenting o
 
 ### `describe.skip.each(table)(name, fn)`
 
-Also under the aliases: `xdescribe.each(table)(name, fn)` and ``xdescribe.each`table`(name, fn)``
+Also under the aliases: `describe.each(table)(name, fn)` and ``describe.each`table`(name, fn)``
 
 Use `describe.skip.each` if you want to stop running a suite of data driven tests.
 

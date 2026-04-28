@@ -888,7 +888,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.useRealTimers()`
 
-Instructs Jest to restore the original implementations of the global date, performance, time and timer APIs. For example, you may call `jest.useRealTimers()` inside `afterEach` hook to restore timers after each test:
+Instructs Jest to restore the original implementations of the global date, performance, time and timer APIs. For example, you may call `jest.useRealTimers()` inside `afterEach` hook to restore timers afterEach test:
 
 ```js
 afterEach(() => {

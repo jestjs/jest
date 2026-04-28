@@ -190,7 +190,7 @@ exports[`skips 1`] = `
   ○ skipped xit
   ○ skipped it.skip
   ○ skipped test.skip
-  xdescribe
+  describe
     ○ skipped it
     ○ skipped test
   describe.skip
@@ -214,7 +214,7 @@ exports[`skips with expand arg 1`] = `
   ○ xit
   ○ it.skip
   ○ test.skip
-  xdescribe
+  describe
     ○ it
     ○ test
   describe.skip

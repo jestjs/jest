@@ -35,7 +35,7 @@ afterAll(() => {
   cleanup(esmTmpDir);
 });
 
-test('globalTeardown is triggered once after all test suites', () => {
+test('globalTeardown is triggered once afterAll test suites', () => {
   createDirectory(DIR);
   const teardownPath = path.resolve(e2eDir, 'teardown.js');
   const result = runWithJson('global-teardown', [

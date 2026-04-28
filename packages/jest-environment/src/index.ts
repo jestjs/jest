@@ -433,7 +433,7 @@ export interface Jest {
    * When the mode is 'interval', timers will be advanced automatically by the [delta]
    * milliseconds every [delta] milliseconds of real time. The default delta is 20 milliseconds.
    *
-   * When mode is 'nextAsync', configures whether timers advance automatically to the next timer in the queue after each macrotask.
+   * When mode is 'nextAsync', configures whether timers advance automatically to the next timer in the queue afterEach macrotask.
    * This mode differs from 'interval' in that it advances all the way to the next timer, regardless
    * of how far in the future that timer is scheduled (e.g. advanceTimersToNextTimerAsync).
    *

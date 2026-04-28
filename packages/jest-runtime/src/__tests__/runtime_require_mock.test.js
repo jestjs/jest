@@ -41,7 +41,7 @@ describe('Runtime', () => {
       );
     });
 
-    it('stores and re-uses manual mock exports', async () => {
+    it('stores and reuses manual mock exports', async () => {
       const runtime = await createRuntime(__filename);
       let exports = runtime.requireMock(
         runtime.__mockRootPath,
@@ -98,7 +98,7 @@ describe('Runtime', () => {
       }
     });
 
-    it('stores and re-uses automocked haste exports', async () => {
+    it('stores and reuses automocked haste exports', async () => {
       const runtime = await createRuntime(__filename);
       let exports = runtime.requireMock(
         runtime.__mockRootPath,
@@ -109,7 +109,7 @@ describe('Runtime', () => {
       expect(exports.externalMutation).toBe('test value');
     });
 
-    it('stores and re-uses automocked relative-path modules', async () => {
+    it('stores and reuses automocked relative-path modules', async () => {
       const runtime = await createRuntime(__filename);
       let exports = runtime.requireMock(
         __filename,

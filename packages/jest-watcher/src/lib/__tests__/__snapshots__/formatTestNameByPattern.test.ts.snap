@@ -6,7 +6,7 @@ exports[`for multiline test name returns test name with highlighted pattern and 
 
 exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 3`] = `"<dim>should⏎ </intensity></>name</><dim> the ⏎function you at...</intensity>"`;
 
-exports[`for one line test name pattern in the middle test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should </intensity></>nam...</>"`;
+exports[`for one line test name pattern in the middle test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should </intensity></>name...</>"`;
 
 exports[`for one line test name pattern in the middle test name with cutted tail and highlighted pattern 1`] = `"<dim>should </intensity></>name</><dim> the functi...</intensity>"`;
 

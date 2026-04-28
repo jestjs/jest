@@ -428,7 +428,7 @@ describe('FakeTimers', () => {
       expect(mock1).toHaveBeenCalledTimes(1);
     });
 
-    it('throws before allowing infinite recursion', () => {
+    it('throws beforeAllowing infinite recursion', () => {
       const global = {
         process: {
           nextTick: () => {},
@@ -604,7 +604,7 @@ describe('FakeTimers', () => {
       expect(nativeSetTimeout).toHaveBeenCalledTimes(0);
     });
 
-    it('throws before allowing infinite recursion', () => {
+    it('throws beforeAllowing infinite recursion', () => {
       const global = {process} as unknown as typeof globalThis;
       const timers = new FakeTimers({
         config,
@@ -737,7 +737,7 @@ describe('FakeTimers', () => {
 
       timers.advanceTimersByTime(100);
     });
-    it('throws before allowing infinite recursion', () => {
+    it('throws beforeAllowing infinite recursion', () => {
       const global = {process} as unknown as typeof globalThis;
       const timers = new FakeTimers({
         config,

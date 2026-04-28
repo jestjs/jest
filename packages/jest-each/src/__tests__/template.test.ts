@@ -26,7 +26,7 @@ const getGlobalTestMocks =
       fit: jest.fn(),
       it: jest.fn(),
       test: jest.fn(),
-      xdescribe: jest.fn(),
+      describe: jest.fn(),
       xit: jest.fn(),
       xtest: jest.fn(),
     };

@@ -163,7 +163,7 @@ export interface TestFrameworkGlobals {
   xit: ItBase;
   xtest: ItBase;
   describe: Describe;
-  xdescribe: DescribeBase;
+  describe: DescribeBase;
   fdescribe: DescribeBase;
   beforeAll: HookBase;
   beforeEach: HookBase;

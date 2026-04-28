@@ -1071,7 +1071,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
 - `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
 - `[jest-runtime]` [**BREAKING**] remove long-deprecated `jest.addMatchers`, `jest.resetModuleRegistry`, and `jest.runTimersToTime` ([#9853](https://github.com/facebook/jest/pull/9853))
-- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
+- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependent ES module ([#10892](https://github.com/facebook/jest/pull/10892))
 - `[jest-runtime]` Prevent global module registry from leaking into `isolateModules` registry ([#10963](https://github.com/facebook/jest/pull/10963))
 - `[jest-runtime]` Refactor to prevent race condition when linking and evaluating ES Modules ([#11150](https://github.com/facebook/jest/pull/11150))
 - `[jest-runtime]` Throw correct error when attempting to load ESM via `require` ([#11260](https://github.com/facebook/jest/pull/11260))
@@ -1803,7 +1803,7 @@ For newer CHANGELOG entries see [`CHANGELOG.md`](CHANGELOG.md).
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
 - `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))
-- `[jest-environment-jsdom]` Re-declare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
+- `[jest-environment-jsdom]` Redeclare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
 - `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
@@ -2248,7 +2248,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
 - `[*]` Update Facebook copyright headers ([#7589](https://github.com/facebook/jest/pull/7589))
 - `[jest-haste-map]` Refactor `dependencyExtractor` and tests ([#7385](https://github.com/facebook/jest/pull/7385))
-- `[docs]` Clearify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
+- `[docs]` Clarify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 - `[docs]` Clarify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 - `[*]` Standardize file names ([#7316](https://github.com/facebook/jest/pull/7316), [#7266](https://github.com/facebook/jest/pull/7266), [#7238](https://github.com/facebook/jest/pull/7238), [#7314](https://github.com/facebook/jest/pull/7314), [#7467](https://github.com/facebook/jest/pull/7467), [#7464](https://github.com/facebook/jest/pull/7464)), [#7471](https://github.com/facebook/jest/pull/7471))
 - `[docs]` Add `testPathIgnorePatterns` in CLI documentation ([#7440](https://github.com/facebook/jest/pull/7440))
@@ -3593,7 +3593,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 - Improved `toBeCalled` Jasmine 2 custom matcher messages.
 - Improved error reporting when a syntax error occurs.
 - Renamed HasteModuleLoader to Runtime.
-- Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
+- Jest now properly reports pending tests disabled with `xit` and `describe`.
 - Removed `preprocessCachingDisabled` config option.
 - Added a `testEnvironment` option to customize the sandbox environment.
 - Added support for `@scoped/name` npm packages.
@@ -3623,7 +3623,7 @@ See <https://jestjs.io/blog/2016/12/15/2016-in-jest>
 
 ## 0.7.0
 
-- Fixed a memory leak with test contexts. Jest now properly cleans up test environments after each test. Added `--logHeapUsage` to log memory usage after each test. Note: this is option is meant for debugging memory leaks and might significantly slow down your test run.
+- Fixed a memory leak with test contexts. Jest now properly cleans up test environments afterEach test. Added `--logHeapUsage` to log memory usage afterEach test. Note: this is option is meant for debugging memory leaks and might significantly slow down your test run.
 - Removed `mock-modules`, `node-haste` and `mocks` virtual modules. This is a breaking change of undocumented public API. Usage of this API can safely be automatically updated through an automated codemod:
 - Example: <http://astexplorer.net/#/zrybZ6UvRA>
 - Codemod: <https://github.com/cpojer/js-codemod/blob/main/transforms/jest-update.js>

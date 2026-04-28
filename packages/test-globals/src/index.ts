@@ -33,7 +33,7 @@ declare global {
 
   const describe: Global.TestFrameworkGlobals['describe'];
   const fdescribe: Global.TestFrameworkGlobals['fdescribe'];
-  const xdescribe: Global.TestFrameworkGlobals['xdescribe'];
+  const describe: Global.TestFrameworkGlobals['describe'];
 
   const it: Global.TestFrameworkGlobals['it'];
   const fit: Global.TestFrameworkGlobals['fit'];

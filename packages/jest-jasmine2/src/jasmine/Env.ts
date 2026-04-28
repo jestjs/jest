@@ -94,7 +94,7 @@ export default function jasmineEnv(j$: Jasmine) {
       fn: QueueableFn['fn'],
       timeout?: number,
     ) => Spec;
-    xdescribe: (
+    describe: (
       description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
@@ -184,17 +184,17 @@ export default function jasmineEnv(j$: Jasmine) {
       const beforeAndAfterFns = function (suite: Suite) {
         return function () {
           let afters: Array<QueueableFn> = [];
-          let befores: Array<QueueableFn> = [];
+          let before: Array<QueueableFn> = [];
 
           while (suite) {
-            befores = befores.concat(suite.beforeFns);
+            before = before.concat(suite.beforeFns);
             afters = afters.concat(suite.afterFns);
 
             suite = suite.parentSuite!;
           }
 
           return {
-            befores: befores.reverse(),
+            before: before.reverse(),
             afters,
           };
         };
@@ -420,7 +420,7 @@ export default function jasmineEnv(j$: Jasmine) {
         return suite;
       };
 
-      this.xdescribe = function (description, specDefinitions) {
+      this.describe = function (description, specDefinitions) {
         const suite = suiteFactory(description);
         suite.pend();
         addSpecsToSuite(suite, specDefinitions);

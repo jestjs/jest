@@ -16,8 +16,8 @@ export default function each(environment: JestEnvironment): void {
     environment.global.describe,
     false,
   );
-  environment.global.xdescribe.each = bindEach(
-    environment.global.xdescribe,
+  environment.global.describe.each = bindEach(
+    environment.global.describe,
     false,
   );
   environment.global.fdescribe.each = bindEach(

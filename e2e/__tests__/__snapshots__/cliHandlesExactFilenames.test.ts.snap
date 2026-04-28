@@ -5,7 +5,7 @@ exports[`CLI accepts exact file names if matchers matched 1`] = `
   ✓ foo
 
 
-Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?"
+Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running afterAll tests finished?"
 `;
 
 exports[`CLI accepts exact file names if matchers matched 2`] = `

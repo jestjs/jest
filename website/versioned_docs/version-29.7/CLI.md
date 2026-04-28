@@ -140,7 +140,7 @@ Clearing the cache will reduce performance.
 
 ### `--clearMocks`
 
-Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) beforeEach test. This does not remove any mock implementation that may have been provided.
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -214,11 +214,11 @@ Find and run the tests that cover a space separated list of source files that we
 
 ### `--forceExit`
 
-Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
+Force Jest to exit afterAll tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
 
 :::caution
 
-This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
+This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources afterEach test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
 
 :::
 
@@ -342,11 +342,11 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 ### `--resetMocks`
 
-Automatically reset mock state before every test. Equivalent to calling [`jest.resetAllMocks()`](JestObjectAPI.md#jestresetallmocks) before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
+Automatically reset mock state before every test. Equivalent to calling [`jest.resetAllMocks()`](JestObjectAPI.md#jestresetallmocks) beforeEach test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
 ### `--restoreMocks`
 
-Automatically restore mock state and implementation before every test. Equivalent to calling [`jest.restoreAllMocks()`](JestObjectAPI.md#jestrestoreallmocks) before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
+Automatically restore mock state and implementation before every test. Equivalent to calling [`jest.restoreAllMocks()`](JestObjectAPI.md#jestrestoreallmocks) beforeEach test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
 ### `--roots`
 
@@ -420,7 +420,7 @@ Run the tests of the specified projects. Jest uses the attribute `displayName` i
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
-A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
+A list of paths to modules that run some code to configure or to set up the testing framework beforeEach test. Beware that files imported by the setup scripts will not be mocked during testing.
 
 ### `--shard`
 
