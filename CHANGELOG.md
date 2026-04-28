@@ -1,5 +1,10 @@
 ## main
 
+### Features
+
+- `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path
+- `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured
+
 ## 30.3.0
 
 ### Features
