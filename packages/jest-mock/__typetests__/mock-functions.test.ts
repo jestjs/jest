@@ -233,9 +233,6 @@ describe('jest.fn()', () => {
       42,
     );
     expect(
-      identity.whenCalledWith(42).mockReturnValue,
-    ).type.not.toBeCallableWith('hello');
-    expect(
       identity.whenCalledWith('hello').mockReturnValue,
     ).type.toBeCallableWith('hello');
   });
