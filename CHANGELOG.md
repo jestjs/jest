@@ -1,5 +1,9 @@
 ## main
 
+### Chore & Maintenance
+
+- `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))
+
 ## 30.3.0
 
 ### Features
