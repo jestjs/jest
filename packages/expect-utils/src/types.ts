@@ -21,8 +21,8 @@ export interface TesterContext {
 
 /**
  * Structural type for any object honoring Jest's asymmetric matcher protocol
- * (e.g. {@link Expect.any}, {@link Expect.objectContaining}). Detected at
- * runtime by {@link equals}.
+ * (e.g. `expect.any(...)`, `expect.objectContaining(...)`). Detected at runtime
+ * by {@link equals}.
  */
 export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
@@ -56,9 +56,9 @@ type WithAsymmetricMatchers<P extends Array<any>> =
     : {[K in keyof P]: DeepAsymmetricMatcher<P[K]>};
 
 /**
- * Like {@link Parameters}, but each parameter accepts an asymmetric matcher
- * (recursively for nested objects), and overloaded functions yield a union of
- * all overload parameter tuples.
+ * Like the built-in `Parameters<F>` utility type, but each parameter accepts an
+ * asymmetric matcher (recursively for nested objects), and overloaded functions
+ * yield a union of all overload parameter tuples.
  */
 export type FunctionParameters<F> =
   FunctionParametersInternal<F> extends never
