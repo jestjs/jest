@@ -605,9 +605,9 @@ test('once-then-persistent regardless of declaration order', () => {
 
 Once a matched branch's queued behavior is exhausted (for example, after a `*Once` is consumed) the call falls through to the base mock instead of returning `undefined`.
 
-`whenCalledWith` works on spies created with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname), in which case non-matching calls fall through to the original method. `mockReset()` on the parent clears every `whenCalledWith` registration; calling it on a sub-mock returned by `whenCalledWith(...)` clears only that branch.
+`whenCalledWith` works on spies created with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname), in which case non-matching calls fall through to the original method.
 
-Precedence note: `whenCalledWith` and the base mock's implementation follow last-registered-wins semantics. Register the base mock first, then layer `whenCalledWith` overrides on top.
+`mockReset()` on the parent clears every `whenCalledWith` registration; calling it on a sub-mock returned by `whenCalledWith(...)` clears only that branch.
 
 ### `mockFn.withImplementation(fn, callback)`
 
