@@ -185,6 +185,24 @@ describe('whenCalledWith', () => {
     expect(fn('b')).toBeUndefined();
   });
 
+  it('cascades mockReset to sub-mocks held by user references', () => {
+    const fn = moduleMocker.fn();
+    const branch = fn.whenCalledWith('a').mockReturnValue('A');
+    expect(fn('a')).toBe('A');
+    fn.mockReset();
+    // After parent reset, the user's reference to the sub-mock should reflect
+    // the reset state (no impl) rather than silently retain the prior impl.
+    expect(branch.getMockImplementation()).toBeUndefined();
+  });
+
+  it('returns a fresh sub-mock from whenCalledWith after a parent mockReset', () => {
+    const fn = moduleMocker.fn();
+    const before = fn.whenCalledWith('a').mockReturnValue('A');
+    fn.mockReset();
+    const after = fn.whenCalledWith('a');
+    expect(after).not.toBe(before);
+  });
+
   it('mockReset on a sub-mock resets only that branch, not siblings or base', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('default');

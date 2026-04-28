@@ -884,6 +884,15 @@ export class ModuleMocker {
 
       f.mockReset = () => {
         f.mockClear();
+        // Cascade to any sub-mocks the user holds via whenCalledWith — without
+        // this, references they captured would silently retain their prior
+        // impl and queued onces.
+        const config = this._mockConfigRegistry.get(f);
+        if (config) {
+          for (const branch of config.whenCalledWithRegistrations) {
+            (branch.subMock as Mock).mockReset();
+          }
+        }
         this._mockConfigRegistry.delete(f);
         return f;
       };
