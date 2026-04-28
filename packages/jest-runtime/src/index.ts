@@ -781,7 +781,9 @@ export default class Runtime {
     if (module.status === 'linked') {
       if (supportsSyncEvaluate && !moduleHasAsyncGraph(module)) {
         // `evaluate()` fulfills synchronously when the graph has no top-level
-        // await, so we don't need to yield to the event loop.
+        // await, so we don't need to yield to the event loop. The Promise
+        // always resolves (never rejects) for sync modules; errors are
+        // reflected in `module.status === 'errored'` instead.
         void module.evaluate();
         const status = module.status as VMModule['status'];
         if (status === 'errored') {
