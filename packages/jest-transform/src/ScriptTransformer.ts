@@ -284,8 +284,9 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
-            transformer =
-              await transformer.createTransformer(transformerConfig);
+            transformer = await transformer.createTransformer(
+              transformerConfig,
+            );
           }
           if (
             typeof transformer.process !== 'function' &&
@@ -849,7 +850,10 @@ class ScriptTransformer {
       return true;
     }
     const transformerEntry = this._getTransformer(filename);
-    return typeof transformerEntry?.transformer.process === 'function';
+    if (transformerEntry == null) {
+      return true;
+    }
+    return typeof transformerEntry.transformer.process === 'function';
   }
 }
 

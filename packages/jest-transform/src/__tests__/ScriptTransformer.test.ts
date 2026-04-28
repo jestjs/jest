@@ -2097,6 +2097,17 @@ describe('ScriptTransformer', () => {
       );
     });
 
+    it('returns true when transform is configured but no pattern matches the file', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [['\\.ts$', 'test_preprocessor', {}]],
+      });
+
+      expect(scriptTransformer.canTransformSync('/fruits/banana.js')).toBe(
+        true,
+      );
+    });
+
     it('returns true for ignored paths even when an async transformer matches', async () => {
       const scriptTransformer = await createScriptTransformer({
         ...config,
