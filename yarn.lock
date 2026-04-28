@@ -350,12 +350,12 @@ __metadata:
   linkType: hard
 
 "@angular/core@npm:^21.0.0":
-  version: 21.2.5
-  resolution: "@angular/core@npm:21.2.5"
+  version: 21.2.10
+  resolution: "@angular/core@npm:21.2.10"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/compiler": 21.2.5
+    "@angular/compiler": 21.2.10
     rxjs: ^6.5.3 || ^7.4.0
     zone.js: ~0.15.0 || ~0.16.0
   peerDependenciesMeta:
@@ -363,7 +363,7 @@ __metadata:
       optional: true
     zone.js:
       optional: true
-  checksum: 10/6bc05469e8003a0984241f8fba305c107198c45570e578694ab62a1961946d6377e2b475424390dbb0d0ac95d62fb13b4e0571f0f247bb6442f5d96a5b099506
+  checksum: 10/6562af9752af95bc06f107539b4f34915a16b2c793142b5f2a85da1cb258229bb27e4a16a1d0b6e79f7e049e68f940ff70f9d91e51a7865476fa6cdd0c57250f
   languageName: node
   linkType: hard
 
@@ -12407,8 +12407,8 @@ __metadata:
   linkType: hard
 
 "handlebars@npm:^4.7.7, handlebars@npm:^4.7.8":
-  version: 4.7.8
-  resolution: "handlebars@npm:4.7.8"
+  version: 4.7.9
+  resolution: "handlebars@npm:4.7.9"
   dependencies:
     minimist: "npm:^1.2.5"
     neo-async: "npm:^2.6.2"
@@ -12420,7 +12420,7 @@ __metadata:
       optional: true
   bin:
     handlebars: bin/handlebars
-  checksum: 10/bd528f4dd150adf67f3f857118ef0fa43ff79a153b1d943fa0a770f2599e38b25a7a0dbac1a3611a4ec86970fd2325a81310fb788b5c892308c9f8743bd02e11
+  checksum: 10/e755433d652e8a15fc02f83d7478e652359e7a4d354c4328818853ed4f8a39d4a09e1d22dad3c7213c5240864a65b3c840970b8b181745575dd957dd258f2b8d
   languageName: node
   linkType: hard
 
@@ -23134,12 +23134,12 @@ __metadata:
   linkType: hard
 
 "yauzl@npm:^3.2.0":
-  version: 3.2.1
-  resolution: "yauzl@npm:3.2.1"
+  version: 3.3.0
+  resolution: "yauzl@npm:3.3.0"
   dependencies:
     buffer-crc32: "npm:~0.2.3"
     pend: "npm:~1.2.0"
-  checksum: 10/15dfae75fbfe59c6a1b7a2cb27a995cda0ee70549d32d6b19937e84897436170f169f6bbefc34b9e9beb9c9114a1b8a8a40e7687a907909a19681ebcbf35a1f3
+  checksum: 10/ac8ae5276a3fb89b80464fc828aadcb5f888af7306a7920e699b9de05aead0490ac6698bc71952ea867c3f2a2c73ed8df91f18f5b6a67ce3231065327817c08f
   languageName: node
   linkType: hard
 
