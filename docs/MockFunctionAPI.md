@@ -600,13 +600,15 @@ test('once-then-persistent regardless of declaration order', () => {
 
   expect(fn('x')).toBe('A');
   expect(fn('x')).toBe('B');
-  expect(fn('z')).toBe(undefined);
+  expect(fn('z')).toBeUndefined();
 });
 ```
 
 Once a matched branch's queued behavior is exhausted (for example, after a `*Once` is consumed) the call falls through to the base mock instead of returning `undefined`.
 
 Parent-level [`mockImplementationOnce`](#mockfnmockimplementationoncefn) (and its `mockReturnValueOnce` / `mockResolvedValueOnce` / `mockRejectedValueOnce` siblings) take precedence over `whenCalledWith` for the call that consumes them, regardless of whether the call's args match a registered matcher. Once the parent-level queue is drained, normal `whenCalledWith` routing resumes.
+
+`whenCalledWith` works on constructor-style mocks too. `new fn(args)` matches the same way as `fn(args)`, and the matching sub-mock's [`mock.instances`](#mockfnmockinstances) records the construct.
 
 `whenCalledWith` works on spies created with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname), in which case non-matching calls fall through to the original method.
 

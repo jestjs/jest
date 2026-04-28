@@ -284,6 +284,28 @@ describe('whenCalledWith', () => {
     expect(fn('a')).toBe('matched');
   });
 
+  it('routes constructor calls through the matching sub-mock', () => {
+    const Ctor = moduleMocker.fn();
+    const sentinel = {kind: 'made-by-A'};
+    Ctor.whenCalledWith('A').mockImplementation(() => sentinel);
+
+    const made = new (Ctor as new (arg: string) => unknown)('A');
+    expect(made).toBe(sentinel);
+  });
+
+  it('records constructor calls on the sub-mock`s mock.instances', () => {
+    const Ctor = moduleMocker.fn();
+    const branch = Ctor.whenCalledWith('A').mockImplementation(() => ({
+      kind: 'made',
+    }));
+
+    const made = new (Ctor as new (arg: string) => unknown)('A');
+
+    expect(made).toEqual({kind: 'made'});
+    expect(branch.mock.instances).toHaveLength(1);
+    expect(branch.mock.calls).toEqual([['A']]);
+  });
+
   it('honors withImplementation scope around whenCalledWith routing', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('default');

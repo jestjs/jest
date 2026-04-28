@@ -647,6 +647,20 @@ export class ModuleMocker {
     //   3. If no matching branch has any active impl, fall through to
     //      `fallbackImpl` — whatever mockImpl was present when this
     //      dispatcher took over (e.g. spyOn's original-method bridge).
+    // Construct calls (`new fn(...)`) go through `mockImpl.apply` in
+    // `mockConstructor`, which loses the `new`-ness. Detect the construct case
+    // by checking whether `this` is an instance of the parent mock and forward
+    // via `Reflect.construct` so the chosen sub-mock records the call on its
+    // own `mock.instances` and runs its construct branch.
+    const fire = function (
+      this: unknown,
+      target: Function,
+      callArgs: Parameters<T>,
+    ): unknown {
+      return this instanceof f
+        ? Reflect.construct(target, callArgs)
+        : target.apply(this, callArgs);
+    };
     return function whenCalledWithDispatcherImpl(
       this: unknown,
       ...callArgs: Parameters<T>
@@ -661,17 +675,20 @@ export class ModuleMocker {
           ensureConfig(branch.subMock as Mock).specificMockImpls.length > 0,
       );
       if (onceBranch) {
-        return onceBranch.subMock.apply(this, callArgs);
+        return fire.call(this, onceBranch.subMock, callArgs);
       }
       // (2) Reverse walk for last-registered persistent.
       for (let i = matching.length - 1; i >= 0; i--) {
         const branch = matching[i];
         if (ensureConfig(branch.subMock as Mock).mockImpl !== undefined) {
-          return branch.subMock.apply(this, callArgs);
+          return fire.call(this, branch.subMock, callArgs);
         }
       }
       // (3) Fall through to the pre-dispatcher impl.
-      return config.fallbackImpl?.apply(this, callArgs);
+      if (config.fallbackImpl !== undefined) {
+        return fire.call(this, config.fallbackImpl, callArgs);
+      }
+      return undefined;
     };
   }
 
