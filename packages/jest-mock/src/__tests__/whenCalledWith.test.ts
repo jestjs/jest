@@ -264,6 +264,26 @@ describe('whenCalledWith', () => {
     expect(fn('a', 'b')).toBe('2-arg');
   });
 
+  it('parent-level mockImplementationOnce wins over whenCalledWith for one call', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('a').mockReturnValue('matched');
+    fn.mockImplementationOnce(() => 'parent-once');
+    expect(fn('a')).toBe('parent-once');
+    // Once consumed, normal whenCalledWith routing resumes.
+    expect(fn('a')).toBe('matched');
+    expect(fn('a')).toBe('matched');
+  });
+
+  it('parent-level mockImplementationOnce queue drains across non-matching calls too', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('a').mockReturnValue('matched');
+    fn.mockImplementationOnce(() => 'one');
+    fn.mockImplementationOnce(() => 'two');
+    expect(fn('non-match')).toBe('one');
+    expect(fn('a')).toBe('two');
+    expect(fn('a')).toBe('matched');
+  });
+
   it('honors withImplementation scope around whenCalledWith routing', () => {
     const fn = moduleMocker.fn();
     fn.mockReturnValue('default');
