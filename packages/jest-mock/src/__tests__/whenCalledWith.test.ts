@@ -92,12 +92,79 @@ describe('whenCalledWith', () => {
   });
 
   it('merges repeat registrations on the same matchers (once-then-persistent)', () => {
+    const persistentFirst = moduleMocker.fn();
+    persistentFirst.whenCalledWith('x').mockReturnValue('B');
+    persistentFirst.whenCalledWith('x').mockReturnValueOnce('A');
+    expect(persistentFirst('x')).toBe('A');
+    expect(persistentFirst('x')).toBe('B');
+    expect(persistentFirst('x')).toBe('B');
+
+    const onceFirst = moduleMocker.fn();
+    onceFirst.whenCalledWith('x').mockReturnValueOnce('A');
+    onceFirst.whenCalledWith('x').mockReturnValue('B');
+    expect(onceFirst('x')).toBe('A');
+    expect(onceFirst('x')).toBe('B');
+    expect(onceFirst('x')).toBe('B');
+  });
+
+  it('merges repeat registrations on the same matchers if they are "equals" equivilent', () => {
+    const persistentFirst = moduleMocker.fn();
+    persistentFirst.whenCalledWith('x').mockReturnValue('B');
+    persistentFirst.whenCalledWith(expect.any(String)).mockReturnValueOnce('A');
+    expect(persistentFirst('x')).toBe('A');
+    expect(persistentFirst('x')).toBe('B');
+    expect(persistentFirst('x')).toBe('B');
+
+    const onceFirst = moduleMocker.fn();
+    onceFirst.whenCalledWith('x').mockReturnValueOnce('A');
+    onceFirst.whenCalledWith(expect.any(String)).mockReturnValue('B');
+    expect(onceFirst('x')).toBe('A');
+    expect(onceFirst('x')).toBe('B');
+    expect(onceFirst('x')).toBe('B');
+  });
+
+  it('exhausts mockReturnValueOnce across overlapping matchers regardless of declaration order', () => {
+    const persistentFirst = moduleMocker.fn();
+    persistentFirst
+      .whenCalledWith(expect.objectContaining({a: 1}))
+      .mockReturnValue('persistent');
+    persistentFirst
+      .whenCalledWith(expect.objectContaining({b: 2}))
+      .mockReturnValueOnce('once');
+    expect(persistentFirst({a: 1, b: 2})).toBe('once');
+    expect(persistentFirst({a: 1, b: 2})).toBe('persistent');
+    expect(persistentFirst({a: 1, b: 2})).toBe('persistent');
+
+    const onceFirst = moduleMocker.fn();
+    onceFirst
+      .whenCalledWith(expect.objectContaining({b: 2}))
+      .mockReturnValueOnce('once');
+    onceFirst
+      .whenCalledWith(expect.objectContaining({a: 1}))
+      .mockReturnValue('persistent');
+    expect(onceFirst({a: 1, b: 2})).toBe('once');
+    expect(onceFirst({a: 1, b: 2})).toBe('persistent');
+    expect(onceFirst({a: 1, b: 2})).toBe('persistent');
+  });
+
+  it('drains queued onces in registration order across overlapping matchers', () => {
     const fn = moduleMocker.fn();
-    fn.whenCalledWith('x').mockReturnValueOnce('A');
-    fn.whenCalledWith('x').mockReturnValue('B');
-    expect(fn('x')).toBe('A');
-    expect(fn('x')).toBe('B');
-    expect(fn('x')).toBe('B');
+    // Two overlapping matchers, both with queued onces; the later registration
+    // also sets the persistent fallback. A call matching both should drain
+    // matcher A's queue (registered first) before touching matcher B's queue,
+    // then fall through to the last-registered persistent.
+    fn.whenCalledWith(expect.objectContaining({a: 1}))
+      .mockReturnValueOnce('A1')
+      .mockReturnValueOnce('A2');
+    fn.whenCalledWith(expect.objectContaining({b: 2}))
+      .mockReturnValueOnce('B1')
+      .mockReturnValue('persistent');
+
+    expect(fn({a: 1, b: 2})).toBe('A1');
+    expect(fn({a: 1, b: 2})).toBe('A2');
+    expect(fn({a: 1, b: 2})).toBe('B1');
+    expect(fn({a: 1, b: 2})).toBe('persistent');
+    expect(fn({a: 1, b: 2})).toBe('persistent');
   });
 
   it('does not clear whenCalledWith registrations on mockClear', () => {

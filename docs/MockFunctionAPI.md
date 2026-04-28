@@ -600,6 +600,7 @@ test('once-then-persistent regardless of declaration order', () => {
 
   expect(fn('x')).toBe('A');
   expect(fn('x')).toBe('B');
+  expect(fn('z')).toBe(undefined);
 });
 ```
 

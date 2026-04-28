@@ -241,6 +241,7 @@ type WhenCalledWithRegistration = {
 };
 
 type MockFunctionConfig = {
+  fallbackImpl: Function | undefined;
   mockImpl: Function | undefined;
   mockName: string;
   specificMockImpls: Array<Function>;
@@ -555,6 +556,48 @@ export class ModuleMocker {
     return [...slots];
   }
 
+  private _makeWhenDispatcherImpl<T extends FunctionLike>(
+    f: Mock<T>,
+  ): Function {
+    const ensureConfig = (mock: Mock) => this._ensureMockConfig(mock);
+    // Precedence rules, in order of priority:
+    //   1. The earliest matching branch with a queued `*Once` impl drains
+    //      first. This is what gives users the intuitive "exhaust all queued
+    //      onces before falling back" behavior even when the queued once was
+    //      registered against a different (but overlapping) matcher.
+    //   2. Among matching branches with no queued onces, the most-recently
+    //      registered persistent impl wins.
+    //   3. If no matching branch has any active impl, fall through to
+    //      `fallbackImpl` — whatever mockImpl was present when this
+    //      dispatcher took over (e.g. spyOn's original-method bridge).
+    return function whenCalledWithDispatcherImpl(
+      this: unknown,
+      ...callArgs: Parameters<T>
+    ) {
+      const config = ensureConfig(f);
+      const matching = config.whenCalledWithRegistrations.filter(branch =>
+        equals(branch.matchers, callArgs),
+      );
+      // (1) Forward find: first matching branch with a queued once.
+      const onceBranch = matching.find(
+        branch =>
+          ensureConfig(branch.subMock as Mock).specificMockImpls.length > 0,
+      );
+      if (onceBranch) {
+        return onceBranch.subMock.apply(this, callArgs);
+      }
+      // (2) Reverse walk for last-registered persistent.
+      for (let i = matching.length - 1; i >= 0; i--) {
+        const branch = matching[i];
+        if (ensureConfig(branch.subMock as Mock).mockImpl !== undefined) {
+          return branch.subMock.apply(this, callArgs);
+        }
+      }
+      // (3) Fall through to the pre-dispatcher impl.
+      return config.fallbackImpl?.apply(this, callArgs);
+    };
+  }
+
   private _ensureMockConfig(f: Mock): MockFunctionConfig {
     let config = this._mockConfigRegistry.get(f);
     if (!config) {
@@ -580,6 +623,7 @@ export class ModuleMocker {
 
   private _defaultMockConfig(): MockFunctionConfig {
     return {
+      fallbackImpl: undefined,
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
@@ -850,33 +894,32 @@ export class ModuleMocker {
         return f;
       };
 
+      // One dispatcher per mock, captured in closure. We compare it against
+      // mockConfig.mockImpl by identity to detect whether the dispatcher is
+      // currently installed or whether some other call (e.g. mockImplementation)
+      // replaced it.
+      const dispatcherImpl = this._makeWhenDispatcherImpl(f);
       f.whenCalledWith = (...args: FunctionParameters<T>) => {
         const mockConfig = this._ensureMockConfig(f);
-        const existing = mockConfig.whenCalledWithRegistrations.find(
-          registration => equals(registration.matchers, args),
+
+        // If the user replaced our dispatcher. Reset the registrations and put
+        // the dispatcher back, with the user's new mockImpl as the fallback
+        if (mockConfig.mockImpl !== dispatcherImpl) {
+          mockConfig.fallbackImpl = mockConfig.mockImpl;
+          mockConfig.whenCalledWithRegistrations = [];
+          mockConfig.mockImpl = dispatcherImpl;
+        }
+
+        // Merge: repeat calls with the same matchers reuse the existing
+        // sub-mock so onces and persistent impls coexist on one branch.
+        const existing = mockConfig.whenCalledWithRegistrations.find(branch =>
+          equals(branch.matchers, args),
         );
         if (existing) {
           return existing.subMock as Mock<T>;
         }
+
         const subMock = this._makeComponent({type: 'function'}) as Mock<T>;
-        const previousImpl = mockConfig.mockImpl;
-        const ensureSubConfig = () => this._ensureMockConfig(subMock);
-        mockConfig.mockImpl = function (
-          this: unknown,
-          ...callArgs: Parameters<T>
-        ) {
-          if (!equals(callArgs, args)) {
-            return previousImpl?.apply(this, callArgs);
-          }
-          const subConfig = ensureSubConfig();
-          if (
-            subConfig.specificMockImpls.length === 0 &&
-            subConfig.mockImpl === undefined
-          ) {
-            return previousImpl?.apply(this, callArgs);
-          }
-          return subMock.apply(this, callArgs);
-        } as T;
         mockConfig.whenCalledWithRegistrations.push({matchers: args, subMock});
         return subMock as Mock<T>;
       };
