@@ -41,7 +41,7 @@ jobs:
         uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         with:
           timeout_minutes: 10
-          max_attempts: 5
+          max_attempts: 3
           retry_on: error
           command: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
 
@@ -69,6 +69,6 @@ jobs:
         uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
         with:
           timeout_minutes: 10
-          max_attempts: 5
+          max_attempts: 3
           retry_on: error
           command: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ inputs.shard }}
