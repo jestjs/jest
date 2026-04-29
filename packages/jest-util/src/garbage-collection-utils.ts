@@ -161,9 +161,12 @@ function deleteProperty(obj: object, key: string | symbol): boolean {
     return Reflect.deleteProperty(obj, key);
   }
 
-  const originalGetter = descriptor.get ?? (() => descriptor.value);
-  const originalSetter =
-    descriptor.set ?? (value => Reflect.set(obj, key, value));
+  // For data properties, capture the value in a mutable cell so the setter can
+  // update it without calling Reflect.set, which would re-enter this accessor
+  // and cause infinite recursion (RangeError: Maximum call stack size exceeded).
+  let currentValue = descriptor.value;
+  const originalGetter = descriptor.get ?? (() => currentValue);
+  const originalSetter = descriptor.set ?? (value => { currentValue = value; });
 
   return Reflect.defineProperty(obj, key, {
     configurable: true,
