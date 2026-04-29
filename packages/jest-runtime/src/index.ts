@@ -147,6 +147,11 @@ const supportsSyncEvaluate =
   // @ts-expect-error - `hasAsyncGraph` is in Node v24.9+, not yet typed in @types/node@18
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
 
+// `linkRequests`/`instantiate`/`hasAsyncGraph`/`hasTopLevelAwait`/
+// `moduleRequests` ship in Node v24.9 and aren't yet in `@types/node@18`.
+// This local interface lets us narrow without `@ts-expect-error` at every
+// call site. Drop the optional `?:` modifiers (or remove the interface
+// entirely) when `@types/node` catches up.
 interface VMModuleWithAsyncGraph extends VMModule {
   hasAsyncGraph?: () => boolean;
   hasTopLevelAwait?: () => boolean;
@@ -158,6 +163,18 @@ interface VMModuleWithAsyncGraph extends VMModule {
   linkRequests?: (deps: ReadonlyArray<VMModule>) => void;
   instantiate?: () => void;
 }
+
+// Future `require(esm)` needs a way to signal "throw a typed error instead of
+// bailing to the legacy async path" on the same edges we currently silently
+// bail on. Plumbed through every helper so that change only adds the throw
+// branches; the dispatch wrapper in this currently always passes
+// `'sync-preferred'`.
+type SyncEsmMode = 'sync-preferred' | 'sync-required';
+
+type WorklistEntry = {
+  cacheKey: string;
+  modulePath: string;
+};
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
@@ -223,6 +240,26 @@ type ScratchEntry = {
   // cache keys, populated for source-text modules; null otherwise.
   deps: Array<string> | null;
 };
+
+function stripFileScheme(specifier: string): string {
+  return specifier.startsWith('file://') ? fileURLToPath(specifier) : specifier;
+}
+
+function buildMockSyntheticModule(
+  identifier: string,
+  context: VMContext,
+  exportsObject: Record<string, unknown>,
+): SyntheticModule {
+  return new SyntheticModule(
+    Object.keys(exportsObject),
+    function () {
+      for (const [key, value] of Object.entries(exportsObject)) {
+        this.setExport(key, value);
+      }
+    },
+    {context, identifier},
+  );
+}
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
@@ -495,7 +532,20 @@ export default class Runtime {
   private _tryLoadEsmGraphSync(
     rootPath: string,
     rootQuery: string,
+    mode: SyncEsmMode,
   ): ESModule | null {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return null;
+    }
+    if (this.isInsideTestCode === false && !supportsDynamicImport) {
+      throw new ReferenceError(
+        'You are trying to `import` a file outside of the scope of the test code.',
+      );
+    }
     invariant(
       typeof this._environment.getVmContext === 'function',
       'ES Modules are only supported if your test environment has the `getVmContext` function',
@@ -506,35 +556,31 @@ export default class Runtime {
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
     const rootKey = rootPath + rootQuery;
 
-    if (this._fileTransformsMutex.has(rootKey)) {
-      // The legacy async path is mid-load on this module. Defer to it.
-      return null;
-    }
-
     const cached = registry.get(rootKey);
     if (cached && !(cached instanceof Promise)) {
-      // Already loaded synchronously before; legacy path may have left a
-      // Promise here, in which case we must defer.
+      // Already loaded; legacy may have stashed a Promise here, in which case
+      // we must defer.
       return cached as ESModule;
     }
     if (cached instanceof Promise) {
       return null;
     }
 
+    // Sync runs to completion before yielding, so the legacy path cannot have
+    // populated the mutex for `rootKey` mid-flight on this same module.
+    invariant(
+      !this._fileTransformsMutex.has(rootKey),
+      `_fileTransformsMutex unexpectedly populated for ${rootKey} when sync core entered with empty registry. This is a bug in Jest, please report it!`,
+    );
+
     const scratch = new Map<string, ScratchEntry>();
-    const worklist: Array<{
-      cacheKey: string;
-      modulePath: string;
-      query: string;
-    }> = [{cacheKey: rootKey, modulePath: rootPath, query: rootQuery}];
+    const worklist: Array<WorklistEntry> = [
+      {cacheKey: rootKey, modulePath: rootPath},
+    ];
 
     while (worklist.length > 0) {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
-
-      if (this._fileTransformsMutex.has(cacheKey)) {
-        return null;
-      }
 
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry && !(fromRegistry instanceof Promise)) {
@@ -572,6 +618,7 @@ export default class Runtime {
           scratch,
           registry,
           worklist,
+          mode,
         );
         if (built === null) return null;
         scratch.set(cacheKey, built);
@@ -580,12 +627,14 @@ export default class Runtime {
 
       if (isWasm(modulePath)) {
         const wasmEntry = this._buildSyncWasmEntry(
+          this.readFileBuffer(modulePath),
           modulePath,
           cacheKey,
           context,
           scratch,
           registry,
           worklist,
+          mode,
         );
         if (wasmEntry === null) return null;
         scratch.set(cacheKey, wasmEntry);
@@ -638,6 +687,18 @@ export default class Runtime {
           },
         }) as VMModuleWithAsyncGraph;
 
+        // Top-level await is detectable per-module before we walk further.
+        // Bailing now skips construction of every node still on the worklist
+        // (a transitive TLA elsewhere in the graph would be caught later by
+        // the post-instantiate `hasAsyncGraph()` check; this one cuts off the
+        // common "TLA at the entry file" case before doing any more work).
+        if (
+          typeof module.hasTopLevelAwait === 'function' &&
+          module.hasTopLevelAwait()
+        ) {
+          return null;
+        }
+
         // Walk dependencies via the v24.9+ `moduleRequests` accessor.
         const requests = module.moduleRequests;
         if (requests === undefined) return null;
@@ -649,6 +710,7 @@ export default class Runtime {
             context,
             scratch,
             registry,
+            mode,
           );
           if (resolved === null) return null;
           deps.push(resolved.cacheKey);
@@ -726,16 +788,22 @@ export default class Runtime {
 
   // Resolve one static-import specifier for the sync graph walker. Returns
   // null on any async-edge or unsupported case so the caller can bail.
+  //
+  // Side effects: for `@jest/globals`, mocked specifiers, and CJS-as-ESM
+  // wrappers this commits the constructed SyntheticModule to both the local
+  // `scratch` and the long-lived `registry`/`_moduleMockRegistry` before
+  // returning. Source-text and JSON deps are only enqueued (the parent
+  // worklist commits them on success). A subsequent bail does not unwind
+  // these eager commits — see `_tryLoadEsmGraphSync`'s header for the
+  // implications.
   private _resolveSpecifierForSyncGraph(
     referencingIdentifier: string,
     specifier: string,
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
-  ): {
-    cacheKey: string;
-    enqueue: {cacheKey: string; modulePath: string; query: string} | null;
-  } | null {
+    mode: SyncEsmMode,
+  ): {cacheKey: string; enqueue: WorklistEntry | null} | null {
     if (specifier === '@jest/globals') {
       const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
       const fromRegistry = registry.get(globalsIdentifier);
@@ -767,12 +835,10 @@ export default class Runtime {
       const cacheKey = specifier;
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: specifier, query: ''},
+        enqueue: {cacheKey, modulePath: specifier},
       };
     }
-    if (specifier.startsWith('file://')) {
-      specifier = fileURLToPath(specifier);
-    }
+    specifier = stripFileScheme(specifier);
 
     const [specifierPath, query = ''] = specifier.split('?');
 
@@ -788,6 +854,7 @@ export default class Runtime {
         specifierPath,
         context,
         scratch,
+        mode,
       );
       if (mocked === null) return null;
       return {cacheKey: mocked.cacheKey, enqueue: null};
@@ -797,7 +864,7 @@ export default class Runtime {
       const cacheKey = specifierPath + query;
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: specifierPath, query},
+        enqueue: {cacheKey, modulePath: specifierPath},
       };
     }
 
@@ -840,7 +907,7 @@ export default class Runtime {
 
     return {
       cacheKey,
-      enqueue: {cacheKey, modulePath: resolved, query},
+      enqueue: {cacheKey, modulePath: resolved},
     };
   }
 
@@ -851,6 +918,7 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
+    _mode: SyncEsmMode,
   ): {cacheKey: string} | null {
     const moduleID = this._resolver.getModuleID(
       this._virtualModuleMocks,
@@ -886,15 +954,10 @@ export default class Runtime {
       return null;
     }
 
-    const exportsObject = result as Record<string, unknown>;
-    const synth = new SyntheticModule(
-      Object.keys(exportsObject),
-      function () {
-        for (const [key, value] of Object.entries(exportsObject)) {
-          this.setExport(key, value);
-        }
-      },
-      {context, identifier: moduleName},
+    const synth = buildMockSyntheticModule(
+      moduleName,
+      context,
+      result as Record<string, unknown>,
     );
     this._moduleMockRegistry.set(moduleID, synth);
     scratch.set(moduleID, {
@@ -916,57 +979,45 @@ export default class Runtime {
   // graphs that have already committed to async should switch to
   // `await WebAssembly.compile(bytes)` to avoid blocking the event loop.
   private _buildSyncWasmEntry(
-    modulePath: string,
+    bytes: BufferSource,
+    identifier: string,
     cacheKey: string,
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
-    worklist: Array<{cacheKey: string; modulePath: string; query: string}>,
+    worklist: Array<WorklistEntry>,
+    mode: SyncEsmMode,
   ): ScratchEntry | null {
-    const wasmModule = new WebAssembly.Module(this.readFileBuffer(modulePath));
-    const exports = WebAssembly.Module.exports(wasmModule);
-    const imports = WebAssembly.Module.imports(wasmModule);
+    const wasmModule = new WebAssembly.Module(bytes);
 
     const moduleSpecToCacheKey = new Map<string, string>();
-    for (const {module: specifier} of imports) {
-      if (moduleSpecToCacheKey.has(specifier)) continue;
+    for (const {module: depSpec} of WebAssembly.Module.imports(wasmModule)) {
+      if (moduleSpecToCacheKey.has(depSpec)) continue;
       const resolved = this._resolveSpecifierForSyncGraph(
-        modulePath,
-        specifier,
+        identifier,
+        depSpec,
         context,
         scratch,
         registry,
+        mode,
       );
       if (resolved === null) return null;
-      moduleSpecToCacheKey.set(specifier, resolved.cacheKey);
+      moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
 
-    const synthetic = new SyntheticModule(
-      exports.map(({name}) => name),
-      function () {
-        const importsObject: WebAssembly.Imports = {};
-        for (const {module: specifier, name} of imports) {
-          if (!importsObject[specifier]) {
-            importsObject[specifier] = {};
-          }
-          const depKey = moduleSpecToCacheKey.get(specifier)!;
-          const depEntry = scratch.get(depKey)!;
-          const namespace = (depEntry.module as VMModule).namespace as Record<
-            string,
-            unknown
-          >;
-          importsObject[specifier][name] = namespace[name] as never;
-        }
-        const wasmInstance = new WebAssembly.Instance(
-          wasmModule,
-          importsObject,
-        );
-        for (const {name} of exports) {
-          this.setExport(name, wasmInstance.exports[name]);
-        }
+    const synthetic = this._buildWasmSyntheticModule(
+      wasmModule,
+      identifier,
+      context,
+      depSpec => {
+        const depKey = moduleSpecToCacheKey.get(depSpec)!;
+        const depEntry = scratch.get(depKey)!;
+        return (depEntry.module as VMModule).namespace as Record<
+          string,
+          unknown
+        >;
       },
-      {context, identifier: modulePath},
     );
 
     return {
@@ -986,12 +1037,13 @@ export default class Runtime {
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
-    worklist: Array<{cacheKey: string; modulePath: string; query: string}>,
+    worklist: Array<WorklistEntry>,
+    mode: SyncEsmMode,
   ): ScratchEntry | null {
     const {mime, code} = parseDataUri(specifier);
 
     if (mime === 'application/wasm') {
-      return this._buildSyncWasmEntryFromBytes(
+      return this._buildSyncWasmEntry(
         new Uint8Array(code as Buffer),
         specifier,
         cacheKey,
@@ -999,6 +1051,7 @@ export default class Runtime {
         scratch,
         registry,
         worklist,
+        mode,
       );
     }
 
@@ -1031,6 +1084,13 @@ export default class Runtime {
       },
     }) as VMModuleWithAsyncGraph;
 
+    if (
+      typeof module.hasTopLevelAwait === 'function' &&
+      module.hasTopLevelAwait()
+    ) {
+      return null;
+    }
+
     const requests = module.moduleRequests;
     if (requests === undefined) return null;
     const deps: Array<string> = [];
@@ -1041,6 +1101,7 @@ export default class Runtime {
         context,
         scratch,
         registry,
+        mode,
       );
       if (resolved === null) return null;
       deps.push(resolved.cacheKey);
@@ -1048,55 +1109,6 @@ export default class Runtime {
     }
 
     return {cacheKey, deps, isSourceText: true, module};
-  }
-
-  // Shared between file-backed wasm and data:application/wasm cases.
-  private _buildSyncWasmEntryFromBytes(
-    wasmBytes: BufferSource,
-    identifier: string,
-    cacheKey: string,
-    context: VMContext,
-    scratch: Map<string, ScratchEntry>,
-    registry: ModuleRegistry | Map<string, JestModule>,
-    worklist: Array<{cacheKey: string; modulePath: string; query: string}>,
-  ): ScratchEntry | null {
-    const wasmModule = new WebAssembly.Module(wasmBytes);
-
-    const moduleSpecToCacheKey = new Map<string, string>();
-    for (const {module: depSpec} of WebAssembly.Module.imports(wasmModule)) {
-      if (moduleSpecToCacheKey.has(depSpec)) continue;
-      const resolved = this._resolveSpecifierForSyncGraph(
-        identifier,
-        depSpec,
-        context,
-        scratch,
-        registry,
-      );
-      if (resolved === null) return null;
-      moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
-      if (resolved.enqueue) worklist.push(resolved.enqueue);
-    }
-
-    const synthetic = this._buildWasmSyntheticModule(
-      wasmModule,
-      identifier,
-      context,
-      depSpec => {
-        const depKey = moduleSpecToCacheKey.get(depSpec)!;
-        const depEntry = scratch.get(depKey)!;
-        return (depEntry.module as VMModule).namespace as Record<
-          string,
-          unknown
-        >;
-      },
-    );
-
-    return {
-      cacheKey,
-      deps: null,
-      isSourceText: false,
-      module: synthetic as VMModuleWithAsyncGraph,
-    };
   }
 
   private async loadEsmModule(
@@ -1108,7 +1120,11 @@ export default class Runtime {
     // user resolver `findNodeModule` silently falls back to the default
     // resolver and would silently miss user mappings; defer to legacy.
     if (supportsSyncEvaluate && this._resolver.canResolveSync()) {
-      const synced = this._tryLoadEsmGraphSync(modulePath, query);
+      const synced = this._tryLoadEsmGraphSync(
+        modulePath,
+        query,
+        'sync-preferred',
+      );
       if (synced) return synced;
     }
     // LEGACY: pre-v24.9 async ESM path. Delete this block (and the
