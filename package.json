@@ -19,7 +19,7 @@
     "@lerna-lite/exec": "^4.3.0",
     "@lerna-lite/publish": "^4.3.0",
     "@microsoft/api-extractor": "^7.35.0",
-    "@tsconfig/node18": "^18.2.4",
+    "@tsconfig/node20": "^20.1.0",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.27.0",
     "@types/babel__template": "^7.4.4",
