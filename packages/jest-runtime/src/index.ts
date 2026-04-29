@@ -1859,7 +1859,6 @@ export default class Runtime {
       return this._moduleImplementation;
     }
 
-    // eslint-disable-next-line unicorn/consistent-function-scoping
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
@@ -2261,7 +2260,6 @@ export default class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
-    // eslint-disable-next-line unicorn/consistent-function-scoping
     const _getFakeTimers = () => {
       if (
         this.isTornDown ||
