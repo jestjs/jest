@@ -3855,6 +3855,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/core@npm:^1.1.1":
+  version: 1.2.1
+  resolution: "@eslint/core@npm:1.2.1"
+  dependencies:
+    "@types/json-schema": "npm:^7.0.15"
+  checksum: 10/e1f9f5534f495b74a4c13c372e8f2feaf0c67f5dd666111c849c97c221d4ba730c98333a2ca94dd28cd7c24e3b1016bd868ca03c42e070732c047053f854cb13
+  languageName: node
+  linkType: hard
+
 "@eslint/eslintrc@npm:^3.3.5":
   version: 3.3.5
   resolution: "@eslint/eslintrc@npm:3.3.5"
@@ -3879,20 +3888,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/markdown@npm:^7.0.0":
-  version: 7.5.1
-  resolution: "@eslint/markdown@npm:7.5.1"
+"@eslint/markdown@npm:^8.0.0":
+  version: 8.0.1
+  resolution: "@eslint/markdown@npm:8.0.1"
   dependencies:
-    "@eslint/core": "npm:^0.17.0"
-    "@eslint/plugin-kit": "npm:^0.4.1"
+    "@eslint/core": "npm:^1.1.1"
+    "@eslint/plugin-kit": "npm:^0.6.1"
     github-slugger: "npm:^2.0.0"
     mdast-util-from-markdown: "npm:^2.0.2"
     mdast-util-frontmatter: "npm:^2.0.1"
     mdast-util-gfm: "npm:^3.1.0"
+    mdast-util-math: "npm:^3.0.0"
     micromark-extension-frontmatter: "npm:^2.0.0"
     micromark-extension-gfm: "npm:^3.0.0"
+    micromark-extension-math: "npm:^3.1.0"
     micromark-util-normalize-identifier: "npm:^2.0.1"
-  checksum: 10/036bdf0149e2b10d7cf8b09d37327ede07437623d3f22480e97e680fa005019831a52f4abba27b9b38508128edb5abd1aa80870ada4811f19a2d1d3d1974cff6
+  checksum: 10/131fc33a807fd37461a539d9929fbe1f1f93cfd7d54793810774f29d6e2f5e13d9b272682efe190b824431f1ce9f16fc944f59bed4905813b8de50c23f30f29b
   languageName: node
   linkType: hard
 
@@ -3910,6 +3921,16 @@ __metadata:
     "@eslint/core": "npm:^0.17.0"
     levn: "npm:^0.4.1"
   checksum: 10/c5947d0ffeddca77d996ac1b886a66060c1a15ed1d5e425d0c7e7d7044a4bd3813fc968892d03950a7831c9b89368a2f7b281e45dd3c74a048962b74bf3a1cb4
+  languageName: node
+  linkType: hard
+
+"@eslint/plugin-kit@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@eslint/plugin-kit@npm:0.6.1"
+  dependencies:
+    "@eslint/core": "npm:^1.1.1"
+    levn: "npm:^0.4.1"
+  checksum: 10/8af22d94720b2474a992a80c5be7584baf75821386d25c34966b359fbc1e3a319989df721404c48c08b20e115683d6d0b344793dc354f5916c2d867c6c0aa04e
   languageName: node
   linkType: hard
 
@@ -4339,7 +4360,7 @@ __metadata:
     "@crowdin/cli": "npm:^4.7.0"
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.5.0"
     "@eslint/js": "npm:^9.28.0"
-    "@eslint/markdown": "npm:^7.0.0"
+    "@eslint/markdown": "npm:^8.0.0"
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@lerna-lite/cli": "npm:^4.3.0"
@@ -6829,6 +6850,13 @@ __metadata:
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10/1a3c3e06236e4c4aab89499c428d585527ce50c24fe8259e8b3926d3df4cfbbbcf306cfc73ddfb66cbafc973116efd15967020b0f738f63e09e64c7d260519e7
+  languageName: node
+  linkType: hard
+
+"@types/katex@npm:^0.16.0":
+  version: 0.16.8
+  resolution: "@types/katex@npm:0.16.8"
+  checksum: 10/4bf5d83d2430bc04c183765c5916c21180a75cb0181172a0aac7350943507679ceb79bfd13e394cf7c101b7417564d14c0c660baa93b16f2f42baef22a99435c
   languageName: node
   linkType: hard
 
@@ -15014,6 +15042,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"katex@npm:^0.16.0":
+  version: 0.16.45
+  resolution: "katex@npm:0.16.45"
+  dependencies:
+    commander: "npm:^8.3.0"
+  bin:
+    katex: cli.js
+  checksum: 10/8c82f9651c3615459722166a6ccb16f23ecd8323850a956568b69b1f641331a57679aa9f3ad4903c4be26089434cbbde850c0384b9b0dff022e4357b84a20ebc
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^4.5.3, keyv@npm:^4.5.4":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -15595,6 +15634,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mdast-util-math@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mdast-util-math@npm:3.0.0"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+    "@types/mdast": "npm:^4.0.0"
+    devlop: "npm:^1.0.0"
+    longest-streak: "npm:^3.0.0"
+    mdast-util-from-markdown: "npm:^2.0.0"
+    mdast-util-to-markdown: "npm:^2.1.0"
+    unist-util-remove-position: "npm:^5.0.0"
+  checksum: 10/26f44933f3ae2bfce85df23e79cd31bcc42ef328eaeef70550f38310e29fc8eece5e79fc404ed1485fd38b9113e1817258ca6c1a602be82a933e0198d812c9af
+  languageName: node
+  linkType: hard
+
 "mdast-util-mdx-expression@npm:^2.0.0":
   version: 2.0.1
   resolution: "mdast-util-mdx-expression@npm:2.0.1"
@@ -15683,7 +15737,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mdast-util-to-markdown@npm:^2.0.0":
+"mdast-util-to-markdown@npm:^2.0.0, mdast-util-to-markdown@npm:^2.1.0":
   version: 2.1.2
   resolution: "mdast-util-to-markdown@npm:2.1.2"
   dependencies:
@@ -16152,6 +16206,21 @@ __metadata:
     micromark-util-combine-extensions: "npm:^2.0.0"
     micromark-util-types: "npm:^2.0.0"
   checksum: 10/8493d1041756bf21f9421fa6d357056bff6112aeccebc20595604686cdd908a6816765de297206457ae4c00f85fc58672bdbcbbc36820c25d561b1737af89055
+  languageName: node
+  linkType: hard
+
+"micromark-extension-math@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "micromark-extension-math@npm:3.1.0"
+  dependencies:
+    "@types/katex": "npm:^0.16.0"
+    devlop: "npm:^1.0.0"
+    katex: "npm:^0.16.0"
+    micromark-factory-space: "npm:^2.0.0"
+    micromark-util-character: "npm:^2.0.0"
+    micromark-util-symbol: "npm:^2.0.0"
+    micromark-util-types: "npm:^2.0.0"
+  checksum: 10/37b2002aca15cf354ff754191379942f2b36df5ceeb69509294d80b4e158e8af83dda03c434e1497ccc597d63cf85a1ccc0d46f17770fc7692f76887404c8d1d
   languageName: node
   linkType: hard
 
@@ -22118,6 +22187,16 @@ __metadata:
   dependencies:
     "@types/unist": "npm:^3.0.0"
   checksum: 10/89d4da00e74618d7562ac7ac288961df9bcd4ccca6df3b5a90650f018eceb6b95de6e771e88bdbef46cc9d96861d456abe57b7ad1108921e0feb67c6292aa29d
+  languageName: node
+  linkType: hard
+
+"unist-util-remove-position@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "unist-util-remove-position@npm:5.0.0"
+  dependencies:
+    "@types/unist": "npm:^3.0.0"
+    unist-util-visit: "npm:^5.0.0"
+  checksum: 10/4d89dc25e2091f9d47d92552145a26bf0e4a32d6b453e9cacac7742d730ada186ee1b820579fee3eeaa31e119850c2cb82f8b5898f977a636d7220e998626967
   languageName: node
   linkType: hard
 
