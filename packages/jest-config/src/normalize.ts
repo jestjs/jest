@@ -886,7 +886,6 @@ export default async function normalize(
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
-      case 'collectTests':
       case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
@@ -1084,6 +1083,8 @@ export default async function normalize(
       : argv.updateSnapshot
         ? 'all'
         : 'new';
+
+  newOptions.collectTests = argv.collectTests || false;
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
