@@ -5,6 +5,27 @@ __metadata:
   version: 9
   cacheKey: 10
 
+"@-xun/debug@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@-xun/debug@npm:2.0.2"
+  dependencies:
+    "@types/debug": "npm:^4.1.12"
+    debug: "npm:^4.4.1"
+    supports-color: "npm:^8.1.1"
+    type-fest: "npm:^4.41.0"
+  checksum: 10/59e37edd562327361870c9b76758bf5d7051f8e8abba025e7f552b9d960940e71b8d8ece04fb5f7c109b49230809738d537bd61a05565e24eb26c440ae32100d
+  languageName: node
+  linkType: hard
+
+"@-xun/fs@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@-xun/fs@npm:2.0.0"
+  dependencies:
+    type-fest: "npm:^4.41.0"
+  checksum: 10/1155c9143c79398a3d8fe0d50f20bb0c44946bb7461ec5c76efda6de182632f614d23bf616fe47bde4067ec69864e2c7d28df17441dfbcc0f7ca0b52aed1bbf6
+  languageName: node
+  linkType: hard
+
 "@algolia/abtesting@npm:1.17.0":
   version: 1.17.0
   resolution: "@algolia/abtesting@npm:1.17.0"
@@ -6583,12 +6604,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.0.0":
-  version: 4.1.12
-  resolution: "@types/debug@npm:4.1.12"
+"@types/debug@npm:^4.0.0, @types/debug@npm:^4.1.12":
+  version: 4.1.13
+  resolution: "@types/debug@npm:4.1.13"
   dependencies:
     "@types/ms": "npm:*"
-  checksum: 10/47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
+  checksum: 10/5091d4ebda85236e6f4a6ecea552860e521e11d1d388d3f6255b40726f5a4a7cf1baa0d09f60853838e4cac6c12a13b14114d5f422ccecaee4d1d07dab349900
   languageName: node
   linkType: hard
 
@@ -8249,7 +8270,7 @@ __metadata:
     "@types/babel__template": "npm:^7.4.4"
     "@types/babel__traverse": "npm:^7.20.7"
     "@types/node": "npm:*"
-    babel-plugin-tester: "npm:^11.0.4"
+    babel-plugin-tester: "npm:^12.0.0"
     prettier: "npm:^3.0.3"
   languageName: unknown
   linkType: soft
@@ -8311,18 +8332,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-tester@npm:^11.0.4":
-  version: 11.0.4
-  resolution: "babel-plugin-tester@npm:11.0.4"
+"babel-plugin-tester@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "babel-plugin-tester@npm:12.0.0"
   dependencies:
-    core-js: "npm:^3.27.2"
-    debug: "npm:^4.3.4"
+    "@-xun/fs": "npm:^2.0.0"
+    core-js: "npm:^3.43.0"
     lodash.mergewith: "npm:^4.6.2"
-    prettier: "npm:^2.8.3"
-    strip-indent: "npm:^3.0.0"
+    prettier: "npm:^3.5.3"
+    pretty-format: "npm:^30.0.0"
+    rejoinder: "npm:^2.0.1"
+    strip-indent~3: "npm:strip-indent@^3.0.0"
+    type-fest: "npm:^4.41.0"
   peerDependencies:
-    "@babel/core": ">=7.11.6"
-  checksum: 10/e1550fb99903254c9e83e692056898a78e9a2a25636510e12488ff2a2c52d3ad448a569d90724d233fdda0ee23ae41d5f58320b5a8afaf15eef17be07dfaf1fb
+    "@babel/core": ">=7.22.0"
+  checksum: 10/f87d65be93e9ad0b88f75bef60550d2932120a6fa44885714be22e4c5aee7e913b0e932459ca22b8f5bd9363bcdc0cfb8204b4bc334f174efe9f215943cce2ee
   languageName: node
   linkType: hard
 
@@ -8820,7 +8844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^5.0.1, chalk@npm:^5.2.0":
+"chalk@npm:^5.0.1, chalk@npm:^5.2.0, chalk@npm:^5.6.0":
   version: 5.6.2
   resolution: "chalk@npm:5.6.2"
   checksum: 10/1b2f48f6fba1370670d5610f9cd54c391d6ede28f4b7062dd38244ea5768777af72e5be6b74fb6c6d54cb84c4a2dff3f3afa9b7cb5948f7f022cfd3d087989e0
@@ -9524,7 +9548,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.27.2, core-js@npm:^3.31.1":
+"core-js@npm:^3.31.1, core-js@npm:^3.43.0, core-js@npm:^3.45.1":
   version: 3.49.0
   resolution: "core-js@npm:3.49.0"
   checksum: 10/31d018f9830b0240ae40869e380595f2d06a8800709ad63299a42a438ba0c8d5805045fa02a20a78f42761d83103b0b71eca982955f5e890fb7cf6b2fe6a9ab1
@@ -11546,6 +11570,13 @@ __metadata:
     strip-final-newline: "npm:^4.0.0"
     yoctocolors: "npm:^2.1.1"
   checksum: 10/53443be93d847ff5b52d31ed3714f77aab764fb6c1d72dc7019214ab1cb1a69888e2158ba846426a8ea51443c110fe7a86de61ffb9ee5687b00120fbd739b8a4
+  languageName: node
+  linkType: hard
+
+"exit-hook@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "exit-hook@npm:4.0.0"
+  checksum: 10/5aa8b4e45fa943e7e174c25329750a0ffefb593ccc2eafd5d67e1d734b114c93cb36b5714548fb1c2a1dd90f3e9cdc606b5e788f428f780708774da444021fdc
   languageName: node
   linkType: hard
 
@@ -18838,7 +18869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-v2@npm:prettier@^2.1.5, prettier@npm:^2.8.3":
+"prettier-v2@npm:prettier@^2.1.5":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -18847,12 +18878,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.3":
-  version: 3.7.4
-  resolution: "prettier@npm:3.7.4"
+"prettier@npm:^3.0.3, prettier@npm:^3.5.3":
+  version: 3.8.3
+  resolution: "prettier@npm:3.8.3"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/b4d00ea13baed813cb777c444506632fb10faaef52dea526cacd03085f01f6db11fc969ccebedf05bf7d93c3960900994c6adf1b150e28a31afd5cfe7089b313
+  checksum: 10/4b3b12cbb29e4c96bed936e5d070167552500c18d37676fb3e0caae6199c42860662608e4dc116230698f6e2bb0267ef2548158224c92d40f188d309d72fdd6f
   languageName: node
   linkType: hard
 
@@ -19767,6 +19798,18 @@ __metadata:
     "@types/hast": "npm:^3.0.0"
     hast-util-to-estree: "npm:^3.0.0"
   checksum: 10/d3d544ad4a18485ec6b03a194b40473f96e2169c63d6a8ee3ce9af5e87b946c308fb9549b53e010c7dd39740337e387bb1a8856ce1b47f3e957b696f1d5b2d0c
+  languageName: node
+  linkType: hard
+
+"rejoinder@npm:^2.0.1":
+  version: 2.1.0
+  resolution: "rejoinder@npm:2.1.0"
+  dependencies:
+    "@-xun/debug": "npm:^2.0.2"
+    chalk: "npm:^5.6.0"
+    core-js: "npm:^3.45.1"
+    exit-hook: "npm:^4.0.0"
+  checksum: 10/51850b035d4402877deb9d92a2b2012513fcae8fc4cf8821dbac86f30324922ecb7cc4579d5c76be5bd2287c0b84147933f6889d63bf77574758feb57a99f03d
   languageName: node
   linkType: hard
 
@@ -21153,21 +21196,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-indent@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "strip-indent@npm:3.0.0"
-  dependencies:
-    min-indent: "npm:^1.0.0"
-  checksum: 10/18f045d57d9d0d90cd16f72b2313d6364fd2cb4bf85b9f593523ad431c8720011a4d5f08b6591c9d580f446e78855c5334a30fb91aa1560f5d9f95ed1b4a0530
-  languageName: node
-  linkType: hard
-
 "strip-indent@npm:^4.0.0":
   version: 4.0.0
   resolution: "strip-indent@npm:4.0.0"
   dependencies:
     min-indent: "npm:^1.0.1"
   checksum: 10/06cbcd93da721c46bc13caeb1c00af93a9b18146a1c95927672d2decab6a25ad83662772417cea9317a2507fb143253ecc23c4415b64f5828cef9b638a744598
+  languageName: node
+  linkType: hard
+
+"strip-indent~3@npm:strip-indent@^3.0.0":
+  version: 3.0.0
+  resolution: "strip-indent@npm:3.0.0"
+  dependencies:
+    min-indent: "npm:^1.0.0"
+  checksum: 10/18f045d57d9d0d90cd16f72b2313d6364fd2cb4bf85b9f593523ad431c8720011a4d5f08b6591c9d580f446e78855c5334a30fb91aa1560f5d9f95ed1b4a0530
   languageName: node
   linkType: hard
 
