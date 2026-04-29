@@ -157,7 +157,7 @@ export default abstract class BaseJSDOMEnvironment implements JestEnvironment<nu
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
-      global: global as unknown as typeof globalThis,
+      global,
       moduleMocker: this.moduleMocker,
       timerConfig: {
         idToRef: (id: number) => id,
@@ -167,7 +167,7 @@ export default abstract class BaseJSDOMEnvironment implements JestEnvironment<nu
 
     this.fakeTimersModern = new ModernFakeTimers({
       config: projectConfig,
-      global: global as unknown as typeof globalThis,
+      global,
     });
   }
 
