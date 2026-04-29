@@ -2,12 +2,12 @@
 
 ### Features
 
-- `[jest-runtime]` Add `requireModuleWithEsmPreload` — async wrapper around `requireModule` that pre-loads all ESM transitive dependencies before executing a CJS module, enabling `require()` calls to ESM packages from CJS projects running under `--experimental-vm-modules` ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-resolve]` Add `canResolveSync()` on `Resolver` so callers can detect when a user-configured resolver only exports an `async` hook ([#16064](https://github.com/jestjs/jest/pull/16064))
+- `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured ([#16062](https://github.com/jestjs/jest/pull/16062))
 
 ### Fixes
 
-- `[jest-circus, jest-jasmine2, jest-runner]` Use `requireModuleWithEsmPreload` for `setupFiles`, `setupFilesAfterEnv`, and the test file itself, so CJS test suites can transparently depend on ESM packages without manual `extensionsToTreatAsEsm` configuration ([#16050](https://github.com/jestjs/jest/pull/16050))
-- `[jest-runtime]` Fix CJS modules loaded via `import` failing when they transitively `require()` ESM dependencies ([#16050](https://github.com/jestjs/jest/pull/16050))
 - `[jest-runtime]` Fix `loadCjsAsEsm` crashing with `SyntaxError` when a `.js` file contains ESM syntax but has no `"type":"module"` marker (e.g. `rxjs/dist/esm5`); the file is now transparently re-loaded as a native ESM `SourceTextModule` ([#16050](https://github.com/jestjs/jest/pull/16050))
 
 ## 30.3.0

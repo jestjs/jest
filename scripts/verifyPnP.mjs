@@ -32,7 +32,7 @@ try {
     dedent`
       enableGlobalCache: true
 
-      enableScripts: false
+      enableScripts: true
 
       yarnPath: ${path.resolve(rootDirectory, yarnConfig.yarnPath)}
     `,

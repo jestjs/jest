@@ -143,6 +143,23 @@ const unmockRegExpCache = new WeakMap();
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
+const supportsSyncEvaluate =
+  // @ts-expect-error - `hasAsyncGraph` is in Node v24.9+, not yet typed in @types/node@18
+  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
+
+interface VMModuleWithAsyncGraph extends VMModule {
+  hasAsyncGraph?: () => boolean;
+}
+
+// `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
+// `SyntheticModule` does not expose it but is by definition sync (the user
+// callback is sync), so treat its absence as "not async".
+function moduleHasAsyncGraph(module: VMModuleWithAsyncGraph): boolean {
+  return typeof module.hasAsyncGraph === 'function'
+    ? module.hasAsyncGraph()
+    : false;
+}
+
 const supportsNodeColonModulePrefixInRequire = (() => {
   try {
     require('node:fs');
@@ -471,13 +488,18 @@ export default class Runtime {
         return core;
       }
 
-      const transformedCode = await this.transformFileAsync(modulePath, {
+      const transformOptions: InternalModuleOptions = {
         isInternalModule: false,
         supportsDynamicImport: true,
         supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
         supportsTopLevelAwait: true,
-      });
+      };
+      const transformedCode = this._scriptTransformer.canTransformSync(
+        modulePath,
+      )
+        ? this.transformFile(modulePath, transformOptions)
+        : await this.transformFileAsync(modulePath, transformOptions);
 
       try {
         let module;
@@ -777,10 +799,26 @@ export default class Runtime {
     }
 
     if (module.status === 'linked') {
-      // Store the evaluate promise so concurrent callers that find the module
-      // in 'evaluating' state can await the same promise instead of skipping.
-      const evalPromise = module.evaluate() as Promise<void>;
-      this._esmModuleEvaluatingMap.set(module, evalPromise);
+      if (supportsSyncEvaluate && !moduleHasAsyncGraph(module)) {
+        // `evaluate()` fulfills synchronously when the graph has no top-level
+        // await, so we don't need to yield to the event loop. The Promise
+        // always resolves (never rejects) for sync modules; errors are
+        // reflected in `module.status === 'errored'` instead.
+        void module.evaluate();
+        const status = module.status as VMModule['status'];
+        if (status === 'errored') {
+          throw module.error;
+        }
+        invariant(
+          status === 'evaluated',
+          `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
+        );
+      } else {
+        // Store the evaluate promise so concurrent callers that find the module
+        // in 'evaluating' state can await the same promise instead of skipping.
+        const evalPromise = module.evaluate() as Promise<void>;
+        this._esmModuleEvaluatingMap.set(module, evalPromise);
+      }
     }
 
     await this._esmModuleEvaluatingMap.get(module);
@@ -1894,7 +1932,6 @@ export default class Runtime {
       return this._moduleImplementation;
     }
 
-    // eslint-disable-next-line unicorn/consistent-function-scoping
     const createRequire = (modulePath: string | URL) => {
       const filename =
         typeof modulePath === 'string'
@@ -2296,7 +2333,6 @@ export default class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
-    // eslint-disable-next-line unicorn/consistent-function-scoping
     const _getFakeTimers = () => {
       if (
         this.isTornDown ||
