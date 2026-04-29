@@ -23,7 +23,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.27.0",
     "@types/babel__template": "^7.4.4",
-    "@types/node": "^18.14",
+    "@types/node": "^24.0.0",
     "@types/which": "^3.0.4",
     "@yarnpkg/types": "^4.0.1",
     "ansi-regex": "^5.0.1",
@@ -195,7 +195,7 @@
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "resolutions": {
-    "@types/node": "18.x",
+    "@types/node": "^24.0.0",
     "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:*",
