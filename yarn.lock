@@ -4382,7 +4382,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: "npm:^17.0.0"
     jest-mock: "workspace:*"
-    jest-serializer-ansi-escapes: "npm:^5.0.0"
+    jest-serializer-ansi-escapes: "npm:^4.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
@@ -14519,12 +14519,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-serializer-ansi-escapes@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "jest-serializer-ansi-escapes@npm:5.0.0"
+"jest-serializer-ansi-escapes@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jest-serializer-ansi-escapes@npm:4.0.0"
   dependencies:
-    pretty-ansi: "npm:^4.0.0"
-  checksum: 10/1c0afe33c209d4edfa7b689fb23781ea03d3244695f989a88a72abbe4b01e96226e883ab6b8769c30cdf7d67332dae36e767ba8fa3a1510f78fd0a3b85d0a869
+    pretty-ansi: "npm:^3.0.0"
+  checksum: 10/3287b8a639488e00c0726d0bd985e5d07d9e2c833ebe8d6a7431842f5a653ea55771aef8a3dde4a0f72185ce2273ae6fc8f34d4295c8596c2f573e9649d3cbcf
   languageName: node
   linkType: hard
 
@@ -18904,10 +18904,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-ansi@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "pretty-ansi@npm:4.0.0"
-  checksum: 10/32d6b19567133ac5cb36bb7c74b3f02639d38f54f2a7ea5ca422d57901b9feb69e9bf20f07f332a06a29fc51b6d2dfa3506ee1116216d1113a1d4fa1ad5f63a4
+"pretty-ansi@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "pretty-ansi@npm:3.0.0"
+  checksum: 10/335308c3593d23fdaac67ac8bce72264dd9ee6f1808b6e642408a9bab64fef5b0124b961bed0f2c1397616b434a6e248fe1561b6438d4d2d034d8a1c125e32db
   languageName: node
   linkType: hard
 
