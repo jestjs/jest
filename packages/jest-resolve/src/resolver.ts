@@ -341,6 +341,24 @@ export default class Resolver {
     return null;
   }
 
+  // True when synchronous resolution is wired up to the same logic the async
+  // path uses. False when a user has configured a resolver that only exports
+  // an `async` hook — in that case `findNodeModule` silently falls back to the
+  // default resolver, which will not honor the user's mappings, so callers
+  // that need correctness should defer to the async API.
+  canResolveSync(): boolean {
+    let resolver: SyncResolver | null = null;
+    const resolverModule = loadResolver(this._options.resolver);
+
+    if (typeof resolverModule === 'function') {
+      resolver = resolverModule;
+    } else if (typeof resolverModule.sync === 'function') {
+      resolver = resolverModule.sync;
+    }
+
+    return typeof resolver === 'function';
+  }
+
   resolveModule(
     from: string,
     moduleName: string,

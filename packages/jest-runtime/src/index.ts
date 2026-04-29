@@ -481,10 +481,17 @@ export default class Runtime {
   // Synchronous graph loader for Node v24.9+. Walks the static import graph
   // depth-first, constructs every node, links via `linkRequests`, instantiates
   // the root, and evaluates synchronously. Returns the fully-evaluated root.
-  // Returns `null` if any node forces an async edge (async transformer, TLA,
-  // mocked spec, data: URI, wasm, core module): the caller falls back to the
-  // legacy async path. The local `scratch` map is committed to the registry
-  // only on success, so partial failures do not corrupt the cache.
+  // The dispatch wrapper additionally guards on `_resolver.canResolveSync()`,
+  // so this method assumes synchronous resolution is available.
+  // Returns `null` when the graph cannot be completed synchronously (async
+  // transformer, TLA, async mock factory) and the caller must fall back to
+  // the legacy async path. Note that some modules — core modules, the
+  // `@jest/globals` synthetic, CJS-as-ESM wrappers, mocked specifiers — are
+  // committed to the registry as we walk, so a later bail can leave those
+  // partial entries in the cache; subsequent loads pick them up unchanged.
+  // The graph's `SourceTextModule`s, by contrast, are kept in `scratch` and
+  // committed only after `instantiate()` succeeds, so a bail mid-walk doesn't
+  // leak unlinked source-text modules.
   private _tryLoadEsmGraphSync(
     rootPath: string,
     rootQuery: string,
@@ -522,7 +529,7 @@ export default class Runtime {
     }> = [{cacheKey: rootKey, modulePath: rootPath, query: rootQuery}];
 
     while (worklist.length > 0) {
-      const {cacheKey, modulePath} = worklist.shift()!;
+      const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
       if (this._fileTransformsMutex.has(cacheKey)) {
@@ -585,6 +592,11 @@ export default class Runtime {
         continue;
       }
 
+      if (!this._scriptTransformer.canTransformSync(modulePath)) {
+        // Async transformer required for this file — bail.
+        return null;
+      }
+
       if (modulePath.endsWith('.json')) {
         module = this._buildJsonSyntheticModule(
           this.transformFile(modulePath, ESM_TRANSFORM_OPTIONS),
@@ -592,10 +604,6 @@ export default class Runtime {
           context,
         ) as VMModuleWithAsyncGraph;
       } else {
-        if (!this._scriptTransformer.canTransformSync(modulePath)) {
-          // Async transformer required for this file — bail.
-          return null;
-        }
         const transformedCode = this.transformFile(
           modulePath,
           ESM_TRANSFORM_OPTIONS,
@@ -902,6 +910,11 @@ export default class Runtime {
   // resolved (sync) and enqueued like static-import deps. The SyntheticModule's
   // body closure-captures `scratch`; by evaluate-cascade time, every dep entry
   // is fully evaluated so `module.namespace` is safe to read.
+  //
+  // Uses `new WebAssembly.Module(bytes)` (sync, blocks on large modules). When
+  // the legacy async path is removed and this core grows async-shell handling,
+  // graphs that have already committed to async should switch to
+  // `await WebAssembly.compile(bytes)` to avoid blocking the event loop.
   private _buildSyncWasmEntry(
     modulePath: string,
     cacheKey: string,
@@ -1090,7 +1103,11 @@ export default class Runtime {
     modulePath: string,
     query = '',
   ): Promise<ESModule> {
-    if (supportsSyncEvaluate) {
+    // The sync core walks the graph synchronously, so it can only run when
+    // the configured resolver supports sync resolution. With an async-only
+    // user resolver `findNodeModule` silently falls back to the default
+    // resolver and would silently miss user mappings; defer to legacy.
+    if (supportsSyncEvaluate && this._resolver.canResolveSync()) {
       const synced = this._tryLoadEsmGraphSync(modulePath, query);
       if (synced) return synced;
     }
@@ -2431,7 +2448,10 @@ export default class Runtime {
     identifier: string,
     context: VMContext,
   ) {
-    const wasmModule = new WebAssembly.Module(source);
+    // Use async `WebAssembly.compile` here (rather than the sync constructor
+    // used by the v24.9+ sync core) to avoid blocking the event loop on large
+    // wasm modules in the legacy async path.
+    const wasmModule = await WebAssembly.compile(source);
     const moduleLookup: Record<string, VMModule> = {};
     for (const {module} of WebAssembly.Module.imports(wasmModule)) {
       if (moduleLookup[module] === undefined) {
@@ -3221,10 +3241,10 @@ export default class Runtime {
     return {...this.getGlobalsFromEnvironment(), jest};
   }
 
-  // Build the `@jest/globals` SyntheticModule for `from`. Returns it
-  // unevaluated; callers either evaluate it themselves (legacy async path) or
-  // plug it into a parent's `linkRequests` and let the root's evaluate cascade
-  // trigger it (sync path).
+  // Build a JSON SyntheticModule exposing the parsed value as the `default`
+  // export. Returns it unevaluated; callers either evaluate it themselves
+  // (legacy async path) or plug it into a parent's `linkRequests` and let the
+  // root's evaluate cascade trigger it (sync path).
   private _buildJsonSyntheticModule(
     jsonText: string,
     identifier: string,
