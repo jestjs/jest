@@ -566,12 +566,13 @@ export default class Runtime {
       return null;
     }
 
-    // Sync runs to completion before yielding, so the legacy path cannot have
-    // populated the mutex for `rootKey` mid-flight on this same module.
-    invariant(
-      !this._fileTransformsMutex.has(rootKey),
-      `_fileTransformsMutex unexpectedly populated for ${rootKey} when sync core entered with empty registry. This is a bug in Jest, please report it!`,
-    );
+    // The legacy async path may be mid-flight on this module from a previous
+    // top-level call — for example, `module.link(asyncLinker)` fans out to
+    // deps, the linker calls back into `loadEsmModule`, and that call routes
+    // here while legacy still holds the mutex on the parent's
+    // `transformFileAsync`. Defer to legacy in that case so we await its
+    // in-flight transform rather than starting a parallel one.
+    if (this._fileTransformsMutex.has(rootKey)) return null;
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
@@ -581,6 +582,10 @@ export default class Runtime {
     while (worklist.length > 0) {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
+
+      // Same rationale as the root-level mutex check above: a different
+      // top-level legacy load may already be transforming this dep.
+      if (this._fileTransformsMutex.has(cacheKey)) return null;
 
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry && !(fromRegistry instanceof Promise)) {
