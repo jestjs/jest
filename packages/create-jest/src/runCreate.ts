@@ -93,10 +93,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   }
 
   // Add test script installation only if needed
-  if (
-    !projectPackageJson.scripts ||
-    projectPackageJson.scripts.test !== 'jest'
-  ) {
+  if (projectPackageJson.scripts?.test !== 'jest') {
     questions.unshift(testScriptQuestion);
   }
 
