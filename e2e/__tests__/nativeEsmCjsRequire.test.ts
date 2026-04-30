@@ -11,21 +11,6 @@ import runJest from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-cjs-require');
 
-// Spawns jest against the fixture in ../native-esm-cjs-require. The real
-// assertions live in that fixture's __tests__/cjs-require-esm.test.js —
-// exitCode 0 here means those inner tests passed.
-test('runs fixture where a CJS module loaded via import synchronously requires an ESM dependency', () => {
-  const {exitCode, stderr} = runJest(DIR, [], {
-    nodeOptions: '--experimental-vm-modules --no-warnings',
-  });
-
-  const {summary} = extractSummary(stderr);
-
-  expect(summary).toMatchSnapshot();
-  expect(exitCode).toBe(0);
-});
-
-// Covers __esModule interop, plain-CJS default, and CJS-as-ESM caching.
 test('runs ESM/CJS interop fixture (__esModule unwrapping, named exports, singleton caching)', () => {
   const {exitCode, stderr} = runJest(
     DIR,

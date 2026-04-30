@@ -844,14 +844,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.27.4, @babel/parser@npm:^7.28.6, @babel/parser@npm:^7.29.0":
-  version: 7.29.2
-  resolution: "@babel/parser@npm:7.29.2"
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.28.6, @babel/parser@npm:^7.29.0":
+  version: 7.29.0
+  resolution: "@babel/parser@npm:7.29.0"
   dependencies:
     "@babel/types": "npm:^7.29.0"
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 10/45d050bf75aa5194b3255f156173e8553d615ff5a2434674cc4a10cdc7c261931befb8618c996a1c449b87f0ef32a3407879af2ac967d95dc7b4fdbae7037efa
+  checksum: 10/b1576dca41074997a33ee740d87b330ae2e647f4b7da9e8d2abd3772b18385d303b0cee962b9b88425e0f30d58358dbb8d63792c1a2d005c823d335f6a029747
   languageName: node
   linkType: hard
 
@@ -14491,9 +14491,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-runtime@workspace:packages/jest-runtime"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
-    "@babel/parser": "npm:^7.27.4"
-    "@babel/types": "npm:^7.27.3"
     "@jest/environment": "workspace:*"
     "@jest/fake-timers": "workspace:*"
     "@jest/globals": "workspace:*"
