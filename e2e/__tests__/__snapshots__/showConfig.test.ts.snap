@@ -63,7 +63,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "roots": [
         "<<REPLACED_ROOT_DIR>>"
       ],
-      "runner": "/Users/simen/repos/jest-worktree/packages/jest-runner/build/index.js",
+      "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
       "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],
@@ -74,7 +74,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "printBasicPrototype": false
       },
       "snapshotSerializers": [],
-      "testEnvironment": "/Users/simen/repos/jest-worktree/packages/jest-environment-node/build/index.js",
+      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
@@ -85,11 +85,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "/Users/simen/repos/jest-worktree/packages/jest-circus/build/runner.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/build/runner.js",
       "transform": [
         [
           "\\\\.[jt]sx?$",
-          "/Users/simen/repos/jest-worktree/packages/babel-jest/build/index.js",
+          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
           {}
         ]
       ],
@@ -148,7 +148,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     },
     "testFailureExitCode": 1,
     "testPathPatterns": [],
-    "testSequencer": "/Users/simen/repos/jest-worktree/packages/jest-test-sequencer/build/index.js",
+    "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "none",
     "useStderr": false,
     "waitForUnhandledRejections": false,
