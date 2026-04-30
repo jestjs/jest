@@ -852,7 +852,7 @@ export default class Runtime {
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
     const cached = registry.get(modulePath);
     if (cached) {
-      return cached as SyntheticModule;
+      return cached as SyntheticModule | Promise<SyntheticModule>;
     }
 
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
@@ -887,12 +887,18 @@ export default class Runtime {
 
     const parsedExports = this.getExportsOfCjs(modulePath);
 
+    // CJS modules can legally set `module.exports` to `null` or a primitive.
+    const cjsRecord =
+      typeof cjs === 'object' && cjs !== null
+        ? (cjs as Record<string, unknown>)
+        : null;
+
     // Merge static analysis with runtime keys: cjs-module-lexer can't detect
     // all export patterns (e.g. Object.assign-style). Since we've already
     // required the module, Object.keys() gives the ground truth.
     const allCandidates = new Set([
       ...parsedExports,
-      ...Object.keys(cjs as Record<string, unknown>),
+      ...(cjsRecord ? Object.keys(cjsRecord) : []),
     ]);
 
     const cjsExports = [...allCandidates].filter(exportName => {
@@ -901,15 +907,13 @@ export default class Runtime {
       if (exportName === 'default' || exportName === '__esModule') {
         return false;
       }
-      return Object.hasOwnProperty.call(cjs, exportName);
+      return cjsRecord
+        ? Object.hasOwnProperty.call(cjsRecord, exportName)
+        : false;
     });
 
     // Unwrap Babel/Webpack __esModule convention: if the CJS file signals it was
     // originally ESM (transpiled), use cjs.default as the ESM default export.
-    const cjsRecord =
-      typeof cjs === 'object' && cjs !== null
-        ? (cjs as Record<string, unknown>)
-        : null;
     const defaultExport =
       cjsRecord?.__esModule === true ? cjsRecord.default : cjs;
 
@@ -925,8 +929,11 @@ export default class Runtime {
       {context, identifier: modulePath},
     );
 
-    registry.set(modulePath, module);
-    return evaluateSyntheticModule(module);
+    // Cache the promise so concurrent importers await the same link/evaluate
+    // instead of grabbing the still-unlinked module out of the registry.
+    const evaluated = evaluateSyntheticModule(module);
+    registry.set(modulePath, evaluated);
+    return evaluated;
   }
 
   private async importMock<T = unknown>(
