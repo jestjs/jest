@@ -8,6 +8,7 @@
 import nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
+import {isNativeError} from 'util/types';
 import {
   SourceTextModule,
   SyntheticModule,
@@ -62,6 +63,9 @@ import {
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
+
+const isError =
+  typeof Error.isError === 'function' ? Error.isError : isNativeError;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -293,6 +297,7 @@ export default class Runtime {
   private readonly _esmoduleRegistry: Map<string, JestModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
+  private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -358,6 +363,7 @@ export default class Runtime {
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
     this._esmModuleLinkingMap = new WeakMap();
+    this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = transformer;
@@ -1417,7 +1423,25 @@ export default class Runtime {
       );
     }
 
-    await this._esmModuleLinkingMap.get(module);
+    const linkPromise = this._esmModuleLinkingMap.get(module);
+    if (linkPromise != null) {
+      await linkPromise;
+    } else if (module.status === 'linking') {
+      // Module entered 'linking' via Node's cascade (a parent's link() recursed
+      // into this dep without going through our code). We have no promise to
+      // await, so yield via setImmediate — which lets all pending microtasks
+      // (including Node's internal linker chain) drain — until linking finishes.
+      const deadline = Date.now() + 5000; // sanity check to prevent infinite loop
+      while (module.status === 'linking') {
+        if (Date.now() > deadline) {
+          throw new Error(
+            `Jest: module ${module.identifier} is stuck in 'linking' state after 5 s — ` +
+              'this is likely a bug in Jest (please report it).',
+          );
+        }
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
+    }
 
     if (module.status === 'linked') {
       if (supportsSyncEvaluate && !moduleHasAsyncGraph(module)) {
@@ -1435,9 +1459,14 @@ export default class Runtime {
           `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
         );
       } else {
-        await module.evaluate();
+        // Store the evaluate promise so concurrent callers that find the module
+        // in 'evaluating' state can await the same promise instead of skipping.
+        const evalPromise = module.evaluate() as Promise<void>;
+        this._esmModuleEvaluatingMap.set(module, evalPromise);
       }
     }
+
+    await this._esmModuleEvaluatingMap.get(module);
 
     return module;
   }
@@ -1463,23 +1492,45 @@ export default class Runtime {
   // Build the SyntheticModule shell that wraps a CJS module so it can be
   // imported as ESM. Returns it unevaluated; legacy callers wrap with
   // `evaluateSyntheticModule`, sync callers plug it into `linkRequests`.
+  // CJS loaded via `import` shares cache with other CJS: https://github.com/nodejs/modules/issues/503
   private _buildCjsAsEsmSyntheticModule(
     from: string,
     modulePath: string,
     context: VMContext,
   ): SyntheticModule {
-    // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
     const parsedExports = this.getExportsOfCjs(modulePath);
 
-    const cjsExports = [...parsedExports].filter(exportName => {
+    // CJS modules can legally set `module.exports` to `null` or a primitive.
+    const cjsRecord =
+      typeof cjs === 'object' && cjs !== null
+        ? (cjs as Record<string, unknown>)
+        : null;
+
+    // Merge static analysis with runtime keys: cjs-module-lexer can't detect
+    // all export patterns (e.g. Object.assign-style). Since we've already
+    // required the module, Object.keys() gives the ground truth.
+    const allCandidates = new Set([
+      ...parsedExports,
+      ...(cjsRecord ? Object.keys(cjsRecord) : []),
+    ]);
+
+    const cjsExports = [...allCandidates].filter(exportName => {
       // we don't wanna respect any exports _named_ default as a named export
-      if (exportName === 'default') {
+      // __esModule is a Babel/Webpack metadata flag, not a real export
+      if (exportName === 'default' || exportName === '__esModule') {
         return false;
       }
-      return Object.hasOwnProperty.call(cjs, exportName);
+      return cjsRecord
+        ? Object.hasOwnProperty.call(cjsRecord, exportName)
+        : false;
     });
+
+    // Unwrap Babel/Webpack __esModule convention: if the CJS file signals it
+    // was originally ESM (transpiled), use cjs.default as the ESM default.
+    const defaultExport =
+      cjsRecord?.__esModule === true ? cjsRecord.default : cjs;
 
     return new SyntheticModule(
       [...cjsExports, 'default'],
@@ -1488,16 +1539,46 @@ export default class Runtime {
           // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
         }
-        this.setExport('default', cjs);
+        this.setExport('default', defaultExport);
       },
       {context, identifier: modulePath},
     );
   }
 
   private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {
-    return evaluateSyntheticModule(
-      this._buildCjsAsEsmSyntheticModule(from, modulePath, context),
-    );
+    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    const cached = registry.get(modulePath);
+    if (cached) {
+      return cached as SyntheticModule | Promise<SyntheticModule>;
+    }
+
+    let synthetic: SyntheticModule;
+    try {
+      synthetic = this._buildCjsAsEsmSyntheticModule(from, modulePath, context);
+    } catch (error) {
+      // Use .name check instead of instanceof: the error comes from
+      // vm.compileFunction with a sandbox parsingContext, so its prototype
+      // may cross context boundaries.
+      if ((error as Error).name !== 'SyntaxError') {
+        throw error;
+      }
+      // The file may contain ESM syntax with no ESM marker (.mjs /
+      // "type":"module") — try loading as native ESM. If the ESM parser also
+      // rejects it, the original CJS error was the genuine one; surface it
+      // instead of the (less useful) ESM diagnostic.
+      const cjsSyntaxError = error as Error;
+      return this.loadEsmModule(modulePath).catch(esmError => {
+        throw isError(esmError) && esmError.name === 'SyntaxError'
+          ? cjsSyntaxError
+          : esmError;
+      });
+    }
+
+    // Cache the promise so concurrent importers await the same link/evaluate
+    // instead of grabbing the still-unlinked module out of the registry.
+    const evaluated = evaluateSyntheticModule(synthetic);
+    registry.set(modulePath, evaluated);
+    return evaluated;
   }
 
   private async importMock<T = unknown>(
@@ -1570,7 +1651,8 @@ export default class Runtime {
       if (this._resolver.isCoreModule(reexport)) {
         const exports = this.requireModule(modulePath, reexport);
         if (exports !== null && typeof exports === 'object') {
-          for (const e of Object.keys(exports)) namedExports.add(e);
+          for (const e of Object.keys(exports as Record<string, unknown>))
+            namedExports.add(e);
         }
       } else {
         const resolved = this._resolveCjsModule(modulePath, reexport);
@@ -1635,9 +1717,7 @@ export default class Runtime {
       const error: NodeJS.ErrnoException = new Error(
         `Must use import to load ES Module: ${modulePath}`,
       );
-
       error.code = 'ERR_REQUIRE_ESM';
-
       throw error;
     }
 
@@ -2481,7 +2561,15 @@ export default class Runtime {
           identifier,
           context,
         );
-        moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
+
+        // Do NOT call linkAndEvaluateModule here: we are executing inside the
+        // linker callback for the parent module, so Node's cascade may already
+        // be linking resolvedModule. Calling linkAndEvaluateModule would spin-
+        // wait via setImmediate, but the cascade can't finish until this linker
+        // returns — deadlock. The SyntheticModule's evaluate function below
+        // accesses namespace only after Node has fully evaluated all deps in
+        // topological order, so the module will be ready by then.
+        moduleLookup[module] = resolvedModule;
       }
     }
     return this._buildWasmSyntheticModule(

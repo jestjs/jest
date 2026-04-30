@@ -1084,6 +1084,8 @@ export default async function normalize(
         ? 'all'
         : 'new';
 
+  newOptions.collectTests = argv.collectTests || false;
+
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
     10,

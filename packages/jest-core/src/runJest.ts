@@ -12,8 +12,11 @@ import chalk from 'chalk';
 import exit from 'exit-x';
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
+import {VerboseReporter} from '@jest/reporters';
 import {
   type AggregatedResult,
+  type AssertionResult,
+  type Suite,
   type Test,
   type TestContext,
   type TestResultsProcessor,
@@ -36,6 +39,25 @@ import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import serializeToJSON from './lib/serializeToJSON';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
+
+export const printCollectedTestTree = (
+  testResults: Array<AssertionResult>,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  const printSuite = (suite: Suite, indent: number): void => {
+    if (suite.title) {
+      outputStream.write(`${'  '.repeat(indent)}${suite.title}\n`);
+    }
+    for (const t of suite.tests) {
+      outputStream.write(`${'  '.repeat(indent + 1)}${t.title}\n`);
+    }
+    for (const child of suite.suites) {
+      printSuite(child, indent + 1);
+    }
+  };
+  const root = VerboseReporter.groupTestsBySuites(testResults);
+  printSuite(root, 0);
+};
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -247,6 +269,46 @@ export default async function runJest({
   }
 
   const hasTests = allTests.length > 0;
+
+  if (globalConfig.collectTests) {
+    if (!hasTests) {
+      // eslint-disable-next-line no-console
+      console.log('No tests found.');
+      onComplete?.(makeEmptyAggregatedTestResult());
+      return;
+    }
+
+    // Suppress reporters; circus collects tests without executing.
+    const collectTestsConfig: Config.GlobalConfig = Object.freeze({
+      ...globalConfig,
+      collectCoverage: false,
+      reporters: [],
+      silent: true,
+    });
+    const scheduler = await createTestScheduler(collectTestsConfig, {
+      startRun,
+      ...testSchedulerContext,
+    });
+    const results = await scheduler.scheduleTests(allTests, testWatcher);
+
+    if (!globalConfig.json) {
+      for (const testResult of results.testResults) {
+        if (testResult.testResults.length > 0) {
+          outputStream.write(`${testResult.testFilePath}\n`);
+          printCollectedTestTree(testResult.testResults, outputStream);
+        }
+      }
+    }
+
+    await processResults(results, {
+      json: globalConfig.json,
+      onComplete,
+      outputFile: globalConfig.outputFile,
+      outputStream,
+      testResultsProcessor: globalConfig.testResultsProcessor,
+    });
+    return;
+  }
 
   if (!hasTests) {
     const {exitWith0, message: noTestsFoundMessage} = getNoTestsFoundMessage(

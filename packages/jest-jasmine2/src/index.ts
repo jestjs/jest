@@ -8,7 +8,11 @@
 import * as path from 'path';
 import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
-import type {TestResult} from '@jest/test-result';
+import {
+  type AssertionResult,
+  type TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
@@ -24,6 +28,79 @@ export type {Jasmine} from './types';
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+
+export type SuiteLike = {
+  children: Array<SuiteLike | SpecLike>;
+  description: string;
+};
+
+export type SpecLike = {
+  description: string;
+  getFullName: () => string;
+};
+
+export const collectSpecs = (
+  suite: SuiteLike,
+  ancestors: Array<string>,
+  testNamePatternRE: RegExp | null,
+): Array<AssertionResult> => {
+  const results: Array<AssertionResult> = [];
+  for (const child of suite.children) {
+    if ('children' in child) {
+      results.push(
+        ...collectSpecs(
+          child,
+          [...ancestors, child.description],
+          testNamePatternRE,
+        ),
+      );
+    } else {
+      const fullName = child.getFullName();
+      if (!testNamePatternRE || testNamePatternRE.test(fullName)) {
+        results.push({
+          ancestorTitles: [...ancestors],
+          duration: null,
+          failing: false,
+          failureDetails: [],
+          failureMessages: [],
+          fullName,
+          invocations: 0,
+          location: null,
+          numPassingAsserts: 0,
+          retryReasons: [],
+          startAt: null,
+          status: 'pending',
+          title: child.description,
+        });
+      }
+    }
+  }
+  return results;
+};
+
+export const buildCollectedTestResult = ({
+  config,
+  suite,
+  testNamePattern,
+  testPath,
+}: {
+  config: Config.ProjectConfig;
+  suite: SuiteLike;
+  testNamePattern: string | undefined;
+  testPath: string;
+}): TestResult => {
+  const testNamePatternRE = testNamePattern
+    ? new RegExp(testNamePattern, 'i')
+    : null;
+  const assertionResults = collectSpecs(suite, [], testNamePatternRE);
+  return {
+    ...createEmptyTestResult(),
+    displayName: config.displayName,
+    numPendingTests: assertionResults.length,
+    testFilePath: testPath,
+    testResults: assertionResults,
+  };
+};
 
 export default async function jasmine2(
   globalConfig: Config.GlobalConfig,
@@ -197,6 +274,15 @@ export default async function jasmine2(
     await runtime.unstable_importModule(testPath);
   } else {
     runtime.requireModule(testPath);
+  }
+
+  if (globalConfig.collectTests) {
+    return buildCollectedTestResult({
+      config,
+      suite: env.topSuite() as unknown as SuiteLike,
+      testNamePattern: globalConfig.testNamePattern,
+      testPath,
+    });
   }
 
   await env.execute();
