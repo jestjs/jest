@@ -99,6 +99,8 @@
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-jasmine": "JEST_JASMINE=1 yarn jest",
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.mjs",
+    "jest-runtime-vm-modules": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" yarn jest packages/jest-runtime",
+    "jest-runtime-vm-modules-ci": "yarn jest-runtime-vm-modules --color --config jest.config.ci.mjs",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md",
     "lint:prettier-script": "prettier . \"!**/*.{js,jsx,cjs,mjs,ts,tsx}\" --cache",
