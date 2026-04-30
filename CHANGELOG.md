@@ -8,7 +8,9 @@
 
 ### Fixes
 
-- `[jest-runtime]` Fix `loadCjsAsEsm` crashing with `SyntaxError` when a `.js` file contains ESM syntax but has no `"type":"module"` marker (e.g. `rxjs/dist/esm5`); the file is now transparently re-loaded as a native ESM `SourceTextModule` ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Fix deadlocks and double-evaluation in concurrent ESM and wasm imports ([#16050](https://github.com/jestjs/jest/pull/16050))
 
 ## 30.3.0
 
