@@ -8,6 +8,7 @@
 import nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
+import {isNativeError} from 'util/types';
 import {
   SourceTextModule,
   SyntheticModule,
@@ -62,6 +63,9 @@ import {
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
+
+const isError =
+  typeof Error.isError === 'function' ? Error.isError : isNativeError;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -846,29 +850,39 @@ export default class Runtime {
 
   private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {
     const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
-    if (registry.has(modulePath)) {
-      return registry.get(modulePath) as SyntheticModule;
+    const cached = registry.get(modulePath);
+    if (cached) {
+      return cached as SyntheticModule;
     }
 
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     let cjs: unknown;
-    let hasSyntaxError = false;
+    let cjsSyntaxError: Error | null = null;
     try {
       cjs = this.requireModuleOrMock(from, modulePath);
     } catch (error) {
-      // Use .name check instead of instanceof: the error comes from vm.compileFunction
-      // with a sandbox parsingContext, so its prototype may cross context boundaries.
+      // Use .name check instead of instanceof: the error comes from
+      // vm.compileFunction with a sandbox parsingContext, so its prototype
+      // may cross context boundaries.
       if ((error as Error).name === 'SyntaxError') {
-        // The .js file contains ESM syntax but has no ESM markers (.mjs /
-        // "type":"module") — load it as a native ESM module instead.
-        hasSyntaxError = true;
+        // The file may contain ESM syntax with no ESM marker (.mjs /
+        // "type":"module") — try loading as native ESM. If the ESM parser
+        // also rejects it, the original CJS error was the genuine one;
+        // surface it instead of the (less useful) ESM diagnostic.
+        cjsSyntaxError = error as Error;
       } else {
         throw error;
       }
     }
 
-    if (hasSyntaxError) {
-      return this.loadEsmModule(modulePath);
+    if (cjsSyntaxError) {
+      return this.loadEsmModule(modulePath).catch(esmError => {
+        const isSyntaxError = isError(esmError)
+          ? esmError.name === 'SyntaxError'
+          : false;
+
+        throw isSyntaxError ? cjsSyntaxError : esmError;
+      });
     }
 
     const parsedExports = this.getExportsOfCjs(modulePath);
