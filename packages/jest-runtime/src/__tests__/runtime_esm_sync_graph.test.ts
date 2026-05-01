@@ -284,12 +284,15 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     expect(ns.valueC).toBe('c');
   });
 
-  testWithSyncEsm('returns the same namespace on repeat require()', async () => {
-    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-    const first = runtime.requireModule(FROM, './a.mjs');
-    const second = runtime.requireModule(FROM, './a.mjs');
-    expect(first).toBe(second);
-  });
+  testWithSyncEsm(
+    'returns the same namespace on repeat require()',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const first = runtime.requireModule(FROM, './a.mjs');
+      const second = runtime.requireModule(FROM, './a.mjs');
+      expect(first).toBe(second);
+    },
+  );
 
   testWithSyncEsm(
     'throws ERR_REQUIRE_ASYNC_MODULE when the file uses top-level await',
@@ -393,17 +396,23 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
-  testWithSyncEsm('require()s an ESM file that pulls in a CJS dep', async () => {
-    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-    const ns = runtime.requireModule(FROM, './import-cjs-dep.mjs');
-    expect(ns.cjsValue).toBe('from-cjs');
-  });
+  testWithSyncEsm(
+    'require()s an ESM file that pulls in a CJS dep',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './import-cjs-dep.mjs');
+      expect(ns.cjsValue).toBe('from-cjs');
+    },
+  );
 
-  testWithSyncEsm('require()s an ESM file importing @jest/globals', async () => {
-    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-    const ns = runtime.requireModule(FROM, './import-jest-globals.mjs');
-    expect(ns.hasJest).toBe(true);
-  });
+  testWithSyncEsm(
+    'require()s an ESM file importing @jest/globals',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './import-jest-globals.mjs');
+      expect(ns.hasJest).toBe(true);
+    },
+  );
 
   testWithSyncEsm('require()s an ESM file importing a JSON dep', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
