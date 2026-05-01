@@ -3587,8 +3587,9 @@ export default class Runtime {
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
-      // @ts-expect-error -- exiting
-      return;
+      throw new ReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
     }
     const dyn = await this.resolveModule<VMModule>(
       specifier,

@@ -4,11 +4,6 @@ exports[`prints useful error for requires after test is done 1`] = `
 "PASS __tests__/lateRequire.test.js
   ✓ require after done
 
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
 
 ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
@@ -21,7 +16,7 @@ ReferenceError: You are trying to \`require\` a file after the Jest environment 
       14 |   }, 0);
 
       at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)
-/Users/simen/repos/jest/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
+<<REPO_ROOT>>/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
     expect(double(5)).toBe(10);
            ^
 
@@ -32,13 +27,8 @@ Node.js <<REPLACED>>"
 
 exports[`prints useful error for requires after test is done 2`] = `
 "PASS __tests__/lateRequire.test.js
-  ✓ require after done (<<REPLACED>>)
+  ✓ require after done
 
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
 
 ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
@@ -51,7 +41,7 @@ ReferenceError: You are trying to \`require\` a file after the Jest environment 
       14 |   }, 0);
 
       at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)
-/Users/simen/repos/jest/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
+<<REPO_ROOT>>/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
     expect(double(5)).toBe(10);
            ^
 

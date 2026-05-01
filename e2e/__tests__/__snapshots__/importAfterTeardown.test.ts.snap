@@ -2,7 +2,7 @@
 
 exports[`prints useful error for imports after test is done w/ \`waitForUnhandledRejections\` 1`] = `
 "FAIL __tests__/lateImport.test.mjs
-  ✕ import after done (<<REPLACED>>)
+  ✕ import after done
 
   ● import after done
 
@@ -17,24 +17,13 @@ exports[`prints useful error for imports after test is done w/ \`waitForUnhandle
       13 | });
 
       at _esmDynamicImport (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
-      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)
-
-Test Suites: 1 failed, 1 total
-Tests:       1 failed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites."
+      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)"
 `;
 
 exports[`prints useful error for imports after test is done w/o \`waitForUnhandledRejections\` 1`] = `
 "PASS __tests__/lateImport.test.mjs
   ✓ import after done
 
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
 
 ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateImport.test.mjs.
 
@@ -47,15 +36,13 @@ ReferenceError: You are trying to \`import\` a file after the Jest environment h
       13 | });
 
       at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)
-node:internal/vm/module:531
-      throw new ERR_VM_MODULE_NOT_MODULE();
+<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>
+      throw new ReferenceError('You are trying to \`import\` a file after the Jest environment has been torn down.');
             ^
 
-Error: Provided module is not an instance of Module
-    at importModuleDynamicallyWrapper (node:internal/vm/module:531:13)
-    at processTicksAndRejections (node:internal/process/task_queues:104:5) {
-  code: 'ERR_VM_MODULE_NOT_MODULE'
-}
+ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down.
+    at _esmDynamicImport (<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>)
+    at Timeout._onTimeout (<<REPO_ROOT>>/e2e/import-after-teardown/__tests__/lateImport.test.mjs:10:22)
 
 Node.js <<REPLACED>>"
 `;

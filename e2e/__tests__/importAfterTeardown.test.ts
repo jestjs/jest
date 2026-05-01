@@ -8,9 +8,10 @@
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
 import {
+  extractSummary,
   replaceJestBuildLineNumbers,
-  replaceNodeVersion,
-  replaceTime,
+  replaceNodeInfo,
+  replaceRepoRoot,
 } from '../Utils';
 
 skipSuiteOnJasmine();
@@ -20,8 +21,9 @@ test('prints useful error for imports after test is done w/o `waitForUnhandledRe
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
 
-  const normalized = replaceJestBuildLineNumbers(
-    replaceNodeVersion(replaceTime(stderr)),
+  const {rest} = extractSummary(stderr);
+  const normalized = replaceRepoRoot(
+    replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateImport.test.mjs:10:');
@@ -34,8 +36,9 @@ test('prints useful error for imports after test is done w/ `waitForUnhandledRej
     {nodeOptions: '--experimental-vm-modules --no-warnings'},
   );
 
-  const normalized = replaceJestBuildLineNumbers(
-    replaceNodeVersion(replaceTime(stderr)),
+  const {rest} = extractSummary(stderr);
+  const normalized = replaceRepoRoot(
+    replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateImport.test.mjs:10:');
