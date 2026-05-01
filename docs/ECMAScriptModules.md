@@ -52,7 +52,7 @@ On Node v24.9 and later, Jest supports `require()`-ing an ES module from CJS cod
 const {value, default: defaultExport} = require('./esm-module.mjs');
 ```
 
-Calling `require()` on an ESM file with top-level `await` (or whose graph contains TLA) throws `ERR_REQUIRE_ASYNC_MODULE`, again matching Node. Use `await import(...)` for those files.
+Calling `require()` on an ESM file with top-level `await` (or whose graph contains TLA) throws `ERR_REQUIRE_ASYNC_MODULE`. Use `await import(...)` for those files.
 
 `jest.mock` does _not_ apply when the resolved file is ESM - `jest.mock` is for CJS targets. To mock an ESM file you `require()`, register the mock via `jest.unstable_mockModule` (the mock applies to transitive dependencies the loaded ESM imports).
 
