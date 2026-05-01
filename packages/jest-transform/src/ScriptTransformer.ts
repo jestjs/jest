@@ -843,6 +843,17 @@ class ScriptTransformer {
 
     return this._config.transform.length > 0 && !isIgnored;
   }
+
+  canTransformSync(filename: string): boolean {
+    if (!this.shouldTransform(filename)) {
+      return true;
+    }
+    const transformerEntry = this._getTransformer(filename);
+    if (transformerEntry == null) {
+      return true;
+    }
+    return typeof transformerEntry.transformer.process === 'function';
+  }
 }
 
 export async function createTranspilingRequire(config: Config.ProjectConfig) {
