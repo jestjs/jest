@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {types} from 'util';
 import {
   type AssertionResult,
+  type FailedAssertion,
   type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
@@ -17,6 +19,38 @@ import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
 
 type Microseconds = number;
+
+const isErrorWithCause = (
+  error: unknown,
+): error is Error & {cause: Error | string} =>
+  (types.isNativeError(error) || error instanceof Error) &&
+  'cause' in error &&
+  (typeof error.cause === 'string' ||
+    types.isNativeError(error.cause) ||
+    error.cause instanceof Error);
+
+const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
+  const stack =
+    typeof error.stack === 'string' && error.stack !== ''
+      ? error.stack
+      : error.message;
+
+  if (!isErrorWithCause(error)) {
+    return stack;
+  }
+
+  let cause: string;
+  if (typeof error.cause === 'string') {
+    cause = error.cause;
+  } else if (seen.has(error.cause)) {
+    cause = '[Circular cause]';
+  } else {
+    seen.add(error);
+    cause = formatErrorStackWithCause(error.cause, seen);
+  }
+
+  return `${stack}\n\n[cause]: ${cause}`;
+};
 
 export default class Jasmine2Reporter implements Reporter {
   private readonly _testResults: Array<AssertionResult>;
@@ -125,6 +159,19 @@ export default class Jasmine2Reporter implements Reporter {
     return stack;
   }
 
+  private _getFailureMessage(failed: FailedAssertion): string {
+    const message =
+      !failed.matcherName && typeof failed.stack === 'string'
+        ? this._addMissingMessageToStack(failed.stack, failed.message)
+        : failed.message || '';
+
+    if (isErrorWithCause(failed.error)) {
+      return formatErrorStackWithCause(failed.error, new Set());
+    }
+
+    return message;
+  }
+
   private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
@@ -155,10 +202,7 @@ export default class Jasmine2Reporter implements Reporter {
     };
 
     for (const failed of specResult.failedExpectations) {
-      const message =
-        !failed.matcherName && typeof failed.stack === 'string'
-          ? this._addMissingMessageToStack(failed.stack, failed.message)
-          : failed.message || '';
+      const message = this._getFailureMessage(failed);
       results.failureMessages.push(message);
       results.failureDetails.push(failed);
     }
