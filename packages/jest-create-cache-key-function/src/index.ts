@@ -7,6 +7,7 @@
  */
 
 import {createHash} from 'node:crypto';
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'node:fs';
 import {relative} from 'node:path';
 import type {Config} from '@jest/types';

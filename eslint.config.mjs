@@ -210,6 +210,7 @@ const config = defineConfig(
       'no-restricted-imports': [
         'error',
         {message: 'Please use graceful-fs instead.', name: 'fs'},
+        {message: 'Please use graceful-fs instead.', name: 'node:fs'},
       ],
       'no-restricted-modules': 'off',
       'no-restricted-syntax': 'off',
