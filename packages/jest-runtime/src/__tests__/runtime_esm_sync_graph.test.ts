@@ -361,6 +361,10 @@ describe('Runtime sync ESM graph — require(esm)', () => {
     expect(entry.filename).toBe(aPath);
     expect(entry.path).toBe(path.dirname(aPath));
     expect(entry.loaded).toBe(true);
+    // `paths` is populated like Node's own Module.paths (node_modules
+    // ascent from the file's directory).
+    expect(Array.isArray(entry.paths)).toBe(true);
+    expect(entry.paths).toContain(path.join(ROOT_DIR, 'node_modules'));
     expect(probe.has(aPath)).toBe(true);
     expect(probe.keys()).toContain(aPath);
   });

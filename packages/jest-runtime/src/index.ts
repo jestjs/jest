@@ -842,20 +842,41 @@ export default class Runtime {
   }
 
   // Synchronous require(esm), gated on `supportsSyncEvaluate` by the caller.
-  // The graph walker either succeeds synchronously or throws
-  // `ERR_REQUIRE_ASYNC_MODULE` on any genuinely-async edge — its result is
-  // therefore non-null.
+  // The graph walker throws `ERR_REQUIRE_ASYNC_MODULE` on any genuinely-async
+  // edge (TLA, async transformer, async mock factory) and otherwise returns
+  // the loaded module. A `null` return from sync-required mode means the
+  // module couldn't be served synchronously for an unrelated reason — the
+  // legacy async path is mid-flight on this same module from a concurrent
+  // `await import()` (registry holds a Promise / mutex still held). We
+  // surface that as `ERR_REQUIRE_ESM` rather than the original "use import
+  // to load" message so users have actionable context.
   //
   // Root-level mock dispatch (`jest.unstable_mockModule(spec)` followed by
   // `require(spec)`) is NOT consulted here: it would require driving a
   // SyntheticModule through link()/evaluate() out-of-band on the sync path,
   // and the existing `unstable_importModule` entry has the same limitation.
   // Mock factories still apply for transitive deps via the graph walker.
+  private _requireEsmModule<T>(modulePath: string): T {
+    const module = this._tryLoadEsmGraphSync(modulePath, '', 'sync-required');
+    if (!module) {
+      const error: NodeJS.ErrnoException = new Error(
+        `Cannot require() ES Module ${modulePath} synchronously: it is currently being loaded by a concurrent \`import()\`. Await that import before calling require(), or import this module instead of requiring it.`,
+      );
+      error.code = 'ERR_REQUIRE_ESM';
+      throw error;
+    }
+    return (module as VMModule).namespace as T;
+  }
+
   // Cache `Module`-shaped wrappers so repeated `require.cache[path]` lookups
-  // return the same object — preserving identity for users that hold a ref.
+  // return the same object. The wrapper is a partial CJS Module shim —
+  // `parent` is stubbed (`null`) and `require` throws if invoked (callers
+  // should use the runtime's own `require`, not pluck one off a cache entry).
+  // The remaining fields, including `paths`, match Node's own population.
   private _wrapEsmForRequireCache(filename: string, esm: VMModule): NodeModule {
     const existing = this._esmRequireCacheWrappers.get(esm);
     if (existing) return existing;
+    const dir = path.dirname(filename);
     const wrapper = {
       children: [],
       exports: esm.namespace,
@@ -864,8 +885,12 @@ export default class Runtime {
       isPreloading: false,
       loaded: true,
       parent: null,
-      path: path.dirname(filename),
-      paths: [],
+      path: dir,
+      paths: (
+        nativeModule.Module as unknown as {
+          _nodeModulePaths: (from: string) => Array<string>;
+        }
+      )._nodeModulePaths(dir),
       require: (() => {
         throw new Error(
           'require() on a require.cache ESM entry is not supported',
@@ -874,15 +899,6 @@ export default class Runtime {
     } as unknown as NodeModule;
     this._esmRequireCacheWrappers.set(esm, wrapper);
     return wrapper;
-  }
-
-  private _requireEsmModule<T>(modulePath: string): T {
-    const module = this._tryLoadEsmGraphSync(modulePath, '', 'sync-required');
-    invariant(
-      module,
-      `_tryLoadEsmGraphSync returned null in 'sync-required' mode for ${modulePath}. This is a bug in Jest, please report it!`,
-    );
-    return (module as VMModule).namespace as T;
   }
 
   // Resolve one static-import specifier for the sync graph walker. Returns
@@ -1232,7 +1248,7 @@ export default class Runtime {
       );
       if (synced) return synced;
     }
-    // LEGACY: pre-v24.9 async ESM path. Delete this block (and the
+    // LEGACY: pre-sync-core async ESM path. Delete this block (and the
     // `supportsSyncEvaluate` branches in this method and `linkAndEvaluateModule`)
     // when Jest's minimum Node version reaches v24.9.
     const cacheKey = modulePath + query;
@@ -1810,8 +1826,9 @@ export default class Runtime {
       if (!supportsSyncEvaluate) {
         const error: NodeJS.ErrnoException = new Error(
           `Must use import to load ES Module: ${modulePath}\n` +
-            "Jest's require(ESM) requires Node v24.9+ for synchronous vm " +
-            'module APIs; the current Node version does not expose them.',
+            "Jest's require(ESM) requires Node v24.9+ for " +
+            'synchronous vm module APIs; the current Node version does not ' +
+            'expose them.',
         );
         error.code = 'ERR_REQUIRE_ESM';
         throw error;
@@ -3049,18 +3066,20 @@ export default class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
+      // True when the registry entry is a fully-loaded ESM module whose
+      // namespace can be read without throwing. The legacy async path can
+      // stash a Promise (mid-load) or an unlinked SourceTextModule (between
+      // construction and link); both must be skipped — `module.namespace`
+      // throws ERR_VM_MODULE_STATUS on an unlinked module.
+      const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
+        if (!entry || entry instanceof Promise) return false;
+        const status = (entry as VMModule).status;
+        return status === 'evaluated' || status === 'errored';
+      };
       const esmEntry = (key: string) => {
         const entry = this._esmoduleRegistry.get(key);
-        // Skip mid-load Promise entries from the legacy async path; only
-        // expose fully-resolved modules (with a readable `namespace`).
-        if (
-          !entry ||
-          entry instanceof Promise ||
-          typeof (entry as VMModule).namespace !== 'object'
-        ) {
-          return undefined;
-        }
-        return this._wrapEsmForRequireCache(key, entry as VMModule);
+        if (!isLiveEsm(entry)) return undefined;
+        return this._wrapEsmForRequireCache(key, entry);
       };
       return new Proxy<(typeof moduleRequire)['cache']>(Object.create(null), {
         defineProperty: notPermittedMethod,
@@ -3074,12 +3093,15 @@ export default class Runtime {
         },
         has: (_target, key) => {
           if (typeof key !== 'string') return false;
-          return this._moduleRegistry.has(key) || esmEntry(key) !== undefined;
+          return (
+            this._moduleRegistry.has(key) ||
+            isLiveEsm(this._esmoduleRegistry.get(key))
+          );
         },
         ownKeys: () => {
           const keys = new Set<string>(this._moduleRegistry.keys());
-          for (const key of this._esmoduleRegistry.keys()) {
-            if (esmEntry(key) !== undefined) keys.add(key);
+          for (const [key, entry] of this._esmoduleRegistry) {
+            if (isLiveEsm(entry)) keys.add(key);
           }
           return [...keys];
         },

@@ -11,10 +11,10 @@ import runJest from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-sync-linker');
 
-// `vm.SourceTextModule#linkRequests` and `instantiate` ship in Node v24.9.
-// On older Node, the legacy async ESM path runs and is covered by the
-// existing native-esm fixture.
-onNodeVersions('>=24.9.0', () => {
+// `vm.SourceTextModule#linkRequests` and `instantiate` ship in Node v22.21
+// and v24.8. On older Node, the legacy async ESM path runs and is covered
+// by the existing native-esm fixture.
+onNodeVersions('^22.21.0 || >=24.8.0', () => {
   test('sync linker handles diamond + cycle graph', () => {
     const {exitCode, stderr} = runJest(DIR, ['sync-linker.test.js'], {
       nodeOptions: '--experimental-vm-modules --no-warnings',

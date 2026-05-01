@@ -11,7 +11,9 @@ test('require() of ESM throws ERR_REQUIRE_ESM with a Node-version message', () =
   expect(() => require('../esm.mjs')).toThrow(
     expect.objectContaining({
       code: 'ERR_REQUIRE_ESM',
-      message: expect.stringContaining('Node v24.9+'),
+      message: expect.stringMatching(
+        /Must use import to load ES Module[\s\S]+Node v24\.9\+/,
+      ),
     }),
   );
 });
