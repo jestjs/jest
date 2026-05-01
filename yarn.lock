@@ -14354,6 +14354,7 @@ __metadata:
     "@types/stack-utils": "npm:^2.0.3"
     chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
+    jest-util: "workspace:*"
     picomatch: "npm:^4.0.3"
     pretty-format: "workspace:*"
     slash: "npm:^3.0.0"
