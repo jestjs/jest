@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {types} from 'node:util';
 import * as path from 'path';
 import co from 'co';
 import dedent from 'dedent';
@@ -19,6 +18,7 @@ import {
   convertDescriptorToString,
   formatTime,
   invariant,
+  isError,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -448,7 +448,7 @@ const isErrorOrStackWithCause = (
   typeof errorOrStack !== 'string' &&
   'cause' in errorOrStack &&
   (typeof errorOrStack.cause === 'string' ||
-    types.isNativeError(errorOrStack.cause) ||
+    isError(errorOrStack.cause) ||
     errorOrStack.cause instanceof Error);
 
 const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {

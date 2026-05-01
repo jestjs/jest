@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {types} from 'util';
 import {
   type AssertionResult,
   type FailedAssertion,
@@ -14,6 +13,7 @@ import {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
+import {isError} from 'jest-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
@@ -23,10 +23,10 @@ type Microseconds = number;
 const isErrorWithCause = (
   error: unknown,
 ): error is Error & {cause: Error | string} =>
-  (types.isNativeError(error) || error instanceof Error) &&
+  (isError(error) || error instanceof Error) &&
   'cause' in error &&
   (typeof error.cause === 'string' ||
-    types.isNativeError(error.cause) ||
+    isError(error.cause) ||
     error.cause instanceof Error);
 
 const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
