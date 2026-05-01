@@ -214,7 +214,9 @@ export const replaceJestBuildLineNumbers = (str: string) =>
 const repoRoot = path.resolve(__dirname, '..');
 
 export const replaceRepoRoot = (str: string) =>
-  str.replaceAll(repoRoot, '<<REPO_ROOT>>');
+  str
+    .replaceAll(repoRoot, '<<REPO_ROOT>>')
+    .replaceAll(repoRoot.replaceAll('\\', '/'), '<<REPO_ROOT>>');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>

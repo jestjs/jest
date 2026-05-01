@@ -17,18 +17,19 @@ import {
 skipSuiteOnJasmine();
 
 test('prints useful error for requires after test is done w/o `waitForUnhandledRejections`', () => {
-  const {stderr} = runJest('require-after-teardown');
+  const {exitCode, stderr} = runJest('require-after-teardown');
 
   const {rest} = extractSummary(stderr);
   const normalized = replaceRepoRoot(
     replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
+  expect(exitCode).toBe(1);
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });
 
 test('prints useful error for requires after test is done w/ `waitForUnhandledRejections`', () => {
-  const {stderr} = runJest('require-after-teardown', [
+  const {exitCode, stderr} = runJest('require-after-teardown', [
     '--waitForUnhandledRejections',
   ]);
 
@@ -36,6 +37,7 @@ test('prints useful error for requires after test is done w/ `waitForUnhandledRe
   const normalized = replaceRepoRoot(
     replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
+  expect(exitCode).toBe(1);
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });

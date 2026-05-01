@@ -7,6 +7,7 @@
 
 /* eslint-disable jest/no-focused-tests */
 
+import {SyntheticModule} from 'node:vm';
 import * as semver from 'semver';
 import {describe, test} from '@jest/globals';
 
@@ -28,6 +29,13 @@ export function skipSuiteOnJestCircus(): void {
       console.warn('[SKIP] Does not work on jest-circus');
     });
   }
+}
+
+export function testWithVmEsm(
+  ...args: Parameters<typeof test>
+): ReturnType<typeof test> {
+  const fn = typeof SyntheticModule === 'function' ? test : test.skip;
+  return fn(...args);
 }
 
 export function onNodeVersions(

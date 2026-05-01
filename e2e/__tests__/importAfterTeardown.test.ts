@@ -17,7 +17,7 @@ import {
 skipSuiteOnJasmine();
 
 test('prints useful error for imports after test is done w/o `waitForUnhandledRejections`', () => {
-  const {stderr} = runJest('import-after-teardown', [], {
+  const {exitCode, stderr} = runJest('import-after-teardown', [], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
 
@@ -25,12 +25,13 @@ test('prints useful error for imports after test is done w/o `waitForUnhandledRe
   const normalized = replaceRepoRoot(
     replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
+  expect(exitCode).toBe(1);
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateImport.test.mjs:10:');
 });
 
 test('prints useful error for imports after test is done w/ `waitForUnhandledRejections`', () => {
-  const {stderr} = runJest(
+  const {exitCode, stderr} = runJest(
     'import-after-teardown',
     ['--waitForUnhandledRejections'],
     {nodeOptions: '--experimental-vm-modules --no-warnings'},
@@ -40,6 +41,7 @@ test('prints useful error for imports after test is done w/ `waitForUnhandledRej
   const normalized = replaceRepoRoot(
     replaceJestBuildLineNumbers(replaceNodeInfo(rest)),
   );
+  expect(exitCode).toBe(1);
   expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateImport.test.mjs:10:');
 });

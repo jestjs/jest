@@ -7,9 +7,9 @@
 
 import * as path from 'path';
 
-import {SourceTextModule, SyntheticModule} from 'vm';
-const vmAvailable = typeof SyntheticModule === 'function';
-const itVm = vmAvailable ? it : it.skip;
+import {SourceTextModule} from 'vm';
+import {testWithVmEsm} from '@jest/test-utils';
+
 const syncCoreAvailable =
   // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
@@ -36,7 +36,7 @@ describe('Runtime sync ESM graph', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm('evaluates a diamond + cycle graph in correct order', async () => {
+  testWithVmEsm('evaluates a diamond + cycle graph in correct order', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -48,7 +48,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.peekA()).toBe('a');
   });
 
-  itVm(
+  testWithVmEsm(
     'caches modules so repeated imports return the same namespace',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -64,7 +64,7 @@ describe('Runtime sync ESM graph', () => {
     },
   );
 
-  itVm(
+  testWithVmEsm(
     'falls back to async evaluate when the graph contains top-level await',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -77,7 +77,7 @@ describe('Runtime sync ESM graph', () => {
     },
   );
 
-  itVm('resolves data: URI specifiers in the sync graph', async () => {
+  testWithVmEsm('resolves data: URI specifiers in the sync graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -86,7 +86,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.dataValue).toBe(99);
   });
 
-  itVm('resolves @jest/globals in the sync graph', async () => {
+  testWithVmEsm('resolves @jest/globals in the sync graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -95,7 +95,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.hasJest).toBe(true);
   });
 
-  itVm('decodes base64-encoded data: URI specifiers', async () => {
+  testWithVmEsm('decodes base64-encoded data: URI specifiers', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -104,7 +104,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.base64Value).toBe('b64');
   });
 
-  itVm('imports JSON files as ESM', async () => {
+  testWithVmEsm('imports JSON files as ESM', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -113,7 +113,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.data).toEqual({answer: 42, label: 'json'});
   });
 
-  itVm('imports core node modules through the ESM graph', async () => {
+  testWithVmEsm('imports core node modules through the ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -123,7 +123,7 @@ describe('Runtime sync ESM graph', () => {
     expect(typeof m.namespace.nodePath.join).toBe('function');
   });
 
-  itVm('exposes import.meta.url for the loaded module', async () => {
+  testWithVmEsm('exposes import.meta.url for the loaded module', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -134,7 +134,7 @@ describe('Runtime sync ESM graph', () => {
     );
   });
 
-  itVm('pulls a CJS dependency into the sync ESM graph', async () => {
+  testWithVmEsm('pulls a CJS dependency into the sync ESM graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -143,7 +143,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.cjsValue).toBe('from-cjs');
   });
 
-  itVm('imports a wasm module via data: URI', async () => {
+  testWithVmEsm('imports a wasm module via data: URI', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -154,7 +154,7 @@ describe('Runtime sync ESM graph', () => {
     expect(Object.keys(m.namespace.wasmMod)).toEqual([]);
   });
 
-  itVm('treats a query suffix as a separate cache entry', async () => {
+  testWithVmEsm('treats a query suffix as a separate cache entry', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const plain = (await runtime.unstable_importModule(FROM, './a.mjs')) as any;
     const queried = (await runtime.unstable_importModule(
@@ -166,7 +166,7 @@ describe('Runtime sync ESM graph', () => {
     expect(queried.namespace.fromA).toEqual(plain.namespace.fromA);
   });
 
-  itVm('supports dynamic import() from inside an ESM module', async () => {
+  testWithVmEsm('supports dynamic import() from inside an ESM module', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -182,7 +182,7 @@ describe('Runtime sync ESM graph - mocks and isolation', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm('replaces a module with a sync mock factory', async () => {
+  testWithVmEsm('replaces a module with a sync mock factory', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     runtime.setModuleMock(FROM, './mock-target.mjs', () => ({
       greeting: 'mocked-sync',
@@ -194,7 +194,7 @@ describe('Runtime sync ESM graph - mocks and isolation', () => {
     expect(m.namespace.greeting).toBe('mocked-sync');
   });
 
-  itVm('replaces a module with an async mock factory', async () => {
+  testWithVmEsm('replaces a module with an async mock factory', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     runtime.setModuleMock(FROM, './mock-target.mjs', async () => ({
       greeting: 'mocked-async',
@@ -206,7 +206,7 @@ describe('Runtime sync ESM graph - mocks and isolation', () => {
     expect(m.namespace.greeting).toBe('mocked-async');
   });
 
-  itVm('isolateModulesAsync gives a fresh ESM namespace', async () => {
+  testWithVmEsm('isolateModulesAsync gives a fresh ESM namespace', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
 
     const before = (await runtime.unstable_importModule(
@@ -238,14 +238,14 @@ describe('Runtime sync ESM graph - error surfacing', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm('rejects when a specifier cannot be resolved', async () => {
+  testWithVmEsm('rejects when a specifier cannot be resolved', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     await expect(
       runtime.unstable_importModule(FROM, './does-not-exist.mjs'),
     ).rejects.toThrow('Cannot find module');
   });
 
-  itVm('surfaces errors thrown by a mock factory', async () => {
+  testWithVmEsm('surfaces errors thrown by a mock factory', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     runtime.setModuleMock(FROM, './mock-target.mjs', () => {
       throw new Error('factory boom');

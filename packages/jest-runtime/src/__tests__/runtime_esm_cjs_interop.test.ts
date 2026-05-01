@@ -15,11 +15,7 @@
 //     packages/jest-runtime/src/__tests__/runtime_esm_cjs_interop.test.ts
 
 import * as path from 'path';
-
-// SyntheticModule is only available when --experimental-vm-modules is active.
-const {SyntheticModule} = require('vm') as typeof import('vm');
-const vmAvailable = typeof SyntheticModule === 'function';
-const itVm = vmAvailable ? it : it.skip;
+import {testWithVmEsm} from '@jest/test-utils';
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_interop_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -34,7 +30,7 @@ describe('Runtime loadCjsAsEsm', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm(
+  testWithVmEsm(
     'unwraps __esModule CJS default export instead of returning the whole exports object',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -47,7 +43,7 @@ describe('Runtime loadCjsAsEsm', () => {
     },
   );
 
-  itVm('does not expose __esModule sentinel as a named export', async () => {
+  testWithVmEsm('does not expose __esModule sentinel as a named export', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -56,7 +52,7 @@ describe('Runtime loadCjsAsEsm', () => {
     expect(Object.keys(m.namespace)).not.toContain('__esModule');
   });
 
-  itVm(
+  testWithVmEsm(
     'exposes named exports alongside default for __esModule CJS',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -68,7 +64,7 @@ describe('Runtime loadCjsAsEsm', () => {
     },
   );
 
-  itVm('uses the full module.exports as default for plain CJS', async () => {
+  testWithVmEsm('uses the full module.exports as default for plain CJS', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -80,7 +76,7 @@ describe('Runtime loadCjsAsEsm', () => {
     });
   });
 
-  itVm('exposes named exports from plain CJS module.exports keys', async () => {
+  testWithVmEsm('exposes named exports from plain CJS module.exports keys', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -90,7 +86,7 @@ describe('Runtime loadCjsAsEsm', () => {
     expect(m.namespace.double(10)).toBe(20);
   });
 
-  itVm(
+  testWithVmEsm(
     'shares singleton state across multiple ESM importers of the same CJS module',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -114,7 +110,7 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm(
+  testWithVmEsm(
     'loads a .js file with ESM syntax that has no "type":"module" marker',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
