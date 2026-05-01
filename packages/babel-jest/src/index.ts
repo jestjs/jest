@@ -55,8 +55,10 @@ function addIstanbulInstrumentation(
   transformOptions: JestTransformOptions,
 ): BabelTransformOptions {
   if (transformOptions.instrument) {
-    const copiedBabelOptions: BabelTransformOptions = {...babelOptions};
-    copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+    const copiedBabelOptions: BabelTransformOptions = {
+      ...babelOptions,
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+    };
     // Copied from jest-runtime transform.js
     copiedBabelOptions.plugins = [
       ...(copiedBabelOptions.plugins ?? []),

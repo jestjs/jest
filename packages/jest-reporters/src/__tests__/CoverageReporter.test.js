@@ -31,21 +31,22 @@ beforeEach(() => {
   libSourceMaps = require('istanbul-lib-source-maps');
   istanbulReports = require('istanbul-reports');
 
-  const fileTree = {};
-  fileTree[`${process.cwd()}/path-test-files`] = {
-    '000pc_coverage_file.js': '',
-    '050pc_coverage_file.js': '',
-    '100pc_coverage_file.js': '',
-    'full_path_file.js': '',
-    'glob-path': {
-      'file1.js': '',
-      'file2.js': '',
+  const fileTree = {
+    [`${process.cwd()}/path-test-files`]: {
+      '000pc_coverage_file.js': '',
+      '050pc_coverage_file.js': '',
+      '100pc_coverage_file.js': '',
+      'full_path_file.js': '',
+      'glob-path': {
+        'file1.js': '',
+        'file2.js': '',
+      },
+      'non_covered_file.js': '',
+      'relative_path_file.js': '',
     },
-    'non_covered_file.js': '',
-    'relative_path_file.js': '',
-  };
-  fileTree[`${process.cwd()}/path-test`] = {
-    '100pc_coverage_file.js': '',
+    [`${process.cwd()}/path-test`]: {
+      '100pc_coverage_file.js': '',
+    },
   };
   mock(fileTree);
 });

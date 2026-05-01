@@ -146,6 +146,21 @@ Automatically clear mock calls, instances, contexts and results before every tes
 
 A glob pattern relative to `rootDir` matching the files that coverage info needs to be collected from.
 
+### `--collectTests`
+
+Discover and print all test suites and test names without executing them. Jest loads each test file, evaluates the top-level `describe` blocks to register tests, then exits before running any test code or lifecycle hooks.
+
+Output is a tree of file paths with their nested describe and test names:
+
+```
+path/to/my.test.ts
+  My suite
+    passes
+    fails
+```
+
+Use `--json` to get machine-readable output instead.
+
 ### `--colors`
 
 Forces test results output highlighting even if stdout is not a TTY.

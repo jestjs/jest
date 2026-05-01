@@ -140,6 +140,62 @@ export const initialize = async ({
   return {globals: globalsObject, snapshotState};
 };
 
+export const collectTestsWithoutRunning = async ({
+  config,
+  testPath,
+}: {
+  config: Config.ProjectConfig;
+  testPath: string;
+}): Promise<TestResult> => {
+  const {rootDescribeBlock, testNamePattern} = getRunnerState();
+
+  const assertionResults: Array<AssertionResult> = [];
+
+  const walk = (
+    block: Circus.DescribeBlock,
+    ancestors: Array<string>,
+  ): void => {
+    for (const child of block.children) {
+      if (child.type === 'describeBlock') {
+        walk(child, [...ancestors, child.name]);
+        continue;
+      }
+
+      if (testNamePattern && !testNamePattern.test(getTestID(child))) {
+        continue;
+      }
+
+      const title = child.name;
+      assertionResults.push({
+        ancestorTitles: [...ancestors],
+        duration: null,
+        failing: false,
+        failureDetails: [],
+        failureMessages: [],
+        fullName: [...ancestors, title].join(' '),
+        invocations: 0,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: [],
+        startAt: null,
+        status: 'pending' as Status,
+        title,
+      });
+    }
+  };
+  walk(rootDescribeBlock, []);
+
+  await dispatch({name: 'teardown'});
+
+  return {
+    ...createEmptyTestResult(),
+    displayName: config.displayName,
+    numPendingTests: assertionResults.length,
+    testFilePath: testPath,
+    testResults: assertionResults,
+  };
+};
+
 export const runAndTransformResultsToJestFormat = async ({
   config,
   globalConfig,
