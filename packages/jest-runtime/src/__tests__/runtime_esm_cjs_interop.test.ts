@@ -17,9 +17,15 @@
 import * as path from 'path';
 
 // SyntheticModule is only available when --experimental-vm-modules is active.
-const {SyntheticModule} = require('vm') as typeof import('vm');
+const {SourceTextModule, SyntheticModule} =
+  require('vm') as typeof import('vm');
 const vmAvailable = typeof SyntheticModule === 'function';
 const itVm = vmAvailable ? it : it.skip;
+// `require(esm)` needs the v24.9+ sync ESM core.
+const syncCoreAvailable =
+  // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
+  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
+const itSyncOnly = syncCoreAvailable ? it : it.skip;
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_interop_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -123,6 +129,15 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
         './import-fake-esm-js.mjs',
       )) as any;
       expect(m.namespace.fakeEsmValue).toBe(123);
+    },
+  );
+
+  itSyncOnly(
+    'require()s a .js file with ESM syntax that has no "type":"module" marker',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, './fake-esm-js.js');
+      expect(ns.fakeEsmValue).toBe(123);
     },
   );
 });

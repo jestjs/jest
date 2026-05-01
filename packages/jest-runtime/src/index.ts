@@ -1877,6 +1877,19 @@ export default class Runtime {
       );
     } catch (error) {
       moduleRegistry.delete(modulePath);
+      // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
+      if (
+        supportsSyncEvaluate &&
+        isError(error) &&
+        error.name === 'SyntaxError'
+      ) {
+        try {
+          return this._requireEsmModule<T>(modulePath);
+        } catch (esmError) {
+          if (isError(esmError) && esmError.name === 'SyntaxError') throw error;
+          throw esmError;
+        }
+      }
       throw error;
     }
 
