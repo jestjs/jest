@@ -42,7 +42,7 @@ Ran all test suites matching native-esm-wasm.test.js."
 
 exports[`runs test with native ESM 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       31 passed, 31 total
+Tests:       30 passed, 30 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching native-esm.test.js."

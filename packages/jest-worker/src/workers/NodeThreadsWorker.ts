@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {totalmem} from 'os';
-import {Worker} from 'worker_threads';
+import {totalmem} from 'node:os';
+import {Worker} from 'node:worker_threads';
 import mergeStream from 'merge-stream';
 import {
   CHILD_MESSAGE_INITIALIZE,

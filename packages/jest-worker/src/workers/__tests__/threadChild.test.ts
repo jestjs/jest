@@ -359,11 +359,25 @@ it('throws if child is not forked', () => {
 
   expect(() => {
     messagePort.emit('message', [CHILD_MESSAGE_CALL, true, 'fooWorks', []]);
-  }).toThrow('_worker_threads.parentPort.postMessage is not a function');
+  }).toThrow(
+    expect.objectContaining({
+      message: expect.stringContaining(
+        'parentPort.postMessage is not a function',
+      ),
+      name: 'TypeError',
+    }),
+  );
 
   expect(() => {
     messagePort.emit('message', [CHILD_MESSAGE_CALL, true, 'fooThrows', []]);
-  }).toThrow('_worker_threads.parentPort.postMessage is not a function');
+  }).toThrow(
+    expect.objectContaining({
+      message: expect.stringContaining(
+        'parentPort.postMessage is not a function',
+      ),
+      name: 'TypeError',
+    }),
+  );
 });
 
 it('handle error if `postMessage` throws an error', () => {

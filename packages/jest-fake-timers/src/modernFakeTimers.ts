@@ -118,7 +118,6 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error needs an upstream fix: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/73943
       this._clock.runMicrotasks();
     }
   }
@@ -152,7 +151,7 @@ export default class FakeTimers {
 
   setSystemTime(now?: number | Date): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now);
+      this._clock.setSystemTime(now instanceof Date ? now.getTime() : now);
     }
   }
 
@@ -227,7 +226,10 @@ export default class FakeTimers {
     return {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
-      now: fakeTimersConfig.now ?? Date.now(),
+      now:
+        fakeTimersConfig.now instanceof Date
+          ? fakeTimersConfig.now.getTime()
+          : (fakeTimersConfig.now ?? Date.now()),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
       toFake: [...toFake],

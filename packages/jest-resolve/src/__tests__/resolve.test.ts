@@ -857,3 +857,55 @@ describe('Resolver.getGlobalPaths()', () => {
     expect(globalPaths).toStrictEqual([]);
   });
 });
+
+describe('canResolveSync', () => {
+  // The other suites auto-mock `userResolver`/`userResolverAsync`, which
+  // changes their shape; load the real modules here to test detection.
+  beforeAll(() => {
+    jest.unmock('../__mocks__/userResolver');
+    jest.unmock('../__mocks__/userResolverAsync');
+  });
+  afterAll(() => {
+    jest
+      .mock('../__mocks__/userResolver')
+      .mock('../__mocks__/userResolverAsync');
+  });
+
+  it('returns true when no user resolver is configured', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports a plain function', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolver'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports a `sync` hook', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverSync'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports both `sync` and `async`', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverDual'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns false when the user resolver only exports `async`', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(false);
+  });
+});

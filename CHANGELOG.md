@@ -2,24 +2,51 @@
 
 ### Features
 
-- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
-- `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
+- `[babel-jest]` Support collecting coverage from `.mts`, `.cts` (and other) files ([#15994](https://github.com/jestjs/jest/pull/15994))
+- `[jest-circus, jest-cli, jest-config, jest-core, jest-jasmine2, jest-types]` Add `--collect-tests` flag to discover and list tests without executing them ([#16006](https://github.com/jestjs/jest/pull/16006))
+- `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-resolve]` Add `canResolveSync()` on `Resolver` so callers can detect when a user-configured resolver only exports an `async` hook ([#16064](https://github.com/jestjs/jest/pull/16064))
+- `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-runtime]` Support `require()` of ES modules on Node v24.9+ ([#16074](https://github.com/jestjs/jest/pull/16074))
+- `[jest-util]` Add `isError` helper ([#16076](https://github.com/jestjs/jest/pull/16076))
 
 ### Fixes
 
+- `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#14011](https://github.com/jestjs/jest/issues/14011))
+- `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
+- `[jest-circus]` Prevent crash when `asyncError` is undefined for non-Error throws ([#16003](https://github.com/jestjs/jest/pull/16003))
+- `[jest-circus, jest-jasmine2]` Include `Error.cause` in JSON `failureMessages` output ([#15949](https://github.com/jestjs/jest/issues/15949))
+- `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Fix deadlocks and double-evaluation in concurrent ESM and wasm imports ([#16050](https://github.com/jestjs/jest/pull/16050))
+
+### Chore & Maintenance
+
+- `[jest-runtime]` Use synchronous `linkRequests` / `instantiate` for ESM linking on Node v24.9+ ([#16063](https://github.com/jestjs/jest/pull/16063))
+
+## 30.3.0
+
+### Features
+
+- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+- `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
+- `[*]` Reduce token usage when run through LLMs ([`3f17932`](https://github.com/jestjs/jest/commit/3f17932061c0203999451e5852664093de876709))
+
+### Fixes
+
+- `[jest-config]` Keep CLI coverage output when using `--json` with `--outputFile` ([#15918](https://github.com/jestjs/jest/pull/15918))
 - `[jest-mock]` Use `Symbol` from test environment ([#15858](https://github.com/jestjs/jest/pull/15858))
 - `[jest-reporters]` Fix issue where console output not displayed for GHA reporter even with `silent: false` option ([#15864](https://github.com/jestjs/jest/pull/15864))
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
 - `[jest-test-sequencer]` Fix issue where failed tests due to compilation errors not getting re-executed even with `--onlyFailures` CLI option ([#15851](https://github.com/jestjs/jest/pull/15851))
 - `[jest-util]` Make sure `process.features.require_module` is `false` ([#15867](https://github.com/jestjs/jest/pull/15867))
-- `[jest-config]` Keep CLI coverage output when using `--json` with `--outputFile` ([#15918](https://github.com/jestjs/jest/pull/15918))
 
 ### Chore & Maintenance
 
-- `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
-- `[deps]` Update to sinon/fake-timers v15
-- Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 - `[*]` Replace remaining micromatch uses with picomatch
+- `[deps]` Update to sinon/fake-timers v15
+- `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
+- Updated Twitter icon to match the latest brand guidelines ([#15869](https://github.com/jestjs/jest/pull/15869))
 
 ## 30.2.0
 

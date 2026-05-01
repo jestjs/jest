@@ -25,7 +25,7 @@
  * produce a full coverage report.
  */
 
-import {createRequire} from 'module';
+import {createRequire} from 'node:module';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import istanbulReport from 'istanbul-lib-report';
 import istanbulReports from 'istanbul-reports';
