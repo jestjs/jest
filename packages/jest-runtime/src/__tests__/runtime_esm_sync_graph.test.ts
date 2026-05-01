@@ -18,9 +18,14 @@
 
 import * as path from 'path';
 
-const {SyntheticModule} = require('vm') as typeof import('vm');
-const vmAvailable = typeof SyntheticModule === 'function';
-const itVm = vmAvailable ? it : it.skip;
+const {SourceTextModule} = require('vm') as typeof import('vm');
+// `hasAsyncGraph` is the v24.9+ marker the runtime gates `supportsSyncEvaluate`
+// on; if it's missing, the sync core never engages and these tests would just
+// be re-running the legacy path covered elsewhere.
+const syncCoreAvailable =
+  // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
+  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
+const itSync = syncCoreAvailable ? it : it.skip;
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_sync_graph_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -35,7 +40,7 @@ describe('Runtime sync ESM graph', () => {
     createRuntime = require('createRuntime');
   });
 
-  itVm('evaluates a diamond + cycle graph in correct order', async () => {
+  itSync('evaluates a diamond + cycle graph in correct order', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -47,7 +52,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.peekA()).toBe('a');
   });
 
-  itVm(
+  itSync(
     'caches modules so repeated imports return the same namespace',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -63,7 +68,7 @@ describe('Runtime sync ESM graph', () => {
     },
   );
 
-  itVm(
+  itSync(
     'falls back to async evaluate when the graph contains top-level await',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
@@ -76,7 +81,7 @@ describe('Runtime sync ESM graph', () => {
     },
   );
 
-  itVm('resolves data: URI specifiers in the sync graph', async () => {
+  itSync('resolves data: URI specifiers in the sync graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
@@ -85,7 +90,7 @@ describe('Runtime sync ESM graph', () => {
     expect(m.namespace.dataValue).toBe(99);
   });
 
-  itVm('resolves @jest/globals in the sync graph', async () => {
+  itSync('resolves @jest/globals in the sync graph', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(
       FROM,
