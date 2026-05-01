@@ -189,6 +189,19 @@ function moduleHasAsyncGraph(module: VMModuleWithAsyncGraph): boolean {
     : false;
 }
 
+// Mirrors Node's `require(esm)` error code so user code can `catch` the same
+// way regardless of whether the throw came from Node or from Jest.
+function makeRequireAsyncError(
+  modulePath: string,
+  detail: string,
+): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new Error(
+    `require() cannot be used to load ES Module ${modulePath}: ${detail}`,
+  );
+  error.code = 'ERR_REQUIRE_ASYNC_MODULE';
+  return error;
+}
+
 const supportsNodeColonModulePrefixInRequire = (() => {
   try {
     require('node:fs');
@@ -295,6 +308,7 @@ export default class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private readonly _esmoduleRegistry: Map<string, JestModule>;
+  private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
@@ -361,6 +375,7 @@ export default class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._esmRequireCacheWrappers = new WeakMap();
     this._cjsNamedExports = new Map();
     this._esmModuleLinkingMap = new WeakMap();
     this._esmModuleEvaluatingMap = new WeakMap();
@@ -653,6 +668,12 @@ export default class Runtime {
       }
 
       if (!this._scriptTransformer.canTransformSync(modulePath)) {
+        if (mode === 'sync-required') {
+          throw makeRequireAsyncError(
+            modulePath,
+            'a configured transformer is async-only',
+          );
+        }
         // Async transformer required for this file — bail.
         return null;
       }
@@ -707,6 +728,9 @@ export default class Runtime {
           typeof module.hasTopLevelAwait === 'function' &&
           module.hasTopLevelAwait()
         ) {
+          if (mode === 'sync-required') {
+            throw makeRequireAsyncError(modulePath, 'top-level await');
+          }
           return null;
         }
 
@@ -769,6 +793,26 @@ export default class Runtime {
       rootModule.instantiate();
 
       if (moduleHasAsyncGraph(rootModule)) {
+        if (mode === 'sync-required') {
+          // Find the offending file so the error names it.
+          let culprit = rootModule.identifier;
+          for (const entry of scratch.values()) {
+            if (
+              entry.isSourceText &&
+              typeof entry.module.hasTopLevelAwait === 'function' &&
+              entry.module.hasTopLevelAwait()
+            ) {
+              culprit = entry.module.identifier;
+              break;
+            }
+          }
+          throw makeRequireAsyncError(
+            rootModule.identifier,
+            culprit === rootModule.identifier
+              ? 'top-level await'
+              : `a dependency uses top-level await (${culprit})`,
+          );
+        }
         // TLA somewhere in the graph — bail to legacy async path.
         return null;
       }
@@ -795,6 +839,50 @@ export default class Runtime {
     );
 
     return rootModule;
+  }
+
+  // Synchronous require(esm), gated on `supportsSyncEvaluate` by the caller.
+  // The graph walker either succeeds synchronously or throws
+  // `ERR_REQUIRE_ASYNC_MODULE` on any genuinely-async edge — its result is
+  // therefore non-null.
+  //
+  // Root-level mock dispatch (`jest.unstable_mockModule(spec)` followed by
+  // `require(spec)`) is NOT consulted here: it would require driving a
+  // SyntheticModule through link()/evaluate() out-of-band on the sync path,
+  // and the existing `unstable_importModule` entry has the same limitation.
+  // Mock factories still apply for transitive deps via the graph walker.
+  // Cache `Module`-shaped wrappers so repeated `require.cache[path]` lookups
+  // return the same object — preserving identity for users that hold a ref.
+  private _wrapEsmForRequireCache(filename: string, esm: VMModule): NodeModule {
+    const existing = this._esmRequireCacheWrappers.get(esm);
+    if (existing) return existing;
+    const wrapper = {
+      children: [],
+      exports: esm.namespace,
+      filename,
+      id: filename,
+      isPreloading: false,
+      loaded: true,
+      parent: null,
+      path: path.dirname(filename),
+      paths: [],
+      require: (() => {
+        throw new Error(
+          'require() on a require.cache ESM entry is not supported',
+        );
+      }) as unknown as NodeJS.Require,
+    } as unknown as NodeModule;
+    this._esmRequireCacheWrappers.set(esm, wrapper);
+    return wrapper;
+  }
+
+  private _requireEsmModule<T>(modulePath: string): T {
+    const module = this._tryLoadEsmGraphSync(modulePath, '', 'sync-required');
+    invariant(
+      module,
+      `_tryLoadEsmGraphSync returned null in 'sync-required' mode for ${modulePath}. This is a bug in Jest, please report it!`,
+    );
+    return (module as VMModule).namespace as T;
   }
 
   // Resolve one static-import specifier for the sync graph walker. Returns
@@ -929,7 +1017,7 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
-    _mode: SyncEsmMode,
+    mode: SyncEsmMode,
   ): {cacheKey: string} | null {
     const moduleID = this._resolver.getModuleID(
       this._virtualModuleMocks,
@@ -961,6 +1049,9 @@ export default class Runtime {
       typeof result === 'object' &&
       typeof (result as {then?: unknown}).then === 'function'
     ) {
+      if (mode === 'sync-required') {
+        throw makeRequireAsyncError(moduleName, 'mock factory is async');
+      }
       // Async factory — sync path can't await; fall back to legacy.
       return null;
     }
@@ -1099,6 +1190,9 @@ export default class Runtime {
       typeof module.hasTopLevelAwait === 'function' &&
       module.hasTopLevelAwait()
     ) {
+      if (mode === 'sync-required') {
+        throw makeRequireAsyncError(specifier, 'top-level await');
+      }
       return null;
     }
 
@@ -1713,12 +1807,16 @@ export default class Runtime {
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
-      // Node includes more info in the message
-      const error: NodeJS.ErrnoException = new Error(
-        `Must use import to load ES Module: ${modulePath}`,
-      );
-      error.code = 'ERR_REQUIRE_ESM';
-      throw error;
+      if (!supportsSyncEvaluate) {
+        const error: NodeJS.ErrnoException = new Error(
+          `Must use import to load ES Module: ${modulePath}\n` +
+            "Jest's require(ESM) requires Node v24.9+ for synchronous vm " +
+            'module APIs; the current Node version does not expose them.',
+        );
+        error.code = 'ERR_REQUIRE_ESM';
+        throw error;
+      }
+      return this._requireEsmModule<T>(modulePath);
     }
 
     let moduleRegistry;
@@ -2951,17 +3049,40 @@ export default class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
+      const esmEntry = (key: string) => {
+        const entry = this._esmoduleRegistry.get(key);
+        // Skip mid-load Promise entries from the legacy async path; only
+        // expose fully-resolved modules (with a readable `namespace`).
+        if (
+          !entry ||
+          entry instanceof Promise ||
+          typeof (entry as VMModule).namespace !== 'object'
+        ) {
+          return undefined;
+        }
+        return this._wrapEsmForRequireCache(key, entry as VMModule);
+      };
       return new Proxy<(typeof moduleRequire)['cache']>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
-        get: (_target, key) =>
-          typeof key === 'string' ? this._moduleRegistry.get(key) : undefined,
+        get: (_target, key) => {
+          if (typeof key !== 'string') return undefined;
+          return this._moduleRegistry.get(key) ?? esmEntry(key);
+        },
         getOwnPropertyDescriptor() {
           return {configurable: true, enumerable: true};
         },
-        has: (_target, key) =>
-          typeof key === 'string' && this._moduleRegistry.has(key),
-        ownKeys: () => [...this._moduleRegistry.keys()],
+        has: (_target, key) => {
+          if (typeof key !== 'string') return false;
+          return this._moduleRegistry.has(key) || esmEntry(key) !== undefined;
+        },
+        ownKeys: () => {
+          const keys = new Set<string>(this._moduleRegistry.keys());
+          for (const key of this._esmoduleRegistry.keys()) {
+            if (esmEntry(key) !== undefined) keys.add(key);
+          }
+          return [...keys];
+        },
         set: notPermittedMethod,
       });
     })();
