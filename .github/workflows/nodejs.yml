@@ -177,6 +177,14 @@ jobs:
           max_attempts: 3
           retry_on: error
           command: yarn jest-runtime-vm-modules-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+      - name: map coverage
+        run: node ./scripts/mapCoverage.mjs
+        if: always()
+      - uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5.5.4
+        if: always()
+        with:
+          directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   test-coverage:
     name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
