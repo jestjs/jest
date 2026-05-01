@@ -28,7 +28,7 @@ export default {
     'packages/.*/build',
     'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
-    'packages/jest-runtime/src/__tests__/test_esm_interop_root',
+    'packages/jest-runtime/src/__tests__/test_esm_*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
     'e2e/node-url-manual-mocks/__mocks__',
