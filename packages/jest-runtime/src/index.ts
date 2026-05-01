@@ -306,7 +306,7 @@ export default class Runtime {
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private readonly _esmoduleRegistry: Map<string, JestModule>;
+  private readonly _esModuleRegistry: Map<string, JestModule>;
   private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
@@ -373,7 +373,7 @@ export default class Runtime {
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
-    this._esmoduleRegistry = new Map();
+    this._esModuleRegistry = new Map();
     this._esmRequireCacheWrappers = new WeakMap();
     this._cjsNamedExports = new Map();
     this._esmModuleLinkingMap = new WeakMap();
@@ -573,7 +573,7 @@ export default class Runtime {
     const context = this._environment.getVmContext();
     invariant(context, 'Test environment has been torn down');
 
-    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
     const rootKey = rootPath + rootQuery;
 
     const cached = registry.get(rootKey);
@@ -1241,7 +1241,7 @@ export default class Runtime {
     // `supportsSyncEvaluate` branches in this method and `linkAndEvaluateModule`)
     // when Jest's minimum Node version reaches v24.9.
     const cacheKey = modulePath + query;
-    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
       await this._fileTransformsMutex.get(cacheKey);
@@ -1391,7 +1391,7 @@ export default class Runtime {
       );
     }
 
-    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
 
     if (specifier === '@jest/globals') {
       const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
@@ -1645,7 +1645,7 @@ export default class Runtime {
   }
 
   private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {
-    const registry = this._isolatedModuleRegistry ?? this._esmoduleRegistry;
+    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
     const cached = registry.get(modulePath);
     if (cached) {
       return cached as SyntheticModule | Promise<SyntheticModule>;
@@ -2119,7 +2119,7 @@ export default class Runtime {
     this._isolatedMockRegistry = null;
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
-    this._esmoduleRegistry.clear();
+    this._esModuleRegistry.clear();
     this._fileTransformsMutex.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
@@ -3063,7 +3063,7 @@ export default class Runtime {
         return status === 'evaluated' || status === 'errored';
       };
       const esmEntry = (key: string) => {
-        const entry = this._esmoduleRegistry.get(key);
+        const entry = this._esModuleRegistry.get(key);
         if (!isLiveEsm(entry)) return undefined;
         return this._wrapEsmForRequireCache(key, entry);
       };
@@ -3081,12 +3081,12 @@ export default class Runtime {
           if (typeof key !== 'string') return false;
           return (
             this._moduleRegistry.has(key) ||
-            isLiveEsm(this._esmoduleRegistry.get(key))
+            isLiveEsm(this._esModuleRegistry.get(key))
           );
         },
         ownKeys: () => {
           const keys = new Set<string>(this._moduleRegistry.keys());
-          for (const [key, entry] of this._esmoduleRegistry) {
+          for (const [key, entry] of this._esModuleRegistry) {
             if (isLiveEsm(entry)) keys.add(key);
           }
           return [...keys];
