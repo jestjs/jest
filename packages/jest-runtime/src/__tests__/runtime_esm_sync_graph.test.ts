@@ -447,4 +447,21 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       );
     },
   );
+
+  itVm(
+    'dynamic import of a CJS dep stores the actual module in the ESM registry, not a Promise',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './dynamic-cjs.mjs',
+      )) as any;
+      await m.namespace.loadCjs();
+
+      const cjsPath = path.join(ROOT_DIR, 'cjs-dep.cjs');
+      const entry = runtime._esModuleRegistry.get(cjsPath);
+      expect(entry).toBeDefined();
+      expect(entry).not.toBeInstanceOf(Promise);
+    },
+  );
 });

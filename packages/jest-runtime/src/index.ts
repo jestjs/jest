@@ -184,6 +184,10 @@ function resolveCacheKey(from: string, to: string): string {
   return `${from}\0${to}`;
 }
 
+function noop(): void {
+  return;
+}
+
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
 // callback is sync), so treat its absence as "not async".
@@ -835,9 +839,7 @@ export default class Runtime {
     // sync when hasAsyncGraph() is false (checked above). The returned
     // Promise mirrors that sync state; attach a noop .catch so eval errors
     // don't surface as unhandled rejections after we throw module.error.
-    rootModule.evaluate().catch(() => {
-      // no-op
-    });
+    rootModule.evaluate().catch(noop);
     const status = rootModule.status as VMModule['status'];
     if (status === 'errored') {
       throw rootModule.error;
@@ -1649,11 +1651,15 @@ export default class Runtime {
     );
   }
 
-  private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {
+  private loadCjsAsEsm(
+    from: string,
+    modulePath: string,
+    context: VMContext,
+  ): SyntheticModule | Promise<VMModule> {
     const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
     const cached = registry.get(modulePath);
     if (cached) {
-      return cached as SyntheticModule | Promise<SyntheticModule>;
+      return cached as SyntheticModule | Promise<VMModule>;
     }
 
     let synthetic: SyntheticModule;
@@ -1678,8 +1684,6 @@ export default class Runtime {
       });
     }
 
-    // Cache the promise so concurrent importers await the same link/evaluate
-    // instead of grabbing the still-unlinked module out of the registry.
     const evaluated = evaluateSyntheticModule(synthetic);
     registry.set(modulePath, evaluated);
     return evaluated;
@@ -3599,10 +3603,7 @@ export default class Runtime {
     );
   }
 
-  private getGlobalsForEsm(
-    from: string,
-    context: VMContext,
-  ): Promise<VMModule> {
+  private getGlobalsForEsm(from: string, context: VMContext): SyntheticModule {
     return evaluateSyntheticModule(
       this._buildJestGlobalsSyntheticModule(from, context),
     );
@@ -3660,12 +3661,14 @@ export default class Runtime {
   }
 }
 
-async function evaluateSyntheticModule(module: SyntheticModule) {
-  await module.link(() => {
-    throw new Error('This should never happen');
-  });
-
-  await module.evaluate();
-
+// SyntheticModules are created `'linked'` (no import deps to resolve) and the
+// body runs synchronously even though `evaluate()` returns a Promise - return
+// it sync so callers can store the actual module rather than a Promise that
+// can poison the registry if microtask draining stalls.
+function evaluateSyntheticModule(module: SyntheticModule) {
+  module.evaluate().catch(noop);
+  if ((module.status as VMModule['status']) === 'errored') {
+    throw module.error;
+  }
   return module;
 }
