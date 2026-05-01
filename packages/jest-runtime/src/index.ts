@@ -3667,8 +3667,12 @@ export default class Runtime {
 // can poison the registry if microtask draining stalls.
 function evaluateSyntheticModule(module: SyntheticModule) {
   module.evaluate().catch(noop);
-  if ((module.status as VMModule['status']) === 'errored') {
+  if (module.status === 'errored') {
     throw module.error;
   }
+  invariant(
+    module.status === 'evaluated',
+    `Synthetic module ${module.identifier} did not evaluate synchronously (status="${module.status}"). This is a bug in Jest, please report it!`,
+  );
   return module;
 }
