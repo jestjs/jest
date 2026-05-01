@@ -8,7 +8,6 @@
 import nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
-import {isNativeError} from 'util/types';
 import {
   SourceTextModule,
   SyntheticModule,
@@ -52,6 +51,7 @@ import {
   createDirectory,
   deepCyclicCopy,
   invariant,
+  isError,
   isNonNullable,
   protectProperties,
 } from 'jest-util';
@@ -63,9 +63,6 @@ import {
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
-
-const isError =
-  typeof Error.isError === 'function' ? Error.isError : isNativeError;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;

@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {types} from 'util';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -14,6 +13,7 @@ import type {
 } from 'prettier-v2';
 import * as semver from 'semver';
 import {createSyncFn} from 'synckit';
+import {isError} from 'jest-util';
 import type {InlineSnapshot} from './types';
 import {
   groupSnapshotsByFile,
@@ -59,7 +59,7 @@ export function saveInlineSnapshots(
         cachedPrettier.set(`worker|${prettierPath}`, workerFn);
       }
     } catch (error) {
-      if (!types.isNativeError(error)) {
+      if (!isError(error)) {
         throw error;
       }
 

@@ -6,13 +6,12 @@
  */
 
 import * as path from 'path';
-import {isNativeError} from 'util/types';
 import * as fs from 'graceful-fs';
 import parseJson from 'parse-json';
 import stripJsonComments from 'strip-json-comments';
 import type {Config} from '@jest/types';
 import {type Pragmas, extract, parse} from 'jest-docblock';
-import {interopRequireDefault, requireOrImportModule} from 'jest-util';
+import {interopRequireDefault, isError, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
@@ -222,7 +221,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
     );
   } catch (error) {
     if (
-      isNativeError(error) &&
+      isError(error) &&
       (error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND'
     ) {
       throw new Error(

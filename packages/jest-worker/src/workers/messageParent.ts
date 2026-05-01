@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {types} from 'node:util';
 import {isMainThread, parentPort} from 'worker_threads';
+import {isError} from 'jest-util';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 import {isDataCloneError} from './isDataCloneError';
 import {packMessage} from './safeMessageTransferring';
@@ -32,7 +32,7 @@ export default function messageParent(
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
     } catch (error) {
       if (
-        types.isNativeError(error) &&
+        isError(error) &&
         // if .send is a function, it's a serialization issue
         !error.message.includes('.send is not a function')
       ) {
