@@ -46,7 +46,7 @@ import.meta.jest.useFakeTimers();
 
 ## `require()` of ESM
 
-On Node v24.9 and later, Jest supports `require()`-ing an ES module from CJS code, mirroring [Node's own `require(esm)`](https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require). The call returns the module's namespace object - `default` is exposed as a named export, _not_ unwrapped.
+On Node v24.9 and later, Jest supports `require()`-ing an ES module from CJS code, mirroring [Node's own `require(esm)`](https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require).
 
 ```js title="main.test.cjs"
 const {value, default: defaultExport} = require('./esm-module.mjs');
