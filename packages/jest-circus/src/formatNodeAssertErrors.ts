@@ -52,12 +52,17 @@ const formatNodeAssertErrors = (
           error = asyncError;
         } else if (originalError.stack) {
           error = originalError;
-        } else {
+        } else if (asyncError) {
           error = asyncError;
 
           error.message =
             originalError.message ||
             `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
+        } else {
+          error = new Error(
+            originalError.message ||
+              `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`,
+          );
         }
       } else {
         error = errors;

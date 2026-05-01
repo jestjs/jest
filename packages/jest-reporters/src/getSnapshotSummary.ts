@@ -27,8 +27,7 @@ export default function getSnapshotSummary(
   globalConfig: Config.GlobalConfig,
   updateCommand: string,
 ): Array<string> {
-  const summary = [];
-  summary.push(SNAPSHOT_SUMMARY('Snapshot Summary'));
+  const summary = [SNAPSHOT_SUMMARY('Snapshot Summary')];
   if (snapshots.added) {
     summary.push(
       `${SNAPSHOT_ADDED(

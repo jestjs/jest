@@ -198,8 +198,8 @@ function printBasicValue(
 }
 
 /**
- * Handles more complex objects ( such as objects with circular references.
- * maps and sets etc )
+ * Handles more complex objects (such as objects with circular references,
+ * maps and sets etc.)
  */
 function printComplexValue(
   val: any,
@@ -212,8 +212,7 @@ function printComplexValue(
   if (refs.includes(val)) {
     return '[Circular]';
   }
-  refs = [...refs];
-  refs.push(val);
+  refs = [...refs, val];
 
   const hitMaxDepth = ++depth > config.maxDepth;
   const min = config.min;
