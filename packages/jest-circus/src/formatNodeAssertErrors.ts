@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AssertionError} from 'assert';
+import {AssertionError} from 'node:assert';
 import chalk from 'chalk';
 import type {Circus} from '@jest/types';
 import {

@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line no-restricted-imports
-import type {Stats} from 'fs';
+import type {Stats} from 'node:fs';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 

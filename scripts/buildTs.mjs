@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {strict as assert} from 'assert';
-import * as os from 'os';
-import * as path from 'path';
+import {strict as assert} from 'node:assert';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import execa from 'execa';
 import {glob} from 'glob';

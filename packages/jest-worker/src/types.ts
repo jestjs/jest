@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ForkOptions} from 'child_process';
-import type {ResourceLimits} from 'worker_threads';
+import type {ForkOptions} from 'node:child_process';
+import type {ResourceLimits} from 'node:worker_threads';
 
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
 type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;

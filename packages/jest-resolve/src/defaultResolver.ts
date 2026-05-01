@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isBuiltin} from 'module';
-import {fileURLToPath} from 'url';
+import {isBuiltin} from 'node:module';
+import {fileURLToPath} from 'node:url';
 import pnpResolver from 'jest-pnp-resolver';
 import {
   type ResolveResult,

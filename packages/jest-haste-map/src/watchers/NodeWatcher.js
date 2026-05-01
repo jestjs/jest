@@ -2,10 +2,10 @@
 
 'use strict';
 
-const EventEmitter = require('events').EventEmitter;
-const fs = require('fs');
-const platform = require('os').platform();
-const path = require('path');
+const EventEmitter = require('node:events').EventEmitter;
+const fs = require('node:fs');
+const platform = require('node:os').platform();
+const path = require('node:path');
 const common = require('./common');
 
 /**

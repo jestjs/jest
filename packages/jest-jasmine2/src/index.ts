@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
 import {

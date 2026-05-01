@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import nativeModule from 'module';
-import * as path from 'path';
-import {URL, fileURLToPath, pathToFileURL} from 'url';
+import nativeModule from 'node:module';
+import * as path from 'node:path';
+import {URL, fileURLToPath, pathToFileURL} from 'node:url';
 import {
   SourceTextModule,
   SyntheticModule,
   type Context as VMContext,
   type Module as VMModule,
   compileFunction,
-} from 'vm';
+} from 'node:vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';

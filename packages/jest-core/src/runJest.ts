@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {performance} from 'perf_hooks';
-import type {WriteStream} from 'tty';
+import * as path from 'node:path';
+import {performance} from 'node:perf_hooks';
+import type {WriteStream} from 'node:tty';
 import chalk from 'chalk';
 import exit from 'exit-x';
 import * as fs from 'graceful-fs';

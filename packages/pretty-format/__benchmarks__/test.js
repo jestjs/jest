@@ -12,7 +12,7 @@
 
 'use strict';
 
-const util = require('util');
+const util = require('node:util');
 const chalk = require('chalk');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
