@@ -346,8 +346,8 @@ export default class Runtime {
   private jestGlobals?: JestGlobals;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
-  private isTornDown = false;
-  private isInsideTestCode: boolean | undefined;
+  private testState: 'loading' | 'inTest' | 'betweenTests' | 'tornDown' =
+    'loading';
   private readonly loggedReferenceErrors = new Set<string>();
 
   constructor(
@@ -565,14 +565,14 @@ export default class Runtime {
     rootQuery: string,
     mode: SyncEsmMode,
   ): ESModule | null {
-    if (this.isTornDown) {
+    if (this.testState === 'tornDown') {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
       return null;
     }
-    if (this.isInsideTestCode === false && !supportsDynamicImport) {
+    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -1381,7 +1381,7 @@ export default class Runtime {
     referencingIdentifier: string,
     context: VMContext,
   ): Promise<T> {
-    if (this.isTornDown) {
+    if (this.testState === 'tornDown') {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
@@ -1389,7 +1389,7 @@ export default class Runtime {
       // @ts-expect-error -- exiting
       return;
     }
-    if (this.isInsideTestCode === false && !supportsDynamicImport) {
+    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -1497,7 +1497,7 @@ export default class Runtime {
   }
 
   private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
-    if (this.isTornDown) {
+    if (this.testState === 'tornDown') {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
@@ -1505,7 +1505,7 @@ export default class Runtime {
       // @ts-expect-error: exiting early
       return;
     }
-    if (this.isInsideTestCode === false && !supportsDynamicImport) {
+    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
@@ -2051,7 +2051,7 @@ export default class Runtime {
   }
 
   requireModuleOrMock<T = unknown>(from: string, moduleName: string): T {
-    if (this.isTornDown) {
+    if (this.testState === 'tornDown') {
       this._logFormattedReferenceError(
         'You are trying to `require` a file after the Jest environment has been torn down.',
       );
@@ -2294,11 +2294,11 @@ export default class Runtime {
   }
 
   enterTestCode(): void {
-    this.isInsideTestCode = true;
+    this.testState = 'inTest';
   }
 
   leaveTestCode(): void {
-    this.isInsideTestCode = false;
+    this.testState = 'betweenTests';
   }
 
   teardown(): void {
@@ -2330,7 +2330,7 @@ export default class Runtime {
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
 
-    this.isTornDown = true;
+    this.testState = 'tornDown';
   }
 
   private _resolveCjsModule(from: string, to: string | undefined) {
@@ -2440,14 +2440,14 @@ export default class Runtime {
     from: string | null,
     moduleName?: string,
   ) {
-    if (this.isTornDown) {
+    if (this.testState === 'tornDown') {
       this._logFormattedReferenceError(
         'You are trying to `require` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
       return;
     }
-    if (this.isInsideTestCode === false && !supportsDynamicImport) {
+    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
       throw new ReferenceError(
         'You are trying to `require` a file outside of the scope of the test code.',
       );
@@ -3234,7 +3234,7 @@ export default class Runtime {
     };
     const _getFakeTimers = () => {
       if (
-        this.isTornDown ||
+        this.testState === 'tornDown' ||
         !(this._environment.fakeTimers || this._environment.fakeTimersModern)
       ) {
         this._logFormattedReferenceError(
@@ -3242,7 +3242,7 @@ export default class Runtime {
         );
         process.exitCode = 1;
       }
-      if (this.isInsideTestCode === false) {
+      if (this.testState === 'betweenTests') {
         throw new ReferenceError(
           'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
         );
@@ -3361,7 +3361,7 @@ export default class Runtime {
       },
       getSeed: () => this._globalConfig.seed,
       getTimerCount: () => _getFakeTimers().getTimerCount(),
-      isEnvironmentTornDown: () => this.isTornDown,
+      isEnvironmentTornDown: () => this.testState === 'tornDown',
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       isolateModulesAsync,
@@ -3577,6 +3577,19 @@ export default class Runtime {
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
+    if (this.testState === 'betweenTests') {
+      throw new ReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+    }
+    if (this.testState === 'tornDown') {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      // @ts-expect-error -- exiting
+      return;
+    }
     const dyn = await this.resolveModule<VMModule>(
       specifier,
       referencingModule.identifier,

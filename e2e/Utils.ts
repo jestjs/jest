@@ -200,6 +200,9 @@ export const replaceTime = (str: string) =>
     .replaceAll(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replaceAll(', estimated <<REPLACED>>', '');
 
+export const replaceNodeVersion = (str: string) =>
+  str.replaceAll(/Node\.js v\d+\.\d+\.\d+/g, 'Node.js <<REPLACED>>');
+
 export const replaceJestBuildLineNumbers = (str: string) =>
   str.replaceAll(/([\w-]+\/build\/[^:\s]+:)\d+:\d+/g, '$1<<REPLACED>>');
 

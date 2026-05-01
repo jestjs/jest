@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`prints useful error for imports after test is done w/ \`waitForUnhandledRejections\` 1`] = `
+"FAIL __tests__/lateImport.test.mjs
+  ✕ import after done (<<REPLACED>>)
+
+  ● import after done
+
+    ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down.
+
+       8 | test('import after done', () => {
+       9 |   setTimeout(async () => {
+    > 10 |     const {double} = await import('../double.mjs');
+         |                      ^
+      11 |     expect(double(5)).toBe(10);
+      12 |   }, 0);
+      13 | });
+
+      at _esmDynamicImport (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
+      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`prints useful error for imports after test is done w/o \`waitForUnhandledRejections\` 1`] = `
+"PASS __tests__/lateImport.test.mjs
+  ✓ import after done
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+
+ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateImport.test.mjs.
+
+       8 | test('import after done', () => {
+       9 |   setTimeout(async () => {
+    > 10 |     const {double} = await import('../double.mjs');
+         |                      ^
+      11 |     expect(double(5)).toBe(10);
+      12 |   }, 0);
+      13 | });
+
+      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)
+node:internal/vm/module:531
+      throw new ERR_VM_MODULE_NOT_MODULE();
+            ^
+
+Error: Provided module is not an instance of Module
+    at importModuleDynamicallyWrapper (node:internal/vm/module:531:13)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  code: 'ERR_VM_MODULE_NOT_MODULE'
+}
+
+Node.js <<REPLACED>>"
+`;
