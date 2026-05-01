@@ -140,4 +140,17 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
       expect(ns.fakeEsmValue).toBe(123);
     },
   );
+
+  // Runtime SyntaxError from inside the CJS body (vs. a parse-time one)
+  // must not trigger the ESM fallback — surfacing the original error
+  // unchanged is the right behavior.
+  itVm(
+    'does not retry as ESM when the CJS body throws a runtime SyntaxError',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() =>
+        runtime.requireModule(FROM, './throws-syntaxerror.cjs'),
+      ).toThrow('user-thrown SyntaxError from CJS body');
+    },
+  );
 });
