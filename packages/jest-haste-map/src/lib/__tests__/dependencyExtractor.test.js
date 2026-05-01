@@ -32,7 +32,7 @@ describe('dependencyExtractor', () => {
       ' */',
     ].join('\r\n');
 
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set());
   });
 
   it('should not extract dependencies inside comments (unicode line endings)', () => {
@@ -44,7 +44,7 @@ describe('dependencyExtractor', () => {
       ' */',
     ].join('');
 
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set());
   });
 
   it('should extract dependencies from `import` statements', () => {
@@ -93,7 +93,7 @@ describe('dependencyExtractor', () => {
       import typeof {foo} from 'inv1';
       import type {foo} from 'inv2';
     `;
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set());
   });
 
   it('should extract dependencies from `export` statements', () => {
@@ -148,7 +148,7 @@ describe('dependencyExtractor', () => {
       export typeof {foo} from 'inv1';
       export type {foo} from 'inv2';
     `;
-    expect(extractor.extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set());
   });
 
   it('should extract dependencies from dynamic `import` calls', () => {

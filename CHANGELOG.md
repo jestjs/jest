@@ -1,5 +1,26 @@
 ## main
 
+### Features
+
+- `[jest-circus, jest-cli, jest-config, jest-core, jest-jasmine2, jest-types]` Add `--collect-tests` flag to discover and list tests without executing them ([#16006](https://github.com/jestjs/jest/pull/16006))
+- `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-resolve]` Add `canResolveSync()` on `Resolver` so callers can detect when a user-configured resolver only exports an `async` hook ([#16064](https://github.com/jestjs/jest/pull/16064))
+- `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-runtime]` Support `require()` of ES modules on Node v24.9+ ([#16074](https://github.com/jestjs/jest/pull/16074))
+
+### Fixes
+
+- `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#14011](https://github.com/jestjs/jest/issues/14011))
+- `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
+- `[jest-circus]` Prevent crash when `asyncError` is undefined for non-Error throws ([#16003](https://github.com/jestjs/jest/pull/16003))
+- `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Fix deadlocks and double-evaluation in concurrent ESM and wasm imports ([#16050](https://github.com/jestjs/jest/pull/16050))
+
+### Chore & Maintenance
+
+- `[jest-runtime]` Use synchronous `linkRequests` / `instantiate` for ESM linking on Node v24.9+ ([#16063](https://github.com/jestjs/jest/pull/16063))
+
 ## 30.3.0
 
 ### Features
