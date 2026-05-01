@@ -5,6 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Top-level await forces the async-evaluate fallback even on the v24.9+ sync path.
-const resolved = await Promise.resolve('tla-value');
-export const value = resolved;
+export const value = await Promise.resolve('tla-value');

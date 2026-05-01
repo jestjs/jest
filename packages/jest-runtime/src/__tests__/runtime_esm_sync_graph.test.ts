@@ -169,7 +169,7 @@ describe('Runtime sync ESM graph', () => {
   });
 });
 
-describe('Runtime sync ESM graph — mocks and isolation', () => {
+describe('Runtime sync ESM graph - mocks and isolation', () => {
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -225,7 +225,7 @@ describe('Runtime sync ESM graph — mocks and isolation', () => {
   });
 });
 
-describe('Runtime sync ESM graph — error surfacing', () => {
+describe('Runtime sync ESM graph - error surfacing', () => {
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -263,9 +263,7 @@ describe('Runtime sync ESM graph — error surfacing', () => {
   );
 });
 
-// `require(esm)` is sync-core only: on older Node we throw `ERR_REQUIRE_ESM`
-// with a Node-version message. The non-throw cases are covered here.
-describe('Runtime sync ESM graph — require(esm)', () => {
+describe('Runtime sync ESM graph - require(esm)', () => {
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -339,7 +337,6 @@ describe('Runtime sync ESM graph — require(esm)', () => {
     'jest.mock (CJS map) does not apply to an ESM target',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      // CJS-map mock; should be ignored because the target is ESM.
       runtime.setMock(FROM, './a.mjs', () => ({mocked: true}));
       const ns = runtime.requireModule(FROM, './a.mjs');
       expect(ns.mocked).toBeUndefined();
@@ -351,18 +348,15 @@ describe('Runtime sync ESM graph — require(esm)', () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const aPath = path.join(ROOT_DIR, 'a.mjs');
     const ns = runtime.requireModule(FROM, './a.mjs');
-    // Pull require.cache from a CJS context inside the runtime; the Proxy
-    // backing it is per-require, so we need to read it from inside.
+    // Read `require.cache` from a CJS context inside the runtime - the
+    // Proxy is per-require so we can't observe it from out here.
     const probe = runtime.requireModule(FROM, './read-require-cache.cjs');
     const entry = probe.entry(aPath);
     expect(entry.exports).toBe(ns);
-    // Wrapper exposes the standard CJS Module shape.
     expect(entry.id).toBe(aPath);
     expect(entry.filename).toBe(aPath);
     expect(entry.path).toBe(path.dirname(aPath));
     expect(entry.loaded).toBe(true);
-    // `paths` is populated like Node's own Module.paths (node_modules
-    // ascent from the file's directory).
     expect(Array.isArray(entry.paths)).toBe(true);
     expect(entry.paths).toContain(path.join(ROOT_DIR, 'node_modules'));
     expect(probe.has(aPath)).toBe(true);

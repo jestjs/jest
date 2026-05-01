@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Exercises the `importModuleDynamically` callback path.
 export async function loadA() {
   const mod = await import('./a.mjs');
   return mod.fromA;

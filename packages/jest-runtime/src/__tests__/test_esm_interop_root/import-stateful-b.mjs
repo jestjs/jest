@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Second ESM importer of stateful.cjs — shares the same CJS singleton as import-stateful-a.mjs.
+// Second ESM importer of stateful.cjs - shares the same CJS singleton as import-stateful-a.mjs.
 export * from './stateful.cjs';

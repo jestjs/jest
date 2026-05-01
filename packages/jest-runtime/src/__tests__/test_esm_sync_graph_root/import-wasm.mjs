@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Minimal wasm module: just the magic bytes + version, no exports.
-// Exercises the `application/wasm` data: URI branch and the wasm sync
-// constructor in the v24.9+ sync core.
+// Minimal wasm module: magic bytes + version, no exports.
 import * as wasmMod from 'data:application/wasm;base64,AGFzbQEAAAA=';
 
 export {wasmMod};

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Stateful CJS module — used to verify that two ESM importers share the same instance.
+// Stateful CJS module - used to verify that two ESM importers share the same instance.
 'use strict';
 let callCount = 0;
 exports.increment = function increment() {

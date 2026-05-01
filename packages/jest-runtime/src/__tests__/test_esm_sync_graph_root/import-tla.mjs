@@ -5,7 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Importing a TLA dep makes the whole graph async — exercises the
-// `hasAsyncGraph()` fallback in the v24.9+ sync core.
 export {value} from './with-tla.mjs';
 export const wrapper = 'wrapper';

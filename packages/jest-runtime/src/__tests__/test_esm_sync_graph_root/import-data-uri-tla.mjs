@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// The data: URI body uses top-level await; require()-ing this file must
-// surface ERR_REQUIRE_ASYNC_MODULE rather than silently bailing.
+// TLA inside the data: URI body, not in this file.
 import {v} from 'data:text/javascript,export const v=await Promise.resolve(1);';
 
 export const value = v;

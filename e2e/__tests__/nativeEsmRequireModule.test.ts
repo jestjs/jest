@@ -11,9 +11,6 @@ import runJest from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-require-module');
 
-// `require(esm)` is implemented on top of the v24.9+ sync ESM core.
-// On older Node, `require()` of an ESM file still throws `ERR_REQUIRE_ESM`
-// with a message pointing at the Node version requirement.
 onNodeVersions('>=24.9.0', () => {
   test('require(esm) returns namespace, throws on TLA, populates require.cache', () => {
     const {exitCode, stderr} = runJest(DIR, ['__tests__/require-esm.test.js'], {

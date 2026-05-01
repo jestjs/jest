@@ -189,8 +189,7 @@ function moduleHasAsyncGraph(module: VMModuleWithAsyncGraph): boolean {
     : false;
 }
 
-// Mirrors Node's `require(esm)` error code so user code can `catch` the same
-// way regardless of whether the throw came from Node or from Jest.
+// Mirrors Node's `require(esm)` error code so user catches work uniformly.
 function makeRequireAsyncError(
   modulePath: string,
   detail: string,
@@ -543,8 +542,8 @@ export default class Runtime {
   // so this method assumes synchronous resolution is available.
   // Returns `null` when the graph cannot be completed synchronously (async
   // transformer, TLA, async mock factory) and the caller must fall back to
-  // the legacy async path. Note that some modules — core modules, the
-  // `@jest/globals` synthetic, CJS-as-ESM wrappers, mocked specifiers — are
+  // the legacy async path. Note that some modules - core modules, the
+  // `@jest/globals` synthetic, CJS-as-ESM wrappers, mocked specifiers - are
   // committed to the registry as we walk, so a later bail can leave those
   // partial entries in the cache; subsequent loads pick them up unchanged.
   // The graph's `SourceTextModule`s, by contrast, are kept in `scratch` and
@@ -588,7 +587,7 @@ export default class Runtime {
     }
 
     // The legacy async path may be mid-flight on this module from a previous
-    // top-level call — for example, `module.link(asyncLinker)` fans out to
+    // top-level call - for example, `module.link(asyncLinker)` fans out to
     // deps, the linker calls back into `loadEsmModule`, and that call routes
     // here while legacy still holds the mutex on the parent's
     // `transformFileAsync`. Defer to legacy in that case so we await its
@@ -674,7 +673,7 @@ export default class Runtime {
             'a configured transformer is async-only',
           );
         }
-        // Async transformer required for this file — bail.
+        // Async transformer required for this file - bail.
         return null;
       }
 
@@ -794,7 +793,6 @@ export default class Runtime {
 
       if (moduleHasAsyncGraph(rootModule)) {
         if (mode === 'sync-required') {
-          // Find the offending file so the error names it.
           let culprit = rootModule.identifier;
           for (const entry of scratch.values()) {
             if (
@@ -813,7 +811,7 @@ export default class Runtime {
               : `a dependency uses top-level await (${culprit})`,
           );
         }
-        // TLA somewhere in the graph — bail to legacy async path.
+        // TLA somewhere in the graph - bail to legacy async path.
         return null;
       }
     }
@@ -841,21 +839,14 @@ export default class Runtime {
     return rootModule;
   }
 
-  // Synchronous require(esm), gated on `supportsSyncEvaluate` by the caller.
-  // The graph walker throws `ERR_REQUIRE_ASYNC_MODULE` on any genuinely-async
-  // edge (TLA, async transformer, async mock factory) and otherwise returns
-  // the loaded module. A `null` return from sync-required mode means the
-  // module couldn't be served synchronously for an unrelated reason — the
-  // legacy async path is mid-flight on this same module from a concurrent
-  // `await import()` (registry holds a Promise / mutex still held). We
-  // surface that as `ERR_REQUIRE_ESM` rather than the original "use import
-  // to load" message so users have actionable context.
+  // A `null` here means the legacy async path is mid-flight on this same
+  // module (registry holds a Promise from a concurrent `await import()`);
+  // surface as ERR_REQUIRE_ESM with actionable context.
   //
-  // Root-level mock dispatch (`jest.unstable_mockModule(spec)` followed by
-  // `require(spec)`) is NOT consulted here: it would require driving a
-  // SyntheticModule through link()/evaluate() out-of-band on the sync path,
-  // and the existing `unstable_importModule` entry has the same limitation.
-  // Mock factories still apply for transitive deps via the graph walker.
+  // Root-level mocks (`jest.unstable_mockModule(spec)` then `require(spec)`)
+  // are not consulted - driving a SyntheticModule from `unlinked` to
+  // `evaluated` needs the async link()/evaluate() pair. Transitive-dep mocks
+  // still apply via the graph walker.
   private _requireEsmModule<T>(modulePath: string): T {
     const module = this._tryLoadEsmGraphSync(modulePath, '', 'sync-required');
     if (!module) {
@@ -868,11 +859,9 @@ export default class Runtime {
     return (module as VMModule).namespace as T;
   }
 
-  // Cache `Module`-shaped wrappers so repeated `require.cache[path]` lookups
-  // return the same object. The wrapper is a partial CJS Module shim —
-  // `parent` is stubbed (`null`) and `require` throws if invoked (callers
-  // should use the runtime's own `require`, not pluck one off a cache entry).
-  // The remaining fields, including `paths`, match Node's own population.
+  // Partial CJS `Module` shim for ESM entries in `require.cache`. `parent`
+  // is null and `require` throws - pluck `exports` off the wrapper, don't
+  // try to use it as a real Module.
   private _wrapEsmForRequireCache(filename: string, esm: VMModule): NodeModule {
     const existing = this._esmRequireCacheWrappers.get(esm);
     if (existing) return existing;
@@ -909,7 +898,7 @@ export default class Runtime {
   // `scratch` and the long-lived `registry`/`_moduleMockRegistry` before
   // returning. Source-text and JSON deps are only enqueued (the parent
   // worklist commits them on success). A subsequent bail does not unwind
-  // these eager commits — see `_tryLoadEsmGraphSync`'s header for the
+  // these eager commits - see `_tryLoadEsmGraphSync`'s header for the
   // implications.
   private _resolveSpecifierForSyncGraph(
     referencingIdentifier: string,
@@ -1027,7 +1016,7 @@ export default class Runtime {
   }
 
   // Sync mirror of `importMock`. Returns null when the mock factory is async
-  // (Promise-returning) or absent — the caller bails to the legacy path.
+  // (Promise-returning) or absent - the caller bails to the legacy path.
   private _importMockSync(
     from: string,
     moduleName: string,
@@ -1068,7 +1057,7 @@ export default class Runtime {
       if (mode === 'sync-required') {
         throw makeRequireAsyncError(moduleName, 'mock factory is async');
       }
-      // Async factory — sync path can't await; fall back to legacy.
+      // Async factory - sync path can't await; fall back to legacy.
       return null;
     }
 
@@ -1186,7 +1175,7 @@ export default class Runtime {
       };
     }
 
-    // text/javascript — SourceTextModule with its own static graph.
+    // text/javascript - SourceTextModule with its own static graph.
     const module = new SourceTextModule(code as string, {
       context,
       identifier: specifier,
@@ -1539,13 +1528,13 @@ export default class Runtime {
     } else if (module.status === 'linking') {
       // Module entered 'linking' via Node's cascade (a parent's link() recursed
       // into this dep without going through our code). We have no promise to
-      // await, so yield via setImmediate — which lets all pending microtasks
-      // (including Node's internal linker chain) drain — until linking finishes.
+      // await, so yield via setImmediate - which lets all pending microtasks
+      // (including Node's internal linker chain) drain - until linking finishes.
       const deadline = Date.now() + 5000; // sanity check to prevent infinite loop
       while (module.status === 'linking') {
         if (Date.now() > deadline) {
           throw new Error(
-            `Jest: module ${module.identifier} is stuck in 'linking' state after 5 s — ` +
+            `Jest: module ${module.identifier} is stuck in 'linking' state after 5 s - ` +
               'this is likely a bug in Jest (please report it).',
           );
         }
@@ -1673,7 +1662,7 @@ export default class Runtime {
         throw error;
       }
       // The file may contain ESM syntax with no ESM marker (.mjs /
-      // "type":"module") — try loading as native ESM. If the ESM parser also
+      // "type":"module") - try loading as native ESM. If the ESM parser also
       // rejects it, the original CJS error was the genuine one; surface it
       // instead of the (less useful) ESM diagnostic.
       const cjsSyntaxError = error as Error;
@@ -2681,7 +2670,7 @@ export default class Runtime {
         // linker callback for the parent module, so Node's cascade may already
         // be linking resolvedModule. Calling linkAndEvaluateModule would spin-
         // wait via setImmediate, but the cascade can't finish until this linker
-        // returns — deadlock. The SyntheticModule's evaluate function below
+        // returns - deadlock. The SyntheticModule's evaluate function below
         // accesses namespace only after Node has fully evaluated all deps in
         // topological order, so the module will be ready by then.
         moduleLookup[module] = resolvedModule;
@@ -3066,11 +3055,8 @@ export default class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
-      // True when the registry entry is a fully-loaded ESM module whose
-      // namespace can be read without throwing. The legacy async path can
-      // stash a Promise (mid-load) or an unlinked SourceTextModule (between
-      // construction and link); both must be skipped — `module.namespace`
-      // throws ERR_VM_MODULE_STATUS on an unlinked module.
+      // `module.namespace` throws ERR_VM_MODULE_STATUS on unlinked / linking
+      // modules, so skip those (legacy path can stash mid-load entries).
       const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
         if (!entry || entry instanceof Promise) return false;
         const status = (entry as VMModule).status;
@@ -3547,7 +3533,7 @@ export default class Runtime {
 
   // Shared async dynamic-import callback: installed on every SourceTextModule
   // we construct (file, data: URI). Calls into resolveModule + linkAndEvaluate
-  // — the dynamic import is async by language regardless of Node version.
+  // - the dynamic import is async by language regardless of Node version.
   private _esmDynamicImport = async (
     specifier: string,
     referencingModule: VMModule,

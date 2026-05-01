@@ -344,7 +344,7 @@ export default class Resolver {
 
   // True when synchronous module resolution is available with the configured
   // resolver. False when a user has configured a resolver that only exports
-  // an `async` hook — in that case `findNodeModule` silently falls back to
+  // an `async` hook - in that case `findNodeModule` silently falls back to
   // the default resolver, which will not honor the user's mappings, so
   // callers that need correctness should defer to the async API.
   //

@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// First ESM importer of stateful.cjs — used to verify CJS singleton caching.
+// First ESM importer of stateful.cjs - used to verify CJS singleton caching.
 export * from './stateful.cjs';

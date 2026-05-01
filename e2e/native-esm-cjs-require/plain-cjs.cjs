@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Plain CJS without __esModule — default export should be the whole module.exports.
+// Plain CJS without __esModule - default export should be the whole module.exports.
 'use strict';
 
 module.exports = {

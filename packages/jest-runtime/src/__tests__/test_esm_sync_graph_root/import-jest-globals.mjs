@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Exercises the @jest/globals special-case in the sync resolver.
 import {jest} from '@jest/globals';
 
 export const hasJest = typeof jest === 'object' && jest !== null;
