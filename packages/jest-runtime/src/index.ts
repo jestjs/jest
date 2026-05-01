@@ -180,6 +180,10 @@ type WorklistEntry = {
   modulePath: string;
 };
 
+function resolveCacheKey(from: string, to: string): string {
+  return `${from}\0${to}`;
+}
+
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
 // `SyntheticModule` does not expose it but is by definition sync (the user
 // callback is sync), so treat its absence as "not async".
@@ -249,13 +253,17 @@ const ESM_TRANSFORM_OPTIONS: InternalModuleOptions = {
   supportsTopLevelAwait: true,
 };
 
-type ScratchEntry = {
-  cacheKey: string;
-  module: VMModuleWithAsyncGraph;
-  isSourceText: boolean;
-  // cache keys, populated for source-text modules; null otherwise.
-  deps: Array<string> | null;
-};
+// Source-text entries carry their dep cacheKeys (used for `linkRequests`).
+// Synthetic entries (mocks, core, JSON, wasm, @jest/globals) are born linked
+// and never appear in the link-requests pass.
+type ScratchEntry =
+  | {
+      kind: 'source';
+      cacheKey: string;
+      module: VMModuleWithAsyncGraph;
+      deps: Array<string>;
+    }
+  | {kind: 'synthetic'; cacheKey: string; module: VMModuleWithAsyncGraph};
 
 function stripFileScheme(specifier: string): string {
   return specifier.startsWith('file://') ? fileURLToPath(specifier) : specifier;
@@ -308,6 +316,8 @@ export default class Runtime {
   private _moduleRegistry: ModuleRegistry;
   private readonly _esModuleRegistry: Map<string, JestModule>;
   private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
+  private readonly _resolveCjsCache = new Map<string, string>();
+  private readonly _resolveEsmCache = new Map<string, string>();
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
@@ -566,25 +576,27 @@ export default class Runtime {
         'You are trying to `import` a file outside of the scope of the test code.',
       );
     }
+
+    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+    const rootKey = rootPath + rootQuery;
+
+    // Fast path: if the root is already loaded we skip context lookup and
+    // graph walking entirely. Legacy may have stashed a Promise here from a
+    // mid-flight async load - defer to it.
+    const cached = registry.get(rootKey);
+    if (cached && !(cached instanceof Promise)) {
+      return cached as ESModule;
+    }
+    if (cached instanceof Promise) {
+      return null;
+    }
+
     invariant(
       typeof this._environment.getVmContext === 'function',
       'ES Modules are only supported if your test environment has the `getVmContext` function',
     );
     const context = this._environment.getVmContext();
     invariant(context, 'Test environment has been torn down');
-
-    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
-    const rootKey = rootPath + rootQuery;
-
-    const cached = registry.get(rootKey);
-    if (cached && !(cached instanceof Promise)) {
-      // Already loaded; legacy may have stashed a Promise here, in which case
-      // we must defer.
-      return cached as ESModule;
-    }
-    if (cached instanceof Promise) {
-      return null;
-    }
 
     // The legacy async path may be mid-flight on this module from a previous
     // top-level call - for example, `module.link(asyncLinker)` fans out to
@@ -611,26 +623,18 @@ export default class Runtime {
       if (fromRegistry && !(fromRegistry instanceof Promise)) {
         scratch.set(cacheKey, {
           cacheKey,
-          deps: null,
-          isSourceText: false,
+          kind: 'synthetic',
           module: fromRegistry as VMModuleWithAsyncGraph,
         });
         continue;
       }
       if (fromRegistry instanceof Promise) return null;
 
-      let module: VMModuleWithAsyncGraph;
-      let deps: Array<string> | null = null;
-
       if (this._resolver.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
           cacheKey,
-          deps: null,
-          isSourceText: false,
-          module: this._buildCoreSyntheticModule(
-            modulePath,
-            context,
-          ) as VMModuleWithAsyncGraph,
+          kind: 'synthetic',
+          module: this._buildCoreSyntheticModule(modulePath, context),
         });
         continue;
       }
@@ -678,18 +682,26 @@ export default class Runtime {
       }
 
       if (modulePath.endsWith('.json')) {
-        module = this._buildJsonSyntheticModule(
-          this.transformFile(modulePath, ESM_TRANSFORM_OPTIONS),
-          modulePath,
-          context,
-        ) as VMModuleWithAsyncGraph;
-      } else {
-        const transformedCode = this.transformFile(
-          modulePath,
-          ESM_TRANSFORM_OPTIONS,
-        );
+        scratch.set(cacheKey, {
+          cacheKey,
+          kind: 'synthetic',
+          module: this._buildJsonSyntheticModule(
+            this.transformFile(modulePath, ESM_TRANSFORM_OPTIONS),
+            modulePath,
+            context,
+          ),
+        });
+        continue;
+      }
 
-        module = new SourceTextModule(transformedCode, {
+      const transformedCode = this.transformFile(
+        modulePath,
+        ESM_TRANSFORM_OPTIONS,
+      );
+
+      const module: VMModuleWithAsyncGraph = new SourceTextModule(
+        transformedCode,
+        {
           context,
           identifier: modulePath,
           importModuleDynamically: this._esmDynamicImport,
@@ -716,55 +728,50 @@ export default class Runtime {
             }
             (meta as JestImportMeta).jest = jest;
           },
-        }) as VMModuleWithAsyncGraph;
+        },
+      );
 
-        // Top-level await is detectable per-module before we walk further.
-        // Bailing now skips construction of every node still on the worklist
-        // (a transitive TLA elsewhere in the graph would be caught later by
-        // the post-instantiate `hasAsyncGraph()` check; this one cuts off the
-        // common "TLA at the entry file" case before doing any more work).
-        if (
-          typeof module.hasTopLevelAwait === 'function' &&
-          module.hasTopLevelAwait()
-        ) {
-          if (mode === 'sync-required') {
-            throw makeRequireAsyncError(modulePath, 'top-level await');
-          }
-          return null;
+      // Top-level await is detectable per-module before we walk further.
+      // Bailing now skips construction of every node still on the worklist
+      // (a transitive TLA elsewhere in the graph would be caught later by
+      // the post-instantiate `hasAsyncGraph()` check; this one cuts off the
+      // common "TLA at the entry file" case before doing any more work).
+      if (
+        typeof module.hasTopLevelAwait === 'function' &&
+        module.hasTopLevelAwait()
+      ) {
+        if (mode === 'sync-required') {
+          throw makeRequireAsyncError(modulePath, 'top-level await');
         }
-
-        // Walk dependencies via the v24.9+ `moduleRequests` accessor.
-        const requests = module.moduleRequests;
-        if (requests === undefined) return null;
-        deps = [];
-        for (const {specifier} of requests) {
-          const resolved = this._resolveSpecifierForSyncGraph(
-            modulePath,
-            specifier,
-            context,
-            scratch,
-            registry,
-            mode,
-          );
-          if (resolved === null) return null;
-          deps.push(resolved.cacheKey);
-          if (resolved.enqueue) worklist.push(resolved.enqueue);
-        }
+        return null;
       }
 
-      scratch.set(cacheKey, {
-        cacheKey,
-        deps,
-        isSourceText: !modulePath.endsWith('.json'),
-        module,
-      });
+      // Walk dependencies via the v24.9+ `moduleRequests` accessor.
+      const requests = module.moduleRequests;
+      if (requests === undefined) return null;
+      const deps: Array<string> = [];
+      for (const {specifier} of requests) {
+        const resolved = this._resolveSpecifierForSyncGraph(
+          modulePath,
+          specifier,
+          context,
+          scratch,
+          registry,
+          mode,
+        );
+        if (resolved === null) return null;
+        deps.push(resolved.cacheKey);
+        if (resolved.enqueue) worklist.push(resolved.enqueue);
+      }
+
+      scratch.set(cacheKey, {cacheKey, deps, kind: 'source', module});
     }
 
     // Link every source-text module to its deps. SyntheticModule entries are
     // born 'linked' and have no `linkRequests` of their own; they plug into
     // the parent's `linkRequests` array directly.
     for (const entry of scratch.values()) {
-      if (!entry.isSourceText || entry.deps === null) continue;
+      if (entry.kind !== 'source') continue;
       const depModules = entry.deps.map(depKey => {
         const depEntry = scratch.get(depKey);
         invariant(
@@ -784,7 +791,7 @@ export default class Runtime {
     invariant(rootEntry, 'Sync ESM graph missing root entry');
     const rootModule = rootEntry.module;
 
-    if (rootEntry.isSourceText) {
+    if (rootEntry.kind === 'source') {
       invariant(
         typeof rootModule.instantiate === 'function',
         'instantiate unavailable on root',
@@ -796,7 +803,7 @@ export default class Runtime {
           let culprit = rootModule.identifier;
           for (const entry of scratch.values()) {
             if (
-              entry.isSourceText &&
+              entry.kind === 'source' &&
               typeof entry.module.hasTopLevelAwait === 'function' &&
               entry.module.hasTopLevelAwait()
             ) {
@@ -828,7 +835,9 @@ export default class Runtime {
     // sync when hasAsyncGraph() is false (checked above). The returned
     // Promise mirrors that sync state; attach a noop .catch so eval errors
     // don't surface as unhandled rejections after we throw module.error.
-    rootModule.evaluate().catch(() => {});
+    rootModule.evaluate().catch(() => {
+      // no-op
+    });
     const status = rootModule.status as VMModule['status'];
     if (status === 'errored') {
       throw rootModule.error;
@@ -902,6 +911,25 @@ export default class Runtime {
   // worklist commits them on success). A subsequent bail does not unwind
   // these eager commits - see `_tryLoadEsmGraphSync`'s header for the
   // implications.
+  // Commit (or reuse) a synthetic-module entry under `cacheKey` in both the
+  // long-lived registry and the local scratch map. Returns false when the
+  // registry entry is a mid-flight Promise (caller bails); true on success.
+  private _commitSyntheticToScratch(
+    cacheKey: string,
+    registry: ModuleRegistry | Map<string, JestModule>,
+    scratch: Map<string, ScratchEntry>,
+    build: () => VMModuleWithAsyncGraph,
+  ): boolean {
+    if (scratch.has(cacheKey)) return true;
+    const fromRegistry = registry.get(cacheKey);
+    if (fromRegistry instanceof Promise) return false;
+    const module =
+      (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
+    if (!fromRegistry) registry.set(cacheKey, module);
+    scratch.set(cacheKey, {cacheKey, kind: 'synthetic', module});
+    return true;
+  }
+
   private _resolveSpecifierForSyncGraph(
     referencingIdentifier: string,
     specifier: string,
@@ -911,28 +939,15 @@ export default class Runtime {
     mode: SyncEsmMode,
   ): {cacheKey: string; enqueue: WorklistEntry | null} | null {
     if (specifier === '@jest/globals') {
-      const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
-      const fromRegistry = registry.get(globalsIdentifier);
-      if (fromRegistry instanceof Promise) return null;
-
-      const module =
-        (fromRegistry as VMModuleWithAsyncGraph | undefined) ??
-        (this._buildJestGlobalsSyntheticModule(
-          referencingIdentifier,
-          context,
-        ) as VMModuleWithAsyncGraph);
-      if (!fromRegistry) {
-        registry.set(globalsIdentifier, module);
-      }
-      if (!scratch.has(globalsIdentifier)) {
-        scratch.set(globalsIdentifier, {
-          cacheKey: globalsIdentifier,
-          deps: null,
-          isSourceText: false,
-          module,
-        });
-      }
-      return {cacheKey: globalsIdentifier, enqueue: null};
+      const cacheKey = `@jest/globals/${referencingIdentifier}`;
+      const ok = this._commitSyntheticToScratch(
+        cacheKey,
+        registry,
+        scratch,
+        () =>
+          this._buildJestGlobalsSyntheticModule(referencingIdentifier, context),
+      );
+      return ok ? {cacheKey, enqueue: null} : null;
     }
 
     // data: URIs flow through the worklist; the worklist handles their
@@ -987,28 +1002,20 @@ export default class Runtime {
       !isWasm(resolved) &&
       !this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      // CJS-as-ESM: build the SyntheticModule sync via the shared helper and
-      // commit it. SyntheticModule is born 'linked', so the parent's
-      // `linkRequests([syn])` will plug it in directly.
-      if (!scratch.has(cacheKey)) {
-        const fromRegistry = registry.get(cacheKey);
-        if (fromRegistry instanceof Promise) return null;
-        const module =
-          (fromRegistry as VMModuleWithAsyncGraph | undefined) ??
-          (this._buildCjsAsEsmSyntheticModule(
+      // CJS-as-ESM: SyntheticModule is born 'linked', plugs straight into
+      // the parent's `linkRequests([syn])`.
+      const ok = this._commitSyntheticToScratch(
+        cacheKey,
+        registry,
+        scratch,
+        () =>
+          this._buildCjsAsEsmSyntheticModule(
             referencingIdentifier,
             resolved,
             context,
-          ) as VMModuleWithAsyncGraph);
-        if (!fromRegistry) registry.set(cacheKey, module);
-        scratch.set(cacheKey, {
-          cacheKey,
-          deps: null,
-          isSourceText: false,
-          module,
-        });
-      }
-      return {cacheKey, enqueue: null};
+          ),
+      );
+      return ok ? {cacheKey, enqueue: null} : null;
     }
 
     return {
@@ -1039,9 +1046,8 @@ export default class Runtime {
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,
-          deps: null,
-          isSourceText: false,
-          module: existing as unknown as VMModuleWithAsyncGraph,
+          kind: 'synthetic',
+          module: existing,
         });
       }
       return {cacheKey: moduleID};
@@ -1071,9 +1077,8 @@ export default class Runtime {
     this._moduleMockRegistry.set(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
-      deps: null,
-      isSourceText: false,
-      module: synth as VMModuleWithAsyncGraph,
+      kind: 'synthetic',
+      module: synth,
     });
     return {cacheKey: moduleID};
   }
@@ -1131,9 +1136,8 @@ export default class Runtime {
 
     return {
       cacheKey,
-      deps: null,
-      isSourceText: false,
-      module: synthetic as VMModuleWithAsyncGraph,
+      kind: 'synthetic',
+      module: synthetic,
     };
   }
 
@@ -1167,13 +1171,12 @@ export default class Runtime {
     if (mime === 'application/json') {
       return {
         cacheKey,
-        deps: null,
-        isSourceText: false,
+        kind: 'synthetic',
         module: this._buildJsonSyntheticModule(
           code as string,
           specifier,
           context,
-        ) as VMModuleWithAsyncGraph,
+        ),
       };
     }
 
@@ -1220,7 +1223,7 @@ export default class Runtime {
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
 
-    return {cacheKey, deps, isSourceText: true, module};
+    return {cacheKey, deps, kind: 'source', module};
   }
 
   private async loadEsmModule(
@@ -1824,6 +1827,12 @@ export default class Runtime {
         error.code = 'ERR_REQUIRE_ESM';
         throw error;
       }
+      // Fast path: skip the graph walker on cache hits.
+      const reg = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+      const cached = reg.get(modulePath);
+      if (cached && !(cached instanceof Promise)) {
+        return (cached as VMModule).namespace as T;
+      }
       return this._requireEsmModule<T>(modulePath);
     }
 
@@ -2313,9 +2322,15 @@ export default class Runtime {
   }
 
   private _resolveCjsModule(from: string, to: string | undefined) {
-    return to
-      ? this._resolver.resolveModule(from, to, {conditions: this.cjsConditions})
-      : from;
+    if (!to) return from;
+    const key = resolveCacheKey(from, to);
+    const cached = this._resolveCjsCache.get(key);
+    if (cached !== undefined) return cached;
+    const resolved = this._resolver.resolveModule(from, to, {
+      conditions: this.cjsConditions,
+    });
+    this._resolveCjsCache.set(key, resolved);
+    return resolved;
   }
 
   private _resolveModule(from: string, to: string | undefined) {
@@ -2869,11 +2884,15 @@ export default class Runtime {
   }
 
   private _resolveModuleSync(from: string, to: string | undefined): string {
-    return to
-      ? this._resolver.resolveModule(from, to, {
-          conditions: this.esmConditions,
-        })
-      : from;
+    if (!to) return from;
+    const key = resolveCacheKey(from, to);
+    const cached = this._resolveEsmCache.get(key);
+    if (cached !== undefined) return cached;
+    const resolved = this._resolver.resolveModule(from, to, {
+      conditions: this.esmConditions,
+    });
+    this._resolveEsmCache.set(key, resolved);
+    return resolved;
   }
 
   // Sync mirror of `_shouldMockModule`. Used by the sync-first ESM core on
