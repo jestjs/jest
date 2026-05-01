@@ -2140,6 +2140,8 @@ export default class Runtime {
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
     this._cacheFSBuffer.clear();
+    this._resolveCjsCache.clear();
+    this._resolveEsmCache.clear();
 
     if (
       this._coverageOptions.collectCoverage &&
@@ -3080,8 +3082,10 @@ export default class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
-      // `module.namespace` throws ERR_VM_MODULE_STATUS on unlinked / linking
-      // modules, so skip those (legacy path can stash mid-load entries).
+      // Only expose modules whose `namespace` is readable without throwing or
+      // exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
+      // and a `linked` SourceTextModule's namespace properties are in TDZ
+      // until evaluate runs (reading them throws `ReferenceError`).
       const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
         if (!entry || entry instanceof Promise) return false;
         const status = (entry as VMModule).status;
