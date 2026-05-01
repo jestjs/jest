@@ -258,7 +258,7 @@ const ESM_TRANSFORM_OPTIONS: InternalModuleOptions = {
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
-// Synthetic entries (mocks, core, JSON, wasm, @jest/globals) are born linked
+// Synthetic entries (mocks, core, JSON, wasm, @jest/globals) start linked
 // and never appear in the link-requests pass.
 type ScratchEntry =
   | {
@@ -771,8 +771,8 @@ export default class Runtime {
       scratch.set(cacheKey, {cacheKey, deps, kind: 'source', module});
     }
 
-    // Link every source-text module to its deps. SyntheticModule entries are
-    // born 'linked' and have no `linkRequests` of their own; they plug into
+    // Link every source-text module to its deps. SyntheticModule entries
+    // start linked and have no `linkRequests` of their own; they plug into
     // the parent's `linkRequests` array directly.
     for (const entry of scratch.values()) {
       if (entry.kind !== 'source') continue;
@@ -1004,7 +1004,7 @@ export default class Runtime {
       !isWasm(resolved) &&
       !this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      // CJS-as-ESM: SyntheticModule is born 'linked', plugs straight into
+      // CJS-as-ESM: SyntheticModule starts linked, plugs straight into
       // the parent's `linkRequests([syn])`.
       const ok = this._commitSyntheticToScratch(
         cacheKey,
@@ -3607,7 +3607,10 @@ export default class Runtime {
     );
   }
 
-  private getGlobalsForEsm(from: string, context: VMContext): SyntheticModule {
+  private getGlobalsForEsm(
+    from: string,
+    context: VMContext,
+  ): SyntheticModule | Promise<SyntheticModule> {
     return evaluateSyntheticModule(
       this._buildJestGlobalsSyntheticModule(from, context),
     );
@@ -3665,11 +3668,20 @@ export default class Runtime {
   }
 }
 
-// SyntheticModules are created `'linked'` (no import deps to resolve) and the
-// body runs synchronously even though `evaluate()` returns a Promise - return
-// it sync so callers can store the actual module rather than a Promise that
-// can poison the registry if microtask draining stalls.
-function evaluateSyntheticModule(module: SyntheticModule) {
+// On Node v22.21+ / v24.8+ a SyntheticModule starts in `'linked'` and the
+// body runs synchronously even though `evaluate()` returns a Promise -
+// return it sync so callers can store the actual module rather than a
+// Promise that can poison the registry if microtask draining stalls. On
+// older Node it starts `'unlinked'` and link/evaluate are genuinely async;
+// fall back to the async path there (the async-only legacy ESM code paths
+// handle the Promise return fine, and sync `require(esm)` doesn't exist on
+// those versions anyway).
+function evaluateSyntheticModule(
+  module: SyntheticModule,
+): SyntheticModule | Promise<SyntheticModule> {
+  if (module.status === 'unlinked') {
+    return evaluateSyntheticModuleAsync(module);
+  }
   module.evaluate().catch(noop);
   if (module.status === 'errored') {
     throw module.error;
@@ -3678,5 +3690,17 @@ function evaluateSyntheticModule(module: SyntheticModule) {
     module.status === 'evaluated',
     `Synthetic module ${module.identifier} did not evaluate synchronously (status="${module.status}"). This is a bug in Jest, please report it!`,
   );
+  return module;
+}
+
+async function evaluateSyntheticModuleAsync(
+  module: SyntheticModule,
+): Promise<SyntheticModule> {
+  await module.link(() => {
+    throw new Error('This should never happen');
+  });
+
+  await module.evaluate();
+
   return module;
 }

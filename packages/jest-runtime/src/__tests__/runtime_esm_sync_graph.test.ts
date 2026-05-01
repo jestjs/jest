@@ -15,6 +15,14 @@ const syncCoreAvailable =
   typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
 const itSyncOnly = syncCoreAvailable ? it : it.skip;
 
+// `linkRequests` shipped together with SyntheticModule's initial `'linked'`
+// status (Node v22.21 and v24.8); use that as the gate for sync-synthetic
+// behavior.
+const syntheticStartsLinked =
+  // @ts-expect-error - linkRequests is in Node v22.21+/v24.8+, not yet typed
+  typeof SourceTextModule?.prototype.linkRequests === 'function';
+const itSyntheticSync = syntheticStartsLinked ? it : it.skip;
+
 const ROOT_DIR = path.join(__dirname, 'test_esm_sync_graph_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
 
@@ -448,7 +456,7 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
-  itVm(
+  itSyntheticSync(
     'dynamic import of a CJS dep stores the actual module in the ESM registry, not a Promise',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
