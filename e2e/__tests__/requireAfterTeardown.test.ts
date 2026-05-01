@@ -7,15 +7,21 @@
 
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
+import {
+  replaceJestBuildLineNumbers,
+  replaceNodeVersion,
+  replaceTime,
+} from '../Utils';
 
 skipSuiteOnJasmine();
 
 test('prints useful error for requires after test is done w/o `waitForUnhandledRejections`', () => {
   const {stderr} = runJest('require-after-teardown');
 
-  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
-
-  expect(interestingLines).toMatchSnapshot();
+  const normalized = replaceJestBuildLineNumbers(
+    replaceNodeVersion(replaceTime(stderr)),
+  );
+  expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });
 
@@ -24,8 +30,9 @@ test('prints useful error for requires after test is done w/ `waitForUnhandledRe
     '--waitForUnhandledRejections',
   ]);
 
-  const interestingLines = stderr.split('\n').slice(5, 14).join('\n');
-
-  expect(interestingLines).toMatchSnapshot();
+  const normalized = replaceJestBuildLineNumbers(
+    replaceNodeVersion(replaceTime(stderr)),
+  );
+  expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });

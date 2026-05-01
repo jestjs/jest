@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`prints useful error for requires after test is done w/ \`waitForUnhandledRejections\` 1`] = `
-"    ReferenceError: You are trying to \`require\` a file outside of the scope of the test code.
+"FAIL __tests__/lateRequire.test.js
+  ✕ require after done (<<REPLACED>>)
+
+  ● require after done
+
+    ReferenceError: You are trying to \`require\` a file outside of the scope of the test code.
 
        9 | test('require after done', () => {
       10 |   setTimeout(() => {
@@ -9,11 +14,29 @@ exports[`prints useful error for requires after test is done w/ \`waitForUnhandl
          |                    ^
       12 |
       13 |     expect(double(5)).toBe(10);
-      14 |   }, 0);"
+      14 |   }, 0);
+
+      at Runtime._execModule (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
+      at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
 `;
 
 exports[`prints useful error for requires after test is done w/o \`waitForUnhandledRejections\` 1`] = `
-"ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
+"PASS __tests__/lateRequire.test.js
+  ✓ require after done
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+
+ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
        9 | test('require after done', () => {
       10 |   setTimeout(() => {
@@ -21,5 +44,14 @@ exports[`prints useful error for requires after test is done w/o \`waitForUnhand
          |                    ^
       12 |
       13 |     expect(double(5)).toBe(10);
-      14 |   }, 0);"
+      14 |   }, 0);
+
+      at Timeout._onTimeout (__tests__/lateRequire.test.js:11:20)
+/Users/simen/repos/jest/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
+    expect(double(5)).toBe(10);
+           ^
+
+[TypeError: double is not a function]
+
+Node.js <<REPLACED>>"
 `;

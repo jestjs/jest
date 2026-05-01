@@ -7,6 +7,11 @@
 
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import runJest from '../runJest';
+import {
+  replaceJestBuildLineNumbers,
+  replaceNodeVersion,
+  replaceTime,
+} from '../Utils';
 
 skipSuiteOnJestCircus();
 
@@ -17,8 +22,9 @@ test.each`
 `('prints useful error for requires after test is done', ({jestArgs}) => {
   const {stderr} = runJest('require-after-teardown', jestArgs);
 
-  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
-
-  expect(interestingLines).toMatchSnapshot();
+  const normalized = replaceJestBuildLineNumbers(
+    replaceNodeVersion(replaceTime(stderr)),
+  );
+  expect(normalized).toMatchSnapshot();
   expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });
