@@ -200,6 +200,9 @@ export const replaceTime = (str: string) =>
     .replaceAll(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replaceAll(', estimated <<REPLACED>>', '');
 
+export const replaceJestBuildLineNumbers = (str: string) =>
+  str.replaceAll(/([\w-]+\/build\/[^:\s]+:)\d+:\d+/g, '$1<<REPLACED>>');
+
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>
   output
