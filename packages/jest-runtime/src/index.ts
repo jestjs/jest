@@ -184,8 +184,8 @@ function resolveCacheKey(from: string, to: string): string {
   return `${from}\0${to}`;
 }
 
-function noop(): void {
-  return;
+function noop() {
+  // empty
 }
 
 // `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
