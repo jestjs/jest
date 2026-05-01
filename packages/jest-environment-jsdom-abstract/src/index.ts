@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context} from 'vm';
+import type {Context} from 'node:vm';
 import type * as jsdom from 'jsdom';
 import type {
   EnvironmentContext,

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import type {
   TransformOptions as BabelTransformOptions,
   PartialConfig,

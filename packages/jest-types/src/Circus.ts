@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as ProcessModule from 'process';
+import type * as ProcessModule from 'node:process';
 import type * as Global from './Global';
 
 type Process = typeof ProcessModule;

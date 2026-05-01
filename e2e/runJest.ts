@@ -6,9 +6,9 @@
  *
  */
 
-import * as path from 'path';
-import {Writable} from 'stream';
-import {stripVTControlCharacters as stripAnsi} from 'util';
+import * as path from 'node:path';
+import {Writable} from 'node:stream';
+import {stripVTControlCharacters as stripAnsi} from 'node:util';
 import dedent from 'dedent';
 import execa from 'execa';
 import * as fs from 'graceful-fs';

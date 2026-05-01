@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';

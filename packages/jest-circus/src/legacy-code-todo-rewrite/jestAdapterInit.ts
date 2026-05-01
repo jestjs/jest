@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as Process from 'process';
+import type * as Process from 'node:process';
 import type {JestEnvironment} from '@jest/environment';
 import {type JestExpect, jestExpect} from '@jest/expect';
 import {

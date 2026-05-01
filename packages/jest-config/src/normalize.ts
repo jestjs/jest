@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {totalmem} from 'os';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import {totalmem} from 'node:os';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import merge from 'deepmerge';
 import {glob} from 'glob';

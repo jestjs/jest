@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk from 'chalk';

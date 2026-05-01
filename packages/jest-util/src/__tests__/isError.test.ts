@@ -57,8 +57,8 @@ describe('cross-realm', () => {
     let error: unknown;
     try {
       vm.runInNewContext('null.x');
-    } catch (e) {
-      error = e;
+    } catch (thrownError) {
+      error = thrownError;
     }
     expect(isError(error)).toBe(true);
   });

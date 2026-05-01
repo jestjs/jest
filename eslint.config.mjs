@@ -7,8 +7,8 @@
 
 /* eslint-disable sort-keys */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import eslintJs from '@eslint/js';
 import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
@@ -210,6 +210,7 @@ const config = defineConfig(
       'no-restricted-imports': [
         'error',
         {message: 'Please use graceful-fs instead.', name: 'fs'},
+        {message: 'Please use graceful-fs instead.', name: 'node:fs'},
       ],
       'no-restricted-modules': 'off',
       'no-restricted-syntax': 'off',
@@ -312,11 +313,7 @@ const config = defineConfig(
       'unicorn/prefer-reflect-apply': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-structured-clone': 'off',
-
-      // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
       'unicorn/prefer-export-from': 'off',
-      // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
-      'unicorn/prefer-node-protocol': 'off',
     },
   },
   [
@@ -455,6 +452,8 @@ const config = defineConfig(
       'jest/require-to-throw-message': 'error',
       'jest/valid-expect': 'error',
       'import-x/order': 'off',
+      // we don't wanna mess with tests
+      'unicorn/prefer-node-protocol': 'off',
     },
   },
 
