@@ -274,6 +274,10 @@ const config = defineConfig(
       'wrap-regex': 'off',
       yoda: 'off',
 
+      // Needs Node 20 as minimum
+      'unicorn/no-array-reverse': 'off',
+      'unicorn/no-array-sort': 'off',
+
       // doesn't work without ESModuleInterop
       'unicorn/import-style': 'off',
       // we're a CJS project
@@ -522,10 +526,13 @@ const config = defineConfig(
       'unicorn/error-message': 'off',
       'unicorn/no-anonymous-default-export': 'off',
       'unicorn/no-await-expression-member': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-static-only-class': 'off',
+      'unicorn/prefer-class-fields': 'off',
       'unicorn/prefer-number-properties': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-global-this': 'off',
+      'unicorn/require-module-specifiers': 'off',
       // The following disabled when upgrade ESLint to v9, some of them make sense to enable
       'prefer-template': 'off',
       '@typescript-eslint/no-require-imports': 'off',
@@ -834,6 +841,29 @@ const config = defineConfig(
       'e2e/transform/**/*',
       'examples/react-native/index.js',
     ],
+  },
+  {
+    files: [
+      'packages/expect/src/__tests__/**/*',
+      'packages/expect-utils/src/__tests__/**/*',
+      'packages/jest-get-type/src/__tests__/**/*',
+      'packages/jest-matcher-utils/src/__tests__/**/*',
+      'packages/pretty-format/src/__tests__/**/*',
+    ],
+    rules: {
+      'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-bigint-literals': 'off',
+    },
+  },
+  {
+    files: [
+      'e2e/coverage-provider-v8/*/uncovered.{ts,js}',
+      'e2e/babel-plugin-jest-hoist/__test_modules__/**/*',
+    ],
+    rules: {
+      'unicorn/prefer-class-fields': 'off',
+      'unicorn/require-module-specifiers': 'off',
+    },
   },
 );
 

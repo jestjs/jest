@@ -9,20 +9,17 @@ import {KEYS} from '../constants';
 import type {ScrollOptions} from '../types';
 
 export default class Prompt {
-  private _entering: boolean;
-  private _value: string;
+  // Copied from `enter` to satisfy TS
+  private _entering = true;
+  private _value = '';
   private _onChange: () => void;
   private _onSuccess: (value: string) => void;
   private _onCancel: (value: string) => void;
   private _offset: number;
   private _promptLength: number;
-  private _selection: string | null;
+  private _selection: string | null = null;
 
   constructor() {
-    // Copied from `enter` to satisfy TS
-    this._entering = true;
-    this._value = '';
-    this._selection = null;
     this._offset = -1;
     this._promptLength = 0;
 

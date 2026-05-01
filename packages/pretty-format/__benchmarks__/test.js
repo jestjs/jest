@@ -165,17 +165,17 @@ test('a number', 123);
 test('a date', new Date(10e11));
 test('an empty object', {});
 test('an object with properties', {prop1: 'value1', prop2: 'value2'});
-const objectWithPropsAndSymbols = {prop: 'value1'};
-objectWithPropsAndSymbols[Symbol('symbol1')] = 'value2';
-objectWithPropsAndSymbols[Symbol('symbol2')] = 'value3';
+const objectWithPropsAndSymbols = {
+  prop: 'value1',
+  [Symbol('symbol1')]: 'value2',
+  [Symbol('symbol2')]: 'value3',
+};
 test('an object with properties and symbols', objectWithPropsAndSymbols);
 test('an object with sorted properties', {a: 2, b: 1});
 test('regular expressions from constructors', new RegExp('regexp'));
 test('regular expressions from literals', /regexp/gi);
 test('an empty set', new Set());
-const setWithValues = new Set();
-setWithValues.add('value1');
-setWithValues.add('value2');
+const setWithValues = new Set(['value1', 'value2']);
 test('a set with values', setWithValues);
 test('a string', 'string');
 test('a symbol', Symbol('symbol'));

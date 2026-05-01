@@ -47,3 +47,30 @@ describe('runJest', () => {
     expect(stderrSpy).toHaveBeenCalled();
   });
 });
+
+describe('runJest with collectTests', () => {
+  test('handles no tests found', async () => {
+    const onComplete = jest.fn();
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    await runJest({
+      contexts: [],
+      globalConfig: {
+        collectTests: true,
+        rootDir: '',
+        testPathPatterns: new TestPathPatterns([]),
+        testSequencer: require.resolve('@jest/test-sequencer'),
+      },
+      onComplete,
+      outputStream: {write: jest.fn()},
+      startRun: jest.fn(),
+      testWatcher: {isInterrupted: () => false},
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith('No tests found.');
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({numTotalTests: 0}),
+    );
+    consoleSpy.mockRestore();
+  });
+});

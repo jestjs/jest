@@ -118,7 +118,6 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error needs an upstream fix: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/73943
       this._clock.runMicrotasks();
     }
   }
