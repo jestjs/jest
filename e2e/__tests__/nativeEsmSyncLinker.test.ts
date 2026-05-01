@@ -11,9 +11,11 @@ import runJest from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-sync-linker');
 
-// `vm.SourceTextModule#linkRequests` and `instantiate` ship in Node v22.21
-// and v24.8. On older Node, the legacy async ESM path runs and is covered
-// by the existing native-esm fixture.
+// This e2e only depends on the sync linker VM APIs
+// (`vm.SourceTextModule#linkRequests` and `instantiate`), which ship in
+// Node v22.21 and v24.8. This is intentionally narrower than any stricter
+// version gate used for `require(esm)` itself. On older Node, the legacy
+// async ESM path runs and is covered by the existing native-esm fixture.
 onNodeVersions('^22.21.0 || >=24.8.0', () => {
   test('sync linker handles diamond + cycle graph', () => {
     const {exitCode, stderr} = runJest(DIR, ['sync-linker.test.js'], {
