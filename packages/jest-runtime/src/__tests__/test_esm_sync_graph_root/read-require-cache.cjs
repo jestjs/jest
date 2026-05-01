@@ -6,6 +6,7 @@
  */
 
 module.exports = {
+  callRequireOnEntry: key => require.cache[key].require('whatever'),
   entry: key => require.cache[key],
   has: key => key in require.cache,
   keys: () => Object.keys(require.cache),

@@ -825,8 +825,10 @@ export default class Runtime {
     }
 
     // SyntheticModule.evaluate() is sync; SourceTextModule.evaluate() is
-    // sync when hasAsyncGraph() is false (checked above).
-    void rootModule.evaluate();
+    // sync when hasAsyncGraph() is false (checked above). The returned
+    // Promise mirrors that sync state; attach a noop .catch so eval errors
+    // don't surface as unhandled rejections after we throw module.error.
+    rootModule.evaluate().catch(() => {});
     const status = rootModule.status as VMModule['status'];
     if (status === 'errored') {
       throw rootModule.error;

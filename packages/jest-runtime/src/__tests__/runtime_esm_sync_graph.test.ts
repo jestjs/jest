@@ -297,14 +297,12 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     'throws ERR_REQUIRE_ASYNC_MODULE naming the dep when a dep uses TLA',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      let caught: NodeJS.ErrnoException | undefined;
-      try {
-        runtime.requireModule(FROM, './import-tla.mjs');
-      } catch (error) {
-        caught = error as NodeJS.ErrnoException;
-      }
-      expect(caught?.code).toBe('ERR_REQUIRE_ASYNC_MODULE');
-      expect(caught?.message).toMatch(/with-tla\.mjs/);
+      expect(() => runtime.requireModule(FROM, './import-tla.mjs')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ASYNC_MODULE',
+          message: expect.stringMatching(/with-tla\.mjs/),
+        }),
+      );
     },
   );
 
@@ -374,6 +372,19 @@ describe('Runtime sync ESM graph - require(esm)', () => {
     },
   );
 
+  itSyncOnly(
+    'require.cache wrapper rejects calls to its `require` field',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const aPath = path.join(ROOT_DIR, 'a.mjs');
+      runtime.requireModule(FROM, './a.mjs');
+      const probe = runtime.requireModule(FROM, './read-require-cache.cjs');
+      expect(() => probe.callRequireOnEntry(aPath)).toThrow(
+        'require() on a require.cache ESM entry is not supported',
+      );
+    },
+  );
+
   itSyncOnly('require()s an ESM file that pulls in a CJS dep', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const ns = runtime.requireModule(FROM, './import-cjs-dep.mjs');
@@ -405,6 +416,35 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       expect(() =>
         runtime.requireModule(FROM, './import-data-uri-tla.mjs'),
       ).toThrow(expect.objectContaining({code: 'ERR_REQUIRE_ASYNC_MODULE'}));
+    },
+  );
+
+  itSyncOnly(
+    'surfaces an error thrown during ESM module evaluation',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      expect(() => runtime.requireModule(FROM, './throws-at-eval.mjs')).toThrow(
+        'boom from esm eval',
+      );
+    },
+  );
+
+  itSyncOnly(
+    'throws ERR_REQUIRE_ESM when an `import()` of the same module is in flight',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const aPath = path.join(ROOT_DIR, 'a.mjs');
+      // Simulate a concurrent `await import()` by stashing a pending Promise
+      // in the registry under the key require() will look up.
+      runtime._esModuleRegistry.set(aPath, new Promise(() => {}));
+      expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ESM',
+          message: expect.stringContaining(
+            'currently being loaded by a concurrent',
+          ),
+        }),
+      );
     },
   );
 });
