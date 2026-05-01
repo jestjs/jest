@@ -6,7 +6,7 @@ exports[`prints useful error for imports after test is done w/ \`waitForUnhandle
 
   ● import after done
 
-    ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down.
+    ReferenceError: You are trying to \`import\` a file outside of the scope of the test code.
 
        8 | test('import after done', () => {
        9 |   setTimeout(async () => {

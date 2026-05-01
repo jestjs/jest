@@ -3579,7 +3579,7 @@ export default class Runtime {
     );
     if (this.testState === 'betweenTests') {
       throw new ReferenceError(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
+        'You are trying to `import` a file outside of the scope of the test code.',
       );
     }
     if (this.testState === 'tornDown') {
