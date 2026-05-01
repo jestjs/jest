@@ -20,6 +20,17 @@ onNodeVersions('>=24.9.0', () => {
     expect(stderr).toContain('4 passed');
     expect(exitCode).toBe(0);
   });
+
+  test('require()/import() fall back to ESM for .js with ESM syntax and no "type":"module" marker', () => {
+    const {exitCode, stderr} = runJest(
+      DIR,
+      ['__tests__/syntax-fallback.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    expect(stderr).toContain('2 passed');
+    expect(exitCode).toBe(0);
+  });
 });
 
 onNodeVersions('<24.9.0', () => {

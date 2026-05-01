@@ -64,6 +64,14 @@ import {
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
 
+// Marker used by the CJS-as-ESM SyntaxError fallback paths to distinguish
+// parse-time errors (where retrying as ESM is correct) from runtime errors
+// a user might throw from inside a module body.
+const CJS_PARSE_ERROR = Symbol('jest-runtime CJS parse error');
+const isCjsParseError = (error: unknown): error is Error =>
+  isError(error) &&
+  (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] === true;
+
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
@@ -1663,20 +1671,16 @@ export default class Runtime {
     try {
       synthetic = this._buildCjsAsEsmSyntheticModule(from, modulePath, context);
     } catch (error) {
-      // Use .name check instead of instanceof: the error comes from
-      // vm.compileFunction with a sandbox parsingContext, so its prototype
-      // may cross context boundaries.
-      if ((error as Error).name !== 'SyntaxError') {
+      if (!isCjsParseError(error)) {
         throw error;
       }
       // The file may contain ESM syntax with no ESM marker (.mjs /
       // "type":"module") - try loading as native ESM. If the ESM parser also
       // rejects it, the original CJS error was the genuine one; surface it
       // instead of the (less useful) ESM diagnostic.
-      const cjsSyntaxError = error as Error;
       return this.loadEsmModule(modulePath).catch(esmError => {
         throw isError(esmError) && esmError.name === 'SyntaxError'
-          ? cjsSyntaxError
+          ? error
           : esmError;
       });
     }
@@ -1877,6 +1881,15 @@ export default class Runtime {
       );
     } catch (error) {
       moduleRegistry.delete(modulePath);
+      // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
+      if (supportsSyncEvaluate && isCjsParseError(error)) {
+        try {
+          return this._requireEsmModule<T>(modulePath);
+        } catch (esmError) {
+          if (isError(esmError) && esmError.name === 'SyntaxError') throw error;
+          throw esmError;
+        }
+      }
       throw error;
     }
 
@@ -2629,6 +2642,12 @@ export default class Runtime {
         },
       ) as ModuleWrapper;
     } catch (error: any) {
+      // Tag so callers can distinguish parse-time SyntaxErrors (where the
+      // ESM-syntax-in-CJS fallback applies) from runtime SyntaxErrors a user
+      // might throw from inside a CJS module body.
+      if (isError(error)) {
+        (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] = true;
+      }
       throw handlePotentialSyntaxError(error);
     }
   }

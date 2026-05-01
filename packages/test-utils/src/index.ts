@@ -9,10 +9,12 @@ export {alignedAnsiStyleSerializer} from './alignedAnsiStyleSerializer';
 
 export {
   isJestJasmineRun,
-  testWithVmEsm,
   onNodeVersions,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
+  testWithLinkedSyntheticModule,
+  testWithSyncEsm,
+  testWithVmEsm,
 } from './ConditionalTest';
 
 export {makeGlobalConfig, makeProjectConfig} from './config';
