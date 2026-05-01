@@ -2056,7 +2056,7 @@ export default class Runtime {
         'You are trying to `require` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
-      // @ts-expect-error - exiting early, the process will be terminated
+      // @ts-expect-error: exiting early
       return;
     }
 

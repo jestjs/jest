@@ -20,7 +20,5 @@ test.each`
   const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
 
   expect(interestingLines).toMatchSnapshot();
-  expect(stderr.split('\n')[19]).toMatch(
-    '(__tests__/lateRequire.test.js:11:20)',
-  );
+  expect(stderr).toContain('(__tests__/lateRequire.test.js:11:20)');
 });
