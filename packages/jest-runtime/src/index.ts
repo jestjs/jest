@@ -16,7 +16,6 @@ import {
   compileFunction,
 } from 'node:vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
-import {CoverageInstrumenter, type V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
 import stripBOM from 'strip-bom';
@@ -62,6 +61,7 @@ import {
 } from './helpers';
 import FileCache from './internals/FileCache';
 import Resolution from './internals/Resolution';
+import V8CoverageCollector from './internals/V8CoverageCollector';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -337,9 +337,7 @@ export default class Runtime {
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, TransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
-  private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
-  private _v8CoverageResult: V8Coverage | undefined;
-  private _v8CoverageSources: Map<string, TransformResult> | undefined;
+  private readonly v8Coverage: V8CoverageCollector;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
   private readonly _virtualMocks: Map<string, boolean>;
@@ -364,6 +362,7 @@ export default class Runtime {
     this.fileCache = new FileCache(cacheFS);
     this._config = config;
     this._coverageOptions = coverageOptions;
+    this.v8Coverage = new V8CoverageCollector(coverageOptions, config);
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._globalConfig = globalConfig;
@@ -2126,16 +2125,7 @@ export default class Runtime {
     this.fileCache.clear();
     this._resolution.clear();
 
-    if (
-      this._coverageOptions.collectCoverage &&
-      this._coverageOptions.coverageProvider === 'v8' &&
-      this._v8CoverageSources
-    ) {
-      this._v8CoverageSources = new Map([
-        ...this._v8CoverageSources,
-        ...this._fileTransforms,
-      ]);
-    }
+    this.v8Coverage.snapshotTransforms(this._fileTransforms);
 
     this._fileTransforms.clear();
 
@@ -2163,23 +2153,12 @@ export default class Runtime {
     }
   }
 
-  async collectV8Coverage(): Promise<void> {
-    this._v8CoverageInstrumenter = new CoverageInstrumenter();
-    this._v8CoverageSources = new Map();
-
-    await this._v8CoverageInstrumenter.startInstrumenting();
+  collectV8Coverage(): Promise<void> {
+    return this.v8Coverage.start();
   }
 
-  async stopCollectingV8Coverage(): Promise<void> {
-    if (!this._v8CoverageInstrumenter || !this._v8CoverageSources) {
-      throw new Error('You need to call `collectV8Coverage` first.');
-    }
-    this._v8CoverageResult =
-      await this._v8CoverageInstrumenter.stopInstrumenting();
-    this._v8CoverageSources = new Map([
-      ...this._v8CoverageSources,
-      ...this._fileTransforms,
-    ]);
+  stopCollectingV8Coverage(): Promise<void> {
+    return this.v8Coverage.stop(this._fileTransforms);
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -2187,29 +2166,7 @@ export default class Runtime {
   }
 
   getAllV8CoverageInfoCopy(): V8CoverageResult {
-    if (!this._v8CoverageResult || !this._v8CoverageSources) {
-      throw new Error('You need to call `stopCollectingV8Coverage` first.');
-    }
-
-    return this._v8CoverageResult
-      .filter(res => res.url.startsWith('file://'))
-      .map(res => ({...res, url: fileURLToPath(res.url)}))
-      .filter(
-        res =>
-          // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
-          res.url.startsWith(this._config.rootDir) &&
-          shouldInstrument(
-            res.url,
-            this._coverageOptions,
-            this._config,
-            /* loadedFilenames */ [...this._v8CoverageSources!.keys()],
-          ),
-      )
-      .map(result => {
-        const transformedFile = this._v8CoverageSources!.get(result.url);
-
-        return {codeTransformResult: transformedFile, result};
-      });
+    return this.v8Coverage.getResult();
   }
 
   getSourceMaps(): SourceMapRegistry {
@@ -2300,9 +2257,7 @@ export default class Runtime {
     this._fileTransforms.clear();
     this.jestObjectCaches.clear();
 
-    this._v8CoverageSources?.clear();
-    this._v8CoverageResult = [];
-    this._v8CoverageInstrumenter = undefined;
+    this.v8Coverage.reset();
     this._moduleImplementation = undefined;
 
     this.testState = 'tornDown';
