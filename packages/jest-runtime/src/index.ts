@@ -58,6 +58,7 @@ import {
 } from './helpers';
 import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
+import MockState from './internals/MockState';
 import ModuleRegistries from './internals/ModuleRegistries';
 import Resolution, {isWasm} from './internals/Resolution';
 import TransformCache, {
@@ -148,8 +149,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   }
   return null;
 };
-
-const unmockRegExpCache = new WeakMap();
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -295,11 +294,7 @@ export default class Runtime {
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
-  private readonly _explicitShouldMock: Map<string, boolean>;
-  private readonly _explicitShouldMockModule: Map<string, boolean>;
-  private readonly _onGenerateMock: Set<
-    (moduleName: string, moduleMock: any) => any
-  >;
+  private readonly mockState: MockState;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
@@ -307,28 +302,15 @@ export default class Runtime {
   private readonly registries: ModuleRegistries;
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
-  private readonly _mockFactories: Map<string, () => unknown>;
-  private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
-  private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
   private readonly cjsExportsCache: CjsExportsCache;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
   private readonly _testPath: string;
   private readonly _resolution: Resolution;
-  private _shouldAutoMock: boolean;
-  private readonly _shouldMockModuleCache: Map<string, boolean>;
-  private readonly _shouldUnmockTransitiveDependenciesCache: Map<
-    string,
-    boolean
-  >;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly transformCache: TransformCache;
   private readonly v8Coverage: V8CoverageCollector;
-  private readonly _transitiveShouldMock: Map<string, boolean>;
-  private _unmockList: RegExp | undefined;
-  private readonly _virtualMocks: Map<string, boolean>;
-  private readonly _virtualModuleMocks: Map<string, boolean>;
   private _moduleImplementation?: typeof nativeModule.Module;
   private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
@@ -352,14 +334,9 @@ export default class Runtime {
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._globalConfig = globalConfig;
-    this._explicitShouldMock = new Map();
-    this._explicitShouldMockModule = new Map();
-    this._onGenerateMock = new Set();
     this.registries = new ModuleRegistries();
     this._isCurrentlyExecutingManualMock = null;
     this._mainModule = null;
-    this._mockFactories = new Map();
-    this._moduleMockFactories = new Map();
     invariant(
       this._environment.moduleMocker,
       '`moduleMocker` must be set on an environment when created',
@@ -369,7 +346,6 @@ export default class Runtime {
     this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
     this._scriptTransformer = transformer;
-    this._shouldAutoMock = config.automock;
     this.transformCache = new TransformCache(
       transformer,
       this.fileCache,
@@ -380,32 +356,18 @@ export default class Runtime {
       config,
       this.transformCache,
     );
-    this._virtualMocks = new Map();
-    this._virtualModuleMocks = new Map();
     this.jestObjectCaches = new Map();
-
-    this._mockMetaDataCache = new Map();
-    this._shouldMockModuleCache = new Map();
-    this._shouldUnmockTransitiveDependenciesCache = new Map();
-    this._transitiveShouldMock = new Map();
 
     this._fakeTimersImplementation = config.fakeTimers.legacyFakeTimers
       ? this._environment.fakeTimers
       : this._environment.fakeTimersModern;
-
-    this._unmockList = unmockRegExpCache.get(config);
-    if (!this._unmockList && config.unmockedModulePathPatterns) {
-      this._unmockList = new RegExp(
-        config.unmockedModulePathPatterns.join('|'),
-      );
-      unmockRegExpCache.set(config, this._unmockList);
-    }
 
     this._resolution = new Resolution(
       resolver,
       this._environment.exportConditions?.() ?? [],
       config.extensionsToTreatAsEsm,
     );
+    this.mockState = new MockState(this._resolution, config);
     this.cjsExportsCache = new CjsExportsCache(
       this._resolution,
       this.fileCache,
@@ -419,9 +381,9 @@ export default class Runtime {
         if (filePath.includes(NODE_MODULES)) {
           // shouldn't really matter, but in theory this will make sure the caching is correct
           const moduleID = this.unstable_shouldLoadAsEsm(filePath)
-            ? this._resolution.getEsmModuleId(this._virtualMocks, filePath)
-            : this._resolution.getCjsModuleId(this._virtualMocks, filePath);
-          this._transitiveShouldMock.set(moduleID, false);
+            ? this._resolution.getEsmModuleId(new Map(), filePath)
+            : this._resolution.getCjsModuleId(new Map(), filePath);
+          this.mockState.markTransitive(moduleID, false);
         }
       }
     }
@@ -904,11 +866,7 @@ export default class Runtime {
     const [specifierPath, query = ''] = specifier.split('?');
 
     if (
-      this._shouldMockModuleSync(
-        referencingIdentifier,
-        specifierPath,
-        this._explicitShouldMockModule,
-      )
+      this.mockState.shouldMockEsmSync(referencingIdentifier, specifierPath)
     ) {
       const mocked = this._importMockSync(
         referencingIdentifier,
@@ -976,11 +934,7 @@ export default class Runtime {
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
   ): {cacheKey: string} | null {
-    const moduleID = this._resolution.getEsmModuleId(
-      this._virtualModuleMocks,
-      from,
-      moduleName,
-    );
+    const moduleID = this.mockState.getEsmModuleId(from, moduleName);
 
     const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) return null;
@@ -995,7 +949,7 @@ export default class Runtime {
       return {cacheKey: moduleID};
     }
 
-    const factory = this._moduleMockFactories.get(moduleID);
+    const factory = this.mockState.getEsmFactory(moduleID);
     if (factory === undefined) return null;
 
     const result = factory();
@@ -1353,10 +1307,9 @@ export default class Runtime {
 
     if (specifier.startsWith('data:')) {
       if (
-        await this._shouldMockModule(
+        await this.mockState.shouldMockEsmAsync(
           referencingIdentifier,
           specifier,
-          this._explicitShouldMockModule,
         )
       ) {
         return this.importMock(referencingIdentifier, specifier, context);
@@ -1411,10 +1364,9 @@ export default class Runtime {
     const [specifierPath, query] = specifier.split('?');
 
     if (
-      await this._shouldMockModule(
+      await this.mockState.shouldMockEsmAsync(
         referencingIdentifier,
         specifierPath,
-        this._explicitShouldMockModule,
       )
     ) {
       return this.importMock(referencingIdentifier, specifierPath, context);
@@ -1628,21 +1580,15 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
   ): Promise<T> {
-    const moduleID = await this._resolution.getEsmModuleIdAsync(
-      this._virtualModuleMocks,
-      from,
-      moduleName,
-    );
+    const moduleID = await this.mockState.getEsmModuleIdAsync(from, moduleName);
 
     if (this.registries.hasModuleMock(moduleID)) {
       return this.registries.getModuleMock(moduleID) as T;
     }
 
-    if (this._moduleMockFactories.has(moduleID)) {
-      const invokedFactory: any = await this._moduleMockFactories.get(
-        moduleID,
-        // has check above makes this ok
-      )!();
+    const factory = this.mockState.getEsmFactory(moduleID);
+    if (factory) {
+      const invokedFactory = (await factory()) as Record<string, unknown>;
 
       const module = new SyntheticModule(
         Object.keys(invokedFactory),
@@ -1669,11 +1615,7 @@ export default class Runtime {
     isRequireActual = false,
   ): T {
     const isInternal = options?.isInternalModule ?? false;
-    const moduleID = this._resolution.getCjsModuleId(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
+    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
     let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
@@ -1687,7 +1629,7 @@ export default class Runtime {
       !moduleResource &&
       manualMock &&
       manualMock !== this._isCurrentlyExecutingManualMock &&
-      this._explicitShouldMock.get(moduleID) !== false
+      !this.mockState.isExplicitlyUnmocked(moduleID)
     ) {
       modulePath = manualMock;
     }
@@ -1796,11 +1738,7 @@ export default class Runtime {
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
-    const moduleID = this._resolution.getCjsModuleId(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
+    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
 
     if (this.registries.hasMock(moduleID)) {
       return this.registries.getMock(moduleID) as T;
@@ -1808,9 +1746,9 @@ export default class Runtime {
 
     const mockRegistry = this.registries.getActiveMockRegistry();
 
-    if (this._mockFactories.has(moduleID)) {
-      // has check above makes this ok
-      const module = this._mockFactories.get(moduleID)!();
+    const factory = this.mockState.getCjsFactory(moduleID);
+    if (factory) {
+      const module = factory();
       mockRegistry.set(moduleID, module);
       return module as T;
     }
@@ -1946,7 +1884,7 @@ export default class Runtime {
     }
 
     try {
-      if (this._shouldMockCjs(from, moduleName, this._explicitShouldMock)) {
+      if (this.mockState.shouldMockCjs(from, moduleName)) {
         return this.requireMock<T>(from, moduleName);
       } else {
         return this.requireModule<T>(from, moduleName);
@@ -2052,18 +1990,7 @@ export default class Runtime {
     mockFactory: () => unknown,
     options?: {virtual?: boolean},
   ): void {
-    if (options?.virtual) {
-      const mockPath = this._resolution.getModulePath(from, moduleName);
-
-      this._virtualMocks.set(mockPath, true);
-    }
-    const moduleID = this._resolution.getCjsModuleId(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
-    this._explicitShouldMock.set(moduleID, true);
-    this._mockFactories.set(moduleID, mockFactory);
+    this.mockState.setMock(from, moduleName, mockFactory, options);
   }
 
   private setModuleMock(
@@ -2072,18 +1999,7 @@ export default class Runtime {
     mockFactory: () => Promise<unknown> | unknown,
     options?: {virtual?: boolean},
   ): void {
-    if (options?.virtual) {
-      const mockPath = this._resolution.getModulePath(from, moduleName);
-
-      this._virtualModuleMocks.set(mockPath, true);
-    }
-    const moduleID = this._resolution.getEsmModuleId(
-      this._virtualModuleMocks,
-      from,
-      moduleName,
-    );
-    this._explicitShouldMockModule.set(moduleID, true);
-    this._moduleMockFactories.set(moduleID, mockFactory);
+    this.mockState.setModuleMock(from, moduleName, mockFactory, options);
   }
 
   restoreAllMocks(): void {
@@ -2112,18 +2028,8 @@ export default class Runtime {
 
     this.registries.clear();
     this._mainModule = null;
-    this._mockFactories.clear();
-    this._moduleMockFactories.clear();
-    this._mockMetaDataCache.clear();
-    this._shouldMockModuleCache.clear();
-    this._shouldUnmockTransitiveDependenciesCache.clear();
-    this._explicitShouldMock.clear();
-    this._explicitShouldMockModule.clear();
-    this._transitiveShouldMock.clear();
-    this._virtualMocks.clear();
-    this._virtualModuleMocks.clear();
+    this.mockState.clear();
     this.fileCache.clear();
-    this._unmockList = undefined;
 
     this.transformCache.clear();
     this.jestObjectCaches.clear();
@@ -2510,11 +2416,10 @@ export default class Runtime {
     const modulePath =
       this._resolution.resolveCjsStub(from, moduleName) ||
       this._resolution.resolveCjs(from, moduleName);
-    if (!this._mockMetaDataCache.has(modulePath)) {
+    if (!this.mockState.hasMockMetadata(modulePath)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-
-      this._mockMetaDataCache.set(
+      this.mockState.setMockMetadata(
         modulePath,
         this._moduleMocker.getMetadata({}) || {},
       );
@@ -2534,221 +2439,12 @@ export default class Runtime {
             'See: https://jestjs.io/docs/manual-mocks#content',
         );
       }
-      this._mockMetaDataCache.set(modulePath, mockMetadata);
+      this.mockState.setMockMetadata(modulePath, mockMetadata);
     }
-    let moduleMock = this._moduleMocker.generateFromMetadata<T>(
-      // added above if missing
-      this._mockMetaDataCache.get(modulePath)!,
+    const moduleMock = this._moduleMocker.generateFromMetadata<T>(
+      this.mockState.getMockMetadata(modulePath)! as MockMetadata<T>,
     );
-
-    for (const onGenerateMock of this._onGenerateMock) {
-      moduleMock = onGenerateMock(modulePath, moduleMock);
-    }
-
-    return moduleMock;
-  }
-
-  private _shouldMockCjs(
-    from: string,
-    moduleName: string,
-    explicitShouldMock: Map<string, boolean>,
-  ): boolean {
-    const moduleID = this._resolution.getCjsModuleId(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
-    const key = from + path.delimiter + moduleID;
-
-    if (explicitShouldMock.has(moduleID)) {
-      // guaranteed by `has` above
-      return explicitShouldMock.get(moduleID)!;
-    }
-
-    if (
-      !this._shouldAutoMock ||
-      this._resolution.isCoreModule(moduleName) ||
-      this._shouldUnmockTransitiveDependenciesCache.get(key)
-    ) {
-      return false;
-    }
-
-    if (this._shouldMockModuleCache.has(moduleID)) {
-      // guaranteed by `has` above
-      return this._shouldMockModuleCache.get(moduleID)!;
-    }
-
-    let modulePath;
-    try {
-      modulePath = this._resolution.resolveCjs(from, moduleName);
-    } catch (error) {
-      const manualMock = this._resolution.getCjsMockModule(from, moduleName);
-      if (manualMock) {
-        this._shouldMockModuleCache.set(moduleID, true);
-        return true;
-      }
-      throw error;
-    }
-
-    if (this._unmockList && this._unmockList.test(modulePath)) {
-      this._shouldMockModuleCache.set(moduleID, false);
-      return false;
-    }
-
-    // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = this._resolution.getCjsModuleId(
-      this._virtualMocks,
-      from,
-    );
-    if (
-      this._transitiveShouldMock.get(currentModuleID) === false ||
-      (from.includes(NODE_MODULES) &&
-        modulePath.includes(NODE_MODULES) &&
-        ((this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock.get(currentModuleID) === false))
-    ) {
-      this._transitiveShouldMock.set(moduleID, false);
-      this._shouldUnmockTransitiveDependenciesCache.set(key, true);
-      return false;
-    }
-    this._shouldMockModuleCache.set(moduleID, true);
-    return true;
-  }
-
-  // Sync mirror of `_shouldMockModule`. Used by the sync-first ESM core on
-  // Node v24.9+. Logic must stay in lockstep with the async version.
-  private _shouldMockModuleSync(
-    from: string,
-    moduleName: string,
-    explicitShouldMock: Map<string, boolean>,
-  ): boolean {
-    const moduleID = this._resolution.getEsmModuleId(
-      this._virtualModuleMocks,
-      from,
-      moduleName,
-    );
-    const key = from + path.delimiter + moduleID;
-
-    if (explicitShouldMock.has(moduleID)) {
-      return explicitShouldMock.get(moduleID)!;
-    }
-
-    if (
-      !this._shouldAutoMock ||
-      this._resolution.isCoreModule(moduleName) ||
-      this._shouldUnmockTransitiveDependenciesCache.get(key)
-    ) {
-      return false;
-    }
-
-    if (this._shouldMockModuleCache.has(moduleID)) {
-      return this._shouldMockModuleCache.get(moduleID)!;
-    }
-
-    let modulePath;
-    try {
-      modulePath = this._resolution.resolveEsm(from, moduleName);
-    } catch (error) {
-      const manualMock = this._resolution.getEsmMockModule(from, moduleName);
-      if (manualMock) {
-        this._shouldMockModuleCache.set(moduleID, true);
-        return true;
-      }
-      throw error;
-    }
-
-    if (this._unmockList && this._unmockList.test(modulePath)) {
-      this._shouldMockModuleCache.set(moduleID, false);
-      return false;
-    }
-
-    const currentModuleID = this._resolution.getEsmModuleId(
-      this._virtualModuleMocks,
-      from,
-    );
-    if (
-      this._transitiveShouldMock.get(currentModuleID) === false ||
-      (from.includes(NODE_MODULES) &&
-        modulePath.includes(NODE_MODULES) &&
-        ((this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock.get(currentModuleID) === false))
-    ) {
-      this._transitiveShouldMock.set(moduleID, false);
-      this._shouldUnmockTransitiveDependenciesCache.set(key, true);
-      return false;
-    }
-    this._shouldMockModuleCache.set(moduleID, true);
-    return true;
-  }
-
-  private async _shouldMockModule(
-    from: string,
-    moduleName: string,
-    explicitShouldMock: Map<string, boolean>,
-  ): Promise<boolean> {
-    const moduleID = await this._resolution.getEsmModuleIdAsync(
-      this._virtualModuleMocks,
-      from,
-      moduleName,
-    );
-    const key = from + path.delimiter + moduleID;
-
-    if (explicitShouldMock.has(moduleID)) {
-      // guaranteed by `has` above
-      return explicitShouldMock.get(moduleID)!;
-    }
-
-    if (
-      !this._shouldAutoMock ||
-      this._resolution.isCoreModule(moduleName) ||
-      this._shouldUnmockTransitiveDependenciesCache.get(key)
-    ) {
-      return false;
-    }
-
-    if (this._shouldMockModuleCache.has(moduleID)) {
-      // guaranteed by `has` above
-      return this._shouldMockModuleCache.get(moduleID)!;
-    }
-
-    let modulePath;
-    try {
-      modulePath = await this._resolution.resolveEsmAsync(from, moduleName);
-    } catch (error) {
-      const manualMock = await this._resolution.getEsmMockModuleAsync(
-        from,
-        moduleName,
-      );
-      if (manualMock) {
-        this._shouldMockModuleCache.set(moduleID, true);
-        return true;
-      }
-      throw error;
-    }
-
-    if (this._unmockList && this._unmockList.test(modulePath)) {
-      this._shouldMockModuleCache.set(moduleID, false);
-      return false;
-    }
-
-    // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = await this._resolution.getEsmModuleIdAsync(
-      this._virtualModuleMocks,
-      from,
-    );
-    if (
-      this._transitiveShouldMock.get(currentModuleID) === false ||
-      (from.includes(NODE_MODULES) &&
-        modulePath.includes(NODE_MODULES) &&
-        ((this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock.get(currentModuleID) === false))
-    ) {
-      this._transitiveShouldMock.set(moduleID, false);
-      this._shouldUnmockTransitiveDependenciesCache.set(key, true);
-      return false;
-    }
-    this._shouldMockModuleCache.set(moduleID, true);
-    return true;
+    return this.mockState.notifyMockGenerated(modulePath, moduleMock);
   }
 
   private _createRequireImplementation(
@@ -2792,58 +2488,36 @@ export default class Runtime {
 
   private _createJestObjectFor(from: string): Jest {
     const disableAutomock = () => {
-      this._shouldAutoMock = false;
+      this.mockState.disableAutomock();
       return jestObject;
     };
     const enableAutomock = () => {
-      this._shouldAutoMock = true;
+      this.mockState.enableAutomock();
       return jestObject;
     };
     const unmock = (moduleName: string) => {
-      const moduleID = this._resolution.getCjsModuleId(
-        this._virtualMocks,
-        from,
-        moduleName,
-      );
-      this._explicitShouldMock.set(moduleID, false);
+      this.mockState.unmockCjs(from, moduleName);
       return jestObject;
     };
     const unmockModule = (moduleName: string) => {
-      const moduleID = this._resolution.getEsmModuleId(
-        this._virtualModuleMocks,
-        from,
-        moduleName,
-      );
-      this._explicitShouldMockModule.set(moduleID, false);
+      this.mockState.unmockEsm(from, moduleName);
       return jestObject;
     };
     const deepUnmock = (moduleName: string) => {
-      const moduleID = this._resolution.getCjsModuleId(
-        this._virtualMocks,
-        from,
-        moduleName,
-      );
-      this._explicitShouldMock.set(moduleID, false);
-      this._transitiveShouldMock.set(moduleID, false);
+      this.mockState.deepUnmock(from, moduleName);
       return jestObject;
     };
     const mock: Jest['mock'] = (moduleName, mockFactory, options) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
       }
-
-      const moduleID = this._resolution.getCjsModuleId(
-        this._virtualMocks,
-        from,
-        moduleName,
-      );
-      this._explicitShouldMock.set(moduleID, true);
+      this.mockState.markExplicitCjsMock(from, moduleName);
       return jestObject;
     };
     const onGenerateMock: Jest['onGenerateMock'] = <T>(
       cb: (moduleName: string, moduleMock: T) => T,
     ) => {
-      this._onGenerateMock.add(cb);
+      this.mockState.addOnGenerateMock(cb as never);
       return jestObject;
     };
     const setMockFactory = (
