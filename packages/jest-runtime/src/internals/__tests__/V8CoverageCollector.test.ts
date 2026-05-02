@@ -5,12 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {CoverageInstrumenter} from 'collect-v8-coverage';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {ShouldInstrumentOptions, TransformResult} from '@jest/transform';
 import V8CoverageCollector from '../V8CoverageCollector';
 
-const mockStartInstrumenting = jest.fn();
-const mockStopInstrumenting = jest.fn();
+const mockStartInstrumenting: jest.MockedFunction<
+  CoverageInstrumenter['startInstrumenting']
+> = jest.fn();
+const mockStopInstrumenting: jest.MockedFunction<
+  CoverageInstrumenter['stopInstrumenting']
+> = jest.fn();
 
 jest.mock('collect-v8-coverage', () => ({
   CoverageInstrumenter: jest.fn().mockImplementation(() => ({

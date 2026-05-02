@@ -60,7 +60,7 @@ import {
 } from './helpers';
 import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
-import Resolution from './internals/Resolution';
+import Resolution, {isWasm} from './internals/Resolution';
 import V8CoverageCollector from './internals/V8CoverageCollector';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
@@ -147,8 +147,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   }
   return null;
 };
-
-const isWasm = (modulePath: string): boolean => modulePath.endsWith('.wasm');
 
 const unmockRegExpCache = new WeakMap();
 
@@ -418,6 +416,7 @@ export default class Runtime {
     this._resolution = new Resolution(
       resolver,
       this._environment.exportConditions?.() ?? [],
+      config.extensionsToTreatAsEsm,
     );
     this.cjsExportsCache = new CjsExportsCache(
       this._resolution,
@@ -531,13 +530,7 @@ export default class Runtime {
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
   unstable_shouldLoadAsEsm(modulePath: string): boolean {
-    return (
-      isWasm(modulePath) ||
-      Resolver.unstable_shouldLoadAsEsm(
-        modulePath,
-        this._config.extensionsToTreatAsEsm,
-      )
-    );
+    return this._resolution.shouldLoadAsEsm(modulePath);
   }
 
   // Synchronous graph loader for Node v24.9+. Walks the static import graph

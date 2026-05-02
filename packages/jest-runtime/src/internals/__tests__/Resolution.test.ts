@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {testWithVmEsm} from '@jest/test-utils';
 import type Resolver from 'jest-resolve';
 import Resolution from '../Resolution';
 
@@ -38,7 +39,7 @@ describe('Resolution', () => {
   describe('conditions', () => {
     test('with no env conditions, uses Node defaults', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -53,7 +54,7 @@ describe('Resolution', () => {
 
     test('appends env-provided conditions and de-dupes', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, ['default', 'browser']);
+      const r = new Resolution(resolver, ['default', 'browser'], []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -70,7 +71,7 @@ describe('Resolution', () => {
   describe('sync resolve cache', () => {
     test('caches by (from, to) and only calls underlying resolver once', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.resolveCjs('/a', 'foo')).toBe('/resolved/foo');
       expect(r.resolveCjs('/a', 'foo')).toBe('/resolved/foo');
@@ -87,7 +88,7 @@ describe('Resolution', () => {
 
     test('cjs and esm caches are independent', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -103,7 +104,7 @@ describe('Resolution', () => {
 
     test('falsy `to` short-circuits to `from` without consulting the resolver', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.resolveCjs('/a', undefined)).toBe('/a');
       expect(r.resolveEsm('/a', undefined)).toBe('/a');
@@ -112,7 +113,7 @@ describe('Resolution', () => {
 
     test('clear() drops both caches', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.resolveCjs('/a', 'foo');
       r.resolveEsm('/a', 'foo');
@@ -128,7 +129,7 @@ describe('Resolution', () => {
   describe('async resolve', () => {
     test('does not cache (each call hits the resolver)', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       await r.resolveEsmAsync('/a', 'foo');
       await r.resolveEsmAsync('/a', 'foo');
@@ -141,7 +142,7 @@ describe('Resolution', () => {
 
     test('falsy `to` short-circuits to `from`', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       await expect(r.resolveEsmAsync('/a', undefined)).resolves.toBe('/a');
       expect(resolver.resolveModuleAsync).not.toHaveBeenCalled();
@@ -153,7 +154,7 @@ describe('Resolution', () => {
 
     test('getCjsModuleId uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.getCjsModuleId(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleID).toHaveBeenCalledWith(
@@ -166,7 +167,7 @@ describe('Resolution', () => {
 
     test('getEsmModuleId uses esm conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.getEsmModuleId(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleID).toHaveBeenCalledWith(
@@ -179,7 +180,7 @@ describe('Resolution', () => {
 
     test('getEsmModuleIdAsync uses esm conditions', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       await r.getEsmModuleIdAsync(virtualMocks, '/a', 'foo');
       expect(resolver.getModuleIDAsync).toHaveBeenCalledWith(
@@ -194,7 +195,7 @@ describe('Resolution', () => {
   describe('mock module lookups', () => {
     test('getCjsMockModule uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.getCjsMockModule('/a', 'foo')).toBe('/mock');
       expect(resolver.getMockModule).toHaveBeenCalledWith('/a', 'foo', {
@@ -204,7 +205,7 @@ describe('Resolution', () => {
 
     test('getEsmMockModule uses esm conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.getEsmMockModule('/a', 'foo')).toBe('/mock');
       expect(resolver.getMockModule).toHaveBeenCalledWith('/a', 'foo', {
@@ -214,7 +215,7 @@ describe('Resolution', () => {
 
     test('getEsmMockModuleAsync uses esm conditions', async () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       await expect(r.getEsmMockModuleAsync('/a', 'foo')).resolves.toBe(
         '/mock-async',
@@ -226,7 +227,7 @@ describe('Resolution', () => {
 
     test('resolveCjsStub uses cjs conditions', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.resolveCjsStub('/a', 'foo')).toBe('/stub');
       expect(resolver.resolveStubModuleName).toHaveBeenCalledWith('/a', 'foo', {
@@ -236,7 +237,7 @@ describe('Resolution', () => {
 
     test('resolveCjsFromDirIfExists forwards conditions and paths', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       r.resolveCjsFromDirIfExists('/dir', 'foo', ['/p1']);
       expect(resolver.resolveModuleFromDirIfExists).toHaveBeenCalledWith(
@@ -257,7 +258,7 @@ describe('Resolution', () => {
   describe('pure pass-throughs', () => {
     test('forwards calls without options', () => {
       const resolver = makeResolver();
-      const r = new Resolution(resolver, []);
+      const r = new Resolution(resolver, [], []);
 
       expect(r.isCoreModule('fs')).toBe(false);
       expect(resolver.isCoreModule).toHaveBeenCalledWith('fs');
@@ -272,6 +273,31 @@ describe('Resolution', () => {
       expect(r.getModulePaths('/a')).toEqual(['/p']);
       expect(r.getGlobalPaths('foo')).toEqual(['/g']);
       expect(r.canResolveSync()).toBe(true);
+    });
+  });
+
+  describe('shouldLoadAsEsm', () => {
+    test('returns true for .wasm regardless of config', () => {
+      const r = new Resolution(makeResolver(), [], []);
+      expect(r.shouldLoadAsEsm('/a/b.wasm')).toBe(true);
+    });
+
+    testWithVmEsm('returns true for .mjs', () => {
+      const r = new Resolution(makeResolver(), [], []);
+      expect(r.shouldLoadAsEsm('/a/b.mjs')).toBe(true);
+    });
+
+    testWithVmEsm(
+      'returns false for .js without an ESM-marker package.json',
+      () => {
+        const r = new Resolution(makeResolver(), [], []);
+        expect(r.shouldLoadAsEsm('/a/b.js')).toBe(false);
+      },
+    );
+
+    testWithVmEsm('honors extensionsToTreatAsEsm', () => {
+      const r = new Resolution(makeResolver(), [], ['.ts']);
+      expect(r.shouldLoadAsEsm('/a/b.ts')).toBe(true);
     });
   });
 });

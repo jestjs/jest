@@ -5,16 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type Resolver from 'jest-resolve';
+import Resolver from 'jest-resolve';
+
+export const isWasm = (modulePath: string): boolean =>
+  modulePath.endsWith('.wasm');
 
 export default class Resolution {
   private readonly resolver: Resolver;
   private readonly cjsConditions: ReadonlyArray<string>;
   private readonly esmConditions: ReadonlyArray<string>;
+  private readonly extensionsToTreatAsEsm: ReadonlyArray<string>;
   private readonly cjsCache = new Map<string, string>();
   private readonly esmCache = new Map<string, string>();
 
-  constructor(resolver: Resolver, envExportConditions: ReadonlyArray<string>) {
+  constructor(
+    resolver: Resolver,
+    envExportConditions: ReadonlyArray<string>,
+    extensionsToTreatAsEsm: ReadonlyArray<string>,
+  ) {
     this.resolver = resolver;
     this.cjsConditions = [
       ...new Set(['require', 'node', 'default', ...envExportConditions]),
@@ -22,6 +30,17 @@ export default class Resolution {
     this.esmConditions = [
       ...new Set(['import', 'default', ...envExportConditions]),
     ];
+    this.extensionsToTreatAsEsm = extensionsToTreatAsEsm;
+  }
+
+  shouldLoadAsEsm(modulePath: string): boolean {
+    return (
+      isWasm(modulePath) ||
+      Resolver.unstable_shouldLoadAsEsm(
+        modulePath,
+        this.extensionsToTreatAsEsm as Array<string>,
+      )
+    );
   }
 
   resolveCjs(from: string, to: string | undefined): string {
