@@ -6,6 +6,8 @@
  */
 
 import type nativeModule from 'node:module';
+import * as path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import type {JestEnvironment, Module} from '@jest/environment';
 import Resolver from 'jest-resolve';
 import type ModuleRegistries from '../ModuleRegistries';
@@ -41,7 +43,7 @@ function makeResolution(
 
 function makeRegistries(): ModuleRegistries {
   return {
-    createRequireCacheProxy: jest.fn(() => ({}) as never),
+    createRequireCacheProxy: jest.fn(() => ({})),
   } as unknown as ModuleRegistries;
 }
 
@@ -104,8 +106,12 @@ describe('resolvePaths', () => {
   });
 
   test('returns [fromDir] for relative specifiers', () => {
+    // `path.resolve('/a/b/from.js', '..')` is `/a/b` on POSIX but
+    // `D:\a\b` on Windows; compute the expected value the same way
+    // `resolvePaths` does so the assertion is platform-agnostic.
+    const fromDir = path.resolve('/a/b/from.js', '..');
     expect(resolvePaths(makeResolution(), '/a/b/from.js', './x')).toEqual([
-      '/a/b',
+      fromDir,
     ]);
   });
 
@@ -296,8 +302,10 @@ describe('CoreModuleProvider', () => {
       'module',
       true,
     ) as typeof nativeModule.Module;
-    const requireFn = ModuleClass.createRequire('/some/abs/file.js');
-    expect(buildRequireFor).toHaveBeenCalledWith('/some/abs/file.js');
+    // Use an absolute path that's valid on both POSIX and Windows.
+    const absolutePath = path.resolve('/some/abs/file.js');
+    const requireFn = ModuleClass.createRequire(absolutePath);
+    expect(buildRequireFor).toHaveBeenCalledWith(absolutePath);
     expect(requireFn).toBe(fakeRequire);
   });
 
@@ -313,10 +321,12 @@ describe('CoreModuleProvider', () => {
       'module',
       true,
     ) as typeof nativeModule.Module;
-    ModuleClass.createRequire('file:///abs/x.js');
-    const filename = buildRequireFor.mock.calls[0][0];
-    expect(typeof filename).toBe('string');
-    expect(filename.startsWith('/')).toBe(true);
+    // Build a file URL from a platform-valid absolute path so the test runs
+    // on Windows (where `file:///abs/x.js` is rejected — needs a drive
+    // letter).
+    const absolutePath = path.resolve('/abs/x.js');
+    ModuleClass.createRequire(pathToFileURL(absolutePath).href);
+    expect(buildRequireFor).toHaveBeenCalledWith(absolutePath);
   });
 
   test('mocked Module.createRequire rejects relative filenames', () => {
