@@ -15,7 +15,10 @@ import {
 } from 'unrs-resolver';
 import {getResolver, setResolver} from './fileWalkers';
 
-export interface ResolverOptions extends UpstreamResolveOptions {
+export interface ResolverOptions extends Omit<
+  UpstreamResolveOptions,
+  'extensions'
+> {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
@@ -24,6 +27,8 @@ export interface ResolverOptions extends UpstreamResolveOptions {
   defaultResolver: SyncResolver;
   /** Instance of default async resolver. */
   defaultAsyncResolver: AsyncResolver;
+  /** List of file extensions to be considered when resolving. */
+  extensions?: ReadonlyArray<string>;
   /**
    * List of directory names to be looked up for modules recursively.
    *
@@ -81,7 +86,10 @@ function baseResolver(
   }
 
   if (process.versions.pnp && options.allowPnp !== false) {
-    return pnpResolver(path, options);
+    return pnpResolver(path, {
+      ...options,
+      extensions: options.extensions as Array<string> | undefined,
+    });
   }
 
   if (path.startsWith('file://')) {
@@ -93,6 +101,7 @@ function baseResolver(
     basedir,
     conditions,
     conditionNames,
+    extensions,
     modules,
     moduleDirectory,
     paths,
@@ -111,6 +120,7 @@ function baseResolver(
         'node',
         'default',
       ],
+    extensions: extensions as Array<string> | undefined,
     modules,
     roots: roots || (rootDir ? [rootDir] : undefined),
     ...rest,
