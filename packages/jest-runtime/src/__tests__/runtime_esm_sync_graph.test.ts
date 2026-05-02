@@ -453,7 +453,7 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       const aPath = path.join(ROOT_DIR, 'a.mjs');
       // Simulate a concurrent `await import()` by stashing a pending Promise
       // in the registry under the key require() will look up.
-      runtime._esModuleRegistry.set(aPath, new Promise(() => {}));
+      runtime.registries.setEsm(aPath, new Promise(() => {}));
       expect(() => runtime.requireModule(FROM, './a.mjs')).toThrow(
         expect.objectContaining({
           code: 'ERR_REQUIRE_ESM',
@@ -476,7 +476,7 @@ describe('Runtime sync ESM graph - require(esm)', () => {
       await m.namespace.loadCjs();
 
       const cjsPath = path.join(ROOT_DIR, 'cjs-dep.cjs');
-      const entry = runtime._esModuleRegistry.get(cjsPath);
+      const entry = runtime.registries.getEsm(cjsPath);
       expect(entry).toBeDefined();
       expect(entry).not.toBeInstanceOf(Promise);
     },

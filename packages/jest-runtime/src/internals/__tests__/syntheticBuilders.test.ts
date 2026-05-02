@@ -21,7 +21,7 @@ async function evaluate(
 ): Promise<Record<string, unknown>> {
   await evaluateSyntheticModule(module);
 
-  return module as unknown as Record<string, unknown>;
+  return module.namespace as Record<string, unknown>;
 }
 
 const context = () => createContext({});
