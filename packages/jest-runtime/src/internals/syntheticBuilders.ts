@@ -9,6 +9,8 @@ import {SyntheticModule, type Context as VMContext} from 'node:vm';
 import type {Jest} from '@jest/environment';
 import type {expect, jest} from '@jest/globals';
 import type {Global} from '@jest/types';
+import {invariant} from 'jest-util';
+import {noop} from '../helpers';
 import type CjsExportsCache from './CjsExportsCache';
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
@@ -163,4 +165,41 @@ export function buildCjsAsEsmSyntheticModule(
     },
     {context, identifier: modulePath},
   );
+}
+
+// On Node v22.21+ / v24.8+ a SyntheticModule starts in `'linked'` and the
+// body runs synchronously even though `evaluate()` returns a Promise -
+// return it sync so callers can store the actual module rather than a
+// Promise that can poison the registry if microtask draining stalls. On
+// older Node it starts `'unlinked'` and link/evaluate are genuinely async;
+// fall back to the async path there (the async-only legacy ESM code paths
+// handle the Promise return fine, and sync `require(esm)` doesn't exist on
+// those versions anyway).
+export function evaluateSyntheticModule(
+  module: SyntheticModule,
+): SyntheticModule | Promise<SyntheticModule> {
+  if (module.status === 'unlinked') {
+    return evaluateSyntheticModuleAsync(module);
+  }
+  module.evaluate().catch(noop);
+  if (module.status === 'errored') {
+    throw module.error;
+  }
+  invariant(
+    module.status === 'evaluated',
+    `Synthetic module ${module.identifier} did not evaluate synchronously (status="${module.status}"). This is a bug in Jest, please report it!`,
+  );
+  return module;
+}
+
+async function evaluateSyntheticModuleAsync(
+  module: SyntheticModule,
+): Promise<SyntheticModule> {
+  await module.link(() => {
+    throw new Error('This should never happen');
+  });
+
+  await module.evaluate();
+
+  return module;
 }

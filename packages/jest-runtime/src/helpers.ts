@@ -73,3 +73,7 @@ export const findSiblingsWithFileExtension = (
 
   return '';
 };
+
+export function noop() {
+  // empty
+}

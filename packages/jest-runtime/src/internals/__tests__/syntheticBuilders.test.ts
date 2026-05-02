@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createContext} from 'node:vm';
+import {type SyntheticModule, createContext} from 'node:vm';
 import {testWithVmEsm} from '@jest/test-utils';
 import type CjsExportsCache from '../CjsExportsCache';
 import {
@@ -13,16 +13,15 @@ import {
   buildCoreSyntheticModule,
   buildJestGlobalsSyntheticModule,
   buildJsonSyntheticModule,
+  evaluateSyntheticModule,
 } from '../syntheticBuilders';
 
 async function evaluate(
-  module: import('node:vm').SyntheticModule,
+  module: SyntheticModule,
 ): Promise<Record<string, unknown>> {
-  await module.link(() => {
-    throw new Error('no deps expected');
-  });
-  await module.evaluate();
-  return module.namespace as Record<string, unknown>;
+  await evaluateSyntheticModule(module);
+
+  return module as unknown as Record<string, unknown>;
 }
 
 const context = () => createContext({});
