@@ -71,6 +71,13 @@ import type {
   JestModule,
   ModuleRegistry,
 } from './internals/moduleTypes';
+import {
+  buildCjsAsEsmSyntheticModule,
+  buildCoreSyntheticModule,
+  buildJestGlobalsSyntheticModule,
+  buildJsonSyntheticModule,
+  buildWasmSyntheticModule,
+} from './internals/syntheticBuilders';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -623,7 +630,7 @@ export default class Runtime {
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
-          module: this._buildJsonSyntheticModule(
+          module: buildJsonSyntheticModule(
             this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
             context,
@@ -1016,7 +1023,7 @@ export default class Runtime {
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
 
-    const synthetic = this._buildWasmSyntheticModule(
+    const synthetic = buildWasmSyntheticModule(
       wasmModule,
       identifier,
       context,
@@ -1068,11 +1075,7 @@ export default class Runtime {
       return {
         cacheKey,
         kind: 'synthetic',
-        module: this._buildJsonSyntheticModule(
-          code as string,
-          specifier,
-          context,
-        ),
+        module: buildJsonSyntheticModule(code as string, specifier, context),
       };
     }
 
@@ -1208,7 +1211,7 @@ export default class Runtime {
       try {
         let module;
         if (modulePath.endsWith('.json')) {
-          module = this._buildJsonSyntheticModule(
+          module = buildJsonSyntheticModule(
             transformedCode,
             modulePath,
             context,
@@ -1330,11 +1333,7 @@ export default class Runtime {
           context,
         );
       } else if (mime === 'application/json') {
-        module = this._buildJsonSyntheticModule(
-          code as string,
-          specifier,
-          context,
-        );
+        module = buildJsonSyntheticModule(code as string, specifier, context);
       } else {
         module = new SourceTextModule(code as string, {
           context,
@@ -1494,50 +1493,12 @@ export default class Runtime {
     modulePath: string,
     context: VMContext,
   ): SyntheticModule {
-    const cjs = this.requireModuleOrMock(from, modulePath);
-
-    const parsedExports = this.cjsExportsCache.getExportsOf(modulePath);
-
-    // CJS modules can legally set `module.exports` to `null` or a primitive.
-    const cjsRecord =
-      typeof cjs === 'object' && cjs !== null
-        ? (cjs as Record<string, unknown>)
-        : null;
-
-    // Merge static analysis with runtime keys: cjs-module-lexer can't detect
-    // all export patterns (e.g. Object.assign-style). Since we've already
-    // required the module, Object.keys() gives the ground truth.
-    const allCandidates = new Set([
-      ...parsedExports,
-      ...(cjsRecord ? Object.keys(cjsRecord) : []),
-    ]);
-
-    const cjsExports = [...allCandidates].filter(exportName => {
-      // we don't wanna respect any exports _named_ default as a named export
-      // __esModule is a Babel/Webpack metadata flag, not a real export
-      if (exportName === 'default' || exportName === '__esModule') {
-        return false;
-      }
-      return cjsRecord
-        ? Object.hasOwnProperty.call(cjsRecord, exportName)
-        : false;
-    });
-
-    // Unwrap Babel/Webpack __esModule convention: if the CJS file signals it
-    // was originally ESM (transpiled), use cjs.default as the ESM default.
-    const defaultExport =
-      cjsRecord?.__esModule === true ? cjsRecord.default : cjs;
-
-    return new SyntheticModule(
-      [...cjsExports, 'default'],
-      function () {
-        for (const exportName of cjsExports) {
-          // @ts-expect-error: TS doesn't know what `this` is
-          this.setExport(exportName, cjs[exportName]);
-        }
-        this.setExport('default', defaultExport);
-      },
-      {context, identifier: modulePath},
+    return buildCjsAsEsmSyntheticModule(
+      from,
+      modulePath,
+      context,
+      (f, name) => this.requireModuleOrMock(f, name),
+      this.cjsExportsCache,
     );
   }
 
@@ -2296,20 +2257,10 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
   ): SyntheticModule {
-    const required = this._requireCoreModule(moduleName, true);
-    const allExports = Object.entries(required);
-    const exportNames = allExports.map(([key]) => key);
-
-    return new SyntheticModule(
-      ['default', ...exportNames],
-      function () {
-        this.setExport('default', required);
-        for (const [key, value] of allExports) {
-          this.setExport(key, value);
-        }
-      },
-      // should identifier be `node://${moduleName}`?
-      {context, identifier: moduleName},
+    return buildCoreSyntheticModule(
+      moduleName,
+      context,
+      (name, supportPrefix) => this._requireCoreModule(name, supportPrefix),
     );
   }
 
@@ -2347,7 +2298,7 @@ export default class Runtime {
         moduleLookup[module] = resolvedModule;
       }
     }
-    return this._buildWasmSyntheticModule(
+    return buildWasmSyntheticModule(
       wasmModule,
       identifier,
       context,
@@ -2834,60 +2785,6 @@ export default class Runtime {
     return {...this.getGlobalsFromEnvironment(), jest};
   }
 
-  // Build a JSON SyntheticModule exposing the parsed value as the `default`
-  // export. Returns it unevaluated; callers either evaluate it themselves
-  // (legacy async path) or plug it into a parent's `linkRequests` and let the
-  // root's evaluate cascade trigger it (sync path).
-  private _buildJsonSyntheticModule(
-    jsonText: string,
-    identifier: string,
-    context: VMContext,
-  ): SyntheticModule {
-    return new SyntheticModule(
-      ['default'],
-      function () {
-        const obj = JSON.parse(jsonText);
-        this.setExport('default', obj);
-      },
-      {context, identifier},
-    );
-  }
-
-  // Build the wasm SyntheticModule. The body reads each import's namespace
-  // via `getDepNamespace`, which both the sync graph (closure over `scratch`)
-  // and the legacy path (closure over a pre-built `moduleLookup`) supply.
-  private _buildWasmSyntheticModule(
-    wasmModule: WebAssembly.Module,
-    identifier: string,
-    context: VMContext,
-    getDepNamespace: (importModule: string) => Record<string, unknown>,
-  ): SyntheticModule {
-    const exports = WebAssembly.Module.exports(wasmModule);
-    const imports = WebAssembly.Module.imports(wasmModule);
-
-    return new SyntheticModule(
-      exports.map(({name}) => name),
-      function () {
-        const importsObject: WebAssembly.Imports = {};
-        for (const {module: depSpec, name} of imports) {
-          if (!importsObject[depSpec]) {
-            importsObject[depSpec] = {};
-          }
-          const namespace = getDepNamespace(depSpec);
-          importsObject[depSpec][name] = namespace[name] as never;
-        }
-        const wasmInstance = new WebAssembly.Instance(
-          wasmModule,
-          importsObject,
-        );
-        for (const {name} of exports) {
-          this.setExport(name, wasmInstance.exports[name]);
-        }
-      },
-      {context, identifier},
-    );
-  }
-
   // Shared async dynamic-import callback: installed on every SourceTextModule
   // we construct (file, data: URI). Calls into resolveModule + linkAndEvaluate
   // - the dynamic import is async by language regardless of Node version.
@@ -2925,6 +2822,15 @@ export default class Runtime {
     from: string,
     context: VMContext,
   ): SyntheticModule {
+    return buildJestGlobalsSyntheticModule(
+      from,
+      context,
+      jestFor => this._getOrCreateJest(jestFor),
+      () => this.getGlobalsFromEnvironment(),
+    );
+  }
+
+  private _getOrCreateJest(from: string): Jest {
     let jest = this.jestObjectCaches.get(from);
 
     if (!jest) {
@@ -2932,21 +2838,7 @@ export default class Runtime {
 
       this.jestObjectCaches.set(from, jest);
     }
-
-    const globals: JestGlobalsWithJest = {
-      ...this.getGlobalsFromEnvironment(),
-      jest,
-    };
-
-    return new SyntheticModule(
-      Object.keys(globals),
-      function () {
-        for (const [key, value] of Object.entries(globals)) {
-          this.setExport(key, value);
-        }
-      },
-      {context, identifier: '@jest/globals'},
-    );
+    return jest;
   }
 
   private getGlobalsForEsm(
