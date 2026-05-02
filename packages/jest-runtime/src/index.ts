@@ -1462,7 +1462,7 @@ export default class Runtime {
       return this.importMock(referencingIdentifier, specifierPath, context);
     }
 
-    const resolved = await this._resolveModule(
+    const resolved = await this._resolution.resolveEsmAsync(
       referencingIdentifier,
       specifierPath,
     );
@@ -1568,7 +1568,7 @@ export default class Runtime {
 
     const [path, query] = (moduleName ?? '').split('?');
 
-    const modulePath = await this._resolveModule(from, path);
+    const modulePath = await this._resolution.resolveEsmAsync(from, path);
 
     const module = await this.loadEsmModule(modulePath, query);
 
@@ -2308,10 +2308,6 @@ export default class Runtime {
     this.testState = 'tornDown';
   }
 
-  private _resolveModule(from: string, to: string | undefined) {
-    return this._resolution.resolveEsmAsync(from, to);
-  }
-
   private _requireResolve(
     from: string,
     moduleName?: string,
@@ -2948,7 +2944,7 @@ export default class Runtime {
 
     let modulePath;
     try {
-      modulePath = await this._resolveModule(from, moduleName);
+      modulePath = await this._resolution.resolveEsmAsync(from, moduleName);
     } catch (error) {
       const manualMock = await this._resolution.getEsmMockModuleAsync(
         from,
