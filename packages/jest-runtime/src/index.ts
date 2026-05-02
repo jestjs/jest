@@ -243,7 +243,7 @@ export default class Runtime {
     | ModernFakeTimers
     | null;
   private readonly registries: ModuleRegistries;
-  readonly testMainModule: TestMainModule;
+  private readonly testMainModule: TestMainModule;
   private readonly requireBuilder: RequireBuilder;
   private readonly executor: ModuleExecutor;
   private readonly cjsLoader: CjsLoader;

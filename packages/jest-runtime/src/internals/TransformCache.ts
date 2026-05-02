@@ -82,10 +82,6 @@ export class TransformCache {
     return this.transforms.get(filename)?.code;
   }
 
-  fullOptions(options: TransformOptions | undefined): TransformationOptions {
-    return this.getFullTransformationOptions(options);
-  }
-
   // Reads + transforms a `.json` file's source, returning the transformed
   // text (still a string). Caller is responsible for `JSON.parse`-ing in the
   // appropriate realm.

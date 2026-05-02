@@ -158,9 +158,10 @@ export class ModuleExecutor {
       );
     } catch (error: any) {
       this.handleExecutionError(error, module);
+    } finally {
+      this.currentlyExecutingManualMock = origCurrExecutingManualMock;
     }
 
-    this.currentlyExecutingManualMock = origCurrExecutingManualMock;
     return 'loaded';
   }
 
