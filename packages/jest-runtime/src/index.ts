@@ -7,7 +7,7 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
-import {URL, fileURLToPath, pathToFileURL} from 'node:url';
+import {type URL, fileURLToPath, pathToFileURL} from 'node:url';
 import {
   SourceTextModule,
   SyntheticModule,
@@ -39,7 +39,7 @@ import {
 import type {Config, Global} from '@jest/types';
 import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import type {MockMetadata, ModuleMocker} from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
@@ -49,10 +49,8 @@ import {
   invariant,
   isError,
   isNonNullable,
-  protectProperties,
 } from 'jest-util';
 import {
-  createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
   noop,
@@ -66,6 +64,8 @@ import TransformCache, {
   type TransformOptions,
 } from './internals/TransformCache';
 import V8CoverageCollector from './internals/V8CoverageCollector';
+import {generateMock} from './internals/automock';
+import {CoreModuleProvider, buildRequire} from './internals/cjsRequire';
 import type {
   ESModule,
   InitialModule,
@@ -129,12 +129,6 @@ const defaultTransformOptions: TransformOptions = {
 // Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
 // e.g. because there are many require sites spread across the dependency graph.
 const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
-const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
-  'jest-resolve-outside-vm-option',
-);
-type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
-};
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
@@ -298,7 +292,7 @@ export default class Runtime {
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly transformCache: TransformCache;
   private readonly v8Coverage: V8CoverageCollector;
-  private _moduleImplementation?: typeof nativeModule.Module;
+  private readonly coreModule: CoreModuleProvider;
   private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
   private testState: 'loading' | 'inTest' | 'betweenTests' | 'tornDown' =
@@ -362,6 +356,20 @@ export default class Runtime {
       (from, moduleName) => this.requireModule(from, moduleName),
       (from, moduleName) => this.requireModuleOrMock(from, moduleName),
     );
+    this.coreModule = new CoreModuleProvider({
+      buildRequireFor: filename =>
+        this._createRequireImplementation({
+          children: [],
+          exports: {},
+          filename,
+          id: filename,
+          isPreloading: false,
+          loaded: false,
+          path: path.dirname(filename),
+        }),
+      environment: this._environment,
+      resolution: this._resolution,
+    });
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
@@ -1576,10 +1584,10 @@ export default class Runtime {
     }
 
     if (moduleName && this._resolution.isCoreModule(moduleName)) {
-      return this._requireCoreModule(
+      return this.coreModule.require(
         moduleName,
         supportsNodeColonModulePrefixInRequire,
-      );
+      ) as T;
     }
 
     if (!modulePath) {
@@ -1976,87 +1984,9 @@ export default class Runtime {
     this.jestObjectCaches.clear();
 
     this.v8Coverage.reset();
-    this._moduleImplementation = undefined;
+    this.coreModule.reset();
 
     this.testState = 'tornDown';
-  }
-
-  private _requireResolve(
-    from: string,
-    moduleName?: string,
-    options: ResolveOptions = {},
-  ) {
-    if (moduleName == null) {
-      throw new Error(
-        'The first argument to require.resolve must be a string. Received null or undefined.',
-      );
-    }
-
-    if (path.isAbsolute(moduleName)) {
-      const module = this._resolution.resolveCjsFromDirIfExists(
-        moduleName,
-        moduleName,
-        [],
-      );
-      if (module) {
-        return module;
-      }
-    } else if (options.paths) {
-      for (const p of options.paths) {
-        const absolutePath = path.resolve(from, '..', p);
-        // required to also resolve files without leading './' directly in the path
-        const module = this._resolution.resolveCjsFromDirIfExists(
-          absolutePath,
-          moduleName,
-          [absolutePath],
-        );
-        if (module) {
-          return module;
-        }
-      }
-
-      throw new Resolver.ModuleNotFoundError(
-        `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
-          "', '",
-        )}'] from ${from}`,
-      );
-    }
-
-    try {
-      return this._resolution.resolveCjs(from, moduleName);
-    } catch (error) {
-      const module = this._resolution.getCjsMockModule(from, moduleName);
-
-      if (module) {
-        return module;
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  private _requireResolvePaths(from: string, moduleName?: string) {
-    const fromDir = path.resolve(from, '..');
-    if (moduleName == null) {
-      throw new Error(
-        'The first argument to require.resolve.paths must be a string. Received null or undefined.',
-      );
-    }
-    if (moduleName.length === 0) {
-      throw new Error(
-        'The first argument to require.resolve.paths must not be the empty string.',
-      );
-    }
-
-    if (moduleName[0] === '.') {
-      return [fromDir];
-    }
-    if (this._resolution.isCoreModule(moduleName)) {
-      return null;
-    }
-    const modulePaths = this._resolution.getModulePaths(fromDir);
-    const globalPaths = this._resolution.getGlobalPaths(moduleName);
-    return [...modulePaths, ...globalPaths];
   }
 
   private _execModule(
@@ -2215,24 +2145,6 @@ export default class Runtime {
     }
   }
 
-  private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
-    const moduleWithoutNodePrefix =
-      supportPrefix &&
-      this._resolution.normalizeCoreModuleSpecifier(moduleName);
-
-    if (moduleWithoutNodePrefix === 'process') {
-      return this._environment.global.process;
-    }
-
-    if (moduleWithoutNodePrefix === 'module') {
-      return this._getMockedNativeModule();
-    }
-
-    const coreModule = require(moduleName);
-    protectProperties(coreModule);
-    return coreModule;
-  }
-
   private _buildCoreSyntheticModule(
     moduleName: string,
     context: VMContext,
@@ -2240,7 +2152,7 @@ export default class Runtime {
     return buildCoreSyntheticModule(
       moduleName,
       context,
-      (name, supportPrefix) => this._requireCoreModule(name, supportPrefix),
+      (name, supportPrefix) => this.coreModule.require(name, supportPrefix),
     );
   }
 
@@ -2286,135 +2198,27 @@ export default class Runtime {
     );
   }
 
-  private _getMockedNativeModule(): typeof nativeModule.Module {
-    if (this._moduleImplementation) {
-      return this._moduleImplementation;
-    }
-
-    const createRequire = (modulePath: string | URL) => {
-      const filename =
-        typeof modulePath === 'string'
-          ? modulePath.startsWith('file:///')
-            ? fileURLToPath(new URL(modulePath))
-            : modulePath
-          : fileURLToPath(modulePath);
-
-      if (!path.isAbsolute(filename)) {
-        const error: NodeJS.ErrnoException = new TypeError(
-          `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
-        );
-        error.code = 'ERR_INVALID_ARG_TYPE';
-        throw error;
-      }
-
-      return this._createRequireImplementation({
-        children: [],
-        exports: {},
-        filename,
-        id: filename,
-        isPreloading: false,
-        loaded: false,
-        path: path.dirname(filename),
-      });
-    };
-
-    // should we implement the class ourselves?
-    class Module extends nativeModule.Module {}
-
-    for (const [key, value] of Object.entries(nativeModule.Module)) {
-      // @ts-expect-error: no index signature
-      Module[key] = value;
-    }
-
-    Module.Module = Module;
-
-    if ('createRequire' in nativeModule) {
-      Module.createRequire = createRequire;
-    }
-    if ('syncBuiltinESMExports' in nativeModule) {
-      // cast since TS seems very confused about whether it exists or not
-      (Module as any).syncBuiltinESMExports =
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        function syncBuiltinESMExports() {};
-    }
-
-    this._moduleImplementation = Module;
-
-    return Module;
-  }
-
-  private _generateMock<T>(from: string, moduleName: string) {
-    const modulePath =
-      this._resolution.resolveCjsStub(from, moduleName) ||
-      this._resolution.resolveCjs(from, moduleName);
-    if (!this.mockState.hasMockMetadata(modulePath)) {
-      // This allows us to handle circular dependencies while generating an
-      // automock
-      this.mockState.setMockMetadata(
-        modulePath,
-        this._moduleMocker.getMetadata({}) || {},
-      );
-
-      // In order to avoid it being possible for automocking to potentially
-      // cause side-effects within the module environment, we need to execute
-      // the module in isolation. This could cause issues if the module being
-      // mocked has calls into side-effectful APIs on another module.
-      const moduleExports = this.registries.withScratchRegistries(() =>
-        this.requireModule(from, moduleName),
-      );
-
-      const mockMetadata = this._moduleMocker.getMetadata(moduleExports);
-      if (mockMetadata == null) {
-        throw new Error(
-          `Failed to get mock metadata: ${modulePath}\n\n` +
-            'See: https://jestjs.io/docs/manual-mocks#content',
-        );
-      }
-      this.mockState.setMockMetadata(modulePath, mockMetadata);
-    }
-    const moduleMock = this._moduleMocker.generateFromMetadata<T>(
-      this.mockState.getMockMetadata(modulePath)! as MockMetadata<T>,
-    );
-    return this.mockState.notifyMockGenerated(modulePath, moduleMock);
+  private _generateMock<T>(from: string, moduleName: string): T {
+    return generateMock<T>(from, moduleName, {
+      mockState: this.mockState,
+      moduleMocker: this._moduleMocker,
+      registries: this.registries,
+      requireModule: (f, name) => this.requireModule(f, name),
+      resolution: this._resolution,
+    });
   }
 
   private _createRequireImplementation(
     from: InitialModule,
     options?: TransformOptions,
   ): NodeJS.Require {
-    const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
-      const resolved = this._requireResolve(
-        from.filename,
-        moduleName,
-        resolveOptions,
-      );
-      if (
-        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
-        options?.isInternalModule
-      ) {
-        return createOutsideJestVmPath(resolved);
-      }
-      return resolved;
-    };
-    resolve.paths = (moduleName: string) =>
-      this._requireResolvePaths(from.filename, moduleName);
-
-    const moduleRequire = (
-      options?.isInternalModule
-        ? (moduleName: string) =>
-            this.requireInternalModule(from.filename, moduleName)
-        : this.requireModuleOrMock.bind(this, from.filename)
-    ) as NodeJS.Require;
-    moduleRequire.extensions = Object.create(null);
-    moduleRequire.resolve = resolve;
-    moduleRequire.cache = this.registries.createRequireCacheProxy();
-
-    Object.defineProperty(moduleRequire, 'main', {
-      enumerable: true,
-      value: this._mainModule,
+    return buildRequire(from, options, {
+      mainModule: () => this._mainModule,
+      registries: this.registries,
+      requireDispatch: (f, name) => this.requireModuleOrMock(f, name),
+      requireInternal: (f, name) => this.requireInternalModule(f, name),
+      resolution: this._resolution,
     });
-
-    return moduleRequire;
   }
 
   private _createJestObjectFor(from: string): Jest {
