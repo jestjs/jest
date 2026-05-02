@@ -9,29 +9,26 @@ import CjsExportsCache from '../CjsExportsCache';
 import type FileCache from '../FileCache';
 import type Resolution from '../Resolution';
 
-function makeResolution(overrides: Partial<Resolution> = {}): {
-  resolution: Resolution;
-  resolveCjs: jest.Mock;
-  isCoreModule: jest.Mock;
-} {
-  const resolveCjs = jest.fn((_from: string, to: string) => `/resolved/${to}`);
-  const isCoreModule = jest.fn(() => false);
+function makeResolution(overrides: Partial<Resolution> = {}) {
+  const resolveCjs: jest.MockedFunction<Resolution['resolveCjs']> = jest.fn(
+    (_from, to) => `/resolved/${to}`,
+  );
+  const isCoreModule: jest.MockedFunction<Resolution['isCoreModule']> = jest.fn(
+    () => false,
+  );
   return {
+    isCoreModule,
     resolution: {
-      resolveCjs,
       isCoreModule,
+      resolveCjs,
       ...overrides,
     } as unknown as Resolution,
     resolveCjs,
-    isCoreModule,
   };
 }
 
-function makeFileCache(files: Record<string, string> = {}): {
-  fileCache: FileCache;
-  readFile: jest.Mock;
-} {
-  const readFile = jest.fn((p: string) => {
+function makeFileCache(files: Record<string, string> = {}) {
+  const readFile: jest.MockedFunction<FileCache['readFile']> = jest.fn(p => {
     if (!(p in files)) throw new Error(`unexpected readFile(${p})`);
     return files[p];
   });

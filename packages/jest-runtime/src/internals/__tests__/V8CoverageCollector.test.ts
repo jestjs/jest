@@ -93,11 +93,11 @@ describe('V8CoverageCollector', () => {
   test('getResult() filters file:// URLs under rootDir and attaches transforms', async () => {
     mockStopInstrumenting.mockResolvedValue([
       // outside rootDir - filtered out
-      {functions: [], url: 'file:///elsewhere/x.js'},
+      {functions: [], scriptId: '1', url: 'file:///elsewhere/x.js'},
       // not file:// - filtered out
-      {functions: [], url: 'node:internal/foo'},
+      {functions: [], scriptId: '2', url: 'node:internal/foo'},
       // inside rootDir - kept
-      {functions: [], url: 'file:///root/a.js'},
+      {functions: [], scriptId: '3', url: 'file:///root/a.js'},
     ]);
 
     const collector = new V8CoverageCollector(v8Options, config);
@@ -115,7 +115,7 @@ describe('V8CoverageCollector', () => {
 
   test('snapshotTransforms() merges into sources when actively collecting v8', async () => {
     mockStopInstrumenting.mockResolvedValue([
-      {functions: [], url: 'file:///root/a.js'},
+      {functions: [], scriptId: '3', url: 'file:///root/a.js'},
     ]);
     const collector = new V8CoverageCollector(v8Options, config);
     await collector.start();
@@ -142,7 +142,7 @@ describe('V8CoverageCollector', () => {
 
   test('snapshotTransforms() is a no-op when coverage is disabled', async () => {
     mockStopInstrumenting.mockResolvedValue([
-      {functions: [], url: 'file:///root/a.js'},
+      {functions: [], scriptId: '3', url: 'file:///root/a.js'},
     ]);
     const collector = new V8CoverageCollector(noCoverageOptions, config);
     await collector.start();
@@ -158,7 +158,7 @@ describe('V8CoverageCollector', () => {
 
   test('snapshotTransforms() is a no-op for non-v8 providers', async () => {
     mockStopInstrumenting.mockResolvedValue([
-      {functions: [], url: 'file:///root/a.js'},
+      {functions: [], scriptId: '3', url: 'file:///root/a.js'},
     ]);
     const collector = new V8CoverageCollector(babelOptions, config);
     await collector.start();
@@ -172,7 +172,7 @@ describe('V8CoverageCollector', () => {
 
   test('reset() drops sources and produces an empty result', async () => {
     mockStopInstrumenting.mockResolvedValue([
-      {functions: [], url: 'file:///root/a.js'},
+      {functions: [], scriptId: '3', url: 'file:///root/a.js'},
     ]);
     const collector = new V8CoverageCollector(v8Options, config);
     await collector.start();
