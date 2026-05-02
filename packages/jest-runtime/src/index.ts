@@ -60,6 +60,7 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
+import FileCache from './internals/FileCache';
 import Resolution from './internals/Resolution';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
@@ -292,8 +293,7 @@ function buildMockSyntheticModule(
 }
 
 export default class Runtime {
-  private readonly _cacheFS: Map<string, string>;
-  private readonly _cacheFSBuffer = new Map<string, BufferSource>();
+  private readonly fileCache: FileCache;
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
@@ -361,7 +361,7 @@ export default class Runtime {
     testPath: string,
     globalConfig: Config.GlobalConfig,
   ) {
-    this._cacheFS = cacheFS;
+    this.fileCache = new FileCache(cacheFS);
     this._config = config;
     this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
@@ -646,7 +646,7 @@ export default class Runtime {
 
       if (isWasm(modulePath)) {
         const wasmEntry = this._buildSyncWasmEntry(
-          this.readFileBuffer(modulePath),
+          this.fileCache.readFileBuffer(modulePath),
           modulePath,
           cacheKey,
           context,
@@ -1267,7 +1267,7 @@ export default class Runtime {
 
       if (isWasm(modulePath)) {
         const wasm = this._importWasmModule(
-          this.readFileBuffer(modulePath),
+          this.fileCache.readFileBuffer(modulePath),
           modulePath,
           context,
         );
@@ -1724,7 +1724,8 @@ export default class Runtime {
     }
 
     const transformedCode =
-      this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
+      this._fileTransforms.get(modulePath)?.code ??
+      this.fileCache.readFile(modulePath);
 
     const {exports, reexports} = parseCjs(transformedCode);
 
@@ -1996,7 +1997,7 @@ export default class Runtime {
     moduleRegistry: ModuleRegistry,
   ) {
     if (path.extname(modulePath) === '.json') {
-      const text = stripBOM(this.readFile(modulePath));
+      const text = stripBOM(this.fileCache.readFile(modulePath));
 
       const transformedFile = this._scriptTransformer.transformJson(
         modulePath,
@@ -2122,8 +2123,7 @@ export default class Runtime {
     this._fileTransformsMutex.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
-    this._cacheFS.clear();
-    this._cacheFSBuffer.clear();
+    this.fileCache.clear();
     this._resolution.clear();
 
     if (
@@ -2292,7 +2292,7 @@ export default class Runtime {
     this._transitiveShouldMock.clear();
     this._virtualMocks.clear();
     this._virtualModuleMocks.clear();
-    this._cacheFS.clear();
+    this.fileCache.clear();
     this._unmockList = undefined;
 
     this._sourceMapRegistry.clear();
@@ -2502,7 +2502,7 @@ export default class Runtime {
     filename: string,
     options?: InternalModuleOptions,
   ): string {
-    const source = this.readFile(filename);
+    const source = this.fileCache.readFile(filename);
 
     if (options?.isInternalModule) {
       return source;
@@ -2526,7 +2526,7 @@ export default class Runtime {
     filename: string,
     options?: InternalModuleOptions,
   ): Promise<string> {
-    const source = this.readFile(filename);
+    const source = this.fileCache.readFile(filename);
 
     if (options?.isInternalModule) {
       return source;
@@ -3578,31 +3578,6 @@ export default class Runtime {
       xit: this._environment.global.xit,
       xtest: this._environment.global.xtest,
     };
-  }
-
-  private readFileBuffer(filename: string) {
-    let source = this._cacheFSBuffer.get(filename);
-
-    if (!source) {
-      source = fs.readFileSync(filename);
-
-      this._cacheFSBuffer.set(filename, source);
-    }
-
-    return source;
-  }
-
-  private readFile(filename: string): string {
-    let source = this._cacheFS.get(filename);
-
-    if (!source) {
-      const buffer = this.readFileBuffer(filename);
-      source = buffer.toString();
-
-      this._cacheFS.set(filename, source);
-    }
-
-    return source;
   }
 
   setGlobalsForRuntime(globals: JestGlobals): void {
