@@ -47,8 +47,8 @@ export function resolve(
       return module;
     }
   } else if (options.paths) {
-    for (const p of options.paths) {
-      const absolutePath = path.resolve(from, '..', p);
+    for (const searchPath of options.paths) {
+      const absolutePath = path.resolve(from, '..', searchPath);
       // required to also resolve files without leading './' directly in the path
       const module = resolution.resolveCjsFromDirIfExists(
         absolutePath,

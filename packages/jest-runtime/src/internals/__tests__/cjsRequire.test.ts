@@ -31,7 +31,7 @@ function makeResolution(
   return {
     getCjsMockModule: jest.fn(() => null),
     getGlobalPaths: jest.fn(() => []),
-    getModulePaths: jest.fn(() => ['/m']),
+    getModulePaths: jest.fn(() => ['/modules']),
     isCoreModule: jest.fn(() => false),
     resolveCjs: jest.fn(),
     resolveCjsFromDirIfExists: jest.fn(() => null),
@@ -53,40 +53,40 @@ describe('resolve', () => {
   });
 
   test('looks up absolute paths via resolveCjsFromDirIfExists', () => {
-    const r = makeResolution({
+    const resolution = makeResolution({
       resolveCjsFromDirIfExists: jest.fn(() => '/abs/found.js'),
     });
-    expect(resolve(r, '/from.js', '/abs/x')).toBe('/abs/found.js');
+    expect(resolve(resolution, '/from.js', '/abs/x')).toBe('/abs/found.js');
   });
 
   test('walks options.paths and throws ModuleNotFoundError when none match', () => {
-    const r = makeResolution({
+    const resolution = makeResolution({
       resolveCjsFromDirIfExists: jest.fn(() => null),
     });
     expect(() =>
-      resolve(r, '/x/from.js', 'foo', {paths: ['./a', './b']}),
+      resolve(resolution, '/x/from.js', 'foo', {paths: ['./a', './b']}),
     ).toThrow(Resolver.ModuleNotFoundError);
   });
 
   test('falls back to mock module when resolveCjs throws', () => {
-    const r = makeResolution({
+    const resolution = makeResolution({
       getCjsMockModule: jest.fn(() => '/mock.js'),
       resolveCjs: jest.fn(() => {
         throw new Error('not found');
       }),
     });
-    expect(resolve(r, '/from.js', 'foo')).toBe('/mock.js');
+    expect(resolve(resolution, '/from.js', 'foo')).toBe('/mock.js');
   });
 
   test('rethrows when no mock fallback', () => {
-    const err = new Error('not found');
-    const r = makeResolution({
+    const error = new Error('not found');
+    const resolution = makeResolution({
       getCjsMockModule: jest.fn(() => null),
       resolveCjs: jest.fn(() => {
-        throw err;
+        throw error;
       }),
     });
-    expect(() => resolve(r, '/from.js', 'foo')).toThrow(err);
+    expect(() => resolve(resolution, '/from.js', 'foo')).toThrow(error);
   });
 });
 
@@ -110,16 +110,19 @@ describe('resolvePaths', () => {
   });
 
   test('returns null for core modules', () => {
-    const r = makeResolution({isCoreModule: jest.fn(() => true)});
-    expect(resolvePaths(r, '/from.js', 'fs')).toBeNull();
+    const resolution = makeResolution({isCoreModule: jest.fn(() => true)});
+    expect(resolvePaths(resolution, '/from.js', 'fs')).toBeNull();
   });
 
   test('concatenates module + global paths for bare specifiers', () => {
-    const r = makeResolution({
-      getGlobalPaths: jest.fn(() => ['/g']),
-      getModulePaths: jest.fn(() => ['/m']),
+    const resolution = makeResolution({
+      getGlobalPaths: jest.fn(() => ['/global']),
+      getModulePaths: jest.fn(() => ['/modules']),
     });
-    expect(resolvePaths(r, '/a/from.js', 'lodash')).toEqual(['/m', '/g']);
+    expect(resolvePaths(resolution, '/a/from.js', 'lodash')).toEqual([
+      '/modules',
+      '/global',
+    ]);
   });
 });
 
@@ -135,21 +138,21 @@ describe('buildRequire', () => {
   };
 
   test('produces a require with .resolve / .paths / .cache / .main / .extensions', () => {
-    const r = makeRegistries();
-    const req = buildRequire(from, undefined, {
+    const registries = makeRegistries();
+    const requireFn = buildRequire(from, undefined, {
       mainModule: () => null,
-      registries: r,
+      registries,
       requireDispatch: jest.fn(),
       requireInternal: jest.fn(),
       resolution: makeResolution({resolveCjs: jest.fn(() => '/resolved.js')}),
     });
 
-    expect(typeof req).toBe('function');
-    expect(typeof req.resolve).toBe('function');
-    expect(typeof req.resolve.paths).toBe('function');
-    expect(req.cache).toBeDefined();
-    expect(req.main).toBeNull();
-    expect(req.extensions).toEqual(Object.create(null));
+    expect(typeof requireFn).toBe('function');
+    expect(typeof requireFn.resolve).toBe('function');
+    expect(typeof requireFn.resolve.paths).toBe('function');
+    expect(requireFn.cache).toBeDefined();
+    expect(requireFn.main).toBeNull();
+    expect(requireFn.extensions).toEqual(Object.create(null));
   });
 
   test('routes non-internal calls through requireDispatch', () => {
@@ -157,14 +160,14 @@ describe('buildRequire', () => {
       () => 'dispatched',
     );
     const requireInternal: jest.MockedFunction<RequireDispatch> = jest.fn();
-    const req = buildRequire(from, undefined, {
+    const requireFn = buildRequire(from, undefined, {
       mainModule: () => null,
       registries: makeRegistries(),
       requireDispatch,
       requireInternal,
       resolution: makeResolution(),
     });
-    expect(req('lodash')).toBe('dispatched');
+    expect(requireFn('lodash')).toBe('dispatched');
     expect(requireDispatch).toHaveBeenCalledWith('/a/b/from.js', 'lodash');
     expect(requireInternal).not.toHaveBeenCalled();
   });
@@ -174,20 +177,20 @@ describe('buildRequire', () => {
     const requireInternal: jest.MockedFunction<RequireDispatch> = jest.fn(
       () => 'internal',
     );
-    const req = buildRequire(from, {isInternalModule: true} as never, {
+    const requireFn = buildRequire(from, {isInternalModule: true} as never, {
       mainModule: () => null,
       registries: makeRegistries(),
       requireDispatch,
       requireInternal,
       resolution: makeResolution(),
     });
-    expect(req('chalk')).toBe('internal');
+    expect(requireFn('chalk')).toBe('internal');
     expect(requireInternal).toHaveBeenCalledWith('/a/b/from.js', 'chalk');
     expect(requireDispatch).not.toHaveBeenCalled();
   });
 
   test('require.resolve respects JEST_RESOLVE_OUTSIDE_VM_OPTION for internal modules', () => {
-    const req = buildRequire(from, {isInternalModule: true} as never, {
+    const requireFn = buildRequire(from, {isInternalModule: true} as never, {
       mainModule: () => null,
       registries: makeRegistries(),
       requireDispatch: jest.fn(),
@@ -196,7 +199,7 @@ describe('buildRequire', () => {
         resolveCjs: jest.fn(() => '/resolved.js'),
       }),
     });
-    const resolved = req.resolve('lodash', {
+    const resolved = requireFn.resolve('lodash', {
       [JEST_RESOLVE_OUTSIDE_VM_OPTION]: true,
     } as ResolveOptions);
     // Outside-vm marker prefix
@@ -204,34 +207,35 @@ describe('buildRequire', () => {
   });
 
   test('reads `main` lazily through the mainModule callback', () => {
-    let main: Module | null = null;
-    const getMain = (): Module | null => main;
+    let mainModule: Module | null = null;
+    const getMainModule = (): Module | null => mainModule;
 
-    // First require: main is null at build time, so `req.main` captures null.
-    const req = buildRequire(from, undefined, {
-      mainModule: getMain,
+    // First require: mainModule is null at build time, so `requireFn.main`
+    // captures null.
+    const requireFn = buildRequire(from, undefined, {
+      mainModule: getMainModule,
       registries: makeRegistries(),
       requireDispatch: jest.fn(),
       requireInternal: jest.fn(),
       resolution: makeResolution(),
     });
-    expect(req.main).toBeNull();
+    expect(requireFn.main).toBeNull();
 
-    // Setting main after build does not retroactively change a pre-built require
-    // (matches existing behavior — `require.main` is captured at module load
-    // via Object.defineProperty).
-    main = {filename: '/test.js'} as never;
-    expect(req.main).toBeNull();
+    // Setting mainModule after build does not retroactively change a
+    // pre-built require (matches existing behavior — `require.main` is
+    // captured at module load via Object.defineProperty).
+    mainModule = {filename: '/test.js'} as never;
+    expect(requireFn.main).toBeNull();
 
     // But a require built later does see the current value.
-    const req2 = buildRequire(from, undefined, {
-      mainModule: getMain,
+    const laterRequire = buildRequire(from, undefined, {
+      mainModule: getMainModule,
       registries: makeRegistries(),
       requireDispatch: jest.fn(),
       requireInternal: jest.fn(),
       resolution: makeResolution(),
     });
-    expect(req2.main).toBe(main);
+    expect(laterRequire.main).toBe(mainModule);
   });
 });
 
@@ -272,10 +276,13 @@ describe('CoreModuleProvider', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'module',
     });
-    const Mod = provider.require('module', true) as typeof nativeModule.Module;
-    expect(typeof Mod.createRequire).toBe('function');
+    const ModuleClass = provider.require(
+      'module',
+      true,
+    ) as typeof nativeModule.Module;
+    expect(typeof ModuleClass.createRequire).toBe('function');
     // Cached on second call
-    expect(provider.require('module', true)).toBe(Mod);
+    expect(provider.require('module', true)).toBe(ModuleClass);
   });
 
   test('mocked Module.createRequire delegates to buildRequireFor with the filename', () => {
@@ -285,10 +292,13 @@ describe('CoreModuleProvider', () => {
       buildRequireFor,
       normalizeCoreModuleSpecifier: () => 'module',
     });
-    const Mod = provider.require('module', true) as typeof nativeModule.Module;
-    const req = Mod.createRequire('/some/abs/file.js');
+    const ModuleClass = provider.require(
+      'module',
+      true,
+    ) as typeof nativeModule.Module;
+    const requireFn = ModuleClass.createRequire('/some/abs/file.js');
     expect(buildRequireFor).toHaveBeenCalledWith('/some/abs/file.js');
-    expect(req).toBe(fakeRequire);
+    expect(requireFn).toBe(fakeRequire);
   });
 
   test('mocked Module.createRequire converts file:// URLs', () => {
@@ -299,30 +309,36 @@ describe('CoreModuleProvider', () => {
       buildRequireFor,
       normalizeCoreModuleSpecifier: () => 'module',
     });
-    const Mod = provider.require('module', true) as typeof nativeModule.Module;
-    Mod.createRequire('file:///abs/x.js');
-    const arg = buildRequireFor.mock.calls[0][0];
-    expect(typeof arg).toBe('string');
-    expect(arg.startsWith('/')).toBe(true);
+    const ModuleClass = provider.require(
+      'module',
+      true,
+    ) as typeof nativeModule.Module;
+    ModuleClass.createRequire('file:///abs/x.js');
+    const filename = buildRequireFor.mock.calls[0][0];
+    expect(typeof filename).toBe('string');
+    expect(filename.startsWith('/')).toBe(true);
   });
 
   test('mocked Module.createRequire rejects relative filenames', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'module',
     });
-    const Mod = provider.require('module', true) as typeof nativeModule.Module;
-    expect(() => Mod.createRequire('relative.js')).toThrow(TypeError);
+    const ModuleClass = provider.require(
+      'module',
+      true,
+    ) as typeof nativeModule.Module;
+    expect(() => ModuleClass.createRequire('relative.js')).toThrow(TypeError);
   });
 
   test('falls through to require() for plain core modules', () => {
     const {provider} = makeProvider({
       normalizeCoreModuleSpecifier: () => 'path',
     });
-    const pathMod = provider.require(
+    const pathModule = provider.require(
       'path',
       true,
     ) as typeof import('node:path');
-    expect(typeof pathMod.join).toBe('function');
+    expect(typeof pathModule.join).toBe('function');
   });
 
   test('skips normalization when supportPrefix=false', () => {
