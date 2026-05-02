@@ -228,7 +228,7 @@ describe('buildRequire', () => {
     expect(requireFn.main).toBeNull();
 
     // Changing mainModule after build does not affect an already-built
-    // require — the value was snapshotted at build time. This matches
+    // require - the value was snapshotted at build time. This matches
     // Node's semantics: `require.main` is set once when `require` is
     // attached to a module.
     mainModule = {filename: '/test.js'} as Module;
@@ -323,7 +323,7 @@ describe('CoreModuleProvider', () => {
       true,
     ) as typeof nativeModule.Module;
     // Build a file URL from a platform-valid absolute path so the test runs
-    // on Windows (where `file:///abs/x.js` is rejected — needs a drive
+    // on Windows (where `file:///abs/x.js` is rejected - needs a drive
     // letter).
     const absolutePath = path.resolve('/abs/x.js');
     ModuleClass.createRequire(pathToFileURL(absolutePath).href);

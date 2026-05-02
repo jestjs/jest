@@ -81,6 +81,10 @@ export default class TransformCache {
     return this.transforms.get(filename)?.code;
   }
 
+  fullOptions(options: TransformOptions | undefined): TransformationOptions {
+    return this.getFullTransformationOptions(options);
+  }
+
   getEntries(): ReadonlyMap<string, TransformResult> {
     return this.transforms;
   }

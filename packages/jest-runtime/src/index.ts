@@ -13,7 +13,6 @@ import {
   SyntheticModule,
   type Context as VMContext,
   type Module as VMModule,
-  compileFunction,
 } from 'node:vm';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
@@ -23,7 +22,6 @@ import type {
   JestEnvironment,
   JestImportMeta,
   Module,
-  ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect} from '@jest/globals';
@@ -33,23 +31,16 @@ import {
   type ScriptTransformer,
   type ShouldInstrumentOptions,
   type TransformationOptions,
-  handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
-import type {Config, Global} from '@jest/types';
+import type {Config} from '@jest/types';
 import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {
-  createDirectory,
-  deepCyclicCopy,
-  invariant,
-  isError,
-  isNonNullable,
-} from 'jest-util';
+import {createDirectory, deepCyclicCopy, invariant, isError} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
@@ -58,6 +49,7 @@ import {
 import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
 import MockState from './internals/MockState';
+import ModuleExecutor, {isCjsParseError} from './internals/ModuleExecutor';
 import ModuleRegistries from './internals/ModuleRegistries';
 import Resolution, {isWasm} from './internals/Resolution';
 import TransformCache, {
@@ -89,14 +81,6 @@ import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
-
-// Marker used by the CJS-as-ESM SyntaxError fallback paths to distinguish
-// parse-time errors (where retrying as ESM is correct) from runtime errors
-// a user might throw from inside a module body.
-const CJS_PARSE_ERROR = Symbol('jest-runtime CJS parse error');
-const isCjsParseError = (error: unknown): error is Error =>
-  isError(error) &&
-  (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] === true;
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -273,7 +257,6 @@ export default class Runtime {
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
-  private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
   private readonly mockState: MockState;
   private _fakeTimersImplementation:
@@ -281,8 +264,7 @@ export default class Runtime {
     | ModernFakeTimers
     | null;
   private readonly registries: ModuleRegistries;
-  private _isCurrentlyExecutingManualMock: string | null;
-  private _mainModule: Module | null;
+  private readonly executor: ModuleExecutor;
   private readonly _moduleMocker: ModuleMocker;
   private readonly cjsExportsCache: CjsExportsCache;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
@@ -312,12 +294,9 @@ export default class Runtime {
     this.fileCache = new FileCache(cacheFS);
     this._config = config;
     this._coverageOptions = coverageOptions;
-    this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._globalConfig = globalConfig;
     this.registries = new ModuleRegistries();
-    this._isCurrentlyExecutingManualMock = null;
-    this._mainModule = null;
     invariant(
       this._environment.moduleMocker,
       '`moduleMocker` must be set on an environment when created',
@@ -369,6 +348,21 @@ export default class Runtime {
         }),
       environment: this._environment,
       resolution: this._resolution,
+    });
+    this.executor = new ModuleExecutor({
+      buildRequireFor: (from, options) =>
+        this._createRequireImplementation(from, options),
+      config,
+      dynamicImport: (specifier, identifier, context) =>
+        this.resolveModule<VMModule>(specifier, identifier, context).then(m =>
+          this.linkAndEvaluateModule(m),
+        ),
+      environment: this._environment,
+      jestObjectCache: this.jestObjectCaches,
+      jestObjectFactory: from => this._createJestObjectFor(from),
+      resolution: this._resolution,
+      testPath,
+      transformCache: this.transformCache,
     });
 
     if (config.automock) {
@@ -1577,7 +1571,7 @@ export default class Runtime {
       !isRequireActual &&
       !moduleResource &&
       manualMock &&
-      manualMock !== this._isCurrentlyExecutingManualMock &&
+      manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
       !this.mockState.isExplicitlyUnmocked(moduleID)
     ) {
       modulePath = manualMock;
@@ -1797,15 +1791,36 @@ export default class Runtime {
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
+      // testState gates only apply to executing JS bodies - JSON/.node go
+      // through pure data parsing and don't run user code in the VM.
+      if (this.testState === 'tornDown') {
+        this._logFormattedReferenceError(
+          'You are trying to `require` a file after the Jest environment has been torn down.',
+        );
+        process.exitCode = 1;
+        return;
+      }
+      if (this.testState === 'betweenTests' && !supportsDynamicImport) {
+        throw new ReferenceError(
+          'You are trying to `require` a file outside of the scope of the test code.',
+        );
+      }
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(
+      const result = this.executor.exec(
         localModule,
         options,
         moduleRegistry,
         fromPath,
         moduleName,
       );
+      if (result === 'env-disposed') {
+        this._logFormattedReferenceError(
+          'You are trying to `require` a file after the Jest environment has been torn down.',
+        );
+        process.exitCode = 1;
+        return;
+      }
     }
     localModule.loaded = true;
   }
@@ -1976,7 +1991,7 @@ export default class Runtime {
     this.resetModules();
 
     this.registries.clear();
-    this._mainModule = null;
+    this.executor.resetMainModule();
     this.mockState.clear();
     this.fileCache.clear();
 
@@ -1987,162 +2002,6 @@ export default class Runtime {
     this.coreModule.reset();
 
     this.testState = 'tornDown';
-  }
-
-  private _execModule(
-    localModule: InitialModule,
-    options: TransformOptions | undefined,
-    moduleRegistry: ModuleRegistry,
-    from: string | null,
-    moduleName?: string,
-  ) {
-    if (this.testState === 'tornDown') {
-      this._logFormattedReferenceError(
-        'You are trying to `require` a file after the Jest environment has been torn down.',
-      );
-      process.exitCode = 1;
-      return;
-    }
-    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
-      throw new ReferenceError(
-        'You are trying to `require` a file outside of the scope of the test code.',
-      );
-    }
-
-    // If the environment was disposed, prevent this module from being executed.
-    if (!this._environment.global) {
-      return;
-    }
-
-    const module = localModule as Module;
-
-    const filename = module.filename;
-    const lastExecutingModulePath = this._currentlyExecutingModulePath;
-    this._currentlyExecutingModulePath = filename;
-    const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
-    this._isCurrentlyExecutingManualMock = filename;
-
-    module.children = [];
-
-    Object.defineProperty(module, 'parent', {
-      enumerable: true,
-      get() {
-        const key = from || '';
-        return moduleRegistry.get(key) || null;
-      },
-    });
-    const modulePaths = this._resolution.getModulePaths(module.path);
-    const globalPaths = this._resolution.getGlobalPaths(moduleName);
-    module.paths = [...modulePaths, ...globalPaths];
-
-    Object.defineProperty(module, 'require', {
-      value: this._createRequireImplementation(module, options),
-    });
-
-    const transformedCode = this.transformCache.transform(filename, options);
-
-    const compiledFunction = this.createScriptFromCode(
-      transformedCode,
-      filename,
-    );
-
-    if (compiledFunction === null) {
-      this._logFormattedReferenceError(
-        'You are trying to `require` a file after the Jest environment has been torn down.',
-      );
-      process.exitCode = 1;
-      return;
-    }
-
-    const jestObject = this._createJestObjectFor(filename);
-
-    this.jestObjectCaches.set(filename, jestObject);
-
-    const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-      this._config.injectGlobals ? jestObject : undefined, // jest object
-      ...this._config.sandboxInjectedGlobals.map<Global.Global>(
-        globalVariable => {
-          if (this._environment.global[globalVariable]) {
-            return this._environment.global[globalVariable];
-          }
-
-          throw new Error(
-            `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-          );
-        },
-      ),
-    ];
-
-    if (!this._mainModule && filename === this._testPath) {
-      this._mainModule = module;
-    }
-
-    Object.defineProperty(module, 'main', {
-      enumerable: true,
-      value: this._mainModule,
-    });
-
-    try {
-      compiledFunction.call(
-        module.exports,
-        module, // module object
-        module.exports, // module exports
-        module.require, // require implementation
-        module.path, // __dirname
-        module.filename, // __filename
-        lastArgs[0],
-        ...lastArgs.slice(1).filter(isNonNullable),
-      );
-    } catch (error: any) {
-      this.handleExecutionError(error, module);
-    }
-
-    this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
-    this._currentlyExecutingModulePath = lastExecutingModulePath;
-  }
-
-  private createScriptFromCode(scriptSource: string, filename: string) {
-    const vmContext = this._environment.getVmContext();
-
-    if (vmContext == null) {
-      return null;
-    }
-
-    try {
-      const scriptFilename = this._resolution.isCoreModule(filename)
-        ? `jest-nodejs-core-${filename}`
-        : filename;
-      return compileFunction(
-        scriptSource,
-        this.constructInjectedModuleParameters(),
-        {
-          filename: scriptFilename,
-          importModuleDynamically: async specifier => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-
-            const module = await this.resolveModule<VMModule>(
-              specifier,
-              scriptFilename,
-              vmContext,
-            );
-
-            return this.linkAndEvaluateModule(module);
-          },
-          parsingContext: vmContext,
-        },
-      ) as ModuleWrapper;
-    } catch (error: any) {
-      // Tag so callers can distinguish parse-time SyntaxErrors (where the
-      // ESM-syntax-in-CJS fallback applies) from runtime SyntaxErrors a user
-      // might throw from inside a CJS module body.
-      if (isError(error)) {
-        (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] = true;
-      }
-      throw handlePotentialSyntaxError(error);
-    }
   }
 
   private _buildCoreSyntheticModule(
@@ -2213,7 +2072,7 @@ export default class Runtime {
     options?: TransformOptions,
   ): NodeJS.Require {
     return buildRequire(from, options, {
-      mainModule: () => this._mainModule,
+      mainModule: () => this.executor.mainModule,
       registries: this.registries,
       requireDispatch: (f, name) => this.requireModuleOrMock(f, name),
       requireInternal: (f, name) => this.requireInternalModule(f, name),
@@ -2529,36 +2388,6 @@ export default class Runtime {
       console.error(formattedMessage);
       this.loggedReferenceErrors.add(formattedMessage);
     }
-  }
-
-  private constructInjectedModuleParameters(): Array<string> {
-    return [
-      'module',
-      'exports',
-      'require',
-      '__dirname',
-      '__filename',
-      this._config.injectGlobals ? 'jest' : undefined,
-      ...this._config.sandboxInjectedGlobals,
-    ].filter(isNonNullable);
-  }
-
-  private handleExecutionError(e: Error, module: Module): never {
-    const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(e);
-    if (moduleNotFoundError) {
-      if (!moduleNotFoundError.requireStack) {
-        moduleNotFoundError.requireStack = [module.filename || module.id];
-
-        for (let cursor = module.parent; cursor; cursor = cursor.parent) {
-          moduleNotFoundError.requireStack.push(cursor.filename || cursor.id);
-        }
-
-        moduleNotFoundError.buildMessage(this._config.rootDir);
-      }
-      throw moduleNotFoundError;
-    }
-
-    throw e;
   }
 
   private getGlobalsForCjs(from: string): JestGlobalsWithJest {

@@ -141,7 +141,7 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
   );
 
   // Runtime SyntaxError from inside the CJS body (vs. a parse-time one)
-  // must not trigger the ESM fallback — surfacing the original error
+  // must not trigger the ESM fallback - surfacing the original error
   // unchanged is the right behavior.
   testWithVmEsm(
     'does not retry as ESM when the CJS body throws a runtime SyntaxError',
