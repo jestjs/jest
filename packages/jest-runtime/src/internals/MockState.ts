@@ -300,10 +300,12 @@ export class MockState {
     this.explicitCjsMock.set(moduleID, true);
   }
 
-  addOnGenerateMock(
-    callback: (moduleName: string, moduleMock: unknown) => unknown,
+  addOnGenerateMock<T>(
+    callback: (moduleName: string, moduleMock: T) => T,
   ): void {
-    this.onGenerateMockCallbacks.add(callback);
+    this.onGenerateMockCallbacks.add(
+      callback as (moduleName: string, moduleMock: unknown) => unknown,
+    );
   }
 
   getCjsModuleId(from: string, moduleName?: string): string {

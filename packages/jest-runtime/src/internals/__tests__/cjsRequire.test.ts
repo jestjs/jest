@@ -13,6 +13,7 @@ import Resolver from 'jest-resolve';
 import type {ModuleRegistries} from '../ModuleRegistries';
 import type {Resolution} from '../Resolution';
 import {TestMainModule} from '../TestMainModule';
+import type {TransformOptions} from '../TransformCache';
 import type {InitialModule} from '../moduleTypes';
 import {
   CoreModuleProvider,
@@ -20,6 +21,14 @@ import {
   RequireBuilder,
   type ResolveOptions,
 } from '../cjsRequire';
+
+const internalOptions: TransformOptions = {
+  isInternalModule: true,
+  supportsDynamicImport: false,
+  supportsExportNamespaceFrom: false,
+  supportsStaticESM: false,
+  supportsTopLevelAwait: false,
+};
 
 type RequireDispatch = (from: string, moduleName: string) => unknown;
 
@@ -100,9 +109,7 @@ describe('RequireBuilder', () => {
         () => 'internal',
       );
       const builder = makeBuilder({requireDispatch, requireInternal});
-      const requireFn = builder.for(sampleFrom, {
-        isInternalModule: true,
-      } as never);
+      const requireFn = builder.for(sampleFrom, internalOptions);
       expect(requireFn('chalk')).toBe('internal');
       expect(requireInternal).toHaveBeenCalledWith('/a/b/from.js', 'chalk');
       expect(requireDispatch).not.toHaveBeenCalled();
@@ -192,9 +199,7 @@ describe('RequireBuilder', () => {
       const builder = makeBuilder({
         resolution: makeResolution({resolveCjs: jest.fn(() => '/resolved.js')}),
       });
-      const requireFn = builder.for(sampleFrom, {
-        isInternalModule: true,
-      } as never);
+      const requireFn = builder.for(sampleFrom, internalOptions);
       const resolved = requireFn.resolve('lodash', {
         [JEST_RESOLVE_OUTSIDE_VM_OPTION]: true,
       } as ResolveOptions);

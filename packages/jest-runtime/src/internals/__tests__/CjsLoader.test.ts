@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {makeProjectConfig, testWithSyncEsm} from '@jest/test-utils';
+import {testWithSyncEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
-import {CjsLoader} from '../CjsLoader';
+import {CjsLoader, type TestState} from '../CjsLoader';
 import type {CoreModuleProvider} from '../cjsRequire';
 import type {ModuleExecutor} from '../ModuleExecutor';
 import type {MockState} from '../MockState';
@@ -23,9 +23,8 @@ type Stubs = {
   environment: JestEnvironment;
   coreModule: jest.Mocked<CoreModuleProvider>;
   executor: jest.Mocked<ModuleExecutor>;
-  requireEsm: jest.MockedFunction<<T>(p: string) => T>;
-  requireDispatch: jest.MockedFunction<(from: string, name: string) => unknown>;
-  getTestState: jest.MockedFunction<() => 'inTest'>;
+  requireEsm: jest.MockedFunction<<T>(modulePath: string) => T>;
+  getTestState: jest.MockedFunction<() => TestState>;
   logFormattedReferenceError: jest.MockedFunction<(msg: string) => void>;
 };
 
@@ -53,8 +52,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
       getActiveCjsRegistry: jest.fn(() => new Map()),
       getActiveEsmRegistry: jest.fn(() => new Map()),
     } as unknown as jest.Mocked<ModuleRegistries>,
-    requireDispatch: jest.fn(),
-    requireEsm: jest.fn() as never,
+    requireEsm: jest.fn() as any,
     resolution: {
       getCjsMockModule: jest.fn(() => null),
       getModule: jest.fn(() => null),
@@ -68,7 +66,6 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     ...overrides,
   };
   const loader = new CjsLoader({
-    config: makeProjectConfig({}),
     coreModule: stubs.coreModule,
     environment: stubs.environment,
     executor: stubs.executor,
@@ -76,11 +73,10 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     logFormattedReferenceError: stubs.logFormattedReferenceError,
     mockState: stubs.mockState,
     registries: stubs.registries,
-    requireDispatch: stubs.requireDispatch,
     requireEsm: stubs.requireEsm,
     resolution: stubs.resolution,
     transformCache: stubs.transformCache,
-  } as never);
+  });
   return {loader, stubs};
 }
 
@@ -193,7 +189,8 @@ describe('CjsLoader.requireModule', () => {
         shouldLoadAsEsm: jest.fn(() => true),
       } as unknown as jest.Mocked<Resolution>,
     });
-    stubs.requireEsm.mockReturnValue('esm-result' as never);
+
+    stubs.requireEsm.mockReturnValue('esm-result' as any);
     expect(loader.requireModule('/from.js', './m.mjs')).toBe('esm-result');
     expect(stubs.requireEsm).toHaveBeenCalledWith('/m.mjs');
   });
@@ -285,7 +282,7 @@ describe('CjsLoader.loadModule', () => {
 
   test('logs and bails when testState is tornDown (JS branch only)', () => {
     const {loader, stubs} = makeLoader({
-      getTestState: jest.fn(() => 'tornDown') as never,
+      getTestState: jest.fn<() => TestState>(() => 'tornDown'),
     });
     const localModule = {
       children: [],

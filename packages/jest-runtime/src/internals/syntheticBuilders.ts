@@ -48,7 +48,9 @@ export function buildWasmSyntheticModule(
           importsObject[depSpec] = {};
         }
         const namespace = getDepNamespace(depSpec);
-        importsObject[depSpec][name] = namespace[name] as never;
+        importsObject[depSpec][name] = namespace[
+          name
+        ] as WebAssembly.ImportValue;
       }
       const wasmInstance = new WebAssembly.Instance(wasmModule, importsObject);
       for (const {name} of exports) {

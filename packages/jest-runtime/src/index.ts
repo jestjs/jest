@@ -1936,7 +1936,7 @@ export default class Runtime {
     const onGenerateMock: Jest['onGenerateMock'] = <T>(
       cb: (moduleName: string, moduleMock: T) => T,
     ) => {
-      this.mockState.addOnGenerateMock(cb as never);
+      this.mockState.addOnGenerateMock(cb);
       return jestObject;
     };
     const setMockFactory = (

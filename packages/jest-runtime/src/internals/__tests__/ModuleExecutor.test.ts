@@ -5,13 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Jest, JestEnvironment} from '@jest/environment';
 import {makeProjectConfig} from '@jest/test-utils';
+import type {RequireBuilder} from '../cjsRequire';
 import {
   CJS_PARSE_ERROR,
   ModuleExecutor,
+  type ModuleExecutorDeps,
   isCjsParseError,
 } from '../ModuleExecutor';
+import type {Resolution} from '../Resolution';
 import {TestMainModule} from '../TestMainModule';
+import type {TransformCache} from '../TransformCache';
 
 describe('isCjsParseError', () => {
   test('matches errors tagged with CJS_PARSE_ERROR', () => {
@@ -31,22 +36,21 @@ describe('ModuleExecutor', () => {
   function makeExecutor(
     overrides: Partial<ConstructorParameters<typeof ModuleExecutor>[0]> = {},
   ) {
+    const noopRequire = (() => undefined) as unknown as NodeJS.Require;
     return new ModuleExecutor({
       config: makeProjectConfig({
         injectGlobals: true,
         sandboxInjectedGlobals: [],
       }),
-      dynamicImport: jest.fn() as never,
-      environment: {global: {}} as never,
+      dynamicImport: jest.fn<ModuleExecutorDeps['dynamicImport']>(),
+      environment: {global: {}} as JestEnvironment,
       jestObjectCache: new Map(),
-      jestObjectFactory: () => ({}) as never,
-      requireBuilder: {
-        for: () => (() => undefined) as unknown as NodeJS.Require,
-      } as never,
-      resolution: {} as never,
+      jestObjectFactory: () => ({}) as Jest,
+      requireBuilder: {for: () => noopRequire} as unknown as RequireBuilder,
+      resolution: {} as unknown as Resolution,
       testMainModule: new TestMainModule(),
       testPath: '/test.js',
-      transformCache: {} as never,
+      transformCache: {} as unknown as TransformCache,
       ...overrides,
     });
   }
@@ -106,7 +110,7 @@ describe('ModuleExecutor', () => {
   describe('exec', () => {
     test('bails early when environment.global is null (env disposed)', () => {
       const executor = makeExecutor({
-        environment: {global: null} as never,
+        environment: {global: null} as unknown as JestEnvironment,
       });
       const localModule = {
         children: [],

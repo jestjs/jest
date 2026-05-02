@@ -71,7 +71,7 @@ describe('automock.generateMock', () => {
     stubs.requireModule = jest.fn(() => {
       order.push('require');
       return {};
-    }) as never;
+    });
 
     generateMock('/from.js', 'foo', stubs);
     // First setMockMetadata (the empty seed) runs before requireModule.
@@ -88,7 +88,7 @@ describe('automock.generateMock', () => {
 
   test('skips re-running when metadata is already cached', () => {
     const stubs = makeStubs();
-    stubs.mockState.hasMockMetadata = jest.fn(() => true) as never;
+    stubs.mockState.hasMockMetadata = jest.fn(() => true);
     generateMock('/from.js', 'foo', stubs);
     expect(stubs.requireModule).not.toHaveBeenCalled();
     expect(stubs.registries.withScratchRegistries).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe('automock.generateMock', () => {
     // First call (seed) returns metadata; second (on real exports) returns null.
     let count = 0;
     stubs.moduleMocker.getMetadata = jest.fn(() =>
-      ++count === 1 ? ({type: 'object'} as never) : null,
+      ++count === 1 ? {type: 'object' as const} : null,
     );
     expect(() => generateMock('/from.js', 'foo', stubs)).toThrow(
       /Failed to get mock metadata/,
@@ -109,7 +109,7 @@ describe('automock.generateMock', () => {
   test('returns the result of notifyMockGenerated', () => {
     const sentinel = {sentinel: true};
     const stubs = makeStubs();
-    stubs.mockState.notifyMockGenerated = jest.fn(() => sentinel) as never;
+    stubs.mockState.notifyMockGenerated = jest.fn(() => sentinel) as any;
     expect(generateMock('/from.js', 'foo', stubs)).toBe(sentinel);
   });
 });
