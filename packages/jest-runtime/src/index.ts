@@ -58,11 +58,18 @@ import {
 } from './helpers';
 import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
+import ModuleRegistries from './internals/ModuleRegistries';
 import Resolution, {isWasm} from './internals/Resolution';
 import TransformCache, {
   type TransformOptions,
 } from './internals/TransformCache';
 import V8CoverageCollector from './internals/V8CoverageCollector';
+import type {
+  ESModule,
+  InitialModule,
+  JestModule,
+  ModuleRegistry,
+} from './internals/moduleTypes';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -102,9 +109,6 @@ const defaultTransformOptions: TransformOptions = {
   supportsStaticESM: false,
   supportsTopLevelAwait: false,
 };
-
-type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
-type ModuleRegistry = Map<string, InitialModule | Module | JestModule>;
 
 // These are modules that we know
 // * are safe to require from the outside (not stateful, not prone to errors passing in instances from different realms), and
@@ -217,9 +221,6 @@ const supportsNodeColonModulePrefixInRequire = (() => {
   }
 })();
 
-type ESModule = VMModule | SyntheticModule;
-type JestModule = ESModule | Promise<ESModule>;
-
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
 function parseDataUri(specifier: string): {
@@ -303,20 +304,13 @@ export default class Runtime {
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
     | null;
-  private readonly _internalModuleRegistry: ModuleRegistry;
+  private readonly registries: ModuleRegistries;
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
   private readonly _mockFactories: Map<string, () => unknown>;
   private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
-  private _mockRegistry: Map<string, any>;
-  private _isolatedMockRegistry: Map<string, any> | null;
-  private readonly _moduleMockRegistry: Map<string, JestModule>;
   private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
-  private _isolatedModuleRegistry: ModuleRegistry | null;
-  private _moduleRegistry: ModuleRegistry;
-  private readonly _esModuleRegistry: Map<string, JestModule>;
-  private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
   private readonly cjsExportsCache: CjsExportsCache;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
@@ -361,23 +355,16 @@ export default class Runtime {
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
     this._onGenerateMock = new Set();
-    this._internalModuleRegistry = new Map();
+    this.registries = new ModuleRegistries();
     this._isCurrentlyExecutingManualMock = null;
     this._mainModule = null;
     this._mockFactories = new Map();
-    this._mockRegistry = new Map();
-    this._moduleMockRegistry = new Map();
     this._moduleMockFactories = new Map();
     invariant(
       this._environment.moduleMocker,
       '`moduleMocker` must be set on an environment when created',
     );
     this._moduleMocker = this._environment.moduleMocker;
-    this._isolatedModuleRegistry = null;
-    this._isolatedMockRegistry = null;
-    this._moduleRegistry = new Map();
-    this._esModuleRegistry = new Map();
-    this._esmRequireCacheWrappers = new WeakMap();
     this._esmModuleLinkingMap = new WeakMap();
     this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
@@ -566,7 +553,7 @@ export default class Runtime {
       );
     }
 
-    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+    const registry = this.registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;
 
     // Fast path: if the root is already loaded we skip context lookup and
@@ -854,37 +841,6 @@ export default class Runtime {
     return (module as VMModule).namespace as T;
   }
 
-  // Partial CJS `Module` shim for ESM entries in `require.cache`. `parent`
-  // is null and `require` throws - pluck `exports` off the wrapper, don't
-  // try to use it as a real Module.
-  private _wrapEsmForRequireCache(filename: string, esm: VMModule): NodeModule {
-    const existing = this._esmRequireCacheWrappers.get(esm);
-    if (existing) return existing;
-    const dir = path.dirname(filename);
-    const wrapper = {
-      children: [],
-      exports: esm.namespace,
-      filename,
-      id: filename,
-      isPreloading: false,
-      loaded: true,
-      parent: null,
-      path: dir,
-      paths: (
-        nativeModule.Module as unknown as {
-          _nodeModulePaths: (from: string) => Array<string>;
-        }
-      )._nodeModulePaths(dir),
-      require: (() => {
-        throw new Error(
-          'require() on a require.cache ESM entry is not supported',
-        );
-      }) as unknown as NodeJS.Require,
-    } as unknown as NodeModule;
-    this._esmRequireCacheWrappers.set(esm, wrapper);
-    return wrapper;
-  }
-
   // Resolve one static-import specifier for the sync graph walker. Returns
   // null on any async-edge or unsupported case so the caller can bail.
   //
@@ -1026,7 +982,7 @@ export default class Runtime {
       moduleName,
     );
 
-    const existing = this._moduleMockRegistry.get(moduleID);
+    const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) return null;
     if (existing) {
       if (!scratch.has(moduleID)) {
@@ -1060,7 +1016,7 @@ export default class Runtime {
       context,
       result as Record<string, unknown>,
     );
-    this._moduleMockRegistry.set(moduleID, synth);
+    this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
       kind: 'synthetic',
@@ -1232,7 +1188,7 @@ export default class Runtime {
     // `supportsSyncEvaluate` branches in this method and `linkAndEvaluateModule`)
     // when Jest's minimum Node version reaches v24.9.
     const cacheKey = modulePath + query;
-    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+    const registry = this.registries.getActiveEsmRegistry();
 
     if (this.transformCache.hasMutex(cacheKey)) {
       await this.transformCache.awaitMutex(cacheKey);
@@ -1380,7 +1336,7 @@ export default class Runtime {
       );
     }
 
-    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+    const registry = this.registries.getActiveEsmRegistry();
 
     if (specifier === '@jest/globals') {
       const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
@@ -1638,7 +1594,7 @@ export default class Runtime {
     modulePath: string,
     context: VMContext,
   ): SyntheticModule | Promise<VMModule> {
-    const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+    const registry = this.registries.getActiveEsmRegistry();
     const cached = registry.get(modulePath);
     if (cached) {
       return cached as SyntheticModule | Promise<VMModule>;
@@ -1678,8 +1634,8 @@ export default class Runtime {
       moduleName,
     );
 
-    if (this._moduleMockRegistry.has(moduleID)) {
-      return this._moduleMockRegistry.get(moduleID) as T;
+    if (this.registries.hasModuleMock(moduleID)) {
+      return this.registries.getModuleMock(moduleID) as T;
     }
 
     if (this._moduleMockFactories.has(moduleID)) {
@@ -1698,7 +1654,7 @@ export default class Runtime {
         {context, identifier: moduleName},
       );
 
-      this._moduleMockRegistry.set(moduleID, module);
+      this.registries.setModuleMock(moduleID, module);
 
       return evaluateSyntheticModule(module) as T;
     }
@@ -1759,7 +1715,7 @@ export default class Runtime {
         throw error;
       }
       // Fast path: skip the graph walker on cache hits.
-      const reg = this._isolatedModuleRegistry ?? this._esModuleRegistry;
+      const reg = this.registries.getActiveEsmRegistry();
       const cached = reg.get(modulePath);
       if (cached && !(cached instanceof Promise)) {
         return (cached as VMModule).namespace as T;
@@ -1767,15 +1723,7 @@ export default class Runtime {
       return this._requireEsmModule<T>(modulePath);
     }
 
-    let moduleRegistry;
-
-    if (isInternal) {
-      moduleRegistry = this._internalModuleRegistry;
-    } else if (this._isolatedModuleRegistry) {
-      moduleRegistry = this._isolatedModuleRegistry;
-    } else {
-      moduleRegistry = this._moduleRegistry;
-    }
+    const moduleRegistry = this.registries.getActiveCjsRegistry(isInternal);
 
     const module = moduleRegistry.get(modulePath);
     if (module) {
@@ -1854,13 +1802,11 @@ export default class Runtime {
       moduleName,
     );
 
-    if (this._isolatedMockRegistry?.has(moduleID)) {
-      return this._isolatedMockRegistry.get(moduleID);
-    } else if (this._mockRegistry.has(moduleID)) {
-      return this._mockRegistry.get(moduleID);
+    if (this.registries.hasMock(moduleID)) {
+      return this.registries.getMock(moduleID) as T;
     }
 
-    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
+    const mockRegistry = this.registries.getActiveMockRegistry();
 
     if (this._mockFactories.has(moduleID)) {
       // has check above makes this ok
@@ -1930,7 +1876,7 @@ export default class Runtime {
         moduleName,
         manualMockPath,
         undefined,
-        mockRegistry,
+        mockRegistry as ModuleRegistry,
       );
 
       mockRegistry.set(moduleID, localModule.exports);
@@ -1939,7 +1885,7 @@ export default class Runtime {
       mockRegistry.set(moduleID, this._generateMock(from, moduleName));
     }
 
-    return mockRegistry.get(moduleID);
+    return mockRegistry.get(moduleID) as T;
   }
 
   private _loadModule(
@@ -2029,53 +1975,26 @@ export default class Runtime {
   }
 
   isolateModules(fn: () => void): void {
-    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
-      throw new Error(
-        'isolateModules cannot be nested inside another isolateModules or isolateModulesAsync.',
-      );
-    }
-    this._isolatedModuleRegistry = new Map();
-    this._isolatedMockRegistry = new Map();
+    this.registries.enterIsolated('isolateModules');
     try {
       fn();
     } finally {
-      // might be cleared within the callback
-      this._isolatedModuleRegistry?.clear();
-      this._isolatedMockRegistry?.clear();
-      this._isolatedModuleRegistry = null;
-      this._isolatedMockRegistry = null;
+      this.registries.exitIsolated();
     }
   }
 
   async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
-    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
-      throw new Error(
-        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
-      );
-    }
-    this._isolatedModuleRegistry = new Map();
-    this._isolatedMockRegistry = new Map();
+    this.registries.enterIsolated('isolateModulesAsync');
     try {
       await fn();
     } finally {
-      // might be cleared within the callback
-      this._isolatedModuleRegistry?.clear();
-      this._isolatedMockRegistry?.clear();
-      this._isolatedModuleRegistry = null;
-      this._isolatedMockRegistry = null;
+      this.registries.exitIsolated();
     }
   }
 
   resetModules(): void {
-    this._isolatedModuleRegistry?.clear();
-    this._isolatedMockRegistry?.clear();
-    this._isolatedModuleRegistry = null;
-    this._isolatedMockRegistry = null;
-    this._mockRegistry.clear();
-    this._moduleRegistry.clear();
-    this._esModuleRegistry.clear();
+    this.registries.clearForReset();
     this.cjsExportsCache.clear();
-    this._moduleMockRegistry.clear();
     this.fileCache.clear();
     this._resolution.clear();
 
@@ -2191,7 +2110,7 @@ export default class Runtime {
     this.restoreAllMocks();
     this.resetModules();
 
-    this._internalModuleRegistry.clear();
+    this.registries.clear();
     this._mainModule = null;
     this._mockFactories.clear();
     this._moduleMockFactories.clear();
@@ -2604,16 +2523,9 @@ export default class Runtime {
       // cause side-effects within the module environment, we need to execute
       // the module in isolation. This could cause issues if the module being
       // mocked has calls into side-effectful APIs on another module.
-      const origMockRegistry = this._mockRegistry;
-      const origModuleRegistry = this._moduleRegistry;
-      this._mockRegistry = new Map();
-      this._moduleRegistry = new Map();
-
-      const moduleExports = this.requireModule(from, moduleName);
-
-      // Restore the "real" module/mock registries
-      this._mockRegistry = origMockRegistry;
-      this._moduleRegistry = origModuleRegistry;
+      const moduleExports = this.registries.withScratchRegistries(() =>
+        this.requireModule(from, moduleName),
+      );
 
       const mockMetadata = this._moduleMocker.getMetadata(moduleExports);
       if (mockMetadata == null) {
@@ -2868,50 +2780,7 @@ export default class Runtime {
     ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolve;
-    moduleRequire.cache = (() => {
-      // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
-      const notPermittedMethod = () => true;
-      // Only expose modules whose `namespace` is readable without throwing or
-      // exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`,
-      // and a `linked` SourceTextModule's namespace properties are in TDZ
-      // until evaluate runs (reading them throws `ReferenceError`).
-      const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
-        if (!entry || entry instanceof Promise) return false;
-        const status = (entry as VMModule).status;
-        return status === 'evaluated' || status === 'errored';
-      };
-      const esmEntry = (key: string) => {
-        const entry = this._esModuleRegistry.get(key);
-        if (!isLiveEsm(entry)) return undefined;
-        return this._wrapEsmForRequireCache(key, entry);
-      };
-      return new Proxy<(typeof moduleRequire)['cache']>(Object.create(null), {
-        defineProperty: notPermittedMethod,
-        deleteProperty: notPermittedMethod,
-        get: (_target, key) => {
-          if (typeof key !== 'string') return undefined;
-          return this._moduleRegistry.get(key) ?? esmEntry(key);
-        },
-        getOwnPropertyDescriptor() {
-          return {configurable: true, enumerable: true};
-        },
-        has: (_target, key) => {
-          if (typeof key !== 'string') return false;
-          return (
-            this._moduleRegistry.has(key) ||
-            isLiveEsm(this._esModuleRegistry.get(key))
-          );
-        },
-        ownKeys: () => {
-          const keys = new Set<string>(this._moduleRegistry.keys());
-          for (const [key, entry] of this._esModuleRegistry) {
-            if (isLiveEsm(entry)) keys.add(key);
-          }
-          return [...keys];
-        },
-        set: notPermittedMethod,
-      });
-    })();
+    moduleRequire.cache = this.registries.createRequireCacheProxy();
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
