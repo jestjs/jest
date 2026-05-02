@@ -873,6 +873,7 @@ export class EsmLoader {
         );
         registry.set(cacheKey, wasm);
         transformResolve();
+        transformCache.clearMutex(cacheKey);
         return wasm;
       }
 
@@ -884,6 +885,7 @@ export class EsmLoader {
         );
         registry.set(cacheKey, core);
         transformResolve();
+        transformCache.clearMutex(cacheKey);
         return core;
       }
 
@@ -934,6 +936,8 @@ export class EsmLoader {
       } catch (error) {
         transformReject(error);
         throw error;
+      } finally {
+        transformCache.clearMutex(cacheKey);
       }
     }
 

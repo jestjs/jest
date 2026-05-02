@@ -118,6 +118,9 @@ export class TransformCache {
   setMutex(key: string, promise: Promise<void>): void {
     this.mutex.set(key, promise);
   }
+  clearMutex(key: string): void {
+    this.mutex.delete(key);
+  }
 
   // `resetModules` calls this; source maps are preserved so post-reset stack
   // traces still resolve. `teardown` calls `clear()` instead.
