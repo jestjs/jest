@@ -30,12 +30,16 @@ function makeResolution(): {
 } {
   const stub: ResolutionStub = {
     getCjsMockModule: jest.fn(() => null),
-    getCjsModuleId: jest.fn((_v, from, name) => `cjs:${from}:${name ?? ''}`),
+    getCjsModuleId: jest.fn(
+      (_virtualMocks, from, name) => `cjs:${from}:${name ?? ''}`,
+    ),
     getEsmMockModule: jest.fn(() => null),
     getEsmMockModuleAsync: jest.fn(async () => null),
-    getEsmModuleId: jest.fn((_v, from, name) => `esm:${from}:${name ?? ''}`),
+    getEsmModuleId: jest.fn(
+      (_virtualMocks, from, name) => `esm:${from}:${name ?? ''}`,
+    ),
     getEsmModuleIdAsync: jest.fn(
-      async (_v, from, name) => `esm:${from}:${name ?? ''}`,
+      async (_virtualMocks, from, name) => `esm:${from}:${name ?? ''}`,
     ),
     getModulePath: jest.fn((from, name) => `${from}/${name}`),
     isCoreModule: jest.fn(() => false),
@@ -53,35 +57,35 @@ describe('MockState', () => {
   describe('decision predicates', () => {
     test('explicit mock wins over everything else (CJS)', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: false}));
-      m.markExplicitCjsMock('/from', './a');
-      expect(m.shouldMockCjs('/from', './a')).toBe(true);
+      const mockState = new MockState(resolution, config({automock: false}));
+      mockState.markExplicitCjsMock('/from', './a');
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(true);
     });
 
     test('explicit unmock wins over automock (CJS)', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      m.unmockCjs('/from', './a');
-      expect(m.shouldMockCjs('/from', './a')).toBe(false);
+      const mockState = new MockState(resolution, config({automock: true}));
+      mockState.unmockCjs('/from', './a');
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(false);
     });
 
     test('returns false when automock is off and no explicit mark', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: false}));
-      expect(m.shouldMockCjs('/from', './a')).toBe(false);
+      const mockState = new MockState(resolution, config({automock: false}));
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(false);
     });
 
     test('returns true under automock for a normal module', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      expect(m.shouldMockCjs('/from', './a')).toBe(true);
+      const mockState = new MockState(resolution, config({automock: true}));
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(true);
     });
 
     test('caches the decision (second call hits cache, no extra resolveCjs)', () => {
       const {resolution, stub} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      m.shouldMockCjs('/from', './a');
-      m.shouldMockCjs('/from', './a');
+      const mockState = new MockState(resolution, config({automock: true}));
+      mockState.shouldMockCjs('/from', './a');
+      mockState.shouldMockCjs('/from', './a');
       expect(stub.resolveCjs).toHaveBeenCalledTimes(1);
     });
 
@@ -91,8 +95,8 @@ describe('MockState', () => {
         throw new Error('not found');
       });
       stub.getCjsMockModule.mockReturnValue('/manual/mock/path');
-      const m = new MockState(resolution, config({automock: true}));
-      expect(m.shouldMockCjs('/from', './a')).toBe(true);
+      const mockState = new MockState(resolution, config({automock: true}));
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(true);
     });
 
     test('rethrows resolve error when no manual mock exists', () => {
@@ -100,33 +104,35 @@ describe('MockState', () => {
       stub.resolveCjs.mockImplementation(() => {
         throw new Error('not found');
       });
-      const m = new MockState(resolution, config({automock: true}));
-      expect(() => m.shouldMockCjs('/from', './a')).toThrow('not found');
+      const mockState = new MockState(resolution, config({automock: true}));
+      expect(() => mockState.shouldMockCjs('/from', './a')).toThrow(
+        'not found',
+      );
     });
 
     test('respects unmockedModulePathPatterns', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(
+      const mockState = new MockState(
         resolution,
         config({
           automock: true,
           unmockedModulePathPatterns: ['/resolved/cjs/'],
         }),
       );
-      expect(m.shouldMockCjs('/from', './a')).toBe(false);
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(false);
     });
 
     test('returns false for core modules even under automock', () => {
       const {resolution, stub} = makeResolution();
       stub.isCoreModule.mockReturnValue(true);
-      const m = new MockState(resolution, config({automock: true}));
-      expect(m.shouldMockCjs('/from', 'fs')).toBe(false);
+      const mockState = new MockState(resolution, config({automock: true}));
+      expect(mockState.shouldMockCjs('/from', 'fs')).toBe(false);
     });
 
     test('shouldMockEsmSync uses ESM resolver and ESM explicit map', () => {
       const {resolution, stub} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      m.shouldMockEsmSync('/from', './a');
+      const mockState = new MockState(resolution, config({automock: true}));
+      mockState.shouldMockEsmSync('/from', './a');
       expect(stub.getEsmModuleId).toHaveBeenCalled();
       expect(stub.resolveEsm).toHaveBeenCalled();
     });
@@ -137,37 +143,39 @@ describe('MockState', () => {
         throw new Error('not found');
       });
       stub.getEsmMockModuleAsync.mockResolvedValue('/manual/mock/path');
-      const m = new MockState(resolution, config({automock: true}));
-      await expect(m.shouldMockEsmAsync('/from', './a')).resolves.toBe(true);
+      const mockState = new MockState(resolution, config({automock: true}));
+      await expect(mockState.shouldMockEsmAsync('/from', './a')).resolves.toBe(
+        true,
+      );
     });
   });
 
   describe('explicit registration', () => {
     test('setMock registers a CJS factory', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({}));
+      const mockState = new MockState(resolution, config({}));
       const factory = jest.fn(() => ({foo: 1}));
-      m.setMock('/from', './a', factory);
-      const moduleID = m.getCjsModuleId('/from', './a');
-      expect(m.hasCjsFactory(moduleID)).toBe(true);
-      expect(m.getCjsFactory(moduleID)).toBe(factory);
-      expect(m.shouldMockCjs('/from', './a')).toBe(true);
+      mockState.setMock('/from', './a', factory);
+      const moduleID = mockState.getCjsModuleId('/from', './a');
+      expect(mockState.hasCjsFactory(moduleID)).toBe(true);
+      expect(mockState.getCjsFactory(moduleID)).toBe(factory);
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(true);
     });
 
     test('setModuleMock registers an ESM factory', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({}));
+      const mockState = new MockState(resolution, config({}));
       const factory = jest.fn();
-      m.setModuleMock('/from', './a', factory);
-      const moduleID = m.getEsmModuleId('/from', './a');
-      expect(m.hasEsmFactory(moduleID)).toBe(true);
-      expect(m.getEsmFactory(moduleID)).toBe(factory);
+      mockState.setModuleMock('/from', './a', factory);
+      const moduleID = mockState.getEsmModuleId('/from', './a');
+      expect(mockState.hasEsmFactory(moduleID)).toBe(true);
+      expect(mockState.getEsmFactory(moduleID)).toBe(factory);
     });
 
     test('setMock with virtual: true registers via getModulePath', () => {
       const {resolution, stub} = makeResolution();
-      const m = new MockState(resolution, config({}));
-      m.setMock('/from', './virtual', () => ({}), {virtual: true});
+      const mockState = new MockState(resolution, config({}));
+      mockState.setMock('/from', './virtual', () => ({}), {virtual: true});
       expect(stub.getModulePath).toHaveBeenCalledWith('/from', './virtual');
     });
   });
@@ -175,30 +183,35 @@ describe('MockState', () => {
   describe('jest-object closure surface', () => {
     test('disable/enableAutomock toggles the predicate', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      m.disableAutomock();
-      expect(m.shouldMockCjs('/from', './a')).toBe(false);
-      m.enableAutomock();
-      expect(m.shouldMockCjs('/from', './a')).toBe(true);
+      const mockState = new MockState(resolution, config({automock: true}));
+      mockState.disableAutomock();
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(false);
+      mockState.enableAutomock();
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(true);
     });
 
     test('deepUnmock prevents transitive automock for descendants', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({automock: true}));
-      m.deepUnmock('/from', './a');
-      expect(m.shouldMockCjs('/from', './a')).toBe(false);
+      const mockState = new MockState(resolution, config({automock: true}));
+      mockState.deepUnmock('/from', './a');
+      expect(mockState.shouldMockCjs('/from', './a')).toBe(false);
     });
 
     test('addOnGenerateMock + notifyMockGenerated runs callbacks in order', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({}));
-      m.addOnGenerateMock((_n, mock) => ({...(mock as object), step: 1}));
-      m.addOnGenerateMock((_n, mock) => ({...(mock as object), step: 2}));
-      const result = m.notifyMockGenerated<{step: number; original: boolean}>(
-        '/p',
-        // intentionally wide cast - the callbacks rewrite the shape
-        {original: true} as never,
-      );
+      const mockState = new MockState(resolution, config({}));
+      mockState.addOnGenerateMock((_name, mock) => ({
+        ...(mock as object),
+        step: 1,
+      }));
+      mockState.addOnGenerateMock((_name, mock) => ({
+        ...(mock as object),
+        step: 2,
+      }));
+      const result = mockState.notifyMockGenerated<{
+        step: number;
+        original: boolean;
+      }>('/path', {original: true} as never);
       expect(result).toEqual({original: true, step: 2});
     });
   });
@@ -206,32 +219,34 @@ describe('MockState', () => {
   describe('mock metadata cache', () => {
     test('round-trips metadata by modulePath', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({}));
-      expect(m.hasMockMetadata('/p')).toBe(false);
-      // The shape of MockMetadata isn't exercised - we just stash & fetch.
-      m.setMockMetadata('/p', {type: 'object'} as never);
-      expect(m.hasMockMetadata('/p')).toBe(true);
-      expect(m.getMockMetadata('/p')).toEqual({type: 'object'});
+      const mockState = new MockState(resolution, config({}));
+      expect(mockState.hasMockMetadata('/path')).toBe(false);
+      mockState.setMockMetadata('/path', {type: 'object'} as never);
+      expect(mockState.hasMockMetadata('/path')).toBe(true);
+      expect(mockState.getMockMetadata('/path')).toEqual({type: 'object'});
     });
   });
 
   describe('clear', () => {
     test('drops factories, explicit marks, virtual marks, callbacks, caches', () => {
       const {resolution} = makeResolution();
-      const m = new MockState(resolution, config({}));
-      m.setMock('/from', './a', () => ({}));
-      m.setModuleMock('/from', './b', () => ({}));
-      m.markExplicitCjsMock('/from', './c');
-      m.addOnGenerateMock(() => ({}));
-      m.setMockMetadata('/p', {} as never);
+      const mockState = new MockState(resolution, config({}));
+      mockState.setMock('/from', './a', () => ({}));
+      mockState.setModuleMock('/from', './b', () => ({}));
+      mockState.markExplicitCjsMock('/from', './c');
+      mockState.addOnGenerateMock(() => ({}));
+      mockState.setMockMetadata('/path', {} as never);
 
-      m.clear();
+      mockState.clear();
 
-      expect(m.hasCjsFactory(m.getCjsModuleId('/from', './a'))).toBe(false);
-      expect(m.hasEsmFactory(m.getEsmModuleId('/from', './b'))).toBe(false);
-      expect(m.hasMockMetadata('/p')).toBe(false);
-      // notifyMockGenerated returns input unchanged when callback set is empty.
-      expect(m.notifyMockGenerated('/p', 'x')).toBe('x');
+      expect(
+        mockState.hasCjsFactory(mockState.getCjsModuleId('/from', './a')),
+      ).toBe(false);
+      expect(
+        mockState.hasEsmFactory(mockState.getEsmModuleId('/from', './b')),
+      ).toBe(false);
+      expect(mockState.hasMockMetadata('/path')).toBe(false);
+      expect(mockState.notifyMockGenerated('/path', 'x')).toBe('x');
     });
   });
 });

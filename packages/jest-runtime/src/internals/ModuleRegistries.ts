@@ -11,7 +11,7 @@ import type {Module as VMModule} from 'node:vm';
 import type {Module} from '@jest/environment';
 import type {InitialModule, JestModule, ModuleRegistry} from './moduleTypes';
 
-// Only expose modules whose `namespace` is readable without throwing or
+// Only expose ESM entries whose `namespace` is readable without throwing or
 // exposing TDZ values: `unlinked`/`linking` throw `ERR_VM_MODULE_STATUS`, and
 // a `linked` SourceTextModule's namespace properties are in TDZ until
 // evaluate runs (reading them throws `ReferenceError`).
@@ -21,16 +21,8 @@ const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
   return status === 'evaluated' || status === 'errored';
 };
 
-// `require.cache` mutators no-op (return true) to mirror legacy CJS Module
-// semantics. We don't support deletions yet.
 const notPermittedMethod = () => true;
 
-// Owns every module/mock cache plus the require.cache Proxy and the
-// `jest.isolateModules{,Async}` overlay. CJS, ESM, and mock lookups all route
-// through `isolatedModule*` first when isolation is active; `internalModule*`
-// is the only registry that bypasses isolation. `_generateMock` uses
-// `withScratchRegistries` for a synchronous "clean module + mock cache"
-// snapshot during automock construction.
 export default class ModuleRegistries {
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
@@ -46,71 +38,73 @@ export default class ModuleRegistries {
     NodeModule
   >();
 
-  // CJS module cache. During isolation, routed to the isolated overlay.
-  getCjs(p: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolatedModuleRegistry ?? this.moduleRegistry).get(p);
+  getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
+    return (this.isolatedModuleRegistry ?? this.moduleRegistry).get(modulePath);
   }
-  setCjs(p: string, m: InitialModule | Module | JestModule): void {
-    (this.isolatedModuleRegistry ?? this.moduleRegistry).set(p, m);
+  setCjs(
+    modulePath: string,
+    module: InitialModule | Module | JestModule,
+  ): void {
+    (this.isolatedModuleRegistry ?? this.moduleRegistry).set(
+      modulePath,
+      module,
+    );
   }
-  hasCjs(p: string): boolean {
-    return (this.isolatedModuleRegistry ?? this.moduleRegistry).has(p);
+  hasCjs(modulePath: string): boolean {
+    return (this.isolatedModuleRegistry ?? this.moduleRegistry).has(modulePath);
   }
-  deleteCjs(p: string): void {
-    (this.isolatedModuleRegistry ?? this.moduleRegistry).delete(p);
-  }
-
-  // CJS internal module cache. Always main; never isolated.
-  getInternalCjs(p: string): InitialModule | Module | JestModule | undefined {
-    return this.internalModuleRegistry.get(p);
-  }
-  setInternalCjs(p: string, m: InitialModule | Module | JestModule): void {
-    this.internalModuleRegistry.set(p, m);
-  }
-  hasInternalCjs(p: string): boolean {
-    return this.internalModuleRegistry.has(p);
+  deleteCjs(modulePath: string): void {
+    (this.isolatedModuleRegistry ?? this.moduleRegistry).delete(modulePath);
   }
 
-  // ESM module cache. Same isolation overlay as CJS - the existing design
-  // shares `_isolatedModuleRegistry` between the two.
+  getInternalCjs(
+    modulePath: string,
+  ): InitialModule | Module | JestModule | undefined {
+    return this.internalModuleRegistry.get(modulePath);
+  }
+  setInternalCjs(
+    modulePath: string,
+    module: InitialModule | Module | JestModule,
+  ): void {
+    this.internalModuleRegistry.set(modulePath, module);
+  }
+  hasInternalCjs(modulePath: string): boolean {
+    return this.internalModuleRegistry.has(modulePath);
+  }
+
   getEsm(key: string): InitialModule | Module | JestModule | undefined {
     return (this.isolatedModuleRegistry ?? this.esModuleRegistry).get(key);
   }
-  setEsm(key: string, m: JestModule): void {
-    (this.isolatedModuleRegistry ?? this.esModuleRegistry).set(key, m);
+  setEsm(key: string, module: JestModule): void {
+    (this.isolatedModuleRegistry ?? this.esModuleRegistry).set(key, module);
   }
   hasEsm(key: string): boolean {
     return (this.isolatedModuleRegistry ?? this.esModuleRegistry).has(key);
   }
 
-  // Mock cache. Routed to the isolated overlay during isolation.
-  getMock(id: string): unknown {
-    return (this.isolatedMockRegistry ?? this.mockRegistry).get(id);
+  getMock(moduleID: string): unknown {
+    return (this.isolatedMockRegistry ?? this.mockRegistry).get(moduleID);
   }
-  setMock(id: string, m: unknown): void {
-    (this.isolatedMockRegistry ?? this.mockRegistry).set(id, m);
+  setMock(moduleID: string, module: unknown): void {
+    (this.isolatedMockRegistry ?? this.mockRegistry).set(moduleID, module);
   }
-  hasMock(id: string): boolean {
-    return (this.isolatedMockRegistry ?? this.mockRegistry).has(id);
-  }
-
-  // Module mock cache (for `unstable_mockModule`). Always main.
-  getModuleMock(id: string): JestModule | undefined {
-    return this.moduleMockRegistry.get(id);
-  }
-  setModuleMock(id: string, m: JestModule): void {
-    this.moduleMockRegistry.set(id, m);
-  }
-  hasModuleMock(id: string): boolean {
-    return this.moduleMockRegistry.has(id);
+  hasMock(moduleID: string): boolean {
+    return (this.isolatedMockRegistry ?? this.mockRegistry).has(moduleID);
   }
 
-  // Returns the active ESM Map (isolated overlay if isolating, else the main
-  // ESM map). Exposed for the sync ESM graph walker which keeps the registry
-  // as a local for repeated `get`/`has`/`set` operations. Note: the isolation
-  // overlay is shared with CJS, so when used in isolation the map's value
-  // type widens to the union; the ESM walker only ever inserts/reads
-  // JestModule values keyed by ESM cache keys.
+  getModuleMock(moduleID: string): JestModule | undefined {
+    return this.moduleMockRegistry.get(moduleID);
+  }
+  setModuleMock(moduleID: string, module: JestModule): void {
+    this.moduleMockRegistry.set(moduleID, module);
+  }
+  hasModuleMock(moduleID: string): boolean {
+    return this.moduleMockRegistry.has(moduleID);
+  }
+
+  // The isolation overlay is shared with CJS, so when used in isolation the
+  // map's value type widens to the union; the ESM walker only ever inserts
+  // and reads JestModule values keyed by ESM cache keys.
   getActiveEsmRegistry(): Map<string, JestModule> {
     return (this.isolatedModuleRegistry ?? this.esModuleRegistry) as Map<
       string,
@@ -118,19 +112,15 @@ export default class ModuleRegistries {
     >;
   }
 
-  // Returns the active CJS Map. `internal=true` always returns the internal
-  // cache; otherwise routes through the isolated overlay when active.
   getActiveCjsRegistry(internal: boolean): ModuleRegistry {
     if (internal) return this.internalModuleRegistry;
     return this.isolatedModuleRegistry ?? this.moduleRegistry;
   }
 
-  // Returns the active mock Map.
   getActiveMockRegistry(): Map<string, unknown> {
     return this.isolatedMockRegistry ?? this.mockRegistry;
   }
 
-  // Whether `jest.isolateModules` is currently active.
   isIsolated(): boolean {
     return (
       this.isolatedModuleRegistry !== null || this.isolatedMockRegistry !== null
@@ -158,25 +148,22 @@ export default class ModuleRegistries {
     this.isolatedMockRegistry = null;
   }
 
-  // Used by `_generateMock` to load a module against fresh, scratch CJS and
-  // mock registries, then restore the originals. Synchronous: the user fn
-  // must complete before `withScratchRegistries` returns.
+  // Loads `fn` against fresh CJS + mock registries, then restores the
+  // originals. Used by `_generateMock` to keep automock loading from
+  // polluting the real caches.
   withScratchRegistries<T>(fn: () => T): T {
-    const origMock = this.mockRegistry;
-    const origModule = this.moduleRegistry;
+    const originalMock = this.mockRegistry;
+    const originalModule = this.moduleRegistry;
     this.mockRegistry = new Map();
     this.moduleRegistry = new Map();
     try {
       return fn();
     } finally {
-      this.mockRegistry = origMock;
-      this.moduleRegistry = origModule;
+      this.mockRegistry = originalMock;
+      this.moduleRegistry = originalModule;
     }
   }
 
-  // Wraps an ESM `module.namespace` so it looks like a Node CJS module entry
-  // for `require.cache` consumers. Cached on the VMModule so repeated lookups
-  // return the same object.
   wrapEsmForRequireCache(filename: string, esm: VMModule): NodeModule {
     const existing = this.esmRequireCacheWrappers.get(esm);
     if (existing) return existing;
@@ -205,10 +192,6 @@ export default class ModuleRegistries {
     return wrapper;
   }
 
-  // Builds the `require.cache` Proxy. Read-only: `defineProperty`,
-  // `deleteProperty`, and `set` no-op-return-true (the legacy CJS Module
-  // semantic). Reads route through `getCjs` first, then fall back to a live
-  // ESM entry wrapped via `wrapEsmForRequireCache`.
   createRequireCacheProxy(): NodeJS.Require['cache'] {
     const esmEntry = (key: string) => {
       const entry = this.esModuleRegistry.get(key);
@@ -246,8 +229,6 @@ export default class ModuleRegistries {
     });
   }
 
-  // `resetModules`: drop everything except the internal cache and the
-  // ESM-require-cache wrapper WeakMap (GC handles the latter naturally).
   clearForReset(): void {
     this.exitIsolated();
     this.mockRegistry.clear();
@@ -256,7 +237,6 @@ export default class ModuleRegistries {
     this.moduleMockRegistry.clear();
   }
 
-  // `teardown`: drop everything including internal CJS modules.
   clear(): void {
     this.clearForReset();
     this.internalModuleRegistry.clear();

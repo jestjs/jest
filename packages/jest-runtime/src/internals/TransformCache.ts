@@ -18,11 +18,6 @@ export interface TransformOptions extends Required<CallerTransformOptions> {
   isInternalModule: boolean;
 }
 
-// Owns transformed source caching, the legacy-ESM in-flight mutex, and the
-// source-map registry. Sync `transform` reads `_fileCache.readFile` and stores
-// `transformedFile` keyed by filename; async `transformAsync` mirrors that for
-// the legacy ESM path. The mutex prevents parallel async transforms of the
-// same file when `loadEsmModule` is called concurrently for the same module.
 export default class TransformCache {
   private readonly scriptTransformer: ScriptTransformer;
   private readonly fileCache: FileCache;
@@ -94,9 +89,9 @@ export default class TransformCache {
     return this.sourceMaps;
   }
 
-  // Legacy-ESM mutex: deduplicates parallel `transformAsync`s of the same
-  // module across concurrent `loadEsmModule` calls. Goes away once min-Node
-  // ≥ v24.9 makes the legacy async ESM path obsolete.
+  // Mutex deduplicates parallel `transformAsync`s of the same module across
+  // concurrent `loadEsmModule` calls on the legacy async path. Goes away
+  // once min-Node ≥ v24.9 makes that path obsolete.
   hasMutex(key: string): boolean {
     return this.mutex.has(key);
   }
@@ -106,18 +101,14 @@ export default class TransformCache {
   setMutex(key: string, promise: Promise<void>): void {
     this.mutex.set(key, promise);
   }
-  deleteMutex(key: string): void {
-    this.mutex.delete(key);
-  }
 
-  // `resetModules`: drop transforms + mutex; preserve source maps so
-  // post-reset stack traces still resolve.
+  // `resetModules` calls this; source maps are preserved so post-reset stack
+  // traces still resolve. `teardown` calls `clear()` instead.
   clearForReset(): void {
     this.transforms.clear();
     this.mutex.clear();
   }
 
-  // `teardown`: drop everything.
   clear(): void {
     this.clearForReset();
     this.sourceMaps.clear();

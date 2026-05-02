@@ -54,7 +54,9 @@ function makeFixture(
 
   const getOptions: jest.MockedFunction<
     (options: TransformOptions | undefined) => TransformationOptions
-  > = jest.fn(o => ({...o!, collectCoverage: false}) as TransformationOptions);
+  > = jest.fn(
+    options => ({...options!, collectCoverage: false}) as TransformationOptions,
+  );
 
   const cache = new TransformCache(scriptTransformer, fileCache, getOptions);
   return {
@@ -90,7 +92,7 @@ describe('TransformCache', () => {
     test('records sourceMapPath in the source-map registry', () => {
       const {cache} = makeFixture(
         'orig',
-        transformResult('T', '/maps/a.js.map'),
+        transformResult('transformed', '/maps/a.js.map'),
       );
       cache.transform('/a.js', userOptions);
       expect(cache.getSourceMaps().get('/a.js')).toBe('/maps/a.js.map');
@@ -131,40 +133,43 @@ describe('TransformCache', () => {
   });
 
   describe('mutex', () => {
-    test('hasMutex/awaitMutex/setMutex/deleteMutex behave like a Map', async () => {
+    test('hasMutex / awaitMutex / setMutex behave like a Map', async () => {
       const {cache} = makeFixture();
-      expect(cache.hasMutex('/k')).toBe(false);
+      expect(cache.hasMutex('/key')).toBe(false);
 
-      let resolveIt!: () => void;
-      const promise = new Promise<void>(resolve => {
-        resolveIt = resolve;
+      let resolveMutex!: () => void;
+      const mutexPromise = new Promise<void>(resolve => {
+        resolveMutex = resolve;
       });
-      cache.setMutex('/k', promise);
+      cache.setMutex('/key', mutexPromise);
 
-      expect(cache.hasMutex('/k')).toBe(true);
-      const awaited = cache.awaitMutex('/k');
-      resolveIt();
+      expect(cache.hasMutex('/key')).toBe(true);
+      const awaited = cache.awaitMutex('/key');
+      resolveMutex();
       await expect(awaited).resolves.toBeUndefined();
-
-      cache.deleteMutex('/k');
-      expect(cache.hasMutex('/k')).toBe(false);
     });
   });
 
   describe('clear semantics', () => {
     test('clearForReset drops transforms + mutex but preserves source maps', () => {
-      const {cache} = makeFixture('orig', transformResult('T', '/m.map'));
+      const {cache} = makeFixture(
+        'orig',
+        transformResult('transformed', '/maps/a.js.map'),
+      );
       cache.transform('/a.js', userOptions);
-      cache.setMutex('/k', Promise.resolve());
+      cache.setMutex('/key', Promise.resolve());
 
       cache.clearForReset();
       expect(cache.getCachedSource('/a.js')).toBeUndefined();
-      expect(cache.hasMutex('/k')).toBe(false);
-      expect(cache.getSourceMaps().get('/a.js')).toBe('/m.map');
+      expect(cache.hasMutex('/key')).toBe(false);
+      expect(cache.getSourceMaps().get('/a.js')).toBe('/maps/a.js.map');
     });
 
     test('clear drops everything including source maps', () => {
-      const {cache} = makeFixture('orig', transformResult('T', '/m.map'));
+      const {cache} = makeFixture(
+        'orig',
+        transformResult('transformed', '/maps/a.js.map'),
+      );
       cache.transform('/a.js', userOptions);
 
       cache.clear();
@@ -174,11 +179,11 @@ describe('TransformCache', () => {
   });
 
   test('getEntries returns the live map (read-only consumers see updates)', () => {
-    const {cache} = makeFixture('orig', transformResult('T'));
+    const {cache} = makeFixture('orig', transformResult('transformed'));
     const entries = cache.getEntries();
     expect(entries.size).toBe(0);
     cache.transform('/a.js', userOptions);
     expect(entries.size).toBe(1);
-    expect(entries.get('/a.js')?.code).toBe('T');
+    expect(entries.get('/a.js')?.code).toBe('transformed');
   });
 });
