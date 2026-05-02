@@ -45,7 +45,7 @@ import HasteMap, {type IHasteMap, type IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
-import Resolver, {type ResolveModuleConfig} from 'jest-resolve';
+import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {
   createDirectory,
@@ -60,6 +60,7 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
+import Resolution from './internals/Resolution';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -184,10 +185,6 @@ type WorklistEntry = {
   cacheKey: string;
   modulePath: string;
 };
-
-function resolveCacheKey(from: string, to: string): string {
-  return `${from}\0${to}`;
-}
 
 function noop() {
   // empty
@@ -325,13 +322,11 @@ export default class Runtime {
   private _moduleRegistry: ModuleRegistry;
   private readonly _esModuleRegistry: Map<string, JestModule>;
   private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
-  private readonly _resolveCjsCache = new Map<string, string>();
-  private readonly _resolveEsmCache = new Map<string, string>();
   private readonly _cjsNamedExports: Map<string, Set<string>>;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
   private readonly _testPath: string;
-  private readonly _resolver: Resolver;
+  private readonly _resolution: Resolution;
   private _shouldAutoMock: boolean;
   private readonly _shouldMockModuleCache: Map<string, boolean>;
   private readonly _shouldUnmockTransitiveDependenciesCache: Map<
@@ -352,8 +347,6 @@ export default class Runtime {
   private _moduleImplementation?: typeof nativeModule.Module;
   private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
-  private readonly esmConditions: Array<string>;
-  private readonly cjsConditions: Array<string>;
   private testState: 'loading' | 'inTest' | 'betweenTests' | 'tornDown' =
     'loading';
   private readonly loggedReferenceErrors = new Set<string>();
@@ -398,7 +391,6 @@ export default class Runtime {
     this._esmModuleLinkingMap = new WeakMap();
     this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
-    this._resolver = resolver;
     this._scriptTransformer = transformer;
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
@@ -425,29 +417,18 @@ export default class Runtime {
       unmockRegExpCache.set(config, this._unmockList);
     }
 
-    const envExportConditions = this._environment.exportConditions?.() ?? [];
-
-    this.esmConditions = [
-      ...new Set(['import', 'default', ...envExportConditions]),
-    ];
-    this.cjsConditions = [
-      ...new Set(['require', 'node', 'default', ...envExportConditions]),
-    ];
+    this._resolution = new Resolution(
+      resolver,
+      this._environment.exportConditions?.() ?? [],
+    );
 
     if (config.automock) {
       for (const filePath of config.setupFiles) {
         if (filePath.includes(NODE_MODULES)) {
-          const moduleID = this._resolver.getModuleID(
-            this._virtualMocks,
-            filePath,
-            undefined,
-            // shouldn't really matter, but in theory this will make sure the caching is correct
-            {
-              conditions: this.unstable_shouldLoadAsEsm(filePath)
-                ? this.esmConditions
-                : this.cjsConditions,
-            },
-          );
+          // shouldn't really matter, but in theory this will make sure the caching is correct
+          const moduleID = this.unstable_shouldLoadAsEsm(filePath)
+            ? this._resolution.getEsmModuleId(this._virtualMocks, filePath)
+            : this._resolution.getCjsModuleId(this._virtualMocks, filePath);
           this._transitiveShouldMock.set(moduleID, false);
         }
       }
@@ -557,7 +538,7 @@ export default class Runtime {
   // Synchronous graph loader for Node v24.9+. Walks the static import graph
   // depth-first, constructs every node, links via `linkRequests`, instantiates
   // the root, and evaluates synchronously. Returns the fully-evaluated root.
-  // The dispatch wrapper additionally guards on `_resolver.canResolveSync()`,
+  // The dispatch wrapper additionally guards on `_resolution.canResolveSync()`,
   // so this method assumes synchronous resolution is available.
   // Returns `null` when the graph cannot be completed synchronously (async
   // transformer, TLA, async mock factory) and the caller must fall back to
@@ -639,7 +620,7 @@ export default class Runtime {
       }
       if (fromRegistry instanceof Promise) return null;
 
-      if (this._resolver.isCoreModule(modulePath)) {
+      if (this._resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
@@ -723,12 +704,9 @@ export default class Runtime {
             meta.dirname = path.dirname(modulePath);
             meta.resolve = (specifier, parent: string | URL = metaUrl) => {
               const parentPath = fileURLToPath(parent);
-              const resolvedPath = this._resolver.resolveModule(
-                parentPath,
-                specifier,
-                {conditions: this.esmConditions},
-              );
-              return pathToFileURL(resolvedPath).href;
+              return pathToFileURL(
+                this._resolution.resolveEsm(parentPath, specifier),
+              ).href;
             };
             let jest = this.jestObjectCaches.get(modulePath);
             if (!jest) {
@@ -988,7 +966,7 @@ export default class Runtime {
       return {cacheKey: mocked.cacheKey, enqueue: null};
     }
 
-    if (this._resolver.isCoreModule(specifierPath)) {
+    if (this._resolution.isCoreModule(specifierPath)) {
       const cacheKey = specifierPath + query;
       return {
         cacheKey,
@@ -998,7 +976,10 @@ export default class Runtime {
 
     let resolved: string;
     try {
-      resolved = this._resolveModuleSync(referencingIdentifier, specifierPath);
+      resolved = this._resolution.resolveEsm(
+        referencingIdentifier,
+        specifierPath,
+      );
     } catch {
       return null;
     }
@@ -1040,11 +1021,10 @@ export default class Runtime {
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
   ): {cacheKey: string} | null {
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getEsmModuleId(
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: this.esmConditions},
     );
 
     const existing = this._moduleMockRegistry.get(moduleID);
@@ -1241,7 +1221,7 @@ export default class Runtime {
     // the configured resolver supports sync resolution. With an async-only
     // user resolver `findNodeModule` silently falls back to the default
     // resolver and would silently miss user mappings; defer to legacy.
-    if (supportsSyncEvaluate && this._resolver.canResolveSync()) {
+    if (supportsSyncEvaluate && this._resolution.canResolveSync()) {
       const synced = this._tryLoadEsmGraphSync(
         modulePath,
         query,
@@ -1298,7 +1278,7 @@ export default class Runtime {
         return wasm;
       }
 
-      if (this._resolver.isCoreModule(modulePath)) {
+      if (this._resolution.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
         registry.set(cacheKey, core);
 
@@ -1337,14 +1317,9 @@ export default class Runtime {
 
               meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
-
-                const resolvedPath = this._resolver.resolveModule(
-                  parentPath,
-                  specifier,
-                  {conditions: this.esmConditions},
-                );
-
-                return pathToFileURL(resolvedPath).href;
+                return pathToFileURL(
+                  this._resolution.resolveEsm(parentPath, specifier),
+                ).href;
               };
 
               let jest = this.jestObjectCaches.get(modulePath);
@@ -1495,7 +1470,7 @@ export default class Runtime {
     if (
       // json files are modules when imported in modules
       resolved.endsWith('.json') ||
-      this._resolver.isCoreModule(resolved) ||
+      this._resolution.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
       return this.loadEsmModule(resolved, query) as T;
@@ -1695,11 +1670,10 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
   ): Promise<T> {
-    const moduleID = await this._resolver.getModuleIDAsync(
+    const moduleID = await this._resolution.getEsmModuleIdAsync(
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: this.esmConditions},
     );
 
     if (this._moduleMockRegistry.has(moduleID)) {
@@ -1757,14 +1731,14 @@ export default class Runtime {
     const namedExports = new Set(exports);
 
     for (const reexport of reexports) {
-      if (this._resolver.isCoreModule(reexport)) {
+      if (this._resolution.isCoreModule(reexport)) {
         const exports = this.requireModule(modulePath, reexport);
         if (exports !== null && typeof exports === 'object') {
           for (const e of Object.keys(exports as Record<string, unknown>))
             namedExports.add(e);
         }
       } else {
-        const resolved = this._resolveCjsModule(modulePath, reexport);
+        const resolved = this._resolution.resolveCjs(modulePath, reexport);
 
         const exports = this.getExportsOfCjs(resolved);
 
@@ -1784,21 +1758,18 @@ export default class Runtime {
     isRequireActual = false,
   ): T {
     const isInternal = options?.isInternalModule ?? false;
-    const resolveModuleOptions = {conditions: this.cjsConditions};
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getCjsModuleId(
       this._virtualMocks,
       from,
       moduleName,
-      resolveModuleOptions,
     );
     let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
-    const moduleResource = moduleName && this._resolver.getModule(moduleName);
+    const moduleResource = moduleName && this._resolution.getModule(moduleName);
     const manualMock =
-      moduleName &&
-      this._resolver.getMockModule(from, moduleName, resolveModuleOptions);
+      moduleName && this._resolution.getCjsMockModule(from, moduleName);
     if (
       !options?.isInternalModule &&
       !isRequireActual &&
@@ -1810,7 +1781,7 @@ export default class Runtime {
       modulePath = manualMock;
     }
 
-    if (moduleName && this._resolver.isCoreModule(moduleName)) {
+    if (moduleName && this._resolution.isCoreModule(moduleName)) {
       return this._requireCoreModule(
         moduleName,
         supportsNodeColonModulePrefixInRequire,
@@ -1818,7 +1789,7 @@ export default class Runtime {
     }
 
     if (!modulePath) {
-      modulePath = this._resolveCjsModule(from, moduleName);
+      modulePath = this._resolution.resolveCjs(from, moduleName);
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
@@ -1922,12 +1893,10 @@ export default class Runtime {
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
-    const options = {conditions: this.cjsConditions};
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getCjsModuleId(
       this._virtualMocks,
       from,
       moduleName,
-      options,
     );
 
     if (this._isolatedMockRegistry?.has(moduleID)) {
@@ -1951,19 +1920,15 @@ export default class Runtime {
 
       // A. Core module specifier i.e. ['fs', 'node:fs']:
       // Normalize then check for a root manual mock '<rootDir>/__mocks__/'
-      if (this._resolver.isCoreModule(moduleName)) {
+      if (this._resolution.isCoreModule(moduleName)) {
         const moduleWithoutNodePrefix =
-          this._resolver.normalizeCoreModuleSpecifier(moduleName);
-        return this._resolver.getMockModule(
-          from,
-          moduleWithoutNodePrefix,
-          options,
-        );
+          this._resolution.normalizeCoreModuleSpecifier(moduleName);
+        return this._resolution.getCjsMockModule(from, moduleWithoutNodePrefix);
       }
 
       // B. Node module specifier i.e. ['jest', 'react']:
       // Look for root manual mock
-      const rootMock = this._resolver.getMockModule(from, moduleName, options);
+      const rootMock = this._resolution.getCjsMockModule(from, moduleName);
       if (rootMock) return rootMock;
 
       // C. Relative/Absolute path:
@@ -1978,7 +1943,7 @@ export default class Runtime {
       // Where some other module does a relative require into each of the
       // respective subDir{1,2} directories and expects a manual mock
       // corresponding to that particular my_module.js file.
-      const modulePath = this._resolveCjsModule(from, moduleName);
+      const modulePath = this._resolution.resolveCjs(from, moduleName);
       const moduleDir = path.dirname(modulePath);
       const moduleFileName = path.basename(modulePath);
       const potentialManualMock = path.join(
@@ -2159,8 +2124,7 @@ export default class Runtime {
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
     this._cacheFSBuffer.clear();
-    this._resolveCjsCache.clear();
-    this._resolveEsmCache.clear();
+    this._resolution.clear();
 
     if (
       this._coverageOptions.collectCoverage &&
@@ -2259,15 +2223,14 @@ export default class Runtime {
     options?: {virtual?: boolean},
   ): void {
     if (options?.virtual) {
-      const mockPath = this._resolver.getModulePath(from, moduleName);
+      const mockPath = this._resolution.getModulePath(from, moduleName);
 
       this._virtualMocks.set(mockPath, true);
     }
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getCjsModuleId(
       this._virtualMocks,
       from,
       moduleName,
-      {conditions: this.cjsConditions},
     );
     this._explicitShouldMock.set(moduleID, true);
     this._mockFactories.set(moduleID, mockFactory);
@@ -2280,15 +2243,14 @@ export default class Runtime {
     options?: {virtual?: boolean},
   ): void {
     if (options?.virtual) {
-      const mockPath = this._resolver.getModulePath(from, moduleName);
+      const mockPath = this._resolution.getModulePath(from, moduleName);
 
       this._virtualModuleMocks.set(mockPath, true);
     }
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getEsmModuleId(
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: this.esmConditions},
     );
     this._explicitShouldMockModule.set(moduleID, true);
     this._moduleMockFactories.set(moduleID, mockFactory);
@@ -2346,24 +2308,8 @@ export default class Runtime {
     this.testState = 'tornDown';
   }
 
-  private _resolveCjsModule(from: string, to: string | undefined) {
-    if (!to) return from;
-    const key = resolveCacheKey(from, to);
-    const cached = this._resolveCjsCache.get(key);
-    if (cached !== undefined) return cached;
-    const resolved = this._resolver.resolveModule(from, to, {
-      conditions: this.cjsConditions,
-    });
-    this._resolveCjsCache.set(key, resolved);
-    return resolved;
-  }
-
   private _resolveModule(from: string, to: string | undefined) {
-    return to
-      ? this._resolver.resolveModuleAsync(from, to, {
-          conditions: this.esmConditions,
-        })
-      : from;
+    return this._resolution.resolveEsmAsync(from, to);
   }
 
   private _requireResolve(
@@ -2378,10 +2324,10 @@ export default class Runtime {
     }
 
     if (path.isAbsolute(moduleName)) {
-      const module = this._resolver.resolveModuleFromDirIfExists(
+      const module = this._resolution.resolveCjsFromDirIfExists(
         moduleName,
         moduleName,
-        {conditions: this.cjsConditions, paths: []},
+        [],
       );
       if (module) {
         return module;
@@ -2389,11 +2335,11 @@ export default class Runtime {
     } else if (options.paths) {
       for (const p of options.paths) {
         const absolutePath = path.resolve(from, '..', p);
-        const module = this._resolver.resolveModuleFromDirIfExists(
+        // required to also resolve files without leading './' directly in the path
+        const module = this._resolution.resolveCjsFromDirIfExists(
           absolutePath,
           moduleName,
-          // required to also resolve files without leading './' directly in the path
-          {conditions: this.cjsConditions, paths: [absolutePath]},
+          [absolutePath],
         );
         if (module) {
           return module;
@@ -2408,11 +2354,9 @@ export default class Runtime {
     }
 
     try {
-      return this._resolveCjsModule(from, moduleName);
+      return this._resolution.resolveCjs(from, moduleName);
     } catch (error) {
-      const module = this._resolver.getMockModule(from, moduleName, {
-        conditions: this.cjsConditions,
-      });
+      const module = this._resolution.getCjsMockModule(from, moduleName);
 
       if (module) {
         return module;
@@ -2438,11 +2382,11 @@ export default class Runtime {
     if (moduleName[0] === '.') {
       return [fromDir];
     }
-    if (this._resolver.isCoreModule(moduleName)) {
+    if (this._resolution.isCoreModule(moduleName)) {
       return null;
     }
-    const modulePaths = this._resolver.getModulePaths(fromDir);
-    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    const modulePaths = this._resolution.getModulePaths(fromDir);
+    const globalPaths = this._resolution.getGlobalPaths(moduleName);
     return [...modulePaths, ...globalPaths];
   }
 
@@ -2488,8 +2432,8 @@ export default class Runtime {
         return moduleRegistry.get(key) || null;
       },
     });
-    const modulePaths = this._resolver.getModulePaths(module.path);
-    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    const modulePaths = this._resolution.getModulePaths(module.path);
+    const globalPaths = this._resolution.getGlobalPaths(moduleName);
     module.paths = [...modulePaths, ...globalPaths];
 
     Object.defineProperty(module, 'require', {
@@ -2616,7 +2560,7 @@ export default class Runtime {
     }
 
     try {
-      const scriptFilename = this._resolver.isCoreModule(filename)
+      const scriptFilename = this._resolution.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
       return compileFunction(
@@ -2654,7 +2598,8 @@ export default class Runtime {
 
   private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
     const moduleWithoutNodePrefix =
-      supportPrefix && this._resolver.normalizeCoreModuleSpecifier(moduleName);
+      supportPrefix &&
+      this._resolution.normalizeCoreModuleSpecifier(moduleName);
 
     if (moduleWithoutNodePrefix === 'process') {
       return this._environment.global.process;
@@ -2791,9 +2736,8 @@ export default class Runtime {
 
   private _generateMock<T>(from: string, moduleName: string) {
     const modulePath =
-      this._resolver.resolveStubModuleName(from, moduleName, {
-        conditions: this.cjsConditions,
-      }) || this._resolveCjsModule(from, moduleName);
+      this._resolution.resolveCjsStub(from, moduleName) ||
+      this._resolution.resolveCjs(from, moduleName);
     if (!this._mockMetaDataCache.has(modulePath)) {
       // This allows us to handle circular dependencies while generating an
       // automock
@@ -2844,12 +2788,10 @@ export default class Runtime {
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
   ): boolean {
-    const options: ResolveModuleConfig = {conditions: this.cjsConditions};
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getCjsModuleId(
       this._virtualMocks,
       from,
       moduleName,
-      options,
     );
     const key = from + path.delimiter + moduleID;
 
@@ -2860,7 +2802,7 @@ export default class Runtime {
 
     if (
       !this._shouldAutoMock ||
-      this._resolver.isCoreModule(moduleName) ||
+      this._resolution.isCoreModule(moduleName) ||
       this._shouldUnmockTransitiveDependenciesCache.get(key)
     ) {
       return false;
@@ -2873,13 +2815,9 @@ export default class Runtime {
 
     let modulePath;
     try {
-      modulePath = this._resolveCjsModule(from, moduleName);
+      modulePath = this._resolution.resolveCjs(from, moduleName);
     } catch (error) {
-      const manualMock = this._resolver.getMockModule(
-        from,
-        moduleName,
-        options,
-      );
+      const manualMock = this._resolution.getCjsMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
@@ -2893,11 +2831,9 @@ export default class Runtime {
     }
 
     // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = this._resolver.getModuleID(
+    const currentModuleID = this._resolution.getCjsModuleId(
       this._virtualMocks,
       from,
-      undefined,
-      options,
     );
     if (
       this._transitiveShouldMock.get(currentModuleID) === false ||
@@ -2914,18 +2850,6 @@ export default class Runtime {
     return true;
   }
 
-  private _resolveModuleSync(from: string, to: string | undefined): string {
-    if (!to) return from;
-    const key = resolveCacheKey(from, to);
-    const cached = this._resolveEsmCache.get(key);
-    if (cached !== undefined) return cached;
-    const resolved = this._resolver.resolveModule(from, to, {
-      conditions: this.esmConditions,
-    });
-    this._resolveEsmCache.set(key, resolved);
-    return resolved;
-  }
-
   // Sync mirror of `_shouldMockModule`. Used by the sync-first ESM core on
   // Node v24.9+. Logic must stay in lockstep with the async version.
   private _shouldMockModuleSync(
@@ -2933,12 +2857,10 @@ export default class Runtime {
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
   ): boolean {
-    const options: ResolveModuleConfig = {conditions: this.esmConditions};
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = this._resolution.getEsmModuleId(
       this._virtualMocks,
       from,
       moduleName,
-      options,
     );
     const key = from + path.delimiter + moduleID;
 
@@ -2948,7 +2870,7 @@ export default class Runtime {
 
     if (
       !this._shouldAutoMock ||
-      this._resolver.isCoreModule(moduleName) ||
+      this._resolution.isCoreModule(moduleName) ||
       this._shouldUnmockTransitiveDependenciesCache.get(key)
     ) {
       return false;
@@ -2960,13 +2882,9 @@ export default class Runtime {
 
     let modulePath;
     try {
-      modulePath = this._resolveModuleSync(from, moduleName);
+      modulePath = this._resolution.resolveEsm(from, moduleName);
     } catch (error) {
-      const manualMock = this._resolver.getMockModule(
-        from,
-        moduleName,
-        options,
-      );
+      const manualMock = this._resolution.getEsmMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
         return true;
@@ -2979,11 +2897,9 @@ export default class Runtime {
       return false;
     }
 
-    const currentModuleID = this._resolver.getModuleID(
+    const currentModuleID = this._resolution.getEsmModuleId(
       this._virtualMocks,
       from,
-      undefined,
-      options,
     );
     if (
       this._transitiveShouldMock.get(currentModuleID) === false ||
@@ -3005,12 +2921,10 @@ export default class Runtime {
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
   ): Promise<boolean> {
-    const options: ResolveModuleConfig = {conditions: this.esmConditions};
-    const moduleID = await this._resolver.getModuleIDAsync(
+    const moduleID = await this._resolution.getEsmModuleIdAsync(
       this._virtualMocks,
       from,
       moduleName,
-      options,
     );
     const key = from + path.delimiter + moduleID;
 
@@ -3021,7 +2935,7 @@ export default class Runtime {
 
     if (
       !this._shouldAutoMock ||
-      this._resolver.isCoreModule(moduleName) ||
+      this._resolution.isCoreModule(moduleName) ||
       this._shouldUnmockTransitiveDependenciesCache.get(key)
     ) {
       return false;
@@ -3036,10 +2950,9 @@ export default class Runtime {
     try {
       modulePath = await this._resolveModule(from, moduleName);
     } catch (error) {
-      const manualMock = await this._resolver.getMockModuleAsync(
+      const manualMock = await this._resolution.getEsmMockModuleAsync(
         from,
         moduleName,
-        options,
       );
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
@@ -3054,11 +2967,9 @@ export default class Runtime {
     }
 
     // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = await this._resolver.getModuleIDAsync(
+    const currentModuleID = await this._resolution.getEsmModuleIdAsync(
       this._virtualMocks,
       from,
-      undefined,
-      options,
     );
     if (
       this._transitiveShouldMock.get(currentModuleID) === false ||
@@ -3167,31 +3078,28 @@ export default class Runtime {
       return jestObject;
     };
     const unmock = (moduleName: string) => {
-      const moduleID = this._resolver.getModuleID(
+      const moduleID = this._resolution.getCjsModuleId(
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, false);
       return jestObject;
     };
     const unmockModule = (moduleName: string) => {
-      const moduleID = this._resolver.getModuleID(
+      const moduleID = this._resolution.getEsmModuleId(
         this._virtualModuleMocks,
         from,
         moduleName,
-        {conditions: this.esmConditions},
       );
       this._explicitShouldMockModule.set(moduleID, false);
       return jestObject;
     };
     const deepUnmock = (moduleName: string) => {
-      const moduleID = this._resolver.getModuleID(
+      const moduleID = this._resolution.getCjsModuleId(
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, false);
       this._transitiveShouldMock.set(moduleID, false);
@@ -3202,11 +3110,10 @@ export default class Runtime {
         return setMockFactory(moduleName, mockFactory, options);
       }
 
-      const moduleID = this._resolver.getModuleID(
+      const moduleID = this._resolution.getCjsModuleId(
         this._virtualMocks,
         from,
         moduleName,
-        {conditions: this.cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, true);
       return jestObject;

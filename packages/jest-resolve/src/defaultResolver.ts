@@ -19,7 +19,7 @@ export interface ResolverOptions extends UpstreamResolveOptions {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
-  conditions?: Array<string>;
+  conditions?: ReadonlyArray<string>;
   /** Instance of default resolver. */
   defaultResolver: SyncResolver;
   /** Instance of default async resolver. */
@@ -30,14 +30,14 @@ export interface ResolverOptions extends UpstreamResolveOptions {
    * @defaultValue
    * The default is `['node_modules']`.
    */
-  moduleDirectory?: Array<string>;
+  moduleDirectory?: ReadonlyArray<string>;
   /**
    * List of `require.paths` to use if nothing is found in `node_modules`.
    *
    * @defaultValue
    * The default is `undefined`.
    */
-  paths?: Array<string>;
+  paths?: ReadonlyArray<string>;
   /** Current root directory. */
   rootDir?: string;
 
@@ -102,11 +102,15 @@ function baseResolver(
     /* eslint-enable prefer-const */
   } = options;
 
-  modules = modules || moduleDirectory;
+  modules = modules || (moduleDirectory as Array<string>);
 
   const resolveOptions: UpstreamResolveOptions = {
     conditionNames: conditionNames ||
-      conditions || ['require', 'node', 'default'],
+      (conditions as Array<string> | undefined) || [
+        'require',
+        'node',
+        'default',
+      ],
     modules,
     roots: roots || (rootDir ? [rootDir] : undefined),
     ...rest,
@@ -135,7 +139,7 @@ function baseResolver(
         if (paths.length > 0) {
           unrsResolver = unrsResolver!.cloneWithOptions({
             ...resolveOptions,
-            modules: paths,
+            modules: paths as Array<string>,
           });
           setResolver(unrsResolver);
           return resolve();
