@@ -200,19 +200,6 @@ export default class Runtime {
       requireBuilder: this.requireBuilder,
       resolution: this._resolution,
     });
-    this.executor = new ModuleExecutor({
-      config,
-      dynamicImport: (specifier, identifier, context) =>
-        this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
-      environment: this._environment,
-      jestObjectCache: this.jestObjectCaches,
-      jestObjectFactory: from => this._createJestObjectFor(from),
-      requireBuilder: this.requireBuilder,
-      resolution: this._resolution,
-      testMainModule: this.testMainModule,
-      testPath,
-      transformCache: this.transformCache,
-    });
     this.esmLoader = new EsmLoader({
       cjsExportsCache: this.cjsExportsCache,
       coreModule: this.coreModule,
@@ -228,6 +215,19 @@ export default class Runtime {
         this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
       shouldLoadAsEsm: modulePath => this.unstable_shouldLoadAsEsm(modulePath),
+      transformCache: this.transformCache,
+    });
+    this.executor = new ModuleExecutor({
+      config,
+      dynamicImport: (specifier, identifier, context) =>
+        this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
+      environment: this._environment,
+      jestObjectCache: this.jestObjectCaches,
+      jestObjectFactory: from => this._createJestObjectFor(from),
+      requireBuilder: this.requireBuilder,
+      resolution: this._resolution,
+      testMainModule: this.testMainModule,
+      testPath,
       transformCache: this.transformCache,
     });
     this.cjsLoader = new CjsLoader({

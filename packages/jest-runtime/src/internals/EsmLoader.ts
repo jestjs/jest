@@ -161,10 +161,9 @@ export interface EsmLoaderDeps {
 
 export class EsmLoader {
   private readonly deps: EsmLoaderDeps;
-  // TODO: legacy async path - delete the field, the methods marked LEGACY,
-  // and the imports `evaluateSyntheticModule`, `isError`, `isCjsParseError`,
-  // `runtimeSupportsVmModules`, `noop` once min-Node ≥ v24.9. eslint/tsc will
-  // surface anything else that becomes unused.
+  // Used only by the legacy async path; deletable when min-Node ≥ v24.9
+  // (delete the block at the bottom of this file too — eslint/tsc will
+  // surface anything else that becomes unused).
   private readonly linkingMap = new WeakMap<JestModule, Promise<unknown>>();
   private readonly evaluatingMap = new WeakMap<JestModule, Promise<void>>();
 
@@ -192,6 +191,9 @@ export class EsmLoader {
     return (module as VMModule).namespace as T;
   }
 
+  // Public for unit-test access. Production callers reach the sync graph
+  // through `requireEsmModule` (sync require entry) or via `loadEsmModule`
+  // (the legacy async entry, which first-tries this).
   tryLoadGraphSync(
     rootPath: string,
     rootQuery: string,
@@ -215,20 +217,13 @@ export class EsmLoader {
       process.exitCode = 1;
       return null;
     }
-    // The original `betweenTests` throw fires only when `!supportsDynamicImport`,
-    // which is impossible here: EsmGraphLoader runs only when `supportsSyncEvaluate`
-    // is true (stricter than `supportsDynamicImport`). Dead branch elided.
 
     const registry = registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;
 
     const cached = registry.get(rootKey);
-    if (cached && !(cached instanceof Promise)) {
-      return cached as ESModule;
-    }
-    if (cached instanceof Promise) {
-      return null;
-    }
+    if (cached instanceof Promise) return null;
+    if (cached) return cached as ESModule;
 
     const context = this.getContext();
 
@@ -463,7 +458,11 @@ export class EsmLoader {
     return context;
   }
 
-  private commitSyntheticToScratch(
+  // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
+  // local scratch and the long-lived registry. Returns `true` on success;
+  // `false` means the registry holds a mid-flight Promise from the legacy async
+  // path - the caller must bail to that path.
+  private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
     scratch: Map<string, ScratchEntry>,
@@ -491,7 +490,7 @@ export class EsmLoader {
 
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
-      const ok = this.commitSyntheticToScratch(
+      const ok = this.tryCommitSynthetic(
         cacheKey,
         registry,
         scratch,
@@ -548,7 +547,7 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !shouldLoadAsEsm(resolved)
     ) {
-      const ok = this.commitSyntheticToScratch(
+      const ok = this.tryCommitSynthetic(
         cacheKey,
         registry,
         scratch,
@@ -784,12 +783,11 @@ export class EsmLoader {
     );
   }
 
-  // TODO: LEGACY async path - everything below is deletable once min-Node
-  // reaches v24.9 (the sync core handles all entry shapes).
+  // TODO: legacy async path — everything below is deletable when min-Node
+  // ≥ v24.9 (the sync core handles all entry shapes). Drop the `linkingMap`
+  // / `evaluatingMap` fields with it.
 
-  // Public entry called from CJS bodies via `compileFunction`'s
-  // `importModuleDynamically`. Goes through the legacy async path; cleanup
-  // tracked with the rest of the LEGACY block.
+  // Called from CJS bodies via `compileFunction`'s `importModuleDynamically`.
   dynamicImportFromCjs(
     specifier: string,
     identifier: string,
@@ -816,8 +814,10 @@ export class EsmLoader {
     return this.linkAndEvaluateModule(module);
   }
 
-  // LEGACY
-  async loadEsmModule(modulePath: string, query = ''): Promise<ESModule> {
+  private async loadEsmModule(
+    modulePath: string,
+    query = '',
+  ): Promise<ESModule> {
     const {transformCache, registries, resolution, fileCache, getJestObject} =
       this.deps;
     // The sync core walks the graph synchronously, so it can only run when
@@ -935,7 +935,6 @@ export class EsmLoader {
     return module as ESModule;
   }
 
-  // LEGACY
   private async resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
@@ -1042,7 +1041,6 @@ export class EsmLoader {
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context) as T;
   }
 
-  // LEGACY
   private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
     const {getTestState, logFormattedReferenceError} = this.deps;
     if (getTestState() === 'tornDown') {
@@ -1112,7 +1110,6 @@ export class EsmLoader {
     return module;
   }
 
-  // LEGACY
   private loadCjsAsEsm(
     from: string,
     modulePath: string,
@@ -1146,7 +1143,6 @@ export class EsmLoader {
     return evaluated;
   }
 
-  // LEGACY
   private async importMock<T = unknown>(
     from: string,
     moduleName: string,
@@ -1170,7 +1166,6 @@ export class EsmLoader {
     throw new Error('Attempting to import a mock without a factory');
   }
 
-  // LEGACY
   private async importWasmModule(
     source: BufferSource,
     identifier: string,

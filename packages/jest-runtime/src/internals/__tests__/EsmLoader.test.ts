@@ -266,7 +266,6 @@ describe('EsmLoader mock dispatch', () => {
       stubs.transformCache.transform.mockReturnValue(
         "import './dep.mjs'; globalThis.__loaded = true;",
       );
-      stubs.resolution.resolveEsm.mockReturnValue('/dep.mjs');
 
       expect(() =>
         loader.tryLoadGraphSync('/entry.mjs', '', 'sync-required'),
@@ -287,7 +286,6 @@ describe('EsmLoader mock dispatch', () => {
       stubs.transformCache.transform.mockReturnValue(
         "import './dep.mjs'; globalThis.__loaded = true;",
       );
-      stubs.resolution.resolveEsm.mockReturnValue('/dep.mjs');
 
       const result = loader.tryLoadGraphSync(
         '/entry.mjs',
@@ -312,7 +310,6 @@ describe('EsmLoader mock dispatch', () => {
       stubs.transformCache.transform.mockReturnValue(
         "import {mocked} from './dep.mjs'; globalThis.__mocked = mocked;",
       );
-      stubs.resolution.resolveEsm.mockReturnValue('/dep.mjs');
 
       const result = loader.tryLoadGraphSync(
         '/entry.mjs',
