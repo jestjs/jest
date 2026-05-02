@@ -96,68 +96,70 @@ export class ModuleExecutor {
     const origCurrExecutingManualMock = this.currentlyExecutingManualMock;
     this.currentlyExecutingManualMock = filename;
 
-    module.children = [];
-
-    Object.defineProperty(module, 'parent', {
-      enumerable: true,
-      get() {
-        const key = from || '';
-        return moduleRegistry.get(key) || null;
-      },
-    });
-    const modulePaths = resolution.getModulePaths(module.path);
-    const globalPaths = resolution.getGlobalPaths(moduleName);
-    module.paths = [...modulePaths, ...globalPaths];
-
-    Object.defineProperty(module, 'require', {
-      value: requireBuilder.for(localModule, options),
-    });
-
-    const transformedCode = transformCache.transform(filename, options);
-
-    const compiledFunction = this.compile(transformedCode, filename);
-    if (compiledFunction === null) {
-      return 'env-disposed';
-    }
-
-    const jestObject = jestObjectFactory(filename);
-    jestObjectCache.set(filename, jestObject);
-
-    const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-      config.injectGlobals ? jestObject : undefined,
-      ...config.sandboxInjectedGlobals.map<Global.Global>(globalVariable => {
-        if (environment.global[globalVariable]) {
-          return environment.global[globalVariable];
-        }
-
-        throw new Error(
-          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-        );
-      }),
-    ];
-
-    if (!testMainModule.current && filename === testPath) {
-      testMainModule.current = module;
-    }
-
-    Object.defineProperty(module, 'main', {
-      enumerable: true,
-      value: testMainModule.current,
-    });
-
     try {
-      compiledFunction.call(
-        module.exports,
-        module, // module object
-        module.exports, // module exports
-        module.require, // require implementation
-        module.path, // __dirname
-        module.filename, // __filename
-        lastArgs[0],
-        ...lastArgs.slice(1).filter(isNonNullable),
-      );
-    } catch (error: any) {
-      this.handleExecutionError(error, module);
+      module.children = [];
+
+      Object.defineProperty(module, 'parent', {
+        enumerable: true,
+        get() {
+          const key = from || '';
+          return moduleRegistry.get(key) || null;
+        },
+      });
+      const modulePaths = resolution.getModulePaths(module.path);
+      const globalPaths = resolution.getGlobalPaths(moduleName);
+      module.paths = [...modulePaths, ...globalPaths];
+
+      Object.defineProperty(module, 'require', {
+        value: requireBuilder.for(localModule, options),
+      });
+
+      const transformedCode = transformCache.transform(filename, options);
+
+      const compiledFunction = this.compile(transformedCode, filename);
+      if (compiledFunction === null) {
+        return 'env-disposed';
+      }
+
+      const jestObject = jestObjectFactory(filename);
+      jestObjectCache.set(filename, jestObject);
+
+      const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
+        config.injectGlobals ? jestObject : undefined,
+        ...config.sandboxInjectedGlobals.map<Global.Global>(globalVariable => {
+          if (environment.global[globalVariable]) {
+            return environment.global[globalVariable];
+          }
+
+          throw new Error(
+            `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+          );
+        }),
+      ];
+
+      if (!testMainModule.current && filename === testPath) {
+        testMainModule.current = module;
+      }
+
+      Object.defineProperty(module, 'main', {
+        enumerable: true,
+        value: testMainModule.current,
+      });
+
+      try {
+        compiledFunction.call(
+          module.exports,
+          module, // module object
+          module.exports, // module exports
+          module.require, // require implementation
+          module.path, // __dirname
+          module.filename, // __filename
+          lastArgs[0],
+          ...lastArgs.slice(1).filter(isNonNullable),
+        );
+      } catch (error: any) {
+        this.handleExecutionError(error, module);
+      }
     } finally {
       this.currentlyExecutingManualMock = origCurrExecutingManualMock;
     }
