@@ -23,6 +23,12 @@ const isLiveEsm = (entry: JestModule | undefined): entry is VMModule => {
 
 const notPermittedMethod = () => true;
 
+class Isolation {
+  readonly cjs: ModuleRegistry = new Map();
+  readonly esm = new Map<string, JestModule>();
+  readonly mock = new Map<string, unknown>();
+}
+
 export default class ModuleRegistries {
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
@@ -30,8 +36,7 @@ export default class ModuleRegistries {
   private mockRegistry = new Map<string, unknown>();
   private readonly moduleMockRegistry = new Map<string, JestModule>();
 
-  private isolatedModuleRegistry: ModuleRegistry | null = null;
-  private isolatedMockRegistry: Map<string, unknown> | null = null;
+  private isolation: Isolation | null = null;
 
   private readonly esmRequireCacheWrappers = new WeakMap<
     VMModule,
@@ -39,22 +44,19 @@ export default class ModuleRegistries {
   >();
 
   getCjs(modulePath: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolatedModuleRegistry ?? this.moduleRegistry).get(modulePath);
+    return (this.isolation?.cjs ?? this.moduleRegistry).get(modulePath);
   }
   setCjs(
     modulePath: string,
     module: InitialModule | Module | JestModule,
   ): void {
-    (this.isolatedModuleRegistry ?? this.moduleRegistry).set(
-      modulePath,
-      module,
-    );
+    (this.isolation?.cjs ?? this.moduleRegistry).set(modulePath, module);
   }
   hasCjs(modulePath: string): boolean {
-    return (this.isolatedModuleRegistry ?? this.moduleRegistry).has(modulePath);
+    return (this.isolation?.cjs ?? this.moduleRegistry).has(modulePath);
   }
   deleteCjs(modulePath: string): void {
-    (this.isolatedModuleRegistry ?? this.moduleRegistry).delete(modulePath);
+    (this.isolation?.cjs ?? this.moduleRegistry).delete(modulePath);
   }
 
   getInternalCjs(
@@ -72,24 +74,24 @@ export default class ModuleRegistries {
     return this.internalModuleRegistry.has(modulePath);
   }
 
-  getEsm(key: string): InitialModule | Module | JestModule | undefined {
-    return (this.isolatedModuleRegistry ?? this.esModuleRegistry).get(key);
+  getEsm(key: string): JestModule | undefined {
+    return (this.isolation?.esm ?? this.esModuleRegistry).get(key);
   }
   setEsm(key: string, module: JestModule): void {
-    (this.isolatedModuleRegistry ?? this.esModuleRegistry).set(key, module);
+    (this.isolation?.esm ?? this.esModuleRegistry).set(key, module);
   }
   hasEsm(key: string): boolean {
-    return (this.isolatedModuleRegistry ?? this.esModuleRegistry).has(key);
+    return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
   }
 
   getMock(moduleID: string): unknown {
-    return (this.isolatedMockRegistry ?? this.mockRegistry).get(moduleID);
+    return (this.isolation?.mock ?? this.mockRegistry).get(moduleID);
   }
   setMock(moduleID: string, module: unknown): void {
-    (this.isolatedMockRegistry ?? this.mockRegistry).set(moduleID, module);
+    (this.isolation?.mock ?? this.mockRegistry).set(moduleID, module);
   }
   hasMock(moduleID: string): boolean {
-    return (this.isolatedMockRegistry ?? this.mockRegistry).has(moduleID);
+    return (this.isolation?.mock ?? this.mockRegistry).has(moduleID);
   }
 
   getModuleMock(moduleID: string): JestModule | undefined {
@@ -102,29 +104,21 @@ export default class ModuleRegistries {
     return this.moduleMockRegistry.has(moduleID);
   }
 
-  // The isolation overlay is shared with CJS, so when used in isolation the
-  // map's value type widens to the union; the ESM walker only ever inserts
-  // and reads JestModule values keyed by ESM cache keys.
   getActiveEsmRegistry(): Map<string, JestModule> {
-    return (this.isolatedModuleRegistry ?? this.esModuleRegistry) as Map<
-      string,
-      JestModule
-    >;
+    return this.isolation?.esm ?? this.esModuleRegistry;
   }
 
   getActiveCjsRegistry(internal: boolean): ModuleRegistry {
     if (internal) return this.internalModuleRegistry;
-    return this.isolatedModuleRegistry ?? this.moduleRegistry;
+    return this.isolation?.cjs ?? this.moduleRegistry;
   }
 
   getActiveMockRegistry(): Map<string, unknown> {
-    return this.isolatedMockRegistry ?? this.mockRegistry;
+    return this.isolation?.mock ?? this.mockRegistry;
   }
 
   isIsolated(): boolean {
-    return (
-      this.isolatedModuleRegistry !== null || this.isolatedMockRegistry !== null
-    );
+    return this.isolation !== null;
   }
 
   enterIsolated(callerName: 'isolateModules' | 'isolateModulesAsync'): void {
@@ -137,15 +131,11 @@ export default class ModuleRegistries {
         `${callerName} cannot be nested inside another ${callerName} or ${other}.`,
       );
     }
-    this.isolatedModuleRegistry = new Map();
-    this.isolatedMockRegistry = new Map();
+    this.isolation = new Isolation();
   }
 
   exitIsolated(): void {
-    this.isolatedModuleRegistry?.clear();
-    this.isolatedMockRegistry?.clear();
-    this.isolatedModuleRegistry = null;
-    this.isolatedMockRegistry = null;
+    this.isolation = null;
   }
 
   // Loads `fn` against fresh CJS + mock registries, then restores the
