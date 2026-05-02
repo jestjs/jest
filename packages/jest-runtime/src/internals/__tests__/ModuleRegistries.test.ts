@@ -72,15 +72,29 @@ describe('ModuleRegistries', () => {
       );
     });
 
-    test('exitIsolated clears + nulls overlay maps', () => {
+    test('exitIsolated empties the overlay maps before dropping the reference', () => {
       const registries = new ModuleRegistries();
       registries.enterIsolated('isolateModules');
       registries.setCjs('/a.js', fakeCjs('/a.js'));
+      registries.setEsm('/b.mjs', fakeEsm() as JestModule);
       registries.setMock('id', 'mock');
 
-      expect(registries.isIsolated()).toBe(true);
+      // Capture the live overlay maps so we can prove they are cleared, not
+      // merely orphaned for GC.
+      const cjsOverlay = registries.getActiveCjsRegistry(false);
+      const esmOverlay = registries.getActiveEsmRegistry();
+      const mockOverlay = registries.getActiveMockRegistry();
+      expect(cjsOverlay.size).toBe(1);
+      expect(esmOverlay.size).toBe(1);
+      expect(mockOverlay.size).toBe(1);
+
       registries.exitIsolated();
+
       expect(registries.isIsolated()).toBe(false);
+      expect(cjsOverlay.size).toBe(0);
+      expect(esmOverlay.size).toBe(0);
+      expect(mockOverlay.size).toBe(0);
+
       expect(registries.hasCjs('/a.js')).toBe(false);
       expect(registries.hasMock('id')).toBe(false);
     });

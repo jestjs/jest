@@ -27,6 +27,12 @@ class Isolation {
   readonly cjs: ModuleRegistry = new Map();
   readonly esm = new Map<string, JestModule>();
   readonly mock = new Map<string, unknown>();
+
+  clear(): void {
+    this.cjs.clear();
+    this.esm.clear();
+    this.mock.clear();
+  }
 }
 
 export default class ModuleRegistries {
@@ -145,6 +151,7 @@ export default class ModuleRegistries {
   }
 
   exitIsolated(): void {
+    this.isolation?.clear();
     this.isolation = null;
   }
 
@@ -184,7 +191,7 @@ export default class ModuleRegistries {
       )._nodeModulePaths(dir),
       require: (() => {
         throw new Error(
-          'require.cache entries from native ESM cannot be require()d',
+          'require() on a require.cache ESM entry is not supported',
         );
       }) as unknown as NodeModule['require'],
     } satisfies NodeModule;
