@@ -115,9 +115,11 @@ export interface BuildRequireDeps {
   // Internal-module require for the `isInternalModule` path. Wired to
   // CjsLoader's requireInternalModule.
   requireInternal: (from: string, moduleName: string) => unknown;
-  // `require.main` is captured at build time, not on every call. Reading via
-  // a getter here lets the loader's `mainModule` field appear without making
-  // the loader a class-level dep.
+  // Resolves to the value snapshotted into `require.main` at build time.
+  // Matches Node's semantics: `require.main` is set once when the require is
+  // attached to a module and does not update later. A callback (rather than
+  // a `Module | null`) lets the loader provide its own `mainModule` field
+  // without making the loader a class-level dep.
   mainModule: () => Module | null;
 }
 

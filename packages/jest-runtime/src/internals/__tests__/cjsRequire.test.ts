@@ -183,7 +183,7 @@ describe('buildRequire', () => {
     const requireInternal: jest.MockedFunction<RequireDispatch> = jest.fn(
       () => 'internal',
     );
-    const requireFn = buildRequire(from, {isInternalModule: true} as never, {
+    const requireFn = buildRequire(from, {isInternalModule: true} as any, {
       mainModule: () => null,
       registries: makeRegistries(),
       requireDispatch,
@@ -196,7 +196,7 @@ describe('buildRequire', () => {
   });
 
   test('require.resolve respects JEST_RESOLVE_OUTSIDE_VM_OPTION for internal modules', () => {
-    const requireFn = buildRequire(from, {isInternalModule: true} as never, {
+    const requireFn = buildRequire(from, {isInternalModule: true} as any, {
       mainModule: () => null,
       registries: makeRegistries(),
       requireDispatch: jest.fn(),
@@ -212,12 +212,12 @@ describe('buildRequire', () => {
     expect(resolved.startsWith('jest-main://')).toBe(true);
   });
 
-  test('reads `main` lazily through the mainModule callback', () => {
+  test('snapshots `main` at build time, not per call', () => {
     let mainModule: Module | null = null;
     const getMainModule = (): Module | null => mainModule;
 
-    // First require: mainModule is null at build time, so `requireFn.main`
-    // captures null.
+    // First require: mainModule is null when buildRequire runs, so
+    // `requireFn.main` captures null.
     const requireFn = buildRequire(from, undefined, {
       mainModule: getMainModule,
       registries: makeRegistries(),
@@ -227,13 +227,14 @@ describe('buildRequire', () => {
     });
     expect(requireFn.main).toBeNull();
 
-    // Setting mainModule after build does not retroactively change a
-    // pre-built require (matches existing behavior — `require.main` is
-    // captured at module load via Object.defineProperty).
-    mainModule = {filename: '/test.js'} as never;
+    // Changing mainModule after build does not affect an already-built
+    // require — the value was snapshotted at build time. This matches
+    // Node's semantics: `require.main` is set once when `require` is
+    // attached to a module.
+    mainModule = {filename: '/test.js'} as Module;
     expect(requireFn.main).toBeNull();
 
-    // But a require built later does see the current value.
+    // A require built later sees whatever mainModule is at that point.
     const laterRequire = buildRequire(from, undefined, {
       mainModule: getMainModule,
       registries: makeRegistries(),
@@ -253,7 +254,7 @@ function makeProvider(
   } = {},
 ) {
   const buildRequireFor: BuildRequireForMock =
-    over.buildRequireFor ?? jest.fn(() => ({}) as never as NodeJS.Require);
+    over.buildRequireFor ?? jest.fn(() => ({}) as NodeJS.Require);
   const provider = new CoreModuleProvider({
     buildRequireFor,
     environment: {
@@ -311,7 +312,7 @@ describe('CoreModuleProvider', () => {
 
   test('mocked Module.createRequire converts file:// URLs', () => {
     const buildRequireFor: BuildRequireForMock = jest.fn(
-      () => ({}) as never as NodeJS.Require,
+      () => ({}) as NodeJS.Require,
     );
     const {provider} = makeProvider({
       buildRequireFor,
@@ -352,9 +353,9 @@ describe('CoreModuleProvider', () => {
   });
 
   test('skips normalization when supportPrefix=false', () => {
-    const normalize = jest.fn();
+    const normalize = jest.fn<(name: string) => string | false>();
     const {provider} = makeProvider({
-      normalizeCoreModuleSpecifier: normalize as never,
+      normalizeCoreModuleSpecifier: normalize,
     });
     provider.require('path', false);
     expect(normalize).not.toHaveBeenCalled();
