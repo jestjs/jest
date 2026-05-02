@@ -305,13 +305,3 @@ describe('CjsLoader.loadModule', () => {
     expect(stubs.executor.exec).not.toHaveBeenCalled();
   });
 });
-
-describe('CjsLoader.requireInternalModule', () => {
-  test('uses native require for outside-VM optimized modules', () => {
-    const {loader} = makeLoader();
-    // `chalk` is in INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES — should
-    // come from the host realm's require cache, not from the VM.
-    const chalk = loader.requireInternalModule(__filename, 'chalk');
-    expect(chalk).toBeDefined();
-  });
-});

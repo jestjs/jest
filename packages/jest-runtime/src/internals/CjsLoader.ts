@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import nativeModule from 'node:module';
 import * as path from 'node:path';
 import type {Module as VMModule} from 'node:vm';
 import type {JestEnvironment, Module} from '@jest/environment';
-import {decodePossibleOutsideJestVmPath} from '../helpers';
 import type {MockState} from './MockState';
 import {type ModuleExecutor, isCjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
@@ -22,14 +20,6 @@ import {
   supportsNodeColonModulePrefixInRequire,
   supportsSyncEvaluate,
 } from './nodeCapabilities';
-
-// Modules safe to require from the outside (not stateful, not prone to
-// realm errors) and slow enough that paying the worker-cache hit is worth
-// it. Internal context only — user `require()` from a test still goes
-// through the VM. Add modules sparingly; use the
-// jest-resolve-outside-vm-option where possible.
-// Use /benchmarks/test-file-overhead to measure the impact.
-const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 
 export type TestState = 'loading' | 'inTest' | 'betweenTests' | 'tornDown';
 
@@ -165,31 +155,6 @@ export class CjsLoader {
     }
 
     return localModule.exports;
-  }
-
-  requireInternalModule<T = unknown>(from: string, to?: string): T {
-    if (to) {
-      const require = nativeModule.createRequire(from);
-      if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
-        return require(to);
-      }
-      const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
-      if (outsideJestVmPath) {
-        return require(outsideJestVmPath);
-      }
-    }
-
-    return this.requireModule<T>(from, to, {
-      isInternalModule: true,
-      supportsDynamicImport: runtimeSupportsVmModules,
-      supportsExportNamespaceFrom: false,
-      supportsStaticESM: false,
-      supportsTopLevelAwait: false,
-    });
-  }
-
-  requireActual<T = unknown>(from: string, moduleName: string): T {
-    return this.requireModule<T>(from, moduleName, undefined, true);
   }
 
   loadModule(

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {type URL, fileURLToPath, pathToFileURL} from 'node:url';
 import {
@@ -34,7 +35,11 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {createDirectory, deepCyclicCopy, invariant, isError} from 'jest-util';
-import {findSiblingsWithFileExtension, noop} from './helpers';
+import {
+  decodePossibleOutsideJestVmPath,
+  findSiblingsWithFileExtension,
+  noop,
+} from './helpers';
 import {CjsExportsCache} from './internals/CjsExportsCache';
 import {CjsLoader} from './internals/CjsLoader';
 import {FileCache} from './internals/FileCache';
@@ -69,6 +74,12 @@ import {
   evaluateSyntheticModule,
 } from './internals/syntheticBuilders';
 import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
+
+// Modules safe to require from the outside (not stateful, not prone to
+// realm errors) and slow enough that paying the worker-cache hit is worth
+// it. Internal context only — user `require()` from a test still goes
+// through the VM.
+const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -328,7 +339,7 @@ export default class Runtime {
       requireDispatch: (from, moduleName) =>
         this.requireModuleOrMock(from, moduleName),
       requireInternal: (from, moduleName) =>
-        this.cjsLoader.requireInternalModule(from, moduleName),
+        this.requireInternalModule(from, moduleName),
       resolution: this._resolution,
       testMainModule: this.testMainModule,
     });
@@ -1567,11 +1578,28 @@ export default class Runtime {
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
-    return this.cjsLoader.requireInternalModule<T>(from, to);
+    if (to) {
+      const require = nativeModule.createRequire(from);
+      if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
+        return require(to);
+      }
+      const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
+      if (outsideJestVmPath) {
+        return require(outsideJestVmPath);
+      }
+    }
+
+    return this.requireModule<T>(from, to, {
+      isInternalModule: true,
+      supportsDynamicImport: runtimeSupportsVmModules,
+      supportsExportNamespaceFrom: false,
+      supportsStaticESM: false,
+      supportsTopLevelAwait: false,
+    });
   }
 
   requireActual<T = unknown>(from: string, moduleName: string): T {
-    return this.cjsLoader.requireActual<T>(from, moduleName);
+    return this.requireModule<T>(from, moduleName, undefined, true);
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
