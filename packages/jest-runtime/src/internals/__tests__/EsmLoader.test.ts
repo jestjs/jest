@@ -8,12 +8,14 @@
 import {SyntheticModule, createContext} from 'node:vm';
 import {testWithSyncEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
+import type {CjsExportsCache} from '../CjsExportsCache';
 import {EsmLoader, type TestState} from '../EsmLoader';
 import type {FileCache} from '../FileCache';
 import type {MockState} from '../MockState';
 import type {ModuleRegistries} from '../ModuleRegistries';
 import type {Resolution} from '../Resolution';
 import type {TransformCache} from '../TransformCache';
+import type {CoreModuleProvider} from '../cjsRequire';
 
 type Stubs = {
   resolution: jest.Mocked<Resolution>;
@@ -22,20 +24,14 @@ type Stubs = {
   registries: jest.Mocked<ModuleRegistries>;
   mockState: jest.Mocked<MockState>;
   environment: JestEnvironment;
+  cjsExportsCache: jest.Mocked<CjsExportsCache>;
+  coreModule: jest.Mocked<CoreModuleProvider>;
   shouldLoadAsEsm: jest.MockedFunction<(modulePath: string) => boolean>;
-  buildCoreSyntheticModule: jest.MockedFunction<
-    (name: string, ctx: any) => SyntheticModule
-  >;
-  buildJestGlobalsSyntheticModule: jest.MockedFunction<
-    (from: string, ctx: any) => SyntheticModule
-  >;
-  buildCjsAsEsmSyntheticModule: jest.MockedFunction<
-    (from: string, modulePath: string, ctx: any) => SyntheticModule
-  >;
-  esmDynamicImport: jest.MockedFunction<
-    (specifier: string, referencingModule: any) => Promise<any>
+  requireModuleOrMock: jest.MockedFunction<
+    (from: string, moduleName: string) => unknown
   >;
   getJestObject: jest.MockedFunction<(from: string) => any>;
+  getEnvironmentGlobals: jest.MockedFunction<() => any>;
   getTestState: jest.MockedFunction<() => TestState>;
   logFormattedReferenceError: jest.MockedFunction<(msg: string) => void>;
 };
@@ -44,16 +40,19 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
   const context = createContext({});
   const esmRegistry = new Map<string, unknown>();
   const stubs: Stubs = {
-    buildCjsAsEsmSyntheticModule: jest.fn(),
-    buildCoreSyntheticModule: jest.fn(),
-    buildJestGlobalsSyntheticModule: jest.fn(),
+    cjsExportsCache: {
+      getExportsOf: jest.fn(() => []),
+    } as unknown as jest.Mocked<CjsExportsCache>,
+    coreModule: {
+      require: jest.fn(),
+    } as unknown as jest.Mocked<CoreModuleProvider>,
     environment: {
       getVmContext: () => context,
     } as unknown as JestEnvironment,
-    esmDynamicImport: jest.fn() as any,
     fileCache: {
       readFileBuffer: jest.fn(),
     } as unknown as jest.Mocked<FileCache>,
+    getEnvironmentGlobals: jest.fn(() => ({})),
     getJestObject: jest.fn() as any,
     getTestState: jest.fn(() => 'inTest' as const),
     logFormattedReferenceError: jest.fn(),
@@ -67,6 +66,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
       getModuleMock: jest.fn(),
       setModuleMock: jest.fn(),
     } as unknown as jest.Mocked<ModuleRegistries>,
+    requireModuleOrMock: jest.fn() as any,
     resolution: {
       isCoreModule: jest.fn(() => false),
       resolveEsm: jest.fn((_from, name) => name),
@@ -80,17 +80,17 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
     ...overrides,
   };
   const loader = new EsmLoader({
-    buildCjsAsEsmSyntheticModule: stubs.buildCjsAsEsmSyntheticModule,
-    buildCoreSyntheticModule: stubs.buildCoreSyntheticModule,
-    buildJestGlobalsSyntheticModule: stubs.buildJestGlobalsSyntheticModule,
+    cjsExportsCache: stubs.cjsExportsCache,
+    coreModule: stubs.coreModule,
     environment: stubs.environment,
-    esmDynamicImport: stubs.esmDynamicImport,
     fileCache: stubs.fileCache,
+    getEnvironmentGlobals: stubs.getEnvironmentGlobals,
     getJestObject: stubs.getJestObject,
     getTestState: stubs.getTestState,
     logFormattedReferenceError: stubs.logFormattedReferenceError,
     mockState: stubs.mockState,
     registries: stubs.registries,
+    requireModuleOrMock: stubs.requireModuleOrMock,
     resolution: stubs.resolution,
     shouldLoadAsEsm: stubs.shouldLoadAsEsm,
     transformCache: stubs.transformCache,
@@ -148,30 +148,21 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
-    'routes core-module specifiers through buildCoreSyntheticModule',
+    'routes core-module specifiers through coreModule.require',
     () => {
-      const {context, loader, stubs} = makeLoader({
+      const {loader, stubs} = makeLoader({
         resolution: {
           isCoreModule: jest.fn(() => true),
           resolveEsm: jest.fn(),
         } as unknown as jest.Mocked<Resolution>,
       });
-      stubs.buildCoreSyntheticModule.mockImplementation(
-        (name, ctx) =>
-          new SyntheticModule(
-            ['default'],
-            function () {
-              this.setExport('default', {core: name});
-            },
-            {context: ctx, identifier: name},
-          ),
-      );
+      stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
-      expect(stubs.buildCoreSyntheticModule).toHaveBeenCalledWith(
-        'fs',
-        context,
-      );
-      expect(result?.namespace).toMatchObject({default: {core: 'fs'}});
+      expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
+      expect(result?.namespace).toMatchObject({
+        default: {foo: 'bar'},
+        foo: 'bar',
+      });
     },
   );
 
@@ -214,30 +205,19 @@ describe('EsmLoader.tryLoadGraphSync', () => {
 
 describe('EsmLoader bridges', () => {
   testWithSyncEsm(
-    'routes a CJS dep to buildCjsAsEsmSyntheticModule callback (extension-point bridge)',
+    'routes a CJS dep through requireModuleOrMock (extension-point bridge)',
     () => {
-      // A CJS file imported from ESM: `shouldLoadAsEsm` returns false, so
-      // the resolver delegates to the Runtime-owned wrapper (which embeds the
-      // `requireModuleOrMock` override seam). We assert the callback fires.
+      // A CJS file imported from ESM: `shouldLoadAsEsm` returns false, so the
+      // resolver delegates to `buildCjsAsEsmSyntheticModule` which calls back
+      // through `requireModuleOrMock` (the override seam).
       const {context, loader, stubs} = makeLoader({
         shouldLoadAsEsm: jest.fn(() => false),
       });
-      const stExports = {fromCjs: 'yes'};
-      stubs.buildCjsAsEsmSyntheticModule.mockImplementation(
-        (_from, _modulePath, ctx) =>
-          new SyntheticModule(
-            ['fromCjs'],
-            function () {
-              this.setExport('fromCjs', 'yes');
-            },
-            {context: ctx, identifier: 'cjs-as-esm'},
-          ),
-      );
+      stubs.requireModuleOrMock.mockReturnValue({fromCjs: 'yes'});
+      stubs.cjsExportsCache.getExportsOf.mockReturnValue(new Set(['fromCjs']));
       stubs.transformCache.transform.mockReturnValue(
         "import {fromCjs} from './dep.cjs'; globalThis.__cjsBridgeOk = fromCjs;",
       );
-      // The `dep.cjs` resolver returns the file path; `shouldLoadAsEsm(false)`
-      // diverts it through the synthetic-module bridge.
       stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
 
       const result = loader.tryLoadGraphSync(
@@ -246,38 +226,27 @@ describe('EsmLoader bridges', () => {
         'sync-preferred',
       );
       expect(result).not.toBeNull();
-      expect(stubs.buildCjsAsEsmSyntheticModule).toHaveBeenCalledWith(
+      expect(stubs.requireModuleOrMock).toHaveBeenCalledWith(
         '/entry.mjs',
         '/dep.cjs',
-        context,
       );
-      expect((context as any).__cjsBridgeOk).toBe(stExports.fromCjs);
+      expect((context as any).__cjsBridgeOk).toBe('yes');
     },
   );
 
   testWithSyncEsm(
-    'routes `@jest/globals` to buildJestGlobalsSyntheticModule callback',
+    'routes `@jest/globals` through getEnvironmentGlobals + getJestObject',
     () => {
       const {context, loader, stubs} = makeLoader();
-      stubs.buildJestGlobalsSyntheticModule.mockImplementation(
-        (_from, ctx) =>
-          new SyntheticModule(
-            ['jest'],
-            function () {
-              this.setExport('jest', {kind: 'jest-stub'});
-            },
-            {context: ctx, identifier: '@jest/globals'},
-          ),
-      );
+      stubs.getEnvironmentGlobals.mockReturnValue({describe: 'describe-stub'});
+      stubs.getJestObject.mockReturnValue({kind: 'jest-stub'});
       stubs.transformCache.transform.mockReturnValue(
         "import {jest} from '@jest/globals'; globalThis.__jest = jest;",
       );
 
       loader.tryLoadGraphSync('/entry.mjs', '', 'sync-preferred');
-      expect(stubs.buildJestGlobalsSyntheticModule).toHaveBeenCalledWith(
-        '/entry.mjs',
-        context,
-      );
+      expect(stubs.getEnvironmentGlobals).toHaveBeenCalled();
+      expect(stubs.getJestObject).toHaveBeenCalledWith('/entry.mjs');
       expect((context as any).__jest).toEqual({kind: 'jest-stub'});
     },
   );

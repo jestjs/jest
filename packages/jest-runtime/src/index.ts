@@ -7,16 +7,10 @@
 
 import nativeModule from 'node:module';
 import * as path from 'node:path';
-import {type URL, fileURLToPath, pathToFileURL} from 'node:url';
-import {
-  SourceTextModule,
-  SyntheticModule,
-  type Context as VMContext,
-  type Module as VMModule,
-} from 'node:vm';
+import {SourceTextModule} from 'node:vm';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
-import type {Jest, JestEnvironment, JestImportMeta} from '@jest/environment';
+import type {Jest, JestEnvironment} from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
@@ -34,7 +28,7 @@ import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy, invariant, isError} from 'jest-util';
+import {createDirectory, deepCyclicCopy, invariant} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
@@ -44,9 +38,9 @@ import {CjsLoader} from './internals/CjsLoader';
 import {EsmLoader} from './internals/EsmLoader';
 import {FileCache} from './internals/FileCache';
 import {MockState} from './internals/MockState';
-import {ModuleExecutor, isCjsParseError} from './internals/ModuleExecutor';
+import {ModuleExecutor} from './internals/ModuleExecutor';
 import {ModuleRegistries} from './internals/ModuleRegistries';
-import {Resolution, isWasm} from './internals/Resolution';
+import {Resolution} from './internals/Resolution';
 import {TestMainModule} from './internals/TestMainModule';
 import {
   TransformCache,
@@ -55,24 +49,8 @@ import {
 import {V8CoverageCollector} from './internals/V8CoverageCollector';
 import {generateMock} from './internals/automock';
 import {CoreModuleProvider, RequireBuilder} from './internals/cjsRequire';
-import type {
-  ESModule,
-  InitialModule,
-  JestModule,
-  ModuleRegistry,
-} from './internals/moduleTypes';
-import {
-  runtimeSupportsVmModules,
-  supportsSyncEvaluate,
-} from './internals/nodeCapabilities';
-import {
-  buildCjsAsEsmSyntheticModule,
-  buildCoreSyntheticModule,
-  buildJestGlobalsSyntheticModule,
-  buildJsonSyntheticModule,
-  buildWasmSyntheticModule,
-  evaluateSyntheticModule,
-} from './internals/syntheticBuilders';
+import type {InitialModule, ModuleRegistry} from './internals/moduleTypes';
+import {runtimeSupportsVmModules} from './internals/nodeCapabilities';
 import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
 
 // Modules safe to require from the outside (not stateful, not prone to
@@ -82,10 +60,6 @@ import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
 const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
-const supportsDynamicImport = esmIsAvailable;
-
-const dataURIRegex =
-  /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
 type HasteMapOptions = {
   console?: Console;
@@ -125,67 +99,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   return null;
 };
 
-// `linkRequests`/`instantiate`/`hasAsyncGraph`/`hasTopLevelAwait`/
-// `moduleRequests` ship in Node v24.9 and aren't yet in `@types/node@18`.
-// This local interface lets us narrow without `@ts-expect-error` at every
-// call site. Drop the optional `?:` modifiers (or remove the interface
-// entirely) when `@types/node` catches up.
-interface VMModuleWithAsyncGraph extends VMModule {
-  hasAsyncGraph?: () => boolean;
-  hasTopLevelAwait?: () => boolean;
-  moduleRequests?: ReadonlyArray<{
-    specifier: string;
-    attributes: Record<string, string>;
-    phase?: string;
-  }>;
-  linkRequests?: (deps: ReadonlyArray<VMModule>) => void;
-  instantiate?: () => void;
-}
-
-// `SourceTextModule#hasAsyncGraph()` lets us prove a graph is sync-evaluable.
-// `SyntheticModule` does not expose it but is by definition sync (the user
-// callback is sync), so treat its absence as "not async".
-function moduleHasAsyncGraph(module: VMModuleWithAsyncGraph): boolean {
-  return typeof module.hasAsyncGraph === 'function'
-    ? module.hasAsyncGraph()
-    : false;
-}
-
-// Decode a `data:` URI specifier into its mime type and decoded code/body.
-// `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
-function parseDataUri(specifier: string): {
-  mime: string;
-  code: string | Buffer;
-} {
-  const match = specifier.match(dataURIRegex);
-  if (!match || !match.groups) {
-    throw new Error('Invalid data URI');
-  }
-  const {mime, encoding, code} = match.groups;
-  if (mime === 'application/wasm') {
-    if (!encoding) throw new Error('Missing data URI encoding');
-    if (encoding !== 'base64') {
-      throw new Error(`Invalid data URI encoding: ${encoding}`);
-    }
-    return {code: Buffer.from(code, 'base64'), mime};
-  }
-  if (!encoding || encoding === 'charset=utf-8') {
-    return {code: decodeURIComponent(code), mime};
-  }
-  if (encoding === 'base64') {
-    return {code: Buffer.from(code, 'base64').toString(), mime};
-  }
-  throw new Error(`Invalid data URI encoding: ${encoding}`);
-}
-
-const ESM_TRANSFORM_OPTIONS: TransformOptions = {
-  isInternalModule: false,
-  supportsDynamicImport: true,
-  supportsExportNamespaceFrom: true,
-  supportsStaticESM: true,
-  supportsTopLevelAwait: true,
-};
-
 export default class Runtime {
   private readonly fileCache: FileCache;
   private readonly _config: Config.ProjectConfig;
@@ -205,11 +118,8 @@ export default class Runtime {
   private readonly cjsLoader: CjsLoader;
   private readonly _moduleMocker: ModuleMocker;
   private readonly cjsExportsCache: CjsExportsCache;
-  private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
-  private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
   private readonly _testPath: string;
   private readonly _resolution: Resolution;
-  private readonly _scriptTransformer: ScriptTransformer;
   private readonly transformCache: TransformCache;
   private readonly v8Coverage: V8CoverageCollector;
   private readonly coreModule: CoreModuleProvider;
@@ -240,10 +150,7 @@ export default class Runtime {
       '`moduleMocker` must be set on an environment when created',
     );
     this._moduleMocker = this._environment.moduleMocker;
-    this._esmModuleLinkingMap = new WeakMap();
-    this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
-    this._scriptTransformer = transformer;
     this.transformCache = new TransformCache(
       transformer,
       this.fileCache,
@@ -296,9 +203,7 @@ export default class Runtime {
     this.executor = new ModuleExecutor({
       config,
       dynamicImport: (specifier, identifier, context) =>
-        this.resolveModule<VMModule>(specifier, identifier, context).then(m =>
-          this.linkAndEvaluateModule(m),
-        ),
+        this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
       environment: this._environment,
       jestObjectCache: this.jestObjectCaches,
       jestObjectFactory: from => this._createJestObjectFor(from),
@@ -309,21 +214,18 @@ export default class Runtime {
       transformCache: this.transformCache,
     });
     this.esmLoader = new EsmLoader({
-      buildCjsAsEsmSyntheticModule: (from, modulePath, ctx) =>
-        this._buildCjsAsEsmSyntheticModule(from, modulePath, ctx),
-      buildCoreSyntheticModule: (name, ctx) =>
-        this._buildCoreSyntheticModule(name, ctx),
-      buildJestGlobalsSyntheticModule: (from, ctx) =>
-        this._buildJestGlobalsSyntheticModule(from, ctx),
+      cjsExportsCache: this.cjsExportsCache,
+      coreModule: this.coreModule,
       environment: this._environment,
-      esmDynamicImport: (specifier, referencingModule) =>
-        this._esmDynamicImport(specifier, referencingModule),
       fileCache: this.fileCache,
+      getEnvironmentGlobals: () => this.getGlobalsFromEnvironment(),
       getJestObject: from => this._getOrCreateJest(from),
       getTestState: () => this.testState,
       logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
       mockState: this.mockState,
       registries: this.registries,
+      requireModuleOrMock: (from, moduleName) =>
+        this.requireModuleOrMock(from, moduleName),
       resolution: this._resolution,
       shouldLoadAsEsm: modulePath => this.unstable_shouldLoadAsEsm(modulePath),
       transformCache: this.transformCache,
@@ -449,448 +351,11 @@ export default class Runtime {
     return this._resolution.shouldLoadAsEsm(modulePath);
   }
 
-  private async loadEsmModule(
-    modulePath: string,
-    query = '',
-  ): Promise<ESModule> {
-    // The sync core walks the graph synchronously, so it can only run when
-    // the configured resolver supports sync resolution. With an async-only
-    // user resolver `findNodeModule` silently falls back to the default
-    // resolver and would silently miss user mappings; defer to legacy.
-    if (supportsSyncEvaluate && this._resolution.canResolveSync()) {
-      const synced = this.esmLoader.tryLoadGraphSync(
-        modulePath,
-        query,
-        'sync-preferred',
-      );
-      if (synced) return synced;
-    }
-    // LEGACY: pre-sync-core async ESM path. Delete this block (and the
-    // `supportsSyncEvaluate` branches in this method and `linkAndEvaluateModule`)
-    // when Jest's minimum Node version reaches v24.9.
-    const cacheKey = modulePath + query;
-    const registry = this.registries.getActiveEsmRegistry();
-
-    if (this.transformCache.hasMutex(cacheKey)) {
-      await this.transformCache.awaitMutex(cacheKey);
-    }
-
-    if (!registry.has(cacheKey)) {
-      invariant(
-        typeof this._environment.getVmContext === 'function',
-        'ES Modules are only supported if your test environment has the `getVmContext` function',
-      );
-
-      const context = this._environment.getVmContext();
-
-      invariant(context, 'Test environment has been torn down');
-
-      let transformResolve: () => void;
-      let transformReject: (error?: unknown) => void;
-
-      this.transformCache.setMutex(
-        cacheKey,
-        new Promise((resolve, reject) => {
-          transformResolve = resolve;
-          transformReject = reject;
-        }),
-      );
-
-      invariant(
-        transformResolve! && transformReject!,
-        'Promise initialization should be sync - please report this bug to Jest!',
-      );
-
-      if (isWasm(modulePath)) {
-        const wasm = this._importWasmModule(
-          this.fileCache.readFileBuffer(modulePath),
-          modulePath,
-          context,
-        );
-
-        registry.set(cacheKey, wasm);
-
-        transformResolve();
-        return wasm;
-      }
-
-      if (this._resolution.isCoreModule(modulePath)) {
-        const core = this._importCoreModule(modulePath, context);
-        registry.set(cacheKey, core);
-
-        transformResolve();
-
-        return core;
-      }
-
-      const transformedCode = this._scriptTransformer.canTransformSync(
-        modulePath,
-      )
-        ? this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
-        : await this.transformCache.transformAsync(
-            modulePath,
-            ESM_TRANSFORM_OPTIONS,
-          );
-
-      try {
-        let module;
-        if (modulePath.endsWith('.json')) {
-          module = buildJsonSyntheticModule(
-            transformedCode,
-            modulePath,
-            context,
-          );
-        } else {
-          module = new SourceTextModule(transformedCode, {
-            context,
-            identifier: modulePath,
-            importModuleDynamically: this._esmDynamicImport,
-            initializeImportMeta: meta => {
-              const metaUrl = pathToFileURL(modulePath).href;
-              meta.url = metaUrl;
-
-              // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
-              meta.filename = modulePath;
-              // @ts-expect-error Jest uses @types/node@18. Will be fixed when updated to @types/node@20.11.0
-              meta.dirname = path.dirname(modulePath);
-
-              meta.resolve = (specifier, parent: string | URL = metaUrl) => {
-                const parentPath = fileURLToPath(parent);
-                return pathToFileURL(
-                  this._resolution.resolveEsm(parentPath, specifier),
-                ).href;
-              };
-
-              let jest = this.jestObjectCaches.get(modulePath);
-
-              if (!jest) {
-                jest = this._createJestObjectFor(modulePath);
-
-                this.jestObjectCaches.set(modulePath, jest);
-              }
-
-              (meta as JestImportMeta).jest = jest;
-            },
-          });
-        }
-
-        invariant(
-          !registry.has(cacheKey),
-          `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
-        );
-
-        registry.set(cacheKey, module);
-
-        transformResolve();
-      } catch (error) {
-        transformReject(error);
-        throw error;
-      }
-    }
-
-    const module = registry.get(cacheKey);
-
-    invariant(
-      module,
-      'Module cache does not contain module. This is a bug in Jest, please open up an issue',
-    );
-
-    return module as ESModule;
-  }
-
-  private async resolveModule<T = unknown>(
-    specifier: string,
-    referencingIdentifier: string,
-    context: VMContext,
-  ): Promise<T> {
-    if (this.testState === 'tornDown') {
-      this._logFormattedReferenceError(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      );
-      process.exitCode = 1;
-      // @ts-expect-error -- exiting
-      return;
-    }
-    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
-    }
-
-    const registry = this.registries.getActiveEsmRegistry();
-
-    if (specifier === '@jest/globals') {
-      const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
-      const fromCache = registry.get(globalsIdentifier);
-
-      if (fromCache) {
-        return fromCache as T;
-      }
-      const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      registry.set(globalsIdentifier, globals);
-
-      return globals as T;
-    }
-
-    if (specifier.startsWith('data:')) {
-      if (
-        await this.mockState.shouldMockEsmAsync(
-          referencingIdentifier,
-          specifier,
-        )
-      ) {
-        return this.importMock(referencingIdentifier, specifier, context);
-      }
-
-      const fromCache = registry.get(specifier);
-
-      if (fromCache) {
-        return fromCache as T;
-      }
-
-      const {mime, code} = parseDataUri(specifier);
-      let module;
-      if (mime === 'application/wasm') {
-        module = await this._importWasmModule(
-          new Uint8Array(code as Buffer),
-          specifier,
-          context,
-        );
-      } else if (mime === 'application/json') {
-        module = buildJsonSyntheticModule(code as string, specifier, context);
-      } else {
-        module = new SourceTextModule(code as string, {
-          context,
-          identifier: specifier,
-          importModuleDynamically: this._esmDynamicImport,
-          initializeImportMeta(meta) {
-            // no `jest` here as it's not loaded in a file
-            meta.url = specifier;
-            if (meta.url.startsWith('file://')) {
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.filename = fileURLToPath(meta.url);
-              // @ts-expect-error Jest uses @types/node@18.
-              meta.dirname = path.dirname(meta.filename);
-            }
-          },
-        });
-      }
-
-      registry.set(specifier, module);
-      return module as T;
-    }
-
-    if (specifier.startsWith('file://')) {
-      specifier = fileURLToPath(specifier);
-    }
-
-    const [specifierPath, query] = specifier.split('?');
-
-    if (
-      await this.mockState.shouldMockEsmAsync(
-        referencingIdentifier,
-        specifierPath,
-      )
-    ) {
-      return this.importMock(referencingIdentifier, specifierPath, context);
-    }
-
-    const resolved = await this._resolution.resolveEsmAsync(
-      referencingIdentifier,
-      specifierPath,
-    );
-
-    if (
-      // json files are modules when imported in modules
-      resolved.endsWith('.json') ||
-      this._resolution.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(resolved)
-    ) {
-      return this.loadEsmModule(resolved, query) as T;
-    }
-
-    return this.loadCjsAsEsm(referencingIdentifier, resolved, context) as T;
-  }
-
-  private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
-    if (this.testState === 'tornDown') {
-      this._logFormattedReferenceError(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      );
-      process.exitCode = 1;
-      // @ts-expect-error: exiting early
-      return;
-    }
-    if (this.testState === 'betweenTests' && !supportsDynamicImport) {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
-    }
-
-    if (module.status === 'unlinked') {
-      // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
-      // this method can await it
-      this._esmModuleLinkingMap.set(
-        module,
-        module.link((specifier: string, referencingModule: VMModule) =>
-          this.resolveModule(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          ),
-        ),
-      );
-    }
-
-    const linkPromise = this._esmModuleLinkingMap.get(module);
-    if (linkPromise != null) {
-      await linkPromise;
-    } else if (module.status === 'linking') {
-      // Module entered 'linking' via Node's cascade (a parent's link() recursed
-      // into this dep without going through our code). We have no promise to
-      // await, so yield via setImmediate - which lets all pending microtasks
-      // (including Node's internal linker chain) drain - until linking finishes.
-      const deadline = Date.now() + 5000; // sanity check to prevent infinite loop
-      while (module.status === 'linking') {
-        if (Date.now() > deadline) {
-          throw new Error(
-            `Jest: module ${module.identifier} is stuck in 'linking' state after 5 s - ` +
-              'this is likely a bug in Jest (please report it).',
-          );
-        }
-        await new Promise<void>(resolve => setImmediate(resolve));
-      }
-    }
-
-    if (module.status === 'linked') {
-      if (supportsSyncEvaluate && !moduleHasAsyncGraph(module)) {
-        // `evaluate()` fulfills synchronously when the graph has no top-level
-        // await, so we don't need to yield to the event loop. The Promise
-        // always resolves (never rejects) for sync modules; errors are
-        // reflected in `module.status === 'errored'` instead.
-        void module.evaluate();
-        const status = module.status as VMModule['status'];
-        if (status === 'errored') {
-          throw module.error;
-        }
-        invariant(
-          status === 'evaluated',
-          `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
-        );
-      } else {
-        // Store the evaluate promise so concurrent callers that find the module
-        // in 'evaluating' state can await the same promise instead of skipping.
-        const evalPromise = module.evaluate() as Promise<void>;
-        this._esmModuleEvaluatingMap.set(module, evalPromise);
-      }
-    }
-
-    await this._esmModuleEvaluatingMap.get(module);
-
-    return module;
-  }
-
   async unstable_importModule(
     from: string,
     moduleName?: string,
   ): Promise<unknown | void> {
-    invariant(
-      runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-    );
-
-    const [path, query] = (moduleName ?? '').split('?');
-
-    const modulePath = await this._resolution.resolveEsmAsync(from, path);
-
-    const module = await this.loadEsmModule(modulePath, query);
-
-    return this.linkAndEvaluateModule(module);
-  }
-
-  // Build the SyntheticModule shell that wraps a CJS module so it can be
-  // imported as ESM. Returns it unevaluated; legacy callers wrap with
-  // `evaluateSyntheticModule`, sync callers plug it into `linkRequests`.
-  // CJS loaded via `import` shares cache with other CJS: https://github.com/nodejs/modules/issues/503
-  private _buildCjsAsEsmSyntheticModule(
-    from: string,
-    modulePath: string,
-    context: VMContext,
-  ): SyntheticModule {
-    return buildCjsAsEsmSyntheticModule(
-      from,
-      modulePath,
-      context,
-      (from, moduleName) => this.requireModuleOrMock(from, moduleName),
-      this.cjsExportsCache,
-    );
-  }
-
-  private loadCjsAsEsm(
-    from: string,
-    modulePath: string,
-    context: VMContext,
-  ): SyntheticModule | Promise<VMModule> {
-    const registry = this.registries.getActiveEsmRegistry();
-    const cached = registry.get(modulePath);
-    if (cached) {
-      return cached as SyntheticModule | Promise<VMModule>;
-    }
-
-    let synthetic: SyntheticModule;
-    try {
-      synthetic = this._buildCjsAsEsmSyntheticModule(from, modulePath, context);
-    } catch (error) {
-      if (!isCjsParseError(error)) {
-        throw error;
-      }
-      // The file may contain ESM syntax with no ESM marker (.mjs /
-      // "type":"module") - try loading as native ESM. If the ESM parser also
-      // rejects it, the original CJS error was the genuine one; surface it
-      // instead of the (less useful) ESM diagnostic.
-      return this.loadEsmModule(modulePath).catch(esmError => {
-        throw isError(esmError) && esmError.name === 'SyntaxError'
-          ? error
-          : esmError;
-      });
-    }
-
-    const evaluated = evaluateSyntheticModule(synthetic);
-    registry.set(modulePath, evaluated);
-    return evaluated;
-  }
-
-  private async importMock<T = unknown>(
-    from: string,
-    moduleName: string,
-    context: VMContext,
-  ): Promise<T> {
-    const moduleID = await this.mockState.getEsmModuleIdAsync(from, moduleName);
-
-    if (this.registries.hasModuleMock(moduleID)) {
-      return this.registries.getModuleMock(moduleID) as T;
-    }
-
-    const factory = this.mockState.getEsmFactory(moduleID);
-    if (factory) {
-      const invokedFactory = (await factory()) as Record<string, unknown>;
-
-      const module = new SyntheticModule(
-        Object.keys(invokedFactory),
-        function () {
-          for (const [key, value] of Object.entries(invokedFactory)) {
-            this.setExport(key, value);
-          }
-        },
-        {context, identifier: moduleName},
-      );
-
-      this.registries.setModuleMock(moduleID, module);
-
-      return evaluateSyntheticModule(module) as T;
-    }
-
-    throw new Error('Attempting to import a mock without a factory');
+    return this.esmLoader.loadAndEvaluate(from, moduleName);
   }
 
   requireModule<T = unknown>(
@@ -1198,59 +663,6 @@ export default class Runtime {
     this.coreModule.reset();
 
     this.testState = 'tornDown';
-  }
-
-  private _buildCoreSyntheticModule(
-    moduleName: string,
-    context: VMContext,
-  ): SyntheticModule {
-    return buildCoreSyntheticModule(
-      moduleName,
-      context,
-      (name, supportPrefix) => this.coreModule.require(name, supportPrefix),
-    );
-  }
-
-  private _importCoreModule(moduleName: string, context: VMContext) {
-    return evaluateSyntheticModule(
-      this._buildCoreSyntheticModule(moduleName, context),
-    );
-  }
-
-  private async _importWasmModule(
-    source: BufferSource,
-    identifier: string,
-    context: VMContext,
-  ) {
-    // Use async `WebAssembly.compile` here (rather than the sync constructor
-    // used by the v24.9+ sync core) to avoid blocking the event loop on large
-    // wasm modules in the legacy async path.
-    const wasmModule = await WebAssembly.compile(source);
-    const moduleLookup: Record<string, VMModule> = {};
-    for (const {module} of WebAssembly.Module.imports(wasmModule)) {
-      if (moduleLookup[module] === undefined) {
-        const resolvedModule = await this.resolveModule<VMModule>(
-          module,
-          identifier,
-          context,
-        );
-
-        // Do NOT call linkAndEvaluateModule here: we are executing inside the
-        // linker callback for the parent module, so Node's cascade may already
-        // be linking resolvedModule. Calling linkAndEvaluateModule would spin-
-        // wait via setImmediate, but the cascade can't finish until this linker
-        // returns - deadlock. The SyntheticModule's evaluate function below
-        // accesses namespace only after Node has fully evaluated all deps in
-        // topological order, so the module will be ready by then.
-        moduleLookup[module] = resolvedModule;
-      }
-    }
-    return buildWasmSyntheticModule(
-      wasmModule,
-      identifier,
-      context,
-      depSpec => moduleLookup[depSpec].namespace as Record<string, unknown>,
-    );
   }
 
   private _generateMock<T>(from: string, moduleName: string): T {
@@ -1581,51 +993,6 @@ export default class Runtime {
     return {...this.getGlobalsFromEnvironment(), jest};
   }
 
-  // Shared async dynamic-import callback: installed on every SourceTextModule
-  // we construct (file, data: URI). Calls into resolveModule + linkAndEvaluate
-  // - the dynamic import is async by language regardless of Node version.
-  private _esmDynamicImport = async (
-    specifier: string,
-    referencingModule: VMModule,
-  ): Promise<VMModule> => {
-    invariant(
-      runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-    );
-    if (this.testState === 'betweenTests') {
-      throw new ReferenceError(
-        'You are trying to `import` a file outside of the scope of the test code.',
-      );
-    }
-    if (this.testState === 'tornDown') {
-      this._logFormattedReferenceError(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      );
-      process.exitCode = 1;
-      throw new ReferenceError(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      );
-    }
-    const dyn = await this.resolveModule<VMModule>(
-      specifier,
-      referencingModule.identifier,
-      referencingModule.context,
-    );
-    return this.linkAndEvaluateModule(dyn);
-  };
-
-  private _buildJestGlobalsSyntheticModule(
-    from: string,
-    context: VMContext,
-  ): SyntheticModule {
-    return buildJestGlobalsSyntheticModule(
-      from,
-      context,
-      jestFor => this._getOrCreateJest(jestFor),
-      () => this.getGlobalsFromEnvironment(),
-    );
-  }
-
   private _getOrCreateJest(from: string): Jest {
     let jest = this.jestObjectCaches.get(from);
 
@@ -1635,15 +1002,6 @@ export default class Runtime {
       this.jestObjectCaches.set(from, jest);
     }
     return jest;
-  }
-
-  private getGlobalsForEsm(
-    from: string,
-    context: VMContext,
-  ): SyntheticModule | Promise<SyntheticModule> {
-    return evaluateSyntheticModule(
-      this._buildJestGlobalsSyntheticModule(from, context),
-    );
   }
 
   private getGlobalsFromEnvironment(): JestGlobals {
