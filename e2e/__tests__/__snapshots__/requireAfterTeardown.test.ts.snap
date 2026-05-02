@@ -16,7 +16,7 @@ exports[`prints useful error for requires after test is done w/ \`waitForUnhandl
       13 |     expect(double(5)).toBe(10);
       14 |   }, 0);
 
-      at Runtime._execModule (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
+      at CjsLoader.loadModule (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
       at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)"
 `;
 
