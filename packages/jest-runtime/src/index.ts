@@ -15,7 +15,6 @@ import {
   type Module as VMModule,
   compileFunction,
 } from 'node:vm';
-import {parse as parseCjs} from 'cjs-module-lexer';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
 import stripBOM from 'strip-bom';
@@ -59,6 +58,7 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
+import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
 import Resolution from './internals/Resolution';
 import V8CoverageCollector from './internals/V8CoverageCollector';
@@ -322,7 +322,7 @@ export default class Runtime {
   private _moduleRegistry: ModuleRegistry;
   private readonly _esModuleRegistry: Map<string, JestModule>;
   private readonly _esmRequireCacheWrappers: WeakMap<VMModule, NodeModule>;
-  private readonly _cjsNamedExports: Map<string, Set<string>>;
+  private readonly cjsExportsCache: CjsExportsCache;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
   private readonly _esmModuleEvaluatingMap: WeakMap<JestModule, Promise<void>>;
   private readonly _testPath: string;
@@ -386,7 +386,6 @@ export default class Runtime {
     this._moduleRegistry = new Map();
     this._esModuleRegistry = new Map();
     this._esmRequireCacheWrappers = new WeakMap();
-    this._cjsNamedExports = new Map();
     this._esmModuleLinkingMap = new WeakMap();
     this._esmModuleEvaluatingMap = new WeakMap();
     this._testPath = testPath;
@@ -419,6 +418,13 @@ export default class Runtime {
     this._resolution = new Resolution(
       resolver,
       this._environment.exportConditions?.() ?? [],
+    );
+    this.cjsExportsCache = new CjsExportsCache(
+      this._resolution,
+      this.fileCache,
+      modulePath => this._fileTransforms.get(modulePath)?.code,
+      (from, moduleName) => this.requireModule(from, moduleName),
+      (from, moduleName) => this.requireModuleOrMock(from, moduleName),
     );
 
     if (config.automock) {
@@ -1585,7 +1591,7 @@ export default class Runtime {
   ): SyntheticModule {
     const cjs = this.requireModuleOrMock(from, modulePath);
 
-    const parsedExports = this.getExportsOfCjs(modulePath);
+    const parsedExports = this.cjsExportsCache.getExportsOf(modulePath);
 
     // CJS modules can legally set `module.exports` to `null` or a primitive.
     const cjsRecord =
@@ -1701,54 +1707,6 @@ export default class Runtime {
     }
 
     throw new Error('Attempting to import a mock without a factory');
-  }
-
-  private getExportsOfCjs(modulePath: string) {
-    const cachedNamedExports = this._cjsNamedExports.get(modulePath);
-
-    if (cachedNamedExports) {
-      return cachedNamedExports;
-    }
-
-    if (path.extname(modulePath) === '.node') {
-      const nativeModule = this.requireModuleOrMock('', modulePath);
-
-      const namedExports = new Set(
-        Object.keys(nativeModule as Record<string, unknown>),
-      );
-
-      this._cjsNamedExports.set(modulePath, namedExports);
-
-      return namedExports;
-    }
-
-    const transformedCode =
-      this._fileTransforms.get(modulePath)?.code ??
-      this.fileCache.readFile(modulePath);
-
-    const {exports, reexports} = parseCjs(transformedCode);
-
-    const namedExports = new Set(exports);
-
-    for (const reexport of reexports) {
-      if (this._resolution.isCoreModule(reexport)) {
-        const exports = this.requireModule(modulePath, reexport);
-        if (exports !== null && typeof exports === 'object') {
-          for (const e of Object.keys(exports as Record<string, unknown>))
-            namedExports.add(e);
-        }
-      } else {
-        const resolved = this._resolution.resolveCjs(modulePath, reexport);
-
-        const exports = this.getExportsOfCjs(resolved);
-
-        for (const e of exports) namedExports.add(e);
-      }
-    }
-
-    this._cjsNamedExports.set(modulePath, namedExports);
-
-    return namedExports;
   }
 
   requireModule<T = unknown>(
@@ -2120,7 +2078,7 @@ export default class Runtime {
     this._moduleRegistry.clear();
     this._esModuleRegistry.clear();
     this._fileTransformsMutex.clear();
-    this._cjsNamedExports.clear();
+    this.cjsExportsCache.clear();
     this._moduleMockRegistry.clear();
     this.fileCache.clear();
     this._resolution.clear();
