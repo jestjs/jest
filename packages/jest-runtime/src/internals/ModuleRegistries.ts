@@ -84,14 +84,24 @@ export default class ModuleRegistries {
     return (this.isolation?.esm ?? this.esModuleRegistry).has(key);
   }
 
+  // Reads cascade: isolated overlay first, fall back to main. Writes go to
+  // the active overlay only. This lets `jest.isolateModules` inherit mock
+  // instances the user set up outside (so `.mockImplementation(...)` on the
+  // outer instance still applies to inner reads) while still allowing the
+  // isolation block to install its own mocks that don't leak back out.
   getMock(moduleID: string): unknown {
-    return (this.isolation?.mock ?? this.mockRegistry).get(moduleID);
+    const fromIsolated = this.isolation?.mock.get(moduleID);
+    if (fromIsolated !== undefined) return fromIsolated;
+    return this.mockRegistry.get(moduleID);
   }
   setMock(moduleID: string, module: unknown): void {
     (this.isolation?.mock ?? this.mockRegistry).set(moduleID, module);
   }
   hasMock(moduleID: string): boolean {
-    return (this.isolation?.mock ?? this.mockRegistry).has(moduleID);
+    return (
+      (this.isolation?.mock.has(moduleID) ?? false) ||
+      this.mockRegistry.has(moduleID)
+    );
   }
 
   getModuleMock(moduleID: string): JestModule | undefined {
