@@ -7,19 +7,10 @@
 
 import {SyntheticModule, type Context as VMContext} from 'node:vm';
 import type {Jest} from '@jest/environment';
-import type {expect, jest} from '@jest/globals';
-import type {Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import {noop} from '../helpers';
 import type CjsExportsCache from './CjsExportsCache';
-
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof expect;
-}
-
-interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof jest;
-}
+import type {JestGlobals, JestGlobalsWithJest} from './types';
 
 export function buildJsonSyntheticModule(
   jsonText: string,

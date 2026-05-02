@@ -26,7 +26,7 @@ import type {
   ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {expect, jest} from '@jest/globals';
+import type {expect} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
@@ -85,6 +85,7 @@ import {
   buildWasmSyntheticModule,
   evaluateSyntheticModule,
 } from './internals/syntheticBuilders';
+import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 const supportsDynamicImport = esmIsAvailable;
@@ -99,14 +100,6 @@ const isCjsParseError = (error: unknown): error is Error =>
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
-
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof expect;
-}
-
-interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof jest;
-}
 
 type HasteMapOptions = {
   console?: Console;
