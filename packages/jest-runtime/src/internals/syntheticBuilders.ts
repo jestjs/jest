@@ -12,11 +12,31 @@ import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {JestGlobals, JestGlobalsWithJest} from './types';
 
+// Build a SyntheticModule from a plain exports record. The keys become the
+// module's named exports; the values are captured at construction time.
+export function syntheticFromExports(
+  identifier: string,
+  context: VMContext,
+  exportsObject: Record<string, unknown>,
+): SyntheticModule {
+  return new SyntheticModule(
+    Object.keys(exportsObject),
+    function () {
+      for (const [key, value] of Object.entries(exportsObject)) {
+        this.setExport(key, value);
+      }
+    },
+    {context, identifier},
+  );
+}
+
 export function buildJsonSyntheticModule(
   jsonText: string,
   identifier: string,
   context: VMContext,
 ): SyntheticModule {
+  // JSON.parse runs in the body so a parse error surfaces during evaluate(),
+  // matching Node's native JSON-module semantics.
   return new SyntheticModule(
     ['default'],
     function () {
@@ -70,20 +90,11 @@ export function buildCoreSyntheticModule(
     string,
     unknown
   >;
-  const allExports = Object.entries(required);
-  const exportNames = allExports.map(([key]) => key);
-
-  return new SyntheticModule(
-    ['default', ...exportNames],
-    function () {
-      this.setExport('default', required);
-      for (const [key, value] of allExports) {
-        this.setExport(key, value);
-      }
-    },
-    // should identifier be `node://${moduleName}`?
-    {context, identifier: moduleName},
-  );
+  // should identifier be `node://${moduleName}`?
+  return syntheticFromExports(moduleName, context, {
+    default: required,
+    ...required,
+  });
 }
 
 export function buildJestGlobalsSyntheticModule(
@@ -96,15 +107,10 @@ export function buildJestGlobalsSyntheticModule(
     ...getEnvironmentGlobals(),
     jest: getJestObject(from),
   };
-
-  return new SyntheticModule(
-    Object.keys(globals),
-    function () {
-      for (const [key, value] of Object.entries(globals)) {
-        this.setExport(key, value);
-      }
-    },
-    {context, identifier: '@jest/globals'},
+  return syntheticFromExports(
+    '@jest/globals',
+    context,
+    globals as unknown as Record<string, unknown>,
   );
 }
 

@@ -78,6 +78,10 @@ export class TransformCache {
     return transformedFile.code;
   }
 
+  canTransformSync(filename: string): boolean {
+    return this.scriptTransformer.canTransformSync(filename);
+  }
+
   getCachedSource(filename: string): string | undefined {
     return this.transforms.get(filename)?.code;
   }
