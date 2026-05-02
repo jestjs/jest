@@ -10,7 +10,19 @@ import {pathToFileURL} from 'node:url';
 import type {CoverageInstrumenter} from 'collect-v8-coverage';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {ShouldInstrumentOptions, TransformResult} from '@jest/transform';
+import type TransformCache from '../TransformCache';
 import V8CoverageCollector from '../V8CoverageCollector';
+
+function makeTransformCache(): {
+  cache: TransformCache;
+  entries: Map<string, TransformResult>;
+} {
+  const entries = new Map<string, TransformResult>();
+  return {
+    cache: {getEntries: () => entries} as unknown as TransformCache,
+    entries,
+  };
+}
 
 const rootDir = path.resolve('/root');
 const insidePath = path.join(rootDir, 'a.js');
@@ -65,34 +77,35 @@ beforeEach(() => {
 
 describe('V8CoverageCollector', () => {
   test('start() initializes the instrumenter and an empty sources map', async () => {
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache} = makeTransformCache();
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
 
     expect(mockStartInstrumenting).toHaveBeenCalledTimes(1);
   });
 
-  test('stop() merges the provided transforms into sources', async () => {
+  test('stop() pulls transforms from the TransformCache into sources', async () => {
     mockStopInstrumenting.mockResolvedValue([]);
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache, entries} = makeTransformCache();
+    entries.set(insidePath, transform('a'));
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
-
-    const transforms = new Map<string, TransformResult>([
-      [insidePath, transform('a')],
-    ]);
-    await collector.stop(transforms);
+    await collector.stop();
 
     expect(mockStopInstrumenting).toHaveBeenCalledTimes(1);
   });
 
   test('stop() throws if start() was not called first', async () => {
-    const collector = new V8CoverageCollector(v8Options, config);
-    await expect(collector.stop(new Map())).rejects.toThrow(
+    const {cache} = makeTransformCache();
+    const collector = new V8CoverageCollector(v8Options, config, cache);
+    await expect(collector.stop()).rejects.toThrow(
       'You need to call `collectV8Coverage` first.',
     );
   });
 
   test('getResult() throws if stop() was not called first', () => {
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache} = makeTransformCache();
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     expect(() => collector.getResult()).toThrow(
       'You need to call `stopCollectingV8Coverage` first.',
     );
@@ -108,59 +121,60 @@ describe('V8CoverageCollector', () => {
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
 
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache, entries} = makeTransformCache();
+    const inside = transform('a');
+    entries.set(insidePath, inside);
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
-    const transforms = new Map<string, TransformResult>([
-      [insidePath, transform('a')],
-    ]);
-    await collector.stop(transforms);
+    await collector.stop();
 
     const result = collector.getResult();
     expect(result).toHaveLength(1);
     expect(result[0].result.url).toBe(insidePath);
-    expect(result[0].codeTransformResult).toBe(transforms.get(insidePath));
+    expect(result[0].codeTransformResult).toBe(inside);
   });
 
-  test('snapshotTransforms() merges into sources when actively collecting v8', async () => {
+  test('snapshotTransforms() preserves entries across a TransformCache reset', async () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache, entries} = makeTransformCache();
+    const inside = transform('a');
+    entries.set(insidePath, inside);
+
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
 
-    const inFlight = new Map<string, TransformResult>([
-      [insidePath, transform('a')],
-    ]);
-    collector.snapshotTransforms(inFlight);
+    // Snapshot before the cache is cleared - this is the resetModules order.
+    collector.snapshotTransforms();
+    entries.clear();
 
-    // After stop with empty transforms, sources should still contain the
-    // snapshot taken before the (simulated) reset.
-    await collector.stop(new Map());
+    await collector.stop();
     const result = collector.getResult();
-    expect(result[0].codeTransformResult).toBe(inFlight.get(insidePath));
+    expect(result[0].codeTransformResult).toBe(inside);
   });
 
   test('snapshotTransforms() is a no-op when not collecting (start never called)', () => {
-    const collector = new V8CoverageCollector(v8Options, config);
-    expect(() =>
-      collector.snapshotTransforms(new Map([[insidePath, transform('a')]])),
-    ).not.toThrow();
-    // No internal state to inspect; just asserting safety.
+    const {cache, entries} = makeTransformCache();
+    entries.set(insidePath, transform('a'));
+    const collector = new V8CoverageCollector(v8Options, config, cache);
+    expect(() => collector.snapshotTransforms()).not.toThrow();
   });
 
   test('snapshotTransforms() is a no-op when coverage is disabled', async () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
-    const collector = new V8CoverageCollector(noCoverageOptions, config);
+    const {cache, entries} = makeTransformCache();
+    entries.set(insidePath, transform('snapshot'));
+    const collector = new V8CoverageCollector(noCoverageOptions, config, cache);
     await collector.start();
-    collector.snapshotTransforms(
-      new Map([[insidePath, transform('snapshot')]]),
-    );
-    await collector.stop(new Map());
+    collector.snapshotTransforms();
+    entries.clear();
+    await collector.stop();
 
     // shouldInstrument returns false when coverage is off, so the row is
-    // filtered out entirely - confirms the snapshot was never applied.
+    // filtered out entirely.
     expect(collector.getResult()).toEqual([]);
   });
 
@@ -168,12 +182,13 @@ describe('V8CoverageCollector', () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
-    const collector = new V8CoverageCollector(babelOptions, config);
+    const {cache, entries} = makeTransformCache();
+    entries.set(insidePath, transform('snapshot'));
+    const collector = new V8CoverageCollector(babelOptions, config, cache);
     await collector.start();
-    collector.snapshotTransforms(
-      new Map([[insidePath, transform('snapshot')]]),
-    );
-    await collector.stop(new Map());
+    collector.snapshotTransforms();
+    entries.clear();
+    await collector.stop();
 
     expect(collector.getResult()).toEqual([]);
   });
@@ -182,9 +197,11 @@ describe('V8CoverageCollector', () => {
     mockStopInstrumenting.mockResolvedValue([
       {functions: [], scriptId: '3', url: insideUrl},
     ]);
-    const collector = new V8CoverageCollector(v8Options, config);
+    const {cache, entries} = makeTransformCache();
+    entries.set(insidePath, transform('a'));
+    const collector = new V8CoverageCollector(v8Options, config, cache);
     await collector.start();
-    await collector.stop(new Map([[insidePath, transform('a')]]));
+    await collector.stop();
 
     collector.reset();
     expect(collector.getResult()).toEqual([]);

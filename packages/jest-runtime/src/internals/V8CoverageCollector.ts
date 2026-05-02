@@ -14,10 +14,12 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config} from '@jest/types';
+import type TransformCache from './TransformCache';
 
 export default class V8CoverageCollector {
   private readonly coverageOptions: ShouldInstrumentOptions;
   private readonly config: Config.ProjectConfig;
+  private readonly transformCache: TransformCache;
   private instrumenter: CoverageInstrumenter | undefined;
   private result: V8Coverage | undefined;
   private sources: Map<string, TransformResult> | undefined;
@@ -25,9 +27,11 @@ export default class V8CoverageCollector {
   constructor(
     coverageOptions: ShouldInstrumentOptions,
     config: Config.ProjectConfig,
+    transformCache: TransformCache,
   ) {
     this.coverageOptions = coverageOptions;
     this.config = config;
+    this.transformCache = transformCache;
   }
 
   async start(): Promise<void> {
@@ -36,17 +40,20 @@ export default class V8CoverageCollector {
     await this.instrumenter.startInstrumenting();
   }
 
-  async stop(transforms: ReadonlyMap<string, TransformResult>): Promise<void> {
+  async stop(): Promise<void> {
     if (!this.instrumenter || !this.sources) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
     this.result = await this.instrumenter.stopInstrumenting();
-    this.sources = new Map([...this.sources, ...transforms]);
+    this.sources = new Map([
+      ...this.sources,
+      ...this.transformCache.getEntries(),
+    ]);
   }
 
   // Snapshot transforms about to be cleared (e.g. by `resetModules`) so the
   // mapping from URL to transformed source survives across the reset.
-  snapshotTransforms(transforms: ReadonlyMap<string, TransformResult>): void {
+  snapshotTransforms(): void {
     if (
       !this.coverageOptions.collectCoverage ||
       this.coverageOptions.coverageProvider !== 'v8' ||
@@ -54,7 +61,10 @@ export default class V8CoverageCollector {
     ) {
       return;
     }
-    this.sources = new Map([...this.sources, ...transforms]);
+    this.sources = new Map([
+      ...this.sources,
+      ...this.transformCache.getEntries(),
+    ]);
   }
 
   getResult(): V8CoverageResult {

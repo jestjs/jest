@@ -30,10 +30,8 @@ import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
-  type CallerTransformOptions,
   type ScriptTransformer,
   type ShouldInstrumentOptions,
-  type TransformResult,
   type TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
@@ -61,6 +59,9 @@ import {
 import CjsExportsCache from './internals/CjsExportsCache';
 import FileCache from './internals/FileCache';
 import Resolution, {isWasm} from './internals/Resolution';
+import TransformCache, {
+  type TransformOptions,
+} from './internals/TransformCache';
 import V8CoverageCollector from './internals/V8CoverageCollector';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
@@ -94,11 +95,7 @@ type HasteMapOptions = {
   workerThreads?: boolean;
 };
 
-interface InternalModuleOptions extends Required<CallerTransformOptions> {
-  isInternalModule: boolean;
-}
-
-const defaultTransformOptions: InternalModuleOptions = {
+const defaultTransformOptions: TransformOptions = {
   isInternalModule: false,
   supportsDynamicImport: esmIsAvailable,
   supportsExportNamespaceFrom: false,
@@ -250,7 +247,7 @@ function parseDataUri(specifier: string): {
   throw new Error(`Invalid data URI encoding: ${encoding}`);
 }
 
-const ESM_TRANSFORM_OPTIONS: InternalModuleOptions = {
+const ESM_TRANSFORM_OPTIONS: TransformOptions = {
   isInternalModule: false,
   supportsDynamicImport: true,
   supportsExportNamespaceFrom: true,
@@ -331,10 +328,8 @@ export default class Runtime {
     string,
     boolean
   >;
-  private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
-  private readonly _fileTransforms: Map<string, TransformResult>;
-  private readonly _fileTransformsMutex: Map<string, Promise<void>>;
+  private readonly transformCache: TransformCache;
   private readonly v8Coverage: V8CoverageCollector;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
@@ -360,7 +355,6 @@ export default class Runtime {
     this.fileCache = new FileCache(cacheFS);
     this._config = config;
     this._coverageOptions = coverageOptions;
-    this.v8Coverage = new V8CoverageCollector(coverageOptions, config);
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._globalConfig = globalConfig;
@@ -389,9 +383,16 @@ export default class Runtime {
     this._testPath = testPath;
     this._scriptTransformer = transformer;
     this._shouldAutoMock = config.automock;
-    this._sourceMapRegistry = new Map();
-    this._fileTransforms = new Map();
-    this._fileTransformsMutex = new Map();
+    this.transformCache = new TransformCache(
+      transformer,
+      this.fileCache,
+      options => this._getFullTransformationOptions(options),
+    );
+    this.v8Coverage = new V8CoverageCollector(
+      coverageOptions,
+      config,
+      this.transformCache,
+    );
     this._virtualMocks = new Map();
     this._virtualModuleMocks = new Map();
     this.jestObjectCaches = new Map();
@@ -421,7 +422,7 @@ export default class Runtime {
     this.cjsExportsCache = new CjsExportsCache(
       this._resolution,
       this.fileCache,
-      modulePath => this._fileTransforms.get(modulePath)?.code,
+      modulePath => this.transformCache.getCachedSource(modulePath),
       (from, moduleName) => this.requireModule(from, moduleName),
       (from, moduleName) => this.requireModuleOrMock(from, moduleName),
     );
@@ -592,7 +593,7 @@ export default class Runtime {
     // here while legacy still holds the mutex on the parent's
     // `transformFileAsync`. Defer to legacy in that case so we await its
     // in-flight transform rather than starting a parallel one.
-    if (this._fileTransformsMutex.has(rootKey)) return null;
+    if (this.transformCache.hasMutex(rootKey)) return null;
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
@@ -605,7 +606,7 @@ export default class Runtime {
 
       // Same rationale as the root-level mutex check above: a different
       // top-level legacy load may already be transforming this dep.
-      if (this._fileTransformsMutex.has(cacheKey)) return null;
+      if (this.transformCache.hasMutex(cacheKey)) return null;
 
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry && !(fromRegistry instanceof Promise)) {
@@ -674,7 +675,7 @@ export default class Runtime {
           cacheKey,
           kind: 'synthetic',
           module: this._buildJsonSyntheticModule(
-            this.transformFile(modulePath, ESM_TRANSFORM_OPTIONS),
+            this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
             context,
           ),
@@ -682,7 +683,7 @@ export default class Runtime {
         continue;
       }
 
-      const transformedCode = this.transformFile(
+      const transformedCode = this.transformCache.transform(
         modulePath,
         ESM_TRANSFORM_OPTIONS,
       );
@@ -1233,8 +1234,8 @@ export default class Runtime {
     const cacheKey = modulePath + query;
     const registry = this._isolatedModuleRegistry ?? this._esModuleRegistry;
 
-    if (this._fileTransformsMutex.has(cacheKey)) {
-      await this._fileTransformsMutex.get(cacheKey);
+    if (this.transformCache.hasMutex(cacheKey)) {
+      await this.transformCache.awaitMutex(cacheKey);
     }
 
     if (!registry.has(cacheKey)) {
@@ -1250,7 +1251,7 @@ export default class Runtime {
       let transformResolve: () => void;
       let transformReject: (error?: unknown) => void;
 
-      this._fileTransformsMutex.set(
+      this.transformCache.setMutex(
         cacheKey,
         new Promise((resolve, reject) => {
           transformResolve = resolve;
@@ -1288,8 +1289,11 @@ export default class Runtime {
       const transformedCode = this._scriptTransformer.canTransformSync(
         modulePath,
       )
-        ? this.transformFile(modulePath, ESM_TRANSFORM_OPTIONS)
-        : await this.transformFileAsync(modulePath, ESM_TRANSFORM_OPTIONS);
+        ? this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
+        : await this.transformCache.transformAsync(
+            modulePath,
+            ESM_TRANSFORM_OPTIONS,
+          );
 
       try {
         let module;
@@ -1705,7 +1709,7 @@ export default class Runtime {
   requireModule<T = unknown>(
     from: string,
     moduleName?: string,
-    options?: InternalModuleOptions,
+    options?: TransformOptions,
     isRequireActual = false,
   ): T {
     const isInternal = options?.isInternalModule ?? false;
@@ -1943,7 +1947,7 @@ export default class Runtime {
     from: string,
     moduleName: string | undefined,
     modulePath: string,
-    options: InternalModuleOptions | undefined,
+    options: TransformOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ) {
     if (path.extname(modulePath) === '.json') {
@@ -1974,7 +1978,7 @@ export default class Runtime {
   }
 
   private _getFullTransformationOptions(
-    options: InternalModuleOptions = defaultTransformOptions,
+    options: TransformOptions = defaultTransformOptions,
   ): TransformationOptions {
     return {...options, ...this._coverageOptions};
   }
@@ -2070,15 +2074,14 @@ export default class Runtime {
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esModuleRegistry.clear();
-    this._fileTransformsMutex.clear();
     this.cjsExportsCache.clear();
     this._moduleMockRegistry.clear();
     this.fileCache.clear();
     this._resolution.clear();
 
-    this.v8Coverage.snapshotTransforms(this._fileTransforms);
+    this.v8Coverage.snapshotTransforms();
 
-    this._fileTransforms.clear();
+    this.transformCache.clearForReset();
 
     if (this._environment) {
       if (this._environment.global) {
@@ -2109,7 +2112,7 @@ export default class Runtime {
   }
 
   stopCollectingV8Coverage(): Promise<void> {
-    return this.v8Coverage.stop(this._fileTransforms);
+    return this.v8Coverage.stop();
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -2121,7 +2124,7 @@ export default class Runtime {
   }
 
   getSourceMaps(): SourceMapRegistry {
-    return this._sourceMapRegistry;
+    return this.transformCache.getSourceMaps();
   }
 
   setMock(
@@ -2203,9 +2206,7 @@ export default class Runtime {
     this.fileCache.clear();
     this._unmockList = undefined;
 
-    this._sourceMapRegistry.clear();
-
-    this._fileTransforms.clear();
+    this.transformCache.clear();
     this.jestObjectCaches.clear();
 
     this.v8Coverage.reset();
@@ -2294,7 +2295,7 @@ export default class Runtime {
 
   private _execModule(
     localModule: InitialModule,
-    options: InternalModuleOptions | undefined,
+    options: TransformOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: string | null,
     moduleName?: string,
@@ -2342,7 +2343,7 @@ export default class Runtime {
       value: this._createRequireImplementation(module, options),
     });
 
-    const transformedCode = this.transformFile(filename, options);
+    const transformedCode = this.transformCache.transform(filename, options);
 
     const compiledFunction = this.createScriptFromCode(
       transformedCode,
@@ -2402,56 +2403,6 @@ export default class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
-  }
-
-  private transformFile(
-    filename: string,
-    options?: InternalModuleOptions,
-  ): string {
-    const source = this.fileCache.readFile(filename);
-
-    if (options?.isInternalModule) {
-      return source;
-    }
-
-    const transformedFile = this._scriptTransformer.transform(
-      filename,
-      this._getFullTransformationOptions(options),
-      source,
-    );
-
-    this._fileTransforms.set(filename, transformedFile);
-
-    if (transformedFile.sourceMapPath) {
-      this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
-    }
-    return transformedFile.code;
-  }
-
-  private async transformFileAsync(
-    filename: string,
-    options?: InternalModuleOptions,
-  ): Promise<string> {
-    const source = this.fileCache.readFile(filename);
-
-    if (options?.isInternalModule) {
-      return source;
-    }
-
-    const transformedFile = await this._scriptTransformer.transformAsync(
-      filename,
-      this._getFullTransformationOptions(options),
-      source,
-    );
-
-    if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
-      this._fileTransforms.set(filename, transformedFile);
-    }
-
-    if (transformedFile.sourceMapPath) {
-      this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
-    }
-    return transformedFile.code;
   }
 
   private createScriptFromCode(scriptSource: string, filename: string) {
@@ -2890,7 +2841,7 @@ export default class Runtime {
 
   private _createRequireImplementation(
     from: InitialModule,
-    options?: InternalModuleOptions,
+    options?: TransformOptions,
   ): NodeJS.Require {
     const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
       const resolved = this._requireResolve(
