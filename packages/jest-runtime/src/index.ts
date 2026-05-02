@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {type URL, fileURLToPath, pathToFileURL} from 'node:url';
 import {
@@ -16,13 +15,7 @@ import {
 } from 'node:vm';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
-import stripBOM from 'strip-bom';
-import type {
-  Jest,
-  JestEnvironment,
-  JestImportMeta,
-  Module,
-} from '@jest/environment';
+import type {Jest, JestEnvironment, JestImportMeta} from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
@@ -41,23 +34,22 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {createDirectory, deepCyclicCopy, invariant, isError} from 'jest-util';
+import {findSiblingsWithFileExtension, noop} from './helpers';
+import {CjsExportsCache} from './internals/CjsExportsCache';
+import {CjsLoader} from './internals/CjsLoader';
+import {FileCache} from './internals/FileCache';
+import {MockState} from './internals/MockState';
+import {ModuleExecutor, isCjsParseError} from './internals/ModuleExecutor';
+import {ModuleRegistries} from './internals/ModuleRegistries';
+import {Resolution, isWasm} from './internals/Resolution';
+import {TestMainModule} from './internals/TestMainModule';
 import {
-  decodePossibleOutsideJestVmPath,
-  findSiblingsWithFileExtension,
-  noop,
-} from './helpers';
-import CjsExportsCache from './internals/CjsExportsCache';
-import FileCache from './internals/FileCache';
-import MockState from './internals/MockState';
-import ModuleExecutor, {isCjsParseError} from './internals/ModuleExecutor';
-import ModuleRegistries from './internals/ModuleRegistries';
-import Resolution, {isWasm} from './internals/Resolution';
-import TransformCache, {
+  TransformCache,
   type TransformOptions,
 } from './internals/TransformCache';
-import V8CoverageCollector from './internals/V8CoverageCollector';
+import {V8CoverageCollector} from './internals/V8CoverageCollector';
 import {generateMock} from './internals/automock';
-import {CoreModuleProvider, buildRequire} from './internals/cjsRequire';
+import {CoreModuleProvider, RequireBuilder} from './internals/cjsRequire';
 import type {
   ESModule,
   InitialModule,
@@ -66,7 +58,6 @@ import type {
 } from './internals/moduleTypes';
 import {
   runtimeSupportsVmModules,
-  supportsNodeColonModulePrefixInRequire,
   supportsSyncEvaluate,
 } from './internals/nodeCapabilities';
 import {
@@ -101,18 +92,6 @@ const defaultTransformOptions: TransformOptions = {
   supportsStaticESM: false,
   supportsTopLevelAwait: false,
 };
-
-// These are modules that we know
-// * are safe to require from the outside (not stateful, not prone to errors passing in instances from different realms), and
-// * take sufficiently long to require to warrant an optimization.
-// When required from the outside, they use the worker's require cache and are thus
-// only loaded once per worker, not once per test file.
-// Use /benchmarks/test-file-overhead to measure the impact.
-// Note that this only applies when they are required in an internal context;
-// users who require one of these modules in their tests will still get the module from inside the VM.
-// Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
-// e.g. because there are many require sites spread across the dependency graph.
-const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
@@ -264,7 +243,10 @@ export default class Runtime {
     | ModernFakeTimers
     | null;
   private readonly registries: ModuleRegistries;
+  readonly testMainModule: TestMainModule;
+  private readonly requireBuilder: RequireBuilder;
   private readonly executor: ModuleExecutor;
+  private readonly cjsLoader: CjsLoader;
   private readonly _moduleMocker: ModuleMocker;
   private readonly cjsExportsCache: CjsExportsCache;
   private readonly _esmModuleLinkingMap: WeakMap<JestModule, Promise<unknown>>;
@@ -335,23 +317,27 @@ export default class Runtime {
       (from, moduleName) => this.requireModule(from, moduleName),
       (from, moduleName) => this.requireModuleOrMock(from, moduleName),
     );
+    // Construction is a DAG: testMainModule → requireBuilder → {coreModule,
+    // executor} → cjsLoader. The two lambdas inside `requireBuilder`'s deps
+    // close over `cjsLoader` (built last) and `this.requireModuleOrMock`,
+    // but those callbacks aren't invoked until user code runs, so the
+    // forward references are safe.
+    this.testMainModule = new TestMainModule();
+    this.requireBuilder = new RequireBuilder({
+      registries: this.registries,
+      requireDispatch: (from, moduleName) =>
+        this.requireModuleOrMock(from, moduleName),
+      requireInternal: (from, moduleName) =>
+        this.cjsLoader.requireInternalModule(from, moduleName),
+      resolution: this._resolution,
+      testMainModule: this.testMainModule,
+    });
     this.coreModule = new CoreModuleProvider({
-      buildRequireFor: filename =>
-        this._createRequireImplementation({
-          children: [],
-          exports: {},
-          filename,
-          id: filename,
-          isPreloading: false,
-          loaded: false,
-          path: path.dirname(filename),
-        }),
       environment: this._environment,
+      requireBuilder: this.requireBuilder,
       resolution: this._resolution,
     });
     this.executor = new ModuleExecutor({
-      buildRequireFor: (from, options) =>
-        this._createRequireImplementation(from, options),
       config,
       dynamicImport: (specifier, identifier, context) =>
         this.resolveModule<VMModule>(specifier, identifier, context).then(m =>
@@ -360,8 +346,23 @@ export default class Runtime {
       environment: this._environment,
       jestObjectCache: this.jestObjectCaches,
       jestObjectFactory: from => this._createJestObjectFor(from),
+      requireBuilder: this.requireBuilder,
       resolution: this._resolution,
+      testMainModule: this.testMainModule,
       testPath,
+      transformCache: this.transformCache,
+    });
+    this.cjsLoader = new CjsLoader({
+      coreModule: this.coreModule,
+      environment: this._environment,
+      executor: this.executor,
+      getTestState: () => this.testState,
+      logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
+      mockState: this.mockState,
+      registries: this.registries,
+      requireEsm: <T>(modulePath: string) =>
+        this._requireEsmModule<T>(modulePath),
+      resolution: this._resolution,
       transformCache: this.transformCache,
     });
 
@@ -1479,7 +1480,7 @@ export default class Runtime {
       from,
       modulePath,
       context,
-      (f, name) => this.requireModuleOrMock(f, name),
+      (from, moduleName) => this.requireModuleOrMock(from, moduleName),
       this.cjsExportsCache,
     );
   }
@@ -1557,127 +1558,20 @@ export default class Runtime {
     options?: TransformOptions,
     isRequireActual = false,
   ): T {
-    const isInternal = options?.isInternalModule ?? false;
-    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
-    let modulePath: string | undefined;
-
-    // Some old tests rely on this mocking behavior. Ideally we'll change this
-    // to be more explicit.
-    const moduleResource = moduleName && this._resolution.getModule(moduleName);
-    const manualMock =
-      moduleName && this._resolution.getCjsMockModule(from, moduleName);
-    if (
-      !options?.isInternalModule &&
-      !isRequireActual &&
-      !moduleResource &&
-      manualMock &&
-      manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
-      !this.mockState.isExplicitlyUnmocked(moduleID)
-    ) {
-      modulePath = manualMock;
-    }
-
-    if (moduleName && this._resolution.isCoreModule(moduleName)) {
-      return this.coreModule.require(
-        moduleName,
-        supportsNodeColonModulePrefixInRequire,
-      ) as T;
-    }
-
-    if (!modulePath) {
-      modulePath = this._resolution.resolveCjs(from, moduleName);
-    }
-
-    if (this.unstable_shouldLoadAsEsm(modulePath)) {
-      if (!supportsSyncEvaluate) {
-        const error: NodeJS.ErrnoException = new Error(
-          `Must use import to load ES Module: ${modulePath}\n` +
-            "Jest's require(ESM) requires Node v24.9+ for " +
-            'synchronous vm module APIs; the current Node version does not ' +
-            'expose them.',
-        );
-        error.code = 'ERR_REQUIRE_ESM';
-        throw error;
-      }
-      // Fast path: skip the graph walker on cache hits.
-      const reg = this.registries.getActiveEsmRegistry();
-      const cached = reg.get(modulePath);
-      if (cached && !(cached instanceof Promise)) {
-        return (cached as VMModule).namespace as T;
-      }
-      return this._requireEsmModule<T>(modulePath);
-    }
-
-    const moduleRegistry = this.registries.getActiveCjsRegistry(isInternal);
-
-    const module = moduleRegistry.get(modulePath);
-    if (module) {
-      return (module as Module).exports;
-    }
-
-    // We must register the pre-allocated module object first so that any
-    // circular dependencies that may arise while evaluating the module can
-    // be satisfied.
-    const localModule: InitialModule = {
-      children: [],
-      exports: {},
-      filename: modulePath,
-      id: modulePath,
-      isPreloading: false,
-      loaded: false,
-      path: path.dirname(modulePath),
-    };
-    moduleRegistry.set(modulePath, localModule);
-
-    try {
-      this._loadModule(
-        localModule,
-        from,
-        moduleName,
-        modulePath,
-        options,
-        moduleRegistry,
-      );
-    } catch (error) {
-      moduleRegistry.delete(modulePath);
-      // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
-      if (supportsSyncEvaluate && isCjsParseError(error)) {
-        try {
-          return this._requireEsmModule<T>(modulePath);
-        } catch (esmError) {
-          if (isError(esmError) && esmError.name === 'SyntaxError') throw error;
-          throw esmError;
-        }
-      }
-      throw error;
-    }
-
-    return localModule.exports;
+    return this.cjsLoader.requireModule<T>(
+      from,
+      moduleName,
+      options,
+      isRequireActual,
+    );
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {
-    if (to) {
-      const require = nativeModule.createRequire(from);
-      if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
-        return require(to);
-      }
-      const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
-      if (outsideJestVmPath) {
-        return require(outsideJestVmPath);
-      }
-    }
-
-    return this.requireModule<T>(from, to, {
-      isInternalModule: true,
-      supportsDynamicImport: esmIsAvailable,
-      supportsExportNamespaceFrom: false,
-      supportsStaticESM: false,
-      supportsTopLevelAwait: false,
-    });
+    return this.cjsLoader.requireInternalModule<T>(from, to);
   }
 
   requireActual<T = unknown>(from: string, moduleName: string): T {
-    return this.requireModule<T>(from, moduleName, undefined, true);
+    return this.cjsLoader.requireActual<T>(from, moduleName);
   }
 
   requireMock<T = unknown>(from: string, moduleName: string): T {
@@ -1751,7 +1645,7 @@ export default class Runtime {
         path: path.dirname(manualMockPath),
       };
 
-      this._loadModule(
+      this.cjsLoader.loadModule(
         localModule,
         from,
         moduleName,
@@ -1767,62 +1661,6 @@ export default class Runtime {
     }
 
     return mockRegistry.get(moduleID) as T;
-  }
-
-  private _loadModule(
-    localModule: InitialModule,
-    from: string,
-    moduleName: string | undefined,
-    modulePath: string,
-    options: TransformOptions | undefined,
-    moduleRegistry: ModuleRegistry,
-  ) {
-    if (path.extname(modulePath) === '.json') {
-      const text = stripBOM(this.fileCache.readFile(modulePath));
-
-      const transformedFile = this._scriptTransformer.transformJson(
-        modulePath,
-        this._getFullTransformationOptions(options),
-        text,
-      );
-
-      localModule.exports =
-        this._environment.global.JSON.parse(transformedFile);
-    } else if (path.extname(modulePath) === '.node') {
-      localModule.exports = require(modulePath);
-    } else {
-      // testState gates only apply to executing JS bodies - JSON/.node go
-      // through pure data parsing and don't run user code in the VM.
-      if (this.testState === 'tornDown') {
-        this._logFormattedReferenceError(
-          'You are trying to `require` a file after the Jest environment has been torn down.',
-        );
-        process.exitCode = 1;
-        return;
-      }
-      if (this.testState === 'betweenTests' && !supportsDynamicImport) {
-        throw new ReferenceError(
-          'You are trying to `require` a file outside of the scope of the test code.',
-        );
-      }
-      // Only include the fromPath if a moduleName is given. Else treat as root.
-      const fromPath = moduleName ? from : null;
-      const result = this.executor.exec(
-        localModule,
-        options,
-        moduleRegistry,
-        fromPath,
-        moduleName,
-      );
-      if (result === 'env-disposed') {
-        this._logFormattedReferenceError(
-          'You are trying to `require` a file after the Jest environment has been torn down.',
-        );
-        process.exitCode = 1;
-        return;
-      }
-    }
-    localModule.loaded = true;
   }
 
   private _getFullTransformationOptions(
@@ -1991,7 +1829,7 @@ export default class Runtime {
     this.resetModules();
 
     this.registries.clear();
-    this.executor.resetMainModule();
+    this.testMainModule.reset();
     this.mockState.clear();
     this.fileCache.clear();
 
@@ -2062,20 +1900,7 @@ export default class Runtime {
       mockState: this.mockState,
       moduleMocker: this._moduleMocker,
       registries: this.registries,
-      requireModule: (f, name) => this.requireModule(f, name),
-      resolution: this._resolution,
-    });
-  }
-
-  private _createRequireImplementation(
-    from: InitialModule,
-    options?: TransformOptions,
-  ): NodeJS.Require {
-    return buildRequire(from, options, {
-      mainModule: () => this.executor.mainModule,
-      registries: this.registries,
-      requireDispatch: (f, name) => this.requireModuleOrMock(f, name),
-      requireInternal: (f, name) => this.requireInternalModule(f, name),
+      requireModule: (from, moduleName) => this.requireModule(from, moduleName),
       resolution: this._resolution,
     });
   }

@@ -10,7 +10,7 @@ import Resolver from 'jest-resolve';
 export const isWasm = (modulePath: string): boolean =>
   modulePath.endsWith('.wasm');
 
-export default class Resolution {
+export class Resolution {
   private readonly resolver: Resolver;
   private readonly cjsConditions: ReadonlyArray<string>;
   private readonly esmConditions: ReadonlyArray<string>;

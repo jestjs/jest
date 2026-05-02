@@ -10,8 +10,8 @@ import type {
   TransformResult,
   TransformationOptions,
 } from '@jest/transform';
-import type FileCache from '../FileCache';
-import TransformCache, {type TransformOptions} from '../TransformCache';
+import type {FileCache} from '../FileCache';
+import {TransformCache, type TransformOptions} from '../TransformCache';
 
 const internalOptions: TransformOptions = {
   isInternalModule: true,

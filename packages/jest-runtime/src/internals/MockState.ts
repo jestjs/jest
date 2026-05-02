@@ -8,7 +8,7 @@
 import * as path from 'node:path';
 import type {Config} from '@jest/types';
 import type {MockMetadata} from 'jest-mock';
-import type Resolution from './Resolution';
+import type {Resolution} from './Resolution';
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 
@@ -17,7 +17,7 @@ const unmockRegExpCache = new WeakMap<Config.ProjectConfig, RegExp>();
 const transitiveCacheKey = (from: string, moduleID: string) =>
   `${from}\0${moduleID}`;
 
-export default class MockState {
+export class MockState {
   private readonly resolution: Resolution;
   private readonly unmockList: RegExp | undefined;
 

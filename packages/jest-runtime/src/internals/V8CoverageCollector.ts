@@ -14,9 +14,9 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config} from '@jest/types';
-import type TransformCache from './TransformCache';
+import type {TransformCache} from './TransformCache';
 
-export default class V8CoverageCollector {
+export class V8CoverageCollector {
   private readonly coverageOptions: ShouldInstrumentOptions;
   private readonly config: Config.ProjectConfig;
   private readonly transformCache: TransformCache;

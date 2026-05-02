@@ -10,8 +10,8 @@ import {pathToFileURL} from 'node:url';
 import type {CoverageInstrumenter} from 'collect-v8-coverage';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {ShouldInstrumentOptions, TransformResult} from '@jest/transform';
-import type TransformCache from '../TransformCache';
-import V8CoverageCollector from '../V8CoverageCollector';
+import type {TransformCache} from '../TransformCache';
+import {V8CoverageCollector} from '../V8CoverageCollector';
 
 function makeTransformCache(): {
   cache: TransformCache;

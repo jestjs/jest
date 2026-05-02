@@ -6,7 +6,7 @@
  */
 
 import type {Module as VMModule} from 'node:vm';
-import ModuleRegistries from '../ModuleRegistries';
+import {ModuleRegistries} from '../ModuleRegistries';
 import type {InitialModule, JestModule} from '../moduleTypes';
 
 const fakeCjs = (filename: string): InitialModule =>

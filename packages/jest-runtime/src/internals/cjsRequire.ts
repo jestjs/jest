@@ -8,12 +8,13 @@
 import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {URL, fileURLToPath} from 'node:url';
-import type {JestEnvironment, Module} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import Resolver from 'jest-resolve';
 import {protectProperties} from 'jest-util';
 import {createOutsideJestVmPath} from '../helpers';
-import type ModuleRegistries from './ModuleRegistries';
-import type Resolution from './Resolution';
+import type {ModuleRegistries} from './ModuleRegistries';
+import type {Resolution} from './Resolution';
+import type {TestMainModule} from './TestMainModule';
 import type {TransformOptions} from './TransformCache';
 import type {InitialModule} from './moduleTypes';
 
@@ -25,161 +26,164 @@ export type ResolveOptions = Parameters<typeof require.resolve>[1] & {
   [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
-export function resolve(
-  resolution: Resolution,
-  from: string,
-  moduleName: string | undefined,
-  options: ResolveOptions = {},
-): string {
-  if (moduleName == null) {
-    throw new Error(
-      'The first argument to require.resolve must be a string. Received null or undefined.',
+export interface RequireBuilderDeps {
+  resolution: Resolution;
+  registries: ModuleRegistries;
+  testMainModule: TestMainModule;
+  requireDispatch: (from: string, moduleName: string) => unknown;
+  requireInternal: (from: string, moduleName: string) => unknown;
+}
+
+export class RequireBuilder {
+  private readonly deps: RequireBuilderDeps;
+
+  constructor(deps: RequireBuilderDeps) {
+    this.deps = deps;
+  }
+
+  for(
+    from: InitialModule,
+    options: TransformOptions | undefined,
+  ): NodeJS.Require {
+    const {registries, requireDispatch, requireInternal, testMainModule} =
+      this.deps;
+
+    const resolveImpl = (
+      moduleName: string,
+      resolveOptions?: ResolveOptions,
+    ) => {
+      const resolved = this.resolve(from.filename, moduleName, resolveOptions);
+      if (
+        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
+        options?.isInternalModule
+      ) {
+        return createOutsideJestVmPath(resolved);
+      }
+      return resolved;
+    };
+    resolveImpl.paths = (moduleName: string) =>
+      this.resolvePaths(from.filename, moduleName);
+
+    const moduleRequire = (
+      options?.isInternalModule
+        ? (moduleName: string) => requireInternal(from.filename, moduleName)
+        : (moduleName: string) => requireDispatch(from.filename, moduleName)
+    ) as NodeJS.Require;
+    moduleRequire.extensions = Object.create(null);
+    moduleRequire.resolve = resolveImpl;
+    moduleRequire.cache = registries.createRequireCacheProxy();
+
+    Object.defineProperty(moduleRequire, 'main', {
+      enumerable: true,
+      value: testMainModule.current,
+    });
+
+    return moduleRequire;
+  }
+
+  forFilename(filename: string): NodeJS.Require {
+    return this.for(
+      {
+        children: [],
+        exports: {},
+        filename,
+        id: filename,
+        isPreloading: false,
+        loaded: false,
+        path: path.dirname(filename),
+      },
+      undefined,
     );
   }
 
-  if (path.isAbsolute(moduleName)) {
-    const module = resolution.resolveCjsFromDirIfExists(
-      moduleName,
-      moduleName,
-      [],
-    );
-    if (module) {
-      return module;
+  private resolve(
+    from: string,
+    moduleName: string | undefined,
+    options: ResolveOptions = {},
+  ): string {
+    const {resolution} = this.deps;
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve must be a string. Received null or undefined.',
+      );
     }
-  } else if (options.paths) {
-    for (const searchPath of options.paths) {
-      const absolutePath = path.resolve(from, '..', searchPath);
-      // required to also resolve files without leading './' directly in the path
+
+    if (path.isAbsolute(moduleName)) {
       const module = resolution.resolveCjsFromDirIfExists(
-        absolutePath,
         moduleName,
-        [absolutePath],
+        moduleName,
+        [],
       );
       if (module) {
         return module;
       }
+    } else if (options.paths) {
+      for (const searchPath of options.paths) {
+        const absolutePath = path.resolve(from, '..', searchPath);
+        // required to also resolve files without leading './' directly in the path
+        const module = resolution.resolveCjsFromDirIfExists(
+          absolutePath,
+          moduleName,
+          [absolutePath],
+        );
+        if (module) {
+          return module;
+        }
+      }
+
+      throw new Resolver.ModuleNotFoundError(
+        `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
     }
 
-    throw new Resolver.ModuleNotFoundError(
-      `Cannot resolve module '${moduleName}' from paths ['${options.paths.join(
-        "', '",
-      )}'] from ${from}`,
-    );
-  }
-
-  try {
-    return resolution.resolveCjs(from, moduleName);
-  } catch (error) {
-    const module = resolution.getCjsMockModule(from, moduleName);
-    if (module) {
-      return module;
+    try {
+      return resolution.resolveCjs(from, moduleName);
+    } catch (error) {
+      const module = resolution.getCjsMockModule(from, moduleName);
+      if (module) {
+        return module;
+      }
+      throw error;
     }
-    throw error;
-  }
-}
-
-export function resolvePaths(
-  resolution: Resolution,
-  from: string,
-  moduleName: string | undefined,
-): Array<string> | null {
-  const fromDir = path.resolve(from, '..');
-  if (moduleName == null) {
-    throw new Error(
-      'The first argument to require.resolve.paths must be a string. Received null or undefined.',
-    );
-  }
-  if (moduleName.length === 0) {
-    throw new Error(
-      'The first argument to require.resolve.paths must not be the empty string.',
-    );
   }
 
-  if (moduleName[0] === '.') {
-    return [fromDir];
-  }
-  if (resolution.isCoreModule(moduleName)) {
-    return null;
-  }
-  const modulePaths = resolution.getModulePaths(fromDir);
-  const globalPaths = resolution.getGlobalPaths(moduleName);
-  return [...modulePaths, ...globalPaths];
-}
-
-export interface BuildRequireDeps {
-  resolution: Resolution;
-  registries: ModuleRegistries;
-  // Mock-aware require for non-internal modules. Wired to MockDispatch's
-  // requireOrMock at construction.
-  requireDispatch: (from: string, moduleName: string) => unknown;
-  // Internal-module require for the `isInternalModule` path. Wired to
-  // CjsLoader's requireInternalModule.
-  requireInternal: (from: string, moduleName: string) => unknown;
-  // Resolves to the value snapshotted into `require.main` at build time.
-  // Matches Node's semantics: `require.main` is set once when the require is
-  // attached to a module and does not update later. A callback (rather than
-  // a `Module | null`) lets the loader provide its own `mainModule` field
-  // without making the loader a class-level dep.
-  mainModule: () => Module | null;
-}
-
-export function buildRequire(
-  from: InitialModule,
-  options: TransformOptions | undefined,
-  deps: BuildRequireDeps,
-): NodeJS.Require {
-  const {resolution, registries, requireDispatch, requireInternal, mainModule} =
-    deps;
-
-  const resolveImpl = (moduleName: string, resolveOptions?: ResolveOptions) => {
-    const resolved = resolve(
-      resolution,
-      from.filename,
-      moduleName,
-      resolveOptions,
-    );
-    if (
-      resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
-      options?.isInternalModule
-    ) {
-      return createOutsideJestVmPath(resolved);
+  private resolvePaths(
+    from: string,
+    moduleName: string | undefined,
+  ): Array<string> | null {
+    const {resolution} = this.deps;
+    const fromDir = path.resolve(from, '..');
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve.paths must be a string. Received null or undefined.',
+      );
     }
-    return resolved;
-  };
-  resolveImpl.paths = (moduleName: string) =>
-    resolvePaths(resolution, from.filename, moduleName);
+    if (moduleName.length === 0) {
+      throw new Error(
+        'The first argument to require.resolve.paths must not be the empty string.',
+      );
+    }
 
-  const moduleRequire = (
-    options?.isInternalModule
-      ? (moduleName: string) => requireInternal(from.filename, moduleName)
-      : (moduleName: string) => requireDispatch(from.filename, moduleName)
-  ) as NodeJS.Require;
-  moduleRequire.extensions = Object.create(null);
-  moduleRequire.resolve = resolveImpl;
-  moduleRequire.cache = registries.createRequireCacheProxy();
-
-  Object.defineProperty(moduleRequire, 'main', {
-    enumerable: true,
-    value: mainModule(),
-  });
-
-  return moduleRequire;
+    if (moduleName[0] === '.') {
+      return [fromDir];
+    }
+    if (resolution.isCoreModule(moduleName)) {
+      return null;
+    }
+    const modulePaths = resolution.getModulePaths(fromDir);
+    const globalPaths = resolution.getGlobalPaths(moduleName);
+    return [...modulePaths, ...globalPaths];
+  }
 }
 
 export interface CoreModuleProviderDeps {
   resolution: Resolution;
   environment: JestEnvironment;
-  // Builds a `NodeJS.Require` for an arbitrary filename. Wired to the loader
-  // so the mocked `Module.createRequire(filename)` produces a real Jest-aware
-  // `require`. Takes a filename rather than an `InitialModule` because
-  // `Module.createRequire` user-facing signature is `(file)`.
-  buildRequireFor: (filename: string) => NodeJS.Require;
+  requireBuilder: RequireBuilder;
 }
 
-// Loads Node core modules (`fs`, `node:path`, etc.) and the special mocked
-// `Module` class returned by `require('module')`. The mocked class wraps
-// `Module.createRequire` to route through Jest's require pipeline; the
-// underlying subclass is built once and cached.
 export class CoreModuleProvider {
   private mockedModuleClass?: typeof nativeModule.Module;
   private readonly deps: CoreModuleProviderDeps;
@@ -211,7 +215,7 @@ export class CoreModuleProvider {
       return this.mockedModuleClass;
     }
 
-    const {buildRequireFor} = this.deps;
+    const {requireBuilder} = this.deps;
 
     const createRequire = (modulePath: string | URL) => {
       const filename =
@@ -229,10 +233,9 @@ export class CoreModuleProvider {
         throw error;
       }
 
-      return buildRequireFor(filename);
+      return requireBuilder.forFilename(filename);
     };
 
-    // should we implement the class ourselves?
     class Module extends nativeModule.Module {}
 
     for (const [key, value] of Object.entries(nativeModule.Module)) {
@@ -256,8 +259,6 @@ export class CoreModuleProvider {
     return Module;
   }
 
-  // Used by `teardown` to drop the cached subclass; matches the existing
-  // `_moduleImplementation = undefined` reach-in.
   reset(): void {
     this.mockedModuleClass = undefined;
   }

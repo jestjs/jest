@@ -7,9 +7,9 @@
 
 import type {ModuleMocker} from 'jest-mock';
 import {generateMock} from '../automock';
-import type MockState from '../MockState';
-import type ModuleRegistries from '../ModuleRegistries';
-import type Resolution from '../Resolution';
+import type {MockState} from '../MockState';
+import type {ModuleRegistries} from '../ModuleRegistries';
+import type {Resolution} from '../Resolution';
 
 type Stubs = {
   resolution: jest.Mocked<Resolution>;
@@ -19,7 +19,7 @@ type Stubs = {
   requireModule: jest.MockedFunction<(from: string, name: string) => unknown>;
 };
 
-function makeStubs(over: Partial<Stubs> = {}): Stubs {
+function makeStubs(overrides: Partial<Stubs> = {}): Stubs {
   const stubs = {
     mockState: {
       getMockMetadata: jest.fn(() => ({})),
@@ -41,7 +41,7 @@ function makeStubs(over: Partial<Stubs> = {}): Stubs {
       resolveCjs: jest.fn(() => '/resolved.js'),
       resolveCjsStub: jest.fn(() => null),
     } as unknown as jest.Mocked<Resolution>,
-    ...over,
+    ...overrides,
   };
   return stubs;
 }

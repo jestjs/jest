@@ -6,9 +6,9 @@
  */
 
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
-import type MockState from './MockState';
-import type ModuleRegistries from './ModuleRegistries';
-import type Resolution from './Resolution';
+import type {MockState} from './MockState';
+import type {ModuleRegistries} from './ModuleRegistries';
+import type {Resolution} from './Resolution';
 
 export interface GenerateMockDeps {
   resolution: Resolution;

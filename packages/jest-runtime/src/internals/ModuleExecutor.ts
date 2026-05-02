@@ -20,9 +20,10 @@ import {handlePotentialSyntaxError} from '@jest/transform';
 import type {Config, Global} from '@jest/types';
 import Resolver from 'jest-resolve';
 import {invariant, isError, isNonNullable} from 'jest-util';
-import type Resolution from './Resolution';
-import type TransformCache from './TransformCache';
-import type {TransformOptions} from './TransformCache';
+import type {Resolution} from './Resolution';
+import type {TestMainModule} from './TestMainModule';
+import type {TransformCache, TransformOptions} from './TransformCache';
+import type {RequireBuilder} from './cjsRequire';
 import type {InitialModule, ModuleRegistry} from './moduleTypes';
 import {runtimeSupportsVmModules} from './nodeCapabilities';
 
@@ -42,18 +43,10 @@ export interface ModuleExecutorDeps {
   environment: JestEnvironment;
   config: Config.ProjectConfig;
   testPath: string;
-  // Builds the `module.require` attached to executing modules. A callback
-  // so the executor doesn't own the require-builder's deps.
-  buildRequireFor: (
-    from: InitialModule,
-    options: TransformOptions | undefined,
-  ) => NodeJS.Require;
-  // Per-`from` jest object production + cache. Tier 3.4 will collapse these
-  // into one `JestObjectFactory` ref.
+  requireBuilder: RequireBuilder;
+  testMainModule: TestMainModule;
   jestObjectFactory: (from: string) => Jest;
   jestObjectCache: Map<string, Jest>;
-  // Dynamic import for `compileFunction`'s `importModuleDynamically` hook.
-  // Tier 3.3 will replace this with a single ESM-loader ref.
   dynamicImport: (
     specifier: string,
     identifier: string,
@@ -61,41 +54,19 @@ export interface ModuleExecutorDeps {
   ) => Promise<VMModule>;
 }
 
-// Compiles and runs CJS module bodies. Owns the "currently executing" state
-// used to detect manual-mock recursion, and the `mainModule` snapshot that
-// becomes `require.main` for every module loaded after the test file itself.
-//
-// Caller responsibilities (not done here):
-// - Guard tornDown / betweenTests state - those checks apply to every
-//   require, not just JS execution.
-// - Dispatch `.json` / `.node` files to their own loaders. The executor only
-//   handles JS module bodies.
-export default class ModuleExecutor {
+// Caller is responsible for testState gating and `.json`/`.node` dispatch.
+export class ModuleExecutor {
   private readonly deps: ModuleExecutorDeps;
   private currentlyExecutingManualMock: string | null = null;
-  mainModule: Module | null = null;
 
   constructor(deps: ModuleExecutorDeps) {
     this.deps = deps;
   }
 
-  // Whether the executor is currently inside the body of a manual mock - used
-  // by `requireModule` to avoid substituting a manual mock for itself.
   getCurrentlyExecutingManualMock(): string | null {
     return this.currentlyExecutingManualMock;
   }
 
-  resetMainModule(): void {
-    this.mainModule = null;
-  }
-
-  // Compiles and runs the JS body of `localModule`. Mutates the module:
-  // attaches `require`, `parent`, `paths`, `main`, and runs the body. The
-  // caller registers `localModule` in the registry first so circular
-  // dependencies during evaluation can resolve.
-  //
-  // Returns `'env-disposed'` if the Jest environment was disposed before or
-  // during exec - the caller surfaces the diagnostic. Otherwise `'loaded'`.
   exec(
     localModule: InitialModule,
     options: TransformOptions | undefined,
@@ -109,7 +80,8 @@ export default class ModuleExecutor {
       environment,
       config,
       testPath,
-      buildRequireFor,
+      requireBuilder,
+      testMainModule,
       jestObjectFactory,
       jestObjectCache,
     } = this.deps;
@@ -138,7 +110,7 @@ export default class ModuleExecutor {
     module.paths = [...modulePaths, ...globalPaths];
 
     Object.defineProperty(module, 'require', {
-      value: buildRequireFor(localModule, options),
+      value: requireBuilder.for(localModule, options),
     });
 
     const transformedCode = transformCache.transform(filename, options);
@@ -152,7 +124,7 @@ export default class ModuleExecutor {
     jestObjectCache.set(filename, jestObject);
 
     const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-      config.injectGlobals ? jestObject : undefined, // jest object
+      config.injectGlobals ? jestObject : undefined,
       ...config.sandboxInjectedGlobals.map<Global.Global>(globalVariable => {
         if (environment.global[globalVariable]) {
           return environment.global[globalVariable];
@@ -164,13 +136,13 @@ export default class ModuleExecutor {
       }),
     ];
 
-    if (!this.mainModule && filename === testPath) {
-      this.mainModule = module;
+    if (!testMainModule.current && filename === testPath) {
+      testMainModule.current = module;
     }
 
     Object.defineProperty(module, 'main', {
       enumerable: true,
-      value: this.mainModule,
+      value: testMainModule.current,
     });
 
     try {

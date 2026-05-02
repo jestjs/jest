@@ -6,11 +6,12 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import type {Module} from '@jest/environment';
-import ModuleExecutor, {
+import {
   CJS_PARSE_ERROR,
+  ModuleExecutor,
   isCjsParseError,
 } from '../ModuleExecutor';
+import {TestMainModule} from '../TestMainModule';
 
 describe('isCjsParseError', () => {
   test('matches errors tagged with CJS_PARSE_ERROR', () => {
@@ -28,10 +29,9 @@ describe('isCjsParseError', () => {
 
 describe('ModuleExecutor', () => {
   function makeExecutor(
-    over: Partial<ConstructorParameters<typeof ModuleExecutor>[0]> = {},
+    overrides: Partial<ConstructorParameters<typeof ModuleExecutor>[0]> = {},
   ) {
     return new ModuleExecutor({
-      buildRequireFor: () => (() => undefined) as unknown as NodeJS.Require,
       config: makeProjectConfig({
         injectGlobals: true,
         sandboxInjectedGlobals: [],
@@ -40,10 +40,14 @@ describe('ModuleExecutor', () => {
       environment: {global: {}} as never,
       jestObjectCache: new Map(),
       jestObjectFactory: () => ({}) as never,
+      requireBuilder: {
+        for: () => (() => undefined) as unknown as NodeJS.Require,
+      } as never,
       resolution: {} as never,
+      testMainModule: new TestMainModule(),
       testPath: '/test.js',
       transformCache: {} as never,
-      ...over,
+      ...overrides,
     });
   }
 
@@ -89,16 +93,6 @@ describe('ModuleExecutor', () => {
         'Math',
         'Reflect',
       ]);
-    });
-  });
-
-  describe('mainModule lifecycle', () => {
-    test('starts null; resetMainModule clears', () => {
-      const executor = makeExecutor();
-      expect(executor.mainModule).toBeNull();
-      executor.mainModule = {filename: '/x.js'} as Module;
-      executor.resetMainModule();
-      expect(executor.mainModule).toBeNull();
     });
   });
 

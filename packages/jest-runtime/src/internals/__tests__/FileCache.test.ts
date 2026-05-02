@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import FileCache from '../FileCache';
+import {FileCache} from '../FileCache';
 
 jest.mock('graceful-fs', () => ({
   readFileSync: jest.fn(),

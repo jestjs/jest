@@ -7,7 +7,7 @@
 
 import * as fs from 'graceful-fs';
 
-export default class FileCache {
+export class FileCache {
   private readonly strings: Map<string, string>;
   private readonly buffers = new Map<string, BufferSource>();
 

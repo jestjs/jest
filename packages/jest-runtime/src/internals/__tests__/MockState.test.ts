@@ -6,8 +6,8 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import MockState from '../MockState';
-import type Resolution from '../Resolution';
+import {MockState} from '../MockState';
+import type {Resolution} from '../Resolution';
 
 type ResolutionStub = {
   [K in

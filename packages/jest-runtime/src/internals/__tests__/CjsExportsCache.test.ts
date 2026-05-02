@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CjsExportsCache from '../CjsExportsCache';
-import type FileCache from '../FileCache';
-import type Resolution from '../Resolution';
+import {CjsExportsCache} from '../CjsExportsCache';
+import type {FileCache} from '../FileCache';
+import type {Resolution} from '../Resolution';
 
 function makeResolution(overrides: Partial<Resolution> = {}) {
   const resolveCjs: jest.MockedFunction<Resolution['resolveCjs']> = jest.fn(

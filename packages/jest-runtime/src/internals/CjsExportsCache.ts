@@ -7,15 +7,15 @@
 
 import * as path from 'node:path';
 import {parse as parseCjs} from 'cjs-module-lexer';
-import type FileCache from './FileCache';
-import type Resolution from './Resolution';
+import type {FileCache} from './FileCache';
+import type {Resolution} from './Resolution';
 
 // Computes (and caches) the named exports of a CJS module by static analysis
 // with cjs-module-lexer, recursively walking `module.exports = require(...)`
 // re-exports. Native (`.node`) addons and core-module re-exports can't be
 // statically analysed, so they are loaded via the injected callbacks and the
 // real export keys are read off the resulting object.
-export default class CjsExportsCache {
+export class CjsExportsCache {
   private readonly cache = new Map<string, Set<string>>();
   private readonly resolution: Resolution;
   private readonly fileCache: FileCache;

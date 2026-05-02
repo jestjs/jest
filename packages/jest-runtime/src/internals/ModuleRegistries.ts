@@ -35,7 +35,7 @@ class Isolation {
   }
 }
 
-export default class ModuleRegistries {
+export class ModuleRegistries {
   private moduleRegistry: ModuleRegistry = new Map();
   private readonly internalModuleRegistry: ModuleRegistry = new Map();
   private readonly esModuleRegistry = new Map<string, JestModule>();

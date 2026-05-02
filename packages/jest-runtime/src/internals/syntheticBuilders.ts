@@ -9,7 +9,7 @@ import {SyntheticModule, type Context as VMContext} from 'node:vm';
 import type {Jest} from '@jest/environment';
 import {invariant} from 'jest-util';
 import {noop} from '../helpers';
-import type CjsExportsCache from './CjsExportsCache';
+import type {CjsExportsCache} from './CjsExportsCache';
 import type {JestGlobals, JestGlobalsWithJest} from './types';
 
 export function buildJsonSyntheticModule(

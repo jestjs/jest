@@ -7,7 +7,7 @@
 
 import {testWithVmEsm} from '@jest/test-utils';
 import type Resolver from 'jest-resolve';
-import Resolution from '../Resolution';
+import {Resolution} from '../Resolution';
 
 const CJS = ['require', 'node', 'default'];
 const ESM = ['import', 'default'];
