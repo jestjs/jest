@@ -25,7 +25,10 @@ import {type Resolution, isWasm} from './Resolution';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
 import type {ESModule, JestModule, ModuleRegistry} from './moduleTypes';
-import {runtimeSupportsVmModules} from './nodeCapabilities';
+import {
+  runtimeSupportsVmModules,
+  supportsSyncEvaluate,
+} from './nodeCapabilities';
 import {
   buildCjsAsEsmSyntheticModule,
   buildCoreSyntheticModule,
@@ -238,8 +241,12 @@ export class EsmLoader {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
-      if (transformCache.hasMutex(cacheKey)) return null;
-
+      // Registry first, mutex second: the legacy `loadEsmModule` sets a
+      // mutex around its transform but never clears the entry after the
+      // module lands in the registry. Checking the mutex first would force
+      // an unnecessary bail (or a misleading ERR_REQUIRE_ESM in
+      // sync-required) every time we revisit a module the legacy path has
+      // already finished transforming.
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry && !(fromRegistry instanceof Promise)) {
         scratch.set(cacheKey, {
@@ -250,6 +257,7 @@ export class EsmLoader {
         continue;
       }
       if (fromRegistry instanceof Promise) return null;
+      if (transformCache.hasMutex(cacheKey)) return null;
 
       if (resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
@@ -820,11 +828,13 @@ export class EsmLoader {
   ): Promise<ESModule> {
     const {transformCache, registries, resolution, fileCache, getJestObject} =
       this.deps;
-    // The sync core walks the graph synchronously, so it can only run when
-    // the configured resolver supports sync resolution. With an async-only
+    // Two gates here. `supportsSyncEvaluate` is a Node-version check: the
+    // sync core relies on `SyntheticModule` starting `'linked'` and on
+    // `evaluate()` completing sync, both of which need v22.21+ / v24.8+.
+    // `canResolveSync` is a configured-resolver check: with an async-only
     // user resolver `findNodeModule` silently falls back to the default
-    // resolver and would silently miss user mappings; defer to legacy.
-    if (resolution.canResolveSync()) {
+    // resolver and would silently miss user mappings.
+    if (supportsSyncEvaluate && resolution.canResolveSync()) {
       const synced = this.tryLoadGraphSync(modulePath, query, 'sync-preferred');
       if (synced) return synced;
     }

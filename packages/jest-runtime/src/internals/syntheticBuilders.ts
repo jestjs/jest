@@ -12,17 +12,19 @@ import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {JestGlobals, JestGlobalsWithJest} from './types';
 
-// Build a SyntheticModule from a plain exports record. The keys become the
-// module's named exports; the values are captured at construction time.
+// Build a SyntheticModule from a plain exports record. Keys + values are
+// snapshotted at construction time so later mutations of `exportsObject`
+// don't leak into the eventual `evaluate()` body.
 export function syntheticFromExports(
   identifier: string,
   context: VMContext,
   exportsObject: Record<string, unknown>,
 ): SyntheticModule {
+  const entries = Object.entries(exportsObject);
   return new SyntheticModule(
-    Object.keys(exportsObject),
+    entries.map(([key]) => key),
     function () {
-      for (const [key, value] of Object.entries(exportsObject)) {
+      for (const [key, value] of entries) {
         this.setExport(key, value);
       }
     },
