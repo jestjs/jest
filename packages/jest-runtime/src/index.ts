@@ -72,6 +72,11 @@ import type {
   ModuleRegistry,
 } from './internals/moduleTypes';
 import {
+  runtimeSupportsVmModules,
+  supportsNodeColonModulePrefixInRequire,
+  supportsSyncEvaluate,
+} from './internals/nodeCapabilities';
+import {
   buildCjsAsEsmSyntheticModule,
   buildCoreSyntheticModule,
   buildJestGlobalsSyntheticModule,
@@ -157,12 +162,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   return null;
 };
 
-const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
-
-const supportsSyncEvaluate =
-  // @ts-expect-error - `hasAsyncGraph` is in Node v24.9+, not yet typed in @types/node@18
-  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
-
 // `linkRequests`/`instantiate`/`hasAsyncGraph`/`hasTopLevelAwait`/
 // `moduleRequests` ship in Node v24.9 and aren't yet in `@types/node@18`.
 // This local interface lets us narrow without `@ts-expect-error` at every
@@ -216,16 +215,6 @@ function makeRequireAsyncError(
   error.code = 'ERR_REQUIRE_ASYNC_MODULE';
   return error;
 }
-
-const supportsNodeColonModulePrefixInRequire = (() => {
-  try {
-    require('node:fs');
-
-    return true;
-  } catch {
-    return false;
-  }
-})();
 
 // Decode a `data:` URI specifier into its mime type and decoded code/body.
 // `application/wasm` returns a Buffer; everything else returns a UTF-8 string.
