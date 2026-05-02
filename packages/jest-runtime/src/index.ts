@@ -2854,7 +2854,7 @@ export default class Runtime {
     explicitShouldMock: Map<string, boolean>,
   ): boolean {
     const moduleID = this._resolution.getEsmModuleId(
-      this._virtualMocks,
+      this._virtualModuleMocks,
       from,
       moduleName,
     );
@@ -2894,7 +2894,7 @@ export default class Runtime {
     }
 
     const currentModuleID = this._resolution.getEsmModuleId(
-      this._virtualMocks,
+      this._virtualModuleMocks,
       from,
     );
     if (
@@ -2918,7 +2918,7 @@ export default class Runtime {
     explicitShouldMock: Map<string, boolean>,
   ): Promise<boolean> {
     const moduleID = await this._resolution.getEsmModuleIdAsync(
-      this._virtualMocks,
+      this._virtualModuleMocks,
       from,
       moduleName,
     );
@@ -2964,7 +2964,7 @@ export default class Runtime {
 
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = await this._resolution.getEsmModuleIdAsync(
-      this._virtualMocks,
+      this._virtualModuleMocks,
       from,
     );
     if (
