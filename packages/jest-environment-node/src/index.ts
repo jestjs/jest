@@ -45,6 +45,12 @@ const denyList = new Set([
 
 type GlobalProperties = Array<keyof typeof globalThis>;
 
+// Storage proxies (Node 25+) emit a warning on any Reflect.get access when
+// --localstorage-file is not set. We install them as non-caching passthrough
+// getters so they never land in GlobalProxy.propertyToValue and are never
+// inspected by deleteProperties at teardown.
+const storageGlobals = new Set(['localStorage', 'sessionStorage']);
+
 const nodeGlobals = new Map(
   (Object.getOwnPropertyNames(globalThis) as GlobalProperties)
     .filter(global => !denyList.has(global as string))
@@ -109,9 +115,25 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       Object.getOwnPropertyNames(global) as GlobalProperties,
     );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
-      protectProperties(globalThis[nodeGlobalsKey]);
+      if (!storageGlobals.has(nodeGlobalsKey as string)) {
+        protectProperties(globalThis[nodeGlobalsKey]);
+      }
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        if (descriptor.configurable) {
+        if (storageGlobals.has(nodeGlobalsKey as string)) {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: true,
+            enumerable: descriptor.enumerable,
+            get: () => globalThis[nodeGlobalsKey],
+            set(value) {
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value,
+                writable: true,
+              });
+            },
+          });
+        } else if (descriptor.configurable) {
           Object.defineProperty(global, nodeGlobalsKey, {
             configurable: true,
             enumerable: descriptor.enumerable,

@@ -129,7 +129,13 @@ Located in `e2e/` with ~190 integration test directories:
 
 ```bash
 cd e2e/<test-directory>
-node ../../packages/jest-cli/bin/jest.js
+node ../../packages/jest-cli/bin/jest.js --no-cache
+```
+
+Pass Node flags via the environment, e.g.:
+
+```bash
+NODE_OPTIONS='--localstorage-file=/tmp/ls.json' node ../../packages/jest-cli/bin/jest.js --no-cache
 ```
 
 **Note**: Some tests may require Mercurial (`hg`) to be installed. On macOS: `brew install hg`
@@ -147,6 +153,15 @@ yarn lint
 - Uses ESLint 9.x with flat config (`eslint.config.mjs`)
 - Caches results for faster subsequent runs
 - Takes 1-2 minutes
+- **Run this only as a final check.** During development, lint only changed files (see below).
+
+**During verification — lint only changed files first**:
+
+```bash
+yarn eslint --cache --fix <changed-file-1> <changed-file-2> ...
+```
+
+Run `yarn eslint --fix` on each file you edited before running the full `yarn lint`. This catches and auto-fixes issues (import order, formatting) without waiting 1-2 minutes for the full suite.
 
 **Lint specific files/directories**:
 
