@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'node:path';
+import * as fs from 'graceful-fs';
 import Resolver from 'jest-resolve';
 
 export const isWasm = (modulePath: string): boolean =>
@@ -109,6 +111,47 @@ export class Resolution {
     return this.resolver.getMockModuleAsync(from, moduleName, {
       conditions: this.esmConditions,
     });
+  }
+
+  // Resolves the manual mock module path from a (potentially aliased) module
+  // name. Covers three shapes:
+  //
+  // A. Core module specifier i.e. ['fs', 'node:fs']:
+  //    Normalize then check for a root manual mock '<rootDir>/__mocks__/'.
+  //
+  // B. Node module specifier i.e. ['jest', 'react']:
+  //    Look for root manual mock.
+  //
+  // C. Relative/Absolute path:
+  //    If the actual module file has a __mocks__ dir sitting immediately next
+  //    to it, look to see if there is a manual mock for this file.
+  //
+  //      subDir1/my_module.js
+  //      subDir1/__mocks__/my_module.js
+  //      subDir2/my_module.js
+  //      subDir2/__mocks__/my_module.js
+  //
+  //    Where some other module does a relative require into each of the
+  //    respective subDir{1,2} directories and expects a manual mock
+  //    corresponding to that particular my_module.js file.
+  findManualMock(from: string, moduleName: string): string | null {
+    if (this.isCoreModule(moduleName)) {
+      return this.getCjsMockModule(
+        from,
+        this.normalizeCoreModuleSpecifier(moduleName),
+      );
+    }
+
+    const rootMock = this.getCjsMockModule(from, moduleName);
+    if (rootMock) return rootMock;
+
+    const modulePath = this.resolveCjs(from, moduleName);
+    const sibling = path.join(
+      path.dirname(modulePath),
+      '__mocks__',
+      path.basename(modulePath),
+    );
+    return fs.existsSync(sibling) ? sibling : null;
   }
 
   resolveCjsStub(from: string, moduleName: string): string | null {

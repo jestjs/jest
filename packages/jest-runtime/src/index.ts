@@ -8,7 +8,6 @@
 import nativeModule from 'node:module';
 import * as path from 'node:path';
 import {SourceTextModule} from 'node:vm';
-import * as fs from 'graceful-fs';
 import slash from 'slash';
 import type {JestEnvironment} from '@jest/environment';
 import type {SourceMapRegistry} from '@jest/source-map';
@@ -413,49 +412,7 @@ export default class Runtime {
       return module as T;
     }
 
-    /** Resolved mock module path from (potentially aliased) module name. */
-    const manualMockPath: string | null = (() => {
-      // Attempt to get manual mock path when moduleName is a:
-
-      // A. Core module specifier i.e. ['fs', 'node:fs']:
-      // Normalize then check for a root manual mock '<rootDir>/__mocks__/'
-      if (this._resolution.isCoreModule(moduleName)) {
-        const moduleWithoutNodePrefix =
-          this._resolution.normalizeCoreModuleSpecifier(moduleName);
-        return this._resolution.getCjsMockModule(from, moduleWithoutNodePrefix);
-      }
-
-      // B. Node module specifier i.e. ['jest', 'react']:
-      // Look for root manual mock
-      const rootMock = this._resolution.getCjsMockModule(from, moduleName);
-      if (rootMock) return rootMock;
-
-      // C. Relative/Absolute path:
-      // If the actual module file has a __mocks__ dir sitting immediately next
-      // to it, look to see if there is a manual mock for this file.
-      //
-      // subDir1/my_module.js
-      // subDir1/__mocks__/my_module.js
-      // subDir2/my_module.js
-      // subDir2/__mocks__/my_module.js
-      //
-      // Where some other module does a relative require into each of the
-      // respective subDir{1,2} directories and expects a manual mock
-      // corresponding to that particular my_module.js file.
-      const modulePath = this._resolution.resolveCjs(from, moduleName);
-      const moduleDir = path.dirname(modulePath);
-      const moduleFileName = path.basename(modulePath);
-      const potentialManualMock = path.join(
-        moduleDir,
-        '__mocks__',
-        moduleFileName,
-      );
-      if (fs.existsSync(potentialManualMock)) {
-        return potentialManualMock;
-      }
-
-      return null;
-    })();
+    const manualMockPath = this._resolution.findManualMock(from, moduleName);
 
     if (manualMockPath) {
       const localModule: InitialModule = {
