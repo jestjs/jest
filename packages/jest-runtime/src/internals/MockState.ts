@@ -398,7 +398,7 @@ export class MockState {
   }
 }
 
-interface GenerateMockOptions {
+export interface GenerateMockOptions {
   resolution: Resolution;
   mockState: MockState;
   moduleMocker: ModuleMocker;

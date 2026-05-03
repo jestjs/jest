@@ -11,7 +11,7 @@ import type {FileCache} from './FileCache';
 import type {Resolution} from './Resolution';
 import type {TransformCache} from './TransformCache';
 
-interface CjsExportsCacheOptions {
+export interface CjsExportsCacheOptions {
   resolution: Resolution;
   fileCache: FileCache;
   transformCache: TransformCache;
