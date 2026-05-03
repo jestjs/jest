@@ -191,7 +191,7 @@ export class EsmLoader {
       error.code = 'ERR_REQUIRE_ESM';
       throw error;
     }
-    return (module as VMModule).namespace as T;
+    return module.namespace as T;
   }
 
   // Public for unit-test access. Production callers reach the sync graph
@@ -225,8 +225,18 @@ export class EsmLoader {
     const rootKey = rootPath + rootQuery;
 
     const cached = registry.get(rootKey);
-    if (cached instanceof Promise) return null;
-    if (cached) return cached as ESModule;
+    if (cached) {
+      if (cached instanceof Promise) return null;
+      // Only reuse fully-evaluated entries. The legacy `loadEsmModule`
+      // source-text branch does `registry.set` while the `SourceTextModule`
+      // is still `'unlinked'` (link runs later in `linkAndEvaluateModule`);
+      // accessing `.namespace` on a non-evaluated module throws
+      // `ERR_VM_MODULE_STATUS`.
+      if (cached.status === 'evaluated') {
+        return cached as ESModule;
+      }
+      return null;
+    }
 
     const context = this.getContext();
 
@@ -241,22 +251,22 @@ export class EsmLoader {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
-      // Registry first, mutex second: the legacy `loadEsmModule` sets a
-      // mutex around its transform but never clears the entry after the
-      // module lands in the registry. Checking the mutex first would force
-      // an unnecessary bail (or a misleading ERR_REQUIRE_ESM in
-      // sync-required) every time we revisit a module the legacy path has
-      // already finished transforming.
+      // Registry first, mutex second. Same `'evaluated'` gate as the root —
+      // anything in `'unlinked'` / `'linking'` / `'linked'` / `'evaluating'`
+      // is the legacy path mid-flight on this dep. Plugging an unlinked
+      // module into the parent's `linkRequests` would fail Node's link
+      // cascade; plugging a `'linked'` one would skip its body. Bail.
       const fromRegistry = registry.get(cacheKey);
-      if (fromRegistry && !(fromRegistry instanceof Promise)) {
+      if (fromRegistry instanceof Promise) return null;
+      if (fromRegistry) {
+        if (fromRegistry.status !== 'evaluated') return null;
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
-          module: fromRegistry as VMModuleWithAsyncGraph,
+          module: fromRegistry,
         });
         continue;
       }
-      if (fromRegistry instanceof Promise) return null;
       if (transformCache.hasMutex(cacheKey)) return null;
 
       if (resolution.isCoreModule(modulePath)) {
@@ -267,7 +277,7 @@ export class EsmLoader {
             modulePath,
             context,
             (name, prefix) => coreModule.require(name, prefix),
-          ) as VMModuleWithAsyncGraph,
+          ),
         });
         continue;
       }
@@ -321,7 +331,7 @@ export class EsmLoader {
             transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
             context,
-          ) as VMModuleWithAsyncGraph,
+          ),
         });
         continue;
       }
@@ -392,7 +402,7 @@ export class EsmLoader {
           depEntry,
           `Sync ESM graph missing dep ${depKey} for ${entry.cacheKey}. This is a bug in Jest, please report it!`,
         );
-        return depEntry.module as VMModule;
+        return depEntry.module;
       });
       invariant(
         typeof entry.module.linkRequests === 'function',
@@ -443,13 +453,13 @@ export class EsmLoader {
     }
 
     rootModule.evaluate().catch(noop);
-    const status = rootModule.status as VMModule['status'];
-    if (status === 'errored') {
+
+    if (rootModule.status === 'errored') {
       throw rootModule.error;
     }
     invariant(
-      status === 'evaluated',
-      `Expected synchronous evaluation to complete for ${rootModule.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
+      rootModule.status === 'evaluated',
+      `Expected synchronous evaluation to complete for ${rootModule.identifier}, but module status is "${rootModule.status}". This is a bug in Jest, please report it!`,
     );
 
     return rootModule;
@@ -467,9 +477,10 @@ export class EsmLoader {
   }
 
   // Commits (or reuses) a synthetic-module entry under `cacheKey` in both the
-  // local scratch and the long-lived registry. Returns `true` on success;
-  // `false` means the registry holds a mid-flight Promise from the legacy async
-  // path - the caller must bail to that path.
+  // local scratch and the long-lived registry. Returns `false` when the
+  // registry holds something the caller must bail on: a mid-flight Promise
+  // from the legacy async path, or a non-evaluated module (legacy can stash
+  // an `'unlinked'` SourceTextModule here while link/evaluate runs).
   private tryCommitSynthetic(
     cacheKey: string,
     registry: ModuleRegistry | Map<string, JestModule>,
@@ -479,6 +490,9 @@ export class EsmLoader {
     if (scratch.has(cacheKey)) return true;
     const fromRegistry = registry.get(cacheKey);
     if (fromRegistry instanceof Promise) return false;
+    if (fromRegistry && (fromRegistry as VMModule).status !== 'evaluated') {
+      return false;
+    }
     const module =
       (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
     if (!fromRegistry) registry.set(cacheKey, module);
@@ -498,15 +512,8 @@ export class EsmLoader {
 
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
-      const ok = this.tryCommitSynthetic(
-        cacheKey,
-        registry,
-        scratch,
-        () =>
-          this.buildJestGlobalsSyntheticModule(
-            referencingIdentifier,
-            context,
-          ) as VMModuleWithAsyncGraph,
+      const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
+        this.buildJestGlobalsSyntheticModule(referencingIdentifier, context),
       );
       return ok ? {cacheKey, enqueue: null} : null;
     }
@@ -555,16 +562,12 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !shouldLoadAsEsm(resolved)
     ) {
-      const ok = this.tryCommitSynthetic(
-        cacheKey,
-        registry,
-        scratch,
-        () =>
-          this.buildCjsAsEsmSyntheticModule(
-            referencingIdentifier,
-            resolved,
-            context,
-          ) as VMModuleWithAsyncGraph,
+      const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
+        this.buildCjsAsEsmSyntheticModule(
+          referencingIdentifier,
+          resolved,
+          context,
+        ),
       );
       return ok ? {cacheKey, enqueue: null} : null;
     }
@@ -592,7 +595,7 @@ export class EsmLoader {
         scratch.set(moduleID, {
           cacheKey: moduleID,
           kind: 'synthetic',
-          module: existing as VMModuleWithAsyncGraph,
+          module: existing,
         });
       }
       return {cacheKey: moduleID};
@@ -618,7 +621,7 @@ export class EsmLoader {
     scratch.set(moduleID, {
       cacheKey: moduleID,
       kind: 'synthetic',
-      module: synth as VMModuleWithAsyncGraph,
+      module: synth,
     });
     return {cacheKey: moduleID};
   }
@@ -664,17 +667,14 @@ export class EsmLoader {
       depSpec => {
         const depKey = moduleSpecToCacheKey.get(depSpec)!;
         const depEntry = scratch.get(depKey)!;
-        return (depEntry.module as VMModule).namespace as Record<
-          string,
-          unknown
-        >;
+        return depEntry.module.namespace as Record<string, unknown>;
       },
     );
 
     return {
       cacheKey,
       kind: 'synthetic',
-      module: synthetic as VMModuleWithAsyncGraph,
+      module: synthetic,
     };
   }
 
@@ -707,11 +707,7 @@ export class EsmLoader {
       return {
         cacheKey,
         kind: 'synthetic',
-        module: buildJsonSyntheticModule(
-          code as string,
-          specifier,
-          context,
-        ) as VMModuleWithAsyncGraph,
+        module: buildJsonSyntheticModule(code as string, specifier, context),
       };
     }
 
@@ -1101,12 +1097,12 @@ export class EsmLoader {
     }
 
     if (module.status === 'linked') {
-      if (moduleHasAsyncGraph(module)) {
-        this.evaluatingMap.set(module, module.evaluate());
-      } else {
+      if (supportsSyncEvaluate && !moduleHasAsyncGraph(module)) {
         // `evaluate()` fulfills synchronously when the graph has no top-level
         // await, so we don't need to yield. Errors land on `module.status`,
-        // not as a Promise rejection.
+        // not as a Promise rejection. Gated on `supportsSyncEvaluate` because
+        // pre-v22.21 / pre-v24.8 Node returns a genuinely-async Promise here
+        // and the status invariant below would fire on `'evaluating'`.
         void module.evaluate().catch(noop);
         const status = module.status as VMModule['status'];
         if (status === 'errored') {
@@ -1116,6 +1112,11 @@ export class EsmLoader {
           status === 'evaluated',
           `Expected synchronous evaluation to complete for ${module.identifier}, but module status is "${status}". This is a bug in Jest, please report it!`,
         );
+      } else {
+        // Async path: TLA somewhere in the graph, or Node lacks the v22.21+ /
+        // v24.8+ sync-evaluate semantics. Store the promise so concurrent
+        // callers finding the module in `'evaluating'` await the same one.
+        this.evaluatingMap.set(module, module.evaluate());
       }
     }
 
