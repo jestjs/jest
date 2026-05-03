@@ -270,14 +270,8 @@ describe.each([
       } as unknown as WorkerOptions;
 
       if (workerClass === ThreadsWorker) {
-        // V8 14.1 (Node 25+) changed incremental marking activation to check
-        // GlobalConsumedBytes() against an 8 MB threshold (previously it checked
-        // EmbedderSizeOfObjects(), which is ~0 for pure-JS workers).
-        // https://github.com/v8/v8/commit/6f1855b64342dd24a813a769b1f1fcd21a9d75e3
-        // With a larger limit IM runs at OOM time, teardown triggers a GC on an
-        // exhausted heap, and aborts the whole process. Keeping the limit at
-        // 8 MB means OOM fires before IM starts, so teardown is safe on all
-        // Node versions.
+        // Larger limits cause the worker OOM to abort the parent process on
+        // Node 25 (V8 14.1). 8 MB is reliably safe across all Node versions.
         options.resourceLimits = {maxOldGenerationSizeMb: 8};
       } else if (workerClass === ChildProcessWorker) {
         options.forkOptions = {
