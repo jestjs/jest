@@ -35,19 +35,30 @@ export interface RequireBuilderDeps {
 }
 
 export class RequireBuilder {
-  private readonly deps: RequireBuilderDeps;
+  private readonly resolution: Resolution;
+  private readonly registries: ModuleRegistries;
+  private readonly testMainModule: TestMainModule;
+  private readonly requireDispatch: (
+    from: string,
+    moduleName: string,
+  ) => unknown;
+  private readonly requireInternal: (
+    from: string,
+    moduleName: string,
+  ) => unknown;
 
   constructor(deps: RequireBuilderDeps) {
-    this.deps = deps;
+    this.resolution = deps.resolution;
+    this.registries = deps.registries;
+    this.testMainModule = deps.testMainModule;
+    this.requireDispatch = deps.requireDispatch;
+    this.requireInternal = deps.requireInternal;
   }
 
   for(
     from: InitialModule,
     options: TransformOptions | undefined,
   ): NodeJS.Require {
-    const {registries, requireDispatch, requireInternal, testMainModule} =
-      this.deps;
-
     const resolveImpl = (
       moduleName: string,
       resolveOptions?: ResolveOptions,
@@ -66,16 +77,18 @@ export class RequireBuilder {
 
     const moduleRequire = (
       options?.isInternalModule
-        ? (moduleName: string) => requireInternal(from.filename, moduleName)
-        : (moduleName: string) => requireDispatch(from.filename, moduleName)
+        ? (moduleName: string) =>
+            this.requireInternal(from.filename, moduleName)
+        : (moduleName: string) =>
+            this.requireDispatch(from.filename, moduleName)
     ) as NodeJS.Require;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolveImpl;
-    moduleRequire.cache = registries.createRequireCacheProxy();
+    moduleRequire.cache = this.registries.createRequireCacheProxy();
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      value: testMainModule.current,
+      value: this.testMainModule.current,
     });
 
     return moduleRequire;
@@ -101,7 +114,6 @@ export class RequireBuilder {
     moduleName: string | undefined,
     options: ResolveOptions = {},
   ): string {
-    const {resolution} = this.deps;
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve must be a string. Received null or undefined.',
@@ -109,7 +121,7 @@ export class RequireBuilder {
     }
 
     if (path.isAbsolute(moduleName)) {
-      const module = resolution.resolveCjsFromDirIfExists(
+      const module = this.resolution.resolveCjsFromDirIfExists(
         moduleName,
         moduleName,
         [],
@@ -121,7 +133,7 @@ export class RequireBuilder {
       for (const searchPath of options.paths) {
         const absolutePath = path.resolve(from, '..', searchPath);
         // required to also resolve files without leading './' directly in the path
-        const module = resolution.resolveCjsFromDirIfExists(
+        const module = this.resolution.resolveCjsFromDirIfExists(
           absolutePath,
           moduleName,
           [absolutePath],
@@ -139,9 +151,9 @@ export class RequireBuilder {
     }
 
     try {
-      return resolution.resolveCjs(from, moduleName);
+      return this.resolution.resolveCjs(from, moduleName);
     } catch (error) {
-      const module = resolution.getCjsMockModule(from, moduleName);
+      const module = this.resolution.getCjsMockModule(from, moduleName);
       if (module) {
         return module;
       }
@@ -153,7 +165,6 @@ export class RequireBuilder {
     from: string,
     moduleName: string | undefined,
   ): Array<string> | null {
-    const {resolution} = this.deps;
     const fromDir = path.resolve(from, '..');
     if (moduleName == null) {
       throw new Error(
@@ -169,11 +180,11 @@ export class RequireBuilder {
     if (moduleName[0] === '.') {
       return [fromDir];
     }
-    if (resolution.isCoreModule(moduleName)) {
+    if (this.resolution.isCoreModule(moduleName)) {
       return null;
     }
-    const modulePaths = resolution.getModulePaths(fromDir);
-    const globalPaths = resolution.getGlobalPaths(moduleName);
+    const modulePaths = this.resolution.getModulePaths(fromDir);
+    const globalPaths = this.resolution.getGlobalPaths(moduleName);
     return [...modulePaths, ...globalPaths];
   }
 }
@@ -186,19 +197,22 @@ export interface CoreModuleProviderDeps {
 
 export class CoreModuleProvider {
   private mockedModuleClass?: typeof nativeModule.Module;
-  private readonly deps: CoreModuleProviderDeps;
+  private readonly resolution: Resolution;
+  private readonly environment: JestEnvironment;
+  private readonly requireBuilder: RequireBuilder;
 
   constructor(deps: CoreModuleProviderDeps) {
-    this.deps = deps;
+    this.resolution = deps.resolution;
+    this.environment = deps.environment;
+    this.requireBuilder = deps.requireBuilder;
   }
 
   require(moduleName: string, supportPrefix: boolean): unknown {
-    const {environment, resolution} = this.deps;
     const moduleWithoutNodePrefix =
-      supportPrefix && resolution.normalizeCoreModuleSpecifier(moduleName);
+      supportPrefix && this.resolution.normalizeCoreModuleSpecifier(moduleName);
 
     if (moduleWithoutNodePrefix === 'process') {
-      return environment.global.process;
+      return this.environment.global.process;
     }
 
     if (moduleWithoutNodePrefix === 'module') {
@@ -214,8 +228,6 @@ export class CoreModuleProvider {
     if (this.mockedModuleClass) {
       return this.mockedModuleClass;
     }
-
-    const {requireBuilder} = this.deps;
 
     const createRequire = (modulePath: string | URL) => {
       const filename =
@@ -233,7 +245,7 @@ export class CoreModuleProvider {
         throw error;
       }
 
-      return requireBuilder.forFilename(filename);
+      return this.requireBuilder.forFilename(filename);
     };
 
     class Module extends nativeModule.Module {}

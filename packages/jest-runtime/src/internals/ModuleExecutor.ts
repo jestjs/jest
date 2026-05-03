@@ -55,11 +55,27 @@ export interface ModuleExecutorDeps {
 }
 
 export class ModuleExecutor {
-  private readonly deps: ModuleExecutorDeps;
+  private readonly resolution: Resolution;
+  private readonly transformCache: TransformCache;
+  private readonly environment: JestEnvironment;
+  private readonly config: Config.ProjectConfig;
+  private readonly testPath: string;
+  private readonly requireBuilder: RequireBuilder;
+  private readonly testMainModule: TestMainModule;
+  private readonly jestGlobals: JestGlobals;
+  private readonly dynamicImport: ModuleExecutorDeps['dynamicImport'];
   private currentlyExecutingManualMock: string | null = null;
 
   constructor(deps: ModuleExecutorDeps) {
-    this.deps = deps;
+    this.resolution = deps.resolution;
+    this.transformCache = deps.transformCache;
+    this.environment = deps.environment;
+    this.config = deps.config;
+    this.testPath = deps.testPath;
+    this.requireBuilder = deps.requireBuilder;
+    this.testMainModule = deps.testMainModule;
+    this.jestGlobals = deps.jestGlobals;
+    this.dynamicImport = deps.dynamicImport;
   }
 
   getCurrentlyExecutingManualMock(): string | null {
@@ -73,18 +89,7 @@ export class ModuleExecutor {
     from: string | null,
     moduleName: string | undefined,
   ): ExecResult {
-    const {
-      transformCache,
-      resolution,
-      environment,
-      config,
-      testPath,
-      requireBuilder,
-      testMainModule,
-      jestGlobals,
-    } = this.deps;
-
-    if (!environment.global) {
+    if (!this.environment.global) {
       return 'env-disposed';
     }
 
@@ -104,43 +109,45 @@ export class ModuleExecutor {
           return moduleRegistry.get(key) || null;
         },
       });
-      const modulePaths = resolution.getModulePaths(module.path);
-      const globalPaths = resolution.getGlobalPaths(moduleName);
+      const modulePaths = this.resolution.getModulePaths(module.path);
+      const globalPaths = this.resolution.getGlobalPaths(moduleName);
       module.paths = [...modulePaths, ...globalPaths];
 
       Object.defineProperty(module, 'require', {
-        value: requireBuilder.for(localModule, options),
+        value: this.requireBuilder.for(localModule, options),
       });
 
-      const transformedCode = transformCache.transform(filename, options);
+      const transformedCode = this.transformCache.transform(filename, options);
 
       const compiledFunction = this.compile(transformedCode, filename);
       if (compiledFunction === null) {
         return 'env-disposed';
       }
 
-      const jestObject = jestGlobals.jestObjectFor(filename);
+      const jestObject = this.jestGlobals.jestObjectFor(filename);
 
       const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
-        config.injectGlobals ? jestObject : undefined,
-        ...config.sandboxInjectedGlobals.map<Global.Global>(globalVariable => {
-          if (environment.global[globalVariable]) {
-            return environment.global[globalVariable];
-          }
+        this.config.injectGlobals ? jestObject : undefined,
+        ...this.config.sandboxInjectedGlobals.map<Global.Global>(
+          globalVariable => {
+            if (this.environment.global[globalVariable]) {
+              return this.environment.global[globalVariable];
+            }
 
-          throw new Error(
-            `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-          );
-        }),
+            throw new Error(
+              `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+            );
+          },
+        ),
       ];
 
-      if (!testMainModule.current && filename === testPath) {
-        testMainModule.current = module;
+      if (!this.testMainModule.current && filename === this.testPath) {
+        this.testMainModule.current = module;
       }
 
       Object.defineProperty(module, 'main', {
         enumerable: true,
-        value: testMainModule.current,
+        value: this.testMainModule.current,
       });
 
       try {
@@ -168,15 +175,14 @@ export class ModuleExecutor {
     scriptSource: string,
     filename: string,
   ): ModuleWrapper | null {
-    const {environment, resolution, dynamicImport} = this.deps;
-    const vmContext = environment.getVmContext();
+    const vmContext = this.environment.getVmContext();
 
     if (vmContext == null) {
       return null;
     }
 
     try {
-      const scriptFilename = resolution.isCoreModule(filename)
+      const scriptFilename = this.resolution.isCoreModule(filename)
         ? `jest-nodejs-core-${filename}`
         : filename;
       return compileFunction(
@@ -189,7 +195,7 @@ export class ModuleExecutor {
               runtimeSupportsVmModules,
               'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
-            return dynamicImport(specifier, scriptFilename, vmContext);
+            return this.dynamicImport(specifier, scriptFilename, vmContext);
           },
           parsingContext: vmContext,
         },
@@ -206,20 +212,18 @@ export class ModuleExecutor {
   }
 
   constructInjectedModuleParameters(): Array<string> {
-    const {config} = this.deps;
     return [
       'module',
       'exports',
       'require',
       '__dirname',
       '__filename',
-      config.injectGlobals ? 'jest' : undefined,
-      ...config.sandboxInjectedGlobals,
+      this.config.injectGlobals ? 'jest' : undefined,
+      ...this.config.sandboxInjectedGlobals,
     ].filter(isNonNullable);
   }
 
   private handleExecutionError(error: Error, module: Module): never {
-    const {config} = this.deps;
     const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(error);
     if (moduleNotFoundError) {
       if (!moduleNotFoundError.requireStack) {
@@ -229,7 +233,7 @@ export class ModuleExecutor {
           moduleNotFoundError.requireStack.push(cursor.filename || cursor.id);
         }
 
-        moduleNotFoundError.buildMessage(config.rootDir);
+        moduleNotFoundError.buildMessage(this.config.rootDir);
       }
       throw moduleNotFoundError;
     }

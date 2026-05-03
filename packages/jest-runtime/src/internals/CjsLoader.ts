@@ -37,10 +37,28 @@ export interface CjsLoaderDeps {
 }
 
 export class CjsLoader {
-  private readonly deps: CjsLoaderDeps;
+  private readonly resolution: Resolution;
+  private readonly registries: ModuleRegistries;
+  private readonly mockState: MockState;
+  private readonly transformCache: TransformCache;
+  private readonly environment: JestEnvironment;
+  private readonly coreModule: CoreModuleProvider;
+  private readonly executor: ModuleExecutor;
+  private readonly requireEsm: <T>(modulePath: string) => T;
+  private readonly getTestState: () => TestState;
+  private readonly logFormattedReferenceError: (msg: string) => void;
 
   constructor(deps: CjsLoaderDeps) {
-    this.deps = deps;
+    this.resolution = deps.resolution;
+    this.registries = deps.registries;
+    this.mockState = deps.mockState;
+    this.transformCache = deps.transformCache;
+    this.environment = deps.environment;
+    this.coreModule = deps.coreModule;
+    this.executor = deps.executor;
+    this.requireEsm = deps.requireEsm;
+    this.getTestState = deps.getTestState;
+    this.logFormattedReferenceError = deps.logFormattedReferenceError;
   }
 
   requireModule<T = unknown>(
@@ -49,46 +67,38 @@ export class CjsLoader {
     options?: TransformOptions,
     isRequireActual = false,
   ): T {
-    const {
-      mockState,
-      registries,
-      resolution,
-      coreModule,
-      executor,
-      requireEsm,
-    } = this.deps;
     const isInternal = options?.isInternalModule ?? false;
-    const moduleID = mockState.getCjsModuleId(from, moduleName);
+    const moduleID = this.mockState.getCjsModuleId(from, moduleName);
     let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
-    const moduleResource = moduleName && resolution.getModule(moduleName);
+    const moduleResource = moduleName && this.resolution.getModule(moduleName);
     const manualMock =
-      moduleName && resolution.getCjsMockModule(from, moduleName);
+      moduleName && this.resolution.getCjsMockModule(from, moduleName);
     if (
       !options?.isInternalModule &&
       !isRequireActual &&
       !moduleResource &&
       manualMock &&
-      manualMock !== executor.getCurrentlyExecutingManualMock() &&
-      !mockState.isExplicitlyUnmocked(moduleID)
+      manualMock !== this.executor.getCurrentlyExecutingManualMock() &&
+      !this.mockState.isExplicitlyUnmocked(moduleID)
     ) {
       modulePath = manualMock;
     }
 
-    if (moduleName && resolution.isCoreModule(moduleName)) {
-      return coreModule.require(
+    if (moduleName && this.resolution.isCoreModule(moduleName)) {
+      return this.coreModule.require(
         moduleName,
         supportsNodeColonModulePrefixInRequire,
       ) as T;
     }
 
     if (!modulePath) {
-      modulePath = resolution.resolveCjs(from, moduleName);
+      modulePath = this.resolution.resolveCjs(from, moduleName);
     }
 
-    if (resolution.shouldLoadAsEsm(modulePath)) {
+    if (this.resolution.shouldLoadAsEsm(modulePath)) {
       if (!supportsSyncEvaluate) {
         const error: NodeJS.ErrnoException = new Error(
           `Must use import to load ES Module: ${modulePath}\n` +
@@ -100,15 +110,15 @@ export class CjsLoader {
         throw error;
       }
       // Fast path: skip the graph walker on cache hits.
-      const reg = registries.getActiveEsmRegistry();
+      const reg = this.registries.getActiveEsmRegistry();
       const cached = reg.get(modulePath);
       if (cached && !(cached instanceof Promise)) {
         return (cached as VMModule).namespace as T;
       }
-      return requireEsm<T>(modulePath);
+      return this.requireEsm<T>(modulePath);
     }
 
-    const moduleRegistry = registries.getActiveCjsRegistry(isInternal);
+    const moduleRegistry = this.registries.getActiveCjsRegistry(isInternal);
 
     const module = moduleRegistry.get(modulePath);
     if (module) {
@@ -143,7 +153,7 @@ export class CjsLoader {
       // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
       if (supportsSyncEvaluate && isCjsParseError(error)) {
         try {
-          return requireEsm<T>(modulePath);
+          return this.requireEsm<T>(modulePath);
         } catch (esmError) {
           if (esmError instanceof Error && esmError.name === 'SyntaxError') {
             throw error;
@@ -165,36 +175,31 @@ export class CjsLoader {
     options: TransformOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ): void {
-    const {
-      transformCache,
-      environment,
-      executor,
-      getTestState,
-      logFormattedReferenceError,
-    } = this.deps;
     if (path.extname(modulePath) === '.json') {
-      const transformed = transformCache.transformJson(modulePath, options);
-      localModule.exports = environment.global.JSON.parse(transformed);
+      const transformed = this.transformCache.transformJson(
+        modulePath,
+        options,
+      );
+      localModule.exports = this.environment.global.JSON.parse(transformed);
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
       // testState gates apply only to executing JS bodies — JSON/.node go
       // through pure data parsing and don't run user code in the VM.
-      if (getTestState() === 'tornDown') {
-        logFormattedReferenceError(
+      if (this.getTestState() === 'tornDown') {
+        this.logFormattedReferenceError(
           'You are trying to `require` a file after the Jest environment has been torn down.',
         );
         process.exitCode = 1;
         return;
       }
-      if (getTestState() === 'betweenTests' && !runtimeSupportsVmModules) {
+      if (this.getTestState() === 'betweenTests' && !runtimeSupportsVmModules) {
         throw new ReferenceError(
           'You are trying to `require` a file outside of the scope of the test code.',
         );
       }
-      // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      const result = executor.exec(
+      const result = this.executor.exec(
         localModule,
         options,
         moduleRegistry,
@@ -202,7 +207,7 @@ export class CjsLoader {
         moduleName,
       );
       if (result === 'env-disposed') {
-        logFormattedReferenceError(
+        this.logFormattedReferenceError(
           'You are trying to `require` a file after the Jest environment has been torn down.',
         );
         process.exitCode = 1;
