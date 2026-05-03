@@ -1404,10 +1404,16 @@ export class ModuleMocker {
   clearMocksOnScope(scope: object): void {
     for (const key of Object.keys(scope)) {
       const value = (scope as Record<string, unknown>)[key];
-      // `isMockFunction` checks the `_isMockFunction === true` marker; the
-      // extra `typeof mockClear === 'function'` guards against forged values
-      // that set the marker but aren't real Jest mocks.
+      // Gate on `'_isMockFunction' in value` first: that uses the `has` trap
+      // and won't fire a throwing getter (e.g. a user Proxy on `globalThis`).
+      // `isMockFunction` reads `._isMockFunction` directly, so we only call
+      // it once we know the property exists. The extra `typeof mockClear`
+      // guard rejects forged values that set the marker but aren't real Jest
+      // mocks.
       if (
+        value != null &&
+        (typeof value === 'object' || typeof value === 'function') &&
+        '_isMockFunction' in value &&
         this.isMockFunction(value) &&
         typeof (value as Mock).mockClear === 'function'
       ) {
