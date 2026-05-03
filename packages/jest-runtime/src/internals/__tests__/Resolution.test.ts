@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import {testWithVmEsm} from '@jest/test-utils';
 import type Resolver from 'jest-resolve';
@@ -302,10 +303,9 @@ describe('Resolution', () => {
       });
       existsSync.mockReturnValue(true);
       const r = new Resolution(resolver, [], []);
-      expect(r.findManualMock('/from.js', 'lib')).toBe(
-        '/path/to/__mocks__/lib.js',
-      );
-      expect(existsSync).toHaveBeenCalledWith('/path/to/__mocks__/lib.js');
+      const expected = path.join('/path/to', '__mocks__', 'lib.js');
+      expect(r.findManualMock('/from.js', 'lib')).toBe(expected);
+      expect(existsSync).toHaveBeenCalledWith(expected);
     });
 
     test('returns null when neither root nor sibling mock exists', () => {
