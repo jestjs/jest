@@ -227,14 +227,13 @@ export class EsmLoader {
     const cached = registry.get(rootKey);
     if (cached) {
       if (cached instanceof Promise) return null;
-      // Only reuse fully-evaluated entries. The legacy `loadEsmModule`
-      // source-text branch does `registry.set` while the `SourceTextModule`
-      // is still `'unlinked'` (link runs later in `linkAndEvaluateModule`);
-      // accessing `.namespace` on a non-evaluated module throws
-      // `ERR_VM_MODULE_STATUS`.
-      if (cached.status === 'evaluated') {
-        return cached as ESModule;
-      }
+      // The legacy `loadEsmModule` source-text branch does `registry.set`
+      // while the `SourceTextModule` is still `'unlinked'` (link runs later
+      // in `linkAndEvaluateModule`); accessing `.namespace` on a non-evaluated
+      // module throws `ERR_VM_MODULE_STATUS`. Surface settled entries
+      // (`'evaluated'` / `'errored'`); bail otherwise.
+      if (cached.status === 'evaluated') return cached as ESModule;
+      if (cached.status === 'errored') throw cached.error;
       return null;
     }
 
@@ -251,7 +250,7 @@ export class EsmLoader {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
-      // Registry first, mutex second. Same `'evaluated'` gate as the root —
+      // Registry first, mutex second. Same settled-status gate as the root —
       // anything in `'unlinked'` / `'linking'` / `'linked'` / `'evaluating'`
       // is the legacy path mid-flight on this dep. Plugging an unlinked
       // module into the parent's `linkRequests` would fail Node's link
@@ -259,6 +258,7 @@ export class EsmLoader {
       const fromRegistry = registry.get(cacheKey);
       if (fromRegistry instanceof Promise) return null;
       if (fromRegistry) {
+        if (fromRegistry.status === 'errored') throw fromRegistry.error;
         if (fromRegistry.status !== 'evaluated') return null;
         scratch.set(cacheKey, {
           cacheKey,
