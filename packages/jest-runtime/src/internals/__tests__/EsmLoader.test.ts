@@ -6,7 +6,7 @@
  */
 
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
-import {testWithSyncEsm} from '@jest/test-utils';
+import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import type {CjsExportsCache} from '../CjsExportsCache';
 import {EsmLoader, type TestState} from '../EsmLoader';
@@ -410,6 +410,41 @@ describe('EsmLoader.requireEsmModule', () => {
           message: expect.stringContaining('concurrent'),
         }),
       );
+    },
+  );
+});
+
+describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
+  testWithVmEsm(
+    'rethrows the original error when the resolved module is errored',
+    async () => {
+      // Regression: `linkAndEvaluateModule` used to fall through on
+      // `'errored'` and return the module silently; the caller's downstream
+      // `.namespace` access would then surface a less-helpful
+      // `ERR_VM_MODULE_STATUS` instead of the original evaluation error.
+      const {context, esmRegistry, loader} = makeLoader();
+      const errored = new SyntheticModule(
+        ['x'],
+        () => {
+          throw new Error('original eval error');
+        },
+        {context, identifier: '@jest/globals/from.mjs'},
+      );
+      await errored.link(() => {
+        throw new Error('no deps');
+      });
+      await errored.evaluate().catch(() => {});
+      expect(errored.status).toBe('errored');
+
+      // `resolveModule`'s `@jest/globals` branch returns this directly from the
+      // registry, so `dynamicImportFromCjs` ends up calling
+      // `linkAndEvaluateModule(errored)` — exactly the path the new guard
+      // protects.
+      esmRegistry.set('@jest/globals/from.mjs', errored);
+
+      await expect(
+        loader.dynamicImportFromCjs('@jest/globals', 'from.mjs', context),
+      ).rejects.toThrow('original eval error');
     },
   );
 });

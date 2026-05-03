@@ -1061,6 +1061,11 @@ export class EsmLoader {
       return;
     }
 
+    // Already-errored module from a prior failed evaluation.
+    if (module.status === 'errored') {
+      throw module.error;
+    }
+
     if (module.status === 'unlinked') {
       this.linkingMap.set(
         module,
