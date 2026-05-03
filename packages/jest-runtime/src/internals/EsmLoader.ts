@@ -552,7 +552,8 @@ export class EsmLoader {
     let resolved: string;
     try {
       resolved = resolution.resolveEsm(referencingIdentifier, specifierPath);
-    } catch {
+    } catch (error) {
+      if (mode === 'sync-required') throw error;
       return null;
     }
 
@@ -861,38 +862,36 @@ export class EsmLoader {
         'Promise initialization should be sync - please report this bug to Jest!',
       );
 
-      if (isWasm(modulePath)) {
-        const wasm = this.importWasmModule(
-          fileCache.readFileBuffer(modulePath),
-          modulePath,
-          context,
-        );
-        registry.set(cacheKey, wasm);
-        transformResolve();
-        transformCache.clearMutex(cacheKey);
-        return wasm;
-      }
-
-      if (resolution.isCoreModule(modulePath)) {
-        const core = evaluateSyntheticModule(
-          buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
-            this.deps.coreModule.require(name, prefix),
-          ),
-        );
-        registry.set(cacheKey, core);
-        transformResolve();
-        transformCache.clearMutex(cacheKey);
-        return core;
-      }
-
-      const transformedCode = transformCache.canTransformSync(modulePath)
-        ? transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
-        : await transformCache.transformAsync(
-            modulePath,
-            ESM_TRANSFORM_OPTIONS,
-          );
-
       try {
+        if (isWasm(modulePath)) {
+          const wasm = this.importWasmModule(
+            fileCache.readFileBuffer(modulePath),
+            modulePath,
+            context,
+          );
+          registry.set(cacheKey, wasm);
+          transformResolve();
+          return wasm;
+        }
+
+        if (resolution.isCoreModule(modulePath)) {
+          const core = evaluateSyntheticModule(
+            buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
+              this.deps.coreModule.require(name, prefix),
+            ),
+          );
+          registry.set(cacheKey, core);
+          transformResolve();
+          return core;
+        }
+
+        const transformedCode = transformCache.canTransformSync(modulePath)
+          ? transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
+          : await transformCache.transformAsync(
+              modulePath,
+              ESM_TRANSFORM_OPTIONS,
+            );
+
         let module: VMModule;
         if (modulePath.endsWith('.json')) {
           module = buildJsonSyntheticModule(
