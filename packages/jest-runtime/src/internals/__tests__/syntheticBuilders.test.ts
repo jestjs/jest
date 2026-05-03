@@ -79,6 +79,7 @@ describe('syntheticBuilders', () => {
         // The whole `required` is the default; `required.default` ('inner-…')
         // is shadowed by the explicit `default` set after the spread.
         expect(ns.default).toBe(required);
+        expect((ns as any).default.default).toBe('inner-default-value');
         expect(ns.named).toBe('n');
       },
     );
