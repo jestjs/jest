@@ -122,7 +122,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         context,
         identifier: '/m.mjs',
       });
-      // Settle to `'evaluated'` — that's the contract for cache reuse.
+      // Settle to `'evaluated'` - that's the contract for cache reuse.
       await cached.link(() => {
         throw new Error('no deps');
       });
@@ -536,7 +536,7 @@ describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
 
       // `resolveModule`'s `@jest/globals` branch returns this directly from the
       // registry, so `dynamicImportFromCjs` ends up calling
-      // `linkAndEvaluateModule(errored)` — exactly the path the new guard
+      // `linkAndEvaluateModule(errored)` - exactly the path the new guard
       // protects.
       esmRegistry.set('@jest/globals/from.mjs', errored);
 

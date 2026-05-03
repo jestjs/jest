@@ -65,7 +65,7 @@ describe('syntheticBuilders', () => {
         // `module.exports.default`. None of the shipped Node cores have a
         // `default` key today, but if one ever does we still want the
         // default-import to mean "the whole module". Note: `import x` and
-        // `import {default as x}` are the same binding in ESM — both resolve
+        // `import {default as x}` are the same binding in ESM - both resolve
         // to the namespace's `default`, which we set to the whole `required`.
         const required = {default: 'inner-default-value', named: 'n'};
         const m = buildCoreSyntheticModule(

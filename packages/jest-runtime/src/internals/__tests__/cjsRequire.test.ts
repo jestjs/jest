@@ -227,7 +227,7 @@ describe('RequireBuilder', () => {
     });
 
     test('returns [fromDir] for relative specifiers', () => {
-      // Windows yields `D:\a\b`, POSIX `/a/b` — compute the same way.
+      // Windows yields `D:\a\b`, POSIX `/a/b` - compute the same way.
       const fromDir = path.resolve('/a/b/from.js', '..');
       expect(pathsVia(makeBuilder(), './x')).toEqual([fromDir]);
     });
@@ -337,7 +337,7 @@ describe('CoreModuleProvider', () => {
       'module',
       true,
     ) as typeof nativeModule.Module;
-    // Windows rejects `file:///abs/x.js` — needs a drive letter.
+    // Windows rejects `file:///abs/x.js` - needs a drive letter.
     const absolutePath = path.resolve('/abs/x.js');
     ModuleClass.createRequire(pathToFileURL(absolutePath).href);
     expect(forFilename).toHaveBeenCalledWith(absolutePath);

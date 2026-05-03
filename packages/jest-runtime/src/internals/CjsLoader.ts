@@ -185,7 +185,7 @@ export class CjsLoader {
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
-      // testState gates apply only to executing JS bodies — JSON/.node go
+      // testState gates apply only to executing JS bodies - JSON/.node go
       // through pure data parsing and don't run user code in the VM.
       if (
         this.testState.bailIfTornDown(

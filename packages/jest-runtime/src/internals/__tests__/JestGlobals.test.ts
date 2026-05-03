@@ -156,7 +156,7 @@ describe('JestGlobals.envGlobals', () => {
     jestGlobals.setEnvGlobalsOverride(override);
     const first = jestGlobals.envGlobals();
     expect(first.describe).toBe('over-describe');
-    // Mutating the returned object must not affect subsequent reads — the
+    // Mutating the returned object must not affect subsequent reads - the
     // current Runtime contract is `{...this.jestGlobals}` on each access.
     (first as unknown as Record<string, unknown>).describe = 'mutated';
     const second = jestGlobals.envGlobals();
@@ -184,7 +184,7 @@ describe('JestGlobals.esmGlobalsModule', () => {
   });
 });
 
-describe('JestGlobals — fake-timers state', () => {
+describe('JestGlobals - fake-timers state', () => {
   test('useFakeTimers points fakeTimersImpl at the modern impl by default', () => {
     const {fakeTimersModern, jestGlobals} = makeJestGlobals();
     const jestObj = jestGlobals.jestObjectFor('/file.js');
@@ -217,7 +217,7 @@ describe('JestGlobals — fake-timers state', () => {
   });
 });
 
-describe('JestGlobals — override-seam bridges', () => {
+describe('JestGlobals - override-seam bridges', () => {
   test('jest.requireActual delegates to the bridge with the captured `from`', () => {
     const {jestGlobals, stubs} = makeJestGlobals();
     const jestObj = jestGlobals.jestObjectFor('/file.js');

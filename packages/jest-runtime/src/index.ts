@@ -53,7 +53,7 @@ import type {EnvironmentGlobals} from './internals/types';
 
 // Modules safe to require from the outside (not stateful, not prone to
 // realm errors) and slow enough that paying the worker-cache hit is worth
-// it. Internal context only — user `require()` from a test still goes
+// it. Internal context only - user `require()` from a test still goes
 // through the VM.
 const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 

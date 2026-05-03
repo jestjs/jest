@@ -170,7 +170,7 @@ export class EsmLoader {
   ) => unknown;
   private readonly testState: TestState;
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
-  // (delete the block at the bottom of this file too — eslint/tsc will
+  // (delete the block at the bottom of this file too - eslint/tsc will
   // surface anything else that becomes unused).
   private readonly linkingMap = new WeakMap<JestModule, Promise<unknown>>();
   private readonly evaluatingMap = new WeakMap<JestModule, Promise<void>>();
@@ -255,7 +255,7 @@ export class EsmLoader {
       const {cacheKey, modulePath} = worklist.pop()!;
       if (scratch.has(cacheKey)) continue;
 
-      // Registry first, mutex second. Same settled-status gate as the root —
+      // Registry first, mutex second. Same settled-status gate as the root -
       // anything in `'unlinked'` / `'linking'` / `'linked'` / `'evaluating'`
       // is the legacy path mid-flight on this dep. Plugging an unlinked
       // module into the parent's `linkRequests` would fail Node's link
@@ -796,7 +796,7 @@ export class EsmLoader {
     );
   }
 
-  // TODO: legacy async path — everything below is deletable when min-Node
+  // TODO: legacy async path - everything below is deletable when min-Node
   // ≥ v24.9 (the sync core handles all entry shapes). Drop the `linkingMap`
   // / `evaluatingMap` fields with it.
 

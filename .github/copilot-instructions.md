@@ -155,7 +155,7 @@ yarn lint
 - Takes 1-2 minutes
 - **Run this only as a final check.** During development, lint only changed files (see below).
 
-**During verification — lint only changed files first**:
+**During verification - lint only changed files first**:
 
 ```bash
 yarn eslint --cache --fix <changed-file-1> <changed-file-2> ...

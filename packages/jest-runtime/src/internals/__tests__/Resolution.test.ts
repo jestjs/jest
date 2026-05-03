@@ -341,6 +341,22 @@ describe('Resolution', () => {
       expect(existsSync).toHaveBeenCalledTimes(1);
     });
 
+    test('shares cache between core specifier and its `node:`-prefixed form', () => {
+      const resolver = makeResolver({
+        getMockModule: jest.fn(() => '/core-mock.js'),
+        isCoreModule: jest.fn(() => true),
+        normalizeCoreModuleSpecifier: jest.fn((name: string) =>
+          name.replace(/^node:/, ''),
+        ),
+      });
+      const r = new Resolution(resolver, [], []);
+      r.findManualMock('/from.js', 'fs');
+      r.findManualMock('/from.js', 'node:fs');
+      // Both call sites should hit the same cache entry - only one underlying
+      // `getMockModule` lookup, not two.
+      expect(resolver.getMockModule).toHaveBeenCalledTimes(1);
+    });
+
     test('clear() drops the manual-mock cache', () => {
       const resolver = makeResolver({
         getMockModule: jest.fn(() => null),

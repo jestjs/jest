@@ -99,7 +99,7 @@ describe('MockState', () => {
       const result = mockState.shouldMockCjs('/from', './a');
       expect(stub.getCjsModuleId).toHaveBeenCalledTimes(1);
       // The returned moduleID is what callers would otherwise have to recompute
-      // — having it on the response saves a second `getCjsModuleId` call on
+      // - having it on the response saves a second `getCjsModuleId` call on
       // the requireModuleOrMock → requireMock dispatch path.
       expect(result.moduleID).toBe('cjs:/from:./a');
     });
@@ -283,7 +283,7 @@ describe('MockState', () => {
 });
 
 // `generateMock` takes (from, name, options); these tests stub every member of
-// that options bag — `mockState` itself is mocked here, unlike the decision
+// that options bag - `mockState` itself is mocked here, unlike the decision
 // tests above where MockState is the real subject. The Resolution stub from
 // `makeResolution()` is reused.
 

@@ -46,7 +46,7 @@ export class CjsExportsCache {
     this.loadCoreReexport = options.loadCoreReexport;
   }
 
-  // `from` is the module asking for the exports — propagated to the load
+  // `from` is the module asking for the exports - propagated to the load
   // callbacks so user mocks (`jest.mock('./addon.node', factory)`) dispatch
   // against the real importer rather than an empty placeholder. The cache is
   // keyed by `modulePath` only (export keys don't depend on the importer);
