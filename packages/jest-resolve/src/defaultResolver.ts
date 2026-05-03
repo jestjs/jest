@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isBuiltin} from 'module';
-import {fileURLToPath} from 'url';
+import {isBuiltin} from 'node:module';
+import {fileURLToPath} from 'node:url';
 import pnpResolver from 'jest-pnp-resolver';
 import {
   type ResolveResult,
@@ -15,29 +15,34 @@ import {
 } from 'unrs-resolver';
 import {getResolver, setResolver} from './fileWalkers';
 
-export interface ResolverOptions extends UpstreamResolveOptions {
+export interface ResolverOptions extends Omit<
+  UpstreamResolveOptions,
+  'extensions'
+> {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
-  conditions?: Array<string>;
+  conditions?: ReadonlyArray<string>;
   /** Instance of default resolver. */
   defaultResolver: SyncResolver;
   /** Instance of default async resolver. */
   defaultAsyncResolver: AsyncResolver;
+  /** List of file extensions to be considered when resolving. */
+  extensions?: ReadonlyArray<string>;
   /**
    * List of directory names to be looked up for modules recursively.
    *
    * @defaultValue
    * The default is `['node_modules']`.
    */
-  moduleDirectory?: Array<string>;
+  moduleDirectory?: ReadonlyArray<string>;
   /**
    * List of `require.paths` to use if nothing is found in `node_modules`.
    *
    * @defaultValue
    * The default is `undefined`.
    */
-  paths?: Array<string>;
+  paths?: ReadonlyArray<string>;
   /** Current root directory. */
   rootDir?: string;
 
@@ -81,7 +86,10 @@ function baseResolver(
   }
 
   if (process.versions.pnp && options.allowPnp !== false) {
-    return pnpResolver(path, options);
+    return pnpResolver(path, {
+      ...options,
+      extensions: options.extensions as Array<string> | undefined,
+    });
   }
 
   if (path.startsWith('file://')) {
@@ -93,6 +101,7 @@ function baseResolver(
     basedir,
     conditions,
     conditionNames,
+    extensions,
     modules,
     moduleDirectory,
     paths,
@@ -102,11 +111,16 @@ function baseResolver(
     /* eslint-enable prefer-const */
   } = options;
 
-  modules = modules || moduleDirectory;
+  modules = modules || (moduleDirectory as Array<string>);
 
   const resolveOptions: UpstreamResolveOptions = {
     conditionNames: conditionNames ||
-      conditions || ['require', 'node', 'default'],
+      (conditions as Array<string> | undefined) || [
+        'require',
+        'node',
+        'default',
+      ],
+    extensions: extensions as Array<string> | undefined,
     modules,
     roots: roots || (rootDir ? [rootDir] : undefined),
     ...rest,
@@ -135,7 +149,7 @@ function baseResolver(
         if (paths.length > 0) {
           unrsResolver = unrsResolver!.cloneWithOptions({
             ...resolveOptions,
-            modules: paths,
+            modules: paths as Array<string>,
           });
           setResolver(unrsResolver);
           return resolve();

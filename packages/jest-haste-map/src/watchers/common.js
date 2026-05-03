@@ -2,8 +2,8 @@
 
 'use strict';
 
-const platform = require('os').platform();
-const path = require('path');
+const platform = require('node:os').platform();
+const path = require('node:path');
 const anymatch = require('anymatch');
 const picomatch = require('picomatch');
 const walker = require('walker');

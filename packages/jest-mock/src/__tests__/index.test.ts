@@ -2428,6 +2428,51 @@ describe('moduleMocker', () => {
   });
 });
 
+describe('moduleMocker.clearMocksOnScope', () => {
+  let moduleMocker: ModuleMocker;
+
+  beforeEach(() => {
+    const mockContext = createContext();
+    moduleMocker = new ModuleMocker(runInNewContext('this', mockContext));
+  });
+
+  it('calls mockClear on every mock function found on the scope object', () => {
+    const fn1 = moduleMocker.fn();
+    const fn2 = moduleMocker.fn();
+    fn1();
+    fn2();
+    fn2();
+    expect(fn1.mock.calls).toHaveLength(1);
+    expect(fn2.mock.calls).toHaveLength(2);
+
+    moduleMocker.clearMocksOnScope({fn1, fn2});
+
+    expect(fn1.mock.calls).toHaveLength(0);
+    expect(fn2.mock.calls).toHaveLength(0);
+  });
+
+  it('skips non-mock functions and primitives', () => {
+    const realFn = () => {};
+    const fn = moduleMocker.fn();
+    fn();
+    expect(() =>
+      moduleMocker.clearMocksOnScope({
+        notAMock: realFn,
+        nullish: null,
+        num: 1,
+        str: 'hi',
+        target: fn,
+      }),
+    ).not.toThrow();
+    expect(fn.mock.calls).toHaveLength(0);
+  });
+
+  it('skips forged values that set _isMockFunction but lack mockClear', () => {
+    const forged = {_isMockFunction: true};
+    expect(() => moduleMocker.clearMocksOnScope({forged})).not.toThrow();
+  });
+});
+
 describe('mocked', () => {
   it('should return unmodified input', () => {
     const subject = {};

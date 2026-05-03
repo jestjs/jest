@@ -6,7 +6,11 @@
  */
 
 import * as path from 'path';
-import {extractSummary, runYarnInstall} from '../Utils';
+import {
+  extractSummary,
+  replaceJestBuildLineNumbers,
+  runYarnInstall,
+} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../require-missing-ext');
@@ -19,5 +23,5 @@ test('shows a proper error from deep requires', () => {
   const {stderr} = runJest(dir);
   const {rest} = extractSummary(stderr);
 
-  expect(rest).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });

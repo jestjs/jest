@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, normalize, resolve} from 'path';
-import {fileURLToPath} from 'url';
+import {dirname, normalize, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
 

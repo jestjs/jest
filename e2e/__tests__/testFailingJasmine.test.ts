@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import {extractSortedSummary} from '../Utils';
+import {extractSortedSummary, replaceJestBuildLineNumbers} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
@@ -18,10 +18,11 @@ test('throws an error about unsupported modifier', () => {
   const result = runJest(dir);
   expect(result.exitCode).toBe(1);
   const {rest} = extractSortedSummary(result.stderr);
-  expect(
+  const normalized = replaceJestBuildLineNumbers(
     rest.replaceAll(
       'at Function.failing (../../packages/jest-jasmine2/',
       'at concurrentFn.failing (../../packages/jest-jasmine2/',
     ),
-  ).toMatchSnapshot();
+  );
+  expect(normalized).toMatchSnapshot();
 });
