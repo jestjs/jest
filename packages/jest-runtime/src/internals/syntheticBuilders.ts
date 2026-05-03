@@ -6,11 +6,9 @@
  */
 
 import {SyntheticModule, type Context as VMContext} from 'node:vm';
-import type {Jest} from '@jest/environment';
 import {invariant} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
-import type {JestGlobals, JestGlobalsWithJest} from './types';
 
 // Build a SyntheticModule from a plain exports record. The set of names and
 // the value *references* are snapshotted at construction time, so later
@@ -99,23 +97,6 @@ export function buildCoreSyntheticModule(
     ...required,
     default: required,
   });
-}
-
-export function buildJestGlobalsSyntheticModule(
-  from: string,
-  context: VMContext,
-  getJestObject: (from: string) => Jest,
-  getEnvironmentGlobals: () => JestGlobals,
-): SyntheticModule {
-  const globals: JestGlobalsWithJest = {
-    ...getEnvironmentGlobals(),
-    jest: getJestObject(from),
-  };
-  return syntheticFromExports(
-    '@jest/globals',
-    context,
-    globals as unknown as Record<string, unknown>,
-  );
 }
 
 // Builds a SyntheticModule wrapping a CJS module's `module.exports` for

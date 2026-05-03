@@ -8,10 +8,10 @@
 import type {expect, jest} from '@jest/globals';
 import type {Global} from '@jest/types';
 
-export interface JestGlobals extends Global.TestFrameworkGlobals {
+export interface EnvironmentGlobals extends Global.TestFrameworkGlobals {
   expect: typeof expect;
 }
 
-export interface JestGlobalsWithJest extends JestGlobals {
+export interface JestGlobalsWithJest extends EnvironmentGlobals {
   jest: typeof jest;
 }

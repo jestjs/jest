@@ -13,11 +13,12 @@ import {
   type Context as VMContext,
   type Module as VMModule,
 } from 'node:vm';
-import type {Jest, JestEnvironment, JestImportMeta} from '@jest/environment';
+import type {JestEnvironment, JestImportMeta} from '@jest/environment';
 import {invariant, isError, isPromise} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
+import type {JestGlobals} from './JestGlobals';
 import type {MockState} from './MockState';
 import {isCjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
@@ -32,13 +33,11 @@ import {
 import {
   buildCjsAsEsmSyntheticModule,
   buildCoreSyntheticModule,
-  buildJestGlobalsSyntheticModule,
   buildJsonSyntheticModule,
   buildWasmSyntheticModule,
   evaluateSyntheticModule,
   syntheticFromExports,
 } from './syntheticBuilders';
-import type {JestGlobals} from './types';
 
 interface VMModuleWithAsyncGraph extends VMModule {
   hasAsyncGraph?: () => boolean;
@@ -149,15 +148,9 @@ export interface EsmLoaderDeps {
   environment: JestEnvironment;
   cjsExportsCache: CjsExportsCache;
   coreModule: CoreModuleProvider;
-  // Bridges to public Runtime entry points. Subclassers override these on
-  // `Runtime`; the override flows through here. See PR #16084 review.
+  jestGlobals: JestGlobals;
   shouldLoadAsEsm: (modulePath: string) => boolean;
   requireModuleOrMock: (from: string, moduleName: string) => unknown;
-  // Cache-or-create lookup; Runtime owns `jestObjectCaches`. Tier 3.4 collapses
-  // this into a JestObjectFactory ref.
-  getJestObject: (from: string) => Jest;
-  getEnvironmentGlobals: () => JestGlobals;
-  // Runtime hooks.
   getTestState: () => TestState;
   logFormattedReferenceError: (msg: string) => void;
 }
@@ -171,13 +164,12 @@ export class EsmLoader {
   private readonly environment: JestEnvironment;
   private readonly cjsExportsCache: CjsExportsCache;
   private readonly coreModule: CoreModuleProvider;
+  private readonly jestGlobals: JestGlobals;
   private readonly shouldLoadAsEsm: (modulePath: string) => boolean;
   private readonly requireModuleOrMock: (
     from: string,
     moduleName: string,
   ) => unknown;
-  private readonly getJestObject: (from: string) => Jest;
-  private readonly getEnvironmentGlobals: () => JestGlobals;
   private readonly getTestState: () => TestState;
   private readonly logFormattedReferenceError: (msg: string) => void;
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
@@ -195,10 +187,9 @@ export class EsmLoader {
     this.environment = deps.environment;
     this.cjsExportsCache = deps.cjsExportsCache;
     this.coreModule = deps.coreModule;
+    this.jestGlobals = deps.jestGlobals;
     this.shouldLoadAsEsm = deps.shouldLoadAsEsm;
     this.requireModuleOrMock = deps.requireModuleOrMock;
-    this.getJestObject = deps.getJestObject;
-    this.getEnvironmentGlobals = deps.getEnvironmentGlobals;
     this.getTestState = deps.getTestState;
     this.logFormattedReferenceError = deps.logFormattedReferenceError;
   }
@@ -378,7 +369,8 @@ export class EsmLoader {
                 this.resolution.resolveEsm(parentPath, specifier),
               ).href;
             };
-            (meta as JestImportMeta).jest = this.getJestObject(modulePath);
+            (meta as JestImportMeta).jest =
+              this.jestGlobals.jestObjectFor(modulePath);
           },
         },
       );
@@ -534,7 +526,7 @@ export class EsmLoader {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-        this.buildJestGlobalsSyntheticModule(referencingIdentifier, context),
+        this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
       );
       return ok ? {cacheKey, enqueue: null} : null;
     }
@@ -808,18 +800,6 @@ export class EsmLoader {
     );
   }
 
-  private buildJestGlobalsSyntheticModule(
-    from: string,
-    context: VMContext,
-  ): SyntheticModule {
-    return buildJestGlobalsSyntheticModule(
-      from,
-      context,
-      this.getJestObject,
-      this.getEnvironmentGlobals,
-    );
-  }
-
   // TODO: legacy async path — everything below is deletable when min-Node
   // ≥ v24.9 (the sync core handles all entry shapes). Drop the `linkingMap`
   // / `evaluatingMap` fields with it.
@@ -947,7 +927,8 @@ export class EsmLoader {
                   this.resolution.resolveEsm(parentPath, specifier),
                 ).href;
               };
-              (meta as JestImportMeta).jest = this.getJestObject(modulePath);
+              (meta as JestImportMeta).jest =
+                this.jestGlobals.jestObjectFor(modulePath);
             },
           });
         }
@@ -997,7 +978,7 @@ export class EsmLoader {
         return fromCache as T;
       }
       const globals = evaluateSyntheticModule(
-        this.buildJestGlobalsSyntheticModule(referencingIdentifier, context),
+        this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
       );
       registry.set(globalsIdentifier, globals);
       return globals as T;

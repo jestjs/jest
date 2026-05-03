@@ -20,6 +20,7 @@ import {handlePotentialSyntaxError} from '@jest/transform';
 import type {Config, Global} from '@jest/types';
 import Resolver from 'jest-resolve';
 import {invariant, isError, isNonNullable} from 'jest-util';
+import type {JestGlobals} from './JestGlobals';
 import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformCache, TransformOptions} from './TransformCache';
@@ -45,8 +46,7 @@ export interface ModuleExecutorDeps {
   testPath: string;
   requireBuilder: RequireBuilder;
   testMainModule: TestMainModule;
-  jestObjectFactory: (from: string) => Jest;
-  jestObjectCache: Map<string, Jest>;
+  jestGlobals: JestGlobals;
   dynamicImport: (
     specifier: string,
     identifier: string,
@@ -54,7 +54,6 @@ export interface ModuleExecutorDeps {
   ) => Promise<VMModule>;
 }
 
-// Caller is responsible for testState gating and `.json`/`.node` dispatch.
 export class ModuleExecutor {
   private readonly deps: ModuleExecutorDeps;
   private currentlyExecutingManualMock: string | null = null;
@@ -82,8 +81,7 @@ export class ModuleExecutor {
       testPath,
       requireBuilder,
       testMainModule,
-      jestObjectFactory,
-      jestObjectCache,
+      jestGlobals,
     } = this.deps;
 
     if (!environment.global) {
@@ -121,8 +119,7 @@ export class ModuleExecutor {
         return 'env-disposed';
       }
 
-      const jestObject = jestObjectFactory(filename);
-      jestObjectCache.set(filename, jestObject);
+      const jestObject = jestGlobals.jestObjectFor(filename);
 
       const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
         config.injectGlobals ? jestObject : undefined,

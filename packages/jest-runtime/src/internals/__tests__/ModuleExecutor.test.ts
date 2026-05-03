@@ -8,6 +8,7 @@
 import type {Jest, JestEnvironment} from '@jest/environment';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {RequireBuilder} from '../cjsRequire';
+import type {JestGlobals} from '../JestGlobals';
 import {
   CJS_PARSE_ERROR,
   ModuleExecutor,
@@ -44,8 +45,9 @@ describe('ModuleExecutor', () => {
       }),
       dynamicImport: jest.fn<ModuleExecutorDeps['dynamicImport']>(),
       environment: {global: {}} as JestEnvironment,
-      jestObjectCache: new Map(),
-      jestObjectFactory: () => ({}) as Jest,
+      jestGlobals: {
+        jestObjectFor: () => ({}) as Jest,
+      } as unknown as JestGlobals,
       requireBuilder: {for: () => noopRequire} as unknown as RequireBuilder,
       resolution: {} as unknown as Resolution,
       testMainModule: new TestMainModule(),

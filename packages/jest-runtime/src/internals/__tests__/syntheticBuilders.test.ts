@@ -11,7 +11,6 @@ import type {CjsExportsCache} from '../CjsExportsCache';
 import {
   buildCjsAsEsmSyntheticModule,
   buildCoreSyntheticModule,
-  buildJestGlobalsSyntheticModule,
   buildJsonSyntheticModule,
   evaluateSyntheticModule,
 } from '../syntheticBuilders';
@@ -83,40 +82,6 @@ describe('syntheticBuilders', () => {
         expect(ns.named).toBe('n');
       },
     );
-  });
-
-  describe('buildJestGlobalsSyntheticModule', () => {
-    testWithVmEsm(
-      'merges environment globals with the jest object for the given `from`',
-      async () => {
-        const jestObject = {fn: 'jest-fn-marker'};
-        const envGlobals = {describe: 'describe-marker', test: 'test-marker'};
-
-        const m = buildJestGlobalsSyntheticModule(
-          '/from.js',
-          context(),
-          () => jestObject as never,
-          () => envGlobals as never,
-        );
-        const ns = await evaluate(m);
-
-        expect(ns.jest).toBe(jestObject);
-        expect(ns.test).toBe('test-marker');
-        expect(ns.describe).toBe('describe-marker');
-      },
-    );
-
-    testWithVmEsm('passes `from` to getJestObject', async () => {
-      const getJestObject: jest.MockedFunction<(from: string) => never> =
-        jest.fn(() => ({}) as never);
-      buildJestGlobalsSyntheticModule(
-        '/some/from.js',
-        context(),
-        getJestObject,
-        () => ({}) as never,
-      );
-      expect(getJestObject).toHaveBeenCalledWith('/some/from.js');
-    });
   });
 
   describe('buildCjsAsEsmSyntheticModule', () => {

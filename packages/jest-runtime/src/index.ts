@@ -10,9 +10,7 @@ import * as path from 'node:path';
 import {SourceTextModule} from 'node:vm';
 import * as fs from 'graceful-fs';
 import slash from 'slash';
-import type {Jest, JestEnvironment} from '@jest/environment';
-import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {expect} from '@jest/globals';
+import type {JestEnvironment} from '@jest/environment';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {TestContext, V8CoverageResult} from '@jest/test-result';
 import {
@@ -37,6 +35,7 @@ import {CjsExportsCache} from './internals/CjsExportsCache';
 import {CjsLoader} from './internals/CjsLoader';
 import {EsmLoader} from './internals/EsmLoader';
 import {FileCache} from './internals/FileCache';
+import {JestGlobals} from './internals/JestGlobals';
 import {MockState} from './internals/MockState';
 import {ModuleExecutor} from './internals/ModuleExecutor';
 import {ModuleRegistries} from './internals/ModuleRegistries';
@@ -51,7 +50,7 @@ import {generateMock} from './internals/automock';
 import {CoreModuleProvider, RequireBuilder} from './internals/cjsRequire';
 import type {InitialModule, ModuleRegistry} from './internals/moduleTypes';
 import {runtimeSupportsVmModules} from './internals/nodeCapabilities';
-import type {JestGlobals, JestGlobalsWithJest} from './internals/types';
+import type {EnvironmentGlobals} from './internals/types';
 
 // Modules safe to require from the outside (not stateful, not prone to
 // realm errors) and slow enough that paying the worker-cache hit is worth
@@ -78,12 +77,6 @@ const defaultTransformOptions: TransformOptions = {
   supportsTopLevelAwait: false,
 };
 
-const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
-const retryTimesSymbol = Symbol.for('RETRY_TIMES');
-const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
-const retryImmediatelySybmbol = Symbol.for('RETRY_IMMEDIATELY');
-const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
-
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 
 const getModuleNameMapper = (config: Config.ProjectConfig) => {
@@ -102,14 +95,9 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 export default class Runtime {
   private readonly fileCache: FileCache;
   private readonly _config: Config.ProjectConfig;
-  private readonly _globalConfig: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private readonly _environment: JestEnvironment;
   private readonly mockState: MockState;
-  private _fakeTimersImplementation:
-    | LegacyFakeTimers<unknown>
-    | ModernFakeTimers
-    | null;
   private readonly registries: ModuleRegistries;
   private readonly testMainModule: TestMainModule;
   private readonly requireBuilder: RequireBuilder;
@@ -123,8 +111,7 @@ export default class Runtime {
   private readonly transformCache: TransformCache;
   private readonly v8Coverage: V8CoverageCollector;
   private readonly coreModule: CoreModuleProvider;
-  private readonly jestObjectCaches: Map<string, Jest>;
-  private jestGlobals?: JestGlobals;
+  private readonly jestGlobals: JestGlobals;
   private testState: 'loading' | 'inTest' | 'betweenTests' | 'tornDown' =
     'loading';
   private readonly loggedReferenceErrors = new Set<string>();
@@ -143,7 +130,6 @@ export default class Runtime {
     this._config = config;
     this._coverageOptions = coverageOptions;
     this._environment = environment;
-    this._globalConfig = globalConfig;
     this.registries = new ModuleRegistries();
     invariant(
       this._environment.moduleMocker,
@@ -161,12 +147,6 @@ export default class Runtime {
       config,
       this.transformCache,
     );
-    this.jestObjectCaches = new Map();
-
-    this._fakeTimersImplementation = config.fakeTimers.legacyFakeTimers
-      ? this._environment.fakeTimers
-      : this._environment.fakeTimersModern;
-
     this._resolution = new Resolution(
       resolver,
       this._environment.exportConditions?.() ?? [],
@@ -200,14 +180,35 @@ export default class Runtime {
       requireBuilder: this.requireBuilder,
       resolution: this._resolution,
     });
+    this.jestGlobals = new JestGlobals({
+      clearAllMocks: () => this.clearAllMocks(),
+      config,
+      environment: this._environment,
+      generateMock: (from, moduleName) => this._generateMock(from, moduleName),
+      getTestState: () => this.testState,
+      globalConfig,
+      isolateModules: fn => this.isolateModules(fn),
+      isolateModulesAsync: fn => this.isolateModulesAsync(fn),
+      logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
+      mockState: this.mockState,
+      moduleMocker: this._moduleMocker,
+      requireActual: (from, moduleName) => this.requireActual(from, moduleName),
+      requireMock: (from, moduleName) => this.requireMock(from, moduleName),
+      resetAllMocks: () => this.resetAllMocks(),
+      resetModules: () => this.resetModules(),
+      restoreAllMocks: () => this.restoreAllMocks(),
+      setMock: (from, moduleName, mockFactory, options) =>
+        this.setMock(from, moduleName, mockFactory, options),
+      setModuleMock: (from, moduleName, mockFactory, options) =>
+        this.setModuleMock(from, moduleName, mockFactory, options),
+    });
     this.esmLoader = new EsmLoader({
       cjsExportsCache: this.cjsExportsCache,
       coreModule: this.coreModule,
       environment: this._environment,
       fileCache: this.fileCache,
-      getEnvironmentGlobals: () => this.getGlobalsFromEnvironment(),
-      getJestObject: from => this._getOrCreateJest(from),
       getTestState: () => this.testState,
+      jestGlobals: this.jestGlobals,
       logFormattedReferenceError: msg => this._logFormattedReferenceError(msg),
       mockState: this.mockState,
       registries: this.registries,
@@ -222,8 +223,7 @@ export default class Runtime {
       dynamicImport: (specifier, identifier, context) =>
         this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
       environment: this._environment,
-      jestObjectCache: this.jestObjectCaches,
-      jestObjectFactory: from => this._createJestObjectFor(from),
+      jestGlobals: this.jestGlobals,
       requireBuilder: this.requireBuilder,
       resolution: this._resolution,
       testMainModule: this.testMainModule,
@@ -505,7 +505,7 @@ export default class Runtime {
     // this module is unmockable
     if (moduleName === '@jest/globals') {
       // @ts-expect-error: we don't care that it's not assignable to T
-      return this.getGlobalsForCjs(from);
+      return this.jestGlobals.cjsGlobals(from);
     }
 
     try {
@@ -657,7 +657,7 @@ export default class Runtime {
     this.fileCache.clear();
 
     this.transformCache.clear();
-    this.jestObjectCaches.clear();
+    this.jestGlobals.clearJestObjectCache();
 
     this.v8Coverage.reset();
     this.coreModule.reset();
@@ -673,292 +673,6 @@ export default class Runtime {
       requireModule: (from, moduleName) => this.requireModule(from, moduleName),
       resolution: this._resolution,
     });
-  }
-
-  private _createJestObjectFor(from: string): Jest {
-    const disableAutomock = () => {
-      this.mockState.disableAutomock();
-      return jestObject;
-    };
-    const enableAutomock = () => {
-      this.mockState.enableAutomock();
-      return jestObject;
-    };
-    const unmock = (moduleName: string) => {
-      this.mockState.unmockCjs(from, moduleName);
-      return jestObject;
-    };
-    const unmockModule = (moduleName: string) => {
-      this.mockState.unmockEsm(from, moduleName);
-      return jestObject;
-    };
-    const deepUnmock = (moduleName: string) => {
-      this.mockState.deepUnmock(from, moduleName);
-      return jestObject;
-    };
-    const mock: Jest['mock'] = (moduleName, mockFactory, options) => {
-      if (mockFactory !== undefined) {
-        return setMockFactory(moduleName, mockFactory, options);
-      }
-      this.mockState.markExplicitCjsMock(from, moduleName);
-      return jestObject;
-    };
-    const onGenerateMock: Jest['onGenerateMock'] = <T>(
-      cb: (moduleName: string, moduleMock: T) => T,
-    ) => {
-      this.mockState.addOnGenerateMock(cb);
-      return jestObject;
-    };
-    const setMockFactory = (
-      moduleName: string,
-      mockFactory: () => unknown,
-      options?: {virtual?: boolean},
-    ) => {
-      this.setMock(from, moduleName, mockFactory, options);
-      return jestObject;
-    };
-    const mockModule: Jest['unstable_mockModule'] = (
-      moduleName,
-      mockFactory,
-      options,
-    ) => {
-      if (typeof mockFactory !== 'function') {
-        throw new TypeError(
-          '`unstable_mockModule` must be passed a mock factory',
-        );
-      }
-
-      this.setModuleMock(from, moduleName, mockFactory, options);
-      return jestObject;
-    };
-    const clearAllMocks = () => {
-      this.clearAllMocks();
-      return jestObject;
-    };
-    const resetAllMocks = () => {
-      this.resetAllMocks();
-      return jestObject;
-    };
-    const restoreAllMocks = () => {
-      this.restoreAllMocks();
-      return jestObject;
-    };
-    const _getFakeTimers = () => {
-      if (
-        this.testState === 'tornDown' ||
-        !(this._environment.fakeTimers || this._environment.fakeTimersModern)
-      ) {
-        this._logFormattedReferenceError(
-          'You are trying to access a property or method of the Jest environment after it has been torn down.',
-        );
-        process.exitCode = 1;
-      }
-      if (this.testState === 'betweenTests') {
-        throw new ReferenceError(
-          'You are trying to access a property or method of the Jest environment outside of the scope of the test code.',
-        );
-      }
-
-      return this._fakeTimersImplementation!;
-    };
-    const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
-      fakeTimersConfig = {
-        ...this._config.fakeTimers,
-        ...fakeTimersConfig,
-      } as Config.FakeTimersConfig;
-      if (fakeTimersConfig?.legacyFakeTimers) {
-        this._fakeTimersImplementation = this._environment.fakeTimers;
-      } else {
-        this._fakeTimersImplementation = this._environment.fakeTimersModern;
-      }
-      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
-      return jestObject;
-    };
-    const useRealTimers = () => {
-      _getFakeTimers().useRealTimers();
-      return jestObject;
-    };
-    const resetModules = () => {
-      this.resetModules();
-      return jestObject;
-    };
-    const isolateModules = (fn: () => void) => {
-      this.isolateModules(fn);
-      return jestObject;
-    };
-    const isolateModulesAsync = this.isolateModulesAsync.bind(this);
-    const fn = this._moduleMocker.fn.bind(this._moduleMocker);
-    const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
-    const mocked = this._moduleMocker.mocked.bind(this._moduleMocker);
-    const replaceProperty = this._moduleMocker.replaceProperty.bind(
-      this._moduleMocker,
-    );
-
-    const setTimeout: Jest['setTimeout'] = timeout => {
-      this._environment.global[testTimeoutSymbol] = timeout;
-      return jestObject;
-    };
-
-    const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
-      this._environment.global[retryTimesSymbol] = numTestRetries;
-      this._environment.global[logErrorsBeforeRetrySymbol] =
-        options?.logErrorsBeforeRetry;
-      this._environment.global[waitBeforeRetrySymbol] =
-        options?.waitBeforeRetry;
-      this._environment.global[retryImmediatelySybmbol] =
-        options?.retryImmediately;
-
-      return jestObject;
-    };
-
-    const jestObject: Jest = {
-      advanceTimersByTime: msToRun =>
-        _getFakeTimers().advanceTimersByTime(msToRun),
-      advanceTimersByTimeAsync: async msToRun => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          await fakeTimers.advanceTimersByTimeAsync(msToRun);
-        } else {
-          throw new TypeError(
-            '`jest.advanceTimersByTimeAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      advanceTimersToNextFrame: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.advanceTimersToNextFrame();
-        }
-        throw new TypeError(
-          '`jest.advanceTimersToNextFrame()` is not available when using legacy fake timers.',
-        );
-      },
-      advanceTimersToNextTimer: steps =>
-        _getFakeTimers().advanceTimersToNextTimer(steps),
-      advanceTimersToNextTimerAsync: async steps => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          await fakeTimers.advanceTimersToNextTimerAsync(steps);
-        } else {
-          throw new TypeError(
-            '`jest.advanceTimersToNextTimerAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      autoMockOff: disableAutomock,
-      autoMockOn: enableAutomock,
-      clearAllMocks,
-      clearAllTimers: () => _getFakeTimers().clearAllTimers(),
-      createMockFromModule: moduleName => this._generateMock(from, moduleName),
-      deepUnmock,
-      disableAutomock,
-      doMock: mock,
-      dontMock: unmock,
-      enableAutomock,
-      fn,
-      getRealSystemTime: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          return fakeTimers.getRealSystemTime();
-        } else {
-          throw new TypeError(
-            '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      getSeed: () => this._globalConfig.seed,
-      getTimerCount: () => _getFakeTimers().getTimerCount(),
-      isEnvironmentTornDown: () => this.testState === 'tornDown',
-      isMockFunction: this._moduleMocker.isMockFunction,
-      isolateModules,
-      isolateModulesAsync,
-      mock,
-      mocked,
-      now: () => _getFakeTimers().now(),
-      onGenerateMock,
-      replaceProperty,
-      requireActual: moduleName => this.requireActual(from, moduleName),
-      requireMock: moduleName => this.requireMock(from, moduleName),
-      resetAllMocks,
-      resetModules,
-      restoreAllMocks,
-      retryTimes,
-      runAllImmediates: () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimers) {
-          fakeTimers.runAllImmediates();
-        } else {
-          throw new TypeError(
-            '`jest.runAllImmediates()` is only available when using legacy fake timers.',
-          );
-        }
-      },
-      runAllTicks: () => _getFakeTimers().runAllTicks(),
-      runAllTimers: () => _getFakeTimers().runAllTimers(),
-      runAllTimersAsync: async () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          await fakeTimers.runAllTimersAsync();
-        } else {
-          throw new TypeError(
-            '`jest.runAllTimersAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runOnlyPendingTimersAsync: async () => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          await fakeTimers.runOnlyPendingTimersAsync();
-        } else {
-          throw new TypeError(
-            '`jest.runOnlyPendingTimersAsync()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
-      setSystemTime: now => {
-        const fakeTimers = _getFakeTimers();
-
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          fakeTimers.setSystemTime(now);
-        } else {
-          throw new TypeError(
-            '`jest.setSystemTime()` is not available when using legacy fake timers.',
-          );
-        }
-      },
-      setTimeout,
-      setTimerTickMode: (
-        mode:
-          | {mode: 'manual' | 'nextAsync'}
-          | {mode: 'interval'; delta?: number},
-      ) => {
-        const fakeTimers = _getFakeTimers();
-        if (fakeTimers === this._environment.fakeTimersModern) {
-          fakeTimers.setTimerTickMode(mode);
-        } else {
-          throw new TypeError(
-            '`jest.setTimerTickMode()` is not available when using legacy fake timers.',
-          );
-        }
-        return jestObject;
-      },
-      spyOn,
-      unmock,
-      unstable_mockModule: mockModule,
-      unstable_unmockModule: unmockModule,
-      useFakeTimers,
-      useRealTimers,
-    };
-    return jestObject;
   }
 
   private _logFormattedReferenceError(errorMessage: string) {
@@ -985,48 +699,7 @@ export default class Runtime {
     }
   }
 
-  private getGlobalsForCjs(from: string): JestGlobalsWithJest {
-    const jest = this.jestObjectCaches.get(from);
-
-    invariant(jest, 'There should always be a Jest object already');
-
-    return {...this.getGlobalsFromEnvironment(), jest};
-  }
-
-  private _getOrCreateJest(from: string): Jest {
-    let jest = this.jestObjectCaches.get(from);
-
-    if (!jest) {
-      jest = this._createJestObjectFor(from);
-
-      this.jestObjectCaches.set(from, jest);
-    }
-    return jest;
-  }
-
-  private getGlobalsFromEnvironment(): JestGlobals {
-    if (this.jestGlobals) {
-      return {...this.jestGlobals};
-    }
-
-    return {
-      afterAll: this._environment.global.afterAll,
-      afterEach: this._environment.global.afterEach,
-      beforeAll: this._environment.global.beforeAll,
-      beforeEach: this._environment.global.beforeEach,
-      describe: this._environment.global.describe,
-      expect: this._environment.global.expect as typeof expect,
-      fdescribe: this._environment.global.fdescribe,
-      fit: this._environment.global.fit,
-      it: this._environment.global.it,
-      test: this._environment.global.test,
-      xdescribe: this._environment.global.xdescribe,
-      xit: this._environment.global.xit,
-      xtest: this._environment.global.xtest,
-    };
-  }
-
-  setGlobalsForRuntime(globals: JestGlobals): void {
-    this.jestGlobals = globals;
+  setGlobalsForRuntime(globals: EnvironmentGlobals): void {
+    this.jestGlobals.setEnvGlobalsOverride(globals);
   }
 }
