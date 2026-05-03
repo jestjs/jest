@@ -135,7 +135,7 @@ node ../../packages/jest-cli/bin/jest.js --no-cache
 Pass Node flags via the environment, e.g.:
 
 ```bash
-NODE_OPTIONS='--localstorage-file=/tmp/ls.json' node ../../packages/jest/bin/jest.js --no-cache
+NODE_OPTIONS='--localstorage-file=/tmp/ls.json' node ../../packages/jest-cli/bin/jest.js --no-cache
 ```
 
 **Note**: Some tests may require Mercurial (`hg`) to be installed. On macOS: `brew install hg`
