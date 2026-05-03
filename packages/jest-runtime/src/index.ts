@@ -620,6 +620,7 @@ export default class Runtime {
 
     this.v8Coverage.reset();
     this.coreModule.reset();
+    this.loggedReferenceErrors.clear();
 
     this.testState.teardown();
   }

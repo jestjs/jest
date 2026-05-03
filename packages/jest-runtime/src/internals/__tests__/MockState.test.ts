@@ -167,9 +167,17 @@ describe('MockState', () => {
       });
       stub.getEsmMockModuleAsync.mockResolvedValue('/manual/mock/path');
       const mockState = new MockState(resolution, config({automock: true}));
-      await expect(mockState.shouldMockEsmAsync('/from', './a')).resolves.toBe(
-        true,
-      );
+      await expect(
+        mockState.shouldMockEsmAsync('/from', './a'),
+      ).resolves.toEqual({moduleID: 'esm:/from:./a', shouldMock: true});
+    });
+
+    test('shouldMockEsmAsync computes moduleID exactly once and returns it', async () => {
+      const {resolution, stub} = makeResolution();
+      const mockState = new MockState(resolution, config({automock: false}));
+      const result = await mockState.shouldMockEsmAsync('/from', './a');
+      expect(stub.getEsmModuleIdAsync).toHaveBeenCalledTimes(1);
+      expect(result.moduleID).toBe('esm:/from:./a');
     });
   });
 

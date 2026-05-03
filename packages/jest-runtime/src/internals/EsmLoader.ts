@@ -981,13 +981,12 @@ export class EsmLoader {
     }
 
     if (specifier.startsWith('data:')) {
-      if (
-        await this.mockState.shouldMockEsmAsync(
-          referencingIdentifier,
-          specifier,
-        )
-      ) {
-        return this.importMock(referencingIdentifier, specifier, context);
+      const dataDecision = await this.mockState.shouldMockEsmAsync(
+        referencingIdentifier,
+        specifier,
+      );
+      if (dataDecision.shouldMock) {
+        return this.importMock(specifier, dataDecision.moduleID, context);
       }
       const fromCache = registry.get(specifier);
       if (fromCache) {
@@ -1029,13 +1028,12 @@ export class EsmLoader {
 
     const [specifierPath, query] = specifier.split('?');
 
-    if (
-      await this.mockState.shouldMockEsmAsync(
-        referencingIdentifier,
-        specifierPath,
-      )
-    ) {
-      return this.importMock(referencingIdentifier, specifierPath, context);
+    const decision = await this.mockState.shouldMockEsmAsync(
+      referencingIdentifier,
+      specifierPath,
+    );
+    if (decision.shouldMock) {
+      return this.importMock(specifierPath, decision.moduleID, context);
     }
 
     const resolved = await this.resolution.resolveEsmAsync(
@@ -1166,12 +1164,10 @@ export class EsmLoader {
   }
 
   private async importMock<T = unknown>(
-    from: string,
     moduleName: string,
+    moduleID: string,
     context: VMContext,
   ): Promise<T> {
-    const moduleID = await this.mockState.getEsmModuleIdAsync(from, moduleName);
-
     if (this.registries.hasModuleMock(moduleID)) {
       return this.registries.getModuleMock(moduleID) as T;
     }

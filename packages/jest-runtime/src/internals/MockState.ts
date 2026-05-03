@@ -84,13 +84,26 @@ export class MockState {
     };
   }
 
-  async shouldMockEsmAsync(from: string, moduleName: string): Promise<boolean> {
+  async shouldMockEsmAsync(
+    from: string,
+    moduleName: string,
+  ): Promise<MockDecision> {
     const moduleID = await this.resolution.getEsmModuleIdAsync(
       this.virtualEsmMocks,
       from,
       moduleName,
     );
+    return {
+      moduleID,
+      shouldMock: await this.decideEsmAsync(from, moduleName, moduleID),
+    };
+  }
 
+  private async decideEsmAsync(
+    from: string,
+    moduleName: string,
+    moduleID: string,
+  ): Promise<boolean> {
     const explicit = this.explicitEsmMock.get(moduleID);
     if (explicit !== undefined) return explicit;
 
