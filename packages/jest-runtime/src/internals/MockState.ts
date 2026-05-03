@@ -18,7 +18,7 @@ const unmockRegExpCache = new WeakMap<Config.ProjectConfig, RegExp>();
 const transitiveCacheKey = (from: string, moduleID: string) =>
   `${from}\0${moduleID}`;
 
-type MockDecision = {shouldMock: boolean; moduleID: string};
+export type MockDecision = {shouldMock: boolean; moduleID: string};
 
 export class MockState {
   private readonly resolution: Resolution;
