@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SyntheticModule, createContext} from 'node:vm';
+import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
 import {testWithSyncEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import type {CjsExportsCache} from '../CjsExportsCache';
@@ -110,16 +110,68 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     );
   });
 
-  testWithSyncEsm('returns cached non-Promise entry from registry', () => {
-    const {context, esmRegistry, loader} = makeLoader();
-    const cached = new SyntheticModule(['x'], () => {}, {
-      context,
-      identifier: '/m.mjs',
-    });
-    esmRegistry.set('/m.mjs', cached);
-    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-    expect(result).toBe(cached);
-  });
+  testWithSyncEsm(
+    'returns cached fully-evaluated entry from registry',
+    async () => {
+      const {context, esmRegistry, loader} = makeLoader();
+      const cached = new SyntheticModule(['x'], () => {}, {
+        context,
+        identifier: '/m.mjs',
+      });
+      // Settle to `'evaluated'` — that's the contract for cache reuse.
+      await cached.link(() => {
+        throw new Error('no deps');
+      });
+      await cached.evaluate();
+      esmRegistry.set('/m.mjs', cached);
+      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+      expect(result).toBe(cached);
+    },
+  );
+
+  testWithSyncEsm(
+    'bails when registry holds an unlinked module (legacy mid-flight stash)',
+    () => {
+      // Regression: `loadEsmModule`'s source-text branch does `registry.set`
+      // before `link()` runs, leaving an `'unlinked'` SourceTextModule in the
+      // registry. The sync graph used to treat any non-Promise registry entry
+      // as a cache hit, then crash on `.namespace` access in
+      // `requireEsmModule`. The fix is to gate cache reuse on settled status.
+      const {context, esmRegistry, loader} = makeLoader();
+      const stashed = new SourceTextModule('export const x = 1;', {
+        context,
+        identifier: '/m.mjs',
+      });
+      expect(stashed.status).toBe('unlinked');
+      esmRegistry.set('/m.mjs', stashed);
+      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+      expect(result).toBeNull();
+    },
+  );
+
+  testWithSyncEsm(
+    'rethrows the cached error when registry holds an errored module',
+    async () => {
+      const {context, esmRegistry, loader} = makeLoader();
+      const errored = new SyntheticModule(
+        ['x'],
+        () => {
+          throw new Error('boom from module body');
+        },
+        {context, identifier: '/m.mjs'},
+      );
+      await errored.link(() => {
+        throw new Error('no deps');
+      });
+      // Drive to `'errored'` by forcing evaluate to fail.
+      await errored.evaluate().catch(() => {});
+      expect(errored.status).toBe('errored');
+      esmRegistry.set('/m.mjs', errored);
+      expect(() =>
+        loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred'),
+      ).toThrow('boom from module body');
+    },
+  );
 
   testWithSyncEsm(
     'returns null when registry has a mid-flight Promise (legacy async load)',
