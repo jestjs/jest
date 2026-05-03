@@ -120,7 +120,7 @@ describe('Runtime', () => {
         runtime.teardown();
 
         await expect(
-          runtime._esmDynamicImport('RegularModule', {
+          runtime.esmLoader.dynamicImport('RegularModule', {
             context: runtime._environment.getVmContext(),
             identifier: __filename,
           }),
@@ -146,7 +146,7 @@ describe('Runtime', () => {
         runtime.leaveTestCode();
 
         await expect(
-          runtime._esmDynamicImport('RegularModule', {
+          runtime.esmLoader.dynamicImport('RegularModule', {
             context: runtime._environment.getVmContext(),
             identifier: __filename,
           }),

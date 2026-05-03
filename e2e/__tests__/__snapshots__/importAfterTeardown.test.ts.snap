@@ -16,7 +16,7 @@ exports[`prints useful error for imports after test is done w/ \`waitForUnhandle
       12 |   }, 0);
       13 | });
 
-      at _esmDynamicImport (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
+      at dynamicImport (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
       at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)"
 `;
 
@@ -41,7 +41,7 @@ ReferenceError: You are trying to \`import\` a file after the Jest environment h
             ^
 
 ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down.
-    at _esmDynamicImport (<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>)
+    at dynamicImport (<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>)
     at Timeout._onTimeout (<<REPO_ROOT>>/e2e/import-after-teardown/__tests__/lateImport.test.mjs:10:22)
 
 Node.js <<REPLACED>>"

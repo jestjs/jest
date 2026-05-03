@@ -78,6 +78,10 @@ export class TransformCache {
     return transformedFile.code;
   }
 
+  canTransformSync(filename: string): boolean {
+    return this.scriptTransformer.canTransformSync(filename);
+  }
+
   getCachedSource(filename: string): string | undefined {
     return this.transforms.get(filename)?.code;
   }
@@ -113,6 +117,9 @@ export class TransformCache {
   }
   setMutex(key: string, promise: Promise<void>): void {
     this.mutex.set(key, promise);
+  }
+  clearMutex(key: string): void {
+    this.mutex.delete(key);
   }
 
   // `resetModules` calls this; source maps are preserved so post-reset stack
