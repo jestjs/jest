@@ -393,10 +393,13 @@ export class EsmLoader {
         return null;
       }
 
-      const requests = module.moduleRequests;
-      if (requests === undefined) return null;
+      // If we got here without `moduleRequests`, the capability gate is lying.
+      invariant(
+        module.moduleRequests !== undefined,
+        `moduleRequests unavailable on ${modulePath}`,
+      );
       const deps: Array<string> = [];
-      for (const {specifier} of requests) {
+      for (const {specifier} of module.moduleRequests) {
         const resolved = this.resolveSpecifierForSyncGraph(
           modulePath,
           specifier,
@@ -627,7 +630,12 @@ export class EsmLoader {
     }
 
     const factory = this.mockState.getEsmFactory(moduleID);
-    if (factory === undefined) return null;
+    // `shouldMockEsmSync` said this spec is mocked but no factory was
+    // registered.
+    invariant(
+      factory !== undefined,
+      'Attempting to import a mock without a factory',
+    );
 
     const result = factory();
     if (isPromise(result)) {
@@ -761,10 +769,12 @@ export class EsmLoader {
       return null;
     }
 
-    const requests = module.moduleRequests;
-    if (requests === undefined) return null;
+    invariant(
+      module.moduleRequests !== undefined,
+      `moduleRequests unavailable on ${specifier}`,
+    );
     const deps: Array<string> = [];
-    for (const {specifier: depSpec} of requests) {
+    for (const {specifier: depSpec} of module.moduleRequests) {
       const resolved = this.resolveSpecifierForSyncGraph(
         specifier,
         depSpec,

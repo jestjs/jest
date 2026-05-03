@@ -12,9 +12,11 @@ import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {JestGlobals, JestGlobalsWithJest} from './types';
 
-// Build a SyntheticModule from a plain exports record. Keys + values are
-// snapshotted at construction time so later mutations of `exportsObject`
-// don't leak into the eventual `evaluate()` body.
+// Build a SyntheticModule from a plain exports record. The set of names and
+// the value *references* are snapshotted at construction time, so later
+// `exportsObject[k] = v` re-assignments or key add/delete won't leak into
+// `evaluate()`. This is a shallow snapshot — mutating an exported object
+// (`exportsObject.x.foo = ...`) is still observable through `setExport`.
 export function syntheticFromExports(
   identifier: string,
   context: VMContext,
