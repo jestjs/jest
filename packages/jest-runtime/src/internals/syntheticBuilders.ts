@@ -94,8 +94,8 @@ export function buildCoreSyntheticModule(
   >;
   // should identifier be `node://${moduleName}`?
   return syntheticFromExports(moduleName, context, {
-    default: required,
     ...required,
+    default: required,
   });
 }
 

@@ -57,6 +57,29 @@ describe('syntheticBuilders', () => {
         expect(ns.writeFile).toBe(required.writeFile);
       },
     );
+
+    testWithVmEsm(
+      'default export is the whole required object even when it has a `default` key',
+      async () => {
+        // ESM-from-CJS interop convention (non-`__esModule`): `import x from
+        // 'core'` should bind `x` to the whole `module.exports`, not to
+        // `module.exports.default`. None of the shipped Node cores have a
+        // `default` key today, but if one ever does we still want the
+        // default-import to mean "the whole module".
+        const required = {default: 'inner-default-value', named: 'n'};
+        const m = buildCoreSyntheticModule(
+          'fake-core',
+          context(),
+          () => required,
+        );
+        const ns = await evaluate(m);
+
+        expect(ns.default).toBe(required);
+        // The named `default` export still reflects `required.default`, so
+        // `import {default as d} from 'fake-core'` would resolve to it.
+        expect(ns.named).toBe('n');
+      },
+    );
   });
 
   describe('buildJestGlobalsSyntheticModule', () => {
