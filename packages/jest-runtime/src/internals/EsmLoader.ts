@@ -163,7 +163,23 @@ export interface EsmLoaderDeps {
 }
 
 export class EsmLoader {
-  private readonly deps: EsmLoaderDeps;
+  private readonly resolution: Resolution;
+  private readonly fileCache: FileCache;
+  private readonly transformCache: TransformCache;
+  private readonly registries: ModuleRegistries;
+  private readonly mockState: MockState;
+  private readonly environment: JestEnvironment;
+  private readonly cjsExportsCache: CjsExportsCache;
+  private readonly coreModule: CoreModuleProvider;
+  private readonly shouldLoadAsEsm: (modulePath: string) => boolean;
+  private readonly requireModuleOrMock: (
+    from: string,
+    moduleName: string,
+  ) => unknown;
+  private readonly getJestObject: (from: string) => Jest;
+  private readonly getEnvironmentGlobals: () => JestGlobals;
+  private readonly getTestState: () => TestState;
+  private readonly logFormattedReferenceError: (msg: string) => void;
   // Used only by the legacy async path; deletable when min-Node ≥ v24.9
   // (delete the block at the bottom of this file too — eslint/tsc will
   // surface anything else that becomes unused).
@@ -171,7 +187,20 @@ export class EsmLoader {
   private readonly evaluatingMap = new WeakMap<JestModule, Promise<void>>();
 
   constructor(deps: EsmLoaderDeps) {
-    this.deps = deps;
+    this.resolution = deps.resolution;
+    this.fileCache = deps.fileCache;
+    this.transformCache = deps.transformCache;
+    this.registries = deps.registries;
+    this.mockState = deps.mockState;
+    this.environment = deps.environment;
+    this.cjsExportsCache = deps.cjsExportsCache;
+    this.coreModule = deps.coreModule;
+    this.shouldLoadAsEsm = deps.shouldLoadAsEsm;
+    this.requireModuleOrMock = deps.requireModuleOrMock;
+    this.getJestObject = deps.getJestObject;
+    this.getEnvironmentGlobals = deps.getEnvironmentGlobals;
+    this.getTestState = deps.getTestState;
+    this.logFormattedReferenceError = deps.logFormattedReferenceError;
   }
 
   // A `null` here means the legacy async path is mid-flight on this same
@@ -202,26 +231,15 @@ export class EsmLoader {
     rootQuery: string,
     mode: SyncEsmMode,
   ): ESModule | null {
-    const {
-      registries,
-      transformCache,
-      resolution,
-      fileCache,
-      coreModule,
-      getTestState,
-      logFormattedReferenceError,
-      getJestObject,
-    } = this.deps;
-    const esmDynamicImport = this.dynamicImport;
-    if (getTestState() === 'tornDown') {
-      logFormattedReferenceError(
+    if (this.getTestState() === 'tornDown') {
+      this.logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
       return null;
     }
 
-    const registry = registries.getActiveEsmRegistry();
+    const registry = this.registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;
 
     const cached = registry.get(rootKey);
@@ -239,7 +257,7 @@ export class EsmLoader {
 
     const context = this.getContext();
 
-    if (transformCache.hasMutex(rootKey)) return null;
+    if (this.transformCache.hasMutex(rootKey)) return null;
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
@@ -267,16 +285,16 @@ export class EsmLoader {
         });
         continue;
       }
-      if (transformCache.hasMutex(cacheKey)) return null;
+      if (this.transformCache.hasMutex(cacheKey)) return null;
 
-      if (resolution.isCoreModule(modulePath)) {
+      if (this.resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
           module: buildCoreSyntheticModule(
             modulePath,
             context,
-            (name, prefix) => coreModule.require(name, prefix),
+            (name, prefix) => this.coreModule.require(name, prefix),
           ),
         });
         continue;
@@ -299,7 +317,7 @@ export class EsmLoader {
 
       if (isWasm(modulePath)) {
         const wasmEntry = this.buildSyncWasmEntry(
-          fileCache.readFileBuffer(modulePath),
+          this.fileCache.readFileBuffer(modulePath),
           modulePath,
           cacheKey,
           context,
@@ -313,7 +331,7 @@ export class EsmLoader {
         continue;
       }
 
-      if (!transformCache.canTransformSync(modulePath)) {
+      if (!this.transformCache.canTransformSync(modulePath)) {
         if (mode === 'sync-required') {
           throw makeRequireAsyncError(
             modulePath,
@@ -328,7 +346,7 @@ export class EsmLoader {
           cacheKey,
           kind: 'synthetic',
           module: buildJsonSyntheticModule(
-            transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
+            this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS),
             modulePath,
             context,
           ),
@@ -336,7 +354,7 @@ export class EsmLoader {
         continue;
       }
 
-      const transformedCode = transformCache.transform(
+      const transformedCode = this.transformCache.transform(
         modulePath,
         ESM_TRANSFORM_OPTIONS,
       );
@@ -346,7 +364,7 @@ export class EsmLoader {
         {
           context,
           identifier: modulePath,
-          importModuleDynamically: esmDynamicImport,
+          importModuleDynamically: this.dynamicImport,
           initializeImportMeta: meta => {
             const metaUrl = pathToFileURL(modulePath).href;
             meta.url = metaUrl;
@@ -356,10 +374,11 @@ export class EsmLoader {
             meta.dirname = path.dirname(modulePath);
             meta.resolve = (specifier, parent: string | URL = metaUrl) => {
               const parentPath = fileURLToPath(parent);
-              return pathToFileURL(resolution.resolveEsm(parentPath, specifier))
-                .href;
+              return pathToFileURL(
+                this.resolution.resolveEsm(parentPath, specifier),
+              ).href;
             };
-            (meta as JestImportMeta).jest = getJestObject(modulePath);
+            (meta as JestImportMeta).jest = this.getJestObject(modulePath);
           },
         },
       );
@@ -466,12 +485,11 @@ export class EsmLoader {
   }
 
   private getContext(): VMContext {
-    const {environment} = this.deps;
     invariant(
-      typeof environment.getVmContext === 'function',
+      typeof this.environment.getVmContext === 'function',
       'ES Modules are only supported if your test environment has the `getVmContext` function',
     );
-    const context = environment.getVmContext();
+    const context = this.environment.getVmContext();
     invariant(context, 'Test environment has been torn down');
     return context;
   }
@@ -508,8 +526,6 @@ export class EsmLoader {
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
   ): {cacheKey: string; enqueue: WorklistEntry | null} | null {
-    const {mockState, resolution, shouldLoadAsEsm} = this.deps;
-
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
@@ -529,7 +545,9 @@ export class EsmLoader {
 
     const [specifierPath, query = ''] = specifier.split('?');
 
-    if (mockState.shouldMockEsmSync(referencingIdentifier, specifierPath)) {
+    if (
+      this.mockState.shouldMockEsmSync(referencingIdentifier, specifierPath)
+    ) {
       const mocked = this.importMockSync(
         referencingIdentifier,
         specifierPath,
@@ -541,7 +559,7 @@ export class EsmLoader {
       return {cacheKey: mocked.cacheKey, enqueue: null};
     }
 
-    if (resolution.isCoreModule(specifierPath)) {
+    if (this.resolution.isCoreModule(specifierPath)) {
       const cacheKey = specifierPath + query;
       return {
         cacheKey,
@@ -551,7 +569,10 @@ export class EsmLoader {
 
     let resolved: string;
     try {
-      resolved = resolution.resolveEsm(referencingIdentifier, specifierPath);
+      resolved = this.resolution.resolveEsm(
+        referencingIdentifier,
+        specifierPath,
+      );
     } catch (error) {
       if (mode === 'sync-required') throw error;
       return null;
@@ -561,7 +582,7 @@ export class EsmLoader {
     if (
       !resolved.endsWith('.json') &&
       !isWasm(resolved) &&
-      !shouldLoadAsEsm(resolved)
+      !this.shouldLoadAsEsm(resolved)
     ) {
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
         this.buildCjsAsEsmSyntheticModule(
@@ -586,10 +607,9 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
   ): {cacheKey: string} | null {
-    const {mockState, registries} = this.deps;
-    const moduleID = mockState.getEsmModuleId(from, moduleName);
+    const moduleID = this.mockState.getEsmModuleId(from, moduleName);
 
-    const existing = registries.getModuleMock(moduleID);
+    const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) return null;
     if (existing) {
       if (!scratch.has(moduleID)) {
@@ -602,7 +622,7 @@ export class EsmLoader {
       return {cacheKey: moduleID};
     }
 
-    const factory = mockState.getEsmFactory(moduleID);
+    const factory = this.mockState.getEsmFactory(moduleID);
     if (factory === undefined) return null;
 
     const result = factory();
@@ -618,7 +638,7 @@ export class EsmLoader {
       context,
       result as Record<string, unknown>,
     );
-    registries.setModuleMock(moduleID, synth);
+    this.registries.setModuleMock(moduleID, synth);
     scratch.set(moduleID, {
       cacheKey: moduleID,
       kind: 'synthetic',
@@ -765,13 +785,12 @@ export class EsmLoader {
     modulePath: string,
     context: VMContext,
   ): SyntheticModule {
-    const {requireModuleOrMock, cjsExportsCache} = this.deps;
     return buildCjsAsEsmSyntheticModule(
       from,
       modulePath,
       context,
-      requireModuleOrMock,
-      cjsExportsCache,
+      this.requireModuleOrMock,
+      this.cjsExportsCache,
     );
   }
 
@@ -779,12 +798,11 @@ export class EsmLoader {
     from: string,
     context: VMContext,
   ): SyntheticModule {
-    const {getJestObject, getEnvironmentGlobals} = this.deps;
     return buildJestGlobalsSyntheticModule(
       from,
       context,
-      getJestObject,
-      getEnvironmentGlobals,
+      this.getJestObject,
+      this.getEnvironmentGlobals,
     );
   }
 
@@ -811,7 +829,7 @@ export class EsmLoader {
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
     const [specifierPath, query] = (moduleName ?? '').split('?');
-    const modulePath = await this.deps.resolution.resolveEsmAsync(
+    const modulePath = await this.resolution.resolveEsmAsync(
       from,
       specifierPath,
     );
@@ -823,24 +841,22 @@ export class EsmLoader {
     modulePath: string,
     query = '',
   ): Promise<ESModule> {
-    const {transformCache, registries, resolution, fileCache, getJestObject} =
-      this.deps;
     // Two gates here. `supportsSyncEvaluate` is a Node-version check: the
     // sync core relies on `SyntheticModule` starting `'linked'` and on
     // `evaluate()` completing sync, both of which need v22.21+ / v24.8+.
     // `canResolveSync` is a configured-resolver check: with an async-only
     // user resolver `findNodeModule` silently falls back to the default
     // resolver and would silently miss user mappings.
-    if (supportsSyncEvaluate && resolution.canResolveSync()) {
+    if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
       const synced = this.tryLoadGraphSync(modulePath, query, 'sync-preferred');
       if (synced) return synced;
     }
 
     const cacheKey = modulePath + query;
-    const registry = registries.getActiveEsmRegistry();
+    const registry = this.registries.getActiveEsmRegistry();
 
-    if (transformCache.hasMutex(cacheKey)) {
-      await transformCache.awaitMutex(cacheKey);
+    if (this.transformCache.hasMutex(cacheKey)) {
+      await this.transformCache.awaitMutex(cacheKey);
     }
 
     if (!registry.has(cacheKey)) {
@@ -849,7 +865,7 @@ export class EsmLoader {
       let transformResolve: () => void;
       let transformReject: (error?: unknown) => void;
 
-      transformCache.setMutex(
+      this.transformCache.setMutex(
         cacheKey,
         new Promise((resolve, reject) => {
           transformResolve = resolve;
@@ -865,7 +881,7 @@ export class EsmLoader {
       try {
         if (isWasm(modulePath)) {
           const wasm = this.importWasmModule(
-            fileCache.readFileBuffer(modulePath),
+            this.fileCache.readFileBuffer(modulePath),
             modulePath,
             context,
           );
@@ -874,10 +890,10 @@ export class EsmLoader {
           return wasm;
         }
 
-        if (resolution.isCoreModule(modulePath)) {
+        if (this.resolution.isCoreModule(modulePath)) {
           const core = evaluateSyntheticModule(
             buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
-              this.deps.coreModule.require(name, prefix),
+              this.coreModule.require(name, prefix),
             ),
           );
           registry.set(cacheKey, core);
@@ -885,9 +901,9 @@ export class EsmLoader {
           return core;
         }
 
-        const transformedCode = transformCache.canTransformSync(modulePath)
-          ? transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
-          : await transformCache.transformAsync(
+        const transformedCode = this.transformCache.canTransformSync(modulePath)
+          ? this.transformCache.transform(modulePath, ESM_TRANSFORM_OPTIONS)
+          : await this.transformCache.transformAsync(
               modulePath,
               ESM_TRANSFORM_OPTIONS,
             );
@@ -914,10 +930,10 @@ export class EsmLoader {
               meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
                 return pathToFileURL(
-                  resolution.resolveEsm(parentPath, specifier),
+                  this.resolution.resolveEsm(parentPath, specifier),
                 ).href;
               };
-              (meta as JestImportMeta).jest = getJestObject(modulePath);
+              (meta as JestImportMeta).jest = this.getJestObject(modulePath);
             },
           });
         }
@@ -932,7 +948,7 @@ export class EsmLoader {
         transformReject(error);
         throw error;
       } finally {
-        transformCache.clearMutex(cacheKey);
+        this.transformCache.clearMutex(cacheKey);
       }
     }
 
@@ -949,17 +965,8 @@ export class EsmLoader {
     referencingIdentifier: string,
     context: VMContext,
   ): Promise<T> {
-    const {
-      registries,
-      resolution,
-      mockState,
-      shouldLoadAsEsm,
-      getTestState,
-      logFormattedReferenceError,
-    } = this.deps;
-
-    if (getTestState() === 'tornDown') {
-      logFormattedReferenceError(
+    if (this.getTestState() === 'tornDown') {
+      this.logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
@@ -967,7 +974,7 @@ export class EsmLoader {
       return;
     }
 
-    const registry = registries.getActiveEsmRegistry();
+    const registry = this.registries.getActiveEsmRegistry();
 
     if (specifier === '@jest/globals') {
       const globalsIdentifier = `@jest/globals/${referencingIdentifier}`;
@@ -984,7 +991,10 @@ export class EsmLoader {
 
     if (specifier.startsWith('data:')) {
       if (
-        await mockState.shouldMockEsmAsync(referencingIdentifier, specifier)
+        await this.mockState.shouldMockEsmAsync(
+          referencingIdentifier,
+          specifier,
+        )
       ) {
         return this.importMock(referencingIdentifier, specifier, context);
       }
@@ -1029,20 +1039,23 @@ export class EsmLoader {
     const [specifierPath, query] = specifier.split('?');
 
     if (
-      await mockState.shouldMockEsmAsync(referencingIdentifier, specifierPath)
+      await this.mockState.shouldMockEsmAsync(
+        referencingIdentifier,
+        specifierPath,
+      )
     ) {
       return this.importMock(referencingIdentifier, specifierPath, context);
     }
 
-    const resolved = await resolution.resolveEsmAsync(
+    const resolved = await this.resolution.resolveEsmAsync(
       referencingIdentifier,
       specifierPath,
     );
 
     if (
       resolved.endsWith('.json') ||
-      resolution.isCoreModule(resolved) ||
-      shouldLoadAsEsm(resolved)
+      this.resolution.isCoreModule(resolved) ||
+      this.shouldLoadAsEsm(resolved)
     ) {
       return this.loadEsmModule(resolved, query) as T;
     }
@@ -1051,9 +1064,8 @@ export class EsmLoader {
   }
 
   private async linkAndEvaluateModule(module: VMModule): Promise<VMModule> {
-    const {getTestState, logFormattedReferenceError} = this.deps;
-    if (getTestState() === 'tornDown') {
-      logFormattedReferenceError(
+    if (this.getTestState() === 'tornDown') {
+      this.logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
@@ -1134,7 +1146,7 @@ export class EsmLoader {
     modulePath: string,
     context: VMContext,
   ): SyntheticModule | Promise<VMModule> {
-    const registry = this.deps.registries.getActiveEsmRegistry();
+    const registry = this.registries.getActiveEsmRegistry();
     const cached = registry.get(modulePath);
     if (cached) {
       return cached as SyntheticModule | Promise<VMModule>;
@@ -1167,18 +1179,17 @@ export class EsmLoader {
     moduleName: string,
     context: VMContext,
   ): Promise<T> {
-    const {mockState, registries} = this.deps;
-    const moduleID = await mockState.getEsmModuleIdAsync(from, moduleName);
+    const moduleID = await this.mockState.getEsmModuleIdAsync(from, moduleName);
 
-    if (registries.hasModuleMock(moduleID)) {
-      return registries.getModuleMock(moduleID) as T;
+    if (this.registries.hasModuleMock(moduleID)) {
+      return this.registries.getModuleMock(moduleID) as T;
     }
 
-    const factory = mockState.getEsmFactory(moduleID);
+    const factory = this.mockState.getEsmFactory(moduleID);
     if (factory) {
       const invokedFactory = (await factory()) as Record<string, unknown>;
       const module = syntheticFromExports(moduleName, context, invokedFactory);
-      registries.setModuleMock(moduleID, module);
+      this.registries.setModuleMock(moduleID, module);
       return evaluateSyntheticModule(module) as T;
     }
 
@@ -1226,18 +1237,18 @@ export class EsmLoader {
     specifier: string,
     referencingModule: VMModule,
   ): Promise<VMModule> => {
-    const {getTestState, logFormattedReferenceError} = this.deps;
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
-    if (getTestState() === 'betweenTests') {
+    const testState = this.getTestState();
+    if (testState === 'betweenTests') {
       throw new ReferenceError(
         'You are trying to `import` a file outside of the scope of the test code.',
       );
     }
-    if (getTestState() === 'tornDown') {
-      logFormattedReferenceError(
+    if (testState === 'tornDown') {
+      this.logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
