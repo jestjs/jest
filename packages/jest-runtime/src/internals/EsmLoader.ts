@@ -508,8 +508,10 @@ export class EsmLoader {
     if (scratch.has(cacheKey)) return true;
     const fromRegistry = registry.get(cacheKey);
     if (fromRegistry instanceof Promise) return false;
-    if (fromRegistry && (fromRegistry as VMModule).status !== 'evaluated') {
-      return false;
+    if (fromRegistry) {
+      const cached = fromRegistry as VMModule;
+      if (cached.status === 'errored') throw cached.error;
+      if (cached.status !== 'evaluated') return false;
     }
     const module =
       (fromRegistry as VMModuleWithAsyncGraph | undefined) ?? build();
@@ -612,6 +614,8 @@ export class EsmLoader {
     const existing = this.registries.getModuleMock(moduleID);
     if (existing instanceof Promise) return null;
     if (existing) {
+      if (existing.status === 'errored') throw existing.error;
+
       if (!scratch.has(moduleID)) {
         scratch.set(moduleID, {
           cacheKey: moduleID,

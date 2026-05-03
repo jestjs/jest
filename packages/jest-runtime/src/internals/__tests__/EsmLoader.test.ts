@@ -174,6 +174,78 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
+    'rethrows when tryCommitSynthetic finds an errored entry (CJS-as-ESM)',
+    async () => {
+      // `resolveSpecifierForSyncGraph`'s CJS-as-ESM branch goes through
+      // `tryCommitSynthetic`. If the registry holds a previously-errored
+      // synthetic at that key, we should rethrow the original error rather
+      // than bail with a misleading "concurrent import" ERR_REQUIRE_ESM.
+      const {context, esmRegistry, loader, stubs} = makeLoader({
+        shouldLoadAsEsm: jest.fn(() => false),
+      });
+      // Pre-stash an errored synth at the cjs-as-esm cache key.
+      const errored = new SyntheticModule(
+        ['x'],
+        () => {
+          throw new Error('cached cjs-as-esm error');
+        },
+        {context, identifier: '/dep.cjs'},
+      );
+      await errored.link(() => {
+        throw new Error('no deps');
+      });
+      await errored.evaluate().catch(() => {});
+      expect(errored.status).toBe('errored');
+      esmRegistry.set('/dep.cjs', errored);
+
+      stubs.transformCache.transform.mockReturnValue(
+        "import {x} from './dep.cjs'; globalThis.__x = x;",
+      );
+      stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
+
+      expect(() =>
+        loader.tryLoadGraphSync('/entry.mjs', '', 'sync-required'),
+      ).toThrow('cached cjs-as-esm error');
+    },
+  );
+
+  testWithSyncEsm(
+    'rethrows when an existing module mock is errored (importMockSync)',
+    async () => {
+      const {context, esmRegistry, loader, stubs} = makeLoader({
+        mockState: {
+          getEsmFactory: jest.fn(() => undefined),
+          getEsmModuleId: jest.fn(() => '/dep.mjs'),
+          shouldMockEsmSync: jest.fn(() => true),
+        } as unknown as jest.Mocked<MockState>,
+      });
+      const erroredMock = new SyntheticModule(
+        ['x'],
+        () => {
+          throw new Error('mock evaluation failed');
+        },
+        {context, identifier: '/dep.mjs'},
+      );
+      await erroredMock.link(() => {
+        throw new Error('no deps');
+      });
+      await erroredMock.evaluate().catch(() => {});
+      expect(erroredMock.status).toBe('errored');
+      // module-mock store, not the active registry
+      stubs.registries.getModuleMock.mockReturnValue(erroredMock);
+      stubs.transformCache.transform.mockReturnValue(
+        "import './dep.mjs'; globalThis.__x = 1;",
+      );
+      // unused but keep the registry intentionally empty for clarity
+      void esmRegistry;
+
+      expect(() =>
+        loader.tryLoadGraphSync('/entry.mjs', '', 'sync-required'),
+      ).toThrow('mock evaluation failed');
+    },
+  );
+
+  testWithSyncEsm(
     'returns null when registry has a mid-flight Promise (legacy async load)',
     () => {
       const {esmRegistry, loader} = makeLoader();
