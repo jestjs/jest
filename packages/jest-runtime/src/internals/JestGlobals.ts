@@ -18,7 +18,7 @@ import type {EnvironmentGlobals, JestGlobalsWithJest} from './types';
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
-const retryImmediatelySybmbol = Symbol.for('RETRY_IMMEDIATELY');
+const retryImmediatelySymbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 export type TestState = 'loading' | 'inTest' | 'betweenTests' | 'tornDown';
@@ -282,7 +282,7 @@ export class JestGlobals {
       this.environment.global[logErrorsBeforeRetrySymbol] =
         options?.logErrorsBeforeRetry;
       this.environment.global[waitBeforeRetrySymbol] = options?.waitBeforeRetry;
-      this.environment.global[retryImmediatelySybmbol] =
+      this.environment.global[retryImmediatelySymbol] =
         options?.retryImmediately;
 
       return jestObject;
