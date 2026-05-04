@@ -173,7 +173,7 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@97ba232459a8e02ff6121db9362b09661c875ab8 # v2.0.0
+        uses: SimenB/github-actions-cpu-cores@97330871fe1b7d3529392ea000e3d2c4b357e403 # v3
       - name: run jest-runtime tests with --experimental-vm-modules
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
         with:
@@ -214,7 +214,7 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@97ba232459a8e02ff6121db9362b09661c875ab8 # v2.0.0
+        uses: SimenB/github-actions-cpu-cores@97330871fe1b7d3529392ea000e3d2c4b357e403 # v3
       - name: run tests with coverage
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
         with:
