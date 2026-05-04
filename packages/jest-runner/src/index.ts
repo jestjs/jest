@@ -153,9 +153,9 @@ export default class TestRunner extends EmittingTestRunner {
         }) as PromiseWithCustomMessage<TestResult>;
 
         if (promise.UNSTABLE_onCustomMessage) {
-          // TODO: Get appropriate type for `onCustomMessage`
-          promise.UNSTABLE_onCustomMessage(([event, payload]: any) =>
-            this.#eventEmitter.emit(event, payload),
+          promise.UNSTABLE_onCustomMessage(
+            ([event, payload]: [event: unknown, payload: unknown]) =>
+              this.#eventEmitter.emit(event, payload),
           );
         }
 
