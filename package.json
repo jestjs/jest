@@ -69,7 +69,7 @@
     "pkg-dir": "^5.0.0",
     "prettier": "^3.0.3",
     "promise": "^8.3.0",
-    "read-pkg": "^5.2.0",
+    "read-pkg": "^10.0.0",
     "resolve": "^1.20.0",
     "rimraf": "^5.0.10",
     "semver": "^7.7.2",
