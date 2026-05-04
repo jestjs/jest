@@ -30,7 +30,7 @@
     "ansi-styles": "^5.2.0",
     "babel-jest": "workspace:*",
     "babel-loader": "^9.2.1",
-    "camelcase": "^6.3.0",
+    "camelcase": "^9.0.0",
     "chalk": "^4.1.2",
     "dedent": "^1.6.0",
     "eslint": "^9.28.0",
