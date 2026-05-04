@@ -4368,7 +4368,7 @@ __metadata:
     eslint-plugin-promise: "npm:^7.2.1"
     eslint-plugin-unicorn: "npm:^64.0.0"
     execa: "npm:^5.1.1"
-    find-process: "npm:^1.4.10"
+    find-process: "npm:^2.0.0"
     glob: "npm:^10.5.0"
     globals: "npm:^17.0.0"
     graceful-fs: "npm:^4.2.11"
@@ -9218,10 +9218,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^12.0.0, commander@npm:^12.1.0":
+"commander@npm:^12.0.0":
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
+  languageName: node
+  linkType: hard
+
+"commander@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
   languageName: node
   linkType: hard
 
@@ -11919,16 +11926,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-process@npm:^1.4.10":
-  version: 1.4.10
-  resolution: "find-process@npm:1.4.10"
+"find-process@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "find-process@npm:2.1.1"
   dependencies:
     chalk: "npm:~4.1.2"
-    commander: "npm:^12.1.0"
+    commander: "npm:^14.0.3"
     loglevel: "npm:^1.9.2"
   bin:
-    find-process: bin/find-process.js
-  checksum: 10/cda45cfb3f52cbc7f643a465a8bffc19e2a3ac49ec5aa74e9b18ed2e4d6d62e370443d38c5fdd3de6b30b232fda51db1d74c2574d70d28e6c896d49df3bc3bcd
+    find-process: dist/cjs/bin/find-process.js
+  checksum: 10/15c88be4ee12cc224bf8edd1c10681b62136f1e97e42e20c0facef163eef3a0c039da0a5ca2dd5c8b3c0e72867e5316d2dd3e9847abad9dc5dad5d2779ed577c
   languageName: node
   linkType: hard
 

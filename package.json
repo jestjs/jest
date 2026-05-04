@@ -43,7 +43,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-unicorn": "^64.0.0",
     "execa": "^5.1.1",
-    "find-process": "^1.4.10",
+    "find-process": "^2.0.0",
     "glob": "^10.5.0",
     "globals": "^17.0.0",
     "graceful-fs": "^4.2.11",
