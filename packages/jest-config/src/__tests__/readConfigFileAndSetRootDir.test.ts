@@ -38,7 +38,7 @@ describe('readConfigFileAndSetRootDir', () => {
       await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
         /jest\.config\.mts requires native TypeScript support/,
       );
-      // loadTSConfigFile reads the file for docblock parsing — it must not be called
+      // loadTSConfigFile reads the file for docblock parsing - it must not be called
       expect(fs.readFileSync).not.toHaveBeenCalled();
     });
 
