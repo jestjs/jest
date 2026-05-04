@@ -4412,7 +4412,7 @@ __metadata:
     netlify-plugin-cache: "npm:^1.0.3"
     node-notifier: "npm:^10.0.1"
     p-limit: "npm:^3.1.0"
-    pkg-dir: "npm:^5.0.0"
+    pkg-dir: "npm:^9.0.0"
     prettier: "npm:^3.0.3"
     promise: "npm:^8.3.0"
     read-pkg: "npm:^5.2.0"
@@ -11967,7 +11967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-up-simple@npm:^1.0.1":
+"find-up-simple@npm:^1.0.0, find-up-simple@npm:^1.0.1":
   version: 1.0.1
   resolution: "find-up-simple@npm:1.0.1"
   checksum: 10/6e374bffda9f8425314eab47ef79752b6e77dcc95c0ad17d257aef48c32fe07bbc41bcafbd22941c25bb94fffaaaa8e178d928867d844c58100c7fe19ec82f72
@@ -18095,21 +18095,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkg-dir@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "pkg-dir@npm:5.0.0"
-  dependencies:
-    find-up: "npm:^5.0.0"
-  checksum: 10/b167bb8dac7bbf22b1d5e30ec223e6b064b84b63010c9d49384619a36734caf95ed23ad23d4f9bd975e8e8082b60a83395f43a89bb192df53a7c25a38ecb57d9
-  languageName: node
-  linkType: hard
-
 "pkg-dir@npm:^7.0.0":
   version: 7.0.0
   resolution: "pkg-dir@npm:7.0.0"
   dependencies:
     find-up: "npm:^6.3.0"
   checksum: 10/94298b20a446bfbbd66604474de8a0cdd3b8d251225170970f15d9646f633e056c80520dd5b4c1d1050c9fed8f6a9e5054b141c93806439452efe72e57562c03
+  languageName: node
+  linkType: hard
+
+"pkg-dir@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pkg-dir@npm:9.0.0"
+  dependencies:
+    find-up-simple: "npm:^1.0.0"
+  checksum: 10/d08693b837e26fadbd1311e3334327d9b2dfef9fedc67677354d63866c2eca5d9e71a6d715aa33a6177b44c11b30efcf4f09c929bae4a246b83640ad7590a4e1
   languageName: node
   linkType: hard
 
