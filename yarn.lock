@@ -14751,7 +14751,7 @@ __metadata:
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
     react-github-btn: "npm:^1.4.0"
-    react-lite-youtube-embed: "npm:^2.5.1"
+    react-lite-youtube-embed: "npm:^3.0.0"
     react-markdown: "npm:^10.1.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -19413,13 +19413,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-lite-youtube-embed@npm:^2.5.1":
-  version: 2.6.0
-  resolution: "react-lite-youtube-embed@npm:2.6.0"
+"react-lite-youtube-embed@npm:^3.0.0":
+  version: 3.5.1
+  resolution: "react-lite-youtube-embed@npm:3.5.1"
   peerDependencies:
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: 10/3d392a3c09ceebb3415084db3219dc9ee56c7298762083da32993c9037cbf470b45225e9f2fb0210011331074448297aed216c020115b3330d3433afef3d4f47
+  checksum: 10/a7561c8141a6679e8f34c184e9afdfe691a8f386b9c1a2df1b0d3a9687ab3d939e6d3139cb4331965bd733ddeb99c0531033f06806866c3a2473d091fa1f446e
   languageName: node
   linkType: hard
 

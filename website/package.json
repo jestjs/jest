@@ -41,7 +41,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-github-btn": "^1.4.0",
-    "react-lite-youtube-embed": "^2.5.1",
+    "react-lite-youtube-embed": "^3.0.0",
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {
