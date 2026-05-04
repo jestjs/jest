@@ -50,7 +50,14 @@ export default async function readConfigFileAndSetRootDir(
           // Try native node TypeScript support first.
           configObject = await requireOrImportModule<any>(configPath);
         } catch (requireOrImportModuleError) {
-          if (!(requireOrImportModuleError instanceof SyntaxError) && !isMTS) {
+          if (isMTS) {
+            // .mts is always ESM and cannot be loaded via require()/ts-node.
+            throw new Error(
+              'jest.config.mts requires native TypeScript support. Ensure you are using Node.js 22.18+ or 23.6+.',
+              {cause: requireOrImportModuleError},
+            );
+          }
+          if (!(requireOrImportModuleError instanceof SyntaxError)) {
             if (!hasTsLoaderExplicitlyConfigured(configPath)) {
               throw requireOrImportModuleError;
             }
@@ -231,6 +238,7 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
     ) {
       throw new Error(
         `Jest: '${loader}' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
+        {cause: error},
       );
     }
 

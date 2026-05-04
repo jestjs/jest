@@ -81,6 +81,15 @@ describe('readInitialOptions', () => {
     });
   });
 
+  onNodeVersions('<22.18', () => {
+    test('should fail to read mts-config/jest.config.mts with a clear error', async () => {
+      const rootDir = resolveFixture('mts-config');
+      await expect(
+        proxyReadInitialOptions(undefined, {cwd: rootDir}),
+      ).rejects.toThrow(/jest\.config\.mts requires native TypeScript support/);
+    });
+  });
+
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(
       'json-config',
