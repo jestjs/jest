@@ -60,7 +60,7 @@
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "jest-watch-typeahead": "^3.0.1",
-    "jquery": "^3.2.1",
+    "jquery": "^4.0.0",
     "js-yaml": "^4.1.1",
     "mock-fs": "^5.5.0",
     "netlify-plugin-cache": "^1.0.3",
