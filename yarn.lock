@@ -4427,7 +4427,7 @@ __metadata:
     typescript-eslint: "npm:^8.38.0"
     webpack: "npm:^5.68.0"
     webpack-node-externals: "npm:^3.0.0"
-    which: "npm:^4.0.0"
+    which: "npm:^6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -22968,17 +22968,6 @@ __metadata:
   bin:
     node-which: ./bin/node-which
   checksum: 10/4782f8a1d6b8fc12c65e968fea49f59752bf6302dc43036c3bf87da718a80710f61a062516e9764c70008b487929a73546125570acea95c5b5dcc8ac3052c70f
-  languageName: node
-  linkType: hard
-
-"which@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "which@npm:4.0.0"
-  dependencies:
-    isexe: "npm:^3.1.1"
-  bin:
-    node-which: bin/which.js
-  checksum: 10/f17e84c042592c21e23c8195108cff18c64050b9efb8459589116999ea9da6dd1509e6a1bac3aeebefd137be00fabbb61b5c2bc0aa0f8526f32b58ee2f545651
   languageName: node
   linkType: hard
 
