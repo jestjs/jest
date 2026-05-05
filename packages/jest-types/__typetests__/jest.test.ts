@@ -536,9 +536,17 @@ expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableFrom(
 // Mock Timers
 
 expect(jest.advanceTimersByTime(6000)).type.toBe<void>();
+// expect(jest.advanceTimersByTime(Temporal.Duration.from(''))).type.toBe<void>();
+expect(jest.advanceTimersByTime({total: () => 6000})).type.toBe<void>();
 expect(jest.advanceTimersByTime()).type.toRaiseError();
 
 expect(jest.advanceTimersByTimeAsync(6000)).type.toBe<Promise<void>>();
+// expect(jest.advanceTimersByTimeAsync(Temporal.Duration.from(''))).type.toBe<
+  Promise<void>
+>();
+expect(jest.advanceTimersByTimeAsync({total: () => 6000})).type.toBe<
+  Promise<void>
+>();
 expect(jest.advanceTimersByTimeAsync()).type.toRaiseError();
 
 expect(jest.advanceTimersToNextTimer()).type.toBe<void>();
@@ -587,7 +595,17 @@ expect(jest.setSystemTime()).type.toBe<void>();
 expect(jest.setSystemTime(1_483_228_800_000)).type.toBe<void>();
 expect(jest.setSystemTime(Date.now())).type.toBe<void>();
 expect(jest.setSystemTime(new Date(1995, 11, 17))).type.toBe<void>();
+// Temporal-shaped input (duck-typed as {epochMilliseconds: number})
+// TODO: add these two once we are on TypeScript v6
+// expect(jest.setSystemTime(Temporal.Now.instant())).type.toBe<void>();
+// expect(jest.setSystemTime(Temporal.Now.zonedDateTimeISO())).type.toBe<void>();
+expect(
+  jest.setSystemTime({epochMilliseconds: 1_483_228_800_000}),
+).type.toBe<void>();
 expect(jest.setSystemTime('1995-12-17T03:24:00')).type.toRaiseError();
+expect(
+  jest.setSystemTime({epochMilliseconds: 'not a number'}),
+).type.toRaiseError();
 
 expect(jest.useFakeTimers()).type.toBe<typeof jest>();
 
@@ -639,6 +657,12 @@ expect(jest.useFakeTimers({now: Date.now()})).type.toBe<typeof jest>();
 expect(jest.useFakeTimers({now: new Date(1995, 11, 17)})).type.toBe<
   typeof jest
 >();
+expect(
+  jest.useFakeTimers({now: {epochMilliseconds: 1_483_228_800_000}}),
+).type.toBe<typeof jest>();
+expect(
+  jest.useFakeTimers({now: {epochMilliseconds: 'not a number'}}),
+).type.toRaiseError();
 expect(jest.useFakeTimers({now: '1995-12-17T03:24:00'})).type.toRaiseError();
 
 expect(jest.useFakeTimers({timerLimit: 1000})).type.toBe<typeof jest>();
