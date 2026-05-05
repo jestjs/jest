@@ -61,12 +61,13 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers, in milliseconds.
+   * Sets current system time to be used by fake timers. Accepts a millisecond
+   * timestamp, a `Date`, a `Temporal.Instant`, or a `Temporal.ZonedDateTime`.
    *
    * @defaultValue
    * The default is `Date.now()`.
    */
-  now?: number | Date;
+  now?: number | Date | {epochMilliseconds: number};
   /**
    * The maximum number of recursive timers that will be run when calling
    * `jest.runAllTimers()`.
@@ -99,7 +100,10 @@ export type LegacyFakeTimersConfig = {
 type FakeTimers = GlobalFakeTimersConfig &
   (
     | (FakeTimersConfig & {
-        now?: Exclude<FakeTimersConfig['now'], Date>;
+        now?: Exclude<
+          FakeTimersConfig['now'],
+          Date | {epochMilliseconds: number}
+        >;
       })
     | LegacyFakeTimersConfig
   );

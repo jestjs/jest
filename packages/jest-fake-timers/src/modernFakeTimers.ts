@@ -15,6 +15,23 @@ import {
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
 
+type TemporalLike = {epochMilliseconds: number};
+type TemporalDurationLike = {total(options: {unit: string}): number};
+
+function toEpochMs(
+  value: number | Date | TemporalLike | undefined,
+): number | undefined {
+  if (value == null) return undefined;
+  if (typeof value === 'number') return value;
+  if (value instanceof Date) return value.getTime();
+  return value.epochMilliseconds;
+}
+
+function toDurationMs(value: number | TemporalDurationLike): number {
+  if (typeof value === 'number') return value;
+  return value.total({unit: 'millisecond'});
+}
+
 export default class FakeTimers {
   private _clock!: InstalledClock;
   private readonly _config: Config.ProjectConfig;
@@ -98,15 +115,17 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number): void {
+  advanceTimersByTime(msToRun: number | TemporalDurationLike): void {
     if (this._checkFakeTimers()) {
-      this._clock.tick(msToRun);
+      this._clock.tick(toDurationMs(msToRun));
     }
   }
 
-  async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
+  async advanceTimersByTimeAsync(
+    msToRun: number | TemporalDurationLike,
+  ): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(msToRun);
+      await this._clock.tickAsync(toDurationMs(msToRun));
     }
   }
 
@@ -149,9 +168,9 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date): void {
+  setSystemTime(now?: number | Date | TemporalLike): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now instanceof Date ? now.getTime() : now);
+      this._clock.setSystemTime(toEpochMs(now));
     }
   }
 
@@ -226,10 +245,7 @@ export default class FakeTimers {
     return {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
-      now:
-        fakeTimersConfig.now instanceof Date
-          ? fakeTimersConfig.now.getTime()
-          : (fakeTimersConfig.now ?? Date.now()),
+      now: toEpochMs(fakeTimersConfig.now) ?? Date.now(),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
       toFake: [...toFake],

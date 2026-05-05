@@ -682,6 +682,12 @@ const config = defineConfig(
     },
   },
   {
+    files: ['e2e/fake-timers-temporal/__tests__/*'],
+    languageOptions: {
+      globals: {Temporal: 'readonly'},
+    },
+  },
+  {
     files: [
       'e2e/**',
       'website/**',

@@ -59,14 +59,18 @@ export interface Jest {
    * that have been queued via `setTimeout()` or `setInterval()`, and would be
    * executed within this time frame will be executed.
    */
-  advanceTimersByTime(msToRun: number): void;
+  advanceTimersByTime(
+    msToRun: number | {total(options: {unit: string}): number},
+  ): void;
   /**
    * Advances all timers by `msToRun` milliseconds, firing callbacks if necessary.
    *
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  advanceTimersByTimeAsync(msToRun: number): Promise<void>;
+  advanceTimersByTimeAsync(
+    msToRun: number | {total(options: {unit: string}): number},
+  ): Promise<void>;
   /**
    * Advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame`.
    * `advanceTimersToNextFrame()` is a helpful way to execute code that is scheduled using `requestAnimationFrame`.
@@ -375,7 +379,7 @@ export interface Jest {
    * @remarks
    * Not available when using legacy fake timers implementation.
    */
-  setSystemTime(now?: number | Date): void;
+  setSystemTime(now?: number | Date | {epochMilliseconds: number}): void;
   /**
    * Set the default timeout interval for tests and before/after hooks in
    * milliseconds.

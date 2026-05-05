@@ -942,8 +942,12 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   legacyFakeTimers?: boolean;
-  /** Sets current system time to be used by fake timers, in milliseconds. The default is `Date.now()`. */
-  now?: number | Date;
+  /**
+   * Sets current system time to be used by fake timers. Accepts a millisecond
+   * timestamp, a `Date`, a `Temporal.Instant`, or a `Temporal.ZonedDateTime`.
+   * The default is `Date.now()`.
+   */
+  now?: number | Date | Temporal.Instant | Temporal.ZonedDateTime;
   /**
    * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
    * The default is `100_000` timers.
@@ -1050,6 +1054,8 @@ Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
 
+`msToRun` also accepts a `Temporal.Duration`. Calendar units (`years`, `months`, `weeks`) are not supported and will throw — use time-based units (`days`, `hours`, `minutes`, `seconds`, `milliseconds`) instead.
+
 ### `jest.advanceTimersByTimeAsync(msToRun)`
 
 Asynchronous equivalent of `jest.advanceTimersByTime(msToRun)`. It allows any scheduled promise callbacks to execute _before_ running the timers.
@@ -1116,9 +1122,11 @@ Returns the number of fake timers still left to run.
 
 Returns the time in ms of the current clock. This is equivalent to `Date.now()` if real timers are in use, or if `Date` is mocked. In other cases (such as legacy timers) it may be useful for implementing custom mocks of `Date.now()`, `performance.now()`, etc.
 
-### `jest.setSystemTime(now?: number | Date)`
+### `jest.setSystemTime(now?: number | Date | Temporal.Instant | Temporal.ZonedDateTime)`
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+
+Note that `Temporal` itself is **not** faked when using fake timers — see [sinonjs/fake-timers#335](https://github.com/sinonjs/fake-timers/issues/335) for the upstream tracking issue.
 
 :::info
 
