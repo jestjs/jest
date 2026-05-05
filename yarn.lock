@@ -19046,9 +19046,9 @@ __metadata:
     immutable: "npm:^5.1.2"
     jest-util: "workspace:*"
     react: "npm:18.3.1"
-    react-17: "npm:react@17.0.2"
-    react-18: "npm:react@18.3.1"
-    react-19: "npm:react@19.1.6"
+    react-17: "npm:react@^17.0.2"
+    react-18: "npm:react@^18.3.1"
+    react-19: "npm:react@^19.2.5"
     react-is-18: "npm:react-is@^18.3.1"
     react-is-19: "npm:react-is@^19.2.5"
     react-test-renderer: "npm:18.3.1"
@@ -19330,7 +19330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-17@npm:react@17.0.2":
+"react-17@npm:react@^17.0.2":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
@@ -19340,7 +19340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-18@npm:react@18.3.1, react@npm:18.3.1":
+"react-18@npm:react@^18.3.1, react@npm:18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -19349,10 +19349,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-19@npm:react@19.1.6":
-  version: 19.1.6
-  resolution: "react@npm:19.1.6"
-  checksum: 10/3e210c09de97acfed34d450e5c79911c78b20659dadb7988a747baea2a7b60e39ff17834495b0b68e2898e248623964384ea34bbde1d4501e695fa9d0c002799
+"react-19@npm:react@^19.2.5":
+  version: 19.2.5
+  resolution: "react@npm:19.2.5"
+  checksum: 10/1c3c7ffecb90b7f89a5c3ef635e6811f3a84600097f203b918150cb7e6b0a52915e858e5b4c82317a520dffccfa46ee4819ccf92c59c5b2d6c25cffe258dd20c
   languageName: node
   linkType: hard
 
