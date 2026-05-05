@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import picomatch = require('picomatch');
+import picomatch from 'picomatch';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
 type Matcher = (str: string) => boolean;
@@ -14,8 +14,6 @@ const globsToMatchersMap = new Map<
   string,
   {isMatch: Matcher; negated: boolean}
 >();
-
-const picomatchOptions = {dot: true};
 
 /**
  * Converts a list of globs into a function that matches a path against the
@@ -34,7 +32,11 @@ const picomatchOptions = {dot: true};
  * isMatch('pizza.js'); // true
  * isMatch('pizza.test.js'); // false
  */
-export default function globsToMatcher(globs: Array<string>): Matcher {
+export default function globsToMatcher(
+  globs: Array<string>,
+  picomatchOptions?: picomatch.PicomatchOptions,
+): Matcher {
+  const dot = picomatchOptions?.dot ?? true;
   if (globs.length === 0) {
     // Since there were no globs given, we can simply have a fast path here and
     // return with a very simple function.
@@ -43,7 +45,7 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
 
   const matchers = globs.map(glob => {
     if (!globsToMatchersMap.has(glob)) {
-      const isMatch = picomatch(glob, picomatchOptions, true);
+      const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
 
       const matcher = {
         isMatch,

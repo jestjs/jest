@@ -444,7 +444,7 @@ expect(
   mockObjectA.someClassInstance.methodB.mockImplementation((a: number) => 123),
 ).type.toRaiseError();
 
-expect<typeof someObject>().type.toBeAssignableWith(mockObjectA);
+expect<typeof someObject>().type.toBeAssignableFrom(mockObjectA);
 
 // shallow mocked()
 
@@ -497,39 +497,39 @@ expect(
   ),
 ).type.toRaiseError();
 
-expect<typeof someObject>().type.toBeAssignableWith(mockObjectB);
+expect<typeof someObject>().type.toBeAssignableFrom(mockObjectB);
 
 // Replaced
 
-expect<jest.Replaced<number>>().type.toBeAssignableWith(
+expect<jest.Replaced<number>>().type.toBeAssignableFrom(
   jest.replaceProperty(someObject, 'propertyA', 123),
 );
 
 // Spied
 
-expect<jest.Spied<typeof someObject.methodA>>().type.toBeAssignableWith(
+expect<jest.Spied<typeof someObject.methodA>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'methodA'),
 );
 
-expect<jest.Spied<typeof someObject.SomeClass>>().type.toBeAssignableWith(
+expect<jest.Spied<typeof someObject.SomeClass>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'SomeClass'),
 );
 
 // Spied*
 
-expect<jest.SpiedClass<typeof someObject.SomeClass>>().type.toBeAssignableWith(
+expect<jest.SpiedClass<typeof someObject.SomeClass>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'SomeClass'),
 );
 
-expect<jest.SpiedFunction<typeof someObject.methodB>>().type.toBeAssignableWith(
+expect<jest.SpiedFunction<typeof someObject.methodB>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'methodB'),
 );
 
-expect<jest.SpiedGetter<typeof someObject.propertyC>>().type.toBeAssignableWith(
+expect<jest.SpiedGetter<typeof someObject.propertyC>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'propertyC', 'get'),
 );
 
-expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableWith(
+expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableFrom(
   jest.spyOn(someObject, 'propertyC', 'set'),
 );
 
@@ -650,6 +650,11 @@ expect(jest.useFakeTimers('modern')).type.toRaiseError();
 
 expect(jest.useRealTimers()).type.toBe<typeof jest>();
 expect(jest.useRealTimers(true)).type.toRaiseError();
+
+expect(jest.setTimerTickMode('manual')).type.toRaiseError();
+expect(jest.setTimerTickMode({mode: 'interval'})).type.toBe<typeof jest>();
+expect(jest.setTimerTickMode({mode: 'manual'})).type.toBe<typeof jest>();
+expect(jest.setTimerTickMode({mode: 'nextAsync'})).type.toBe<typeof jest>();
 
 // Misc
 

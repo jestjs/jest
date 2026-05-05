@@ -117,6 +117,24 @@ class Contributors extends React.Component {
     return (
       <div className="opencollective">
         <h3>
+          <Translate>Gold Sponsors</Translate>
+        </h3>
+        <div className="opencollective-avatars">
+          <a
+            className="sponsor-item"
+            title="Thordata"
+            target="_blank"
+            rel="nofollow noopener"
+            href="https://www.thordata.com/?ls=waOicIkB&lk=jest"
+          >
+            <img
+              className="sponsor-avatar"
+              src="/img/logos/thordata.svg"
+              alt="Thordata logo"
+            />
+          </a>
+        </div>
+        <h3>
           <Translate>Featured Sponsors</Translate>
         </h3>
         <div className="opencollective-avatars">
@@ -131,9 +149,7 @@ class Contributors extends React.Component {
             target="_blank"
             rel="nofollow noopener"
           >
-            Join{' '}
-            {backers.filter(b => b.tier && b.tier.slug === 'backer').length}+
-            donors
+            Join 600+ donors
           </a>{' '}
           who sponsor Jest for $3 or more per month on{' '}
           <a
@@ -554,10 +570,10 @@ class Index extends React.Component {
                 </h2>
                 <MarkdownBlock>
                   <Translate>
-                    A lot of people! With [300+
+                    A lot of people! With [100m+
                     million](https://www.npmjs.com/package/jest) downloads in
                     the last month, and used on over
-                    [11,000,000](https://github.com/jestjs/jest/network/dependents)
+                    [15,000,000](https://github.com/jestjs/jest/network/dependents)
                     public repos on GitHub.
                   </Translate>
                 </MarkdownBlock>

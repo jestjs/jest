@@ -186,11 +186,21 @@ describe('TestPathPatternsExecutor', () => {
     });
 
     it('returns true only if matches relative path', () => {
+      const rootDir = '/home/myuser/';
+
       const testPathPatterns = makeExecutor(['home'], {
-        rootDir: '/home/myuser/',
+        rootDir,
       });
-      expect(testPathPatterns.isMatch('/home/myuser/LoginPage.js')).toBe(false);
-      expect(testPathPatterns.isMatch('/home/myuser/HomePage.js')).toBe(true);
+      expect(
+        testPathPatterns.isMatch(
+          path.relative(rootDir, '/home/myuser/LoginPage.js'),
+        ),
+      ).toBe(false);
+      expect(
+        testPathPatterns.isMatch(
+          path.relative(rootDir, '/home/myuser/HomePage.js'),
+        ),
+      ).toBe(true);
     });
 
     it('matches absolute paths regardless of rootDir', () => {
@@ -229,6 +239,21 @@ describe('TestPathPatternsExecutor', () => {
       forceWindows();
       const testPathPatterns = makeExecutor(['a/b'], config);
       expect(testPathPatterns.isMatch('C:\\foo\\a\\b')).toBe(true);
+    });
+
+    it('matches absolute path with absPath', () => {
+      const pattern = '^/home/app/';
+      const rootDir = '/home/app';
+      const absolutePath = '/home/app/packages/';
+
+      const testPathPatterns = makeExecutor([pattern], {
+        rootDir,
+      });
+
+      const relativePath = path.relative(rootDir, absolutePath);
+
+      expect(testPathPatterns.isMatch(relativePath)).toBe(false);
+      expect(testPathPatterns.isMatch(absolutePath)).toBe(true);
     });
   });
 });

@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {SubService} from './sub.service';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class DataService {
-  constructor(private subService: SubService) {}
+  private subService = inject(SubService);
 
   getTitle() {
     return this.subService.getTitle();

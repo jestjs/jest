@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {isNativeError} from 'util/types';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
-import parseJson = require('parse-json');
-import stripJsonComments = require('strip-json-comments');
+import parseJson from 'parse-json';
+import stripJsonComments from 'strip-json-comments';
 import type {Config} from '@jest/types';
-import {extract, parse} from 'jest-docblock';
-import {interopRequireDefault, requireOrImportModule} from 'jest-util';
+import {type Pragmas, extract, parse} from 'jest-docblock';
+import {interopRequireDefault, isError, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_CTS,
   JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_MTS,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
@@ -26,7 +26,8 @@ interface TsLoader {
 type TsLoaderModule = 'ts-node' | 'esbuild-register';
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
+// 2. If it's a `jest.config.ts`/`jest.config.cts`/`jest.config.mts` file,
+//    we use native TypeScript support when possible, otherwise a TS loader.
 // 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
@@ -34,17 +35,57 @@ export default async function readConfigFileAndSetRootDir(
 ): Promise<Config.InitialOptions> {
   const isTS =
     configPath.endsWith(JEST_CONFIG_EXT_TS) ||
+    configPath.endsWith(JEST_CONFIG_EXT_MTS) ||
     configPath.endsWith(JEST_CONFIG_EXT_CTS);
+  const isMTS = configPath.endsWith(JEST_CONFIG_EXT_MTS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
-  // type assertion can be removed once @types/node is updated
-  // https://nodejs.org/api/process.html#processfeaturestypescript
-  const supportsTS = (process.features as {typescript?: boolean | string})
-    .typescript;
   let configObject;
 
   try {
-    if (isTS && !supportsTS) {
-      configObject = await loadTSConfigFile(configPath);
+    if (isTS) {
+      // .mts is always ESM, so attempt import-based loading first.
+      // @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+      if (isMTS || process.features.typescript) {
+        try {
+          // Try native node TypeScript support first.
+          configObject = await requireOrImportModule<any>(configPath);
+        } catch (requireOrImportModuleError) {
+          if (isMTS) {
+            // .mts is always ESM and cannot be loaded via require()/ts-node.
+            throw new Error(
+              'jest.config.mts requires native TypeScript support. Ensure you are using Node.js 22.18+ or 23.6+.',
+              {cause: requireOrImportModuleError},
+            );
+          }
+          if (!(requireOrImportModuleError instanceof SyntaxError)) {
+            if (!hasTsLoaderExplicitlyConfigured(configPath)) {
+              throw requireOrImportModuleError;
+            }
+          }
+          try {
+            // There are various reasons of failed loadout of Jest config in Typescript:
+            // 1. User has specified a TypeScript loader in the docblock and
+            // desire non-native compilation (https://github.com/jestjs/jest/issues/15837)
+            // 2. Likely ESM in a file interpreted as CJS, which means it needs to be
+            // compiled. We ignore the error and try to load it with a loader.
+            configObject = await loadTSConfigFile(configPath);
+          } catch (loadTSConfigFileError) {
+            // If we still encounter an error, we throw both messages combined.
+            // This string is caught further down and merged into a new error message.
+            // eslint-disable-next-line no-throw-literal
+            throw (
+              // Preamble text is added further down:
+              // Jest: Failed to parse the TypeScript config file ${configPath}\n
+              '  both with the native node TypeScript support and configured TypeScript loaders.\n' +
+              '    Errors were:\n' +
+              `    - ${requireOrImportModuleError}\n` +
+              `    - ${loadTSConfigFileError}`
+            );
+          }
+        }
+      } else {
+        configObject = await loadTSConfigFile(configPath);
+      }
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
       configObject = parseJson(stripJsonComments(fileContent), configPath);
@@ -95,11 +136,22 @@ export default async function readConfigFileAndSetRootDir(
 // Load the TypeScript configuration
 let extraTSLoaderOptions: Record<string, unknown>;
 
+const hasTsLoaderExplicitlyConfigured = (configPath: string): boolean => {
+  const docblockPragmas = loadDocblockPragmasInConfig(configPath);
+  const tsLoader = docblockPragmas['jest-config-loader'];
+  return !Array.isArray(tsLoader) && (tsLoader ?? '').trim() !== '';
+};
+
+const loadDocblockPragmasInConfig = (configPath: string): Pragmas => {
+  const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
+  return docblockPragmas;
+};
+
 const loadTSConfigFile = async (
   configPath: string,
 ): Promise<Config.InitialOptions> => {
   // Get registered TypeScript compiler instance
-  const docblockPragmas = parse(extract(fs.readFileSync(configPath, 'utf8')));
+  const docblockPragmas = loadDocblockPragmasInConfig(configPath);
   const tsLoader = docblockPragmas['jest-config-loader'] || 'ts-node';
   const docblockTSLoaderOptions = docblockPragmas['jest-config-loader-options'];
 
@@ -181,11 +233,12 @@ async function registerTsLoader(loader: TsLoaderModule): Promise<TsLoader> {
     );
   } catch (error) {
     if (
-      isNativeError(error) &&
+      isError(error) &&
       (error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND'
     ) {
       throw new Error(
         `Jest: '${loader}' is required for the TypeScript configuration files. Make sure it is installed\nError: ${error.message}`,
+        {cause: error},
       );
     }
 

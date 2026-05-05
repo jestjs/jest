@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as os from 'os';
-import * as path from 'path';
-import micromatch = require('micromatch');
+import * as os from 'node:os';
+import * as path from 'node:path';
 import type {TestPathPatternsExecutor} from '@jest/pattern';
 import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -315,14 +314,10 @@ export default class SearchSource {
         const normalizedPath = normalizePosix(
           path.resolve(this._context.config.cwd, p),
         );
-        const match = micromatch(
-          allFiles.map(normalizePosix),
-          normalizedPath,
-          options,
-        );
-        return match[0];
+        const matcher = globsToMatcher([normalizedPath], options);
+        return allFiles.map(normalizePosix).find(matcher);
       })
-      .filter(Boolean)
+      .filter(p => p !== undefined)
       .map(p => path.resolve(p));
     return paths;
   }

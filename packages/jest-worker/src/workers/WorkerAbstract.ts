@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter, PassThrough} from 'stream';
+import {EventEmitter, PassThrough} from 'node:stream';
 import {
   WorkerEvents,
   type WorkerInterface,
@@ -125,8 +125,7 @@ export default abstract class WorkerAbstract
    * killed off.
    */
   protected _shutdown(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    this.state === WorkerStates.SHUT_DOWN;
+    this.state = WorkerStates.SHUT_DOWN;
 
     // End the permanent stream so the merged stream end too
     if (this._fakeStream) {

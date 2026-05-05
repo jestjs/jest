@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`jest-each .describe throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.

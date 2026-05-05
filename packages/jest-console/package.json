@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "30.0.0-alpha.7",
+  "version": "30.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -21,7 +21,7 @@
   "dependencies": {
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.0.0",
+    "chalk": "^4.1.2",
     "jest-message-util": "workspace:*",
     "jest-util": "workspace:*",
     "slash": "^3.0.0"
@@ -30,7 +30,7 @@
     "@jest/test-utils": "workspace:*"
   },
   "engines": {
-    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"

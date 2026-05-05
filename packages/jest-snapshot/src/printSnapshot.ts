@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {getObjectSubset} from '@jest/expect-utils';
+import {getType, isPrimitive} from '@jest/get-type';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -18,7 +19,6 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,

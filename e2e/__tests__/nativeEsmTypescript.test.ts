@@ -17,6 +17,6 @@ test('runs TS test with native ESM', () => {
 
   expect(exitCode).toBe(0);
 
-  expect(json.numTotalTests).toBe(2);
-  expect(json.numPassedTests).toBe(2);
+  expect(json.numTotalTests).toBe(3);
+  expect(json.numPassedTests).toBe(3);
 });

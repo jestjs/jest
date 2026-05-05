@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import chalk = require('chalk');
+import * as path from 'node:path';
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import slash = require('slash');
+import slash from 'slash';
 import {ValidationError} from 'jest-validate';
 import {
   JEST_CONFIG_BASE_NAME,

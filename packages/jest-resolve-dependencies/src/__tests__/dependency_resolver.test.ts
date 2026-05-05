@@ -31,7 +31,11 @@ beforeEach(async () => {
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
     moduleNameMapper: [['^\\$asdf/(.*)$', '<rootDir>/$1']],
-    rootDir: '.',
+    /**
+     * `rootDir` must be an absolute path
+     * @See https://github.com/jestjs/jest/blob/76632c6ec3f56708ec5781158972a295d0cc9332/packages/jest-haste-map/src/lib/fast_path.ts#L19-L25
+     */
+    rootDir: process.cwd(),
     roots: ['./packages/jest-resolve-dependencies'],
   });
   const runtimeContext = await Runtime.createContext(config, {

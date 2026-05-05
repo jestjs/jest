@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import micromatch = require('micromatch');
+import * as path from 'node:path';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
@@ -42,7 +41,7 @@ export default function shouldInstrument(
 
   if (
     config.forceCoverageMatch.length > 0 &&
-    micromatch.any(filename, config.forceCoverageMatch)
+    globsToMatcher(config.forceCoverageMatch)(filename)
   ) {
     return true;
   }

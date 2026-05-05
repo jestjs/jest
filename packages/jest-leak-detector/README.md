@@ -11,7 +11,9 @@ Internally creates a weak reference to the object, and forces garbage collection
   let reference = {};
   let isLeaking;
 
-  const detector = new LeakDetector(reference);
+  const detector = new LeakDetector(reference, {
+    shouldGenerateV8HeapSnapshot: true,
+  });
 
   // Reference is held in memory.
   isLeaking = await detector.isLeaking();

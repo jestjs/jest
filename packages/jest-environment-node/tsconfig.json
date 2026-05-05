@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "lib": ["es2021", "ESNext.Disposable"]
+    "lib": ["es2023", "ESNext.Disposable"]
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
@@ -12,6 +12,7 @@
     {"path": "../jest-fake-timers"},
     {"path": "../jest-mock"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"}
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"}
   ]
 }

@@ -6,8 +6,8 @@
  */
 
 import {EventEmitter} from 'events';
-import {PassThrough} from 'stream';
-import getStream = require('get-stream');
+import {PassThrough, type Stream} from 'stream';
+import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -155,8 +155,12 @@ it('provides stdout and stderr from the threads', async () => {
   // @ts-expect-error: Testing internal method
   worker._worker.emit('exit', 0);
 
-  await expect(getStream(stdout!)).resolves.toBe('Hello World!');
-  await expect(getStream(stderr!)).resolves.toBe('Jest Workers!');
+  await expect(getStream(stdout as unknown as Stream)).resolves.toBe(
+    'Hello World!',
+  );
+  await expect(getStream(stderr as unknown as Stream)).resolves.toBe(
+    'Jest Workers!',
+  );
 });
 
 it('sends the task to the thread', () => {

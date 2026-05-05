@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import Emittery = require('emittery');
-import pLimit = require('p-limit');
+import chalk from 'chalk';
+import Emittery from 'emittery';
+import pLimit from 'p-limit';
 import type {
   Test,
   TestEvents,
@@ -118,6 +118,7 @@ export default class TestRunner extends EmittingTestRunner {
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: [...resolvers.values()]}],
+      workerGracefulExitTimeout: this._globalConfig.workerGracefulExitTimeout,
     }) as JestWorkerFarm<TestWorker>;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);

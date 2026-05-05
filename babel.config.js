@@ -16,11 +16,6 @@ module.exports = {
   exclude: /react-native/,
   overrides: [
     {
-      plugins: [
-        require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
-        ),
-      ],
       presets: [
         [
           '@babel/preset-typescript',
@@ -37,7 +32,6 @@ module.exports = {
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [
     [

@@ -53,6 +53,7 @@ it('handles cyclic dependencies', () => {
 
   const cyclic: Cyclic = {a: 42};
 
+  // eslint-disable-next-line unicorn/no-immediate-mutation
   cyclic.subcycle = {};
   cyclic.subcycle.baz = cyclic;
   cyclic.bar = cyclic;

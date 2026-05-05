@@ -2,10 +2,10 @@
 
 'use strict';
 
-const platform = require('os').platform();
-const path = require('path');
+const platform = require('node:os').platform();
+const path = require('node:path');
 const anymatch = require('anymatch');
-const micromatch = require('micromatch');
+const picomatch = require('picomatch');
 const walker = require('walker');
 
 /**
@@ -61,9 +61,8 @@ exports.isFileIncluded = function (globs, dot, doIgnore, relativePath) {
     return false;
   }
   return globs.length > 0
-    ? micromatch.some(relativePath, globs, {dot})
-    : // eslint-disable-next-line unicorn/no-array-method-this-argument
-      dot || micromatch.some(relativePath, '**/*');
+    ? globs.some(glob => picomatch(glob, {dot})(relativePath))
+    : dot || picomatch('**/*')(relativePath);
 };
 
 /**

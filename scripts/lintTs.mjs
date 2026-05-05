@@ -7,9 +7,9 @@
 
 /* eslint-disable sort-keys */
 
-import * as os from 'os';
-import * as path from 'path';
-import * as url from 'url';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import * as url from 'node:url';
 import chalk from 'chalk';
 import {ESLint} from 'eslint';
 import eslintPluginJest from 'eslint-plugin-jest';
@@ -18,12 +18,7 @@ import typescriptEslint from 'typescript-eslint';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(
-  1,
-  (typeof os.availableParallelism === 'function'
-    ? os.availableParallelism()
-    : os.cpus().length) - 1,
-);
+const cpus = Math.max(1, os.availableParallelism() - 1);
 
 const mutex = pLimit(cpus);
 
@@ -55,7 +50,6 @@ const packagesNotToTest = [
   'jest-pattern',
   'jest-phabricator',
   'jest-regex-util',
-  'jest-repl',
   'jest-reporters',
   'jest-resolve',
   'jest-runner',

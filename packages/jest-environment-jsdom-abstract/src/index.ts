@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context} from 'vm';
+import type {Context} from 'node:vm';
 import type * as jsdom from 'jsdom';
 import type {
   EnvironmentContext,
@@ -30,9 +30,7 @@ function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
-export default abstract class BaseJSDOMEnvironment
-  implements JestEnvironment<number>
-{
+export default abstract class BaseJSDOMEnvironment implements JestEnvironment<number> {
   dom: jsdom.JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -52,7 +50,26 @@ export default abstract class BaseJSDOMEnvironment
     const {JSDOM, ResourceLoader, VirtualConsole} = jsdomModule;
 
     const virtualConsole = new VirtualConsole();
-    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+
+    if (
+      'forwardTo' in virtualConsole &&
+      typeof virtualConsole.forwardTo === 'function'
+    ) {
+      // JSDOM 27+ uses `forwardTo`
+      virtualConsole.forwardTo(context.console);
+    } else if (
+      'sendTo' in virtualConsole &&
+      typeof virtualConsole.sendTo === 'function'
+    ) {
+      // JSDOM 26 uses `sendTo`
+      virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    } else {
+      // Fallback for unexpected API changes
+      throw new TypeError(
+        'Unable to forward JSDOM console output - neither sendTo nor forwardTo methods are available',
+      );
+    }
+
     virtualConsole.on('jsdomError', error => {
       context.console.error(error);
     });
@@ -140,7 +157,7 @@ export default abstract class BaseJSDOMEnvironment
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
-      global: global as unknown as typeof globalThis,
+      global,
       moduleMocker: this.moduleMocker,
       timerConfig: {
         idToRef: (id: number) => id,
@@ -150,7 +167,7 @@ export default abstract class BaseJSDOMEnvironment
 
     this.fakeTimersModern = new ModernFakeTimers({
       config: projectConfig,
-      global: global as unknown as typeof globalThis,
+      global,
     });
   }
 

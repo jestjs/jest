@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
-import stripAnsi = require('strip-ansi');
+import {stripVTControlCharacters as stripAnsi} from 'util';
+import chalk from 'chalk';
 import {makeProjectConfig} from '@jest/test-utils';
 import printDisplayName from '../printDisplayName';
 import trimAndFormatPath from '../trimAndFormatPath';

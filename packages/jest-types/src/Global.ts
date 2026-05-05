@@ -176,7 +176,6 @@ export interface GlobalAdditions extends TestFrameworkGlobals {
 }
 
 export interface Global
-  extends GlobalAdditions,
-    Omit<typeof globalThis, keyof GlobalAdditions> {
+  extends GlobalAdditions, Omit<typeof globalThis, keyof GlobalAdditions> {
   [extras: PropertyKey]: unknown;
 }

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`errors when a test both returns a promise and takes a callback 1`] = `
 "FAIL __tests__/promise-and-callback.test.js

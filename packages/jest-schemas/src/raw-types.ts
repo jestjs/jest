@@ -237,6 +237,7 @@ export const InitialOptions = Type.Partial(
     changedSince: Type.String(),
     collectCoverage: Type.Boolean(),
     collectCoverageFrom: Type.Array(Type.String()),
+    collectTests: Type.Boolean(),
     coverageDirectory: Type.String(),
     coveragePathIgnorePatterns: Type.Array(Type.String()),
     coverageProvider: CoverageProvider,
@@ -323,7 +324,7 @@ export const InitialOptions = Type.Partial(
     testEnvironmentOptions: Type.Record(Type.String(), Type.Unknown()),
     testFailureExitCode: Type.Integer(),
     testLocationInResults: Type.Boolean(),
-    testMatch: Type.Array(Type.String()),
+    testMatch: Type.Union([Type.String(), Type.Array(Type.String())]),
     testNamePattern: Type.String(),
     testPathIgnorePatterns: Type.Array(Type.String()),
     testRegex: Type.Union([Type.String(), Type.Array(Type.String())]),
@@ -341,7 +342,7 @@ export const InitialOptions = Type.Partial(
     updateSnapshot: Type.Boolean(),
     useStderr: Type.Boolean(),
     verbose: Type.Boolean(),
-    waitNextEventLoopTurnForUnhandledRejectionEvents: Type.Boolean(),
+    waitForUnhandledRejections: Type.Boolean(),
     watch: Type.Boolean(),
     watchAll: Type.Boolean(),
     watchman: Type.Boolean(),
@@ -350,5 +351,9 @@ export const InitialOptions = Type.Partial(
     ),
     workerIdleMemoryLimit: Type.Union([Type.Number(), Type.String()]),
     workerThreads: Type.Boolean(),
+    workerGracefulExitTimeout: Type.Number({
+      description:
+        'Timeout in milliseconds for worker processes to exit gracefully after tests complete. Workers that do not exit in time are force-killed. Default: 500.',
+    }),
   }),
 );

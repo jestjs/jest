@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import stringLength = require('string-length');
+import chalk from 'chalk';
+import stringLength from 'string-length';
 import type {
   AggregatedResult,
   Test,
@@ -71,7 +71,7 @@ type Cache = {
  * from the terminal.
  */
 export default class Status {
-  private _cache: Cache | null;
+  private _cache: Cache | null = null;
   private _callback?: () => void;
   private readonly _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
@@ -86,7 +86,6 @@ export default class Status {
   private _showStatus: boolean;
 
   constructor(private readonly _globalConfig: Config.GlobalConfig) {
-    this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
     this._done = false;

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import slash = require('slash');
+import slash from 'slash';
 import runJest from '../runJest';
 
 const MULTIPLE_CONFIGS_WARNING_TEXT = 'Multiple configurations found';

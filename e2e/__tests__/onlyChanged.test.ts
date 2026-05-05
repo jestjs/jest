@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import semver = require('semver');
+import * as semver from 'semver';
 import {cleanup, run, testIfHg, testIfSl, writeFiles} from '../Utils';
 import runJest from '../runJest';
 

@@ -66,7 +66,7 @@ describe('Mocked', () => {
       return;
     });
 
-    expect(new SomeClass('sample')).type.toBeAssignableWith(mockSomeInstance);
+    expect(new SomeClass('sample')).type.toBeAssignableFrom(mockSomeInstance);
   });
 
   test('wraps a function type with type definitions of the Jest mock function', () => {
@@ -83,7 +83,7 @@ describe('Mocked', () => {
       (a: boolean, b?: number) => true,
     );
 
-    expect(someFunction).type.toBeAssignableWith(mockFunction);
+    expect(someFunction).type.toBeAssignableFrom(mockFunction);
   });
 
   test('wraps an async function type with type definitions of the Jest mock function', () => {
@@ -102,7 +102,7 @@ describe('Mocked', () => {
       (a: Array<boolean>) => Promise.resolve(true),
     );
 
-    expect(someAsyncFunction).type.toBeAssignableWith(mockAsyncFunction);
+    expect(someAsyncFunction).type.toBeAssignableFrom(mockAsyncFunction);
   });
 
   test('wraps a function object type with type definitions of the Jest mock function', () => {
@@ -144,7 +144,7 @@ describe('Mocked', () => {
       return;
     });
 
-    expect(someFunctionObject).type.toBeAssignableWith(mockFunctionObject);
+    expect(someFunctionObject).type.toBeAssignableFrom(mockFunctionObject);
   });
 
   test('wraps an object type with type definitions of the Jest mock function', () => {
@@ -253,16 +253,16 @@ describe('Mocked', () => {
       mockObject.someClassInstance.methodB.mockImplementation,
     ).type.not.toBeCallableWith((a: number) => 123);
 
-    expect(someObject).type.toBeAssignableWith(mockObject);
+    expect(someObject).type.toBeAssignableFrom(mockObject);
   });
 
   test('wraps the global `console` object type with type definitions of the Jest mock function', () => {
     const mockConsole = console as Mocked<typeof console>;
 
-    expect(console.log).type.toBeAssignableWith(
+    expect(console.log).type.toBeAssignableFrom(
       mockConsole.log.mockImplementation(() => {}),
     );
-    expect<MockInstance<typeof console.log>>().type.toBeAssignableWith(
+    expect<MockInstance<typeof console.log>>().type.toBeAssignableFrom(
       mockConsole.log.mockImplementation(() => {}),
     );
   });

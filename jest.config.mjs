@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
+import {createRequire} from 'node:module';
 const require = createRequire(import.meta.url);
 
 /** @type {import('jest').Config} */
@@ -28,14 +28,19 @@ export default {
     'packages/.*/build',
     'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
+    'packages/jest-runtime/src/__tests__/test_esm_*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
+    'e2e/node-url-manual-mocks/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   snapshotFormat: {
     printBasicPrototype: true,
   },
   snapshotSerializers: [require.resolve('jest-serializer-ansi-escapes')],
+  testEnvironmentOptions: {
+    globalsCleanup: process.env.GLOBALS_CLEANUP ?? 'on',
+  },
   testPathIgnorePatterns: [
     '/__arbitraries__/',
     '/__benchmarks__/',
@@ -57,7 +62,6 @@ export default {
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
     '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
     '/packages/jest-haste-map/src/__tests__/test_dotfiles_root/',
-    '/packages/jest-repl/src/__tests__/test_root',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',
     '/packages/jest-runtime/src/__tests__/NODE_PATH_dir',
@@ -65,6 +69,9 @@ export default {
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
+    Number.parseInt(process.versions.node, 10) >= 20
+      ? '/.*\\.nodejs18\\..*'
+      : '/.*\\.nodejs20plus\\..*',
   ],
   testTimeout: 70_000,
   transform: {

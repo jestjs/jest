@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "30.0.0-alpha.7",
+  "version": "30.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -21,15 +21,13 @@
   "dependencies": {
     "@jest/environment": "workspace:*",
     "@jest/environment-jsdom-abstract": "workspace:*",
-    "@types/jsdom": "^21.1.1",
-    "@types/node": "*",
-    "jsdom": "^22.0.0"
+    "jsdom": "^26.1.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*"
   },
   "peerDependencies": {
-    "canvas": "^2.5.0"
+    "canvas": "^3.0.0"
   },
   "peerDependenciesMeta": {
     "canvas": {
@@ -37,7 +35,7 @@
     }
   },
   "engines": {
-    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"

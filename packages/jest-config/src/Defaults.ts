@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {sep} from 'path';
+import {sep} from 'node:path';
 import {isCI} from 'ci-info';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -91,10 +91,11 @@ const defaultOptions: Config.DefaultOptions = {
   testSequencer: '@jest/test-sequencer',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
-  waitNextEventLoopTurnForUnhandledRejectionEvents: false,
+  waitForUnhandledRejections: false,
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
+  workerGracefulExitTimeout: 500,
   workerThreads: false,
 };
 

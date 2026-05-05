@@ -143,6 +143,13 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
+  it('should resolve async function to toBe', async () => {
+    async function fn() {
+      return 'Test';
+    }
+    await jestExpect(fn).resolves.toBe('Test');
+  });
+
   for (const value of ['a', [1], () => {}, {a: 1}]) {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
@@ -2205,6 +2212,30 @@ describe('toMatchObject()', () => {
         [transitiveCircularObjB, transitiveCircularObjA1],
         [primitiveInsteadOfRef, transitiveCircularObjA1],
       ]);
+    });
+
+    describe('getter circular references', () => {
+      test('handles self-referential getter without infinite recursion', () => {
+        class TestClass {
+          constructor(value) {
+            this.value = value;
+          }
+
+          get selfRef() {
+            return new TestClass(this.value.toLowerCase());
+          }
+        }
+
+        const abc = new TestClass('abc');
+        const def = new TestClass('def');
+
+        jestExpect(abc).toMatchObject(abc);
+        jestExpect(abc).not.toMatchObject(def);
+
+        expect(() =>
+          jestExpect(abc).toMatchObject(def),
+        ).toThrowErrorMatchingSnapshot();
+      });
     });
   });
 

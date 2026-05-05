@@ -4,6 +4,7 @@
 *.swp
 *~
 /examples/*/node_modules/
+/examples/react-native/.watchman-cookie-*
 
 /e2e/*/node_modules
 /e2e/*/.pnp
@@ -12,6 +13,7 @@
 !/e2e/presets/js/node_modules
 /e2e/transform/*/coverage
 /e2e/transform/*/node_modules
+/e2e/custom-jsdom-version/*/node_modules
 
 /node_modules
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`malformed custom resolver in project config inconsistent functions throws  1`] = `"<bold>Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('foo/__tests__/bar.test.js')) === foo/__SPECS__/bar.test.js</intensity>"`;
 

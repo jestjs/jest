@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`.rejects fails for promise that resolves 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBe<d>()</>
@@ -87,7 +87,7 @@ Rejected to value: <r>4</>
 exports[`.resolves fails non-promise value "a" 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -96,7 +96,7 @@ Received has value: <r>"a"</>
 exports[`.resolves fails non-promise value "a" synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -105,7 +105,7 @@ Received has value: <r>"a"</>
 exports[`.resolves fails non-promise value [1] 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -114,7 +114,7 @@ Received has value: <r>[1]</>
 exports[`.resolves fails non-promise value [1] synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -123,7 +123,7 @@ Received has value: <r>[1]</>
 exports[`.resolves fails non-promise value [Function anonymous] 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -132,7 +132,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -141,7 +141,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -150,7 +150,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -159,7 +159,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.resolves fails non-promise value 4 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -168,7 +168,7 @@ Received has value: <r>4</>
 exports[`.resolves fails non-promise value 4 synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -177,7 +177,7 @@ Received has value: <r>4</>
 exports[`.resolves fails non-promise value null 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -185,7 +185,7 @@ Received has value: <r>null</>
 exports[`.resolves fails non-promise value null synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -193,7 +193,7 @@ Received has value: <r>null</>
 exports[`.resolves fails non-promise value true 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -202,7 +202,7 @@ Received has value: <r>true</>
 exports[`.resolves fails non-promise value true synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -211,7 +211,7 @@ Received has value: <r>true</>
 exports[`.resolves fails non-promise value undefined 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
@@ -219,7 +219,7 @@ Received has value: <r>undefined</>
 exports[`.resolves fails non-promise value undefined synchronously 1`] = `
 <d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
@@ -292,12 +292,7 @@ Expected: <g>"cde"</>
 Received: <r>"abc"</>
 `;
 
-exports[`.toBe() fails for: "four
-4
-line
-string" and "3
-line
-string" 1`] = `
+exports[`.toBe() fails for: "four\\n4\\nline\\nstring" and "3\\nline\\nstring" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
 <g>- Expected  - 1</>
@@ -317,8 +312,7 @@ Expected: <g>"<i>delightful</i> JavaScript testing"</>
 Received: <r>"<i>painless</i> JavaScript testing"</>
 `;
 
-exports[`.toBe() fails for: "with 
-trailing space" and "without trailing space" 1`] = `
+exports[`.toBe() fails for: "with \\ntrailing space" and "without trailing space" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
 <g>- Expected  - 1</>
@@ -2050,9 +2044,7 @@ Expected: <g>"apple"</>
 Received: <r>"banana"</>
 `;
 
-exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function ? \\"function\\" : \\"object\\";").toEqual("type TypeName<T> = T extends Function
-? \\"function\\"
-: \\"object\\";") 1`] = `
+exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function ? \\"function\\" : \\"object\\";").toEqual("type TypeName<T> = T extends Function\\n? \\"function\\"\\n: \\"object\\";") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 <g>- Expected  - 3</>
@@ -3533,11 +3525,7 @@ Expected value: <g>"\\"That <i>cat </i>cartoon\\""</>
 Received value: <r>"\\"That cartoon\\""</>
 `;
 
-exports[`.toHaveProperty() {pass: false} expect({"children": ["Roses are red.
-Violets are blue.
-Testing with Jest is good for you."], "props": null, "type": "pre"}).toHaveProperty('children,0', "Roses are red, violets are blue.
-Testing with Jest
-Is good for you.") 1`] = `
+exports[`.toHaveProperty() {pass: false} expect({"children": ["Roses are red.\\nViolets are blue.\\nTesting with Jest is good for you."], "props": null, "type": "pre"}).toHaveProperty('children,0', "Roses are red, violets are blue.\\nTesting with Jest\\nIs good for you.") 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
 
 Expected path: <g>["children", 0]</>
@@ -4605,6 +4593,19 @@ exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {2, 1
 
 Expected: not <g>Set {2, 1}</>
 Received:     <r>Set {1, 2}</>
+`;
+
+exports[`toMatchObject() circular references getter circular references handles self-referential getter without infinite recursion 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
+
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<g>- TestClass {</>
+<g>-   "value": "def",</>
+<r>+ Object {</>
+<r>+   "value": "abc",</>
+<d>  }</>
 `;
 
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `

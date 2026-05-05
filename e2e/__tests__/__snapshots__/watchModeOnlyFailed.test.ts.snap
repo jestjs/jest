@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`can press "f" to run only failed tests: test results 1`] = `
 "FAIL __tests__/bar.spec.js

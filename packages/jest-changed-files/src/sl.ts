@@ -6,8 +6,8 @@
  *
  */
 
-import * as path from 'path';
-import execa = require('execa');
+import * as path from 'node:path';
+import execa from 'execa';
 import type {SCMAdapter} from './types';
 
 /**

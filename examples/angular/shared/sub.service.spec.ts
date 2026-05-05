@@ -9,7 +9,7 @@ describe('Service: SubService', () => {
     TestBed.configureTestingModule({
       providers: [SubService],
     });
-    service = TestBed.get(SubService);
+    service = TestBed.inject(SubService);
   });
 
   it('should create service', () => {

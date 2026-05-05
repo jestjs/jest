@@ -10,8 +10,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 const yaml = require('js-yaml');
 const i18n = require('./i18n');
 const ArchivedVersions = require('./archivedVersions.json');
@@ -76,9 +76,7 @@ const config = {
             path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
-            require.resolve(
-              'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
-            ),
+            require.resolve('react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'),
           ],
         },
         gtag: {

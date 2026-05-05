@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`basic test constructs 1`] = `
 "PASS __tests__/basic.testConstructs.test.js
@@ -24,9 +24,9 @@ exports[`cannot have describe with no implementation 1`] = `
     Missing second argument. It must be a callback function.
 
     > 1 | describe('describe, no implementation');
-        |                                        ^
+        | ^
 
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:40)"
+      at Object.describe (__tests__/onlyConstructs.test.js:1:1)"
 `;
 
 exports[`cannot have describe with no implementation 2`] = `

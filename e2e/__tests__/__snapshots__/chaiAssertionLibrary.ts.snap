@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`chai assertion errors should display properly 1`] = `
 "FAIL __tests__/chai_assertion.js

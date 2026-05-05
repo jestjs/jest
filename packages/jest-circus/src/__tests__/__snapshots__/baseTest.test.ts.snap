@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`concurrent 1`] = `
 "start_describe_definition: describe
@@ -11,6 +11,7 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
@@ -29,6 +30,7 @@ test_fn_success: three
 test_done: one
 test_done: two
 test_done: three
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -47,6 +49,7 @@ finish_describe_definition: describe
 run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
+concurrent_tests_start
 test_start: one
 test_start: two
 test_start: three
@@ -65,6 +68,59 @@ test_fn_success: three
 test_done: one
 test_done: two
 test_done: three
+concurrent_tests_end
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe.skip + concurrent 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+concurrent_tests_start
+test_start: one
+test_start: two
+test_start: three
+test_skip
+test_skip
+test_skip
+concurrent_tests_end
+run_describe_finish: describe
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`describe.skip + concurrent.each 1`] = `
+"start_describe_definition: describe
+add_hook: beforeEach
+add_hook: afterEach
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+concurrent_tests_start
+test_start: one
+test_start: two
+test_start: three
+test_skip
+test_skip
+test_skip
+concurrent_tests_end
 run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -120,6 +176,34 @@ test_fn_start: One
 test_fn_success: One
 test_done: One
 run_describe_finish: describer
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
+exports[`nested describe.skip + concurrent 1`] = `
+"start_describe_definition: describe
+start_describe_definition: nested
+add_test: one
+add_test: two
+add_test: three
+finish_describe_definition: nested
+finish_describe_definition: describe
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describe
+run_describe_start: nested
+concurrent_tests_start
+test_start: one
+test_start: two
+test_start: three
+test_skip
+test_skip
+test_skip
+concurrent_tests_end
+run_describe_finish: nested
+run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 

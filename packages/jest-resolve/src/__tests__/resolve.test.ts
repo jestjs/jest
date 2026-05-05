@@ -6,43 +6,26 @@
  *
  */
 
-import * as path from 'path';
-import {fileURLToPath, pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
-import {sync as resolveSync} from 'resolve';
 import {type IModuleMap, ModuleMap} from 'jest-haste-map';
+import * as path from 'path';
+import {pathToFileURL} from 'url';
+
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import defaultResolver, {type PackageFilter} from '../defaultResolver';
+import defaultResolver, {defaultAsyncResolver} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
-// Do not fully mock `resolve` because it is used by Jest. Doing it will crash
-// in very strange ways. Instead, just spy on it and its `sync` method.
-jest.mock('resolve', () => {
-  const originalModule =
-    jest.requireActual<typeof import('resolve')>('resolve');
-
-  const m = jest.fn<typeof import('resolve')>((...args) =>
-    originalModule(...args),
-  );
-  Object.assign(m, originalModule);
-  m.sync = jest.spyOn(originalModule, 'sync');
-
-  return m;
-});
-
 const mockUserResolver = jest.mocked(userResolver);
 const mockUserResolverAsync = jest.mocked(userResolverAsync);
-const mockResolveSync = jest.mocked(resolveSync);
 
 beforeEach(() => {
   mockUserResolver.mockClear();
   mockUserResolverAsync.async.mockClear();
-  mockResolveSync.mockClear();
 
   Resolver.clearDefaultResolverCache();
 });
@@ -92,15 +75,33 @@ describe('isCoreModule', () => {
     expect(isCore).toBe(true);
   });
 
-  it('returns true if using `node:` URLs and `moduleName` is not a core module.', () => {
+  it('returns false if using `node:` URLs and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:not-a-core-module');
-    expect(isCore).toBe(true);
+    expect(isCore).toBe(false);
   });
 });
 
 describe('findNodeModule', () => {
+  it('should resolve builtin modules as-is', () => {
+    expect(
+      Resolver.findNodeModule('url', {
+        basedir: __dirname,
+      }),
+    ).toBe('url');
+    expect(
+      Resolver.findNodeModule('node:url', {
+        basedir: __dirname,
+      }),
+    ).toBe('node:url');
+    expect(
+      Resolver.findNodeModule('url/', {
+        basedir: __dirname,
+      }),
+    ).toBe(path.resolve('node_modules/url/url.js'));
+  });
+
   it('is possible to override the default resolver', () => {
     const cwd = process.cwd();
     const resolvedCwd = fs.realpathSync(cwd) || cwd;
@@ -126,31 +127,13 @@ describe('findNodeModule', () => {
     expect(mockUserResolver.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       conditions: ['conditions, woooo'],
+      defaultAsyncResolver,
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
-  });
-
-  it('wraps passed packageFilter to the resolve module when using the default resolver', () => {
-    const packageFilter = jest.fn<PackageFilter>();
-
-    // A resolver that delegates to defaultResolver with a packageFilter implementation
-    mockUserResolver.mockImplementation((request, opts) =>
-      opts.defaultResolver(request, {...opts, packageFilter}),
-    );
-
-    Resolver.findNodeModule('./test', {
-      basedir: path.resolve(__dirname, '../__mocks__/'),
-      resolver: require.resolve('../__mocks__/userResolver'),
-    });
-
-    expect(packageFilter).toHaveBeenCalledWith(
-      expect.objectContaining({name: '__mocks__'}),
-      expect.any(String),
-    );
   });
 
   it('supports file URLs', () => {
@@ -407,7 +390,9 @@ describe('findNodeModule', () => {
           basedir: path.resolve(importsRoot, './foo-import/index.js'),
           conditions: [],
         });
-      }).toThrow('Missing "#something-else" specifier in "foo-import" package');
+      }).toThrow(
+        `Package import specifier "#something-else" is not defined in package ${path.join(importsRoot, 'foo-import/package.json')}`,
+      );
     });
   });
 });
@@ -438,33 +423,13 @@ describe('findNodeModuleAsync', () => {
     expect(mockUserResolverAsync.async.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       conditions: ['conditions, woooo'],
+      defaultAsyncResolver,
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: [...(nodePaths || []), '/something'],
       rootDir: undefined,
     });
-  });
-
-  it('passes packageFilter to the resolve module when using the default resolver', async () => {
-    const packageFilter = jest.fn<PackageFilter>();
-
-    // A resolver that delegates to defaultResolver with a packageFilter implementation
-    mockUserResolverAsync.async.mockImplementation((request, opts) =>
-      Promise.resolve(opts.defaultResolver(request, {...opts, packageFilter})),
-    );
-
-    await Resolver.findNodeModuleAsync('test', {
-      basedir: '/',
-      resolver: require.resolve('../__mocks__/userResolverAsync'),
-    });
-
-    expect(mockResolveSync).toHaveBeenCalledWith(
-      'test',
-      expect.objectContaining({
-        packageFilter,
-      }),
-    );
   });
 
   it('supports file URLs', async () => {
@@ -890,5 +855,57 @@ describe('Resolver.getGlobalPaths()', () => {
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const globalPaths = resolver.getGlobalPaths();
     expect(globalPaths).toStrictEqual([]);
+  });
+});
+
+describe('canResolveSync', () => {
+  // The other suites auto-mock `userResolver`/`userResolverAsync`, which
+  // changes their shape; load the real modules here to test detection.
+  beforeAll(() => {
+    jest.unmock('../__mocks__/userResolver');
+    jest.unmock('../__mocks__/userResolverAsync');
+  });
+  afterAll(() => {
+    jest
+      .mock('../__mocks__/userResolver')
+      .mock('../__mocks__/userResolverAsync');
+  });
+
+  it('returns true when no user resolver is configured', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports a plain function', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolver'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports a `sync` hook', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverSync'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns true when the user resolver exports both `sync` and `async`', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverDual'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
+  });
+
+  it('returns false when the user resolver only exports `async`', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(false);
   });
 });

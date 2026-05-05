@@ -8,5 +8,8 @@
 const config = {
   displayName: 'Config from modern ts file',
   testEnvironment: 'node',
+  testEnvironmentOptions: {
+    globalsCleanup: 'on',
+  },
 };
 export default config;

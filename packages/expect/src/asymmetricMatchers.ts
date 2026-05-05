@@ -56,9 +56,9 @@ export function hasProperty(
   return hasProperty(Object.getPrototypeOf(obj), property);
 }
 
-export abstract class AsymmetricMatcher<T>
-  implements AsymmetricMatcherInterface
-{
+export abstract class AsymmetricMatcher<
+  T,
+> implements AsymmetricMatcherInterface {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
   constructor(

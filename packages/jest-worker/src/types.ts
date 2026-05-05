@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ForkOptions} from 'child_process';
-import type {ResourceLimits} from 'worker_threads';
+import type {ForkOptions} from 'node:child_process';
+import type {ResourceLimits} from 'node:worker_threads';
 
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
 type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
@@ -147,6 +147,7 @@ export type WorkerFarmOptions = {
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerPoolOptions = {
@@ -157,6 +158,7 @@ export type WorkerPoolOptions = {
   numWorkers: number;
   enableWorkerThreads: boolean;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerOptions = {
@@ -175,6 +177,10 @@ export type WorkerOptions = {
    * a job is complete. So you could have a resource limit of 500MB but an idle
    * limit of 50MB. The latter will only trigger if after a job has completed the
    * memory usage hasn't returned back down under 50MB.
+   *
+   * Special case: setting this to 0 will restart the worker process after each
+   * job completes, providing complete process isolation between test files
+   * regardless of memory usage.
    */
   idleMemoryLimit?: number;
   /**

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`printDiffOrStringify asymmetricMatcher array 1`] = `
 <g>- Expected  - 1</>
@@ -182,6 +182,16 @@ exports[`printDiffOrStringify expected is multi line and received is empty 1`] =
 Expected: <g>"multi</>
 <g>line"</>
 Received: <r>""</>
+`;
+
+exports[`printDiffOrStringify getters handles self-referential getters without infinite recursion 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  TestClass {</>
+<g>-   "value": "hello",</>
+<r>+   "value": "world",</>
+<d>  }</>
 `;
 
 exports[`printDiffOrStringify has no common after clean up chaff multiline 1`] = `

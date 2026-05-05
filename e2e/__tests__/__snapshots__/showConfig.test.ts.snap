@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`--showConfig outputs config info and exits 1`] = `
 "{
@@ -97,7 +97,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/",
         "<<REPLACED_PNP_PATH>>"
       ],
-      "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+      "waitForUnhandledRejections": false,
       "watchPathIgnorePatterns": []
     }
   ],
@@ -107,6 +107,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "ci": true,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "collectTests": false,
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
     "coverageProvider": "babel",
     "coverageReporters": [
@@ -150,10 +151,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "none",
     "useStderr": false,
-    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+    "waitForUnhandledRejections": false,
     "watch": false,
     "watchAll": false,
     "watchman": true,
+    "workerGracefulExitTimeout": 500,
     "workerThreads": false
   },
   "version": "[version]"

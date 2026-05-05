@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`init has jest config in package.json should ask the user whether to override config or not 1`] = `
 Object {
@@ -46,6 +46,15 @@ Object {
 `;
 
 exports[`init has-jest-config-file-mjs ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
+exports[`init has-jest-config-file-mts ask the user whether to override config or not user answered with "Yes" 1`] = `
 Object {
   "initial": true,
   "message": "It seems that you already have a jest configuration, do you want to override it?",

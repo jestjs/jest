@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {DeprecatedOptions} from 'jest-validate';
 
 function formatDeprecation(message: string): string {
@@ -89,7 +89,7 @@ const deprecatedOptions: DeprecatedOptions = {
 
   testPathPattern: () =>
     formatDeprecation(
-      'Option *testPathPattern* was replaced by *testPathPatterns*.',
+      'Option *testPathPattern* was replaced by *--testPathPatterns*. *--testPathPatterns* is only available as a command-line option.',
     ),
 
   testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(

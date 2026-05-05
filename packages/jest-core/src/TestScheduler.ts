@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {GITHUB_ACTIONS} from 'ci-info';
-import exit = require('exit-x');
+import exit from 'exit-x';
 import {
+  AgentReporter,
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
@@ -41,7 +42,30 @@ import {
 import {ErrorWithStack, invariant, requireOrImportModule} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
+import runGlobalHook from './runGlobalHook';
 import {shouldRunInBand} from './testSchedulerHelper';
+
+// Env vars that indicate the process is running inside an AI coding agent.
+// Based on the detection logic from the std-env package.
+const AGENT_ENV_VARS = [
+  'AI_AGENT',
+  'AUGMENT_AGENT',
+  'CLAUDE_CODE',
+  'CLAUDECODE',
+  'CODEX_SANDBOX',
+  'CODEX_THREAD_ID',
+  'CURSOR_AGENT',
+  'GEMINI_CLI',
+  'GOOSE_PROVIDER',
+  'OPENCODE',
+  'REPL_ID',
+];
+
+function detectAgent(): boolean {
+  return AGENT_ENV_VARS.some(
+    key => key in process.env && process.env[key] !== '',
+  );
+}
 
 export type ReporterConstructor = new (
   globalConfig: Config.GlobalConfig,
@@ -150,7 +174,12 @@ class TestScheduler {
         testResult,
         aggregatedResults,
       );
-      return this._bailIfNeeded(testContexts, aggregatedResults, watcher);
+      return this._bailIfNeeded(
+        testContexts,
+        aggregatedResults,
+        watcher,
+        tests,
+      );
     };
 
     const onFailure = async (test: Test, error: SerializableError) => {
@@ -344,11 +373,17 @@ class TestScheduler {
 
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
-    const reporters = this._globalConfig.reporters || [['default', {}]];
+    const reporters = this._globalConfig.reporters || [
+      [detectAgent() ? 'agent' : 'default', {}],
+    ];
     let summaryOptions: SummaryReporterOptions | null = null;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {
+        case 'agent':
+          summaryOptions = options;
+          this.addReporter(new AgentReporter(this._globalConfig));
+          break;
         case 'default':
           summaryOptions = options;
           this.addReporter(
@@ -408,6 +443,7 @@ class TestScheduler {
     testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
+    allTests: Array<Test>,
   ): Promise<void> {
     if (
       this._globalConfig.bail !== 0 &&
@@ -421,8 +457,17 @@ class TestScheduler {
       try {
         await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
       } finally {
-        const exitCode = this._globalConfig.testFailureExitCode;
-        exit(exitCode);
+        // Perform global teardown if client configures `bail`
+        if (allTests.length > 0) {
+          performance.mark('jest/globalTeardown:start');
+          await runGlobalHook({
+            allTests,
+            globalConfig: this._globalConfig,
+            moduleName: 'globalTeardown',
+          });
+          performance.mark('jest/globalTeardown:end');
+          exit(this._globalConfig.testFailureExitCode);
+        }
       }
     }
   }

@@ -48,7 +48,7 @@ export function shouldRunInBand(
 
   return (
     // When specifying a memory limit, workers should be used
-    !workerIdleMemoryLimit &&
+    workerIdleMemoryLimit === undefined &&
     (oneWorkerOrLess ||
       oneTestOrLess ||
       (tests.length <= 20 && timings.length > 0 && areFastTests))

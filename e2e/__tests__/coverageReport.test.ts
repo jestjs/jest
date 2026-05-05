@@ -189,3 +189,18 @@ test('generates coverage when using the testRegex config param ', () => {
   expect(stdout).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
+
+test('prints coverage when using --outputFile with --json', () => {
+  const outputFileName = 'sum.result.json';
+  const outputFilePath = path.join(DIR, outputFileName);
+
+  const {stdout, exitCode} = runJest(DIR, [
+    '--json',
+    `--outputFile=${outputFileName}`,
+    '--coverage',
+  ]);
+
+  expect(stdout).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+  fs.unlinkSync(outputFilePath);
+});

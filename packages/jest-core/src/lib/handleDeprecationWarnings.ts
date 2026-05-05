@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ReadStream, WriteStream} from 'tty';
-import chalk = require('chalk');
+import type {ReadStream, WriteStream} from 'node:tty';
+import chalk from 'chalk';
 import {KEYS} from 'jest-watcher';
 
 export default function handleDeprecationWarnings(

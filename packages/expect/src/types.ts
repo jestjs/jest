@@ -22,8 +22,8 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type MatcherFunctionWithContext<
   Context extends MatcherContext = MatcherContext,
-  Expected extends
-    Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
+  // TODO should be: extends Array<unknown>
+  Expected extends Array<any> = [],
 > = (
   this: Context,
   actual: unknown,
@@ -106,7 +106,7 @@ export type Expect = (<T = unknown>(
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
 
-type Inverse<Matchers> = {
+export type Inverse<Matchers> = {
   /**
    * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
    */
@@ -209,6 +209,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Used when you want to check that an item is in a list.
    * For testing the items in the list, this uses `===`, a strict equality check.
+   * `.toContain` can also check whether a string is a substring of another string.
    */
   toContain(expected: unknown): R;
   /**

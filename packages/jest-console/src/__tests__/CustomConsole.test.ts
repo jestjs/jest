@@ -7,7 +7,7 @@
 
 import {Writable} from 'stream';
 import type {WriteStream} from 'tty';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {
@@ -79,7 +79,7 @@ describe('CustomConsole', () => {
       expect(_stderr).toMatch('AssertionError');
       expect(_stderr).toMatch(
         // The message may differ across Node versions
-        /(false == true)|(The expression evaluated to a falsy value:)/,
+        /(false == true)|(The expression evaluated to a falsy value)/,
       );
     });
 

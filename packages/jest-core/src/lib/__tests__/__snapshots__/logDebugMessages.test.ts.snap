@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`prints the config object 1`] = `
 "{
@@ -75,7 +75,7 @@ exports[`prints the config object 1`] = `
     "testTimeout": 5000,
     "transform": [],
     "transformIgnorePatterns": [],
-    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+    "waitForUnhandledRejections": false,
     "watchPathIgnorePatterns": []
   },
   "globalConfig": {
@@ -85,6 +85,7 @@ exports[`prints the config object 1`] = `
     "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "collectTests": false,
     "coverageDirectory": "coverage",
     "coverageProvider": "babel",
     "coverageReporters": [],
@@ -128,7 +129,7 @@ exports[`prints the config object 1`] = `
     "updateSnapshot": "none",
     "useStderr": false,
     "verbose": false,
-    "waitNextEventLoopTurnForUnhandledRejectionEvents": false,
+    "waitForUnhandledRejections": false,
     "watch": true,
     "watchAll": false,
     "watchPlugins": [],

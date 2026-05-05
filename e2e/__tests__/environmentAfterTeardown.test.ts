@@ -10,7 +10,7 @@ import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 
-test('prints useful error for environment methods after test is done w/o `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
+test('prints useful error for environment methods after test is done w/o `waitForUnhandledRejections`', () => {
   const {stderr} = runJest('environment-after-teardown');
   const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
 
@@ -20,9 +20,9 @@ test('prints useful error for environment methods after test is done w/o `waitNe
   );
 });
 
-test('prints useful error for environment methods after test is done w/ `waitNextEventLoopTurnForUnhandledRejectionEvents`', () => {
+test('prints useful error for environment methods after test is done w/ `waitForUnhandledRejections`', () => {
   const {stderr} = runJest('environment-after-teardown', [
-    '--waitNextEventLoopTurnForUnhandledRejectionEvents',
+    '--waitForUnhandledRejections',
   ]);
   const interestingLines = stderr.split('\n').slice(5, 14).join('\n');
 

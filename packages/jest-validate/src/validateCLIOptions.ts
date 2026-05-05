@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import camelcase = require('camelcase');
-import chalk = require('chalk');
+import camelcase from 'camelcase';
+import chalk from 'chalk';
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import type {

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`child tests marked with only should not run if describe block is skipped 1`] = `
 "start_describe_definition: describe

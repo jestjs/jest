@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {replacePathSepForRegex} from 'jest-regex-util';
 
 export class TestPathPatterns {
@@ -113,6 +113,10 @@ export class TestPathPatternsExecutor {
 
       regexStr = replacePathSepForRegex(regexStr);
       if (this.toRegex(regexStr).test(pathToTest)) {
+        return true;
+      }
+
+      if (this.toRegex(regexStr).test(absPath)) {
         return true;
       }
     }

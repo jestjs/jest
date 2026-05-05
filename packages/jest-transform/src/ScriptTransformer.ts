@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
-import stableStringify = require('fast-json-stable-stringify');
+import stableStringify from 'fast-json-stable-stringify';
 import * as fs from 'graceful-fs';
 import {addHook} from 'pirates';
-import slash = require('slash');
+import slash from 'slash';
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
@@ -843,23 +843,26 @@ class ScriptTransformer {
 
     return this._config.transform.length > 0 && !isIgnored;
   }
+
+  canTransformSync(filename: string): boolean {
+    if (!this.shouldTransform(filename)) {
+      return true;
+    }
+    const transformerEntry = this._getTransformer(filename);
+    if (transformerEntry == null) {
+      return true;
+    }
+    return typeof transformerEntry.transformer.process === 'function';
+  }
 }
 
-// TODO: do we need to define the generics twice?
-export async function createTranspilingRequire(
-  config: Config.ProjectConfig,
-): Promise<
-  <TModuleType = unknown>(
-    resolverPath: string,
-    applyInteropRequireDefault?: boolean,
-  ) => Promise<TModuleType>
-> {
+export async function createTranspilingRequire(config: Config.ProjectConfig) {
   const transformer = await createScriptTransformer(config);
 
   return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
     applyInteropRequireDefault = false,
-  ) {
+  ): Promise<TModuleType> {
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
         resolverPath,

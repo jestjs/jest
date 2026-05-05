@@ -19,6 +19,32 @@ import TOCInline from '@theme/TOCInline';
 
 ## Reference
 
+### `mockFn.getMockImplementation()`
+
+Returns the current implementation of the mock function set by [`mockImplementation()`](#mockfnmockimplementationfn). Returns `undefined` if no implementation has been set.
+
+```js tab
+const mockFn = jest.fn();
+
+mockFn.getMockImplementation(); // undefined
+
+mockFn.mockImplementation(() => 42);
+
+mockFn.getMockImplementation(); // () => 42
+```
+
+```ts tab
+import {jest} from '@jest/globals';
+
+const mockFn = jest.fn<() => number>();
+
+mockFn.getMockImplementation(); // undefined
+
+mockFn.mockImplementation(() => 42);
+
+mockFn.getMockImplementation(); // () => 42
+```
+
 ### `mockFn.getMockName()`
 
 Returns the mock name string set by calling [`.mockName()`](#mockfnmocknamename).

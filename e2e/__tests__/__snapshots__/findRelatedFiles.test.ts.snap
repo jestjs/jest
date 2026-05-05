@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 1`] = `
 "Test Suites: 1 passed, 1 total

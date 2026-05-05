@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {strict as assert} from 'assert';
-import * as os from 'os';
-import * as path from 'path';
+import {strict as assert} from 'node:assert';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import execa from 'execa';
 import {glob} from 'glob';
@@ -176,12 +176,7 @@ try {
 console.log(chalk.inverse(' Validating TypeScript definition files '));
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(
-  1,
-  (typeof os.availableParallelism === 'function'
-    ? os.availableParallelism()
-    : os.cpus().length) - 1,
-);
+const cpus = Math.max(1, os.availableParallelism() - 1);
 
 const typesReferenceDirective = '/// <reference types';
 const typesNodeReferenceDirective = `${typesReferenceDirective}="node" />`;

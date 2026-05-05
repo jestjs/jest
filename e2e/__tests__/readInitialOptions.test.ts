@@ -4,8 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import path = require('path');
-import execa = require('execa');
+import path from 'path';
+import execa from 'execa';
 import {onNodeVersions} from '@jest/test-utils';
 import type {ReadJestConfigOptions, readInitialOptions} from 'jest-config';
 
@@ -68,6 +68,27 @@ describe('readInitialOptions', () => {
       expect(configPath).toEqual(configFile);
     },
   );
+
+  onNodeVersions('^22.18 || >=23.6', () => {
+    test('should read mts-config/jest.config.mts file', async () => {
+      const configFile = resolveFixture('mts-config', 'jest.config.mts');
+      const rootDir = resolveFixture('mts-config');
+      const {config, configPath} = await proxyReadInitialOptions(undefined, {
+        cwd: rootDir,
+      });
+      expect(config).toEqual({jestConfig: 'jest.config.mts', rootDir});
+      expect(configPath).toEqual(configFile);
+    });
+  });
+
+  onNodeVersions('<22.18', () => {
+    test('should fail to read mts-config/jest.config.mts with a clear error', async () => {
+      const rootDir = resolveFixture('mts-config');
+      await expect(
+        proxyReadInitialOptions(undefined, {cwd: rootDir}),
+      ).rejects.toThrow(/jest\.config\.mts requires native TypeScript support/);
+    });
+  });
 
   test('should be able to skip config reading, instead read from cwd', async () => {
     const expectedConfigFile = resolveFixture(

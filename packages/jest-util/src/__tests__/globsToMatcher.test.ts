@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import micromatch = require('micromatch');
+import micromatch from 'micromatch';
 import globsToMatcher from '../globsToMatcher';
 
 it('works like micromatch with only positive globs', () => {

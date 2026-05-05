@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`\`done()\` should not be called more than once 1`] = `
 "FAIL __tests__/index.test.js

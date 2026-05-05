@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 1`] = `"<dim>should⏎ </intensity></>name</><dim> the ⏎function you at...</intensity>"`;
 

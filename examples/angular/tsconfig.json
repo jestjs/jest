@@ -3,7 +3,6 @@
   "compilerOptions": {
     "emitDeclarationOnly": false,
     "noEmit": true,
-    "experimentalDecorators": true,
     "strict": true
   },
   "include": ["./**/*"]

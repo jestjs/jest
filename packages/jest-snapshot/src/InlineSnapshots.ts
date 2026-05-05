@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {types} from 'util';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier-v2';
-import semver = require('semver');
+import * as semver from 'semver';
 import {createSyncFn} from 'synckit';
+import {isError} from 'jest-util';
 import type {InlineSnapshot} from './types';
 import {
   groupSnapshotsByFile,
@@ -44,9 +44,12 @@ export function saveInlineSnapshots(
     : undefined;
   if (prettierPath && !prettier) {
     try {
-      prettier =
-        // @ts-expect-error requireOutside
-        requireOutside(prettierPath) as Prettier;
+      prettier = require(
+        require.resolve(prettierPath, {
+          [Symbol.for('jest-resolve-outside-vm-option')]: true,
+        }),
+      ) as Prettier;
+
       cachedPrettier.set(`module|${prettierPath}`, prettier);
 
       if (semver.gte(prettier.version, '3.0.0')) {
@@ -56,7 +59,7 @@ export function saveInlineSnapshots(
         cachedPrettier.set(`worker|${prettierPath}`, workerFn);
       }
     } catch (error) {
-      if (!types.isNativeError(error)) {
+      if (!isError(error)) {
         throw error;
       }
 

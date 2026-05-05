@@ -118,7 +118,6 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error - doesn't exist?
       this._clock.runMicrotasks();
     }
   }
@@ -152,7 +151,16 @@ export default class FakeTimers {
 
   setSystemTime(now?: number | Date): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now);
+      this._clock.setSystemTime(now instanceof Date ? now.getTime() : now);
+    }
+  }
+
+  setTimerTickMode(tickModeConfig: {
+    mode: 'interval' | 'manual' | 'nextAsync';
+    delta?: number;
+  }): void {
+    if (this._checkFakeTimers()) {
+      this._clock.setTickMode(tickModeConfig);
     }
   }
 
@@ -218,7 +226,10 @@ export default class FakeTimers {
     return {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
-      now: fakeTimersConfig.now ?? Date.now(),
+      now:
+        fakeTimersConfig.now instanceof Date
+          ? fakeTimersConfig.now.getTime()
+          : (fakeTimersConfig.now ?? Date.now()),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
       toFake: [...toFake],

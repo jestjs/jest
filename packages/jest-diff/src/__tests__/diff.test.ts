@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import stripAnsi = require('strip-ansi');
+import {stripVTControlCharacters as stripAnsi} from 'util';
+import chalk from 'chalk';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {diff} from '../';
 import {NO_DIFF_MESSAGE} from '../constants';

@@ -16,4 +16,6 @@ export {
 
 export {run, buildArgv} from 'jest-cli';
 
+export {defineConfig, mergeConfig} from 'jest-config';
+
 export type Config = ConfigTypes.InitialOptions;

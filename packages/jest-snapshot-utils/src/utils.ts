@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import chalk = require('chalk');
+import * as path from 'node:path';
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import naturalCompare = require('natural-compare');
+import naturalCompare from 'natural-compare';
 import type {Config} from '@jest/types';
 import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
-const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
-export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
+const SNAPSHOT_HEADER_REGEXP = /^\/\/ Jest Snapshot v(.+), (.+)$/m;
+export const SNAPSHOT_GUIDE_LINK = 'https://jestjs.io/docs/snapshot-testing';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
     'we recommend that you revert any local changes to tests or other code, ' +
@@ -24,9 +24,10 @@ export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
-const validateSnapshotVersion = (snapshotContents: string) => {
-  const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = versionTest && versionTest[1];
+const validateSnapshotHeader = (snapshotContents: string) => {
+  const headerTest = SNAPSHOT_HEADER_REGEXP.exec(snapshotContents);
+  const version = headerTest && headerTest[1];
+  const guideLink = headerTest && headerTest[2];
 
   if (!version) {
     return new Error(
@@ -72,18 +73,61 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     );
   }
 
+  if (guideLink !== SNAPSHOT_GUIDE_LINK) {
+    return new Error(
+      // eslint-disable-next-line prefer-template
+      chalk.red(
+        `${chalk.red.bold(
+          'Outdated guide link',
+        )}: The snapshot guide link at the top of this snapshot is outdated. ` +
+          'Please update all snapshots during this upgrade of Jest.',
+      ) +
+        '\n\n' +
+        `Expected: ${SNAPSHOT_GUIDE_LINK}\n` +
+        `Received: ${guideLink}`,
+    );
+  }
+
   return null;
 };
 
+const normalizeTestNameForKey = (testName: string): string =>
+  testName.replaceAll(/\r\n|\r|\n/g, match => {
+    switch (match) {
+      case '\r\n':
+        return '\\r\\n';
+      case '\r':
+        return '\\r';
+      case '\n':
+        return '\\n';
+      default:
+        return match;
+    }
+  });
+
+const denormalizeTestNameFromKey = (key: string): string =>
+  key.replaceAll(/\\r\\n|\\r|\\n/g, match => {
+    switch (match) {
+      case '\\r\\n':
+        return '\r\n';
+      case '\\r':
+        return '\r';
+      case '\\n':
+        return '\n';
+      default:
+        return match;
+    }
+  });
+
 export const testNameToKey = (testName: string, count: number): string =>
-  `${testName} ${count}`;
+  `${normalizeTestNameForKey(testName)} ${count}`;
 
 export const keyToTestName = (key: string): string => {
   if (!/ \d+$/.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
-
-  return key.replace(/ \d+$/, '');
+  const testNameWithoutCount = key.replace(/ \d+$/, '');
+  return denormalizeTestNameFromKey(testNameWithoutCount);
 };
 
 export const getSnapshotData = (
@@ -106,7 +150,7 @@ export const getSnapshotData = (
     } catch {}
   }
 
-  const validationResult = validateSnapshotVersion(snapshotContents);
+  const validationResult = validateSnapshotHeader(snapshotContents);
   const isInvalid = snapshotContents && validationResult;
 
   if (update === 'none' && isInvalid) {

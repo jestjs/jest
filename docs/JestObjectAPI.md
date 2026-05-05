@@ -761,7 +761,7 @@ If your codebase is set up to transpile the ["explicit resource management"](htt
 
 ```js
 test('logs a warning', () => {
-  using spy = jest.spyOn(console.warn);
+  using spy = jest.spyOn(console, 'warn');
   doSomeThingWarnWorthy();
   expect(spy).toHaveBeenCalled();
 });
@@ -773,7 +773,7 @@ That code is semantically equal to
 test('logs a warning', () => {
   let spy;
   try {
-    spy = jest.spyOn(console.warn);
+    spy = jest.spyOn(console, 'warn');
     doSomeThingWarnWorthy();
     expect(spy).toHaveBeenCalled();
   } finally {
@@ -789,7 +789,7 @@ You can even go a step further and use a code block to restrict your mock to onl
 ```js
 test('testing something', () => {
   {
-    using spy = jest.spyOn(console.warn);
+    using spy = jest.spyOn(console, 'warn');
     setupStepThatWillLogAWarning();
   }
   // here, console.warn is already restored to the original value
@@ -1119,6 +1119,29 @@ Returns the time in ms of the current clock. This is equivalent to `Date.now()` 
 ### `jest.setSystemTime(now?: number | Date)`
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
+
+### `jest.setTimerTickMode(mode)`
+
+Allows configuring how fake timers advance time.
+
+Configuration options:
+
+```ts
+type TimerTickMode =
+  | {mode: 'manual'}
+  | {mode: 'nextAsync'}
+  | {mode: 'interval'; delta?: number};
+```
+
+- `manual`: Timers do not advance without explicit, manual calls to the tick APIs (`jest.advanceTimersByTime(ms)`, `jest.runAllTimers()`, etc).
+- `nextAsync`: The clock will continuously break the event loop, then run the next timer until the mode changes.
+- `interval`: This is the same as specifying `advanceTimers: true` with an `advanceTimeDelta`. If the delta is not specified, 20 will be used by default.
 
 :::info
 

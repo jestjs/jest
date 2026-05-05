@@ -20,6 +20,7 @@ export default function Link({page, children}) {
 
   return (
     <a
+      aria-label={status}
       className={status}
       href={page || '#'}
       onMouseEnter={onMouseEnter}

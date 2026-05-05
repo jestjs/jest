@@ -5,25 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
-import {
-  type TransformOptions as BabelTransformOptions,
-  type PartialConfig,
-  transformSync as babelTransform,
-  transformAsync as babelTransformAsync,
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
+import type {
+  TransformOptions as BabelTransformOptions,
+  PartialConfig,
 } from '@babel/core';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import slash = require('slash');
+import slash from 'slash';
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
   TransformerCreator,
 } from '@jest/transform';
-import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
+import {
+  transformSync as babelTransform,
+  transformAsync as babelTransformAsync,
+  loadPartialConfigAsync,
+  loadPartialConfigSync,
+} from './babel';
 
-interface TransformerConfig extends BabelTransformOptions {
+export interface TransformerConfig extends BabelTransformOptions {
   excludeJestPreset?: boolean;
 }
 
@@ -48,12 +51,15 @@ function assertLoadedBabelConfig(
 }
 
 function addIstanbulInstrumentation(
+  filename: string,
   babelOptions: BabelTransformOptions,
   transformOptions: JestTransformOptions,
 ): BabelTransformOptions {
   if (transformOptions.instrument) {
-    const copiedBabelOptions: BabelTransformOptions = {...babelOptions};
-    copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+    const copiedBabelOptions: BabelTransformOptions = {
+      ...babelOptions,
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+    };
     // Copied from jest-runtime transform.js
     copiedBabelOptions.plugins = [
       ...(copiedBabelOptions.plugins ?? []),
@@ -63,6 +69,7 @@ function addIstanbulInstrumentation(
           // files outside `cwd` will not be instrumented
           cwd: transformOptions.config.cwd,
           exclude: [],
+          extension: [path.extname(filename)],
         },
       ],
     ];
@@ -112,7 +119,7 @@ function loadBabelConfig(
   filename: string,
   transformOptions: BabelTransformOptions,
 ): PartialConfig {
-  const babelConfig = loadPartialConfig(transformOptions);
+  const babelConfig = loadPartialConfigSync(transformOptions);
 
   assertLoadedBabelConfig(babelConfig, cwd, filename);
 
@@ -139,7 +146,7 @@ function loadBabelOptions(
 ): BabelTransformOptions {
   const {options} = loadBabelConfig(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
 async function loadBabelOptionsAsync(
@@ -150,7 +157,7 @@ async function loadBabelOptionsAsync(
 ): Promise<BabelTransformOptions> {
   const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
 export const createTransformer: TransformerCreator<

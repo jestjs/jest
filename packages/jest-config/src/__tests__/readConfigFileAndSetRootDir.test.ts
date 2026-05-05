@@ -5,14 +5,59 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path = require('path');
+import path from 'path';
 import * as fs from 'graceful-fs';
 import {requireOrImportModule} from 'jest-util';
 import readConfigFileAndSetRootDir from '../readConfigFileAndSetRootDir';
+import {onNodeVersions} from '@jest/test-utils';
 
 jest.mock('graceful-fs').mock('jest-util');
 
 describe('readConfigFileAndSetRootDir', () => {
+  describe('TypeScript ESM file', () => {
+    test('reads .mts config and sets `rootDir`', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest.config.mts'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+
+    test('throws a clear error when native import fails, without falling back to ts-node', async () => {
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new Error('Unknown file extension ".mts"'));
+
+      const configPath = path.join(
+        path.resolve('some', 'path', 'to'),
+        'jest.config.mts',
+      );
+      await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
+        /jest\.config\.mts requires native TypeScript support/,
+      );
+      // loadTSConfigFile reads the file for docblock parsing - it must not be called
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+
+    test('throws a clear error when native import fails with a SyntaxError', async () => {
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new SyntaxError('Unexpected token'));
+
+      const configPath = path.join(
+        path.resolve('some', 'path', 'to'),
+        'jest.config.mts',
+      );
+      await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
+        /jest\.config\.mts requires native TypeScript support/,
+      );
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+  });
+
   describe('JavaScript file', () => {
     test('reads config and sets `rootDir`', async () => {
       jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
@@ -164,6 +209,26 @@ describe('readConfigFileAndSetRootDir', () => {
         resetModules: true,
         rootDir: path.resolve('some', 'path', 'to'),
       });
+    });
+  });
+});
+
+onNodeVersions('^24', () => {
+  describe('TypeScript file', () => {
+    test('reaches into 2nd loadout by TS loader if specified in docblock', async () => {
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new Error('Module not found'));
+      jest.mocked(fs.readFileSync).mockReturnValue(`
+        /** @jest-config-loader tsx */
+        export { testTimeout: 1_000 }
+      `);
+      const rootDir = path.resolve('some', 'path', 'to');
+      await expect(
+        readConfigFileAndSetRootDir(path.join(rootDir, 'jest.config.ts')),
+      ).rejects.toThrow(
+        /Module not found\n.*'tsx' is not a valid TypeScript configuration loader./,
+      );
     });
   });
 });

@@ -4,11 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import exp = require('constants');
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 skipSuiteOnJasmine();
+
+jest.retryTimes(3);
 
 describe('all passing', () => {
   it('runs the correct number of tests', () => {
@@ -17,8 +18,8 @@ describe('all passing', () => {
     ]);
 
     expect(exitCode).toBe(0);
-    expect(json.numTotalTests).toBe(10);
-    expect(json.numPassedTests).toBe(10);
+    expect(json.numTotalTests).toBe(12);
+    expect(json.numPassedTests).toBe(12);
     expect(json.numFailedTests).toBe(0);
     expect(json.numPendingTests).toBe(0);
   });

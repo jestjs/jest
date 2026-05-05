@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ReadStream, WriteStream} from 'tty';
+import type {ReadStream, WriteStream} from 'node:tty';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 

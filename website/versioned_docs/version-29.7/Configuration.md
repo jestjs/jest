@@ -1579,6 +1579,54 @@ By default, `roots` has a single entry `<rootDir>` but there are cases where you
 
 :::
 
+### `runtime` \[string]
+
+Default: `"jest-runtime"`
+
+This option allows the use of a custom runtime to execute test files. A custom runtime can be provided by specifying a path to a runtime implementation.
+
+The runtime module must export a class that extends Jest's default `Runtime` class or implements a compatible interface with the same constructor signature and methods.
+
+:::warning
+
+Creating a custom runtime is an advanced use case. Most users should not need to customize the runtime. Consider whether your use case might be better addressed with custom [transformers](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object), [test environments](Configuration.md#testenvironment-string), or [module mocks](ManualMocks.md).
+
+:::
+
+Example:
+
+```js title="custom-runtime.js"
+const {default: Runtime} = require('jest-runtime');
+
+class CustomRuntime extends Runtime {
+  //...custom logic
+}
+
+module.exports = CustomRuntime;
+```
+
+```ts title="custom-runtime.ts"
+import Runtime from 'jest-runtime';
+
+export default class CustomRuntime extends Runtime {
+  //...custom logic
+}
+```
+
+Add the custom runtime to your Jest configuration:
+
+```js tab title="jest.config.js"
+module.exports = {
+  runtime: './custom-runtime.js',
+};
+```
+
+```ts tab title="jest.config.ts"
+export default {
+  runtime: './custom-runtime.ts',
+};
+```
+
 ### `runner` \[string]
 
 Default: `"jest-runner"`
@@ -1787,16 +1835,32 @@ A list of paths to snapshot serializer modules Jest should use for snapshot test
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more information.
 
-```js title="custom-serializer.js"
+```js tab title="custom-serializer.js"
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return `Pretty foo: ${printer(val.foo)}`;
+    return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
   },
 
   test(val) {
     return val && Object.prototype.hasOwnProperty.call(val, 'foo');
   },
 };
+```
+
+```ts tab title="custom-serializer.ts"
+import type {Plugin} from 'pretty-format';
+
+const plugin: Plugin = {
+  serialize(val, config, indentation, depth, refs, printer): string {
+    return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`;
+  },
+
+  test(val): boolean {
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
+  },
+};
+
+export default plugin;
 ```
 
 `printer` is a function that serializes a value using existing plugins.
@@ -1816,7 +1880,7 @@ module.exports = config;
 import type {Config} from 'jest';
 
 const config: Config = {
-  snapshotSerializers: ['path/to/custom-serializer.js'],
+  snapshotSerializers: ['path/to/custom-serializer.ts'],
 };
 
 export default config;
@@ -2463,6 +2527,7 @@ Specifies the memory limit for workers before they are recycled and is primarily
 
 After the worker has executed a test the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. The limit can be specified in a number of different ways and whatever the result is `Math.floor` is used to turn it into an integer value:
 
+- `0` - Always restart the worker between tests.
 - `<= 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
 - `\> 1` - Assumed to be a fixed byte value. Because of the previous rule if you wanted a value of 1 byte (I don't know why) you could use `1.1`.
 - With units

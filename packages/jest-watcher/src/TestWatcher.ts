@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Emittery = require('emittery');
+import Emittery from 'emittery';
 
 type State = {
   interrupted: boolean;

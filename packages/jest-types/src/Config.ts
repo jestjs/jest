@@ -207,10 +207,11 @@ export type DefaultOptions = {
   testSequencer: string;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerGracefulExitTimeout: number;
   workerThreads: boolean;
 };
 
@@ -261,6 +262,7 @@ export type GlobalConfig = {
   ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
+  collectTests: boolean;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
@@ -313,7 +315,7 @@ export type GlobalConfig = {
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -321,6 +323,7 @@ export type GlobalConfig = {
     path: string;
     config: Record<string, unknown>;
   }> | null;
+  workerGracefulExitTimeout?: number;
   workerIdleMemoryLimit?: number;
   // TODO: make non-optional in Jest 30
   workerThreads?: boolean;
@@ -389,7 +392,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
-  waitNextEventLoopTurnForUnhandledRejectionEvents: boolean;
+  waitForUnhandledRejections: boolean;
   workerIdleMemoryLimit?: number;
 };
 
@@ -412,6 +415,7 @@ export type Argv = Arguments<
     clearMocks: boolean;
     collectCoverage: boolean;
     collectCoverageFrom: string;
+    collectTests: boolean;
     color: boolean;
     colors: boolean;
     config: string;
@@ -470,7 +474,7 @@ export type Argv = Arguments<
     testEnvironment: string;
     testEnvironmentOptions: string;
     testFailureExitCode: string | null | undefined;
-    testMatch: Array<string>;
+    testMatch: string | Array<string>;
     testNamePattern: string;
     testPathIgnorePatterns: Array<string>;
     testPathPatterns: Array<string>;
@@ -490,6 +494,7 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
+    workerGracefulExitTimeout: number;
     workerIdleMemoryLimit: number | string;
     workerThreads: boolean;
   }>

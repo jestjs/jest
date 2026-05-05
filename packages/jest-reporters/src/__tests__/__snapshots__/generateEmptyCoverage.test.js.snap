@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`generateEmptyCoverage generates an empty coverage object for a file without running it 1`] = `
 Object {

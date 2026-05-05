@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
+import {getType} from '@jest/get-type';
 import type {Config} from '@jest/types';
-import {getType} from 'jest-get-type';
 import {ValidationError} from 'jest-validate';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
 

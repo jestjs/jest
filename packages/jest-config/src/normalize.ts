@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {totalmem} from 'os';
-import * as path from 'path';
-import chalk = require('chalk');
-import merge = require('deepmerge');
+import {createHash} from 'node:crypto';
+import {totalmem} from 'node:os';
+import * as path from 'node:path';
+import chalk from 'chalk';
+import merge from 'deepmerge';
 import {glob} from 'glob';
 import {statSync} from 'graceful-fs';
-import micromatch = require('micromatch');
 import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -24,6 +23,7 @@ import Resolver, {
 } from 'jest-resolve';
 import {
   clearLine,
+  globsToMatcher,
   replacePathSepForGlob,
   requireOrImportModule,
   tryRealpath,
@@ -377,7 +377,9 @@ const normalizeReporters = ({
       normalizedReporterConfig[0],
     );
 
-    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
+    if (
+      !['agent', 'default', 'github-actions', 'summary'].includes(reporterPath)
+    ) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: rootDir,
       });
@@ -592,49 +594,46 @@ export default async function normalize(
     switch (key) {
       case 'setupFiles':
       case 'setupFilesAfterEnv':
-      case 'snapshotSerializers':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              resolve(newOptions.resolver, {
-                filePath,
-                key,
-                rootDir: options.rootDir,
-              }),
-            );
-        }
+      case 'snapshotSerializers': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          option.map(filePath =>
+            resolve(newOptions.resolver, {
+              filePath,
+              key,
+              rootDir: options.rootDir,
+            }),
+          );
         break;
+      }
       case 'modulePaths':
-      case 'roots':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              path.resolve(
-                options.rootDir,
-                replaceRootDirInPath(options.rootDir, filePath),
-              ),
-            );
-        }
+      case 'roots': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          option.map(filePath =>
+            path.resolve(
+              options.rootDir,
+              replaceRootDirInPath(options.rootDir, filePath),
+            ),
+          );
         break;
+      }
       case 'collectCoverageFrom':
         value = normalizeCollectCoverageFrom(oldOptions, key);
         break;
       case 'cacheDirectory':
-      case 'coverageDirectory':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            path.resolve(
-              options.rootDir,
-              replaceRootDirInPath(options.rootDir, option),
-            );
-        }
+      case 'coverageDirectory': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          path.resolve(
+            options.rootDir,
+            replaceRootDirInPath(options.rootDir, option),
+          );
         break;
+      }
       case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
@@ -642,48 +641,45 @@ export default async function normalize(
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
-      case 'filter':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              rootDir: options.rootDir,
-            });
-        }
+      case 'filter': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          resolve(newOptions.resolver, {
+            filePath: option,
+            key,
+            rootDir: options.rootDir,
+          });
         break;
-      case 'runner':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            resolveRunner(newOptions.resolver, {
-              filePath: option,
-              requireResolveFunction: requireResolve,
-              rootDir: options.rootDir,
-            });
-        }
+      }
+      case 'runner': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          resolveRunner(newOptions.resolver, {
+            filePath: option,
+            requireResolveFunction: requireResolve,
+            rootDir: options.rootDir,
+          });
         break;
-      case 'prettierPath':
-        {
-          // We only want this to throw if "prettierPath" is explicitly passed
-          // from config or CLI, and the requested path isn't found. Otherwise we
-          // set it to null and throw an error lazily when it is used.
+      }
+      case 'prettierPath': {
+        // We only want this to throw if "prettierPath" is explicitly passed
+        // from config or CLI, and the requested path isn't found. Otherwise we
+        // set it to null and throw an error lazily when it is used.
 
-          const option = oldOptions[key];
+        const option = oldOptions[key];
 
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              optional: option === DEFAULT_CONFIG[key],
-              rootDir: options.rootDir,
-            });
-        }
+        value =
+          option &&
+          resolve(newOptions.resolver, {
+            filePath: option,
+            key,
+            optional: option === DEFAULT_CONFIG[key],
+            rootDir: options.rootDir,
+          });
         break;
+      }
       case 'moduleNameMapper':
         const moduleNameMapper = oldOptions[key];
         value =
@@ -767,32 +763,33 @@ export default async function normalize(
           );
         break;
       case 'moduleDirectories':
-      case 'testMatch':
-        {
-          const replacedRootDirTags = _replaceRootDirTags(
-            escapeGlobCharacters(options.rootDir),
-            oldOptions[key],
-          );
+      case 'testMatch': {
+        const option = oldOptions[key];
+        const rawValue =
+          Array.isArray(option) || option == null ? option : [option];
+        const replacedRootDirTags = _replaceRootDirTags(
+          escapeGlobCharacters(options.rootDir),
+          rawValue,
+        );
 
-          if (replacedRootDirTags) {
-            value = Array.isArray(replacedRootDirTags)
-              ? replacedRootDirTags.map(replacePathSepForGlob)
-              : replacePathSepForGlob(replacedRootDirTags);
-          } else {
-            value = replacedRootDirTags;
-          }
+        if (replacedRootDirTags) {
+          value = Array.isArray(replacedRootDirTags)
+            ? replacedRootDirTags.map(replacePathSepForGlob)
+            : replacePathSepForGlob(replacedRootDirTags);
+        } else {
+          value = replacedRootDirTags;
         }
         break;
-      case 'testRegex':
-        {
-          const option = oldOptions[key];
-          value = option
-            ? (Array.isArray(option) ? option : [option]).map(
-                replacePathSepForRegex,
-              )
-            : [];
-        }
+      }
+      case 'testRegex': {
+        const option = oldOptions[key];
+        value = option
+          ? (Array.isArray(option) ? option : [option]).map(
+              replacePathSepForRegex,
+            )
+          : [];
         break;
+      }
       case 'moduleFileExtensions': {
         value = oldOptions[key];
 
@@ -936,10 +933,11 @@ export default async function normalize(
       case 'testNamePattern':
       case 'useStderr':
       case 'verbose':
-      case 'waitNextEventLoopTurnForUnhandledRejectionEvents':
+      case 'waitForUnhandledRejections':
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerGracefulExitTimeout':
       case 'workerThreads':
         value = oldOptions[key];
         break;
@@ -1087,6 +1085,8 @@ export default async function normalize(
         ? 'all'
         : 'new';
 
+  newOptions.collectTests = argv.collectTests || false;
+
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,
     10,
@@ -1107,8 +1107,9 @@ export default async function normalize(
     newOptions.testMatch = [];
   }
 
-  // If argv.json is set, coverageReporters shouldn't print a text report.
-  if (argv.json) {
+  // If argv.json is set without an outputFile, coverageReporters shouldn't print
+  // a text report to avoid polluting the JSON written to stdout.
+  if (argv.json && !argv.outputFile) {
     newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
       reporter => reporter !== 'text',
     );
@@ -1132,10 +1133,9 @@ export default async function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          micromatch(
-            [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom,
-          ).length === 0
+          !globsToMatcher(newOptions.collectCoverageFrom)(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
+          )
         ) {
           return patterns;
         }

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EOL} from 'os';
-import detectNewline = require('detect-newline');
+import {EOL} from 'node:os';
+import detectNewline from 'detect-newline';
 
-type Pragmas = Record<string, string | Array<string>>;
+export type Pragmas = Record<string, string | Array<string>>;
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*?/;

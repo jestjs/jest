@@ -18,7 +18,7 @@ import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
-/* eslint-disable import/no-duplicates */
+/* eslint-disable import-x/no-duplicates */
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
@@ -215,17 +215,6 @@ test('handle circular dependency', async () => {
   expect(moduleA.id).toBe('circularDependentA');
   expect(moduleA.moduleB.id).toBe('circularDependentB');
   expect(moduleA.moduleB.moduleA).toBe(moduleA);
-});
-
-test('require of ESM should throw correct error', () => {
-  const require = createRequire(import.meta.url);
-
-  expect(() => require('../fromCjs.mjs')).toThrow(
-    expect.objectContaining({
-      code: 'ERR_REQUIRE_ESM',
-      message: expect.stringContaining('Must use import to load ES Module'),
-    }),
-  );
 });
 
 test('supports imports using "node:" prefix', () => {

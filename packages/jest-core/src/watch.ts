@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import type {WriteStream} from 'tty';
-import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
-import exit = require('exit-x');
-import slash = require('slash');
+import * as path from 'node:path';
+import type {WriteStream} from 'node:tty';
+import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
+import exit from 'exit-x';
+import slash from 'slash';
 import {TestPathPatterns} from '@jest/pattern';
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import co from 'co';
 import dedent from 'dedent';
 import isGeneratorFn from 'is-generator-fn';
-import slash = require('slash');
-import StackUtils = require('stack-utils');
+import slash from 'slash';
+import StackUtils from 'stack-utils';
 import type {Status, TestCaseResult} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
 import {
@@ -18,6 +18,7 @@ import {
   convertDescriptorToString,
   formatTime,
   invariant,
+  isError,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -433,13 +434,48 @@ const _getError = (
     return error;
   }
 
-  asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+  if (asyncError) {
+    asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    return asyncError;
+  }
 
-  return asyncError;
+  return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
+};
+
+const isErrorOrStackWithCause = (
+  errorOrStack: Error | string,
+): errorOrStack is Error & {cause: Error | string} =>
+  typeof errorOrStack !== 'string' &&
+  'cause' in errorOrStack &&
+  (typeof errorOrStack.cause === 'string' ||
+    isError(errorOrStack.cause) ||
+    errorOrStack.cause instanceof Error);
+
+const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
+  const stack =
+    typeof error.stack === 'string' && error.stack !== ''
+      ? error.stack
+      : error.message;
+
+  if (!isErrorOrStackWithCause(error)) {
+    return stack;
+  }
+
+  let cause: string;
+  if (typeof error.cause === 'string') {
+    cause = error.cause;
+  } else if (seen.has(error.cause)) {
+    cause = '[Circular cause]';
+  } else {
+    seen.add(error);
+    cause = formatErrorStackWithCause(error.cause, seen);
+  }
+
+  return `${stack}\n\n[cause]: ${cause}`;
 };
 
 const getErrorStack = (error: Error): string =>
-  typeof error.stack === 'string' ? error.stack : error.message;
+  formatErrorStackWithCause(error, new Set());
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,

@@ -6,7 +6,7 @@
  *
  */
 
-import {isPrimitive} from 'jest-get-type';
+import {isPrimitive} from '@jest/get-type';
 import {format as pretty} from 'pretty-format';
 
 export type Template = Record<string, unknown>;
@@ -32,7 +32,7 @@ export const interpolateVariables = (
     )
     .replace('$#', `${index}`);
 
-/* eslint import/export: 0*/
+/* eslint import-x/export: 0*/
 export function getPath<
   Obj extends Template,
   A extends keyof Obj,

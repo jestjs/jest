@@ -24,9 +24,6 @@ jest.mock(
 
 jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 
-jest.doMock('strip-ansi');
-require('strip-ansi').mockImplementation(str => str);
-
 jest.doMock(
   '../runJest',
   () =>

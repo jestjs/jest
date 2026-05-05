@@ -7,14 +7,16 @@
 
 /* eslint-disable sort-keys */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import eslintJs from '@eslint/js';
+import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import eslintPluginImport from 'eslint-plugin-import';
+import {defineConfig} from 'eslint/config';
+import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
+import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
-import eslintPluginMarkdown from 'eslint-plugin-markdown';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
@@ -36,10 +38,11 @@ function getPackages() {
   });
 }
 
-const config = typescriptEslint.config(
+const config = defineConfig(
   eslintJs.configs.recommended,
-  eslintPluginMarkdown.configs.recommended,
-  eslintPluginImport.flatConfigs.errors,
+  eslintMarkdown.configs.recommended,
+  ...eslintMarkdown.configs.processor,
+  eslintPluginImportX.flatConfigs.errors,
   eslintPluginEslintCommentsConfigs.recommended,
   eslintPluginUnicorn.configs.recommended,
   eslintPluginPromise.configs['flat/recommended'],
@@ -48,16 +51,14 @@ const config = typescriptEslint.config(
     languageOptions: {globals: {...globals.builtins, console: 'readonly'}},
     plugins: {jsdoc: eslintPluginJsdoc, local: eslintPluginLocal},
     settings: {
-      'import/ignore': ['react-native'],
+      'import-x/ignore': ['react-native'],
       // using `new RegExp` makes sure to escape `/`
-      'import/internal-regex': new RegExp(
+      'import-x/internal-regex': new RegExp(
         getPackages()
           .map(pkg => `^${pkg}$`)
           .join('|'),
       ).source,
-      'import/resolver': {
-        typescript: {},
-      },
+      'import-x/resolver-next': createTypeScriptImportResolver(),
     },
     rules: {
       'accessor-pairs': ['warn', {setWithoutGet: true}],
@@ -83,8 +84,8 @@ const config = typescriptEslint.config(
       'handle-callback-err': 'off',
       'id-length': 'off',
       'id-match': 'off',
-      'import/no-duplicates': 'error',
-      'import/no-extraneous-dependencies': [
+      'import-x/no-duplicates': 'error',
+      'import-x/no-extraneous-dependencies': [
         'error',
         {
           devDependencies: [
@@ -96,11 +97,12 @@ const config = typescriptEslint.config(
             'babel.config.js',
             'testSetupFile.js',
             'eslint.config.mjs',
+            'yarn.config.cjs',
           ],
         },
       ],
-      'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-      'import/order': [
+      'import-x/no-unresolved': ['error', {ignore: ['fsevents']}],
+      'import-x/order': [
         'error',
         {
           alphabetize: {
@@ -208,6 +210,7 @@ const config = typescriptEslint.config(
       'no-restricted-imports': [
         'error',
         {message: 'Please use graceful-fs instead.', name: 'fs'},
+        {message: 'Please use graceful-fs instead.', name: 'node:fs'},
       ],
       'no-restricted-modules': 'off',
       'no-restricted-syntax': 'off',
@@ -272,6 +275,10 @@ const config = typescriptEslint.config(
       'wrap-regex': 'off',
       yoda: 'off',
 
+      // Needs Node 20 as minimum
+      'unicorn/no-array-reverse': 'off',
+      'unicorn/no-array-sort': 'off',
+
       // doesn't work without ESModuleInterop
       'unicorn/import-style': 'off',
       // we're a CJS project
@@ -306,18 +313,14 @@ const config = typescriptEslint.config(
       'unicorn/prefer-reflect-apply': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-structured-clone': 'off',
-
-      // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
       'unicorn/prefer-export-from': 'off',
-      // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
-      'unicorn/prefer-node-protocol': 'off',
     },
   },
   [
     typescriptEslint.configs.eslintRecommended,
     typescriptEslint.configs.strict,
     typescriptEslint.configs.stylistic,
-    eslintPluginImport.flatConfigs.typescript,
+    eslintPluginImportX.flatConfigs.typescript,
     {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
@@ -346,11 +349,11 @@ const config = typescriptEslint.config(
         '@typescript-eslint/no-invalid-void-type': 'off',
         '@typescript-eslint/consistent-type-definitions': 'off',
         '@typescript-eslint/no-require-imports': 'off',
-        'import/no-unresolved': 'off',
+        'import-x/no-unresolved': 'off',
         '@typescript-eslint/no-unsafe-function-type': 'off',
 
         // not needed to be enforced for TS
-        'import/namespace': 'off',
+        'import-x/namespace': 'off',
       },
     },
   ]
@@ -448,7 +451,9 @@ const config = typescriptEslint.config(
       'jest/no-identical-title': 'error',
       'jest/require-to-throw-message': 'error',
       'jest/valid-expect': 'error',
-      'import/order': 'off',
+      'import-x/order': 'off',
+      // we don't wanna mess with tests
+      'unicorn/prefer-node-protocol': 'off',
     },
   },
 
@@ -506,9 +511,9 @@ const config = typescriptEslint.config(
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-empty-interface': 'off',
       'consistent-return': 'off',
-      'import/export': 'off',
-      'import/no-extraneous-dependencies': 'off',
-      'import/no-unresolved': 'off',
+      'import-x/export': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
+      'import-x/no-unresolved': 'off',
       'jest/no-focused-tests': 'off',
       'jest/require-to-throw-message': 'off',
       'no-console': 'off',
@@ -520,14 +525,17 @@ const config = typescriptEslint.config(
       'unicorn/error-message': 'off',
       'unicorn/no-anonymous-default-export': 'off',
       'unicorn/no-await-expression-member': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-static-only-class': 'off',
+      'unicorn/prefer-class-fields': 'off',
       'unicorn/prefer-number-properties': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-global-this': 'off',
+      'unicorn/require-module-specifiers': 'off',
       // The following disabled when upgrade ESLint to v9, some of them make sense to enable
       'prefer-template': 'off',
       '@typescript-eslint/no-require-imports': 'off',
-      'import/default': 'off',
+      'import-x/default': 'off',
       'jest/prefer-to-have-length': 'off',
       'unicorn/prefer-at': 'off',
       'unicorn/numeric-separators-style': 'off',
@@ -582,8 +590,8 @@ const config = typescriptEslint.config(
     files: ['docs/**/*', 'website/**/*'],
     rules: {
       'no-redeclare': 'off',
-      'import/order': 'off',
-      'import/sort-keys': 'off',
+      'import-x/order': 'off',
+      'import-x/sort-keys': 'off',
       'no-restricted-globals': ['off'],
       'sort-keys': 'off',
     },
@@ -608,7 +616,7 @@ const config = typescriptEslint.config(
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',
-      'import/no-anonymous-default-export': [
+      'import-x/no-anonymous-default-export': [
         'error',
         {
           allowAnonymousClass: false,
@@ -683,7 +691,7 @@ const config = typescriptEslint.config(
       '.eslintplugin/**',
     ],
     rules: {
-      'import/no-extraneous-dependencies': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/error-message': 'off',
     },
@@ -705,7 +713,6 @@ const config = typescriptEslint.config(
       'scripts/*',
       'packages/*/__benchmarks__/test.js',
       'packages/create-jest/src/runCreate.ts',
-      'packages/jest-repl/src/cli/runtime-cli.ts',
     ],
     rules: {
       'no-console': 'off',
@@ -724,7 +731,7 @@ const config = typescriptEslint.config(
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
-      'import/no-unresolved': 'off',
+      'import-x/no-unresolved': 'off',
       'no-console': 'off',
       'no-unused-vars': 'off',
       'unicorn/no-anonymous-default-export': 'off',
@@ -755,8 +762,8 @@ const config = typescriptEslint.config(
       'e2e/transform/babel-jest-async/__tests__/babelJest.test.js',
     ],
     rules: {
-      'import/namespace': 'off',
-      'import/default': 'off',
+      'import-x/namespace': 'off',
+      'import-x/default': 'off',
     },
   },
   {
@@ -806,6 +813,7 @@ const config = typescriptEslint.config(
       // JS Syntax error
       '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
       '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
+      'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
 
       // Bug? Uses TS syntax
       'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
@@ -833,6 +841,29 @@ const config = typescriptEslint.config(
       'e2e/transform/**/*',
       'examples/react-native/index.js',
     ],
+  },
+  {
+    files: [
+      'packages/expect/src/__tests__/**/*',
+      'packages/expect-utils/src/__tests__/**/*',
+      'packages/jest-get-type/src/__tests__/**/*',
+      'packages/jest-matcher-utils/src/__tests__/**/*',
+      'packages/pretty-format/src/__tests__/**/*',
+    ],
+    rules: {
+      'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-bigint-literals': 'off',
+    },
+  },
+  {
+    files: [
+      'e2e/coverage-provider-v8/*/uncovered.{ts,js}',
+      'e2e/babel-plugin-jest-hoist/__test_modules__/**/*',
+    ],
+    rules: {
+      'unicorn/prefer-class-fields': 'off',
+      'unicorn/require-module-specifiers': 'off',
+    },
   },
 );
 

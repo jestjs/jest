@@ -8,3 +8,9 @@
 export function double(num: number): number {
   return num * 2;
 }
+
+export function doubleWithDynamicImport(
+  num: number,
+): typeof import('./doubleType') {
+  return (num * 2) as typeof import('./doubleType');
+}

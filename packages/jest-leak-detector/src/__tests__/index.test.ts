@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {getHeapSnapshot} from 'v8';
 import LeakDetector from '../index';
 
 jest.mock('v8', () => ({
@@ -129,4 +130,26 @@ it('correctly checks more complex leaks', async () => {
   expect(isLeaking1).toBe(false);
   isLeaking2 = await detector2.isLeaking();
   expect(isLeaking2).toBe(false);
+});
+
+it('generate V8 heap snapshots can be toggled on and off', async () => {
+  const getHeapSnapshotSpy = jest.fn();
+  getHeapSnapshot.mockImplementation(getHeapSnapshotSpy);
+
+  const ref1: unknown = {};
+  const ref2: unknown = {};
+  const ref3: unknown = {};
+
+  let detector = new LeakDetector(ref1);
+  const isLeaking = await detector.isLeaking();
+  expect(isLeaking).toBe(true);
+  expect(getHeapSnapshotSpy).toHaveBeenCalledTimes(1);
+
+  detector = new LeakDetector(ref2, {shouldGenerateV8HeapSnapshot: true});
+  await detector.isLeaking();
+  expect(getHeapSnapshotSpy).toHaveBeenCalledTimes(2);
+
+  detector = new LeakDetector(ref3, {shouldGenerateV8HeapSnapshot: false});
+  await detector.isLeaking();
+  expect(getHeapSnapshotSpy).toHaveBeenCalledTimes(2);
 });

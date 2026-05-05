@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {SnapshotSummary} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';
@@ -27,8 +27,7 @@ export default function getSnapshotSummary(
   globalConfig: Config.GlobalConfig,
   updateCommand: string,
 ): Array<string> {
-  const summary = [];
-  summary.push(SNAPSHOT_SUMMARY('Snapshot Summary'));
+  const summary = [SNAPSHOT_SUMMARY('Snapshot Summary')];
   if (snapshots.added) {
     summary.push(
       `${SNAPSHOT_ADDED(

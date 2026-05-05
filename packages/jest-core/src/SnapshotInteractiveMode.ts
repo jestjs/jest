@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';

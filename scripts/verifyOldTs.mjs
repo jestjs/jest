@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
-import * as path from 'path';
-import {fileURLToPath} from 'url';
+import {createRequire} from 'node:module';
+import * as path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import stripJsonComments from 'strip-json-comments';
-/* eslint-disable import/order */
+/* eslint-disable import-x/order */
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);
 
@@ -21,7 +21,7 @@ const rootPackageJson = require('../package.json');
 const tsconfigBasePackage = Object.keys(rootPackageJson.devDependencies).find(
   packageName => packageName.startsWith('@tsconfig'),
 );
-/* eslint-enable import/order */
+/* eslint-enable import-x/order */
 
 const baseTsConfig = JSON.parse(
   stripJsonComments(
@@ -41,7 +41,7 @@ const tsConfig = {
 };
 /* eslint-enable sort-keys */
 
-const tsVersion = '5.0';
+const tsVersion = '5.4';
 
 function smoketest() {
   const jestDirectory = path.resolve(

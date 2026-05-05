@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import chalk = require('chalk');
-import exit = require('exit-x');
+import * as path from 'node:path';
+import chalk from 'chalk';
+import exit from 'exit-x';
 import * as fs from 'graceful-fs';
-import prompts = require('prompts');
+import prompts from 'prompts';
 import {constants} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
@@ -93,10 +93,7 @@ export async function runCreate(rootDir = process.cwd()): Promise<void> {
   }
 
   // Add test script installation only if needed
-  if (
-    !projectPackageJson.scripts ||
-    projectPackageJson.scripts.test !== 'jest'
-  ) {
+  if (projectPackageJson.scripts?.test !== 'jest') {
     questions.unshift(testScriptQuestion);
   }
 

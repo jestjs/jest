@@ -6,9 +6,8 @@
  */
 
 import {EventEmitter} from 'events';
-import {PassThrough} from 'stream';
-import getStream = require('get-stream');
-import * as supportsColor from 'supports-color';
+import {PassThrough, type Stream} from 'stream';
+import getStream from 'get-stream';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -20,6 +19,7 @@ import {
   PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   type WorkerOptions,
+  WorkerStates,
 } from '../../types';
 
 jest.useFakeTimers();
@@ -30,6 +30,7 @@ let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
 let forkInterface: ReturnType<typeof childProcess.fork>;
 let originalExecArgv: typeof process.execArgv;
+let originalForceColor: string | undefined;
 
 const totalmem = jest.spyOn(require('os') as typeof import('os'), 'totalmem');
 
@@ -42,6 +43,9 @@ class MockedForkInterface extends EventEmitter {
 }
 
 beforeEach(() => {
+  originalForceColor = process.env.FORCE_COLOR;
+  delete process.env.FORCE_COLOR;
+
   originalExecArgv = process.execArgv;
 
   childProcess = require('child_process') as typeof import('child_process');
@@ -63,6 +67,7 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetModules();
   process.execArgv = originalExecArgv;
+  process.env.FORCE_COLOR = originalForceColor;
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
@@ -84,7 +89,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   expect(jest.mocked(childProcess.fork).mock.calls[0][0]).toBe(child);
   expect(jest.mocked(childProcess.fork).mock.calls[0][2]).toEqual({
     cwd: '/tmp', // Overridden default option.
-    env: {...process.env, FORCE_COLOR: supportsColor.stdout ? '1' : undefined}, // Default option.
+    env: process.env, // Default option.
     execArgv: ['-p'], // Filtered option.
     execPath: 'hello', // Added option.
     serialization: 'advanced', // Default option.
@@ -169,8 +174,12 @@ it('provides stdout and stderr from the child processes', async () => {
   (forkInterface.stderr as PassThrough).end('Workers!', 'utf8');
   forkInterface.emit('exit', 0);
 
-  await expect(getStream(stdout)).resolves.toBe('Hello World!');
-  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
+  await expect(getStream(stdout as unknown as Stream)).resolves.toBe(
+    'Hello World!',
+  );
+  await expect(getStream(stderr as unknown as Stream)).resolves.toBe(
+    'Jest Workers!',
+  );
 });
 
 it('sends the task to the child process', () => {
@@ -668,5 +677,41 @@ it('should check for memory limits and restart if above absolute limit', async (
   ]);
 
   expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+it('should restart immediately when limit is 0 without checking memory', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    idleMemoryLimit: 0,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  } as WorkerOptions);
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'test', []] as ChildMessageCall,
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  forkInterface.emit('message', [PARENT_MESSAGE_OK]);
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.send).not.toHaveBeenCalledWith(
+    [CHILD_MESSAGE_MEM_USAGE],
+    expect.any(Function),
+  );
+  expect(worker.state).toBe(WorkerStates.RESTARTING);
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
 });

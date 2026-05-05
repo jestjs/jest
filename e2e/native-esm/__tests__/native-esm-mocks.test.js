@@ -21,10 +21,29 @@ test('can mock module', async () => {
   expect(importedMock.foo).toBe('bar');
 });
 
+test('can statically import a virtual mocked module', async () => {
+  jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
+    virtual: true,
+  });
+
+  const importedMock = await import('../virtualMockReexport.mjs');
+
+  expect(importedMock.foo).toBe('bar');
+});
+
 test('can mock transitive module', async () => {
   jestObject.unstable_mockModule('../index.js', () => ({foo: 'bar'}));
 
   const importedMock = await import('../reexport.js');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toBe('bar');
+});
+
+test('can mock transitive builtin module', async () => {
+  jestObject.unstable_mockModule('node:fs', () => ({foo: 'bar'}));
+
+  const importedMock = await import('../fsReexport.js');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
   expect(importedMock.foo).toBe('bar');

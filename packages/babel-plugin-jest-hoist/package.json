@@ -1,13 +1,13 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "30.0.0-alpha.7",
+  "version": "30.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/babel-plugin-jest-hoist"
   },
   "engines": {
-    "node": "^16.10.0 || ^18.12.0 || >=20.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -22,19 +22,21 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/template": "^7.3.3",
-    "@babel/types": "^7.3.3",
-    "@types/babel__core": "^7.1.14"
+    "@types/babel__core": "^7.20.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-react": "^7.12.1",
-    "@babel/preset-typescript": "^7.0.0",
-    "@prettier/sync": "^0.5.0",
-    "@types/babel__template": "^7.0.2",
-    "@types/babel__traverse": "^7.0.6",
+    "@babel-8/core": "npm:@babel/core@8.0.0-rc.4",
+    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-rc.4",
+    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-rc.4",
+    "@babel/core": "^7.27.4",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@babel/types": "^7.27.3",
+    "@prettier/sync": "^0.6.0",
+    "@types/babel__template": "^7.4.4",
+    "@types/babel__traverse": "^7.20.7",
     "@types/node": "*",
-    "babel-plugin-tester": "^11.0.2",
+    "babel-plugin-tester": "^11.0.4",
     "prettier": "^3.0.3"
   },
   "publishConfig": {

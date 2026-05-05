@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style = require('ansi-styles');
+import style from 'ansi-styles';
 import {
   printIteratorEntries,
   printIteratorValues,
@@ -158,6 +158,9 @@ function printBasicValue(
 
   const toStringed = toString.call(val);
 
+  if (toStringed === '[object Promise]') {
+    return 'Promise {}';
+  }
   if (toStringed === '[object WeakMap]') {
     return 'WeakMap {}';
   }
@@ -195,8 +198,8 @@ function printBasicValue(
 }
 
 /**
- * Handles more complex objects ( such as objects with circular references.
- * maps and sets etc )
+ * Handles more complex objects (such as objects with circular references,
+ * maps and sets etc.)
  */
 function printComplexValue(
   val: any,
@@ -209,8 +212,7 @@ function printComplexValue(
   if (refs.includes(val)) {
     return '[Circular]';
   }
-  refs = [...refs];
-  refs.push(val);
+  refs = [...refs, val];
 
   const hitMaxDepth = ++depth > config.maxDepth;
   const min = config.min;

@@ -5,12 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, resolve} from 'path';
+import {dirname, resolve} from 'node:path';
 import * as fs from 'graceful-fs';
+import type {ResolverFactory} from 'unrs-resolver';
 import {tryRealpath} from 'jest-util';
 import type {PackageJSON} from './types';
 
+let unrsResolver: ResolverFactory | undefined;
+
+export function getResolver(): ResolverFactory | undefined {
+  return unrsResolver;
+}
+
+export function setResolver(nextResolver: ResolverFactory): void {
+  unrsResolver = nextResolver;
+}
+
 export function clearFsCache(): void {
+  unrsResolver?.clearCache();
   checkedPaths.clear();
   checkedRealpathPaths.clear();
   packageContents.clear();

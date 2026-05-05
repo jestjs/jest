@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {fileURLToPath} from 'url';
-import {types} from 'util';
+import * as path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {codeFrameColumns} from '@babel/code-frame';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import micromatch = require('micromatch');
-import slash = require('slash');
-import StackUtils = require('stack-utils');
+import picomatch from 'picomatch';
+import slash from 'slash';
+import StackUtils from 'stack-utils';
 import type {Config, TestResult} from '@jest/types';
+import {isError} from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 
@@ -153,12 +153,9 @@ export const formatExecError = (
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
-      } else if (
-        types.isNativeError(error.cause) ||
-        error.cause instanceof Error
-      ) {
-        /* `isNativeError` is used, because the error might come from another realm.
-         `instanceof Error` is used because `isNativeError` does return `false` for some
+      } else if (isError(error.cause) || error.cause instanceof Error) {
+        /* `isError` is used, because the error might come from another realm.
+         `instanceof Error` is used because `isError` does return `false` for some
          things that are `instanceof Error` like the errors provided in
          [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
         */
@@ -242,6 +239,10 @@ const removeInternalStackEntries = (
   let pathCounter = 0;
 
   return lines.filter(line => {
+    if (!line) {
+      return false;
+    }
+
     if (ANONYMOUS_FN_IGNORE.test(line)) {
       return false;
     }
@@ -302,7 +303,7 @@ export const formatPath = (
   if (
     (config.testMatch &&
       config.testMatch.length > 0 &&
-      micromatch([filePath], config.testMatch).length > 0) ||
+      picomatch(config.testMatch)(filePath)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
@@ -368,17 +369,18 @@ export function formatStackTrace(
     }
   }
 
-  const stacktrace = lines
-    .filter(Boolean)
-    .map(
-      line =>
-        STACK_INDENT + formatPath(trimPaths(line), config, relativeTestPath),
-    )
-    .join('\n');
+  const stacktrace =
+    lines.length === 0
+      ? ''
+      : `\n${lines
+          .map(
+            line =>
+              STACK_INDENT +
+              formatPath(trimPaths(line), config, relativeTestPath),
+          )
+          .join('\n')}`;
 
-  return renderedCallsite
-    ? `${renderedCallsite}\n${stacktrace}`
-    : `\n${stacktrace}`;
+  return renderedCallsite + stacktrace;
 }
 
 type FailedResults = Array<{
@@ -397,7 +399,7 @@ function isErrorOrStackWithCause(
     typeof errorOrStack !== 'string' &&
     'cause' in errorOrStack &&
     (typeof errorOrStack.cause === 'string' ||
-      types.isNativeError(errorOrStack.cause) ||
+      isError(errorOrStack.cause) ||
       errorOrStack.cause instanceof Error)
   );
 }
@@ -443,14 +445,13 @@ function failureDetailsToErrorOrStack(
   if (!failureDetails) {
     return content;
   }
-  if (types.isNativeError(failureDetails) || failureDetails instanceof Error) {
+  if (isError(failureDetails) || failureDetails instanceof Error) {
     return failureDetails; // receiving raw errors for jest-circus
   }
   if (
     typeof failureDetails === 'object' &&
     'error' in failureDetails &&
-    (types.isNativeError(failureDetails.error) ||
-      failureDetails.error instanceof Error)
+    (isError(failureDetails.error) || failureDetails.error instanceof Error)
   ) {
     return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
   }
@@ -463,18 +464,12 @@ export const formatResultsErrors = (
   options: StackTraceOptions,
   testPath?: string,
 ): string | null => {
-  const failedResults: FailedResults = testResults.reduce<FailedResults>(
-    (errors, result) => {
-      for (const [index, item] of result.failureMessages.entries()) {
-        errors.push({
-          content: item,
-          failureDetails: result.failureDetails[index],
-          result,
-        });
-      }
-      return errors;
-    },
-    [],
+  const failedResults: FailedResults = testResults.flatMap(result =>
+    result.failureMessages.map((item, index) => ({
+      content: item,
+      failureDetails: result.failureDetails[index],
+      result,
+    })),
   );
 
   if (failedResults.length === 0) {

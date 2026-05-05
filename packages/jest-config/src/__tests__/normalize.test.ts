@@ -8,7 +8,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import semver = require('semver');
+import * as semver from 'semver';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
@@ -172,6 +172,20 @@ it('sets coverageReporters correctly when argv.json is set', async () => {
   );
 
   expect(options.coverageReporters).toEqual(['json', 'lcov', 'clover']);
+});
+
+it('keeps text coverage reporter when argv.json and outputFile are set', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/path/foo',
+    },
+    {
+      json: true,
+      outputFile: 'results.json',
+    } as Config.Argv,
+  );
+
+  expect(options.coverageReporters).toEqual(['json', 'text', 'lcov', 'clover']);
 });
 
 describe('rootDir', () => {
@@ -954,7 +968,7 @@ describe('testMatch', () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('normalizes testMatch', async () => {
+  it('normalizes testMatch root directory', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
@@ -964,6 +978,18 @@ describe('testMatch', () => {
     );
 
     expect(options.testMatch).toEqual(['/root/**/*.js']);
+  });
+
+  it('normalizes testMatch to array', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testMatch: '**/*.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testMatch).toEqual(['**/*.js']);
   });
 });
 
@@ -1142,9 +1168,8 @@ describe('preset', () => {
       {virtual: true},
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
-      ? /TypeError: Cannot read property 'call' of undefined[\S\s]* at /
-      : "TypeError: Cannot read properties of undefined (reading 'call')";
+    const errorMessage =
+      "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
       normalize(

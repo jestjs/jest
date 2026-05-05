@@ -8,7 +8,7 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 
 import {equals, iterableEquality} from '@jest/expect-utils';
-import {getType, isPrimitive} from 'jest-get-type';
+import {getType, isPrimitive} from '@jest/get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,

@@ -7,9 +7,9 @@
  */
 
 import {runInContext} from 'node:vm';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import sourcemapSupport = require('source-map-support');
+import * as sourcemapSupport from 'source-map-support';
 import {
   BufferedConsole,
   CustomConsole,
@@ -184,7 +184,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(environment.global, 'console', testConsole);
+  setGlobal(environment.global, 'console', testConsole, 'retain');
 
   const runtime = new Runtime(
     projectConfig,
@@ -217,8 +217,11 @@ async function runTestInternal(
       );
       sourcemapSupport.resetRetrieveHandlers();
 
-      await environment.teardown();
-      isTornDown = true;
+      try {
+        await environment.teardown();
+      } finally {
+        isTornDown = true;
+      }
     }
   };
 

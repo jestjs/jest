@@ -121,8 +121,7 @@ export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
  * is provided, its typings are inferred correctly.
  */
 export interface Mock<T extends FunctionLike = UnknownFunction>
-  extends Function,
-    MockInstance<T> {
+  extends Function, MockInstance<T> {
   new (...args: Parameters<T>): ReturnType<T>;
   (...args: Parameters<T>): ReturnType<T>;
 }
@@ -133,8 +132,9 @@ type ResolveType<T extends FunctionLike> =
 type RejectType<T extends FunctionLike> =
   ReturnType<T> extends PromiseLike<any> ? unknown : never;
 
-export interface MockInstance<T extends FunctionLike = UnknownFunction>
-  extends Disposable {
+export interface MockInstance<
+  T extends FunctionLike = UnknownFunction,
+> extends Disposable {
   _isMockFunction: true;
   _protoImpl: Function;
   getMockImplementation(): T | undefined;
@@ -800,8 +800,8 @@ export class ModuleMocker {
       };
 
       f.withImplementation = withImplementation.bind(this);
-      if (Symbol.dispose) {
-        f[Symbol.dispose] = f.mockRestore;
+      if (this._environmentGlobal.Symbol.dispose) {
+        f[this._environmentGlobal.Symbol.dispose] = f.mockRestore;
       }
 
       function withImplementation(fn: T, callback: () => void): void;
@@ -1393,6 +1393,33 @@ export class ModuleMocker {
 
   clearAllMocks(): void {
     this._mockState = new WeakMap();
+  }
+
+  /**
+   * Walks the own keys of `scope` and calls `.mockClear()` on each value that
+   * is a Jest mock function. Used by `resetModules` to clear mocks that user
+   * code installed directly on the test environment's global object (where
+   * the mock-fn registry doesn't see them).
+   */
+  clearMocksOnScope(scope: object): void {
+    for (const key of Object.keys(scope)) {
+      const value = (scope as Record<string, unknown>)[key];
+      // Gate on `'_isMockFunction' in value` first: that uses the `has` trap
+      // and won't fire a throwing getter (e.g. a user Proxy on `globalThis`).
+      // `isMockFunction` reads `._isMockFunction` directly, so we only call
+      // it once we know the property exists. The extra `typeof mockClear`
+      // guard rejects forged values that set the marker but aren't real Jest
+      // mocks.
+      if (
+        value != null &&
+        (typeof value === 'object' || typeof value === 'function') &&
+        '_isMockFunction' in value &&
+        this.isMockFunction(value) &&
+        typeof (value as Mock).mockClear === 'function'
+      ) {
+        (value as Mock).mockClear();
+      }
+    }
   }
 
   resetAllMocks(): void {
