@@ -4423,7 +4423,7 @@ __metadata:
     tempy: "npm:^1.0.1"
     ts-node: "npm:^10.5.0"
     tstyche: "npm:^6.0.2"
-    typescript: "npm:^5.8.3"
+    typescript: "npm:^6.0.0"
     typescript-eslint: "npm:^8.38.0"
     webpack: "npm:^5.68.0"
     webpack-node-externals: "npm:^3.0.0"
@@ -14211,7 +14211,7 @@ __metadata:
     slash: "npm:^3.0.0"
     strip-json-comments: "npm:^3.1.1"
     ts-node: "npm:^10.5.0"
-    typescript: "npm:^5.8.3"
+    typescript: "npm:^6.0.0"
   peerDependencies:
     "@types/node": "*"
     esbuild-register: ">=3.4.0"
@@ -14753,7 +14753,7 @@ __metadata:
     react-github-btn: "npm:^1.4.0"
     react-lite-youtube-embed: "npm:^3.0.0"
     react-markdown: "npm:^10.1.0"
-    typescript: "npm:^5.8.3"
+    typescript: "npm:^6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -22023,6 +22023,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "typescript@npm:6.0.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/0ef2357a4cffd916b52b683a021cdab0f81eea4e9aa35f2d254581c9a5106da02224e3392e1b0ed42b7a48f80c966e5f52b8e1a27941fa0523c1705a9c2e0330
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
@@ -22030,6 +22040,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/696e1b017bc2635f4e0c94eb4435357701008e2f272f553d06e35b494b8ddc60aa221145e286c28ace0c89ee32827a28c2040e3a69bdc108b1a5dc8fb40b72e3
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^6.0.0#optional!builtin<compat/typescript>":
+  version: 6.0.3
+  resolution: "typescript@patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/22b67a18dafedf9b1468b64ca20d9aa02ea61d449b65413d8aa6552aeb63f52ef369e86beb25b6b4c91a803d9726ee5c196f391a9b64201263263410a4223ee6
   languageName: node
   linkType: hard
 
