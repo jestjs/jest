@@ -14,6 +14,24 @@ describe('Temporal support in fake timers', () => {
     jest.useRealTimers();
   });
 
+  test('fakes Temporal.Now.instant()', () => {
+    jest.useFakeTimers({now: EPOCH_MS});
+    expect(Temporal.Now.instant().epochMilliseconds).toBe(EPOCH_MS);
+  });
+
+  test('fakes Temporal.Now.zonedDateTimeISO()', () => {
+    jest.useFakeTimers({now: EPOCH_MS});
+    expect(Temporal.Now.zonedDateTimeISO('UTC').epochMilliseconds).toBe(
+      EPOCH_MS,
+    );
+  });
+
+  test('Temporal.Now follows setSystemTime', () => {
+    jest.useFakeTimers({now: 0});
+    jest.setSystemTime(EPOCH_MS);
+    expect(Temporal.Now.instant().epochMilliseconds).toBe(EPOCH_MS);
+  });
+
   test('useFakeTimers({now}) accepts Temporal.Instant', () => {
     jest.useFakeTimers({now: Temporal.Instant.from(ISO)});
     expect(Date.now()).toBe(EPOCH_MS);

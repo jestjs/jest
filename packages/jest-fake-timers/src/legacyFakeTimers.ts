@@ -16,9 +16,9 @@ import type {
   UnknownFunction,
 } from 'jest-mock';
 import {setGlobal} from 'jest-util';
-import {type TemporalDurationLike, toDurationMs} from './temporalUtils';
 
 type Callback = (...args: Array<unknown>) => void;
+type TemporalDurationLike = {total(options: {unit: string}): number};
 
 type TimerID = string;
 
@@ -277,7 +277,10 @@ export default class FakeTimers<TimerRef = unknown> {
 
   advanceTimersByTime(msToRun: number | TemporalDurationLike): void {
     this._checkFakeTimers();
-    let msRemaining = toDurationMs(msToRun);
+    let msRemaining =
+      typeof msToRun === 'number'
+        ? msToRun
+        : msToRun.total({unit: 'millisecond'});
     // Only run a generous number of timers and then bail.
     // This is just to help avoid recursive loops
     let i;

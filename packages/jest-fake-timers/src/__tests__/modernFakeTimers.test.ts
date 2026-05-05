@@ -7,6 +7,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
+import type {TemporalDuration} from '@sinonjs/fake-timers';
 import FakeTimers from '../modernFakeTimers';
 
 describe('FakeTimers', () => {
@@ -1019,8 +1020,8 @@ describe('FakeTimers', () => {
         'mock1',
         'mock2',
         'mock2',
-        'mock3',
         'mock5',
+        'mock3',
         'mock1',
         'mock2',
       ]);
@@ -1560,7 +1561,7 @@ describe('FakeTimers', () => {
       timers.useFakeTimers({now: 0});
       timers.advanceTimersByTime({
         total: ({unit}) => (unit === 'millisecond' ? 5000 : 5),
-      });
+      } as TemporalDuration);
       expect(fakedGlobal.Date.now()).toBe(5000);
     });
 
@@ -1581,7 +1582,7 @@ describe('FakeTimers', () => {
       asyncTimers.useFakeTimers({now: 0});
       await asyncTimers.advanceTimersByTimeAsync({
         total: ({unit}) => (unit === 'millisecond' ? 5000 : 5),
-      });
+      } as TemporalDuration);
       expect(asyncGlobal.Date.now()).toBe(5000);
       asyncTimers.useRealTimers();
     });

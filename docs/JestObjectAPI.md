@@ -923,7 +923,8 @@ type FakeableAPI =
   | 'setInterval'
   | 'clearInterval'
   | 'setTimeout'
-  | 'clearTimeout';
+  | 'clearTimeout'
+  | 'Temporal';
 
 type FakeTimersConfig = {
   /**
@@ -1126,7 +1127,7 @@ Returns the time in ms of the current clock. This is equivalent to `Date.now()` 
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
-Note that `Temporal` itself is **not** faked when using fake timers — see [sinonjs/fake-timers#335](https://github.com/sinonjs/fake-timers/issues/335) for the upstream tracking issue.
+When `'Temporal'` is faked (see `useFakeTimers`), `Temporal.Now.*` methods (`instant()`, `zonedDateTimeISO()`, `plainDateTimeISO()`, etc.) are driven by the fake clock. `Temporal.Now.timeZoneId()` is not faked.
 
 :::info
 

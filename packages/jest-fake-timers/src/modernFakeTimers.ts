@@ -10,16 +10,12 @@ import {
   type FakeMethod as FakeableAPI,
   type Clock as InstalledClock,
   type Config as SinonFakeTimersConfig,
+  type TemporalDuration,
+  type TemporalTimelike,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
-import {
-  type TemporalDurationLike,
-  type TemporalEpochLike,
-  toDurationMs,
-  toEpochMs,
-} from './temporalUtils';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
@@ -104,17 +100,17 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number | TemporalDurationLike): void {
+  advanceTimersByTime(msToRun: number | TemporalDuration): void {
     if (this._checkFakeTimers()) {
-      this._clock.tick(toDurationMs(msToRun));
+      this._clock.tick(msToRun);
     }
   }
 
   async advanceTimersByTimeAsync(
-    msToRun: number | TemporalDurationLike,
+    msToRun: number | TemporalDuration,
   ): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(toDurationMs(msToRun));
+      await this._clock.tickAsync(msToRun);
     }
   }
 
@@ -157,9 +153,9 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date | TemporalEpochLike): void {
+  setSystemTime(now?: number | Date | TemporalTimelike): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(toEpochMs(now));
+      this._clock.setSystemTime(now);
     }
   }
 
@@ -234,7 +230,7 @@ export default class FakeTimers {
     return {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
-      now: toEpochMs(fakeTimersConfig.now) ?? Date.now(),
+      now: fakeTimersConfig.now ?? Date.now(),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
       toFake: [...toFake],

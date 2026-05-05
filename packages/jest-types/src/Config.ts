@@ -30,7 +30,8 @@ export type FakeableAPI =
   | 'setInterval'
   | 'clearInterval'
   | 'setTimeout'
-  | 'clearTimeout';
+  | 'clearTimeout'
+  | 'Temporal';
 
 export type GlobalFakeTimersConfig = {
   /**
