@@ -630,6 +630,35 @@ describe('validateImportAttributes', () => {
       }
       expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
     });
+
+    test('truncates data: URI payload in the deprecation warning', () => {
+      const {referencer} = uniquePaths();
+      const huge = 'a'.repeat(10_000);
+      const dataUri = `data:application/json,${encodeURIComponent(huge)}`;
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(dataUri, {}, referencer);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        const message = warnSpy.mock.calls[0][0];
+        expect(message).toContain('data:application/json,…');
+        expect(message).not.toContain(huge);
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    test('warning mentions both static and dynamic syntax', () => {
+      const {json, referencer} = uniquePaths();
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        const message = warnSpy.mock.calls[0][0];
+        expect(message).toContain("with { type: 'json' }");
+        expect(message).toContain("{ with: { type: 'json' } }");
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
   });
 
   describe('non-JSON modules', () => {

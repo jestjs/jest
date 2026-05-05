@@ -162,6 +162,16 @@ function isJsonModule(modulePath: string): boolean {
   );
 }
 
+// Avoid dumping the full payload of data: URIs (or other very long specifiers)
+// into stderr.
+function describeForWarning(modulePath: string): string {
+  if (modulePath.startsWith('data:')) {
+    const comma = modulePath.indexOf(',');
+    if (comma > 0) return `${modulePath.slice(0, comma)},…`;
+  }
+  return modulePath;
+}
+
 function makeImportAttributeError(
   code:
     | 'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED'
@@ -202,9 +212,12 @@ export function validateImportAttributes(
           warnedMissingJsonAttributePairs.clear();
         }
         warnedMissingJsonAttributePairs.add(dedupeKey);
+        const moduleLabel = describeForWarning(modulePath);
         console.warn(
           'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
-            `Add \`with { type: 'json' }\` to the import of "${modulePath}" (from ${referencingIdentifier}).`,
+            `Update the import of "${moduleLabel}" (from ${referencingIdentifier}): ` +
+            "use `with { type: 'json' }` for static imports, or pass " +
+            "`{ with: { type: 'json' } }` as the second argument to dynamic `import()`.",
         );
       }
       return;
