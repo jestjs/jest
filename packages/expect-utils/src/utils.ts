@@ -234,104 +234,129 @@ export const iterableEquality = (
     iterableEqualityWithStack,
   ];
 
-  try {
-    if (a.size !== undefined) {
-      if (a.size !== b.size) {
-        return false;
-      } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
-        let allFound = true;
-        for (const aValue of a) {
-          if (!b.has(aValue)) {
-            let has = false;
-            for (const bValue of b) {
-              const isEqual = equals(aValue, bValue, filteredCustomTesters);
-              if (isEqual === true) {
-                has = true;
-              }
-            }
-
-            if (has === false) {
-              allFound = false;
-              break;
+  if (a.size !== undefined) {
+    if (a.size !== b.size) {
+      aStack.pop();
+      bStack.pop();
+      return false;
+    } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
+      let allFound = true;
+      for (const aValue of a) {
+        if (!b.has(aValue)) {
+          let has = false;
+          for (const bValue of b) {
+            const isEqual = equals(aValue, bValue, filteredCustomTesters);
+            if (isEqual === true) {
+              has = true;
             }
           }
+
+          if (has === false) {
+            allFound = false;
+            break;
+          }
         }
-        return allFound;
-      } else if (
-        isA<Map<unknown, unknown>>('Map', a) ||
-        isImmutableUnorderedKeyed(a)
-      ) {
-        let allFound = true;
-        for (const aEntry of a) {
-          if (
-            !b.has(aEntry[0]) ||
-            !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
-          ) {
-            let has = false;
-            for (const bEntry of b) {
-              const matchedKey = equals(
-                aEntry[0],
-                bEntry[0],
+      }
+      // Remove the first value from the stack of traversed values.
+      aStack.pop();
+      bStack.pop();
+      return allFound;
+    } else if (
+      isA<Map<unknown, unknown>>('Map', a) ||
+      isImmutableUnorderedKeyed(a)
+    ) {
+      let allFound = true;
+      for (const aEntry of a) {
+        if (
+          !b.has(aEntry[0]) ||
+          !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
+        ) {
+          let has = false;
+          for (const bEntry of b) {
+            const matchedKey = equals(
+              aEntry[0],
+              bEntry[0],
+              filteredCustomTesters,
+            );
+
+            let matchedValue = false;
+            if (matchedKey === true) {
+              matchedValue = equals(
+                aEntry[1],
+                bEntry[1],
                 filteredCustomTesters,
               );
-
-              let matchedValue = false;
-              if (matchedKey === true) {
-                matchedValue = equals(
-                  aEntry[1],
-                  bEntry[1],
-                  filteredCustomTesters,
-                );
-              }
-              if (matchedValue === true) {
-                has = true;
-              }
             }
-
-            if (has === false) {
-              allFound = false;
-              break;
+            if (matchedValue === true) {
+              has = true;
             }
           }
+
+          if (has === false) {
+            allFound = false;
+            break;
+          }
         }
-        return allFound;
       }
+      // Remove the first value from the stack of traversed values.
+      aStack.pop();
+      bStack.pop();
+      return allFound;
     }
+  }
 
-    const bIterator = b[IteratorSymbol]();
-
-    for (const aValue of a) {
-      const nextB = bIterator.next();
-      if (nextB.done || !equals(aValue, nextB.value, filteredCustomTesters)) {
-        return false;
-      }
-    }
-    if (!bIterator.next().done) {
-      return false;
-    }
-
-    if (
-      !isImmutableList(a) &&
-      !isImmutableOrderedKeyed(a) &&
-      !isImmutableOrderedSet(a) &&
-      !isImmutableRecord(a)
-    ) {
-      const aEntries = entries(a);
-      const bEntries = entries(b);
-      if (!equals(aEntries, bEntries)) {
-        return false;
-      }
-    }
-
-    return true;
+  let aIterator: Iterator<unknown>;
+  let bIterator: Iterator<unknown>;
+  try {
+    aIterator = a[IteratorSymbol]();
+    bIterator = b[IteratorSymbol]();
   } catch {
-    // If an exotic iterator/getter throws (DOM objects, proxies, host objects),
-    // treat it as "not equal" rather than crashing the matcher.
-    return false;
-  } finally {
+    // If the iterator factory itself throws (e.g. a TypedArray method used as
+    // [Symbol.iterator] on a plain object), we cannot compare as iterables.
+    // Return undefined so equals() falls through to Object.is / property checks.
     aStack.pop();
     bStack.pop();
+    return undefined;
   }
+
+  let aStep = aIterator.next();
+  while (!aStep.done) {
+    const bStep = bIterator.next();
+    if (
+      bStep.done ||
+      !equals(aStep.value, bStep.value, filteredCustomTesters)
+    ) {
+      aStack.pop();
+      bStack.pop();
+      return false;
+    }
+    aStep = aIterator.next();
+  }
+  if (!bIterator.next().done) {
+    aStack.pop();
+    bStack.pop();
+    return false;
+  }
+
+  if (
+    !isImmutableList(a) &&
+    !isImmutableOrderedKeyed(a) &&
+    !isImmutableOrderedSet(a) &&
+    !isImmutableRecord(a)
+  ) {
+    const aEntries = entries(a);
+    const bEntries = entries(b);
+    if (!equals(aEntries, bEntries)) {
+      aStack.pop();
+      bStack.pop();
+      return false;
+    }
+  }
+
+  // Remove the first value from the stack of traversed values.
+  aStack.pop();
+  bStack.pop();
+  return true;
 };
 
 const entries = (obj: any) => {

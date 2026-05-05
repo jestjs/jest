@@ -2389,4 +2389,14 @@ describe('toMatchObject()', () => {
       [sym]: true,
     });
   });
+
+  test('does not throw on exotic iterables (e.g. TypedArray iterator on plain object)', () => {
+    const badIterable = {
+      [Symbol.iterator]: Uint8Array.prototype[Symbol.iterator],
+    };
+    expect(() =>
+      jestExpect([badIterable]).toMatchObject([badIterable]),
+    ).not.toThrow();
+    jestExpect([badIterable]).toMatchObject([badIterable]);
+  });
 });

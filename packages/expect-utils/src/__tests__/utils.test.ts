@@ -660,7 +660,10 @@ describe('iterableEquality', () => {
     };
 
     expect(() => iterableEquality(badIterable, badIterable)).not.toThrow();
-    expect(iterableEquality(badIterable, badIterable)).toBe(false);
+    // Returns undefined so equals() can fall through to Object.is / property checks.
+    expect(iterableEquality(badIterable, badIterable)).toBeUndefined();
+    // Same reference must still be considered equal via equals().
+    expect(equals(badIterable, badIterable, [iterableEquality])).toBe(true);
   });
 });
 
