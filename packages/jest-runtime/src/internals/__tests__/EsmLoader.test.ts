@@ -613,6 +613,23 @@ describe('validateImportAttributes', () => {
         warnSpy.mockRestore();
       }
     });
+
+    test('treats data:application/json URIs as JSON modules', () => {
+      const {referencer} = uniquePaths();
+      const dataUri = 'data:application/json,{"x":1}';
+      // type: 'json' is accepted
+      expect(() =>
+        validateImportAttributes(dataUri, {type: 'json'}, referencer),
+      ).not.toThrow();
+      // Wrong type is rejected
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(dataUri, {type: 'css'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+    });
   });
 
   describe('non-JSON modules', () => {

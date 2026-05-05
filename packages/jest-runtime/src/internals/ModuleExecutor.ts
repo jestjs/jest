@@ -25,7 +25,11 @@ import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {RequireBuilder} from './cjsRequire';
-import type {InitialModule, ModuleRegistry} from './moduleTypes';
+import type {
+  ImportAttributes,
+  InitialModule,
+  ModuleRegistry,
+} from './moduleTypes';
 import {runtimeSupportsVmModules} from './nodeCapabilities';
 
 export type ExecResult = 'loaded' | 'env-disposed';
@@ -51,7 +55,7 @@ export interface ModuleExecutorOptions {
     specifier: string,
     identifier: string,
     context: VMContext,
-    importAttributes?: Record<string, string>,
+    importAttributes?: ImportAttributes,
   ) => Promise<VMModule>;
 }
 
@@ -204,7 +208,7 @@ export class ModuleExecutor {
               specifier,
               scriptFilename,
               vmContext,
-              importAttributes as Record<string, string> | undefined,
+              importAttributes as ImportAttributes | undefined,
             );
           },
           parsingContext: vmContext,

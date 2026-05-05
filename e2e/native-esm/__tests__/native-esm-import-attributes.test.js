@@ -17,3 +17,11 @@ test('supports dynamic import with type: json attribute', async () => {
   });
   expect(dyn).toHaveProperty('jest.testEnvironment', 'node');
 });
+
+test('supports data:application/json with type: json attribute', async () => {
+  const dataUri = `data:application/json,${encodeURIComponent(
+    JSON.stringify({hello: 'world'}),
+  )}`;
+  const {default: dyn} = await import(dataUri, {with: {type: 'json'}});
+  expect(dyn).toEqual({hello: 'world'});
+});

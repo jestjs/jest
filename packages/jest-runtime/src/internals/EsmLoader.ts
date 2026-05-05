@@ -26,7 +26,12 @@ import {type Resolution, isWasm} from './Resolution';
 import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
-import type {ESModule, JestModule, ModuleRegistry} from './moduleTypes';
+import type {
+  ESModule,
+  ImportAttributes,
+  JestModule,
+  ModuleRegistry,
+} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
   supportsSyncEvaluate,
@@ -45,7 +50,7 @@ interface VMModuleWithAsyncGraph extends VMModule {
   hasTopLevelAwait?: () => boolean;
   moduleRequests?: ReadonlyArray<{
     specifier: string;
-    attributes: Record<string, string>;
+    attributes: ImportAttributes;
     phase?: string;
   }>;
   linkRequests?: (deps: ReadonlyArray<VMModule>) => void;
@@ -67,6 +72,15 @@ type ResolvedSyncSpecifier = {
   cacheKey: string;
   enqueue: WorklistEntry | null;
   modulePath: string;
+};
+
+// Shape of the third arg Node passes to the `module.link` callback. TC39 final
+// is `{attributes}`; legacy was `{assert}`. `@types/node@18` only types the
+// legacy field, so we declare both ourselves.
+// TODO(jest next major): drop `assert` once we require Node 22+.
+type ModuleLinkExtra = {
+  assert?: ImportAttributes;
+  attributes?: ImportAttributes;
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
@@ -136,6 +150,17 @@ function parseDataUri(specifier: string): {
 // The only deliberate divergence: missing `type: 'json'` warns instead of
 // throwing — see the JSON branch below.
 const warnedMissingJsonAttributePairs = new Set<string>();
+// Soft cap so a long-lived process (watch mode, --runInBand) can't grow the
+// set without bound. When we hit it we drop everything; users see at most one
+// extra repeated warning per pair, which is benign.
+const MAX_WARNED_PAIRS = 10_000;
+
+function isJsonModule(modulePath: string): boolean {
+  return (
+    modulePath.endsWith('.json') ||
+    modulePath.startsWith('data:application/json')
+  );
+}
 
 function makeImportAttributeError(
   code:
@@ -151,7 +176,7 @@ function makeImportAttributeError(
 
 export function validateImportAttributes(
   modulePath: string,
-  attributes: Record<string, string>,
+  attributes: ImportAttributes,
   referencingIdentifier: string,
 ): void {
   for (const key of Object.keys(attributes)) {
@@ -164,7 +189,7 @@ export function validateImportAttributes(
   }
 
   const declaredType = attributes.type;
-  const isJson = modulePath.endsWith('.json');
+  const isJson = isJsonModule(modulePath);
 
   if (isJson) {
     if (declaredType === undefined) {
@@ -173,6 +198,9 @@ export function validateImportAttributes(
       // without `with { type: 'json' }` keep working.
       const dedupeKey = `${referencingIdentifier}::${modulePath}`;
       if (!warnedMissingJsonAttributePairs.has(dedupeKey)) {
+        if (warnedMissingJsonAttributePairs.size >= MAX_WARNED_PAIRS) {
+          warnedMissingJsonAttributePairs.clear();
+        }
         warnedMissingJsonAttributePairs.add(dedupeKey);
         console.warn(
           'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
@@ -888,7 +916,7 @@ export class EsmLoader {
     specifier: string,
     identifier: string,
     context: VMContext,
-    importAttributes?: Record<string, string>,
+    importAttributes?: ImportAttributes,
   ): Promise<VMModule> {
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
       m => {
@@ -1167,16 +1195,7 @@ export class EsmLoader {
             referencingModule.identifier,
             referencingModule.context,
           );
-          // TODO(jest next major): drop the `extra.assert` fallback once we
-          // require a Node version that has removed the legacy `assert`
-          // keyword (Node 22+). Until then we accept both shapes so users
-          // mid-migration aren't surprised.
-          const extraAttrs = extra as
-            | {
-                assert?: Record<string, string>;
-                attributes?: Record<string, string>;
-              }
-            | undefined;
+          const extraAttrs = extra as ModuleLinkExtra | undefined;
           validateImportAttributes(
             resolved.identifier,
             extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
@@ -1330,7 +1349,7 @@ export class EsmLoader {
   private dynamicImport = async (
     specifier: string,
     referencingModule: VMModule,
-    importAttributes?: Record<string, string>,
+    importAttributes?: ImportAttributes,
   ): Promise<VMModule> => {
     invariant(
       runtimeSupportsVmModules,
