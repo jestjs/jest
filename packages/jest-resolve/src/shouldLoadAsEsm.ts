@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, extname} from 'path';
-import {SyntheticModule} from 'vm';
+import {dirname, extname} from 'node:path';
+import {SyntheticModule} from 'node:vm';
 import {findClosestPackageJson, readPackageCached} from './fileWalkers';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';

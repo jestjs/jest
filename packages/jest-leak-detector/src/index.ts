@@ -6,9 +6,9 @@
  */
 /// <reference lib="es2021.WeakRef" />
 
-import {promisify} from 'util';
-import {getHeapSnapshot, setFlagsFromString} from 'v8';
-import {runInNewContext} from 'vm';
+import {promisify} from 'node:util';
+import {getHeapSnapshot, setFlagsFromString} from 'node:v8';
+import {runInNewContext} from 'node:vm';
 import {isPrimitive} from '@jest/get-type';
 import {format as prettyFormat} from 'pretty-format';
 

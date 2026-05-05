@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isAbsolute} from 'path';
-import {pathToFileURL} from 'url';
+import {isAbsolute} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import interopRequireDefault from './interopRequireDefault';
 
 async function importModule(
@@ -52,7 +52,7 @@ export default async function requireOrImportModule<T>(
     );
   }
   try {
-    if (filePath.endsWith('.mjs')) {
+    if (filePath.endsWith('.mjs') || filePath.endsWith('.mts')) {
       return importModule(filePath, applyInteropRequireDefault);
     }
 

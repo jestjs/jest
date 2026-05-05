@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context} from 'vm';
+import type {Context} from 'node:vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {Mocked, ModuleMocker} from 'jest-mock';

@@ -10,8 +10,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 const yaml = require('js-yaml');
 const i18n = require('./i18n');
 const ArchivedVersions = require('./archivedVersions.json');

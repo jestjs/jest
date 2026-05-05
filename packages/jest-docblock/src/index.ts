@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EOL} from 'os';
+import {EOL} from 'node:os';
 import detectNewline from 'detect-newline';
 
 export type Pragmas = Record<string, string | Array<string>>;

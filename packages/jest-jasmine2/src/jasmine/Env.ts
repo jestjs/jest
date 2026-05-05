@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {AssertionError} from 'assert';
+import {AssertionError} from 'node:assert';
 import type {Circus} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';

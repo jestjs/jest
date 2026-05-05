@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {spawn} from 'child_process';
-import * as path from 'path';
+import {spawn} from 'node:child_process';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';

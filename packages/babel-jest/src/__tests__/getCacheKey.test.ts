@@ -185,6 +185,7 @@ function defineTests({
           loadPartialConfig: (
             options: Parameters<typeof babel.loadPartialConfig>[0],
           ) => ({
+            // @ts-expect-error typed as void
             ...babel.loadPartialConfig(options),
             babelrc: 'new-babelrc',
           }),

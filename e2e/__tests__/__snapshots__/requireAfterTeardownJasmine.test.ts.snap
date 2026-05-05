@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`prints useful error for requires after test is done 1`] = `
-"ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
+"PASS __tests__/lateRequire.test.js
+  ✓ require after done
+
+
+ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
        9 | test('require after done', () => {
       10 |   setTimeout(() => {
@@ -9,11 +13,24 @@ exports[`prints useful error for requires after test is done 1`] = `
          |                    ^
       12 |
       13 |     expect(double(5)).toBe(10);
-      14 |   }, 0);"
+      14 |   }, 0);
+
+      at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)
+<<REPO_ROOT>>/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
+    expect(double(5)).toBe(10);
+           ^
+
+[TypeError: double is not a function]
+
+Node.js <<REPLACED>>"
 `;
 
 exports[`prints useful error for requires after test is done 2`] = `
-"ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
+"PASS __tests__/lateRequire.test.js
+  ✓ require after done
+
+
+ReferenceError: You are trying to \`require\` a file after the Jest environment has been torn down. From __tests__/lateRequire.test.js.
 
        9 | test('require after done', () => {
       10 |   setTimeout(() => {
@@ -21,5 +38,14 @@ exports[`prints useful error for requires after test is done 2`] = `
          |                    ^
       12 |
       13 |     expect(double(5)).toBe(10);
-      14 |   }, 0);"
+      14 |   }, 0);
+
+      at Timeout.require [as _onTimeout] (__tests__/lateRequire.test.js:11:20)
+<<REPO_ROOT>>/e2e/require-after-teardown/__tests__/lateRequire.test.js:12
+    expect(double(5)).toBe(10);
+           ^
+
+[TypeError: double is not a function]
+
+Node.js <<REPLACED>>"
 `;

@@ -237,6 +237,7 @@ export const InitialOptions = Type.Partial(
     changedSince: Type.String(),
     collectCoverage: Type.Boolean(),
     collectCoverageFrom: Type.Array(Type.String()),
+    collectTests: Type.Boolean(),
     coverageDirectory: Type.String(),
     coveragePathIgnorePatterns: Type.Array(Type.String()),
     coverageProvider: CoverageProvider,

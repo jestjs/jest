@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import deepMerge from 'deepmerge';
 import * as fs from 'graceful-fs';
@@ -133,6 +133,7 @@ const groupOptions = (
     ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
+    collectTests: options.collectTests,
     coverageDirectory: options.coverageDirectory,
     coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,

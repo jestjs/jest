@@ -6,7 +6,7 @@
  */
 
 import {skipSuiteOnJasmine} from '@jest/test-utils';
-import {extractSummary} from '../Utils';
+import {extractSummary, replaceJestBuildLineNumbers} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnJasmine();
@@ -19,5 +19,5 @@ it('defining tests and hooks asynchronously throws', () => {
   expect(result.exitCode).toBe(1);
 
   const {rest} = extractSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });

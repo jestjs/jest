@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
+import {createHash} from 'node:crypto';
 import type {ForegroundColor} from 'chalk';
 
 type Color = typeof ForegroundColor;

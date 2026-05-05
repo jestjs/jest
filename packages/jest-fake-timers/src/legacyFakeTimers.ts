@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {promisify} from 'util';
+import {promisify} from 'node:util';
 import {type StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import type {
   FunctionLike,

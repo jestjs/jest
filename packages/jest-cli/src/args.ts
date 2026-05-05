@@ -172,6 +172,12 @@ export const options: {[key: string]: Options} = {
     requiresArg: true,
     type: 'string',
   },
+  collectTests: {
+    description:
+      'Discover and report all test cases without executing them. ' +
+      'Prints a tree of test suites and test names.',
+    type: 'boolean',
+  },
   color: {
     description:
       'Forces test results output color highlighting (even if ' +

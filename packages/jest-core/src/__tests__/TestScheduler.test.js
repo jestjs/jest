@@ -7,6 +7,7 @@
  */
 
 import {
+  AgentReporter,
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
@@ -64,11 +65,40 @@ beforeEach(() => {
   spyRunGlobalHook.mockClear();
 });
 
+const AGENT_ENV_VARS = [
+  'AI_AGENT',
+  'AUGMENT_AGENT',
+  'CLAUDE_CODE',
+  'CLAUDECODE',
+  'CODEX_SANDBOX',
+  'CODEX_THREAD_ID',
+  'CURSOR_AGENT',
+  'GEMINI_CLI',
+  'GOOSE_PROVIDER',
+  'OPENCODE',
+  'REPL_ID',
+];
+
 describe('reporters', () => {
   const CustomReporter = require('/custom-reporter.js');
+  const savedAgentEnv = {};
+
+  beforeEach(() => {
+    for (const key of AGENT_ENV_VARS) {
+      savedAgentEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
+    for (const key of AGENT_ENV_VARS) {
+      if (savedAgentEnv[key] === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = savedAgentEnv[key];
+      }
+    }
   });
 
   test('works with default value', async () => {
@@ -86,6 +116,25 @@ describe('reporters', () => {
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
     expect(CoverageReporter).toHaveBeenCalledTimes(0);
     expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('uses agent reporter when AI agent is detected', async () => {
+    process.env.AI_AGENT = '1';
+    try {
+      await createTestScheduler(
+        makeGlobalConfig({
+          reporters: undefined,
+        }),
+        {},
+        {},
+      );
+
+      expect(AgentReporter).toHaveBeenCalledTimes(1);
+      expect(DefaultReporter).toHaveBeenCalledTimes(0);
+      expect(SummaryReporter).toHaveBeenCalledTimes(1);
+    } finally {
+      delete process.env.AI_AGENT;
+    }
   });
 
   test('does not enable any reporters, if empty list is passed', async () => {
