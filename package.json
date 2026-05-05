@@ -64,7 +64,7 @@
     "mock-fs": "^5.5.0",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.1",
-    "p-limit": "^3.1.0",
+    "p-limit": "^7.0.0",
     "pkg-dir": "^5.0.0",
     "prettier": "^3.0.3",
     "promise": "^8.3.0",

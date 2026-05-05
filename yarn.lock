@@ -4410,7 +4410,7 @@ __metadata:
     mock-fs: "npm:^5.5.0"
     netlify-plugin-cache: "npm:^1.0.3"
     node-notifier: "npm:^10.0.1"
-    p-limit: "npm:^3.1.0"
+    p-limit: "npm:^7.0.0"
     pkg-dir: "npm:^5.0.0"
     prettier: "npm:^3.0.3"
     promise: "npm:^8.3.0"
@@ -14113,7 +14113,7 @@ __metadata:
   dependencies:
     execa: "npm:^5.1.1"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
+    p-limit: "npm:^7.0.0"
   languageName: unknown
   linkType: soft
 
@@ -14143,7 +14143,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
+    p-limit: "npm:^7.0.0"
     pretty-format: "workspace:*"
     pure-rand: "npm:^7.0.0"
     slash: "npm:^3.0.0"
@@ -14343,7 +14343,7 @@ __metadata:
     jest-runtime: "workspace:*"
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
-    p-limit: "npm:^3.1.0"
+    p-limit: "npm:^7.0.0"
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14527,7 +14527,7 @@ __metadata:
     jest-util: "workspace:*"
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
-    p-limit: "npm:^3.1.0"
+    p-limit: "npm:^7.0.0"
     source-map-support: "npm:0.5.13"
   languageName: unknown
   linkType: soft
@@ -17575,7 +17575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-limit@npm:^3.0.2, p-limit@npm:^3.1.0":
+"p-limit@npm:^3.0.2":
   version: 3.1.0
   resolution: "p-limit@npm:3.1.0"
   dependencies:
@@ -17599,6 +17599,15 @@ __metadata:
   dependencies:
     yocto-queue: "npm:^1.1.1"
   checksum: 10/70e8df3e5f1c173c9bd9fa8390a3c5c2797505240ae42973536992b1f5f59a922153c2f35ff1bf36fb72a0f025b0f13fca062a4233e830adad446960d56b4d84
+  languageName: node
+  linkType: hard
+
+"p-limit@npm:^7.0.0":
+  version: 7.3.0
+  resolution: "p-limit@npm:7.3.0"
+  dependencies:
+    yocto-queue: "npm:^1.2.1"
+  checksum: 10/bd3f3487ec84401e2cbf243122eef11813edacb621a27808e60a425646d0e75a79514acc2c01e39c41911550dbae5ef0f0ab01caa61cfc1c541cd17a19e8f01b
   languageName: node
   linkType: hard
 
@@ -23550,10 +23559,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yocto-queue@npm:^1.0.0, yocto-queue@npm:^1.1.1":
-  version: 1.2.1
-  resolution: "yocto-queue@npm:1.2.1"
-  checksum: 10/0843d6c2c0558e5c06e98edf9c17942f25c769e21b519303a5c2adefd5b738c9b2054204dc856ac0cd9d134b1bc27d928ce84fd23c9e2423b7e013d5a6f50577
+"yocto-queue@npm:^1.0.0, yocto-queue@npm:^1.1.1, yocto-queue@npm:^1.2.1":
+  version: 1.2.2
+  resolution: "yocto-queue@npm:1.2.2"
+  checksum: 10/92dd9880c324dbc94ff4b677b7d350ba8d835619062b7102f577add7a59ab4d87f40edc5a03d77d369dfa9d11175b1b2ec4a06a6f8a5d8ce5d1306713f66ee41
   languageName: node
   linkType: hard
 
