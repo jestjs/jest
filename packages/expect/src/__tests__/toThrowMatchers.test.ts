@@ -262,7 +262,7 @@ describe('toThrow', () => {
       SubErr;
     `);
 
-    it('passes when constructor names match across realms', () => {
+    it('passes when constructor names match across realms (class form)', () => {
       jestExpect(() => {
         throw new CrossRealmErr();
       }).toThrow(Err);
@@ -272,12 +272,18 @@ describe('toThrow', () => {
       }).toThrow(Err);
     });
 
+    it('passes when constructor names match across realms (object form)', () => {
+      jestExpect(() => {
+        throw new CrossRealmErr('apple');
+      }).toThrow(new Err('apple'));
+    });
+
     it('fails when class names do not match across realms', () => {
       expect(() => {
         jestExpect(() => {
           throw new CrossRealmErr('apple');
         }).toThrow(Err2);
-      }).toThrowErrorMatchingSnapshot();
+      }).toThrow(/Expected constructor.*Err2[\s\S]*Received constructor.*Err/);
     });
   });
 

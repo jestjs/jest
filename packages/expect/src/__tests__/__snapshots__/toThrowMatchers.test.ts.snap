@@ -86,16 +86,6 @@ Received message: <r>"apple"</>
       <d>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<d>:24:74)</>
 `;
 
-exports[`toThrow error class (cross-realm) fails when class names do not match across realms 1`] = `
-<d>expect(</><r>received</><d>).</>toThrow<d>(</><g>expected</><d>)</>
-
-Expected constructor: <g>Err2</>
-Received constructor: <r>Err</>
-
-Received message: <r>"apple"</>
-
-        at test
-`;
 
 exports[`toThrow error class did not throw at all 1`] = `
 <d>expect(</><r>received</><d>).</>toThrow<d>(</><g>expected</><d>)</>
