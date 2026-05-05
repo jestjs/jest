@@ -14,23 +14,12 @@ import {
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
-
-type TemporalLike = {epochMilliseconds: number};
-type TemporalDurationLike = {total(options: {unit: string}): number};
-
-function toEpochMs(
-  value: number | Date | TemporalLike | undefined,
-): number | undefined {
-  if (value == null) return undefined;
-  if (typeof value === 'number') return value;
-  if (value instanceof Date) return value.getTime();
-  return value.epochMilliseconds;
-}
-
-function toDurationMs(value: number | TemporalDurationLike): number {
-  if (typeof value === 'number') return value;
-  return value.total({unit: 'millisecond'});
-}
+import {
+  type TemporalDurationLike,
+  type TemporalInstantLike,
+  toDurationMs,
+  toEpochMs,
+} from './temporalUtils';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
@@ -168,7 +157,7 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date | TemporalLike): void {
+  setSystemTime(now?: number | Date | TemporalInstantLike): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(toEpochMs(now));
     }

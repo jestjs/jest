@@ -16,6 +16,7 @@ import type {
   UnknownFunction,
 } from 'jest-mock';
 import {setGlobal} from 'jest-util';
+import {type TemporalDurationLike, toDurationMs} from './temporalUtils';
 
 type Callback = (...args: Array<unknown>) => void;
 
@@ -274,8 +275,9 @@ export default class FakeTimers<TimerRef = unknown> {
     }
   }
 
-  advanceTimersByTime(msToRun: number): void {
+  advanceTimersByTime(msToRun: number | TemporalDurationLike): void {
     this._checkFakeTimers();
+    let msRemaining = toDurationMs(msToRun);
     // Only run a generous number of timers and then bail.
     // This is just to help avoid recursive loops
     let i;
@@ -288,18 +290,18 @@ export default class FakeTimers<TimerRef = unknown> {
       }
       const [timerHandle, nextTimerExpiry] = timerHandleAndExpiry;
 
-      if (this._now + msToRun < nextTimerExpiry) {
+      if (this._now + msRemaining < nextTimerExpiry) {
         // There are no timers between now and the target we're running to
         break;
       } else {
-        msToRun -= nextTimerExpiry - this._now;
+        msRemaining -= nextTimerExpiry - this._now;
         this._now = nextTimerExpiry;
         this._runTimerHandle(timerHandle);
       }
     }
 
     // Advance the clock by whatever time we still have left to run
-    this._now += msToRun;
+    this._now += msRemaining;
 
     if (i === this._maxLoops) {
       throw new Error(
