@@ -19,6 +19,7 @@
 
 ### Fixes
 
+- `[expect]` Fix `toThrow(SomeClass)` failing when the thrown instance and the expected class come from different realms ([#16130](https://github.com/jestjs/jest/pull/16130))
 - `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#15959](https://github.com/jestjs/jest/pull/15959))
 - `[@jest/expect-utils]` Prevent `toMatchObject`/subset matching from throwing when encountering exotic iterables ([#15952](https://github.com/jestjs/jest/pull/15952))
 - `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
