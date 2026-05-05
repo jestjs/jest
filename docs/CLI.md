@@ -571,6 +571,10 @@ Use `--no-watchAll` (or `--watchAll=false`) to explicitly disable the watch mode
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
 
+### `--workerGracefulExitTimeout=<number>`
+
+Timeout in milliseconds for worker processes to exit gracefully after tests complete. Workers that do not exit in time are force-killed. Default: `500`.
+
 ### `--workerThreads`
 
 Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.

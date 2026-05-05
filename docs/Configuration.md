@@ -2483,6 +2483,30 @@ Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
+### `workerGracefulExitTimeout` \[number]
+
+Default: `500`
+
+Timeout in milliseconds for a worker process to exit gracefully after all tests have completed. If a worker does not exit within this timeout, it is force-killed.
+
+Increase this value if your test environment requires more time to tear down (for example, when using `--detectOpenHandles` or when workers hold onto long-lived resources).
+
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  workerGracefulExitTimeout: 2000,
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  workerGracefulExitTimeout: 2000,
+});
+```
+
 ### `workerIdleMemoryLimit` \[number|string]
 
 Default: `undefined`
