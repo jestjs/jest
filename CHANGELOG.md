@@ -17,7 +17,7 @@
 ### Fixes
 
 - `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#15959](https://github.com/jestjs/jest/pull/15959))
-- `[@jest/expect-utils]` Prevent `toMatchObject`/subset matching from throwing when encountering exotic iterables (for example, objects with a TypedArray iterator) ([#15952](https://github.com/jestjs/jest/pull/15952))
+- `[@jest/expect-utils]` Prevent `toMatchObject`/subset matching from throwing when encountering exotic iterables ([#15952](https://github.com/jestjs/jest/pull/15952))
 - `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
 - `[jest-circus]` Prevent crash when `asyncError` is undefined for non-Error throws ([#16003](https://github.com/jestjs/jest/pull/16003))
 - `[jest-circus, jest-jasmine2]` Include `Error.cause` in JSON `failureMessages` output ([#15949](https://github.com/jestjs/jest/issues/15949))
