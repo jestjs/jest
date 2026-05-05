@@ -37,4 +37,16 @@ describe('Temporal support in fake timers', () => {
     jest.setSystemTime(zdt);
     expect(Date.now()).toBe(EPOCH_MS);
   });
+
+  test('advanceTimersByTime accepts Temporal.Duration', () => {
+    jest.useFakeTimers({now: EPOCH_MS});
+    jest.advanceTimersByTime(Temporal.Duration.from({hours: 1}));
+    expect(Date.now()).toBe(EPOCH_MS + 3_600_000);
+  });
+
+  test('advanceTimersByTimeAsync accepts Temporal.Duration', async () => {
+    jest.useFakeTimers({now: EPOCH_MS});
+    await jest.advanceTimersByTimeAsync(Temporal.Duration.from({minutes: 30}));
+    expect(Date.now()).toBe(EPOCH_MS + 1_800_000);
+  });
 });

@@ -16,7 +16,7 @@ import type {Config} from '@jest/types';
 import {formatStackTrace} from 'jest-message-util';
 import {
   type TemporalDurationLike,
-  type TemporalInstantLike,
+  type TemporalEpochLike,
   toDurationMs,
   toEpochMs,
 } from './temporalUtils';
@@ -157,7 +157,7 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date | TemporalInstantLike): void {
+  setSystemTime(now?: number | Date | TemporalEpochLike): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(toEpochMs(now));
     }

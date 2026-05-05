@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export type TemporalInstantLike = {epochMilliseconds: number};
+export type TemporalEpochLike = {epochMilliseconds: number};
 export type TemporalDurationLike = {total(options: {unit: string}): number};
 
 export function toEpochMs(
-  value: number | Date | TemporalInstantLike | undefined,
+  value: number | Date | TemporalEpochLike | undefined,
 ): number | undefined {
   if (value == null) return undefined;
   if (typeof value === 'number') return value;
@@ -18,7 +18,7 @@ export function toEpochMs(
   // across module boundaries in a webpack bundle).
   if (typeof (value as Date).getTime === 'function')
     return (value as Date).getTime();
-  return (value as TemporalInstantLike).epochMilliseconds;
+  return (value as TemporalEpochLike).epochMilliseconds;
 }
 
 export function toDurationMs(value: number | TemporalDurationLike): number {
