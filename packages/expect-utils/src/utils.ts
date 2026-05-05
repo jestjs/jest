@@ -218,17 +218,17 @@ export const iterableEquality = (
   aStack.push(a);
   bStack.push(b);
 
-  // Replace any instance of iterableEquality with the new iterableEqualityWithStack
-  // so we can do circular detection.
-  const iterableEqualityWithStack = (aInner: any, bInner: any) =>
+  const iterableEqualityWithStack = (a: any, b: any) =>
     iterableEquality(
-      aInner,
-      bInner,
+      a,
+      b,
       [...filteredCustomTesters],
       [...aStack],
       [...bStack],
     );
 
+  // Replace any instance of iterableEquality with the new
+  // iterableEqualityWithStack so we can do circular detection
   const filteredCustomTesters: Array<Tester> = [
     ...customTesters.filter(t => t !== iterableEquality),
     iterableEqualityWithStack,
@@ -236,8 +236,6 @@ export const iterableEquality = (
 
   if (a.size !== undefined) {
     if (a.size !== b.size) {
-      aStack.pop();
-      bStack.pop();
       return false;
     } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
@@ -326,15 +324,11 @@ export const iterableEquality = (
       bStep.done ||
       !equals(aStep.value, bStep.value, filteredCustomTesters)
     ) {
-      aStack.pop();
-      bStack.pop();
       return false;
     }
     aStep = aIterator.next();
   }
   if (!bIterator.next().done) {
-    aStack.pop();
-    bStack.pop();
     return false;
   }
 
@@ -347,8 +341,6 @@ export const iterableEquality = (
     const aEntries = entries(a);
     const bEntries = entries(b);
     if (!equals(aEntries, bEntries)) {
-      aStack.pop();
-      bStack.pop();
       return false;
     }
   }
