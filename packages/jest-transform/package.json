@@ -32,7 +32,7 @@
     "jest-util": "workspace:*",
     "pirates": "^4.0.7",
     "slash": "^3.0.0",
-    "write-file-atomic": "^5.0.1"
+    "write-file-atomic": "^7.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
