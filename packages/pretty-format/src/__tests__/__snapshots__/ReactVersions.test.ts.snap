@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`React 17 renders a simple element 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 17 renders nested elements 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;
+
+exports[`React 18 renders a simple element 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 18 renders nested elements 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;
+
+exports[`React 19 renders a simple element 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 19 renders nested elements 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;

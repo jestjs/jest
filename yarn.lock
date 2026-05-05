@@ -7012,12 +7012,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-is@npm:^18.3.1":
-  version: 18.3.1
-  resolution: "@types/react-is@npm:18.3.1"
+"@types/react-is@npm:^19.0.0":
+  version: 19.2.0
+  resolution: "@types/react-is@npm:19.2.0"
   dependencies:
-    "@types/react": "npm:^18"
-  checksum: 10/ccb79d6e196a5232cde8ccb255ec97e062801a3dafeff3816130fb5ad6b9a87f7c0806ab35bc00890a229773228ef217d0390839b68c705d3add2f798b5fcf82
+    "@types/react": "npm:*"
+  checksum: 10/cf684b259dd0c60bb07df38e1b51a57728101b8cdde9d06209388e9a22daa64a6e36a8c7945f8d029a588c4a0d6540857ccbf52b7ec98ef083b4cee6ca4a3ee4
   languageName: node
   linkType: hard
 
@@ -19040,14 +19040,17 @@ __metadata:
   dependencies:
     "@jest/schemas": "workspace:*"
     "@types/react": "npm:^18.3.23"
-    "@types/react-is": "npm:^18.3.1"
+    "@types/react-is": "npm:^19.0.0"
     "@types/react-test-renderer": "npm:^18.3.1"
     ansi-styles: "npm:^5.2.0"
     immutable: "npm:^5.1.2"
     jest-util: "workspace:*"
     react: "npm:18.3.1"
-    react-dom: "npm:18.3.1"
-    react-is: "npm:^18.3.1"
+    react-17: "npm:react@17.0.2"
+    react-18: "npm:react@18.3.1"
+    react-19: "npm:react@19.1.6"
+    react-is-18: "npm:react-is@^18.3.1"
+    react-is-19: "npm:react-is@^19.2.5"
     react-test-renderer: "npm:18.3.1"
   languageName: unknown
   linkType: soft
@@ -19327,6 +19330,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-17@npm:react@17.0.2":
+  version: 17.0.2
+  resolution: "react@npm:17.0.2"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+    object-assign: "npm:^4.1.1"
+  checksum: 10/ece60c31c1d266d132783aaaffa185d2e4c9b4db144f853933ec690cee1e0600c8929a1dd0a9e79323eea8e2df636c9a06d40f6cfdc9f797f65225433e67f707
+  languageName: node
+  linkType: hard
+
+"react-18@npm:react@18.3.1, react@npm:18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+  checksum: 10/261137d3f3993eaa2368a83110466fc0e558bc2c7f7ae7ca52d94f03aac945f45146bd85e5f481044db1758a1dbb57879e2fcdd33924e2dde1bdc550ce73f7bf
+  languageName: node
+  linkType: hard
+
+"react-19@npm:react@19.1.6":
+  version: 19.1.6
+  resolution: "react@npm:19.1.6"
+  checksum: 10/3e210c09de97acfed34d450e5c79911c78b20659dadb7988a747baea2a7b60e39ff17834495b0b68e2898e248623964384ea34bbde1d4501e695fa9d0c002799
+  languageName: node
+  linkType: hard
+
 "react-devtools-core@npm:^6.1.5":
   version: 6.1.5
   resolution: "react-devtools-core@npm:6.1.5"
@@ -19383,10 +19412,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^18.0.0, react-is@npm:^18.3.1":
+"react-is-18@npm:react-is@^18.3.1, react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^18.0.0, react-is@npm:^18.3.1":
   version: 18.3.1
   resolution: "react-is@npm:18.3.1"
   checksum: 10/d5f60c87d285af24b1e1e7eaeb123ec256c3c8bdea7061ab3932e3e14685708221bf234ec50b21e10dd07f008f1b966a2730a0ce4ff67905b3872ff2042aec22
+  languageName: node
+  linkType: hard
+
+"react-is-19@npm:react-is@^19.2.5":
+  version: 19.2.5
+  resolution: "react-is@npm:19.2.5"
+  checksum: 10/b2e18d4efd39496474956684a3757c43b9102af56add174abf2a46a6c1441dbdfe5fa7d9e7d7ebb42f543ffc9c7941fc74eb1e2bfdbf08979ea9e2ccc36da600
   languageName: node
   linkType: hard
 
@@ -19595,15 +19631,6 @@ __metadata:
   peerDependencies:
     react: ^18.3.1
   checksum: 10/d53137315c677bdfba702a7179a69828233fc7635ae1e0c03b203923d643400ace72b343cb3dd3dafba8911c20bef53f55bff7aa2e4ddff3ccc423fdd9deeee2
-  languageName: node
-  linkType: hard
-
-"react@npm:18.3.1":
-  version: 18.3.1
-  resolution: "react@npm:18.3.1"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10/261137d3f3993eaa2368a83110466fc0e558bc2c7f7ae7ca52d94f03aac945f45146bd85e5f481044db1758a1dbb57879e2fcdd33924e2dde1bdc550ce73f7bf
   languageName: node
   linkType: hard
 

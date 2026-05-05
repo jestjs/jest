@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as ReactIs from 'react-is';
+import * as ReactIs18 from 'react-is-18';
+import * as ReactIs19 from 'react-is-19';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 import {
   printChildren,
@@ -36,22 +37,28 @@ const getType = (element: any) => {
     return type.displayName || type.name || 'Unknown';
   }
 
-  if (ReactIs.isFragment(element)) {
+  if (ReactIs18.isFragment(element) || ReactIs19.isFragment(element)) {
     return 'React.Fragment';
   }
-  if (ReactIs.isSuspense(element)) {
+  if (ReactIs18.isSuspense(element) || ReactIs19.isSuspense(element)) {
     return 'React.Suspense';
   }
   if (typeof type === 'object' && type !== null) {
-    if (ReactIs.isContextProvider(element)) {
+    if (
+      ReactIs18.isContextProvider(element) ||
+      ReactIs19.isContextProvider(element)
+    ) {
       return 'Context.Provider';
     }
 
-    if (ReactIs.isContextConsumer(element)) {
+    if (
+      ReactIs18.isContextConsumer(element) ||
+      ReactIs19.isContextConsumer(element)
+    ) {
       return 'Context.Consumer';
     }
 
-    if (ReactIs.isForwardRef(element)) {
+    if (ReactIs18.isForwardRef(element) || ReactIs19.isForwardRef(element)) {
       if (type.displayName) {
         return type.displayName;
       }
@@ -61,7 +68,7 @@ const getType = (element: any) => {
       return functionName === '' ? 'ForwardRef' : `ForwardRef(${functionName})`;
     }
 
-    if (ReactIs.isMemo(element)) {
+    if (ReactIs18.isMemo(element) || ReactIs19.isMemo(element)) {
       const functionName =
         type.displayName || type.type.displayName || type.type.name || '';
 
@@ -113,7 +120,7 @@ export const serialize: NewPlugin['serialize'] = (
       );
 
 export const test: NewPlugin['test'] = (val: unknown) =>
-  val != null && ReactIs.isElement(val);
+  val != null && (ReactIs18.isElement(val) || ReactIs19.isElement(val));
 
 const plugin: NewPlugin = {serialize, test};
 
