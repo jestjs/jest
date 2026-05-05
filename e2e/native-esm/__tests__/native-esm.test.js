@@ -172,7 +172,12 @@ test('handle dynamic imports of the same module in parallel', async () => {
 });
 
 test('import same file with child imports in parallel indirectly', async () => {
-  await Promise.all([import('../file1.js'), import('../file2.js')]);
+  const [{double: double1}, {double: double2}] = await Promise.all([
+    import('../file1.js'),
+    import('../file2.js'),
+  ]);
+
+  expect(double1).toBe(double2);
 });
 
 test('varies module cache by query', () => {
