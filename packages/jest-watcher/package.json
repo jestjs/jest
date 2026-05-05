@@ -21,7 +21,7 @@
     "chalk": "^4.1.2",
     "emittery": "^0.13.1",
     "jest-util": "workspace:*",
-    "string-length": "^4.0.2"
+    "string-length": "^7.0.0"
   },
   "repository": {
     "type": "git",

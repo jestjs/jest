@@ -4477,7 +4477,7 @@ __metadata:
     mock-fs: "npm:^5.5.0"
     node-notifier: "npm:^10.0.1"
     slash: "npm:^3.0.0"
-    string-length: "npm:^4.0.2"
+    string-length: "npm:^7.0.0"
     v8-to-istanbul: "npm:^9.0.1"
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -14724,7 +14724,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     emittery: "npm:^0.13.1"
     jest-util: "workspace:*"
-    string-length: "npm:^4.0.2"
+    string-length: "npm:^7.0.0"
   languageName: unknown
   linkType: soft
 
@@ -21071,22 +21071,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-length@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "string-length@npm:4.0.2"
-  dependencies:
-    char-regex: "npm:^1.0.2"
-    strip-ansi: "npm:^6.0.0"
-  checksum: 10/ce85533ef5113fcb7e522bcf9e62cb33871aa99b3729cec5595f4447f660b0cefd542ca6df4150c97a677d58b0cb727a3fe09ac1de94071d05526c73579bf505
-  languageName: node
-  linkType: hard
-
 "string-length@npm:^6.0.0":
   version: 6.0.0
   resolution: "string-length@npm:6.0.0"
   dependencies:
     strip-ansi: "npm:^7.1.0"
   checksum: 10/b171e9e193ec292ad71f8b2a36e20478bf1bac8cd5beec062fb126942d627dfd9311959e271e9ab7b0a383d16b85b9e25a183d15786e30f22104d152e7627f99
+  languageName: node
+  linkType: hard
+
+"string-length@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "string-length@npm:7.0.1"
+  checksum: 10/1db272129bf59ea9ead51f575005b1664aacfa9e983bbf445dea8ed537776a9edec2074941b6b8c31e08da1fc2be9f189c1267ff3cd176d0e1931f4bc983cc8a
   languageName: node
   linkType: hard
 
