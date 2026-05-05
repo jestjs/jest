@@ -1,0 +1,8 @@
+{
+  "name": "isolate-modules-cjs-esm",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  }
+}

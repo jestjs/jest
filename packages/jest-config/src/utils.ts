@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';

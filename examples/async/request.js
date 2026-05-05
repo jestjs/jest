@@ -1,6 +1,6 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
-const http = require('http');
+const http = require('node:http');
 
 export default function request(url) {
   return new Promise(resolve => {

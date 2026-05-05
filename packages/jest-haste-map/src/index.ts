@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {EventEmitter} from 'events';
-import {tmpdir} from 'os';
-import * as path from 'path';
-import {deserialize, serialize} from 'v8';
+import {createHash} from 'node:crypto';
+import {EventEmitter} from 'node:events';
+import {tmpdir} from 'node:os';
+import * as path from 'node:path';
+import {deserialize, serialize} from 'node:v8';
 import {type Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';

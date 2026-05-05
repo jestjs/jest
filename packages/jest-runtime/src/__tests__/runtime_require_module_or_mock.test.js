@@ -172,6 +172,31 @@ it('unmocks modules in config.unmockedModulePathPatterns for tests with automock
   expect(moduleData.isUnmocked()).toBe(true);
 });
 
+it('mock dispatch computes moduleID once per requireModuleOrMock call', async () => {
+  // Use an explicit factory mock so the only `getCjsModuleId` calls come from
+  // the dispatch path itself (no automock load that would call it again
+  // through the cjsLoader recursion).
+  const runtime = await createRuntime(__filename);
+  const root = runtime.requireModule(runtime.__mockRootPath);
+  root.jest.mock('my-virtual-module', () => ({foo: 'bar'}), {virtual: true});
+
+  const shouldMockSpy = jest.spyOn(runtime.mockState, 'shouldMockCjs');
+  const getModuleIdSpy = jest.spyOn(runtime._resolution, 'getCjsModuleId');
+
+  runtime.requireModuleOrMock(runtime.__mockRootPath, 'my-virtual-module');
+
+  // The point of `shouldMockCjs` returning `{shouldMock, moduleID}` is that
+  // the caller threads the moduleID through to `_requireMockWithId` without
+  // re-asking MockState. So one dispatch = one call to `shouldMockCjs`, and
+  // exactly one underlying `getCjsModuleId` (the explicit-mock branch returns
+  // before `decideSync` would compute `currentModuleID`).
+  expect(shouldMockSpy).toHaveBeenCalledTimes(1);
+  expect(getModuleIdSpy).toHaveBeenCalledTimes(1);
+
+  shouldMockSpy.mockRestore();
+  getModuleIdSpy.mockRestore();
+});
+
 it('unmocks virtual mocks after they have been mocked previously', async () => {
   const runtime = await createRuntime(__filename);
   const root = runtime.requireModule(runtime.__mockRootPath);

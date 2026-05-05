@@ -8,6 +8,7 @@
 
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
+import {createContext, runInContext} from 'vm';
 import {equals} from '../jasmineUtils';
 import {
   arrayBufferEquality,
@@ -657,6 +658,87 @@ describe('iterableEquality', () => {
 describe('typeEquality', () => {
   test('returns undefined if given mock.calls and []', () => {
     expect(typeEquality(jest.fn().mock.calls, [])).toBeUndefined();
+  });
+
+  test('returns undefined for cross-realm plain objects', () => {
+    const context = createContext({});
+    const otherRealmObject = runInContext('({key: "test"})', context);
+    expect(typeEquality(otherRealmObject, {key: 'test'})).toBeUndefined();
+  });
+
+  test('returns undefined for cross-realm Maps', () => {
+    const context = createContext({});
+    const otherRealmMap = runInContext('new Map([["key", "value"]])', context);
+    expect(
+      typeEquality(otherRealmMap, new Map([['key', 'value']])),
+    ).toBeUndefined();
+  });
+
+  test('returns undefined for cross-realm Sets', () => {
+    const context = createContext({});
+    const otherRealmSet = runInContext('new Set(["test"])', context);
+    expect(typeEquality(otherRealmSet, new Set(['test']))).toBeUndefined();
+  });
+
+  test('returns undefined for cross-realm Dates', () => {
+    const context = createContext({});
+    const otherRealmDate = runInContext('new Date("2023-01-01")', context);
+    expect(
+      typeEquality(otherRealmDate, new Date('2023-01-01')),
+    ).toBeUndefined();
+  });
+
+  test('returns undefined for cross-realm RegExps', () => {
+    const context = createContext({});
+    const otherRealmRegExp = runInContext('/test/gi', context);
+    expect(typeEquality(otherRealmRegExp, /test/gi)).toBeUndefined();
+  });
+
+  test('returns false for different user-defined classes with same name', () => {
+    class Child {
+      a: number;
+      constructor(a: number) {
+        this.a = a;
+      }
+    }
+    const OtherChild = class Child {
+      a: number;
+      constructor(a: number) {
+        this.a = a;
+      }
+    };
+    expect(typeEquality(new Child(1), new OtherChild(1))).toBe(false);
+  });
+});
+
+describe('iterableEquality (cross-realm)', () => {
+  test('returns true for cross-realm Sets with same values', () => {
+    const context = createContext({});
+    const otherRealmSet = runInContext('new Set([1, 2, 3])', context);
+    expect(iterableEquality(otherRealmSet, new Set([1, 2, 3]))).toBe(true);
+  });
+
+  test('returns true for cross-realm Maps with same entries', () => {
+    const context = createContext({});
+    const otherRealmMap = runInContext(
+      'new Map([["a", 1], ["b", 2]])',
+      context,
+    );
+    expect(
+      iterableEquality(
+        otherRealmMap,
+        new Map([
+          ['a', 1],
+          ['b', 2],
+        ]),
+      ),
+    ).toBe(true);
+  });
+
+  test('returns false for cross-realm Sets with different values', () => {
+    const context = createContext({});
+    const otherRealmSet = runInContext('new Set([1, 2])', context);
+    expect(iterableEquality(otherRealmSet, new Set([1, 2, 3]))).toBe(false);
   });
 });
 

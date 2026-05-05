@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {types} from 'util';
 import * as fs from 'graceful-fs';
 import {escapeBacktickString} from '@jest/snapshot-utils';
 import type {Config} from '@jest/types';
@@ -20,6 +19,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
+import {isError} from 'jest-util';
 import {EXTENSION, type SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
@@ -530,7 +530,7 @@ const _toThrowErrorMatchingSnapshot = (
   let message = error.message;
   while ('cause' in error) {
     error = error.cause;
-    if (types.isNativeError(error) || error instanceof Error) {
+    if (isError(error) || error instanceof Error) {
       message += `\nCause: ${error.message}`;
     } else {
       if (typeof error === 'string') {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as ProcessModule from 'process';
+import type * as ProcessModule from 'node:process';
 import type * as Global from './Global';
 
 type Process = typeof ProcessModule;
@@ -273,7 +273,9 @@ export type DescribeBlock = {
   tests: Array<TestEntry>;
 };
 
-export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
+export type TestError =
+  | Exception
+  | [Exception | undefined, Exception | undefined]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
   type: 'test';

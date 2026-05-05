@@ -6,8 +6,8 @@
  *
  */
 
-import {EventEmitter} from 'events';
-import * as path from 'path';
+import {EventEmitter} from 'node:events';
+import * as path from 'node:path';
 import anymatch, {type Matcher} from 'anymatch';
 import * as fs from 'graceful-fs';
 // @ts-expect-error -- no types

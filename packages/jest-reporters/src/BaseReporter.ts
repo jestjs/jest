@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {WriteStream} from 'tty';
+import type {WriteStream} from 'node:tty';
 import type {
   AggregatedResult,
   Test,
