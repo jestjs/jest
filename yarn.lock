@@ -10471,10 +10471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emittery@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "emittery@npm:0.13.1"
-  checksum: 10/fbe214171d878b924eedf1757badf58a5dce071cd1fa7f620fa841a0901a80d6da47ff05929d53163105e621ce11a71b9d8acb1148ffe1745e045145f6e69521
+"emittery@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "emittery@npm:2.0.0"
+  checksum: 10/a59816b4de0e4d20fc9e39081818809767a3758024145d468519000a43f7a75f8e53c1ea22bf17ef60c99eafa294acf9c21e944bb5550a9d87c84970398e5707
   languageName: node
   linkType: hard
 
@@ -14513,7 +14513,7 @@ __metadata:
     "@types/node": "npm:*"
     "@types/source-map-support": "npm:^0.5.10"
     chalk: "npm:^4.1.2"
-    emittery: "npm:^0.13.1"
+    emittery: "npm:^2.0.0"
     exit-x: "npm:^0.2.2"
     graceful-fs: "npm:^4.2.11"
     jest-docblock: "workspace:*"
@@ -14722,7 +14722,7 @@ __metadata:
     "@types/node": "npm:*"
     ansi-escapes: "npm:^4.3.2"
     chalk: "npm:^4.1.2"
-    emittery: "npm:^0.13.1"
+    emittery: "npm:^2.0.0"
     jest-util: "workspace:*"
     string-length: "npm:^4.0.2"
   languageName: unknown
