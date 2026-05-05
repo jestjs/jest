@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "jsdom": "^27.0.0"
+    "jsdom": "^29.0.0"
   },
   "jest": {
     "testEnvironment": "./custom-jsdom-env.js"
