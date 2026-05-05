@@ -6,10 +6,10 @@
  */
 
 import {
-  type FakeTimerWithContext,
+  type FakeTimers as FakeTimerWithContext,
   type FakeMethod as FakeableAPI,
-  type InstalledClock,
-  type FakeTimerInstallOpts as SinonFakeTimersConfig,
+  type Clock as InstalledClock,
+  type Config as SinonFakeTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';

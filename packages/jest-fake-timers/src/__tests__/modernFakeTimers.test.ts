@@ -1019,8 +1019,8 @@ describe('FakeTimers', () => {
         'mock1',
         'mock2',
         'mock2',
-        'mock3',
         'mock5',
+        'mock3',
         'mock1',
         'mock2',
       ]);
