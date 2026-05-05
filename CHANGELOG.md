@@ -11,7 +11,7 @@
 - `[jest-runtime]` Support `require()` of ES modules on Node v24.9+ ([#16074](https://github.com/jestjs/jest/pull/16074))
 - `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path ([#16062](https://github.com/jestjs/jest/pull/16062))
 - `[jest-util]` Add `isError` helper ([#16076](https://github.com/jestjs/jest/pull/16076))
-- `[pretty-format]` Support React 19
+- `[pretty-format]` Support React 19 ([#16123](https://github.com/jestjs/jest/pull/16123))
 
 ### Fixes
 
