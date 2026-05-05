@@ -172,6 +172,12 @@ export const options: {[key: string]: Options} = {
     requiresArg: true,
     type: 'string',
   },
+  collectTests: {
+    description:
+      'Discover and report all test cases without executing them. ' +
+      'Prints a tree of test suites and test names.',
+    type: 'boolean',
+  },
   color: {
     description:
       'Forces test results output color highlighting (even if ' +
@@ -773,6 +779,14 @@ export const options: {[key: string]: Options} = {
       'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
     type: 'boolean',
+  },
+  workerGracefulExitTimeout: {
+    description:
+      'Timeout in milliseconds for worker processes to exit gracefully ' +
+      'after tests complete. Workers that do not exit in time are ' +
+      'force-killed. Default: 500.',
+    requiresArg: true,
+    type: 'number',
   },
   workerThreads: {
     description:

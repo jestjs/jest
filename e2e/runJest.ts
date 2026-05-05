@@ -6,9 +6,9 @@
  *
  */
 
-import * as path from 'path';
-import {Writable} from 'stream';
-import {stripVTControlCharacters as stripAnsi} from 'util';
+import * as path from 'node:path';
+import {Writable} from 'node:stream';
+import {stripVTControlCharacters as stripAnsi} from 'node:util';
 import dedent from 'dedent';
 import execa from 'execa';
 import * as fs from 'graceful-fs';
@@ -93,8 +93,20 @@ function spawnJest(
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
+    // Prevent AI agent detection from leaking into child processes, which
+    // would activate the AgentReporter and break output-dependent e2e tests.
+    AI_AGENT: undefined,
+    AUGMENT_AGENT: undefined,
+    CLAUDECODE: undefined,
+    CLAUDE_CODE: undefined,
+    CODEX_SANDBOX: undefined,
+    CODEX_THREAD_ID: undefined,
+    CURSOR_AGENT: undefined,
     FORCE_COLOR: '0',
+    GEMINI_CLI: undefined,
+    GOOSE_PROVIDER: undefined,
     NO_COLOR: '1',
+    OPENCODE: undefined,
     ...options.env,
   };
 

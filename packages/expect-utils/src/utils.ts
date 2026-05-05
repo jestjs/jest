@@ -193,7 +193,17 @@ export const iterableEquality = (
     return undefined;
   }
   if (a.constructor !== b.constructor) {
-    return false;
+    // Same cross-realm constructor check as typeEquality — see #14011.
+    // https://github.com/jestjs/jest/issues/14011
+    if (
+      a.constructor == null ||
+      b.constructor == null ||
+      a.constructor.name !== b.constructor.name ||
+      !isNativeFunction(a.constructor) ||
+      !isNativeFunction(b.constructor)
+    ) {
+      return false;
+    }
   }
   let length = aStack.length;
   while (length--) {
@@ -392,6 +402,14 @@ export const subsetEquality = (
   return subsetEqualityWithContext()(object, subset);
 };
 
+// Returns true if `fn` is a native function (its toString contains "[native code]").
+function isNativeFunction(fn: unknown): boolean {
+  return (
+    typeof fn === 'function' &&
+    Function.prototype.toString.call(fn).includes('[native code]')
+  );
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const typeEquality = (a: any, b: any): boolean | undefined => {
   if (
@@ -403,6 +421,21 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
     // Both of them should be able to compare correctly when they are array-to-array.
     // https://github.com/jestjs/jest/issues/2549
     (Array.isArray(a) && Array.isArray(b))
+  ) {
+    return undefined;
+  }
+
+  // structuredClone (and other cross-realm calls) return objects whose
+  // constructors come from a different VM context, so identity checks fail.
+  // Fall back to comparing constructor names for native built-ins only —
+  // user-defined classes still need identity equality.
+  // https://github.com/jestjs/jest/issues/14011
+  if (
+    a.constructor != null &&
+    b.constructor != null &&
+    a.constructor.name === b.constructor.name &&
+    isNativeFunction(a.constructor) &&
+    isNativeFunction(b.constructor)
   ) {
     return undefined;
   }

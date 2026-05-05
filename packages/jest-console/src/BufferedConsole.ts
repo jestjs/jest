@@ -5,9 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AssertionError, strict as assert} from 'assert';
-import {Console} from 'console';
-import {type InspectOptions, format, formatWithOptions, inspect} from 'util';
+import {AssertionError, strict as assert} from 'node:assert';
+import {Console} from 'node:console';
+import {
+  type InspectOptions,
+  format,
+  formatWithOptions,
+  inspect,
+} from 'node:util';
 import chalk from 'chalk';
 import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {

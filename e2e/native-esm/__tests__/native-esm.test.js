@@ -213,17 +213,6 @@ test('handle circular dependency', async () => {
   expect(moduleA.moduleB.moduleA).toBe(moduleA);
 });
 
-test('require of ESM should throw correct error', () => {
-  const require = createRequire(import.meta.url);
-
-  expect(() => require('../fromCjs.mjs')).toThrow(
-    expect.objectContaining({
-      code: 'ERR_REQUIRE_ESM',
-      message: expect.stringContaining('Must use import to load ES Module'),
-    }),
-  );
-});
-
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
 });

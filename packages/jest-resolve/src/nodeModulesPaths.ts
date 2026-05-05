@@ -7,7 +7,7 @@
  * Adapted from: https://github.com/substack/node-resolve
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {tryRealpath} from 'jest-util';
 
 type NodeModulesPathsOptions = {

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {strict as assert} from 'assert';
-import {createRequire} from 'module';
-import * as path from 'path';
-import util from 'util';
+import {strict as assert} from 'node:assert';
+import {createRequire} from 'node:module';
+import * as path from 'node:path';
+import util from 'node:util';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import fs from 'graceful-fs';
