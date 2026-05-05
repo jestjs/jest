@@ -15,6 +15,20 @@ import {
   printProps,
 } from './lib/markup';
 
+const isElement = (val: unknown) =>
+  ReactIs18.isElement(val) || ReactIs19.isElement(val);
+const isFragment = (val: unknown) =>
+  ReactIs18.isFragment(val) || ReactIs19.isFragment(val);
+const isSuspense = (val: unknown) =>
+  ReactIs18.isSuspense(val) || ReactIs19.isSuspense(val);
+const isContextProvider = (val: unknown) =>
+  ReactIs18.isContextProvider(val) || ReactIs19.isContextProvider(val);
+const isContextConsumer = (val: unknown) =>
+  ReactIs18.isContextConsumer(val) || ReactIs19.isContextConsumer(val);
+const isForwardRef = (val: unknown) =>
+  ReactIs18.isForwardRef(val) || ReactIs19.isForwardRef(val);
+const isMemo = (val: unknown) => ReactIs18.isMemo(val) || ReactIs19.isMemo(val);
+
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
 const getChildren = (arg: unknown, children: Array<unknown> = []) => {
@@ -37,28 +51,22 @@ const getType = (element: any) => {
     return type.displayName || type.name || 'Unknown';
   }
 
-  if (ReactIs18.isFragment(element) || ReactIs19.isFragment(element)) {
+  if (isFragment(element)) {
     return 'React.Fragment';
   }
-  if (ReactIs18.isSuspense(element) || ReactIs19.isSuspense(element)) {
+  if (isSuspense(element)) {
     return 'React.Suspense';
   }
   if (typeof type === 'object' && type !== null) {
-    if (
-      ReactIs18.isContextProvider(element) ||
-      ReactIs19.isContextProvider(element)
-    ) {
+    if (isContextProvider(element)) {
       return 'Context.Provider';
     }
 
-    if (
-      ReactIs18.isContextConsumer(element) ||
-      ReactIs19.isContextConsumer(element)
-    ) {
+    if (isContextConsumer(element)) {
       return 'Context.Consumer';
     }
 
-    if (ReactIs18.isForwardRef(element) || ReactIs19.isForwardRef(element)) {
+    if (isForwardRef(element)) {
       if (type.displayName) {
         return type.displayName;
       }
@@ -68,7 +76,7 @@ const getType = (element: any) => {
       return functionName === '' ? 'ForwardRef' : `ForwardRef(${functionName})`;
     }
 
-    if (ReactIs18.isMemo(element) || ReactIs19.isMemo(element)) {
+    if (isMemo(element)) {
       const functionName =
         type.displayName || type.type.displayName || type.type.name || '';
 
@@ -120,7 +128,7 @@ export const serialize: NewPlugin['serialize'] = (
       );
 
 export const test: NewPlugin['test'] = (val: unknown) =>
-  val != null && (ReactIs18.isElement(val) || ReactIs19.isElement(val));
+  val != null && isElement(val);
 
 const plugin: NewPlugin = {serialize, test};
 

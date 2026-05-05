@@ -16,7 +16,7 @@ describe.each([
   ['React 18', require('react-18') as typeof import('react')],
   ['React 19', require('react-19') as typeof import('react')],
 ])('%s', (_name, React) => {
-  test('renders a simple element', () => {
+  test('fragment', () => {
     expect(
       formatElement(
         React.createElement(
@@ -28,7 +28,7 @@ describe.each([
     ).toMatchSnapshot();
   });
 
-  test('renders nested elements', () => {
+  test('host element', () => {
     expect(
       formatElement(
         React.createElement(
@@ -36,6 +36,56 @@ describe.each([
           null,
           React.createElement('span', {className: 'bar'}, 'world'),
         ),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('suspense', () => {
+    expect(
+      formatElement(
+        React.createElement(
+          React.Suspense,
+          {fallback: React.createElement('span', null, 'loading')},
+          React.createElement('div', null, 'content'),
+        ),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('forwardRef', () => {
+    function Cat(props: Record<string, unknown>, _ref: unknown) {
+      return React.createElement('div', props);
+    }
+    expect(
+      formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
+    ).toMatchSnapshot();
+  });
+
+  test('memo', () => {
+    function Dog(props: Record<string, unknown>) {
+      return React.createElement('div', props);
+    }
+    expect(
+      formatElement(React.createElement(React.memo(Dog), null, 'cat')),
+    ).toMatchSnapshot();
+  });
+
+  test('context provider', () => {
+    const {Provider} = React.createContext('test');
+    expect(
+      formatElement(
+        React.createElement(Provider, {value: 'test-value'}, 'child'),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('context consumer', () => {
+    const {Consumer} = React.createContext('test');
+    expect(
+      formatElement(
+        React.createElement(Consumer, {
+          children: () => React.createElement('div', null, 'child'),
+        }),
       ),
     ).toMatchSnapshot();
   });
