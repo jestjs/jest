@@ -63,6 +63,12 @@ type WorklistEntry = {
   modulePath: string;
 };
 
+type ResolvedSyncSpecifier = {
+  cacheKey: string;
+  enqueue: WorklistEntry | null;
+  modulePath: string;
+};
+
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
 // Synthetic entries (mocks, core, JSON, wasm, @jest/globals) start linked
 // and never appear in the link-requests pass.
@@ -124,6 +130,74 @@ function parseDataUri(specifier: string): {
     return {code: Buffer.from(code, 'base64').toString(), mime};
   }
   throw new Error(`Invalid data URI encoding: ${encoding}`);
+}
+
+// Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
+// The only deliberate divergence: missing `type: 'json'` warns instead of
+// throwing — see the JSON branch below.
+const warnedMissingJsonAttributePairs = new Set<string>();
+
+function makeImportAttributeError(
+  code:
+    | 'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED'
+    | 'ERR_IMPORT_ATTRIBUTE_MISSING'
+    | 'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+  message: string,
+): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new TypeError(message);
+  error.code = code;
+  return error;
+}
+
+export function validateImportAttributes(
+  modulePath: string,
+  attributes: Record<string, string>,
+  referencingIdentifier: string,
+): void {
+  for (const key of Object.keys(attributes)) {
+    if (key !== 'type') {
+      throw makeImportAttributeError(
+        'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED',
+        `Import attribute "${key}" with value "${attributes[key]}" is not supported (importing "${modulePath}" from ${referencingIdentifier})`,
+      );
+    }
+  }
+
+  const declaredType = attributes.type;
+  const isJson = modulePath.endsWith('.json');
+
+  if (isJson) {
+    if (declaredType === undefined) {
+      // TODO(jest next major): match Node and throw
+      // ERR_IMPORT_ATTRIBUTE_MISSING here. Until then, warn so existing users
+      // without `with { type: 'json' }` keep working.
+      const dedupeKey = `${referencingIdentifier}::${modulePath}`;
+      if (!warnedMissingJsonAttributePairs.has(dedupeKey)) {
+        warnedMissingJsonAttributePairs.add(dedupeKey);
+        console.warn(
+          'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
+            `Add \`with { type: 'json' }\` to the import of "${modulePath}" (from ${referencingIdentifier}).`,
+        );
+      }
+      return;
+    }
+    if (declaredType !== 'json') {
+      throw makeImportAttributeError(
+        'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+        `Module "${modulePath}" is not of type "${declaredType}"`,
+      );
+    }
+    return;
+  }
+
+  // Non-JSON (implicit-type) module. Per HTML spec, the default type cannot
+  // be re-asserted, so any explicit `type` attribute is rejected.
+  if (declaredType !== undefined) {
+    throw makeImportAttributeError(
+      'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+      `Module "${modulePath}" is not of type "${declaredType}"`,
+    );
+  }
 }
 
 const ESM_TRANSFORM_OPTIONS: TransformOptions = {
@@ -387,7 +461,7 @@ export class EsmLoader {
         `moduleRequests unavailable on ${modulePath}`,
       );
       const deps: Array<string> = [];
-      for (const {specifier} of module.moduleRequests) {
+      for (const {specifier, attributes} of module.moduleRequests) {
         const resolved = this.resolveSpecifierForSyncGraph(
           modulePath,
           specifier,
@@ -397,6 +471,7 @@ export class EsmLoader {
           mode,
         );
         if (resolved === null) return null;
+        validateImportAttributes(resolved.modulePath, attributes, modulePath);
         deps.push(resolved.cacheKey);
         if (resolved.enqueue) worklist.push(resolved.enqueue);
       }
@@ -518,13 +593,13 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
-  ): {cacheKey: string; enqueue: WorklistEntry | null} | null {
+  ): ResolvedSyncSpecifier | null {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
         this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
       );
-      return ok ? {cacheKey, enqueue: null} : null;
+      return ok ? {cacheKey, enqueue: null, modulePath: cacheKey} : null;
     }
 
     if (specifier.startsWith('data:')) {
@@ -532,6 +607,7 @@ export class EsmLoader {
       return {
         cacheKey,
         enqueue: {cacheKey, modulePath: specifier},
+        modulePath: specifier,
       };
     }
     specifier = stripFileScheme(specifier);
@@ -551,7 +627,11 @@ export class EsmLoader {
         mode,
       );
       if (mocked === null) return null;
-      return {cacheKey: mocked.cacheKey, enqueue: null};
+      return {
+        cacheKey: mocked.cacheKey,
+        enqueue: null,
+        modulePath: specifierPath,
+      };
     }
 
     if (this.resolution.isCoreModule(specifierPath)) {
@@ -559,6 +639,7 @@ export class EsmLoader {
       return {
         cacheKey,
         enqueue: {cacheKey, modulePath: specifierPath},
+        modulePath: specifierPath,
       };
     }
 
@@ -586,12 +667,13 @@ export class EsmLoader {
           context,
         ),
       );
-      return ok ? {cacheKey, enqueue: null} : null;
+      return ok ? {cacheKey, enqueue: null, modulePath: resolved} : null;
     }
 
     return {
       cacheKey,
       enqueue: {cacheKey, modulePath: resolved},
+      modulePath: resolved,
     };
   }
 
@@ -762,7 +844,7 @@ export class EsmLoader {
       `moduleRequests unavailable on ${specifier}`,
     );
     const deps: Array<string> = [];
-    for (const {specifier: depSpec} of module.moduleRequests) {
+    for (const {specifier: depSpec, attributes} of module.moduleRequests) {
       const resolved = this.resolveSpecifierForSyncGraph(
         specifier,
         depSpec,
@@ -772,6 +854,7 @@ export class EsmLoader {
         mode,
       );
       if (resolved === null) return null;
+      validateImportAttributes(resolved.modulePath, attributes, specifier);
       deps.push(resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
@@ -805,9 +888,17 @@ export class EsmLoader {
     specifier: string,
     identifier: string,
     context: VMContext,
+    importAttributes?: Record<string, string>,
   ): Promise<VMModule> {
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
-      m => this.linkAndEvaluateModule(m),
+      m => {
+        validateImportAttributes(
+          m.identifier,
+          importAttributes ?? {},
+          identifier,
+        );
+        return this.linkAndEvaluateModule(m);
+      },
     );
   }
 
@@ -1070,13 +1161,29 @@ export class EsmLoader {
     if (module.status === 'unlinked') {
       this.linkingMap.set(
         module,
-        module.link((specifier, referencingModule) =>
-          this.resolveModule(
+        module.link(async (specifier, referencingModule, extra) => {
+          const resolved = await this.resolveModule<VMModule>(
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-          ),
-        ),
+          );
+          // TODO(jest next major): drop the `extra.assert` fallback once we
+          // require a Node version that has removed the legacy `assert`
+          // keyword (Node 22+). Until then we accept both shapes so users
+          // mid-migration aren't surprised.
+          const extraAttrs = extra as
+            | {
+                assert?: Record<string, string>;
+                attributes?: Record<string, string>;
+              }
+            | undefined;
+          validateImportAttributes(
+            resolved.identifier,
+            extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
+            referencingModule.identifier,
+          );
+          return resolved;
+        }),
       );
     }
 
@@ -1223,6 +1330,7 @@ export class EsmLoader {
   private dynamicImport = async (
     specifier: string,
     referencingModule: VMModule,
+    importAttributes?: Record<string, string>,
   ): Promise<VMModule> => {
     invariant(
       runtimeSupportsVmModules,
@@ -1238,6 +1346,11 @@ export class EsmLoader {
       specifier,
       referencingModule.identifier,
       referencingModule.context,
+    );
+    validateImportAttributes(
+      dyn.identifier,
+      importAttributes ?? {},
+      referencingModule.identifier,
     );
     return this.linkAndEvaluateModule(dyn);
   };

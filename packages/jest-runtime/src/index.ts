@@ -221,8 +221,13 @@ export default class Runtime {
     });
     this.executor = new ModuleExecutor({
       config,
-      dynamicImport: (specifier, identifier, context) =>
-        this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
+      dynamicImport: (specifier, identifier, context, importAttributes) =>
+        this.esmLoader.dynamicImportFromCjs(
+          specifier,
+          identifier,
+          context,
+          importAttributes,
+        ),
       environment: this._environment,
       jestGlobals: this.jestGlobals,
       requireBuilder: this.requireBuilder,

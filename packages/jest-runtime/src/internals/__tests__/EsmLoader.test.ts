@@ -9,7 +9,7 @@ import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
 import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import type {CjsExportsCache} from '../CjsExportsCache';
-import {EsmLoader} from '../EsmLoader';
+import {EsmLoader, validateImportAttributes} from '../EsmLoader';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
 import type {MockState} from '../MockState';
@@ -545,4 +545,148 @@ describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
       ).rejects.toThrow('original eval error');
     },
   );
+});
+
+describe('validateImportAttributes', () => {
+  // Each test uses a unique modulePath/referencingIdentifier pair so the
+  // deprecation-warn dedup cache (module-scoped in EsmLoader) doesn't suppress
+  // across tests.
+  let counter = 0;
+  const uniquePaths = () => {
+    counter += 1;
+    return {
+      js: `/test-${counter}.js`,
+      json: `/test-${counter}.json`,
+      referencer: `/referencer-${counter}.mjs`,
+    };
+  };
+
+  describe('JSON modules', () => {
+    test('accepts type: json', () => {
+      const {json, referencer} = uniquePaths();
+      expect(() =>
+        validateImportAttributes(json, {type: 'json'}, referencer),
+      ).not.toThrow();
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is wrong', () => {
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(json, {type: 'css'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error).not.toBeNull();
+      expect(error).toBeInstanceOf(TypeError);
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+      expect(error?.message).toMatch(/not of type "css"/);
+    });
+
+    test('warns once per (referencer, module) when no attribute is present', () => {
+      const {json, referencer} = uniquePaths();
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, referencer);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'importing JSON without an import attribute is deprecated',
+          ),
+        );
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    test('warns again for a different referencer importing the same module', () => {
+      const {json, referencer} = uniquePaths();
+      const otherReferencer = `${referencer}-other`;
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, otherReferencer);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+  });
+
+  describe('non-JSON modules', () => {
+    test('accepts no attributes', () => {
+      const {js, referencer} = uniquePaths();
+      expect(() => validateImportAttributes(js, {}, referencer)).not.toThrow();
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is set', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {type: 'javascript'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+      expect(error?.message).toMatch(/not of type "javascript"/);
+    });
+
+    test('throws when type: json is asserted on non-JSON', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {type: 'json'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+    });
+  });
+
+  describe('unknown attribute keys', () => {
+    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a JSON module', () => {
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(
+          json,
+          {cache: 'no-store', type: 'json'},
+          referencer,
+        );
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+      expect(error?.message).toMatch(/Import attribute "cache"/);
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a non-JSON module', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {foo: 'bar'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+    });
+
+    test('rejects unknown key before reporting type-mismatch', () => {
+      // Unknown-key check is first per Node's `validateAttributes` order.
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(
+          json,
+          {nonsense: 'x', type: 'css'},
+          referencer,
+        );
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+    });
+  });
 });

@@ -130,7 +130,7 @@ test('runs WebAssembly (Wasm) test with native ESM', () => {
   expect(exitCode).toBe(0);
 });
 
-test('does not enforce import assertions', () => {
+test('warns but does not throw on JSON import without attribute', () => {
   const {exitCode, stderr, stdout} = runJest(
     DIR,
     ['native-esm-missing-import-assertions.test.js'],
@@ -140,6 +140,9 @@ test('does not enforce import assertions', () => {
   const {summary} = extractSummary(stderr);
 
   expect(summary).toMatchSnapshot();
+  expect(stderr).toContain(
+    'importing JSON without an import attribute is deprecated',
+  );
   expect(stdout).toBe('');
   expect(exitCode).toBe(0);
 });
@@ -161,10 +164,43 @@ test('does not enforce import assertions', () => {
   },
 );
 
-// support for import assertions in dynamic imports was added in Node.js 16.12.0
-// support for import assertions was removed in Node.js 22.0.0
+// `with` syntax for static import attributes is stable from Node 22.
+onNodeVersions('>=22.0.0', () => {
+  test('supports import attributes', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-import-attributes.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+
+  test('rejects mismatched import attributes', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-import-attribute-mismatch.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+});
+
+// Legacy `assert` syntax for import attributes was supported from Node 16.12
+// and removed in Node 22. We still accept it on the runtimes that parse it so
+// users mid-migration aren't broken, but plan to drop the fallback in the
+// next major.
 onNodeVersions('>=16.12.0 <22.0.0', () => {
-  test('supports import assertions', () => {
+  test('supports legacy import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
       ['native-esm-import-assertions.test.js'],
@@ -180,7 +216,7 @@ onNodeVersions('>=16.12.0 <22.0.0', () => {
 });
 
 onNodeVersions('<16.12.0 || >=22.0.0', () => {
-  test('syntax error for import assertions', () => {
+  test('syntax error for legacy import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
       ['native-esm-import-assertions.test.js'],

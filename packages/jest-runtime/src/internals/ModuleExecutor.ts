@@ -51,6 +51,7 @@ export interface ModuleExecutorOptions {
     specifier: string,
     identifier: string,
     context: VMContext,
+    importAttributes?: Record<string, string>,
   ) => Promise<VMModule>;
 }
 
@@ -190,12 +191,21 @@ export class ModuleExecutor {
         this.constructInjectedModuleParameters(),
         {
           filename: scriptFilename,
-          importModuleDynamically: async specifier => {
+          importModuleDynamically: async (
+            specifier,
+            _function,
+            importAttributes,
+          ) => {
             invariant(
               runtimeSupportsVmModules,
               'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
-            return this.dynamicImport(specifier, scriptFilename, vmContext);
+            return this.dynamicImport(
+              specifier,
+              scriptFilename,
+              vmContext,
+              importAttributes as Record<string, string> | undefined,
+            );
           },
           parsingContext: vmContext,
         },
