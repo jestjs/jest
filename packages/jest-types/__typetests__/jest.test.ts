@@ -542,8 +542,8 @@ expect(jest.advanceTimersByTime()).type.toRaiseError();
 
 expect(jest.advanceTimersByTimeAsync(6000)).type.toBe<Promise<void>>();
 // expect(jest.advanceTimersByTimeAsync(Temporal.Duration.from(''))).type.toBe<
-  Promise<void>
->();
+//   Promise<void>
+// >();
 expect(jest.advanceTimersByTimeAsync({total: () => 6000})).type.toBe<
   Promise<void>
 >();
