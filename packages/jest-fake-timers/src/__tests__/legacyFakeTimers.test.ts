@@ -1636,4 +1636,25 @@ describe('FakeTimers', () => {
       expect(now).toBeLessThanOrEqual(after);
     });
   });
+
+  describe('Temporal', () => {
+    let timers: FakeTimers;
+
+    beforeEach(() => {
+      const global = {process} as unknown as typeof globalThis;
+      timers = new FakeTimers({config, global, moduleMocker, timerConfig});
+      timers.useFakeTimers();
+    });
+
+    afterEach(() => {
+      timers.useRealTimers();
+    });
+
+    it('advanceTimersByTime accepts an object with total()', () => {
+      timers.advanceTimersByTime({
+        total: ({unit}) => (unit === 'millisecond' ? 5000 : 5),
+      });
+      expect(timers.now()).toBe(5000);
+    });
+  });
 });

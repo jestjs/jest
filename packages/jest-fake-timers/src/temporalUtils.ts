@@ -13,8 +13,12 @@ export function toEpochMs(
 ): number | undefined {
   if (value == null) return undefined;
   if (typeof value === 'number') return value;
-  if (value instanceof Date) return value.getTime();
-  return value.epochMilliseconds;
+  // Use duck-typing rather than instanceof to handle cross-realm Date objects
+  // (e.g. Sinon's ClockDate, which extends Date but may fail instanceof checks
+  // across module boundaries in a webpack bundle).
+  if (typeof (value as Date).getTime === 'function')
+    return (value as Date).getTime();
+  return (value as TemporalInstantLike).epochMilliseconds;
 }
 
 export function toDurationMs(value: number | TemporalDurationLike): number {
