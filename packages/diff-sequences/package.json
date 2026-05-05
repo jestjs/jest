@@ -1,6 +1,6 @@
 {
   "name": "@jest/diff-sequences",
-  "version": "30.0.1",
+  "version": "30.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@fast-check/jest": "^2.1.1",
     "benchmark": "^2.1.4",
-    "diff": "^8.0.3"
+    "diff": "^9.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isBuiltin} from 'module';
-import * as path from 'path';
+import {isBuiltin} from 'node:module';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
@@ -25,19 +25,19 @@ import type {ResolverConfig} from './types';
 
 export type FindNodeModuleConfig = {
   basedir: string;
-  conditions?: Array<string>;
-  extensions?: Array<string>;
-  moduleDirectory?: Array<string>;
-  paths?: Array<string>;
+  conditions?: ReadonlyArray<string>;
+  extensions?: ReadonlyArray<string>;
+  moduleDirectory?: ReadonlyArray<string>;
+  paths?: ReadonlyArray<string>;
   resolver?: string | null;
   rootDir?: string;
   throwIfNotFound?: boolean;
 };
 
 export type ResolveModuleConfig = {
-  conditions?: Array<string>;
+  conditions?: ReadonlyArray<string>;
   skipNodeResolution?: boolean;
-  paths?: Array<string>;
+  paths?: ReadonlyArray<string>;
 };
 
 const NATIVE_PLATFORM = 'native';
@@ -59,6 +59,7 @@ export default class Resolver {
   private readonly _moduleNameCache: Map<string, string>;
   private readonly _modulePathCache: Map<string, Array<string>>;
   private readonly _supportsNativePlatform: boolean;
+  private _canResolveSync: boolean | undefined;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
     this._options = {
@@ -339,6 +340,34 @@ export default class Resolver {
     } catch {}
 
     return null;
+  }
+
+  // True when synchronous module resolution is available with the configured
+  // resolver. False when a user has configured a resolver that only exports
+  // an `async` hook - in that case `findNodeModule` silently falls back to
+  // the default resolver, which will not honor the user's mappings, so
+  // callers that need correctness should defer to the async API.
+  //
+  // The contract is "plain function or `.sync` hook = sync"; an `async
+  // function` in either slot is a user-side contract violation we don't
+  // defend against here.
+  //
+  // Memoized: the resolver config is immutable per-`Resolver`. A throwing
+  // `loadResolver` (malformed user resolver) is treated as `false` so
+  // callers route to the async path, which will surface the actual error.
+  canResolveSync(): boolean {
+    if (this._canResolveSync != null) return this._canResolveSync;
+    let result: boolean;
+    try {
+      const resolverModule = loadResolver(this._options.resolver);
+      result =
+        typeof resolverModule === 'function' ||
+        typeof resolverModule.sync === 'function';
+    } catch {
+      result = false;
+    }
+    this._canResolveSync = result;
+    return result;
   }
 
   resolveModule(

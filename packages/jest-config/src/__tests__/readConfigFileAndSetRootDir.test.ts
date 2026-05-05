@@ -14,6 +14,50 @@ import {onNodeVersions} from '@jest/test-utils';
 jest.mock('graceful-fs').mock('jest-util');
 
 describe('readConfigFileAndSetRootDir', () => {
+  describe('TypeScript ESM file', () => {
+    test('reads .mts config and sets `rootDir`', async () => {
+      jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});
+
+      const rootDir = path.resolve('some', 'path', 'to');
+      const config = await readConfigFileAndSetRootDir(
+        path.join(rootDir, 'jest.config.mts'),
+      );
+
+      expect(config).toEqual({notify: true, rootDir});
+    });
+
+    test('throws a clear error when native import fails, without falling back to ts-node', async () => {
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new Error('Unknown file extension ".mts"'));
+
+      const configPath = path.join(
+        path.resolve('some', 'path', 'to'),
+        'jest.config.mts',
+      );
+      await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
+        /jest\.config\.mts requires native TypeScript support/,
+      );
+      // loadTSConfigFile reads the file for docblock parsing - it must not be called
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+
+    test('throws a clear error when native import fails with a SyntaxError', async () => {
+      jest
+        .mocked(requireOrImportModule)
+        .mockRejectedValueOnce(new SyntaxError('Unexpected token'));
+
+      const configPath = path.join(
+        path.resolve('some', 'path', 'to'),
+        'jest.config.mts',
+      );
+      await expect(readConfigFileAndSetRootDir(configPath)).rejects.toThrow(
+        /jest\.config\.mts requires native TypeScript support/,
+      );
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+  });
+
   describe('JavaScript file', () => {
     test('reads config and sets `rootDir`', async () => {
       jest.mocked(requireOrImportModule).mockResolvedValueOnce({notify: true});

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as util from 'util';
 import type {Test} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {isError} from 'jest-util';
 import prettyFormat from 'pretty-format';
 
 export default async function runGlobalHook({
@@ -60,7 +60,7 @@ export default async function runGlobalHook({
         );
       } catch (error) {
         if (
-          util.types.isNativeError(error) &&
+          isError(error) &&
           (Object.getOwnPropertyDescriptor(error, 'message')?.writable ||
             Object.getOwnPropertyDescriptor(
               Object.getPrototypeOf(error),

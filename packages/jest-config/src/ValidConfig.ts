@@ -24,6 +24,7 @@ export const initialOptions: Config.InitialOptions = {
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
+  collectTests: false,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'v8',
@@ -199,6 +200,7 @@ export const initialOptions: Config.InitialOptions = {
     ],
   ],
   watchman: true,
+  workerGracefulExitTimeout: 500,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
   workerThreads: true,
 };

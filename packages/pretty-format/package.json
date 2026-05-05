@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "30.2.0",
+  "version": "30.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -23,16 +23,19 @@
   "dependencies": {
     "@jest/schemas": "workspace:*",
     "ansi-styles": "^5.2.0",
-    "react-is": "^18.3.1"
+    "react-is-18": "npm:react-is@^18.3.1",
+    "react-is-19": "npm:react-is@^19.2.5"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
-    "@types/react-is": "^18.3.1",
+    "@types/react-is": "^19.0.0",
     "@types/react-test-renderer": "^18.3.1",
     "immutable": "^5.1.2",
     "jest-util": "workspace:*",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react-17": "npm:react@^17.0.2",
+    "react-18": "npm:react@^18.3.1",
+    "react-19": "npm:react@^19.2.5",
     "react-test-renderer": "18.3.1"
   },
   "engines": {

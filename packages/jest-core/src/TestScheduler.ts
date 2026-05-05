@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import {GITHUB_ACTIONS} from 'ci-info';
 import exit from 'exit-x';
 import {
+  AgentReporter,
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
@@ -43,6 +44,28 @@ import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
 import runGlobalHook from './runGlobalHook';
 import {shouldRunInBand} from './testSchedulerHelper';
+
+// Env vars that indicate the process is running inside an AI coding agent.
+// Based on the detection logic from the std-env package.
+const AGENT_ENV_VARS = [
+  'AI_AGENT',
+  'AUGMENT_AGENT',
+  'CLAUDE_CODE',
+  'CLAUDECODE',
+  'CODEX_SANDBOX',
+  'CODEX_THREAD_ID',
+  'CURSOR_AGENT',
+  'GEMINI_CLI',
+  'GOOSE_PROVIDER',
+  'OPENCODE',
+  'REPL_ID',
+];
+
+function detectAgent(): boolean {
+  return AGENT_ENV_VARS.some(
+    key => key in process.env && process.env[key] !== '',
+  );
+}
 
 export type ReporterConstructor = new (
   globalConfig: Config.GlobalConfig,
@@ -350,11 +373,17 @@ class TestScheduler {
 
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
-    const reporters = this._globalConfig.reporters || [['default', {}]];
+    const reporters = this._globalConfig.reporters || [
+      [detectAgent() ? 'agent' : 'default', {}],
+    ];
     let summaryOptions: SummaryReporterOptions | null = null;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {
+        case 'agent':
+          summaryOptions = options;
+          this.addReporter(new AgentReporter(this._globalConfig));
+          break;
         case 'default':
           summaryOptions = options;
           this.addReporter(

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {availableParallelism} from 'os';
+import {availableParallelism} from 'node:os';
 import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(

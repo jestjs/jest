@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {strict as assert} from 'assert';
-import {EventEmitter} from 'events';
-import * as path from 'path';
+import {strict as assert} from 'node:assert';
+import {EventEmitter} from 'node:events';
+import * as path from 'node:path';
 import watchman from 'fb-watchman';
 import fs from 'graceful-fs';
 import RecrawlWarning from './RecrawlWarning';
