@@ -38,6 +38,7 @@
 - `[jest-runtime]` Fix error when `require()` is called after the Jest environment has been torn down ([#15951](https://github.com/jestjs/jest/pull/15951))
 - `[jest-runtime]` Fix missing error when `import()` is called after the Jest environment has been torn down ([#16080](https://github.com/jestjs/jest/pull/16080))
 - `[jest-runtime]` Fix virtual `unstable_mockModule` registrations not respected in ESM ([#16081](https://github.com/jestjs/jest/pull/16081))
+- `[jest-runtime]` Apply `moduleNameMapper` when resolving modules with `require.resolve()` and the `paths` option ([#16135](https://github.com/jestjs/jest/pull/16135))
 
 ### Chore & Maintenance
 
