@@ -239,7 +239,7 @@ const toThrowExpectedObject = (
     thrownMessageAndCause === expectedMessageAndCause &&
     (!isCompareErrorInstance ||
       !isExpectedCustomErrorInstance ||
-      isInstanceOf(thrown.value, expected.constructor));
+      thrown.value instanceof expected.constructor);
 
   const message = pass
     ? () =>
@@ -284,35 +284,13 @@ const toThrowExpectedObject = (
   return {message, pass};
 };
 
-// `instanceof` fails when the same class is loaded from two different module
-// registries (e.g. the global `expect` injected by the runner vs. a test
-// file's own `import {JestAssertionError} from 'expect'`).  Walk the prototype
-// chain and match by constructor name as a cross-realm fallback.
-const isInstanceOf = (value: unknown, ctor: Function): boolean => {
-  if (value instanceof ctor) {
-    return true;
-  }
-  if (ctor.name && value != null && typeof value === 'object') {
-    let proto: unknown = Object.getPrototypeOf(value);
-    while (proto != null) {
-      const name = (proto as {constructor?: {name?: unknown}}).constructor
-        ?.name;
-      if (typeof name === 'string' && name === ctor.name) {
-        return true;
-      }
-      proto = Object.getPrototypeOf(proto);
-    }
-  }
-  return false;
-};
-
 const toThrowExpectedClass = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Function,
 ): SyncExpectationResult => {
-  const pass = thrown !== null && isInstanceOf(thrown.value, expected);
+  const pass = thrown !== null && thrown.value instanceof expected;
 
   const message = pass
     ? () =>

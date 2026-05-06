@@ -197,6 +197,27 @@ it('mock dispatch computes moduleID once per requireModuleOrMock call', async ()
   getModuleIdSpy.mockRestore();
 });
 
+it('requireModuleOrMock returns the internal `expect` instance', async () => {
+  const runtime = await createRuntime(__filename);
+  const internal = runtime.requireInternalModule(
+    runtime.__mockRootPath,
+    'expect',
+  );
+  const user = runtime.requireModuleOrMock(runtime.__mockRootPath, 'expect');
+  expect(user).toBe(internal);
+  expect(user.JestAssertionError).toBe(internal.JestAssertionError);
+});
+
+it('requireActual returns the internal `expect` instance', async () => {
+  const runtime = await createRuntime(__filename);
+  const internal = runtime.requireInternalModule(
+    runtime.__mockRootPath,
+    'expect',
+  );
+  const actual = runtime.requireActual(runtime.__mockRootPath, 'expect');
+  expect(actual).toBe(internal);
+});
+
 it('unmocks virtual mocks after they have been mocked previously', async () => {
   const runtime = await createRuntime(__filename);
   const root = runtime.requireModule(runtime.__mockRootPath);

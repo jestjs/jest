@@ -229,64 +229,6 @@ describe('toThrow', () => {
     });
   });
 
-  describe('error class (cross-realm)', () => {
-    // Simulate cross-realm: the thrown error is an instance of a class created
-    // in a different vm context, so `instanceof` fails even though both classes
-    // have the same name.  This mirrors the real-world case where the global
-    // `expect` injected by the runner uses a different module registry than the
-    // test file's own `import {JestAssertionError} from 'expect'`.
-    const {runInNewContext} = require('vm') as typeof import('vm');
-
-    const CrossRealmErr = runInNewContext(`
-      class CustomError extends Error {
-        constructor(message) {
-          super(message);
-          this.name = 'Error';
-          this.stack = 'Error\\n  at test';
-        }
-      }
-      class Err extends CustomError {}
-      Err;
-    `);
-
-    const CrossRealmSubErr = runInNewContext(`
-      class CustomError extends Error {
-        constructor(message) {
-          super(message);
-          this.name = 'Error';
-          this.stack = 'Error\\n  at test';
-        }
-      }
-      class Err extends CustomError {}
-      class SubErr extends Err {}
-      SubErr;
-    `);
-
-    it('passes when constructor names match across realms (class form)', () => {
-      jestExpect(() => {
-        throw new CrossRealmErr();
-      }).toThrow(Err);
-
-      jestExpect(() => {
-        throw new CrossRealmSubErr();
-      }).toThrow(Err);
-    });
-
-    it('passes when constructor names match across realms (object form)', () => {
-      jestExpect(() => {
-        throw new CrossRealmErr('apple');
-      }).toThrow(new Err('apple'));
-    });
-
-    it('fails when class names do not match across realms', () => {
-      expect(() => {
-        jestExpect(() => {
-          throw new CrossRealmErr('apple');
-        }).toThrow(Err2);
-      }).toThrow(/Expected constructor.*Err2[\s\S]*Received constructor.*Err/);
-    });
-  });
-
   describe('error-message', () => {
     // Received message in report if object has message property.
     class ErrorMessage {

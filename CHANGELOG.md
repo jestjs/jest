@@ -19,7 +19,6 @@
 
 ### Fixes
 
-- `[expect]` Fix `toThrow(SomeClass)` failing when the thrown instance and the expected class come from different realms ([#16130](https://github.com/jestjs/jest/pull/16130))
 - `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#15959](https://github.com/jestjs/jest/pull/15959))
 - `[@jest/expect-utils]` Prevent `toMatchObject`/subset matching from throwing when encountering exotic iterables ([#15952](https://github.com/jestjs/jest/pull/15952))
 - `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
@@ -27,6 +26,7 @@
 - `[jest-circus, jest-jasmine2]` Include `Error.cause` in JSON `failureMessages` output ([#15949](https://github.com/jestjs/jest/issues/15949))
 - `[jest-config]` Fix preset path resolution on Windows when the preset uses subpath `exports` ([#15961](https://github.com/jestjs/jest/pull/15961))
 - `[jest-environment-node]` Fix `--localstorage-file` warning on Node 25+ ([#16086](https://github.com/jestjs/jest/pull/16086))
+- `[jest-runtime]` Resolve `expect` and `@jest/expect` from the internal module registry so test-file imports share the same `JestAssertionError` as the global `expect` ([#16130](https://github.com/jestjs/jest/pull/16130))
 - `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
 - `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))
 - `[jest-runtime]` Extend the `.js`-with-ESM-syntax fallback to `require()` on Node v24.9+ - falls back to `require(esm)` when the CJS parser rejects ESM syntax ([#16078](https://github.com/jestjs/jest/pull/16078))
