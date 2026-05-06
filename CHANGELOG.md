@@ -3,7 +3,7 @@
 ### Features
 
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support
-- `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`)
+- `[@jest/expect-utils]` Export `AsymmetricMatcher` type (previously private to `expect`)
 
 ### Fixes
 

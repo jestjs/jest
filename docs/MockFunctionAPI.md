@@ -615,17 +615,25 @@ fetchUser.whenCalledWith(1).mockResolvedValue({id: 1});
 fetchUser.whenCalledWith(2).mockRejectedValue(new Error('not found'));
 ```
 
-#### Same-matchers merge
+#### Repeat calls return fresh branches
 
-Repeat `whenCalledWith` calls with the same matchers reuse the same branch — declaration order between `mockReturnValueOnce` and `mockReturnValue` doesn't matter:
+Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) — the most recently registered persistent wins for matching calls, and queued onces drain in registration order across all matching branches:
 
 ```js
 fn.whenCalledWith('x').mockReturnValueOnce('A');
 fn.whenCalledWith('x').mockReturnValue('B');
 
-fn('x'); // 'A'
+fn('x'); // 'A' (once on first branch)
+fn('x'); // 'B' (last-registered persistent)
 fn('x'); // 'B'
-fn('x'); // 'B'
+```
+
+If you want to add behavior to an existing registration, save the reference and chain on it:
+
+```js
+const branch = fn.whenCalledWith('x');
+branch.mockReturnValueOnce('once');
+branch.mockReturnValue('default');
 ```
 
 #### Fall-through
@@ -641,11 +649,13 @@ fn('x'); // 'default' (matched branch drained, falls through)
 fn('y'); // 'default' (no matcher fires)
 ```
 
-#### Precedence (per call, in order)
+#### Precedence
+
+When multiple registrations could match a single call, the dispatcher resolves them in this order:
 
 | Priority | Source |
 | --- | --- |
-| 1 | Parent-level `*Once` queue (`fn.mockReturnValueOnce`, `fn.mockImplementationOnce`, etc.) — these are the most explicit one-shot overrides and fire next regardless of matchers |
+| 1 | Parent-level `*Once` queue (`fn.mockReturnValueOnce`, `fn.mockImplementationOnce`, etc.) — the most explicit one-shot override, fires regardless of matchers |
 | 2 | Earliest matching branch with a queued `*Once` |
 | 3 | Last-registered matching branch with a persistent impl |
 | 4 | Base impl set on the parent (`fn.mockReturnValue`, the `spyOn` original method, etc.) — or `undefined` if none |
