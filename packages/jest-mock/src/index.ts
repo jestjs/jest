@@ -1008,11 +1008,11 @@ export class ModuleMocker {
       f.whenCalledWith = (...args: FunctionParameters<T>) => {
         const mockConfig = this._ensureMockConfig(f);
 
-        // If the user replaced our dispatcher. Reset the registrations and put
-        // the dispatcher back, with the user's new mockImpl as the fallback
+        // If the user replaced our dispatcher (e.g. via mockImplementation),
+        // reinstall it with their new mockImpl as the fallback. Keep prior
+        // registrations — re-arming a fallback shouldn't silently drop them.
         if (mockConfig.mockImpl !== dispatcherImpl) {
           mockConfig.fallbackImpl = mockConfig.mockImpl;
-          mockConfig.whenCalledWithRegistrations = [];
           mockConfig.mockImpl = dispatcherImpl;
         }
 

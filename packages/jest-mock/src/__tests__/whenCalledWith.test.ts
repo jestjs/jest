@@ -167,6 +167,16 @@ describe('whenCalledWith', () => {
     expect(fn({a: 1, b: 2})).toBe('persistent');
   });
 
+  it('preserves prior registrations when a later mockImplementation re-arms the dispatcher', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.mockImplementation(() => 'fallback');
+    fn.whenCalledWith('y').mockReturnValue('Y');
+    expect(fn('x')).toBe('X');
+    expect(fn('y')).toBe('Y');
+    expect(fn('other')).toBe('fallback');
+  });
+
   it('does not clear whenCalledWith registrations on mockClear', () => {
     const fn = moduleMocker.fn();
     fn.whenCalledWith('match').mockReturnValue('matched');
