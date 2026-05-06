@@ -91,7 +91,7 @@ describe('whenCalledWith', () => {
     expect(fn('foo')).toBe('default');
   });
 
-  it('merges repeat registrations on the same matchers (once-then-persistent)', () => {
+  it('drains a once registered after a persistent on the same literal', () => {
     const persistentFirst = moduleMocker.fn();
     persistentFirst.whenCalledWith('x').mockReturnValue('B');
     persistentFirst.whenCalledWith('x').mockReturnValueOnce('A');
@@ -107,7 +107,7 @@ describe('whenCalledWith', () => {
     expect(onceFirst('x')).toBe('B');
   });
 
-  it('merges repeat registrations on the same matchers if they are "equals" equivilent', () => {
+  it('drains a once on a literal before a wildcard persistent (and vice versa)', () => {
     const persistentFirst = moduleMocker.fn();
     persistentFirst.whenCalledWith('x').mockReturnValue('B');
     persistentFirst.whenCalledWith(expect.any(String)).mockReturnValueOnce('A');
@@ -121,6 +121,73 @@ describe('whenCalledWith', () => {
     expect(onceFirst('x')).toBe('A');
     expect(onceFirst('x')).toBe('B');
     expect(onceFirst('x')).toBe('B');
+  });
+
+  it('keeps the wildcard branch live for non-literal calls when literal was registered first', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('lit');
+    fn.whenCalledWith(expect.any(String)).mockReturnValue('wild');
+    expect(fn('y')).toBe('wild');
+    expect(fn('z')).toBe('wild');
+  });
+
+  it('keeps the wildcard branch live for non-literal calls when literal was registered second', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith(expect.any(String)).mockReturnValue('wild');
+    fn.whenCalledWith('x').mockReturnValue('lit');
+    expect(fn('y')).toBe('wild');
+    expect(fn('z')).toBe('wild');
+  });
+
+  it('returns distinct sub-mock references for repeat literal whenCalledWith calls', () => {
+    const fn = moduleMocker.fn();
+    const first = fn.whenCalledWith('x');
+    const second = fn.whenCalledWith('x');
+    expect(first).not.toBe(second);
+  });
+
+  it('records overlapping calls only on the branch that actually fired', () => {
+    const fn = moduleMocker.fn();
+    const first = fn.whenCalledWith('x').mockReturnValue('A');
+    const second = fn.whenCalledWith('x').mockReturnValue('B');
+    fn('x');
+    expect(second.mock.calls).toEqual([['x']]);
+    expect(first.mock.calls).toEqual([]);
+  });
+
+  it('treats a second whenCalledWith on the same literal as an override', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('A');
+    fn.whenCalledWith('x').mockReturnValue('B');
+    expect(fn('x')).toBe('B');
+  });
+
+  it('lets a later literal override an earlier wildcard for matching calls', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith(expect.any(String)).mockReturnValue('wild');
+    fn.whenCalledWith('x').mockReturnValue('lit');
+    expect(fn('x')).toBe('lit');
+    expect(fn('y')).toBe('wild');
+  });
+
+  it('accumulates onces and a persistent on a saved sub-mock reference', () => {
+    const fn = moduleMocker.fn();
+    const branch = fn.whenCalledWith('x');
+    branch.mockReturnValueOnce('once');
+    branch.mockReturnValue('default');
+    expect(fn('x')).toBe('once');
+    expect(fn('x')).toBe('default');
+    expect(fn('x')).toBe('default');
+  });
+
+  it('does not merge when the same asymmetric matcher reference is reused', () => {
+    const fn = moduleMocker.fn();
+    const matcher = expect.any(String);
+    fn.whenCalledWith(matcher).mockReturnValueOnce('A');
+    fn.whenCalledWith(matcher).mockReturnValue('B');
+    expect(fn('foo')).toBe('A');
+    expect(fn('foo')).toBe('B');
+    expect(fn('foo')).toBe('B');
   });
 
   it('exhausts mockReturnValueOnce across overlapping matchers regardless of declaration order', () => {

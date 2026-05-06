@@ -1016,18 +1016,9 @@ export class ModuleMocker {
           mockConfig.mockImpl = dispatcherImpl;
         }
 
-        // Merge: repeat calls with the same matchers reuse the existing
-        // sub-mock so onces and persistent impls coexist on one branch.
-        const existing = mockConfig.whenCalledWithRegistrations.find(branch =>
-          equals(branch.matchers, args),
-        );
-        if (existing) {
-          return existing.subMock as Mock<T>;
-        }
-
         const subMock = this._makeComponent({type: 'function'}) as Mock<T>;
         mockConfig.whenCalledWithRegistrations.push({matchers: args, subMock});
-        return subMock as Mock<T>;
+        return subMock;
       };
 
       f.mockReturnThis = () =>
