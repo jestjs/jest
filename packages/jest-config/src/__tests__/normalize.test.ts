@@ -135,6 +135,40 @@ it('validation warning occurs when options not for projects is set', async () =>
   expect(mockWarn).toHaveBeenCalledTimes(1);
 });
 
+it('no validation warning for collectCoverage in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      collectCoverage: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for coverageProvider in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      coverageProvider: 'v8',
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
 it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
