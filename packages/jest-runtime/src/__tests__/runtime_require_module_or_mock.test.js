@@ -197,59 +197,55 @@ it('mock dispatch computes moduleID once per requireModuleOrMock call', async ()
   getModuleIdSpy.mockRestore();
 });
 
-it.each(['expect', '@jest/expect'])(
-  'requireModuleOrMock returns the internal `%s` instance',
-  async moduleName => {
-    const runtime = await createRuntime(__filename);
-    const internal = runtime.requireInternalModule(
-      runtime.__mockRootPath,
-      moduleName,
-    );
-    const user = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      moduleName,
-    );
-    expect(user).toBe(internal);
-  },
-);
+describe.each(['expect', '@jest/expect'])(
+  'framework singleton module: %s',
+  moduleName => {
+    it('requireModuleOrMock returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const user = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(user).toBe(internal);
+    });
 
-it.each(['expect', '@jest/expect'])(
-  'requireActual returns the internal `%s` instance',
-  async moduleName => {
-    const runtime = await createRuntime(__filename);
-    const internal = runtime.requireInternalModule(
-      runtime.__mockRootPath,
-      moduleName,
-    );
-    const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
-    expect(actual).toBe(internal);
-  },
-);
+    it('requireActual returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
 
-it.each(['expect', '@jest/expect'])(
-  'jest.mock("%s") is respected and does not affect the global expect',
-  async moduleName => {
-    const runtime = await createRuntime(__filename);
-    const root = runtime.requireModule(runtime.__mockRootPath);
-    const mockImpl = {isMock: true};
-    root.jest.mock(moduleName, () => mockImpl);
+    it('jest.mock() is respected and does not affect the global expect', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      const mockImpl = {isMock: true};
+      root.jest.mock(moduleName, () => mockImpl);
 
-    const mocked = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      moduleName,
-    );
-    expect(mocked).toBe(mockImpl);
+      const mocked = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(mocked).toBe(mockImpl);
 
-    // The internal instance backing the global must be unaffected.
-    const internal = runtime.requireInternalModule(
-      runtime.__mockRootPath,
-      moduleName,
-    );
-    expect(internal).not.toBe(mockImpl);
+      // The internal instance backing the global must be unaffected.
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(internal).not.toBe(mockImpl);
 
-    // requireActual always bypasses the mock and returns the shared instance.
-    const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
-    expect(actual).toBe(internal);
+      // requireActual always bypasses the mock and returns the shared instance.
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
   },
 );
 
