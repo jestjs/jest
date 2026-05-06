@@ -8,6 +8,6 @@
 import runJest from '../runJest';
 
 test('toThrow(JestAssertionError) passes when imported from a separate require call', () => {
-  const result = runJest('jest-assertion-error-cross-realm');
+  const result = runJest('jest-assertion-error-import');
   expect(result.exitCode).toBe(0);
 });

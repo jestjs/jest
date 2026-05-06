@@ -7,11 +7,8 @@
 
 'use strict';
 
-// The global `expect` is injected by the runner from the host module registry.
-// When the test file requires 'expect' itself it gets a separate instance from
-// jest-runtime's own registry.  The two JestAssertionError classes are
-// identical in shape but different objects, so a naive `instanceof` check
-// fails.  Regression test for https://github.com/jestjs/jest/issues/14882.
+// `require('expect')` in a test file must resolve to the same module instance
+// that backs the global `expect`, so JestAssertionError is the same class.
 const {JestAssertionError} = require('expect');
 
 test('toThrow(JestAssertionError) passes when a matcher assertion fails', () => {
