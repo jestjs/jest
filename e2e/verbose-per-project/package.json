@@ -1,0 +1,23 @@
+{
+  "jest": {
+    "projects": [
+      {
+        "displayName": "verbose-project",
+        "rootDir": "<rootDir>/verbose-project",
+        "testEnvironment": "node",
+        "verbose": true
+      },
+      {
+        "displayName": "default-project",
+        "rootDir": "<rootDir>/default-project",
+        "testEnvironment": "node"
+      },
+      {
+        "displayName": "silent-project",
+        "rootDir": "<rootDir>/silent-project",
+        "testEnvironment": "node",
+        "silent": true
+      }
+    ]
+  }
+}

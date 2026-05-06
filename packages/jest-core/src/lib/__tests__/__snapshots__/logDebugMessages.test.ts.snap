@@ -60,6 +60,7 @@ exports[`prints the config object 1`] = `
     "sandboxInjectedGlobals": [],
     "setupFiles": [],
     "setupFilesAfterEnv": [],
+    "silent": false,
     "skipFilter": false,
     "skipNodeResolution": false,
     "slowTestThreshold": 5,
@@ -77,6 +78,7 @@ exports[`prints the config object 1`] = `
     "testTimeout": 5000,
     "transform": [],
     "transformIgnorePatterns": [],
+    "verbose": false,
     "waitForUnhandledRejections": false,
     "watchPathIgnorePatterns": []
   },

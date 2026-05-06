@@ -120,6 +120,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   sandboxInjectedGlobals: [],
   setupFiles: [],
   setupFilesAfterEnv: [],
+  silent: false,
   skipFilter: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
@@ -137,6 +138,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,
+  verbose: false,
   waitForUnhandledRejections: false,
   watchPathIgnorePatterns: [],
 };

@@ -129,6 +129,14 @@ class TestScheduler {
       }
     }
 
+    if (
+      !this._globalConfig.verbose &&
+      tests.some(t => t.context.config.verbose)
+    ) {
+      this._dispatcher.unregister(DefaultReporter);
+      this.addReporter(new VerboseReporter(this._globalConfig));
+    }
+
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
@@ -425,8 +433,9 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor =
-        await requireOrImportModule(reporter);
+      const Reporter: ReporterConstructor = await requireOrImportModule(
+        reporter,
+      );
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),

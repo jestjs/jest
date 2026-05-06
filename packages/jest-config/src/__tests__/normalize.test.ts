@@ -141,8 +141,8 @@ it('global-only option in project config emits targeted warning', async () => {
   await normalize(
     {
       bail: true,
+      forceExit: true,
       rootDir,
-      verbose: true,
     },
     {} as Config.Argv,
     rootDir,
@@ -181,6 +181,40 @@ it('no validation warning for coverageProvider in project config', async () => {
     {
       coverageProvider: 'v8',
       rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for verbose in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      verbose: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for silent in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      silent: true,
     },
     {} as Config.Argv,
     rootDir,
