@@ -77,16 +77,16 @@ const unknownProjectOption = (
 ): void => {
   const warningTitle =
     (options.title && options.title.warning) ?? 'Validation Warning';
-  if (GLOBAL_ONLY_OPTIONS.has(option)) {
+  const optionPath = path && path.length > 0 ? `${path.join('.')}.` : '';
+  if ((!path || path.length === 0) && GLOBAL_ONLY_OPTIONS.has(option)) {
     logValidationWarning(
       warningTitle,
       `  Option ${chalk.bold(
-        `"${option}"`,
+        `"${optionPath}${option}"`,
       )} is not supported in an individual project configuration.\n  Move it to the root configuration.`,
       options.comment,
     );
   } else {
-    const optionPath = path && path.length > 0 ? `${path.join('.')}.` : '';
     const didYouMean = createDidYouMeanMessage(
       option,
       Object.keys(exampleConfig),
