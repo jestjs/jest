@@ -299,7 +299,7 @@
 
 ### Chore & Maintenance
 
-- `[jest-environment-jsdom, jest-environment-jsdom-abstract]` Increased version of jsdom to `^26.0.0` ([#15473](https://github.com/jestjs/jest/pull/15473)
+- `[jest-environment-jsdom, jest-environment-jsdom-abstract]` Increased version of jsdom to `^26.0.0` ([#15473](https://github.com/jestjs/jest/pull/15473))
 - `[*]` Increase version of `micromatch` to `^4.0.7` ([#15082](https://github.com/jestjs/jest/pull/15082))
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14, 16, 19, 21 and 23 ([#14460](https://github.com/jestjs/jest/pull/14460), [#15118](https://github.com/jestjs/jest/pull/15118), [#15623](https://github.com/jestjs/jest/pull/15623), [#15640](https://github.com/jestjs/jest/pull/15640))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.4` ([#14542](https://github.com/jestjs/jest/pull/14542), [#15621](https://github.com/jestjs/jest/pull/15621))
