@@ -2,6 +2,13 @@
 
 exports[`per-project verbose and silent 1`] = `
 "PASS default-project default-project/__tests__/index.test.js
+  ● Console
+
+    console.log
+      this log should appear
+
+      at Object.log (__tests__/index.test.js:12:13)
+
 PASS silent-project silent-project/__tests__/index.test.js
 PASS verbose-project verbose-project/__tests__/index.test.js
   VerboseSuite

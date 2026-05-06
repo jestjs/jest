@@ -83,8 +83,8 @@ describe('reporters', () => {
   const CustomReporter = require('/custom-reporter.js');
   const savedAgentEnv = {};
   const mockWatcher = {
-    isInterrupted: jest.fn(),
-    isWatchMode: () => false,
+    isInterrupted: jest.fn(() => false),
+    isWatchMode: jest.fn(() => false),
     setState: jest.fn(),
   };
 

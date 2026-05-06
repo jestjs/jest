@@ -9,6 +9,7 @@
 
 describe('DefaultSuite', () => {
   it('default test passes', () => {
+    console.log('this log should appear');
     expect(1).toBe(1);
   });
 });
