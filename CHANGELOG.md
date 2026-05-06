@@ -24,8 +24,8 @@
 - `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
 - `[jest-circus]` Prevent crash when `asyncError` is undefined for non-Error throws ([#16003](https://github.com/jestjs/jest/pull/16003))
 - `[jest-circus, jest-jasmine2]` Include `Error.cause` in JSON `failureMessages` output ([#15949](https://github.com/jestjs/jest/issues/15949))
-- `[jest-config]` Allow `collectCoverage` and `coverageProvider` in project config without a validation warning
-- `[jest]` Export `GlobalConfig` and `ProjectConfig` TypeScript types
+- `[jest-config]` Allow `collectCoverage` and `coverageProvider` in project config without a validation warning ([#16132](https://github.com/jestjs/jest/pull/16132))
+- `[jest]` Export `GlobalConfig` and `ProjectConfig` TypeScript types ([#16132](https://github.com/jestjs/jest/pull/16132))
 - `[jest-config]` Fix preset path resolution on Windows when the preset uses subpath `exports` ([#15961](https://github.com/jestjs/jest/pull/15961))
 - `[jest-environment-node]` Fix `--localstorage-file` warning on Node 25+ ([#16086](https://github.com/jestjs/jest/pull/16086))
 - `[jest-runtime]` Resolve `expect` and `@jest/expect` from the internal module registry so test-file imports share the same `JestAssertionError` as the global `expect` ([#16130](https://github.com/jestjs/jest/pull/16130))
