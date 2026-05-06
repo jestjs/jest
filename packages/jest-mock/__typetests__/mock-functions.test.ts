@@ -136,9 +136,12 @@ describe('jest.fn()', () => {
     );
   });
 
-  test('.whenCalledWith() return type preserves T for further chaining', () => {
+  test('.whenCalledWith() returns Mock<T> for further chaining', () => {
     const typedFn = fn((a: string) => true);
 
+    expect(typedFn.whenCalledWith('foo')).type.toBe<
+      Mock<(a: string) => boolean>
+    >();
     expect(
       typedFn
         .whenCalledWith('foo')

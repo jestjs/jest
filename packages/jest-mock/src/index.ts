@@ -233,7 +233,7 @@ export interface MockInstance<
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
-  whenCalledWith(...args: FunctionParameters<T>): this;
+  whenCalledWith(...args: FunctionParameters<T>): Mock<T>;
 }
 
 export interface Replaced<T = unknown> {
