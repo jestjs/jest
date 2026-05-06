@@ -380,7 +380,7 @@ export type ProjectConfig = {
   sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
-  silent: boolean;
+  silent?: boolean;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
   slowTestThreshold: number;
@@ -399,7 +399,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
-  verbose: boolean;
+  verbose?: boolean;
   waitForUnhandledRejections: boolean;
   workerIdleMemoryLimit?: number;
 };
