@@ -138,6 +138,7 @@ const FakeableAPI = Type.Union([
   Type.Literal('clearInterval'),
   Type.Literal('setTimeout'),
   Type.Literal('clearTimeout'),
+  Type.Literal('Temporal'),
 ]);
 
 const FakeTimersConfig = Type.Partial(
