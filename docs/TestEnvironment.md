@@ -12,7 +12,13 @@ By default, you can use these environments:
 
 ## Environments for Specific Files
 
-When setting `testEnvironment` option in your config, it will apply to all the test files in your project. To have more fine-grained control, you can use control comments to specify environment for specific files. Control comments are comments that start with `@jest-environment` and are followed by the environment name:
+:::info
+
+Each test suite runs in its own `TestEnvironment` instance. `setup` and `teardown` are called once per suite.
+
+:::
+
+When setting `testEnvironment` option in your config, it will apply to all the test files in your project. To have more fine-grained control, you can use docblock pragmas to specify environment for specific files. Docblock pragmas are comments that start with `@jest-environment` and are followed by the environment name:
 
 - With built-in environments:
 
@@ -62,7 +68,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-### Extending built-in Environments
+## Extending built-in Environments
 
 Jest allows you to extend the built-in environments, such as `NodeEnvironment` or `JSDOMEnvironment`, to create your own custom environment. This is useful when you want to add additional functionality or modify the behavior of the existing environments.
 
@@ -113,7 +119,7 @@ class CustomNodeEnvironment extends NodeEnvironment {
   }
 }
 
-module.exports = CustomEnvironment;
+module.exports = CustomNodeEnvironment;
 ```
 
 ```ts tab title="custom-node-environment.ts"
@@ -177,6 +183,14 @@ export default defineConfig({
 });
 ```
 
+:::note
+
+Any docblock pragmas in a test file (e.g. `@my-custom-pragma my-value`) are passed to the environment constructor as `context.docblockPragmas`.
+
+`handleTestEvent` is optional. When it returns a Promise, jest-circus waits for it to settle before continuing — **except** for these sync events: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test`, and `error`.
+
+:::
+
 :::tip
 
 Jest also provides `@jest/environment-jsdom-abstract` package to make it easier for you to compose your own custom test environment based on `jsdom` or use your own `jsdom` installed version.
@@ -229,7 +243,7 @@ export default defineConfig({
 
 :::
 
-### Custom Environment
+## Custom Environment
 
 You can create your own package to extend Jest environment. To do so, create package with a name, or specify a path to a valid JS/TS file. That package should export an object with the shape of Environment:
 
