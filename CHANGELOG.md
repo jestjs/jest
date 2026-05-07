@@ -42,6 +42,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-circus]` Update `pure-rand` to v8 ([#16125](https://github.com/jestjs/jest/pull/16125))
 - `[jest-runtime]` Use synchronous `linkRequests` / `instantiate` for ESM linking on Node v24.9+ ([#16063](https://github.com/jestjs/jest/pull/16063))
 
 ## 30.3.0

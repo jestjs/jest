@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {unsafeUniformIntDistribution, xoroshiro128plus} from 'pure-rand';
+import {uniformInt} from 'pure-rand/distribution/uniformInt';
+import {xoroshiro128plus} from 'pure-rand/generator/xoroshiro128plus';
 
 // Generates [from, to] inclusive
 export type RandomNumberGenerator = {
@@ -14,7 +15,7 @@ export type RandomNumberGenerator = {
 
 export const rngBuilder = (seed: number): RandomNumberGenerator => {
   const gen = xoroshiro128plus(seed);
-  return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
+  return {next: (from, to) => uniformInt(gen, from, to)};
 };
 
 // Fisher-Yates shuffle

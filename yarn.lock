@@ -3989,13 +3989,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/jest@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@fast-check/jest@npm:2.1.1"
+"@fast-check/jest@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@fast-check/jest@npm:2.2.0"
   dependencies:
     fast-check: "npm:^3.0.0 || ^4.0.0"
   peerDependencies:
-    "@fast-check/worker": ">=0.0.7 <0.6.0"
+    "@fast-check/worker": ">=0.0.7 <0.7.0"
     "@jest/expect": ">=28.0.0"
     "@jest/globals": ">=25.5.2"
   peerDependenciesMeta:
@@ -4003,7 +4003,7 @@ __metadata:
       optional: true
     "@jest/expect":
       optional: true
-  checksum: 10/c7a6445ee0ad7a24faaa6c15ed3124b1db1cf19a408c561460c9771496afbd49864be3f291afd6b566ecf518471352cb69a62d2e1f1e50717a66e808984177bf
+  checksum: 10/1ab4493d1183fd0a244d8b8e4508cb29812c10dbbb0b1a68168fb50939d987c663f260620504f6219a506ffbec91509890981a1bd6d8fb21faf3e31fa15aaa41
   languageName: node
   linkType: hard
 
@@ -4312,7 +4312,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/diff-sequences@workspace:packages/diff-sequences"
   dependencies:
-    "@fast-check/jest": "npm:^2.1.1"
+    "@fast-check/jest": "npm:^2.2.0"
     benchmark: "npm:^2.1.4"
     diff: "npm:^9.0.0"
   languageName: unknown
@@ -11866,7 +11866,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
-    "@fast-check/jest": "npm:^2.1.1"
+    "@fast-check/jest": "npm:^2.2.0"
     "@jest/expect-utils": "workspace:*"
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
@@ -11942,11 +11942,11 @@ __metadata:
   linkType: hard
 
 "fast-check@npm:^3.0.0 || ^4.0.0":
-  version: 4.1.1
-  resolution: "fast-check@npm:4.1.1"
+  version: 4.7.0
+  resolution: "fast-check@npm:4.7.0"
   dependencies:
-    pure-rand: "npm:^7.0.0"
-  checksum: 10/fae29b0387cc08a89e6dc6e4c1292c4f2a84ddf7b9d2df9074107965f1c9a7238e17fbcbafe413a588cc57c2f51bdd8b6f1450f7c9379efd3149d718cce11444
+    pure-rand: "npm:^8.0.0"
+  checksum: 10/fabe4cb8296dc893c3ac49dc2c1564e60aec7ab5774d8f71b6e0952d32ad2f93e320234e5fd8a671490060f35a6bba96df339ee8c8e3597eff946c74df9a3920
   languageName: node
   linkType: hard
 
@@ -14362,7 +14362,7 @@ __metadata:
     jest-util: "workspace:*"
     p-limit: "npm:^3.1.0"
     pretty-format: "workspace:*"
-    pure-rand: "npm:^7.0.0"
+    pure-rand: "npm:^8.0.0"
     slash: "npm:^3.0.0"
     stack-utils: "npm:^2.0.6"
     tempy: "npm:^1.0.1"
@@ -19454,10 +19454,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "pure-rand@npm:7.0.1"
-  checksum: 10/c61a576fda5032ec9763ecb000da4a8f19263b9e2f9ae9aa2759c8fbd9dc6b192b2ce78391ebd41abb394a5fedb7bcc4b03c9e6141ac8ab20882dd5717698b80
+"pure-rand@npm:^8.0.0":
+  version: 8.4.0
+  resolution: "pure-rand@npm:8.4.0"
+  checksum: 10/baaee81b6647c89e426458fa0a6fcf51a42315db3db6a2c1c48d676813dd7cebf46dc56d352ce352c3bdfacd5a965b9c7783ba2a92f38cf2e64a9a8186469c3e
   languageName: node
   linkType: hard
 

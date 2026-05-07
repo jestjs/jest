@@ -29,7 +29,7 @@
     "jest-util": "workspace:*"
   },
   "devDependencies": {
-    "@fast-check/jest": "^2.1.1",
+    "@fast-check/jest": "^2.2.0",
     "@jest/test-utils": "workspace:*",
     "chalk": "^4.1.2",
     "immutable": "^5.1.2"
