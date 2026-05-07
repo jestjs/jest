@@ -197,6 +197,58 @@ it('mock dispatch computes moduleID once per requireModuleOrMock call', async ()
   getModuleIdSpy.mockRestore();
 });
 
+describe.each(['expect', '@jest/expect'])(
+  'framework singleton module: %s',
+  moduleName => {
+    it('requireModuleOrMock returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const user = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(user).toBe(internal);
+    });
+
+    it('requireActual returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
+
+    it('jest.mock() is respected and does not affect the global expect', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      const mockImpl = {isMock: true};
+      root.jest.mock(moduleName, () => mockImpl);
+
+      const mocked = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(mocked).toBe(mockImpl);
+
+      // The internal instance backing the global must be unaffected.
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(internal).not.toBe(mockImpl);
+
+      // requireActual always bypasses the mock and returns the shared instance.
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
+  },
+);
+
 it('unmocks virtual mocks after they have been mocked previously', async () => {
   const runtime = await createRuntime(__filename);
   const root = runtime.requireModule(runtime.__mockRootPath);

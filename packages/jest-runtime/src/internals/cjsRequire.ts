@@ -130,14 +130,22 @@ export class RequireBuilder {
         return module;
       }
     } else if (options.paths) {
+      const module = this.resolution.resolveCjsStub(from, moduleName);
+
+      if (module) {
+        return module;
+      }
+
       for (const searchPath of options.paths) {
         const absolutePath = path.resolve(from, '..', searchPath);
+
         // required to also resolve files without leading './' directly in the path
         const module = this.resolution.resolveCjsFromDirIfExists(
           absolutePath,
           moduleName,
           [absolutePath],
         );
+
         if (module) {
           return module;
         }

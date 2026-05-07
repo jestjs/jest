@@ -84,11 +84,7 @@ export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
   context: TestSchedulerContext,
 ): Promise<TestScheduler> {
-  const scheduler = new TestScheduler(globalConfig, context);
-
-  await scheduler._setupReporters();
-
-  return scheduler;
+  return new TestScheduler(globalConfig, context);
 }
 
 class TestScheduler {
@@ -117,6 +113,8 @@ class TestScheduler {
     tests: Array<Test>,
     watcher: TestWatcher,
   ): Promise<AggregatedResult> {
+    await this._setupReporters(tests);
+
     const onTestFileStart = this._dispatcher.onTestFileStart.bind(
       this._dispatcher,
     );
@@ -371,8 +369,10 @@ class TestScheduler {
     }
   }
 
-  async _setupReporters() {
-    const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
+  async _setupReporters(tests: Array<Test>) {
+    const {collectCoverage: coverage, notify} = this._globalConfig;
+    const verbose =
+      this._globalConfig.verbose || tests.some(t => t.context.config.verbose);
     const reporters = this._globalConfig.reporters || [
       [detectAgent() ? 'agent' : 'default', {}],
     ];
@@ -425,8 +425,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor =
-        await requireOrImportModule(reporter);
+      const Reporter =
+        await requireOrImportModule<ReporterConstructor>(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),

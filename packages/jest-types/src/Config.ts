@@ -339,9 +339,11 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
@@ -379,6 +381,7 @@ export type ProjectConfig = {
   sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  silent?: boolean;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
   slowTestThreshold: number;
@@ -397,6 +400,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  verbose?: boolean;
   waitForUnhandledRejections: boolean;
   workerIdleMemoryLimit?: number;
 };

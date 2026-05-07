@@ -28,7 +28,14 @@ import {
   requireOrImportModule,
   tryRealpath,
 } from 'jest-util';
-import {ValidationError, validate} from 'jest-validate';
+import {
+  ValidationError,
+  type ValidationOptions,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+  validate,
+} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
@@ -54,6 +61,47 @@ import {
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
+
+const GLOBAL_ONLY_OPTIONS = new Set(
+  Object.keys(VALID_CONFIG).filter(
+    key => !Object.hasOwn(VALID_PROJECT_CONFIG, key),
+  ),
+);
+
+const unknownProjectOption = (
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
+  option: string,
+  options: ValidationOptions,
+  path?: Array<string>,
+): void => {
+  const warningTitle =
+    (options.title && options.title.warning) ?? 'Validation Warning';
+  const optionPath = path && path.length > 0 ? `${path.join('.')}.` : '';
+  if ((!path || path.length === 0) && GLOBAL_ONLY_OPTIONS.has(option)) {
+    logValidationWarning(
+      warningTitle,
+      `  Option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} is not supported in an individual project configuration.\n  Move it to the root configuration.`,
+      options.comment,
+    );
+  } else {
+    const didYouMean = createDidYouMeanMessage(
+      option,
+      Object.keys(exampleConfig),
+    );
+    logValidationWarning(
+      warningTitle,
+      `  Unknown option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} with value ${chalk.bold(format(config[option]))} was found.${
+        didYouMean && ` ${didYouMean}`
+      }\n  This is probably a typing mistake. Fixing it will remove this message.`,
+      options.comment,
+    );
+  }
+};
 
 export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
@@ -169,7 +217,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -504,6 +554,7 @@ export default async function normalize(
       'testEnvironmentOptions',
       'transform',
     ],
+    ...(isProjectOptions && {unknown: unknownProjectOption}),
   });
 
   let options = normalizeMissingOptions(

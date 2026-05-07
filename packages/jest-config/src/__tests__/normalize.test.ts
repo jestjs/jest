@@ -135,6 +135,96 @@ it('validation warning occurs when options not for projects is set', async () =>
   expect(mockWarn).toHaveBeenCalledTimes(1);
 });
 
+it('global-only option in project config emits targeted warning', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true,
+      forceExit: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(2);
+  const warnMessages = mockWarn.mock.calls.map(call => call[0] as string);
+  expect(warnMessages.some(msg => msg.includes('root configuration'))).toBe(
+    true,
+  );
+});
+
+it('no validation warning for collectCoverage in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      collectCoverage: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for coverageProvider in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      coverageProvider: 'v8',
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for verbose in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      verbose: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for silent in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      silent: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
 it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {

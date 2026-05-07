@@ -82,6 +82,18 @@ const AGENT_ENV_VARS = [
 describe('reporters', () => {
   const CustomReporter = require('/custom-reporter.js');
   const savedAgentEnv = {};
+  const mockWatcher = {
+    isInterrupted: jest.fn(() => false),
+    isWatchMode: jest.fn(() => false),
+    setState: jest.fn(),
+  };
+
+  // Helper: createTestScheduler + scheduleTests([]) so reporters are set up.
+  const setupScheduler = async config => {
+    const scheduler = await createTestScheduler(config, {}, {});
+    await scheduler.scheduleTests([], mockWatcher);
+    return scheduler;
+  };
 
   beforeEach(() => {
     for (const key of AGENT_ENV_VARS) {
@@ -102,12 +114,10 @@ describe('reporters', () => {
   });
 
   test('works with default value', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: undefined,
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
@@ -121,12 +131,10 @@ describe('reporters', () => {
   test('uses agent reporter when AI agent is detected', async () => {
     process.env.AI_AGENT = '1';
     try {
-      await createTestScheduler(
+      await setupScheduler(
         makeGlobalConfig({
           reporters: undefined,
         }),
-        {},
-        {},
       );
 
       expect(AgentReporter).toHaveBeenCalledTimes(1);
@@ -138,12 +146,10 @@ describe('reporters', () => {
   });
 
   test('does not enable any reporters, if empty list is passed', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
@@ -155,12 +161,10 @@ describe('reporters', () => {
   });
 
   test('sets up default reporters', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [['default', {}]],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
@@ -172,13 +176,11 @@ describe('reporters', () => {
   });
 
   test('sets up verbose reporter', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [['default', {}]],
         verbose: true,
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
@@ -190,15 +192,13 @@ describe('reporters', () => {
   });
 
   test('sets up github actions reporter', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [
           ['default', {}],
           ['github-actions', {}],
         ],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
@@ -210,13 +210,11 @@ describe('reporters', () => {
   });
 
   test('sets up notify reporter', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         notify: true,
         reporters: [['default', {}]],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
@@ -228,13 +226,11 @@ describe('reporters', () => {
   });
 
   test('sets up coverage reporter', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         collectCoverage: true,
         reporters: [['default', {}]],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
@@ -246,12 +242,10 @@ describe('reporters', () => {
   });
 
   test('allows enabling summary reporter separately', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [['summary', {}]],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
@@ -263,15 +257,13 @@ describe('reporters', () => {
   });
 
   test('sets up custom reporter', async () => {
-    await createTestScheduler(
+    await setupScheduler(
       makeGlobalConfig({
         reporters: [
           ['default', {}],
           ['/custom-reporter.js', {}],
         ],
       }),
-      {},
-      {},
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
