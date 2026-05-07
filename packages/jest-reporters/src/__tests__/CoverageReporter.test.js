@@ -326,9 +326,7 @@ describe('onRunComplete', () => {
     expect(testReporter.getLastError()).toBeUndefined();
   });
 
-  test(`getLastError() returns error when global threshold group
-   is empty because PATH and GLOB threshold groups have matched all the
-    files but global threshold exceeds aggregate coverage.`, async () => {
+  test('getLastError() returns error when global threshold group is empty because PATH and GLOB threshold groups have matched all the files but global threshold exceeds aggregate coverage.', async () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
