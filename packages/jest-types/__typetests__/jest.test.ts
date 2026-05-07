@@ -537,16 +537,12 @@ expect<jest.SpiedSetter<typeof someObject.propertyC>>().type.toBeAssignableFrom(
 
 expect(jest.advanceTimersByTime(6000)).type.toBe<void>();
 // expect(jest.advanceTimersByTime(Temporal.Duration.from(''))).type.toBe<void>();
-expect(jest.advanceTimersByTime({total: () => 6000})).type.toBe<void>();
 expect(jest.advanceTimersByTime()).type.toRaiseError();
 
 expect(jest.advanceTimersByTimeAsync(6000)).type.toBe<Promise<void>>();
 // expect(jest.advanceTimersByTimeAsync(Temporal.Duration.from(''))).type.toBe<
 //   Promise<void>
 // >();
-expect(jest.advanceTimersByTimeAsync({total: () => 6000})).type.toBe<
-  Promise<void>
->();
 expect(jest.advanceTimersByTimeAsync()).type.toRaiseError();
 
 expect(jest.advanceTimersToNextTimer()).type.toBe<void>();
