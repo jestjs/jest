@@ -102,7 +102,12 @@ export default class FakeTimers {
 
   advanceTimersByTime(msToRun: number | TemporalDuration): void {
     if (this._checkFakeTimers()) {
-      this._clock.tick(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      this._clock.tick(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
@@ -110,7 +115,12 @@ export default class FakeTimers {
     msToRun: number | TemporalDuration,
   ): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      await this._clock.tickAsync(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
