@@ -9,6 +9,7 @@
 - `[jest-config, jest-core, jest-reporters, jest-runner]` `verbose` and `silent` can now be set per-project; the project-level value overrides the global value for that project's tests ([#16133](https://github.com/jestjs/jest/pull/16133))
 - `[@jest/fake-timers]` Accept `Temporal.Duration` in `jest.advanceTimersByTime()` and `jest.advanceTimersByTimeAsync()` ([#16128](https://github.com/jestjs/jest/pull/16128))
 - `[@jest/fake-timers]` Accept `Temporal.Instant` and `Temporal.ZonedDateTime` in `jest.setSystemTime()` and `useFakeTimers({now})` ([#16128](https://github.com/jestjs/jest/pull/16128))
+- `[@jest/fake-timers]` Support faking `Temporal.Now.*` ([#16131](https://github.com/jestjs/jest/pull/16131))
 - `[jest-mock]` Add `clearMocksOnScope(scope)` on `ModuleMocker` for clearing every mock function exposed on a scope object ([#16088](https://github.com/jestjs/jest/pull/16088))
 - `[jest-resolve]` Add `canResolveSync()` on `Resolver` so callers can detect when a user-configured resolver only exports an `async` hook ([#16064](https://github.com/jestjs/jest/pull/16064))
 - `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured ([#16062](https://github.com/jestjs/jest/pull/16062))
