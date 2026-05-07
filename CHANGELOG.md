@@ -42,6 +42,7 @@
 
 ### Chore & Maintenance
 
+- `[@jest/fake-timers]` Upgrade `@sinonjs/fake-timers` ([#16139](https://github.com/jestjs/jest/pull/16139))
 - `[jest-runtime]` Use synchronous `linkRequests` / `instantiate` for ESM linking on Node v24.9+ ([#16063](https://github.com/jestjs/jest/pull/16063))
 
 ## 30.3.0
