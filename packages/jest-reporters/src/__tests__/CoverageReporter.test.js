@@ -377,7 +377,8 @@ describe('onRunComplete', () => {
       },
     );
     testReporter.log = jest.fn();
-    // The two 100% files are excluded from global, dropping the aggregate below 50%
+    // The 100% files matched by path thresholds are subtracted from the global
+    // bucket, dropping the aggregate below 50%.
     await testReporter.onRunComplete(new Set(), {}, mockAggResults);
 
     expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
