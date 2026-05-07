@@ -306,7 +306,10 @@ export const InitialOptions = Type.Partial(
     restoreMocks: Type.Boolean(),
     rootDir: Type.String(),
     roots: Type.Array(Type.String()),
-    runner: Type.String(),
+    runner: Type.Union([
+      Type.String(),
+      Type.Tuple([Type.String(), Type.Record(Type.String(), Type.Unknown())]),
+    ]),
     runTestsByPath: Type.Boolean(),
     runtime: Type.String(),
     sandboxInjectedGlobals: Type.Array(Type.String()),

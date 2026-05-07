@@ -56,6 +56,7 @@ exports[`prints the config object 1`] = `
       "path/to/dir/test"
     ],
     "runner": "jest-runner",
+    "runnerOptions": {},
     "runtime": "/test_module_loader_path",
     "sandboxInjectedGlobals": [],
     "setupFiles": [],

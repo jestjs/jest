@@ -116,6 +116,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   rootDir: '/test_root_dir/',
   roots: [],
   runner: 'jest-runner',
+  runnerOptions: {},
   runtime: '/test_module_loader_path',
   sandboxInjectedGlobals: [],
   setupFiles: [],

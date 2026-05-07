@@ -25,6 +25,7 @@
     "chalk": "^4.1.2",
     "ci-info": "^4.2.0",
     "exit-x": "^0.2.2",
+    "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.11",
     "jest-changed-files": "workspace:*",
     "jest-config": "workspace:*",

@@ -1237,7 +1237,7 @@ export default defineConfig({
 
 This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.
 
-The projects feature can also be used to run multiple configurations or multiple [runners](#runner-string). For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via [jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in the same invocation of Jest:
+The projects feature can also be used to run multiple configurations or multiple [runners](#runner-string--string-object). For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via [jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in the same invocation of Jest:
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -1654,7 +1654,7 @@ export default defineConfig({
 });
 ```
 
-### `runner` \[string]
+### `runner` \[string | \[string, object\]]
 
 Default: `"jest-runner"`
 
@@ -1671,17 +1671,76 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) in the constructor, and has a `runTests` method with the signature:
+You can pass options to a custom runner by using a tuple form. The options will be passed as the third argument to the runner's constructor:
 
-```ts
-async function runTests(
-  tests: Array<Test>,
-  watcher: TestWatcher,
-  onStart: OnTestStart,
-  onResult: OnTestSuccess,
-  onFailure: OnTestFailure,
-  options: TestRunnerOptions,
-): Promise<void>;
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  runner: ['jest-runner-custom', {myOption: true, timeout: 5000}],
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  runner: ['jest-runner-custom', {myOption: true, timeout: 5000}],
+});
+```
+
+To write a custom test-runner, export a class that extends one of the base runners from `jest-runner` (`CallbackTestRunner` or `EmittingTestRunner`) and implements the `runTests` method. When using the tuple configuration, the options object is passed as the third constructor argument:
+
+```js tab title="my-runner.js"
+const {CallbackTestRunner} = require('jest-runner');
+
+class MyRunner extends CallbackTestRunner {
+  constructor(globalConfig, context, options) {
+    super(globalConfig, context);
+    this._runnerOptions = options;
+  }
+
+  async runTests(tests, watcher, onStart, onResult, onFailure, options) {
+    // implement test execution using this._runnerOptions
+  }
+}
+
+module.exports = MyRunner;
+```
+
+```ts tab title="my-runner.ts"
+import type {Config} from '@jest/types';
+import type {
+  CallbackTestRunner,
+  OnTestFailure,
+  OnTestStart,
+  OnTestSuccess,
+  Test,
+  TestRunnerContext,
+  TestRunnerOptions,
+  TestWatcher,
+} from 'jest-runner';
+
+export default class MyRunner extends CallbackTestRunner {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    context: TestRunnerContext,
+    private readonly _runnerOptions?: Record<string, unknown>,
+  ) {
+    super(globalConfig, context);
+  }
+
+  async runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void> {
+    // implement test execution using this._runnerOptions
+  }
+}
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.

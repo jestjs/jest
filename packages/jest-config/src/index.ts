@@ -236,6 +236,7 @@ const groupOptions = (
     rootDir: options.rootDir,
     roots: options.roots,
     runner: options.runner,
+    runnerOptions: options.runnerOptions,
     runtime: options.runtime,
     sandboxInjectedGlobals: options.sandboxInjectedGlobals,
     setupFiles: options.setupFiles,

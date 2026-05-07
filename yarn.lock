@@ -4265,6 +4265,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     ci-info: "npm:^4.2.0"
     exit-x: "npm:^0.2.2"
+    fast-json-stable-stringify: "npm:^2.1.0"
     graceful-fs: "npm:^4.2.11"
     jest-changed-files: "workspace:*"
     jest-config: "workspace:*"

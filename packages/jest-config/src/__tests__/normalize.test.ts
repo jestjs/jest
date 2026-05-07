@@ -1635,6 +1635,105 @@ describe('runner', () => {
       ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
+
+  it('resolves runner from tuple config [path, options]', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {workers: 4}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({workers: 4});
+  });
+
+  it('sets runnerOptions to empty object for string runner', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: 'my-runner-foo',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('sets runnerOptions to empty object when tuple has no options', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('throws error when runner options is not a plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', 'invalid' as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner options is an array', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', [] as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner tuple has empty string', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['', {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner tuple has non-string first element', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: [123, {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner options is a non-plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', new Date() as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
 });
 
 describe('watchPlugins', () => {

@@ -137,7 +137,10 @@ export const initialOptions: Config.InitialOptions = {
   rootDir: '/',
   roots: ['<rootDir>'],
   runTestsByPath: false,
-  runner: 'jest-runner',
+  runner: multipleValidOptions('jest-runner', [
+    'jest-runner',
+    ['jest-runner', {option: true}],
+  ]) as unknown as string,
   runtime: '<rootDir>',
   sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],
@@ -299,7 +302,10 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   restoreMocks: false,
   rootDir: '/',
   roots: ['<rootDir>'],
-  runner: 'jest-runner',
+  runner: multipleValidOptions('jest-runner', [
+    'jest-runner',
+    ['jest-runner', {option: true}],
+  ]) as unknown as string,
   runtime: '<rootDir>',
   sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],

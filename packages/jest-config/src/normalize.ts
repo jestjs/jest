@@ -705,10 +705,39 @@ export default async function normalize(
       }
       case 'runner': {
         const option = oldOptions[key];
+        let runnerPath: string | undefined;
+        if (Array.isArray(option)) {
+          if (typeof option[0] !== 'string' || option[0].length === 0) {
+            throw createConfigError(
+              '  Runner must be a string or a tuple [string, object].\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          runnerPath = option[0];
+          const runnerOptions = option[1];
+          if (
+            runnerOptions != null &&
+            (typeof runnerOptions !== 'object' ||
+              Array.isArray(runnerOptions) ||
+              Object.getPrototypeOf(runnerOptions) !== Object.prototype)
+          ) {
+            throw createConfigError(
+              '  Runner options must be a plain object.\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          newOptions.runnerOptions =
+            (runnerOptions as Record<string, unknown>) ?? {};
+        } else {
+          runnerPath = option;
+          newOptions.runnerOptions = {};
+        }
         value =
-          option &&
+          runnerPath &&
           resolveRunner(newOptions.resolver, {
-            filePath: option,
+            filePath: runnerPath,
             requireResolveFunction: requireResolve,
             rootDir: options.rootDir,
           });
@@ -910,7 +939,11 @@ export default async function normalize(
           value = oldOptions[key];
         } else {
           value = {
-            color: getDisplayNameColor(options.runner),
+            color: getDisplayNameColor(
+              Array.isArray(options.runner)
+                ? options.runner[0]
+                : options.runner,
+            ),
             name: displayName,
           };
         }
@@ -1052,6 +1085,10 @@ export default async function normalize(
 
   if (newOptions.runner === DEFAULT_CONFIG.runner) {
     newOptions.runner = require.resolve(newOptions.runner);
+  }
+
+  if (newOptions.runnerOptions == null) {
+    newOptions.runnerOptions = {};
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);

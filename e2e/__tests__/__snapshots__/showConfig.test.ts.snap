@@ -66,6 +66,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "<<REPLACED_ROOT_DIR>>"
       ],
       "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
+      "runnerOptions": {},
       "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],

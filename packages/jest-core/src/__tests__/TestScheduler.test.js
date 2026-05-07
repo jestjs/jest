@@ -618,3 +618,108 @@ test('should set runInBand to not run in serial', async () => {
   expect(mockParallelRunner.runTests).toHaveBeenCalled();
   expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeFalsy();
 });
+
+test('passes runnerOptions as third argument to runner constructor', async () => {
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
+  const test = {
+    context: {
+      config: makeProjectConfig({
+        moduleFileExtensions: ['.js'],
+        runner: 'jest-runner-serial',
+        runnerOptions: {workers: 2},
+        transform: [],
+      }),
+      hasteFS: {
+        matchFiles: jest.fn(() => []),
+      },
+    },
+    path: './test/path.js',
+  };
+
+  await scheduler.scheduleTests([test], {isInterrupted: jest.fn()});
+
+  const RunnerConstructor = require('jest-runner-serial');
+  expect(RunnerConstructor).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.anything(),
+    {workers: 2},
+  );
+});
+
+test('creates separate runner instances for same runner with different options', async () => {
+  const RunnerConstructor = require('jest-runner-serial');
+  RunnerConstructor.mockClear();
+
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
+  const context1 = {
+    config: makeProjectConfig({
+      moduleFileExtensions: ['.js'],
+      runner: 'jest-runner-serial',
+      runnerOptions: {mode: 'fast'},
+      transform: [],
+    }),
+    hasteFS: {
+      matchFiles: jest.fn(() => []),
+    },
+  };
+  const context2 = {
+    config: makeProjectConfig({
+      moduleFileExtensions: ['.js'],
+      runner: 'jest-runner-serial',
+      runnerOptions: {mode: 'slow'},
+      transform: [],
+    }),
+    hasteFS: {
+      matchFiles: jest.fn(() => []),
+    },
+  };
+  const test1 = {
+    context: context1,
+    path: './test/path1.js',
+  };
+  const test2 = {
+    context: context2,
+    path: './test/path2.js',
+  };
+
+  await scheduler.scheduleTests([test1, test2], {isInterrupted: jest.fn()});
+
+  expect(RunnerConstructor).toHaveBeenCalledTimes(2);
+});
+
+test('deduplicates runners with nested options in different key order', async () => {
+  const RunnerConstructor = require('jest-runner-serial');
+  RunnerConstructor.mockClear();
+
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
+  const sharedContext = {
+    config: makeProjectConfig({
+      moduleFileExtensions: ['.js'],
+      runner: 'jest-runner-serial',
+      runnerOptions: {list: [1, 2, 3], nested: {a: 1, b: 2}},
+      transform: [],
+    }),
+    hasteFS: {
+      matchFiles: jest.fn(() => []),
+    },
+  };
+  const test1 = {
+    context: sharedContext,
+    path: './test/path1.js',
+  };
+  const test2 = {
+    context: sharedContext,
+    path: './test/path2.js',
+  };
+
+  await scheduler.scheduleTests([test1, test2], {isInterrupted: jest.fn()});
+
+  // Same context = same runner, only instantiated once
+  expect(RunnerConstructor).toHaveBeenCalledTimes(1);
+  // Verify nested options were passed correctly
+  expect(RunnerConstructor).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.anything(),
+    {list: [1, 2, 3], nested: {a: 1, b: 2}},
+  );
+});

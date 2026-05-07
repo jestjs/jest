@@ -229,7 +229,7 @@ export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
 export type InitialProjectOptions = Pick<
-  InitialOptions & {cwd?: string},
+  InitialOptions & {cwd?: string; runnerOptions?: Record<string, unknown>},
   keyof ProjectConfig
 >;
 
@@ -377,6 +377,7 @@ export type ProjectConfig = {
   rootDir: string;
   roots: Array<string>;
   runner: string;
+  runnerOptions: Record<string, unknown>;
   runtime?: string;
   sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
