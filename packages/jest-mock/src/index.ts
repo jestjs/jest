@@ -888,7 +888,19 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
+      // One dispatcher per mock, captured in closure. We compare it against
+      // mockConfig.mockImpl by identity to detect whether the dispatcher is
+      // currently installed or whether some other call (e.g. mockImplementation)
+      // replaced it.
+      const dispatcherImpl = this._makeWhenDispatcherImpl(f);
+      f.getMockImplementation = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        // The dispatcher is internal — surface the user's underlying impl.
+        if (mockConfig.mockImpl === dispatcherImpl) {
+          return mockConfig.fallbackImpl as T;
+        }
+        return mockConfig.mockImpl as T;
+      };
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -999,11 +1011,6 @@ export class ModuleMocker {
         return f;
       };
 
-      // One dispatcher per mock, captured in closure. We compare it against
-      // mockConfig.mockImpl by identity to detect whether the dispatcher is
-      // currently installed or whether some other call (e.g. mockImplementation)
-      // replaced it.
-      const dispatcherImpl = this._makeWhenDispatcherImpl(f);
       f.whenCalledWith = (...args: FunctionParameters<T>) => {
         const mockConfig = this._ensureMockConfig(f);
 

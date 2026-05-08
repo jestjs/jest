@@ -275,6 +275,19 @@ describe('whenCalledWith', () => {
     expect(fn({a: 1, b: 2})).toBe('persistent');
   });
 
+  it('getMockImplementation returns the user impl, not the internal dispatcher', () => {
+    const fn = moduleMocker.fn();
+    expect(fn.getMockImplementation()).toBeUndefined();
+
+    fn.whenCalledWith('x').mockReturnValue('matched');
+    expect(fn.getMockImplementation()).toBeUndefined();
+
+    const userImpl = () => 'user';
+    fn.mockImplementation(userImpl);
+    fn.whenCalledWith('y').mockReturnValue('also-matched');
+    expect(fn.getMockImplementation()).toBe(userImpl);
+  });
+
   it('preserves prior registrations when a later mockImplementation re-arms the dispatcher', () => {
     const fn = moduleMocker.fn();
     fn.whenCalledWith('x').mockReturnValue('X');
