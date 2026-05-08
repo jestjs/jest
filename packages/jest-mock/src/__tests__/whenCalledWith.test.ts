@@ -288,6 +288,32 @@ describe('whenCalledWith', () => {
     expect(fn.getMockImplementation()).toBe(userImpl);
   });
 
+  it('forwards `new fn(...)` to an arrow-fn fallback without throwing', () => {
+    const fn = moduleMocker.fn();
+    fn.mockImplementation((name: string) => ({built: name}));
+    fn.whenCalledWith('match').mockReturnValue({matched: true});
+
+    const made = new (fn as unknown as new (name: string) => {built: string})(
+      'non-match',
+    );
+    expect(made).toEqual({built: 'non-match'});
+  });
+
+  it('falls through `new spy(...)` to the original method on a non-matching arg', () => {
+    const target = {
+      factory(name: string) {
+        return {created: name};
+      },
+    };
+    const spy = moduleMocker.spyOn(target, 'factory');
+    spy.whenCalledWith('match').mockImplementation(() => ({matched: true}));
+
+    const made = new (spy as unknown as new (name: string) => {
+      created: string;
+    })('non-match');
+    expect(made).toEqual({created: 'non-match'});
+  });
+
   it('preserves prior registrations when a later mockImplementation re-arms the dispatcher', () => {
     const fn = moduleMocker.fn();
     fn.whenCalledWith('x').mockReturnValue('X');

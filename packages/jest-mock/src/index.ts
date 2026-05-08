@@ -658,20 +658,10 @@ export class ModuleMocker {
     //   3. If no matching branch has any active impl, fall through to
     //      `fallbackImpl` — whatever mockImpl was present when this
     //      dispatcher took over (e.g. spyOn's original-method bridge).
-    // Construct calls (`new fn(...)`) go through `mockImpl.apply` in
-    // `mockConstructor`, which loses the `new`-ness. Detect the construct case
-    // by checking whether `this` is an instance of the parent mock and forward
-    // via `Reflect.construct` so the chosen sub-mock records the call on its
-    // own `mock.instances` and runs its construct branch.
-    const fire = function (
-      this: unknown,
-      target: Function,
-      callArgs: Parameters<T>,
-    ): unknown {
-      return this instanceof f
-        ? Reflect.construct(target, callArgs)
-        : target.apply(this, callArgs);
-    };
+    // Targets are always invoked via `.apply` (never `Reflect.construct`),
+    // mirroring `mockConstructor`'s own handling of `new` and keeping the
+    // behavior consistent for non-constructable targets (arrow fn fallbacks,
+    // method-shorthand spies, etc.).
     return function whenCalledWithDispatcherImpl(
       this: unknown,
       ...callArgs: Parameters<T>
@@ -685,18 +675,18 @@ export class ModuleMocker {
         branch => ensureConfig(branch.subMock).specificMockImpls.length > 0,
       );
       if (onceBranch) {
-        return fire.call(this, onceBranch.subMock, callArgs);
+        return onceBranch.subMock.apply(this, callArgs);
       }
       // (2) Reverse walk for last-registered persistent.
       for (let i = matching.length - 1; i >= 0; i--) {
         const branch = matching[i];
         if (ensureConfig(branch.subMock).mockImpl !== undefined) {
-          return fire.call(this, branch.subMock, callArgs);
+          return branch.subMock.apply(this, callArgs);
         }
       }
       // (3) Fall through to the pre-dispatcher impl.
       if (config.fallbackImpl !== undefined) {
-        return fire.call(this, config.fallbackImpl, callArgs);
+        return config.fallbackImpl.apply(this, callArgs);
       }
       return undefined;
     };
