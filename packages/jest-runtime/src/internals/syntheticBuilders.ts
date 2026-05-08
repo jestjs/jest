@@ -140,9 +140,8 @@ export function buildCjsAsEsmSyntheticModule(
       for (const exportName of cjsExports) {
         this.setExport(exportName, (cjs as any)[exportName]);
       }
-      // Always use the whole module.exports as the ESM default, matching Node's
-      // native CJS-from-ESM behavior. We deliberately do not apply the
-      // Babel/Webpack __esModule unwrapping convention here.
+      // module.exports is the ESM default, matching Node's CJS-from-ESM behavior.
+      // __esModule is not honored — see Node docs on named exports from CJS.
       this.setExport('default', cjs);
     },
     {context, identifier: modulePath},
