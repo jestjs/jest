@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ModuleMocker} from '../';
+import {type Mock, ModuleMocker} from '../';
 
 describe('whenCalledWith', () => {
   let moduleMocker: ModuleMocker;
@@ -289,13 +289,11 @@ describe('whenCalledWith', () => {
   });
 
   it('forwards `new fn(...)` to an arrow-fn fallback without throwing', () => {
-    const fn = moduleMocker.fn();
+    const fn = moduleMocker.fn<(name: string) => {built: string}>();
     fn.mockImplementation((name: string) => ({built: name}));
-    fn.whenCalledWith('match').mockReturnValue({matched: true});
+    fn.whenCalledWith('match').mockReturnValue({built: 'matched'});
 
-    const made = new (fn as unknown as new (name: string) => {built: string})(
-      'non-match',
-    );
+    const made = new fn('non-match');
     expect(made).toEqual({built: 'non-match'});
   });
 
@@ -305,12 +303,12 @@ describe('whenCalledWith', () => {
         return {created: name};
       },
     };
-    const spy = moduleMocker.spyOn(target, 'factory');
-    spy.whenCalledWith('match').mockImplementation(() => ({matched: true}));
+    const spy = moduleMocker.spyOn(target, 'factory') as unknown as Mock<
+      typeof target.factory
+    >;
+    spy.whenCalledWith('match').mockImplementation(name => ({created: name}));
 
-    const made = new (spy as unknown as new (name: string) => {
-      created: string;
-    })('non-match');
+    const made = new spy('non-match');
     expect(made).toEqual({created: 'non-match'});
   });
 
@@ -442,21 +440,21 @@ describe('whenCalledWith', () => {
   });
 
   it('routes constructor calls through the matching sub-mock', () => {
-    const Ctor = moduleMocker.fn();
+    const Ctor = moduleMocker.fn<(arg: string) => {kind: string}>();
     const sentinel = {kind: 'made-by-A'};
     Ctor.whenCalledWith('A').mockImplementation(() => sentinel);
 
-    const made = new (Ctor as new (arg: string) => unknown)('A');
+    const made = new Ctor('A');
     expect(made).toBe(sentinel);
   });
 
   it('records constructor calls on the sub-mock`s mock.instances', () => {
-    const Ctor = moduleMocker.fn();
+    const Ctor = moduleMocker.fn<(arg: string) => {kind: string}>();
     const branch = Ctor.whenCalledWith('A').mockImplementation(() => ({
       kind: 'made',
     }));
 
-    const made = new (Ctor as new (arg: string) => unknown)('A');
+    const made = new Ctor('A');
 
     expect(made).toEqual({kind: 'made'});
     expect(branch.mock.instances).toHaveLength(1);
