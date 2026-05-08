@@ -978,6 +978,7 @@ export class ModuleMocker {
         const mockConfig = this._ensureMockConfig(f);
         const previousImplementation = mockConfig.mockImpl;
         const previousSpecificImplementations = mockConfig.specificMockImpls;
+        const previousFallbackImpl = mockConfig.fallbackImpl;
         mockConfig.mockImpl = fn;
         mockConfig.specificMockImpls = [];
 
@@ -987,10 +988,12 @@ export class ModuleMocker {
           return returnedValue.then(() => {
             mockConfig.mockImpl = previousImplementation;
             mockConfig.specificMockImpls = previousSpecificImplementations;
+            mockConfig.fallbackImpl = previousFallbackImpl;
           });
         } else {
           mockConfig.mockImpl = previousImplementation;
           mockConfig.specificMockImpls = previousSpecificImplementations;
+          mockConfig.fallbackImpl = previousFallbackImpl;
         }
       }
 
