@@ -102,8 +102,7 @@ export function buildCoreSyntheticModule(
 // Builds a SyntheticModule wrapping a CJS module's `module.exports` for
 // import-from-ESM. Merges cjs-module-lexer's static export list with the
 // runtime keys of the actual exports object (lexer can miss
-// `Object.assign`-style patterns). Honors the Babel/Webpack `__esModule`
-// convention: when set, `cjs.default` becomes the ESM `default`.
+// `Object.assign`-style patterns).
 export function buildCjsAsEsmSyntheticModule(
   from: string,
   modulePath: string,
@@ -126,9 +125,8 @@ export function buildCjsAsEsmSyntheticModule(
   ]);
 
   const cjsExports = [...allCandidates].filter(exportName => {
-    // we don't wanna respect any exports _named_ default as a named export
-    // __esModule is a Babel/Webpack metadata flag, not a real export
-    if (exportName === 'default' || exportName === '__esModule') {
+    // `default` is handled separately below as the whole module.exports.
+    if (exportName === 'default') {
       return false;
     }
     return cjsRecord
@@ -136,26 +134,16 @@ export function buildCjsAsEsmSyntheticModule(
       : false;
   });
 
-  // Honors the Babel/Webpack __esModule convention: when the CJS module sets
-  // __esModule and has an explicit .default property, use that as the ESM
-  // default. We only unwrap when 'default' is actually present — packages like
-  // tslib set __esModule without a .default, so without the 'in' guard their
-  // named exports (e.g. __extends) would become unreachable via the default.
-  // Note: Node core never applies this convention; it always exposes the whole
-  // module.exports as the ESM default. Jest diverges intentionally for
-  // backward compatibility with Babel-compiled code.
-  const defaultExport =
-    cjsRecord?.__esModule === true && 'default' in cjsRecord
-      ? cjsRecord.default
-      : cjs;
-
   return new SyntheticModule(
     [...cjsExports, 'default'],
     function () {
       for (const exportName of cjsExports) {
         this.setExport(exportName, (cjs as any)[exportName]);
       }
-      this.setExport('default', defaultExport);
+      // Always use the whole module.exports as the ESM default, matching Node's
+      // native CJS-from-ESM behavior. We deliberately do not apply the
+      // Babel/Webpack __esModule unwrapping convention here.
+      this.setExport('default', cjs);
     },
     {context, identifier: modulePath},
   );

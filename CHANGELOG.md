@@ -6,7 +6,7 @@
 
 ### Fixes
 
-- `[jest-runtime]` Fix CJS→ESM interop regression for packages with `__esModule: true` but no `.default` export (e.g. `tslib`) ([#16143](https://github.com/jestjs/jest/pull/16143))
+- `[jest-runtime]` Align CJS-from-ESM default export with Node: `module.exports` is always the ESM default, `__esModule` unwrapping is no longer applied ([#16143](https://github.com/jestjs/jest/pull/16143))
 
 ## 30.4.0
 

@@ -110,22 +110,25 @@ describe('syntheticBuilders', () => {
       },
     );
 
-    testWithVmEsm('unwraps Babel-style __esModule + default', async () => {
-      const cjs = {__esModule: true, default: {real: 'default'}, named: 'n'};
-      const m = buildCjsAsEsmSyntheticModule(
-        '/from.js',
-        '/mod.cjs',
-        context(),
-        () => cjs,
-        makeCache(['__esModule', 'default', 'named']),
-      );
-      const ns = await evaluate(m);
-      // `__esModule` is a metadata flag, not exposed
-      expect(ns.__esModule).toBeUndefined();
-      // `default` named export is suppressed; the default unwraps to cjs.default
-      expect(ns.default).toEqual({real: 'default'});
-      expect(ns.named).toBe('n');
-    });
+    testWithVmEsm(
+      'uses whole module.exports as default for __esModule CJS (Node-aligned)',
+      async () => {
+        const cjs = {__esModule: true, default: {real: 'default'}, named: 'n'};
+        const m = buildCjsAsEsmSyntheticModule(
+          '/from.js',
+          '/mod.cjs',
+          context(),
+          () => cjs,
+          makeCache(['__esModule', 'default', 'named']),
+        );
+        const ns = await evaluate(m);
+        // default is always the whole module.exports, no __esModule unwrapping
+        expect(ns.default).toBe(cjs);
+        // __esModule is exposed as a named export, matching Node behavior
+        expect(ns.__esModule).toBe(true);
+        expect(ns.named).toBe('n');
+      },
+    );
 
     testWithVmEsm('handles non-object module.exports', async () => {
       const m = buildCjsAsEsmSyntheticModule(

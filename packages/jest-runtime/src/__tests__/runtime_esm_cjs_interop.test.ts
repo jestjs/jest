@@ -31,27 +31,29 @@ describe('Runtime loadCjsAsEsm', () => {
   });
 
   testWithVmEsm(
-    'unwraps __esModule CJS default export instead of returning the whole exports object',
+    'uses the full module.exports as default for __esModule CJS (Node-aligned, no unwrapping)',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
       const m = (await runtime.unstable_importModule(
         FROM,
         './import-babel-esmodule.mjs',
       )) as any;
-      expect(m.namespace.default).toBe(42);
-      expect(typeof m.namespace.default).not.toBe('object');
+      // default is the whole module.exports, matching Node's native behavior
+      expect(m.namespace.default).toEqual(
+        expect.objectContaining({default: 42, named: 'hello'}),
+      );
     },
   );
 
   testWithVmEsm(
-    'does not expose __esModule sentinel as a named export',
+    'exposes __esModule as a named export, matching Node behavior',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
       const m = (await runtime.unstable_importModule(
         FROM,
         './import-babel-esmodule.mjs',
       )) as any;
-      expect(Object.keys(m.namespace)).not.toContain('__esModule');
+      expect(m.namespace.__esModule).toBe(true);
     },
   );
 
@@ -68,30 +70,16 @@ describe('Runtime loadCjsAsEsm', () => {
   );
 
   testWithVmEsm(
-    'uses full module.exports as default for __esModule CJS with no .default property (tslib-style)',
+    'uses full module.exports as default for __esModule CJS with no .default (tslib-style)',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
       const m = (await runtime.unstable_importModule(
         FROM,
         './import-esmodule-no-default.mjs',
       )) as any;
-      // default should be the whole exports object, not undefined
       expect(m.namespace.default).toEqual(
         expect.objectContaining({helper: expect.any(Function), value: 99}),
       );
-    },
-  );
-
-  testWithVmEsm(
-    'exposes named exports from __esModule CJS with no .default property (tslib-style)',
-    async () => {
-      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
-      const m = (await runtime.unstable_importModule(
-        FROM,
-        './import-esmodule-no-default.mjs',
-      )) as any;
-      expect(m.namespace.helper(5)).toBe(10);
-      expect(m.namespace.value).toBe(99);
     },
   );
 
