@@ -5,15 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Tests for the ESM/CJS interoperability code added to jest-runtime:
-//   loadCjsAsEsm - __esModule default-unwrapping, named-export filtering,
-//   and CJS-as-ESM module caching (singleton guarantee).
-//
-// These tests require --experimental-vm-modules and are skipped otherwise.
-// To run:
-//   NODE_OPTIONS=--experimental-vm-modules node ./packages/jest-cli/bin/jest.js \
-//     packages/jest-runtime/src/__tests__/runtime_esm_cjs_interop.test.ts
-
 import * as path from 'path';
 import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 
