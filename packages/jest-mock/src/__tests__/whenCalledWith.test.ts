@@ -115,12 +115,53 @@ describe('whenCalledWith', () => {
     expect(persistentFirst('x')).toBe('B');
     expect(persistentFirst('x')).toBe('B');
 
+    const persistentFirst2 = moduleMocker.fn();
+    persistentFirst2.whenCalledWith('x').mockReturnValue('B');
+    persistentFirst2
+      .whenCalledWith(expect.any(String))
+      .mockReturnValueOnce('A');
+    expect(persistentFirst2('OTHER')).toBe('A');
+    expect(persistentFirst2('x')).toBe('B');
+    expect(persistentFirst2('x')).toBe('B');
+
     const onceFirst = moduleMocker.fn();
     onceFirst.whenCalledWith('x').mockReturnValueOnce('A');
     onceFirst.whenCalledWith(expect.any(String)).mockReturnValue('B');
     expect(onceFirst('x')).toBe('A');
     expect(onceFirst('x')).toBe('B');
     expect(onceFirst('x')).toBe('B');
+  });
+
+  it('drains a once on a wildcard before a literal persistent (and vice versa)', () => {
+    const persistentFirst = moduleMocker.fn();
+    persistentFirst.whenCalledWith(expect.any(String)).mockReturnValue('B');
+    persistentFirst.whenCalledWith('x').mockReturnValueOnce('A');
+    expect(persistentFirst('OTHER')).toBe('B');
+    expect(persistentFirst('x')).toBe('A');
+    expect(persistentFirst('x')).toBe('B');
+    expect(persistentFirst('x')).toBe('B');
+
+    const persistentFirst2 = moduleMocker.fn();
+    persistentFirst2.whenCalledWith(expect.any(String)).mockReturnValue('B');
+    persistentFirst2.whenCalledWith('x').mockReturnValueOnce('A');
+    expect(persistentFirst2('OTHER')).toBe('B');
+    expect(persistentFirst2('x')).toBe('A');
+    expect(persistentFirst2('x')).toBe('B');
+    expect(persistentFirst2('x')).toBe('B');
+
+    const onceFirst = moduleMocker.fn();
+    onceFirst.whenCalledWith(expect.any(String)).mockReturnValueOnce('A');
+    onceFirst.whenCalledWith('x').mockReturnValue('B');
+    expect(onceFirst('x')).toBe('A');
+    expect(onceFirst('x')).toBe('B');
+    expect(onceFirst('x')).toBe('B');
+
+    const onceFirst2 = moduleMocker.fn();
+    onceFirst2.whenCalledWith(expect.any(String)).mockReturnValueOnce('A');
+    onceFirst2.whenCalledWith('x').mockReturnValue('B');
+    expect(onceFirst2('OTHER')).toBe('A');
+    expect(onceFirst2('x')).toBe('B');
+    expect(onceFirst2('x')).toBe('B');
   });
 
   it('keeps the wildcard branch live for non-literal calls when literal was registered first', () => {
