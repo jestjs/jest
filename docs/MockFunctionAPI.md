@@ -569,8 +569,7 @@ fn({user: 'alice'}); // 'user'
 
 Argument matching uses the same equality as [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-):
 
-- **Strict arity** — `whenCalledWith('a')` matches `fn('a')`, but **not** `fn('a', 'b')` or `fn()`.
-- **Trailing `undefined` is OK** — `whenCalledWith(1)` matches `fn(1, undefined)` (mirrors Jest's existing call-tracking semantics).
+- **Arity** — `whenCalledWith('a')` matches `fn('a')` and `fn('a', undefined)`, but **not** `fn('a', 'b')` or `fn()`. (Trailing `undefined` is allowed for parity with Jest's existing call-tracking semantics.)
 - **Deep equality** — objects and arrays are compared structurally.
 
 #### Multiple matchers
@@ -617,7 +616,7 @@ fetchUser.whenCalledWith(2).mockRejectedValue(new Error('not found'));
 
 #### Repeat calls return fresh branches
 
-Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) — the most recently registered persistent wins for matching calls, and queued onces drain in registration order across all matching branches:
+Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) — the most recently registered "persistent" wins for matching calls, and queued "onces" drain in registration order across all matching branches:
 
 ```js
 fn.whenCalledWith('x').mockReturnValueOnce('A');

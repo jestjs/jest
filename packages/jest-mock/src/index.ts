@@ -314,7 +314,7 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
 
 type WhenCalledWithRegistration = {
   matchers: ReadonlyArray<unknown>;
-  subMock: Function;
+  subMock: Mock;
 };
 
 type MockFunctionConfig = {
@@ -640,7 +640,7 @@ export class ModuleMocker {
     const config = this._mockConfigRegistry.get(f);
     if (!config) return;
     for (const branch of config.whenCalledWithRegistrations) {
-      (branch.subMock as Mock).mockReset();
+      branch.subMock.mockReset();
     }
   }
 
@@ -682,8 +682,7 @@ export class ModuleMocker {
       );
       // (1) Forward find: first matching branch with a queued once.
       const onceBranch = matching.find(
-        branch =>
-          ensureConfig(branch.subMock as Mock).specificMockImpls.length > 0,
+        branch => ensureConfig(branch.subMock).specificMockImpls.length > 0,
       );
       if (onceBranch) {
         return fire.call(this, onceBranch.subMock, callArgs);
@@ -691,7 +690,7 @@ export class ModuleMocker {
       // (2) Reverse walk for last-registered persistent.
       for (let i = matching.length - 1; i >= 0; i--) {
         const branch = matching[i];
-        if (ensureConfig(branch.subMock as Mock).mockImpl !== undefined) {
+        if (ensureConfig(branch.subMock).mockImpl !== undefined) {
           return fire.call(this, branch.subMock, callArgs);
         }
       }
