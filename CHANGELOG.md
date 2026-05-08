@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-runtime]` Fix named imports from CJS modules whose `module.exports` is a function with own-property exports
+- `[jest-runtime]` Fix named imports from CJS modules whose `module.exports` is a function with own-property exports ([#16150](https://github.com/jestjs/jest/pull/16150))
 
 ## 30.4.1
 
