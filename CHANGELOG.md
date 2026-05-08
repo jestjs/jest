@@ -4,6 +4,10 @@
 
 - `[jest-config, jest-core, jest-runner, jest-schemas, jest-types]` Allow custom runner configuration options via tuple format `['runner-path', {options}]` ([#16141](https://github.com/jestjs/jest/pull/16141))
 
+### Fixes
+
+- `[jest-runtime]` Fix CJS→ESM interop regression for packages with `__esModule: true` but no `.default` export (e.g. `tslib`) ([#16143](https://github.com/jestjs/jest/pull/16143))
+
 ## 30.4.0
 
 ### Features

@@ -68,6 +68,34 @@ describe('Runtime loadCjsAsEsm', () => {
   );
 
   testWithVmEsm(
+    'uses full module.exports as default for __esModule CJS with no .default property (tslib-style)',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esmodule-no-default.mjs',
+      )) as any;
+      // default should be the whole exports object, not undefined
+      expect(m.namespace.default).toEqual(
+        expect.objectContaining({helper: expect.any(Function), value: 99}),
+      );
+    },
+  );
+
+  testWithVmEsm(
+    'exposes named exports from __esModule CJS with no .default property (tslib-style)',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esmodule-no-default.mjs',
+      )) as any;
+      expect(m.namespace.helper(5)).toBe(10);
+      expect(m.namespace.value).toBe(99);
+    },
+  );
+
+  testWithVmEsm(
     'uses the full module.exports as default for plain CJS',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
