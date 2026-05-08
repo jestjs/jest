@@ -130,6 +130,27 @@ describe('syntheticBuilders', () => {
       },
     );
 
+    testWithVmEsm(
+      'exposes own-property named exports when module.exports is a function',
+      async () => {
+        // Pattern: `module.exports = function parse() {}; parse.helper = ...`
+        function parse() {}
+        (parse as any).helper = () => 'h';
+        (parse as any).splitCookiesString = () => ['a', 'b'];
+        const m = buildCjsAsEsmSyntheticModule(
+          '/from.js',
+          '/mod.cjs',
+          context(),
+          () => parse,
+          makeCache(['helper', 'splitCookiesString']),
+        );
+        const ns = await evaluate(m);
+        expect(ns.default).toBe(parse);
+        expect(ns.helper).toBe((parse as any).helper);
+        expect(ns.splitCookiesString).toBe((parse as any).splitCookiesString);
+      },
+    );
+
     testWithVmEsm('handles non-object module.exports', async () => {
       const m = buildCjsAsEsmSyntheticModule(
         '/from.js',

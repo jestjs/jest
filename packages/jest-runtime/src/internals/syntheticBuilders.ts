@@ -114,9 +114,10 @@ export function buildCjsAsEsmSyntheticModule(
   const parsedExports = cjsExportsCache.getExportsOf(from, modulePath);
 
   // CJS modules can legally set `module.exports` to `null` or a primitive.
+  // Functions are also valid (e.g. `module.exports = fn; fn.helper = ...`).
   const cjsRecord =
-    typeof cjs === 'object' && cjs !== null
-      ? (cjs as Record<string, unknown>)
+    cjs !== null && (typeof cjs === 'object' || typeof cjs === 'function')
+      ? cjs
       : null;
 
   const allCandidates = new Set([
@@ -126,19 +127,19 @@ export function buildCjsAsEsmSyntheticModule(
 
   const cjsExports = [...allCandidates].filter(exportName => {
     // `default` is handled separately below as the whole module.exports.
-    if (exportName === 'default') {
+    if (exportName === 'default' || cjsRecord == null) {
       return false;
     }
-    return cjsRecord
-      ? Object.hasOwnProperty.call(cjsRecord, exportName)
-      : false;
+    return Object.hasOwn(cjsRecord, exportName);
   });
 
   return new SyntheticModule(
     [...cjsExports, 'default'],
     function () {
-      for (const exportName of cjsExports) {
-        this.setExport(exportName, (cjs as any)[exportName]);
+      if (cjsRecord != null) {
+        for (const exportName of cjsExports) {
+          this.setExport(exportName, Reflect.get(cjsRecord, exportName));
+        }
       }
       // module.exports is the ESM default, matching Node's CJS-from-ESM behavior.
       // __esModule is not honored — see Node docs on named exports from CJS.

@@ -1,5 +1,11 @@
 ## main
 
+## 30.4.2
+
+### Fixes
+
+- `[jest-runtime]` Fix named imports from CJS modules whose `module.exports` is a function with own-property exports
+
 ## 30.4.1
 
 ### Features

@@ -7,6 +7,10 @@
 
 import greet, {helper} from '../babel-style-default.cjs';
 import plainDefault, {multiply, value} from '../plain-cjs.cjs';
+import fnDefault, {
+  helper as fnHelper,
+  splitCookiesString,
+} from '../fn-exports.cjs';
 import {getCount as countA, increment as incA} from '../importer-a.mjs';
 import {getCount as countB, increment as incB} from '../importer-b.mjs';
 
@@ -36,6 +40,18 @@ test('default import of plain CJS is the whole module.exports object', () => {
 test('named imports from plain CJS work', () => {
   expect(value).toBe(99);
   expect(multiply(6, 7)).toBe(42);
+});
+
+// ── CJS with function module.exports ─────────────────────────────────────────
+
+test('default import of function-export CJS is the function itself', () => {
+  expect(typeof fnDefault).toBe('function');
+  expect(fnDefault('x')).toEqual({input: 'x'});
+});
+
+test('named imports from function-export CJS work', () => {
+  expect(splitCookiesString('a,b')).toEqual(['a', 'b']);
+  expect(fnHelper(21)).toBe(42);
 });
 
 // ── CJS-as-ESM caching (singleton) ───────────────────────────────────────────
