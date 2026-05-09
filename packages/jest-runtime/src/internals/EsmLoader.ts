@@ -14,13 +14,12 @@ import {
   type Module as VMModule,
 } from 'node:vm';
 import type {JestEnvironment, JestImportMeta} from '@jest/environment';
-import {invariant, isError, isPromise} from 'jest-util';
+import {invariant, isPromise} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
 import type {JestGlobals} from './JestGlobals';
 import type {MockState} from './MockState';
-import {isCjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
 import {type Resolution, isWasm} from './Resolution';
 import type {TestState} from './TestState';
@@ -701,14 +700,20 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !this.shouldLoadAsEsm(resolved)
     ) {
-      const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-        this.buildCjsAsEsmSyntheticModule(
-          referencingIdentifier,
-          resolved,
-          context,
-        ),
+      const synthetic = this.buildCjsAsEsmSyntheticModule(
+        referencingIdentifier,
+        resolved,
+        context,
       );
-      return ok ? {cacheKey, enqueue: null, modulePath: resolved} : null;
+      if (synthetic !== null) {
+        const ok = this.tryCommitSynthetic(
+          cacheKey,
+          registry,
+          scratch,
+          () => synthetic,
+        );
+        return ok ? {cacheKey, enqueue: null, modulePath: resolved} : null;
+      }
     }
 
     return {
@@ -910,7 +915,7 @@ export class EsmLoader {
     from: string,
     modulePath: string,
     context: VMContext,
-  ): SyntheticModule {
+  ): SyntheticModule | null {
     return buildCjsAsEsmSyntheticModule(
       from,
       modulePath,
@@ -1280,21 +1285,13 @@ export class EsmLoader {
       return cached as SyntheticModule | Promise<VMModule>;
     }
 
-    let synthetic: SyntheticModule;
-    try {
-      synthetic = this.buildCjsAsEsmSyntheticModule(from, modulePath, context);
-    } catch (error) {
-      if (!isCjsParseError(error)) {
-        throw error;
-      }
-      // The file may contain ESM syntax with no ESM marker (.mjs /
-      // "type":"module") - try loading as native ESM. If the ESM parser also
-      // rejects it, the original CJS error was the genuine one.
-      return this.loadEsmModule(modulePath).catch(esmError => {
-        throw isError(esmError) && esmError.name === 'SyntaxError'
-          ? error
-          : esmError;
-      });
+    const synthetic = this.buildCjsAsEsmSyntheticModule(
+      from,
+      modulePath,
+      context,
+    );
+    if (synthetic === null) {
+      return this.loadEsmModule(modulePath);
     }
 
     const evaluated = evaluateSyntheticModule(synthetic);

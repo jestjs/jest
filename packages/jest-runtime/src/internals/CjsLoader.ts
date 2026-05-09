@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import type {Module as VMModule} from 'node:vm';
 import type {JestEnvironment, Module} from '@jest/environment';
 import type {MockState} from './MockState';
-import {type ModuleExecutor, isCjsParseError} from './ModuleExecutor';
+import {CjsParseError, type ModuleExecutor} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
 import type {Resolution} from './Resolution';
 import type {TestState} from './TestState';
@@ -152,12 +152,12 @@ export class CjsLoader {
     } catch (error) {
       moduleRegistry.delete(modulePath);
       // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
-      if (supportsSyncEvaluate && isCjsParseError(error)) {
+      if (supportsSyncEvaluate && error instanceof CjsParseError) {
         try {
           return this.requireEsm<T>(modulePath);
         } catch (esmError) {
           if (esmError instanceof Error && esmError.name === 'SyntaxError') {
-            throw error;
+            throw error.cause;
           }
           throw esmError;
         }

@@ -147,6 +147,30 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     },
   );
 
+  // node_modules files are not transformed, so a .js file with ESM syntax
+  // has no "type":"module" and compileFunction rejects it. The fallback must
+  // detect the ESM syntax and load it as a native SourceTextModule.
+  testWithVmEsm(
+    'falls back to native ESM for an untransformed node_modules .js file with ESM syntax',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esm-no-marker.mjs',
+      )) as any;
+      expect(m.namespace.esmNoMarkerValue).toBe(456);
+    },
+  );
+
+  testWithSyncEsm(
+    'require()s an untransformed node_modules .js file with ESM syntax',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, 'esm-no-marker');
+      expect(ns.esmNoMarkerValue).toBe(456);
+    },
+  );
+
   // Runtime SyntaxError from inside the CJS body (vs. a parse-time one)
   // must not trigger the ESM fallback - surfacing the original error
   // unchanged is the right behavior.
