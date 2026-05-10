@@ -9,7 +9,6 @@ import {SyntheticModule, type Context as VMContext} from 'node:vm';
 import {invariant} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
-import {CjsParseError} from './ModuleExecutor';
 
 // Build a SyntheticModule from a plain exports record. The set of names and
 // the value *references* are snapshotted at construction time, so later
@@ -103,24 +102,17 @@ export function buildCoreSyntheticModule(
 // Builds a SyntheticModule wrapping a CJS module's `module.exports` for
 // import-from-ESM. Merges cjs-module-lexer's static export list with the
 // runtime keys of the actual exports object (lexer can miss
-// `Object.assign`-style patterns). Returns null when CJS parsing fails and
-// es-module-lexer confirms ESM syntax — callers fall back to loadEsmModule.
+// `Object.assign`-style patterns). Throws CjsParseError when the file has
+// ESM syntax but no ESM marker — callers catch it and fall back to loadEsmModule.
 export function buildCjsAsEsmSyntheticModule(
   from: string,
   modulePath: string,
   context: VMContext,
   requireModuleOrMock: (from: string, moduleName: string) => unknown,
   cjsExportsCache: Pick<CjsExportsCache, 'getExportsOf'>,
-): SyntheticModule | null {
-  let cjs: unknown;
-  let parsedExports: Set<string>;
-  try {
-    cjs = requireModuleOrMock(from, modulePath);
-    parsedExports = cjsExportsCache.getExportsOf(from, modulePath);
-  } catch (error) {
-    if (!(error instanceof CjsParseError)) throw error;
-    return null;
-  }
+): SyntheticModule {
+  const cjs = requireModuleOrMock(from, modulePath);
+  const parsedExports = cjsExportsCache.getExportsOf(from, modulePath);
 
   // CJS modules can legally set `module.exports` to `null` or a primitive.
   // Functions are also valid (e.g. `module.exports = fn; fn.helper = ...`).

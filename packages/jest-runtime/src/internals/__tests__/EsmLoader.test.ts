@@ -108,7 +108,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
     const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-    expect(result).toBeNull();
+    expect(result).toBe('load-async');
     expect(stubs.logFormattedReferenceError).toHaveBeenCalledWith(
       expect.stringContaining('torn down'),
     );
@@ -149,7 +149,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       expect(stashed.status).toBe('unlinked');
       esmRegistry.set('/m.mjs', stashed);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
+      expect(result).toBe('load-async');
     },
   );
 
@@ -258,7 +258,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       const {esmRegistry, loader} = makeLoader();
       esmRegistry.set('/m.mjs', Promise.resolve());
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
+      expect(result).toBe('load-async');
     },
   );
 
@@ -273,7 +273,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         } as unknown as jest.Mocked<TransformCache>,
       });
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
+      expect(result).toBe('load-async');
       expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
     },
   );
@@ -329,7 +329,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         } as unknown as jest.Mocked<TransformCache>,
       });
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
+      expect(result).toBe('load-async');
     },
   );
 });
@@ -356,7 +356,7 @@ describe('EsmLoader bridges', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBeNull();
+      expect(result).not.toBe('load-async');
       expect(stubs.requireModuleOrMock).toHaveBeenCalledWith(
         '/entry.mjs',
         '/dep.cjs',
@@ -439,7 +439,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).toBeNull();
+      expect(result).toBe('load-async');
     },
   );
 
@@ -466,7 +466,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBeNull();
+      expect(result).not.toBe('load-async');
       expect(factory).toHaveBeenCalled();
       expect((context as any).__mocked).toBe('value');
     },

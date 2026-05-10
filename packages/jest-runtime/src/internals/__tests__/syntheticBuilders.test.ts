@@ -102,7 +102,7 @@ describe('syntheticBuilders', () => {
           context(),
           requireModuleOrMock,
           makeCache(['foo', 'bar']),
-        )!;
+        );
         const ns = await evaluate(m);
         expect(ns.foo).toBe(1);
         expect(ns.bar).toBe(2);
@@ -120,7 +120,7 @@ describe('syntheticBuilders', () => {
           context(),
           () => cjs,
           makeCache(['__esModule', 'default', 'named']),
-        )!;
+        );
         const ns = await evaluate(m);
         // default is always the whole module.exports, no __esModule unwrapping
         expect(ns.default).toBe(cjs);
@@ -143,7 +143,7 @@ describe('syntheticBuilders', () => {
           context(),
           () => parse,
           makeCache(['helper', 'splitCookiesString']),
-        )!;
+        );
         const ns = await evaluate(m);
         expect(ns.default).toBe(parse);
         expect(ns.helper).toBe((parse as any).helper);
@@ -158,7 +158,7 @@ describe('syntheticBuilders', () => {
         context(),
         () => null,
         makeCache([]),
-      )!;
+      );
       const ns = await evaluate(m);
       expect(ns.default).toBeNull();
     });
@@ -175,7 +175,7 @@ describe('syntheticBuilders', () => {
           context(),
           () => cjs,
           makeCache(['foo']),
-        )!;
+        );
         const ns = await evaluate(m);
         expect(ns.foo).toBe(1);
         expect(ns.bar).toBe(2);
