@@ -14,7 +14,7 @@ import {
   type Module as VMModule,
 } from 'node:vm';
 import type {JestEnvironment, JestImportMeta} from '@jest/environment';
-import {invariant, isPromise} from 'jest-util';
+import {invariant, isError, isPromise} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
@@ -1299,12 +1299,28 @@ export class EsmLoader {
       synthetic = this.buildCjsAsEsmSyntheticModule(from, modulePath, context);
     } catch (error) {
       if (!(error instanceof CjsParseError)) throw error;
-      return this.loadEsmModule(modulePath);
+      return this.loadCjsAsEsmFallback(modulePath, error);
     }
 
     const evaluated = evaluateSyntheticModule(synthetic);
     registry.set(modulePath, evaluated);
     return evaluated;
+  }
+
+  private async loadCjsAsEsmFallback(
+    modulePath: string,
+    cjsParseError: CjsParseError,
+  ): Promise<VMModule> {
+    try {
+      return await this.loadEsmModule(modulePath);
+    } catch (esmError) {
+      // Both parsers rejected. Surface the original CJS parse error when the
+      // ESM load also fails with a SyntaxError — it's more informative.
+      if (isError(esmError) && esmError.name === 'SyntaxError') {
+        throw cjsParseError.cause;
+      }
+      throw esmError;
+    }
   }
 
   private async importMock<T = unknown>(
