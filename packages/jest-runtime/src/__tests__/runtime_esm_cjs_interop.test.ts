@@ -171,6 +171,19 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     },
   );
 
+  testWithSyncEsm(
+    'deduplicates an ESM-fallback module imported via a diamond graph (same module, two importers)',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esm-no-marker-diamond.mjs',
+      )) as any;
+      expect(m.namespace.fromA).toBe(456);
+      expect(m.namespace.fromB).toBe(456);
+    },
+  );
+
   // Runtime SyntaxError from inside the CJS body (vs. a parse-time one)
   // must not trigger the ESM fallback - surfacing the original error
   // unchanged is the right behavior.
