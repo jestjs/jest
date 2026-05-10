@@ -7,13 +7,11 @@
 
 import * as path from 'node:path';
 import {parse as parseCjs} from 'cjs-module-lexer';
-import {initSync as initEsmLexer, parse as parseEsm} from 'es-module-lexer';
 import type {FileCache} from './FileCache';
 import {CjsParseError} from './ModuleExecutor';
 import type {Resolution} from './Resolution';
 import type {TransformCache} from './TransformCache';
-
-initEsmLexer();
+import {hasEsmSyntax} from './esmLexer';
 
 export interface CjsExportsCacheOptions {
   resolution: Resolution;
@@ -77,9 +75,8 @@ export class CjsExportsCache {
     try {
       ({exports, reexports} = parseCjs(transformedCode));
     } catch (error) {
-      const hasModuleSyntax = parseEsm(transformedCode)[3];
-      if (hasModuleSyntax) {
-        throw new CjsParseError(error as Error);
+      if (error instanceof Error && hasEsmSyntax(transformedCode)) {
+        throw new CjsParseError(error);
       }
       throw error;
     }

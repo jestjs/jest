@@ -10,7 +10,6 @@ import {
   type Module as VMModule,
   compileFunction,
 } from 'node:vm';
-import {initSync as initEsmLexer, parse as parseEsm} from 'es-module-lexer';
 import type {
   Jest,
   JestEnvironment,
@@ -26,14 +25,13 @@ import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {RequireBuilder} from './cjsRequire';
+import {hasEsmSyntax} from './esmLexer';
 import type {
   ImportAttributes,
   InitialModule,
   ModuleRegistry,
 } from './moduleTypes';
 import {runtimeSupportsVmModules} from './nodeCapabilities';
-
-initEsmLexer();
 
 export type ExecResult = 'loaded' | 'env-disposed';
 
@@ -219,9 +217,12 @@ export class ModuleExecutor {
           parsingContext: vmContext,
         },
       ) as ModuleWrapper;
-    } catch (error: any) {
-      const hasModuleSyntax = parseEsm(scriptSource)[3];
-      if (runtimeSupportsVmModules && hasModuleSyntax) {
+    } catch (error) {
+      if (
+        runtimeSupportsVmModules &&
+        error instanceof Error &&
+        hasEsmSyntax(scriptSource)
+      ) {
         throw new CjsParseError(error);
       }
       throw handlePotentialSyntaxError(error);
