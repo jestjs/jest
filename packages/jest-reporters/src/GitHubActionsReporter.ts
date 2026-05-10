@@ -331,7 +331,11 @@ export default class GitHubActionsReporter extends BaseReporter {
       this.startGroup(
         `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
       );
-      if (consoleLog && !this.options.silent) {
+      if (
+        consoleLog &&
+        !this.options.silent &&
+        !(config.verbose ?? this.globalConfig.verbose)
+      ) {
         this.log(getConsoleOutput(consoleLog, config, this.globalConfig));
       }
       for (const child of resultTree.children) {
@@ -427,7 +431,11 @@ export default class GitHubActionsReporter extends BaseReporter {
           written = true;
         }
         this.startGroup(`Errors thrown in ${testDir}`);
-        if (consoleLog && !this.options.silent) {
+        if (
+          consoleLog &&
+          !this.options.silent &&
+          !(context.context.config.verbose ?? this.globalConfig.verbose)
+        ) {
           this.log(
             getConsoleOutput(
               consoleLog,
