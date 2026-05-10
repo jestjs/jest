@@ -48,29 +48,53 @@ const resolveWithPrefix = (
   },
 ): string => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
-  let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
+  const isPathLike = fileName.startsWith('.') || path.isAbsolute(fileName);
+
+  // For path-like inputs (relative or absolute paths), resolve from rootDir
+  // first since they refer to project-local files, not npm packages.
+  // For package names, resolve from Jest's own location first to avoid
+  // loading wrong versions hoisted by third-party dependencies.
+  // See https://github.com/jestjs/jest/issues/5913
+  if (isPathLike) {
+    // For path-like inputs, prefix variants (e.g. jest-environment-./foo) are
+    // nonsensical, so only resolve the bare name from rootDir first, then
+    // fall back to requireResolveFunction.
+    const module = Resolver.findNodeModule(fileName, {
+      basedir: rootDir,
+      resolver: resolver || undefined,
+    });
+    if (module) {
+      return module;
+    }
+
+    try {
+      return requireResolveFunction(fileName);
+    } catch {}
+  } else {
+    try {
+      return requireResolveFunction(`${prefix}${fileName}`);
+    } catch {}
+
+    let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
+      basedir: rootDir,
+      resolver: resolver || undefined,
+    });
+    if (module) {
+      return module;
+    }
+
+    try {
+      return requireResolveFunction(fileName);
+    } catch {}
+
+    module = Resolver.findNodeModule(fileName, {
+      basedir: rootDir,
+      resolver: resolver || undefined,
+    });
+    if (module) {
+      return module;
+    }
   }
-
-  try {
-    return requireResolveFunction(`${prefix}${fileName}`);
-  } catch {}
-
-  module = Resolver.findNodeModule(fileName, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
-  }
-
-  try {
-    return requireResolveFunction(fileName);
-  } catch {}
 
   throw createValidationError(
     `  ${humanOptionName} ${chalk.bold(
@@ -84,10 +108,10 @@ const resolveWithPrefix = (
 /**
  * Finds the test environment to use:
  *
- * 1. looks for jest-environment-<name> relative to project.
  * 1. looks for jest-environment-<name> relative to Jest.
- * 1. looks for <name> relative to project.
+ * 1. looks for jest-environment-<name> relative to project.
  * 1. looks for <name> relative to Jest.
+ * 1. looks for <name> relative to project.
  */
 export const resolveTestEnvironment = ({
   rootDir,
@@ -125,10 +149,15 @@ export const resolveTestEnvironment = ({
 /**
  * Finds the watch plugins to use:
  *
- * 1. looks for jest-watch-<name> relative to project.
+ * For package names:
  * 1. looks for jest-watch-<name> relative to Jest.
- * 1. looks for <name> relative to project.
+ * 1. looks for jest-watch-<name> relative to project.
  * 1. looks for <name> relative to Jest.
+ * 1. looks for <name> relative to project.
+ *
+ * For file paths (relative/absolute):
+ * 1. looks for jest-watch-<name> relative to project.
+ * 1. looks for <name> relative to project.
  */
 export const resolveWatchPlugin = (
   resolver: string | undefined | null,
@@ -154,10 +183,15 @@ export const resolveWatchPlugin = (
 /**
  * Finds the runner to use:
  *
- * 1. looks for jest-runner-<name> relative to project.
+ * For package names:
  * 1. looks for jest-runner-<name> relative to Jest.
- * 1. looks for <name> relative to project.
+ * 1. looks for jest-runner-<name> relative to project.
  * 1. looks for <name> relative to Jest.
+ * 1. looks for <name> relative to project.
+ *
+ * For file paths (relative/absolute):
+ * 1. looks for jest-runner-<name> relative to project.
+ * 1. looks for <name> relative to project.
  */
 export const resolveRunner = (
   resolver: string | undefined | null,

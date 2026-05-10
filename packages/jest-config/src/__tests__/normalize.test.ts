@@ -893,7 +893,7 @@ describe('testEnvironment', () => {
     });
   });
 
-  it('resolves to an environment and prefers jest-environment-`name`', async () => {
+  it('resolves to an environment and prefers jest-environment-`name` from Jest location', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
@@ -902,7 +902,12 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toBe('node_modules/jest-environment-jsdom');
+    // Jest's own location is preferred over rootDir to avoid version conflicts
+    // when third-party packages hoist jest-environment-* to project root.
+    // See https://github.com/jestjs/jest/issues/5913
+    expect(options.testEnvironment).toBe(
+      require.resolve('jest-environment-jsdom'),
+    );
   });
 
   it('resolves to node environment by default', async () => {
@@ -1761,7 +1766,7 @@ describe('watchPlugins', () => {
     expect(options.watchPlugins).toBeUndefined();
   });
 
-  it('resolves to watch plugins and prefers jest-watch-`name`', async () => {
+  it('resolves to watch plugins and prefers jest-watch-`name` from Jest location', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root/',
@@ -1770,8 +1775,14 @@ describe('watchPlugins', () => {
       {} as Config.Argv,
     );
 
+    // Jest's own location is preferred over rootDir to avoid version conflicts
+    // when third-party packages hoist jest-watch-* to project root.
+    // See https://github.com/jestjs/jest/issues/5913
     expect(options.watchPlugins).toEqual([
-      {config: {} as Config.Argv, path: 'node_modules/jest-watch-typeahead'},
+      {
+        config: {} as Config.Argv,
+        path: require.resolve('jest-watch-typeahead'),
+      },
     ]);
   });
 
@@ -1799,7 +1810,10 @@ describe('watchPlugins', () => {
     );
 
     expect(options.watchPlugins).toEqual([
-      {config: {} as Config.Argv, path: 'node_modules/jest-watch-typeahead'},
+      {
+        config: {} as Config.Argv,
+        path: require.resolve('jest-watch-typeahead'),
+      },
       {config: {} as Config.Argv, path: '/root/path/to/plugin'},
     ]);
   });
