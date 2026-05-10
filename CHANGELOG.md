@@ -7,6 +7,7 @@
 
 ### Fixes
 
+- `[jest-resolve]` Resolve prefixed modules (environments, runners, watch plugins, sequencers) from Jest's own install location first to prevent hoisted dependencies from shadowing bundled versions ([#5913](https://github.com/jestjs/jest/issues/5913), [#16156](https://github.com/jestjs/jest/pull/16156))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
