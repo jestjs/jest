@@ -123,6 +123,7 @@ export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
   failing: Failing<TestFn>;
+  step: <T>(title: string, body: () => T | Promise<T>) => Promise<T>;
 }
 
 export interface It extends ItBase {
