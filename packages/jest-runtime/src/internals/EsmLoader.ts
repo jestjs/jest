@@ -700,6 +700,12 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !this.shouldLoadAsEsm(resolved)
     ) {
+      if (scratch.has(cacheKey) || registry.get(cacheKey)) {
+        const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () => {
+          throw new Error('unreachable');
+        });
+        return ok ? {cacheKey, enqueue: null, modulePath: resolved} : null;
+      }
       const synthetic = this.buildCjsAsEsmSyntheticModule(
         referencingIdentifier,
         resolved,
