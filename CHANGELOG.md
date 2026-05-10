@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[jest-console]` `CustomConsole` now buffers console output so `TestResult.console` is populated for reporters when `verbose` is enabled ([#16155](https://github.com/jestjs/jest/pull/16155))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
