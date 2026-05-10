@@ -217,7 +217,7 @@ export class ModuleExecutor {
           parsingContext: vmContext,
         },
       ) as ModuleWrapper;
-    } catch (error) {
+    } catch (error: any) {
       if (
         runtimeSupportsVmModules &&
         isError(error) &&
