@@ -19,7 +19,7 @@ import type {
 import {handlePotentialSyntaxError} from '@jest/transform';
 import type {Config, Global} from '@jest/types';
 import Resolver from 'jest-resolve';
-import {invariant, isNonNullable} from 'jest-util';
+import {invariant, isError, isNonNullable} from 'jest-util';
 import type {JestGlobals} from './JestGlobals';
 import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
@@ -220,7 +220,7 @@ export class ModuleExecutor {
     } catch (error) {
       if (
         runtimeSupportsVmModules &&
-        error instanceof Error &&
+        isError(error) &&
         hasEsmSyntax(scriptSource)
       ) {
         throw new CjsParseError(error);
