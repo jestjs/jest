@@ -66,7 +66,8 @@ export type SyncEsmMode = 'sync-preferred' | 'sync-required';
 // Returned by sync-graph methods when a dependency or condition prevents
 // synchronous loading. Callers propagate it upward; the top-level
 // `tryLoadGraphSync` caller falls back to the legacy async path.
-type LoadAsync = LOAD_ASYNC;
+export const LOAD_ASYNC = 'load-async' as const;
+type LoadAsync = typeof LOAD_ASYNC;
 
 type WorklistEntry = {
   cacheKey: string;
@@ -645,9 +646,7 @@ export class EsmLoader {
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
         this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
       );
-      return ok
-        ? {cacheKey, enqueue: null, modulePath: cacheKey}
-        : LOAD_ASYNC;
+      return ok ? {cacheKey, enqueue: null, modulePath: cacheKey} : LOAD_ASYNC;
     }
 
     if (specifier.startsWith('data:')) {
