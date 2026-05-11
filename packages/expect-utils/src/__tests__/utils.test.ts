@@ -6,6 +6,7 @@
  *
  */
 
+import {onNodeVersions} from '@jest/test-utils';
 import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
 import {createContext, runInContext} from 'vm';
@@ -15,6 +16,7 @@ import {
   emptyObject,
   getObjectSubset,
   getPath,
+  isError,
   iterableEquality,
   subsetEquality,
   typeEquality,
@@ -813,6 +815,31 @@ describe('arrayBufferEquality', () => {
     const a = new URL('https://jestjs.io/docs/getting-started');
     const b = new URL('https://jestjs.io/docs/getting-started#using-babel');
     expect(equals(a, b)).toBe(false);
+  });
+});
+
+describe('isError', () => {
+  it('returns true for Error instances', () => {
+    expect(isError(new Error('error'))).toBe(true);
+  });
+
+  it('returns false for non-errors instances', () => {
+    expect(isError(new Error('error'))).toBe(true);
+  });
+
+  onNodeVersions('>=24.3.0', () => {
+    it('handles cross-realm errors', () => {
+      const context = createContext({});
+      const otherRealmError = runInContext(
+        `new class CustomError extends Error {
+          get [Symbol.toStringTag]() {
+            return "CustomError";
+          }
+        }`,
+        context,
+      );
+      expect(isError(otherRealmError)).toBe(true);
+    });
   });
 });
 

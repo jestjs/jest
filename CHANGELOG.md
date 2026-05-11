@@ -3,6 +3,7 @@
 ### Fixes
 
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
+- `[expect-utils]` Support using [`Error.isError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/isError) to handle cross-realm error objects
 
 ### Chore & Maintenance
 
