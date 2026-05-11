@@ -12,12 +12,12 @@ import fs from 'graceful-fs';
 
 const excludedModules = [
   'e2e/global-setup-node-modules/node_modules/',
+  'e2e/native-esm-js-esm-syntax-fallback/node_modules/',
   'e2e/presets/cjs/node_modules/',
   'e2e/presets/js/node_modules/',
   'e2e/presets/js-type-module/node_modules/',
   'e2e/presets/json/node_modules/',
   'e2e/presets/mjs/node_modules/',
-  'e2e/native-esm-js-esm-syntax-fallback/node_modules/',
   'e2e/resolve-conditions/node_modules/',
   'e2e/retain-all-files/node_modules/',
 ].map(dir => normalize(dir));
