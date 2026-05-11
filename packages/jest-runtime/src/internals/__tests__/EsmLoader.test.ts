@@ -10,7 +10,7 @@ import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
-import {EsmLoader, validateImportAttributes} from '../EsmLoader';
+import {EsmLoader, LOAD_ASYNC, validateImportAttributes} from '../EsmLoader';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
 import type {MockState} from '../MockState';
@@ -151,7 +151,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       expect(stashed.status).toBe('unlinked');
       esmRegistry.set('/m.mjs', stashed);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe('load-async');
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
@@ -260,7 +260,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       const {esmRegistry, loader} = makeLoader();
       esmRegistry.set('/m.mjs', Promise.resolve());
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe('load-async');
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
@@ -275,7 +275,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         } as unknown as jest.Mocked<TransformCache>,
       });
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe('load-async');
+      expect(result).toBe(LOAD_ASYNC);
       expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
     },
   );
@@ -292,8 +292,8 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
       expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
-      expect(result).not.toBe('load-async');
-      invariant(result !== 'load-async', 'Asserted above by teh expect');
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
       expect(result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
@@ -333,7 +333,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
         } as unknown as jest.Mocked<TransformCache>,
       });
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe('load-async');
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 });
@@ -360,7 +360,7 @@ describe('EsmLoader bridges', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBe('load-async');
+      expect(result).not.toBe(LOAD_ASYNC);
       expect(stubs.requireModuleOrMock).toHaveBeenCalledWith(
         '/entry.mjs',
         '/dep.cjs',
@@ -443,7 +443,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).toBe('load-async');
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
@@ -470,7 +470,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBe('load-async');
+      expect(result).not.toBe(LOAD_ASYNC);
       expect(factory).toHaveBeenCalled();
       expect((context as any).__mocked).toBe('value');
     },
