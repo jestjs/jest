@@ -102,8 +102,7 @@ export function buildCoreSyntheticModule(
 // Builds a SyntheticModule wrapping a CJS module's `module.exports` for
 // import-from-ESM. Merges cjs-module-lexer's static export list with the
 // runtime keys of the actual exports object (lexer can miss
-// `Object.assign`-style patterns). Throws CjsParseError when the file has
-// ESM syntax but no ESM marker — callers catch it and fall back to loadEsmModule.
+// `Object.assign`-style patterns).
 export function buildCjsAsEsmSyntheticModule(
   from: string,
   modulePath: string,
