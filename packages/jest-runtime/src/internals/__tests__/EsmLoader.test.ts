@@ -6,7 +6,11 @@
  */
 
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
-import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
+import {
+  testWithLinkedSyntheticModule,
+  testWithSyncEsm,
+  testWithVmEsm,
+} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
 import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
@@ -106,7 +110,7 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
 }
 
 describe('EsmLoader.tryLoadGraphSync', () => {
-  testWithSyncEsm('throws when testState reports torn down', () => {
+  test('throws when testState reports torn down', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
     expect(() =>
@@ -117,7 +121,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     );
   });
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'returns cached fully-evaluated entry from registry',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -136,7 +140,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'bails when registry holds an unlinked module (legacy mid-flight stash)',
     () => {
       // Regression: `loadEsmModule`'s source-text branch does `registry.set`
@@ -156,7 +160,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'rethrows the cached error when registry holds an errored module',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -180,7 +184,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'rethrows when tryCommitSynthetic finds an errored entry (CJS-as-ESM)',
     async () => {
       // `resolveSpecifierForSyncGraph`'s CJS-as-ESM branch goes through
@@ -228,8 +232,8 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       stubs.requireModuleOrMock.mockImplementation(() => {
         throw new CjsParseError(new SyntaxError('export is not defined'));
       });
-      // The dep has TLA — forces LOAD_ASYNC so we can verify the enqueue path
-      // was taken without needing a fully linked sync graph.
+      // TLA in the dep triggers hasAsyncGraph → LOAD_ASYNC, proving the dep
+      // was enqueued as native ESM rather than crashing on CjsParseError.
       stubs.transformCache.transform.mockImplementation((modulePath: string) =>
         modulePath === '/dep.cjs'
           ? 'export const x = await Promise.resolve(1);'
@@ -246,7 +250,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'rethrows when an existing module mock is errored (importMockSync)',
     async () => {
       const {context, esmRegistry, loader, stubs} = makeLoader({
@@ -285,33 +289,27 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
-    "returns 'load-async' when registry has a mid-flight Promise (legacy async load)",
-    () => {
-      const {esmRegistry, loader} = makeLoader();
-      esmRegistry.set('/m.mjs', Promise.resolve());
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe(LOAD_ASYNC);
-    },
-  );
+  test("returns 'load-async' when registry has a mid-flight Promise (legacy async load)", () => {
+    const {esmRegistry, loader} = makeLoader();
+    esmRegistry.set('/m.mjs', Promise.resolve());
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+  });
 
-  testWithSyncEsm(
-    "returns 'load-async' when transformCache holds a mutex on the root",
-    () => {
-      const {loader, stubs} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => true),
-          hasMutex: jest.fn(() => true),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe(LOAD_ASYNC);
-      expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
-    },
-  );
+  test("returns 'load-async' when transformCache holds a mutex on the root", () => {
+    const {loader, stubs} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => true),
+        hasMutex: jest.fn(() => true),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
+  });
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'routes core-module specifiers through coreModule.require',
     () => {
       const {loader, stubs} = makeLoader({
@@ -332,41 +330,35 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
-    'sync-required mode rejects async transformers with ERR_REQUIRE_ASYNC_MODULE',
-    () => {
-      const {loader} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => false),
-          hasMutex: jest.fn(() => false),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      expect(() =>
-        loader.tryLoadGraphSync('/m.mjs', '', 'sync-required'),
-      ).toThrow(
-        expect.objectContaining({
-          code: 'ERR_REQUIRE_ASYNC_MODULE',
-          message: expect.stringContaining('async-only'),
-        }),
-      );
-    },
-  );
+  test('sync-required mode rejects async transformers with ERR_REQUIRE_ASYNC_MODULE', () => {
+    const {loader} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => false),
+        hasMutex: jest.fn(() => false),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    expect(() =>
+      loader.tryLoadGraphSync('/m.mjs', '', 'sync-required'),
+    ).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringContaining('async-only'),
+      }),
+    );
+  });
 
-  testWithSyncEsm(
-    "sync-preferred mode bails ('load-async') on async-only transformer",
-    () => {
-      const {loader} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => false),
-          hasMutex: jest.fn(() => false),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBe(LOAD_ASYNC);
-    },
-  );
+  test("sync-preferred mode bails ('load-async') on async-only transformer", () => {
+    const {loader} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => false),
+        hasMutex: jest.fn(() => false),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+  });
 });
 
 describe('EsmLoader bridges', () => {
@@ -429,7 +421,7 @@ describe('EsmLoader bridges', () => {
 });
 
 describe('EsmLoader mock dispatch', () => {
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'sync-required mode rejects async mock factory with ERR_REQUIRE_ASYNC_MODULE',
     () => {
       const {loader, stubs} = makeLoader({
@@ -452,7 +444,7 @@ describe('EsmLoader mock dispatch', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     "sync-preferred mode bails on async mock factory ('load-async')",
     () => {
       const {loader, stubs} = makeLoader({
@@ -509,7 +501,7 @@ describe('EsmLoader mock dispatch', () => {
 });
 
 describe('EsmLoader.requireEsmModule', () => {
-  testWithSyncEsm(
+  testWithVmEsm(
     'returns the module namespace on a successful sync load',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -532,19 +524,16 @@ describe('EsmLoader.requireEsmModule', () => {
     },
   );
 
-  testWithSyncEsm(
-    'throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise',
-    () => {
-      const {esmRegistry, loader} = makeLoader();
-      esmRegistry.set('/m.mjs', Promise.resolve());
-      expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
-        expect.objectContaining({
-          code: 'ERR_REQUIRE_ESM',
-          message: expect.stringContaining('concurrent'),
-        }),
-      );
-    },
-  );
+  test('throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise', () => {
+    const {esmRegistry, loader} = makeLoader();
+    esmRegistry.set('/m.mjs', Promise.resolve());
+    expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ESM',
+        message: expect.stringContaining('concurrent'),
+      }),
+    );
+  });
 });
 
 describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
