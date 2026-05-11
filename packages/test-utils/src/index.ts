@@ -12,6 +12,7 @@ export {
   onNodeVersions,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
+  testWithLegacyAsyncEsm,
   testWithLinkedSyntheticModule,
   testWithSyncEsm,
   testWithVmEsm,

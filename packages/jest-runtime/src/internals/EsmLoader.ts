@@ -14,7 +14,7 @@ import {
   type Module as VMModule,
 } from 'node:vm';
 import type {JestEnvironment, JestImportMeta} from '@jest/environment';
-import {invariant, isError, isPromise} from 'jest-util';
+import {invariant, isPromise} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
@@ -1001,13 +1001,15 @@ export class EsmLoader {
       let transformResolve: () => void;
       let transformReject: (error?: unknown) => void;
 
-      this.transformCache.setMutex(
-        cacheKey,
-        new Promise((resolve, reject) => {
-          transformResolve = resolve;
-          transformReject = reject;
-        }),
-      );
+      const mutex = new Promise<void>((resolve, reject) => {
+        transformResolve = resolve;
+        transformReject = reject;
+      });
+      // Prevent an unhandled-rejection warning when no concurrent caller is
+      // awaiting the mutex — the originating caller re-throws the error itself.
+      // Concurrent waiters still see the rejection because they await `mutex`.
+      mutex.catch(noop);
+      this.transformCache.setMutex(cacheKey, mutex);
 
       invariant(
         transformResolve! && transformReject!,
@@ -1299,28 +1301,12 @@ export class EsmLoader {
       synthetic = this.buildCjsAsEsmSyntheticModule(from, modulePath, context);
     } catch (error) {
       if (!(error instanceof CjsParseError)) throw error;
-      return this.loadCjsAsEsmFallback(modulePath, error);
+      return this.loadEsmModule(modulePath);
     }
 
     const evaluated = evaluateSyntheticModule(synthetic);
     registry.set(modulePath, evaluated);
     return evaluated;
-  }
-
-  private async loadCjsAsEsmFallback(
-    modulePath: string,
-    cjsParseError: CjsParseError,
-  ): Promise<VMModule> {
-    try {
-      return await this.loadEsmModule(modulePath);
-    } catch (esmError) {
-      // Both parsers rejected. Surface the original CJS parse error when the
-      // ESM load also fails with a SyntaxError — it's more informative.
-      if (isError(esmError) && esmError.name === 'SyntaxError') {
-        throw cjsParseError.cause;
-      }
-      throw esmError;
-    }
   }
 
   private async importMock<T = unknown>(

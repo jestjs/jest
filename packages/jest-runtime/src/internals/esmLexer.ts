@@ -20,6 +20,9 @@ export function hasEsmSyntax(source: string): boolean {
   try {
     return parse(source)[3];
   } catch {
+    // parse() throws on syntax errors it cannot recover from. We cannot
+    // determine whether the file is ESM — and native ESM would also fail —
+    // so return false and let the original CJS error surface.
     return false;
   }
 }

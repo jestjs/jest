@@ -290,7 +290,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
       expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
-      expect(result?.namespace).toMatchObject({
+      expect(result !== 'load-async' && result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
       });

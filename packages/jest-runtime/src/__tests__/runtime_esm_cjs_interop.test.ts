@@ -6,7 +6,12 @@
  */
 
 import * as path from 'path';
-import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
+import {
+  testWithLegacyAsyncEsm,
+  testWithLinkedSyntheticModule,
+  testWithSyncEsm,
+  testWithVmEsm,
+} from '@jest/test-utils';
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_interop_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -181,6 +186,38 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
       )) as any;
       expect(m.namespace.fromA).toBe(456);
       expect(m.namespace.fromB).toBe(456);
+    },
+  );
+
+  // hasEsmSyntax returns false when es-module-lexer throws (broken ESM like
+  // `export {`). No CjsParseError is thrown, so the raw CJS compile error
+  // surfaces directly — no pointless ESM retry.
+  testWithLinkedSyntheticModule(
+    'surfaces the CJS compile error when both parsers reject the file (sync graph path)',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/'],
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-esm-syntax-error.mjs'),
+      ).rejects.toThrow("Unexpected token 'export'");
+    },
+  );
+
+  // On older Node (vm modules but no sync-graph), loadCjsAsEsm uses the
+  // legacy async linker. Same hasEsmSyntax behavior: lexer throws → false →
+  // raw CJS error surfaces.
+  testWithLegacyAsyncEsm(
+    'surfaces the CJS compile error when both parsers reject the file (legacy async path)',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/'],
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-esm-syntax-error.mjs'),
+      ).rejects.toThrow("Unexpected token 'export'");
     },
   );
 

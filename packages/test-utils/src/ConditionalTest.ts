@@ -49,6 +49,21 @@ export function testWithSyncEsm(
   return fn(...args);
 }
 
+// Runs only on Node versions that support vm modules but NOT the sync-graph
+// API (i.e. before v22.21 / v24.8). These are the only versions where the
+// legacy async linker path in EsmLoader is exercised.
+export function testWithLegacyAsyncEsm(
+  ...args: Parameters<typeof test>
+): ReturnType<typeof test> {
+  const fn =
+    typeof SyntheticModule === 'function' &&
+    // @ts-expect-error - linkRequests is in Node v22.21+/v24.8+, not yet typed
+    typeof SourceTextModule?.prototype.linkRequests !== 'function'
+      ? test
+      : test.skip;
+  return fn(...args);
+}
+
 export function testWithLinkedSyntheticModule(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
