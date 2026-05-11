@@ -6,6 +6,7 @@
 /examples/*/node_modules/
 /examples/react-native/.watchman-cookie-*
 
+/e2e/setup-files-after-env-config/package.json
 /e2e/*/node_modules
 /e2e/*/.pnp
 /e2e/*/.pnp.js
@@ -15,6 +16,8 @@
 /e2e/transform/*/coverage
 /e2e/transform/*/node_modules
 /e2e/custom-jsdom-version/*/node_modules
+
+!packages/jest-runtime/src/__tests__/test_root/node_modules
 
 /node_modules
 

@@ -4,6 +4,10 @@
 
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 
+### Chore & Maintenance
+
+- `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
+
 ## 30.4.2
 
 ### Fixes
