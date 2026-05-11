@@ -8,6 +8,7 @@
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
 import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
+import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
 import {EsmLoader, validateImportAttributes} from '../EsmLoader';
 import type {FileCache} from '../FileCache';
@@ -104,11 +105,12 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
 }
 
 describe('EsmLoader.tryLoadGraphSync', () => {
-  testWithSyncEsm('returns null when testState reports torn down', () => {
+  testWithSyncEsm('throws when testState reports torn down', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
-    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-    expect(result).toBe('load-async');
+    expect(() =>
+      loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred'),
+    ).toThrow('torn down');
     expect(stubs.logFormattedReferenceError).toHaveBeenCalledWith(
       expect.stringContaining('torn down'),
     );
@@ -253,7 +255,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
-    'returns null when registry has a mid-flight Promise (legacy async load)',
+    "returns 'load-async' when registry has a mid-flight Promise (legacy async load)",
     () => {
       const {esmRegistry, loader} = makeLoader();
       esmRegistry.set('/m.mjs', Promise.resolve());
@@ -263,7 +265,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
-    'returns null when transformCache holds a mutex on the root',
+    "returns 'load-async' when transformCache holds a mutex on the root",
     () => {
       const {loader, stubs} = makeLoader({
         transformCache: {
@@ -290,7 +292,9 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
       expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
-      expect(result !== 'load-async' && result.namespace).toMatchObject({
+      expect(result).not.toBe('load-async');
+      invariant(result !== 'load-async', 'Asserted above by teh expect');
+      expect(result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
       });
@@ -319,7 +323,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
-    'sync-preferred mode bails (returns null) on async-only transformer',
+    "sync-preferred mode bails ('load-async') on async-only transformer",
     () => {
       const {loader} = makeLoader({
         transformCache: {
@@ -418,7 +422,7 @@ describe('EsmLoader mock dispatch', () => {
   );
 
   testWithSyncEsm(
-    'sync-preferred mode bails on async mock factory (returns null)',
+    "sync-preferred mode bails on async mock factory ('load-async')",
     () => {
       const {loader, stubs} = makeLoader({
         mockState: {

@@ -310,9 +310,9 @@ export class EsmLoader {
     this.testState = options.testState;
   }
 
-  // A `null` here means the legacy async path is mid-flight on this same
-  // module (registry holds a Promise from a concurrent `await import()`);
-  // surface as ERR_REQUIRE_ESM with actionable context.
+  // `'load-async'` means the sync graph could not be completed — a concurrent
+  // `await import()` is mid-flight, a dependency is async-only, etc. Surface
+  // as ERR_REQUIRE_ESM with actionable context.
   //
   // Root-level mocks (`jest.unstable_mockModule(spec)` then `require(spec)`)
   // are not consulted - driving a SyntheticModule from `unlinked` to
@@ -338,13 +338,9 @@ export class EsmLoader {
     rootQuery: string,
     mode: SyncEsmMode,
   ): ESModule | LoadAsync {
-    if (
-      this.testState.bailIfTornDown(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      )
-    ) {
-      return 'load-async';
-    }
+    this.testState.throwIfTornDown(
+      'You are trying to `import` a file after the Jest environment has been torn down.',
+    );
 
     const registry = this.registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;
