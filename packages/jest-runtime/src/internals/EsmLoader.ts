@@ -339,13 +339,9 @@ export class EsmLoader {
     rootQuery: string,
     mode: SyncEsmMode,
   ): ESModule | LoadAsync {
-    if (
-      this.testState.bailIfTornDown(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      )
-    ) {
-      return LOAD_ASYNC;
-    }
+    this.testState.throwIfTornDown(
+      'You are trying to `import` a file after the Jest environment has been torn down.',
+    );
 
     const registry = this.registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;

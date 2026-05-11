@@ -11,6 +11,7 @@ import type {JestEnvironment} from '@jest/environment';
 import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
 import {EsmLoader, LOAD_ASYNC, validateImportAttributes} from '../EsmLoader';
+import {CjsParseError} from '../ModuleExecutor';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
 import type {MockState} from '../MockState';
@@ -212,6 +213,36 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       expect(() =>
         loader.tryLoadGraphSync('/entry.mjs', '', 'sync-required'),
       ).toThrow('cached cjs-as-esm error');
+    },
+  );
+
+  testWithSyncEsm(
+    'falls through to native ESM when a CJS dep throws CjsParseError',
+    () => {
+      // When a .cjs file has ESM syntax, `buildCjsAsEsmSyntheticModule` throws
+      // `CjsParseError`. `resolveSpecifierForSyncGraph` catches it and falls
+      // through to the native ESM enqueue path rather than crashing the graph.
+      const {loader, stubs} = makeLoader({
+        shouldLoadAsEsm: jest.fn(p => !p.endsWith('.cjs')),
+      });
+      stubs.requireModuleOrMock.mockImplementation(() => {
+        throw new CjsParseError(new SyntaxError('export is not defined'));
+      });
+      // The dep has TLA — forces LOAD_ASYNC so we can verify the enqueue path
+      // was taken without needing a fully linked sync graph.
+      stubs.transformCache.transform.mockImplementation((modulePath: string) =>
+        modulePath === '/dep.cjs'
+          ? 'export const x = await Promise.resolve(1);'
+          : "import {x} from './dep.cjs'; globalThis.__x = x;",
+      );
+      stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
