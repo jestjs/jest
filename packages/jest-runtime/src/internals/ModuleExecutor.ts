@@ -221,6 +221,7 @@ export class ModuleExecutor {
       if (
         runtimeSupportsVmModules &&
         isError(error) &&
+        error.name === 'SyntaxError' &&
         hasEsmSyntax(scriptSource)
       ) {
         throw new CjsParseError(error);
