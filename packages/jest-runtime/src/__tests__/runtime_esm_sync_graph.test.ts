@@ -255,10 +255,11 @@ describe('Runtime sync ESM graph - error surfacing', () => {
     ).rejects.toThrow('factory boom');
   });
 
-  // Sync-core only: the legacy path leaks the SourceTextModule constructor
-  // SyntaxError as an unhandled rejection through `_fileTransformsMutex`,
-  // which crashes the process on Node v22. The sync core surfaces it cleanly.
-  testWithSyncEsm(
+  // On the legacy async path (pre-sync-graph), `new SourceTextModule` throws
+  // synchronously with no concurrent mutex awaiter — an unhandled rejection
+  // that crashes the worker. Both paths must surface the error as a clean
+  // rejection instead.
+  testWithVmEsm(
     'rejects with a SyntaxError for ESM with parse errors',
     async () => {
       const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
