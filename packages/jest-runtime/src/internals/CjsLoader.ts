@@ -151,7 +151,8 @@ export class CjsLoader {
       );
     } catch (error) {
       moduleRegistry.delete(modulePath);
-      // Mirror of `loadCjsAsEsm`'s SyntaxError fallback for `require()`.
+      // ESM-syntax-in-CJS fallback for require(): retry as native ESM, but if
+      // the ESM parser also rejects it, surface the original CJS error.
       if (supportsSyncEvaluate && error instanceof CjsParseError) {
         try {
           return this.requireEsm<T>(modulePath);
