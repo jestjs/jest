@@ -564,6 +564,21 @@ describe('whenCalledWith', () => {
     expect(fn('miss')).toBe('default');
   });
 
+  it('discriminates Maps and Sets by content via iterableEquality', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith(new Map([['a', 1]])).mockReturnValue('A');
+    fn.whenCalledWith(new Map([['b', 2]])).mockReturnValue('B');
+    expect(fn(new Map([['a', 1]]))).toBe('A');
+    expect(fn(new Map([['b', 2]]))).toBe('B');
+    expect(fn(new Map([['c', 3]]))).toBeUndefined();
+
+    const setFn = moduleMocker.fn();
+    setFn.whenCalledWith(new Set([1, 2])).mockReturnValue('one-two');
+    setFn.whenCalledWith(new Set([3, 4])).mockReturnValue('three-four');
+    expect(setFn(new Set([1, 2]))).toBe('one-two');
+    expect(setFn(new Set([3, 4]))).toBe('three-four');
+  });
+
   it('matches null and symbol args by identity', () => {
     const fn = moduleMocker.fn();
     const sym = Symbol('s');

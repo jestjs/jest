@@ -9,7 +9,11 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import {type AsymmetricMatcher, equals} from '@jest/expect-utils';
+import {
+  type AsymmetricMatcher,
+  equals,
+  iterableEquality,
+} from '@jest/expect-utils';
 import {isPromise} from 'jest-util';
 
 export type MockMetadataType =
@@ -668,7 +672,7 @@ export class ModuleMocker {
     ) {
       const config = ensureConfig(f);
       const matching = config.whenCalledWithRegistrations.filter(branch =>
-        equals(branch.matchers, callArgs),
+        equals(branch.matchers, callArgs, [iterableEquality]),
       );
       // (1) Forward find: first matching branch with a queued once.
       const onceBranch = matching.find(
