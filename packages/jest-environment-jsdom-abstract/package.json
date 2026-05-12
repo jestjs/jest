@@ -22,16 +22,17 @@
     "@jest/environment": "workspace:*",
     "@jest/fake-timers": "workspace:*",
     "@jest/types": "workspace:*",
-    "@types/jsdom": "^21.1.7",
     "@types/node": "*",
     "jest-mock": "workspace:*",
     "jest-util": "workspace:*"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
+    "@types/jsdom": "^21.1.7",
     "jsdom": "^26.1.0"
   },
   "peerDependencies": {
+    "@types/jsdom": "*",
     "canvas": "^3.0.0",
     "jsdom": "*"
   },
