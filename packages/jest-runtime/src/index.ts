@@ -139,13 +139,6 @@ export default class Runtime {
       '`moduleMocker` must be set on an environment when created',
     );
     this._moduleMocker = this._environment.moduleMocker;
-    if (typeof this._moduleMocker.clearMocksOnScope !== 'function') {
-      throw new TypeError(
-        "The test environment's `moduleMocker` is not compatible with this version of Jest. " +
-          '`clearMocksOnScope` is required but not available. ' +
-          'Please ensure your test environment (e.g., `jest-environment-jsdom`) uses a compatible version of `jest-mock` (>=30.4.0).',
-      );
-    }
     this._testPath = testPath;
     this.testState = new TestState(msg =>
       this._logFormattedReferenceError(msg),
@@ -562,7 +555,7 @@ export default class Runtime {
 
     if (this._environment) {
       if (this._environment.global) {
-        this._moduleMocker.clearMocksOnScope(this._environment.global);
+        this._moduleMocker?.clearMocksOnScope?.(this._environment.global);
       }
 
       if (this._environment.fakeTimers) {
