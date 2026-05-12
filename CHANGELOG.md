@@ -4,8 +4,7 @@
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
-- `[jest-environment-jsdom-abstract]` Make @types/jsdom a peer dependency with a lax version constraint.
-- `[jest-environment-jsdom]` @types/jsdom is now a dependency.
+- `[jest-environment-jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 
 ### Chore & Maintenance
 
