@@ -1000,7 +1000,15 @@ export class ModuleMocker {
       f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.mockImpl = fn;
+        // When whenCalledWith routing is active, writes to the implementation
+        // describe the fall-through (the value used when no branch matches),
+        // not the routing itself. Without this, calling mockImplementation
+        // after whenCalledWith would silently disable the branches.
+        if (mockConfig.mockImpl === dispatcherImpl) {
+          mockConfig.fallbackImpl = fn;
+        } else {
+          mockConfig.mockImpl = fn;
+        }
         return f;
       };
 

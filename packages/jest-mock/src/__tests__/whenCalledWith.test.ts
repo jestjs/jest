@@ -312,6 +312,41 @@ describe('whenCalledWith', () => {
     expect(made).toEqual({created: 'non-match'});
   });
 
+  it('a later mockReturnValue overrides the fall-through without disturbing branches', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.mockReturnValue('A');
+    fn.mockReturnValue('B');
+    expect(fn('x')).toBe('X');
+    expect(fn('y')).toBe('B');
+  });
+
+  it('mockResolvedValue after whenCalledWith sets the fall-through value', async () => {
+    const fn = moduleMocker.fn<(arg: string) => Promise<string>>();
+    fn.whenCalledWith('x').mockResolvedValue('X');
+    fn.mockResolvedValue('default');
+    await expect(fn('x')).resolves.toBe('X');
+    await expect(fn('y')).resolves.toBe('default');
+  });
+
+  it('mockReturnValue after whenCalledWith sets the fall-through value', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.mockReturnValue('default');
+    expect(fn('x')).toBe('X');
+    expect(fn('y')).toBe('default');
+  });
+
+  it('mockImplementation after whenCalledWith sets the fall-through, not the routing', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.whenCalledWith('y').mockReturnValue('Y');
+    fn.mockImplementation(() => 'fallback');
+    expect(fn('y')).toBe('Y');
+    expect(fn('x')).toBe('X');
+    expect(fn('bla')).toBe('fallback');
+  });
+
   it('preserves prior registrations when a later mockImplementation re-arms the dispatcher', () => {
     const fn = moduleMocker.fn();
     fn.whenCalledWith('x').mockReturnValue('X');
@@ -338,6 +373,28 @@ describe('whenCalledWith', () => {
     fn.mockReset();
     expect(fn('a')).toBeUndefined();
     expect(fn('b')).toBeUndefined();
+  });
+
+  it('resetAllMocks clears whenCalledWith registrations', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.mockReturnValue('default');
+    expect(fn('x')).toBe('X');
+    moduleMocker.resetAllMocks();
+    expect(fn('x')).toBeUndefined();
+    expect(fn('y')).toBeUndefined();
+  });
+
+  it('mockReset clears both whenCalledWith branches and the fall-through impl', () => {
+    const fn = moduleMocker.fn();
+    fn.whenCalledWith('x').mockReturnValue('X');
+    fn.mockReturnValue('default');
+    expect(fn('x')).toBe('X');
+    expect(fn('y')).toBe('default');
+    fn.mockReset();
+    expect(fn('x')).toBeUndefined();
+    expect(fn('y')).toBeUndefined();
+    expect(fn.getMockImplementation()).toBeUndefined();
   });
 
   it('cascades mockReset to sub-mocks held by user references', () => {
