@@ -4333,6 +4333,7 @@ __metadata:
     jest-util: "workspace:*"
     jsdom: "npm:^26.1.0"
   peerDependencies:
+    "@types/jsdom": "*"
     canvas: ^3.0.0
     jsdom: "*"
   peerDependenciesMeta:
@@ -14473,6 +14474,7 @@ __metadata:
     "@jest/environment": "workspace:*"
     "@jest/environment-jsdom-abstract": "workspace:*"
     "@jest/test-utils": "workspace:*"
+    "@types/jsdom": "npm:^21.1.7"
     jsdom: "npm:^26.1.0"
   peerDependencies:
     canvas: ^3.0.0
