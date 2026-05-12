@@ -23,6 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import type {Tester, TesterContext} from './types';
+import {isError} from './utils';
 
 export type EqualsFunction = (
   a: unknown,
@@ -83,7 +84,7 @@ function eq(
     }
   }
 
-  if (a instanceof Error && b instanceof Error) {
+  if (isError(a) && isError(b)) {
     return a.message === b.message;
   }
 

@@ -563,7 +563,11 @@ export const isError = (value: unknown): value is Error => {
     case '[object DOMException]':
       return true;
     default:
-      return value instanceof Error;
+      return (
+        value instanceof Error ||
+        (typeof (Error as any).isError === 'function' &&
+          (Error as any).isError(value))
+      );
   }
 };
 
