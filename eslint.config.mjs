@@ -613,6 +613,17 @@ const config = defineConfig(
     },
   },
   {
+    files: [
+      'packages/jest-message-util/src/**/*',
+      'packages/jest-pattern/src/**/*',
+      'packages/jest-regex-util/src/**/*',
+      'packages/jest-util/src/**/*',
+    ],
+    rules: {
+      'unicorn/prefer-node-protocol': 'off',
+    },
+  },
+  {
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',

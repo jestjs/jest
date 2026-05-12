@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'node:path';
-import {fileURLToPath} from 'node:url';
+import * as path from 'path';
+import {fileURLToPath} from 'url';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
