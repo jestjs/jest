@@ -505,7 +505,7 @@ describe('whenCalledWith', () => {
     expect(made).toBe(sentinel);
   });
 
-  it('records constructor calls on the sub-mock`s mock.instances', () => {
+  it("records constructor calls on the sub-mock's mock.instances", () => {
     const Ctor = moduleMocker.fn<(arg: string) => {kind: string}>();
     const branch = Ctor.whenCalledWith('A').mockImplementation(() => ({
       kind: 'made',

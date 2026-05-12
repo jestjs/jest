@@ -567,10 +567,10 @@ fn(42); // 'numeric'
 fn({user: 'alice'}); // 'user'
 ```
 
-Argument matching uses the same equality as [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-):
+Argument matching uses `equals` from `@jest/expect-utils` with `iterableEquality`, so structural equality, Map/Set discrimination, and asymmetric matchers all behave as you'd expect from [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-). Custom testers registered via `expect.extend(...)` are **not** applied to `whenCalledWith` matching.
 
 - **Arity** — `whenCalledWith('a')` matches `fn('a')` and `fn('a', undefined)`, but **not** `fn('a', 'b')` or `fn()`. (Trailing `undefined` is allowed for parity with Jest's existing call-tracking semantics.)
-- **Deep equality** — objects and arrays are compared structurally.
+- **Deep equality** — objects, arrays, Maps, and Sets are compared structurally.
 
 #### Multiple matchers
 
@@ -588,7 +588,7 @@ fn('c'); // 3
 fn('z'); // undefined
 ```
 
-Two registrations whose matchers _overlap_ on a given call (e.g. `expect.objectContaining({a: 1})` and `expect.objectContaining({b: 2})` against `fn({a: 1, b: 2})`) both match. The dispatcher resolves them via the precedence rules below.
+Two registrations whose matchers _overlap_ on a given call (e.g. `expect.objectContaining({a: 1})` and `expect.objectContaining({b: 2})` against `fn({a: 1, b: 2})`) both match. The [precedence rules](#precedence) below decide which one fires.
 
 #### Onces and persistents
 
@@ -650,7 +650,7 @@ fn('y'); // 'default' (no matcher fires)
 
 #### Precedence
 
-When multiple registrations could match a single call, the dispatcher resolves them in this order:
+When multiple registrations could match a single call, they're resolved in this order:
 
 | Priority | Source |
 | --- | --- |
@@ -659,7 +659,7 @@ When multiple registrations could match a single call, the dispatcher resolves t
 | 3 | Last-registered matching branch with a persistent impl |
 | 4 | Base impl set on the parent (`fn.mockReturnValue`, the `spyOn` original method, etc.) — or `undefined` if none |
 
-#### Composition
+#### On spies
 
 Works with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname). Non-matching calls fall through to the spied object's original method:
 
@@ -672,14 +672,7 @@ target.greet('world'); // 'hi world'
 target.greet('jest'); // 'hello jest' (original method)
 ```
 
-Works with `new` (constructor mocks). `new fn(args)` matches the same way as `fn(args)`:
-
-```js
-const Service = jest.fn();
-Service.whenCalledWith('cfg').mockImplementation(() => ({connected: true}));
-
-const s = new Service('cfg'); // {connected: true}
-```
+#### Resetting
 
 `mockReset()` on the parent clears all `whenCalledWith` registrations and cascades the reset to each sub-mock — so any references you kept reflect the reset state. Calling `mockReset()` on a sub-mock clears only that branch.
 
