@@ -38,11 +38,11 @@ describe('whenCalledWith', () => {
     const fn = moduleMocker.fn();
     fn.whenCalledWith('a').mockReturnValue(1);
     fn.whenCalledWith('b').mockReturnValue(2);
-    fn.whenCalledWith('c').mockReturnValue(3);
+    fn.whenCalledWith({a: 42}).mockReturnValue(3);
     expect(fn('a')).toBe(1);
     expect(fn('b')).toBe(2);
-    expect(fn('c')).toBe(3);
-    expect(fn('z')).toBeUndefined();
+    expect(fn({a: 42})).toBe(3);
+    expect(fn({a: 43})).toBeUndefined();
   });
 
   it('matches asymmetric matchers via equals', () => {
@@ -51,6 +51,22 @@ describe('whenCalledWith', () => {
     expect(fn(42)).toBe('numeric');
     expect(fn(0)).toBe('numeric');
     expect(fn('not-a-number')).toBeUndefined();
+  });
+
+  it('matches asymmetric matchers nested inside object args', () => {
+    const fn = moduleMocker.fn();
+    const matcher = {
+      meta: {roles: expect.arrayContaining(['admin'])},
+      user: expect.any(String),
+    };
+
+    fn.whenCalledWith(matcher).mockReturnValue('user');
+
+    expect(fn({meta: {roles: ['admin', 'editor']}, user: 'alice'})).toBe(
+      'user',
+    );
+    expect(fn({meta: {roles: ['admin']}, user: 123})).toBeUndefined();
+    expect(fn({meta: {roles: ['editor']}, user: 'alice'})).toBeUndefined();
   });
 
   it('mockReturnValueOnce on the sub-mock returns the value exactly once', () => {
