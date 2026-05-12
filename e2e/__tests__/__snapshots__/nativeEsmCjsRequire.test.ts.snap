@@ -2,7 +2,7 @@
 
 exports[`runs ESM/CJS interop fixture (__esModule unwrapping, named exports, singleton caching) 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       6 passed, 6 total
+Tests:       8 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching cjs-esm-interop."

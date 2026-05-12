@@ -1,5 +1,22 @@
 ## main
 
+### Fixes
+
+- `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
+- `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
+
+### Chore & Maintenance
+
+- `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
+
+## 30.4.2
+
+### Fixes
+
+- `[jest-runtime]` Fix named imports from CJS modules whose `module.exports` is a function with own-property exports ([#16150](https://github.com/jestjs/jest/pull/16150))
+
+## 30.4.1
+
 ### Features
 
 - `[jest-config, jest-core, jest-runner, jest-schemas, jest-types]` Allow custom runner configuration options via tuple format `['runner-path', {options}]` ([#16141](https://github.com/jestjs/jest/pull/16141))

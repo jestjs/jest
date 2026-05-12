@@ -147,6 +147,59 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     },
   );
 
+  // node_modules files are not transformed, so a .js file with ESM syntax
+  // has no "type":"module" and compileFunction rejects it. The fallback must
+  // detect the ESM syntax and load it as a native SourceTextModule.
+  testWithVmEsm(
+    'falls back to native ESM for an untransformed node_modules .js file with ESM syntax',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esm-no-marker.mjs',
+      )) as any;
+      expect(m.namespace.esmNoMarkerValue).toBe(456);
+    },
+  );
+
+  testWithSyncEsm(
+    'require()s an untransformed node_modules .js file with ESM syntax',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const ns = runtime.requireModule(FROM, 'esm-no-marker');
+      expect(ns.esmNoMarkerValue).toBe(456);
+    },
+  );
+
+  testWithSyncEsm(
+    'deduplicates an ESM-fallback module imported via a diamond graph (same module, two importers)',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+      const m = (await runtime.unstable_importModule(
+        FROM,
+        './import-esm-no-marker-diamond.mjs',
+      )) as any;
+      expect(m.namespace.fromA).toBe(456);
+      expect(m.namespace.fromB).toBe(456);
+    },
+  );
+
+  // hasEsmSyntax returns false when es-module-lexer throws (broken ESM like
+  // `export {`). No CjsParseError is thrown, so the raw CJS compile error
+  // surfaces directly — no pointless ESM retry.
+  testWithVmEsm(
+    'surfaces the CJS compile error when both parsers reject the file',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/'],
+      });
+      await expect(
+        runtime.unstable_importModule(FROM, './import-esm-syntax-error.mjs'),
+      ).rejects.toThrow("Unexpected token 'export'");
+    },
+  );
+
   // Runtime SyntaxError from inside the CJS body (vs. a parse-time one)
   // must not trigger the ESM fallback - surfacing the original error
   // unchanged is the right behavior.

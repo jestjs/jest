@@ -8,8 +8,10 @@
 import * as path from 'node:path';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import type {FileCache} from './FileCache';
+import {CjsParseError} from './ModuleExecutor';
 import type {Resolution} from './Resolution';
 import type {TransformCache} from './TransformCache';
+import {hasEsmSyntax} from './esmLexer';
 
 export interface CjsExportsCacheOptions {
   resolution: Resolution;
@@ -68,7 +70,16 @@ export class CjsExportsCache {
       this.transformCache.getCachedSource(modulePath) ??
       this.fileCache.readFile(modulePath);
 
-    const {exports, reexports} = parseCjs(transformedCode);
+    let exports: Array<string>;
+    let reexports: Array<string>;
+    try {
+      ({exports, reexports} = parseCjs(transformedCode));
+    } catch (error) {
+      if (error instanceof Error && hasEsmSyntax(transformedCode)) {
+        throw new CjsParseError(error);
+      }
+      throw error;
+    }
     const namedExports = new Set(exports);
 
     for (const reexport of reexports) {

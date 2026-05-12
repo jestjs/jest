@@ -10,26 +10,25 @@ import {makeProjectConfig} from '@jest/test-utils';
 import type {RequireBuilder} from '../cjsRequire';
 import type {JestGlobals} from '../JestGlobals';
 import {
-  CJS_PARSE_ERROR,
+  CjsParseError,
   ModuleExecutor,
   type ModuleExecutorOptions,
-  isCjsParseError,
 } from '../ModuleExecutor';
 import type {Resolution} from '../Resolution';
 import {TestMainModule} from '../TestMainModule';
 import type {TransformCache} from '../TransformCache';
 
-describe('isCjsParseError', () => {
-  test('matches errors tagged with CJS_PARSE_ERROR', () => {
-    const error = new Error('boom') as Error & Record<symbol, unknown>;
-    error[CJS_PARSE_ERROR] = true;
-    expect(isCjsParseError(error)).toBe(true);
+describe('CjsParseError', () => {
+  test('is identified by instanceof', () => {
+    const cause = new Error('boom');
+    const error = new CjsParseError(cause);
+    expect(error).toBeInstanceOf(CjsParseError);
+    expect(error.cause).toBe(cause);
+    expect(error.message).toBe('boom');
   });
 
-  test('rejects untagged errors and non-Error values', () => {
-    expect(isCjsParseError(new Error('boom'))).toBe(false);
-    expect(isCjsParseError('boom')).toBe(false);
-    expect(isCjsParseError(null)).toBe(false);
+  test('plain Error is not a CjsParseError', () => {
+    expect(new Error('boom')).not.toBeInstanceOf(CjsParseError);
   });
 });
 

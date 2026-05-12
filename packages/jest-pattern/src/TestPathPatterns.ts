@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'node:path';
+import * as path from 'path';
 import {replacePathSepForRegex} from 'jest-regex-util';
 
 export class TestPathPatterns {
