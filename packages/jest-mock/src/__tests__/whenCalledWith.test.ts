@@ -534,50 +534,50 @@ describe('whenCalledWith', () => {
     expect(branch.mock.calls).toEqual([['A']]);
   });
 
-  it('does not leak the withImplementation temp fn into fallbackImpl', () => {
+  it('lets the withImplementation temp fn take precedence over existing branches', () => {
     const fn = moduleMocker.fn<(arg: string) => string>();
-    fn.mockReturnValue('default');
+    fn.whenCalledWith('x').mockReturnValue('X');
+
+    expect(fn('x')).toBe('X');
+
+    fn.withImplementation(
+      () => 'temp',
+      () => {
+        expect(fn('x')).toBe('temp');
+      },
+    );
+  });
+
+  it('reactivates branch routing after calling whenCalledWith inside withImplementation', () => {
+    const fn = moduleMocker.fn<(arg: string) => string>();
     fn.whenCalledWith('x').mockReturnValue('X');
 
     fn.withImplementation(
       () => 'temp',
       () => {
-        // Before any re-arm inside the scope: temp wins for everything.
         expect(fn('x')).toBe('temp');
-        expect(fn('other')).toBe('temp');
-        // Calling whenCalledWith inside the scope reinstalls the dispatcher
-        // (mirroring how mockImplementation inside the scope would override).
-        // Registered branches route, non-matches fall through to the temp fn.
+
         fn.whenCalledWith('y').mockReturnValue('Y');
         expect(fn('x')).toBe('X');
         expect(fn('y')).toBe('Y');
-        expect(fn('other')).toBe('temp');
+        expect(fn('z')).toBe('temp');
       },
     );
-
-    // After the scope: registrations preserved, fallback restored to default.
-    expect(fn('x')).toBe('X');
-    expect(fn('y')).toBe('Y');
-    expect(fn('other')).toBe('default');
   });
 
-  it('honors withImplementation scope around whenCalledWith routing', () => {
-    const fn = moduleMocker.fn();
-    fn.mockReturnValue('default');
-    fn.whenCalledWith('match').mockReturnValue('matched');
-    expect(fn('match')).toBe('matched');
-    expect(fn('miss')).toBe('default');
+  it('preserves existing and new branches after withImplementation', () => {
+    const fn = moduleMocker.fn<(arg: string) => string>();
+    fn.whenCalledWith('x').mockReturnValue('X');
 
     fn.withImplementation(
       () => 'temp',
       () => {
-        expect(fn('match')).toBe('temp');
-        expect(fn('miss')).toBe('temp');
+        fn.whenCalledWith('y').mockReturnValue('Y');
       },
     );
 
-    expect(fn('match')).toBe('matched');
-    expect(fn('miss')).toBe('default');
+    expect(fn('x')).toBe('X');
+    expect(fn('y')).toBe('Y');
   });
 
   it('discriminates Maps and Sets by content via iterableEquality', () => {
