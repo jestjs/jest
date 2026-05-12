@@ -6,6 +6,7 @@
  *
  */
 
+import type {JestEnvironment} from '@jest/environment';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import NodeEnvironment from 'jest-environment-node';
 import Runtime from '../';
@@ -25,17 +26,23 @@ describe('Runtime constructor', () => {
       {console, docblockPragmas: {}, testPath: __filename},
     );
 
+    // NodeEnvironment always sets moduleMocker in its constructor, but the
+    // interface types it as `ModuleMocker | null` so we guard explicitly.
+    const {moduleMocker} = environment;
+    if (!moduleMocker) throw new Error('Expected moduleMocker to be set');
+
     // Simulate an old moduleMocker (e.g. from jest-environment-jsdom@29.x using
     // jest-mock@29.x) that does not have clearMocksOnScope
-    Object.defineProperty(environment.moduleMocker, 'clearMocksOnScope', {
+    Object.defineProperty(moduleMocker, 'clearMocksOnScope', {
       configurable: true,
       value: undefined,
     });
 
     expect(() => {
+      // eslint-disable-next-line no-new
       new Runtime(
         projectConfig,
-        environment,
+        environment as JestEnvironment,
         null as any,
         null as any,
         new Map(),
