@@ -567,7 +567,7 @@ fn(42); // 'numeric'
 fn({user: 'alice'}); // 'user'
 ```
 
-Argument matching uses `equals` from `@jest/expect-utils` with `iterableEquality`, so structural equality, Map/Set discrimination, and asymmetric matchers all behave as you'd expect from [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-). Custom testers registered via `expect.extend(...)` are **not currently** applied to `whenCalledWith` matching — if that's a gap for your use case, please open an issue.
+Structural equality, Map/Set discrimination, and asymmetric matchers all behave as you'd expect from [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-). Custom testers registered via `expect.extend(...)` are **not currently** applied to `whenCalledWith` matching — if that's a gap for your use case, please open an issue.
 
 - **Arity** — `whenCalledWith('a')` matches `fn('a')` and `fn('a', undefined)`, but **not** `fn('a', 'b')` or `fn()`. (Trailing `undefined` is allowed for parity with Jest's existing call-tracking semantics.)
 - **Deep equality** — objects, arrays, Maps, and Sets are compared structurally.
