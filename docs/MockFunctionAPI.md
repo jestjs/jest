@@ -616,23 +616,20 @@ fetchUser.whenCalledWith(2).mockRejectedValue(new Error('not found'));
 
 #### Repeat calls return fresh branches
 
-Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) — the most recently registered "persistent" wins for matching calls, and queued "onces" drain in registration order across all matching branches:
+Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) below — the most recently registered persistent wins, and queued onces drain in registration order across every matching branch:
 
 ```js
-fn.whenCalledWith('x').mockReturnValueOnce('A');
-fn.whenCalledWith('x').mockReturnValue('B');
+fn.whenCalledWith('x')
+  .mockReturnValueOnce('first-once')
+  .mockReturnValue('first-persistent');
+fn.whenCalledWith('x')
+  .mockReturnValueOnce('second-once')
+  .mockReturnValue('second-persistent');
 
-fn('x'); // 'A' (once on first branch)
-fn('x'); // 'B' (last-registered persistent)
-fn('x'); // 'B'
-```
-
-If you want to add behavior to an existing registration, save the reference and chain on it:
-
-```js
-const branch = fn.whenCalledWith('x');
-branch.mockReturnValueOnce('once');
-branch.mockReturnValue('default');
+fn('x'); // 'first-once'         (earliest matching branch's queued once)
+fn('x'); // 'second-once'        (next branch's queued once)
+fn('x'); // 'second-persistent'  (last-registered persistent wins after onces drain)
+fn('x'); // 'second-persistent'
 ```
 
 #### Fall-through
@@ -654,10 +651,22 @@ When multiple registrations could match a single call, they're resolved in this 
 
 | Priority | Source |
 | --- | --- |
-| 1 | Parent-level `*Once` queue (`fn.mockReturnValueOnce`, `fn.mockImplementationOnce`, etc.) — the most explicit one-shot override, fires regardless of matchers |
-| 2 | Earliest matching branch with a queued `*Once` |
+| 1 | Base `*Once` queue (`fn.mockReturnValueOnce`, `fn.mockImplementationOnce`, etc.) — the most explicit one-shot override, fires regardless of matching branches |
+| 2 | Earliest-registered matching branch with a queued `*Once` |
 | 3 | Last-registered matching branch with a persistent impl |
-| 4 | Base impl set on the parent (`fn.mockReturnValue`, the `spyOn` original method, etc.) — or `undefined` if none |
+| 4 | Implementation set on the base (`fn.mockReturnValue`, the `spyOn` original method, etc.) — or `undefined` if none |
+
+```js
+fn.mockReturnValue('base');
+fn.whenCalledWith('x').mockReturnValue('matched-persistent');
+fn.whenCalledWith('x').mockReturnValueOnce('matched-once');
+fn.mockReturnValueOnce('base-once');
+
+fn('x'); // 'base-once'           — priority 1
+fn('x'); // 'matched-once'        — priority 2
+fn('x'); // 'matched-persistent'  — priority 3
+fn('y'); // 'base'                — priority 4 (no match)
+```
 
 #### On spies
 
@@ -675,6 +684,13 @@ target.greet('jest'); // 'hello jest' (original method)
 #### Resetting
 
 `mockReset()` on the parent clears all `whenCalledWith` registrations and cascades the reset to each sub-mock — so any references you kept reflect the reset state. Calling `mockReset()` on a sub-mock clears only that branch.
+
+```js
+fn.whenCalledWith('x').mockReturnValue('X');
+fn('x'); // 'X'
+fn.mockReset();
+fn('x'); // undefined — registration gone
+```
 
 #### TypeScript
 
