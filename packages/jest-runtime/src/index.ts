@@ -555,7 +555,7 @@ export default class Runtime {
 
     if (this._environment) {
       if (this._environment.global) {
-        this._moduleMocker?.clearMocksOnScope?.(this._environment.global);
+        this._moduleMocker.clearMocksOnScope?.(this._environment.global);
       }
 
       if (this._environment.fakeTimers) {
