@@ -740,10 +740,12 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 2,
           },
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 4,
           },
@@ -759,10 +761,12 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 'MOCKED!',
           },
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 4,
           },
@@ -779,10 +783,12 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 2,
           },
           {
+            timestamp: expect.any(Number),
             type: 'return',
             value: 4,
           },
@@ -827,14 +833,17 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 8,
         },
         {
+          timestamp: expect.any(Number),
           type: 'throw',
           value: error,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 18,
         },
@@ -858,6 +867,7 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
+          timestamp: expect.any(Number),
           type: 'throw',
           value: undefined,
         },
@@ -882,22 +892,27 @@ describe('moduleMocker', () => {
       // (in correct order of calls, rather than order of returns)
       expect(fn.mock.results).toEqual([
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 10,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 6,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 3,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 1,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 0,
         },
@@ -918,22 +933,27 @@ describe('moduleMocker', () => {
             // But only the last 3 calls have returned at this point.
             expect(fn.mock.results).toEqual([
               {
+                timestamp: expect.any(Number),
                 type: 'incomplete',
                 value: undefined,
               },
               {
+                timestamp: expect.any(Number),
                 type: 'incomplete',
                 value: undefined,
               },
               {
+                timestamp: expect.any(Number),
                 type: 'return',
                 value: 3,
               },
               {
+                timestamp: expect.any(Number),
                 type: 'return',
                 value: 1,
               },
               {
+                timestamp: expect.any(Number),
                 type: 'return',
                 value: 0,
               },
@@ -968,14 +988,17 @@ describe('moduleMocker', () => {
       // Results (after the call that cleared the mock) are tracked
       expect(fn.mock.results).toEqual([
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 3,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 1,
         },
         {
+          timestamp: expect.any(Number),
           type: 'return',
           value: 0,
         },
@@ -1050,6 +1073,94 @@ describe('moduleMocker', () => {
         );
 
         expect(mock.prototype).toBe(1);
+      });
+    });
+
+    describe('timestamps', () => {
+      it('records timestamps for each call', () => {
+        let counter = 0;
+        moduleMocker._getTimestamp = () => ++counter;
+
+        const fn1 = moduleMocker.fn();
+        expect(fn1.mock.timestamps).toEqual([]);
+
+        fn1(1, 2, 3);
+        expect(fn1.mock.timestamps).toEqual([1]);
+
+        fn1('a', 'b', 'c');
+        expect(fn1.mock.timestamps).toEqual([1, 2]);
+      });
+
+      it('records timestamps across multiple mocks', () => {
+        let counter = 0;
+        moduleMocker._getTimestamp = () => ++counter;
+
+        const fn1 = moduleMocker.fn();
+        const fn2 = moduleMocker.fn();
+
+        fn1();
+        fn2();
+        fn1();
+
+        expect(fn1.mock.timestamps).toEqual([1, 3]);
+        expect(fn2.mock.timestamps).toEqual([2]);
+      });
+
+      it('records timestamps on mock results', () => {
+        let counter = 0;
+        moduleMocker._getTimestamp = () => ++counter;
+
+        const fn1 = moduleMocker.fn(() => 'value');
+        fn1();
+        fn1();
+
+        expect(fn1.mock.results[0]).toEqual({
+          timestamp: 1,
+          type: 'return',
+          value: 'value',
+        });
+        expect(fn1.mock.results[1]).toEqual({
+          timestamp: 2,
+          type: 'return',
+          value: 'value',
+        });
+      });
+
+      it('records timestamps on thrown results', () => {
+        let counter = 0;
+        moduleMocker._getTimestamp = () => ++counter;
+
+        const error = new Error('test');
+        const fn1 = moduleMocker.fn(() => {
+          throw error;
+        });
+
+        try {
+          fn1();
+        } catch {
+          // expected
+        }
+
+        expect(fn1.mock.results[0]).toEqual({
+          timestamp: 1,
+          type: 'throw',
+          value: error,
+        });
+      });
+
+      it('clears timestamps on mockClear', () => {
+        let counter = 0;
+        moduleMocker._getTimestamp = () => ++counter;
+
+        const fn1 = moduleMocker.fn();
+        fn1();
+        expect(fn1.mock.timestamps).toEqual([1]);
+
+        fn1.mockClear();
+        expect(fn1.mock.timestamps).toEqual([]);
+
+        fn1();
+        expect(fn1.mock.timestamps).toEqual([2]);
       });
     });
   });

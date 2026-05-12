@@ -176,6 +176,11 @@ type ReplacedPropertyRestorer<T extends object, K extends keyof T> = {
 };
 
 type MockFunctionResultIncomplete = {
+  /**
+   * High-resolution monotonic timestamp (in milliseconds) of when the mock
+   * function was called. Useful for verifying timing-dependent behavior.
+   */
+  timestamp: number;
   type: 'incomplete';
   /**
    * Result of a single call to a mock function that has not yet completed.
@@ -185,6 +190,11 @@ type MockFunctionResultIncomplete = {
   value: undefined;
 };
 type MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> = {
+  /**
+   * High-resolution monotonic timestamp (in milliseconds) of when the mock
+   * function was called. Useful for verifying timing-dependent behavior.
+   */
+  timestamp: number;
   type: 'return';
   /**
    * Result of a single call to a mock function that returned.
@@ -192,6 +202,11 @@ type MockFunctionResultReturn<T extends FunctionLike = UnknownFunction> = {
   value: ReturnType<T>;
 };
 type MockFunctionResultThrow = {
+  /**
+   * High-resolution monotonic timestamp (in milliseconds) of when the mock
+   * function was called. Useful for verifying timing-dependent behavior.
+   */
+  timestamp: number;
   type: 'throw';
   /**
    * Result of a single call to a mock function that threw.
@@ -231,6 +246,11 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
    * List of the results of all calls that have been made to the mock.
    */
   results: Array<MockFunctionResult<T>>;
+  /**
+   * List of timestamps (high-resolution monotonic, in milliseconds) for each
+   * call that has been made to the mock.
+   */
+  timestamps: Array<number>;
 };
 
 type MockFunctionConfig = {
@@ -491,6 +511,14 @@ export class ModuleMocker {
   private _invocationCallCounter: number;
 
   /**
+   * Returns the current high-resolution monotonic timestamp in milliseconds.
+   * Override in tests to provide deterministic timestamps.
+   */
+  _getTimestamp(): number {
+    return performance.now();
+  }
+
+  /**
    * @see README.md
    * @param global Global object of the test environment, used to create
    * mocks
@@ -585,6 +613,7 @@ export class ModuleMocker {
       instances: [],
       invocationCallOrder: [],
       results: [],
+      timestamps: [],
     };
   }
 
@@ -642,14 +671,17 @@ export class ModuleMocker {
       ) {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
+        const callTimestamp = mocker._getTimestamp();
         mockState.instances.push(this);
         mockState.contexts.push(this);
         mockState.calls.push(args);
+        mockState.timestamps.push(callTimestamp);
         // Create and record an "incomplete" mock result immediately upon
         // calling rather than waiting for the mock to return. This avoids
         // issues caused by recursion where results can be recorded in the
         // wrong order.
         const mockResult: MockFunctionResult = {
+          timestamp: callTimestamp,
           type: 'incomplete',
           value: undefined,
         };

@@ -22,6 +22,10 @@ export const serialize: NewPlugin['serialize'] = (
   let callsString = '';
   if (val.mock.calls.length > 0) {
     const indentationNext = indentation + config.indent;
+    // Strip non-deterministic timestamps from results for snapshot stability
+    const results = val.mock.results.map(
+      ({type, value}: {type: string; value: unknown}) => ({type, value}),
+    );
     callsString = ` {${config.spacingOuter}${indentationNext}"calls": ${printer(
       val.mock.calls,
       config,
@@ -31,7 +35,7 @@ export const serialize: NewPlugin['serialize'] = (
     )}${config.min ? ', ' : ','}${
       config.spacingOuter
     }${indentationNext}"results": ${printer(
-      val.mock.results,
+      results,
       config,
       indentationNext,
       depth,

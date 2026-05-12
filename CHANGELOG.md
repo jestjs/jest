@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[jest-mock]` Add timestamps to mock function calls and results ([#6672](https://github.com/jestjs/jest/issues/6672), [#16158](https://github.com/jestjs/jest/pull/16158))
+
 ### Fixes
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
