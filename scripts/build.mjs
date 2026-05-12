@@ -11,8 +11,8 @@ import * as path from 'node:path';
 import util from 'node:util';
 import chalk from 'chalk';
 import dedent from 'dedent';
-import fs from 'graceful-fs';
 import {glob} from 'glob';
+import fs from 'graceful-fs';
 import webpack from 'webpack';
 import {
   ERROR,
@@ -35,7 +35,7 @@ async function normalizeNodeProtocolSpecifiers(buildDirectory) {
   await Promise.all(
     buildFiles.map(async buildFile => {
       const source = await fs.promises.readFile(buildFile, 'utf8');
-      const normalizedSource = source.replace(
+      const normalizedSource = source.replaceAll(
         nodeProtocolRequirePattern,
         'require($1$2$1)',
       );
