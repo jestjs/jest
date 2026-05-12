@@ -3,6 +3,7 @@
 ### Fixes
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
+- `[jest-runtime]` Detect incompatible test environments that provide a `moduleMocker` without `clearMocksOnScope` and throw a descriptive error pointing to the minimum required version (`jest-mock` >=30.4.0) instead of a cryptic `TypeError` ([#PR_NUMBER](https://github.com/jestjs/jest/pull/PR_NUMBER))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 
 ### Chore & Maintenance
