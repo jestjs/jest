@@ -965,6 +965,7 @@ export default async function normalize(
         break;
       }
       case 'automock':
+      case 'browserMode':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':
@@ -1085,6 +1086,10 @@ export default async function normalize(
 
   if (newOptions.runner === DEFAULT_CONFIG.runner) {
     newOptions.runner = require.resolve(newOptions.runner);
+  }
+
+  if (newOptions.browserMode?.enabled) {
+    newOptions.runner = require.resolve('@jest/browser');
   }
 
   if (newOptions.runnerOptions == null) {

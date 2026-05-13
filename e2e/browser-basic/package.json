@@ -1,0 +1,15 @@
+{
+  "jest": {
+    "browserMode": {
+      "enabled": true,
+      "provider": "@jest/browser-playwright",
+      "name": "chromium",
+      "headless": true,
+      "screenshotFailures": true,
+      "viewport": {
+        "width": 414,
+        "height": 896
+      }
+    }
+  }
+}

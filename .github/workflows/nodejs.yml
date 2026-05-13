@@ -105,6 +105,10 @@ jobs:
     with:
       os: ubuntu-latest
       shard: ${{ matrix.shard }}
+  test-browser:
+    uses: ./.github/workflows/test-browser.yml
+    needs: prepare-yarn-cache-ubuntu
+    name: Browser E2E Tests
   test-macos:
     uses: ./.github/workflows/test.yml
     needs: prepare-yarn-cache-macos

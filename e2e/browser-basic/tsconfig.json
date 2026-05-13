@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Bundler",
+    "types": ["@jest/globals", "@jest/browser/matchers"]
+  }
+}

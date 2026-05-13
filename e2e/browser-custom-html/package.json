@@ -1,0 +1,12 @@
+{
+  "jest": {
+    "browserMode": {
+      "enabled": true,
+      "provider": "playwright",
+      "name": "chromium",
+      "headless": true,
+      "screenshotFailures": true,
+      "testerHtmlPath": "./customTester.html"
+    }
+  }
+}

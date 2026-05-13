@@ -1,0 +1,26 @@
+{
+  "jest": {
+    "projects": [
+      {
+        "displayName": "unit",
+        "testEnvironment": "jsdom",
+        "testMatch": [
+          "<rootDir>/unit/**/*.test.js"
+        ],
+        "transform": {}
+      },
+      {
+        "displayName": "browser",
+        "browserMode": {
+          "enabled": true,
+          "provider": "playwright",
+          "name": "chromium",
+          "headless": true
+        },
+        "testMatch": [
+          "<rootDir>/browser/**/*.test.ts"
+        ]
+      }
+    ]
+  }
+}

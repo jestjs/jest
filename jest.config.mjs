@@ -69,6 +69,10 @@ export default {
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
+    '/e2e/__tests__/browser.*', // browser e2e tests need Playwright, run in separate CI job
+    '/e2e/browser-basic/',
+    '/e2e/browser-mixed-projects/',
+    '/e2e/browser-multi-browser/',
     Number.parseInt(process.versions.node, 10) >= 20
       ? '/.*\\.nodejs18\\..*'
       : '/.*\\.nodejs20plus\\..*',

@@ -230,6 +230,63 @@ export const InitialOptions = Type.Partial(
   Type.Object({
     automock: Type.Boolean(),
     bail: Type.Union([Type.Boolean(), Type.Number()]),
+    browserMode: Type.Partial(
+      Type.Object({
+        api: Type.Union([
+          Type.Object({
+            host: Type.Optional(Type.String()),
+            port: Type.Optional(Type.Number()),
+          }),
+          Type.Number(),
+        ]),
+        connectTimeout: Type.Number(),
+        enabled: Type.Boolean(),
+        expect: Type.Partial(
+          Type.Object({
+            toMatchScreenshot: Type.Partial(
+              Type.Object({
+                maxDiffPixelRatio: Type.Number(),
+                maxDiffPixels: Type.Number(),
+                threshold: Type.Number(),
+              }),
+            ),
+          }),
+        ),
+        fileParallelism: Type.Boolean(),
+        headless: Type.Boolean(),
+        instances: Type.Array(
+          Type.Partial(
+            Type.Object({
+              browser: Type.String(),
+              headless: Type.Boolean(),
+              providerOptions: Type.Record(Type.String(), Type.Unknown()),
+              screenshotDirectory: Type.String(),
+              screenshotFailures: Type.Boolean(),
+              viewport: Type.Object({
+                height: Type.Number(),
+                width: Type.Number(),
+              }),
+            }),
+          ),
+        ),
+        name: Type.String(),
+        provider: Type.String(),
+        providerOptions: Type.Record(Type.String(), Type.Unknown()),
+        screenshotDirectory: Type.String(),
+        screenshotFailures: Type.Boolean(),
+        testerHtmlPath: Type.String(),
+        trace: Type.Union([
+          Type.Literal('off'),
+          Type.Literal('on'),
+          Type.Literal('retain-on-failure'),
+        ]),
+        trackUnhandledErrors: Type.Boolean(),
+        viewport: Type.Object({
+          height: Type.Number(),
+          width: Type.Number(),
+        }),
+      }),
+    ),
     cache: Type.Boolean(),
     cacheDirectory: Type.String(),
     ci: Type.Boolean(),

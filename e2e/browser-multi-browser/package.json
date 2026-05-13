@@ -1,0 +1,16 @@
+{
+  "jest": {
+    "browserMode": {
+      "enabled": true,
+      "provider": "playwright",
+      "instances": [
+        {
+          "browser": "chromium"
+        },
+        {
+          "browser": "firefox"
+        }
+      ]
+    }
+  }
+}

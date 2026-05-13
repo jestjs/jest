@@ -62,3 +62,7 @@ crowdin-cli.jar
 
 # We don't want these temp files
 packages/jest-worker/src/workers/__tests__/__temp__
+
+# Browser mode screenshot references (platform-dependent, generated at runtime)
+**/__screenshots__
+**/__diff__

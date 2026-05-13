@@ -94,6 +94,9 @@ function getPackages() {
               './build/toThrowMatchers': './build/toThrowMatchers.js',
             }
           : {}),
+        ...(pkg.name === '@jest/browser'
+          ? {'./matchers': {types: './types.d.ts'}}
+          : {}),
       },
       `Package "${pkg.name}" does not export correct files`,
     );
@@ -242,6 +245,15 @@ export function createBuildConfigs() {
               currentValue !== './package.json' &&
               !currentValue.startsWith('./bin')
             ) {
+              // skip types-only exports (no JS to build)
+              const exportValue = pkg.exports[currentValue];
+              if (
+                typeof exportValue === 'object' &&
+                Object.keys(exportValue).length === 1 &&
+                exportValue.types
+              ) {
+                return previousValue;
+              }
               // skip `./`
               previousValue[currentValue.slice(2)] = path.resolve(
                 packageDir,
@@ -264,7 +276,16 @@ export function createBuildConfigs() {
           ...separateChunks,
           ...extraEntryPoints,
         },
-        externals: nodeExternals(),
+        externals: [
+          nodeExternals(),
+          // Optional peer dependencies for browser mode
+          ({request}, callback) => {
+            if (/^(playwright|vite)$/.test(request)) {
+              return callback(null, `commonjs ${request}`);
+            }
+            return callback();
+          },
+        ],
         mode: 'production',
         module: {
           rules: [

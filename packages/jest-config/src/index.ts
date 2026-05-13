@@ -196,6 +196,7 @@ const groupOptions = (
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
+    browserMode: options.browserMode,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,

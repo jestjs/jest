@@ -13,6 +13,17 @@
     "Guides": [
       "snapshot-testing",
       "test-environment",
+      {
+        "type": "category",
+        "label": "Browser Mode",
+        "items": [
+          "browser-mode",
+          "browser-mode-configuration",
+          "browser-mode-api",
+          "browser-mode-screenshots",
+          "browser-mode-multi-browser"
+        ]
+      },
       "tutorial-async",
       "timer-mocks",
       "manual-mocks",

@@ -1792,7 +1792,7 @@ The state object includes the following commonly used properties (among others).
 
 The full name of the currently running test, including all parent `describe` block names separated by a space. For example:
 
-```js title="myTest.test.js"
+```js tab title="myTest.test.js"
 describe('my suite', () => {
   describe('nested', () => {
     beforeEach(() => {
@@ -1808,7 +1808,7 @@ describe('my suite', () => {
 });
 ```
 
-```ts title="myTest.test.ts"
+```ts tab title="myTest.test.ts"
 describe('my suite', () => {
   describe('nested', () => {
     beforeEach(() => {
@@ -1834,14 +1834,14 @@ This is particularly useful for:
 
 The absolute path to the test file being executed.
 
-```js title="myTest.test.js"
+```js tab title="myTest.test.js"
 beforeEach(() => {
   const {testPath} = expect.getState();
   console.log(testPath); // '/path/to/project/myTest.test.js'
 });
 ```
 
-```ts title="myTest.test.ts"
+```ts tab title="myTest.test.ts"
 beforeEach(() => {
   const {testPath} = expect.getState();
   console.log(testPath); // '/path/to/project/myTest.test.ts'
@@ -1856,13 +1856,13 @@ A boolean indicating whether Jest was invoked with the `--expand` flag. This is 
 
 Merges the provided object into the current matcher state. This is primarily used internally and inside custom matchers.
 
-```js title="myTest.test.js"
+```js tab title="myTest.test.js"
 expect.setState({key: 'value'});
 const {key} = expect.getState();
 console.log(key); // 'value'
 ```
 
-```ts title="custom.d.ts"
+```ts tab={"span":2} title="custom.d.ts"
 // To use custom properties with setState in TypeScript,
 // augment the MatcherState interface:
 declare module 'expect' {
@@ -1872,7 +1872,7 @@ declare module 'expect' {
 }
 ```
 
-```ts title="myTest.test.ts"
+```ts tab title="myTest.test.ts"
 expect.setState({key: 'value'});
 const {key} = expect.getState();
 console.log(key); // 'value'

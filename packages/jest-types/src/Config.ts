@@ -157,6 +157,7 @@ export interface ConfigGlobals {
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
+  browserMode: undefined;
   cache: boolean;
   cacheDirectory: string;
   changedFilesWithAncestor: boolean;
@@ -336,6 +337,37 @@ export type GlobalConfig = {
 
 export type ProjectConfig = {
   automock: boolean;
+  browserMode?: {
+    api?: {host?: string; port?: number} | number;
+    connectTimeout?: number;
+    enabled: boolean;
+    expect?: {
+      toMatchScreenshot?: {
+        maxDiffPixelRatio?: number;
+        maxDiffPixels?: number;
+        threshold?: number;
+      };
+    };
+    fileParallelism?: boolean;
+    headless: boolean;
+    instances?: Array<{
+      browser: string;
+      headless?: boolean;
+      providerOptions?: Record<string, unknown>;
+      screenshotDirectory?: string;
+      screenshotFailures?: boolean;
+      viewport?: {height: number; width: number};
+    }>;
+    name: string;
+    provider: string;
+    providerOptions: Record<string, unknown>;
+    screenshotDirectory?: string;
+    screenshotFailures?: boolean;
+    testerHtmlPath?: string;
+    trace?: 'off' | 'on' | 'retain-on-failure';
+    trackUnhandledErrors?: boolean;
+    viewport?: {height: number; width: number};
+  };
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;

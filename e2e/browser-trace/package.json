@@ -1,0 +1,11 @@
+{
+  "jest": {
+    "browserMode": {
+      "enabled": true,
+      "provider": "playwright",
+      "name": "chromium",
+      "headless": true,
+      "trace": "on"
+    }
+  }
+}

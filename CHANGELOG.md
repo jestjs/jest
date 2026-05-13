@@ -1,5 +1,9 @@
 ## main
 
+### Features
+
+- `[@jest/browser, jest-config, jest-schemas, jest-types]` Add browser mode with Playwright provider for running tests in real browsers via Vite dev server ([#16173](https://github.com/jestjs/jest/pull/16173))
+
 ### Fixes
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
