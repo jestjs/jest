@@ -153,6 +153,7 @@ const config = {
         ],
       }),
     ],
+    'docusaurus-plugin-copy-page-button',
   ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
