@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- `[@jest/console]` Add console buffering to CustomConsole for reporters in verbose mode ([#6441](https://github.com/jestjs/jest/issues/6441))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 
 ### Chore & Maintenance

@@ -227,7 +227,8 @@ export default class DefaultReporter extends BaseReporter {
     }
 
     this.log(getResultHeader(result, this._globalConfig, config));
-    if (result.console) {
+    const isVerbose = config.verbose ?? this._globalConfig.verbose;
+    if (result.console && !isVerbose) {
       this.log(
         `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(result.console, config, this._globalConfig)}`,
       );
