@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- `[jest-util]` Fix infinite recursion (`RangeError: Maximum call stack size exceeded`) when writing to a data property soft-deleted by `globalsCleanup: 'soft'` ([#16044](https://github.com/jestjs/jest/issues/16044))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 
