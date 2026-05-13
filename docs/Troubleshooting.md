@@ -17,13 +17,106 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 
 This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.
 
-To debug in Google Chrome (or any Chromium-based browser), open your browser and go to `chrome://inspect` and click on "Open Dedicated DevTools for Node", which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like `localhost:9229`) after running the above command, and you will be able to debug Jest using Chrome's DevTools.
-
-The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
+You can then attach a debugger to the paused process. See the sections below for specific debugger instructions.
 
 :::note
 
 The `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+
+:::
+
+## Debugging in Chrome
+
+To debug your tests in Google Chrome (or any Chromium-based browser), follow these steps:
+
+### Step 1: Add a debugger statement
+
+Place a `debugger;` statement in your test file where you want execution to pause:
+
+```javascript
+describe('my test', () => {
+  it('should work', () => {
+    debugger; // Execution will pause here
+    expect(true).toBe(true);
+  });
+});
+```
+
+### Step 2: Run Jest with the inspect flag
+
+In your project's directory, run:
+
+```bash
+node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
+```
+
+Or on Windows:
+
+```bash
+node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
+```
+
+You should see output like:
+
+```
+Debugger listening on ws://127.0.0.1:9229/...
+For help, see: https://nodejs.org/en/docs/inspector
+```
+
+The process will pause and wait for a debugger to connect.
+
+### Step 3: Open Chrome DevTools
+
+1. Open Google Chrome (or any Chromium-based browser)
+2. Navigate to `chrome://inspect`
+3. You should see your Jest process listed under "Remote Target"
+4. Click the "Inspect" link next to your Jest process
+
+### Step 4: DevTools will open
+
+When Chrome DevTools opens, you'll see:
+
+- A breakpoint at the first line of the Jest CLI script (this gives you time to open DevTools)
+- The debugger paused in the `Inspect` view
+
+### Step 5: Resume execution
+
+1. Look for the blue "Resume" button (looks like a play button ▶) in the top toolbar
+2. Click it to continue execution
+3. Jest will run and load your tests
+4. When Jest reaches your `debugger;` statement, execution will pause again
+
+### Step 6: Debug your code
+
+Now you can:
+
+- **Inspect variables**: Hover over variables or use the console
+- **Step through code**: Use Step Over (F10), Step Into (F11), Step Out (Shift+F11)
+- **Evaluate expressions**: Type expressions in the console tab
+- **Set additional breakpoints**: Click line numbers in DevTools
+
+### Troubleshooting
+
+**Process doesn't appear in chrome://inspect?**
+
+- Make sure you waited long enough after running the command
+- Check that port 9229 isn't blocked by a firewall
+- Try refreshing the `chrome://inspect` page
+
+**Execution doesn't pause on `debugger;`?**
+
+- Make sure you're using `--runInBand` flag
+- Verify the `debugger;` statement is in your test file
+- Check that the file will actually be executed
+
+**Port 9229 already in use?**
+
+- Change the port: `node --inspect-brk=9230 node_modules/.bin/jest --runInBand`
+- Find and kill the process using port 9229
+
+:::note
+
+The `--runInBand` flag is important because it runs all tests in a single process. Without it, Jest spawns multiple processes for parallel test execution, making it difficult to debug since the debugger would need to attach to multiple processes.
 
 :::
 
