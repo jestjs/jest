@@ -10502,6 +10502,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"docusaurus-plugin-copy-page-button@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "docusaurus-plugin-copy-page-button@npm:0.4.2"
+  peerDependencies:
+    "@docusaurus/core": ^3.0.0
+    react: ^18.0.0 || ^19.0.0
+  checksum: 10/e591ff132932e4e2ba028f8b221309a6146d618c005c3fd985e3dffe6f435468d6b88d3ac91f717e46762524451ffc8cef75e1fd6de7ea4692488a3123ebc08b
+  languageName: node
+  linkType: hard
+
 "docusaurus-remark-plugin-tab-blocks@npm:^4.0.0":
   version: 4.0.0
   resolution: "docusaurus-remark-plugin-tab-blocks@npm:4.0.0"
@@ -14953,6 +14963,7 @@ __metadata:
     "@docusaurus/tsconfig": "npm:^3.0.0"
     "@types/react": "npm:^18.3.23"
     clsx: "npm:^2.1.1"
+    docusaurus-plugin-copy-page-button: "npm:^0.4.2"
     docusaurus-remark-plugin-tab-blocks: "npm:^4.0.0"
     graphql: "npm:^16.11.0"
     graphql-request: "npm:^6.1.0"
