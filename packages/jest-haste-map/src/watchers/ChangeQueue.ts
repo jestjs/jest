@@ -50,7 +50,6 @@ export class ChangeQueue {
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _changeQueue: Promise<null | void> = Promise.resolve();
   private _eventsQueue: EventsQueue = [];
-  // Set-based dedup replaces the previous O(n) linear scan per event.
   private _pendingEventKeys = new Set<string>();
   private _hasteMap: InternalHasteMap;
   // We only need to copy the entire haste map once per "frame".

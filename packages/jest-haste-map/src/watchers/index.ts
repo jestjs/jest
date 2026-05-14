@@ -75,10 +75,6 @@ export class WatcherDriver {
     this._watchers = [];
   }
 
-  get watcherCount(): number {
-    return this._watchers.length;
-  }
-
   private _createWatcher(
     Backend: any,
     root: string,

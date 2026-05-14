@@ -136,6 +136,27 @@ describe('FileProcessor', () => {
       ).rejects.toBeInstanceOf(DuplicateError);
     });
 
+    it('calls getSha1 for node_modules files when retainAllFiles and computeSha1 are true', async () => {
+      const hasteMap = createEmptyMap();
+      const nmPath = `${ROOT}/node_modules/pkg/index.js`;
+      const relPath = 'node_modules/pkg/index.js';
+      hasteMap.files.set(relPath, ['', 1000, 42, 0, '', null]);
+
+      const worker = makeWorker({sha1: 'abc123'});
+      const pool = new MockWorkerPool({maxWorkers: 1});
+      (pool.get as jest.Mock).mockReturnValue(worker);
+
+      const fp = new FileProcessor(
+        makeOptions({computeSha1: true, retainAllFiles: true}),
+        console,
+        pool,
+      );
+      await fp.processFile(hasteMap, hasteMap.map, hasteMap.mocks, nmPath);
+
+      expect(worker.getSha1).toHaveBeenCalledTimes(1);
+      expect(worker.worker).not.toHaveBeenCalled();
+    });
+
     it('returns null for a visited file with no ID', () => {
       const hasteMap = createEmptyMap();
       hasteMap.files.set('src/NoId.js', ['', 1000, 42, 1, '', null]);
