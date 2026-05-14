@@ -39,11 +39,7 @@ const driverOpts = {
 };
 
 describe('shouldUseWatchman', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    // reset module-scope promise cache between tests
-    jest.resetModules();
-  });
+  beforeEach(() => jest.clearAllMocks());
 
   it('returns false when useWatchmanOption is false', async () => {
     expect(await shouldUseWatchman(false)).toBe(false);

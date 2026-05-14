@@ -151,7 +151,6 @@ export class FileProcessor {
     const moduleMetadata = hasteMap.map.get(fileMetadata[H.ID]);
     const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
 
-    // Callback called when the response from the worker is successful.
     const workerReply = (metadata: WorkerMetadata) => {
       // `1` for truthy values instead of `true` to save cache space.
       fileMetadata[H.VISITED] = 1;
@@ -173,7 +172,6 @@ export class FileProcessor {
       }
     };
 
-    // Callback called when the response from the worker is an error.
     const workerError = (error: Error | any) => {
       if (typeof error !== 'object' || !error.message || !error.stack) {
         error = new Error(error);

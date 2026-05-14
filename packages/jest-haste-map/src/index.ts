@@ -497,6 +497,22 @@ class HasteMap extends EventEmitter implements IHasteMap {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
     this._ignoreFn = buildIgnoreMatcher(this._options.ignorePattern, true);
+    this._fileProcessor = new FileProcessor(
+      {
+        computeDependencies: this._options.computeDependencies,
+        computeSha1: this._options.computeSha1,
+        dependencyExtractor: this._options.dependencyExtractor,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+        mocksPattern: this._options.mocksPattern,
+        platforms: this._options.platforms,
+        retainAllFiles: true,
+        rootDir: this._options.rootDir,
+        skipPackageJson: this._options.skipPackageJson,
+        throwOnModuleCollision: false,
+      },
+      this._console,
+      this._workerPool,
+    );
 
     this._watcherDriver = new WatcherDriver({
       extensions: this._options.extensions,
