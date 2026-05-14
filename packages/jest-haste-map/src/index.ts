@@ -24,7 +24,6 @@ import {WorkerPool} from './lib/WorkerPool';
 import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
-import isWatchmanInstalled from './lib/isWatchmanInstalled';
 import normalizePathSep from './lib/normalizePathSep';
 import {copy, copyMap, createEmptyMap} from './lib/util';
 import type {
@@ -46,11 +45,7 @@ import type {
   SerializableModuleMap,
   WorkerMetadata,
 } from './types';
-import {FSEventsWatcher} from './watchers/FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
-import NodeWatcher from './watchers/NodeWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
-import WatchmanWatcher from './watchers/WatchmanWatcher';
+import {WatcherDriver, shouldUseWatchman} from './watchers';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -107,13 +102,7 @@ type InternalOptions = {
   workerThreads?: boolean;
 };
 
-type Watcher = {
-  close(): Promise<void>;
-};
-
 type HasteWorker = typeof import('./worker');
-
-let isWatchmanInstalledPromise: Promise<boolean> | undefined;
 
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
@@ -126,7 +115,6 @@ export type {
 } from './types';
 
 const CHANGE_INTERVAL = 30;
-const MAX_WAIT_TIME = 240_000;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
@@ -220,7 +208,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
   private readonly _options: InternalOptions;
-  private _watchers: Array<Watcher> = [];
+  private _watcherDriver?: WatcherDriver;
   private _workerPool!: WorkerPool;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
@@ -752,7 +740,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
         rootDir: options.rootDir,
         roots: options.roots,
       },
-      await this._shouldUseWatchman(),
+      await shouldUseWatchman(this._options.useWatchman),
       this._console,
     );
   }
@@ -771,42 +759,20 @@ class HasteMap extends EventEmitter implements IHasteMap {
     this._options.retainAllFiles = true;
     this._ignoreFn = buildIgnoreMatcher(this._options.ignorePattern, true);
 
-    // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher = (await this._shouldUseWatchman())
-      ? WatchmanWatcher
-      : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
+    this._watcherDriver = new WatcherDriver({
+      extensions: this._options.extensions,
+      ignorePattern: this._options.ignorePattern,
+      roots: this._options.roots,
+      useWatchman: await shouldUseWatchman(this._options.useWatchman),
+    });
 
-    const extensions = this._options.extensions;
-    const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
+    const extensions = this._options.extensions;
 
     let changeQueue: Promise<null | void> = Promise.resolve();
     let eventsQueue: EventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
-
-    const createWatcher = (root: string): Promise<Watcher> => {
-      const watcher = new Watcher(root, {
-        dot: true,
-        glob: extensions.map(extension => `**/*.${extension}`),
-        ignored: ignorePattern,
-      });
-
-      return new Promise((resolve, reject) => {
-        const rejectTimeout = setTimeout(
-          () => reject(new Error('Failed to start watch mode.')),
-          MAX_WAIT_TIME,
-        );
-
-        watcher.once('ready', () => {
-          clearTimeout(rejectTimeout);
-          watcher.on('all', onChange);
-          resolve(watcher);
-        });
-      });
-    };
 
     const emitChange = () => {
       if (eventsQueue.length > 0) {
@@ -966,11 +932,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    return Promise.all(this._options.roots.map(createWatcher)).then(
-      watchers => {
-        this._watchers = watchers;
-      },
-    );
+    await this._watcherDriver.start(onChange);
   }
 
   /**
@@ -1034,13 +996,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       clearInterval(this._changeInterval);
     }
 
-    if (this._watchers.length === 0) {
-      return;
-    }
-
-    await Promise.all(this._watchers.map(watcher => watcher.close()));
-
-    this._watchers = [];
+    await this._watcherDriver?.close();
   }
 
   /**
@@ -1048,16 +1004,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
    */
   private _ignore(filePath: string): boolean {
     return this._ignoreFn(filePath);
-  }
-
-  private async _shouldUseWatchman(): Promise<boolean> {
-    if (!this._options.useWatchman) {
-      return false;
-    }
-    if (!isWatchmanInstalledPromise) {
-      isWatchmanInstalledPromise = isWatchmanInstalled();
-    }
-    return isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {
