@@ -9,8 +9,7 @@ import {createHash} from 'node:crypto';
 import {EventEmitter} from 'node:events';
 import {tmpdir} from 'node:os';
 import * as path from 'node:path';
-import {deserialize, serialize} from 'node:v8';
-import {type Stats, readFileSync, writeFileSync} from 'graceful-fs';
+import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {invariant, requireOrImportModule} from 'jest-util';
@@ -21,6 +20,7 @@ import H from './constants';
 import {nodeCrawl} from './crawlers/node';
 import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
+import {CacheManager} from './lib/CacheManager';
 import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -217,7 +217,7 @@ type WorkerOptions = {forceInBand: boolean};
  */
 class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
-  private _cachePath = '';
+  private _cacheManager!: CacheManager;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
@@ -328,7 +328,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       }
     }
 
-    this._cachePath = HasteMap.getCacheFilePath(
+    const cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.id}-${rootDirHash}`,
       VERSION,
@@ -345,6 +345,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       dependencyExtractorHash,
       this._options.computeDependencies.toString(),
     );
+    this._cacheManager = new CacheManager(cachePath);
   }
 
   static getCacheFilePath(
@@ -364,7 +365,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   getCacheFilePath(): string {
-    return this._cachePath;
+    return this._cacheManager.path;
   }
 
   build(): Promise<InternalHasteMapObject> {
@@ -414,15 +415,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * 1. read data from the cache or create an empty structure.
    */
   read(): InternalHasteMap {
-    let hasteMap: InternalHasteMap;
-
-    try {
-      hasteMap = deserialize(readFileSync(this._cachePath));
-    } catch {
-      hasteMap = this._createEmptyMap();
-    }
-
-    return hasteMap;
+    return this._cacheManager.read();
   }
 
   readModuleMap(): HasteModuleMap {
@@ -443,13 +436,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }> {
-    let hasteMap: InternalHasteMap;
-    try {
-      const read = this._options.resetCache ? this._createEmptyMap : this.read;
-      hasteMap = read.call(this);
-    } catch {
-      hasteMap = this._createEmptyMap();
-    }
+    const hasteMap = this._options.resetCache
+      ? this._createEmptyMap()
+      : this._cacheManager.read();
     return this._crawl(hasteMap);
   }
 
@@ -742,7 +731,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * 4. serialize the new `HasteMap` in a cache file.
    */
   private _persist(hasteMap: InternalHasteMap) {
-    writeFileSync(this._cachePath, serialize(hasteMap));
+    this._cacheManager.persist(hasteMap);
   }
 
   /**
