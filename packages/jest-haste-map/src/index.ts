@@ -9,10 +9,9 @@ import {createHash} from 'node:crypto';
 import {EventEmitter} from 'node:events';
 import {tmpdir} from 'node:os';
 import * as path from 'node:path';
-import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {invariant, requireOrImportModule} from 'jest-util';
+import {requireOrImportModule} from 'jest-util';
 import type {JestWorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -24,14 +23,10 @@ import {WorkerPool} from './lib/WorkerPool';
 import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
-import normalizePathSep from './lib/normalizePathSep';
-import {copy, copyMap, createEmptyMap} from './lib/util';
+import {copyMap, createEmptyMap} from './lib/util';
 import type {
-  ChangeEvent,
   DependencyExtractor,
-  EventsQueue,
   FileData,
-  FileMetaData,
   HasteMapStatic,
   HasteRegExp,
   IHasteMap,
@@ -46,6 +41,7 @@ import type {
   WorkerMetadata,
 } from './types';
 import {WatcherDriver, shouldUseWatchman} from './watchers';
+import {ChangeQueue} from './watchers/ChangeQueue';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -114,7 +110,6 @@ export type {
   SerializableModuleMap,
 } from './types';
 
-const CHANGE_INTERVAL = 30;
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
@@ -204,7 +199,7 @@ type WorkerOptions = {forceInBand: boolean};
 class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cacheManager!: CacheManager;
-  private _changeInterval?: ReturnType<typeof setInterval>;
+  private _changeQueue?: ChangeQueue;
   private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
   private readonly _options: InternalOptions;
@@ -766,173 +761,27 @@ class HasteMap extends EventEmitter implements IHasteMap {
       useWatchman: await shouldUseWatchman(this._options.useWatchman),
     });
 
-    const rootDir = this._options.rootDir;
-    const extensions = this._options.extensions;
+    this._changeQueue = new ChangeQueue(hasteMap, this._options.extensions, {
+      cleanup: () => this._cleanup(),
+      emit: event => this.emit('change', event),
+      ignore: filePath => this._ignore(filePath),
+      mocksPattern: this._options.mocksPattern,
+      onError: error =>
+        this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`),
+      platforms: this._options.platforms,
+      processFile: (map, filePath) =>
+        this._processFile(map, map.map, map.mocks, filePath, {
+          forceInBand: true,
+        }),
+      recoverDuplicates: (map, relPath, name) =>
+        this._recoverDuplicates(map, relPath, name),
+      rootDir: this._options.rootDir,
+    });
 
-    let changeQueue: Promise<null | void> = Promise.resolve();
-    let eventsQueue: EventsQueue = [];
-    // We only need to copy the entire haste map once on every "frame".
-    let mustCopy = true;
-
-    const emitChange = () => {
-      if (eventsQueue.length > 0) {
-        mustCopy = true;
-        const changeEvent: ChangeEvent = {
-          eventsQueue,
-          hasteFS: new HasteFS({files: hasteMap.files, rootDir}),
-          moduleMap: new HasteModuleMap({
-            duplicates: hasteMap.duplicates,
-            map: hasteMap.map,
-            mocks: hasteMap.mocks,
-            rootDir,
-          }),
-        };
-        this.emit('change', changeEvent);
-        eventsQueue = [];
-      }
-    };
-
-    const onChange = (
-      type: string,
-      filePath: string,
-      root: string,
-      stat?: Stats,
-    ) => {
-      filePath = path.join(root, normalizePathSep(filePath));
-      if (
-        (stat && stat.isDirectory()) ||
-        this._ignore(filePath) ||
-        !extensions.some(extension => filePath.endsWith(extension))
-      ) {
-        return;
-      }
-
-      const relativeFilePath = fastPath.relative(rootDir, filePath);
-      const fileMetadata = hasteMap.files.get(relativeFilePath);
-
-      // The file has been accessed, not modified
-      if (
-        type === 'change' &&
-        fileMetadata &&
-        stat &&
-        fileMetadata[H.MTIME] === stat.mtime.getTime()
-      ) {
-        return;
-      }
-
-      changeQueue = changeQueue
-        .then(() => {
-          // If we get duplicate events for the same file, ignore them.
-          if (
-            eventsQueue.some(
-              event =>
-                event.type === type &&
-                event.filePath === filePath &&
-                ((!event.stat && !stat) ||
-                  (!!event.stat &&
-                    !!stat &&
-                    event.stat.mtime.getTime() === stat.mtime.getTime())),
-            )
-          ) {
-            return null;
-          }
-
-          if (mustCopy) {
-            mustCopy = false;
-            hasteMap = {
-              clocks: new Map(hasteMap.clocks),
-              duplicates: new Map(hasteMap.duplicates),
-              files: new Map(hasteMap.files),
-              map: new Map(hasteMap.map),
-              mocks: new Map(hasteMap.mocks),
-            };
-          }
-
-          const add = () => {
-            eventsQueue.push({filePath, stat, type});
-            return null;
-          };
-
-          const fileMetadata = hasteMap.files.get(relativeFilePath);
-
-          // If it's not an addition, delete the file and all its metadata
-          if (fileMetadata != null) {
-            const moduleName = fileMetadata[H.ID];
-            const platform =
-              getPlatformExtension(filePath, this._options.platforms) ||
-              H.GENERIC_PLATFORM;
-            hasteMap.files.delete(relativeFilePath);
-
-            let moduleMap = hasteMap.map.get(moduleName);
-            if (moduleMap != null) {
-              // We are forced to copy the object because jest-haste-map exposes
-              // the map as an immutable entity.
-              moduleMap = copy(moduleMap);
-              delete moduleMap[platform];
-              if (Object.keys(moduleMap).length === 0) {
-                hasteMap.map.delete(moduleName);
-              } else {
-                hasteMap.map.set(moduleName, moduleMap);
-              }
-            }
-
-            if (
-              this._options.mocksPattern &&
-              this._options.mocksPattern.test(filePath)
-            ) {
-              const mockName = getMockName(filePath);
-              hasteMap.mocks.delete(mockName);
-            }
-
-            this._recoverDuplicates(hasteMap, relativeFilePath, moduleName);
-          }
-
-          // If the file was added or changed,
-          // parse it and update the haste map.
-          if (type === 'add' || type === 'change') {
-            invariant(
-              stat,
-              'since the file exists or changed, it should have stats',
-            );
-            const fileMetadata: FileMetaData = [
-              '',
-              stat.mtime.getTime(),
-              stat.size,
-              0,
-              '',
-              null,
-            ];
-            hasteMap.files.set(relativeFilePath, fileMetadata);
-            const promise = this._processFile(
-              hasteMap,
-              hasteMap.map,
-              hasteMap.mocks,
-              filePath,
-              {forceInBand: true},
-            );
-            // Cleanup
-            this._cleanup();
-            if (promise) {
-              return promise.then(add);
-            } else {
-              // If a file in node_modules has changed,
-              // emit an event regardless.
-              add();
-            }
-          } else {
-            add();
-          }
-          return null;
-        })
-        .catch((error: Error) => {
-          this._console.error(
-            `jest-haste-map: watch error:\n  ${error.stack}\n`,
-          );
-        });
-    };
-
-    this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    await this._watcherDriver.start(onChange);
+    this._changeQueue.start();
+    await this._watcherDriver.start((type, filePath, root, stat) =>
+      this._changeQueue!.onChange(type, filePath, root, stat),
+    );
   }
 
   /**
@@ -992,10 +841,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   async end(): Promise<void> {
-    if (this._changeInterval) {
-      clearInterval(this._changeInterval);
-    }
-
+    this._changeQueue?.stop();
     await this._watcherDriver?.close();
   }
 
