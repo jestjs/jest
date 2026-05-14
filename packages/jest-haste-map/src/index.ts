@@ -17,8 +17,7 @@ import type {JestWorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
-import {nodeCrawl} from './crawlers/node';
-import {watchmanCrawl} from './crawlers/watchman';
+import {crawl as crawlFiles} from './crawlers';
 import getMockName from './getMockName';
 import {CacheManager} from './lib/CacheManager';
 import {WorkerPool} from './lib/WorkerPool';
@@ -30,7 +29,6 @@ import normalizePathSep from './lib/normalizePathSep';
 import {copy, copyMap, createEmptyMap} from './lib/util';
 import type {
   ChangeEvent,
-  CrawlerOptions,
   DependencyExtractor,
   EventsQueue,
   FileData,
@@ -743,46 +741,20 @@ class HasteMap extends EventEmitter implements IHasteMap {
 
   private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
-    const ignore = this._ignore.bind(this);
-    const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
-    const crawlerOptions: CrawlerOptions = {
-      computeSha1: options.computeSha1,
-      data: hasteMap,
-      enableSymlinks: options.enableSymlinks,
-      extensions: options.extensions,
-      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-      ignore,
-      rootDir: options.rootDir,
-      roots: options.roots,
-    };
-
-    const retry = (retryError: Error) => {
-      if (crawl === watchmanCrawl) {
-        this._console.warn(
-          'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
-            'crawler.\n' +
-            "  Usually this happens when watchman isn't running. Create an " +
-            "empty `.watchmanconfig` file in your project's root folder or " +
-            'initialize a git or hg repository in your project.\n' +
-            `  ${retryError}`,
-        );
-        return nodeCrawl(crawlerOptions).catch(error => {
-          throw new Error(
-            'Crawler retry failed:\n' +
-              `  Original error: ${retryError.message}\n` +
-              `  Retry error: ${error.message}\n`,
-          );
-        });
-      }
-
-      throw retryError;
-    };
-
-    try {
-      return await crawl(crawlerOptions);
-    } catch (error: any) {
-      return retry(error);
-    }
+    return crawlFiles(
+      {
+        computeSha1: options.computeSha1,
+        data: hasteMap,
+        enableSymlinks: options.enableSymlinks,
+        extensions: options.extensions,
+        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
+        ignore: this._ignore.bind(this),
+        rootDir: options.rootDir,
+        roots: options.roots,
+      },
+      await this._shouldUseWatchman(),
+      this._console,
+    );
   }
 
   /**
