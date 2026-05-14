@@ -21,10 +21,12 @@ import H from './constants';
 import {nodeCrawl} from './crawlers/node';
 import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
+import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
 import isWatchmanInstalled from './lib/isWatchmanInstalled';
 import normalizePathSep from './lib/normalizePathSep';
+import {copy, copyMap, createEmptyMap} from './lib/util';
 import type {
   ChangeEvent,
   CrawlerOptions,
@@ -217,6 +219,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
+  private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
   private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
@@ -292,6 +295,11 @@ class HasteMap extends EventEmitter implements IHasteMap {
           'Set either `enableSymlinks` to false or `useWatchman` to false.',
       );
     }
+
+    this._ignoreFn = buildIgnoreMatcher(
+      this._options.ignorePattern,
+      this._options.retainAllFiles,
+    );
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -816,6 +824,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     // all files, even changes to node_modules.
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
+    this._ignoreFn = buildIgnoreMatcher(this._options.ignorePattern, true);
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
     const Watcher = (await this._shouldUseWatchman())
@@ -1093,16 +1102,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * Helpers
    */
   private _ignore(filePath: string): boolean {
-    const ignorePattern = this._options.ignorePattern;
-    const ignoreMatched =
-      ignorePattern instanceof RegExp
-        ? ignorePattern.test(filePath)
-        : ignorePattern && ignorePattern(filePath);
-
-    return (
-      ignoreMatched ||
-      (!this._options.retainAllFiles && filePath.includes(NODE_MODULES))
-    );
+    return this._ignoreFn(filePath);
   }
 
   private async _shouldUseWatchman(): Promise<boolean> {
@@ -1116,13 +1116,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   private _createEmptyMap(): InternalHasteMap {
-    return {
-      clocks: new Map(),
-      duplicates: new Map(),
-      files: new Map(),
-      map: new Map(),
-      mocks: new Map(),
-    };
+    return createEmptyMap();
   }
 
   static H = H;
@@ -1138,14 +1132,6 @@ export class DuplicateError extends Error {
     this.mockPath1 = mockPath1;
     this.mockPath2 = mockPath2;
   }
-}
-
-function copy<T extends Record<string, unknown>>(object: T): T {
-  return Object.assign(Object.create(null), object);
-}
-
-function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
-  return new Map(input);
 }
 
 // Export the smallest API surface required by Jest
