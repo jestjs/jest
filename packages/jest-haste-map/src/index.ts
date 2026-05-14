@@ -13,7 +13,7 @@ import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {invariant, requireOrImportModule} from 'jest-util';
-import {type JestWorkerFarm, Worker} from 'jest-worker';
+import type {JestWorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -21,6 +21,7 @@ import {nodeCrawl} from './crawlers/node';
 import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
 import {CacheManager} from './lib/CacheManager';
+import {WorkerPool} from './lib/WorkerPool';
 import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -52,7 +53,6 @@ import {FSEventsWatcher} from './watchers/FSEventsWatcher';
 import NodeWatcher from './watchers/NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
-import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -223,7 +223,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private readonly _console: Console;
   private readonly _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
-  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
+  private _workerPool!: WorkerPool;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
     if (config.haste.hasteMapModulePath) {
@@ -300,6 +300,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
       this._options.ignorePattern,
       this._options.retainAllFiles,
     );
+    this._workerPool = new WorkerPool({
+      maxWorkers: this._options.maxWorkers,
+      workerThreads: this._options.workerThreads,
+    });
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -718,13 +722,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   private _cleanup() {
-    const worker = this._worker;
-
-    if (worker && 'end' in worker) {
-      worker.end();
-    }
-
-    this._worker = null;
+    this._workerPool.end();
   }
 
   /**
@@ -740,21 +738,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _getWorker(
     options: WorkerOptions | undefined,
   ): JestWorkerFarm<HasteWorker> | HasteWorker {
-    if (!this._worker) {
-      if (options?.forceInBand || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        this._worker = new Worker(require.resolve('./worker'), {
-          enableWorkerThreads: this._options.workerThreads,
-          exposedMethods: ['getSha1', 'worker'],
-          forkOptions: {serialization: 'json'},
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as JestWorkerFarm<HasteWorker>;
-      }
-    }
-
-    return this._worker;
+    return this._workerPool.get(options?.forceInBand);
   }
 
   private async _crawl(hasteMap: InternalHasteMap) {
