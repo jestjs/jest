@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'node:path';
 import {DuplicateError, FileProcessor} from '../FileProcessor';
 import {WorkerPool} from '../WorkerPool';
 import {createEmptyMap} from '../util';
@@ -13,7 +14,8 @@ jest.mock('../WorkerPool');
 
 const MockWorkerPool = WorkerPool as jest.MockedClass<typeof WorkerPool>;
 
-const ROOT = '/root';
+const ROOT = path.join('/', 'root');
+const FAKE_WORKER_PATH = '/fake/worker.js';
 
 function makeOptions(overrides = {}) {
   return {
@@ -39,11 +41,16 @@ function makeWorker(reply: object = {}) {
 }
 
 describe('FileProcessor', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe('processFile', () => {
     it('throws when the file is not in the haste map', () => {
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(makeWorker());
       const fp = new FileProcessor(makeOptions(), console, pool);
       const hasteMap = createEmptyMap();
@@ -53,22 +60,32 @@ describe('FileProcessor', () => {
           hasteMap,
           hasteMap.map,
           hasteMap.mocks,
-          `${ROOT}/missing.js`,
+          path.join(ROOT, 'missing.js'),
         ),
       ).toThrow('File to process was not found');
     });
 
     it('calls the worker and updates file metadata on success', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set('src/Apple.js', ['', 1000, 42, 0, '', null]);
+      hasteMap.files.set(path.join('src', 'Apple.js'), [
+        '',
+        1000,
+        42,
+        0,
+        '',
+        null,
+      ]);
 
       const worker = makeWorker({
         dependencies: ['React'],
         id: 'Apple',
-        module: ['src/Apple.js', 0],
+        module: [path.join('src', 'Apple.js'), 0],
         sha1: null,
       });
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
@@ -76,23 +93,35 @@ describe('FileProcessor', () => {
         hasteMap,
         hasteMap.map,
         hasteMap.mocks,
-        `${ROOT}/src/Apple.js`,
+        path.join(ROOT, 'src', 'Apple.js'),
       );
 
       expect(worker.worker).toHaveBeenCalledTimes(1);
-      expect(hasteMap.files.get('src/Apple.js')?.[0]).toBe('Apple');
+      expect(hasteMap.files.get(path.join('src', 'Apple.js'))?.[0]).toBe(
+        'Apple',
+      );
     });
 
     it('silently removes the file on ENOENT worker error', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set('src/Gone.js', ['', 1000, 42, 0, '', null]);
+      hasteMap.files.set(path.join('src', 'Gone.js'), [
+        '',
+        1000,
+        42,
+        0,
+        '',
+        null,
+      ]);
 
       const enoent = Object.assign(new Error('ENOENT'), {code: 'ENOENT'});
       const worker = {
         getSha1: jest.fn(),
         worker: jest.fn().mockRejectedValue(enoent),
       };
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
@@ -100,24 +129,27 @@ describe('FileProcessor', () => {
         hasteMap,
         hasteMap.map,
         hasteMap.mocks,
-        `${ROOT}/src/Gone.js`,
+        path.join(ROOT, 'src', 'Gone.js'),
       );
 
-      expect(hasteMap.files.has('src/Gone.js')).toBe(false);
+      expect(hasteMap.files.has(path.join('src', 'Gone.js'))).toBe(false);
     });
 
     it('throws DuplicateError when throwOnModuleCollision is true', async () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set('src/A.js', ['', 1000, 42, 0, '', null]);
-      hasteMap.map.set('Apple', {g: ['src/existing/A.js', 0]});
+      hasteMap.files.set(path.join('src', 'A.js'), ['', 1000, 42, 0, '', null]);
+      hasteMap.map.set('Apple', {g: [path.join('src', 'existing', 'A.js'), 0]});
 
       const worker = makeWorker({
         dependencies: [],
         id: 'Apple',
-        module: ['src/A.js', 0],
+        module: [path.join('src', 'A.js'), 0],
         sha1: null,
       });
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(worker);
 
       const mockConsole = {error: jest.fn()} as unknown as Console;
@@ -132,19 +164,22 @@ describe('FileProcessor', () => {
           hasteMap,
           hasteMap.map,
           hasteMap.mocks,
-          `${ROOT}/src/A.js`,
+          path.join(ROOT, 'src', 'A.js'),
         ),
       ).rejects.toBeInstanceOf(DuplicateError);
     });
 
     it('calls getSha1 for node_modules files when retainAllFiles and computeSha1 are true', async () => {
       const hasteMap = createEmptyMap();
-      const nmPath = `${ROOT}/node_modules/pkg/index.js`;
-      const relPath = 'node_modules/pkg/index.js';
+      const nmPath = path.join(ROOT, 'node_modules', 'pkg', 'index.js');
+      const relPath = path.join('node_modules', 'pkg', 'index.js');
       hasteMap.files.set(relPath, ['', 1000, 42, 0, '', null]);
 
       const worker = makeWorker({sha1: 'abc123'});
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(worker);
 
       const fp = new FileProcessor(
@@ -160,9 +195,19 @@ describe('FileProcessor', () => {
 
     it('returns null for a visited file with no ID', () => {
       const hasteMap = createEmptyMap();
-      hasteMap.files.set('src/NoId.js', ['', 1000, 42, 1, '', null]);
+      hasteMap.files.set(path.join('src', 'NoId.js'), [
+        '',
+        1000,
+        42,
+        1,
+        '',
+        null,
+      ]);
 
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(makeWorker());
 
       const fp = new FileProcessor(makeOptions(), console, pool);
@@ -170,7 +215,7 @@ describe('FileProcessor', () => {
         hasteMap,
         hasteMap.map,
         hasteMap.mocks,
-        `${ROOT}/src/NoId.js`,
+        path.join(ROOT, 'src', 'NoId.js'),
       );
       expect(result).toBeNull();
     });
@@ -182,7 +227,10 @@ describe('FileProcessor', () => {
       hasteMap.files.set('src/A.js', ['', 1000, 42, 0, '', null]);
       hasteMap.files.set('src/B.js', ['', 2000, 42, 0, '', null]);
 
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       const worker = makeWorker({
         dependencies: [],
         id: '',
@@ -206,7 +254,10 @@ describe('FileProcessor', () => {
 
     it('calls recoverDuplicates for each removed file', async () => {
       const hasteMap = createEmptyMap();
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(makeWorker());
 
       const fp = new FileProcessor(makeOptions(), console, pool);
@@ -229,10 +280,11 @@ describe('FileProcessor', () => {
 
     it('calls workerPool.end() after processing', async () => {
       const hasteMap = createEmptyMap();
-      const mockEnd = jest.fn();
-      const pool = new MockWorkerPool({maxWorkers: 1});
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
       (pool.get as jest.Mock).mockReturnValue(makeWorker());
-      (pool.end as jest.Mock) = mockEnd;
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       await fp.buildHasteMap(
@@ -240,7 +292,7 @@ describe('FileProcessor', () => {
         jest.fn(),
       );
 
-      expect(mockEnd).toHaveBeenCalledTimes(1);
+      expect(pool.end).toHaveBeenCalledTimes(1);
     });
   });
 });

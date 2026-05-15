@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'node:path';
 import {createEmptyMap} from '../../lib/util';
 import {ChangeQueue} from '../ChangeQueue';
 
 jest.useFakeTimers();
 
 const INTERVAL = 30; // matches CHANGE_INTERVAL in ChangeQueue
+
+const ROOT = path.join('/', 'root');
 
 function makeCallbacks(overrides = {}) {
   return {
@@ -22,7 +25,7 @@ function makeCallbacks(overrides = {}) {
     platforms: [],
     processFile: jest.fn().mockReturnValue(null),
     recoverDuplicates: jest.fn(),
-    rootDir: '/root',
+    rootDir: ROOT,
     ...overrides,
   };
 }
@@ -38,12 +41,19 @@ describe('ChangeQueue', () => {
 
   it('drops a change event when the file mtime is unchanged', async () => {
     const hasteMap = createEmptyMap();
-    hasteMap.files.set('src/Banana.js', ['Banana', 1000, 42, 1, '', null]);
+    hasteMap.files.set(path.join('src', 'Banana.js'), [
+      'Banana',
+      1000,
+      42,
+      1,
+      '',
+      null,
+    ]);
     const callbacks = makeCallbacks();
 
     const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
     queue.start();
-    queue.onChange('change', 'src/Banana.js', '/root', STAT);
+    queue.onChange('change', path.join('src', 'Banana.js'), ROOT, STAT);
 
     await Promise.resolve();
     jest.advanceTimersByTime(INTERVAL);
@@ -59,9 +69,9 @@ describe('ChangeQueue', () => {
     const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
     queue.start();
 
-    queue.onChange('add', 'src/Apple.js', '/root', STAT);
+    queue.onChange('add', path.join('src', 'Apple.js'), ROOT, STAT);
     await Promise.resolve();
-    queue.onChange('add', 'src/Apple.js', '/root', STAT);
+    queue.onChange('add', path.join('src', 'Apple.js'), ROOT, STAT);
     await Promise.resolve();
 
     jest.advanceTimersByTime(INTERVAL);
@@ -77,7 +87,7 @@ describe('ChangeQueue', () => {
 
     const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
     queue.start();
-    queue.onChange('add', 'src/Mango.js', '/root', STAT);
+    queue.onChange('add', path.join('src', 'Mango.js'), ROOT, STAT);
     await Promise.resolve();
 
     jest.advanceTimersByTime(INTERVAL);
@@ -86,7 +96,7 @@ describe('ChangeQueue', () => {
     const [event] = callbacks.emit.mock.calls[0];
     expect(event.eventsQueue).toHaveLength(1);
     expect(event.eventsQueue[0]).toMatchObject({
-      filePath: '/root/src/Mango.js',
+      filePath: path.join(ROOT, 'src', 'Mango.js'),
       type: 'add',
     });
     queue.stop();
@@ -106,18 +116,25 @@ describe('ChangeQueue', () => {
 
   it('calls recoverDuplicates when a known file is deleted', async () => {
     const hasteMap = createEmptyMap();
-    hasteMap.files.set('src/Banana.js', ['Banana', 999, 42, 1, '', null]);
+    hasteMap.files.set(path.join('src', 'Banana.js'), [
+      'Banana',
+      999,
+      42,
+      1,
+      '',
+      null,
+    ]);
     const callbacks = makeCallbacks();
 
     const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
     queue.start();
-    queue.onChange('delete', 'src/Banana.js', '/root', undefined);
+    queue.onChange('delete', path.join('src', 'Banana.js'), ROOT, undefined);
     await Promise.resolve();
     jest.advanceTimersByTime(INTERVAL);
 
     expect(callbacks.recoverDuplicates).toHaveBeenCalledWith(
       expect.anything(),
-      'src/Banana.js',
+      path.join('src', 'Banana.js'),
       'Banana',
     );
     queue.stop();
@@ -131,7 +148,7 @@ describe('ChangeQueue', () => {
     queue.start();
     queue.stop();
 
-    queue.onChange('add', 'src/Apple.js', '/root', STAT);
+    queue.onChange('add', path.join('src', 'Apple.js'), ROOT, STAT);
     await Promise.resolve();
     jest.advanceTimersByTime(INTERVAL);
 
