@@ -16,8 +16,8 @@
 yarn.lock
 
 # Test fixtures and benchmarks — lots of small files, rarely relevant when
-# editing production code. Re-include the haste-map fixture node_modules
-# because it's checked-in shape that the resolver tests assert against.
+# editing production code. Re-include the jest-runtime resolver fixture
+# because its checked-in shape is what the resolver tests assert against.
 /benchmarks/
 !/packages/jest-runtime/src/__tests__/test_root/node_modules/
 
@@ -31,7 +31,7 @@ yarn.lock
 *.log
 /reports/
 .eslintcache
-.DS_STORE
+.DS_Store
 *.swp
 *~
 .idea/
