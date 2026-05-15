@@ -183,6 +183,51 @@ describe('FileProcessor', () => {
       ).rejects.toBeInstanceOf(DuplicateError);
     });
 
+    it('preserves sibling platform entry when only one platform collides', async () => {
+      const hasteMap = createEmptyMap();
+      // File with .ios.js suffix → platform ios
+      hasteMap.files.set(path.join('src', 'A.ios.js'), [
+        '',
+        1000,
+        42,
+        0,
+        '',
+        null,
+      ]);
+      // Apple already has two platform entries: generic (g) and ios.
+      hasteMap.map.set('Apple', {
+        g: [path.join('src', 'A.js'), 0],
+        ios: [path.join('src', 'existing.ios.js'), 0],
+      });
+
+      const worker = makeWorker({
+        dependencies: [],
+        id: 'Apple',
+        // Module path has .ios.js suffix → getPlatformExtension returns 'ios'
+        module: [path.join('src', 'A.ios.js'), 0],
+        sha1: null,
+      });
+      const pool = new MockWorkerPool({
+        maxWorkers: 1,
+        workerPath: FAKE_WORKER_PATH,
+      });
+      jest.mocked(pool.get).mockReturnValue(worker);
+
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const fp = new FileProcessor(makeOptions(), console, pool);
+      await fp.processFile(
+        hasteMap,
+        hasteMap.map,
+        hasteMap.mocks,
+        path.join(ROOT, 'src', 'A.ios.js'),
+      );
+
+      // The generic (g) entry must survive even though ios collided.
+      expect(hasteMap.map.get('Apple')).toMatchObject({
+        g: [path.join('src', 'A.js'), 0],
+      });
+    });
+
     it('calls getSha1 for node_modules files when retainAllFiles and computeSha1 are true', async () => {
       const hasteMap = createEmptyMap();
       const nmPath = path.join(ROOT, 'node_modules', 'pkg', 'index.js');

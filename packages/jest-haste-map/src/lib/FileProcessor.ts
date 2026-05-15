@@ -109,7 +109,7 @@ export class FileProcessor {
         // We do NOT want consumers to use a module that is ambiguous.
         delete moduleMap[platform];
 
-        if (Object.keys(moduleMap).length === 1) {
+        if (Object.keys(moduleMap).length === 0) {
           map.delete(id);
         }
 
