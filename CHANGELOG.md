@@ -4,7 +4,7 @@
 
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
-- `[jest-config, jest-haste-map]` Add `watcher` config option (`'default' | 'parcel'`, with tuple form for sub-options: `['default', {useWatchman, enableSymlinks, forceNodeFilesystemAPI}]`). `jest-config` now fully normalises legacy top-level `watchman`, `haste.enableSymlinks`, and `haste.forceNodeFilesystemAPI` into the watcher tuple so haste-map receives a single resolved config.
+- `[jest-config, jest-haste-map]` Add `watcher` config option (`'default' | 'parcel'`, with tuple form for sub-options) ([#16184](https://github.com/jestjs/jest/pull/16184))
 
 ### Fixes
 
