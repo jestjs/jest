@@ -12,6 +12,7 @@ type HasteWorker = typeof import('../worker');
 
 type WorkerPoolOptions = {
   maxWorkers: number;
+  workerPath: string;
   workerThreads?: boolean;
 };
 
@@ -28,7 +29,7 @@ export class WorkerPool {
       if (forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        this._worker = new Worker(require.resolve('../worker'), {
+        this._worker = new Worker(this._options.workerPath, {
           enableWorkerThreads: this._options.workerThreads,
           exposedMethods: ['getSha1', 'worker'],
           forkOptions: {serialization: 'json'},

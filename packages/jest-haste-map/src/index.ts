@@ -273,6 +273,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     );
     this._workerPool = new WorkerPool({
       maxWorkers: this._options.maxWorkers,
+      workerPath: require.resolve('./worker'),
       workerThreads: this._options.workerThreads,
     });
     this._fileProcessor = new FileProcessor(
