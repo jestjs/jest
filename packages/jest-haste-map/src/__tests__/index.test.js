@@ -574,16 +574,16 @@ describe('HasteMap', () => {
     await expect(
       HasteMap.create({
         ...defaultConfig,
+        backend: 'parcel',
         enableSymlinks: true,
-        watcher: 'parcel',
       }),
     ).resolves.not.toThrow();
   });
 
-  it('throws when watcher is parcel and build is called', async () => {
+  it('throws when backend is parcel and build is called', async () => {
     const haste = await HasteMap.create({
       ...defaultConfig,
-      watcher: 'parcel',
+      backend: 'parcel',
     });
     await expect(haste.build()).rejects.toThrow(
       '@parcel/watcher backend is not yet supported',

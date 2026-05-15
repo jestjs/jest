@@ -315,6 +315,7 @@ export default class Runtime {
         : undefined;
 
     return HasteMap.create({
+      backend: config.haste.backend,
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
       console: options?.console,
@@ -336,7 +337,6 @@ export default class Runtime {
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options?.watchman,
       watch: options?.watch,
-      watcher: config.haste.watcher,
       workerThreads: options?.workerThreads,
     });
   }

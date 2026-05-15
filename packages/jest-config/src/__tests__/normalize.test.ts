@@ -563,8 +563,8 @@ describe('haste', () => {
     );
 
     expect(options.haste).toEqual({
+      backend: 'default',
       hasteImplModulePath: '/root/haste_impl.js',
-      watcher: 'default',
     });
   });
 });
@@ -2409,25 +2409,25 @@ describe('runInBand', () => {
   });
 });
 
-describe('watcher', () => {
-  test('defaults haste.watcher to default when unset', async () => {
+describe('backend', () => {
+  test('defaults haste.backend to default when unset', async () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
-    expect(options.haste.watcher).toBe('default');
+    expect(options.haste.backend).toBe('default');
   });
 
-  test('passes haste.watcher: parcel through', async () => {
+  test('passes haste.backend: parcel through', async () => {
     const {options} = await normalize(
-      {haste: {watcher: 'parcel'}, rootDir: '/root/'},
+      {haste: {backend: 'parcel'}, rootDir: '/root/'},
       {} as Config.Argv,
     );
-    expect(options.haste.watcher).toBe('parcel');
+    expect(options.haste.backend).toBe('parcel');
   });
 
-  test('haste.watcher: parcel + enableSymlinks does not throw', async () => {
+  test('haste.backend: parcel + enableSymlinks does not throw', async () => {
     await expect(
       normalize(
         {
-          haste: {enableSymlinks: true, watcher: 'parcel'},
+          haste: {backend: 'parcel', enableSymlinks: true},
           rootDir: '/root/',
           watchman: true,
         },

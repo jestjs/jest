@@ -35,11 +35,11 @@ const defaultOptions: Config.DefaultOptions = {
   forceCoverageMatch: [],
   globals: {},
   haste: {
+    backend: 'default',
     computeSha1: false,
     enableSymlinks: false,
     forceNodeFilesystemAPI: true,
     throwOnModuleCollision: false,
-    watcher: 'default',
   },
   injectGlobals: true,
   listTests: false,

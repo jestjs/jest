@@ -909,6 +909,14 @@ This will be used to configure the behavior of `jest-haste-map`, Jest's internal
 
 ```ts
 type HasteConfig = {
+  /**
+   * Backend used for the initial file crawl and watch mode.
+   * - `'default'` — uses Watchman when installed, falling back to native FSEvents
+   *   on macOS, then pure Node.js. The initial crawl always uses the Node.js crawler
+   *   when Watchman is unavailable.
+   * - `'parcel'` — reserved for a future `@parcel/watcher` integration.
+   */
+  backend?: 'default' | 'parcel';
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -930,14 +938,6 @@ type HasteConfig = {
   retainAllFiles?: boolean;
   /** Whether to throw an error on module collision. */
   throwOnModuleCollision?: boolean;
-  /**
-   * Backend used for the initial file crawl and watch mode.
-   * - `'default'` — uses Watchman when installed, falling back to native FSEvents
-   *   on macOS, then pure Node.js. The initial crawl always uses the Node.js crawler
-   *   when Watchman is unavailable.
-   * - `'parcel'` — reserved for a future `@parcel/watcher` integration.
-   */
-  watcher?: 'default' | 'parcel';
 };
 ```
 
@@ -2641,7 +2641,7 @@ Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
-See also: [`haste.watcher`](#haste-object).
+See also: [`haste.backend`](#haste-object).
 
 ### `workerGracefulExitTimeout` \[number]
 

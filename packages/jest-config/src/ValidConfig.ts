@@ -78,6 +78,7 @@ export const initialOptions: Config.InitialOptions = {
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    backend: multipleValidOptions('default', 'parcel') as 'default' | 'parcel',
     computeSha1: true,
     defaultPlatform: 'ios',
     enableSymlinks: false,
@@ -87,7 +88,6 @@ export const initialOptions: Config.InitialOptions = {
     platforms: ['ios', 'android'],
     retainAllFiles: false,
     throwOnModuleCollision: false,
-    watcher: multipleValidOptions('default', 'parcel') as 'default' | 'parcel',
   },
   id: 'string',
   injectGlobals: true,
@@ -259,6 +259,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    backend: multipleValidOptions('default', 'parcel') as 'default' | 'parcel',
     computeSha1: true,
     defaultPlatform: 'ios',
     enableSymlinks: false,
@@ -268,7 +269,6 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
     platforms: ['ios', 'android'],
     retainAllFiles: false,
     throwOnModuleCollision: false,
-    watcher: multipleValidOptions('default', 'parcel') as 'default' | 'parcel',
   },
   id: 'string',
   injectGlobals: true,

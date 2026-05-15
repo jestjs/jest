@@ -19,13 +19,13 @@ const NodeWatcher = NodeWatcherImpl as WatcherCtor;
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
 export async function resolveWatcherBackend({
+  backend,
   useWatchman,
-  watcher,
 }: {
+  backend: 'default' | 'parcel';
   useWatchman: boolean;
-  watcher: 'default' | 'parcel';
 }): Promise<ResolvedBackend> {
-  switch (watcher) {
+  switch (backend) {
     case 'default': {
       if (useWatchman) {
         const watchmanInstalled = await isWatchmanInstalled();
@@ -37,10 +37,10 @@ export async function resolveWatcherBackend({
     }
     case 'parcel':
       throw new Error(
-        '@parcel/watcher backend is not yet supported. Use haste.watcher: "default" instead.',
+        '@parcel/watcher backend is not yet supported. Use haste.backend: "default" instead.',
       );
     default:
-      throw new Error(`Unknown watcher backend: ${watcher as string}`);
+      throw new Error(`Unknown haste backend: ${backend as string}`);
   }
 }
 
@@ -86,7 +86,7 @@ export class WatcherDriver {
         break;
       case 'parcel':
         throw new Error(
-          '@parcel/watcher backend is not yet supported. Use haste.watcher: "default" instead.',
+          '@parcel/watcher backend is not yet supported. Use haste.backend: "default" instead.',
         );
     }
 

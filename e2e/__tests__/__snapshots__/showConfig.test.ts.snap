@@ -32,11 +32,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
+        "backend": "default",
         "computeSha1": false,
         "enableSymlinks": false,
         "forceNodeFilesystemAPI": true,
-        "throwOnModuleCollision": false,
-        "watcher": "default"
+        "throwOnModuleCollision": false
       },
       "id": "[md5 hash]",
       "injectGlobals": true,

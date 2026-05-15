@@ -813,7 +813,7 @@ export default async function normalize(
 
           value.hasteImplModulePath = resolvedHasteImpl || undefined;
         }
-        value.watcher ??= 'default';
+        value.backend ??= 'default';
         break;
       case 'projects':
         value = (oldOptions[key] || [])
@@ -1061,7 +1061,7 @@ export default async function normalize(
   if (
     options.watchman &&
     options.haste?.enableSymlinks &&
-    newOptions.haste?.watcher !== 'parcel'
+    newOptions.haste?.backend !== 'parcel'
   ) {
     throw new ValidationError(
       'Validation Error',

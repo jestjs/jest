@@ -43,6 +43,7 @@ import type {ResolvedBackend} from './watchers/types';
 const {version: VERSION} = require('../package.json');
 
 type Options = {
+  backend?: 'default' | 'parcel';
   cacheDirectory?: string;
   computeDependencies?: boolean;
   computeSha1?: boolean;
@@ -66,11 +67,11 @@ type Options = {
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
-  watcher?: 'default' | 'parcel';
   workerThreads?: boolean;
 };
 
 type InternalOptions = {
+  backend: 'default' | 'parcel';
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
@@ -92,7 +93,6 @@ type InternalOptions = {
   throwOnModuleCollision: boolean;
   useWatchman: boolean;
   watch: boolean;
-  watcher: 'default' | 'parcel';
   workerThreads?: boolean;
 };
 
@@ -222,6 +222,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private constructor(options: Options) {
     super();
     this._options = {
+      backend: options.backend ?? 'default',
       cacheDirectory: options.cacheDirectory || tmpdir(),
       computeDependencies: options.computeDependencies ?? true,
       computeSha1: options.computeSha1 || false,
@@ -244,7 +245,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman ?? true,
       watch: !!options.watch,
-      watcher: options.watcher ?? 'default',
       workerThreads: options.workerThreads,
     };
     this._console = options.console || globalThis.console;
@@ -266,7 +266,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
 
     if (
       this._options.enableSymlinks &&
-      this._options.watcher !== 'parcel' &&
+      this._options.backend !== 'parcel' &&
       this._options.useWatchman
     ) {
       throw new Error(
@@ -497,8 +497,8 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _resolveBackend(): Promise<ResolvedBackend> {
     if (!this._resolvedBackendPromise) {
       this._resolvedBackendPromise = resolveWatcherBackend({
+        backend: this._options.backend,
         useWatchman: this._options.useWatchman,
-        watcher: this._options.watcher,
       });
     }
     return this._resolvedBackendPromise;

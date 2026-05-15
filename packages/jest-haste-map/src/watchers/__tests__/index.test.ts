@@ -45,33 +45,33 @@ describe('resolveWatcherBackend', () => {
     jest.clearAllMocks();
   });
 
-  it('returns watchman when watcher is default and watchman is installed', async () => {
+  it('returns watchman when backend is default and watchman is installed', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
     expect(
-      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('watchman');
   });
 
-  it('returns fsevents when watcher is default, watchman unavailable, and FSEvents supported', async () => {
+  it('returns fsevents when backend is default, watchman unavailable, and FSEvents supported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     expect(
-      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('fsevents');
   });
 
-  it('returns node when watcher is default, watchman unavailable, and FSEvents unsupported', async () => {
+  it('returns node when backend is default, watchman unavailable, and FSEvents unsupported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(false);
     expect(
-      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('node');
   });
 
   it('skips watchman when useWatchman is false', async () => {
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     expect(
-      await resolveWatcherBackend({useWatchman: false, watcher: 'default'}),
+      await resolveWatcherBackend({backend: 'default', useWatchman: false}),
     ).toBe('fsevents');
     expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
   });
@@ -79,23 +79,23 @@ describe('resolveWatcherBackend', () => {
   it('probes watchman when useWatchman is true', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
     expect(
-      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('watchman');
   });
 
-  it('throws for watcher: parcel', async () => {
+  it('throws for backend: parcel', async () => {
     await expect(
-      resolveWatcherBackend({useWatchman: true, watcher: 'parcel'}),
+      resolveWatcherBackend({backend: 'parcel', useWatchman: true}),
     ).rejects.toThrow('@parcel/watcher backend is not yet supported');
   });
 
-  it('throws for unknown watcher backend', async () => {
+  it('throws for unknown haste backend', async () => {
     await expect(
       resolveWatcherBackend({
+        backend: 'bogus' as 'default',
         useWatchman: true,
-        watcher: 'bogus' as 'default',
       }),
-    ).rejects.toThrow('Unknown watcher backend: bogus');
+    ).rejects.toThrow('Unknown haste backend: bogus');
   });
 });
 

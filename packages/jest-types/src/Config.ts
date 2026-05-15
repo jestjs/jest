@@ -110,6 +110,8 @@ type FakeTimers = GlobalFakeTimersConfig &
   );
 
 export type HasteConfig = {
+  /** Backend used for file crawling and watch mode. */
+  backend?: 'default' | 'parcel';
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -132,8 +134,6 @@ export type HasteConfig = {
   hasteMapModulePath?: string;
   /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
   retainAllFiles?: boolean;
-  /** Backend used for file crawling and watch mode. */
-  watcher?: 'default' | 'parcel';
 };
 
 export type CoverageReporterName = keyof ReportOptions;
