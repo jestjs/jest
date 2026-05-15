@@ -35,7 +35,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "computeSha1": false,
         "enableSymlinks": false,
         "forceNodeFilesystemAPI": true,
-        "throwOnModuleCollision": false
+        "throwOnModuleCollision": false,
+        "watcher": "default"
       },
       "id": "[md5 hash]",
       "injectGlobals": true,
