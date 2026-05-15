@@ -330,6 +330,9 @@ const config: Config = {
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
 
+  // Backend used for file crawling and watch mode ('default' or 'parcel')
+  // watcher: "default",
+
   // Whether to use watchman for file crawling
   // watchman: true,
 };
@@ -534,6 +537,9 @@ const config = {
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
 
+  // Backend used for file crawling and watch mode ('default' or 'parcel')
+  // watcher: "default",
+
   // Whether to use watchman for file crawling
   // watchman: true,
 };
@@ -737,6 +743,9 @@ const config = {
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
+
+  // Backend used for file crawling and watch mode ('default' or 'parcel')
+  // watcher: "default",
 
   // Whether to use watchman for file crawling
   // watchman: true,
