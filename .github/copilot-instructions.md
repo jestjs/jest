@@ -137,10 +137,12 @@ yarn test-with-type-info    # jest.config.ts e2e test with full type info
 
 ### Test Directory Conventions
 
-- **`src/__tests__/`** — unit tests for the package. One test file per production module.
-- **`src/internals/__tests__/`** — unit tests for internal sub-modules (e.g. `jest-runtime/src/internals/`). The test file lives next to the production file.
+- **`src/__tests__/`** — unit tests for the package. One test file per production module; extend the existing `<Foo>.test.ts` with a new `describe`, don't split.
+- **`src/internals/__tests__/`** — unit tests for internal sub-modules. The test file lives next to the production file. Internal class APIs change with refactors — these tests are NOT a stability contract; update them in lockstep. Don't add adapter shims to keep old test code working.
 - **`__typetests__/`** — type-level tests using [TSTyche](https://tstyche.org/) (`expect<T>().type.toBe<U>()`). Run separately with `yarn test-types`, not by `yarn jest`.
 - **`e2e/__tests__/`** — integration tests that execute Jest as a subprocess.
+- **Cross-platform path assertions**: when asserting a value built via `path.join` / `path.dirname` / `path.basename`, derive the expected value with `path.join` too. Don't hardcode POSIX strings — Windows CI will fail.
+- **ESM tests**: `yarn jest packages/jest-runtime` does NOT include ESM-only tests. Use `yarn jest-runtime-vm-modules` for the `--experimental-vm-modules` suite. Two helpers from `@jest/test-utils`: `testWithVmEsm` (Node 18+) and `testWithSyncEsm` (Node 22.21+ / 24.8+).
 
 ### E2E Tests
 
@@ -352,7 +354,7 @@ Object keys must be sorted alphabetically in source files (`sort-keys` ESLint ru
 ### Imports
 
 - Sort imports alphabetically within each group (`import-x/order`)
-- Use `node:` protocol for Node built-ins in source files (`node:path`, `node:fs`, `node:crypto`, etc.)
+- Use `node:` protocol for Node built-ins in source files (`node:path`, `node:fs`, `node:crypto`, etc.); the unicorn rule is off in test files, but the convention applies there too
 - Never import `fs` directly — use `graceful-fs`
 - Never use `global` — use `globalThis`
 
@@ -383,6 +385,63 @@ const fake = {foo: jest.fn()} as unknown as RealType; // avoid if possible
 
 ---
 
+## Code Patterns
+
+### Class extraction & dependency injection
+
+- For a class with more than three dependencies, take a constructor options bag — not positional args. Name the interface `*Options` (not `*Deps`):
+
+  ```ts
+  export interface FooBarOptions {
+    foo: Foo;
+  }
+
+  export class FooBar {
+    private readonly foo: Foo;
+    constructor(options: FooBarOptions) {
+      this.foo = options.foo;
+    }
+    doThing(): void {
+      this.foo.work();
+    }
+  }
+  ```
+
+- One `private readonly x: T` field per dep — never a single `private readonly deps: FooBarOptions` bag.
+- Methods read fields directly: `this.resolution.resolveCjs(...)`. Don't `const {resolution} = this;`.
+- Initialize a field in the constructor body (not at declaration) when its initializer closes over `this` or another field — declaration-time initialization runs before the constructor body and can capture `undefined`.
+- Don't group unrelated dependencies into nested bags (`hooks`, `esm`, `capabilities`) to shrink the argument count. If the bag gets long, the class is doing too much; decompose the class.
+
+### Encapsulation across internals
+
+The encapsulation boundary that matters is "what the top-level consumer sees", not "every internal class has a pristine API". A composing class can own state-holder classes with looser file-local APIs. When a passthrough wrapper looks redundant, find a semantic alternative — don't fix it by exposing the private state it was hiding.
+
+### Identifier names
+
+- No abbreviated identifiers: `requireFn` not `req`, `resolution` not `r`, `(from, name) => …` not `(f, n) => …`.
+
+### Comments
+
+- Default to no comments.
+- Only add a comment when the WHY is non-obvious: a hidden constraint, a subtle invariant, a workaround for a specific bug, behavior that would surprise a reader.
+- Don't explain WHAT the code does — well-named identifiers carry that.
+- Don't reference the current PR, fix, or callers ("used by X", "added for the Y flow", "see PR #16084") — those belong in PR descriptions and rot in code.
+- When inserting a new declaration above an existing block, check the line above isn't a doc comment that would now bind to your declaration.
+
+### Error handling
+
+- Use `isError` from `jest-util` to narrow thrown values: `if (isError(e)) { e.message }`. Don't cast `e as Error`.
+- Don't throw exceptions for control flow. Prefer explicit capability predicates over try/catch-as-probe.
+- Validate at system boundaries (user input, external APIs). Trust internal code — don't add defensive try/catch for scenarios that can't happen.
+
+### Refactor PRs
+
+- Refactor PRs are not obligated to be strictly behavior-preserving. Surfacing latent bugs is part of the value — fix correctness issues inline, back them with regression tests.
+- Don't amend commits during review. Stack follow-up changes as new commits.
+- When a single task spans multiple logical groups, use one commit per group.
+
+---
+
 ## Project Structure
 
 ### Root Files
@@ -408,81 +467,65 @@ const fake = {foo: jest.fn()} as unknown as RealType; // avoid if possible
 - **`docs/`** — Markdown documentation
 - **`.github/workflows/`** — CI/CD
 
-### Important Packages
+### How the pieces fit
 
-Core runtime:
+A test run flows through a small number of packages. Pick the right starting point by what you want to change.
 
-- `jest` — main entry point and public API
-- `jest-cli` — command-line interface
-- `jest-config` — configuration loading and normalization (supports `.js`, `.ts`, `.mts`, `.cts`, `.mjs`, `.cjs`, `.json`)
-- `jest-core` — top-level test orchestration
-- `jest-runtime` — module loading, mocking, ESM/CJS interop
-- `jest-circus` — default test runner
-- `jest-jasmine2` — legacy test runner
+**Pipeline (top → bottom):**
 
-Testing APIs:
+```
+jest-cli           — parses CLI args, dispatches into jest-core
+jest-config        — loads + normalizes user config
+jest-validate      — config validation (jest-schemas defines the shape)
+jest-core          — orchestrates: haste map, sequencing, worker spawning, output
+jest-runner        — per-worker test execution
+jest-runtime       — module loading, mocking, ESM/CJS interop inside a test file
+jest-circus        — test framework (describe/it/beforeEach/…); default
+  (or) jest-jasmine2  — legacy framework, kept for compatibility
+expect / expect-utils — assertions; uses jest-matcher-utils, jest-diff,
+                        pretty-format to format failures
+jest-reporters     — final output formatting (default, GitHub, junit, etc.)
+```
 
-- `expect` — assertion library
-- `jest-mock` — mock/spy implementation
-- `jest-snapshot` — snapshot testing
-- `jest-fake-timers` — timer mocking (wraps `@sinonjs/fake-timers`)
-- `jest-each` — parameterized test tables
+**Cross-cutting infrastructure** (used by multiple stages):
 
-Infrastructure:
+- `jest-haste-map` — file crawl + in-memory module map (Watchman or Node fs)
+- `jest-resolve` — module resolution, consumed by `jest-runtime` and `jest-haste-map`
+- `@jest/transform` — transformation pipeline; `babel-jest` is the default transformer
+- `jest-worker` — worker pool used by `jest-runner`, `jest-haste-map`, others
+- `jest-environment-node` / `jest-environment-jsdom` — VM context + globals; `jest-runtime` runs user code inside one
+- `jest-mock` — mock-function implementation; `jest-runtime` wires `jest.fn`/`jest.spyOn` to it
+- `jest-fake-timers` — timer mocking, exposed via `jest.useFakeTimers()`
+- `jest-snapshot` / `jest-snapshot-utils` — snapshot matchers and file I/O
+- `jest-watcher` — `--watch` mode UI and state
+- `jest-changed-files` / `jest-resolve-dependencies` — `--onlyChanged`, `--onlyFailures`
+- `jest-message-util` — stack trace + error formatting; used wherever errors surface
+- `jest-types` — shared TypeScript types for config and globals
+- `jest-util` — small shared utilities (`isError`, `invariant`, `deepCyclicCopy`, …)
 
-- `jest-haste-map` — file system crawler and module map builder (recently refactored — see below)
-- `jest-resolve` — module resolution
-- `jest-transform` — file transformation pipeline
-- `jest-runner` — test process management
-- `jest-reporters` — output formatting
-- `jest-worker` — worker thread pool
-- `jest-environment-node` — Node.js test environment
-- `jest-environment-jsdom` — jsdom test environment
-- `jest-environment-jsdom-abstract` — shared base for jsdom-based environments
-- `babel-jest` — Babel transformer
-- `jest-types` — shared TypeScript types for config
+**Where to start when…**
 
-Support:
+| Goal | Start in | Likely also touches |
+| --- | --- | --- |
+| Add/change a CLI flag | `jest-cli/src/cli/args.ts` | `jest-config`, `jest-types` |
+| Add/change a config option | `jest-schemas/src/raw-types.ts` + `jest-config/src/Descriptions.ts` | `jest-validate`, `jest-types`, `docs/Configuration.md` |
+| Change a matcher | `expect/src/matchers.ts` (or `asymmetricMatchers.ts`, `spyMatchers.ts`) | `expect-utils`, `jest-matcher-utils` |
+| Change snapshot behavior | `jest-snapshot/src/*.ts` | `jest-snapshot-utils`, `pretty-format` |
+| Change reporter output | `jest-reporters/src/<Reporter>Reporter.ts` | `jest-message-util`, `pretty-format` |
+| Change module loading / mocking | `jest-runtime/src/index.ts` + `internals/` | `jest-resolve`, `jest-mock`, `@jest/transform` |
+| Change module resolution | `jest-resolve/src/resolver.ts` + `defaultResolver.ts` | possibly `jest-runtime`, `jest-haste-map` |
+| Change file crawl / watch | `jest-haste-map/src/crawlers/` or `watchers/` | `jest-worker` |
+| Change transform pipeline | `@jest/transform/src/ScriptTransformer.ts` | individual transformers (`babel-jest`, etc.) |
+| Change test-environment globals | `jest-environment-node` / `jest-environment-jsdom` | `jest-runtime` (consumer) |
+| Change worker scheduling | `jest-runner/src/runTest.ts` + `testWorker.ts` | `jest-worker`, `@jest/test-sequencer` |
+| Change timer mocking | `jest-fake-timers/src/*.ts` | `jest-runtime` (wiring) |
+| Change mock function behavior | `jest-mock/src/index.ts` | `jest-runtime` (wiring) |
 
-- `jest-schemas` — Zod schemas for config validation
-- `jest-util` — shared utility functions
-- `jest-diff` — pretty-printing diffs
-- `pretty-format` — value serialization for snapshots
-- `jest-matcher-utils` — matcher formatting helpers
-- `jest-message-util` — error message formatting
-- `jest-source-map` — source map support
-- `jest-snapshot-utils` — snapshot serialization helpers
-- `diff-sequences` — diff algorithm
-- `jest-get-type` — runtime type detection
-- `jest-regex-util` — regex helpers
-- `jest-docblock` — `@jest-environment` pragma parsing
-- `jest-changed-files` — git/hg changed file detection
-- `jest-resolve-dependencies` — dependency graph for `--onlyFailures`/`--watch`
-- `jest-test-sequencer` — test ordering
-- `jest-leak-detector` — memory leak detection
-- `create-jest` — `npm init jest` scaffolding
+**Tracing tips:**
 
-Internal test utilities (not published):
-
-- `test-globals` — test global type declarations
-- `test-utils` — shared test helpers
-- `@jest/test-utils` (workspace) — internal test utilities
-
-### `jest-haste-map` Architecture
-
-`jest-haste-map` was recently refactored (PR #16180) from a single 1157-line `index.ts` into focused modules:
-
-- `src/lib/FileProcessor.ts` — file processing and haste map building
-- `src/lib/CacheManager.ts` — v8 serialize/deserialize cache I/O
-- `src/lib/WorkerPool.ts` — jest-worker lifecycle
-- `src/lib/buildIgnoreMatcher.ts` — ignore predicate builder
-- `src/lib/util.ts` — `copy`, `copyMap`, `createEmptyMap`
-- `src/crawlers/index.ts` — watchman → node fallback driver
-- `src/watchers/index.ts` — `WatcherDriver` + `shouldUseWatchman`
-- `src/watchers/ChangeQueue.ts` — watch-mode event debouncing and dedup
-- `src/index.ts` — orchestration (~633 lines)
-
-Each extracted module has focused unit tests in the corresponding `__tests__/` subdirectory.
+- Most public-API behavior changes need: code in the implementing package, types in `jest-types` + `jest-schemas`, normalization in `jest-config`, and docs in `docs/`.
+- `Runtime` (`jest-runtime/src/index.ts`) is documented as subclassable. Override seams: `requireModule`, `requireModuleOrMock`, `requireMock`, `requireActual`, `requireInternalModule`, `unstable_importModule`. Any internal callback that "loads a module" must dispatch through these — never call sibling internals directly.
+- When `node:vm` semantics matter (sync vs async ESM), check `jest-runtime/src/internals/nodeCapabilities.ts` for the current capability gates. Carry gates verbatim with the code they guard.
 
 ---
 
@@ -501,6 +544,8 @@ Each extracted module has focused unit tests in the corresponding `__tests__/` s
 2. **Tests timing out**: Default timeout is 70 000 ms — adjust per-test with `jest.setTimeout()` if needed
 3. **E2E test failures**: Some tests require Mercurial (`hg`) — `brew install hg` on macOS
 4. **ESM test failures**: Use `yarn jest-runtime-vm-modules` for `jest-runtime` ESM tests
+5. **Windows CI failures on path-shaped assertions**: if a test compares against a hardcoded `/path/to/...` string, the production code may join paths with platform separators, producing `\path\to\...` on Windows. Build the expected value with `path.join` too.
+6. **Throwing-getter regression risk on object scans**: when iterating `Object.keys(scope)` and reading `scope[key]`, a user-installed throwing getter on `globalThis` will crash the loop. Use `'someKey' in value` (goes through the `has` trap, not `get`) as a gate before any property read.
 
 ### TypeScript Checks
 
