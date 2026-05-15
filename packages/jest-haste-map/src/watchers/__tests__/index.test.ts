@@ -6,18 +6,14 @@
  */
 
 import {EventEmitter} from 'node:events';
-import isWatchmanInstalled from '../../lib/isWatchmanInstalled';
 import {FSEventsWatcher} from '../FSEventsWatcher';
-import {WatcherDriver, resolveWatcherBackend} from '../index';
+import {WatcherDriver} from '../index';
 
 jest.mock('../../lib/isWatchmanInstalled');
 jest.mock('../FSEventsWatcher');
 jest.mock('../NodeWatcher');
 jest.mock('../WatchmanWatcher');
 
-const mockIsWatchmanInstalled = isWatchmanInstalled as jest.MockedFunction<
-  typeof isWatchmanInstalled
->;
 const MockFSEventsWatcher = FSEventsWatcher as jest.MockedClass<
   typeof FSEventsWatcher
 >;
@@ -41,8 +37,22 @@ const driverOpts = {
 };
 
 describe('resolveWatcherBackend', () => {
+  let resolveWatcherBackend: typeof import('../index').resolveWatcherBackend;
+  let mockIsWatchmanInstalled: jest.MockedFunction<
+    typeof import('../../lib/isWatchmanInstalled').default
+  >;
+  let MockFSEventsWatcherLocal: jest.MockedClass<typeof FSEventsWatcher>;
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetModules();
+    // Re-require after reset so each test gets a fresh module-level promise cache.
+    jest.mock('../../lib/isWatchmanInstalled');
+    jest.mock('../FSEventsWatcher');
+    jest.mock('../NodeWatcher');
+    jest.mock('../WatchmanWatcher');
+    ({resolveWatcherBackend} = require('../index'));
+    mockIsWatchmanInstalled = require('../../lib/isWatchmanInstalled').default;
+    MockFSEventsWatcherLocal = require('../FSEventsWatcher').FSEventsWatcher;
   });
 
   it('returns watchman when backend is default and watchman is installed', async () => {
@@ -54,7 +64,7 @@ describe('resolveWatcherBackend', () => {
 
   it('returns fsevents when backend is default, watchman unavailable, and FSEvents supported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
+    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(true);
     expect(
       await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('fsevents');
@@ -62,14 +72,14 @@ describe('resolveWatcherBackend', () => {
 
   it('returns node when backend is default, watchman unavailable, and FSEvents unsupported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(false);
+    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(false);
     expect(
       await resolveWatcherBackend({backend: 'default', useWatchman: true}),
     ).toBe('node');
   });
 
   it('skips watchman when useWatchman is false', async () => {
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
+    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(true);
     expect(
       await resolveWatcherBackend({backend: 'default', useWatchman: false}),
     ).toBe('fsevents');

@@ -911,10 +911,12 @@ This will be used to configure the behavior of `jest-haste-map`, Jest's internal
 type HasteConfig = {
   /**
    * Backend used for the initial file crawl and watch mode.
-   * - `'default'` — uses Watchman when installed, falling back to native FSEvents
-   *   on macOS, then pure Node.js. The initial crawl always uses the Node.js crawler
-   *   when Watchman is unavailable.
-   * - `'parcel'` — reserved for a future `@parcel/watcher` integration.
+   * - `'default'` — uses Watchman when installed (for both crawl and watch). When
+   *   Watchman is unavailable, the initial crawl uses Node.js `fs` APIs; watch mode
+   *   additionally uses native FSEvents on macOS before falling back to Node.js.
+   *   Set top-level `watchman: false` to skip the Watchman probe entirely.
+   * - `'parcel'` — reserved for a future `@parcel/watcher` integration (not yet
+   *   implemented; setting this will throw at startup).
    */
   backend?: 'default' | 'parcel';
   /** Whether to hash files using SHA-1. */
