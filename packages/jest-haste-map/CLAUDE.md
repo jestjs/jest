@@ -5,6 +5,7 @@
 `jest-haste-map` crawls the file system, maintains an in-memory module map, and drives watch mode. `src/index.ts` is the orchestration entry point.
 
 Key files to know:
+
 - `lib/FileProcessor.ts` — `processFile` (worker dispatch, haste-id extraction, duplicate tracking) and `buildHasteMap` (initial build loop).
 - `lib/CacheManager.ts` — v8 serialize/deserialize for the on-disk cache. **Sync I/O is intentional** — at haste-map's scale, async overhead adds no value and switching to `fs.promises` is not a free win.
 - `watchers/ChangeQueue.ts` — 30 ms debounce, O(1) mtime-dedup via `Set<string>`, copy-on-write for the live map, file-processing dispatch.
@@ -15,14 +16,14 @@ Key files to know:
 
 `FileMetaData` is a positional 6-tuple; use the `H` constants from `src/constants.ts`:
 
-| Index | Constant | Value |
-|---|---|---|
-| 0 | `H.ID` | haste module name |
-| 1 | `H.MTIME` | mtime (ms) |
-| 2 | `H.SIZE` | file size |
-| 3 | `H.VISITED` | 0 = unprocessed, 1 = processed |
-| 4 | `H.DEPENDENCIES` | NUL-delimited dep list string |
-| 5 | `H.SHA1` | sha1 or null |
+| Index | Constant         | Value                          |
+| ----- | ---------------- | ------------------------------ |
+| 0     | `H.ID`           | haste module name              |
+| 1     | `H.MTIME`        | mtime (ms)                     |
+| 2     | `H.SIZE`         | file size                      |
+| 3     | `H.VISITED`      | 0 = unprocessed, 1 = processed |
+| 4     | `H.DEPENDENCIES` | NUL-delimited dep list string  |
+| 5     | `H.SHA1`         | sha1 or null                   |
 
 `InternalHasteMap.map` is `haste-id → {platform → [path, type]}`. `duplicates` tracks haste-id collisions. `clocks` persists watchman's incremental state.
 

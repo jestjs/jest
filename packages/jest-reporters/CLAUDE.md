@@ -7,7 +7,7 @@ All methods are optional — implement only what you need:
 ```ts
 interface Reporter {
   onRunStart?(results, options): Promise<void> | void;
-  onTestFileStart?(test): Promise<void> | void;          // alias: onTestStart
+  onTestFileStart?(test): Promise<void> | void; // alias: onTestStart
   onTestCaseStart?(test, info): Promise<void> | void;
   onTestCaseResult?(test, result): Promise<void> | void;
   onTestFileResult?(test, result, aggregated): Promise<void> | void; // alias: onTestResult

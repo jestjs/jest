@@ -13,8 +13,8 @@ Implement `SyncTransformer` (or `AsyncTransformer` for async-only):
 
 ```ts
 export const process = (source, path, options): TransformedSource => ({
-  code: compile(source),   // required
-  map: sourceMap,          // optional
+  code: compile(source), // required
+  map: sourceMap, // optional
 });
 
 export const getCacheKey = (source, path, options): string =>
@@ -24,8 +24,12 @@ export const getCacheKey = (source, path, options): string =>
 For transformers that need config, export a factory instead:
 
 ```ts
-export const createTransformer = (config?: MyConfig): SyncTransformer<MyConfig> => ({
-  process(source, path, options) { /* options.transformerConfig === config */ },
+export const createTransformer = (
+  config?: MyConfig,
+): SyncTransformer<MyConfig> => ({
+  process(source, path, options) {
+    /* options.transformerConfig === config */
+  },
 });
 ```
 
