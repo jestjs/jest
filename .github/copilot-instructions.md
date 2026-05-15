@@ -35,6 +35,7 @@ yarn test-ci-partial:parallel --max-workers <N> --shard=<M>/<N>   # CI-mode shar
 - **`yarn typecheck:tests` is gated in CI** — must exit 0. Adding a new package's tests means appending it to the glob in `package.json`.
 - **E2E tests (`e2e/__tests__/`) can't use `jest.mock`/`jest.fn`** — ESLint enforces this. Use fixture files instead.
 - Some e2e tests need Mercurial: `brew install hg`.
+- **Docblock pragmas** in test files: `@jest-environment <name>` overrides the test environment; `@jest-environment-options {"key": value}` merges into `testEnvironmentOptions`. Both are extracted by `jest-runner` and apply only to that file.
 
 To run an e2e fixture manually:
 
@@ -65,7 +66,7 @@ Full lint (`yarn lint`) before pushing. ESLint 9.x flat config (`eslint.config.m
 
 - **`graceful-fs`, never `fs`/`node:fs`** — both are banned by `no-restricted-imports`.
 - **`globalThis`, never `global`** — banned by `no-restricted-globals`.
-- **`node:` protocol** for Node built-ins in source files (`import * as path from 'node:path'`). **Exception**: `expect`, `jest-message-util`, `jest-pattern`, `jest-regex-util`, `jest-util` are consumed by webpack/browser bundles — they must NOT use `node:` (see CHANGELOG #16167).
+- **`node:` protocol** for Node built-ins in source files (`import * as path from 'node:path'`). **Exception**: `expect`, `expect-utils`, `jest-matcher-utils`, `jest-message-util`, `jest-pattern`, `jest-regex-util`, `jest-util` are consumed by webpack/browser bundles — they must NOT use `node:`. ESLint enforces this with `no-restricted-syntax` (see CHANGELOG #16167).
 - **`sort-keys`** alphabetical in source. Off in tests.
 - **`import-x/order`** alphabetical within groups (`builtin → external → internal → parent → sibling → index`, `newlines-between: never`). Auto-fix handles it.
 - **No `Function` type, no `Boolean`/`Number`/`Object`/`String`/`Symbol` wrappers** — primitives only. Warned via `local/no-restricted-types-eventually`.
@@ -104,6 +105,8 @@ jest.fn().mockReturnValue(x)        // widens to UnknownFunction
 ```
 
 `beforeEach(() => jest.clearAllMocks())` fails `typecheck:tests` (return type widens). Use a block body: `beforeEach(() => { jest.clearAllMocks(); })`.
+
+`mockClear()` resets call records only. `mockReset()` also clears implementations/return values. `mockRestore()` additionally restores the original (only meaningful for `spyOn`). The config options `clearMocks`/`resetMocks`/`restoreMocks` apply the corresponding operation before each test automatically.
 
 Reference patterns live in `packages/jest-mock/__typetests__/mock-functions.test.ts` and `packages/jest-runtime/src/internals/__tests__/*.test.ts`.
 
@@ -229,5 +232,5 @@ Alphabetize by first package name within each section. `yarn check-changelog` va
 
 ## When in doubt
 
-- Per-package `CLAUDE.md` files cover the complex packages (`jest-runtime`, `jest-haste-map`, `jest-config`, `jest-mock`, `expect`, `jest-snapshot`). Read those for package-specific gotchas.
+- Per-package `CLAUDE.md` files exist for: `expect`, `jest-circus`, `jest-config`, `jest-environment-node`, `jest-fake-timers`, `jest-haste-map`, `jest-mock`, `jest-reporters`, `jest-resolve`, `jest-runtime`, `jest-snapshot`, `jest-transform`, `jest-worker`. Read the relevant one for package-specific gotchas.
 - Trust the code over this file. When something contradicts what you see, fix this file as part of your change.

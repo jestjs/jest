@@ -39,13 +39,7 @@ When a matcher fails, the error thrown is a `JestAssertionError` whose `.matcher
 
 ### Sync vs async matcher dispatch
 
-`expect(actual)` returns an `expectation` object with three branches:
-
-- direct: `expect(x).toBe(y)` — sync, throws on failure.
-- `.resolves` / `.rejects`: returns a Promise. The matcher runs against the awaited value. Both `.resolves.toThrow` and `.rejects.toThrow` exist with different semantics (see `getPromiseMatcher`).
-- `.not`: inverts `pass`. Applied independently of `.resolves`/`.rejects`.
-
-The stack-trace anchor matters: `makeThrowingMatcher` captures `err = new JestAssertionError()` at `expect()` call site **before** awaiting, so the thrown stack points at the user's `expect(...)` line, not at the internal Promise machinery. When adding a new wrapper, capture the outer `Error` synchronously.
+`expect(actual)` returns three branches: direct (sync, throws on failure), `.resolves`/`.rejects` (awaits then runs the matcher), and `.not` (inverts `pass`). The stack-trace anchor matters: `makeThrowingMatcher` captures `err = new JestAssertionError()` **before** awaiting, so the stack points at the `expect(...)` call site, not internal Promise machinery. Always capture the anchor error synchronously before any `await`.
 
 ### `INTERNAL_MATCHER_FLAG` controls stack-trace rewriting
 

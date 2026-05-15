@@ -65,8 +65,4 @@ Sync code paths must validate `vm.Module#status` before reuse:
 - Pick the appropriate test gate: `testWithVmEsm` for legacy-path tests (Node 18+ with `--experimental-vm-modules`); `testWithLinkedSyntheticModule` for sync-graph tests that need `linkRequests` (Node 22.21+/24.8+); `testWithSyncEsm` for sync-graph tests that need `hasAsyncGraph` (Node 24.9+). All come from `@jest/test-utils` (gate details in the root copilot-instructions.md).
 - `internals/__tests__/` test files mirror production files 1:1; extend with new `describe` blocks rather than splitting. Their APIs are NOT a stability contract — change them in lockstep with the implementation.
 
-## Invariants
 
-- Don't trust a registry hit. The legacy async path can stash an `'unlinked'` `SourceTextModule`; sync readers must gate on `module.status === 'evaluated'`.
-- Don't reveal `MockState`'s private `virtualCjsMocks` / `virtualEsmMocks` maps to neighbour classes. The three passthrough wrappers (`getCjsModuleId` / `getEsmModuleId` / `getEsmModuleIdAsync`) earn their keep as encapsulators.
-- `MockState.shouldMockCjs` / `shouldMockEsmSync` / `shouldMockEsmAsync` return `MockDecision = {shouldMock, moduleID}` — thread the moduleID through to the dispatch path so it isn't recomputed.
