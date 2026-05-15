@@ -6,6 +6,8 @@
  */
 
 import * as path from 'node:path';
+import type {WorkerMetadata} from '../../types';
+import type * as WorkerModule from '../../worker';
 import {DuplicateError, FileProcessor} from '../FileProcessor';
 import {WorkerPool} from '../WorkerPool';
 import {createEmptyMap} from '../util';
@@ -33,10 +35,18 @@ function makeOptions(overrides = {}) {
   };
 }
 
-function makeWorker(reply: object = {}) {
+function makeWorker(reply: Partial<WorkerMetadata> = {}) {
+  const fullReply: WorkerMetadata = {
+    dependencies: reply.dependencies ?? null,
+    id: reply.id ?? null,
+    module: reply.module ?? null,
+    sha1: reply.sha1 ?? null,
+  };
   return {
-    getSha1: jest.fn().mockResolvedValue(reply),
-    worker: jest.fn().mockResolvedValue(reply),
+    getSha1: jest
+      .fn<typeof WorkerModule.getSha1>()
+      .mockResolvedValue(fullReply),
+    worker: jest.fn<typeof WorkerModule.worker>().mockResolvedValue(fullReply),
   };
 }
 
@@ -45,13 +55,17 @@ describe('FileProcessor', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('processFile', () => {
     it('throws when the file is not in the haste map', () => {
       const pool = new MockWorkerPool({
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(makeWorker());
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
       const fp = new FileProcessor(makeOptions(), console, pool);
       const hasteMap = createEmptyMap();
 
@@ -86,7 +100,7 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(worker);
+      jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       await fp.processFile(
@@ -115,14 +129,14 @@ describe('FileProcessor', () => {
 
       const enoent = Object.assign(new Error('ENOENT'), {code: 'ENOENT'});
       const worker = {
-        getSha1: jest.fn(),
-        worker: jest.fn().mockRejectedValue(enoent),
+        getSha1: jest.fn<typeof WorkerModule.getSha1>(),
+        worker: jest.fn<typeof WorkerModule.worker>().mockRejectedValue(enoent),
       };
       const pool = new MockWorkerPool({
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(worker);
+      jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       await fp.processFile(
@@ -150,12 +164,12 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(worker);
+      jest.mocked(pool.get).mockReturnValue(worker);
 
-      const mockConsole = {error: jest.fn()} as unknown as Console;
+      jest.spyOn(console, 'error').mockImplementation(() => {});
       const fp = new FileProcessor(
         makeOptions({throwOnModuleCollision: true}),
-        mockConsole,
+        console,
         pool,
       );
 
@@ -180,7 +194,7 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(worker);
+      jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(
         makeOptions({computeSha1: true, retainAllFiles: true}),
@@ -208,7 +222,7 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(makeWorker());
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       const result = fp.processFile(
@@ -237,7 +251,7 @@ describe('FileProcessor', () => {
         module: null,
         sha1: null,
       });
-      (pool.get as jest.Mock).mockReturnValue(worker);
+      jest.mocked(pool.get).mockReturnValue(worker);
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       const removedFiles = new Map([
@@ -258,7 +272,7 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(makeWorker());
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       const recoverDuplicates = jest.fn();
@@ -284,7 +298,7 @@ describe('FileProcessor', () => {
         maxWorkers: 1,
         workerPath: FAKE_WORKER_PATH,
       });
-      (pool.get as jest.Mock).mockReturnValue(makeWorker());
+      jest.mocked(pool.get).mockReturnValue(makeWorker());
 
       const fp = new FileProcessor(makeOptions(), console, pool);
       await fp.buildHasteMap(

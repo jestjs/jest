@@ -6,8 +6,10 @@
  */
 
 import * as path from 'node:path';
+import type {Stats} from 'graceful-fs';
 import {createEmptyMap} from '../../lib/util';
-import {ChangeQueue} from '../ChangeQueue';
+import type {ChangeEvent, InternalHasteMap} from '../../types';
+import {type Callbacks, ChangeQueue} from '../ChangeQueue';
 
 jest.useFakeTimers();
 
@@ -15,15 +17,17 @@ const INTERVAL = 30; // matches CHANGE_INTERVAL in ChangeQueue
 
 const ROOT = path.join('/', 'root');
 
-function makeCallbacks(overrides = {}) {
+function makeCallbacks(overrides: Partial<Callbacks> = {}): Callbacks {
   return {
     cleanup: jest.fn(),
-    emit: jest.fn(),
-    ignore: jest.fn().mockReturnValue(false),
+    emit: jest.fn<(event: ChangeEvent) => void>(),
+    ignore: jest.fn((_filePath: string) => false),
     mocksPattern: null,
     onError: jest.fn(),
     platforms: [],
-    processFile: jest.fn().mockReturnValue(null),
+    processFile: jest.fn(
+      (_hasteMap: InternalHasteMap, _filePath: string) => null,
+    ),
     recoverDuplicates: jest.fn(),
     rootDir: ROOT,
     ...overrides,
@@ -32,12 +36,14 @@ function makeCallbacks(overrides = {}) {
 
 const STAT = {
   isDirectory: () => false,
-  mtime: {getTime: () => 1000},
+  mtime: {getTime: () => 1000} as Date,
   size: 42,
-} as any;
+} as unknown as Stats;
 
 describe('ChangeQueue', () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('drops a change event when the file mtime is unchanged', async () => {
     const hasteMap = createEmptyMap();
@@ -76,7 +82,7 @@ describe('ChangeQueue', () => {
 
     jest.advanceTimersByTime(INTERVAL);
 
-    const [event] = callbacks.emit.mock.calls[0];
+    const [event] = jest.mocked(callbacks.emit).mock.calls[0];
     expect(event.eventsQueue).toHaveLength(1);
     queue.stop();
   });
@@ -93,7 +99,7 @@ describe('ChangeQueue', () => {
     jest.advanceTimersByTime(INTERVAL);
 
     expect(callbacks.emit).toHaveBeenCalledTimes(1);
-    const [event] = callbacks.emit.mock.calls[0];
+    const [event] = jest.mocked(callbacks.emit).mock.calls[0];
     expect(event.eventsQueue).toHaveLength(1);
     expect(event.eventsQueue[0]).toMatchObject({
       filePath: path.join(ROOT, 'src', 'Mango.js'),

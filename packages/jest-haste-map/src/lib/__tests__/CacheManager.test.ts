@@ -20,7 +20,9 @@ const mockWriteFileSync = writeFileSync as jest.MockedFunction<
 >;
 
 describe('CacheManager', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('path getter returns the constructor argument', () => {
     const cm = new CacheManager('/tmp/cache-path');

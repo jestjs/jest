@@ -43,7 +43,9 @@ const mockResult = {
 const mockConsole = {warn: jest.fn()} as unknown as Console;
 
 describe('crawl', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('uses watchman when useWatchman is true', async () => {
     mockWatchmanCrawl.mockResolvedValue(mockResult);

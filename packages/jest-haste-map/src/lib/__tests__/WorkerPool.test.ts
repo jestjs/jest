@@ -13,7 +13,9 @@ jest.mock('jest-worker');
 const MockWorker = Worker as jest.MockedClass<typeof Worker>;
 
 describe('WorkerPool', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('returns an in-process worker when forceInBand is true', () => {
     const pool = new WorkerPool({maxWorkers: 4, workerPath: '/fake/worker.js'});

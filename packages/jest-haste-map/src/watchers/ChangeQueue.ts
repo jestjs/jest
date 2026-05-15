@@ -25,7 +25,7 @@ import type {
 
 const CHANGE_INTERVAL = 30;
 
-type Callbacks = {
+export type Callbacks = {
   cleanup: () => void;
   emit: (event: ChangeEvent) => void;
   ignore: (filePath: string) => boolean;
