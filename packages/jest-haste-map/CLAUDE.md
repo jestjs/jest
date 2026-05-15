@@ -10,6 +10,7 @@ Key files to know:
 - `lib/CacheManager.ts` — v8 serialize/deserialize for the on-disk cache. **Sync I/O is intentional** — at haste-map's scale, async overhead adds no value and switching to `fs.promises` is not a free win.
 - `watchers/ChangeQueue.ts` — 30 ms debounce, O(1) mtime-dedup via `Set<string>`, copy-on-write for the live map, file-processing dispatch.
 - `crawlers/watchman.ts` — fb-watchman with clock-based incremental updates. `crawlers/node.ts` — pure Node.js fallback.
+- `watchers/types.ts` — `IWatcher`, `WatcherOptions`, `WatcherCtor`, `WatcherBackend`. New backends must implement `IWatcher` and accept `(root: string, opts: WatcherOptions)`.
 - `watchers/WatchmanWatcher.js` — macOS/Linux watchman. `FSEventsWatcher.ts` — macOS native. `NodeWatcher.js` — cross-platform fallback.
 
 ## Data model

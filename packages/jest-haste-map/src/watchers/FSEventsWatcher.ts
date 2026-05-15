@@ -8,11 +8,13 @@
 
 import {EventEmitter} from 'node:events';
 import * as path from 'node:path';
-import anymatch, {type Matcher} from 'anymatch';
+import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
 // @ts-expect-error -- no types
 import walker from 'walker';
 import {globsToMatcher} from 'jest-util';
+import type {HasteRegExp} from '../types';
+import type {IWatcher, WatcherOptions} from './types';
 
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
 // @ts-ignore: this is for CI which runs linux and might not have this
@@ -38,9 +40,9 @@ type FsEventsWatcherEvent =
  * Export `FSEventsWatcher` class.
  * Watches `dir`.
  */
-export class FSEventsWatcher extends EventEmitter {
+export class FSEventsWatcher extends EventEmitter implements IWatcher {
   readonly root: string;
-  readonly ignored?: Matcher;
+  readonly ignored: HasteRegExp | undefined;
   readonly glob: Array<string>;
   readonly dot: boolean;
   readonly hasIgnore: boolean;
@@ -65,7 +67,7 @@ export class FSEventsWatcher extends EventEmitter {
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
     endCallback: () => void,
     errorCallback: () => void,
-    ignored?: Matcher,
+    ignored?: HasteRegExp,
   ) {
     walker(dir)
       .filterDir(
@@ -79,15 +81,7 @@ export class FSEventsWatcher extends EventEmitter {
       });
   }
 
-  constructor(
-    dir: string,
-    opts: {
-      root: string;
-      ignored?: Matcher;
-      glob: string | Array<string>;
-      dot: boolean;
-    },
-  ) {
+  constructor(dir: string, opts: WatcherOptions) {
     if (!fsevents) {
       throw new Error(
         '`fsevents` unavailable (this watcher can only be used on Darwin)',
@@ -98,7 +92,7 @@ export class FSEventsWatcher extends EventEmitter {
 
     this.dot = opts.dot || false;
     this.ignored = opts.ignored;
-    this.glob = Array.isArray(opts.glob) ? opts.glob : [opts.glob];
+    this.glob = [...opts.glob];
 
     this.hasIgnore =
       Boolean(opts.ignored) && !(Array.isArray(opts) && opts.length > 0);

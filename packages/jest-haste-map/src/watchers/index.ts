@@ -10,11 +10,13 @@ import isWatchmanInstalled from '../lib/isWatchmanInstalled';
 import type {HasteRegExp} from '../types';
 import {FSEventsWatcher} from './FSEventsWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
-import NodeWatcher from './NodeWatcher';
+import NodeWatcherImpl from './NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
-import WatchmanWatcher from './WatchmanWatcher';
+import WatchmanWatcherImpl from './WatchmanWatcher';
+import type {IWatcher, WatcherCtor} from './types';
 
-type WatcherInstance = {close(): Promise<void>};
+const NodeWatcher = NodeWatcherImpl as WatcherCtor;
+const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
 let isWatchmanInstalledPromise: Promise<boolean> | undefined;
 
@@ -44,7 +46,7 @@ export class WatcherDriver {
   private readonly _ignorePattern: HasteRegExp | undefined;
   private readonly _roots: Array<string>;
   private readonly _useWatchman: boolean;
-  private _watchers: Array<WatcherInstance> = [];
+  private _watchers: Array<IWatcher> = [];
 
   constructor(opts: {
     extensions: Array<string>;
@@ -59,10 +61,10 @@ export class WatcherDriver {
   }
 
   async start(onChange: OnChangeCallback): Promise<void> {
-    const Backend = this._useWatchman
+    const Backend: WatcherCtor = this._useWatchman
       ? WatchmanWatcher
       : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
+        ? (FSEventsWatcher as unknown as WatcherCtor)
         : NodeWatcher;
 
     const results = await Promise.allSettled(
@@ -70,7 +72,7 @@ export class WatcherDriver {
     );
     const fulfilled = results
       .filter(r => r.status === 'fulfilled')
-      .map(r => (r as PromiseFulfilledResult<WatcherInstance>).value);
+      .map(r => (r as PromiseFulfilledResult<IWatcher>).value);
     const rejected = results
       .filter(r => r.status === 'rejected')
       .map(r => (r as PromiseRejectedResult).reason);
@@ -87,10 +89,10 @@ export class WatcherDriver {
   }
 
   private _createWatcher(
-    Backend: any,
+    Backend: WatcherCtor,
     root: string,
     onChange: OnChangeCallback,
-  ): Promise<WatcherInstance> {
+  ): Promise<IWatcher> {
     const watcher = new Backend(root, {
       dot: true,
       glob: this._extensions.map(ext => `**/*.${ext}`),
