@@ -8,11 +8,20 @@
 import type {Static} from '@sinclair/typebox';
 import * as types from './raw-types';
 
-export const SnapshotFormat = types.SnapshotFormat;
-export type SnapshotFormat = Static<typeof SnapshotFormat>;
+export const DefaultWatcherSubOptions = types.DefaultWatcherSubOptions;
+export type DefaultWatcherSubOptions = Static<typeof DefaultWatcherSubOptions>;
+
+export const FakeTimers = types.FakeTimers;
+export type FakeTimers = Static<typeof FakeTimers>;
 
 export const InitialOptions = types.InitialOptions;
 export type InitialOptions = Static<typeof InitialOptions>;
 
-export const FakeTimers = types.FakeTimers;
-export type FakeTimers = Static<typeof FakeTimers>;
+export const ParcelWatcherSubOptions = types.ParcelWatcherSubOptions;
+export type ParcelWatcherSubOptions = Static<typeof ParcelWatcherSubOptions>;
+
+export const SnapshotFormat = types.SnapshotFormat;
+export type SnapshotFormat = Static<typeof SnapshotFormat>;
+
+export const UserWatcherConfig = types.UserWatcherConfig;
+export type UserWatcherConfig = Static<typeof UserWatcherConfig>;

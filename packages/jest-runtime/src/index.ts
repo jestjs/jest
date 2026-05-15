@@ -69,7 +69,7 @@ type HasteMapOptions = {
   maxWorkers: number;
   resetCache: boolean;
   watch?: boolean;
-  watchman: boolean;
+  watchman?: boolean;
   workerThreads?: boolean;
 };
 
@@ -278,7 +278,7 @@ export default class Runtime {
       console?: Console;
       maxWorkers: number;
       watch?: boolean;
-      watchman: boolean;
+      watchman?: boolean;
     },
   ): Promise<TestContext> {
     createDirectory(config.cacheDirectory);
@@ -336,6 +336,7 @@ export default class Runtime {
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options?.watchman,
       watch: options?.watch,
+      watcher: config.watcher,
       workerThreads: options?.workerThreads,
     });
   }

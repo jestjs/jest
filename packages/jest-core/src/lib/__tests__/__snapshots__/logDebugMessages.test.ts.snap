@@ -79,7 +79,8 @@ exports[`prints the config object 1`] = `
     "transform": [],
     "transformIgnorePatterns": [],
     "waitForUnhandledRejections": false,
-    "watchPathIgnorePatterns": []
+    "watchPathIgnorePatterns": [],
+    "watcher": "default"
   },
   "globalConfig": {
     "bail": 0,

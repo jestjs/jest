@@ -202,6 +202,11 @@ export const initialOptions: Config.InitialOptions = {
       },
     ],
   ],
+  watcher: multipleValidOptions(
+    'default',
+    ['default', {useWatchman: false}],
+    'parcel',
+  ) as unknown as Config.UserWatcherConfig,
   watchman: true,
   workerGracefulExitTimeout: 500,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
@@ -345,5 +350,10 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   verbose: false,
   waitForUnhandledRejections: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
+  watcher: multipleValidOptions(
+    'default',
+    ['default', {useWatchman: false}],
+    'parcel',
+  ) as unknown as Config.UserWatcherConfig,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };

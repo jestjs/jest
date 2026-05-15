@@ -94,6 +94,7 @@ const defaultOptions: Config.DefaultOptions = {
   waitForUnhandledRejections: false,
   watch: false,
   watchPathIgnorePatterns: [],
+  watcher: 'default',
   watchman: true,
   workerGracefulExitTimeout: 500,
   workerThreads: false,

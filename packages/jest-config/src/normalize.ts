@@ -624,6 +624,10 @@ export default async function normalize(
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
 
+  if (options.watcher == null) {
+    options.watcher = DEFAULT_CONFIG.watcher;
+  }
+
   if (options.watchman == null) {
     options.watchman = DEFAULT_CONFIG.watchman;
   }
@@ -1020,6 +1024,7 @@ export default async function normalize(
       case 'waitForUnhandledRejections':
       case 'watch':
       case 'watchAll':
+      case 'watcher':
       case 'watchman':
       case 'workerGracefulExitTimeout':
       case 'workerThreads':
@@ -1063,6 +1068,29 @@ export default async function normalize(
       'haste.enableSymlinks is incompatible with watchman',
       'Either set haste.enableSymlinks to false or do not use watchman',
     );
+  }
+
+  // Fold legacy top-level options into the watcher tuple so haste-map receives
+  // a single fully-resolved config. Explicit tuple sub-options take precedence.
+  if (
+    newOptions.watcher === 'default' ||
+    (Array.isArray(newOptions.watcher) && newOptions.watcher[0] === 'default')
+  ) {
+    const tupleOpts: Config.DefaultWatcherSubOptions = Array.isArray(
+      newOptions.watcher,
+    )
+      ? (newOptions.watcher[1] as Config.DefaultWatcherSubOptions)
+      : {};
+    newOptions.watcher = [
+      'default',
+      {
+        enableSymlinks: newOptions.haste?.enableSymlinks ?? false,
+        forceNodeFilesystemAPI:
+          newOptions.haste?.forceNodeFilesystemAPI ?? false,
+        useWatchman: newOptions.watchman,
+        ...tupleOpts,
+      },
+    ];
   }
 
   for (const [i, root] of newOptions.roots.entries()) {
@@ -1170,8 +1198,8 @@ export default async function normalize(
     newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.collectTests = argv.collectTests || false;
 

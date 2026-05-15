@@ -6,6 +6,7 @@
  */
 
 import type {EventEmitter} from 'node:events';
+import type {Config} from '@jest/types';
 import type {HasteRegExp} from '../types';
 
 export type WatcherBackend =
@@ -15,19 +16,9 @@ export type WatcherBackend =
   | 'fsevents'
   | 'node';
 
-export type DefaultWatcherSubOptions = {
-  enableSymlinks?: boolean;
-  forceNodeFilesystemAPI?: boolean;
-  useWatchman?: boolean;
-};
-
-export type ParcelWatcherSubOptions = Record<string, never>;
-
-export type UserWatcherConfig =
-  | 'default'
-  | 'parcel'
-  | readonly ['default', DefaultWatcherSubOptions]
-  | readonly ['parcel', ParcelWatcherSubOptions];
+export type DefaultWatcherSubOptions = Config.DefaultWatcherSubOptions;
+export type ParcelWatcherSubOptions = Config.ParcelWatcherSubOptions;
+export type UserWatcherConfig = Config.UserWatcherConfig;
 
 export type ResolvedBackend = 'watchman' | 'fsevents' | 'node' | 'parcel';
 

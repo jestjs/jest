@@ -2628,11 +2628,35 @@ The values in the `watchPlugins` property value can omit the `jest-watch-` prefi
 
 :::
 
+### `watcher` \[string | array]
+
+Default: `'default'`
+
+Selects the backend used for file crawling and watch mode.
+
+- `'default'` — uses [Watchman](https://facebook.github.io/watchman/) when installed, falling back to native FSEvents on macOS, then pure Node.js.
+- `'parcel'` — reserved for a future `@parcel/watcher` integration.
+
+The tuple form allows passing sub-options to the selected backend:
+
+```js
+// jest.config.js
+export default {
+  watcher: ['default', {useWatchman: false}],
+};
+```
+
+Sub-options for `'default'`: `useWatchman` (boolean), `enableSymlinks` (boolean), `forceNodeFilesystemAPI` (boolean). Top-level values for those keys are honoured as defaults; an explicit tuple sub-option takes precedence.
+
+See also: [`watchman`](#watchman-boolean).
+
 ### `watchman` \[boolean]
 
 Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
+
+See also: [`watcher`](#watcher-string--array).
 
 ### `workerGracefulExitTimeout` \[number]
 

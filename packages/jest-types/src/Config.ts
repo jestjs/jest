@@ -9,9 +9,18 @@ import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
 import type {TestPathPatterns} from '@jest/pattern';
-import type {InitialOptions, SnapshotFormat} from '@jest/schemas';
+import type {
+  InitialOptions,
+  SnapshotFormat,
+  UserWatcherConfig,
+} from '@jest/schemas';
 
-export type {InitialOptions} from '@jest/schemas';
+export type {
+  DefaultWatcherSubOptions,
+  InitialOptions,
+  ParcelWatcherSubOptions,
+  UserWatcherConfig,
+} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -215,6 +224,7 @@ export type DefaultOptions = {
   waitForUnhandledRejections: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
+  watcher: UserWatcherConfig;
   watchman: boolean;
   workerGracefulExitTimeout: number;
   workerThreads: boolean;
@@ -400,6 +410,7 @@ export type ProjectConfig = {
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
+  watcher: UserWatcherConfig;
   unmockedModulePathPatterns?: Array<string>;
   verbose?: boolean;
   waitForUnhandledRejections: boolean;

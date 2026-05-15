@@ -108,9 +108,9 @@ exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "<hideCursor>
 <clearTerminal>
 
-<bold>Pattern Mode Usage</intensity>
- <dim>› Press</intensity> Esc <dim>to exit pattern mode.</intensity>
- <dim>› Press</intensity> Enter <dim>to filter by a filenames regex pattern.</intensity>
+Pattern Mode Usage
+ › Press Esc to exit pattern mode.
+ › Press Enter to filter by a filenames regex pattern.
 
 
 <showCursor>

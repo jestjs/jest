@@ -2407,3 +2407,46 @@ describe('runInBand', () => {
     expect(options.runInBand).toBe(true);
   });
 });
+
+describe('watcher', () => {
+  test("defaults to fully-resolved 'default' tuple", async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.watcher).toEqual([
+      'default',
+      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: true},
+    ]);
+  });
+
+  test("passes 'parcel' through unchanged", async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', watcher: 'parcel'},
+      {} as Config.Argv,
+    );
+    expect(options.watcher).toBe('parcel');
+  });
+
+  test('tuple sub-options win over legacy top-level defaults', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        watcher: ['default', {useWatchman: false}],
+      },
+      {} as Config.Argv,
+    );
+    expect(options.watcher).toEqual([
+      'default',
+      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: false},
+    ]);
+  });
+
+  test('legacy watchman: false is folded into watcher tuple', async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', watchman: false},
+      {} as Config.Argv,
+    );
+    expect(options.watcher).toEqual([
+      'default',
+      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: false},
+    ]);
+  });
+});
