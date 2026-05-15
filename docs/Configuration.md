@@ -912,7 +912,7 @@ type HasteConfig = {
   /**
    * Backend used for the initial file crawl and watch mode.
    * - `'default'` — uses Watchman when installed (for both crawl and watch). When
-   *   Watchman is unavailable, the initial crawl uses Node.js `fs` APIs; watch mode
+   *   Watchman is unavailable, the initial crawl uses the Node.js crawler; watch mode
    *   additionally uses native FSEvents on macOS before falling back to Node.js.
    *   Set top-level `watchman: false` to skip the Watchman probe entirely.
    * - `'parcel'` — reserved for a future `@parcel/watcher` integration (not yet

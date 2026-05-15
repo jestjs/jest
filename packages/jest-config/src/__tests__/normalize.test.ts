@@ -2436,6 +2436,20 @@ describe('backend', () => {
     ).resolves.not.toThrow();
   });
 
+  test('rejects unknown haste.backend values', async () => {
+    await expect(
+      normalize(
+        {
+          haste: {backend: 'bogus' as 'default'},
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow(
+      'Option "haste.backend" must be one of "default" or "parcel"',
+    );
+  });
+
   test('watchman: true + haste.enableSymlinks: true still throws', async () => {
     await expect(
       normalize(
