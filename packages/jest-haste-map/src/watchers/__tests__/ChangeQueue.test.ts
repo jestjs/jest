@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ChangeQueue} from '../ChangeQueue';
 import {createEmptyMap} from '../../lib/util';
+import {ChangeQueue} from '../ChangeQueue';
 
 jest.useFakeTimers();
 

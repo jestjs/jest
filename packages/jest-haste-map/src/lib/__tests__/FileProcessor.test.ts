@@ -120,9 +120,10 @@ describe('FileProcessor', () => {
       const pool = new MockWorkerPool({maxWorkers: 1});
       (pool.get as jest.Mock).mockReturnValue(worker);
 
+      const mockConsole = {error: jest.fn()} as unknown as Console;
       const fp = new FileProcessor(
         makeOptions({throwOnModuleCollision: true}),
-        console,
+        mockConsole,
         pool,
       );
 

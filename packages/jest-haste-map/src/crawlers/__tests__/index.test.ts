@@ -40,19 +40,21 @@ const mockResult = {
   removedFiles: new Map(),
 };
 
+const mockConsole = {warn: jest.fn()} as unknown as Console;
+
 describe('crawl', () => {
   beforeEach(() => jest.clearAllMocks());
 
   it('uses watchman when useWatchman is true', async () => {
     mockWatchmanCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, true, console);
+    await crawl(crawlerOptions, true, mockConsole);
     expect(mockWatchmanCrawl).toHaveBeenCalledTimes(1);
     expect(mockNodeCrawl).not.toHaveBeenCalled();
   });
 
   it('uses node when useWatchman is false', async () => {
     mockNodeCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, false, console);
+    await crawl(crawlerOptions, false, mockConsole);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
     expect(mockWatchmanCrawl).not.toHaveBeenCalled();
   });
@@ -62,7 +64,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(watchmanError);
     mockNodeCrawl.mockResolvedValue(mockResult);
 
-    const result = await crawl(crawlerOptions, true, console);
+    const result = await crawl(crawlerOptions, true, mockConsole);
     expect(result).toBe(mockResult);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
   });
@@ -71,7 +73,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman error'));
     mockNodeCrawl.mockRejectedValue(new Error('node error'));
 
-    await expect(crawl(crawlerOptions, true, console)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
       'Crawler retry failed',
     );
   });
@@ -80,7 +82,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman failed'));
     mockNodeCrawl.mockRejectedValue(new Error('node failed'));
 
-    await expect(crawl(crawlerOptions, true, console)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
       /watchman failed.*node failed/s,
     );
   });
@@ -89,7 +91,7 @@ describe('crawl', () => {
     const nodeError = new Error('node error');
     mockNodeCrawl.mockRejectedValue(nodeError);
 
-    await expect(crawl(crawlerOptions, false, console)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, false, mockConsole)).rejects.toThrow(
       nodeError,
     );
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
