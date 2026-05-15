@@ -178,8 +178,8 @@ export type ChangeEvent = {
 export type DependencyExtractor = {
   extract: (
     code: string,
-    filePath: string,
-    defaultExtract: DependencyExtractor['extract'],
+    filePath?: string,
+    defaultExtract?: DependencyExtractor['extract'],
   ) => Iterable<string>;
   getCacheKey?: () => string;
 };
