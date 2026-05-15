@@ -48,6 +48,7 @@ CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retrie
 
 ### Test gotchas worth memorizing
 
+- **Snapshot updates with ANSI colors**: many snapshots contain chalk-rendered ANSI escape sequences. Always update snapshots with `FORCE_COLOR=1 yarn jest <path> -u` so the color output is preserved. Running without `FORCE_COLOR=1` strips the sequences and produces wrong snapshots.
 - **Windows CI on path-shaped assertions**: when comparing against a value built via `path.join`/`path.dirname`/`path.basename`, build the expected value with `path.join` too. Hardcoded POSIX strings (`'/path/to/x'`) fail on Windows.
 - **Throwing-getter regression on `globalThis` scans**: iterating `Object.keys(scope)` and reading `scope[key]` crashes if a user installed a throwing getter. Use `'key' in scope` (the `has` trap, not `get`) as the gate.
 - **ESM helpers from `@jest/test-utils`**: `testWithVmEsm` (Node 18+ with `--experimental-vm-modules`), `testWithLinkedSyntheticModule` (Node 22.21+/24.8+, gates on `linkRequests`), and `testWithSyncEsm` (Node 24.9+, gates on `hasAsyncGraph`). `yarn jest packages/jest-runtime` does **not** include the ESM suite — use `yarn jest-runtime-vm-modules`.
