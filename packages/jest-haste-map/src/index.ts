@@ -37,11 +37,7 @@ import type {
 } from './types';
 import {WatcherDriver, resolveWatcherBackend} from './watchers';
 import {ChangeQueue} from './watchers/ChangeQueue';
-import type {
-  DefaultWatcherSubOptions,
-  ResolvedBackend,
-  UserWatcherConfig,
-} from './watchers/types';
+import type {ResolvedBackend} from './watchers/types';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -70,7 +66,7 @@ type Options = {
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
-  watcher?: UserWatcherConfig;
+  watcher?: 'default' | 'parcel';
   workerThreads?: boolean;
 };
 
@@ -79,7 +75,9 @@ type InternalOptions = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor: string | null;
+  enableSymlinks: boolean;
   extensions: Array<string>;
+  forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
   id: string;
   ignorePattern?: HasteRegExp;
@@ -92,8 +90,9 @@ type InternalOptions = {
   roots: Array<string>;
   skipPackageJson: boolean;
   throwOnModuleCollision: boolean;
-  watcher: UserWatcherConfig;
+  useWatchman: boolean;
   watch: boolean;
+  watcher: 'default' | 'parcel';
   workerThreads?: boolean;
 };
 
@@ -110,40 +109,6 @@ export type {
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-function getDefaultWatcherSubOptions(
-  watcher: UserWatcherConfig,
-): DefaultWatcherSubOptions {
-  if (Array.isArray(watcher) && watcher[0] === 'default') {
-    return watcher[1] as DefaultWatcherSubOptions;
-  }
-  return {};
-}
-
-function normalizeWatcherConfig(options: Options): UserWatcherConfig {
-  // Legacy top-level options act as defaults; explicit tuple sub-options win.
-  const legacyDefaults: DefaultWatcherSubOptions = {
-    enableSymlinks: options.enableSymlinks ?? false,
-    forceNodeFilesystemAPI: options.forceNodeFilesystemAPI ?? false,
-    useWatchman: options.useWatchman ?? true,
-  };
-  const input = options.watcher;
-  if (input == null || input === 'default') {
-    return ['default', legacyDefaults];
-  }
-  if (typeof input === 'string') {
-    // 'parcel' or any other future string — legacy default-options don't apply
-    return input;
-  }
-  const [name, tupleOpts] = input;
-  if (name === 'default') {
-    return [
-      name,
-      {...legacyDefaults, ...(tupleOpts as DefaultWatcherSubOptions)},
-    ];
-  }
-  return input;
-}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -261,7 +226,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
       computeDependencies: options.computeDependencies ?? true,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
+      enableSymlinks: options.enableSymlinks ?? false,
       extensions: options.extensions,
+      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI ?? false,
       hasteImplModulePath: options.hasteImplModulePath,
       id: options.id,
       maxWorkers: options.maxWorkers,
@@ -275,8 +242,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
       roots: [...new Set(options.roots)],
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
+      useWatchman: options.useWatchman ?? true,
       watch: !!options.watch,
-      watcher: normalizeWatcherConfig(options),
+      watcher: options.watcher ?? 'default',
       workerThreads: options.workerThreads,
     };
     this._console = options.console || globalThis.console;
@@ -296,8 +264,11 @@ class HasteMap extends EventEmitter implements IHasteMap {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
 
-    const defaultOpts = getDefaultWatcherSubOptions(this._options.watcher);
-    if (defaultOpts.enableSymlinks && defaultOpts.useWatchman !== false) {
+    if (
+      this._options.enableSymlinks &&
+      this._options.watcher !== 'parcel' &&
+      this._options.useWatchman
+    ) {
       throw new Error(
         'jest-haste-map: enableSymlinks config option was set, but ' +
           'is incompatible with watchman.\n' +
@@ -507,15 +478,13 @@ class HasteMap extends EventEmitter implements IHasteMap {
 
   private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
-    const {enableSymlinks, forceNodeFilesystemAPI} =
-      getDefaultWatcherSubOptions(options.watcher);
     return crawlFiles(
       {
         computeSha1: options.computeSha1,
         data: hasteMap,
-        enableSymlinks: enableSymlinks ?? false,
+        enableSymlinks: options.enableSymlinks,
         extensions: options.extensions,
-        forceNodeFilesystemAPI: forceNodeFilesystemAPI ?? false,
+        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
         ignore: this._ignore.bind(this),
         rootDir: options.rootDir,
         roots: options.roots,
@@ -527,9 +496,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
 
   private _resolveBackend(): Promise<ResolvedBackend> {
     if (!this._resolvedBackendPromise) {
-      this._resolvedBackendPromise = resolveWatcherBackend(
-        this._options.watcher,
-      );
+      this._resolvedBackendPromise = resolveWatcherBackend({
+        useWatchman: this._options.useWatchman,
+        watcher: this._options.watcher,
+      });
     }
     return this._resolvedBackendPromise;
   }

@@ -586,7 +586,7 @@ describe('HasteMap', () => {
       watcher: 'parcel',
     });
     await expect(haste.build()).rejects.toThrow(
-      '@parcel/watcher crawler is not yet wired',
+      '@parcel/watcher backend is not yet supported',
     );
   });
 

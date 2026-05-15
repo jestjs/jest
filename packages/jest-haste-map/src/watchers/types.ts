@@ -6,19 +6,7 @@
  */
 
 import type {EventEmitter} from 'node:events';
-import type {Config} from '@jest/types';
 import type {HasteRegExp} from '../types';
-
-export type WatcherBackend =
-  | 'auto'
-  | 'watchman'
-  | 'parcel'
-  | 'fsevents'
-  | 'node';
-
-export type DefaultWatcherSubOptions = Config.DefaultWatcherSubOptions;
-export type ParcelWatcherSubOptions = Config.ParcelWatcherSubOptions;
-export type UserWatcherConfig = Config.UserWatcherConfig;
 
 export type ResolvedBackend = 'watchman' | 'fsevents' | 'node' | 'parcel';
 

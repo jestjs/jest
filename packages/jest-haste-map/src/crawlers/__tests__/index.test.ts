@@ -70,7 +70,7 @@ describe('crawl', () => {
 
   it('throws when backend is parcel', async () => {
     await expect(crawl(crawlerOptions, 'parcel', mockConsole)).rejects.toThrow(
-      '@parcel/watcher crawler is not yet wired',
+      '@parcel/watcher backend is not yet supported',
     );
   });
 

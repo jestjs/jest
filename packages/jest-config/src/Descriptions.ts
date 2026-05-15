@@ -94,8 +94,6 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'Indicates whether each individual test should be reported during the run',
   watchPathIgnorePatterns:
     'An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode',
-  watcher:
-    "Backend used for file crawling and watch mode ('default' or 'parcel')",
   watchman: 'Whether to use watchman for file crawling',
 };
 

@@ -913,24 +913,31 @@ type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
-  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
-  forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   *   This options cannot be used in projects which use watchman.
-   *   Projects with `watchman` set to true will error if this option is set to true.
+   * Cannot be used together with `watchman: true`.
    */
   enableSymlinks?: boolean;
+  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  forceNodeFilesystemAPI?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
-  /** All platforms to target, e.g ['ios', 'android']. */
-  platforms?: Array<string>;
-  /** Whether to throw an error on module collision. */
-  throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;
+  /** All platforms to target, e.g ['ios', 'android']. */
+  platforms?: Array<string>;
   /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
   retainAllFiles?: boolean;
+  /** Whether to throw an error on module collision. */
+  throwOnModuleCollision?: boolean;
+  /**
+   * Backend used for the initial file crawl and watch mode.
+   * - `'default'` — uses Watchman when installed, falling back to native FSEvents
+   *   on macOS, then pure Node.js. The initial crawl always uses the Node.js crawler
+   *   when Watchman is unavailable.
+   * - `'parcel'` — reserved for a future `@parcel/watcher` integration.
+   */
+  watcher?: 'default' | 'parcel';
 };
 ```
 
@@ -2628,35 +2635,13 @@ The values in the `watchPlugins` property value can omit the `jest-watch-` prefi
 
 :::
 
-### `watcher` \[string | array]
-
-Default: `'default'`
-
-Selects the backend used for file crawling and watch mode.
-
-- `'default'` — uses [Watchman](https://facebook.github.io/watchman/) when installed, falling back to native FSEvents on macOS, then pure Node.js.
-- `'parcel'` — reserved for a future `@parcel/watcher` integration.
-
-The tuple form allows passing sub-options to the selected backend:
-
-```js
-// jest.config.js
-export default {
-  watcher: ['default', {useWatchman: false}],
-};
-```
-
-Sub-options for `'default'`: `useWatchman` (boolean), `enableSymlinks` (boolean), `forceNodeFilesystemAPI` (boolean). Top-level values for those keys are honoured as defaults; an explicit tuple sub-option takes precedence.
-
-See also: [`watchman`](#watchman-boolean).
-
 ### `watchman` \[boolean]
 
 Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
-See also: [`watcher`](#watcher-string--array).
+See also: [`haste.watcher`](#haste-object).
 
 ### `workerGracefulExitTimeout` \[number]
 

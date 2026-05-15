@@ -13,34 +13,35 @@ import {FSEventsWatcher} from './FSEventsWatcher';
 import NodeWatcherImpl from './NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcherImpl from './WatchmanWatcher';
-import type {
-  IWatcher,
-  ResolvedBackend,
-  UserWatcherConfig,
-  WatcherCtor,
-} from './types';
+import type {IWatcher, ResolvedBackend, WatcherCtor} from './types';
 
 const NodeWatcher = NodeWatcherImpl as WatcherCtor;
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
-export async function resolveWatcherBackend(
-  watcher: UserWatcherConfig,
-): Promise<ResolvedBackend> {
-  const [name, opts] = typeof watcher === 'string' ? [watcher, {}] : watcher;
-
-  if (name === 'parcel') {
-    return 'parcel';
-  }
-
-  // name === 'default'
-  const useWatchman = (opts as {useWatchman?: boolean}).useWatchman ?? true;
-  if (useWatchman) {
-    const watchmanIsInstalled = await isWatchmanInstalled();
-    if (watchmanIsInstalled) {
-      return 'watchman';
+export async function resolveWatcherBackend({
+  useWatchman,
+  watcher,
+}: {
+  useWatchman: boolean;
+  watcher: 'default' | 'parcel';
+}): Promise<ResolvedBackend> {
+  switch (watcher) {
+    case 'default': {
+      if (useWatchman) {
+        const watchmanInstalled = await isWatchmanInstalled();
+        if (watchmanInstalled) {
+          return 'watchman';
+        }
+      }
+      return FSEventsWatcher.isSupported() ? 'fsevents' : 'node';
     }
+    case 'parcel':
+      throw new Error(
+        '@parcel/watcher backend is not yet supported. Use haste.watcher: "default" instead.',
+      );
+    default:
+      throw new Error(`Unknown watcher backend: ${watcher as string}`);
   }
-  return FSEventsWatcher.isSupported() ? 'fsevents' : 'node';
 }
 
 type OnChangeCallback = (
@@ -85,7 +86,7 @@ export class WatcherDriver {
         break;
       case 'parcel':
         throw new Error(
-          '@parcel/watcher backend is not yet wired — coming in a follow-up PR.',
+          '@parcel/watcher backend is not yet supported. Use haste.watcher: "default" instead.',
         );
     }
 

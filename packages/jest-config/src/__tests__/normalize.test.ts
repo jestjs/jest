@@ -564,6 +564,7 @@ describe('haste', () => {
 
     expect(options.haste).toEqual({
       hasteImplModulePath: '/root/haste_impl.js',
+      watcher: 'default',
     });
   });
 });
@@ -2409,44 +2410,42 @@ describe('runInBand', () => {
 });
 
 describe('watcher', () => {
-  test("defaults to fully-resolved 'default' tuple", async () => {
+  test('defaults haste.watcher to default when unset', async () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
-    expect(options.watcher).toEqual([
-      'default',
-      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: true},
-    ]);
+    expect(options.haste.watcher).toBe('default');
   });
 
-  test("passes 'parcel' through unchanged", async () => {
+  test('passes haste.watcher: parcel through', async () => {
     const {options} = await normalize(
-      {rootDir: '/root/', watcher: 'parcel'},
+      {haste: {watcher: 'parcel'}, rootDir: '/root/'},
       {} as Config.Argv,
     );
-    expect(options.watcher).toBe('parcel');
+    expect(options.haste.watcher).toBe('parcel');
   });
 
-  test('tuple sub-options win over legacy top-level defaults', async () => {
-    const {options} = await normalize(
-      {
-        rootDir: '/root/',
-        watcher: ['default', {useWatchman: false}],
-      },
-      {} as Config.Argv,
-    );
-    expect(options.watcher).toEqual([
-      'default',
-      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: false},
-    ]);
+  test('haste.watcher: parcel + enableSymlinks does not throw', async () => {
+    await expect(
+      normalize(
+        {
+          haste: {enableSymlinks: true, watcher: 'parcel'},
+          rootDir: '/root/',
+          watchman: true,
+        },
+        {} as Config.Argv,
+      ),
+    ).resolves.not.toThrow();
   });
 
-  test('legacy watchman: false is folded into watcher tuple', async () => {
-    const {options} = await normalize(
-      {rootDir: '/root/', watchman: false},
-      {} as Config.Argv,
-    );
-    expect(options.watcher).toEqual([
-      'default',
-      {enableSymlinks: false, forceNodeFilesystemAPI: true, useWatchman: false},
-    ]);
+  test('watchman: true + haste.enableSymlinks: true still throws', async () => {
+    await expect(
+      normalize(
+        {
+          haste: {enableSymlinks: true},
+          rootDir: '/root/',
+          watchman: true,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
   });
 });

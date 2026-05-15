@@ -223,25 +223,11 @@ const HasteConfig = Type.Partial(
       description:
         'Whether to retain all files, allowing e.g. search for tests in `node_modules`.',
     }),
+    watcher: Type.Union([Type.Literal('default'), Type.Literal('parcel')], {
+      description: 'Backend used for file crawling and watch mode.',
+    }),
   }),
 );
-
-export const DefaultWatcherSubOptions = Type.Partial(
-  Type.Object({
-    enableSymlinks: Type.Boolean(),
-    forceNodeFilesystemAPI: Type.Boolean(),
-    useWatchman: Type.Boolean(),
-  }),
-);
-
-export const ParcelWatcherSubOptions = Type.Object({});
-
-export const UserWatcherConfig = Type.Union([
-  Type.Literal('default'),
-  Type.Literal('parcel'),
-  Type.Tuple([Type.Literal('default'), DefaultWatcherSubOptions]),
-  Type.Tuple([Type.Literal('parcel'), ParcelWatcherSubOptions]),
-]);
 
 export const InitialOptions = Type.Partial(
   Type.Object({
@@ -366,7 +352,6 @@ export const InitialOptions = Type.Partial(
     waitForUnhandledRejections: Type.Boolean(),
     watch: Type.Boolean(),
     watchAll: Type.Boolean(),
-    watcher: UserWatcherConfig,
     watchman: Type.Boolean(),
     watchPlugins: Type.Array(
       Type.Union([Type.String(), Type.Tuple([Type.String(), Type.Unknown()])]),

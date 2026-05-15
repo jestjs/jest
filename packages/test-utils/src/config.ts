@@ -140,7 +140,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   unmockedModulePathPatterns: undefined,
   waitForUnhandledRejections: false,
   watchPathIgnorePatterns: [],
-  watcher: 'default',
 };
 
 export const makeGlobalConfig = (

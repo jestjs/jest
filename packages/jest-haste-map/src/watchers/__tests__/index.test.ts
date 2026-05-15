@@ -47,43 +47,55 @@ describe('resolveWatcherBackend', () => {
 
   it('returns watchman when watcher is default and watchman is installed', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
-    expect(await resolveWatcherBackend('default')).toBe('watchman');
+    expect(
+      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+    ).toBe('watchman');
   });
 
   it('returns fsevents when watcher is default, watchman unavailable, and FSEvents supported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
-    expect(await resolveWatcherBackend('default')).toBe('fsevents');
+    expect(
+      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+    ).toBe('fsevents');
   });
 
   it('returns node when watcher is default, watchman unavailable, and FSEvents unsupported', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(false);
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(false);
-    expect(await resolveWatcherBackend('default')).toBe('node');
+    expect(
+      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+    ).toBe('node');
   });
 
-  it('skips watchman when tuple opts has useWatchman: false', async () => {
+  it('skips watchman when useWatchman is false', async () => {
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
-    expect(await resolveWatcherBackend(['default', {useWatchman: false}])).toBe(
-      'fsevents',
-    );
+    expect(
+      await resolveWatcherBackend({useWatchman: false, watcher: 'default'}),
+    ).toBe('fsevents');
     expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
   });
 
-  it('tuple useWatchman: true takes precedence and probes watchman', async () => {
+  it('probes watchman when useWatchman is true', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
-    expect(await resolveWatcherBackend(['default', {useWatchman: true}])).toBe(
-      'watchman',
-    );
+    expect(
+      await resolveWatcherBackend({useWatchman: true, watcher: 'default'}),
+    ).toBe('watchman');
   });
 
-  it('returns parcel for watcher: parcel', async () => {
-    expect(await resolveWatcherBackend('parcel')).toBe('parcel');
-    expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
+  it('throws for watcher: parcel', async () => {
+    await expect(
+      resolveWatcherBackend({useWatchman: true, watcher: 'parcel'}),
+    ).rejects.toThrow('@parcel/watcher backend is not yet supported');
   });
 
-  it('returns parcel for tuple watcher: [parcel, {}]', async () => {
-    expect(await resolveWatcherBackend(['parcel', {}])).toBe('parcel');
+  it('throws for unknown watcher backend', async () => {
+    await expect(
+      resolveWatcherBackend({
+        useWatchman: true,
+        watcher: 'bogus' as 'default',
+      }),
+    ).rejects.toThrow('Unknown watcher backend: bogus');
   });
 });
 
@@ -127,7 +139,7 @@ describe('WatcherDriver', () => {
   it('throws when backend is parcel', async () => {
     const driver = new WatcherDriver({...driverOpts, backend: 'parcel'});
     await expect(driver.start(jest.fn())).rejects.toThrow(
-      '@parcel/watcher backend is not yet wired',
+      '@parcel/watcher backend is not yet supported',
     );
   });
 

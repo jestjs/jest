@@ -17,7 +17,7 @@ export async function crawl(
 ): ReturnType<typeof nodeCrawl> {
   if (backend === 'parcel') {
     throw new Error(
-      '@parcel/watcher crawler is not yet wired — coming in a follow-up PR.',
+      '@parcel/watcher backend is not yet supported. Use haste.watcher: "default" instead.',
     );
   }
 

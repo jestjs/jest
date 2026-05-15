@@ -262,7 +262,6 @@ const groupOptions = (
     verbose: options.verbose,
     waitForUnhandledRejections: options.waitForUnhandledRejections,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
-    watcher: options.watcher,
   }),
 });
 
