@@ -14,6 +14,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Fix `setup` used as a verb in Getting Started and TypeScript examples note (should be `set up`)
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
 
