@@ -10,7 +10,8 @@ Key files to know:
 - `lib/CacheManager.ts` — v8 serialize/deserialize for the on-disk cache. **Sync I/O is intentional** — at haste-map's scale, async overhead adds no value and switching to `fs.promises` is not a free win.
 - `watchers/ChangeQueue.ts` — 30 ms debounce, O(1) mtime-dedup via `Set<string>`, copy-on-write for the live map, file-processing dispatch.
 - `crawlers/watchman.ts` — fb-watchman with clock-based incremental updates. `crawlers/node.ts` — pure Node.js fallback.
-- `watchers/types.ts` — `IWatcher`, `WatcherOptions`, `WatcherCtor`, `WatcherBackend`. New backends must implement `IWatcher` and accept `(root: string, opts: WatcherOptions)`.
+- `watchers/types.ts` — `IWatcher`, `WatcherOptions`, `WatcherCtor`, `WatcherBackend`, `UserWatcherConfig`, `ResolvedBackend`. New backends must implement `IWatcher` and accept `(root: string, opts: WatcherOptions)`.
+- `watchers/index.ts` — `resolveWatcherBackend(watcher: UserWatcherConfig) → Promise<ResolvedBackend>`. Single source of truth for backend selection; called once per `HasteMap` instance via `_resolveBackend()`. `WatcherDriver` receives the already-resolved backend; callers never read `useWatchman` after the ctor.
 - `watchers/WatchmanWatcher.js` — macOS/Linux watchman. `FSEventsWatcher.ts` — macOS native. `NodeWatcher.js` — cross-platform fallback.
 
 ## Data model
@@ -35,6 +36,10 @@ Key files to know:
 **`ChangeQueue` `stat` is required for add/change events.** The queue reads `stat.isDirectory()`, `stat.mtime.getTime()`, and `stat.size`. New watcher backends must supply `stat` (via `lstat` if the backend doesn't provide it). Delete events omit `stat` — that is correct.
 
 **`WatchmanWatcher` ≠ parcel-watcher.** They both may use watchman internally but are independent codepaths. `WatchmanWatcher` stores clocks in `InternalHasteMap.clocks`; a `ParcelWatcher` would use parcel's opaque snapshot files.
+
+**`useWatchman`, `enableSymlinks`, `forceNodeFilesystemAPI` are normalised exactly once** in the `HasteMap` constructor via `normalizeWatcherConfig()`. They become sub-options of a `['default', {...}]` tuple in `InternalOptions.watcher`. Top-level values act as defaults; any explicit tuple sub-options win. After that point no code reads them directly — all decisions flow through `resolveWatcherBackend()` / `getDefaultWatcherSubOptions()`.
+
+**`enableSymlinks` guard reads from the watcher tuple** (via `getDefaultWatcherSubOptions`), not from a top-level `InternalOptions` field. It only fires for `'default'` backend without explicit `useWatchman: false`. Parcel is never subject to this guard.
 
 ## Tests
 

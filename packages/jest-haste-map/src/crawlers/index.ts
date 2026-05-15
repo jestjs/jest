@@ -6,15 +6,22 @@
  */
 
 import type {CrawlerOptions} from '../types';
+import type {ResolvedBackend} from '../watchers/types';
 import {nodeCrawl} from './node';
 import {watchmanCrawl} from './watchman';
 
 export async function crawl(
   crawlerOptions: CrawlerOptions,
-  useWatchman: boolean,
+  backend: ResolvedBackend,
   console: Console,
 ): ReturnType<typeof nodeCrawl> {
-  const crawlFn = useWatchman ? watchmanCrawl : nodeCrawl;
+  if (backend === 'parcel') {
+    throw new Error(
+      '@parcel/watcher crawler is not yet wired — coming in a follow-up PR.',
+    );
+  }
+
+  const crawlFn = backend === 'watchman' ? watchmanCrawl : nodeCrawl;
 
   const retry = (retryError: Error) => {
     if (crawlFn === watchmanCrawl) {

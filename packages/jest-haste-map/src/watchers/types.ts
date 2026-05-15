@@ -15,6 +15,22 @@ export type WatcherBackend =
   | 'fsevents'
   | 'node';
 
+export type DefaultWatcherSubOptions = {
+  enableSymlinks?: boolean;
+  forceNodeFilesystemAPI?: boolean;
+  useWatchman?: boolean;
+};
+
+export type ParcelWatcherSubOptions = Record<string, never>;
+
+export type UserWatcherConfig =
+  | 'default'
+  | 'parcel'
+  | readonly ['default', DefaultWatcherSubOptions]
+  | readonly ['parcel', ParcelWatcherSubOptions];
+
+export type ResolvedBackend = 'watchman' | 'fsevents' | 'node' | 'parcel';
+
 export type WatcherOptions = {
   dot: boolean;
   glob: ReadonlyArray<string>;

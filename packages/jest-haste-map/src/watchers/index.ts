@@ -13,23 +13,31 @@ import {FSEventsWatcher} from './FSEventsWatcher';
 import NodeWatcherImpl from './NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcherImpl from './WatchmanWatcher';
-import type {IWatcher, WatcherCtor} from './types';
+import type {
+  IWatcher,
+  ResolvedBackend,
+  UserWatcherConfig,
+  WatcherCtor,
+} from './types';
 
 const NodeWatcher = NodeWatcherImpl as WatcherCtor;
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
-let isWatchmanInstalledPromise: Promise<boolean> | undefined;
+export async function resolveWatcherBackend(
+  watcher: UserWatcherConfig,
+): Promise<ResolvedBackend> {
+  const [name, opts] = typeof watcher === 'string' ? [watcher, {}] : watcher;
 
-export async function shouldUseWatchman(
-  useWatchmanOption: boolean,
-): Promise<boolean> {
-  if (!useWatchmanOption) {
-    return false;
+  if (name === 'parcel') {
+    return 'parcel';
   }
-  if (!isWatchmanInstalledPromise) {
-    isWatchmanInstalledPromise = isWatchmanInstalled();
+
+  // name === 'default'
+  const useWatchman = (opts as {useWatchman?: boolean}).useWatchman ?? true;
+  if (useWatchman && (await isWatchmanInstalled())) {
+    return 'watchman';
   }
-  return isWatchmanInstalledPromise;
+  return FSEventsWatcher.isSupported() ? 'fsevents' : 'node';
 }
 
 type OnChangeCallback = (
@@ -45,27 +53,38 @@ export class WatcherDriver {
   private readonly _extensions: Array<string>;
   private readonly _ignorePattern: HasteRegExp | undefined;
   private readonly _roots: Array<string>;
-  private readonly _useWatchman: boolean;
+  private readonly _backend: ResolvedBackend;
   private _watchers: Array<IWatcher> = [];
 
   constructor(opts: {
+    backend: ResolvedBackend;
     extensions: Array<string>;
     ignorePattern: HasteRegExp | undefined;
     roots: Array<string>;
-    useWatchman: boolean;
   }) {
+    this._backend = opts.backend;
     this._extensions = opts.extensions;
     this._ignorePattern = opts.ignorePattern;
     this._roots = opts.roots;
-    this._useWatchman = opts.useWatchman;
   }
 
   async start(onChange: OnChangeCallback): Promise<void> {
-    const Backend: WatcherCtor = this._useWatchman
-      ? WatchmanWatcher
-      : FSEventsWatcher.isSupported()
-        ? (FSEventsWatcher as unknown as WatcherCtor)
-        : NodeWatcher;
+    let Backend: WatcherCtor;
+    switch (this._backend) {
+      case 'watchman':
+        Backend = WatchmanWatcher;
+        break;
+      case 'fsevents':
+        Backend = FSEventsWatcher as unknown as WatcherCtor;
+        break;
+      case 'node':
+        Backend = NodeWatcher;
+        break;
+      case 'parcel':
+        throw new Error(
+          '@parcel/watcher backend is not yet wired — coming in a follow-up PR.',
+        );
+    }
 
     const results = await Promise.allSettled(
       this._roots.map(root => this._createWatcher(Backend, root, onChange)),

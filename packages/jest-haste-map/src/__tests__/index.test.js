@@ -570,6 +570,24 @@ describe('HasteMap', () => {
         useWatchman: false,
       }),
     ).resolves.not.toThrow();
+
+    await expect(
+      HasteMap.create({
+        ...defaultConfig,
+        enableSymlinks: true,
+        watcher: 'parcel',
+      }),
+    ).resolves.not.toThrow();
+  });
+
+  it('throws when watcher is parcel and build is called', async () => {
+    const haste = await HasteMap.create({
+      ...defaultConfig,
+      watcher: 'parcel',
+    });
+    await expect(haste.build()).rejects.toThrow(
+      '@parcel/watcher crawler is not yet wired',
+    );
   });
 
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
@@ -1097,8 +1115,9 @@ describe('HasteMap', () => {
 
   describe('duplicate modules', () => {
     beforeEach(async () => {
-      mockFs[path.join('/', 'project', 'fruits', 'another', 'Strawberry.js')] =
-        `
+      mockFs[
+        path.join('/', 'project', 'fruits', 'another', 'Strawberry.js')
+      ] = `
         const Blackberry = require("Blackberry");
       `;
 
