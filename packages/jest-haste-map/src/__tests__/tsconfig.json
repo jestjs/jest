@@ -1,5 +1,8 @@
 {
   "extends": "../../../../tsconfig.test.json",
+  "compilerOptions": {
+    "types": ["@jest/test-globals", "node"]
+  },
   "include": ["./**/*"],
   "references": [{"path": "../../"}]
 }

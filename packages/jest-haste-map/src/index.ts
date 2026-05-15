@@ -9,48 +9,34 @@ import {createHash} from 'node:crypto';
 import {EventEmitter} from 'node:events';
 import {tmpdir} from 'node:os';
 import * as path from 'node:path';
-import {deserialize, serialize} from 'node:v8';
-import {type Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {invariant, requireOrImportModule} from 'jest-util';
-import {type JestWorkerFarm, Worker} from 'jest-worker';
+import {requireOrImportModule} from 'jest-util';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
-import {nodeCrawl} from './crawlers/node';
-import {watchmanCrawl} from './crawlers/watchman';
-import getMockName from './getMockName';
+import {crawl as crawlFiles} from './crawlers';
+import {CacheManager} from './lib/CacheManager';
+import {DuplicateError, FileProcessor} from './lib/FileProcessor';
+import {WorkerPool} from './lib/WorkerPool';
+import {buildIgnoreMatcher} from './lib/buildIgnoreMatcher';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
-import isWatchmanInstalled from './lib/isWatchmanInstalled';
-import normalizePathSep from './lib/normalizePathSep';
+import {copyMap, createEmptyMap} from './lib/util';
 import type {
-  ChangeEvent,
-  CrawlerOptions,
   DependencyExtractor,
-  EventsQueue,
   FileData,
-  FileMetaData,
   HasteMapStatic,
   HasteRegExp,
   IHasteMap,
   IModuleMap,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
-  MockData,
-  ModuleMapData,
   ModuleMapItem,
-  ModuleMetaData,
   SerializableModuleMap,
-  WorkerMetadata,
 } from './types';
-import {FSEventsWatcher} from './watchers/FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
-import NodeWatcher from './watchers/NodeWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
-import WatchmanWatcher from './watchers/WatchmanWatcher';
-import {getSha1, worker} from './worker';
+import {WatcherDriver, shouldUseWatchman} from './watchers';
+import {ChangeQueue} from './watchers/ChangeQueue';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -107,14 +93,6 @@ type InternalOptions = {
   workerThreads?: boolean;
 };
 
-type Watcher = {
-  close(): Promise<void>;
-};
-
-type HasteWorker = typeof import('./worker');
-
-let isWatchmanInstalledPromise: Promise<boolean> | undefined;
-
 export const ModuleMap = HasteModuleMap as {
   create: (rootPath: string) => IModuleMap;
 };
@@ -125,15 +103,9 @@ export type {
   SerializableModuleMap,
 } from './types';
 
-const CHANGE_INTERVAL = 30;
-const MAX_WAIT_TIME = 240_000;
-const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
-const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg', '.sl']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-type WorkerOptions = {forceInBand: boolean};
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -215,12 +187,14 @@ type WorkerOptions = {forceInBand: boolean};
  */
 class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
-  private _cachePath = '';
-  private _changeInterval?: ReturnType<typeof setInterval>;
+  private _cacheManager!: CacheManager;
+  private _changeQueue?: ChangeQueue;
+  private _fileProcessor!: FileProcessor;
+  private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
   private readonly _options: InternalOptions;
-  private _watchers: Array<Watcher> = [];
-  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
+  private _watcherDriver?: WatcherDriver;
+  private _workerPool!: WorkerPool;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
     if (config.haste.hasteMapModulePath) {
@@ -292,6 +266,32 @@ class HasteMap extends EventEmitter implements IHasteMap {
           'Set either `enableSymlinks` to false or `useWatchman` to false.',
       );
     }
+
+    this._ignoreFn = buildIgnoreMatcher(
+      this._options.ignorePattern,
+      this._options.retainAllFiles,
+    );
+    this._workerPool = new WorkerPool({
+      maxWorkers: this._options.maxWorkers,
+      workerPath: require.resolve('./worker'),
+      workerThreads: this._options.workerThreads,
+    });
+    this._fileProcessor = new FileProcessor(
+      {
+        computeDependencies: this._options.computeDependencies,
+        computeSha1: this._options.computeSha1,
+        dependencyExtractor: this._options.dependencyExtractor,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+        mocksPattern: this._options.mocksPattern,
+        platforms: this._options.platforms,
+        retainAllFiles: this._options.retainAllFiles,
+        rootDir: this._options.rootDir,
+        skipPackageJson: this._options.skipPackageJson,
+        throwOnModuleCollision: this._options.throwOnModuleCollision,
+      },
+      this._console,
+      this._workerPool,
+    );
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -320,7 +320,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       }
     }
 
-    this._cachePath = HasteMap.getCacheFilePath(
+    const cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.id}-${rootDirHash}`,
       VERSION,
@@ -337,6 +337,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       dependencyExtractorHash,
       this._options.computeDependencies.toString(),
     );
+    this._cacheManager = new CacheManager(cachePath);
   }
 
   static getCacheFilePath(
@@ -356,7 +357,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   getCacheFilePath(): string {
-    return this._cachePath;
+    return this._cacheManager.path;
   }
 
   build(): Promise<InternalHasteMapObject> {
@@ -406,15 +407,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
    * 1. read data from the cache or create an empty structure.
    */
   read(): InternalHasteMap {
-    let hasteMap: InternalHasteMap;
-
-    try {
-      hasteMap = deserialize(readFileSync(this._cachePath));
-    } catch {
-      hasteMap = this._createEmptyMap();
-    }
-
-    return hasteMap;
+    return this._cacheManager.read();
   }
 
   readModuleMap(): HasteModuleMap {
@@ -435,13 +428,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }> {
-    let hasteMap: InternalHasteMap;
-    try {
-      const read = this._options.resetCache ? this._createEmptyMap : this.read;
-      hasteMap = read.call(this);
-    } catch {
-      hasteMap = this._createEmptyMap();
-    }
+    const hasteMap = this._options.resetCache
+      ? this._createEmptyMap()
+      : this._cacheManager.read();
     return this._crawl(hasteMap);
   }
 
@@ -450,215 +439,15 @@ class HasteMap extends EventEmitter implements IHasteMap {
    */
   private _processFile(
     hasteMap: InternalHasteMap,
-    map: ModuleMapData,
-    mocks: MockData,
     filePath: string,
-    workerOptions?: WorkerOptions,
   ): Promise<void> | null {
-    const rootDir = this._options.rootDir;
-
-    const setModule = (id: string, module: ModuleMetaData) => {
-      let moduleMap = map.get(id);
-      if (!moduleMap) {
-        moduleMap = Object.create(null) as ModuleMapItem;
-        map.set(id, moduleMap);
-      }
-      const platform =
-        getPlatformExtension(module[H.PATH], this._options.platforms) ||
-        H.GENERIC_PLATFORM;
-
-      const existingModule = moduleMap[platform];
-
-      if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const method = this._options.throwOnModuleCollision ? 'error' : 'warn';
-
-        this._console[method](
-          [
-            `jest-haste-map: Haste module naming collision: ${id}`,
-            '  The following files share their name; please adjust your hasteImpl:',
-            `    * <rootDir>${path.sep}${existingModule[H.PATH]}`,
-            `    * <rootDir>${path.sep}${module[H.PATH]}`,
-            '',
-          ].join('\n'),
-        );
-
-        if (this._options.throwOnModuleCollision) {
-          throw new DuplicateError(existingModule[H.PATH], module[H.PATH]);
-        }
-
-        // We do NOT want consumers to use a module that is ambiguous.
-        delete moduleMap[platform];
-
-        if (Object.keys(moduleMap).length === 1) {
-          map.delete(id);
-        }
-
-        let dupsByPlatform = hasteMap.duplicates.get(id);
-        if (dupsByPlatform == null) {
-          dupsByPlatform = new Map();
-          hasteMap.duplicates.set(id, dupsByPlatform);
-        }
-
-        const dups = new Map([
-          [module[H.PATH], module[H.TYPE]],
-          [existingModule[H.PATH], existingModule[H.TYPE]],
-        ]);
-        dupsByPlatform.set(platform, dups);
-
-        return;
-      }
-
-      const dupsByPlatform = hasteMap.duplicates.get(id);
-      if (dupsByPlatform != null) {
-        const dups = dupsByPlatform.get(platform);
-        if (dups != null) {
-          dups.set(module[H.PATH], module[H.TYPE]);
-        }
-        return;
-      }
-
-      moduleMap[platform] = module;
-    };
-
-    const relativeFilePath = fastPath.relative(rootDir, filePath);
-    const fileMetadata = hasteMap.files.get(relativeFilePath);
-    if (!fileMetadata) {
-      throw new Error(
-        'jest-haste-map: File to process was not found in the haste map.',
-      );
-    }
-
-    const moduleMetadata = hasteMap.map.get(fileMetadata[H.ID]);
-    const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
-
-    // Callback called when the response from the worker is successful.
-    const workerReply = (metadata: WorkerMetadata) => {
-      // `1` for truthy values instead of `true` to save cache space.
-      fileMetadata[H.VISITED] = 1;
-
-      const metadataId = metadata.id;
-      const metadataModule = metadata.module;
-
-      if (metadataId && metadataModule) {
-        fileMetadata[H.ID] = metadataId;
-        setModule(metadataId, metadataModule);
-      }
-
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
-        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
-        : '';
-
-      if (computeSha1) {
-        fileMetadata[H.SHA1] = metadata.sha1;
-      }
-    };
-
-    // Callback called when the response from the worker is an error.
-    const workerError = (error: Error | any) => {
-      if (typeof error !== 'object' || !error.message || !error.stack) {
-        error = new Error(error);
-        error.stack = ''; // Remove stack for stack-less errors.
-      }
-
-      if (!['ENOENT', 'EACCES'].includes(error.code)) {
-        throw error;
-      }
-
-      // If a file cannot be read we remove it from the file list and
-      // ignore the failure silently.
-      hasteMap.files.delete(relativeFilePath);
-    };
-
-    // If we retain all files in the virtual HasteFS representation, we avoid
-    // reading them if they aren't important (node_modules).
-    if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
-      if (computeSha1) {
-        return this._getWorker(workerOptions)
-          .getSha1({
-            computeDependencies: this._options.computeDependencies,
-            computeSha1,
-            dependencyExtractor: this._options.dependencyExtractor,
-            filePath,
-            hasteImplModulePath: this._options.hasteImplModulePath,
-            rootDir,
-          })
-          .then(workerReply, workerError);
-      }
-
-      return null;
-    }
-
-    if (
-      this._options.mocksPattern &&
-      this._options.mocksPattern.test(filePath)
-    ) {
-      const mockPath = getMockName(filePath);
-      const existingMockPath = mocks.get(mockPath);
-
-      if (existingMockPath) {
-        const secondMockPath = fastPath.relative(rootDir, filePath);
-        if (existingMockPath !== secondMockPath) {
-          const method = this._options.throwOnModuleCollision
-            ? 'error'
-            : 'warn';
-
-          this._console[method](
-            [
-              `jest-haste-map: duplicate manual mock found: ${mockPath}`,
-              '  The following files share their name; please delete one of them:',
-              `    * <rootDir>${path.sep}${existingMockPath}`,
-              `    * <rootDir>${path.sep}${secondMockPath}`,
-              '',
-            ].join('\n'),
-          );
-
-          if (this._options.throwOnModuleCollision) {
-            throw new DuplicateError(existingMockPath, secondMockPath);
-          }
-        }
-      }
-
-      mocks.set(mockPath, relativeFilePath);
-    }
-
-    if (fileMetadata[H.VISITED]) {
-      if (!fileMetadata[H.ID]) {
-        return null;
-      }
-
-      if (moduleMetadata != null) {
-        const platform =
-          getPlatformExtension(filePath, this._options.platforms) ||
-          H.GENERIC_PLATFORM;
-
-        const module = moduleMetadata[platform];
-
-        if (module == null) {
-          return null;
-        }
-
-        const moduleId = fileMetadata[H.ID];
-        let modulesByPlatform = map.get(moduleId);
-        if (!modulesByPlatform) {
-          modulesByPlatform = Object.create(null) as ModuleMapItem;
-          map.set(moduleId, modulesByPlatform);
-        }
-        modulesByPlatform[platform] = module;
-
-        return null;
-      }
-    }
-
-    return this._getWorker(workerOptions)
-      .worker({
-        computeDependencies: this._options.computeDependencies,
-        computeSha1,
-        dependencyExtractor: this._options.dependencyExtractor,
-        filePath,
-        hasteImplModulePath: this._options.hasteImplModulePath,
-        rootDir,
-      })
-      .then(workerReply, workerError);
+    return this._fileProcessor.processFile(
+      hasteMap,
+      hasteMap.map,
+      hasteMap.mocks,
+      filePath,
+      {forceInBand: true},
+    );
   }
 
   private _buildHasteMap(data: {
@@ -666,142 +455,34 @@ class HasteMap extends EventEmitter implements IHasteMap {
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
-    const {removedFiles, changedFiles, hasteMap} = data;
-
-    // If any files were removed or we did not track what files changed, process
-    // every file looking for changes. Otherwise, process only changed files.
-    let map: ModuleMapData;
-    let mocks: MockData;
-    let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size > 0) {
-      map = new Map();
-      mocks = new Map();
-      filesToProcess = hasteMap.files;
-    } else {
-      map = hasteMap.map;
-      mocks = hasteMap.mocks;
-      filesToProcess = changedFiles;
-    }
-
-    for (const [relativeFilePath, fileMetadata] of removedFiles) {
-      this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
-    }
-
-    const promises: Array<Promise<void>> = [];
-    for (const relativeFilePath of filesToProcess.keys()) {
-      if (
-        this._options.skipPackageJson &&
-        relativeFilePath.endsWith(PACKAGE_JSON)
-      ) {
-        continue;
-      }
-      // SHA-1, if requested, should already be present thanks to the crawler.
-      const filePath = fastPath.resolve(
-        this._options.rootDir,
-        relativeFilePath,
-      );
-      const promise = this._processFile(hasteMap, map, mocks, filePath);
-      if (promise) {
-        promises.push(promise);
-      }
-    }
-
-    return Promise.all(promises).then(
-      () => {
-        this._cleanup();
-        hasteMap.map = map;
-        hasteMap.mocks = mocks;
-        return hasteMap;
-      },
-      error => {
-        this._cleanup();
-        throw error;
-      },
+    return this._fileProcessor.buildHasteMap(data, (map, relPath, name) =>
+      this._recoverDuplicates(map, relPath, name),
     );
-  }
-
-  private _cleanup() {
-    const worker = this._worker;
-
-    if (worker && 'end' in worker) {
-      worker.end();
-    }
-
-    this._worker = null;
   }
 
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
   private _persist(hasteMap: InternalHasteMap) {
-    writeFileSync(this._cachePath, serialize(hasteMap));
-  }
-
-  /**
-   * Creates workers or parses files and extracts metadata in-process.
-   */
-  private _getWorker(
-    options: WorkerOptions | undefined,
-  ): JestWorkerFarm<HasteWorker> | HasteWorker {
-    if (!this._worker) {
-      if (options?.forceInBand || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        this._worker = new Worker(require.resolve('./worker'), {
-          enableWorkerThreads: this._options.workerThreads,
-          exposedMethods: ['getSha1', 'worker'],
-          forkOptions: {serialization: 'json'},
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as JestWorkerFarm<HasteWorker>;
-      }
-    }
-
-    return this._worker;
+    this._cacheManager.persist(hasteMap);
   }
 
   private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
-    const ignore = this._ignore.bind(this);
-    const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
-    const crawlerOptions: CrawlerOptions = {
-      computeSha1: options.computeSha1,
-      data: hasteMap,
-      enableSymlinks: options.enableSymlinks,
-      extensions: options.extensions,
-      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-      ignore,
-      rootDir: options.rootDir,
-      roots: options.roots,
-    };
-
-    const retry = (retryError: Error) => {
-      if (crawl === watchmanCrawl) {
-        this._console.warn(
-          'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
-            'crawler.\n' +
-            "  Usually this happens when watchman isn't running. Create an " +
-            "empty `.watchmanconfig` file in your project's root folder or " +
-            'initialize a git or hg repository in your project.\n' +
-            `  ${retryError}`,
-        );
-        return nodeCrawl(crawlerOptions).catch(error => {
-          throw new Error(
-            'Crawler retry failed:\n' +
-              `  Original error: ${retryError.message}\n` +
-              `  Retry error: ${error.message}\n`,
-          );
-        });
-      }
-
-      throw retryError;
-    };
-
-    try {
-      return await crawl(crawlerOptions);
-    } catch (error: any) {
-      return retry(error);
-    }
+    return crawlFiles(
+      {
+        computeSha1: options.computeSha1,
+        data: hasteMap,
+        enableSymlinks: options.enableSymlinks,
+        extensions: options.extensions,
+        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
+        ignore: this._ignore.bind(this),
+        rootDir: options.rootDir,
+        roots: options.roots,
+      },
+      await shouldUseWatchman(this._options.useWatchman),
+      this._console,
+    );
   }
 
   /**
@@ -816,207 +497,54 @@ class HasteMap extends EventEmitter implements IHasteMap {
     // all files, even changes to node_modules.
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
-
-    // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher = (await this._shouldUseWatchman())
-      ? WatchmanWatcher
-      : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
-
-    const extensions = this._options.extensions;
-    const ignorePattern = this._options.ignorePattern;
-    const rootDir = this._options.rootDir;
-
-    let changeQueue: Promise<null | void> = Promise.resolve();
-    let eventsQueue: EventsQueue = [];
-    // We only need to copy the entire haste map once on every "frame".
-    let mustCopy = true;
-
-    const createWatcher = (root: string): Promise<Watcher> => {
-      const watcher = new Watcher(root, {
-        dot: true,
-        glob: extensions.map(extension => `**/*.${extension}`),
-        ignored: ignorePattern,
-      });
-
-      return new Promise((resolve, reject) => {
-        const rejectTimeout = setTimeout(
-          () => reject(new Error('Failed to start watch mode.')),
-          MAX_WAIT_TIME,
-        );
-
-        watcher.once('ready', () => {
-          clearTimeout(rejectTimeout);
-          watcher.on('all', onChange);
-          resolve(watcher);
-        });
-      });
-    };
-
-    const emitChange = () => {
-      if (eventsQueue.length > 0) {
-        mustCopy = true;
-        const changeEvent: ChangeEvent = {
-          eventsQueue,
-          hasteFS: new HasteFS({files: hasteMap.files, rootDir}),
-          moduleMap: new HasteModuleMap({
-            duplicates: hasteMap.duplicates,
-            map: hasteMap.map,
-            mocks: hasteMap.mocks,
-            rootDir,
-          }),
-        };
-        this.emit('change', changeEvent);
-        eventsQueue = [];
-      }
-    };
-
-    const onChange = (
-      type: string,
-      filePath: string,
-      root: string,
-      stat?: Stats,
-    ) => {
-      filePath = path.join(root, normalizePathSep(filePath));
-      if (
-        (stat && stat.isDirectory()) ||
-        this._ignore(filePath) ||
-        !extensions.some(extension => filePath.endsWith(extension))
-      ) {
-        return;
-      }
-
-      const relativeFilePath = fastPath.relative(rootDir, filePath);
-      const fileMetadata = hasteMap.files.get(relativeFilePath);
-
-      // The file has been accessed, not modified
-      if (
-        type === 'change' &&
-        fileMetadata &&
-        stat &&
-        fileMetadata[H.MTIME] === stat.mtime.getTime()
-      ) {
-        return;
-      }
-
-      changeQueue = changeQueue
-        .then(() => {
-          // If we get duplicate events for the same file, ignore them.
-          if (
-            eventsQueue.some(
-              event =>
-                event.type === type &&
-                event.filePath === filePath &&
-                ((!event.stat && !stat) ||
-                  (!!event.stat &&
-                    !!stat &&
-                    event.stat.mtime.getTime() === stat.mtime.getTime())),
-            )
-          ) {
-            return null;
-          }
-
-          if (mustCopy) {
-            mustCopy = false;
-            hasteMap = {
-              clocks: new Map(hasteMap.clocks),
-              duplicates: new Map(hasteMap.duplicates),
-              files: new Map(hasteMap.files),
-              map: new Map(hasteMap.map),
-              mocks: new Map(hasteMap.mocks),
-            };
-          }
-
-          const add = () => {
-            eventsQueue.push({filePath, stat, type});
-            return null;
-          };
-
-          const fileMetadata = hasteMap.files.get(relativeFilePath);
-
-          // If it's not an addition, delete the file and all its metadata
-          if (fileMetadata != null) {
-            const moduleName = fileMetadata[H.ID];
-            const platform =
-              getPlatformExtension(filePath, this._options.platforms) ||
-              H.GENERIC_PLATFORM;
-            hasteMap.files.delete(relativeFilePath);
-
-            let moduleMap = hasteMap.map.get(moduleName);
-            if (moduleMap != null) {
-              // We are forced to copy the object because jest-haste-map exposes
-              // the map as an immutable entity.
-              moduleMap = copy(moduleMap);
-              delete moduleMap[platform];
-              if (Object.keys(moduleMap).length === 0) {
-                hasteMap.map.delete(moduleName);
-              } else {
-                hasteMap.map.set(moduleName, moduleMap);
-              }
-            }
-
-            if (
-              this._options.mocksPattern &&
-              this._options.mocksPattern.test(filePath)
-            ) {
-              const mockName = getMockName(filePath);
-              hasteMap.mocks.delete(mockName);
-            }
-
-            this._recoverDuplicates(hasteMap, relativeFilePath, moduleName);
-          }
-
-          // If the file was added or changed,
-          // parse it and update the haste map.
-          if (type === 'add' || type === 'change') {
-            invariant(
-              stat,
-              'since the file exists or changed, it should have stats',
-            );
-            const fileMetadata: FileMetaData = [
-              '',
-              stat.mtime.getTime(),
-              stat.size,
-              0,
-              '',
-              null,
-            ];
-            hasteMap.files.set(relativeFilePath, fileMetadata);
-            const promise = this._processFile(
-              hasteMap,
-              hasteMap.map,
-              hasteMap.mocks,
-              filePath,
-              {forceInBand: true},
-            );
-            // Cleanup
-            this._cleanup();
-            if (promise) {
-              return promise.then(add);
-            } else {
-              // If a file in node_modules has changed,
-              // emit an event regardless.
-              add();
-            }
-          } else {
-            add();
-          }
-          return null;
-        })
-        .catch((error: Error) => {
-          this._console.error(
-            `jest-haste-map: watch error:\n  ${error.stack}\n`,
-          );
-        });
-    };
-
-    this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    return Promise.all(this._options.roots.map(createWatcher)).then(
-      watchers => {
-        this._watchers = watchers;
+    this._ignoreFn = buildIgnoreMatcher(this._options.ignorePattern, true);
+    this._fileProcessor = new FileProcessor(
+      {
+        computeDependencies: this._options.computeDependencies,
+        computeSha1: this._options.computeSha1,
+        dependencyExtractor: this._options.dependencyExtractor,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+        mocksPattern: this._options.mocksPattern,
+        platforms: this._options.platforms,
+        retainAllFiles: true,
+        rootDir: this._options.rootDir,
+        skipPackageJson: this._options.skipPackageJson,
+        throwOnModuleCollision: false,
       },
+      this._console,
+      this._workerPool,
     );
+
+    this._watcherDriver = new WatcherDriver({
+      extensions: this._options.extensions,
+      ignorePattern: this._options.ignorePattern,
+      roots: this._options.roots,
+      useWatchman: await shouldUseWatchman(this._options.useWatchman),
+    });
+
+    this._changeQueue = new ChangeQueue(hasteMap, this._options.extensions, {
+      cleanup: () => this._workerPool.end(),
+      emit: event => this.emit('change', event),
+      ignore: filePath => this._ignore(filePath),
+      mocksPattern: this._options.mocksPattern,
+      onError: error =>
+        this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`),
+      platforms: this._options.platforms,
+      processFile: (map, filePath) => this._processFile(map, filePath),
+      recoverDuplicates: (map, relPath, name) =>
+        this._recoverDuplicates(map, relPath, name),
+      rootDir: this._options.rootDir,
+    });
+
+    this._changeQueue.start();
+    try {
+      await this._watcherDriver.start((type, filePath, root, stat) =>
+        this._changeQueue!.onChange(type, filePath, root, stat),
+      );
+    } catch (error) {
+      this._changeQueue.stop();
+      throw error;
+    }
   }
 
   /**
@@ -1076,77 +604,25 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   async end(): Promise<void> {
-    if (this._changeInterval) {
-      clearInterval(this._changeInterval);
-    }
-
-    if (this._watchers.length === 0) {
-      return;
-    }
-
-    await Promise.all(this._watchers.map(watcher => watcher.close()));
-
-    this._watchers = [];
+    this._changeQueue?.stop();
+    await this._watcherDriver?.close();
   }
 
   /**
    * Helpers
    */
   private _ignore(filePath: string): boolean {
-    const ignorePattern = this._options.ignorePattern;
-    const ignoreMatched =
-      ignorePattern instanceof RegExp
-        ? ignorePattern.test(filePath)
-        : ignorePattern && ignorePattern(filePath);
-
-    return (
-      ignoreMatched ||
-      (!this._options.retainAllFiles && filePath.includes(NODE_MODULES))
-    );
-  }
-
-  private async _shouldUseWatchman(): Promise<boolean> {
-    if (!this._options.useWatchman) {
-      return false;
-    }
-    if (!isWatchmanInstalledPromise) {
-      isWatchmanInstalledPromise = isWatchmanInstalled();
-    }
-    return isWatchmanInstalledPromise;
+    return this._ignoreFn(filePath);
   }
 
   private _createEmptyMap(): InternalHasteMap {
-    return {
-      clocks: new Map(),
-      duplicates: new Map(),
-      files: new Map(),
-      map: new Map(),
-      mocks: new Map(),
-    };
+    return createEmptyMap();
   }
 
   static H = H;
 }
 
-export class DuplicateError extends Error {
-  mockPath1: string;
-  mockPath2: string;
-
-  constructor(mockPath1: string, mockPath2: string) {
-    super('Duplicated files or mocks. Please check the console for more info');
-
-    this.mockPath1 = mockPath1;
-    this.mockPath2 = mockPath2;
-  }
-}
-
-function copy<T extends Record<string, unknown>>(object: T): T {
-  return Object.assign(Object.create(null), object);
-}
-
-function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
-  return new Map(input);
-}
+export {DuplicateError};
 
 // Export the smallest API surface required by Jest
 type IJestHasteMap = HasteMapStatic & {
