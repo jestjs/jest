@@ -615,6 +615,10 @@ export class ModuleMocker {
       if (config.fallbackImpl !== undefined) {
         return config.fallbackImpl.apply(this, callArgs);
       }
+      // (4) Fall through to the prototype impl (class hierarchy auto-mocks).
+      if (f._protoImpl) {
+        return f._protoImpl.apply(this, callArgs);
+      }
       return undefined;
     };
   }

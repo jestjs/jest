@@ -633,4 +633,26 @@ describe('whenCalledWith', () => {
     spy.mockRestore();
     expect(target.greet('world')).toBe('hello world');
   });
+
+  it('falls through to _protoImpl on non-matching calls for class-hierarchy auto-mocks', () => {
+    class Base {
+      greet(name: string) {
+        return `hello ${name}`;
+      }
+    }
+    class Child extends Base {}
+
+    const ChildMock = moduleMocker.generateFromMetadata(
+      moduleMocker.getMetadata(Child),
+    ) as typeof Child;
+    const instance = new ChildMock();
+
+    // _protoImpl is the parent mock's greet — configure it to return something
+    // recognisable so we can tell the dispatcher fell through.
+    instance.greet._protoImpl.mockReturnValue('from-proto');
+
+    instance.greet.whenCalledWith('match').mockReturnValue('matched');
+    expect(instance.greet('match')).toBe('matched');
+    expect(instance.greet('other')).toBe('from-proto');
+  });
 });
