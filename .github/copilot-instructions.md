@@ -49,7 +49,7 @@ CI runs the test matrix with `nick-fields/retry` (10-min timeout, up to 3 retrie
 
 - **Windows CI on path-shaped assertions**: when comparing against a value built via `path.join`/`path.dirname`/`path.basename`, build the expected value with `path.join` too. Hardcoded POSIX strings (`'/path/to/x'`) fail on Windows.
 - **Throwing-getter regression on `globalThis` scans**: iterating `Object.keys(scope)` and reading `scope[key]` crashes if a user installed a throwing getter. Use `'key' in scope` (the `has` trap, not `get`) as the gate.
-- **ESM helpers from `@jest/test-utils`**: `testWithVmEsm` (Node 18+) and `testWithSyncEsm` (Node 22.21+ / 24.8+). `yarn jest packages/jest-runtime` does **not** include the ESM suite — use `yarn jest-runtime-vm-modules`.
+- **ESM helpers from `@jest/test-utils`**: `testWithVmEsm` (Node 18+ with `--experimental-vm-modules`), `testWithLinkedSyntheticModule` (Node 22.21+/24.8+, gates on `linkRequests`), and `testWithSyncEsm` (Node 24.9+, gates on `hasAsyncGraph`). `yarn jest packages/jest-runtime` does **not** include the ESM suite — use `yarn jest-runtime-vm-modules`.
 
 ## Linting
 
@@ -157,7 +157,7 @@ Cross-cutting infrastructure used by multiple stages:
 - `jest-environment-node` / `jest-environment-jsdom` — VM context + globals
 - `jest-mock` — `jest.fn`/`jest.spyOn` implementation
 - `jest-fake-timers` — `jest.useFakeTimers()`
-- `jest-snapshot` / `jest-snapshot-utils` — snapshot matchers and file I/O
+- `jest-snapshot` / `@jest/snapshot-utils` — snapshot matchers and file I/O
 - `jest-watcher` — `--watch` UI/state
 - `jest-changed-files` / `jest-resolve-dependencies` — `--onlyChanged`, `--onlyFailures`
 - `jest-message-util` — stack trace + error formatting
@@ -167,10 +167,10 @@ Where to start by goal:
 
 | Goal | Start in | Likely also touches |
 | --- | --- | --- |
-| Add/change a CLI flag | `jest-cli/src/cli/args.ts` | `jest-config`, `jest-types` |
+| Add/change a CLI flag | `jest-cli/src/args.ts` | `jest-config`, `jest-types` |
 | Add/change a config option | `jest-schemas/src/raw-types.ts` + `jest-config/src/Descriptions.ts` | `jest-validate`, `jest-types`, `docs/Configuration.md` |
 | Change a matcher | `expect/src/matchers.ts` (or `asymmetricMatchers.ts`, `spyMatchers.ts`) | `expect-utils`, `jest-matcher-utils` |
-| Change snapshot behavior | `jest-snapshot/src/*.ts` | `jest-snapshot-utils`, `pretty-format` |
+| Change snapshot behavior | `jest-snapshot/src/*.ts` | `@jest/snapshot-utils`, `pretty-format` |
 | Change reporter output | `jest-reporters/src/<Reporter>Reporter.ts` | `jest-message-util`, `pretty-format` |
 | Change module loading / mocking | `jest-runtime/src/index.ts` + `internals/` | `jest-resolve`, `jest-mock`, `@jest/transform` |
 | Change module resolution | `jest-resolve/src/resolver.ts` + `defaultResolver.ts` | possibly `jest-runtime`, `jest-haste-map` |

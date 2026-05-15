@@ -42,7 +42,7 @@ Preserve their public signatures. **Any internal callback that "loads a module" 
 `internals/nodeCapabilities.ts` exports three gates:
 
 - `runtimeSupportsVmModules` — `typeof SyntheticModule === 'function'` (Node 18+ with `--experimental-vm-modules`)
-- `supportsSyncEvaluate` — Node 22.21+ / 24.8+; required for the sync ESM graph walker
+- `supportsSyncEvaluate` — Node 24.9+ (gates on `hasAsyncGraph`); required for the sync ESM graph walker
 - `Resolution.canResolveSync()` — `false` when the user's configured resolver only exports an async hook
 
 When moving a method that depends on a gate, carry the gate verbatim with the body it guards. Don't leave a comment in place of the runtime check; PR #16085 lost the `supportsSyncEvaluate` gate twice doing exactly that.
@@ -62,7 +62,7 @@ Sync code paths must validate `vm.Module#status` before reuse:
 
 ## Tests
 
-- Pick the looser test gate (`testWithVmEsm`) for legacy-path tests; the stricter one (`testWithSyncEsm`) for sync-graph tests. Both come from `@jest/test-utils` (gate details in the root copilot-instructions.md).
+- Pick the appropriate test gate: `testWithVmEsm` for legacy-path tests (Node 18+ with `--experimental-vm-modules`); `testWithLinkedSyntheticModule` for sync-graph tests that need `linkRequests` (Node 22.21+/24.8+); `testWithSyncEsm` for sync-graph tests that need `hasAsyncGraph` (Node 24.9+). All come from `@jest/test-utils` (gate details in the root copilot-instructions.md).
 - `internals/__tests__/` test files mirror production files 1:1; extend with new `describe` blocks rather than splitting. Their APIs are NOT a stability contract — change them in lockstep with the implementation.
 
 ## Invariants
