@@ -526,6 +526,7 @@ jest-reporters     — final output formatting (default, GitHub, junit, etc.)
 - Most public-API behavior changes need: code in the implementing package, types in `jest-types` + `jest-schemas`, normalization in `jest-config`, and docs in `docs/`.
 - `Runtime` (`jest-runtime/src/index.ts`) is documented as subclassable. Override seams: `requireModule`, `requireModuleOrMock`, `requireMock`, `requireActual`, `requireInternalModule`, `unstable_importModule`. Any internal callback that "loads a module" must dispatch through these — never call sibling internals directly.
 - When `node:vm` semantics matter (sync vs async ESM), check `jest-runtime/src/internals/nodeCapabilities.ts` for the current capability gates. Carry gates verbatim with the code they guard.
+- **For cross-package investigations, spawn a read-only Explore subagent rather than scanning files in the main context.** Use cases: "where does config X get consumed?", "trace the call chain from `jest-cli` to the test framework", "audit every place that reads `_isMockFunction`". The subagent returns a summary; the main agent edits with the full picture. Keep the main context budget for synthesis and changes.
 
 ---
 
