@@ -65,9 +65,20 @@ export class WatcherDriver {
         ? FSEventsWatcher
         : NodeWatcher;
 
-    this._watchers = await Promise.all(
+    const results = await Promise.allSettled(
       this._roots.map(root => this._createWatcher(Backend, root, onChange)),
     );
+    const fulfilled = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => (r as PromiseFulfilledResult<WatcherInstance>).value);
+    const rejected = results
+      .filter(r => r.status === 'rejected')
+      .map(r => (r as PromiseRejectedResult).reason);
+    if (rejected.length > 0) {
+      await Promise.allSettled(fulfilled.map(w => w.close()));
+      throw new AggregateError(rejected, 'Failed to start watch mode.');
+    }
+    this._watchers = fulfilled;
   }
 
   async close(): Promise<void> {
@@ -87,16 +98,18 @@ export class WatcherDriver {
     });
 
     return new Promise((resolve, reject) => {
-      const rejectTimeout = setTimeout(
-        () => reject(new Error('Failed to start watch mode.')),
-        MAX_WAIT_TIME,
-      );
-
-      watcher.once('ready', () => {
+      const onReady = () => {
         clearTimeout(rejectTimeout);
         watcher.on('all', onChange);
         resolve(watcher);
-      });
+      };
+      const rejectTimeout = setTimeout(() => {
+        watcher.off('ready', onReady);
+        watcher.close().catch(() => undefined);
+        reject(new Error('Failed to start watch mode.'));
+      }, MAX_WAIT_TIME);
+
+      watcher.once('ready', onReady);
     });
   }
 }

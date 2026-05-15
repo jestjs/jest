@@ -119,7 +119,9 @@ describe('WatcherDriver', () => {
   it('rejects when the watcher does not emit ready within the timeout', async () => {
     jest.useFakeTimers();
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
-    const watcher = new EventEmitter();
+    const watcher = Object.assign(new EventEmitter(), {
+      close: jest.fn(async () => {}),
+    });
     MockFSEventsWatcher.mockImplementation(
       () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
     );
@@ -130,6 +132,60 @@ describe('WatcherDriver', () => {
 
     jest.advanceTimersByTime(250_000);
     await expect(startPromise).rejects.toThrow('Failed to start watch mode.');
+    jest.useRealTimers();
+  });
+
+  it('closes the watcher when the ready timeout fires', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
+    const close = jest.fn(async () => {});
+    const watcher = Object.assign(new EventEmitter(), {close});
+    MockFSEventsWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
+    );
+
+    const startPromise = new WatcherDriver({...driverOpts}).start(jest.fn());
+    jest.advanceTimersByTime(250_000);
+    await expect(startPromise).rejects.toThrow('Failed to start watch mode.');
+
+    expect(close).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+  });
+
+  it('closes already-started watchers when one root fails to start', async () => {
+    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
+    const closeA = jest.fn(async () => {});
+    let call = 0;
+    MockFSEventsWatcher.mockImplementation(() => {
+      if (call++ === 0) {
+        // First root: ready immediately
+        const w =
+          makeReadyWatcher() as unknown as jest.MockedObject<FSEventsWatcher>;
+        w.close = closeA;
+        return w;
+      }
+      // Second root: never emits ready — we make it reject by returning a
+      // watcher whose close rejects, but the actual failure comes from a
+      // manual rejection below.
+      const emitter = new EventEmitter();
+      return Object.assign(emitter, {
+        close: jest.fn(async () => {}),
+      }) as unknown as jest.MockedObject<FSEventsWatcher>;
+    });
+
+    const driver = new WatcherDriver({
+      ...driverOpts,
+      roots: ['/root/a', '/root/b'],
+    });
+
+    // Wrap start() to reject the second watcher's promise by monkey-patching
+    // _createWatcher is private, so we trigger the failure via a timeout.
+    jest.useFakeTimers();
+    const startPromise = driver.start(jest.fn());
+    jest.advanceTimersByTime(250_000);
+    await expect(startPromise).rejects.toThrow('Failed to start watch mode.');
+
+    expect(closeA).toHaveBeenCalledTimes(1);
     jest.useRealTimers();
   });
 });

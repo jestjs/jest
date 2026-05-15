@@ -788,7 +788,7 @@ describe('HasteMap', () => {
 
     // Duplicate modules are removed so that it doesn't cause
     // non-determinism later on.
-    expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).toBeUndefined();
+    expect(data.map.get('Strawberry')?.[H.GENERIC_PLATFORM]).toBeUndefined();
 
     expect(
       console.warn.mock.calls[0][0].replaceAll('\\', '/'),
@@ -1115,7 +1115,7 @@ describe('HasteMap', () => {
           }),
         }),
       );
-      expect(data.map.get('Strawberry')).toEqual({});
+      expect(data.map.get('Strawberry')).toBeUndefined();
     });
 
     it('recovers when a duplicate file is deleted', async () => {

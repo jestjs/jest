@@ -537,9 +537,14 @@ class HasteMap extends EventEmitter implements IHasteMap {
     });
 
     this._changeQueue.start();
-    await this._watcherDriver.start((type, filePath, root, stat) =>
-      this._changeQueue!.onChange(type, filePath, root, stat),
-    );
+    try {
+      await this._watcherDriver.start((type, filePath, root, stat) =>
+        this._changeQueue!.onChange(type, filePath, root, stat),
+      );
+    } catch (error) {
+      this._changeQueue.stop();
+      throw error;
+    }
   }
 
   /**
