@@ -64,29 +64,30 @@ console.log(files);
 
 ### options
 
-| Option                 | Type                | Required | Default Value |
-| ---------------------- | ------------------- | -------- | ------------- |
-| cacheDirectory         | string              | No       | `os.tmpdir()` |
-| computeDependencies    | boolean             | No       | `true`        |
-| computeSha1            | boolean             | No       | `false`       |
-| console                | Console             | No       | -             |
-| dependencyExtractor    | string \| null      | No       | `null`        |
-| enableSymlinks         | boolean             | No       | `false`       |
-| extensions             | Array&lt;string&gt; | Yes      | -             |
-| forceNodeFilesystemAPI | boolean             | Yes      | -             |
-| hasteImplModulePath    | string              | Yes      | -             |
-| hasteMapModulePath     | string              | Yes      | -             |
-| id                     | string              | Yes      | -             |
-| ignorePattern          | HasteRegExp         | No       | -             |
-| maxWorkers             | number              | Yes      | -             |
-| mocksPattern           | string              | No       | -             |
-| platforms              | Array&lt;string&gt; | Yes      | -             |
-| resetCache             | boolean             | No       | -             |
-| retainAllFiles         | boolean             | Yes      | -             |
-| rootDir                | string              | Yes      | -             |
-| roots                  | Array&lt;string&gt; | Yes      | -             |
-| skipPackageJson        | boolean             | Yes      | -             |
-| throwOnModuleCollision | boolean             | Yes      | -             |
-| useWatchman            | boolean             | No       | `true`        |
+| Option                 | Type                  | Required | Default Value |
+| ---------------------- | --------------------- | -------- | ------------- |
+| backend                | `'default'\|'parcel'` | No       | `'default'`   |
+| cacheDirectory         | string                | No       | `os.tmpdir()` |
+| computeDependencies    | boolean               | No       | `true`        |
+| computeSha1            | boolean               | No       | `false`       |
+| console                | Console               | No       | -             |
+| dependencyExtractor    | string \| null        | No       | `null`        |
+| enableSymlinks         | boolean               | No       | `false`       |
+| extensions             | Array&lt;string&gt;   | Yes      | -             |
+| forceNodeFilesystemAPI | boolean               | Yes      | -             |
+| hasteImplModulePath    | string                | Yes      | -             |
+| hasteMapModulePath     | string                | Yes      | -             |
+| id                     | string                | Yes      | -             |
+| ignorePattern          | HasteRegExp           | No       | -             |
+| maxWorkers             | number                | Yes      | -             |
+| mocksPattern           | string                | No       | -             |
+| platforms              | Array&lt;string&gt;   | Yes      | -             |
+| resetCache             | boolean               | No       | -             |
+| retainAllFiles         | boolean               | Yes      | -             |
+| rootDir                | string                | Yes      | -             |
+| roots                  | Array&lt;string&gt;   | Yes      | -             |
+| skipPackageJson        | boolean               | Yes      | -             |
+| throwOnModuleCollision | boolean               | Yes      | -             |
+| useWatchman            | boolean               | No       | `true`        |
 
 For more, you can check [github](https://github.com/jestjs/jest/tree/main/packages/jest-haste-map)

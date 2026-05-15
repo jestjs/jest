@@ -925,7 +925,7 @@ type HasteConfig = {
   defaultPlatform?: string | null;
   /**
    * Whether to follow symlinks when crawling for files.
-   * Cannot be used together with `watchman: true`.
+   * Cannot be used together with `watchman: true` unless `backend: 'parcel'` is set.
    */
   enableSymlinks?: boolean;
   /** Force use of Node's `fs` APIs rather than shelling out to `find` */
