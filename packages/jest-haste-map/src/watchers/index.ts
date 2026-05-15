@@ -23,8 +23,6 @@ import type {
 const NodeWatcher = NodeWatcherImpl as WatcherCtor;
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
-let isWatchmanInstalledPromise: Promise<boolean> | undefined;
-
 export async function resolveWatcherBackend(
   watcher: UserWatcherConfig,
 ): Promise<ResolvedBackend> {
@@ -37,10 +35,8 @@ export async function resolveWatcherBackend(
   // name === 'default'
   const useWatchman = (opts as {useWatchman?: boolean}).useWatchman ?? true;
   if (useWatchman) {
-    if (!isWatchmanInstalledPromise) {
-      isWatchmanInstalledPromise = isWatchmanInstalled();
-    }
-    if (await isWatchmanInstalledPromise) {
+    const watchmanIsInstalled = await isWatchmanInstalled();
+    if (watchmanIsInstalled) {
       return 'watchman';
     }
   }
