@@ -1,22 +1,17 @@
 # `expect` — agent notes
 
-Loaded additively on top of root `CLAUDE.md` when working inside this package.
-
 ## What lives here
 
-`expect` is the assertion library. It exports a callable `expect(actual)` plus a small static API (`expect.extend`, `expect.assertions`, asymmetric matcher factories, `expect.getState`/`setState`).
+`expect` is the assertion library: a callable `expect(actual)` plus a small static API (`expect.extend`, `expect.assertions`, asymmetric matcher factories, `expect.getState`/`setState`).
 
-- `index.ts` (~470 lines) — the `expect()` entry, `.resolves`/`.rejects` plumbing, `.not` wiring, `JestAssertionError`, `expect.extend` glue.
-- `matchers.ts` (~1000 lines) — built-in matchers: `toBe`, `toEqual`, `toStrictEqual`, `toMatchObject`, `toContain`, `toHaveLength`, `toMatch`, `toBeCloseTo`, etc.
-- `spyMatchers.ts` (~1300 lines) — call-related matchers: `toHaveBeenCalled`, `toHaveBeenCalledWith`, `toHaveBeenLastCalledWith`, `toHaveReturnedWith`, etc. Heaviest file because each matcher needs to format calls/returns nicely.
-- `toThrowMatchers.ts` (~530 lines) — `toThrow` family + the snapshot-throw variants.
-- `asymmetricMatchers.ts` (~430 lines) — `expect.any`, `expect.anything`, `expect.objectContaining`, `expect.arrayContaining`, `expect.arrayOf`, `expect.stringContaining`, `expect.stringMatching`, `expect.closeTo`. Plus the `AsymmetricMatcher` base class.
-- `jestMatchersObject.ts` (~145 lines) — the **global registry**. Stores matchers + state + custom equality testers on `globalThis[Symbol.for('$$jest-matchers-object')]`. Houses `getState`/`setState`/`getMatchers`/`setMatchers`.
-- `print.ts` — formatting helpers shared across matchers.
-- `extractExpectedAssertionsErrors.ts` — turns `expect.assertions(n)` violations into surfaced errors.
-- `types.ts` — `Expect`, `MatcherState`, `MatcherContext`, `MatchersObject`, `RawMatcherFn`, etc.
+The load-bearing files:
 
-Most equality logic and shared helpers (`equals`, `iterableEquality`, `subsetEquality`) live in the sibling `expect-utils` package.
+- `index.ts` — `expect()` entry, `.resolves`/`.rejects` plumbing, `.not` wiring, `JestAssertionError`, `expect.extend` glue.
+- `jestMatchersObject.ts` — the **global registry**. Stores matchers + state + custom equality testers on `globalThis[Symbol.for('$$jest-matchers-object')]`.
+- `asymmetricMatchers.ts` — `AsymmetricMatcher` base class plus the built-in factories.
+- `matchers.ts` / `spyMatchers.ts` / `toThrowMatchers.ts` — built-in matchers. Heavy files; each matcher needs careful formatting of call/return/diff output.
+
+Most equality logic (`equals`, `iterableEquality`, `subsetEquality`) lives in the sibling `expect-utils` package. The user-facing `expect.addEqualityTesters(...)` extends what `equals` knows about — that's the supported extension point, not patching `equals` directly.
 
 ## Hard rules
 
@@ -56,46 +51,27 @@ The stack-trace anchor matters: `makeThrowingMatcher` captures `err = new JestAs
 
 Built-in matchers are marked with `Symbol.for('$$jest-internal-matcher')` (via `setMatchers(_, isInternal: true, _)`). `jest-circus`/`jest-jasmine2` use this flag to decide whether to rewrite stack frames in error output. User matchers from `expect.extend` are `isInternal: false` and keep their full stack. Don't strip the flag when copying matcher functions.
 
-## Matcher implementation conventions
+## When writing a matcher
 
-Every matcher is a function `(this: MatcherContext, received, ...args) => {pass: boolean, message: () => string}`:
+Signature: `(this: MatcherContext, received, ...args) => {pass: boolean, message: () => string}`. A few non-obvious things:
 
-- **Return both `pass` and `message`** — `message` is a thunk because building it is expensive and skipped on success.
-- **Use `matcherHint` and `matcherErrorMessage`** from `jest-matcher-utils` for headers. Don't hand-roll the "Expected: / Received:" formatting — it'll skew from siblings.
-- **Honour `this.isNot`** when composing the failure message (the dispatcher inverts `pass`, but the _message wording_ still needs the right voice).
-- **Honour `this.promise`** (`'resolves' | 'rejects' | ''`) in the header so `.resolves.toThrow` failures don't pretend to be plain `.toThrow`.
-- **Check `received` type early** and throw a structured `matcherErrorMessage` if it's wrong (e.g. `toThrow` on a non-function/non-promise).
+- `message` is a **thunk** because building it is expensive and skipped on success — don't eagerly format.
+- The dispatcher inverts `pass` for `.not`, but the message wording still needs the right voice — read `this.isNot` and adjust phrasing.
+- The header must honour `this.promise` (`'resolves' | 'rejects' | ''`) so a `.resolves.toThrow` failure doesn't pretend to be plain `.toThrow`. `matcherHint` from `jest-matcher-utils` handles this when given the option object — use it; don't hand-roll headers.
+- Type-check `received` early and throw a structured `matcherErrorMessage` if it's wrong (the canonical example is `toThrow` rejecting a non-function/non-promise).
 
-The state on `this` (`MatcherContext`):
-
-- `equals` — bound copy of `jasmineUtils.equals` carrying the user's custom testers.
-- `customTesters` — array of `Tester` functions.
-- `isNot`, `promise` — context for messages.
-- `utils` — handle to `jest-matcher-utils` (formatting).
-- `dontThrow()` — used by snapshot matchers that accumulate errors instead of throwing immediately.
+`MatcherContext` carries `equals` (bound copy of `jasmineUtils.equals` with the user's custom testers baked in), `customTesters`, `isNot`, `promise`, `utils` (`jest-matcher-utils`), and `dontThrow()` (used by snapshot matchers that accumulate errors instead of throwing immediately).
 
 ## `expect.getState()` / `setState()`
 
-Public per-test state for plugins (snapshot, spy matcher counts, `expect.assertions(n)` enforcement). The contract:
+Public per-test state used by snapshot, assertion counting, and the runner. Notable fields:
 
-- `assertionCalls: number` — auto-incremented by every matcher dispatch.
-- `expectedAssertionsNumber: number | null` — set by `expect.assertions(n)`.
-- `isExpectingAssertions: boolean` — set by `expect.hasAssertions()`.
-- `numPassingAsserts: number` — separate from `assertionCalls` (only-success count).
-- `suppressedErrors: Array<Error>` — soft-failures from snapshot matchers in `dontThrow` mode.
-- Test-runner-specific keys (`currentTestName`, `testPath`, `snapshotState`) added by `jest-jasmine2`/`jest-circus` per test.
+- `assertionCalls` — incremented per matcher dispatch; `expectedAssertionsNumber` is the budget set by `expect.assertions(n)`; `isExpectingAssertions` is the `expect.hasAssertions()` flag.
+- `suppressedErrors` — soft-failures from snapshot matchers in `dontThrow` mode.
+- `currentTestName`, `testPath`, `snapshotState` — added by the runner per test.
 
-`getState()` returns the live mutable object — readers see updates. Reset behaviour is the runner's responsibility, not `expect`'s.
+`getState()` returns the **live mutable object** — readers see updates. Reset behaviour is the runner's responsibility, not `expect`'s.
 
 ## Tests
 
-- `src/__tests__/*.test.{ts,js}` — runtime behaviour. A few are still `.js`. Some files (`matchers-toEqual.property.test.ts`, etc.) are property-based tests using `fast-check` arbitraries in `__arbitraries__/`.
-- `__typetests__/` — TSTyche assertions for the matcher and `expect.extend` types. Update when changing public types.
-- This package is in the `test-leak` matrix (`yarn test-leak`).
-
-## Related packages
-
-- `expect-utils` — `equals`, `Tester` infrastructure, `iterableEquality`, `subsetEquality`, immutable helpers.
-- `jest-matcher-utils` — message formatting, `matcherHint`, `printExpected`/`printReceived`, `MatcherHintOptions`. Not imported here transitively but every matcher pulls it in.
-- `@jest/expect` — re-export wrapper used by `jest-runtime` to ensure the `JestAssertionError` constructor identity is shared (see #16130).
-- `jest-snapshot` — registers snapshot matchers via `expect.extend` (with `isInternal: true`).
+Property-based tests in `src/__tests__/matchers-*.property.test.ts` use `fast-check` arbitraries from `__arbitraries__/`. When changing the public matcher or `expect.extend` types, update the assertions under `__typetests__/`.

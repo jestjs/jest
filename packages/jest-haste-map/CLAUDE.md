@@ -1,10 +1,8 @@
 # `jest-haste-map` — agent notes
 
-Loaded additively on top of root `CLAUDE.md` when working inside this package.
-
 ## What lives here
 
-`jest-haste-map` crawls the file system, maintains an in-memory module map, and drives watch mode. It was refactored in PR #16180 from a single 1157-line `index.ts` into focused modules. `src/index.ts` is now ~630 lines of orchestration; all logic lives in:
+`jest-haste-map` crawls the file system, maintains an in-memory module map, and drives watch mode. `src/index.ts` is the orchestration entry point; all logic lives in focused modules:
 
 **Library modules (`src/lib/`)**
 
@@ -45,11 +43,11 @@ Loaded additively on top of root `CLAUDE.md` when working inside this package.
 
 ```ts
 {
-  WatchmanClocks; // watchman incremental state
-  DuplicatesIndex; // haste-id → platform → path → type
-  FileData; // path → FileMetaData tuple
-  ModuleMapData; // haste-id → { platform → [path, type] }
-  MockData; // mock name → path
+  clocks: WatchmanClocks; // watchman incremental state
+  duplicates: DuplicatesIndex; // haste-id → platform → path → type
+  files: FileData; // path → FileMetaData tuple
+  map: ModuleMapData; // haste-id → { platform → [path, type] }
+  mocks: MockData; // mock name → path
 }
 ```
 
@@ -99,9 +97,6 @@ If `WatcherDriver.start()` throws, `ChangeQueue.stop()` is called before re-thro
 
 ## Tests
 
-- `src/__tests__/index.test.js` — large integration suite (~1800 lines). Watcher mocks at lines 73–82 (mock both `NodeWatcher` and `WatchmanWatcher`). Watch-mode tests from line ~1462 onward.
-- `src/lib/__tests__/` — unit tests for each extracted module. Run with `yarn jest packages/jest-haste-map/src/lib`.
-- `src/watchers/__tests__/` — `WatcherDriver` and `ChangeQueue` unit tests.
-- `src/crawlers/__tests__/` — `node.test.js`, `watchman.test.js`, crawler driver test.
-- All new test files are `.ts`; some pre-existing tests remain `.js` (large ones: `index.test.js`, `worker.test.js`, `node.test.js`, `watchman.test.js`).
-- **`yarn typecheck:tests` covers this package.** Run it after touching any test file under `src/`.
+`src/__tests__/index.test.js` is the large integration suite — mocks both `NodeWatcher` and `WatchmanWatcher`, then drives events via `mockEmitters[root].emit('all', ...)`. Find the watcher-mock and watch-mode blocks by name; line numbers rot.
+
+Per-module unit tests live in `src/lib/__tests__/`, `src/watchers/__tests__/`, `src/crawlers/__tests__/`. Some pre-existing tests are still `.js` (`index.test.js`, `worker.test.js`, `node.test.js`, `watchman.test.js`); new tests are `.ts`. This package is covered by `yarn typecheck:tests`.

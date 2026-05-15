@@ -1,10 +1,8 @@
 # `jest-runtime` — agent notes
 
-Loaded additively on top of root `CLAUDE.md` when working inside this package.
-
 ## What lives here
 
-`jest-runtime` is the module loader that runs user test code: resolution, mocking, ESM/CJS interop, the `jest` object, `@jest/globals`. It was refactored from a single 3500-line class into 17 focused units. The public class is `Runtime` (`src/index.ts`, ~660 lines — DI wiring + public API + test-state machine + static factories). Everything else lives under `src/internals/`:
+`jest-runtime` is the module loader that runs user test code: resolution, mocking, ESM/CJS interop, the `jest` object, `@jest/globals`. The public class is `Runtime` (`src/index.ts` — DI wiring + public API + test-state machine + static factories). Everything else lives under `src/internals/`:
 
 **State holders & caches**
 
@@ -64,17 +62,11 @@ Sync code paths must validate `vm.Module#status` before reuse:
 
 ## Tests
 
-- **`yarn jest packages/jest-runtime` does NOT include ESM tests.** Use `yarn jest-runtime-vm-modules` for the `--experimental-vm-modules` suite. Failing to run this is how CI regressions sneak in.
-- Two test gates from `@jest/test-utils`:
-  - `testWithVmEsm` — `runtimeSupportsVmModules` (Node 18+)
-  - `testWithSyncEsm` — `supportsSyncEvaluate` (Node 22.21+ / 24.8+)
-- Pick the looser gate (`testWithVmEsm`) for legacy-path tests; the stricter one (`testWithSyncEsm`) for sync-graph tests.
-- `internals/__tests__/` test files mirror production files 1:1; extend with new `describe` blocks rather than splitting. Their APIs are NOT a stability contract — change with the refactor.
-- Don't hardcode POSIX paths in assertions on values built via `path.join` / `path.dirname` / `path.basename`. Derive expected via `path.join` too, or Windows CI will fail.
+- Pick the looser test gate (`testWithVmEsm`) for legacy-path tests; the stricter one (`testWithSyncEsm`) for sync-graph tests. Both come from `@jest/test-utils` (gate details in the root copilot-instructions.md).
+- `internals/__tests__/` test files mirror production files 1:1; extend with new `describe` blocks rather than splitting. Their APIs are NOT a stability contract — change them in lockstep with the implementation.
 
-## Refactor invariants (carried from PRs #16083–#16088)
+## Invariants
 
-- Refactor PRs are NOT obligated to be behaviour-preserving. Surfacing latent bugs is exactly what the breakup is for — fix them inline, back them with regression tests.
 - Don't trust a registry hit. The legacy async path can stash an `'unlinked'` `SourceTextModule`; sync readers must gate on `module.status === 'evaluated'`.
 - Don't reveal `MockState`'s private `virtualCjsMocks` / `virtualEsmMocks` maps to neighbour classes. The three passthrough wrappers (`getCjsModuleId` / `getEsmModuleId` / `getEsmModuleIdAsync`) earn their keep as encapsulators.
 - `MockState.shouldMockCjs` / `shouldMockEsmSync` / `shouldMockEsmAsync` return `MockDecision = {shouldMock, moduleID}` — thread the moduleID through to the dispatch path so it isn't recomputed.

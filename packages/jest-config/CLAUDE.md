@@ -1,21 +1,16 @@
 # `jest-config` — agent notes
 
-Loaded additively on top of root `CLAUDE.md` when working inside this package.
-
 ## What lives here
 
-`jest-config` loads a user config file, applies presets, validates, normalizes, and produces the `{globalConfig, projectConfig}` pair that the rest of Jest consumes. Public API surface is small; the hard work is in three files.
+`jest-config` loads a user config file, applies presets, validates, normalizes, and produces the `{globalConfig, projectConfig}` pair that the rest of Jest consumes.
 
-- `index.ts` (~490 lines) — public API: `readConfig`, `readConfigs`, `defineConfig`, `mergeConfig`, plus the global/project split.
-- `normalize.ts` (~1270 lines) — the bulk of the logic. One giant `normalize()` function with a switch over every option, plus preset merging, deprecation routing, and `<rootDir>` resolution.
-- `readConfigFileAndSetRootDir.ts` (~250 lines) — multi-format loader (`.js`/`.ts`/`.mts`/`.cts`/`.mjs`/`.cjs`/`.json`).
-- `ValidConfig.ts` (~350 lines) — example shape used by `jest-validate`. `initialOptions` (full) and `initialProjectOptions` (project subset).
-- `Defaults.ts` — default values applied during normalization.
-- `Deprecated.ts` — deprecation message map for `jest-validate`.
-- `Descriptions.ts` — human descriptions for `--help` and config schemas.
-- `resolveConfigPath.ts` — walks up from `cwd` to find `jest.config.{ext}` / `jest.config.{ext}.json` / `package.json#jest`.
-- `setFromArgv.ts` — CLI overrides applied on top of file-loaded options.
-- `utils.ts` — `replaceRootDirInPath`, `replaceRootDirTags`, `BULLET`/`DOCUMENTATION_NOTE` constants.
+The three load-bearing files:
+
+- `normalize.ts` — one large `normalize()` function with a switch over every option, plus preset merging, deprecation routing, and `<rootDir>` resolution.
+- `readConfigFileAndSetRootDir.ts` — multi-format loader (`.js`/`.ts`/`.mts`/`.cts`/`.mjs`/`.cjs`/`.json`). See ".mts is always ESM" below.
+- `ValidConfig.ts` — example shape consumed by `jest-validate`. `initialOptions` (full) and `initialProjectOptions` (project subset). The diff between them is what determines which options are global-only.
+
+`index.ts` is the public API (`readConfig`, `readConfigs`, `defineConfig`, `mergeConfig`) plus the global/project split. `Defaults.ts`, `Deprecated.ts`, `Descriptions.ts` are option-keyed tables. `utils.ts` carries `replaceRootDirInPath` / `replaceRootDirTags`.
 
 ## Adding or changing a config option
 
@@ -25,7 +20,7 @@ Every option lives in multiple places. Touch all of them or validation/help/docs
 2. **Schema**: add to `initialOptions` in `ValidConfig.ts` (and `initialProjectOptions` if project-level). Use `multipleValidOptions(a, b, ...)` to declare alternative valid shapes.
 3. **Default**: add to `Defaults.ts`.
 4. **Normalization**: add a `case 'optionName':` to the big switch in `normalize.ts` if the value needs transformation (e.g. `<rootDir>` substitution, path resolution). Pure passthrough doesn't need a case.
-5. **Global vs project split**: in `index.ts`, copy the value into `globalConfig` (around line 130) or `projectConfig` (around line 200) or both.
+5. **Global vs project split**: in `index.ts`'s `readConfig`, copy the value into the `globalConfig` object literal (the one returned to the rest of Jest) and/or the `projectConfig` literal. Search for an existing similar option's name to find the spot.
 6. **Description**: add to `Descriptions.ts` for `--help`.
 7. **Deprecating**: add a message function to `Deprecated.ts`. `jest-validate` walks the user's config against this map and emits warnings.
 8. **Docs**: add an entry to `docs/Configuration.md`.
@@ -80,7 +75,4 @@ readConfig(argv, packageRoot)
 
 ## Tests
 
-- `src/__tests__/*.test.ts` — covered by `typecheck:tests`. Most behaviour is exercised through `normalize.test.ts` (large) and per-feature files.
-- `e2e/read-initial-options/` — e2e fixtures for the multi-format loader (one fixture per extension, including `mts-config/`).
-- `e2e/__tests__/jest.config.ts.test.ts` and `e2e/__tests__/tsIntegration.test.ts` — TypeScript-config integration; the latter runs through its own `jest.config.ts.mjs` (`yarn test-ts`).
-- `e2e/__tests__/configFile.test.ts` — exercises pragma-based loader selection.
+The TypeScript-config integration tests run through their own config and aren't part of the default `yarn jest` run — invoke `yarn test-ts` for `jest.config.ts.mjs`. `e2e/read-initial-options/` carries one fixture per supported extension (including `mts-config/`); `e2e/__tests__/configFile.test.ts` exercises the `@jest-config-loader` docblock pragma.
