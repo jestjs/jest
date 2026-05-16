@@ -61,6 +61,7 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  enableSymlinks: boolean,
   callback: Callback,
 ): void {
   const extSet = new Set(extensions);
@@ -73,7 +74,8 @@ function find(
   for (const root of roots) {
     walk(
       {
-        exclude: ignore,
+        enableSymlinks,
+        exclude: (_dirName, dirPath) => ignore(dirPath),
         onEntry: (kind, filePath, stats) => {
           if (
             kind === 'file' &&
@@ -152,8 +154,15 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
-  const {data, extensions, forceNodeFilesystemAPI, ignore, rootDir, roots} =
-    options;
+  const {
+    data,
+    enableSymlinks,
+    extensions,
+    forceNodeFilesystemAPI,
+    ignore,
+    rootDir,
+    roots,
+  } = options;
 
   const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
@@ -184,7 +193,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     if (useNativeFind) {
       findNative(roots, extensions, ignore, callback);
     } else {
-      find(roots, extensions, ignore, callback);
+      find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
 }

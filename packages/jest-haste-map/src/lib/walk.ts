@@ -21,6 +21,7 @@ export interface WalkOptions extends Pick<
 > {
   root: string;
   concurrency?: number;
+  enableSymlinks?: boolean;
   onEntry: (kind: WalkEntryKind, filePath: string, stats: fs.Stats) => void;
   onError?: (err: NodeJS.ErrnoException) => void;
 }
@@ -31,6 +32,7 @@ export function walk(
 ): void {
   const {
     concurrency = DEFAULT_CONCURRENCY,
+    enableSymlinks = false,
     onEntry,
     onError,
     root,
@@ -39,12 +41,13 @@ export function walk(
 
   const builder = new Fdir({
     ...fdirOpts,
-    excludeSymlinks: true,
+    excludeSymlinks: !enableSymlinks,
     fs,
     includeBasePath: true,
+    resolveSymlinks: enableSymlinks,
   });
 
-  const statFn = fs.lstat;
+  const statFn = enableSymlinks ? fs.stat : fs.lstat;
 
   builder.crawl(root).withCallback((crawlErr, rawPaths) => {
     if (crawlErr != null) {
