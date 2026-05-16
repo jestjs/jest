@@ -83,6 +83,7 @@ exports.recReaddir = function (
   endCallback,
   errorCallback,
   ignored,
+  statCache,
 ) {
   const normDir = normalizeProxy(dirCallback);
   const normFile = normalizeProxy(fileCallback);
@@ -100,6 +101,7 @@ exports.recReaddir = function (
       },
       onError: errorCallback,
       root: dir,
+      statCache,
     },
     err => {
       if (err) {

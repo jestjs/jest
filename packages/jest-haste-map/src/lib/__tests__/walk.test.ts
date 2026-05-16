@@ -139,6 +139,56 @@ describe('walk', () => {
     expect(files.some(p => p.endsWith('good.ts'))).toBe(true);
   });
 
+  it('returns cached Stats without re-statting when path is pre-populated', async () => {
+    const filePath = path.join(root, 'a.ts');
+    touch(filePath);
+
+    const fakeStats = {
+      isDirectory: () => false,
+      mtime: new Date(0),
+      size: 12345,
+    } as unknown as fs.Stats;
+    const statCache = new Map([[filePath, fakeStats]]);
+
+    const received = new Map<string, fs.Stats>();
+    await walkAsync({
+      onEntry: (_kind, p, stats) => received.set(p, stats),
+      root,
+      statCache,
+    });
+
+    // Exact same object reference — real lstat was never called for this path.
+    expect(received.get(filePath)).toBe(fakeStats);
+  });
+
+  it('populates statCache on first walk so second walk gets same Stats object', async () => {
+    const filePath = path.join(root, 'a.ts');
+    touch(filePath);
+
+    const statCache = new Map<string, fs.Stats>();
+
+    let firstStats: fs.Stats | undefined;
+    await walkAsync({
+      onEntry: (_kind, p, stats) => {
+        if (p === filePath) firstStats = stats;
+      },
+      root,
+      statCache,
+    });
+
+    let secondStats: fs.Stats | undefined;
+    await walkAsync({
+      onEntry: (_kind, p, stats) => {
+        if (p === filePath) secondStats = stats;
+      },
+      root,
+      statCache,
+    });
+
+    // Second walk used the cache — same Stats object, no re-stat.
+    expect(secondStats).toBe(firstStats);
+  });
+
   it('respects the concurrency cap', async () => {
     for (let i = 0; i < 20; i++) {
       touch(path.join(root, `f${i}.ts`));

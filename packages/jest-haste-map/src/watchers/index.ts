@@ -67,8 +67,11 @@ export class WatcherDriver {
         ? (FSEventsWatcher as unknown as WatcherCtor)
         : NodeWatcher;
 
+    const statCache = new Map<string, Stats>();
     const results = await Promise.allSettled(
-      this._roots.map(root => this._createWatcher(Backend, root, onChange)),
+      this._roots.map(root =>
+        this._createWatcher(Backend, root, onChange, statCache),
+      ),
     );
     const fulfilled = results
       .filter(r => r.status === 'fulfilled')
@@ -92,11 +95,13 @@ export class WatcherDriver {
     Backend: WatcherCtor,
     root: string,
     onChange: OnChangeCallback,
+    statCache: Map<string, Stats>,
   ): Promise<IWatcher> {
     const watcher = new Backend(root, {
       dot: true,
       glob: this._extensions.map(ext => `**/*.${ext}`),
       ignored: this._ignorePattern,
+      statCache,
     });
 
     return new Promise((resolve, reject) => {

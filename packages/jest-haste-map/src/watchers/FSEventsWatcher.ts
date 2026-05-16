@@ -85,6 +85,7 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
         },
         onError: this.emit.bind(this, 'error'),
         root: this.root,
+        statCache: opts.statCache,
       },
       err => {
         if (err) {

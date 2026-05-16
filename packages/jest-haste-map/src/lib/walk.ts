@@ -22,6 +22,12 @@ export interface WalkOptions extends Pick<FdirOptions, 'includeDirs'> {
   exclude?: (path: string) => boolean;
   onEntry: (kind: WalkEntryKind, filePath: string, stats: fs.Stats) => void;
   onError?: (err: NodeJS.ErrnoException) => void;
+  // Optional stat cache shared across multiple walk() calls (e.g. one per root
+  // in find()). A path already in the cache skips the lstat syscall. Hits are
+  // best-effort: concurrent walks may both miss the same path if neither has
+  // completed its lstat before the other checks. Must NOT be passed to runtime
+  // (post-startup) walks — stale cached stats would be returned for changed files.
+  statCache?: Map<string, fs.Stats>;
 }
 
 export function walk(
@@ -35,6 +41,7 @@ export function walk(
     onEntry,
     onError,
     root,
+    statCache,
     ...fdirOpts
   } = options;
 
@@ -88,12 +95,18 @@ export function walk(
     function pump() {
       while (inflight < concurrency && index < rawPaths.length) {
         const filePath = rawPaths[index++].replace(TRAILING_SEP_RE, '');
+        const cached = statCache?.get(filePath);
+        if (cached != null) {
+          onEntry(cached.isDirectory() ? 'dir' : 'file', filePath, cached);
+          continue;
+        }
         inflight++;
         statFn(filePath, (err, stats) => {
           inflight--;
           if (err) {
             onError?.(err);
           } else {
+            statCache?.set(filePath, stats);
             onEntry(stats.isDirectory() ? 'dir' : 'file', filePath, stats);
           }
           if (index < rawPaths.length) {

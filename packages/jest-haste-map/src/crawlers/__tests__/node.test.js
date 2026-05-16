@@ -372,6 +372,28 @@ describe('node crawler', () => {
     expect(removedFiles).toEqual(new Map());
   });
 
+  it('deduplicates results when roots overlap', async () => {
+    nodeCrawl = require('../node').nodeCrawl;
+
+    const {hasteMap} = await nodeCrawl({
+      data: {files: new Map()},
+      extensions: ['js'],
+      forceNodeFilesystemAPI: true,
+      ignore: pearMatcher,
+      rootDir,
+      // /project/fruits/directory is a subdirectory of /project/fruits, so
+      // strawberry.js is reachable from both roots.
+      roots: ['/project/fruits', '/project/fruits/directory'],
+    });
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        'fruits/directory/strawberry.js': expect.any(Array),
+        'fruits/tomato.js': expect.any(Array),
+      }),
+    );
+  });
+
   it('avoids calling lstat for directories and symlinks', async () => {
     nodeCrawl = require('../node').nodeCrawl;
     const fs = require('graceful-fs');

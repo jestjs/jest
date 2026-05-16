@@ -66,6 +66,7 @@ function find(
 ): void {
   const extSet = new Set(extensions);
   const result: Result = [];
+  const statCache = new Map<string, fs.Stats>();
   let remaining = roots.length;
 
   if (remaining === 0) {
@@ -84,6 +85,7 @@ function find(
           }
         },
         root,
+        statCache,
       },
       () => {
         remaining--;
