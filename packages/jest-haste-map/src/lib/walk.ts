@@ -87,6 +87,10 @@ export function walk(
       return;
     }
 
+    // Two-phase design (readdir-all via fdir, then stat-all here): fdir does not
+    // stat during the crawl. Pipelining lstat with readdir would not improve
+    // throughput on large repos anyway — both share libuv's thread pool, which
+    // the concurrent readdir calls already saturate.
     let index = 0;
     let inflight = 0;
     // Prevent done() being called twice: once from the last stat callback and
