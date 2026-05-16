@@ -27,7 +27,7 @@
 - `[jest-message-util]` Detect Jest's own frames without assuming the checkout directory's name, and cover `@jest/*` packages, so stack traces and code frames point at user code ([#16326](https://github.com/jestjs/jest/pull/16326))
 - `[jest-mock]` `mockResolvedValue` / `mockRejectedValue` now see all overload return types, so a Promise-returning overload survives even when a later overload returns a non-Promise (e.g. `pg.Client['end']`) ([#16237](https://github.com/jestjs/jest/pull/16237))
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
-- `[jest-mock]` Add construct signature to `MockedClass` ([#16191](https://github.com/jestjs/jest/pull/16191))
+- `[jest-mock]` Add construct signature to `MockedClass` ([#16189](https://github.com/jestjs/jest/pull/16189))
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
@@ -36,9 +36,6 @@
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
-=======
-- `[jest-mock]` Add construct signature to `MockedClass` ([#16191](https://github.com/jestjs/jest/pull/16191))
->>>>>>> b4096e3b6 (fix(jest-mock): add construct signature to MockedClass)
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))
