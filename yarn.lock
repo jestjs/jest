@@ -14526,7 +14526,6 @@ __metadata:
     jest-worker: "workspace:*"
     picomatch: "npm:^4.0.3"
     slash: "npm:^3.0.0"
-    walker: "npm:^1.0.8"
   dependenciesMeta:
     fsevents:
       optional: true
@@ -22888,7 +22887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"walker@npm:^1.0.7, walker@npm:^1.0.8":
+"walker@npm:^1.0.7":
   version: 1.0.8
   resolution: "walker@npm:1.0.8"
   dependencies:

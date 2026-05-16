@@ -28,8 +28,7 @@
     "jest-regex-util": "workspace:*",
     "jest-util": "workspace:*",
     "jest-worker": "workspace:*",
-    "picomatch": "^4.0.3",
-    "walker": "^1.0.8"
+    "picomatch": "^4.0.3"
   },
   "devDependencies": {
     "@types/fb-watchman": "^2.0.5",

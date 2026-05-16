@@ -10,9 +10,8 @@ import {EventEmitter} from 'node:events';
 import * as path from 'node:path';
 import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
-// @ts-expect-error -- no types
-import walker from 'walker';
 import {globsToMatcher} from 'jest-util';
+import {walk} from '../lib/walk';
 import type {HasteRegExp} from '../types';
 import type {IWatcher, WatcherOptions} from './types';
 
@@ -54,33 +53,6 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
     return fsevents !== null;
   }
 
-  private static normalizeProxy(
-    callback: (normalizedPath: string, stats: fs.Stats) => void,
-  ) {
-    return (filepath: string, stats: fs.Stats): void =>
-      callback(path.normalize(filepath), stats);
-  }
-
-  private static recReaddir(
-    dir: string,
-    dirCallback: (normalizedPath: string, stats: fs.Stats) => void,
-    fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
-    endCallback: () => void,
-    errorCallback: () => void,
-    ignored?: HasteRegExp,
-  ) {
-    walker(dir)
-      .filterDir(
-        (currentDir: string) => !ignored || !anymatch(ignored, currentDir),
-      )
-      .on('dir', FSEventsWatcher.normalizeProxy(dirCallback))
-      .on('file', FSEventsWatcher.normalizeProxy(fileCallback))
-      .on('error', errorCallback)
-      .on('end', () => {
-        endCallback();
-      });
-  }
-
   constructor(dir: string, opts: WatcherOptions) {
     if (!fsevents) {
       throw new Error(
@@ -94,8 +66,7 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
     this.ignored = opts.ignored;
     this.glob = [...opts.glob];
 
-    this.hasIgnore =
-      Boolean(opts.ignored) && !(Array.isArray(opts) && opts.length > 0);
+    this.hasIgnore = Boolean(opts.ignored);
     this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
 
     this.root = path.resolve(dir);
@@ -105,17 +76,23 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
     );
 
     this._tracked = new Set();
-    FSEventsWatcher.recReaddir(
-      this.root,
-      (filepath: string) => {
-        this._tracked.add(filepath);
+    walk(
+      {
+        exclude: this.hasIgnore ? this.doIgnore : undefined,
+        includeDirs: true,
+        onEntry: (_kind, filePath) => {
+          this._tracked.add(path.normalize(filePath));
+        },
+        onError: this.emit.bind(this, 'error'),
+        root: this.root,
       },
-      (filepath: string) => {
-        this._tracked.add(filepath);
+      err => {
+        if (err) {
+          this.emit('error', err);
+        } else {
+          this.emit('ready');
+        }
       },
-      this.emit.bind(this, 'ready'),
-      this.emit.bind(this, 'error'),
-      this.ignored,
     );
   }
 
