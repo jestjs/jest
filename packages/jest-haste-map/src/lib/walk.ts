@@ -44,7 +44,11 @@ export function walk(
     excludeSymlinks: !enableSymlinks,
     fs,
     includeBasePath: true,
-    resolveSymlinks: enableSymlinks,
+    // resolveSymlinks: false — `fdir`'s resolveSymlinks calls realpath and emits
+    // the resolved path, losing the original symlink path. haste-map must track
+    // files under the path Jest uses to require them (the symlink path), so we
+    // keep the original path and use fs.stat to follow the symlink for stats.
+    resolveSymlinks: false,
   });
 
   const statFn = enableSymlinks ? fs.stat : fs.lstat;
