@@ -86,10 +86,10 @@ exports.recReaddir = function (
 ) {
   const normDir = normalizeProxy(dirCallback);
   const normFile = normalizeProxy(fileCallback);
-  const doIgnore = anymatch(ignored);
+  const exclude = anymatch(ignored);
   walk(
     {
-      exclude: (_, dirPath) => doIgnore(dirPath),
+      exclude,
       includeDirs: true,
       onEntry(kind, filePath, stats) {
         if (kind === 'dir') {

@@ -15,13 +15,11 @@ const DEFAULT_CONCURRENCY = Math.max(os.availableParallelism() * 4, 32);
 // fdir returns directory paths with a trailing separator; strip it.
 const TRAILING_SEP_RE = /[/\\]+$/;
 
-export interface WalkOptions extends Pick<
-  FdirOptions,
-  'exclude' | 'includeDirs'
-> {
+export interface WalkOptions extends Pick<FdirOptions, 'includeDirs'> {
   root: string;
   concurrency?: number;
   enableSymlinks?: boolean;
+  exclude?: (dirPath: string) => boolean;
   onEntry: (kind: WalkEntryKind, filePath: string, stats: fs.Stats) => void;
   onError?: (err: NodeJS.ErrnoException) => void;
 }
@@ -33,6 +31,7 @@ export function walk(
   const {
     concurrency = DEFAULT_CONCURRENCY,
     enableSymlinks = false,
+    exclude,
     onEntry,
     onError,
     root,
@@ -41,6 +40,11 @@ export function walk(
 
   const builder = new Fdir({
     ...fdirOpts,
+    // fdir passes dirPath with a trailing separator; strip it before delegating.
+    exclude: exclude
+      ? (_dirName: string, dirPath: string) =>
+          exclude(dirPath.replace(TRAILING_SEP_RE, ''))
+      : undefined,
     excludeSymlinks: !enableSymlinks,
     fs,
     includeBasePath: true,
@@ -61,6 +65,7 @@ export function walk(
 
     let index = 0;
     let inflight = 0;
+    let finished = false;
 
     function pump() {
       while (inflight < concurrency && index < rawPaths.length) {
@@ -75,12 +80,14 @@ export function walk(
           }
           if (index < rawPaths.length) {
             pump();
-          } else if (inflight === 0) {
+          } else if (inflight === 0 && !finished) {
+            finished = true;
             done(null);
           }
         });
       }
-      if (inflight === 0) {
+      if (inflight === 0 && !finished) {
+        finished = true;
         done(null);
       }
     }

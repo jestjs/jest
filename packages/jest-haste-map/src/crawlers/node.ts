@@ -75,12 +75,12 @@ function find(
     walk(
       {
         enableSymlinks,
-        exclude: (_dirName, dirPath) => ignore(dirPath),
+        exclude: ignore,
         onEntry: (kind, filePath, stats) => {
           if (
             kind === 'file' &&
-            !ignore(filePath) &&
-            extSet.has(path.extname(filePath).slice(1))
+            extSet.has(path.extname(filePath).slice(1)) &&
+            !ignore(filePath)
           ) {
             result.push([filePath, stats.mtime.getTime(), stats.size]);
           }

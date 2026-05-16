@@ -96,7 +96,7 @@ describe('walk', () => {
     touch(path.join(root, 'included', 'yes.ts'));
     const files: Array<string> = [];
     await walkAsync({
-      exclude: (_dirName, dirPath) => dirPath.includes('excluded'),
+      exclude: dirPath => dirPath.includes('excluded'),
       onEntry: (kind, p) => kind === 'file' && files.push(p),
       root,
     });
