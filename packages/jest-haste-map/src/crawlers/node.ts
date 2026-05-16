@@ -67,21 +67,19 @@ function find(
   const extSet = new Set(extensions);
   const result: Result = [];
   let remaining = roots.length;
+
   if (remaining === 0) {
     callback(result);
     return;
   }
+
   for (const root of roots) {
     walk(
       {
         enableSymlinks,
         exclude: ignore,
         onEntry: (kind, filePath, stats) => {
-          if (
-            kind === 'file' &&
-            extSet.has(path.extname(filePath).slice(1)) &&
-            !ignore(filePath)
-          ) {
+          if (kind === 'file' && extSet.has(path.extname(filePath).slice(1))) {
             result.push([filePath, stats.mtime.getTime(), stats.size]);
           }
         },
@@ -138,7 +136,7 @@ function findNative(
     const lines = stdout
       .trim()
       .split('\n')
-      .filter(x => !ignore(x));
+      .filter(x => x && !ignore(x));
     const result: Result = [];
     let count = lines.length;
     if (count) {

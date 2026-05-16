@@ -19,7 +19,7 @@ export interface WalkOptions extends Pick<FdirOptions, 'includeDirs'> {
   root: string;
   concurrency?: number;
   enableSymlinks?: boolean;
-  exclude?: (dirPath: string) => boolean;
+  exclude?: (path: string) => boolean;
   onEntry: (kind: WalkEntryKind, filePath: string, stats: fs.Stats) => void;
   onError?: (err: NodeJS.ErrnoException) => void;
 }
@@ -38,14 +38,25 @@ export function walk(
     ...fdirOpts
   } = options;
 
+  // Wrap exclude to strip fdir's trailing path separator before delegating.
+  const normalizedExclude = exclude
+    ? (p: string) => exclude(p.replace(TRAILING_SEP_RE, ''))
+    : undefined;
+
   const builder = new Fdir({
     ...fdirOpts,
-    // fdir passes dirPath with a trailing separator; strip it before delegating.
-    exclude: exclude
-      ? (_dirName: string, dirPath: string) =>
-          exclude(dirPath.replace(TRAILING_SEP_RE, ''))
+    // Used for directory pruning (prevents fdir from recursing into subtrees).
+    // fdir calls exclude(dirName, dirPath) — dirName is the basename and dirPath
+    // is the full path, so dirName is unused (it's a subset of dirPath).
+    exclude: normalizedExclude
+      ? (_dirName: string, dirPath: string) => normalizedExclude(dirPath)
       : undefined,
     excludeSymlinks: !enableSymlinks,
+    // Also used as an output filter so ignored paths never enter the stat pool.
+    // Applies to both file and dir entries (dirs also have a trailing sep, hence
+    // the shared normalizedExclude that strips it). fdir includes entries where
+    // the filter returns true, so we negate: include when NOT excluded.
+    filters: normalizedExclude ? [path => !normalizedExclude(path)] : [],
     fs,
     includeBasePath: true,
     // resolveSymlinks: false — `fdir`'s resolveSymlinks calls realpath and emits
@@ -53,11 +64,16 @@ export function walk(
     // files under the path Jest uses to require them (the symlink path), so we
     // keep the original path and use fs.stat to follow the symlink for stats.
     resolveSymlinks: false,
+    // Unreadable directories are skipped and the walk continues with partial
+    // results.
+    suppressErrors: true,
   });
 
   const statFn = enableSymlinks ? fs.stat : fs.lstat;
 
   builder.crawl(root).withCallback((crawlErr, rawPaths) => {
+    // suppressErrors: true means crawlErr is always null, but keep the guard
+    // as a safety net in case fdir's default changes.
     if (crawlErr != null) {
       done(crawlErr);
       return;
@@ -65,6 +81,8 @@ export function walk(
 
     let index = 0;
     let inflight = 0;
+    // Prevent done() being called twice: once from the last stat callback and
+    // once from the post-while guard when concurrency > remaining paths.
     let finished = false;
 
     function pump() {

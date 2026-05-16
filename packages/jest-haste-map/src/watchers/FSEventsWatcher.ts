@@ -81,7 +81,7 @@ export class FSEventsWatcher extends EventEmitter implements IWatcher {
         exclude: this.hasIgnore ? this.doIgnore : undefined,
         includeDirs: true,
         onEntry: (_kind, filePath) => {
-          this._tracked.add(path.normalize(filePath));
+          this._tracked.add(filePath);
         },
         onError: this.emit.bind(this, 'error'),
         root: this.root,
