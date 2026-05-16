@@ -10,6 +10,7 @@ import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
+import {walk} from '../lib/walk';
 import type {
   CrawlerOptions,
   FileData,
@@ -60,73 +61,34 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  enableSymlinks: boolean,
   callback: Callback,
 ): void {
+  const extSet = new Set(extensions);
   const result: Result = [];
-  let activeCalls = 0;
-
-  function search(directory: string): void {
-    activeCalls++;
-    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
-      activeCalls--;
-      if (err) {
-        if (activeCalls === 0) {
-          callback(result);
-        }
-        return;
-      }
-      for (const entry of entries) {
-        const file = path.join(directory, entry.name);
-
-        if (ignore(file)) {
-          continue;
-        }
-
-        if (entry.isSymbolicLink()) {
-          continue;
-        }
-        if (entry.isDirectory()) {
-          search(file);
-          continue;
-        }
-
-        activeCalls++;
-
-        const stat = enableSymlinks ? fs.stat : fs.lstat;
-
-        stat(file, (err, stat) => {
-          activeCalls--;
-
-          // This logic is unnecessary for node > v10.10, but leaving it in
-          // since we need it for backwards-compatibility still.
-          if (!err && stat && !stat.isSymbolicLink()) {
-            if (stat.isDirectory()) {
-              search(file);
-            } else {
-              const ext = path.extname(file).slice(1);
-              if (extensions.includes(ext)) {
-                result.push([file, stat.mtime.getTime(), stat.size]);
-              }
-            }
-          }
-
-          if (activeCalls === 0) {
-            callback(result);
-          }
-        });
-      }
-
-      if (activeCalls === 0) {
-        callback(result);
-      }
-    });
-  }
-
-  if (roots.length > 0) {
-    for (const root of roots) search(root);
-  } else {
+  let remaining = roots.length;
+  if (remaining === 0) {
     callback(result);
+    return;
+  }
+  for (const root of roots) {
+    walk(
+      {
+        exclude: ignore,
+        onEntry: (kind, filePath, stats) => {
+          if (
+            kind === 'file' &&
+            !ignore(filePath) &&
+            extSet.has(path.extname(filePath).slice(1))
+          ) {
+            result.push([filePath, stats.mtime.getTime(), stats.size]);
+          }
+        },
+        root,
+      },
+      () => {
+        if (--remaining === 0) callback(result);
+      },
+    );
   }
 }
 
@@ -134,15 +96,9 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  enableSymlinks: boolean,
   callback: Callback,
 ): void {
-  const args = [...roots];
-  if (enableSymlinks) {
-    args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
-  } else {
-    args.push('-type', 'f');
-  }
+  const args = [...roots, '-type', 'f'];
 
   if (extensions.length > 0) {
     args.push('(');
@@ -196,15 +152,8 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
-  const {
-    data,
-    extensions,
-    forceNodeFilesystemAPI,
-    ignore,
-    rootDir,
-    enableSymlinks,
-    roots,
-  } = options;
+  const {data, extensions, forceNodeFilesystemAPI, ignore, rootDir, roots} =
+    options;
 
   const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
@@ -233,9 +182,9 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, enableSymlinks, callback);
+      findNative(roots, extensions, ignore, callback);
     } else {
-      find(roots, extensions, ignore, enableSymlinks, callback);
+      find(roots, extensions, ignore, callback);
     }
   });
 }

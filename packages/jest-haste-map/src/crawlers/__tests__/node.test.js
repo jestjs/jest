@@ -71,44 +71,52 @@ jest.mock('graceful-fs', () => {
         throw new Error('readdir: callback is not a function!');
       }
 
-      if (slash(dir) === '/project/fruits') {
+      const normalizedDir = slash(dir).replace(/\/+$/, '');
+      if (normalizedDir === '/project/fruits') {
         setTimeout(
           () =>
             callback(null, [
               {
                 isDirectory: () => true,
+                isFile: () => false,
                 isSymbolicLink: () => false,
                 name: 'directory',
               },
               {
                 isDirectory: () => false,
+                isFile: () => true,
                 isSymbolicLink: () => false,
                 name: 'tomato.js',
               },
               {
                 isDirectory: () => false,
+                isFile: () => false,
                 isSymbolicLink: () => true,
                 name: 'symlink',
               },
             ]),
           0,
         );
-      } else if (slash(dir) === '/project/fruits/directory') {
+      } else if (normalizedDir === '/project/fruits/directory') {
         setTimeout(
           () =>
             callback(null, [
               {
                 isDirectory: () => false,
+                isFile: () => true,
                 isSymbolicLink: () => false,
                 name: 'strawberry.js',
               },
             ]),
           0,
         );
-      } else if (slash(dir) === '/error') {
+      } else if (normalizedDir === '/error') {
         setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),
+    readdirSync: jest.fn(() => []),
+    realpath: jest.fn(),
+    realpathSync: jest.fn(),
     stat: jest.fn(stat),
   };
 });
