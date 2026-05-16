@@ -81,6 +81,7 @@ export function walk(
   builder.crawl(root).withCallback((crawlErr, rawPaths) => {
     // suppressErrors: true means crawlErr is always null, but keep the guard
     // as a safety net in case fdir's default changes.
+    /* c8 ignore next 4 */
     if (crawlErr != null) {
       done(crawlErr);
       return;

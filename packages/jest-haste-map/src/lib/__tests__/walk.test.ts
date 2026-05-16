@@ -120,22 +120,54 @@ describe('walk', () => {
   });
 
   it('routes lstat errors through onError and continues', async () => {
+    // jest.spyOn on the graceful-fs module export doesn't reach walk.ts because
+    // TypeScript's __importStar copies function references at module load time.
+    // Use jest.doMock + fresh require so walk.ts loads with the patched lstat.
+    jest.resetModules();
+
+    const fakeError = Object.assign(new Error('EACCES'), {
+      code: 'EACCES',
+    }) as NodeJS.ErrnoException;
+    jest.doMock('graceful-fs', () => {
+      const real =
+        jest.requireActual<typeof import('graceful-fs')>('graceful-fs');
+      return {
+        ...real,
+        lstat(
+          p: string,
+          cb: (err: NodeJS.ErrnoException | null, stats?: fs.Stats) => void,
+        ) {
+          if (p.endsWith('bad.ts')) {
+            setImmediate(() => cb(fakeError));
+          } else {
+            real.lstat(p, cb);
+          }
+        },
+      };
+    });
+
+    const {walk: walkFresh} = require('../walk') as typeof import('../walk');
+
     touch(path.join(root, 'good.ts'));
-    const badPath = path.join(root, 'bad.ts');
-    touch(badPath);
-    fs.chmodSync(badPath, 0o000);
+    touch(path.join(root, 'bad.ts'));
+
     const errors: Array<string> = [];
     const files: Array<string> = [];
-    try {
-      await walkAsync({
-        concurrency: 1,
-        onEntry: (_, p) => files.push(p),
-        onError: err => errors.push(err.code ?? 'ERR'),
-        root,
-      });
-    } finally {
-      fs.chmodSync(badPath, 0o644);
-    }
+    await new Promise<void>((resolve, reject) =>
+      walkFresh(
+        {
+          concurrency: 1,
+          onEntry: (_, p) => files.push(p),
+          onError: err => errors.push(err.code ?? 'ERR'),
+          root,
+        },
+        err => (err ? reject(err) : resolve()),
+      ),
+    );
+
+    jest.resetModules();
+
+    expect(errors).toEqual(['EACCES']);
     expect(files.some(p => p.endsWith('good.ts'))).toBe(true);
   });
 
@@ -146,7 +178,7 @@ describe('walk', () => {
     const fakeStats = {
       isDirectory: () => false,
       mtime: new Date(0),
-      size: 12345,
+      size: 12_345,
     } as unknown as fs.Stats;
     const statCache = new Map([[filePath, fakeStats]]);
 

@@ -394,6 +394,51 @@ describe('node crawler', () => {
     );
   });
 
+  it('passes symlink args to find when enableSymlinks is true', async () => {
+    childProcess = require('child_process');
+    nodeCrawl = require('../node').nodeCrawl;
+
+    await nodeCrawl({
+      data: {files: new Map()},
+      enableSymlinks: true,
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    });
+
+    expect(childProcess.spawn).toHaveBeenLastCalledWith('find', [
+      '/project/fruits',
+      '(',
+      '-type',
+      'f',
+      '-o',
+      '-type',
+      'l',
+      ')',
+      '(',
+      '-iname',
+      '*.js',
+      ')',
+    ]);
+  });
+
+  it('handles empty results from find after filtering', async () => {
+    nodeCrawl = require('../node').nodeCrawl;
+    // All paths match the ignore pattern, so the filtered list is empty.
+    mockResponse = '/project/fruits/pear.js';
+
+    const {hasteMap} = await nodeCrawl({
+      data: {files: new Map()},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    });
+
+    expect(hasteMap.files).toEqual(new Map());
+  });
+
   it('avoids calling lstat for directories and symlinks', async () => {
     nodeCrawl = require('../node').nodeCrawl;
     const fs = require('graceful-fs');
