@@ -201,6 +201,12 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     };
 
     if (useNativeFind) {
+      // TODO: consider making forceNodeFilesystemAPI the default. find(1) does
+      // not receive the ignore predicate, so it traverses ignored directories
+      // (e.g. node_modules, .git) in full and discards results afterward.
+      // find() via fdir prunes those subtrees at readdir time. For a typical
+      // project where node_modules dwarfs source files, the wasted traversal
+      // likely outweighs find(1)'s native speed advantage.
       findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
       find(roots, extensions, ignore, enableSymlinks, callback);
