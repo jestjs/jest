@@ -88,7 +88,10 @@ function find(
         root,
       },
       () => {
-        if (--remaining === 0) callback(result);
+        remaining--;
+        if (remaining === 0) {
+          callback(result);
+        }
       },
     );
   }
