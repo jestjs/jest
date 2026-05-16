@@ -102,7 +102,6 @@ function findNative(
   callback: Callback,
 ): void {
   const args = [...roots];
-
   if (enableSymlinks) {
     args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
   } else {
