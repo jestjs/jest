@@ -563,7 +563,6 @@ describe('haste', () => {
     );
 
     expect(options.haste).toEqual({
-      backend: 'default',
       hasteImplModulePath: '/root/haste_impl.js',
     });
   });
@@ -2406,60 +2405,5 @@ describe('runInBand', () => {
       runInBand: true,
     } as Config.Argv);
     expect(options.runInBand).toBe(true);
-  });
-});
-
-describe('backend', () => {
-  test('defaults haste.backend to default when unset', async () => {
-    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
-    expect(options.haste.backend).toBe('default');
-  });
-
-  test('passes haste.backend: parcel through', async () => {
-    const {options} = await normalize(
-      {haste: {backend: 'parcel'}, rootDir: '/root/'},
-      {} as Config.Argv,
-    );
-    expect(options.haste.backend).toBe('parcel');
-  });
-
-  test('haste.backend: parcel + enableSymlinks does not throw', async () => {
-    await expect(
-      normalize(
-        {
-          haste: {backend: 'parcel', enableSymlinks: true},
-          rootDir: '/root/',
-          watchman: true,
-        },
-        {} as Config.Argv,
-      ),
-    ).resolves.not.toThrow();
-  });
-
-  test('rejects unknown haste.backend values', async () => {
-    await expect(
-      normalize(
-        {
-          haste: {backend: 'bogus' as 'default'},
-          rootDir: '/root/',
-        },
-        {} as Config.Argv,
-      ),
-    ).rejects.toThrow(
-      'Option "haste.backend" must be one of "default" or "parcel"',
-    );
-  });
-
-  test('watchman: true + haste.enableSymlinks: true still throws', async () => {
-    await expect(
-      normalize(
-        {
-          haste: {enableSymlinks: true},
-          rootDir: '/root/',
-          watchman: true,
-        },
-        {} as Config.Argv,
-      ),
-    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
   });
 });

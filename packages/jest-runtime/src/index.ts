@@ -69,7 +69,7 @@ type HasteMapOptions = {
   maxWorkers: number;
   resetCache: boolean;
   watch?: boolean;
-  watchman?: boolean;
+  watchman: boolean;
   workerThreads?: boolean;
 };
 
@@ -278,7 +278,7 @@ export default class Runtime {
       console?: Console;
       maxWorkers: number;
       watch?: boolean;
-      watchman?: boolean;
+      watchman: boolean;
     },
   ): Promise<TestContext> {
     createDirectory(config.cacheDirectory);
@@ -315,7 +315,6 @@ export default class Runtime {
         : undefined;
 
     return HasteMap.create({
-      backend: config.haste.backend,
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
       console: options?.console,

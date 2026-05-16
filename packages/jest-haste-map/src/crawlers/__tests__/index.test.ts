@@ -47,31 +47,18 @@ describe('crawl', () => {
     jest.clearAllMocks();
   });
 
-  it('uses watchman when backend is watchman', async () => {
+  it('uses watchman when useWatchman is true', async () => {
     mockWatchmanCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, 'watchman', mockConsole);
+    await crawl(crawlerOptions, true, mockConsole);
     expect(mockWatchmanCrawl).toHaveBeenCalledTimes(1);
     expect(mockNodeCrawl).not.toHaveBeenCalled();
   });
 
-  it('uses node when backend is node', async () => {
+  it('uses node when useWatchman is false', async () => {
     mockNodeCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, 'node', mockConsole);
+    await crawl(crawlerOptions, false, mockConsole);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
     expect(mockWatchmanCrawl).not.toHaveBeenCalled();
-  });
-
-  it('uses node when backend is fsevents (no fsevents crawler)', async () => {
-    mockNodeCrawl.mockResolvedValue(mockResult);
-    await crawl(crawlerOptions, 'fsevents', mockConsole);
-    expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
-    expect(mockWatchmanCrawl).not.toHaveBeenCalled();
-  });
-
-  it('throws when backend is parcel', async () => {
-    await expect(crawl(crawlerOptions, 'parcel', mockConsole)).rejects.toThrow(
-      '@parcel/watcher backend is not yet supported',
-    );
   });
 
   it('falls back to node when watchman fails', async () => {
@@ -79,7 +66,7 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(watchmanError);
     mockNodeCrawl.mockResolvedValue(mockResult);
 
-    const result = await crawl(crawlerOptions, 'watchman', mockConsole);
+    const result = await crawl(crawlerOptions, true, mockConsole);
     expect(result).toBe(mockResult);
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);
   });
@@ -88,25 +75,25 @@ describe('crawl', () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman error'));
     mockNodeCrawl.mockRejectedValue(new Error('node error'));
 
-    await expect(
-      crawl(crawlerOptions, 'watchman', mockConsole),
-    ).rejects.toThrow('Crawler retry failed');
+    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
+      'Crawler retry failed',
+    );
   });
 
   it('combined error message includes both original error messages', async () => {
     mockWatchmanCrawl.mockRejectedValue(new Error('watchman failed'));
     mockNodeCrawl.mockRejectedValue(new Error('node failed'));
 
-    await expect(
-      crawl(crawlerOptions, 'watchman', mockConsole),
-    ).rejects.toThrow(/watchman failed.*node failed/s);
+    await expect(crawl(crawlerOptions, true, mockConsole)).rejects.toThrow(
+      /watchman failed.*node failed/s,
+    );
   });
 
-  it('does not retry when backend is node and node fails', async () => {
+  it('does not retry when useWatchman is false and node fails', async () => {
     const nodeError = new Error('node error');
     mockNodeCrawl.mockRejectedValue(nodeError);
 
-    await expect(crawl(crawlerOptions, 'node', mockConsole)).rejects.toThrow(
+    await expect(crawl(crawlerOptions, false, mockConsole)).rejects.toThrow(
       nodeError,
     );
     expect(mockNodeCrawl).toHaveBeenCalledTimes(1);

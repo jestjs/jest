@@ -6,22 +6,15 @@
  */
 
 import type {CrawlerOptions} from '../types';
-import type {ResolvedBackend} from '../watchers/types';
 import {nodeCrawl} from './node';
 import {watchmanCrawl} from './watchman';
 
 export async function crawl(
   crawlerOptions: CrawlerOptions,
-  backend: ResolvedBackend,
+  useWatchman: boolean,
   console: Console,
 ): ReturnType<typeof nodeCrawl> {
-  if (backend === 'parcel') {
-    throw new Error(
-      '@parcel/watcher backend is not yet supported. Use haste.backend: "default" instead.',
-    );
-  }
-
-  const crawlFn = backend === 'watchman' ? watchmanCrawl : nodeCrawl;
+  const crawlFn = useWatchman ? watchmanCrawl : nodeCrawl;
 
   const retry = (retryError: Error) => {
     if (crawlFn === watchmanCrawl) {

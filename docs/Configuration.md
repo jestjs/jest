@@ -909,37 +909,28 @@ This will be used to configure the behavior of `jest-haste-map`, Jest's internal
 
 ```ts
 type HasteConfig = {
-  /**
-   * Backend used for the initial file crawl and watch mode.
-   * - `'default'` — uses Watchman when installed (for both crawl and watch). When
-   *   Watchman is unavailable, the initial crawl uses the Node.js crawler; watch mode
-   *   additionally uses native FSEvents on macOS before falling back to Node.js.
-   *   Set top-level `watchman: false` to skip the Watchman probe entirely.
-   * - `'parcel'` — reserved for a future `@parcel/watcher` integration (not yet
-   *   implemented; setting this will throw at startup).
-   */
-  backend?: 'default' | 'parcel';
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
-  /**
-   * Whether to follow symlinks when crawling for files.
-   * Cannot be used together with `watchman: true` unless `backend: 'parcel'` is set.
-   */
-  enableSymlinks?: boolean;
   /** Force use of Node's `fs` APIs rather than shelling out to `find` */
   forceNodeFilesystemAPI?: boolean;
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
+   */
+  enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
-  /** Custom HasteMap module */
-  hasteMapModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
-  /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
-  retainAllFiles?: boolean;
   /** Whether to throw an error on module collision. */
   throwOnModuleCollision?: boolean;
+  /** Custom HasteMap module */
+  hasteMapModulePath?: string;
+  /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
+  retainAllFiles?: boolean;
 };
 ```
 
@@ -2642,8 +2633,6 @@ The values in the `watchPlugins` property value can omit the `jest-watch-` prefi
 Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
-
-See also: [`haste.backend`](#haste-object).
 
 ### `workerGracefulExitTimeout` \[number]
 

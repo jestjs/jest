@@ -44,17 +44,4 @@ describe('Runtime statics', () => {
       }),
     );
   });
-
-  test('Runtime.createHasteMap forwards haste.backend to HasteMap', async () => {
-    const configWithBackend = makeProjectConfig({
-      cacheDirectory: '/tmp',
-      haste: {backend: 'parcel'},
-      modulePathIgnorePatterns: [],
-      watchPathIgnorePatterns: [],
-    });
-    await Runtime.createHasteMap(configWithBackend, options);
-    expect(HasteMap.create).toHaveBeenCalledWith(
-      expect.objectContaining({backend: 'parcel'}),
-    );
-  });
 });

@@ -35,15 +35,13 @@ import type {
   ModuleMapItem,
   SerializableModuleMap,
 } from './types';
-import {WatcherDriver, resolveWatcherBackend} from './watchers';
+import {WatcherDriver, shouldUseWatchman} from './watchers';
 import {ChangeQueue} from './watchers/ChangeQueue';
-import type {ResolvedBackend} from './watchers/types';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
 
 type Options = {
-  backend?: 'default' | 'parcel';
   cacheDirectory?: string;
   computeDependencies?: boolean;
   computeSha1?: boolean;
@@ -71,7 +69,6 @@ type Options = {
 };
 
 type InternalOptions = {
-  backend: 'default' | 'parcel';
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
@@ -196,7 +193,6 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _ignoreFn: (filePath: string) => boolean = () => false;
   private readonly _console: Console;
   private readonly _options: InternalOptions;
-  private _resolvedBackendPromise: Promise<ResolvedBackend> | undefined;
   private _watcherDriver?: WatcherDriver;
   private _workerPool!: WorkerPool;
 
@@ -222,14 +218,13 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private constructor(options: Options) {
     super();
     this._options = {
-      backend: options.backend ?? 'default',
       cacheDirectory: options.cacheDirectory || tmpdir(),
       computeDependencies: options.computeDependencies ?? true,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
-      enableSymlinks: options.enableSymlinks ?? false,
+      enableSymlinks: options.enableSymlinks || false,
       extensions: options.extensions,
-      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI ?? false,
+      forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       id: options.id,
       maxWorkers: options.maxWorkers,
@@ -264,11 +259,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
 
-    if (
-      this._options.enableSymlinks &&
-      this._options.backend !== 'parcel' &&
-      this._options.useWatchman
-    ) {
+    if (this._options.enableSymlinks && this._options.useWatchman) {
       throw new Error(
         'jest-haste-map: enableSymlinks config option was set, but ' +
           'is incompatible with watchman.\n' +
@@ -489,19 +480,9 @@ class HasteMap extends EventEmitter implements IHasteMap {
         rootDir: options.rootDir,
         roots: options.roots,
       },
-      await this._resolveBackend(),
+      await shouldUseWatchman(this._options.useWatchman),
       this._console,
     );
-  }
-
-  private _resolveBackend(): Promise<ResolvedBackend> {
-    if (!this._resolvedBackendPromise) {
-      this._resolvedBackendPromise = resolveWatcherBackend({
-        backend: this._options.backend,
-        useWatchman: this._options.useWatchman,
-      });
-    }
-    return this._resolvedBackendPromise;
   }
 
   /**
@@ -535,10 +516,10 @@ class HasteMap extends EventEmitter implements IHasteMap {
     );
 
     this._watcherDriver = new WatcherDriver({
-      backend: await this._resolveBackend(),
       extensions: this._options.extensions,
       ignorePattern: this._options.ignorePattern,
       roots: this._options.roots,
+      useWatchman: await shouldUseWatchman(this._options.useWatchman),
     });
 
     this._changeQueue = new ChangeQueue(hasteMap, this._options.extensions, {

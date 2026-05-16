@@ -6,14 +6,18 @@
  */
 
 import {EventEmitter} from 'node:events';
+import isWatchmanInstalled from '../../lib/isWatchmanInstalled';
 import {FSEventsWatcher} from '../FSEventsWatcher';
-import {WatcherDriver} from '../index';
+import {WatcherDriver, shouldUseWatchman} from '../index';
 
 jest.mock('../../lib/isWatchmanInstalled');
 jest.mock('../FSEventsWatcher');
 jest.mock('../NodeWatcher');
 jest.mock('../WatchmanWatcher');
 
+const mockIsWatchmanInstalled = isWatchmanInstalled as jest.MockedFunction<
+  typeof isWatchmanInstalled
+>;
 const MockFSEventsWatcher = FSEventsWatcher as jest.MockedClass<
   typeof FSEventsWatcher
 >;
@@ -30,82 +34,25 @@ function makeReadyWatcher(): EventEmitter & WatcherInstance {
 }
 
 const driverOpts = {
-  backend: 'fsevents' as const,
   extensions: ['js'],
   ignorePattern: undefined,
   roots: ['/root/a'],
+  useWatchman: false,
 };
 
-describe('resolveWatcherBackend', () => {
-  let resolveWatcherBackend: typeof import('../index').resolveWatcherBackend;
-  let mockIsWatchmanInstalled: jest.MockedFunction<
-    typeof import('../../lib/isWatchmanInstalled').default
-  >;
-  let MockFSEventsWatcherLocal: jest.MockedClass<typeof FSEventsWatcher>;
-
+describe('shouldUseWatchman', () => {
   beforeEach(() => {
-    jest.resetModules();
-    // Re-require after reset so each test gets a fresh module-level promise cache.
-    jest.mock('../../lib/isWatchmanInstalled');
-    jest.mock('../FSEventsWatcher');
-    jest.mock('../NodeWatcher');
-    jest.mock('../WatchmanWatcher');
-    ({resolveWatcherBackend} = require('../index'));
-    mockIsWatchmanInstalled = require('../../lib/isWatchmanInstalled').default;
-    MockFSEventsWatcherLocal = require('../FSEventsWatcher').FSEventsWatcher;
+    jest.clearAllMocks();
   });
 
-  it('returns watchman when backend is default and watchman is installed', async () => {
-    mockIsWatchmanInstalled.mockResolvedValue(true);
-    expect(
-      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
-    ).toBe('watchman');
-  });
-
-  it('returns fsevents when backend is default, watchman unavailable, and FSEvents supported', async () => {
-    mockIsWatchmanInstalled.mockResolvedValue(false);
-    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(true);
-    expect(
-      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
-    ).toBe('fsevents');
-  });
-
-  it('returns node when backend is default, watchman unavailable, and FSEvents unsupported', async () => {
-    mockIsWatchmanInstalled.mockResolvedValue(false);
-    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(false);
-    expect(
-      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
-    ).toBe('node');
-  });
-
-  it('skips watchman when useWatchman is false', async () => {
-    jest.spyOn(MockFSEventsWatcherLocal, 'isSupported').mockReturnValue(true);
-    expect(
-      await resolveWatcherBackend({backend: 'default', useWatchman: false}),
-    ).toBe('fsevents');
+  it('returns false when useWatchmanOption is false', async () => {
+    expect(await shouldUseWatchman(false)).toBe(false);
     expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
   });
 
-  it('probes watchman when useWatchman is true', async () => {
+  it('returns isWatchmanInstalled() result when useWatchmanOption is true', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
-    expect(
-      await resolveWatcherBackend({backend: 'default', useWatchman: true}),
-    ).toBe('watchman');
-  });
-
-  it('throws for backend: parcel', async () => {
-    await expect(
-      resolveWatcherBackend({backend: 'parcel', useWatchman: true}),
-    ).rejects.toThrow('@parcel/watcher backend is not yet supported');
-  });
-
-  it('throws for unknown haste backend', async () => {
-    await expect(
-      resolveWatcherBackend({
-        backend: 'bogus' as 'default',
-        useWatchman: true,
-      }),
-    ).rejects.toThrow('Unknown haste backend: bogus');
+    expect(await shouldUseWatchman(true)).toBe(true);
   });
 });
 
@@ -114,13 +61,13 @@ describe('WatcherDriver', () => {
     jest.clearAllMocks();
   });
 
-  it('uses FSEventsWatcher when backend is fsevents', async () => {
+  it('uses FSEventsWatcher when useWatchman=false and FSEventsWatcher is supported', async () => {
     jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     MockFSEventsWatcher.mockImplementation(
       () => makeReadyWatcher() as unknown as jest.MockedObject<FSEventsWatcher>,
     );
 
-    const driver = new WatcherDriver(driverOpts);
+    const driver = new WatcherDriver({...driverOpts, useWatchman: false});
     await driver.start(jest.fn());
 
     expect(MockFSEventsWatcher).toHaveBeenCalledTimes(1);
@@ -133,7 +80,7 @@ describe('WatcherDriver', () => {
       () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
     );
 
-    const driver = new WatcherDriver(driverOpts);
+    const driver = new WatcherDriver({...driverOpts, useWatchman: false});
     const onChange = jest.fn();
     await driver.start(onChange);
 
@@ -143,13 +90,6 @@ describe('WatcherDriver', () => {
       'file.js',
       '/root/a',
       undefined,
-    );
-  });
-
-  it('throws when backend is parcel', async () => {
-    const driver = new WatcherDriver({...driverOpts, backend: 'parcel'});
-    await expect(driver.start(jest.fn())).rejects.toThrow(
-      '@parcel/watcher backend is not yet supported',
     );
   });
 
@@ -224,7 +164,9 @@ describe('WatcherDriver', () => {
         w.close = closeA;
         return w;
       }
-      // Second root: never emits ready — will hit the timeout
+      // Second root: never emits ready — we make it reject by returning a
+      // watcher whose close rejects, but the actual failure comes from a
+      // manual rejection below.
       const emitter = new EventEmitter();
       return Object.assign(emitter, {
         close: jest.fn(async () => {}),
@@ -236,6 +178,8 @@ describe('WatcherDriver', () => {
       roots: ['/root/a', '/root/b'],
     });
 
+    // Wrap start() to reject the second watcher's promise by monkey-patching
+    // _createWatcher is private, so we trigger the failure via a timeout.
     jest.useFakeTimers();
     const startPromise = driver.start(jest.fn());
     jest.advanceTimersByTime(250_000);

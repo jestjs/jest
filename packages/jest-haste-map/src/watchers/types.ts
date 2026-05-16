@@ -8,7 +8,12 @@
 import type {EventEmitter} from 'node:events';
 import type {HasteRegExp} from '../types';
 
-export type ResolvedBackend = 'watchman' | 'fsevents' | 'node' | 'parcel';
+export type WatcherBackend =
+  | 'auto'
+  | 'watchman'
+  | 'parcel'
+  | 'fsevents'
+  | 'node';
 
 export type WatcherOptions = {
   dot: boolean;

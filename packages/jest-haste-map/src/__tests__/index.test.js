@@ -570,24 +570,6 @@ describe('HasteMap', () => {
         useWatchman: false,
       }),
     ).resolves.not.toThrow();
-
-    await expect(
-      HasteMap.create({
-        ...defaultConfig,
-        backend: 'parcel',
-        enableSymlinks: true,
-      }),
-    ).resolves.not.toThrow();
-  });
-
-  it('throws when backend is parcel and build is called', async () => {
-    const haste = await HasteMap.create({
-      ...defaultConfig,
-      backend: 'parcel',
-    });
-    await expect(haste.build()).rejects.toThrow(
-      '@parcel/watcher backend is not yet supported',
-    );
   });
 
   describe('builds a haste map on a fresh cache with SHA-1s', () => {

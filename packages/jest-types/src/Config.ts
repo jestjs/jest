@@ -110,8 +110,6 @@ type FakeTimers = GlobalFakeTimersConfig &
   );
 
 export type HasteConfig = {
-  /** Backend used for file crawling and watch mode. */
-  backend?: 'default' | 'parcel';
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
@@ -120,7 +118,8 @@ export type HasteConfig = {
   forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   * Cannot be used together with `watchman: true` unless `backend: 'parcel'` is set.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;
   /** string to a custom implementation of Haste. */

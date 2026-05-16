@@ -191,9 +191,6 @@ export const FakeTimers = Type.Intersect([
 
 const HasteConfig = Type.Partial(
   Type.Object({
-    backend: Type.Union([Type.Literal('default'), Type.Literal('parcel')], {
-      description: 'Backend used for file crawling and watch mode.',
-    }),
     computeSha1: Type.Boolean({
       description: 'Whether to hash files using SHA-1.',
     }),
@@ -206,7 +203,9 @@ const HasteConfig = Type.Partial(
     }),
     enableSymlinks: Type.Boolean({
       description:
-        'Whether to follow symlinks when crawling for files. Cannot be used together with `watchman: true` unless `haste.backend: "parcel"` is set.',
+        'Whether to follow symlinks when crawling for files.' +
+        '\n\tThis options cannot be used in projects which use watchman.' +
+        '\n\tProjects with `watchman` set to true will error if this option is set to true.',
     }),
     hasteImplModulePath: Type.String({
       description: 'Path to a custom implementation of Haste.',
