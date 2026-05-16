@@ -8,13 +8,6 @@
 import type {EventEmitter} from 'node:events';
 import type {HasteRegExp} from '../types';
 
-export type WatcherBackend =
-  | 'auto'
-  | 'watchman'
-  | 'parcel'
-  | 'fsevents'
-  | 'node';
-
 export type WatcherOptions = {
   dot: boolean;
   glob: ReadonlyArray<string>;

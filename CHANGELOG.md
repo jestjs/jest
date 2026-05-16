@@ -15,6 +15,7 @@
 ### Chore & Maintenance
 
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
+- `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
 
 ## 30.4.2

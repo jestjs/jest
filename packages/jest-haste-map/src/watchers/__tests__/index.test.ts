@@ -50,9 +50,19 @@ describe('shouldUseWatchman', () => {
     expect(mockIsWatchmanInstalled).not.toHaveBeenCalled();
   });
 
-  it('returns isWatchmanInstalled() result when useWatchmanOption is true', async () => {
+  it('returns true when useWatchmanOption is true and watchman is installed', async () => {
     mockIsWatchmanInstalled.mockResolvedValue(true);
     expect(await shouldUseWatchman(true)).toBe(true);
+  });
+
+  it('returns false when useWatchmanOption is true but watchman is not installed', async () => {
+    // Isolate so the module-level isWatchmanInstalledPromise cache is fresh.
+    let fn!: typeof shouldUseWatchman;
+    jest.isolateModules(() => {
+      mockIsWatchmanInstalled.mockResolvedValue(false);
+      fn = require('../index').shouldUseWatchman as typeof shouldUseWatchman;
+    });
+    expect(await fn(true)).toBe(false);
   });
 });
 
@@ -164,9 +174,8 @@ describe('WatcherDriver', () => {
         w.close = closeA;
         return w;
       }
-      // Second root: never emits ready — we make it reject by returning a
-      // watcher whose close rejects, but the actual failure comes from a
-      // manual rejection below.
+      // Second root: never emits ready — the ready-timeout below triggers
+      // the rejection.
       const emitter = new EventEmitter();
       return Object.assign(emitter, {
         close: jest.fn(async () => {}),
@@ -178,8 +187,6 @@ describe('WatcherDriver', () => {
       roots: ['/root/a', '/root/b'],
     });
 
-    // Wrap start() to reject the second watcher's promise by monkey-patching
-    // _createWatcher is private, so we trigger the failure via a timeout.
     jest.useFakeTimers();
     const startPromise = driver.start(jest.fn());
     jest.advanceTimersByTime(250_000);
