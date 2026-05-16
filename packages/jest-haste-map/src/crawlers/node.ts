@@ -98,9 +98,16 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  enableSymlinks: boolean,
   callback: Callback,
 ): void {
-  const args = [...roots, '-type', 'f'];
+  const args = [...roots];
+
+  if (enableSymlinks) {
+    args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
+  } else {
+    args.push('-type', 'f');
+  }
 
   if (extensions.length > 0) {
     args.push('(');
@@ -191,7 +198,7 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, callback);
+      findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
       find(roots, extensions, ignore, enableSymlinks, callback);
     }
