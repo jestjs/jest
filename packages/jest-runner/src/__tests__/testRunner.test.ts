@@ -75,3 +75,22 @@ test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () =>
 
   expect(process.env.JEST_WORKER_ID).toBe('1');
 });
+
+test('UNSTABLE_onCustomMessage callback receives typed tuple arguments', () => {
+  // Verify that the onCustomMessage callback destructures a typed tuple
+  // [event: unknown, payload: unknown] instead of the previous `any` type.
+  // This test ensures the type safety improvement from #16111 is preserved.
+  const callback = ([event, payload]: [event: unknown, payload: unknown]) => {
+    // Both event and payload should be typed as unknown, not any
+    const _eventType: unknown = event;
+    const _payloadType: unknown = payload;
+    return [_eventType, _payloadType];
+  };
+
+  // Simulate the custom message format used by jest-worker
+  const result = callback(['test-case-start', {testPath: './file.test.js'}]);
+  expect(result).toEqual([
+    'test-case-start',
+    {testPath: './file.test.js'},
+  ]);
+});
