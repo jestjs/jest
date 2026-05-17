@@ -169,27 +169,30 @@ const indent = (
     .join('\n');
 };
 
-const generate = (
-  require(
-    require.resolve('@babel/generator', {
+let babelCore: typeof import('@babel/core') | undefined;
+let babelGenerator: typeof import('@babel/generator').default | undefined;
+
+const getBabelCore = (): typeof import('@babel/core') => {
+  babelCore ??= require(
+    require.resolve('@babel/core', {
       [Symbol.for('jest-resolve-outside-vm-option')]: true,
     }),
-  ) as typeof import('@babel/generator')
-).default;
+  ) as typeof import('@babel/core');
 
-const {parseSync, types} = require(
-  require.resolve('@babel/core', {
-    [Symbol.for('jest-resolve-outside-vm-option')]: true,
-  }),
-) as typeof import('@babel/core');
+  return babelCore;
+};
 
-const {
-  isAwaitExpression,
-  templateElement,
-  templateLiteral,
-  traverseFast,
-  traverse,
-} = types;
+const getBabelGenerator = (): typeof import('@babel/generator').default => {
+  babelGenerator ??= (
+    require(
+      require.resolve('@babel/generator', {
+        [Symbol.for('jest-resolve-outside-vm-option')]: true,
+      }),
+    ) as typeof import('@babel/generator')
+  ).default;
+
+  return babelGenerator;
+};
 
 export const processInlineSnapshotsWithBabel = (
   snapshots: Array<InlineSnapshot>,
@@ -219,6 +222,7 @@ export const processInlineSnapshotsWithBabel = (
   const snapshotMatcherNames: Array<string> = [];
 
   let ast: ParseResult | null = null;
+  const {parseSync} = getBabelCore();
 
   try {
     ast = parseSync(sourceFile, {
@@ -255,6 +259,7 @@ export const processInlineSnapshotsWithBabel = (
     throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
   }
   traverseAst(snapshots, ast, snapshotMatcherNames);
+  const generate = getBabelGenerator();
 
   return {
     snapshotMatcherNames,
@@ -291,6 +296,10 @@ export const processPrettierAst = (
   snapshotMatcherNames: Array<string>,
   keepNode?: boolean,
 ): void => {
+  const {
+    types: {isAwaitExpression, templateElement, templateLiteral, traverse},
+  } = getBabelCore();
+
   traverse(ast, (node: Node, ancestors: TraversalAncestors) => {
     if (node.type !== 'CallExpression') return;
 
@@ -377,6 +386,10 @@ const traverseAst = (
   ast: File | Program,
   snapshotMatcherNames: Array<string>,
 ) => {
+  const {
+    types: {templateElement, templateLiteral, traverseFast},
+  } = getBabelCore();
+
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
