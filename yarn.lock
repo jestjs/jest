@@ -4651,7 +4651,7 @@ __metadata:
     "@types/convert-source-map": "npm:^2.0.3"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/write-file-atomic": "npm:^4.0.3"
-    babel-plugin-istanbul: "npm:^7.0.1"
+    babel-plugin-istanbul: "npm:^8.0.0"
     chalk: "npm:^4.1.2"
     convert-source-map: "npm:^2.0.0"
     dedent: "npm:^1.6.0"
@@ -8444,7 +8444,7 @@ __metadata:
     "@jest/transform": "workspace:*"
     "@types/babel__core": "npm:^7.20.5"
     "@types/graceful-fs": "npm:^4.1.9"
-    babel-plugin-istanbul: "npm:^7.0.1"
+    babel-plugin-istanbul: "npm:^8.0.0"
     babel-preset-jest: "workspace:*"
     chalk: "npm:^4.1.2"
     graceful-fs: "npm:^4.2.11"
@@ -8476,16 +8476,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-istanbul@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "babel-plugin-istanbul@npm:7.0.1"
+"babel-plugin-istanbul@npm:^8.0.0":
+  version: 8.0.2
+  resolution: "babel-plugin-istanbul@npm:8.0.2"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^7.0.0"
     "@istanbuljs/load-nyc-config": "npm:^1.0.0"
     "@istanbuljs/schema": "npm:^0.1.3"
     istanbul-lib-instrument: "npm:^6.0.2"
-    test-exclude: "npm:^6.0.0"
-  checksum: 10/fe9f865f975aaa7a033de9ccb2b63fdcca7817266c5e98d3e02ac7ffd774c695093d215302796cb3770a71ef4574e7a9b298504c3c0c104cf4b48c8eda67b2a6
+    test-exclude: "npm:^7.0.1"
+  checksum: 10/b2bd017e4001caca7c82d50a1a832f5d7b692f07eb62feae8fb17af026468bffb918284a3f5bc8d98ec2b2b1f8bb4c253e6bb9a1a07431f26bf308ab5202fb05
   languageName: node
   linkType: hard
 
@@ -12590,7 +12590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2, glob@npm:^10.3.7, glob@npm:^10.5.0":
+"glob@npm:^10.2.2, glob@npm:^10.3.7, glob@npm:^10.4.1, glob@npm:^10.5.0":
   version: 10.5.0
   resolution: "glob@npm:10.5.0"
   dependencies:
@@ -12633,7 +12633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4":
+"glob@npm:^7.0.0, glob@npm:^7.1.1, glob@npm:^7.1.3":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
   dependencies:
@@ -16913,7 +16913,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:3.1.5, minimatch@npm:^3.0.4, minimatch@npm:^3.1.1, minimatch@npm:^3.1.5":
+"minimatch@npm:3.1.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.5":
   version: 3.1.5
   resolution: "minimatch@npm:3.1.5"
   dependencies:
@@ -21803,14 +21803,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"test-exclude@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "test-exclude@npm:6.0.0"
+"test-exclude@npm:^7.0.1":
+  version: 7.0.2
+  resolution: "test-exclude@npm:7.0.2"
   dependencies:
     "@istanbuljs/schema": "npm:^0.1.2"
-    glob: "npm:^7.1.4"
-    minimatch: "npm:^3.0.4"
-  checksum: 10/8fccb2cb6c8fcb6bb4115394feb833f8b6cf4b9503ec2485c2c90febf435cac62abe882a0c5c51a37b9bbe70640cdd05acf5f45e486ac4583389f4b0855f69e5
+    glob: "npm:^10.4.1"
+    minimatch: "npm:^10.2.2"
+  checksum: 10/45920af7556a58333c75c3d5011b4087f7ac41366319fb0f6ccc4ac8d0e9d2c81442d7ebf6efd13813dcf18c135eda3c52e4ad3e00407a3ee041d8dec6bfd753
   languageName: node
   linkType: hard
 
