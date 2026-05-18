@@ -231,14 +231,16 @@ describe('walk', () => {
     const origLstat = gfs.lstat;
     const spy = jest
       .spyOn(gfs, 'lstat')
-      .mockImplementation((p, cb: Parameters<typeof origLstat>[1]) => {
-        inflight++;
-        maxInflight = Math.max(maxInflight, inflight);
-        origLstat(p as string, (...args) => {
-          inflight--;
-          (cb as (...a: Array<unknown>) => void)(...args);
-        });
-      });
+      .mockImplementation(
+        (p: fs.PathLike, cb: Parameters<typeof origLstat>[1]) => {
+          inflight++;
+          maxInflight = Math.max(maxInflight, inflight);
+          origLstat(p as string, (...args) => {
+            inflight--;
+            (cb as (...a: Array<unknown>) => void)(...args);
+          });
+        },
+      );
 
     await walkAsync({concurrency: 5, onEntry: () => {}, root});
     spy.mockRestore();

@@ -56,6 +56,51 @@ type WithAsymmetricMatchers<P extends Array<any>> =
     : {[K in keyof P]: DeepAsymmetricMatcher<P[K]>};
 
 /**
+ * Extracts the call signatures of a function type as a union of
+ * `(...args) => returnType` types. Supports up to 15 overloads. For
+ * non-overloaded functions, returns the function type unchanged. Falls back to
+ * `never` for non-function types. This lets downstream utility types (e.g.
+ * `Parameters<S>`, `ReturnType<S>`) distribute over each overload instead of
+ * collapsing to the last one.
+ */
+export type FunctionSignatures<F> = F extends {
+  (...args: infer A1): infer R1;
+  (...args: infer A2): infer R2;
+  (...args: infer A3): infer R3;
+  (...args: infer A4): infer R4;
+  (...args: infer A5): infer R5;
+  (...args: infer A6): infer R6;
+  (...args: infer A7): infer R7;
+  (...args: infer A8): infer R8;
+  (...args: infer A9): infer R9;
+  (...args: infer A10): infer R10;
+  (...args: infer A11): infer R11;
+  (...args: infer A12): infer R12;
+  (...args: infer A13): infer R13;
+  (...args: infer A14): infer R14;
+  (...args: infer A15): infer R15;
+}
+  ?
+      | ((...args: A1) => R1)
+      | ((...args: A2) => R2)
+      | ((...args: A3) => R3)
+      | ((...args: A4) => R4)
+      | ((...args: A5) => R5)
+      | ((...args: A6) => R6)
+      | ((...args: A7) => R7)
+      | ((...args: A8) => R8)
+      | ((...args: A9) => R9)
+      | ((...args: A10) => R10)
+      | ((...args: A11) => R11)
+      | ((...args: A12) => R12)
+      | ((...args: A13) => R13)
+      | ((...args: A14) => R14)
+      | ((...args: A15) => R15)
+  : F extends (...args: any) => any
+    ? F
+    : never;
+
+/**
  * Like the built-in `Parameters<F>` utility type, but each parameter accepts an
  * asymmetric matcher (recursively for nested objects), and overloaded functions
  * yield a union of all overload parameter tuples.
@@ -65,45 +110,9 @@ export type FunctionParameters<F> =
     ? Array<unknown>
     : FunctionParametersInternal<F>;
 
-/**
- * 1. If the function is overloaded or has no parameters → overloaded form
- *    (union of tuples, up to 15 overloads).
- * 2. If the function has parameters → simple form.
- * 3. else → `never`.
- */
-type FunctionParametersInternal<F> = F extends {
-  (...args: infer P1): any;
-  (...args: infer P2): any;
-  (...args: infer P3): any;
-  (...args: infer P4): any;
-  (...args: infer P5): any;
-  (...args: infer P6): any;
-  (...args: infer P7): any;
-  (...args: infer P8): any;
-  (...args: infer P9): any;
-  (...args: infer P10): any;
-  (...args: infer P11): any;
-  (...args: infer P12): any;
-  (...args: infer P13): any;
-  (...args: infer P14): any;
-  (...args: infer P15): any;
-}
-  ?
-      | WithAsymmetricMatchers<P1>
-      | WithAsymmetricMatchers<P2>
-      | WithAsymmetricMatchers<P3>
-      | WithAsymmetricMatchers<P4>
-      | WithAsymmetricMatchers<P5>
-      | WithAsymmetricMatchers<P6>
-      | WithAsymmetricMatchers<P7>
-      | WithAsymmetricMatchers<P8>
-      | WithAsymmetricMatchers<P9>
-      | WithAsymmetricMatchers<P10>
-      | WithAsymmetricMatchers<P11>
-      | WithAsymmetricMatchers<P12>
-      | WithAsymmetricMatchers<P13>
-      | WithAsymmetricMatchers<P14>
-      | WithAsymmetricMatchers<P15>
-  : F extends (...args: infer P) => any
-    ? WithAsymmetricMatchers<P>
+type FunctionParametersInternal<F> =
+  FunctionSignatures<F> extends infer S
+    ? S extends (...args: infer P) => any
+      ? WithAsymmetricMatchers<P>
+      : never
     : never;
