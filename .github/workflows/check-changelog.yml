@@ -28,7 +28,9 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: install
-        run: yarn --immutable
+        env:
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn --immutable --mode=skip-build
       - name: check changelog
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'require-changelog') }}
         run: yarn check-changelog
