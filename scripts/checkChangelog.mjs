@@ -44,7 +44,7 @@ for (const changelogPath of changelogPaths) {
 }
 
 if (prNumber != null) {
-  if (!/^\d+$/.test(prNumber)) {
+  if (!/^[1-9]\d*$/.test(prNumber)) {
     throw new Error(`PR number must be a positive integer, got: ${prNumber}`);
   }
 
@@ -64,7 +64,7 @@ if (errors.length > 0) {
   console.error(
     `Found ${errors.length} error${
       errors.length === 1 ? '' : 's'
-    } in changelog links:\n`,
+    } in changelog:\n`,
   );
   for (const error of errors) {
     console.error(error);
