@@ -152,12 +152,19 @@ export default class TestRunner extends EmittingTestRunner {
           path: test.path,
         }) as PromiseWithCustomMessage<TestResult>;
 
-        if (promise.UNSTABLE_onCustomMessage) {
-          promise.UNSTABLE_onCustomMessage(
-            ([event, payload]: [event: unknown, payload: unknown]) =>
-              this.#eventEmitter.emit(event, payload),
-          );
-        }
+ if (promise.UNSTABLE_onCustomMessage) {
+ promise.UNSTABLE_onCustomMessage(
+ (message: Array<unknown> | unknown) => {
+ if (Array.isArray(message)) {
+ const [event, payload] = message as [
+ keyof TestEvents,
+ ...unknown[],
+ ];
+ this.#eventEmitter.emit(event, payload);
+ }
+ },
+ );
+ }
 
         return promise;
       });
