@@ -28,7 +28,7 @@ The first time this test is run, Jest creates a [snapshot file](https://github.c
 ```javascript
 exports[`renders correctly 1`] = `
 <a
-  aria-label="normal
+  aria-label="normal"
   class="normal"
   href="http://www.facebook.com"
 >
