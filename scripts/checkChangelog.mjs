@@ -44,6 +44,10 @@ for (const changelogPath of changelogPaths) {
 }
 
 if (prNumber != null) {
+  if (!/^\d+$/.test(prNumber)) {
+    throw new Error(`PR number must be a positive integer, got: ${prNumber}`);
+  }
+
   const mainChangelog = fs.readFileSync(mainChangelogPath, 'utf8');
   const mainSection = mainChangelog
     .split(/^## /m)

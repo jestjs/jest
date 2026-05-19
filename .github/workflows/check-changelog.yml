@@ -27,8 +27,10 @@ jobs:
       - name: install
         run: yarn --immutable
       - name: check changelog
-        if: contains(github.event.pull_request.labels.*.name, 'skip-changelog')
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'require-changelog') }}
         run: yarn check-changelog
       - name: check changelog entry
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-changelog') }}
-        run: yarn check-changelog ${{ github.event.pull_request.number }}
+        if: contains(github.event.pull_request.labels.*.name, 'require-changelog')
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: yarn check-changelog $PR_NUMBER
