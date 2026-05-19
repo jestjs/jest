@@ -119,7 +119,7 @@ export interface AsymmetricMatchers {
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
   arrayOf(sample: unknown): AsymmetricMatcher;
   closeTo(sample: number, precision?: number): AsymmetricMatcher;
-  objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
+  objectContaining(sample: object): AsymmetricMatcher;
   stringContaining(sample: string): AsymmetricMatcher;
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
@@ -298,9 +298,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Used to check that a JavaScript object matches a subset of the properties of an object
    */
-  toMatchObject(
-    expected: Record<string, unknown> | Array<Record<string, unknown>>,
-  ): R;
+  toMatchObject(expected: object | Array<object>): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */

@@ -140,6 +140,32 @@ describe('Expect', () => {
   test('does not define the `.toMatchSnapshot()` matcher', () => {
     expect(jestExpect(null)).type.not.toHaveProperty('toMatchSnapshot');
   });
+
+  test('.toMatchObject() accepts class instances', () => {
+    class Session {
+      id = '';
+      username = '';
+      userId = 0;
+    }
+
+    const session = new Session();
+    expect(jestExpect({}).toMatchObject(session)).type.not.toRaiseError();
+    expect(
+      jestExpect({}).toMatchObject([session, session]),
+    ).type.not.toRaiseError();
+    expect(
+      jestExpect({}).toMatchObject({a: 1, b: 'two'}),
+    ).type.not.toRaiseError();
+  });
+
+  test('.objectContaining() accepts class instances', () => {
+    class Session {
+      id = '';
+    }
+
+    expect(jestExpect.objectContaining(new Session())).type.not.toRaiseError();
+    expect(jestExpect.objectContaining({a: 1})).type.not.toRaiseError();
+  });
 });
 
 describe('MatcherFunction', () => {
