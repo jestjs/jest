@@ -55,7 +55,7 @@ if (prNumber != null) {
   const expectedLink = `[#${prNumber}](https://github.com/jestjs/jest/pull/${prNumber})`;
   if (mainSection == null || !mainSection.includes(expectedLink)) {
     errors.push(
-      `mainChangelogPath: missing entry for PR #${prNumber} in "## main" — expected: ${expectedLink}`,
+      `${mainChangelogPath}: missing entry for PR #${prNumber} in "## main" — expected: ${expectedLink}`,
     );
   }
 }
