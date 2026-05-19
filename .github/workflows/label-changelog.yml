@@ -1,0 +1,32 @@
+name: Label Changelog
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  label-changelog:
+    name: Label Changelog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Check for relevant changes and update label
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const {default: run} = await import('${{ github.workspace }}/scripts/labelChangelog.mjs')
+            await run({github, context, core})
