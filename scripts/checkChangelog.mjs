@@ -8,24 +8,47 @@
 import fs from 'graceful-fs';
 
 const linkRegex =
-  /\[#(\d+)]\(https:\/\/github.com\/facebook\/jest\/(issues|pull)\/(\d+)\)/g;
+  /\[#(\d+)]\(https:\/\/github.com\/([^/]+)\/jest\/([^/]+)\/(\d+)\)/g;
 
-const changelogPath = 'CHANGELOG.md';
-const data = fs.readFileSync(changelogPath, 'utf8');
+const changelogPaths = ['CHANGELOG.md', 'CHANGELOG_PRE_v30.md'];
 
-let error = false;
-let lineNumber = 1;
-for (const line of data.split('\n')) {
-  for (const match of line.matchAll(linkRegex))
-    if (match[1] !== match[3]) {
+const errors = [];
+
+for (const changelogPath of changelogPaths) {
+  const data = fs.readFileSync(changelogPath, 'utf8');
+
+  let lineNumber = 1;
+  for (const line of data.split('\n')) {
+    for (const match of line.matchAll(linkRegex)) {
+      const [, linkNumber, org, type, urlNumber] = match;
       const column = match.index + 1;
-      console.error(
-        `${changelogPath}:${lineNumber}:${column}: error: ` +
-          `Link is incorrect: ${match[0]}`,
-      );
-      error = true;
+      const location = `${changelogPath}:${lineNumber}:${column}: error: `;
+      if (org !== 'jestjs') {
+        errors.push(
+          `${location}Expected org 'jestjs', got '${org}': ${match[0]}`,
+        );
+      }
+      if (type !== 'pull') {
+        errors.push(`${location}Expected 'pull', got '${type}': ${match[0]}`);
+      }
+      if (linkNumber !== urlNumber) {
+        errors.push(
+          `${location}Link number ${linkNumber} does not match URL number ${urlNumber}: ${match[0]}`,
+        );
+      }
     }
-  ++lineNumber;
+    ++lineNumber;
+  }
 }
 
-process.exit(error ? 1 : 0);
+if (errors.length > 0) {
+  console.error(
+    `Found ${errors.length} error${
+      errors.length === 1 ? '' : 's'
+    } in changelog links:\n`,
+  );
+  for (const error of errors) {
+    console.error(error);
+  }
+  process.exit(1);
+}
