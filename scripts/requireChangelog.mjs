@@ -29,6 +29,11 @@ export default async function requireChangelog({github, context}) {
       repo: context.repo.repo,
     });
   } else {
+    const hasLabel = context.payload.pull_request.labels.some(
+      l => l.name === 'require-changelog',
+    );
+    if (!hasLabel) return;
+
     const events = await github.paginate(github.rest.issues.listEvents, {
       issue_number: context.issue.number,
       owner: context.repo.owner,

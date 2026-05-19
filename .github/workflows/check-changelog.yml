@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'require-changelog') }}
         run: yarn check-changelog
       - name: check changelog entry
-        if: contains(github.event.pull_request.labels.*.name, 'require-changelog')
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'require-changelog') }}
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: yarn check-changelog $PR_NUMBER
