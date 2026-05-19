@@ -11,7 +11,7 @@ export {
   format,
   logValidationWarning,
 } from './utils';
-export type {DeprecatedOptions} from './types';
+export type {DeprecatedOptions, ValidationOptions} from './types';
 export {default as validate} from './validate';
 export {default as validateCLIOptions} from './validateCLIOptions';
 export {multipleValidOptions} from './condition';

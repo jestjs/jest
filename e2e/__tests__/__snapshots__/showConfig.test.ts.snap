@@ -8,11 +8,13 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
+      "collectCoverage": false,
       "collectCoverageFrom": [],
       "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
       "coveragePathIgnorePatterns": [
         "/node_modules/"
       ],
+      "coverageProvider": "babel",
       "coverageReporters": [
         "json",
         "text",
@@ -64,6 +66,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "<<REPLACED_ROOT_DIR>>"
       ],
       "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
+      "runnerOptions": {},
       "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],
@@ -107,6 +110,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "ci": true,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "collectTests": false,
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
     "coverageProvider": "babel",
     "coverageReporters": [
@@ -154,6 +158,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "watch": false,
     "watchAll": false,
     "watchman": true,
+    "workerGracefulExitTimeout": 500,
     "workerThreads": false
   },
   "version": "[version]"

@@ -6,10 +6,12 @@
  */
 
 import {
-  type FakeTimerWithContext,
+  type FakeTimers as FakeTimerWithContext,
   type FakeMethod as FakeableAPI,
-  type InstalledClock,
-  type FakeTimerInstallOpts as SinonFakeTimersConfig,
+  type Clock as InstalledClock,
+  type Config as SinonFakeTimersConfig,
+  type TemporalDuration,
+  type TemporalTimelike,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -98,15 +100,27 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number): void {
+  advanceTimersByTime(msToRun: number | TemporalDuration): void {
     if (this._checkFakeTimers()) {
-      this._clock.tick(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      this._clock.tick(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
-  async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
+  async advanceTimersByTimeAsync(
+    msToRun: number | TemporalDuration,
+  ): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      await this._clock.tickAsync(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
@@ -118,7 +132,6 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error needs an upstream fix: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/73943
       this._clock.runMicrotasks();
     }
   }
@@ -150,7 +163,7 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date): void {
+  setSystemTime(now?: number | Date | TemporalTimelike): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(now);
     }

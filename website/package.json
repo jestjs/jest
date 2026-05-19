@@ -36,12 +36,12 @@
     "@docusaurus/preset-classic": "^3.0.0",
     "@docusaurus/remark-plugin-npm2yarn": "^3.0.0",
     "clsx": "^2.1.1",
-    "docusaurus-remark-plugin-tab-blocks": "^3.1.0",
+    "docusaurus-remark-plugin-tab-blocks": "^4.0.0",
     "prism-react-renderer": "^2.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-github-btn": "^1.4.0",
-    "react-lite-youtube-embed": "^2.5.1",
+    "react-lite-youtube-embed": "^3.0.0",
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {

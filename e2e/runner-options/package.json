@@ -1,0 +1,11 @@
+{
+  "jest": {
+    "runner": [
+      "<rootDir>/runner.js",
+      {
+        "myOption": "hello",
+        "count": 42
+      }
+    ]
+  }
+}

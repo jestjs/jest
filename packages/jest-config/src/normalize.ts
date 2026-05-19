@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import {totalmem} from 'os';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import {totalmem} from 'node:os';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import merge from 'deepmerge';
 import {glob} from 'glob';
@@ -28,7 +28,14 @@ import {
   requireOrImportModule,
   tryRealpath,
 } from 'jest-util';
-import {ValidationError, validate} from 'jest-validate';
+import {
+  ValidationError,
+  type ValidationOptions,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+  validate,
+} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
@@ -54,6 +61,47 @@ import {
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
+
+const GLOBAL_ONLY_OPTIONS = new Set(
+  Object.keys(VALID_CONFIG).filter(
+    key => !Object.hasOwn(VALID_PROJECT_CONFIG, key),
+  ),
+);
+
+const unknownProjectOption = (
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
+  option: string,
+  options: ValidationOptions,
+  path?: Array<string>,
+): void => {
+  const warningTitle =
+    (options.title && options.title.warning) ?? 'Validation Warning';
+  const optionPath = path && path.length > 0 ? `${path.join('.')}.` : '';
+  if ((!path || path.length === 0) && GLOBAL_ONLY_OPTIONS.has(option)) {
+    logValidationWarning(
+      warningTitle,
+      `  Option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} is not supported in an individual project configuration.\n  Move it to the root configuration.`,
+      options.comment,
+    );
+  } else {
+    const didYouMean = createDidYouMeanMessage(
+      option,
+      Object.keys(exampleConfig),
+    );
+    logValidationWarning(
+      warningTitle,
+      `  Unknown option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} with value ${chalk.bold(format(config[option]))} was found.${
+        didYouMean && ` ${didYouMean}`
+      }\n  This is probably a typing mistake. Fixing it will remove this message.`,
+      options.comment,
+    );
+  }
+};
 
 export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
@@ -126,9 +174,9 @@ const setupPreset = async (
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.startsWith('.')
+    presetPath.startsWith('.') || path.isAbsolute(presetPath)
       ? presetPath
-      : path.join(presetPath, PRESET_NAME),
+      : `${presetPath}/${PRESET_NAME}`,
     {
       basedir: options.rootDir,
       extensions: PRESET_EXTENSIONS,
@@ -169,7 +217,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -377,7 +427,9 @@ const normalizeReporters = ({
       normalizedReporterConfig[0],
     );
 
-    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
+    if (
+      !['agent', 'default', 'github-actions', 'summary'].includes(reporterPath)
+    ) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: rootDir,
       });
@@ -502,6 +554,7 @@ export default async function normalize(
       'testEnvironmentOptions',
       'transform',
     ],
+    ...(isProjectOptions && {unknown: unknownProjectOption}),
   });
 
   let options = normalizeMissingOptions(
@@ -592,49 +645,46 @@ export default async function normalize(
     switch (key) {
       case 'setupFiles':
       case 'setupFilesAfterEnv':
-      case 'snapshotSerializers':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              resolve(newOptions.resolver, {
-                filePath,
-                key,
-                rootDir: options.rootDir,
-              }),
-            );
-        }
+      case 'snapshotSerializers': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          option.map(filePath =>
+            resolve(newOptions.resolver, {
+              filePath,
+              key,
+              rootDir: options.rootDir,
+            }),
+          );
         break;
+      }
       case 'modulePaths':
-      case 'roots':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              path.resolve(
-                options.rootDir,
-                replaceRootDirInPath(options.rootDir, filePath),
-              ),
-            );
-        }
+      case 'roots': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          option.map(filePath =>
+            path.resolve(
+              options.rootDir,
+              replaceRootDirInPath(options.rootDir, filePath),
+            ),
+          );
         break;
+      }
       case 'collectCoverageFrom':
         value = normalizeCollectCoverageFrom(oldOptions, key);
         break;
       case 'cacheDirectory':
-      case 'coverageDirectory':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            path.resolve(
-              options.rootDir,
-              replaceRootDirInPath(options.rootDir, option),
-            );
-        }
+      case 'coverageDirectory': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          path.resolve(
+            options.rootDir,
+            replaceRootDirInPath(options.rootDir, option),
+          );
         break;
+      }
       case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
@@ -642,48 +692,74 @@ export default async function normalize(
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
-      case 'filter':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              rootDir: options.rootDir,
-            });
-        }
+      case 'filter': {
+        const option = oldOptions[key];
+        value =
+          option &&
+          resolve(newOptions.resolver, {
+            filePath: option,
+            key,
+            rootDir: options.rootDir,
+          });
         break;
-      case 'runner':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            resolveRunner(newOptions.resolver, {
-              filePath: option,
-              requireResolveFunction: requireResolve,
-              rootDir: options.rootDir,
-            });
+      }
+      case 'runner': {
+        const option = oldOptions[key];
+        let runnerPath: string | undefined;
+        if (Array.isArray(option)) {
+          if (typeof option[0] !== 'string' || option[0].length === 0) {
+            throw createConfigError(
+              '  Runner must be a string or a tuple [string, object].\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          runnerPath = option[0];
+          const runnerOptions = option[1];
+          if (
+            runnerOptions != null &&
+            (typeof runnerOptions !== 'object' ||
+              Array.isArray(runnerOptions) ||
+              Object.getPrototypeOf(runnerOptions) !== Object.prototype)
+          ) {
+            throw createConfigError(
+              '  Runner options must be a plain object.\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          newOptions.runnerOptions =
+            (runnerOptions as Record<string, unknown>) ?? {};
+        } else {
+          runnerPath = option;
+          newOptions.runnerOptions = {};
         }
+        value =
+          runnerPath &&
+          resolveRunner(newOptions.resolver, {
+            filePath: runnerPath,
+            requireResolveFunction: requireResolve,
+            rootDir: options.rootDir,
+          });
         break;
-      case 'prettierPath':
-        {
-          // We only want this to throw if "prettierPath" is explicitly passed
-          // from config or CLI, and the requested path isn't found. Otherwise we
-          // set it to null and throw an error lazily when it is used.
+      }
+      case 'prettierPath': {
+        // We only want this to throw if "prettierPath" is explicitly passed
+        // from config or CLI, and the requested path isn't found. Otherwise we
+        // set it to null and throw an error lazily when it is used.
 
-          const option = oldOptions[key];
+        const option = oldOptions[key];
 
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              optional: option === DEFAULT_CONFIG[key],
-              rootDir: options.rootDir,
-            });
-        }
+        value =
+          option &&
+          resolve(newOptions.resolver, {
+            filePath: option,
+            key,
+            optional: option === DEFAULT_CONFIG[key],
+            rootDir: options.rootDir,
+          });
         break;
+      }
       case 'moduleNameMapper':
         const moduleNameMapper = oldOptions[key];
         value =
@@ -767,35 +843,33 @@ export default async function normalize(
           );
         break;
       case 'moduleDirectories':
-      case 'testMatch':
-        {
-          const option = oldOptions[key];
-          const rawValue =
-            Array.isArray(option) || option == null ? option : [option];
-          const replacedRootDirTags = _replaceRootDirTags(
-            escapeGlobCharacters(options.rootDir),
-            rawValue,
-          );
+      case 'testMatch': {
+        const option = oldOptions[key];
+        const rawValue =
+          Array.isArray(option) || option == null ? option : [option];
+        const replacedRootDirTags = _replaceRootDirTags(
+          escapeGlobCharacters(options.rootDir),
+          rawValue,
+        );
 
-          if (replacedRootDirTags) {
-            value = Array.isArray(replacedRootDirTags)
-              ? replacedRootDirTags.map(replacePathSepForGlob)
-              : replacePathSepForGlob(replacedRootDirTags);
-          } else {
-            value = replacedRootDirTags;
-          }
+        if (replacedRootDirTags) {
+          value = Array.isArray(replacedRootDirTags)
+            ? replacedRootDirTags.map(replacePathSepForGlob)
+            : replacePathSepForGlob(replacedRootDirTags);
+        } else {
+          value = replacedRootDirTags;
         }
         break;
-      case 'testRegex':
-        {
-          const option = oldOptions[key];
-          value = option
-            ? (Array.isArray(option) ? option : [option]).map(
-                replacePathSepForRegex,
-              )
-            : [];
-        }
+      }
+      case 'testRegex': {
+        const option = oldOptions[key];
+        value = option
+          ? (Array.isArray(option) ? option : [option]).map(
+              replacePathSepForRegex,
+            )
+          : [];
         break;
+      }
       case 'moduleFileExtensions': {
         value = oldOptions[key];
 
@@ -865,7 +939,11 @@ export default async function normalize(
           value = oldOptions[key];
         } else {
           value = {
-            color: getDisplayNameColor(options.runner),
+            color: getDisplayNameColor(
+              Array.isArray(options.runner)
+                ? options.runner[0]
+                : options.runner,
+            ),
             name: displayName,
           };
         }
@@ -943,6 +1021,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerGracefulExitTimeout':
       case 'workerThreads':
         value = oldOptions[key];
         break;
@@ -1006,6 +1085,10 @@ export default async function normalize(
 
   if (newOptions.runner === DEFAULT_CONFIG.runner) {
     newOptions.runner = require.resolve(newOptions.runner);
+  }
+
+  if (newOptions.runnerOptions == null) {
+    newOptions.runnerOptions = {};
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
@@ -1089,6 +1172,8 @@ export default async function normalize(
       : argv.updateSnapshot
         ? 'all'
         : 'new';
+
+  newOptions.collectTests = argv.collectTests || false;
 
   newOptions.maxConcurrency = Number.parseInt(
     newOptions.maxConcurrency as unknown as string,

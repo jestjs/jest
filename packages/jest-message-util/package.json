@@ -1,6 +1,6 @@
 {
   "name": "jest-message-util",
-  "version": "30.2.0",
+  "version": "30.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jestjs/jest.git",
@@ -27,6 +27,7 @@
     "@types/stack-utils": "^2.0.3",
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
+    "jest-util": "workspace:*",
     "picomatch": "^4.0.3",
     "pretty-format": "workspace:*",
     "slash": "^3.0.0",

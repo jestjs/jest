@@ -6,7 +6,7 @@
  */
 
 // eslint-disable-next-line no-restricted-imports
-import type {Stats} from 'fs';
+import type {Stats} from 'node:fs';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 
@@ -178,8 +178,8 @@ export type ChangeEvent = {
 export type DependencyExtractor = {
   extract: (
     code: string,
-    filePath: string,
-    defaultExtract: DependencyExtractor['extract'],
+    filePath?: string,
+    defaultExtract?: DependencyExtractor['extract'],
   ) => Iterable<string>;
   getCacheKey?: () => string;
 };

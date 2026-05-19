@@ -71,44 +71,52 @@ jest.mock('graceful-fs', () => {
         throw new Error('readdir: callback is not a function!');
       }
 
-      if (slash(dir) === '/project/fruits') {
+      const normalizedDir = slash(dir).replace(/\/+$/, '');
+      if (normalizedDir === '/project/fruits') {
         setTimeout(
           () =>
             callback(null, [
               {
                 isDirectory: () => true,
+                isFile: () => false,
                 isSymbolicLink: () => false,
                 name: 'directory',
               },
               {
                 isDirectory: () => false,
+                isFile: () => true,
                 isSymbolicLink: () => false,
                 name: 'tomato.js',
               },
               {
                 isDirectory: () => false,
+                isFile: () => false,
                 isSymbolicLink: () => true,
                 name: 'symlink',
               },
             ]),
           0,
         );
-      } else if (slash(dir) === '/project/fruits/directory') {
+      } else if (normalizedDir === '/project/fruits/directory') {
         setTimeout(
           () =>
             callback(null, [
               {
                 isDirectory: () => false,
+                isFile: () => true,
                 isSymbolicLink: () => false,
                 name: 'strawberry.js',
               },
             ]),
           0,
         );
-      } else if (slash(dir) === '/error') {
+      } else if (normalizedDir === '/error') {
         setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),
+    readdirSync: jest.fn(() => []),
+    realpath: jest.fn(),
+    realpathSync: jest.fn(),
     stat: jest.fn(stat),
   };
 });
@@ -362,6 +370,73 @@ describe('node crawler', () => {
 
     expect(hasteMap.files).toEqual(new Map());
     expect(removedFiles).toEqual(new Map());
+  });
+
+  it('deduplicates results when roots overlap', async () => {
+    nodeCrawl = require('../node').nodeCrawl;
+
+    const {hasteMap} = await nodeCrawl({
+      data: {files: new Map()},
+      extensions: ['js'],
+      forceNodeFilesystemAPI: true,
+      ignore: pearMatcher,
+      rootDir,
+      // /project/fruits/directory is a subdirectory of /project/fruits, so
+      // strawberry.js is reachable from both roots.
+      roots: ['/project/fruits', '/project/fruits/directory'],
+    });
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        'fruits/directory/strawberry.js': expect.any(Array),
+        'fruits/tomato.js': expect.any(Array),
+      }),
+    );
+  });
+
+  it('passes symlink args to find when enableSymlinks is true', async () => {
+    childProcess = require('child_process');
+    nodeCrawl = require('../node').nodeCrawl;
+
+    await nodeCrawl({
+      data: {files: new Map()},
+      enableSymlinks: true,
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    });
+
+    expect(childProcess.spawn).toHaveBeenLastCalledWith('find', [
+      '/project/fruits',
+      '(',
+      '-type',
+      'f',
+      '-o',
+      '-type',
+      'l',
+      ')',
+      '(',
+      '-iname',
+      '*.js',
+      ')',
+    ]);
+  });
+
+  it('handles empty results from find after filtering', async () => {
+    nodeCrawl = require('../node').nodeCrawl;
+    // All paths match the ignore pattern, so the filtered list is empty.
+    mockResponse = '/project/fruits/pear.js';
+
+    const {hasteMap} = await nodeCrawl({
+      data: {files: new Map()},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    });
+
+    expect(hasteMap.files).toEqual(new Map());
   });
 
   it('avoids calling lstat for directories and symlinks', async () => {

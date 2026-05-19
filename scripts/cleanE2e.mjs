@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, normalize, resolve} from 'path';
-import {fileURLToPath} from 'url';
+import {dirname, normalize, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {glob} from 'glob';
 import fs from 'graceful-fs';
 
 const excludedModules = [
   'e2e/global-setup-node-modules/node_modules/',
+  'e2e/native-esm-js-esm-syntax-fallback/node_modules/',
   'e2e/presets/cjs/node_modules/',
   'e2e/presets/js/node_modules/',
   'e2e/presets/js-type-module/node_modules/',

@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "30.2.0",
+  "version": "30.4.2",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -25,6 +25,7 @@
     "chalk": "^4.1.2",
     "ci-info": "^4.2.0",
     "exit-x": "^0.2.2",
+    "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.11",
     "jest-changed-files": "workspace:*",
     "jest-config": "workspace:*",

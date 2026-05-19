@@ -2,24 +2,113 @@
 
 ### Features
 
-- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
-- `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
+- `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
+- `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
+- `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 
 ### Fixes
 
+- `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
+- `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
+- `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
+- `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
+- `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
+
+### Chore & Maintenance
+
+- `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
+- `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
+- `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
+
+## 30.4.2
+
+### Fixes
+
+- `[jest-runtime]` Fix named imports from CJS modules whose `module.exports` is a function with own-property exports ([#16150](https://github.com/jestjs/jest/pull/16150))
+
+## 30.4.1
+
+### Features
+
+- `[jest-config, jest-core, jest-runner, jest-schemas, jest-types]` Allow custom runner configuration options via tuple format `['runner-path', {options}]` ([#16141](https://github.com/jestjs/jest/pull/16141))
+
+### Fixes
+
+- `[jest-runtime]` Align CJS-from-ESM default export with Node: `module.exports` is always the ESM default, `__esModule` unwrapping is no longer applied ([#16143](https://github.com/jestjs/jest/pull/16143))
+
+## 30.4.0
+
+### Features
+
+- `[babel-jest]` Support collecting coverage from `.mts`, `.cts` (and other) files ([#15994](https://github.com/jestjs/jest/pull/15994))
+- `[jest-circus, jest-cli, jest-config, jest-core, jest-jasmine2, jest-types]` Add `--collect-tests` flag to discover and list tests without executing them ([#16006](https://github.com/jestjs/jest/pull/16006))
+- `[jest-config, jest-runner, jest-worker]` Add `workerGracefulExitTimeout` config option to control how long workers are given to exit before being force-killed ([#15984](https://github.com/jestjs/jest/pull/15984))
+- `[jest-config]` Add support for `jest.config.mts` as a valid configuration file ([#16005](https://github.com/jestjs/jest/pull/16005))
+- `[jest-config, jest-core, jest-reporters, jest-runner]` `verbose` and `silent` can now be set per-project; the project-level value overrides the global value for that project's tests ([#16133](https://github.com/jestjs/jest/pull/16133))
+- `[@jest/fake-timers]` Accept `Temporal.Duration` in `jest.advanceTimersByTime()` and `jest.advanceTimersByTimeAsync()` ([#16128](https://github.com/jestjs/jest/pull/16128))
+- `[@jest/fake-timers]` Accept `Temporal.Instant` and `Temporal.ZonedDateTime` in `jest.setSystemTime()` and `useFakeTimers({now})` ([#16128](https://github.com/jestjs/jest/pull/16128))
+- `[@jest/fake-timers]` Support faking `Temporal.Now.*` ([#16131](https://github.com/jestjs/jest/pull/16131))
+- `[jest-mock]` Add `clearMocksOnScope(scope)` on `ModuleMocker` for clearing every mock function exposed on a scope object ([#16088](https://github.com/jestjs/jest/pull/16088))
+- `[jest-resolve]` Add `canResolveSync()` on `Resolver` so callers can detect when a user-configured resolver only exports an `async` hook ([#16064](https://github.com/jestjs/jest/pull/16064))
+- `[jest-runtime]` Use synchronous `evaluate()` for ES modules without top-level `await` on Node versions that support it (v24.9+), and prefer the synchronous transform path when a sync transformer is configured ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-runtime]` Support `require()` of ES modules on Node v24.9+ ([#16074](https://github.com/jestjs/jest/pull/16074))
+- `[jest-runtime]` Validate TC39 import attributes (`with { type: 'json' }`) on ESM imports ([#16127](https://github.com/jestjs/jest/pull/16127))
+- `[@jest/transform]` Add `canTransformSync(filename)` on `ScriptTransformer` so callers can pick the sync vs async transform path ([#16062](https://github.com/jestjs/jest/pull/16062))
+- `[jest-util]` Add `isError` helper ([#16076](https://github.com/jestjs/jest/pull/16076))
+- `[pretty-format]` Support React 19 ([#16123](https://github.com/jestjs/jest/pull/16123))
+
+### Fixes
+
+- `[expect-utils]` Fix `toStrictEqual` failing on `structuredClone` results due to cross-realm constructor mismatch ([#15959](https://github.com/jestjs/jest/pull/15959))
+- `[@jest/expect-utils]` Prevent `toMatchObject`/subset matching from throwing when encountering exotic iterables ([#15952](https://github.com/jestjs/jest/pull/15952))
+- `[fake-timers]` Convert `Date` to milliseconds before passing to `@sinonjs/fake-timers` ([#16029](https://github.com/jestjs/jest/pull/16029))
+- `[jest]` Export `GlobalConfig` and `ProjectConfig` TypeScript types ([#16132](https://github.com/jestjs/jest/pull/16132))
+- `[jest-circus]` Prevent crash when `asyncError` is undefined for non-Error throws ([#16003](https://github.com/jestjs/jest/pull/16003))
+- `[jest-circus, jest-jasmine2]` Include `Error.cause` in JSON `failureMessages` output ([#15967](https://github.com/jestjs/jest/pull/15967))
+- `[jest-config]` Fix preset path resolution on Windows when the preset uses subpath `exports` ([#15961](https://github.com/jestjs/jest/pull/15961))
+- `[jest-config]` Allow `collectCoverage` and `coverageProvider` in project config without a validation warning ([#16132](https://github.com/jestjs/jest/pull/16132))
+- `[jest-config]` Project config validator now emits "is not supported in an individual project configuration" instead of "probably a typing mistake" for known global-only options ([#16132](https://github.com/jestjs/jest/pull/16132))
+- `[jest-environment-node]` Fix `--localstorage-file` warning on Node 25+ ([#16086](https://github.com/jestjs/jest/pull/16086))
+- `[jest-reporters]` Apply global coverage threshold to unmatched pattern files in addition to glob/path thresholds ([#16137](https://github.com/jestjs/jest/pull/16137))
+- `[jest-reporters, jest-runner, jest-runtime, jest-transform]` Fix coverage report not showing correct code coverage when using `projects` config option ([#16140](https://github.com/jestjs/jest/pull/16140))
+- `[jest-runtime]` Resolve `expect` and `@jest/expect` from the internal module registry so test-file imports share the same `JestAssertionError` as the global `expect` ([#16130](https://github.com/jestjs/jest/pull/16130))
+- `[jest-runtime]` Improve CJS-from-ESM interop: `__esModule`/Babel default unwrap, broader named-export coverage, and shared CJS singleton across importers ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Load `.js` files with ESM syntax but no `"type":"module"` marker as native ESM ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Extend the `.js`-with-ESM-syntax fallback to `require()` on Node v24.9+ - falls back to `require(esm)` when the CJS parser rejects ESM syntax ([#16078](https://github.com/jestjs/jest/pull/16078))
+- `[jest-runtime]` Fix deadlocks and double-evaluation in concurrent ESM and wasm imports ([#16050](https://github.com/jestjs/jest/pull/16050))
+- `[jest-runtime]` Fix error when `require()` is called after the Jest environment has been torn down ([#15951](https://github.com/jestjs/jest/pull/15951))
+- `[jest-runtime]` Fix missing error when `import()` is called after the Jest environment has been torn down ([#16080](https://github.com/jestjs/jest/pull/16080))
+- `[jest-runtime]` Fix virtual `unstable_mockModule` registrations not respected in ESM ([#16081](https://github.com/jestjs/jest/pull/16081))
+- `[jest-runtime]` Apply `moduleNameMapper` when resolving modules with `require.resolve()` and the `paths` option ([#16135](https://github.com/jestjs/jest/pull/16135))
+
+### Chore & Maintenance
+
+- `[@jest/fake-timers]` Upgrade `@sinonjs/fake-timers` ([#16139](https://github.com/jestjs/jest/pull/16139))
+- `[jest-runtime]` Use synchronous `linkRequests` / `instantiate` for ESM linking on Node v24.9+ ([#16063](https://github.com/jestjs/jest/pull/16063))
+
+## 30.3.0
+
+### Features
+
+- `[jest-config]` Add `defineConfig` and `mergeConfig` helpers for type-safe Jest config ([#15844](https://github.com/jestjs/jest/pull/15844))
+- `[jest-fake-timers]` Add `setTimerTickMode` to configure how timers advance
+- `[*]` Reduce token usage when run through LLMs ([`3f17932`](https://github.com/jestjs/jest/commit/3f17932061c0203999451e5852664093de876709))
+
+### Fixes
+
+- `[jest-config]` Keep CLI coverage output when using `--json` with `--outputFile` ([#15918](https://github.com/jestjs/jest/pull/15918))
 - `[jest-mock]` Use `Symbol` from test environment ([#15858](https://github.com/jestjs/jest/pull/15858))
 - `[jest-reporters]` Fix issue where console output not displayed for GHA reporter even with `silent: false` option ([#15864](https://github.com/jestjs/jest/pull/15864))
 - `[jest-runtime]` Fix issue where user cannot utilize dynamic import despite specifying `--experimental-vm-modules` Node option ([#15842](https://github.com/jestjs/jest/pull/15842))
 - `[jest-test-sequencer]` Fix issue where failed tests due to compilation errors not getting re-executed even with `--onlyFailures` CLI option ([#15851](https://github.com/jestjs/jest/pull/15851))
 - `[jest-util]` Make sure `process.features.require_module` is `false` ([#15867](https://github.com/jestjs/jest/pull/15867))
-- `[jest-config]` Keep CLI coverage output when using `--json` with `--outputFile` ([#15918](https://github.com/jestjs/jest/pull/15918))
 
 ### Chore & Maintenance
 
-- `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
-- `[deps]` Update to sinon/fake-timers v15
-- Updated Twitter icon to match the latest brand guidelines.([#15868](https://github.com/jestjs/jest/pull/15869))
 - `[*]` Replace remaining micromatch uses with picomatch
+- `[deps]` Update to sinon/fake-timers v15
+- `[docs]` Update V30 migration guide to notify users on `jest.mock()` work with case-sensitive path ([#15849](https://github.com/jestjs/jest/pull/15849))
+- Updated Twitter icon to match the latest brand guidelines ([#15869](https://github.com/jestjs/jest/pull/15869))
 
 ## 30.2.0
 
@@ -70,7 +159,7 @@
 - `[jest-snapshot-utils]` Fix deprecated goo.gl snapshot guide link not getting replaced with fully canonical URL ([#15787](https://github.com/jestjs/jest/pull/15787))
 - `[jest-circus]` Fix `it.concurrent` not working with `describe.skip` ([#15765](https://github.com/jestjs/jest/pull/15765))
 - `[jest-snapshot]` Fix mangled inline snapshot updates when used with Prettier 3 and CRLF line endings
-- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15772](https://github.com/jestjs/jest/issues/15772))
+- `[jest-runtime]` Importing from `@jest/globals` in more than one file no longer breaks relative paths ([#15773](https://github.com/jestjs/jest/pull/15773))
 
 # Chore
 
@@ -108,7 +197,7 @@
 
 ### Features
 
-- `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/facebook/jest/pull/15696))
+- `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/jestjs/jest/pull/15696))
 
 ## 30.0.2
 
@@ -144,13 +233,13 @@
 - `[jest-circus, jest-cli, jest-config]` Add `waitNextEventLoopTurnForUnhandledRejectionEvents` flag to minimise performance impact of correct detection of unhandled promise rejections introduced in [#14315](https://github.com/jestjs/jest/pull/14315) ([#14681](https://github.com/jestjs/jest/pull/14681))
 - `[jest-circus]` Add a `waitBeforeRetry` option to `jest.retryTimes` ([#14738](https://github.com/jestjs/jest/pull/14738))
 - `[jest-circus]` Add a `retryImmediately` option to `jest.retryTimes` ([#14696](https://github.com/jestjs/jest/pull/14696))
-- `[jest-circus, jest-jasmine2]` Allow `setupFilesAfterEnv` to export an async function ([#10962](https://github.com/jestjs/jest/issues/10962))
+- `[jest-circus, jest-jasmine2]` Allow `setupFilesAfterEnv` to export an async function ([#14749](https://github.com/jestjs/jest/pull/14749))
 - `[jest-circus, jest-test-result]` Add `startedAt` timestamp in `TestCaseResultObject` within `onTestCaseResult` ([#15145](https://github.com/jestjs/jest/pull/15145))
-- `[jest-cli]` Export `buildArgv` ([#15310](https://github.com/facebook/jest/pull/15310))
-- `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/facebook/jest/pull/14369))
+- `[jest-cli]` Export `buildArgv` ([#15310](https://github.com/jestjs/jest/pull/15310))
+- `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/jestjs/jest/pull/14369))
 - `[jest-config]` [**BREAKING**] Update `testMatch` and `testRegex` default option for supporting `mjs`, `cjs`, `mts`, and `cts` ([#14584](https://github.com/jestjs/jest/pull/14584))
-- `[jest-config]` Loads config file from provided path in `package.json` ([#14044](https://github.com/facebook/jest/pull/14044))
-- `[jest-config]` Allow loading `jest.config.cts` files ([#14070](https://github.com/facebook/jest/pull/14070))
+- `[jest-config]` Loads config file from provided path in `package.json` ([#14044](https://github.com/jestjs/jest/pull/14044))
+- `[jest-config]` Allow loading `jest.config.cts` files ([#14070](https://github.com/jestjs/jest/pull/14070))
 - `[jest-config]` Show `rootDir` in error message when a `preset` fails to load ([#15194](https://github.com/jestjs/jest/pull/15194))
 - `[jest-config]` Support loading TS config files using `esbuild-register` via docblock loader ([#15190](https://github.com/jestjs/jest/pull/15190))
 - `[jest-config]` Allow passing TS config loader options via docblock comment ([#15234](https://github.com/jestjs/jest/pull/15234))
@@ -167,8 +256,8 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM to v22 ([#13825](https://github.com/jestjs/jest/pull/13825))
 - `[@jest/environment-jsdom-abstract]` Introduce new package which abstracts over the `jsdom` environment, allowing usage of custom versions of JSDOM ([#14717](https://github.com/jestjs/jest/pull/14717))
 - `[jest-environment-node]` Update jest environment with dispose symbols `Symbol` ([#14888](https://github.com/jestjs/jest/pull/14888) & [#14909](https://github.com/jestjs/jest/pull/14909))
-- `[expect, @jest/expect]` [**BREAKING**] Add type inference for function parameters in `CalledWith` assertions ([#15129](https://github.com/facebook/jest/pull/15129))
-- `[@jest/expect-utils]` Properly compare all types of `TypedArray`s ([#15178](https://github.com/facebook/jest/pull/15178))
+- `[expect, @jest/expect]` [**BREAKING**] Add type inference for function parameters in `CalledWith` assertions ([#15129](https://github.com/jestjs/jest/pull/15129))
+- `[@jest/expect-utils]` Properly compare all types of `TypedArray`s ([#15178](https://github.com/jestjs/jest/pull/15178))
 - `[@jest/fake-timers]` [**BREAKING**] Upgrade `@sinonjs/fake-timers` to v13 ([#14544](https://github.com/jestjs/jest/pull/14544) & [#15470](https://github.com/jestjs/jest/pull/15470))
 - `[@jest/fake-timers]` Exposing new modern timers function `advanceTimersToFrame()` which advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-matcher-utils]` Add `SERIALIZABLE_PROPERTIES` to allow custom serialization of objects ([#14893](https://github.com/jestjs/jest/pull/14893))
@@ -186,14 +275,14 @@
 - `[@jest/schemas]` Upgrade `@sinclair/typebox` to v0.34 ([#15450](https://github.com/jestjs/jest/pull/15450))
 - `[@jest/types]` `test.each()`: Accept a readonly (`as const`) table properly ([#14565](https://github.com/jestjs/jest/pull/14565))
 - `[@jest/types]` Improve argument type inference passed to `test` and `describe` callback functions from `each` tables ([#14920](https://github.com/jestjs/jest/pull/14920))
-- `[jest-snapshot]` [**BREAKING**] Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/facebook/jest/pull/13965))
-- `[jest-snapshot]` Support Prettier 3 ([#14566](https://github.com/facebook/jest/pull/14566))
-- `[@jest/util-snapshot]` Extract utils used by tooling from `jest-snapshot` into its own package ([#15095](https://github.com/facebook/jest/pull/15095))
-- `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/facebook/jest/pull/14470))
+- `[jest-snapshot]` [**BREAKING**] Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/jestjs/jest/pull/13965))
+- `[jest-snapshot]` Support Prettier 3 ([#14566](https://github.com/jestjs/jest/pull/14566))
+- `[@jest/util-snapshot]` Extract utils used by tooling from `jest-snapshot` into its own package ([#15095](https://github.com/jestjs/jest/pull/15095))
+- `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/jestjs/jest/pull/14470))
 
 ### Fixes
 
-- `[expect]` Show `AggregateError` to display ([#15346](https://github.com/facebook/jest/pull/15346))
+- `[expect]` Show `AggregateError` to display ([#15346](https://github.com/jestjs/jest/pull/15346))
 - `[*]` Replace `exit` with `exit-x` ([#15399](https://github.com/jestjs/jest/pull/15399))
 - `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[babel-plugin-jest-hoist]` Do not rely on buggy Babel behaviour ([#15415](https://github.com/jestjs/jest/pull/15415))
@@ -211,7 +300,7 @@
 - `[jest-cli]` [**BREAKING**] Validate CLI flags that require arguments receives them ([#14783](https://github.com/jestjs/jest/pull/14783))
 - `[jest-config]` Make sure to respect `runInBand` option ([#14578](https://github.com/jestjs/jest/pull/14578))
 - `[jest-config]` Support `testTimeout` in project config ([#14697](https://github.com/jestjs/jest/pull/14697))
-- `[jest-config]` Support `coverageReporters` in project config ([#14697](https://github.com/jestjs/jest/pull/14830))
+- `[jest-config]` Support `coverageReporters` in project config ([#14830](https://github.com/jestjs/jest/pull/14830))
 - `[jest-config]` Allow `reporters` in project config ([#14768](https://github.com/jestjs/jest/pull/14768))
 - `[jest-config]` Allow Node16/NodeNext/Bundler `moduleResolution` in project's tsconfig ([#14739](https://github.com/jestjs/jest/pull/14739))
 - `[@jest/create-cache-key-function]` Correct the return type of `createCacheKey` ([#15159](https://github.com/jestjs/jest/pull/15159))
@@ -225,7 +314,7 @@
 - `[jest-haste-map]` Fix errors or clobbering with multiple `hasteImplModulePath`s ([#15522](https://github.com/jestjs/jest/pull/15522))
 - `[jest-leak-detector]` Make leak-detector more aggressive when running GC ([#14526](https://github.com/jestjs/jest/pull/14526))
 - `[jest-runtime]` Properly handle re-exported native modules in ESM via CJS ([#14589](https://github.com/jestjs/jest/pull/14589))
-- `[jest-runtime]` Refactor `_importCoreModel` so required core module is consistent if modified while loading ([#15077](https://github.com/jestjs/jest/issues/15077))
+- `[jest-runtime]` Refactor `_importCoreModel` so required core module is consistent if modified while loading ([#15517](https://github.com/jestjs/jest/pull/15517))
 - `[jest-schemas, jest-types]` [**BREAKING**] Fix type of `testFailureExitCode` config option([#15232](https://github.com/jestjs/jest/pull/15232))
 - `[jest-util]` Make sure `isInteractive` works in a browser ([#14552](https://github.com/jestjs/jest/pull/14552))
 - `[pretty-format]` [**BREAKING**] Print `ArrayBuffer` and `DataView` correctly ([#14290](https://github.com/jestjs/jest/pull/14290))
@@ -254,7 +343,7 @@
 
 ### Chore & Maintenance
 
-- `[jest-environment-jsdom, jest-environment-jsdom-abstract]` Increased version of jsdom to `^26.0.0` ([#15325](https://github.com/jestjs/jest/issues/15325)[CVE-2024-37890](https://nvd.nist.gov/vuln/detail/CVE-2024-37890))
+- `[jest-environment-jsdom, jest-environment-jsdom-abstract]` Increased version of jsdom to `^26.0.0` ([#15473](https://github.com/jestjs/jest/pull/15473))
 - `[*]` Increase version of `micromatch` to `^4.0.7` ([#15082](https://github.com/jestjs/jest/pull/15082))
 - `[*]` [**BREAKING**] Drop support for Node.js versions 14, 16, 19, 21 and 23 ([#14460](https://github.com/jestjs/jest/pull/14460), [#15118](https://github.com/jestjs/jest/pull/15118), [#15623](https://github.com/jestjs/jest/pull/15623), [#15640](https://github.com/jestjs/jest/pull/15640))
 - `[*]` [**BREAKING**] Drop support for `typescript@4.3`, minimum version is now `5.4` ([#14542](https://github.com/jestjs/jest/pull/14542), [#15621](https://github.com/jestjs/jest/pull/15621))
@@ -284,4 +373,4 @@
 
 ## Older Changelog Entries
 
-For newer CHANGELOG entries see [`CHANGELOG_PRE_v30.md`](CHANGELOG_PRE_v30.md).
+For older CHANGELOG entries see [`CHANGELOG_PRE_v30.md`](CHANGELOG_PRE_v30.md).

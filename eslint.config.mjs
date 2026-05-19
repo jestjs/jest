@@ -7,8 +7,8 @@
 
 /* eslint-disable sort-keys */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import eslintJs from '@eslint/js';
 import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
@@ -210,6 +210,7 @@ const config = defineConfig(
       'no-restricted-imports': [
         'error',
         {message: 'Please use graceful-fs instead.', name: 'fs'},
+        {message: 'Please use graceful-fs instead.', name: 'node:fs'},
       ],
       'no-restricted-modules': 'off',
       'no-restricted-syntax': 'off',
@@ -274,6 +275,10 @@ const config = defineConfig(
       'wrap-regex': 'off',
       yoda: 'off',
 
+      // Needs Node 20 as minimum
+      'unicorn/no-array-reverse': 'off',
+      'unicorn/no-array-sort': 'off',
+
       // doesn't work without ESModuleInterop
       'unicorn/import-style': 'off',
       // we're a CJS project
@@ -308,11 +313,7 @@ const config = defineConfig(
       'unicorn/prefer-reflect-apply': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-structured-clone': 'off',
-
-      // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
       'unicorn/prefer-export-from': 'off',
-      // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
-      'unicorn/prefer-node-protocol': 'off',
     },
   },
   [
@@ -451,6 +452,8 @@ const config = defineConfig(
       'jest/require-to-throw-message': 'error',
       'jest/valid-expect': 'error',
       'import-x/order': 'off',
+      // we don't wanna mess with tests
+      'unicorn/prefer-node-protocol': 'off',
     },
   },
 
@@ -522,10 +525,13 @@ const config = defineConfig(
       'unicorn/error-message': 'off',
       'unicorn/no-anonymous-default-export': 'off',
       'unicorn/no-await-expression-member': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-static-only-class': 'off',
+      'unicorn/prefer-class-fields': 'off',
       'unicorn/prefer-number-properties': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-global-this': 'off',
+      'unicorn/require-module-specifiers': 'off',
       // The following disabled when upgrade ESLint to v9, some of them make sense to enable
       'prefer-template': 'off',
       '@typescript-eslint/no-require-imports': 'off',
@@ -607,6 +613,32 @@ const config = defineConfig(
     },
   },
   {
+    // These packages are consumed by webpack/browser bundles (see CHANGELOG #16167).
+    // They must not use the `node:` protocol — it is not available in all bundler targets.
+    files: [
+      'packages/expect/src/**/*',
+      'packages/expect-utils/src/**/*',
+      'packages/jest-matcher-utils/src/**/*',
+      'packages/jest-message-util/src/**/*',
+      'packages/jest-pattern/src/**/*',
+      'packages/jest-regex-util/src/**/*',
+      'packages/jest-util/src/**/*',
+    ],
+    rules: {
+      // Don't require the node: prefix (would break browser bundling).
+      'unicorn/prefer-node-protocol': 'off',
+      // Actively ban node: protocol imports in case a contributor adds one.
+      'no-restricted-syntax': [
+        'error',
+        {
+          message:
+            'Use the bare module name (e.g. "path") instead of the "node:" protocol — this package must be browser-bundle compatible.',
+          selector: 'ImportDeclaration[source.value=/^node:/]',
+        },
+      ],
+    },
+  },
+  {
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -673,6 +705,12 @@ const config = defineConfig(
         jasmine: 'readonly',
         pending: 'readonly',
       },
+    },
+  },
+  {
+    files: ['e2e/fake-timers-temporal/__tests__/*'],
+    languageOptions: {
+      globals: {Temporal: 'readonly'},
     },
   },
   {
@@ -779,7 +817,14 @@ const config = defineConfig(
       'unicorn/prefer-number-properties': 'off',
     },
   },
-
+  // Instruction files for AI agents
+  {
+    files: ['**/CLAUDE.md/**', '.github/copilot-instructions.md/**'],
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
   {
     ignores: [
       '!.*',
@@ -807,6 +852,7 @@ const config = defineConfig(
       // JS Syntax error
       '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
       '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
+      'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
 
       // Bug? Uses TS syntax
       'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
@@ -834,6 +880,29 @@ const config = defineConfig(
       'e2e/transform/**/*',
       'examples/react-native/index.js',
     ],
+  },
+  {
+    files: [
+      'packages/expect/src/__tests__/**/*',
+      'packages/expect-utils/src/__tests__/**/*',
+      'packages/jest-get-type/src/__tests__/**/*',
+      'packages/jest-matcher-utils/src/__tests__/**/*',
+      'packages/pretty-format/src/__tests__/**/*',
+    ],
+    rules: {
+      'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-bigint-literals': 'off',
+    },
+  },
+  {
+    files: [
+      'e2e/coverage-provider-v8/*/uncovered.{ts,js}',
+      'e2e/babel-plugin-jest-hoist/__test_modules__/**/*',
+    ],
+    rules: {
+      'unicorn/prefer-class-fields': 'off',
+      'unicorn/require-module-specifiers': 'off',
+    },
   },
 );
 

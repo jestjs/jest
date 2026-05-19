@@ -7,12 +7,14 @@ exports[`prints the config object 1`] = `
     "cache": false,
     "cacheDirectory": "/test_cache_dir/",
     "clearMocks": false,
+    "collectCoverage": false,
     "collectCoverageFrom": [
       "src",
       "!public"
     ],
     "coverageDirectory": "coverage",
     "coveragePathIgnorePatterns": [],
+    "coverageProvider": "babel",
     "coverageReporters": [],
     "cwd": "/test_root_dir/",
     "detectLeaks": false,
@@ -54,6 +56,7 @@ exports[`prints the config object 1`] = `
       "path/to/dir/test"
     ],
     "runner": "jest-runner",
+    "runnerOptions": {},
     "runtime": "/test_module_loader_path",
     "sandboxInjectedGlobals": [],
     "setupFiles": [],
@@ -85,6 +88,7 @@ exports[`prints the config object 1`] = `
     "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "collectTests": false,
     "coverageDirectory": "coverage",
     "coverageProvider": "babel",
     "coverageReporters": [],

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isNativeError} from 'node:util/types';
+import {isError} from 'jest-util';
 
 /**
  * When we're asked to give a JSON output with the --json flag or otherwise,
@@ -23,7 +23,7 @@ export default function serializeToJSON(
     (_, value) => {
       // There might be more in Error, but pulling out just the message, name,
       // and stack should be good enough
-      if (isNativeError(value)) {
+      if (isError(value)) {
         return {
           message: value.message,
           name: value.name,

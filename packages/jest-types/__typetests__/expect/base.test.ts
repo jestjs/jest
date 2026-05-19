@@ -69,6 +69,16 @@ expect(
 expect(
   jestExpect({a: 1}).toEqual(jestExpect.objectContaining({a: 1})),
 ).type.toBe<void>();
+
+class SessionForContaining {
+  id = '';
+}
+expect(
+  jestExpect({id: ''}).toEqual(
+    jestExpect.objectContaining(new SessionForContaining()),
+  ),
+).type.toBe<void>();
+
 expect(
   jestExpect({a: 1}).toEqual(jestExpect.objectContaining(1)),
 ).type.toRaiseError();
@@ -266,6 +276,16 @@ expect(jestExpect({a: 1, b: 2}).toMatchObject({b: 2})).type.toBe<void>();
 expect(
   jestExpect([{a: 1}, {b: 2, c: true}]).toMatchObject([{a: 1}, {b: 2}]),
 ).type.toBe<void>();
+
+class Session {
+  id = '';
+  username = '';
+  userId = 0;
+}
+const session = new Session();
+expect(jestExpect({}).toMatchObject(session)).type.toBe<void>();
+expect(jestExpect({}).toMatchObject([session, session])).type.toBe<void>();
+
 expect(jestExpect({c: true}).toMatchObject(true)).type.toRaiseError();
 expect(jestExpect({c: true}).toMatchObject()).type.toRaiseError();
 

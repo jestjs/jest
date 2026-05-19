@@ -5,7 +5,7 @@ title: Configuring Jest
 
 The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
-It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|cts|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|mts|cjs|cts|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
 
 :::note
 
@@ -392,7 +392,11 @@ For more information about the options object shape refer to `CoverageReporterWi
 
 Default: `undefined`
 
-This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as `global`, as a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.
+This will be used to configure minimum threshold enforcement for coverage results. Thresholds can be specified as `global`, as a [glob](https://github.com/isaacs/node-glob#glob-primer), and as a directory or file path. If thresholds aren't met, jest will fail.
+
+- If a threshold is set to a **positive** number, it will be interpreted as the **minimum** percentage of coverage required.
+
+- If a threshold is set to a **negative** number, it will be treated as the **maximum** number of uncovered items allowed.
 
 For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:
 
@@ -402,9 +406,13 @@ const {defineConfig} = require('jest');
 module.exports = defineConfig({
   coverageThreshold: {
     global: {
+      // Requires 80% branch coverage
       branches: 80,
+      // Requires 80% function coverage
       functions: 80,
+      // Requires 80% line coverage
       lines: 80,
+      // Require that no more than 10 statements are uncovered
       statements: -10,
     },
   },
@@ -417,18 +425,48 @@ import {defineConfig} from 'jest';
 export default defineConfig({
   coverageThreshold: {
     global: {
+      // Requires 80% branch coverage
       branches: 80,
+      // Requires 80% function coverage
       functions: 80,
+      // Requires 80% line coverage
       lines: 80,
+      // Require that no more than 10 statements are uncovered
       statements: -10,
     },
   },
 });
 ```
 
-If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, an error is returned.
+#### coverageThreshold.global.lines [number]
 
-For example, with the following configuration:
+Global threshold for lines.
+
+#### coverageThreshold.global.functions [number]
+
+Global threshold for functions.
+
+#### coverageThreshold.global.statements [number]
+
+Global threshold for statements.
+
+#### coverageThreshold.global.branches [number]
+
+Global threshold for branches.
+
+#### coverageThreshold[glob-pattern] \[object]
+
+Default: `undefined`
+
+Sets thresholds for files matching the [glob](https://github.com/isaacs/node-glob#glob-primer) pattern. This allows you to enforce a high global standard while also setting specific thresholds for critical files or directories.
+
+:::info
+
+When globs or paths are defined together with a global threshold, Jest applies each threshold independently — specific patterns use their own limits, while the global threshold applies to files not matched by any pattern. If all files are matched by path or glob patterns, the global threshold falls back to applying against all covered files.
+
+If the file specified by path is not found, an error is returned.
+
+:::
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -488,10 +526,10 @@ export default defineConfig({
 
 Jest will fail if:
 
-- The `./src/components` directory has less than 40% branch or statement coverage.
+- The `./src/components` directory has less than 40% branch/statement coverage.
 - One of the files matching the `./src/reducers/**/*.js` glob has less than 90% statement coverage.
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
-- Every remaining file combined has less than 50% coverage (`global`).
+- All files that are not matched by `./src/components`, `./src/reducers/**/*.js`, or `./src/api/very-important-module.js` have less than 50% coverage (`global`).
 
 ### `dependencyExtractor` \[string]
 
@@ -875,11 +913,22 @@ type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
-  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  /**
+   * Force use of Node's `fs` APIs (via `fdir`) rather than shelling out to
+   * the system `find` binary. Defaults to `false` on Linux/macOS.
+   *
+   * **Consider setting this to `true`**: `find(1)` receives no ignore
+   * predicate, so it traverses ignored directories (e.g. `node_modules`,
+   * `.git`) in full and discards the results afterward. The Node `fs` crawler
+   * prunes those subtrees at `readdir` time. For most projects where
+   * `node_modules` dwarfs source files, this makes the Node crawler faster
+   * in practice despite `find(1)` being native code. A future Jest version
+   * may flip this default.
+   */
   forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   *   This options cannot be used in projects which use watchman.
+   *   This option cannot be used in projects which use watchman.
    *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;
@@ -1212,7 +1261,7 @@ export default defineConfig({
 
 This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.
 
-The projects feature can also be used to run multiple configurations or multiple [runners](#runner-string). For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via [jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in the same invocation of Jest:
+The projects feature can also be used to run multiple configurations or multiple [runners](#runner-string--string-object). For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via [jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in the same invocation of Jest:
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -1257,6 +1306,18 @@ When using multi-project runner, it's recommended to add a `displayName` for eac
 :::note
 
 With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the _child's root directory_ even if they are defined in the root-level configuration.
+
+:::
+
+:::note
+
+Some options only take effect at the **root (global) config** level and are ignored when set inside a project config. These include: `bail`, `changedSince`, `ci`, `coverageReporters`, `coverageThreshold`, `forceExit`, `maxConcurrency`, `passWithNoTests`, `reporters`, `testResultsProcessor`, `testSequencer`, `watch`, `watchAll`, and `watchPlugins`. If you need to use any of these options, define them in the root config instead of a project config.
+
+The `jest` package exports the `ProjectConfig` and `GlobalConfig` TypeScript types if you need to distinguish between the two:
+
+```ts
+import type {GlobalConfig, ProjectConfig} from 'jest';
+```
 
 :::
 
@@ -1617,7 +1678,7 @@ export default defineConfig({
 });
 ```
 
-### `runner` \[string]
+### `runner` \[string | \[string, object\]]
 
 Default: `"jest-runner"`
 
@@ -1634,17 +1695,76 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) in the constructor, and has a `runTests` method with the signature:
+You can pass options to a custom runner by using a tuple form. The options will be passed as the third argument to the runner's constructor:
 
-```ts
-async function runTests(
-  tests: Array<Test>,
-  watcher: TestWatcher,
-  onStart: OnTestStart,
-  onResult: OnTestSuccess,
-  onFailure: OnTestFailure,
-  options: TestRunnerOptions,
-): Promise<void>;
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  runner: ['jest-runner-custom', {myOption: true, timeout: 5000}],
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  runner: ['jest-runner-custom', {myOption: true, timeout: 5000}],
+});
+```
+
+To write a custom test-runner, export a class that extends one of the base runners from `jest-runner` (`CallbackTestRunner` or `EmittingTestRunner`) and implements the `runTests` method. When using the tuple configuration, the options object is passed as the third constructor argument:
+
+```js tab title="my-runner.js"
+const {CallbackTestRunner} = require('jest-runner');
+
+class MyRunner extends CallbackTestRunner {
+  constructor(globalConfig, context, options) {
+    super(globalConfig, context);
+    this._runnerOptions = options;
+  }
+
+  async runTests(tests, watcher, onStart, onResult, onFailure, options) {
+    // implement test execution using this._runnerOptions
+  }
+}
+
+module.exports = MyRunner;
+```
+
+```ts tab title="my-runner.ts"
+import type {Config} from '@jest/types';
+import type {
+  CallbackTestRunner,
+  OnTestFailure,
+  OnTestStart,
+  OnTestSuccess,
+  Test,
+  TestRunnerContext,
+  TestRunnerOptions,
+  TestWatcher,
+} from 'jest-runner';
+
+export default class MyRunner extends CallbackTestRunner {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    context: TestRunnerContext,
+    private readonly _runnerOptions?: Record<string, unknown>,
+  ) {
+    super(globalConfig, context);
+  }
+
+  async runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void> {
+    // implement test execution using this._runnerOptions
+  }
+}
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
@@ -1902,15 +2022,17 @@ More about serializers API can be found [here](https://github.com/jestjs/jest/tr
 
 :::
 
-### `testEnvironment` \[string]
+### `testEnvironment` \[node | jsdom | string]
 
-Default: `"node"`
+Default: `node`
 
 The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through [`jsdom`](https://github.com/jsdom/jsdom) instead.
 
 By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
 
-```js
+- With built-in environments:
+
+```js tab title="my-test.spec.js"
 /**
  * @jest-environment jsdom
  */
@@ -1921,91 +2043,108 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [`globalConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/jestjs/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481) as its first argument, and [`testEnvironmentContext`](https://github.com/jestjs/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
-
-The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/jestjs/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/jestjs/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
-
-Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
-
-To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might look like this:
-
-```js
+```ts tab title="my-test.spec.ts"
 /**
- * @jest-environment ./src/test/my-custom-environment
+ * @jest-environment jsdom
  */
+
+test('use jsdom in this test file', () => {
+  const element = document.createElement('div');
+  expect(element).not.toBeNull();
+});
 ```
 
-:::info
+- With custom environment:
 
-TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.
+```js tab title="my-test.spec.js"
+/**
+ * @jest-environment ./my-custom-environment.js
+ */
 
-:::
+test('use jsdom in this test file', () => {
+  const element = document.createElement('div');
+  expect(element).not.toBeNull();
+});
+```
 
-Example:
+```ts tab title="my-test.spec.ts"
+/**
+ * @jest-environment ./my-custom-environment.ts
+ */
 
-```js
-// my-custom-environment
-const NodeEnvironment = require('jest-environment-node').TestEnvironment;
+test('use jsdom in this test file', () => {
+  const element = document.createElement('div');
+  expect(element).not.toBeNull();
+});
+```
 
-class CustomEnvironment extends NodeEnvironment {
+You can also define custom environment. When non-builtin environment is used, Jest will try to load either the file path or the package name defined as value for `testEnvironment`. That file or the package should export an object with the shape of `JestEnvironment`:
+
+```js tab title="environment.js"
+/**
+ * @implements {import('@jest/environment').JestEnvironment}
+ */
+class CustomEnvironment {
   constructor(config, context) {
-    super(config, context);
-    console.log(config.globalConfig);
-    console.log(config.projectConfig);
-    this.testPath = context.testPath;
-    this.docblockPragmas = context.docblockPragmas;
+    const {projectConfig} = config;
+    // Implement the constructor
   }
 
-  async setup() {
-    await super.setup();
-    await someSetupTasks(this.testPath);
-    this.global.someGlobalObject = createGlobalObject();
-
-    // Will trigger if docblock contains @my-custom-pragma my-pragma-value
-    if (this.docblockPragmas['my-custom-pragma'] === 'my-pragma-value') {
-      // ...
-    }
-  }
-
-  async teardown() {
-    this.global.someGlobalObject = destroyGlobalObject();
-    await someTeardownTasks();
-    await super.teardown();
-  }
-
+  // Example of a method
   getVmContext() {
-    return super.getVmContext();
+    return null;
   }
-
-  async handleTestEvent(event, state) {
-    if (event.name === 'test_start') {
-      // ...
-    }
-  }
+  // Implement the required methods here
 }
 
 module.exports = CustomEnvironment;
 ```
 
-```js
-// my-test-suite
-/**
- * @jest-environment ./my-custom-environment
- */
-let someGlobalObject;
+```ts tab title="environment.ts"
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 
-beforeAll(() => {
-  someGlobalObject = globalThis.someGlobalObject;
-});
+export default class CustomEnvironment implements JestEnvironment {
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
+    const {projectConfig} = config;
+    // Implement the constructor
+  }
+
+  // Example of a method
+  getVmContext() {
+    return null;
+  }
+  // Implement the required methods here
+}
 ```
+
+Jest also exposes `builtinEnvironments` through `jest-environment-node` and `jest-environment-jsdom` packages, in case you just want to extend it. You can read more about extending environments in [our guide](TestEnvironment.md).
 
 ### `testEnvironmentOptions` \[Object]
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment being used.
 
-For example, you can override options passed to [`jsdom`](https://github.com/jsdom/jsdom):
+#### Node Environment Options
+
+When using the `node` environment, you can configure various options that are passed to `runInContext`. These options include:
+
+- **`globalsCleanup`** (**'on'** | **'soft'** | **'off'**): Controls cleanup of global variables between tests. Default: `'soft'`.
+- All the options listed in the [vm.runInContext](https://nodejs.org/api/vm.html#scriptrunincontextcontextifiedobject-options) documentation
+
+#### JSDOM Environment Options
+
+When using the `jsdom` environment, you can configure various options that are passed to [jsdom](https://github.com/jsdom/jsdom). These options include:
+
+- **`url`** - The URL of the page (affects `window.location` and relative URLs). Default: `"http://localhost"`
+- **`userAgent`** - The user agent string. Default: a generic user agent
+- All the options listed in the [jsdom](https://github.com/jsdom/jsdom)
+
+For example, you can override options passed to `jsdom`:
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -2013,7 +2152,7 @@ const {defineConfig} = require('jest');
 module.exports = defineConfig({
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    html: '<html lang="zh-cmn-Hant"></html>',
+    html: '<html lang="en-US"></html>',
     url: 'https://jestjs.io/',
     userAgent: 'Agent/007',
   },
@@ -2026,14 +2165,23 @@ import {defineConfig} from 'jest';
 export default defineConfig({
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    html: '<html lang="zh-cmn-Hant"></html>',
+    html: '<html lang="en-US"></html>',
     url: 'https://jestjs.io/',
     userAgent: 'Agent/007',
   },
 });
 ```
 
-Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
+#### Custom Export Conditions
+
+The `testEnvironmentOptions` allow specifying `customExportConditions`, which control which versions of a library are loaded from `exports` in `package.json`.
+
+The built-in environments have the following defaults:
+
+- `jest-environment-jsdom` defaults to `['browser']`
+- `jest-environment-node` defaults to `['node', 'node-addons']`
+
+For example, you can override `customExportConditions` passed to `jsdom`:
 
 ```js tab title="jest.config.js"
 const {defineConfig} = require('jest');
@@ -2067,6 +2215,20 @@ These options can also be passed in a docblock, similar to `testEnvironment`. Th
 
 test('use jsdom and set the URL in this test file', () => {
   expect(window.location.href).toBe('https://jestjs.io/');
+});
+```
+
+You can combine multiple options:
+
+```js
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options {"url": "https://example.com/", "userAgent": "Custom Agent"}
+ */
+
+test('use custom URL and user agent', () => {
+  expect(window.location.href).toBe('https://example.com/');
+  expect(window.navigator.userAgent).toContain('Custom Agent');
 });
 ```
 
@@ -2495,6 +2657,30 @@ The values in the `watchPlugins` property value can omit the `jest-watch-` prefi
 Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
+
+### `workerGracefulExitTimeout` \[number]
+
+Default: `500`
+
+Timeout in milliseconds for a worker process to exit gracefully after all tests have completed. If a worker does not exit within this timeout, it is force-killed.
+
+Increase this value if your test environment requires more time to tear down (for example, when using `--detectOpenHandles` or when workers hold onto long-lived resources).
+
+```js tab title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  workerGracefulExitTimeout: 2000,
+});
+```
+
+```ts tab title="jest.config.ts"
+import {defineConfig} from 'jest';
+
+export default defineConfig({
+  workerGracefulExitTimeout: 2000,
+});
+```
 
 ### `workerIdleMemoryLimit` \[number|string]
 

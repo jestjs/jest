@@ -3,9 +3,13 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
-    "lib": ["es2021", "ESNext.Disposable"]
+    "lib": ["es2023", "ESNext.Disposable"]
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
-  "references": [{"path": "../jest-types"}, {"path": "../jest-util"}]
+  "references": [
+    {"path": "../expect-utils"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"}
+  ]
 }

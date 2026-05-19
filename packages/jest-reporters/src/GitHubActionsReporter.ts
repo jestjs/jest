@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {stripVTControlCharacters as stripAnsi} from 'util';
+import {stripVTControlCharacters as stripAnsi} from 'node:util';
 import chalk from 'chalk';
 import {type ConsoleBuffer, getConsoleOutput} from '@jest/console';
 import type {

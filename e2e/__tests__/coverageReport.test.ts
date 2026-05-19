@@ -204,3 +204,27 @@ test('prints coverage when using --outputFile with --json', () => {
   expect(exitCode).toBe(0);
   fs.unlinkSync(outputFilePath);
 });
+
+test('outputs coverage report with projects option', () => {
+  const projectDir = path.resolve(__dirname, '../coverage-with-projects');
+  const {stdout, exitCode} = runJest(projectDir, ['--no-cache', '--coverage'], {
+    stripAnsi: true,
+  });
+
+  expect(stdout).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
+
+test('outputs coverage report with projects option and v8 provider', () => {
+  const projectDir = path.resolve(__dirname, '../coverage-with-projects');
+  const {stdout, exitCode} = runJest(
+    projectDir,
+    ['--no-cache', '--coverage', '--coverageProvider', 'v8'],
+    {
+      stripAnsi: true,
+    },
+  );
+
+  expect(stdout).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});

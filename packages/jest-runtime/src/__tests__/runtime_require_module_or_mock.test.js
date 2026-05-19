@@ -172,6 +172,83 @@ it('unmocks modules in config.unmockedModulePathPatterns for tests with automock
   expect(moduleData.isUnmocked()).toBe(true);
 });
 
+it('mock dispatch computes moduleID once per requireModuleOrMock call', async () => {
+  // Use an explicit factory mock so the only `getCjsModuleId` calls come from
+  // the dispatch path itself (no automock load that would call it again
+  // through the cjsLoader recursion).
+  const runtime = await createRuntime(__filename);
+  const root = runtime.requireModule(runtime.__mockRootPath);
+  root.jest.mock('my-virtual-module', () => ({foo: 'bar'}), {virtual: true});
+
+  const shouldMockSpy = jest.spyOn(runtime.mockState, 'shouldMockCjs');
+  const getModuleIdSpy = jest.spyOn(runtime._resolution, 'getCjsModuleId');
+
+  runtime.requireModuleOrMock(runtime.__mockRootPath, 'my-virtual-module');
+
+  // The point of `shouldMockCjs` returning `{shouldMock, moduleID}` is that
+  // the caller threads the moduleID through to `_requireMockWithId` without
+  // re-asking MockState. So one dispatch = one call to `shouldMockCjs`, and
+  // exactly one underlying `getCjsModuleId` (the explicit-mock branch returns
+  // before `decideSync` would compute `currentModuleID`).
+  expect(shouldMockSpy).toHaveBeenCalledTimes(1);
+  expect(getModuleIdSpy).toHaveBeenCalledTimes(1);
+
+  shouldMockSpy.mockRestore();
+  getModuleIdSpy.mockRestore();
+});
+
+describe.each(['expect', '@jest/expect'])(
+  'framework singleton module: %s',
+  moduleName => {
+    it('requireModuleOrMock returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const user = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(user).toBe(internal);
+    });
+
+    it('requireActual returns the internal instance', async () => {
+      const runtime = await createRuntime(__filename);
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
+
+    it('jest.mock() is respected and does not affect the global expect', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      const mockImpl = {isMock: true};
+      root.jest.mock(moduleName, () => mockImpl);
+
+      const mocked = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(mocked).toBe(mockImpl);
+
+      // The internal instance backing the global must be unaffected.
+      const internal = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        moduleName,
+      );
+      expect(internal).not.toBe(mockImpl);
+
+      // requireActual always bypasses the mock and returns the shared instance.
+      const actual = runtime.requireActual(runtime.__mockRootPath, moduleName);
+      expect(actual).toBe(internal);
+    });
+  },
+);
+
 it('unmocks virtual mocks after they have been mocked previously', async () => {
   const runtime = await createRuntime(__filename);
   const root = runtime.requireModule(runtime.__mockRootPath);
