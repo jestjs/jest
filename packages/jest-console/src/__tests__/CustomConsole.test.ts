@@ -236,6 +236,58 @@ describe('CustomConsole', () => {
     });
   });
 
+  describe('getBuffer', () => {
+    test('returns undefined when buffer is empty', () => {
+      expect(_console.getBuffer()).toBeUndefined();
+    });
+
+    test('returns buffer after log is called', () => {
+      _console.log('test message');
+      const buffer = _console.getBuffer();
+
+      expect(buffer).toBeDefined();
+      expect(buffer).toHaveLength(1);
+      expect(buffer?.[0].message).toContain('test message');
+      expect(buffer?.[0].type).toBe('log');
+      expect(buffer?.[0].origin).toBeDefined();
+    });
+
+    test('captures error in buffer', () => {
+      _console.error('error message');
+      const buffer = _console.getBuffer();
+
+      expect(buffer).toBeDefined();
+      expect(buffer?.[0].type).toBe('error');
+      expect(buffer?.[0].message).toContain('error message');
+    });
+
+    test('captures warn in buffer', () => {
+      _console.warn('warning message');
+      const buffer = _console.getBuffer();
+
+      expect(buffer).toBeDefined();
+      expect(buffer?.[0].type).toBe('warn');
+      expect(buffer?.[0].message).toContain('warning message');
+    });
+
+    test('includes origin stack trace in buffer entries', () => {
+      _console.log('test');
+      const buffer = _console.getBuffer();
+
+      expect(buffer?.[0].origin).toBeDefined();
+      expect(buffer?.[0].origin).toContain('at ');
+    });
+
+    test('preserves group indentation in buffer', () => {
+      _console.group('Group');
+      _console.log('indented message');
+      _console.groupEnd();
+      const buffer = _console.getBuffer();
+
+      expect(buffer?.[1].message).toMatch(/^ {2}/);
+    });
+  });
+
   describe('console', () => {
     test('should be able to initialize console instance', () => {
       expect(_console.Console).toBeDefined();
