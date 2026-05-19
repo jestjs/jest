@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
+      issues: write
+      pull-requests: read
     outputs:
       skip: ${{ steps.check.outputs.skip }}
 
