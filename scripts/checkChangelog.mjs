@@ -10,7 +10,9 @@ import fs from 'graceful-fs';
 const linkRegex =
   /\[#(\d+)]\(https:\/\/github.com\/([^/]+)\/jest\/([^/]+)\/(\d+)\)/g;
 
-const changelogPaths = ['CHANGELOG.md', 'CHANGELOG_PRE_v30.md'];
+const mainChangelogPath = 'CHANGELOG.md';
+const changelogPaths = [mainChangelogPath, 'CHANGELOG_PRE_v30.md'];
+const prNumber = process.argv[2];
 
 const errors = [];
 
@@ -41,11 +43,28 @@ for (const changelogPath of changelogPaths) {
   }
 }
 
+if (prNumber != null) {
+  if (!/^[1-9]\d*$/.test(prNumber)) {
+    throw new Error(`PR number must be a positive integer, got: ${prNumber}`);
+  }
+
+  const mainChangelog = fs.readFileSync(mainChangelogPath, 'utf8');
+  const mainSection = mainChangelog
+    .split(/^## /m)
+    .find(s => s.startsWith('main\n'));
+  const expectedLink = `[#${prNumber}](https://github.com/jestjs/jest/pull/${prNumber})`;
+  if (mainSection == null || !mainSection.includes(expectedLink)) {
+    errors.push(
+      `${mainChangelogPath}: missing entry for PR #${prNumber} in "## main" — expected: ${expectedLink}`,
+    );
+  }
+}
+
 if (errors.length > 0) {
   console.error(
     `Found ${errors.length} error${
       errors.length === 1 ? '' : 's'
-    } in changelog links:\n`,
+    } in changelog:\n`,
   );
   for (const error of errors) {
     console.error(error);
