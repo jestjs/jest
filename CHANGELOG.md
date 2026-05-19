@@ -196,7 +196,7 @@
 
 ### Features
 
-- `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/facebook/jest/pull/15696))
+- `[jest-diff]` Show non-printable control characters to diffs ([#15696](https://github.com/jestjs/jest/pull/15696))
 
 ## 30.0.2
 
@@ -234,11 +234,11 @@
 - `[jest-circus]` Add a `retryImmediately` option to `jest.retryTimes` ([#14696](https://github.com/jestjs/jest/pull/14696))
 - `[jest-circus, jest-jasmine2]` Allow `setupFilesAfterEnv` to export an async function ([#14749](https://github.com/jestjs/jest/pull/14749))
 - `[jest-circus, jest-test-result]` Add `startedAt` timestamp in `TestCaseResultObject` within `onTestCaseResult` ([#15145](https://github.com/jestjs/jest/pull/15145))
-- `[jest-cli]` Export `buildArgv` ([#15310](https://github.com/facebook/jest/pull/15310))
-- `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/facebook/jest/pull/14369))
+- `[jest-cli]` Export `buildArgv` ([#15310](https://github.com/jestjs/jest/pull/15310))
+- `[jest-config]` [**BREAKING**] Add `mts` and `cts` to default `moduleFileExtensions` config ([#14369](https://github.com/jestjs/jest/pull/14369))
 - `[jest-config]` [**BREAKING**] Update `testMatch` and `testRegex` default option for supporting `mjs`, `cjs`, `mts`, and `cts` ([#14584](https://github.com/jestjs/jest/pull/14584))
-- `[jest-config]` Loads config file from provided path in `package.json` ([#14044](https://github.com/facebook/jest/pull/14044))
-- `[jest-config]` Allow loading `jest.config.cts` files ([#14070](https://github.com/facebook/jest/pull/14070))
+- `[jest-config]` Loads config file from provided path in `package.json` ([#14044](https://github.com/jestjs/jest/pull/14044))
+- `[jest-config]` Allow loading `jest.config.cts` files ([#14070](https://github.com/jestjs/jest/pull/14070))
 - `[jest-config]` Show `rootDir` in error message when a `preset` fails to load ([#15194](https://github.com/jestjs/jest/pull/15194))
 - `[jest-config]` Support loading TS config files using `esbuild-register` via docblock loader ([#15190](https://github.com/jestjs/jest/pull/15190))
 - `[jest-config]` Allow passing TS config loader options via docblock comment ([#15234](https://github.com/jestjs/jest/pull/15234))
@@ -255,8 +255,8 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM to v22 ([#13825](https://github.com/jestjs/jest/pull/13825))
 - `[@jest/environment-jsdom-abstract]` Introduce new package which abstracts over the `jsdom` environment, allowing usage of custom versions of JSDOM ([#14717](https://github.com/jestjs/jest/pull/14717))
 - `[jest-environment-node]` Update jest environment with dispose symbols `Symbol` ([#14888](https://github.com/jestjs/jest/pull/14888) & [#14909](https://github.com/jestjs/jest/pull/14909))
-- `[expect, @jest/expect]` [**BREAKING**] Add type inference for function parameters in `CalledWith` assertions ([#15129](https://github.com/facebook/jest/pull/15129))
-- `[@jest/expect-utils]` Properly compare all types of `TypedArray`s ([#15178](https://github.com/facebook/jest/pull/15178))
+- `[expect, @jest/expect]` [**BREAKING**] Add type inference for function parameters in `CalledWith` assertions ([#15129](https://github.com/jestjs/jest/pull/15129))
+- `[@jest/expect-utils]` Properly compare all types of `TypedArray`s ([#15178](https://github.com/jestjs/jest/pull/15178))
 - `[@jest/fake-timers]` [**BREAKING**] Upgrade `@sinonjs/fake-timers` to v13 ([#14544](https://github.com/jestjs/jest/pull/14544) & [#15470](https://github.com/jestjs/jest/pull/15470))
 - `[@jest/fake-timers]` Exposing new modern timers function `advanceTimersToFrame()` which advances all timers by the needed milliseconds to execute callbacks currently scheduled with `requestAnimationFrame` ([#14598](https://github.com/jestjs/jest/pull/14598))
 - `[jest-matcher-utils]` Add `SERIALIZABLE_PROPERTIES` to allow custom serialization of objects ([#14893](https://github.com/jestjs/jest/pull/14893))
@@ -274,14 +274,14 @@
 - `[@jest/schemas]` Upgrade `@sinclair/typebox` to v0.34 ([#15450](https://github.com/jestjs/jest/pull/15450))
 - `[@jest/types]` `test.each()`: Accept a readonly (`as const`) table properly ([#14565](https://github.com/jestjs/jest/pull/14565))
 - `[@jest/types]` Improve argument type inference passed to `test` and `describe` callback functions from `each` tables ([#14920](https://github.com/jestjs/jest/pull/14920))
-- `[jest-snapshot]` [**BREAKING**] Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/facebook/jest/pull/13965))
-- `[jest-snapshot]` Support Prettier 3 ([#14566](https://github.com/facebook/jest/pull/14566))
-- `[@jest/util-snapshot]` Extract utils used by tooling from `jest-snapshot` into its own package ([#15095](https://github.com/facebook/jest/pull/15095))
-- `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/facebook/jest/pull/14470))
+- `[jest-snapshot]` [**BREAKING**] Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in snapshots ([#13965](https://github.com/jestjs/jest/pull/13965))
+- `[jest-snapshot]` Support Prettier 3 ([#14566](https://github.com/jestjs/jest/pull/14566))
+- `[@jest/util-snapshot]` Extract utils used by tooling from `jest-snapshot` into its own package ([#15095](https://github.com/jestjs/jest/pull/15095))
+- `[pretty-format]` [**BREAKING**] Do not render empty string children (`''`) in React plugin ([#14470](https://github.com/jestjs/jest/pull/14470))
 
 ### Fixes
 
-- `[expect]` Show `AggregateError` to display ([#15346](https://github.com/facebook/jest/pull/15346))
+- `[expect]` Show `AggregateError` to display ([#15346](https://github.com/jestjs/jest/pull/15346))
 - `[*]` Replace `exit` with `exit-x` ([#15399](https://github.com/jestjs/jest/pull/15399))
 - `[babel-plugin-jest-hoist]` Use `denylist` instead of the deprecated `blacklist` for Babel 8 support ([#14109](https://github.com/jestjs/jest/pull/14109))
 - `[babel-plugin-jest-hoist]` Do not rely on buggy Babel behaviour ([#15415](https://github.com/jestjs/jest/pull/15415))
@@ -299,7 +299,7 @@
 - `[jest-cli]` [**BREAKING**] Validate CLI flags that require arguments receives them ([#14783](https://github.com/jestjs/jest/pull/14783))
 - `[jest-config]` Make sure to respect `runInBand` option ([#14578](https://github.com/jestjs/jest/pull/14578))
 - `[jest-config]` Support `testTimeout` in project config ([#14697](https://github.com/jestjs/jest/pull/14697))
-- `[jest-config]` Support `coverageReporters` in project config ([#14697](https://github.com/jestjs/jest/pull/14830))
+- `[jest-config]` Support `coverageReporters` in project config ([#14830](https://github.com/jestjs/jest/pull/14830))
 - `[jest-config]` Allow `reporters` in project config ([#14768](https://github.com/jestjs/jest/pull/14768))
 - `[jest-config]` Allow Node16/NodeNext/Bundler `moduleResolution` in project's tsconfig ([#14739](https://github.com/jestjs/jest/pull/14739))
 - `[@jest/create-cache-key-function]` Correct the return type of `createCacheKey` ([#15159](https://github.com/jestjs/jest/pull/15159))
