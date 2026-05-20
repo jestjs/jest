@@ -178,6 +178,24 @@ export interface Jest {
    */
   getTimerCount(): number;
   /**
+   * When using `babel-jest`, the call to `jest.hoisted` will automatically
+   * be hoisted to the top of the test file, before any imports or
+   * `jest.mock()` factories. Variables bound from `jest.hoisted` may then
+   * be referenced inside `jest.mock` factories without the usual
+   * `mock`-prefix restriction. The factory must be an inline function
+   * literal so that `babel-plugin-jest-hoist` can move the declaration
+   * statically. Outside of the Babel transform (e.g. raw ESM without the
+   * plugin) `jest.hoisted` simply invokes the factory inline and the
+   * hoisting guarantee does not apply.
+   *
+   * @example
+   * ```ts
+   * const { mockGet } = jest.hoisted(() => ({ mockGet: jest.fn() }));
+   * jest.mock('./api', () => ({ get: mockGet }));
+   * ```
+   */
+  hoisted<T>(factory: () => T): T;
+  /**
    * Returns `true` if test environment has been torn down.
    *
    * @example
