@@ -348,6 +348,35 @@ Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md#jestmock
 
 :::
 
+### `jest.hoisted(factory)`
+
+Declares variables that need to be available before any `jest.mock` factory runs. Calls to `jest.hoisted` (and the declarations that consume their return value) are hoisted to the top of the file, alongside `jest.mock` calls, so the values they produce can be safely referenced from `jest.mock` factories.
+
+This is the recommended escape hatch when the `mock`-prefixed naming convention is not enough — for example when you want to share a single mock implementation between the factory and the test body.
+
+```js
+import {jest} from '@jest/globals';
+import {fetchUser} from '../user';
+
+const {mockGet} = jest.hoisted(() => ({mockGet: jest.fn()}));
+
+jest.mock('../api', () => ({getUser: mockGet}));
+
+test('fetchUser delegates to api.getUser', () => {
+  mockGet.mockReturnValue({id: 1, name: 'Alice'});
+  expect(fetchUser(1)).toEqual({id: 1, name: 'Alice'});
+  expect(mockGet).toHaveBeenCalledWith(1);
+});
+```
+
+The factory may be assigned to `const`, `let`, or `var`, destructured, or called as a bare statement for side effects. Because the call runs before any `import` is initialized, the factory **cannot reference imported bindings or any other file-local variables declared later in the file**. Globals (including `globalThis` and built-ins like `Map`, `Promise`), `require` in CommonJS, and `jest` itself remain available.
+
+:::caution
+
+`jest.hoisted` must be called at the top level of the file. Calling it inside a block, function, or other nested scope throws a `ReferenceError` at transform time. The factory argument must be an inline function literal.
+
+:::
+
 ### `jest.Mocked<Source>`
 
 See [TypeScript Usage](MockFunctionAPI.md#jestmockedsource) chapter of Mock Functions page for documentation.
