@@ -7,7 +7,6 @@
 'use strict';
 
 const fs = require('fs');
-const http = require('http');
 const url = require('url');
 
 test('arrays returned by Node APIs use the test realm Array constructor', () => {
@@ -38,23 +37,9 @@ test('errors thrown by Node APIs do not match unrelated subclasses', () => {
   }
 });
 
-test('Object.getPrototypeOf maps Node fetch results to the test realm', async () => {
-  const server = http.createServer((request, response) => {
-    response.setHeader('Content-Type', 'application/json');
-    response.end(JSON.stringify({ok: true}));
-  });
+test('Object.getPrototypeOf maps Node API results to the test realm', () => {
+  const report = process.report.getReport();
 
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-
-  try {
-    const {port} = server.address();
-    const response = await fetch(`http://127.0.0.1:${port}`);
-    const json = await response.json();
-
-    expect(Object.getPrototypeOf(json)).toBe(Object.prototype);
-  } finally {
-    await new Promise((resolve, reject) => {
-      server.close(error => (error ? reject(error) : resolve()));
-    });
-  }
+  expect(report).toBeInstanceOf(Object);
+  expect(Object.getPrototypeOf(report)).toBe(Object.prototype);
 });
