@@ -179,8 +179,8 @@ export interface MockInstance<
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
-  mockReturnValue(value: FunctionReturn<T>): this;
-  mockReturnValueOnce(value: FunctionReturn<T>): this;
+  mockReturnValue(value: ReturnType<T>): this;
+  mockReturnValueOnce(value: ReturnType<T>): this;
   mockResolvedValue(value: ResolveType<T>): this;
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
@@ -879,7 +879,7 @@ export class ModuleMocker {
         return restore ? restore() : undefined;
       };
 
-      f.mockReturnValueOnce = (value: FunctionReturn<T>) =>
+      f.mockReturnValueOnce = (value: ReturnType<T>) =>
         // next function call will return this value or default return value
         f.mockImplementationOnce(() => value);
 
@@ -893,7 +893,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockReturnValue = (value: FunctionReturn<T>) =>
+      f.mockReturnValue = (value: ReturnType<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 

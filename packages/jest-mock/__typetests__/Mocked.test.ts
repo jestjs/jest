@@ -117,7 +117,6 @@ describe('Mocked', () => {
     expect(client.end.mockResolvedValueOnce).type.toBeCallableWith(undefined);
     expect(client.end.mockRejectedValue).type.toBeCallableWith(new Error());
     expect(client.end.mockRejectedValueOnce).type.toBeCallableWith(new Error());
-    expect(client.end.mockReturnValue).type.toBeCallableWith(Promise.resolve());
   });
 
   test('wraps a function object type with type definitions of the Jest mock function', () => {
