@@ -132,10 +132,35 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
 }
 
 type ResolveType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<infer U> ? U : never;
+  FunctionReturn<T> extends infer R
+    ? R extends PromiseLike<infer U>
+      ? U
+      : never
+    : never;
 
 type RejectType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<any> ? unknown : never;
+  FunctionReturn<T> extends infer R
+    ? R extends PromiseLike<any>
+      ? unknown
+      : never
+    : never;
+
+type FunctionReturn<F> = F extends {
+  (...args: Array<any>): infer R1;
+  (...args: Array<any>): infer R2;
+  (...args: Array<any>): infer R3;
+  (...args: Array<any>): infer R4;
+  (...args: Array<any>): infer R5;
+  (...args: Array<any>): infer R6;
+  (...args: Array<any>): infer R7;
+  (...args: Array<any>): infer R8;
+  (...args: Array<any>): infer R9;
+  (...args: Array<any>): infer R10;
+}
+  ? R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10
+  : F extends (...args: Array<any>) => infer R
+    ? R
+    : never;
 
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
@@ -154,8 +179,8 @@ export interface MockInstance<
   withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
-  mockReturnValue(value: ReturnType<T>): this;
-  mockReturnValueOnce(value: ReturnType<T>): this;
+  mockReturnValue(value: FunctionReturn<T>): this;
+  mockReturnValueOnce(value: FunctionReturn<T>): this;
   mockResolvedValue(value: ResolveType<T>): this;
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
@@ -854,7 +879,7 @@ export class ModuleMocker {
         return restore ? restore() : undefined;
       };
 
-      f.mockReturnValueOnce = (value: ReturnType<T>) =>
+      f.mockReturnValueOnce = (value: FunctionReturn<T>) =>
         // next function call will return this value or default return value
         f.mockImplementationOnce(() => value);
 
@@ -868,7 +893,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockReturnValue = (value: ReturnType<T>) =>
+      f.mockReturnValue = (value: FunctionReturn<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
