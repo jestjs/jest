@@ -6,7 +6,12 @@
  */
 
 import {expect, test} from 'tstyche';
-import {type MockMetadata, type Mocked, ModuleMocker} from 'jest-mock';
+import {
+  type MockMetadata,
+  type Mocked,
+  type MockedObject,
+  ModuleMocker,
+} from 'jest-mock';
 
 class ExampleClass {
   memberA: Array<number>;
@@ -78,4 +83,14 @@ test('generateFromMetadata', () => {
   expect(exampleMock.propertyD).type.toBe<string>();
   expect(exampleMock.propertyE).type.toBe<boolean>();
   expect(exampleMock.propertyF).type.toBe<symbol>();
+});
+
+test('generateFromMetadata constructs mocked class instances', () => {
+  const classMetadata = moduleMocker.getMetadata(ExampleClass);
+  const MockClass = moduleMocker.generateFromMetadata(classMetadata!);
+
+  const instance = new MockClass();
+
+  expect(instance).type.toBeAssignableTo<MockedObject<ExampleClass>>();
+  expect(instance.memberB.mock.calls).type.toBe<Array<[]>>();
 });
