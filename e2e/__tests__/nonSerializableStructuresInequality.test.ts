@@ -107,6 +107,22 @@ describe.each([
     expect(summary).toMatchSnapshot();
   });
 
+  test('handles asymmetric matchers', async () => {
+    const {summary, rest} = await testIn2Workers(
+      `
+    it('test', () => {
+      expect({}).toEqual({
+        value1: 0,
+        value2: expect.any(String),
+      });
+    });
+  `,
+      extraOptions,
+    );
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+  });
+
   test('handles functions', async () => {
     const {summary, rest} = await testIn2Workers(
       `
