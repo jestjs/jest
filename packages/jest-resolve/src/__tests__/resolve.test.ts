@@ -22,6 +22,7 @@ jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
 const mockUserResolver = jest.mocked(userResolver);
 const mockUserResolverAsync = jest.mocked(userResolverAsync);
+const itOnWindows = process.platform === 'win32' ? it : it.skip;
 
 beforeEach(() => {
   mockUserResolver.mockClear();
@@ -144,6 +145,30 @@ describe('findNodeModule', () => {
 
     expect(newPath).toBe(__filename);
   });
+
+  itOnWindows(
+    'retries Windows volume GUID paths without symlink resolution',
+    async () => {
+      const basedir =
+        '\\\\?\\Volume{c79c005d-0000-0000-0000-100000000000}\\project';
+
+      expect(() =>
+        defaultResolver('missing-package', {
+          basedir,
+          defaultAsyncResolver,
+          defaultResolver,
+        }),
+      ).toThrow("Cannot find module 'missing-package'");
+
+      await expect(
+        defaultAsyncResolver('missing-package', {
+          basedir,
+          defaultAsyncResolver,
+          defaultResolver,
+        }),
+      ).rejects.toThrow("Cannot find module 'missing-package'");
+    },
+  );
 
   describe('conditions', () => {
     const conditionsRoot = path.resolve(__dirname, '../__mocks__/conditions');

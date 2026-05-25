@@ -93,7 +93,7 @@ function baseResolver(
 
   modules = modules || (moduleDirectory as Array<string>);
 
-  const resolveOptions: UpstreamResolveOptions = {
+  let resolveOptions: UpstreamResolveOptions = {
     conditionNames: conditionNames ||
       (conditions as Array<string> | undefined) || [
         'require',
@@ -119,6 +119,19 @@ function baseResolver(
   const finalResolver = (
     resolve: () => ResolveResult | Promise<ResolveResult>,
   ) => {
+    const retryWithoutSymlinksIfUnsupported = (result: ResolveResult) => {
+      if (
+        typeof result.error === 'string' &&
+        result.error.includes('contains unsupported construct') &&
+        resolveOptions.symlinks !== false
+      ) {
+        resolveOptions = {...resolveOptions, symlinks: false};
+        unrsResolver = unrsResolver!.cloneWithOptions(resolveOptions);
+        setResolver(unrsResolver);
+        return resolve();
+      }
+      return result;
+    };
     const resolveWithPathsFallback = (result: ResolveResult) => {
       if (!result.path && paths?.length) {
         const modulesArr =
@@ -137,13 +150,23 @@ function baseResolver(
       }
       return result;
     };
+    const resolveWithFallbacks = (result: ResolveResult) => {
+      const resultWithSymlinksFallback =
+        retryWithoutSymlinksIfUnsupported(result);
+      if ('then' in resultWithSymlinksFallback) {
+        return resultWithSymlinksFallback.then(resolveWithPathsFallback);
+      }
+      return resolveWithPathsFallback(resultWithSymlinksFallback);
+    };
     const result = resolve();
     if ('then' in result) {
-      return result.then(resolveWithPathsFallback).then(handleResolveResult);
+      return result.then(resolveWithFallbacks).then(handleResolveResult);
     }
-    return handleResolveResult(
-      resolveWithPathsFallback(result) as ResolveResult,
-    );
+    const resultWithFallbacks = resolveWithFallbacks(result);
+    if ('then' in resultWithFallbacks) {
+      return resultWithFallbacks.then(handleResolveResult);
+    }
+    return handleResolveResult(resultWithFallbacks as ResolveResult);
   };
 
   return finalResolver(() =>
