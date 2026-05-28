@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 9
+  version: 10
   cacheKey: 10
 
 "@algolia/abtesting@npm:1.18.1":
@@ -4486,6 +4486,11 @@ __metadata:
     webpack: "npm:^5.68.0"
     webpack-node-externals: "npm:^3.0.0"
     which: "npm:^4.0.0"
+  dependenciesMeta:
+    esbuild:
+      built: true
+    unrs-resolver:
+      built: true
   languageName: unknown
   linkType: soft
 
