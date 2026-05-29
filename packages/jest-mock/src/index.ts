@@ -910,22 +910,35 @@ export class ModuleMocker {
         const previousImplementation = mockConfig.mockImpl;
         const previousSpecificImplementations = mockConfig.specificMockImpls;
         const previousFallbackImpl = mockConfig.fallbackImpl;
-        mockConfig.mockImpl = fn;
-        mockConfig.specificMockImpls = [];
-
-        const returnedValue = callback();
-
-        if (isPromise(returnedValue)) {
-          return returnedValue.then(() => {
-            mockConfig.mockImpl = previousImplementation;
-            mockConfig.specificMockImpls = previousSpecificImplementations;
-            mockConfig.fallbackImpl = previousFallbackImpl;
-          });
-        } else {
+        const restore = () => {
           mockConfig.mockImpl = previousImplementation;
           mockConfig.specificMockImpls = previousSpecificImplementations;
           mockConfig.fallbackImpl = previousFallbackImpl;
+        };
+        mockConfig.mockImpl = fn;
+        mockConfig.specificMockImpls = [];
+
+        let returnedValue: ReturnType<typeof callback>;
+        try {
+          returnedValue = callback();
+        } catch (error) {
+          restore();
+          throw error;
         }
+
+        if (isPromise(returnedValue)) {
+          return this._environmentGlobal.Promise.resolve(returnedValue).then(
+            () => {
+              restore();
+            },
+            error => {
+              restore();
+              throw error;
+            },
+          );
+        }
+
+        restore();
       }
 
       f.mockImplementation = (fn: T) => {
