@@ -45,6 +45,53 @@ const denyList = new Set([
 
 type GlobalProperties = Array<keyof typeof globalThis>;
 
+type NativeConstructor = {
+  prototype: object;
+  [Symbol.hasInstance](value: unknown): boolean;
+};
+
+const crossContextConstructorNames = [
+  'AggregateError',
+  'Array',
+  'ArrayBuffer',
+  'BigInt',
+  'BigInt64Array',
+  'BigUint64Array',
+  'Boolean',
+  'DataView',
+  'Date',
+  'Error',
+  'EvalError',
+  'Float32Array',
+  'Float64Array',
+  'Function',
+  'Int8Array',
+  'Int16Array',
+  'Int32Array',
+  'Map',
+  'Number',
+  'Object',
+  'Promise',
+  'RangeError',
+  'ReferenceError',
+  'RegExp',
+  'Set',
+  'SharedArrayBuffer',
+  'String',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'Uint8Array',
+  'Uint8ClampedArray',
+  'Uint16Array',
+  'Uint32Array',
+  'WeakMap',
+  'WeakSet',
+];
+
+const functionHasInstance = Function.prototype[Symbol.hasInstance];
+
 // Storage proxies (Node 25+) emit a warning on any Reflect.get access when
 // --localstorage-file is not set. We install them as non-caching passthrough
 // getters so they never land in GlobalProxy.propertyToValue and are never
@@ -72,6 +119,99 @@ const nodeGlobals = new Map(
 
 function isString(value: unknown): value is string {
   return typeof value === 'string';
+}
+
+function isObject(value: unknown): value is object {
+  return (
+    (typeof value === 'object' && value !== null) || typeof value === 'function'
+  );
+}
+
+function getNativeConstructor(
+  globalObject: typeof globalThis,
+  name: string,
+): NativeConstructor | undefined {
+  const constructor = globalObject[name as keyof typeof globalThis];
+
+  if (typeof constructor !== 'function') {
+    return undefined;
+  }
+
+  const prototype = (constructor as {prototype?: unknown}).prototype;
+
+  if (!isObject(prototype)) {
+    return undefined;
+  }
+
+  return constructor as unknown as NativeConstructor;
+}
+
+function addCrossContextInstanceOfAlias(
+  target: NativeConstructor,
+  alias: NativeConstructor,
+): void {
+  const originalHasInstance = target[Symbol.hasInstance];
+
+  Object.defineProperty(target, Symbol.hasInstance, {
+    configurable: true,
+    value(this: NativeConstructor, value: unknown) {
+      return (
+        originalHasInstance.call(this, value) ||
+        (this === target && functionHasInstance.call(alias, value))
+      );
+    },
+    writable: true,
+  });
+}
+
+function installCrossContextGetPrototypeOfAlias(
+  globalObject: typeof globalThis,
+  prototypeMap: Map<object, object>,
+): void {
+  const {getPrototypeOf} = globalObject.Object;
+
+  Object.defineProperty(globalObject.Object, 'getPrototypeOf', {
+    configurable: true,
+    value(value: unknown): object | null {
+      const prototype = getPrototypeOf(value);
+
+      return prototype === null
+        ? null
+        : (prototypeMap.get(prototype) ?? prototype);
+    },
+    writable: true,
+  });
+}
+
+function installCrossContextConstructorAliases(
+  globalObject: typeof globalThis,
+): void {
+  const prototypeMap = new Map<object, object>();
+
+  // Node APIs can return values from the parent realm. Teach the test realm's
+  // constructors to recognize those values without replacing the VM intrinsics.
+  for (const constructorName of crossContextConstructorNames) {
+    const globalConstructor = getNativeConstructor(
+      globalObject,
+      constructorName,
+    );
+    const nativeConstructor = getNativeConstructor(globalThis, constructorName);
+
+    if (
+      globalConstructor === undefined ||
+      nativeConstructor === undefined ||
+      globalConstructor === nativeConstructor
+    ) {
+      continue;
+    }
+
+    addCrossContextInstanceOfAlias(globalConstructor, nativeConstructor);
+    prototypeMap.set(nativeConstructor.prototype, globalConstructor.prototype);
+  }
+
+  if (prototypeMap.size > 0) {
+    installCrossContextGetPrototypeOfAlias(globalObject, prototypeMap);
+  }
 }
 
 const timerIdToRef = (id: number) => ({
@@ -185,6 +325,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     // different than the global one used by users in tests. This makes sure the
     // same constructor is referenced by both.
     global.Uint8Array = Uint8Array;
+
+    installCrossContextConstructorAliases(global);
 
     installCommonGlobals(global, projectConfig.globals, globalsCleanupMode);
 
