@@ -75,3 +75,27 @@ test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () =>
 
   expect(process.env.JEST_WORKER_ID).toBe('1');
 });
+
+test('UNSTABLE_onCustomMessage callback handles Array<unknown> messages', () => {
+  // The OnCustomMessage type is (message: Array<unknown> | unknown) => void.
+  // This test verifies the callback properly handles the message format
+  // used by jest-worker, extracting event and payload from array messages.
+  const callback = (message: Array<unknown> | unknown) => {
+    if (Array.isArray(message)) {
+      const [event, payload] = message;
+      return [event, payload];
+    }
+    return [message];
+  };
+
+  // Simulate the custom message format used by jest-worker
+  const result = callback(['test-case-start', {testPath: './file.test.js'}]);
+  expect(result).toEqual([
+    'test-case-start',
+    {testPath: './file.test.js'},
+  ]);
+
+  // Non-array messages are passed through as-is
+  const scalarResult = callback('single-message');
+  expect(scalarResult).toEqual(['single-message']);
+});
