@@ -105,6 +105,20 @@ describe('Mocked', () => {
     expect(someAsyncFunction).type.toBeAssignableFrom(mockAsyncFunction);
   });
 
+  test('supports promise helpers on overloaded methods', () => {
+    interface Client {
+      end(): Promise<void>;
+      end(callback: (err: Error) => void): void;
+    }
+
+    const client = {} as Mocked<Client>;
+
+    expect(client.end.mockResolvedValue).type.toBeCallableWith(undefined);
+    expect(client.end.mockResolvedValueOnce).type.toBeCallableWith(undefined);
+    expect(client.end.mockRejectedValue).type.toBeCallableWith(new Error());
+    expect(client.end.mockRejectedValueOnce).type.toBeCallableWith(new Error());
+  });
+
   test('wraps a function object type with type definitions of the Jest mock function', () => {
     interface SomeFunctionObject {
       (a: number, b?: string): void;
