@@ -161,9 +161,23 @@ function deleteProperty(obj: object, key: string | symbol): boolean {
     return Reflect.deleteProperty(obj, key);
   }
 
-  const originalGetter = descriptor.get ?? (() => descriptor.value);
+  // For data descriptors, the fallback fast-path used to be
+  // `value => Reflect.set(obj, key, value)`, which recursed back into the
+  // new setter we are about to install on `obj[key]` and produced
+  // `RangeError: Maximum call stack size exceeded` on the first write
+  // after a soft delete (issue #16044). Keep the data-property value in a
+  // closure-scoped slot instead so writes update local storage rather
+  // than re-entering the wrapping setter. Accessor descriptors that
+  // already carry their own setter keep using it -- calling
+  // `descriptor.set(value)` directly is correct and does not loop.
+  let storedValue: unknown = descriptor.value;
+  const originalGetter = descriptor.get ?? (() => storedValue);
   const originalSetter =
-    descriptor.set ?? (value => Reflect.set(obj, key, value));
+    descriptor.set ??
+    ((value: unknown) => {
+      storedValue = value;
+      return true;
+    });
 
   return Reflect.defineProperty(obj, key, {
     configurable: true,
