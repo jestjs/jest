@@ -1327,6 +1327,11 @@ export class ModuleMocker {
     propertyKey: keyof T,
     accessType: 'get' | 'set',
   ): MockInstance {
+    const isPropertyOwner = Object.prototype.hasOwnProperty.call(
+      object,
+      propertyKey,
+    );
+
     let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
     let proto = Object.getPrototypeOf(object);
 
@@ -1377,9 +1382,17 @@ export class ModuleMocker {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-expect-error: mock is assignable
-        descriptor![accessType] = original;
-        Object.defineProperty(object, propertyKey, descriptor!);
+        if (isPropertyOwner) {
+          // @ts-expect-error: mock is assignable
+          descriptor![accessType] = original;
+          Object.defineProperty(object, propertyKey, descriptor!);
+        } else {
+          // The accessor was inherited from the prototype chain, so the spy
+          // installed an own property on `object`. Deleting it re-exposes the
+          // original prototype accessor instead of pinning a stale copy on the
+          // instance.
+          delete object[propertyKey];
+        }
       });
 
       (descriptor[accessType] as Mock).mockImplementation(function (
