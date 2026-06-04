@@ -11,6 +11,7 @@ import * as path from 'node:path';
 import util from 'node:util';
 import chalk from 'chalk';
 import dedent from 'dedent';
+import {glob} from 'glob';
 import fs from 'graceful-fs';
 import webpack from 'webpack';
 import {
@@ -22,6 +23,31 @@ import {
 } from './buildUtils.mjs';
 
 const require = createRequire(import.meta.url);
+
+const nodeProtocolRequirePattern = /\brequire\((['"])node:([^'"]+)\1\)/g;
+
+async function normalizeNodeProtocolSpecifiers(buildDirectory) {
+  const buildFiles = await glob('**/*.js', {
+    absolute: true,
+    cwd: buildDirectory,
+  });
+
+  await Promise.all(
+    buildFiles.map(async buildFile => {
+      const source = await fs.promises.readFile(buildFile, 'utf8');
+      const normalizedSource = source.replaceAll(
+        nodeProtocolRequirePattern,
+        'require($1$2$1)',
+      );
+
+      if (normalizedSource !== source) {
+        // Browser bundlers such as webpack 5 do not resolve `node:` specifiers
+        // by default, so published CommonJS bundles should emit bare builtins.
+        await fs.promises.writeFile(buildFile, normalizedSource);
+      }
+    }),
+  );
+}
 
 async function buildNodePackages() {
   process.stdout.write(chalk.inverse(' Bundling packages \n'));
@@ -54,6 +80,8 @@ async function buildNodePackages() {
   }
 
   for (const {packageDir, pkg} of buildConfigs) {
+    await normalizeNodeProtocolSpecifiers(path.resolve(packageDir, 'build'));
+
     const entryPointFile = path.resolve(packageDir, pkg.main);
 
     assert.ok(
