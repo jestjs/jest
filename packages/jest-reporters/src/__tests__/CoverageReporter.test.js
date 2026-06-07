@@ -454,12 +454,58 @@ describe('onRunComplete', () => {
     await testReporter.onRunComplete(new Set(), {}, mockAggResults);
 
     expect(istanbulReports.create).toHaveBeenCalledWith('json', {
-      maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
+      maxCols: process.stdout.columns || parseInt(process.env.COLUMNS || '', 10) || ((process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') && !process.env.JEST_WORKER_ID ? 80 : Number.POSITIVE_INFINITY),
     });
     expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
       maxCols: 10,
       projectRoot: './',
     });
     expect(testReporter.getLastError()).toBeUndefined();
+  });
+
+  describe('maxCols fallback logic in CI', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+      delete process.env.COLUMNS;
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    test('falls back to 80 in CI without JEST_WORKER_ID', async () => {
+      process.env.CI = 'true';
+      delete process.env.JEST_WORKER_ID;
+      
+      const testReporter = new CoverageReporter({
+        coverageReporters: ['json'],
+      });
+      testReporter.log = jest.fn();
+
+      await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+      expect(istanbulReports.create).toHaveBeenCalledWith('json', {
+        maxCols: process.stdout.columns || 80,
+      });
+    });
+
+    test('falls back to Infinity in CI with JEST_WORKER_ID', async () => {
+      process.env.CI = 'true';
+      process.env.JEST_WORKER_ID = '1';
+      
+      const testReporter = new CoverageReporter({
+        coverageReporters: ['json'],
+      });
+      testReporter.log = jest.fn();
+
+      await testReporter.onRunComplete(new Set(), {}, mockAggResults);
+
+      expect(istanbulReports.create).toHaveBeenCalledWith('json', {
+        maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
+      });
+    });
   });
 });
