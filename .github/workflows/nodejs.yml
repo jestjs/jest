@@ -182,7 +182,7 @@ jobs:
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         if: always()
         with:
           directory: ./coverage
@@ -223,7 +223,7 @@ jobs:
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         if: always()
         with:
           directory: ./coverage
