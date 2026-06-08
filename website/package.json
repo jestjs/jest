@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",
-    "@crowdin/cli": "^4.7.0",
+    "@crowdin/cli": "^4.14.2",
     "@docusaurus/module-type-aliases": "^3.0.0",
     "@docusaurus/tsconfig": "^3.0.0",
     "@types/react": "^18.3.23",
