@@ -13,6 +13,7 @@
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 - `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
+- `[jest-reporters]` Fix coverage report table formatting in CI/GitHub Actions environments where `process.stdout.columns` is undefined by falling back to the `COLUMNS` env var or `80` columns in CI, preserving existing behaviour in other non-TTY environments ([#16227](https://github.com/jestjs/jest/pull/16227))
 
 ### Chore & Maintenance
 
