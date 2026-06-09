@@ -297,6 +297,18 @@ class ObjectContaining extends AsymmetricMatcher<
   }
 }
 
+class Satisfying extends AsymmetricMatcher<(value: unknown) => boolean> {
+  constructor(sample: (value: unknown) => boolean, inverse = false) {
+    super(sample, inverse);
+  }
+  asymmetricMatch(other: unknown): boolean {
+    return true;
+  }
+  toString() {
+    return `${this.inverse ? 'Not' : ''}Satisfying[]`;
+  }
+}
+
 class StringContaining extends AsymmetricMatcher<string> {
   constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
