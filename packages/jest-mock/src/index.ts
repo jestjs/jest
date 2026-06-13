@@ -138,29 +138,31 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
 // `never` and reject any value. Walk up to four overloads and union their
 // return types so the Promise-shaped overload (if any) survives.
 type OverloadedReturnType<T> = T extends {
-  (...args: any[]): infer R1;
-  (...args: any[]): infer R2;
-  (...args: any[]): infer R3;
-  (...args: any[]): infer R4;
+  (...args: Array<any>): infer R1;
+  (...args: Array<any>): infer R2;
+  (...args: Array<any>): infer R3;
+  (...args: Array<any>): infer R4;
 }
   ? R1 | R2 | R3 | R4
   : T extends {
-        (...args: any[]): infer R1;
-        (...args: any[]): infer R2;
-        (...args: any[]): infer R3;
+        (...args: Array<any>): infer R1;
+        (...args: Array<any>): infer R2;
+        (...args: Array<any>): infer R3;
       }
     ? R1 | R2 | R3
     : T extends {
-          (...args: any[]): infer R1;
-          (...args: any[]): infer R2;
+          (...args: Array<any>): infer R1;
+          (...args: Array<any>): infer R2;
         }
       ? R1 | R2
-      : T extends (...args: any[]) => infer R
+      : T extends (...args: Array<any>) => infer R
         ? R
         : never;
 
 type ResolveType<T extends FunctionLike> =
-  Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<infer U>
+  Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
+    infer U
+  >
     ? U
     : never;
 
