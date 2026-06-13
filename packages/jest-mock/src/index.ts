@@ -160,16 +160,18 @@ type OverloadedReturnType<T> = T extends {
         : never;
 
 type ResolveType<T extends FunctionLike> =
-  Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
-    infer U
-  >
-    ? U
-    : never;
+  [Extract<OverloadedReturnType<T>, PromiseLike<any>>] extends [never]
+    ? never
+    : Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
+          infer U
+        >
+      ? U
+      : never;
 
 type RejectType<T extends FunctionLike> =
-  Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<any>
-    ? unknown
-    : never;
+  [Extract<OverloadedReturnType<T>, PromiseLike<any>>] extends [never]
+    ? never
+    : unknown;
 
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
