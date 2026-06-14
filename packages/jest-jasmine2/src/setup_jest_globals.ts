@@ -22,7 +22,7 @@ import type {
 export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  localRequire: (moduleName: string) => Plugin;
+  localRequire: (moduleName: string) => Promise<Plugin>;
   testPath: string;
 };
 
@@ -99,7 +99,7 @@ export default async function setupJestGlobals({
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
-    addSerializer(localRequire(config.snapshotSerializers[i]));
+    addSerializer(await localRequire(config.snapshotSerializers[i]));
   }
 
   patchJasmine();

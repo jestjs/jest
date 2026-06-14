@@ -120,6 +120,28 @@ describe('Runtime sync ESM graph', () => {
     expect(typeof m.namespace.nodePath.join).toBe('function');
   });
 
+  testWithVmEsm('loads modules through requireOrImportModule', async () => {
+    const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+    await expect(
+      runtime.requireOrImportModule(FROM, './cjs-dep.cjs'),
+    ).resolves.toEqual({cjsValue: 'from-cjs'});
+    await expect(
+      runtime.requireOrImportModule(FROM, './default-export.mjs'),
+    ).resolves.toEqual({esmValue: 'from-mjs'});
+  });
+
+  testWithVmEsm(
+    'rejects ESM modules without a default in requireOrImportModule',
+    async () => {
+      const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
+
+      await expect(
+        runtime.requireOrImportModule(FROM, './a.mjs'),
+      ).rejects.toThrow('did you use a default export?');
+    },
+  );
+
   testWithVmEsm('exposes import.meta.url for the loaded module', async () => {
     const runtime = await createRuntime(__filename, {rootDir: ROOT_DIR});
     const m = (await runtime.unstable_importModule(

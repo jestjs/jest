@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {interopRequireDefault} from 'jest-util';
+import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 
 export type SnapshotResolver = {
   /** Resolves from `testPath` to snapshot path. */
@@ -28,13 +28,24 @@ export const isSnapshotPath = (path: string): boolean =>
 
 const cache = new Map<string, SnapshotResolver>();
 
-type LocalRequire = (module: string) => unknown;
+type LocalRequire = (module: string) => unknown | Promise<unknown>;
+
+const createTranspilingRequireWithEsmSupport = async (
+  config: Config.ProjectConfig,
+): Promise<LocalRequire> => {
+  const transpilingRequire = await createTranspilingRequire(config);
+
+  return modulePath =>
+    modulePath.endsWith('.mjs') || modulePath.endsWith('.mts')
+      ? requireOrImportModule(modulePath)
+      : transpilingRequire(modulePath);
+};
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
-    config,
-  ),
+  localRequire:
+    | Promise<LocalRequire>
+    | LocalRequire = createTranspilingRequireWithEsmSupport(config),
 ): Promise<SnapshotResolver> => {
   const key = config.rootDir;
 

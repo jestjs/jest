@@ -4,6 +4,7 @@
 
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
+- `[jest-circus, jest-jasmine2, jest-runtime, jest-snapshot]` Support ESM snapshot resolvers and serializers configured via `snapshotResolver` and `snapshotSerializers` ([#16214](https://github.com/jestjs/jest/pull/16214))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 
 ### Fixes

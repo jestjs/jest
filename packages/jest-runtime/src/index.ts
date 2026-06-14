@@ -25,7 +25,13 @@ import type {ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
-import {createDirectory, deepCyclicCopy, invariant} from 'jest-util';
+import {
+  createDirectory,
+  deepCyclicCopy,
+  interopRequireDefault,
+  invariant,
+  requireOrImportModule as requireOrImportModuleOutsideVm,
+} from 'jest-util';
 import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
@@ -381,6 +387,39 @@ export default class Runtime {
       options,
       isRequireActual,
     );
+  }
+
+  async requireOrImportModule<T = unknown>(
+    from: string,
+    moduleName?: string,
+  ): Promise<T> {
+    const modulePath = moduleName
+      ? await this._resolution.resolveEsmAsync(from, moduleName)
+      : from;
+
+    if (modulePath.endsWith('.mjs') || modulePath.endsWith('.mts')) {
+      return requireOrImportModuleOutsideVm<T>(modulePath);
+    }
+
+    if (this._resolution.shouldLoadAsEsm(modulePath)) {
+      const importedModule = await this.unstable_importModule(from, moduleName);
+
+      if (
+        importedModule === null ||
+        (typeof importedModule !== 'object' &&
+          typeof importedModule !== 'function') ||
+        !('default' in importedModule)
+      ) {
+        throw new Error(
+          `Jest: Failed to load ESM at ${modulePath} - did you use a default export?`,
+        );
+      }
+
+      return importedModule.default as T;
+    }
+
+    return interopRequireDefault(this.requireModule(from, moduleName))
+      .default as T;
   }
 
   requireInternalModule<T = unknown>(from: string, to?: string): T {

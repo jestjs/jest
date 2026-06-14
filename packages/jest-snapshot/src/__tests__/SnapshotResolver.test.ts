@@ -6,11 +6,34 @@
  */
 
 import * as path from 'path';
+import {createTranspilingRequire} from '@jest/transform';
 import {makeProjectConfig} from '@jest/test-utils';
+import {requireOrImportModule} from 'jest-util';
 import {
   type SnapshotResolver,
   buildSnapshotResolver,
 } from '../SnapshotResolver';
+
+jest.mock('@jest/transform', () => {
+  const actual =
+    jest.requireActual<typeof import('@jest/transform')>('@jest/transform');
+
+  return {
+    ...actual,
+    createTranspilingRequire: jest.fn(actual.createTranspilingRequire),
+  };
+});
+
+jest.mock('jest-util', () => {
+  const actual = jest.requireActual<typeof import('jest-util')>('jest-util');
+
+  return {
+    ...actual,
+    requireOrImportModule: jest.fn(actual.requireOrImportModule),
+  };
+});
+
+type TranspilingRequire = Awaited<ReturnType<typeof createTranspilingRequire>>;
 
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;
@@ -78,6 +101,102 @@ describe('custom resolver in project config', () => {
         path.resolve('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
       ),
     ).toBe(path.resolve('/abc/cde/__tests__/a.test.js'));
+  });
+});
+
+describe('ESM-aware custom resolver loading', () => {
+  afterEach(() => {
+    jest
+      .mocked(createTranspilingRequire)
+      .mockImplementation(
+        jest.requireActual<typeof import('@jest/transform')>('@jest/transform')
+          .createTranspilingRequire,
+      );
+    jest
+      .mocked(requireOrImportModule)
+      .mockImplementation(
+        jest.requireActual<typeof import('jest-util')>('jest-util')
+          .requireOrImportModule,
+      );
+    jest.clearAllMocks();
+  });
+
+  it('loads .mjs snapshot resolver files through requireOrImportModule', async () => {
+    const customSnapshotResolverFile = path.join(
+      __dirname,
+      'fixtures',
+      'customSnapshotResolver.mjs',
+    );
+    const projectConfig = makeProjectConfig({
+      rootDir: 'custom-esm-mocked',
+      snapshotResolver: customSnapshotResolverFile,
+    });
+    const transpilingRequire = jest.fn();
+    jest
+      .mocked(createTranspilingRequire)
+      .mockResolvedValue(transpilingRequire as unknown as TranspilingRequire);
+    const requireOrImportModuleMock = jest
+      .mocked(requireOrImportModule)
+      .mockResolvedValue({
+        resolveSnapshotPath: (testPath: string, snapshotExtension: string) =>
+          testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+        resolveTestPath: (
+          snapshotFilePath: string,
+          snapshotExtension: string,
+        ) =>
+          snapshotFilePath
+            .replace('__snapshots__', '__tests__')
+            .slice(0, -snapshotExtension.length),
+        testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
+      });
+
+    const snapshotResolver = await buildSnapshotResolver(projectConfig);
+
+    expect(createTranspilingRequire).toHaveBeenCalledWith(projectConfig);
+    expect(requireOrImportModuleMock).toHaveBeenCalledWith(
+      customSnapshotResolverFile,
+    );
+    expect(transpilingRequire).not.toHaveBeenCalled();
+    expect(
+      snapshotResolver.resolveSnapshotPath(
+        path.resolve('/abc/cde/__tests__/a.test.js'),
+      ),
+    ).toBe(path.resolve('/abc/cde/__snapshots__/a.test.js.snap'));
+  });
+
+  it('continues to load .js snapshot resolver files through transpiling require', async () => {
+    const customSnapshotResolverFile = path.join(
+      __dirname,
+      'fixtures',
+      'customSnapshotResolver.js',
+    );
+    const projectConfig = makeProjectConfig({
+      rootDir: 'custom-js-transpiling-require',
+      snapshotResolver: customSnapshotResolverFile,
+    });
+    const transpilingRequire = jest.fn(async (_modulePath: string) => ({
+      resolveSnapshotPath: (testPath: string, snapshotExtension: string) =>
+        testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+      resolveTestPath: (snapshotFilePath: string, snapshotExtension: string) =>
+        snapshotFilePath
+          .replace('__snapshots__', '__tests__')
+          .slice(0, -snapshotExtension.length),
+      testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
+    }));
+    jest
+      .mocked(createTranspilingRequire)
+      .mockResolvedValue(transpilingRequire as unknown as TranspilingRequire);
+
+    const snapshotResolver = await buildSnapshotResolver(projectConfig);
+
+    expect(createTranspilingRequire).toHaveBeenCalledWith(projectConfig);
+    expect(transpilingRequire).toHaveBeenCalledWith(customSnapshotResolverFile);
+    expect(requireOrImportModule).not.toHaveBeenCalled();
+    expect(
+      snapshotResolver.resolveSnapshotPath(
+        path.resolve('/abc/cde/__tests__/a.test.js'),
+      ),
+    ).toBe(path.resolve('/abc/cde/__snapshots__/a.test.js.snap'));
   });
 });
 

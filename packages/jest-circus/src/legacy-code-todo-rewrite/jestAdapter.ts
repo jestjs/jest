@@ -34,7 +34,7 @@ const jestAdapter = async (
     config,
     environment,
     globalConfig,
-    localRequire: runtime.requireModule.bind(runtime),
+    localRequire: runtime.requireOrImportModule.bind(runtime),
     parentProcess: process,
     runtime,
     sendMessageToJest,

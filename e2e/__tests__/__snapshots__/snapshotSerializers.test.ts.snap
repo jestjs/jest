@@ -56,3 +56,15 @@ Object {
   "snapshot serializers works with second plugin 1": "bar - 2",
 }
 `;
+
+exports[`Snapshot serializers renders snapshots with an ESM serializer from config 1`] = `
+Object {
+  "renders snapshots with an ESM serializer from config 1": "ESM: serializer",
+}
+`;
+
+exports[`Snapshot serializers renders snapshots with an ESM serializer from config using jasmine2 1`] = `
+Object {
+  "renders snapshots with an ESM serializer from config 1": "ESM: serializer",
+}
+`;
