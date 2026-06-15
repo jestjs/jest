@@ -1,3 +1,8 @@
+## [Unrealesed]
+
+### Features
+- `[expect]` Add `expect.satisfying(fn)` as a new built-in asymmetric matcher to wrap `(value) => boolean` to be used anywhere an asymmetric matcher is accepted 
+
 ## main
 
 ### Features
