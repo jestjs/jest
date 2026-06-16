@@ -219,7 +219,6 @@ export class ModuleExecutor {
       ) as ModuleWrapper;
     } catch (error: any) {
       if (
-        runtimeSupportsVmModules &&
         isError(error) &&
         error.name === 'SyntaxError' &&
         hasEsmSyntax(scriptSource)

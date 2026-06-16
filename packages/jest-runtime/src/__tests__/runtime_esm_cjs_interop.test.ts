@@ -6,7 +6,11 @@
  */
 
 import * as path from 'path';
-import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
+import {
+  testWithSyncEsm,
+  testWithVmEsm,
+  testWithoutSyncEsm,
+} from '@jest/test-utils';
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_interop_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -181,6 +185,54 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
       )) as any;
       expect(m.namespace.fromA).toBe(456);
       expect(m.namespace.fromB).toBe(456);
+    },
+  );
+
+  testWithSyncEsm(
+    'require()s an ESM-marked node_modules package natively on Node 24.9+',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/'],
+      });
+      const ns = runtime.requireModule(FROM, 'esm-marked');
+      expect(ns.esmMarkedValue).toBe(789);
+    },
+  );
+
+  testWithoutSyncEsm(
+    'require()s an ESM-marked node_modules package when a transform covers it',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/(?!esm-marked/)'],
+      });
+      const ns = runtime.requireModule(FROM, 'esm-marked');
+      expect(ns.esmMarkedValue).toBe(789);
+    },
+  );
+
+  testWithoutSyncEsm(
+    'gives a clear error when requiring an untransformed ESM-marked package',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: ['/node_modules/'],
+      });
+      const modulePath = path.join(
+        ROOT_DIR,
+        'node_modules',
+        'esm-marked',
+        'index.js',
+      );
+      expect(() => runtime.requireModule(FROM, 'esm-marked')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ESM',
+          message: expect.stringContaining(
+            `Must use import to load ES Module: ${modulePath}`,
+          ),
+        }),
+      );
     },
   );
 
