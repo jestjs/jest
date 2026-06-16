@@ -9,6 +9,11 @@ import * as path from 'node:path';
 
 const MOCKS_PATTERN = `${path.sep}__mocks__${path.sep}`;
 
+export const getMockCandidateModulePath = (filePath: string): string => {
+  const [parentPath, mockPath] = filePath.split(MOCKS_PATTERN);
+  return path.join(parentPath, mockPath);
+};
+
 const getMockName = (filePath: string): string => {
   const mockPath = filePath.split(MOCKS_PATTERN)[1];
   return mockPath
