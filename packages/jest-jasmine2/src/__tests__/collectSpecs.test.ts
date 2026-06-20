@@ -86,15 +86,17 @@ describe('collectSpecs', () => {
     expect(results[0].title).toBe('deep');
   });
 
-  test('filters by testNamePattern', () => {
+  test('reports testNamePattern-deselected specs as pending', () => {
     const root = makeSuite('', [
       makeSpec('matching test', {fullName: 'matching test'}),
       makeSpec('other test', {fullName: 'other test'}),
     ]);
     const results = collect(root, /matching/i);
 
-    expect(results).toHaveLength(1);
-    expect(results[0].title).toBe('matching test');
+    expect(results.map(r => ({status: r.status, title: r.title}))).toEqual([
+      {status: 'passed', title: 'matching test'},
+      {status: 'pending', title: 'other test'},
+    ]);
   });
 
   test('returns empty array for empty suite', () => {
@@ -137,7 +139,7 @@ describe('buildCollectedTestResult', () => {
     expect(result.testFilePath).toBe('/path/to/test.js');
   });
 
-  test('filters by testNamePattern string', () => {
+  test('counts testNamePattern-deselected specs as pending', () => {
     const suite = makeSuite('', [
       makeSpec('match me', {fullName: 'match me'}),
       makeSpec('skip me', {fullName: 'skip me'}),
@@ -149,9 +151,9 @@ describe('buildCollectedTestResult', () => {
       testPath: '/test.js',
     });
 
-    expect(result.testResults).toHaveLength(1);
-    expect(result.testResults[0].title).toBe('match me');
+    expect(result.testResults).toHaveLength(2);
     expect(result.numPassingTests).toBe(1);
+    expect(result.numPendingTests).toBe(1);
   });
 
   test('returns empty results for empty suite', () => {

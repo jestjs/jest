@@ -7,6 +7,24 @@
 
 import runJest from '../runJest';
 
+type Counts = {
+  numFailedTests: number;
+  numPassedTests: number;
+  numPendingTests: number;
+  numTodoTests: number;
+  numTotalTestSuites: number;
+  numTotalTests: number;
+};
+
+const counts = (result: Counts): Counts => ({
+  numFailedTests: result.numFailedTests,
+  numPassedTests: result.numPassedTests,
+  numPendingTests: result.numPendingTests,
+  numTodoTests: result.numTodoTests,
+  numTotalTestSuites: result.numTotalTestSuites,
+  numTotalTests: result.numTotalTests,
+});
+
 describe('jest --collect-tests', () => {
   test('lists test names without executing test bodies', () => {
     const {exitCode, stdout} = runJest('each', [
@@ -56,9 +74,11 @@ describe('jest --collect-tests', () => {
 
     const testFile = json.testResults[0];
     expect(testFile.name).toContain('success.test.js');
-    // Every test in this fixture would run, so all collect to `passed`.
+    // Every test in this fixture would run, so all collect to `passed` and are
+    // flagged `wouldRun` (selected, but never executed).
     for (const assertion of testFile.assertionResults) {
       expect(assertion.status).toBe('passed');
+      expect(assertion.wouldRun).toBe(true);
     }
   });
 
@@ -84,16 +104,34 @@ describe('jest --collect-tests', () => {
     expect(stdout).toContain('fails');
   });
 
-  test('filters correctly with --testNamePattern', () => {
+  test('reports --testNamePattern-deselected tests as pending (like a real run)', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',
+      '--json',
       '--testPathPatterns=success',
       '--testNamePattern=one row',
     ]);
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain('passes one row expected');
-    expect(stdout).not.toContain("The word red contains the letter 'e'");
+    const json = JSON.parse(stdout);
+    const byTitle = new Map<string, {status: string; wouldRun?: boolean}>(
+      json.testResults[0].assertionResults.map(
+        (assertion: {status: string; title: string; wouldRun?: boolean}) => [
+          assertion.title,
+          assertion,
+        ],
+      ),
+    );
+
+    // Matching tests would run; non-matching ones are still collected, but as
+    // pending — exactly how an actual run accounts for them.
+    expect(byTitle.get('passes one row expected true == true')).toMatchObject({
+      status: 'passed',
+      wouldRun: true,
+    });
+    expect(byTitle.get("The word red contains the letter 'e'")?.status).toBe(
+      'pending',
+    );
   });
 
   test('exits 0 even when no tests match', () => {
@@ -123,22 +161,6 @@ describe('jest --collect-tests', () => {
       const real = JSON.parse(runReal.stdout);
       const collected = JSON.parse(runCollect.stdout);
 
-      const counts = (result: {
-        numFailedTests: number;
-        numPassedTests: number;
-        numPendingTests: number;
-        numTodoTests: number;
-        numTotalTestSuites: number;
-        numTotalTests: number;
-      }) => ({
-        numFailedTests: result.numFailedTests,
-        numPassedTests: result.numPassedTests,
-        numPendingTests: result.numPendingTests,
-        numTodoTests: result.numTodoTests,
-        numTotalTestSuites: result.numTotalTestSuites,
-        numTotalTests: result.numTotalTests,
-      });
-
       // The real run passes (every runnable test is written to pass), so the
       // full per-status breakdown collected without execution matches it
       // exactly.
@@ -152,6 +174,22 @@ describe('jest --collect-tests', () => {
       expect(collected.numPassedTests).toBeGreaterThan(50);
     },
   );
+
+  testOnCircus('matches a real run when filtered by --testNamePattern', () => {
+    const args = ['--testNamePattern=passes'];
+    const real = JSON.parse(
+      runJest('collect-tests', ['--json', ...args]).stdout,
+    );
+    const collected = JSON.parse(
+      runJest('collect-tests', ['--collect-tests', '--json', ...args]).stdout,
+    );
+
+    // Deselected tests are counted as pending by both, so the totals agree.
+    expect(real.numFailedTests).toBe(0);
+    expect(counts(collected)).toEqual(counts(real));
+    expect(collected.numPendingTests).toBeGreaterThan(0);
+    expect(collected.numPassedTests).toBeGreaterThan(0);
+  });
 
   testOnCircus('marks xfail (test.failing) entries as failing', () => {
     const {exitCode, stdout} = runJest('collect-tests', [

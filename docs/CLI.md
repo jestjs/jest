@@ -162,9 +162,15 @@ Test suites: 1
 Tests:       2 total, 2 runnable
 ```
 
-Parametrized tests declared with [`test.each`](GlobalAPI.md#testeachtablename-fn-timeout) / `describe.each` are expanded to one entry per case, and each collected test is categorized exactly as a real run would categorize it — runnable tests as `passed`, [`test.skip`](GlobalAPI.md#testskipname-fn) (and tests deselected by `test.only`) as `pending`, and [`test.todo`](GlobalAPI.md#testtodoname) as `todo`. As a result the counts reported by `--collectTests` match those of an actual run (assuming every runnable test passes), so it can be used to count tests without executing them.
+Parametrized tests declared with [`test.each`](GlobalAPI.md#testeachtablename-fn-timeout) / `describe.each` are expanded to one entry per case, and each collected test is categorized exactly as a real run would categorize it:
 
-Use `--json` to get machine-readable output instead. The JSON uses the same shape as a normal run, including `numTotalTests`, `numPassedTests`, `numPendingTests` and `numTodoTests`.
+- a test that would run is reported in the `passed` bucket and flagged `wouldRun: true` (it was selected but never executed);
+- [`test.skip`](GlobalAPI.md#testskipname-fn), tests inside a skipped `describe`, tests deselected by `test.only`, and tests excluded by `--testNamePattern` are reported as `pending`;
+- [`test.todo`](GlobalAPI.md#testtodoname) is reported as `todo`.
+
+Because every test is accounted for in the same bucket an actual run would use, the counts reported by `--collectTests` match those of a run in which every selected test passes — so it can be used to count tests without executing them, including under `--testNamePattern`.
+
+Use `--json` to get machine-readable output instead. The JSON uses the same shape as a normal run, including `numTotalTests`, `numPassedTests`, `numPendingTests` and `numTodoTests`, and each assertion carries the `wouldRun` flag described above.
 
 ### `--colors`
 

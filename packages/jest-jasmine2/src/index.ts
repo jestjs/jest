@@ -65,23 +65,23 @@ export const collectSpecs = (
       );
     } else {
       const fullName = child.getFullName();
-      if (
-        context.testNamePatternRE &&
-        !context.testNamePatternRE.test(fullName)
-      ) {
-        continue;
-      }
+      const deselected =
+        context.testNamePatternRE !== null &&
+        !context.testNamePatternRE.test(fullName);
 
-      // Mirror `Spec.status` without executing: skipped (`markedPending`) maps to
-      // `pending`, `markedTodo` to `todo`, otherwise the spec would run and is
-      // reported as it would resolve when passing.
+      // Mirror `Spec.status` without executing: skipped (`markedPending`) and
+      // pattern-deselected specs map to `pending` (an actual run still counts
+      // them), `markedTodo` to `todo`, otherwise the spec would run and is
+      // reported in the passed bucket and flagged as `wouldRun`.
       let status: Status;
-      if (context.parentPending || child.markedPending) {
+      let wouldRun: true | undefined;
+      if (context.parentPending || child.markedPending || deselected) {
         status = 'pending';
       } else if (child.markedTodo) {
         status = 'todo';
       } else {
         status = 'passed';
+        wouldRun = true;
       }
 
       results.push({
@@ -98,6 +98,7 @@ export const collectSpecs = (
         startAt: null,
         status,
         title: child.description,
+        wouldRun,
       });
     }
   }

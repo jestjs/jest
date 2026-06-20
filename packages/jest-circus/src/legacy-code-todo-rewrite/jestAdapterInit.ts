@@ -166,24 +166,27 @@ export const collectTestsWithoutRunning = async ({
         continue;
       }
 
-      if (testNamePattern && !testNamePattern.test(getTestID(child))) {
-        continue;
-      }
-
+      // Same conditions `_runTest` uses to dispatch `test_skip`: an actual run
+      // still reports these as pending, so collection counts them too.
+      const deselected =
+        testNamePattern != null && !testNamePattern.test(getTestID(child));
       const skipped =
         parent.skipped ||
         child.mode === 'skip' ||
-        (hasFocusedTests && child.mode === undefined);
+        (hasFocusedTests && child.mode === undefined) ||
+        deselected;
 
       let status: Status;
+      let wouldRun: true | undefined;
       if (skipped) {
         status = 'pending';
       } else if (child.mode === 'todo') {
         status = 'todo';
       } else {
         // Test bodies are never executed in collection mode, so a selected test
-        // is reported as it would resolve when passing.
+        // is reported in the passed bucket and flagged as `wouldRun`.
         status = 'passed';
+        wouldRun = true;
       }
 
       const title = child.name;
@@ -201,6 +204,7 @@ export const collectTestsWithoutRunning = async ({
         startAt: null,
         status,
         title,
+        wouldRun,
       });
     }
   };
