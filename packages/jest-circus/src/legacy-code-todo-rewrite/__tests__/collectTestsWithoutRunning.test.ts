@@ -57,6 +57,7 @@ describe('collectTestsWithoutRunning', () => {
       'test two',
     ]);
     expect(result.testResults[0].status).toBe('passed');
+    expect(result.testResults[0].wouldRun).toBe(true);
     expect(result.numPassingTests).toBe(2);
     expect(result.numPendingTests).toBe(0);
   });
@@ -154,7 +155,7 @@ describe('collectTestsWithoutRunning', () => {
     expect(result.testResults).toHaveLength(0);
   });
 
-  it('filters tests by testNamePattern from runner state', async () => {
+  it('reports testNamePattern-deselected tests as pending, like a real run', async () => {
     const state = getRunnerState();
     state.testNamePattern = /one/;
     addTest('test one', state.rootDescribeBlock);
@@ -162,6 +163,13 @@ describe('collectTestsWithoutRunning', () => {
 
     const result = await collect();
 
-    expect(result.testResults.map(r => r.title)).toEqual(['test one']);
+    expect(
+      result.testResults.map(r => ({status: r.status, title: r.title})),
+    ).toEqual([
+      {status: 'passed', title: 'test one'},
+      {status: 'pending', title: 'test two'},
+    ]);
+    expect(result.numPassingTests).toBe(1);
+    expect(result.numPendingTests).toBe(1);
   });
 });
