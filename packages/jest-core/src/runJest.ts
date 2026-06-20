@@ -59,6 +59,27 @@ export const printCollectedTestTree = (
   printSuite(root, 0);
 };
 
+const printCollectedTestSummary = (
+  results: AggregatedResult,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  const testsLine = [`${chalk.bold(results.numTotalTests)} total`];
+  if (results.numPassedTests > 0) {
+    testsLine.push(chalk.green(`${results.numPassedTests} runnable`));
+  }
+  if (results.numPendingTests > 0) {
+    testsLine.push(chalk.yellow(`${results.numPendingTests} skipped`));
+  }
+  if (results.numTodoTests > 0) {
+    testsLine.push(chalk.magenta(`${results.numTodoTests} todo`));
+  }
+
+  outputStream.write(
+    `\n${chalk.bold('Test suites:')} ${results.numTotalTestSuites}\n`,
+  );
+  outputStream.write(`${chalk.bold('Tests:')}       ${testsLine.join(', ')}\n`);
+};
+
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   projectConfig: Config.ProjectConfig,
@@ -298,6 +319,7 @@ export default async function runJest({
           printCollectedTestTree(testResult.testResults, outputStream);
         }
       }
+      printCollectedTestSummary(results, outputStream);
     }
 
     await processResults(results, {

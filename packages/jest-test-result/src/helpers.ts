@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AggregatedResult, SerializableError, TestResult} from './types';
+import type {
+  AggregatedResult,
+  AssertionResult,
+  SerializableError,
+  TestResult,
+} from './types';
 
 export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
   numFailedTestSuites: 0,
@@ -184,3 +189,51 @@ export const createEmptyTestResult = (): TestResult => ({
   testFilePath: '',
   testResults: [],
 });
+
+// Build a single-file `TestResult` from already-resolved assertion results,
+// tallying the per-status counts. Used by the test runners' `--collect-tests`
+// paths, where test bodies are not executed but per-status counts must still
+// match what an actual run would report.
+export const makeCollectedTestResult = (
+  testResults: Array<AssertionResult>,
+  {
+    displayName,
+    testFilePath,
+  }: {displayName: TestResult['displayName']; testFilePath: string},
+): TestResult => {
+  let numFailingTests = 0;
+  let numPassingTests = 0;
+  let numPendingTests = 0;
+  let numTodoTests = 0;
+
+  for (const {status} of testResults) {
+    switch (status) {
+      case 'failed': {
+        numFailingTests += 1;
+        break;
+      }
+      case 'passed': {
+        numPassingTests += 1;
+        break;
+      }
+      case 'todo': {
+        numTodoTests += 1;
+        break;
+      }
+      default: {
+        numPendingTests += 1;
+      }
+    }
+  }
+
+  return {
+    ...createEmptyTestResult(),
+    displayName,
+    numFailingTests,
+    numPassingTests,
+    numPendingTests,
+    numTodoTests,
+    testFilePath,
+    testResults,
+  };
+};

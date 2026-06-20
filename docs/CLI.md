@@ -150,16 +150,21 @@ A glob pattern relative to `rootDir` matching the files that coverage info needs
 
 Discover and print all test suites and test names without executing them. Jest loads each test file, evaluates the top-level `describe` blocks to register tests, then exits before running any test code or lifecycle hooks.
 
-Output is a tree of file paths with their nested describe and test names:
+Output is a tree of file paths with their nested describe and test names, followed by a summary of the total counts:
 
 ```
 path/to/my.test.ts
   My suite
     passes
     fails
+
+Test suites: 1
+Tests:       2 total, 2 runnable
 ```
 
-Use `--json` to get machine-readable output instead.
+Parametrized tests declared with [`test.each`](GlobalAPI.md#testeachtablename-fn-timeout) / `describe.each` are expanded to one entry per case, and each collected test is categorized exactly as a real run would categorize it — runnable tests as `passed`, [`test.skip`](GlobalAPI.md#testskipname-fn) (and tests deselected by `test.only`) as `pending`, and [`test.todo`](GlobalAPI.md#testtodoname) as `todo`. As a result the counts reported by `--collectTests` match those of an actual run (assuming every runnable test passes), so it can be used to count tests without executing them.
+
+Use `--json` to get machine-readable output instead. The JSON uses the same shape as a normal run, including `numTotalTests`, `numPassedTests`, `numPendingTests` and `numTodoTests`.
 
 ### `--colors`
 

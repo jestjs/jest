@@ -10,6 +10,7 @@ export {
   addResult,
   buildFailureTestResult,
   createEmptyTestResult,
+  makeCollectedTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
 export type {
