@@ -22,16 +22,21 @@ beforeEach(() => {
   resetState();
 });
 
-const addTest = (name: string, parent: Circus.DescribeBlock) => {
+const addTest = (
+  name: string,
+  parent: Circus.DescribeBlock,
+  mode: Circus.TestMode = undefined,
+  failing = false,
+) => {
   const test = makeTest(
     () => {},
-    undefined,
+    mode,
     false,
     name,
     parent,
     undefined,
     new Error(),
-    false,
+    failing,
   );
   parent.children.push(test);
 };
@@ -40,7 +45,7 @@ const collect = (testPath = '/test.js') =>
   collectTestsWithoutRunning({config: makeProjectConfig(), testPath});
 
 describe('collectTestsWithoutRunning', () => {
-  it('collects flat tests with pending status', async () => {
+  it('collects runnable tests as passed', async () => {
     const root = getRunnerState().rootDescribeBlock;
     addTest('test one', root);
     addTest('test two', root);
@@ -51,8 +56,69 @@ describe('collectTestsWithoutRunning', () => {
       'test one',
       'test two',
     ]);
+    expect(result.testResults[0].status).toBe('passed');
+    expect(result.numPassingTests).toBe(2);
+    expect(result.numPendingTests).toBe(0);
+  });
+
+  it('resolves status per test mode to match a real run', async () => {
+    const root = getRunnerState().rootDescribeBlock;
+    addTest('runnable', root);
+    addTest('skipped', root, 'skip');
+    addTest('todo', root, 'todo');
+
+    const result = await collect();
+
+    expect(
+      result.testResults.map(r => ({status: r.status, title: r.title})),
+    ).toEqual([
+      {status: 'passed', title: 'runnable'},
+      {status: 'pending', title: 'skipped'},
+      {status: 'todo', title: 'todo'},
+    ]);
+    expect(result.numPassingTests).toBe(1);
+    expect(result.numPendingTests).toBe(1);
+    expect(result.numTodoTests).toBe(1);
+  });
+
+  it('marks tests under a skipped describe as pending', async () => {
+    const root = getRunnerState().rootDescribeBlock;
+    const skipped = makeDescribe('skipped suite', root, 'skip');
+    root.children.push(skipped);
+    addTest('child', skipped);
+
+    const result = await collect();
+
     expect(result.testResults[0].status).toBe('pending');
-    expect(result.numPendingTests).toBe(2);
+    expect(result.numPendingTests).toBe(1);
+  });
+
+  it('marks unfocused tests as pending when the file has focused tests', async () => {
+    const state = getRunnerState();
+    state.hasFocusedTests = true;
+    addTest('focused', state.rootDescribeBlock, 'only');
+    addTest('unfocused', state.rootDescribeBlock);
+    addTest('todo survives focus', state.rootDescribeBlock, 'todo');
+
+    const result = await collect();
+
+    expect(
+      result.testResults.map(r => ({status: r.status, title: r.title})),
+    ).toEqual([
+      {status: 'passed', title: 'focused'},
+      {status: 'pending', title: 'unfocused'},
+      {status: 'todo', title: 'todo survives focus'},
+    ]);
+  });
+
+  it('preserves the failing flag for xfail tests', async () => {
+    const root = getRunnerState().rootDescribeBlock;
+    addTest('xfail', root, undefined, true);
+
+    const result = await collect();
+
+    expect(result.testResults[0].failing).toBe(true);
+    expect(result.testResults[0].status).toBe('passed');
   });
 
   it('collects nested tests with correct ancestor titles', async () => {

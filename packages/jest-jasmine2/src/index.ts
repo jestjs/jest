@@ -10,8 +10,9 @@ import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
 import {
   type AssertionResult,
+  type Status,
   type TestResult,
-  createEmptyTestResult,
+  makeCollectedTestResult,
 } from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
@@ -32,47 +33,72 @@ const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 export type SuiteLike = {
   children: Array<SuiteLike | SpecLike>;
   description: string;
+  markedPending?: boolean;
 };
 
 export type SpecLike = {
   description: string;
   getFullName: () => string;
+  markedPending?: boolean;
+  markedTodo?: boolean;
+};
+
+type CollectContext = {
+  ancestors: Array<string>;
+  parentPending: boolean;
+  testNamePatternRE: RegExp | null;
 };
 
 export const collectSpecs = (
   suite: SuiteLike,
-  ancestors: Array<string>,
-  testNamePatternRE: RegExp | null,
+  context: CollectContext,
 ): Array<AssertionResult> => {
   const results: Array<AssertionResult> = [];
   for (const child of suite.children) {
     if ('children' in child) {
       results.push(
-        ...collectSpecs(
-          child,
-          [...ancestors, child.description],
-          testNamePatternRE,
-        ),
+        ...collectSpecs(child, {
+          ...context,
+          ancestors: [...context.ancestors, child.description],
+          parentPending: context.parentPending || child.markedPending === true,
+        }),
       );
     } else {
       const fullName = child.getFullName();
-      if (!testNamePatternRE || testNamePatternRE.test(fullName)) {
-        results.push({
-          ancestorTitles: [...ancestors],
-          duration: null,
-          failing: false,
-          failureDetails: [],
-          failureMessages: [],
-          fullName,
-          invocations: 0,
-          location: null,
-          numPassingAsserts: 0,
-          retryReasons: [],
-          startAt: null,
-          status: 'pending',
-          title: child.description,
-        });
+      if (
+        context.testNamePatternRE &&
+        !context.testNamePatternRE.test(fullName)
+      ) {
+        continue;
       }
+
+      // Mirror `Spec.status` without executing: skipped (`markedPending`) maps to
+      // `pending`, `markedTodo` to `todo`, otherwise the spec would run and is
+      // reported as it would resolve when passing.
+      let status: Status;
+      if (context.parentPending || child.markedPending) {
+        status = 'pending';
+      } else if (child.markedTodo) {
+        status = 'todo';
+      } else {
+        status = 'passed';
+      }
+
+      results.push({
+        ancestorTitles: [...context.ancestors],
+        duration: null,
+        failing: false,
+        failureDetails: [],
+        failureMessages: [],
+        fullName,
+        invocations: 0,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: [],
+        startAt: null,
+        status,
+        title: child.description,
+      });
     }
   }
   return results;
@@ -92,14 +118,15 @@ export const buildCollectedTestResult = ({
   const testNamePatternRE = testNamePattern
     ? new RegExp(testNamePattern, 'i')
     : null;
-  const assertionResults = collectSpecs(suite, [], testNamePatternRE);
-  return {
-    ...createEmptyTestResult(),
+  const assertionResults = collectSpecs(suite, {
+    ancestors: [],
+    parentPending: suite.markedPending === true,
+    testNamePatternRE,
+  });
+  return makeCollectedTestResult(assertionResults, {
     displayName: config.displayName,
-    numPendingTests: assertionResults.length,
     testFilePath: testPath,
-    testResults: assertionResults,
-  };
+  });
 };
 
 export default async function jasmine2(
