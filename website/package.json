@@ -50,7 +50,7 @@
     "@docusaurus/module-type-aliases": "^3.0.0",
     "@docusaurus/tsconfig": "^3.0.0",
     "@types/react": "^18.3.23",
-    "graphql": "^16.11.0",
+    "graphql": "^17.0.0",
     "graphql-request": "^6.1.0",
     "js-yaml": "^5.0.0",
     "typescript": "^5.8.3"
