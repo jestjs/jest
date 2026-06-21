@@ -212,7 +212,8 @@ export const makeCollectedTestResult = (
     displayName,
     numFailingTests,
     numPassingTests,
-    // Everything else (`pending`, `skipped`, …) counts as pending.
+    // Anything that is neither passing, failing, nor todo (i.e. pending) counts
+    // as pending.
     numPendingTests:
       testResults.length - numFailingTests - numPassingTests - numTodoTests,
     numTodoTests,

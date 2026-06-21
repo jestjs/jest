@@ -120,6 +120,20 @@ describe('collectTestsWithoutRunning', () => {
     expect(result.testResults[0].fullName).toBe('outer inner deep test');
   });
 
+  it('preserves source order across describe blocks', async () => {
+    const root = getRunnerState().rootDescribeBlock;
+    const a = makeDescribe('A', root);
+    root.children.push(a);
+    addTest('first', a);
+    const b = makeDescribe('B', root);
+    root.children.push(b);
+    addTest('second', b);
+
+    const result = await collect();
+
+    expect(result.testResults.map(r => r.title)).toEqual(['first', 'second']);
+  });
+
   it('returns empty results when no tests exist', async () => {
     const result = await collect();
     expect(result.testResults).toHaveLength(0);
