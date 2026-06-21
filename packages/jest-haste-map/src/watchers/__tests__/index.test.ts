@@ -7,19 +7,18 @@
 
 import {EventEmitter} from 'node:events';
 import isWatchmanInstalled from '../../lib/isWatchmanInstalled';
-import {FSEventsWatcher} from '../FSEventsWatcher';
+import {ParcelWatcher} from '../ParcelWatcher';
 import {WatcherDriver, shouldUseWatchman} from '../index';
 
 jest.mock('../../lib/isWatchmanInstalled');
-jest.mock('../FSEventsWatcher');
-jest.mock('../NodeWatcher');
+jest.mock('../ParcelWatcher');
 jest.mock('../WatchmanWatcher');
 
 const mockIsWatchmanInstalled = isWatchmanInstalled as jest.MockedFunction<
   typeof isWatchmanInstalled
 >;
-const MockFSEventsWatcher = FSEventsWatcher as jest.MockedClass<
-  typeof FSEventsWatcher
+const MockParcelWatcher = ParcelWatcher as jest.MockedClass<
+  typeof ParcelWatcher
 >;
 
 type WatcherInstance = {close(): Promise<void>};
@@ -34,6 +33,7 @@ function makeReadyWatcher(): EventEmitter & WatcherInstance {
 }
 
 const driverOpts = {
+  cacheFilePath: '/tmp/haste-map-cache',
   extensions: ['js'],
   ignorePattern: undefined,
   roots: ['/root/a'],
@@ -71,23 +71,21 @@ describe('WatcherDriver', () => {
     jest.clearAllMocks();
   });
 
-  it('uses FSEventsWatcher when useWatchman=false and FSEventsWatcher is supported', async () => {
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
-    MockFSEventsWatcher.mockImplementation(
-      () => makeReadyWatcher() as unknown as jest.MockedObject<FSEventsWatcher>,
+  it('uses ParcelWatcher when useWatchman=false', async () => {
+    MockParcelWatcher.mockImplementation(
+      () => makeReadyWatcher() as unknown as jest.MockedObject<ParcelWatcher>,
     );
 
     const driver = new WatcherDriver({...driverOpts, useWatchman: false});
     await driver.start(jest.fn());
 
-    expect(MockFSEventsWatcher).toHaveBeenCalledTimes(1);
+    expect(MockParcelWatcher).toHaveBeenCalledTimes(1);
   });
 
   it('emits change events to the onChange callback', async () => {
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     const watcher = makeReadyWatcher();
-    MockFSEventsWatcher.mockImplementation(
-      () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
+    MockParcelWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
     );
 
     const driver = new WatcherDriver({...driverOpts, useWatchman: false});
@@ -104,13 +102,12 @@ describe('WatcherDriver', () => {
   });
 
   it('close() awaits every watcher', async () => {
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     const closeA = jest.fn(async () => {});
     const closeB = jest.fn(async () => {});
     let call = 0;
-    MockFSEventsWatcher.mockImplementation(() => {
+    MockParcelWatcher.mockImplementation(() => {
       const w =
-        makeReadyWatcher() as unknown as jest.MockedObject<FSEventsWatcher>;
+        makeReadyWatcher() as unknown as jest.MockedObject<ParcelWatcher>;
       w.close = call++ === 0 ? closeA : closeB;
       return w;
     });
@@ -128,12 +125,11 @@ describe('WatcherDriver', () => {
 
   it('rejects when the watcher does not emit ready within the timeout', async () => {
     jest.useFakeTimers();
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     const watcher = Object.assign(new EventEmitter(), {
       close: jest.fn(async () => {}),
     });
-    MockFSEventsWatcher.mockImplementation(
-      () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
+    MockParcelWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
     );
 
     const startPromise = new WatcherDriver({
@@ -147,11 +143,10 @@ describe('WatcherDriver', () => {
 
   it('closes the watcher when the ready timeout fires', async () => {
     jest.useFakeTimers();
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     const close = jest.fn(async () => {});
     const watcher = Object.assign(new EventEmitter(), {close});
-    MockFSEventsWatcher.mockImplementation(
-      () => watcher as unknown as jest.MockedObject<FSEventsWatcher>,
+    MockParcelWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
     );
 
     const startPromise = new WatcherDriver({...driverOpts}).start(jest.fn());
@@ -163,14 +158,13 @@ describe('WatcherDriver', () => {
   });
 
   it('closes already-started watchers when one root fails to start', async () => {
-    jest.spyOn(FSEventsWatcher, 'isSupported').mockReturnValue(true);
     const closeA = jest.fn(async () => {});
     let call = 0;
-    MockFSEventsWatcher.mockImplementation(() => {
+    MockParcelWatcher.mockImplementation(() => {
       if (call++ === 0) {
         // First root: ready immediately
         const w =
-          makeReadyWatcher() as unknown as jest.MockedObject<FSEventsWatcher>;
+          makeReadyWatcher() as unknown as jest.MockedObject<ParcelWatcher>;
         w.close = closeA;
         return w;
       }
@@ -179,7 +173,7 @@ describe('WatcherDriver', () => {
       const emitter = new EventEmitter();
       return Object.assign(emitter, {
         close: jest.fn(async () => {}),
-      }) as unknown as jest.MockedObject<FSEventsWatcher>;
+      }) as unknown as jest.MockedObject<ParcelWatcher>;
     });
 
     const driver = new WatcherDriver({

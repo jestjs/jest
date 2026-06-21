@@ -516,6 +516,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     );
 
     this._watcherDriver = new WatcherDriver({
+      cacheFilePath: this._cacheManager.path,
       extensions: this._options.extensions,
       ignorePattern: this._options.ignorePattern,
       roots: this._options.roots,

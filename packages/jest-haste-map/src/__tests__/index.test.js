@@ -78,7 +78,9 @@ const mockWatcherConstructor = jest.fn(root => {
   return mockEmitters[root];
 });
 
-jest.mock('../watchers/NodeWatcher', () => mockWatcherConstructor);
+jest.mock('../watchers/ParcelWatcher', () => ({
+  ParcelWatcher: mockWatcherConstructor,
+}));
 jest.mock('../watchers/WatchmanWatcher', () => mockWatcherConstructor);
 
 let mockChangedFiles;

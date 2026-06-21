@@ -6,14 +6,14 @@
  */
 
 import type {EventEmitter} from 'node:events';
-import type {Stats} from 'graceful-fs';
 import type {HasteRegExp} from '../types';
 
 export type WatcherOptions = {
   dot: boolean;
   glob: ReadonlyArray<string>;
   ignored: HasteRegExp | undefined;
-  statCache?: Map<string, Stats>;
+  snapshotPath?: string;
+  useWatchman: boolean;
 };
 
 export type WatcherEventType = 'add' | 'change' | 'delete';
