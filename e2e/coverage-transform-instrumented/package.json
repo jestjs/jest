@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.0.0",
     "babel-plugin-istanbul": "^7.0.1"
   }
