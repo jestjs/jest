@@ -7,7 +7,7 @@
 
 import * as path from 'node:path';
 import * as util from 'node:util';
-import dedentBase from 'dedent';
+import dedent from 'dedent';
 import {
   type ExecaSyncError,
   type SyncOptions as ExecaSyncOptions,
@@ -18,8 +18,6 @@ import * as fs from 'graceful-fs';
 import slash from 'slash';
 import which from 'which';
 import type {Config} from '@jest/types';
-
-const dedent = dedentBase.withOptions({escapeSpecialCharacters: true});
 
 export const run = (
   cmd: string,
