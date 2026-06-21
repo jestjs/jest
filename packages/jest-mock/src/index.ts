@@ -1387,10 +1387,8 @@ export class ModuleMocker {
           descriptor![accessType] = original;
           Object.defineProperty(object, propertyKey, descriptor!);
         } else {
-          // The accessor was inherited from the prototype chain, so the spy
-          // installed an own property on `object`. Deleting it re-exposes the
-          // original prototype accessor instead of pinning a stale copy on the
-          // instance.
+          // Inherited accessor: drop the own property the spy installed so the
+          // prototype accessor is exposed again instead of a stale copy.
           delete object[propertyKey];
         }
       });
