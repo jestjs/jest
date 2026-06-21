@@ -201,37 +201,20 @@ export const makeCollectedTestResult = (
     testFilePath,
   }: {displayName: TestResult['displayName']; testFilePath: string},
 ): TestResult => {
-  let numFailingTests = 0;
-  let numPassingTests = 0;
-  let numPendingTests = 0;
-  let numTodoTests = 0;
-
-  for (const {status} of testResults) {
-    switch (status) {
-      case 'failed': {
-        numFailingTests += 1;
-        break;
-      }
-      case 'passed': {
-        numPassingTests += 1;
-        break;
-      }
-      case 'todo': {
-        numTodoTests += 1;
-        break;
-      }
-      default: {
-        numPendingTests += 1;
-      }
-    }
-  }
+  const count = (status: AssertionResult['status']) =>
+    testResults.filter(result => result.status === status).length;
+  const numFailingTests = count('failed');
+  const numPassingTests = count('passed');
+  const numTodoTests = count('todo');
 
   return {
     ...createEmptyTestResult(),
     displayName,
     numFailingTests,
     numPassingTests,
-    numPendingTests,
+    // Everything else (`pending`, `skipped`, …) counts as pending.
+    numPendingTests:
+      testResults.length - numFailingTests - numPassingTests - numTodoTests,
     numTodoTests,
     testFilePath,
     testResults,

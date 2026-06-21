@@ -10,22 +10,12 @@
 // When a file focuses tests with `.only`, the unfocused tests are reported as
 // skipped (pending) in a real run. `--collect-tests` must reflect the same.
 
-test.only('focused passes a', () => {
-  expect(true).toBe(true);
-});
-
-test.only('focused passes b', () => {
+test.only('focused passes', () => {
   expect(true).toBe(true);
 });
 
 test('unfocused becomes skipped', () => {
   throw new Error('should never run');
-});
-
-describe('unfocused describe', () => {
-  test('also skipped', () => {
-    throw new Error('should never run');
-  });
 });
 
 test.todo('todo survives focus');

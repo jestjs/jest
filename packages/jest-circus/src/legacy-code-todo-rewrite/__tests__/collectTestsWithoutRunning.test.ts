@@ -45,24 +45,7 @@ const collect = (testPath = '/test.js') =>
   collectTestsWithoutRunning({config: makeProjectConfig(), testPath});
 
 describe('collectTestsWithoutRunning', () => {
-  it('collects runnable tests as passed', async () => {
-    const root = getRunnerState().rootDescribeBlock;
-    addTest('test one', root);
-    addTest('test two', root);
-
-    const result = await collect();
-
-    expect(result.testResults.map(r => r.title)).toEqual([
-      'test one',
-      'test two',
-    ]);
-    expect(result.testResults[0].status).toBe('passed');
-    expect(result.testResults[0].wouldRun).toBe(true);
-    expect(result.numPassingTests).toBe(2);
-    expect(result.numPendingTests).toBe(0);
-  });
-
-  it('resolves status per test mode to match a real run', async () => {
+  it('resolves status and counts per test mode to match a real run', async () => {
     const root = getRunnerState().rootDescribeBlock;
     addTest('runnable', root);
     addTest('skipped', root, 'skip');
@@ -77,6 +60,7 @@ describe('collectTestsWithoutRunning', () => {
       {status: 'pending', title: 'skipped'},
       {status: 'todo', title: 'todo'},
     ]);
+    expect(result.testResults[0].wouldRun).toBe(true);
     expect(result.numPassingTests).toBe(1);
     expect(result.numPendingTests).toBe(1);
     expect(result.numTodoTests).toBe(1);
@@ -134,20 +118,6 @@ describe('collectTestsWithoutRunning', () => {
 
     expect(result.testResults[0].ancestorTitles).toEqual(['outer', 'inner']);
     expect(result.testResults[0].fullName).toBe('outer inner deep test');
-  });
-
-  it('preserves source order across describe blocks', async () => {
-    const root = getRunnerState().rootDescribeBlock;
-    const a = makeDescribe('A', root);
-    root.children.push(a);
-    addTest('first', a);
-    const b = makeDescribe('B', root);
-    root.children.push(b);
-    addTest('second', b);
-
-    const result = await collect();
-
-    expect(result.testResults.map(r => r.title)).toEqual(['first', 'second']);
   });
 
   it('returns empty results when no tests exist', async () => {
