@@ -16,13 +16,23 @@ import {
 const makeSpec = (
   description: string,
   {
+    disabled,
     fullName,
+    id,
     markedPending,
     markedTodo,
-  }: {fullName?: string; markedPending?: boolean; markedTodo?: boolean} = {},
+  }: {
+    disabled?: boolean;
+    fullName?: string;
+    id?: string;
+    markedPending?: boolean;
+    markedTodo?: boolean;
+  } = {},
 ): SpecLike => ({
   description,
+  disabled,
   getFullName: () => fullName ?? description,
+  id,
   markedPending,
   markedTodo,
 });
@@ -30,11 +40,26 @@ const makeSpec = (
 const makeSuite = (
   description: string,
   children: Array<SuiteLike | SpecLike>,
-  markedPending = false,
-): SuiteLike => ({children, description, markedPending});
+  {id, markedPending = false}: {id?: string; markedPending?: boolean} = {},
+): SuiteLike => ({children, description, id, markedPending});
 
-const collect = (suite: SuiteLike, testNamePatternRE: RegExp | null = null) =>
-  collectSpecs(suite, {ancestors: [], parentPending: false, testNamePatternRE});
+const collect = (
+  suite: SuiteLike,
+  {
+    focusedRunnableIds = [],
+    testNamePatternRE = null,
+  }: {
+    focusedRunnableIds?: Array<string>;
+    testNamePatternRE?: RegExp | null;
+  } = {},
+) =>
+  collectSpecs(suite, {
+    ancestors: [],
+    focusedRunnableIds,
+    parentEnabled: focusedRunnableIds.length === 0,
+    parentPending: false,
+    testNamePatternRE,
+  });
 
 describe('collectSpecs', () => {
   test('resolves status per spec mode', () => {
@@ -55,7 +80,7 @@ describe('collectSpecs', () => {
 
   test('marks specs under a pending suite as pending', () => {
     const root = makeSuite('', [
-      makeSuite('skipped suite', [makeSpec('child')], true),
+      makeSuite('skipped suite', [makeSpec('child')], {markedPending: true}),
     ]);
     expect(collect(root)[0].status).toBe('pending');
   });
@@ -65,7 +90,7 @@ describe('collectSpecs', () => {
       makeSpec('matching test', {fullName: 'matching test'}),
       makeSpec('other test', {fullName: 'other test'}),
     ]);
-    const results = collect(root, /matching/i);
+    const results = collect(root, {testNamePatternRE: /matching/i});
 
     expect(results.map(r => ({status: r.status, title: r.title}))).toEqual([
       {status: 'passed', title: 'matching test'},
@@ -84,6 +109,51 @@ describe('collectSpecs', () => {
     expect(result.ancestorTitles).toEqual(['outer', 'inner']);
     expect(result.fullName).toBe('outer inner deep');
     expect(result.title).toBe('deep');
+  });
+
+  test('preserves source order across sibling suites', () => {
+    const root = makeSuite('', [
+      makeSuite('A', [makeSpec('first', {fullName: 'A first'})]),
+      makeSuite('B', [makeSpec('second', {fullName: 'B second'})]),
+    ]);
+
+    expect(collect(root).map(r => r.title)).toEqual(['first', 'second']);
+  });
+
+  test('reports specs not selected by focus as pending', () => {
+    // `fit('focused')` and a plain `it('unfocused')`: only the focused spec and
+    // a focused suite's descendants would run; everything else is pending. A
+    // todo deselected by focus is also pending, mirroring `Spec.status`.
+    const root = makeSuite('', [
+      makeSpec('focused spec', {id: 'spec-1'}),
+      makeSpec('unfocused spec', {id: 'spec-2'}),
+      makeSpec('unfocused todo', {id: 'spec-3', markedTodo: true}),
+      makeSuite('focused suite', [makeSpec('inside focus', {id: 'spec-4'})], {
+        id: 'suite-1',
+      }),
+    ]);
+    const results = collect(root, {focusedRunnableIds: ['spec-1', 'suite-1']});
+
+    expect(results.map(r => ({status: r.status, title: r.title}))).toEqual([
+      {status: 'passed', title: 'focused spec'},
+      {status: 'pending', title: 'unfocused spec'},
+      {status: 'pending', title: 'unfocused todo'},
+      {status: 'passed', title: 'inside focus'},
+    ]);
+  });
+
+  test('reports explicitly disabled specs as pending', () => {
+    const root = makeSuite('', [
+      makeSpec('runnable'),
+      makeSpec('disabled', {disabled: true}),
+    ]);
+
+    expect(
+      collect(root).map(r => ({status: r.status, title: r.title})),
+    ).toEqual([
+      {status: 'passed', title: 'runnable'},
+      {status: 'pending', title: 'disabled'},
+    ]);
   });
 });
 

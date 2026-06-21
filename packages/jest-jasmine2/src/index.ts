@@ -33,18 +33,23 @@ const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 export type SuiteLike = {
   children: Array<SuiteLike | SpecLike>;
   description: string;
+  id?: string;
   markedPending?: boolean;
 };
 
 export type SpecLike = {
   description: string;
+  disabled?: boolean;
   getFullName: () => string;
+  id?: string;
   markedPending?: boolean;
   markedTodo?: boolean;
 };
 
 type CollectContext = {
   ancestors: Array<string>;
+  focusedRunnableIds: Array<string>;
+  parentEnabled: boolean;
   parentPending: boolean;
   testNamePatternRE: RegExp | null;
 };
@@ -54,12 +59,17 @@ export const collectSpecs = (
   context: CollectContext,
 ): Array<AssertionResult> => {
   const results: Array<AssertionResult> = [];
+  const isEnabled = (node: SuiteLike | SpecLike): boolean =>
+    context.parentEnabled ||
+    (node.id != null && context.focusedRunnableIds.includes(node.id));
+
   for (const child of suite.children) {
     if ('children' in child) {
       results.push(
         ...collectSpecs(child, {
           ...context,
           ancestors: [...context.ancestors, child.description],
+          parentEnabled: isEnabled(child),
           parentPending: context.parentPending || child.markedPending === true,
         }),
       );
@@ -69,16 +79,20 @@ export const collectSpecs = (
         context.testNamePatternRE !== null &&
         !context.testNamePatternRE.test(fullName);
 
-      // Mirror `Spec.status` without executing: skipped (`markedPending`) and
-      // pattern-deselected specs map to `pending` (an actual run still counts
-      // them), `markedTodo` to `todo`, otherwise the spec would run and is
-      // reported in the passed bucket and flagged as `wouldRun`.
+      // Mirror `Spec.status` without executing, in the same precedence order: a
+      // spec not selected by focus (`fit`/`fdescribe`), explicitly disabled, or
+      // deselected by `--testNamePattern` reports as `pending` (an actual run
+      // still counts these); `markedTodo` reports as `todo`; a skipped
+      // (`markedPending`) spec reports as `pending`; otherwise the spec would
+      // run and is reported in the passed bucket and flagged as `wouldRun`.
       let status: Status;
       let wouldRun: true | undefined;
-      if (context.parentPending || child.markedPending || deselected) {
+      if (!isEnabled(child) || child.disabled || deselected) {
         status = 'pending';
       } else if (child.markedTodo) {
         status = 'todo';
+      } else if (context.parentPending || child.markedPending) {
+        status = 'pending';
       } else {
         status = 'passed';
         wouldRun = true;
@@ -107,11 +121,13 @@ export const collectSpecs = (
 
 export const buildCollectedTestResult = ({
   config,
+  focusedRunnableIds = [],
   suite,
   testNamePattern,
   testPath,
 }: {
   config: Config.ProjectConfig;
+  focusedRunnableIds?: Array<string>;
   suite: SuiteLike;
   testNamePattern: string | undefined;
   testPath: string;
@@ -121,6 +137,10 @@ export const buildCollectedTestResult = ({
     : null;
   const assertionResults = collectSpecs(suite, {
     ancestors: [],
+    focusedRunnableIds,
+    // With no focus the whole tree runs; with focus only the focused subtrees
+    // do, so the root suite is enabled only when nothing is focused.
+    parentEnabled: focusedRunnableIds.length === 0,
     parentPending: suite.markedPending === true,
     testNamePatternRE,
   });
@@ -307,6 +327,7 @@ export default async function jasmine2(
   if (globalConfig.collectTests) {
     return buildCollectedTestResult({
       config,
+      focusedRunnableIds: env.focusedRunnableIds(),
       suite: env.topSuite() as unknown as SuiteLike,
       testNamePattern: globalConfig.testNamePattern,
       testPath,

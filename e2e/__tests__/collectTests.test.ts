@@ -22,10 +22,10 @@ const counts = (result: Counts): Counts =>
   Object.fromEntries(COUNT_KEYS.map(key => [key, result[key]])) as Counts;
 
 describe('jest --collect-tests', () => {
-  // `.only` focus and `test.failing` collection parity is only implemented for
-  // the default circus runner; jasmine2 collection support is best-effort, so
-  // tests that rely on the kitchenSink fixture (which uses `test.failing`) run
-  // on circus only.
+  // `test.failing` (xfail) collection parity is only implemented for the
+  // default circus runner, so tests that rely on the kitchenSink fixture (which
+  // uses `test.failing`) run on circus only. Focus parity is supported on both
+  // runners and is exercised by a dedicated test below.
   const testOnCircus = process.env.JEST_JASMINE ? test.skip : test;
 
   test('prints a tree and summary without executing tests', () => {
@@ -126,6 +126,27 @@ describe('jest --collect-tests', () => {
     expect(counts(collected)).toEqual(counts(real));
     expect(collected.numPassedTests).toBeGreaterThan(0);
     expect(collected.numPendingTests).toBeGreaterThan(0);
+  });
+
+  // Focus (`test.only`/`fdescribe`) deselects the other tests in the file. Both
+  // runners must collect the same per-status counts a real run produces; the
+  // focused fixture has no `test.failing`, so jasmine parity holds here too.
+  test('reports the same counts as a real run with focused tests', () => {
+    const real = JSON.parse(
+      runJest('collect-tests', ['--json', '--testPathPatterns=focused']).stdout,
+    );
+    const collected = JSON.parse(
+      runJest('collect-tests', [
+        '--collect-tests',
+        '--json',
+        '--testPathPatterns=focused',
+      ]).stdout,
+    );
+
+    expect(real.numFailedTests).toBe(0);
+    expect(real.numPassedTests).toBe(1);
+    expect(real.numPendingTests).toBeGreaterThan(0);
+    expect(counts(collected)).toEqual(counts(real));
   });
 
   testOnCircus('marks xfail (test.failing) entries as failing', () => {
