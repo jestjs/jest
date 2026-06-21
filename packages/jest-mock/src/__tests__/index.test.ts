@@ -1768,6 +1768,28 @@ describe('moduleMocker', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('does not leave an own descriptor when restoring a spy on an inherited getter-defined method', () => {
+      let calls = 0;
+      const parent = {
+        get method() {
+          return function () {
+            calls++;
+          };
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker.spyOn(child, 'method');
+      child.method();
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockRestore();
+
+      expect(Object.prototype.hasOwnProperty.call(child, 'method')).toBe(false);
+      child.method();
+      expect(calls).toBe(2);
+    });
+
     it('should work with object of null prototype', () => {
       const Foo = Object.assign(Object.create(null), {
         foo() {},
@@ -1843,6 +1865,62 @@ describe('moduleMocker', () => {
       obj.property = true;
       expect(spy).not.toHaveBeenCalled();
       expect(obj.property).toBe(true);
+    });
+
+    it('does not leave an own descriptor on the instance after restoring an inherited getter', () => {
+      const parent = {
+        get value() {
+          return 'parent';
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker
+        .spyOn(child, 'value', 'get')
+        .mockReturnValue('spied');
+      expect(child.value).toBe('spied');
+
+      spy.mockRestore();
+
+      expect(child.value).toBe('parent');
+      // The accessor was inherited, so restoring should not leave an own
+      // property shadowing the prototype.
+      expect(Object.prototype.hasOwnProperty.call(child, 'value')).toBe(false);
+
+      // Because the own property was removed, later changes to the prototype
+      // accessor are still observed through the instance.
+      Object.defineProperty(parent, 'value', {
+        configurable: true,
+        get() {
+          return 'parent updated';
+        },
+      });
+      expect(child.value).toBe('parent updated');
+    });
+
+    it('does not leave an own descriptor on the instance after restoring an inherited setter', () => {
+      const received: Array<unknown> = [];
+      let stored: unknown;
+      const parent = {
+        get value() {
+          return stored;
+        },
+        set value(next: unknown) {
+          stored = next;
+          received.push(next);
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker.spyOn(child, 'value', 'set');
+      child.value = 'a';
+      expect(spy).toHaveBeenCalledWith('a');
+
+      spy.mockRestore();
+
+      expect(Object.prototype.hasOwnProperty.call(child, 'value')).toBe(false);
+      child.value = 'b';
+      expect(received).toEqual(['a', 'b']);
     });
 
     it('should throw on invalid input', () => {
