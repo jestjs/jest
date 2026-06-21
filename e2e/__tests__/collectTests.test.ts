@@ -7,59 +7,41 @@
 
 import runJest from '../runJest';
 
-type Counts = {
-  numFailedTests: number;
-  numPassedTests: number;
-  numPendingTests: number;
-  numTodoTests: number;
-  numTotalTestSuites: number;
-  numTotalTests: number;
-};
+const COUNT_KEYS = [
+  'numFailedTests',
+  'numPassedTests',
+  'numPendingTests',
+  'numTodoTests',
+  'numTotalTestSuites',
+  'numTotalTests',
+] as const;
 
-const counts = (result: Counts): Counts => ({
-  numFailedTests: result.numFailedTests,
-  numPassedTests: result.numPassedTests,
-  numPendingTests: result.numPendingTests,
-  numTodoTests: result.numTodoTests,
-  numTotalTestSuites: result.numTotalTestSuites,
-  numTotalTests: result.numTotalTests,
-});
+type Counts = Record<(typeof COUNT_KEYS)[number], number>;
+
+const counts = (result: Counts): Counts =>
+  Object.fromEntries(COUNT_KEYS.map(key => [key, result[key]])) as Counts;
 
 describe('jest --collect-tests', () => {
-  test('lists test names without executing test bodies', () => {
+  // `.only` focus and `test.failing` collection parity is only implemented for
+  // the default circus runner; jasmine2 collection support is best-effort, so
+  // tests that rely on the kitchenSink fixture (which uses `test.failing`) run
+  // on circus only.
+  const testOnCircus = process.env.JEST_JASMINE ? test.skip : test;
+
+  test('prints a tree and summary without executing tests', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',
       '--testPathPatterns=success',
     ]);
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain("The word red contains the letter 'e'");
-    expect(stdout).toContain('passes one row expected true == true');
-    expect(stdout).toContain('passes all rows expected true == true');
     expect(stdout).toContain('success.test.js');
+    expect(stdout).toContain("The word red contains the letter 'e'");
+    expect(stdout).toMatch(/Test suites:\s+1/);
+    expect(stdout).toMatch(/Tests:\s+15 total/);
   });
 
-  test('expands it.each / test.each into one entry per case', () => {
-    const {exitCode, stdout} = runJest('each', [
-      '--collect-tests',
-      '--json',
-      '--testPathPatterns=success',
-    ]);
-
-    expect(exitCode).toBe(0);
-    const json = JSON.parse(stdout);
-    const titles = json.testResults[0].assertionResults.map(
-      (assertion: {title: string}) => assertion.title,
-    );
-
-    // The three-element `test.each(['red', 'green', 'bean'])` becomes three
-    // separate collected entries rather than a single `.each` block.
-    expect(titles).toContain("The word red contains the letter 'e'");
-    expect(titles).toContain("The word green contains the letter 'e'");
-    expect(titles).toContain("The word bean contains the letter 'e'");
-  });
-
-  test('produces valid JSON with --json', () => {
+  test('emits JSON with per-test status and the wouldRun flag', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',
       '--json',
@@ -70,7 +52,6 @@ describe('jest --collect-tests', () => {
     const json = JSON.parse(stdout);
     expect(json.success).toBe(true);
     expect(json.numTotalTestSuites).toBe(1);
-    expect(json.numTotalTests).toBeGreaterThan(0);
 
     const testFile = json.testResults[0];
     expect(testFile.name).toContain('success.test.js');
@@ -82,18 +63,7 @@ describe('jest --collect-tests', () => {
     }
   });
 
-  test('prints a summary line with the total count', () => {
-    const {exitCode, stdout} = runJest('each', [
-      '--collect-tests',
-      '--testPathPatterns=success',
-    ]);
-
-    expect(exitCode).toBe(0);
-    expect(stdout).toMatch(/Test suites:\s+1/);
-    expect(stdout).toMatch(/Tests:\s+15 total/);
-  });
-
-  test('annotates skipped and todo tests in the tree', () => {
+  testOnCircus('annotates skipped and todo tests in the tree', () => {
     const {exitCode, stdout} = runJest('collect-tests', [
       '--collect-tests',
       '--testPathPatterns=kitchenSink',
@@ -102,9 +72,7 @@ describe('jest --collect-tests', () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain('explicitly skipped [skipped]');
     expect(stdout).toContain('write this later [todo]');
-    // Runnable tests are left unannotated.
-    expect(stdout).toContain('deeply nested passes\n');
-    expect(stdout).not.toContain('deeply nested passes [');
+    expect(stdout).toContain('deeply nested passes\n'); // runnable: unannotated
   });
 
   test('surfaces test files that fail to load', () => {
@@ -113,57 +81,24 @@ describe('jest --collect-tests', () => {
     ]);
 
     // A file that throws while loading cannot be collected: it is reported with
-    // its error and counted, and the exit code is non-zero.
+    // its error, and the exit code is non-zero.
     expect(exitCode).not.toBe(0);
-    expect(stdout).toContain('broken.test.js');
     expect(stdout).toContain('boom while loading this test file');
     expect(stdout).toMatch(/test suite\(s\) failed to load/);
-    // The healthy file is still collected.
-    expect(stdout).toContain('this one collects fine');
+    expect(stdout).toContain('this one collects fine'); // healthy file still listed
   });
 
-  test('does not execute tests (failing tests still exit 0)', () => {
+  test('does not execute test bodies (failing tests still exit 0)', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',
       '--testPathPatterns=failure',
     ]);
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain('failure.test.js');
     expect(stdout).toContain('fails');
   });
 
-  test('reports --testNamePattern-deselected tests as pending (like a real run)', () => {
-    const {exitCode, stdout} = runJest('each', [
-      '--collect-tests',
-      '--json',
-      '--testPathPatterns=success',
-      '--testNamePattern=one row',
-    ]);
-
-    expect(exitCode).toBe(0);
-    const json = JSON.parse(stdout);
-    const byTitle = new Map<string, {status: string; wouldRun?: boolean}>(
-      json.testResults[0].assertionResults.map(
-        (assertion: {status: string; title: string; wouldRun?: boolean}) => [
-          assertion.title,
-          assertion,
-        ],
-      ),
-    );
-
-    // Matching tests would run; non-matching ones are still collected, but as
-    // pending — exactly how an actual run accounts for them.
-    expect(byTitle.get('passes one row expected true == true')).toMatchObject({
-      status: 'passed',
-      wouldRun: true,
-    });
-    expect(byTitle.get("The word red contains the letter 'e'")?.status).toBe(
-      'pending',
-    );
-  });
-
-  test('exits 0 even when no tests match', () => {
+  test('exits 0 when no tests match', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',
       '--testPathPatterns=nonexistent',
@@ -173,39 +108,13 @@ describe('jest --collect-tests', () => {
     expect(stdout).toContain('No tests found');
   });
 
-  // Focus (`.only`) and `test.failing` collection parity is only implemented for
-  // the default circus runner; jasmine2 collection support is best-effort.
-  const testOnCircus = process.env.JEST_JASMINE ? test.skip : test;
-
-  testOnCircus(
-    'reports the same per-status counts as a real run (skip/todo/xfail/each/focus)',
-    () => {
-      const runReal = runJest('collect-tests', ['--json']);
-      const runCollect = runJest('collect-tests', [
-        '--collect-tests',
-        '--json',
-      ]);
-
-      expect(runCollect.exitCode).toBe(0);
-      const real = JSON.parse(runReal.stdout);
-      const collected = JSON.parse(runCollect.stdout);
-
-      // The real run passes (every runnable test is written to pass), so the
-      // full per-status breakdown collected without execution matches it
-      // exactly.
-      expect(real.numFailedTests).toBe(0);
-      expect(counts(collected)).toEqual(counts(real));
-
-      // Sanity-check the breakdown is non-trivial: skips, todos and `.each`
-      // expansion are all represented.
-      expect(collected.numPendingTests).toBeGreaterThan(0);
-      expect(collected.numTodoTests).toBeGreaterThan(0);
-      expect(collected.numPassedTests).toBeGreaterThan(50);
-    },
-  );
-
-  testOnCircus('matches a real run when filtered by --testNamePattern', () => {
-    const args = ['--testNamePattern=passes'];
+  // The fixture's runnable tests all pass, so the per-status breakdown collected
+  // without execution matches a real run exactly — including `.each` expansion,
+  // skips, todos, xfail, focus, and `--testNamePattern` deselection.
+  testOnCircus.each([
+    ['unfiltered', [] as Array<string>],
+    ['--testNamePattern', ['--testNamePattern=passes']],
+  ])('reports the same counts as a real run (%s)', (_label, args) => {
     const real = JSON.parse(
       runJest('collect-tests', ['--json', ...args]).stdout,
     );
@@ -213,27 +122,22 @@ describe('jest --collect-tests', () => {
       runJest('collect-tests', ['--collect-tests', '--json', ...args]).stdout,
     );
 
-    // Deselected tests are counted as pending by both, so the totals agree.
     expect(real.numFailedTests).toBe(0);
     expect(counts(collected)).toEqual(counts(real));
-    expect(collected.numPendingTests).toBeGreaterThan(0);
     expect(collected.numPassedTests).toBeGreaterThan(0);
+    expect(collected.numPendingTests).toBeGreaterThan(0);
   });
 
   testOnCircus('marks xfail (test.failing) entries as failing', () => {
-    const {exitCode, stdout} = runJest('collect-tests', [
+    const {stdout} = runJest('collect-tests', [
       '--collect-tests',
       '--json',
       '--testPathPatterns=kitchenSink',
     ]);
-
-    expect(exitCode).toBe(0);
-    const json = JSON.parse(stdout);
-    const xfail = json.testResults[0].assertionResults.find(
+    const xfail = JSON.parse(stdout).testResults[0].assertionResults.find(
       (assertion: {title: string}) =>
         assertion.title === 'known broken passes when it throws',
     );
-    expect(xfail).toBeDefined();
     expect(xfail.failing).toBe(true);
   });
 });

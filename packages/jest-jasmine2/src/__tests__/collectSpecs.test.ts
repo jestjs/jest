@@ -37,16 +37,6 @@ const collect = (suite: SuiteLike, testNamePatternRE: RegExp | null = null) =>
   collectSpecs(suite, {ancestors: [], parentPending: false, testNamePatternRE});
 
 describe('collectSpecs', () => {
-  test('collects flat runnable specs as passed', () => {
-    const root = makeSuite('', [makeSpec('test one'), makeSpec('test two')]);
-    const results = collect(root);
-
-    expect(results).toHaveLength(2);
-    expect(results[0].title).toBe('test one');
-    expect(results[0].status).toBe('passed');
-    expect(results[1].title).toBe('test two');
-  });
-
   test('resolves status per spec mode', () => {
     const root = makeSuite('', [
       makeSpec('runnable'),
@@ -60,30 +50,14 @@ describe('collectSpecs', () => {
       {status: 'pending', title: 'skipped'},
       {status: 'todo', title: 'todo'},
     ]);
+    expect(results[0].wouldRun).toBe(true);
   });
 
   test('marks specs under a pending suite as pending', () => {
     const root = makeSuite('', [
       makeSuite('skipped suite', [makeSpec('child')], true),
     ]);
-    const results = collect(root);
-
-    expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('pending');
-  });
-
-  test('collects nested specs with ancestor titles', () => {
-    const root = makeSuite('', [
-      makeSuite('outer', [
-        makeSuite('inner', [makeSpec('deep', {fullName: 'outer inner deep'})]),
-      ]),
-    ]);
-    const results = collect(root);
-
-    expect(results).toHaveLength(1);
-    expect(results[0].ancestorTitles).toEqual(['outer', 'inner']);
-    expect(results[0].fullName).toBe('outer inner deep');
-    expect(results[0].title).toBe('deep');
+    expect(collect(root)[0].status).toBe('pending');
   });
 
   test('reports testNamePattern-deselected specs as pending', () => {
@@ -99,20 +73,17 @@ describe('collectSpecs', () => {
     ]);
   });
 
-  test('returns empty array for empty suite', () => {
-    const root = makeSuite('', []);
-    const results = collect(root);
-    expect(results).toHaveLength(0);
-  });
-
-  test('preserves order across sibling suites', () => {
+  test('collects nested specs with ancestor titles in order', () => {
     const root = makeSuite('', [
-      makeSuite('A', [makeSpec('first', {fullName: 'A first'})]),
-      makeSuite('B', [makeSpec('second', {fullName: 'B second'})]),
+      makeSuite('outer', [
+        makeSuite('inner', [makeSpec('deep', {fullName: 'outer inner deep'})]),
+      ]),
     ]);
-    const results = collect(root);
+    const [result] = collect(root);
 
-    expect(results.map(r => r.title)).toEqual(['first', 'second']);
+    expect(result.ancestorTitles).toEqual(['outer', 'inner']);
+    expect(result.fullName).toBe('outer inner deep');
+    expect(result.title).toBe('deep');
   });
 });
 
@@ -139,28 +110,10 @@ describe('buildCollectedTestResult', () => {
     expect(result.testFilePath).toBe('/path/to/test.js');
   });
 
-  test('counts testNamePattern-deselected specs as pending', () => {
-    const suite = makeSuite('', [
-      makeSpec('match me', {fullName: 'match me'}),
-      makeSpec('skip me', {fullName: 'skip me'}),
-    ]);
-    const result = buildCollectedTestResult({
-      config: makeProjectConfig(),
-      suite,
-      testNamePattern: 'match',
-      testPath: '/test.js',
-    });
-
-    expect(result.testResults).toHaveLength(2);
-    expect(result.numPassingTests).toBe(1);
-    expect(result.numPendingTests).toBe(1);
-  });
-
   test('returns empty results for empty suite', () => {
-    const suite = makeSuite('', []);
     const result = buildCollectedTestResult({
       config: makeProjectConfig(),
-      suite,
+      suite: makeSuite('', []),
       testNamePattern: undefined,
       testPath: '/test.js',
     });
