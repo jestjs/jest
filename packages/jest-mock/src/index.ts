@@ -1297,8 +1297,12 @@ export class ModuleMocker {
       if (descriptor && descriptor.get) {
         const originalGet = descriptor.get;
         mock = this._makeComponent({type: 'function'}, () => {
-          descriptor!.get = originalGet;
-          Object.defineProperty(object, methodKey, descriptor!);
+          if (isMethodOwner) {
+            descriptor!.get = originalGet;
+            Object.defineProperty(object, methodKey, descriptor!);
+          } else {
+            delete object[methodKey];
+          }
         });
         descriptor.get = () => mock;
         Object.defineProperty(object, methodKey, descriptor);

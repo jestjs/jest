@@ -1768,6 +1768,28 @@ describe('moduleMocker', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('does not leave an own descriptor when restoring a spy on an inherited getter-defined method', () => {
+      let calls = 0;
+      const parent = {
+        get method() {
+          return function () {
+            calls++;
+          };
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker.spyOn(child, 'method');
+      child.method();
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockRestore();
+
+      expect(Object.prototype.hasOwnProperty.call(child, 'method')).toBe(false);
+      child.method();
+      expect(calls).toBe(2);
+    });
+
     it('should work with object of null prototype', () => {
       const Foo = Object.assign(Object.create(null), {
         foo() {},
