@@ -93,6 +93,35 @@ describe('jest --collect-tests', () => {
     expect(stdout).toMatch(/Tests:\s+15 total/);
   });
 
+  test('annotates skipped and todo tests in the tree', () => {
+    const {exitCode, stdout} = runJest('collect-tests', [
+      '--collect-tests',
+      '--testPathPatterns=kitchenSink',
+    ]);
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain('explicitly skipped [skipped]');
+    expect(stdout).toContain('write this later [todo]');
+    // Runnable tests are left unannotated.
+    expect(stdout).toContain('deeply nested passes\n');
+    expect(stdout).not.toContain('deeply nested passes [');
+  });
+
+  test('surfaces test files that fail to load', () => {
+    const {exitCode, stdout} = runJest('collect-tests-load-error', [
+      '--collect-tests',
+    ]);
+
+    // A file that throws while loading cannot be collected: it is reported with
+    // its error and counted, and the exit code is non-zero.
+    expect(exitCode).not.toBe(0);
+    expect(stdout).toContain('broken.test.js');
+    expect(stdout).toContain('boom while loading this test file');
+    expect(stdout).toMatch(/test suite\(s\) failed to load/);
+    // The healthy file is still collected.
+    expect(stdout).toContain('this one collects fine');
+  });
+
   test('does not execute tests (failing tests still exit 0)', () => {
     const {exitCode, stdout} = runJest('each', [
       '--collect-tests',

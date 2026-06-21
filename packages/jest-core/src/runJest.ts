@@ -44,12 +44,23 @@ export const printCollectedTestTree = (
   testResults: Array<AssertionResult>,
   outputStream: NodeJS.WritableStream,
 ): void => {
+  const annotate = (test: AssertionResult): string => {
+    if (test.status === 'todo') {
+      return chalk.dim(' [todo]');
+    }
+    if (test.status === 'pending') {
+      return chalk.dim(' [skipped]');
+    }
+    return '';
+  };
   const printSuite = (suite: Suite, indent: number): void => {
     if (suite.title) {
       outputStream.write(`${'  '.repeat(indent)}${suite.title}\n`);
     }
     for (const t of suite.tests) {
-      outputStream.write(`${'  '.repeat(indent + 1)}${t.title}\n`);
+      outputStream.write(
+        `${'  '.repeat(indent + 1)}${t.title}${annotate(t)}\n`,
+      );
     }
     for (const child of suite.suites) {
       printSuite(child, indent + 1);
@@ -78,6 +89,14 @@ const printCollectedTestSummary = (
     `\n${chalk.bold('Test suites:')} ${results.numTotalTestSuites}\n`,
   );
   outputStream.write(`${chalk.bold('Tests:')}       ${testsLine.join(', ')}\n`);
+
+  if (results.numRuntimeErrorTestSuites > 0) {
+    outputStream.write(
+      chalk.bold.red(
+        `\n${results.numRuntimeErrorTestSuites} test suite(s) failed to load and could not be collected.\n`,
+      ),
+    );
+  }
 };
 
 const getTestPaths = async (
@@ -314,7 +333,13 @@ export default async function runJest({
 
     if (!globalConfig.json) {
       for (const testResult of results.testResults) {
-        if (testResult.testResults.length > 0) {
+        if (testResult.testExecError) {
+          outputStream.write(
+            `${chalk.red(testResult.testFilePath)}\n${
+              testResult.failureMessage ?? testResult.testExecError.message
+            }\n`,
+          );
+        } else if (testResult.testResults.length > 0) {
           outputStream.write(`${testResult.testFilePath}\n`);
           printCollectedTestTree(testResult.testResults, outputStream);
         }
