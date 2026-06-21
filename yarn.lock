@@ -228,6 +228,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular/common@npm:21.2.15":
+  version: 21.2.15
+  resolution: "@angular/common@npm:21.2.15"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": 21.2.15
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 10/a64d1b25c077effc040e145b0c5b663594832a734227112d0957879780962f28df0d6715790d8926064bd3347084736ccb3c6e25d5998bd6686dd128b48fe979
+  languageName: node
+  linkType: hard
+
 "@angular/common@npm:^21.0.0":
   version: 21.2.17
   resolution: "@angular/common@npm:21.2.17"
@@ -4407,6 +4419,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/monorepo@workspace:."
   dependencies:
+    "@angular/common": "npm:21.2.15"
     "@babel/core": "npm:^7.27.4"
     "@babel/plugin-transform-modules-commonjs": "npm:^7.27.1"
     "@babel/preset-env": "npm:^7.27.2"
