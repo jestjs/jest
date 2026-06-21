@@ -478,7 +478,6 @@ const config = defineConfig(
 
   {
     files: [
-      'website/docusaurus.config.js',
       'website/fetchSupporters.js',
       'website/src/prism/themeLight.js',
       'website/src/prism/themeDark.js',
@@ -489,6 +488,13 @@ const config = defineConfig(
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,
+    },
+  },
+
+  {
+    files: ['website/docusaurus.config.mjs'],
+    languageOptions: {
+      globals: globals.nodeBuiltin,
     },
   },
 
@@ -597,7 +603,7 @@ const config = defineConfig(
     },
   },
   {
-    files: ['examples/**/*', 'eslint.config.mjs'],
+    files: ['examples/**/*', 'eslint.config.mjs', 'website/**/*'],
     rules: {
       'no-restricted-imports': 'off',
     },

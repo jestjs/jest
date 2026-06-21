@@ -11,7 +11,7 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
 import fs from 'graceful-fs';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import tempy from 'tempy';
 
 const rootDirectory = path.resolve(

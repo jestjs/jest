@@ -4494,7 +4494,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-util: "workspace:*"
     jest-watch-typeahead: "npm:^3.0.1"
-    js-yaml: "npm:^4.1.1"
+    js-yaml: "npm:^5.0.0"
     mock-fs: "npm:^5.5.0"
     netlify-plugin-cache: "npm:^1.0.3"
     node-notifier: "npm:^10.0.1"
@@ -15128,7 +15128,7 @@ __metadata:
     docusaurus-remark-plugin-tab-blocks: "npm:^4.0.0"
     graphql: "npm:^16.11.0"
     graphql-request: "npm:^6.1.0"
-    js-yaml: "npm:^4.1.1"
+    js-yaml: "npm:^5.0.0"
     prism-react-renderer: "npm:^2.1.0"
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
@@ -15269,6 +15269,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/51de2067a2b44b07ba5206132e56005f8b568ff279bb4d2f645068958c56fa4827d40a6841c983234671fa0a134bf094d0b0717873c2a3d319185297af145a6d
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "js-yaml@npm:5.0.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.mjs
+  checksum: 10/51691da5a1b3894ffdd6ffe386d061fecf8769d135560dce8f3d3b7c5f7b167ec7fbe2c232c91135d58216b2f6ba215e85ac60fe569c46f0a9024f2ff6dec47e
   languageName: node
   linkType: hard
 
