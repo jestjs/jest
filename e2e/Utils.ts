@@ -19,6 +19,8 @@ import slash from 'slash';
 import which from 'which';
 import type {Config} from '@jest/types';
 
+const dedentWithoutTrim = dedent.withOptions({trimWhitespace: false});
+
 export const run = (
   cmd: string,
   cwd?: string,
@@ -127,7 +129,9 @@ export const cleanup = (directory: string) => {
 export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
+  {skipTrim = false}: {skipTrim?: boolean} = {},
 ) => {
+  const format = skipTrim ? dedentWithoutTrim : dedent;
   fs.mkdirSync(directory, {recursive: true});
   for (const fileOrPath of Object.keys(files)) {
     const dirname = path.dirname(fileOrPath);
@@ -137,7 +141,7 @@ export const writeFiles = (
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      dedent(files[fileOrPath]),
+      format(files[fileOrPath]),
     );
   }
 };
