@@ -60,7 +60,7 @@
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "jest-watch-typeahead": "^3.0.1",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^5.0.0",
     "mock-fs": "^5.5.0",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.1",
@@ -215,5 +215,5 @@
     "lru-cache@^10.2.2": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@4.15.0"
+  "packageManager": "yarn@4.17.0"
 }
