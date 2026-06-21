@@ -777,6 +777,38 @@ describe('HasteMap', () => {
     }
   });
 
+  it('does not warn on duplicate adjacent manual mocks', async () => {
+    mockFs[path.join('/', 'project', 'fruits', 'module1', 'index.js')] = `
+      // module1
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module1', '__mocks__', 'index.js')
+    ] = `
+      // module1 mock
+    `;
+    mockFs[path.join('/', 'project', 'fruits', 'module2', 'index.js')] = `
+      // module2
+    `;
+    mockFs[
+      path.join('/', 'project', 'fruits', 'module2', '__mocks__', 'index.js')
+    ] = `
+      // module2 mock
+    `;
+
+    await (
+      await HasteMap.create({
+        ...defaultConfig,
+        hasteImplModulePath: undefined,
+        mocksPattern: '__mocks__',
+        throwOnModuleCollision: true,
+      })
+    ).build();
+
+    expect(console.error).not.toHaveBeenCalledWith(
+      expect.stringContaining('duplicate manual mock found: index'),
+    );
+  });
+
   it('warns on duplicate module ids', async () => {
     mockFs[path.join('/', 'project', 'fruits', 'other', 'Strawberry.js')] = `
       const Banana = require("Banana");

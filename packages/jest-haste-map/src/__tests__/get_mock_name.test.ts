@@ -7,7 +7,7 @@
  */
 
 import * as path from 'node:path';
-import getMockName from '../getMockName';
+import getMockName, {getMockCandidateModulePath} from '../getMockName';
 
 describe('getMockName', () => {
   it('extracts mock name from file path', () => {
@@ -16,5 +16,11 @@ describe('getMockName', () => {
     expect(getMockName(path.join('a', '__mocks__', 'c', 'd.js'))).toBe(
       path.join('c', 'd').replaceAll('\\', '/'),
     );
+  });
+
+  it('resolves the mocked module adjacent to the __mocks__ directory', () => {
+    expect(
+      getMockCandidateModulePath(path.join('a', 'b', '__mocks__', 'index.js')),
+    ).toBe(path.join('a', 'b', 'index.js'));
   });
 });
