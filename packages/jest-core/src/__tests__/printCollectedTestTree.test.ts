@@ -11,7 +11,8 @@ import {printCollectedTestTree} from '../runJest';
 const makeResult = (
   title: string,
   ancestorTitles: Array<string> = [],
-): AssertionResult => ({ancestorTitles, title}) as AssertionResult;
+  status?: AssertionResult['status'],
+): AssertionResult => ({ancestorTitles, status, title}) as AssertionResult;
 
 const collectOutput = (fn: (stream: NodeJS.WritableStream) => void): string => {
   const chunks: Array<string> = [];
@@ -47,6 +48,24 @@ describe('printCollectedTestTree', () => {
     expect(output).toContain('outer\n');
     expect(output).toContain('  inner\n');
     expect(output).toContain('    deep\n');
+  });
+
+  test('annotates skipped and todo tests but leaves runnable ones bare', () => {
+    const output = collectOutput(stream =>
+      printCollectedTestTree(
+        [
+          makeResult('runs', [], 'passed'),
+          makeResult('skipped', [], 'pending'),
+          makeResult('later', [], 'todo'),
+        ],
+        stream,
+      ),
+    );
+    // The runnable test is printed without any status marker.
+    expect(output).toContain('  runs\n');
+    // Skipped/todo markers are present (color codes, if any, surround them).
+    expect(output).toContain('[skipped]');
+    expect(output).toContain('[todo]');
   });
 
   test('handles empty results', () => {
