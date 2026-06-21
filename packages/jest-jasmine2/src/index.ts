@@ -39,7 +39,6 @@ export type SuiteLike = {
 
 export type SpecLike = {
   description: string;
-  disabled?: boolean;
   getFullName: () => string;
   id?: string;
   markedPending?: boolean;
@@ -80,14 +79,14 @@ export const collectSpecs = (
         !context.testNamePatternRE.test(fullName);
 
       // Mirror `Spec.status` without executing, in the same precedence order: a
-      // spec not selected by focus (`fit`/`fdescribe`), explicitly disabled, or
-      // deselected by `--testNamePattern` reports as `pending` (an actual run
-      // still counts these); `markedTodo` reports as `todo`; a skipped
-      // (`markedPending`) spec reports as `pending`; otherwise the spec would
-      // run and is reported in the passed bucket and flagged as `wouldRun`.
+      // spec not selected by focus (`fit`/`fdescribe`) or deselected by
+      // `--testNamePattern` reports as `pending` (an actual run still counts
+      // these); `markedTodo` reports as `todo`; a skipped (`markedPending`) spec
+      // reports as `pending`; otherwise the spec would run and is reported in
+      // the passed bucket and flagged as `wouldRun`.
       let status: Status;
       let wouldRun: true | undefined;
-      if (!isEnabled(child) || child.disabled || deselected) {
+      if (!isEnabled(child) || deselected) {
         status = 'pending';
       } else if (child.markedTodo) {
         status = 'todo';

@@ -16,13 +16,11 @@ import {
 const makeSpec = (
   description: string,
   {
-    disabled,
     fullName,
     id,
     markedPending,
     markedTodo,
   }: {
-    disabled?: boolean;
     fullName?: string;
     id?: string;
     markedPending?: boolean;
@@ -30,7 +28,6 @@ const makeSpec = (
   } = {},
 ): SpecLike => ({
   description,
-  disabled,
   getFullName: () => fullName ?? description,
   id,
   markedPending,
@@ -139,20 +136,6 @@ describe('collectSpecs', () => {
       {status: 'pending', title: 'unfocused spec'},
       {status: 'pending', title: 'unfocused todo'},
       {status: 'passed', title: 'inside focus'},
-    ]);
-  });
-
-  test('reports explicitly disabled specs as pending', () => {
-    const root = makeSuite('', [
-      makeSpec('runnable'),
-      makeSpec('disabled', {disabled: true}),
-    ]);
-
-    expect(
-      collect(root).map(r => ({status: r.status, title: r.title})),
-    ).toEqual([
-      {status: 'passed', title: 'runnable'},
-      {status: 'pending', title: 'disabled'},
     ]);
   });
 });
