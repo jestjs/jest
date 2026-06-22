@@ -99,6 +99,27 @@ const printCollectedTestSummary = (
   }
 };
 
+// Human-readable (non-JSON) rendering for `--collectTests`: each file's tree,
+// any file that failed to load (with its error), then the summary line.
+export const printCollectedResults = (
+  results: AggregatedResult,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  for (const testResult of results.testResults) {
+    if (testResult.testExecError) {
+      outputStream.write(
+        `${chalk.red(testResult.testFilePath)}\n${
+          testResult.failureMessage ?? testResult.testExecError.message
+        }\n`,
+      );
+    } else if (testResult.testResults.length > 0) {
+      outputStream.write(`${testResult.testFilePath}\n`);
+      printCollectedTestTree(testResult.testResults, outputStream);
+    }
+  }
+  printCollectedTestSummary(results, outputStream);
+};
+
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   projectConfig: Config.ProjectConfig,
@@ -332,19 +353,7 @@ export default async function runJest({
     const results = await scheduler.scheduleTests(allTests, testWatcher);
 
     if (!globalConfig.json) {
-      for (const testResult of results.testResults) {
-        if (testResult.testExecError) {
-          outputStream.write(
-            `${chalk.red(testResult.testFilePath)}\n${
-              testResult.failureMessage ?? testResult.testExecError.message
-            }\n`,
-          );
-        } else if (testResult.testResults.length > 0) {
-          outputStream.write(`${testResult.testFilePath}\n`);
-          printCollectedTestTree(testResult.testResults, outputStream);
-        }
-      }
-      printCollectedTestSummary(results, outputStream);
+      printCollectedResults(results, outputStream);
     }
 
     await processResults(results, {
