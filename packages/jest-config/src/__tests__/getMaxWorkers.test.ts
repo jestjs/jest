@@ -13,6 +13,7 @@ jest.mock('os');
 describe('getMaxWorkers', () => {
   beforeEach(() => {
     require('os').__setCpus({length: 4});
+    delete process.env.JEST_MAX_WORKERS;
   });
 
   it('Returns 1 when runInBand', () => {
@@ -28,6 +29,23 @@ describe('getMaxWorkers', () => {
   it('Returns the `maxWorkers` when specified', () => {
     const argv = {maxWorkers: 8};
     expect(getMaxWorkers(argv)).toBe(8);
+  });
+
+  it('Returns the `maxWorkers` from JEST_MAX_WORKERS environment variable', () => {
+    process.env.JEST_MAX_WORKERS = '6';
+    expect(getMaxWorkers({})).toBe(6);
+  });
+
+  it('Prefers argv.maxWorkers over JEST_MAX_WORKERS', () => {
+    process.env.JEST_MAX_WORKERS = '6';
+    const argv = {maxWorkers: 8};
+    expect(getMaxWorkers(argv)).toBe(8);
+  });
+
+  it('Prefers defaultOptions.maxWorkers over JEST_MAX_WORKERS', () => {
+    process.env.JEST_MAX_WORKERS = '6';
+    const defaultOptions = {maxWorkers: 5};
+    expect(getMaxWorkers({}, defaultOptions)).toBe(5);
   });
 
   it('Returns based on the number of cpus', () => {
@@ -50,6 +68,16 @@ describe('getMaxWorkers', () => {
     it("0% shouldn't break", () => {
       const argv = {maxWorkers: '0%'};
       expect(getMaxWorkers(argv)).toBe(1);
+    });
+
+    it('JEST_MAX_WORKERS supports percentage values', () => {
+      process.env.JEST_MAX_WORKERS = '50%';
+      expect(getMaxWorkers({})).toBe(2);
+    });
+
+    it('JEST_MAX_WORKERS percentage < 0 workers should become 1', () => {
+      process.env.JEST_MAX_WORKERS = '1%';
+      expect(getMaxWorkers({})).toBe(1);
     });
   });
 });
