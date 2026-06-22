@@ -27,6 +27,7 @@ export type DiffOptions = {
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
   compareKeys?: CompareKeys;
+  printBasicPrototype?: boolean;
 };
 
 export type DiffOptionsNormalized = {
@@ -48,4 +49,5 @@ export type DiffOptionsNormalized = {
   includeChangeCounts: boolean;
   omitAnnotationLines: boolean;
   patchColor: DiffOptionsColor;
+  printBasicPrototype: boolean;
 };

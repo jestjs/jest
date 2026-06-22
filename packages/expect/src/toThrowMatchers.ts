@@ -124,7 +124,13 @@ export const createMatcher = (
     ) {
       return toThrowExpectedAsymmetric(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected === 'object') {
-      return toThrowExpectedObject(matcherName, options, thrown, expected);
+      return toThrowExpectedObject(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        this.printBasicPrototype,
+      );
     } else {
       throw new Error(
         matcherErrorMessage(
@@ -225,6 +231,7 @@ const toThrowExpectedObject = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Error,
+  printBasicPrototype?: boolean,
 ): SyncExpectationResult => {
   const expectedMessageAndCause = createMessageAndCause(expected);
   const thrownMessageAndCause =
@@ -273,6 +280,7 @@ const toThrowExpectedObject = (
                 `Expected ${messageAndCause(expected)}`,
                 `Received ${messageAndCause(thrown.value)}`,
                 true,
+                printBasicPrototype,
               ) +
               '\n' +
               formatStack(thrown)

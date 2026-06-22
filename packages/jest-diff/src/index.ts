@@ -171,11 +171,12 @@ function getFormatOptions(
   formatOptions: PrettyFormatOptions,
   options?: DiffOptions,
 ): PrettyFormatOptions {
-  const {compareKeys} = normalizeDiffOptions(options);
+  const {compareKeys, printBasicPrototype} = normalizeDiffOptions(options);
 
   return {
     ...formatOptions,
     compareKeys,
+    printBasicPrototype,
   };
 }
 

@@ -32,6 +32,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   includeChangeCounts: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
+  printBasicPrototype: true,
 };
 
 const getCompareKeys = (compareKeys?: CompareKeys): CompareKeys =>
@@ -46,6 +47,13 @@ const getContextLines = (contextLines?: number): number =>
     ? contextLines
     : DIFF_CONTEXT_DEFAULT;
 
+const getPrintBasicPrototype = (
+  printBasicPrototype?: boolean,
+): boolean =>
+  typeof printBasicPrototype === 'boolean'
+    ? printBasicPrototype
+    : OPTIONS_DEFAULT.printBasicPrototype;
+
 // Pure function returns options with all properties.
 export const normalizeDiffOptions = (
   options: DiffOptions = {},
@@ -54,4 +62,5 @@ export const normalizeDiffOptions = (
   ...options,
   compareKeys: getCompareKeys(options.compareKeys),
   contextLines: getContextLines(options.contextLines),
+  printBasicPrototype: getPrintBasicPrototype(options.printBasicPrototype),
 });
