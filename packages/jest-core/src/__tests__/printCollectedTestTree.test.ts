@@ -29,6 +29,8 @@ const makeAggregated = (
     ...overrides,
   }) as AggregatedResult;
 
+const stripAnsi = (str: string): string => str.replaceAll(/\u001B\[\d+m/g, '');
+
 const collectOutput = (fn: (stream: NodeJS.WritableStream) => void): string => {
   const chunks: Array<string> = [];
   const stream = {write: (s: string) => chunks.push(s) && true};
@@ -110,8 +112,8 @@ describe('printCollectedResults', () => {
       ] as AggregatedResult['testResults'],
     });
 
-    const output = collectOutput(stream =>
-      printCollectedResults(results, stream),
+    const output = stripAnsi(
+      collectOutput(stream => printCollectedResults(results, stream)),
     );
 
     expect(output).toContain('/a.test.js\n');
