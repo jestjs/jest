@@ -459,7 +459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.21.3, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2, @babel/core@npm:^7.25.9, @babel/core@npm:^7.27.4":
+"@babel/core@npm:^7.21.3, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4, @babel/core@npm:^7.25.2, @babel/core@npm:^7.25.9":
   version: 7.29.7
   resolution: "@babel/core@npm:7.29.7"
   dependencies:
@@ -479,6 +479,30 @@ __metadata:
     json5: "npm:^2.2.3"
     semver: "npm:^6.3.1"
   checksum: 10/38e71cf81db790b0bb2a3a0c8140c2b1c87576b61dc6be676de4fab8c3be871af590a739e8c489fe8e8f9a8e5899fa11e35e59e9e09d40b259c6a675f2f98928
+  languageName: node
+  linkType: hard
+
+"@babel/core@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@babel/core@npm:8.0.0"
+  dependencies:
+    "@babel/code-frame": "npm:^8.0.0"
+    "@babel/generator": "npm:^8.0.0"
+    "@babel/helper-compilation-targets": "npm:^8.0.0"
+    "@babel/helpers": "npm:^8.0.0"
+    "@babel/parser": "npm:^8.0.0"
+    "@babel/template": "npm:^8.0.0"
+    "@babel/traverse": "npm:^8.0.0"
+    "@babel/types": "npm:^8.0.0"
+    "@types/gensync": "npm:^1.0.5"
+    convert-source-map: "npm:^2.0.0"
+    empathic: "npm:^2.0.1"
+    gensync: "npm:^1.0.0-beta.2"
+    import-meta-resolve: "npm:^4.2.0"
+    json5: "npm:^2.2.3"
+    obug: "npm:^2.1.1"
+    semver: "npm:^7.7.3"
+  checksum: 10/eebb3a3d538c5bda8cb880e16580a1f92f57559fd3b3f6f2c5f82cbea5a23f358aa9390072e88e3c9ec79fc739dd13f27c7739c7a4d762872f67957084d277aa
   languageName: node
   linkType: hard
 
@@ -4433,7 +4457,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/monorepo@workspace:."
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/plugin-transform-modules-commonjs": "npm:^7.27.1"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-react": "npm:^7.27.1"
@@ -4674,7 +4698,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@jridgewell/trace-mapping": "npm:^0.3.25"
@@ -8658,7 +8682,7 @@ __metadata:
   resolution: "babel-jest@workspace:packages/babel-jest"
   dependencies:
     "@babel-8/core": "npm:@babel/core@^8.0.0"
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@types/babel__core": "npm:^7.20.5"
@@ -8715,7 +8739,7 @@ __metadata:
     "@babel-8/core": "npm:@babel/core@^8.0.0"
     "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-rc.5"
     "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-rc.5"
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@babel/types": "npm:^7.27.3"
@@ -11814,7 +11838,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-async@workspace:examples/async"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11825,7 +11849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-automatic-mocks@workspace:examples/automatic-mocks"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11836,7 +11860,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-expect-extend@workspace:examples/expect-extend"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@jest/globals": "workspace:*"
@@ -11851,7 +11875,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11862,7 +11886,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-jquery@workspace:examples/jquery"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11875,7 +11899,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mock@workspace:examples/module-mock"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11886,7 +11910,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mocks@workspace:examples/manual-mocks"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11898,7 +11922,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-native@workspace:examples/react-native"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@react-native/babel-preset": "npm:^0.81.1"
     babel-jest: "workspace:*"
@@ -11913,7 +11937,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-testing-library@workspace:examples/react-testing-library"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-react": "npm:^7.27.1"
     "@testing-library/dom": "npm:^10.4.1"
@@ -11930,7 +11954,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react@workspace:examples/react"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-react": "npm:^7.27.1"
     babel-jest: "workspace:*"
@@ -11945,7 +11969,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-snapshot@workspace:examples/snapshot"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-react": "npm:^7.27.1"
     "@testing-library/dom": "npm:^10.4.1"
@@ -11962,7 +11986,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-timer@workspace:examples/timer"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     babel-jest: "workspace:*"
     jest: "workspace:*"
@@ -11973,7 +11997,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-typescript@workspace:examples/typescript"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/preset-env": "npm:^7.27.2"
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
@@ -13503,8 +13527,8 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^2.0.9":
-  version: 2.0.9
-  resolution: "http-proxy-middleware@npm:2.0.9"
+  version: 2.0.10
+  resolution: "http-proxy-middleware@npm:2.0.10"
   dependencies:
     "@types/http-proxy": "npm:^1.17.8"
     http-proxy: "npm:^1.18.1"
@@ -13516,7 +13540,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/express":
       optional: true
-  checksum: 10/4ece416a91d52e96f8136c5f4abfbf7ac2f39becbad21fa8b158a12d7e7d8f808287ff1ae342b903fd1f15f2249dee87fabc09e1f0e73106b83331c496d67660
+  checksum: 10/efa8b5d4dec112fba5f6741df33a926818f87156f44dee425e653284c20844f3a9f2af88042a7d4ef297161479e1549302dea693bce23123fa2da07420fa2214
   languageName: node
   linkType: hard
 
@@ -14509,7 +14533,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/register": "npm:^7.27.1"
     "@jest/environment": "workspace:*"
     "@jest/expect": "workspace:*"
@@ -14569,7 +14593,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@jest/get-type": "workspace:*"
     "@jest/pattern": "workspace:*"
     "@jest/test-sequencer": "workspace:*"
@@ -14965,7 +14989,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@babel/generator": "npm:^7.27.5"
     "@babel/plugin-syntax-jsx": "npm:^7.27.1"
     "@babel/plugin-syntax-typescript": "npm:^7.27.1"
@@ -15110,7 +15134,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-website@workspace:website"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@crowdin/cli": "npm:^4.7.0"
     "@docusaurus/core": "npm:^3.0.0"
     "@docusaurus/module-type-aliases": "npm:^3.0.0"
@@ -15162,7 +15186,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
-    "@babel/core": "npm:^7.27.4"
+    "@babel/core": "npm:^8.0.0"
     "@types/merge-stream": "npm:^2.0.0"
     "@types/node": "npm:*"
     "@types/supports-color": "npm:^8.1.3"
@@ -15269,13 +15293,13 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "js-yaml@npm:5.0.0"
+  version: 5.1.0
+  resolution: "js-yaml@npm:5.1.0"
   dependencies:
     argparse: "npm:^2.0.1"
   bin:
     js-yaml: bin/js-yaml.mjs
-  checksum: 10/51691da5a1b3894ffdd6ffe386d061fecf8769d135560dce8f3d3b7c5f7b167ec7fbe2c232c91135d58216b2f6ba215e85ac60fe569c46f0a9024f2ff6dec47e
+  checksum: 10/0361e773deeff5e75c5ff37dbfce639490b3cba17fe9f2e86c353790527936c4860a3c189262910157ee85e00e1e4a217b042658fdf19f1fce8af0af6628ff4d
   languageName: node
   linkType: hard
 

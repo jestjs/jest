@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^8.0.0",
     "@jest/get-type": "workspace:*",
     "@jest/pattern": "workspace:*",
     "@jest/test-sequencer": "workspace:*",
