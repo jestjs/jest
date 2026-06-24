@@ -10,6 +10,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   test:
     strategy:
