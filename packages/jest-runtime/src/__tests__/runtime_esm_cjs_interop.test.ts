@@ -6,7 +6,12 @@
  */
 
 import * as path from 'path';
-import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import {
+  testWithSyncEsm,
+  testWithVmEsm,
+  testWithoutSyncEsm,
+} from '@jest/test-utils';
 
 const ROOT_DIR = path.join(__dirname, 'test_esm_interop_root');
 const FROM = path.join(ROOT_DIR, 'test.js');
@@ -184,6 +189,63 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     },
   );
 
+  testWithSyncEsm(
+    'require()s an ESM-marked node_modules package natively without a transform',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+      });
+      const ns = runtime.requireModule(FROM, 'esm-marked');
+      expect(ns.esmMarkedValue).toBe(789);
+    },
+  );
+
+  testWithoutSyncEsm(
+    'require()s an ESM-marked node_modules package when a transform covers it',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [
+          replacePathSepForRegex('/node_modules/(?!esm-marked/)'),
+        ],
+      });
+      const ns = runtime.requireModule(FROM, 'esm-marked');
+      expect(ns.esmMarkedValue).toBe(789);
+    },
+  );
+
+  testWithoutSyncEsm(
+    'throws ERR_REQUIRE_ESM for an untransformed ESM-marked package',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+      });
+      expect(() => runtime.requireModule(FROM, 'esm-marked')).toThrow(
+        expect.objectContaining({
+          code: 'ERR_REQUIRE_ESM',
+          message: expect.stringContaining(
+            `Must use import to load ES Module: ${path.join(ROOT_DIR, 'node_modules', 'esm-marked', 'index.js')}`,
+          ),
+        }),
+      );
+    },
+  );
+
+  testWithoutSyncEsm(
+    'throws a normal SyntaxError for a genuine syntax error in an ESM-marked package',
+    async () => {
+      const runtime = await createRuntime(__filename, {
+        rootDir: ROOT_DIR,
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+      });
+      expect(() =>
+        runtime.requireModule(FROM, 'esm-marked-syntax-error'),
+      ).toThrow("Unexpected token ';'");
+    },
+  );
+
   // hasEsmSyntax returns false when es-module-lexer throws (broken ESM like
   // `export {`). No CjsParseError is thrown, so the raw CJS compile error
   // surfaces directly — no pointless ESM retry.
@@ -192,7 +254,7 @@ describe('Runtime loadCjsAsEsm SyntaxError fallback', () => {
     async () => {
       const runtime = await createRuntime(__filename, {
         rootDir: ROOT_DIR,
-        transformIgnorePatterns: ['/node_modules/'],
+        transformIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
       });
       await expect(
         runtime.unstable_importModule(FROM, './import-esm-syntax-error.mjs'),
