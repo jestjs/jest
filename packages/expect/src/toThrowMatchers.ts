@@ -87,27 +87,28 @@ export const createMatcher = (
 
     let thrown = null;
 
-    if (fromPromise && isError(received)) {
-      thrown = getThrown(received);
-    } else {
-      if (typeof received === 'function') {
-        try {
-          received();
-        } catch (error) {
-          thrown = getThrown(error);
-        }
-      } else {
-        if (!fromPromise) {
-          const placeholder = expected === undefined ? '' : 'expected';
-          throw new Error(
-            matcherErrorMessage(
-              matcherHint(matcherName, undefined, placeholder, options),
-              `${RECEIVED_COLOR('received')} value must be a function`,
-              printWithType('Received', received, printReceived),
-            ),
-          );
-        }
+    if (typeof received === 'function') {
+      try {
+        received();
+      } catch (error) {
+        thrown = getThrown(error);
       }
+    } else if (fromPromise) {
+      // Treating a Promise.resolve(err) as "throws" is unusual but matches with
+      // previous versions of Jest.
+      thrown =
+        this.promise === 'rejects' || isError(received)
+          ? getThrown(received)
+          : null;
+    } else {
+      const placeholder = expected === undefined ? '' : 'expected';
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, placeholder, options),
+          `${RECEIVED_COLOR('received')} value must be a function`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
     }
 
     if (expected === undefined) {
