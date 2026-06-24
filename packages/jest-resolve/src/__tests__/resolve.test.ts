@@ -8,6 +8,7 @@
 
 import * as fs from 'graceful-fs';
 import {type IModuleMap, ModuleMap} from 'jest-haste-map';
+import {tmpdir} from 'os';
 import * as path from 'path';
 import {pathToFileURL} from 'url';
 
@@ -391,7 +392,10 @@ describe('findNodeModule', () => {
           conditions: [],
         });
       }).toThrow(
-        `Package import specifier "#something-else" is not defined in package ${path.join(importsRoot, 'foo-import/package.json')}`,
+        `Package import specifier "#something-else" is not defined in package ${path.join(
+          importsRoot,
+          'foo-import/package.json',
+        )}`,
       );
     });
   });
@@ -907,5 +911,99 @@ describe('canResolveSync', () => {
       resolver: require.resolve('../__mocks__/userResolverAsync'),
     } as ResolverConfig);
     expect(resolver.canResolveSync()).toBe(false);
+  });
+});
+
+describe('preserveSymlinks', () => {
+  const ORIGINAL_NODE_PRESERVE_SYMLINKS = process.env.NODE_PRESERVE_SYMLINKS;
+  const ORIGINAL_NODE_OPTIONS = process.env.NODE_OPTIONS;
+  const ORIGINAL_EXEC_ARGV = process.execArgv;
+
+  let appDir: string;
+  let realModuleEntry: string;
+  let symlinkedModuleEntry: string;
+  let tempDir: string;
+
+  beforeAll(() => {
+    // `app/node_modules/dep` is a symlink to the real `packages/dep` module.
+    // `realpathSync` avoids macOS `/var` -> `/private/var` discrepancies.
+    tempDir = fs.realpathSync(
+      fs.mkdtempSync(path.join(tmpdir(), 'jest-resolve-preserve-symlinks-')),
+    );
+    const realModuleDir = path.join(tempDir, 'packages', 'dep');
+    appDir = path.join(tempDir, 'app');
+
+    fs.mkdirSync(realModuleDir, {recursive: true});
+    fs.mkdirSync(path.join(appDir, 'node_modules'), {recursive: true});
+    fs.writeFileSync(
+      path.join(realModuleDir, 'package.json'),
+      JSON.stringify({main: 'index.js', name: 'dep', version: '1.0.0'}),
+    );
+    fs.writeFileSync(
+      path.join(realModuleDir, 'index.js'),
+      'module.exports = 1;\n',
+    );
+
+    const symlinkedModuleDir = path.join(appDir, 'node_modules', 'dep');
+    // `junction` works on Windows without elevated privileges.
+    fs.symlinkSync(realModuleDir, symlinkedModuleDir, 'junction');
+
+    realModuleEntry = path.join(realModuleDir, 'index.js');
+    symlinkedModuleEntry = path.join(symlinkedModuleDir, 'index.js');
+  });
+
+  afterAll(() => {
+    fs.rmSync(tempDir, {force: true, recursive: true});
+  });
+
+  beforeEach(() => {
+    delete process.env.NODE_PRESERVE_SYMLINKS;
+    delete process.env.NODE_OPTIONS;
+    process.execArgv = [];
+  });
+
+  afterEach(() => {
+    if (ORIGINAL_NODE_PRESERVE_SYMLINKS === undefined) {
+      delete process.env.NODE_PRESERVE_SYMLINKS;
+    } else {
+      process.env.NODE_PRESERVE_SYMLINKS = ORIGINAL_NODE_PRESERVE_SYMLINKS;
+    }
+    if (ORIGINAL_NODE_OPTIONS === undefined) {
+      delete process.env.NODE_OPTIONS;
+    } else {
+      process.env.NODE_OPTIONS = ORIGINAL_NODE_OPTIONS;
+    }
+    process.execArgv = ORIGINAL_EXEC_ARGV;
+  });
+
+  const findDep = () => Resolver.findNodeModule('dep', {basedir: appDir});
+
+  it('realpaths symlinked modules by default', () => {
+    expect(findDep()).toBe(realModuleEntry);
+  });
+
+  it('preserves symlinks when NODE_PRESERVE_SYMLINKS=1', () => {
+    process.env.NODE_PRESERVE_SYMLINKS = '1';
+    expect(findDep()).toBe(symlinkedModuleEntry);
+  });
+
+  it('preserves symlinks when started with --preserve-symlinks', () => {
+    process.execArgv = ['--preserve-symlinks'];
+    expect(findDep()).toBe(symlinkedModuleEntry);
+  });
+
+  it('preserves symlinks when --preserve-symlinks is set via NODE_OPTIONS', () => {
+    process.env.NODE_OPTIONS = '--preserve-symlinks';
+    expect(findDep()).toBe(symlinkedModuleEntry);
+  });
+
+  it('ignores NODE_PRESERVE_SYMLINKS values other than "1"', () => {
+    process.env.NODE_PRESERVE_SYMLINKS = '2';
+    expect(findDep()).toBe(realModuleEntry);
+  });
+
+  it('does not treat --preserve-symlinks-main as --preserve-symlinks', () => {
+    process.execArgv = ['--preserve-symlinks-main'];
+    expect(findDep()).toBe(realModuleEntry);
   });
 });
