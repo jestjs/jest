@@ -9,6 +9,7 @@ import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
+import {stepStorage} from './run';
 
 export {
   setState,
@@ -222,6 +223,27 @@ const test: Global.It = (() => {
       name: 'add_test',
       testName,
       timeout,
+    });
+  };
+
+  test.step = async function step<T>(
+    title: string,
+    body: () => T | Promise<T>,
+  ): Promise<T> {
+    const currentStepPath = stepStorage.getStore();
+    const fullStepPath = currentStepPath
+      ? `${currentStepPath} > ${title}`
+      : title;
+
+    return stepStorage.run(fullStepPath, async () => {
+      try {
+        return await body();
+      } catch (error) {
+        if (error instanceof Error) {
+          error.message = `step "${fullStepPath}": ${error.message}`;
+        }
+        throw error;
+      }
     });
   };
 

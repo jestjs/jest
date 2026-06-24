@@ -29,6 +29,7 @@ import {
 const {setTimeout} = globalThis;
 
 const testNameStorage = new AsyncLocalStorage<string>();
+const stepStorage = new AsyncLocalStorage<string | undefined>();
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
@@ -305,4 +306,5 @@ const _callCircusTest = async (
   }
 };
 
+export {stepStorage};
 export default run;
