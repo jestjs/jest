@@ -41,7 +41,7 @@
     "eslint-plugin-jsdoc": "^63.0.0",
     "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-unicorn": "^64.0.0",
+    "eslint-plugin-unicorn": "^69.0.0",
     "execa": "^5.1.1",
     "find-process": "^2.0.0",
     "glob": "^10.5.0",
