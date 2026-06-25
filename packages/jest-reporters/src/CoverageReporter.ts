@@ -87,7 +87,14 @@ export default class CoverageReporter extends BaseReporter {
         }
         istanbulReports
           .create(reporter, {
-            maxCols: process.stdout.columns || Number.POSITIVE_INFINITY,
+            maxCols:
+              process.stdout.columns ||
+              Number.parseInt(process.env.COLUMNS || '', 10) ||
+              ((process.env.CI === 'true' ||
+                process.env.GITHUB_ACTIONS === 'true') &&
+              !process.env.JEST_WORKER_ID
+                ? 80
+                : Number.POSITIVE_INFINITY),
             ...additionalOptions,
           })
           .execute(reportContext);
