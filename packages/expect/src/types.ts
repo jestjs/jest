@@ -120,6 +120,7 @@ export interface AsymmetricMatchers {
   arrayOf(sample: unknown): AsymmetricMatcher;
   closeTo(sample: number, precision?: number): AsymmetricMatcher;
   objectContaining(sample: object): AsymmetricMatcher;
+  satisfying<T>(sample: (value: T) => boolean): AsymmetricMatcher;
   stringContaining(sample: string): AsymmetricMatcher;
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
