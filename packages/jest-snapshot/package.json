@@ -19,11 +19,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/generator": "^7.27.5",
-    "@babel/plugin-syntax-jsx": "^7.27.1",
-    "@babel/plugin-syntax-typescript": "^7.27.1",
-    "@babel/types": "^7.27.3",
+    "@babel/core": "^8.0.0",
+    "@babel/generator": "^8.0.0",
+    "@babel/plugin-syntax-jsx": "^8.0.0",
+    "@babel/plugin-syntax-typescript": "^8.0.0",
+    "@babel/types": "^8.0.0",
     "@jest/expect-utils": "workspace:*",
     "@jest/get-type": "workspace:*",
     "@jest/snapshot-utils": "workspace:*",
@@ -42,8 +42,8 @@
     "synckit": "^0.11.8"
   },
   "devDependencies": {
-    "@babel/preset-flow": "^7.27.1",
-    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-flow": "^8.0.0",
+    "@babel/preset-react": "^8.0.0",
     "@jest/test-utils": "workspace:*",
     "@types/babel__core": "^7.20.5",
     "@types/graceful-fs": "^4.1.9",

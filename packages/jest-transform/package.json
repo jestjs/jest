@@ -19,7 +19,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^8.0.0",
     "@jest/types": "workspace:*",
     "@jridgewell/trace-mapping": "^0.3.25",
     "babel-plugin-istanbul": "^7.0.1",
