@@ -3,6 +3,6 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@babel/plugin-transform-explicit-resource-management": "^7.28.6"
+    "@babel/plugin-transform-explicit-resource-management": "^8.0.0"
   }
 }
