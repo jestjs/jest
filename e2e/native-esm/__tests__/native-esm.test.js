@@ -171,6 +171,15 @@ test('handle dynamic imports of the same module in parallel', async () => {
   expect(first(2)).toBe(4);
 });
 
+test('import same file with child imports in parallel indirectly', async () => {
+  const [{double: double1}, {double: double2}] = await Promise.all([
+    import('../file1.js'),
+    import('../file2.js'),
+  ]);
+
+  expect(double1).toBe(double2);
+});
+
 test('varies module cache by query', () => {
   expect(staticImportedStatefulWithQuery).not.toBe(
     staticImportedStatefulWithAnotherQuery,
