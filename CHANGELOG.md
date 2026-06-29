@@ -4,6 +4,7 @@
 
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
+- `[jest-circus, jest-core, jest-jasmine2, jest-test-result, jest-types]` `--collectTests` now expands `test.each`/`describe.each` cases and reports per-status counts (skipped/todo via the new `wouldRun` flag for selected tests) plus a summary line that match a real run, including under `--testNamePattern` and `.only`/`fdescribe` focus on both the circus and jasmine2 runners ([#16258](https://github.com/jestjs/jest/pull/16258))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 
 ### Fixes
