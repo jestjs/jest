@@ -37,7 +37,6 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        bugfixes: true,
         // we manually include the CJS plugin above, so let's make preset-env do less work
         modules: false,
         shippedProposals: true,
