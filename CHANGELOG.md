@@ -7,6 +7,7 @@
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 
 ### Fixes
+- `[jest-config]` Use `--config` for the global config when multiple `--projects` are specified ([#16273](https://github.com/jestjs/jest/pull/16273))
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
