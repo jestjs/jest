@@ -422,6 +422,14 @@ export async function readConfigs(
       // and its config has `projects` settings, use that value instead.
       projects = globalConfig.projects;
     }
+  } else if (projectPaths.length > 1 && argv.config) {
+    // When multiple projects are passed on the CLI alongside --config, the
+    // per-project reads all skip `argv.config`, so read it here for the
+    // global scope (mirroring the single-project branch above).
+    const parsedConfig = await readConfig(argv, process.cwd());
+    configPath = parsedConfig.configPath;
+    hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
+    globalConfig = parsedConfig.globalConfig;
   }
 
   if (projects.length > 0) {
