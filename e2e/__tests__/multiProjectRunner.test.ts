@@ -616,11 +616,11 @@ test('uses --config for the global config when multiple projects are specified',
     'global.config.js': `
       module.exports = {testTimeout: 30000};
     `,
+    'p1/jest.config.js': 'module.exports = {};',
+    'p1/some.test.js': "test('a', () => expect(1).toBe(1));",
+    'p2/jest.config.js': 'module.exports = {};',
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
     'package.json': '{}',
-    'p1/jest.config.js': `module.exports = {};`,
-    'p1/some.test.js': `test('a', () => expect(1).toBe(1));`,
-    'p2/jest.config.js': `module.exports = {};`,
-    'p2/other.test.js': `test('b', () => expect(1).toBe(1));`,
   });
 
   const {stdout, exitCode} = runJest(DIR, [
@@ -634,5 +634,5 @@ test('uses --config for the global config when multiple projects are specified',
 
   expect(exitCode).toBe(0);
   const {globalConfig} = JSON.parse(stdout);
-  expect(globalConfig.testTimeout).toBe(30000);
+  expect(globalConfig.testTimeout).toBe(30_000);
 });
