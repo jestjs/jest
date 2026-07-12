@@ -371,33 +371,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel-8/preset-react@npm:@babel/preset-react@8.0.0-rc.5":
-  version: 8.0.0-rc.5
-  resolution: "@babel/preset-react@npm:8.0.0-rc.5"
+"@babel-8/preset-react@npm:@babel/preset-react@8.0.1":
+  version: 8.0.1
+  resolution: "@babel/preset-react@npm:8.0.1"
   dependencies:
-    "@babel/helper-plugin-utils": "npm:^8.0.0-rc.5"
-    "@babel/helper-validator-option": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-react-display-name": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-react-jsx": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-react-jsx-development": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-react-pure-annotations": "npm:^8.0.0-rc.5"
+    "@babel/helper-plugin-utils": "npm:^8.0.1"
+    "@babel/helper-validator-option": "npm:^8.0.0"
+    "@babel/plugin-transform-react-display-name": "npm:^8.0.1"
+    "@babel/plugin-transform-react-jsx": "npm:^8.0.1"
+    "@babel/plugin-transform-react-jsx-development": "npm:^8.0.1"
+    "@babel/plugin-transform-react-pure-annotations": "npm:^8.0.1"
   peerDependencies:
-    "@babel/core": ^8.0.0-rc.5
-  checksum: 10/9d6f1b7867662288ad1ee05a06b44efb6bf7a87b32c21bffd91b7dde4eb2a07a98a9f4d9ab166b0f9f38a02ada6387c5573049eca7b651f0c18befb2a4256201
+    "@babel/core": ^8.0.0
+  checksum: 10/e9ffdc0e29dec5587d6fa45a38400a067eb3348e1c1f21f73e270530d8f2e73b40e15076c8e2e9e8b342431ac834d5a8f7fa86eeb6511205df0b943157ce39f9
   languageName: node
   linkType: hard
 
-"@babel-8/preset-typescript@npm:@babel/preset-typescript@8.0.0-rc.5":
-  version: 8.0.0-rc.5
-  resolution: "@babel/preset-typescript@npm:8.0.0-rc.5"
+"@babel-8/preset-typescript@npm:@babel/preset-typescript@8.0.1":
+  version: 8.0.1
+  resolution: "@babel/preset-typescript@npm:8.0.1"
   dependencies:
-    "@babel/helper-plugin-utils": "npm:^8.0.0-rc.5"
-    "@babel/helper-validator-option": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-modules-commonjs": "npm:^8.0.0-rc.5"
-    "@babel/plugin-transform-typescript": "npm:^8.0.0-rc.5"
+    "@babel/helper-plugin-utils": "npm:^8.0.1"
+    "@babel/helper-validator-option": "npm:^8.0.0"
+    "@babel/plugin-transform-modules-commonjs": "npm:^8.0.1"
+    "@babel/plugin-transform-typescript": "npm:^8.0.1"
   peerDependencies:
-    "@babel/core": ^8.0.0-rc.5
-  checksum: 10/1affdb01b719bed07d57360603770dcbee45024a92725f23046b62e58a10826e9c590da65cea8cba93b581f4e85b368d6c8f386119ae9f434810ee135ca38f12
+    "@babel/core": ^8.0.0
+  checksum: 10/1844864626dda003d6fca960f1fe584cd62deee43d115225d51848460dc8e39a9c9d7e59c0d15bf458612790de1b88f4bc1840be94e080ab108e16b43a6a2933
   languageName: node
   linkType: hard
 
@@ -720,7 +720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-plugin-utils@npm:^8.0.0-rc.5, @babel/helper-plugin-utils@npm:^8.0.1":
+"@babel/helper-plugin-utils@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/helper-plugin-utils@npm:8.0.1"
   peerDependencies:
@@ -823,7 +823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-option@npm:^8.0.0, @babel/helper-validator-option@npm:^8.0.0-rc.5":
+"@babel/helper-validator-option@npm:^8.0.0":
   version: 8.0.0
   resolution: "@babel/helper-validator-option@npm:8.0.0"
   checksum: 10/12c2bf5457fbe1ff0701321b4e471420d46a94a2b10858042c7a96134894212ba04224021345c8572ed3eb7b536890deb842ccd7e5f655aa56de594529ec64d0
@@ -1547,7 +1547,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^8.0.0-rc.5":
+"@babel/plugin-transform-modules-commonjs@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-modules-commonjs@npm:8.0.1"
   dependencies:
@@ -1749,7 +1749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-display-name@npm:^8.0.0-rc.5":
+"@babel/plugin-transform-react-display-name@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-react-display-name@npm:8.0.1"
   dependencies:
@@ -1771,7 +1771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-jsx-development@npm:^8.0.0-rc.5":
+"@babel/plugin-transform-react-jsx-development@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-react-jsx-development@npm:8.0.1"
   dependencies:
@@ -1819,7 +1819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-jsx@npm:^8.0.0-rc.5, @babel/plugin-transform-react-jsx@npm:^8.0.1":
+"@babel/plugin-transform-react-jsx@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-react-jsx@npm:8.0.1"
   dependencies:
@@ -1846,7 +1846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-pure-annotations@npm:^8.0.0-rc.5":
+"@babel/plugin-transform-react-pure-annotations@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-react-pure-annotations@npm:8.0.1"
   dependencies:
@@ -1979,7 +1979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-typescript@npm:^8.0.0-rc.5":
+"@babel/plugin-transform-typescript@npm:^8.0.1":
   version: 8.0.1
   resolution: "@babel/plugin-transform-typescript@npm:8.0.1"
   dependencies:
@@ -8713,8 +8713,8 @@ __metadata:
   resolution: "babel-plugin-jest-hoist@workspace:packages/babel-plugin-jest-hoist"
   dependencies:
     "@babel-8/core": "npm:@babel/core@^8.0.0"
-    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-rc.5"
-    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-rc.5"
+    "@babel-8/preset-react": "npm:@babel/preset-react@8.0.1"
+    "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.1"
     "@babel/core": "npm:^7.27.4"
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
