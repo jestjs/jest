@@ -105,7 +105,11 @@ describe('notify', () => {
     }
 
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-    const {stderr} = runJest('detect-open-handles', ['notify', '--notify']);
+    const {stderr} = runJest('detect-open-handles', [
+      'notify',
+      '--notify',
+      '--openHandlesTimeout=8000',
+    ]);
     const textAfterTest = getTextAfterTest(stderr);
 
     expect(textAfterTest).toBe('');
