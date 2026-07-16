@@ -1,0 +1,18 @@
+{
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!setup.js",
+      "!babel.config.js",
+      "!**/node_modules/**",
+      "!**/coverage/**"
+    ],
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/setup.js"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-flow": "^7.0.0"
+  }
+}

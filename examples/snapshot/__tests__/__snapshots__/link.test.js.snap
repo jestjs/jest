@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`changes the class when hovered 1`] = `
+<a
+  aria-label="normal"
+  class="normal"
+  href="http://www.facebook.com"
+>
+  Facebook
+</a>
+`;
+
+exports[`changes the class when hovered 2`] = `
+<a
+  aria-label="hovered"
+  class="hovered"
+  href="http://www.facebook.com"
+>
+  Facebook
+</a>
+`;
+
+exports[`changes the class when hovered 3`] = `
+<a
+  aria-label="normal"
+  class="normal"
+  href="http://www.facebook.com"
+>
+  Facebook
+</a>
+`;
+
+exports[`properly escapes quotes 1`] = `
+<a
+  aria-label="normal"
+  class="normal"
+  href="#"
+>
+  "Facebook" \\'is \\ 'awesome'
+</a>
+`;
+
+exports[`renders as an anchor when no page is set 1`] = `
+<a
+  aria-label="normal"
+  class="normal"
+  href="#"
+>
+  Facebook
+</a>
+`;
+
+exports[`renders correctly 1`] = `
+<a
+  aria-label="normal"
+  class="normal"
+  href="http://www.facebook.com"
+>
+  Facebook
+</a>
+`;

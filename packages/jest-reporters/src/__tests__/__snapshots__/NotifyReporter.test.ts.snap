@@ -1,0 +1,328 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`test always 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test always with moduleName 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+]
+`;
+
+exports[`test always with rootDir 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+]
+`;
+
+exports[`test change 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test change with moduleName 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+]
+`;
+
+exports[`test change with rootDir 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+]
+`;
+
+exports[`test failure-change 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test failure-change with moduleName 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+]
+`;
+
+exports[`test failure-change with rootDir 1`] = `
+Array [
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+]
+`;
+
+exports[`test success 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+]
+`;
+
+exports[`test success with moduleName 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+]
+`;
+
+exports[`test success with rootDir 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+]
+`;
+
+exports[`test success-change 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "100% Failed",
+  },
+]
+`;
+
+exports[`test success-change with moduleName 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-module - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-module - 100% Failed",
+  },
+]
+`;
+
+exports[`test success-change with rootDir 1`] = `
+Array [
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 tests passed",
+    "title": "some-test - 100% Passed",
+  },
+  Object {
+    "message": "3 of 3 tests failed",
+    "title": "some-test - 100% Failed",
+  },
+]
+`;

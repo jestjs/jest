@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "coverageReporters": [
+      "json"
+    ]
+  }
+}

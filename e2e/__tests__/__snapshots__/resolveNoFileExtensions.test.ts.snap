@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`show error message when no js moduleFileExtensions 1`] = `
+"● Validation Error:
+
+  moduleFileExtensions must include 'js':
+  but instead received:
+    ["jsx"]
+  Please change your configuration to include 'js'.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+"
+`;
+
+exports[`show error message with matching files 1`] = `
+"FAIL __tests__/test.js
+  ● Test suite failed to run
+
+    Cannot find module './some-json-file' from 'index.js'
+
+    Require stack:
+      index.js
+      __tests__/test.js
+
+
+    However, Jest was able to find:
+    	'./some-json-file.json'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+      6 |  */
+      7 |
+    > 8 | module.exports = require('./some-json-file');
+        |                  ^
+      9 |
+
+      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:<<REPLACED>>)
+      at Object.require (index.js:8:18)
+      at Object.require (__tests__/test.js:8:11)"
+`;

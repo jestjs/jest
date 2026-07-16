@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 20,
+        "margin": 10,
+        "textAlign": "center",
+      }
+    }
+  >
+    Welcome to React Native!
+  </Text>
+  <Text
+    style={
+      {
+        "color": "#333333",
+        "marginBottom": 5,
+        "textAlign": "center",
+      }
+    }
+  >
+    This is a React Native snapshot test.
+  </Text>
+</View>
+`;
+
+exports[`renders the ActivityIndicator component 1`] = `
+<ActivityIndicator
+  animating={true}
+  size="small"
+/>
+`;
+
+exports[`renders the FlatList component 1`] = `
+<RCTScrollView
+  data={
+    [
+      "apple",
+      "banana",
+      "kiwi",
+    ]
+  }
+  getItem={[Function]}
+  getItemCount={[Function]}
+  keyExtractor={[Function]}
+  onContentSizeChange={[Function]}
+  onLayout={[Function]}
+  onMomentumScrollBegin={[Function]}
+  onMomentumScrollEnd={[Function]}
+  onScroll={[Function]}
+  onScrollBeginDrag={[Function]}
+  onScrollEndDrag={[Function]}
+  removeClippedSubviews={false}
+  renderItem={[Function]}
+  scrollEventThrottle={0.0001}
+  stickyHeaderIndices={[]}
+  viewabilityConfigCallbackPairs={[]}
+>
+  <View>
+    <View
+      onFocusCapture={[Function]}
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        apple
+      </Text>
+    </View>
+    <View
+      onFocusCapture={[Function]}
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        banana
+      </Text>
+    </View>
+    <View
+      onFocusCapture={[Function]}
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        kiwi
+      </Text>
+    </View>
+  </View>
+</RCTScrollView>
+`;
+
+exports[`renders the TextInput component 1`] = `
+<TextInput
+  autoCorrect={false}
+  value="apple banana kiwi"
+/>
+`;

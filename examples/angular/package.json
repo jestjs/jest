@@ -1,0 +1,26 @@
+{
+  "name": "example-angular",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "jest"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.0.0",
+    "typescript": "^5.8.3",
+    "zone.js": "~0.16.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "workspace:*",
+    "jest": "workspace:*",
+    "jest-preset-angular": "^16.0.0",
+    "jsdom": "^26.1.0"
+  }
+}

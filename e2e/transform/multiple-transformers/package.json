@@ -1,0 +1,24 @@
+{
+  "jest": {
+    "transform": {
+      "\\.css$": "<rootDir>/cssPreprocessor.js",
+      "\\.js$": "<rootDir>/jsPreprocessor.js",
+      "\\.svg$": "<rootDir>/filePreprocessor.js"
+    },
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
+    ]
+  },
+  "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@testing-library/react": "^16.3.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

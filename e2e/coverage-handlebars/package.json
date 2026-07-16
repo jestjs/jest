@@ -1,0 +1,13 @@
+{
+  "jest": {
+    "transform": {
+      "\\.hbs$": "<rootDir>/transform-handlebars.js"
+    },
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "@jridgewell/build-mapping": "^0.2.0",
+    "handlebars": "^4.7.3",
+    "string-dedent": "^3.0.1"
+  }
+}

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`should work without error 1`] = `
+"FAIL __tests__/dom.test.js
+  ✕ use toBe compare two div
+  ✕ compare span and div
+
+  ● use toBe compare two div
+
+    expect(received).toBe(expected) // Object.is equality
+
+    If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+    Expected: <div />
+    Received: serializes to the same string
+
+      12 |   const div1 = document.createElement('div');
+      13 |   const div2 = document.createElement('div');
+    > 14 |   expect(div1).toBe(div2);
+         |                ^
+      15 | });
+      16 |
+      17 | test('compare span and div', () => {
+
+      at Object.toBe (__tests__/dom.test.js:14:16)
+
+  ● compare span and div
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    - <span />
+    + <div />
+
+      16 |
+      17 | test('compare span and div', () => {
+    > 18 |   expect(document.createElement('div')).toBe(document.createElement('span'));
+         |                                         ^
+      19 | });
+      20 |
+
+      at Object.toBe (__tests__/dom.test.js:18:41)"
+`;
+
+exports[`should work without error 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;

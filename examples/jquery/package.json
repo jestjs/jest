@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-jquery",
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
+    "jest-environment-jsdom": "workspace:*"
+  },
+  "dependencies": {
+    "jquery": "^4.0.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

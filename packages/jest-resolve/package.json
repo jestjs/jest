@@ -1,0 +1,40 @@
+{
+  "name": "jest-resolve",
+  "version": "30.4.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-resolve"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "graceful-fs": "^4.2.11",
+    "jest-haste-map": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-validate": "workspace:*",
+    "slash": "^3.0.0",
+    "unrs-resolver": "^1.12.1"
+  },
+  "devDependencies": {
+    "@types/graceful-fs": "^4.1.9",
+    "url": "^0.11.4"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

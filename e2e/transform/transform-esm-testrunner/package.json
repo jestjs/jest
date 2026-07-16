@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@jest/test-result": "link:../../../packages/jest-test-result"
+  },
+  "jest": {
+    "rootDir": "./",
+    "testRunner": "<rootDir>/test-runner.mjs"
+  }
+}

@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ensureNoExpected() throws error when expected is not undefined with matcherName 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeDefined()</>
+
+<b>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  object
+Expected has value: <g>{"a": 1}</>
+`;
+
+exports[`ensureNoExpected() throws error when expected is not undefined with matcherName and options 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeDefined<d>()</>
+
+<b>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  object
+Expected has value: <g>{"a": 1}</>
+`;
+
+exports[`ensureNumbers() throws error when expected is not a number (backward compatibility) 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeCloseTo(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
+
+Expected has type:  string
+Expected has value: <g>"not_a_number"</>
+`;
+
+exports[`ensureNumbers() throws error when received is not a number (backward compatibility) 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeCloseTo(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <r>received</> value must be a number or bigint
+
+Received has type:  string
+Received has value: <r>"not_a_number"</>
+`;
+
+exports[`ensureNumbers() with options promise empty isNot false received 1`] = `
+<d>expect(</><r>received</><d>).</>toBeCloseTo<d>(</><g>expected</><d>, </><g>precision</><d>)</>
+
+<b>Matcher error</>: <r>received</> value must be a number or bigint
+
+Received has type:  string
+Received has value: <r>""</>
+`;
+
+exports[`ensureNumbers() with options promise empty isNot true expected 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
+
+Expected has value: <g>undefined</>
+`;
+
+exports[`ensureNumbers() with options promise rejects isNot false expected 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
+
+Expected has type:  string
+Expected has value: <g>"0"</>
+`;
+
+exports[`ensureNumbers() with options promise rejects isNot true received 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <r>received</> value must be a number or bigint
+
+Received has type:  symbol
+Received has value: <r>Symbol(0.1)</>
+`;
+
+exports[`ensureNumbers() with options promise resolves isNot false received 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <r>received</> value must be a number or bigint
+
+Received has type:  boolean
+Received has value: <r>false</>
+`;
+
+exports[`ensureNumbers() with options promise resolves isNot true expected 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
+
+Expected has value: <g>null</>
+`;
+
+exports[`printDiffOrStringify expected asymmetric matchers should be diffable 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<g>- ObjectContaining {</>
+<r>+ Object {</>
+<d>    "array": Array [</>
+<d>      Object {</>
+<d>        "3": "three",</>
+<d>        "four": "4",</>
+<d>        "one": 1,</>
+<g>-       "two": 2,</>
+<r>+       "two": 1,</>
+<d>      },</>
+<d>    ],</>
+<d>    "foo": "bar",</>
+<d>  }</>
+`;
+
+exports[`stringify() toJSON errors when comparing two objects 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "b": 1,</>
+<r>+   "a": 1,</>
+<d>    "toJSON": [Function toJSON],</>
+<d>  }</>
+`;

@@ -1,0 +1,6 @@
+{
+  "name": "test_script_configured",
+  "scripts": {
+    "test": "jest"
+  }
+}

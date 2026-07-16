@@ -1,0 +1,6 @@
+{
+  "jest": {
+    "maxWorkers": 2,
+    "workerIdleMemoryLimit": "1MB"
+  }
+}

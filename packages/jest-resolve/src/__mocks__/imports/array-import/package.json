@@ -1,0 +1,17 @@
+{
+  "name": "array-import",
+  "imports": {
+    "#array-import": {
+      "import": [
+        "./node.mjs",
+        "./node-2.mjs"
+      ],
+      "browser": [
+        {
+          "chrome": "./chrome.cjs"
+        },
+        "./browser.cjs"
+      ]
+    }
+  }
+}

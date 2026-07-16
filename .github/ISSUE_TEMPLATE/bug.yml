@@ -1,0 +1,103 @@
+name: Bug Report 🪲
+description: Create a bug report to help us improve
+title: '[Bug]: '
+labels: ['Bug Report', 'Needs Triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Please follow these steps first:
+  - type: markdown
+    attributes:
+      value: |
+        ## Troubleshoot
+        If Jest is not behaving the way you expect, we'd ask you to look at the [documentation](https://jestjs.io/docs/getting-started) and search the issue tracker for evidence supporting your expectation. Please make reasonable efforts to troubleshoot and rule out issues with your code, the configuration, or any 3rd party libraries you might be using.
+  - type: markdown
+    attributes:
+      value: |
+        ## Ask for help through appropriate channels
+        If you feel unsure about the cause of the problem, consider asking for help on for example [StackOverflow](https://stackoverflow.com/questions/ask) or our [Discord channel](https://discord.gg/j6FKKQQrW9) before posting a bug report. The issue tracker is not a help forum.
+  - type: markdown
+    attributes:
+      value: |
+        ## Verify transformations
+        It's important to understand that Jest runs the code in your project as JavaScript. If you use syntax not supported by Node.js out of the box - such as React JSX, types from TypeScript, or components from Angular or Vue - that code needs to be [transformed](https://jestjs.io/docs/code-transformation) into plain JavaScript (similar to what you would do when building for browsers). Jest supports this via the [`transform` configuration option](https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object).
+  - type: markdown
+    attributes:
+      value: |
+        ## Make a minimal reproduction
+        To file the report, you will need a GitHub repository with a minimal (but complete) example and simple/clear steps on how to reproduce the bug. If all your tests fail with a strange error, can you find a way to show us with just one? If you have many configuration options in your `jest.config.js`, can you simplify it?
+
+        The simpler you can make it, the more likely we are to successfully verify and fix the bug.
+  - type: markdown
+    attributes:
+      value: |
+        :bangbang: &nbsp; Bug reports without a minimal reproduction will be rejected. :bangbang:
+
+        ---
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: |
+        The version of Jest you are using.
+        Is it the [latest](https://github.com/jestjs/jest/releases)? Test and see if the bug has already been fixed.
+      placeholder: ex. 27.0.6
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Please link to a repository with a minimal reproduction and describe accurately how we can reproduce/verify the bug.
+      placeholder: |
+        Example steps (replace with your own):
+        1. Clone my repo at https://github.com/<myuser>/example
+        2. yarn install
+        3. yarn test
+        4. You should see the error come up
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A description of what you expect to happen.
+      placeholder: I expect to see X or Y
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Actual behavior
+      description: A clear and concise description of the unexpected behavior.
+      placeholder: A bug happened!
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might be relevant
+    validations:
+      required: false
+  - type: textarea
+    id: envinfo
+    attributes:
+      label: Environment
+      description: |
+        Please paste the output of running `npx envinfo --preset jest`.
+        This will be automatically formatted as a code block, so no need for backticks.
+      placeholder: |
+        System:
+          OS: Linux 5.10 Debian GNU/Linux 9 (stretch)
+          CPU: (8) arm64
+        Binaries:
+          Node: 14.17.0 - /usr/local/bin/node
+          Yarn: 1.22.5 - /usr/local/bin/yarn
+          npm: 6.14.13 - /usr/local/bin/npm
+        npmPackages:
+          jest: 27.0.6 => 27.0.6
+      render: shell
+    validations:
+      required: true

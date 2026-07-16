@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`test.failing doesnt update or remove snapshots 1`] = `
+"// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[\`snapshots not updated nor removed 1\`] = \`"1"\`;
+
+exports[\`snapshots not updated nor removed 2\`] = \`"1"\`;
+
+exports[\`snapshots not updated nor removed 3\`] = \`"1"\`;
+"
+`;
+
+exports[`test.failing doesnt update or remove snapshots 2`] = `
+"/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+test.failing('inline snapshot not updated', () => {
+  // eslint-disable-next-line quotes
+  expect('0').toMatchInlineSnapshot(\`"1"\`);
+});
+"
+`;

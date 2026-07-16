@@ -1,0 +1,53 @@
+name: Node Nightly CI
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+  issues: write # to create an issue and comment in it
+
+jobs:
+  prepare-yarn-cache-ubuntu:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: ubuntu-latest
+  prepare-yarn-cache-macos:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: macos-latest
+  prepare-yarn-cache-windows:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: windows-latest
+
+  test-ubuntu:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-ubuntu
+    with:
+      os: ubuntu-latest
+  test-macos:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-macos
+    with:
+      os: macos-latest
+  test-windows:
+    uses: ./.github/workflows/test-nightly.yml
+    needs: prepare-yarn-cache-windows
+    with:
+      os: windows-latest
+  notify:
+    name: Notify failed build
+    needs: [test-ubuntu, test-macos, test-windows]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # v1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

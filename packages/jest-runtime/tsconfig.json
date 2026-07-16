@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // needed for WebAssembly, see https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/826
+    "lib": ["es2023", "dom"],
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__mocks__/**/*", "./**/__tests__/**/*"],
+  "references": [
+    {"path": "../jest-environment"},
+    {"path": "../jest-environment-node"},
+    {"path": "../jest-fake-timers"},
+    {"path": "../jest-globals"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-mock"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-snapshot"},
+    {"path": "../jest-source-map"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-transform"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"}
+  ]
+}

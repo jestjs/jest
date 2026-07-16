@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`snapshots not updated 1`] = `"1"`;
+
+exports[`snapshots not updated 2`] = `"1"`;

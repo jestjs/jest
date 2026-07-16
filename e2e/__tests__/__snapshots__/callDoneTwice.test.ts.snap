@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`\`done()\` should not be called more than once 1`] = `
+"FAIL __tests__/index.test.js
+  ● \`done()\` called more than once › should fail
+
+    Expected done to be called once, but it was called multiple times.
+
+       8 |   it('should fail', done => {
+       9 |     done();
+    > 10 |     done();
+         |     ^
+      11 |   });
+      12 |
+      13 |   it('should fail inside a promise', done => {
+
+      at Object.done (__tests__/index.test.js:10:5)
+
+  ● \`done()\` called more than once › should fail inside a promise
+
+    Expected done to be called once, but it was called multiple times.
+
+      15 |       .then(() => {
+      16 |         done();
+    > 17 |         done();
+         |         ^
+      18 |       })
+      19 |       .catch(error => error);
+      20 |   });
+
+      at done (__tests__/index.test.js:17:9)
+
+  ● multiple \`done()\` inside beforeEach › should fail
+
+    Expected done to be called once, but it was called multiple times.
+
+      24 |   beforeEach(done => {
+      25 |     done();
+    > 26 |     done();
+         |     ^
+      27 |   });
+      28 |
+      29 |   it('should fail', () => {
+
+      at Object.done (__tests__/index.test.js:26:5)
+
+  ● multiple \`done()\` inside afterEach › should fail
+
+    Expected done to be called once, but it was called multiple times.
+
+      35 |   afterEach(done => {
+      36 |     done();
+    > 37 |     done();
+         |     ^
+      38 |   });
+      39 |
+      40 |   it('should fail', () => {
+
+      at Object.done (__tests__/index.test.js:37:5)
+
+  ● multiple \`done()\` inside beforeAll › should fail
+
+    Expected done to be called once, but it was called multiple times.
+
+      46 |   beforeAll(done => {
+      47 |     done();
+    > 48 |     done();
+         |     ^
+      49 |   });
+      50 |
+      51 |   it('should fail', () => {
+
+      at Object.done (__tests__/index.test.js:48:5)
+
+
+  ● Test suite failed to run
+
+    Expected done to be called once, but it was called multiple times.
+
+      57 |   afterAll(done => {
+      58 |     done();
+    > 59 |     done();
+         |     ^
+      60 |   });
+      61 |
+      62 |   it('should fail', () => {
+
+      at Object.done (__tests__/index.test.js:59:5)"
+`;

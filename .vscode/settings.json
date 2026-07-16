@@ -1,0 +1,14 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.rulers": [80],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "javascript.validate.enable": false,
+  "jest.jestCommandLine": "yarn jest",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.format.semicolons": "insert",
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "\\.js$": "<rootDir>/my-transform.mjs"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/this-directory-is-covered/Covered.js",
+      "<rootDir>/this-directory-is-covered/ExcludedFromCoverage.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "ExcludedFromCoverage"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      "\\.js$": [
+        "babel-jest",
+        {
+          "presets": [
+            "@babel/preset-flow"
+          ]
+        }
+      ]
+    }
+  }
+}

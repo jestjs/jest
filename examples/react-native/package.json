@@ -1,0 +1,21 @@
+{
+  "name": "example-react-native",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@react-native/babel-preset": "^0.81.1",
+    "react": "18.3.1",
+    "react-native": "0.81.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
+    "react-test-renderer": "18.3.1"
+  }
+}

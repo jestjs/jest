@@ -1,0 +1,35 @@
+
+# File to setup Netlify server-side redirects
+
+# Initially used to handle the Docusaurus v1-v2 migration url changes
+# https://github.com/jest-website-migration/jest
+# https://github.com/jestjs/jest/pull/11021
+
+
+/en/*                 /:splat
+/docs/en/*            /docs/:splat
+/docs/ja/*            /ja/docs/:splat
+/docs/es-ES/*         /es-ES/docs/:splat
+/docs/fr/*            /fr/docs/:splat
+/docs/pt-BR/*         /pt-BR/docs/:splat
+/docs/ro/*            /ro/docs/:splat
+/docs/ru/*            /ru/docs/:splat
+/docs/uk/*            /uk/docs/:splat
+/docs/zh-Hans/*       /zh-Hans/docs/:splat
+
+
+# Redirect each country to appropriate 404
+# See https://docs.netlify.com/routing/redirects/redirect-options/#custom-404-page-handling
+
+/ja/*         /ja/404.html          404
+/es-ES/*      /es-ES/404.html       404
+/fr/*         /fr/404.html          404
+/pt-BR/*      /pt-BR/404.html       404
+/ro/*         /ro/404.html          404
+/ru/*         /ru/404.html          404
+/uk/*         /uk/404.html          404
+/zh-Hans/*    /zh-Hans/404.html     404
+
+
+# Redirect Docusaurus v1 blog RSS feed
+/blog/feed.xml   /blog/rss.xml

@@ -1,0 +1,7 @@
+{
+  "name": "empty-sourcemap",
+  "version": "1.0.0",
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

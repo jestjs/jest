@@ -1,0 +1,32 @@
+{
+  "name": "@jest/test-utils",
+  "version": "30.4.1",
+  "private": true,
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/globals": "workspace:*",
+    "@jest/pattern": "workspace:*",
+    "@jest/types": "workspace:*",
+    "@types/node": "*",
+    "ansi-regex": "^5.0.1",
+    "ansi-styles": "^5.2.0",
+    "pretty-format": "workspace:*",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.7.0"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  }
+}

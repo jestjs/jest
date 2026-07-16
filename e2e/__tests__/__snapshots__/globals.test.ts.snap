@@ -1,0 +1,232 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`basic test constructs 1`] = `
+"PASS __tests__/basic.testConstructs.test.js
+  ✓ it
+  ✓ test
+  describe
+    ✓ it
+    ✓ test"
+`;
+
+exports[`basic test constructs 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`cannot have describe with no implementation 1`] = `
+"FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function.
+
+    > 1 | describe('describe, no implementation');
+        | ^
+
+      at Object.describe (__tests__/onlyConstructs.test.js:1:1)"
+`;
+
+exports[`cannot have describe with no implementation 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`cannot test with no implementation 1`] = `
+"FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
+
+      1 | it('it', () => {});
+    > 2 | it('it, no implementation');
+        | ^
+      3 | test('test, no implementation');
+
+      at Object.it (__tests__/onlyConstructs.test.js:2:1)"
+`;
+
+exports[`cannot test with no implementation 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`cannot test with no implementation with expand arg 1`] = `
+"FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
+
+      1 | it('it', () => {});
+    > 2 | it('it, no implementation');
+        | ^
+      3 | test('test, no implementation');
+
+      at Object.it (__tests__/onlyConstructs.test.js:2:1)"
+`;
+
+exports[`cannot test with no implementation with expand arg 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`function as describe() descriptor 1`] = `
+"PASS __tests__/functionAsDescriptor.test.js
+  Foo
+    ✓ it"
+`;
+
+exports[`function as describe() descriptor 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`function as it() descriptor 1`] = `
+"PASS __tests__/functionAsDescriptor.test.js
+  ✓ Foo"
+`;
+
+exports[`function as it() descriptor 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`interleaved describe and test children order 1`] = `
+"PASS __tests__/interleaved.test.js
+  ✓ above
+  ✓ below
+  describe
+    ✓ inside"
+`;
+
+exports[`interleaved describe and test children order 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 1`] = `
+"PASS __tests__/symbolDispose.test.js
+  ✓ test"
+`;
+
+exports[`on node ^18.18.0 || >=20.4.0 Symbol's \`dispose\` are available 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`only 1`] = `
+"PASS __tests__/onlyConstructs.test.js
+  ✓ test.only
+  ✓ it.only
+  ✓ fit
+  ○ skipped it
+  fdescribe
+    ✓ it
+    ✓ test
+  describe.only
+    ✓ test
+    describe
+      ✓ test"
+`;
+
+exports[`only 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 skipped, 7 passed, 8 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`only with expand arg 1`] = `
+"PASS __tests__/onlyConstructs.test.js
+  ○ it
+  ✓ test.only
+  ✓ it.only
+  ✓ fit
+  fdescribe
+    ✓ it
+    ✓ test
+  describe.only
+    ✓ test
+    describe
+      ✓ test"
+`;
+
+exports[`only with expand arg 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 skipped, 7 passed, 8 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`skips 1`] = `
+"PASS __tests__/skipsConstructs.test.js
+  ✓ it
+  ○ skipped xtest
+  ○ skipped xit
+  ○ skipped it.skip
+  ○ skipped test.skip
+  xdescribe
+    ○ skipped it
+    ○ skipped test
+  describe.skip
+    ○ skipped test
+    describe
+      ○ skipped test"
+`;
+
+exports[`skips 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       8 skipped, 1 passed, 9 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`skips with expand arg 1`] = `
+"PASS __tests__/skipsConstructs.test.js
+  ✓ it
+  ○ xtest
+  ○ xit
+  ○ it.skip
+  ○ test.skip
+  xdescribe
+    ○ it
+    ○ test
+  describe.skip
+    ○ test
+    describe
+      ○ test"
+`;
+
+exports[`skips with expand arg 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       8 skipped, 1 passed, 9 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;

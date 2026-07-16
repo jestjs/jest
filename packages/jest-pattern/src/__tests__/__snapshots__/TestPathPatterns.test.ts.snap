@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`TestPathPatterns toPretty renders a human-readable string 1`] = `"a/b|c/d"`;
+
+exports[`TestPathPatternsExecutor toPretty renders a human-readable string 1`] = `"a/b|c/d"`;

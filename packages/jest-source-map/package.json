@@ -1,0 +1,35 @@
+{
+  "name": "@jest/source-map",
+  "version": "30.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-source-map"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jridgewell/trace-mapping": "^0.3.25",
+    "callsites": "^3.1.0",
+    "graceful-fs": "^4.2.11"
+  },
+  "devDependencies": {
+    "@types/graceful-fs": "^4.1.9"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

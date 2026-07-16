@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
+  "references": [
+    {"path": "../jest-changed-files"},
+    {"path": "../jest-config"},
+    {"path": "../jest-console"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-pattern"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-reporters"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-resolve-dependencies"},
+    {"path": "../jest-runner"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-snapshot"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-test-sequencer"},
+    {"path": "../jest-transform"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"},
+    {"path": "../jest-watcher"},
+    {"path": "../pretty-format"}
+  ]
+}

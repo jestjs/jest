@@ -1,0 +1,78 @@
+{
+  "name": "jest-config",
+  "version": "30.4.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-config"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@types/node": "*",
+    "esbuild-register": ">=3.4.0",
+    "ts-node": ">=9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/node": {
+      "optional": true
+    },
+    "esbuild-register": {
+      "optional": true
+    },
+    "ts-node": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@babel/core": "^7.27.4",
+    "@jest/get-type": "workspace:*",
+    "@jest/pattern": "workspace:*",
+    "@jest/test-sequencer": "workspace:*",
+    "@jest/types": "workspace:*",
+    "babel-jest": "workspace:*",
+    "chalk": "^4.1.2",
+    "ci-info": "^4.2.0",
+    "deepmerge": "^4.3.1",
+    "glob": "^10.5.0",
+    "graceful-fs": "^4.2.11",
+    "jest-circus": "workspace:*",
+    "jest-docblock": "workspace:*",
+    "jest-environment-node": "workspace:*",
+    "jest-regex-util": "workspace:*",
+    "jest-resolve": "workspace:*",
+    "jest-runner": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-validate": "workspace:*",
+    "parse-json": "^5.2.0",
+    "pretty-format": "workspace:*",
+    "slash": "^3.0.0",
+    "strip-json-comments": "^3.1.1"
+  },
+  "devDependencies": {
+    "@jest/test-utils": "workspace:*",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/parse-json": "^4.0.2",
+    "esbuild": "^0.28.0",
+    "esbuild-register": "^3.6.0",
+    "semver": "^7.7.2",
+    "ts-node": "^10.5.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

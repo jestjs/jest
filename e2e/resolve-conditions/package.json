@@ -1,0 +1,17 @@
+{
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "cjs",
+      "mjs",
+      "json"
+    ],
+    "testMatch": [
+      "<rootDir>/**/*.test.*"
+    ],
+    "moduleNameMapper": {
+      "^fake-dual-dep2$": "fake-dual-dep2"
+    },
+    "transform": {}
+  }
+}

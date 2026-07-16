@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@foo/js$": "<rootDir>/js/index.js"
+    }
+  }
+}

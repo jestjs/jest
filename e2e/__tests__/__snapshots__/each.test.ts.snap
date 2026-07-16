@@ -1,0 +1,376 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`allows nullable or undefined args when templating object each args 1`] = `
+"PASS __tests__/eachTemplate.test.js
+  ✓ allows templating "value"
+  ✓ allows templating "null"
+  ✓ allows templating "undefined"
+  ✓ allows templating "1"
+  ✓ allows templating "null"
+  ✓ allows templating "undefined""
+`;
+
+exports[`formats args with pretty format when given %p 1`] = `
+"PASS __tests__/pretty.test.js
+  array
+    ✓ "hello" == "hello"
+    ✓ 1 == 1
+    ✓ null == null
+    ✓ undefined == undefined
+    ✓ 1.2 == 1.2
+    ✓ {"foo": "bar"} == {"foo": "bar"}
+    ✓ {"foo": [Object]} == {"foo": [Object]}
+    ✓ [Function noop] == [Function noop]
+    ✓ [] == []
+    ✓ [[Object]] == [[Object]]
+    ✓ Infinity == Infinity
+    ✓ -Infinity == -Infinity
+    ✓ NaN == NaN
+  template
+    ✓ hello == hello
+    ✓ 1 == 1
+    ✓ null == null
+    ✓ undefined == undefined
+    ✓ 1.2 == 1.2
+    ✓ {"foo": "bar"} == {"foo": "bar"}
+    ✓ {"foo": [Object]} == {"foo": [Object]}
+    ✓ [Function noop] == [Function noop]
+    ✓ [] == []
+    ✓ [[Object]] == [[Object]]
+    ✓ Infinity == Infinity
+    ✓ -Infinity == -Infinity
+    ✓ NaN == NaN"
+`;
+
+exports[`runs only the describe.only.each tests 1`] = `
+"PASS __tests__/describeOnly.test.js
+  passes all rows expected true == true
+    ✓ passes
+    ✓ passes
+  fails all rows expected false == true
+    ○ skipped fails"
+`;
+
+exports[`shows error message when not enough arguments are supplied to tests 1`] = `
+"FAIL __tests__/eachException.test.js
+  ✕ throws exception when one argument too few are supplied $left == $right
+  ✕ throws exception when not enough arguments are supplied $left == $right
+
+  ● throws exception when one argument too few are supplied $left == $right
+
+    Not enough arguments supplied for given headings:
+    left | right
+
+    Received:
+    Array [
+      true,
+      true,
+      true,
+    ]
+
+    Missing 1 argument
+
+       6 |  */
+       7 |
+    >  8 | it.each\`
+         |        ^
+       9 |   left    | right
+      10 |   \${true} | \${true}
+      11 |   \${true}
+
+      at Object.<anonymous> (__tests__/eachException.test.js:8:8)
+
+  ● throws exception when not enough arguments are supplied $left == $right
+
+    Not enough arguments supplied for given headings:
+    left | right | up | down
+
+    Received:
+    Array [
+      true,
+      true,
+    ]
+
+    Missing 2 arguments
+
+      17 | );
+      18 |
+    > 19 | it.each\`
+         |        ^
+      20 |   left    | right   | up | down
+      21 |   \${true} | \${true}
+      22 | \`(
+
+      at Object.<anonymous> (__tests__/eachException.test.js:19:8)"
+`;
+
+exports[`shows only the tests with .only as being ran 1`] = `
+"PASS __tests__/eachOnly.test.js
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ○ skipped Should not be ran: fails all rows expected true == false
+  ○ skipped Should not be ran: fails all rows expected true == true
+  ○ skipped Should not be ran: fails all rows expected true == false
+  ○ skipped Should not be ran: fails all rows expected true == false"
+`;
+
+exports[`shows only the tests without .skip as being ran 1`] = `
+"PASS __tests__/eachSkip.test.js
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ✓ passes one row expected true == true
+  ○ skipped Should not be ran: fails all rows expected true == false
+  ○ skipped Should not be ran: fails all rows expected true == true
+  ○ skipped Should not be ran: fails all rows expected true == false
+  ○ skipped Should not be ran: fails all rows expected true == false
+  passes all rows expected true == true
+    ○ skipped passes
+    ○ skipped passes"
+`;
+
+exports[`shows the correct errors in stderr when failing tests 1`] = `
+"FAIL __tests__/failure.test.js
+  ✓ array table fails on one row: expected true == true
+  ✕ array table fails on one row: expected true == false
+  ✕ array table fails on all rows expected 1 == 2
+  ✕ array table fails on all rows expected 3 == 4
+  ✕ template table fails on one row expected: true == false
+  ✓ template table fails on one row expected: true == true
+  ✕ template table fails on all rows expected: 1 == 2
+  ✕ template table fails on all rows expected: 3 == 4
+  ✕ The word red contains the letter 'z'
+  ✕ The word green contains the letter 'z'
+  ✕ The word bean contains the letter 'z'
+  template table describe fails on all rows expected "a" == "b"
+    ✕ fails
+  template table describe fails on all rows expected "c" == "d"
+    ✕ fails
+  array table describe fails on all rows expected a == b
+    ✕ fails
+  array table describe fails on all rows expected c == d
+    ✕ fails
+
+  ● array table fails on one row: expected true == false
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      10 |   [true, false],
+      11 | ])('array table fails on one row: expected %s == %s', (left, right) => {
+    > 12 |   expect(left).toBe(right);
+         |                ^
+      13 | });
+      14 |
+      15 | it.each([
+
+      at toBe (__tests__/failure.test.js:12:16)
+
+  ● array table fails on all rows expected 1 == 2
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      17 |   [3, 4],
+      18 | ])('array table fails on all rows expected %s == %s', (left, right) => {
+    > 19 |   expect(left).toBe(right);
+         |                ^
+      20 | });
+      21 |
+      22 | it.each\`
+
+      at toBe (__tests__/failure.test.js:19:16)
+
+  ● array table fails on all rows expected 3 == 4
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 4
+    Received: 3
+
+      17 |   [3, 4],
+      18 | ])('array table fails on all rows expected %s == %s', (left, right) => {
+    > 19 |   expect(left).toBe(right);
+         |                ^
+      20 | });
+      21 |
+      22 | it.each\`
+
+      at toBe (__tests__/failure.test.js:19:16)
+
+  ● template table fails on one row expected: true == false
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      27 |   'template table fails on one row expected: $left == $right',
+      28 |   ({left, right}) => {
+    > 29 |     expect(left).toBe(right);
+         |                  ^
+      30 |   },
+      31 | );
+      32 |
+
+      at toBe (__tests__/failure.test.js:29:18)
+
+  ● template table fails on all rows expected: 1 == 2
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      38 |   'template table fails on all rows expected: $left == $right',
+      39 |   ({left, right}) => {
+    > 40 |     expect(left).toBe(right);
+         |                  ^
+      41 |   },
+      42 | );
+      43 |
+
+      at toBe (__tests__/failure.test.js:40:18)
+
+  ● template table fails on all rows expected: 3 == 4
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 4
+    Received: 3
+
+      38 |   'template table fails on all rows expected: $left == $right',
+      39 |   ({left, right}) => {
+    > 40 |     expect(left).toBe(right);
+         |                  ^
+      41 |   },
+      42 | );
+      43 |
+
+      at toBe (__tests__/failure.test.js:40:18)
+
+  ● The word red contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      45 |   "The word %s contains the letter 'z'",
+      46 |   word => {
+    > 47 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      48 |   },
+      49 | );
+      50 |
+
+      at toBe (__tests__/failure.test.js:47:28)
+
+  ● The word green contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      45 |   "The word %s contains the letter 'z'",
+      46 |   word => {
+    > 47 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      48 |   },
+      49 | );
+      50 |
+
+      at toBe (__tests__/failure.test.js:47:28)
+
+  ● The word bean contains the letter 'z'
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      45 |   "The word %s contains the letter 'z'",
+      46 |   word => {
+    > 47 |     expect(/z/.test(word)).toBe(true);
+         |                            ^
+      48 |   },
+      49 | );
+      50 |
+
+      at toBe (__tests__/failure.test.js:47:28)
+
+  ● template table describe fails on all rows expected "a" == "b" › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "b"
+    Received: "a"
+
+      57 |   ({left, right}) => {
+      58 |     it('fails ', () => {
+    > 59 |       expect(left).toBe(right);
+         |                    ^
+      60 |     });
+      61 |   },
+      62 | );
+
+      at Object.toBe (__tests__/failure.test.js:59:20)
+
+  ● template table describe fails on all rows expected "c" == "d" › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "d"
+    Received: "c"
+
+      57 |   ({left, right}) => {
+      58 |     it('fails ', () => {
+    > 59 |       expect(left).toBe(right);
+         |                    ^
+      60 |     });
+      61 |   },
+      62 | );
+
+      at Object.toBe (__tests__/failure.test.js:59:20)
+
+  ● array table describe fails on all rows expected a == b › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "b"
+    Received: "a"
+
+      69 |   (left, right) => {
+      70 |     it('fails', () => {
+    > 71 |       expect(left).toBe(right);
+         |                    ^
+      72 |     });
+      73 |   },
+      74 | );
+
+      at Object.toBe (__tests__/failure.test.js:71:20)
+
+  ● array table describe fails on all rows expected c == d › fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "d"
+    Received: "c"
+
+      69 |   (left, right) => {
+      70 |     it('fails', () => {
+    > 71 |       expect(left).toBe(right);
+         |                    ^
+      72 |     });
+      73 |   },
+      74 | );
+
+      at Object.toBe (__tests__/failure.test.js:71:20)"
+`;

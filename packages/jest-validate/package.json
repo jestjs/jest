@@ -1,0 +1,38 @@
+{
+  "name": "jest-validate",
+  "version": "30.4.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-validate"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/get-type": "workspace:*",
+    "@jest/types": "workspace:*",
+    "camelcase": "^6.3.0",
+    "chalk": "^4.1.2",
+    "leven": "^3.1.0",
+    "pretty-format": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.33"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

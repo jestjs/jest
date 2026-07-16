@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.test.json",
+  "compilerOptions": {
+    "rootDir": "./"
+  },
+  "include": ["./**/*"],
+  "references": [{"path": "../packages/test-utils"}]
+}

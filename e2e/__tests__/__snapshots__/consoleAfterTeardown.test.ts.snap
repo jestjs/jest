@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`console printing 1`] = `
+"PASS __tests__/console.test.js
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "hello!".
+
+      10 |   // Named function to have the function be named the same in jasmine and circus
+      11 |   new Promise(resolve => setTimeout(resolve, 500)).then(function log() {
+    > 12 |     console.log('hello!');
+         |             ^
+      13 |   });
+      14 | });
+      15 |"
+`;

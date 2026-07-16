@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`does not print info about open handlers for a server that is already closed 1`] = `""`;
+
+exports[`prints message about flag on forceExit 1`] = `"Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?"`;
+
+exports[`prints message about flag on slow tests 1`] = `
+"Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
+`;
+
+exports[`prints message about flag on slow tests with a custom timeout 1`] = `
+"Jest did not exit 0.5 seconds after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
+`;
+
+exports[`prints out info about open handlers 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  TCPSERVERWRAP
+
+      12 | const app = new Server();
+      13 |
+    > 14 | app.listen({host: 'localhost', port: 0});
+         |     ^
+      15 |
+
+      at Object.listen (server.js:14:5)
+      at Object.require (__tests__/outside.js:8:1)"
+`;
+
+exports[`prints out info about open handlers from inside tests 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | test('something', () => {
+    >  9 |   setTimeout(() => {}, 30_000);
+         |   ^
+      10 |   expect(true).toBe(true);
+      11 | });
+      12 |
+
+      at Object.setTimeout (__tests__/inside.js:9:3)"
+`;
+
+exports[`prints out info about open handlers from lifecycle functions with a \`done\` callback 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | beforeAll(done => {
+    >  9 |   setTimeout(() => {}, 10_000);
+         |   ^
+      10 |   done();
+      11 | });
+      12 |
+
+      at setTimeout (__tests__/in-done-lifecycle.js:9:3)"
+`;
+
+exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | test('something', done => {
+    >  9 |   setTimeout(() => {}, 10_000);
+         |   ^
+      10 |   expect(true).toBe(true);
+      11 |   done();
+      12 | });
+
+      at Object.setTimeout (__tests__/in-done-function.js:9:3)"
+`;

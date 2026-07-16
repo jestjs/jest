@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Watch mode flows Runs Jest in a non-interactive environment not showing usage 1`] = `
+Array [
+  "
+",
+]
+`;
+
+exports[`Watch mode flows Runs Jest once by default and shows usage 1`] = `
+Array [
+  "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+",
+]
+`;
+
+exports[`Watch mode flows allows WatchPlugins to be configured 1`] = `
+Array [
+  "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press k to filter with a custom prompt.
+ › Press Enter to trigger a test run.
+",
+]
+`;
+
+exports[`Watch mode flows allows WatchPlugins to override eligible internal plugins 1`] = `
+Array [
+  "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press p to custom "P" plugin.
+ › Press Enter to trigger a test run.
+",
+]
+`;
+
+exports[`Watch mode flows makes watch plugin initialization errors look nice 1`] = `
+[Error: Failed to initialize watch plugin "packages/jest-core/src/__tests__/__fixtures__/watchPluginThrows":
+
+  ● Test suite failed to run
+
+    initialization error
+
+      at Object.<anonymous> (__fixtures__/watchPluginThrows.js:8:7)
+]
+`;
+
+exports[`Watch mode flows shows prompts for WatchPlugins in alphabetical order 1`] = `
+Array [
+  Array [
+    "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press r to do something else.
+ › Press s to do nothing.
+ › Press Enter to trigger a test run.
+",
+  ],
+]
+`;
+
+exports[`Watch mode flows shows update snapshot prompt (with interactive) 1`] = `
+Array [
+  Array [
+    "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press u to update failing snapshots.
+ › Press i to update failing snapshots interactively.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+",
+  ],
+]
+`;
+
+exports[`Watch mode flows shows update snapshot prompt (without interactive) 1`] = `
+Array [
+  Array [
+    "
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press u to update failing snapshots.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+",
+  ],
+]
+`;

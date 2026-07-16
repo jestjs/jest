@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/*.js"
+    ],
+    "transform": {}
+  }
+}

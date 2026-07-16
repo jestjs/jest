@@ -1,0 +1,7 @@
+{
+  "name": "type_module",
+  "scripts": {
+    "test": "different-test-runner"
+  },
+  "type": "module"
+}

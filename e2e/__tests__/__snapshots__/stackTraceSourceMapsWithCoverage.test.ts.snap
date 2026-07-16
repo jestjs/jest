@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`processes stack traces and code frames with source maps with coverage 1`] = `
+"FAIL __tests__/fails.ts
+  ✕ fails
+
+  ● fails
+
+    This did not work!
+
+      12 |
+      13 | export function error() {
+    > 14 |   throw new Error('This did not work!');
+         |         ^
+      15 | }
+      16 |
+
+      at error (lib.ts:14:9)
+      at Object.<anonymous> (__tests__/fails.ts:10:8)"
+`;

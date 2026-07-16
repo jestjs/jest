@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-react",
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
+    "jest-environment-jsdom": "workspace:*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

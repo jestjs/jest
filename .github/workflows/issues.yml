@@ -1,0 +1,28 @@
+name: 'Close issues'
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write # to close issues (peter-evans/close-issue)
+
+jobs:
+  questions:
+    name: Questions
+    runs-on: ubuntu-latest
+    steps:
+      - if: "${{ github.event.label.name == ':speech_balloon: Question' }}"
+        run: gh issue close $ISSUE --comment "Please note this issue tracker is not a help forum. We recommend using [StackOverflow](https://stackoverflow.com/questions/tagged/jestjs) or our [discord channel](https://discord.gg/j6FKKQQrW9) for questions."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ github.event.issue.html_url }}
+  bug-without-repro:
+    name: Bug reports without reproductions
+    runs-on: ubuntu-latest
+    steps:
+      - if: "${{ github.event.label.name == 'Needs Reproduction' }}"
+        run: gh issue close $ISSUE --comment "As noted in the [Bug Report template](https://github.com/jestjs/jest/blob/main/.github/ISSUE_TEMPLATE/bug.yml), all bug reports requires a minimal reproduction. Please open up a new issue providing one. Read more at https://stackoverflow.com/help/minimal-reproducible-example."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ github.event.issue.html_url }}

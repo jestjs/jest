@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`generates a snapshot with correctly transformed dependencies 1`] = `
+<div
+  class="App-root"
+>
+  <div
+    class="App-header"
+  >
+    <img
+      alt="logo"
+      class="App-logo"
+      src="logo.svg"
+    />
+    <h2>
+      Welcome to React
+    </h2>
+  </div>
+  <p
+    class="App-intro"
+  >
+    To get started, edit 
+    <code>
+      src/App.js
+    </code>
+     and save to reload.
+  </p>
+</div>
+`;

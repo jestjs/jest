@@ -1,0 +1,57 @@
+{
+  "name": "jest-runner",
+  "version": "30.4.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-runner"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/console": "workspace:*",
+    "@jest/environment": "workspace:*",
+    "@jest/test-result": "workspace:*",
+    "@jest/transform": "workspace:*",
+    "@jest/types": "workspace:*",
+    "@types/node": "*",
+    "chalk": "^4.1.2",
+    "emittery": "^0.13.1",
+    "exit-x": "^0.2.2",
+    "graceful-fs": "^4.2.11",
+    "jest-docblock": "workspace:*",
+    "jest-environment-node": "workspace:*",
+    "jest-haste-map": "workspace:*",
+    "jest-leak-detector": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-resolve": "workspace:*",
+    "jest-runtime": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-watcher": "workspace:*",
+    "jest-worker": "workspace:*",
+    "p-limit": "^3.1.0",
+    "source-map-support": "0.5.13"
+  },
+  "devDependencies": {
+    "@jest/test-utils": "workspace:*",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/source-map-support": "^0.5.10",
+    "jest-jasmine2": "workspace:*"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

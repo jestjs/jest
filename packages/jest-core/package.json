@@ -1,0 +1,101 @@
+{
+  "name": "@jest/core",
+  "description": "Delightful JavaScript Testing.",
+  "version": "30.4.2",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/console": "workspace:*",
+    "@jest/pattern": "workspace:*",
+    "@jest/reporters": "workspace:*",
+    "@jest/test-result": "workspace:*",
+    "@jest/transform": "workspace:*",
+    "@jest/types": "workspace:*",
+    "@types/node": "*",
+    "ansi-escapes": "^4.3.2",
+    "chalk": "^4.1.2",
+    "ci-info": "^4.2.0",
+    "exit-x": "^0.2.2",
+    "fast-json-stable-stringify": "^2.1.0",
+    "graceful-fs": "^4.2.11",
+    "jest-changed-files": "workspace:*",
+    "jest-config": "workspace:*",
+    "jest-haste-map": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-regex-util": "workspace:*",
+    "jest-resolve": "workspace:*",
+    "jest-resolve-dependencies": "workspace:*",
+    "jest-runner": "workspace:*",
+    "jest-runtime": "workspace:*",
+    "jest-snapshot": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-validate": "workspace:*",
+    "jest-watcher": "workspace:*",
+    "pretty-format": "workspace:*",
+    "slash": "^3.0.0"
+  },
+  "devDependencies": {
+    "@jest/test-sequencer": "workspace:*",
+    "@jest/test-utils": "workspace:*",
+    "@types/graceful-fs": "^4.1.9"
+  },
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-core"
+  },
+  "bugs": {
+    "url": "https://github.com/jestjs/jest/issues"
+  },
+  "homepage": "https://jestjs.io/",
+  "license": "MIT",
+  "keywords": [
+    "ava",
+    "babel",
+    "coverage",
+    "easy",
+    "expect",
+    "facebook",
+    "immersive",
+    "instant",
+    "jasmine",
+    "jest",
+    "jsdom",
+    "mocha",
+    "mocking",
+    "painless",
+    "qunit",
+    "runner",
+    "sandboxed",
+    "snapshot",
+    "tap",
+    "tape",
+    "test",
+    "testing",
+    "typescript",
+    "watch"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

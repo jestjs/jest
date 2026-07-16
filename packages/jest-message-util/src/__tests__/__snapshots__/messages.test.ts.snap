@@ -1,0 +1,187 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`.formatExecError() 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Whoops!
+"
+`;
+
+exports[`codeframe 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Whoops!
+
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color>
+     <gray>   |</color>       <red><bold>^</intensity></color></>
+
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
+"
+`;
+
+exports[`formatStackTrace does not print code frame when noCodeFrame = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
+        "
+`;
+
+exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
+        "
+`;
+
+exports[`formatStackTrace prints code frame and stacktrace 1`] = `
+"
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color>
+     <gray>   |</color>       <red><bold>^</intensity></color></>
+
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
+        "
+`;
+
+exports[`formatStackTrace should properly handle deeply nested causes 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Error with cause test</color></intensity>
+
+    intercepted by f
+<dim></intensity>
+<dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
+
+    Cause:
+    intercepted by g
+<dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:8:11)</intensity><dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
+
+    Cause:
+    boom
+<dim></intensity>
+<dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:2:9)</intensity><dim></intensity>
+<dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:6:5)</intensity><dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
+"
+`;
+
+exports[`formatStackTrace should properly handle string causes 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Error with string cause test</color></intensity>
+
+    boom
+<dim></intensity>
+<dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
+
+    Cause:
+    string cause
+
+"
+`;
+
+exports[`formatStackTrace should strip node internals 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Unix test</color></intensity>
+
+      
+        Expected value to be of type:
+          "number"
+        Received:
+          ""
+        type:
+          "string"
+<dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>__tests__/test.js<dim>:8:14)</intensity><dim></intensity>
+"
+`;
+
+exports[`no codeframe 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Whoops!
+
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
+"
+`;
+
+exports[`no stack 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Whoops!
+"
+`;
+
+exports[`retains message in babel code frame error 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Babel test</color></intensity>
+
+      
+        packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
+<dim></intensity>
+<dim>          </> <gray> 18 | </color>        <cyan>false</color><yellow>,</color></intensity>
+<dim>           <gray> 19 | </color>        <green>'forwardRef requires a render function but received a \`memo\` '</color></intensity>
+<dim>          <red><bold>></intensity><dim></color><gray> 20 | </color>          <green>'component. Instead of forwardRef(memo(...)), use '</color> <yellow>+</color></intensity>
+<dim>           <gray>    | </color>          <red><bold>^</intensity><dim></color></intensity>
+<dim>           <gray> 21 | </color>          <green>'memo(forwardRef(...)).'</color><yellow>,</color></intensity>
+<dim>           <gray> 22 | </color>      )<yellow>;</color></intensity>
+<dim>           <gray> 23 | </color>    } <cyan>else</color> <cyan>if</color> (<cyan>typeof</color> render <yellow>!==</color> <green>'function'</color>) {</></intensity>
+"
+`;
+
+exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Unix test</color></intensity>
+
+      at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
+<dim></intensity>
+<dim>      <dim>at Object.addResult (</intensity><dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)</intensity><dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>build/__tests__/messages-test.js<dim>:45:41)</intensity><dim></intensity>
+"
+`;
+
+exports[`should not exclude vendor from stack trace 1`] = `
+"<bold><red>  <bold>● </intensity><bold>Vendor test</color></intensity>
+
+      
+        Expected value to be of type:
+          "number"
+        Received:
+          ""
+        type:
+          "string"
+<dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>__tests__/vendor/cool_test.js<dim>:6:666)</intensity><dim></intensity>
+<dim>      <dim>at Object.asyncFn (</intensity><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</intensity><dim></intensity>
+"
+`;
+
+exports[`should return the error cause if there is one 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Test exception
+
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:564:17)</intensity>
+
+    Cause:
+     Cause Error
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:565:12)</intensity>
+
+"
+`;
+
+exports[`should return the inner errors of an AggregateError 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    AggregateError:
+
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:20)</intensity>
+
+    Errors contained in AggregateError:
+     Err 1
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:40)</intensity>
+
+     Err 2
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:60)</intensity>
+
+"
+`;

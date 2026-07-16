@@ -1,0 +1,9 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "node_modules",
+      "jest-runner"
+    ]
+  }
+}

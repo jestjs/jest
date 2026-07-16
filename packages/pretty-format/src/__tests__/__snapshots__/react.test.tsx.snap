@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ReactElement plugin highlights syntax 1`] = `
+"<cyan><Mouse</color>
+  <yellow>prop</color>=<green>{
+    <cyan><div></color>
+      </>mouse</>
+      <cyan><span></color>
+        </>rat</>
+      <cyan></span></color>
+    <cyan></div></color>
+  }</color>
+<cyan>/></color>"
+`;
+
+exports[`ReactElement plugin highlights syntax with color from theme option 1`] = `
+"<cyan><Mouse</color>
+  <yellow>style</color>=<red>"color:red"</color>
+<cyan>></color>
+  </>Hello, Mouse!</>
+<cyan></Mouse></color>"
+`;
+
+exports[`ReactTestComponent plugin highlights syntax 1`] = `
+"<cyan><Mouse</color>
+  <yellow>prop</color>=<green>{
+    <cyan><div></color>
+      </>mouse</>
+      <cyan><span></color>
+        </>rat</>
+      <cyan></span></color>
+    <cyan></div></color>
+  }</color>
+<cyan>/></color>"
+`;
+
+exports[`ReactTestComponent plugin highlights syntax with color from theme option 1`] = `
+"<cyan><Mouse</color>
+  <yellow>style</color>=<red>"color:red"</color>
+<cyan>></color>
+  </>Hello, Mouse!</>
+<cyan></Mouse></color>"
+`;
+
+exports[`ReactTestComponent removes undefined props 1`] = `
+"<cyan><Mouse</color>
+  <yellow>xyz</color>=<red>{true}</color>
+<cyan>/></color>"
+`;

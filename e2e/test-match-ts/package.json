@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "testMatch": [
+      "**/__tests__/*.?ts"
+    ]
+  }
+}

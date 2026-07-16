@@ -1,0 +1,42 @@
+{
+  "name": "jest-util",
+  "version": "30.4.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-util"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/types": "workspace:*",
+    "@types/node": "*",
+    "chalk": "^4.1.2",
+    "ci-info": "^4.2.0",
+    "graceful-fs": "^4.2.11",
+    "picomatch": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/graceful-fs": "^4.1.9",
+    "@types/micromatch": "^4.0.10",
+    "@types/picomatch": "^4.0.0",
+    "lodash": "^4.17.19",
+    "micromatch": "^4.0.8"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

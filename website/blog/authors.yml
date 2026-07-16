@@ -1,0 +1,57 @@
+cpojer:
+  name: Christoph Nakazawa
+  url: https://github.com/cpojer
+  image_url: https://github.com/cpojer.png
+  socials:
+    github: cpojer
+    x: cpojer
+
+hramos:
+  name: Héctor Ramos
+  image_url: https://github.com/hramos.png
+  socials:
+    github: hramos
+    x: hectorramos
+
+rogeliog:
+  name: Rogelio Guzman
+  image_url: https://github.com/rogeliog.png
+  socials:
+    github: rogeliog
+    x: rogeliog
+
+simenb:
+  name: Simen Bekkhus
+  image_url: https://github.com/SimenB.png
+  socials:
+    github: simenb
+    x: sbekkhus
+
+rickhanlonii:
+  name: Ricky Hanlon
+  image_url: https://github.com/rickhanlonii.png
+  socials:
+    github: rickhanlonii
+    x: rickhanlonii
+
+slorber:
+  name: Sébastien Lorber
+  title: Docusaurus maintainer
+  url: https://sebastienlorber.com
+  image_url: https://github.com/slorber.png
+  socials:
+    github: slorber
+    x: sebastienlorber
+
+jeysal:
+  name: Tim Seckinger
+  image_url: https://github.com/jeysal.png
+  socials:
+    github: jeysal
+    x: _jeysal_
+
+MillerSvt:
+  name: Svyatoslav Zaytsev
+  image_url: https://github.com/MillerSvt.png
+  socials:
+    github: MillerSvt

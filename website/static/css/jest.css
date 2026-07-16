@@ -1,0 +1,347 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.debug * {
+  outline: 1px solid rebeccapurple;
+}
+
+.sponsor-item {
+  margin: 10px;
+}
+
+.sponsor-item img {
+  background: white;
+}
+
+.sponsor-avatar {
+  display: inline-block;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  border: 1px solid white;
+  overflow: hidden;
+  object-fit: contain;
+}
+
+.backer-item {
+  margin: 2px;
+}
+
+.backer-avatar {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid white;
+  overflow: hidden;
+  object-fit: contain;
+}
+
+.support-button {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 0.4em 1em;
+  text-transform: uppercase;
+  color: #99424f;
+  border: 1px solid #99424f;
+  border-radius: 1.25em;
+  -webkit-transition: all 250ms;
+  transition: all 250ms;
+}
+
+.support-button:hover {
+  background: #99424f;
+  color: #ffffff;
+}
+
+.opencollective h3 {
+  display: inline-block;
+  font-weight: normal;
+  color: var(--yellow);
+  letter-spacing: 1px;
+  text-transform: lowercase;
+}
+
+.section-container .blockContent h2 {
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  padding-left: 10px;
+  margin-top: 1.6rem;
+  letter-spacing: 1px;
+  border-left-width: 8px;
+  border-left-style: solid;
+}
+
+.blockContent > div {
+  margin: 16px 0 0 18px;
+}
+
+.containerV1.intro p {
+  font-size: 1.8rem;
+  font-family: Monaco, Courier, monospace;
+  color: var(--grey3);
+}
+
+.containerV1.intro .wrapperV1 {
+  max-width: 960px;
+}
+.containerV1 .wrapperV1 .imageAlignSide p {
+  margin-bottom: 0;
+}
+
+/* On mobile, show the screenshot under the body */
+@media only screen and (max-width: 780px) {
+  /* Ensure the consistent order of text first, then image */
+  .containerV1 .wrapperV1 .imageAlignLeft {
+    flex-flow: row wrap-reverse;
+  }
+
+  /* Makes the image is always visible and has space to center correctly */
+  .imageAlignSide .blockImage {
+    display: block;
+    max-width: 100%;
+    flex: 0 1 100%;
+    margin: 0;
+  }
+
+  /* Makes sure that it's always centered */
+  .imageAlignSide .blockImage img {
+    margin: auto 0;
+  }
+}
+
+.containerV1.section-container {
+  padding: 20px 0 0 0;
+}
+
+.containerV1.section-container.philosophy {
+  padding: 30px 0;
+}
+
+.blockContent.flex-end {
+  align-self: flex-end;
+}
+
+.section-container .blockImage {
+  overflow: hidden;
+  height: 280px;
+}
+
+.containerV1.features .yellow.blockElement h2,
+.containerV1.features .yellow.blockElement p {
+  text-align: left;
+  margin: 16px 0 0 18px;
+}
+
+.section-container .blockImage img {
+  padding-top: 10px;
+}
+
+.section-container.community {
+  padding-bottom: 30px;
+}
+
+.opencollective-avatars {
+  padding: 12px 0;
+}
+
+.logos {
+  align-items: baseline;
+}
+
+.logos > a {
+  margin-left: 0;
+}
+
+.logos > p.others {
+  align-self: center;
+}
+
+@media only screen and (min-width: 736px) {
+  /* Medium desktop and up */
+  .containerV1 .yellow.blockElement {
+    width: 25%;
+  }
+}
+
+.gridBlockV1.philosophy > *:first-child,
+.gridBlockV1.logos > *:first-child {
+  margin-left: 0;
+}
+
+.logos .logo-item {
+  margin: 10px;
+}
+
+.logos img {
+  max-height: 75px;
+  width: 75px;
+}
+
+.gridBlockV1 > *:first-child {
+  margin: 0 12px;
+}
+
+.fixedHeaderContainer {
+  background-color: #ffffff;
+}
+
+.headerWrapper img {
+  display: none;
+}
+
+/* Section titles colors */
+.section-container .yellow h2 {
+  font-family: Monaco, Courier, monospace;
+  color: var(--yellow);
+}
+
+.section-container .green h2 {
+  font-family: Monaco, Courier, monospace;
+  color: var(--green);
+}
+
+.section-container .red h2 {
+  font-family: Monaco, Courier, monospace;
+  color: var(--red);
+}
+
+/* Search input background color */
+.reactNavSearchWrapper input#search_input_react {
+  background-color: var(--grey);
+}
+
+/* Logo */
+.navbar__title {
+  background-color: var(--green);
+  text-transform: uppercase;
+  color: var(--ifm-color-content-inverse);
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 500;
+  padding: 6px 15px;
+}
+
+.containerV1.features {
+  padding: 40px 0;
+}
+
+.features .gridBlockV1 {
+  flex-wrap: nowrap;
+}
+
+.features .gridBlockV1 .fourByGridBlock {
+  flex: initial;
+}
+
+.features h2 {
+  color: var(--yellow);
+  font-size: 20px;
+  text-transform: lowercase;
+  font-family: Monaco, Courier, monospace;
+}
+
+.features .blockElement {
+  margin: 0 !important;
+}
+
+.button.landing {
+  margin: 4px 10px;
+  cursor: pointer;
+  text-transform: none;
+  text-decoration: none;
+}
+@media only screen and (max-width: 780px) {
+  .button.landing {
+    padding: 5px 10px;
+  }
+}
+
+.containerV1 .gridBlockV1 .blockContent p.buttons-wrapper {
+  margin: 8px;
+}
+
+.navigationSlider .slidingNav ul li a,
+.fixedHeaderContainer header h3 {
+  color: var(--grey3);
+}
+
+div.navigationSlider .slidingNav ul {
+  background: #ffffff;
+}
+
+.navigationSlider .slidingNav ul li a:focus,
+.navigationSlider .slidingNav ul li a:hover,
+.navigationSlider .slidingNav ul li.siteNavGroupActive a {
+  background: #ffffff;
+  color: var(--grey3);
+}
+
+body
+  > div.fixedHeaderContainer
+  > div
+  > header
+  > div
+  > nav
+  > ul
+  > li.siteNavGroupActive.siteNavItemActive
+  > a {
+  background-color: #10910e;
+  color: white;
+}
+
+.hide-small {
+  display: none;
+}
+
+@media only screen and (min-width: 736px) {
+  .show-small {
+    display: none;
+  }
+  .hide-small {
+    display: block;
+  }
+}
+
+/* Temporary fix for not ideal Docusaurus 2 layout */
+/* May be removed when we close https://github.com/facebook/docusaurus/issues/4083 */
+.main-wrapper.blog-wrapper .container .row .col.col--2:first-child {
+  --ifm-col-width: 22%;
+}
+
+.main-wrapper.blog-wrapper
+  .container
+  .row
+  /* Blog post list */
+  .col.col--2:first-child
+  div[class^='sidebar'] {
+  padding-right: 1rem;
+}
+
+/* Center */
+.main-wrapper.blog-wrapper .container .row .col.col--8 {
+  --ifm-col-width: 62%;
+}
+@media only screen and (max-width: 996px) {
+  .main-wrapper.blog-wrapper .container .row .col.col--8 {
+    --ifm-col-width: 100% !important;
+  }
+}
+
+/* TOC */
+.main-wrapper.blog-wrapper .container .row .col.col--2:last-child {
+  --ifm-col-width: 16%;
+}
+
+/* For large screens, make the container a bit larger than Docusaurus default */
+@media (min-width: 1650px) {
+  .container {
+    max-width: 1500px;
+  }
+}

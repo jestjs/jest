@@ -1,0 +1,16 @@
+{
+  "name": "custom-resolve",
+  "jest": {
+    "haste": {
+      "platforms": [
+        "native"
+      ],
+      "defaultPlatform": "android",
+      "hasteImplModulePath": "<rootDir>/hasteImpl.js"
+    },
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "test2mapper": "<rootDir>/test2mapper"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+// do-no-match-me.txt
+
+require('../module.txt');

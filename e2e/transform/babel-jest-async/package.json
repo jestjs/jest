@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@babel/preset-flow": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "only-file-to-transform\\.js$": "<rootDir>/transformer.js"
+    }
+  }
+}

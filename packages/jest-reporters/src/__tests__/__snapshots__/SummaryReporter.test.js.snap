@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`snapshots all have results (after update) 1`] = `
+"<bold>Snapshot Summary</intensity>
+<bold><green> › 1 snapshot written </color></intensity>from 1 test suite.
+<bold><red> › 1 snapshot failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</intensity>
+<bold><green> › 1 snapshot updated </color></intensity>from 1 test suite.
+<bold><green> › 1 snapshot file removed </color></intensity>from 1 test suite.
+<bold><green> › 1 snapshot removed </color></intensity>from 1 test suite.
+   ↳ <dim>../path/to/</intensity><bold>suite_one</intensity>
+       • unchecked snapshot 1
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Snapshots:   </intensity><bold><red>1 failed</color></intensity>, <bold><green>1 removed</color></intensity>, <bold><green>1 file removed</color></intensity>, <bold><green>1 updated</color></intensity>, <bold><green>1 written</color></intensity>, <bold><green>2 passed</color></intensity>, 2 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`snapshots all have results (no update) 1`] = `
+"<bold>Snapshot Summary</intensity>
+<bold><green> › 1 snapshot written </color></intensity>from 1 test suite.
+<bold><red> › 1 snapshot failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</intensity>
+<bold><green> › 1 snapshot updated </color></intensity>from 1 test suite.
+<bold><yellow> › 1 snapshot file obsolete </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
+<bold><yellow> › 1 snapshot obsolete </color></intensity>from 1 test suite. <dim>To remove it, run \`yarn test -u\`.</intensity>
+   ↳ <dim>../path/to/</intensity><bold>suite_one</intensity>
+       • unchecked snapshot 1
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Snapshots:   </intensity><bold><red>1 failed</color></intensity>, <bold><yellow>1 obsolete</color></intensity>, <bold><yellow>1 file obsolete</color></intensity>, <bold><green>1 updated</color></intensity>, <bold><green>1 written</color></intensity>, <bold><green>2 passed</color></intensity>, 2 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`snapshots needs update with npm test 1`] = `
+"<bold>Snapshot Summary</intensity>
+<bold><red> › 2 snapshots failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`npm test -- -u\` to update them.</intensity>
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Snapshots:   </intensity><bold><red>2 failed</color></intensity>, 2 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`snapshots needs update with yarn test 1`] = `
+"<bold>Snapshot Summary</intensity>
+<bold><red> › 2 snapshots failed</color></intensity> from 1 test suite. <dim>Inspect your code changes or run \`yarn test -u\` to update them.</intensity>
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 1 total
+<bold>Snapshots:   </intensity><bold><red>2 failed</color></intensity>, 2 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`summaryThreshold option Should not print failure messages when number of test suites is equal to the threshold 1`] = `
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`summaryThreshold option Should not print failure messages when number of test suites is under the threshold 1`] = `
+"<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;
+
+exports[`summaryThreshold option Should print failure messages when number of test suites is over the threshold 1`] = `
+"<bold>Summary of all failing tests</intensity>
+</><inverse><bold><red> FAIL </color></intensity></inverse></> <dim>../</intensity><bold>path1</intensity>
+FailureMessage1
+</><inverse><bold><red> FAIL </color></intensity></inverse></> <dim>../</intensity><bold>path2</intensity>
+FailureMessage2
+
+<bold>Test Suites: </intensity><bold><red>1 failed</color></intensity>, <bold><green>2 passed</color></intensity>, 3 total
+<bold>Tests:       </intensity><bold><red>1 failed</color></intensity>, 3 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s
+<dim>Ran all test suites</intensity><dim>.</intensity>
+"
+`;

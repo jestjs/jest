@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Runtime requireModule with no extension throws error pointing out file with extension 1`] = `
+"Cannot find module 'RegularModuleWithWrongExt' from 'root.js'
+
+However, Jest was able to find:
+	'./RegularModuleWithWrongExt.txt'
+
+You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js', 'jsx', 'ts', 'tsx', 'json', 'node'].
+
+See https://jestjs.io/docs/configuration#modulefileextensions-arraystring"
+`;

@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`prints the config object 1`] = `
+"{
+  "configs": {
+    "automock": false,
+    "cache": false,
+    "cacheDirectory": "/test_cache_dir/",
+    "clearMocks": false,
+    "collectCoverage": false,
+    "collectCoverageFrom": [
+      "src",
+      "!public"
+    ],
+    "coverageDirectory": "coverage",
+    "coveragePathIgnorePatterns": [],
+    "coverageProvider": "babel",
+    "coverageReporters": [],
+    "cwd": "/test_root_dir/",
+    "detectLeaks": false,
+    "detectOpenHandles": false,
+    "errorOnDeprecated": false,
+    "extensionsToTreatAsEsm": [],
+    "fakeTimers": {
+      "enableGlobally": false
+    },
+    "forceCoverageMatch": [],
+    "globals": {},
+    "haste": {},
+    "id": "test_name",
+    "injectGlobals": true,
+    "moduleDirectories": [],
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "moduleNameMapper": [],
+    "modulePathIgnorePatterns": [],
+    "modulePaths": [],
+    "openHandlesTimeout": 1000,
+    "prettierPath": "prettier",
+    "reporters": [
+      "default",
+      "custom-reporter-1",
+      [
+        "custom-reporter-2",
+        {
+          "configValue": true
+        }
+      ]
+    ],
+    "resetMocks": false,
+    "resetModules": false,
+    "restoreMocks": false,
+    "rootDir": "/path/to/dir",
+    "roots": [
+      "path/to/dir/test"
+    ],
+    "runner": "jest-runner",
+    "runnerOptions": {},
+    "runtime": "/test_module_loader_path",
+    "sandboxInjectedGlobals": [],
+    "setupFiles": [],
+    "setupFilesAfterEnv": [],
+    "skipFilter": false,
+    "skipNodeResolution": false,
+    "slowTestThreshold": 5,
+    "snapshotFormat": {},
+    "snapshotSerializers": [],
+    "testEnvironment": "node",
+    "testEnvironmentOptions": {},
+    "testLocationInResults": false,
+    "testMatch": [],
+    "testPathIgnorePatterns": [],
+    "testRegex": [
+      "\\\\.test\\\\.js$"
+    ],
+    "testRunner": "myRunner",
+    "testTimeout": 5000,
+    "transform": [],
+    "transformIgnorePatterns": [],
+    "waitForUnhandledRejections": false,
+    "watchPathIgnorePatterns": []
+  },
+  "globalConfig": {
+    "bail": 0,
+    "changedFilesWithAncestor": false,
+    "changedSince": "",
+    "ci": false,
+    "collectCoverage": false,
+    "collectCoverageFrom": [],
+    "collectTests": false,
+    "coverageDirectory": "coverage",
+    "coverageProvider": "babel",
+    "coverageReporters": [],
+    "coverageThreshold": {
+      "global": {}
+    },
+    "detectLeaks": false,
+    "detectOpenHandles": false,
+    "errorOnDeprecated": false,
+    "expand": false,
+    "findRelatedTests": false,
+    "forceExit": false,
+    "json": false,
+    "lastCommit": false,
+    "listTests": false,
+    "logHeapUsage": false,
+    "maxConcurrency": 5,
+    "maxWorkers": 2,
+    "noStackTrace": false,
+    "nonFlagArgs": [],
+    "notify": false,
+    "notifyMode": "failure-change",
+    "onlyChanged": false,
+    "onlyFailures": false,
+    "openHandlesTimeout": 1000,
+    "passWithNoTests": false,
+    "projects": [],
+    "reporters": [],
+    "rootDir": "/test_root_dir/",
+    "runInBand": false,
+    "runTestsByPath": false,
+    "seed": 1234,
+    "silent": false,
+    "skipFilter": false,
+    "snapshotFormat": {},
+    "testFailureExitCode": 1,
+    "testNamePattern": "",
+    "testPathPatterns": [],
+    "testSequencer": "@jest/test-sequencer",
+    "testTimeout": 5000,
+    "updateSnapshot": "none",
+    "useStderr": false,
+    "verbose": false,
+    "waitForUnhandledRejections": false,
+    "watch": true,
+    "watchAll": false,
+    "watchPlugins": [],
+    "watchman": false
+  },
+  "version": 123
+}
+"
+`;

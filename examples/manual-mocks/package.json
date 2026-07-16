@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-manual-mocks",
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "lodash": "^4.17.19"
+  }
+}

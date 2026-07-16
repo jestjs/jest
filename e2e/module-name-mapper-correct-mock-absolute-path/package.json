@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "moduleNameMapper": {
+      "^/(.*)$": "<rootDir>/src/$1"
+    }
+  }
+}

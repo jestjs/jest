@@ -1,0 +1,63 @@
+{
+  "name": "jest-snapshot",
+  "version": "30.4.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-snapshot"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/generator": "^7.27.5",
+    "@babel/plugin-syntax-jsx": "^7.27.1",
+    "@babel/plugin-syntax-typescript": "^7.27.1",
+    "@babel/types": "^7.27.3",
+    "@jest/expect-utils": "workspace:*",
+    "@jest/get-type": "workspace:*",
+    "@jest/snapshot-utils": "workspace:*",
+    "@jest/transform": "workspace:*",
+    "@jest/types": "workspace:*",
+    "babel-preset-current-node-syntax": "^1.2.0",
+    "chalk": "^4.1.2",
+    "expect": "workspace:*",
+    "graceful-fs": "^4.2.11",
+    "jest-diff": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-util": "workspace:*",
+    "pretty-format": "workspace:*",
+    "semver": "^7.7.2",
+    "synckit": "^0.11.8"
+  },
+  "devDependencies": {
+    "@babel/preset-flow": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
+    "@jest/test-utils": "workspace:*",
+    "@types/babel__core": "^7.20.5",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/prettier-v2": "npm:@types/prettier@^2.1.5",
+    "@types/semver": "^7.7.0",
+    "ansi-regex": "^5.0.1",
+    "ansi-styles": "^5.2.0",
+    "prettier": "^3.0.3",
+    "prettier-v2": "npm:prettier@^2.1.5"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

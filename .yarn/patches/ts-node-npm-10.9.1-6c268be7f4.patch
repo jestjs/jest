@@ -1,0 +1,15 @@
+diff --git a/dist/ts-compiler-types.d.ts b/dist/ts-compiler-types.d.ts
+index 99cd4c62381bcbaacfaa3545f412ca36f5ed82f5..9afe05903b58bf0aad41d2f35f6434a20707e228 100644
+--- a/dist/ts-compiler-types.d.ts
++++ b/dist/ts-compiler-types.d.ts
+@@ -52,9 +52,7 @@ export declare namespace TSCommon {
+     type FileReference = _ts.FileReference;
+     type SourceFile = _ts.SourceFile;
+     type ModuleKindEnum = typeof _ts.ModuleKind & {
+-        Node16: typeof _ts.ModuleKind extends {
+-            Node16: any;
+-        } ? typeof _ts.ModuleKind['Node16'] : 100;
++        Node16: 100;
+     };
+     namespace ModuleKind {
+         type CommonJS = _ts.ModuleKind.CommonJS;

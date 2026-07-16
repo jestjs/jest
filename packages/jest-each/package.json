@@ -1,0 +1,42 @@
+{
+  "name": "jest-each",
+  "version": "30.4.1",
+  "description": "Parameterised tests for Jest",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-each"
+  },
+  "keywords": [
+    "jest",
+    "parameterised",
+    "test",
+    "each"
+  ],
+  "author": "Matt Phillips (mattphillips)",
+  "license": "MIT",
+  "dependencies": {
+    "@jest/get-type": "workspace:*",
+    "@jest/types": "workspace:*",
+    "chalk": "^4.1.2",
+    "jest-util": "workspace:*",
+    "pretty-format": "workspace:*"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

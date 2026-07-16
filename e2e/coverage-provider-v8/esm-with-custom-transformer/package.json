@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/*.ts"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "transform": {
+      "\\.ts$": "<rootDir>/typescriptPreprocessor.js"
+    }
+  }
+}

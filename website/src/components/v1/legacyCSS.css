@@ -1,0 +1,282 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/* Main Container */
+.mainContainerV1 {
+  flex: 1 1 0%;
+  max-width: 100%;
+  padding: 40px 0;
+}
+
+.mainContainerV1 .wrapperV1 {
+  text-align: left;
+}
+/* End of Main Container */
+
+/* Utils */
+.wrapperV1 {
+  margin: 0px auto;
+  max-width: 1100px;
+  padding: 0 20px;
+}
+@media only screen and (min-width: 1500px) {
+  .wrapperV1 {
+    max-width: 1400px;
+  }
+}
+
+.wrapperV1 blockquote > p:first-child {
+  padding-top: 0;
+}
+
+.center {
+  display: block;
+  text-align: center;
+}
+/* End of Utils */
+
+/* GridBlock */
+.gridBlockV1 {
+  padding: 0;
+}
+
+.gridBlockV1 > * {
+  box-sizing: border-box;
+}
+
+.gridBlockV1 .twoByGridBlock img,
+.gridBlockV1 .threeByGridBlock img,
+.gridBlockV1 .fourByGridBlock img {
+  max-width: 100%;
+}
+
+.gridBlockV1 .gridClear {
+  clear: both;
+}
+
+@media only screen and (max-width: 735px) {
+  .gridBlockV1 .fourByGridBlock {
+    flex: 1 0 26%;
+  }
+}
+
+@media only screen and (min-width: 736px) {
+  .gridBlockV1 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .gridBlockV1 > * {
+    margin: 0 12px;
+  }
+
+  .gridBlockV1 > *:first-child {
+    margin-left: 0;
+  }
+
+  .gridBlockV1 > *:last-child {
+    margin-right: 0;
+  }
+
+  .gridBlockV1 .twoByGridBlock {
+    flex: 1 0 40%;
+  }
+
+  .gridBlockV1 .threeByGridBlock {
+    flex: 1 0 26%;
+  }
+
+  .gridBlockV1 .fourByGridBlock {
+    flex: 1 0 20%;
+  }
+
+  h2 + .gridBlockV1 {
+    padding-top: 20px;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .gridBlockV1 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.imageAlignSide {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.blockImage {
+  max-width: 730px;
+}
+
+.imageAlignSide .blockImage {
+  flex: 0 1 500px;
+  max-width: 500px;
+}
+
+@media only screen and (max-width: 735px) {
+  .imageAlignSide .blockImage {
+    display: none;
+  }
+}
+
+.imageAlignSide .blockContent {
+  flex: 1 1;
+}
+
+.imageAlignBottom .blockImage {
+  margin: 0 auto 20px;
+  max-width: 730px;
+}
+
+.imageAlignBottom.alignCenter .blockImage {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.imageAlignTop .blockImage {
+  margin-bottom: 20px;
+  max-width: 80px;
+}
+
+.imageAlignTop.alignCenter .blockImage {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.imageAlignRight .blockImage {
+  margin-left: 40px;
+}
+
+.imageAlignLeft .blockImage {
+  margin-right: 40px;
+}
+/* End of GridBlock */
+
+/* Start of Container */
+.containerV1 .gridBlockV1 .blockContent p {
+  padding: 0;
+}
+
+.containerV1 .wrapperV1 .alignCenter h2 {
+  text-align: center;
+}
+
+.containerV1 .wrapperV1 .imageAlignSide h2 {
+  text-align: left;
+}
+
+.containerV1 .wrapperV1 .imageAlignSide p {
+  margin: 0;
+  margin-bottom: 40px;
+  max-width: 560px;
+}
+
+.highlightBackground {
+  background: rgba(153, 66, 79, 0.7);
+  color: #fff;
+}
+
+.highlightBackground a {
+  border-color: white;
+  color: #fff;
+  font-weight: 800;
+}
+
+.containerV1.highlightBackground .wrapperV1 h1,
+.containerV1.highlightBackground .wrapperV1 h2,
+.containerV1.highlightBackground .wrapperV1 h3,
+.containerV1.highlightBackground .wrapperV1 h4,
+.containerV1.highlightBackground .wrapperV1 h5 {
+  border-color: white;
+  color: white;
+}
+
+.lightBackground {
+  /* background: #f7f7f7; */
+  background: var(--ifm-menu-color-background-active);
+}
+
+.darkBackground {
+  background: #808080;
+  color: #fff;
+}
+
+.darkBackground a {
+  color: #d6b3b8;
+}
+
+.darkBackground code {
+  color: #d6b3b8;
+}
+
+.containerV1.darkBackground .wrapperV1 h1,
+.containerV1.darkBackground .wrapperV1 h2,
+.containerV1.darkBackground .wrapperV1 h3,
+.containerV1.darkBackground .wrapperV1 h4,
+.containerV1.darkBackground .wrapperV1 h5 {
+  border-color: #fff;
+  color: #fff;
+}
+
+.containerV1.paddingAll {
+  padding: 40px;
+}
+
+.containerV1.paddingBottom {
+  padding-bottom: 80px;
+}
+
+.containerV1.paddingLeft {
+  padding-left: 40px;
+}
+
+.containerV1.paddingRight {
+  padding-right: 40px;
+}
+
+.containerV1.paddingTop {
+  padding-top: 80px;
+}
+
+@media only screen and (max-width: 735px) {
+  .containerV1.paddingBottom {
+    padding-bottom: 40px;
+  }
+
+  .containerV1.paddingTop {
+    padding-top: 20px;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  .responsiveList .blockContent {
+    position: relative;
+  }
+
+  .responsiveList .blockContent > div {
+    padding-left: 20px;
+  }
+
+  .responsiveList .blockContent:before {
+    content: '\2022';
+    position: absolute;
+  }
+}
+/* End of Container */

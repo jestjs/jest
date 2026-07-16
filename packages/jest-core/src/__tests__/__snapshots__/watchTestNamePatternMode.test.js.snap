@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › c
+<saveCursorPosition>
+<moveCursorToRow6Column13>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › co
+<saveCursorPosition>
+<moveCursorToRow6Column14>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con
+<saveCursorPosition>
+<moveCursorToRow6Column15>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con 
+<saveCursorPosition>
+<moveCursorToRow6Column16>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con 1
+<saveCursorPosition>
+<moveCursorToRow6Column17>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con 12
+<saveCursorPosition>
+<moveCursorToRow6Column18>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con 1
+<saveCursorPosition>
+<moveCursorToRow6Column17>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con 
+<saveCursorPosition>
+<moveCursorToRow6Column16>
+<restoreCursorPosition>
+"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › con *
+<saveCursorPosition>
+<moveCursorToRow6Column17>
+<restoreCursorPosition>
+"
+`;

@@ -1,0 +1,1078 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`not throwing Error objects 1`] = `
+"FAIL __tests__/throwNumber.test.js
+  ● Test suite failed to run
+
+    Expected an Error, but "1" was thrown"
+`;
+
+exports[`not throwing Error objects 2`] = `
+"FAIL __tests__/throwString.test.js
+  ● Test suite failed to run
+
+    banana"
+`;
+
+exports[`not throwing Error objects 3`] = `
+"FAIL __tests__/throwObject.test.js
+  ● Test suite failed to run
+
+    thrown: Object {}"
+`;
+
+exports[`not throwing Error objects 4`] = `
+"FAIL __tests__/assertionCount.test.js
+  .assertions()
+    ✕ throws
+    ✕ throws on redeclare of assertion count
+    ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
+
+  ● .assertions() › throws
+
+    expect(received).toBeTruthy()
+
+    Received: false
+
+      10 | const throws = () => {
+      11 |   expect.assertions(2);
+    > 12 |   expect(false).toBeTruthy();
+         |                 ^
+      13 | };
+      14 | const redeclare = () => {
+      15 |   expect.assertions(1);
+
+      at Object.toBeTruthy (__tests__/assertionCount.test.js:12:17)
+
+  ● .assertions() › throws
+
+    expect.assertions(2)
+
+    Expected two assertions to be called but received one assertion call.
+
+       9 |
+      10 | const throws = () => {
+    > 11 |   expect.assertions(2);
+         |          ^
+      12 |   expect(false).toBeTruthy();
+      13 | };
+      14 | const redeclare = () => {
+
+      at Object.assertions (__tests__/assertionCount.test.js:11:10)
+
+  ● .assertions() › throws on redeclare of assertion count
+
+    expect(received).toBeTruthy()
+
+    Received: false
+
+      14 | const redeclare = () => {
+      15 |   expect.assertions(1);
+    > 16 |   expect(false).toBeTruthy();
+         |                 ^
+      17 |   expect.assertions(2);
+      18 | };
+      19 |
+
+      at Object.toBeTruthy (__tests__/assertionCount.test.js:16:17)
+
+  ● .assertions() › throws on assertion
+
+    expect.assertions(0)
+
+    Expected zero assertions to be called but received one assertion call.
+
+      19 |
+      20 | const noAssertions = () => {
+    > 21 |   expect.assertions(0);
+         |          ^
+      22 |   expect(true).toBeTruthy();
+      23 | };
+      24 |
+
+      at Object.assertions (__tests__/assertionCount.test.js:21:10)
+
+  ● .hasAssertions() › throws when there are not assertions
+
+    expect.hasAssertions()
+
+    Expected at least one assertion to be called but received none.
+
+      24 |
+      25 | const hasNoAssertions = () => {
+    > 26 |   expect.hasAssertions();
+         |          ^
+      27 | };
+      28 |
+      29 | describe('.assertions()', () => {
+
+      at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)"
+`;
+
+exports[`not throwing Error objects 5`] = `
+"FAIL __tests__/duringTests.test.js
+  ✕ Promise thrown during test
+  ✕ Boolean thrown during test
+  ✕ undefined thrown during test
+  ✕ Object thrown during test
+  ✕ Object with stack prop thrown during test
+  ✕ Error during test
+  ✕ done(Error)
+  ✕ done(non-error)
+  ✕ returned promise rejection
+
+  ● Promise thrown during test
+
+    thrown: Promise {}
+
+      12 | };
+      13 |
+    > 14 | test('Promise thrown during test', () => {
+         | ^
+      15 |   throw Promise.resolve(5);
+      16 | });
+      17 |
+
+      at Object.test (__tests__/duringTests.test.js:14:1)
+
+  ● Boolean thrown during test
+
+    thrown: false
+
+      16 | });
+      17 |
+    > 18 | test('Boolean thrown during test', () => {
+         | ^
+      19 |   // eslint-disable-next-line no-throw-literal
+      20 |   throw false;
+      21 | });
+
+      at Object.test (__tests__/duringTests.test.js:18:1)
+
+  ● undefined thrown during test
+
+    thrown: undefined
+
+      21 | });
+      22 |
+    > 23 | test('undefined thrown during test', () => {
+         | ^
+      24 |   // eslint-disable-next-line no-throw-literal
+      25 |   throw undefined;
+      26 | });
+
+      at Object.test (__tests__/duringTests.test.js:23:1)
+
+  ● Object thrown during test
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      26 | });
+      27 |
+    > 28 | test('Object thrown during test', () => {
+         | ^
+      29 |   throw deepObject;
+      30 | });
+      31 |
+
+      at Object.test (__tests__/duringTests.test.js:28:1)
+
+  ● Object with stack prop thrown during test
+
+    thrown: Object {
+      "stack": 42,
+    }
+
+      30 | });
+      31 |
+    > 32 | test('Object with stack prop thrown during test', () => {
+         | ^
+      33 |   // eslint-disable-next-line no-throw-literal
+      34 |   throw {stack: 42};
+      35 | });
+
+      at Object.test (__tests__/duringTests.test.js:32:1)
+
+  ● Error during test
+
+    ReferenceError: doesNotExist is not defined
+
+      37 | test('Error during test', () => {
+      38 |   // eslint-disable-next-line no-undef
+    > 39 |   doesNotExist.alsoThisNot;
+         |   ^
+      40 | });
+      41 |
+      42 | test('done(Error)', done => {
+
+      at Object.doesNotExist (__tests__/duringTests.test.js:39:3)
+
+  ● done(Error)
+
+    this is an error
+
+      41 |
+      42 | test('done(Error)', done => {
+    > 43 |   done(new Error('this is an error'));
+         |        ^
+      44 | });
+      45 |
+      46 | test('done(non-error)', done => {
+
+      at Object.<anonymous> (__tests__/duringTests.test.js:43:8)
+
+  ● done(non-error)
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      45 |
+      46 | test('done(non-error)', done => {
+    > 47 |   done(deepObject);
+         |   ^
+      48 | });
+      49 |
+      50 | test('returned promise rejection', () => Promise.reject(deepObject));
+
+      at Object.done (__tests__/duringTests.test.js:47:3)
+
+  ● returned promise rejection
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      48 | });
+      49 |
+    > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
+         | ^
+      51 |
+
+      at Object.test (__tests__/duringTests.test.js:50:1)"
+`;
+
+exports[`not throwing Error objects 6`] = `
+"FAIL __tests__/throwObjectWithStackProp.test.js
+  ● Test suite failed to run
+
+    thrown: Object {
+
+        "stack": 42,
+      }"
+`;
+
+exports[`works with assertions in separate files 1`] = `
+"FAIL __tests__/testMacro.test.js
+  ✕ use some imported macro to make assertion
+
+  ● use some imported macro to make assertion
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: 2
+    Received: 1
+
+       8 |
+       9 | module.exports = (one: any, two: any) => {
+    > 10 |   expect(one).toEqual(two);
+         |               ^
+      11 | };
+      12 |
+
+      at toEqual (macros.js:10:15)
+      at Object.shouldEqual (__tests__/testMacro.test.js:13:3)"
+`;
+
+exports[`works with async failures 1`] = `
+"FAIL __tests__/asyncFailures.test.js
+  ✕ resolve, but fail
+  ✕ reject, but fail
+  ✕ expect reject
+  ✕ expect resolve
+  ✕ timeout
+
+  ● resolve, but fail
+
+    expect(received).resolves.toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "baz": "bar",
+    +   "foo": "bar",
+      }
+
+       9 |
+      10 | test('resolve, but fail', () =>
+    > 11 |   expect(Promise.resolve({foo: 'bar'})).resolves.toEqual({baz: 'bar'}));
+         |                                                  ^
+      12 |
+      13 | test('reject, but fail', () =>
+      14 |   expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'}));
+
+      at Object.toEqual (__tests__/asyncFailures.test.js:11:50)
+
+  ● reject, but fail
+
+    expect(received).rejects.toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "baz": "bar",
+    +   "foo": "bar",
+      }
+
+      12 |
+      13 | test('reject, but fail', () =>
+    > 14 |   expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'}));
+         |                                                ^
+      15 |
+      16 | test('expect reject', () =>
+      17 |   expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'}));
+
+      at Object.toEqual (__tests__/asyncFailures.test.js:14:48)
+
+  ● expect reject
+
+    expect(received).rejects.toEqual()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"foo": "bar"}
+
+      15 |
+      16 | test('expect reject', () =>
+    > 17 |   expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'}));
+         |   ^
+      18 |
+      19 | test('expect resolve', () =>
+      20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
+
+      at Object.expect (__tests__/asyncFailures.test.js:17:3)
+
+  ● expect resolve
+
+    expect(received).resolves.toEqual()
+
+    Received promise rejected instead of resolved
+    Rejected to value: {"foo": "bar"}
+
+      18 |
+      19 | test('expect resolve', () =>
+    > 20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
+         |   ^
+      21 |
+      22 | test('timeout', done => {
+      23 |   setTimeout(done, 50);
+
+      at Object.expect (__tests__/asyncFailures.test.js:20:3)
+
+  ● timeout
+
+<REPLACED>
+
+      20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
+      21 |
+    > 22 | test('timeout', done => {
+         | ^
+      23 |   setTimeout(done, 50);
+      24 | }, 5);
+      25 |
+
+      at Object.test (__tests__/asyncFailures.test.js:22:1)"
+`;
+
+exports[`works with error with cause 1`] = `
+"FAIL __tests__/errorWithCause.test.js
+  ✕ error with cause in test
+  describe block
+    ✕ error with cause in describe/it
+    ✕ error with string cause in describe/it
+
+  ● error with cause in test
+
+    error during f
+
+      10 |
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
+         |                 ^
+      13 |   if (opts.cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, opts);
+
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
+      at Object.f (__tests__/errorWithCause.test.js:32:3)
+
+    Cause:
+    error during g
+
+      19 |
+      20 | function g() {
+    > 21 |   throw new Error('error during g');
+         |         ^
+      22 | }
+      23 | function f() {
+      24 |   try {
+
+      at g (__tests__/errorWithCause.test.js:21:9)
+      at g (__tests__/errorWithCause.test.js:25:5)
+      at Object.f (__tests__/errorWithCause.test.js:32:3)
+
+  ● describe block › error with cause in describe/it
+
+    error during f
+
+      10 |
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
+         |                 ^
+      13 |   if (opts.cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, opts);
+
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
+      at Object.f (__tests__/errorWithCause.test.js:37:5)
+
+    Cause:
+    error during g
+
+      19 |
+      20 | function g() {
+    > 21 |   throw new Error('error during g');
+         |         ^
+      22 | }
+      23 | function f() {
+      24 |   try {
+
+      at g (__tests__/errorWithCause.test.js:21:9)
+      at g (__tests__/errorWithCause.test.js:25:5)
+      at Object.f (__tests__/errorWithCause.test.js:37:5)
+
+  ● describe block › error with string cause in describe/it
+
+    with string cause
+
+      10 |
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
+         |                 ^
+      13 |   if (opts.cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, opts);
+
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at Object.buildErrorWithCause (__tests__/errorWithCause.test.js:41:11)
+
+    Cause:
+    here is the cause"
+`;
+
+exports[`works with error with cause thrown outside tests 1`] = `
+"error during f
+
+10 |
+11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+> 12 |   const error = new Error(message, opts);
+|                 ^
+13 |   if (opts.cause !== error.cause) {
+14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+15 |     Object.assign(error, opts);
+
+at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:12:17)
+at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:27:11)
+at f (__tests__/errorWithCauseInDescribe.test.js:32:3)
+at Object.describe (__tests__/errorWithCauseInDescribe.test.js:31:1)
+
+Cause:
+error during g
+
+19 |
+20 | function g() {
+> 21 |   throw new Error('error during g');
+|         ^
+22 | }
+23 | function f() {
+24 |   try {
+
+at g (__tests__/errorWithCauseInDescribe.test.js:21:9)
+at g (__tests__/errorWithCauseInDescribe.test.js:25:5)
+at f (__tests__/errorWithCauseInDescribe.test.js:32:3)
+at Object.describe (__tests__/errorWithCauseInDescribe.test.js:31:1)"
+`;
+
+exports[`works with node assert 1`] = `
+"FAIL __tests__/assertionError.test.js
+  ✕ assert
+  ✕ assert with a message
+  ✕ assert.ok
+  ✕ assert.ok with a message
+  ✕ assert.equal
+  ✕ assert.notEqual
+  ✕ assert.deepEqual
+  ✕ assert.deepEqual with a message
+  ✕ assert.notDeepEqual
+  ✕ assert.strictEqual
+  ✕ assert.notStrictEqual
+  ✕ assert.deepStrictEqual
+  ✕ assert.notDeepStrictEqual
+  ✕ assert.ifError
+  ✕ assert.doesNotThrow
+  ✕ assert.throws
+  ✕ assert.throws with different error messages
+  ✕ assert.throws with different error types
+  ✕ async
+  ✕ assert.fail
+  ✕ assert.fail with a message
+
+  ● assert
+
+    assert(received)
+
+    Expected value to be equal to:
+      true
+    Received:
+      false
+
+      12 |
+      13 | test('assert', () => {
+    > 14 |   assert(false);
+         |   ^
+      15 | });
+      16 |
+      17 | test('assert with a message', () => {
+
+      at Object.assert (__tests__/assertionError.test.js:14:3)
+
+  ● assert with a message
+
+    assert(received)
+
+    Expected value to be equal to:
+      true
+    Received:
+      false
+
+    Message:
+      this is a message
+
+      16 |
+      17 | test('assert with a message', () => {
+    > 18 |   assert(false, 'this is a message');
+         |   ^
+      19 | });
+      20 |
+      21 | test('assert.ok', () => {
+
+      at Object.assert (__tests__/assertionError.test.js:18:3)
+
+  ● assert.ok
+
+    assert(received)
+
+    Expected value to be equal to:
+      true
+    Received:
+      false
+
+      20 |
+      21 | test('assert.ok', () => {
+    > 22 |   assert.ok(false);
+         |          ^
+      23 | });
+      24 |
+      25 | test('assert.ok with a message', () => {
+
+      at Object.ok (__tests__/assertionError.test.js:22:10)
+
+  ● assert.ok with a message
+
+    assert(received)
+
+    Expected value to be equal to:
+      true
+    Received:
+      false
+
+    Message:
+      this is a message
+
+      24 |
+      25 | test('assert.ok with a message', () => {
+    > 26 |   assert.ok(false, 'this is a message');
+         |          ^
+      27 | });
+      28 |
+      29 | test('assert.equal', () => {
+
+      at Object.ok (__tests__/assertionError.test.js:26:10)
+
+  ● assert.equal
+
+    assert.equal(received, expected)
+
+    Expected value to be equal to:
+      2
+    Received:
+      1
+
+      28 |
+      29 | test('assert.equal', () => {
+    > 30 |   assert.equal(1, 2);
+         |          ^
+      31 | });
+      32 |
+      33 | test('assert.notEqual', () => {
+
+      at Object.equal (__tests__/assertionError.test.js:30:10)
+
+  ● assert.notEqual
+
+    assert.notEqual(received, expected)
+
+    Expected value to not be equal to:
+      1
+    Received:
+      1
+
+      32 |
+      33 | test('assert.notEqual', () => {
+    > 34 |   assert.notEqual(1, 1);
+         |          ^
+      35 | });
+      36 |
+      37 | test('assert.deepEqual', () => {
+
+      at Object.notEqual (__tests__/assertionError.test.js:34:10)
+
+  ● assert.deepEqual
+
+    assert.deepEqual(received, expected)
+
+    Expected value to deeply equal to:
+      {"a": {"b": {"c": 6}}}
+    Received:
+      {"a": {"b": {"c": 5}}}
+
+    Difference:
+
+    - Expected
+    + Received
+
+      Object {
+        "a": Object {
+          "b": Object {
+    -       "c": 6,
+    +       "c": 5,
+          },
+        },
+      }
+
+      36 |
+      37 | test('assert.deepEqual', () => {
+    > 38 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 6}}});
+         |          ^
+      39 | });
+      40 |
+      41 | test('assert.deepEqual with a message', () => {
+
+      at Object.deepEqual (__tests__/assertionError.test.js:38:10)
+
+  ● assert.deepEqual with a message
+
+    assert.deepEqual(received, expected)
+
+    Expected value to deeply equal to:
+      {"a": {"b": {"c": 7}}}
+    Received:
+      {"a": {"b": {"c": 5}}}
+
+    Message:
+      this is a message
+
+    Difference:
+
+    - Expected
+    + Received
+
+      Object {
+        "a": Object {
+          "b": Object {
+    -       "c": 7,
+    +       "c": 5,
+          },
+        },
+      }
+
+      40 |
+      41 | test('assert.deepEqual with a message', () => {
+    > 42 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 7}}}, 'this is a message');
+         |          ^
+      43 | });
+      44 |
+      45 | test('assert.notDeepEqual', () => {
+
+      at Object.deepEqual (__tests__/assertionError.test.js:42:10)
+
+  ● assert.notDeepEqual
+
+    assert.notDeepEqual(received, expected)
+
+    Expected value not to deeply equal to:
+      {"a": 1}
+    Received:
+      {"a": 1}
+
+    Difference:
+
+    Compared values have no visual difference.
+
+      44 |
+      45 | test('assert.notDeepEqual', () => {
+    > 46 |   assert.notDeepEqual({a: 1}, {a: 1});
+         |          ^
+      47 | });
+      48 |
+      49 | test('assert.strictEqual', () => {
+
+      at Object.notDeepEqual (__tests__/assertionError.test.js:46:10)
+
+  ● assert.strictEqual
+
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      NaN
+    Received:
+      1
+
+      48 |
+      49 | test('assert.strictEqual', () => {
+    > 50 |   assert.strictEqual(1, Number.NaN);
+         |          ^
+      51 | });
+      52 |
+      53 | test('assert.notStrictEqual', () => {
+
+      at Object.strictEqual (__tests__/assertionError.test.js:50:10)
+
+  ● assert.notStrictEqual
+
+    assert.notStrictEqual(received, expected)
+
+    Expected value not be strictly equal to:
+      1
+    Received:
+      1
+
+    Message:
+      My custom error message
+
+      52 |
+      53 | test('assert.notStrictEqual', () => {
+    > 54 |   assert.notStrictEqual(1, 1, 'My custom error message');
+         |          ^
+      55 | });
+      56 |
+      57 | test('assert.deepStrictEqual', () => {
+
+      at Object.notStrictEqual (__tests__/assertionError.test.js:54:10)
+
+  ● assert.deepStrictEqual
+
+    assert.deepStrictEqual(received, expected)
+
+    Expected value to deeply and strictly equal to:
+      {"a": 2}
+    Received:
+      {"a": 1}
+
+    Difference:
+
+    - Expected
+    + Received
+
+      Object {
+    -   "a": 2,
+    +   "a": 1,
+      }
+
+      56 |
+      57 | test('assert.deepStrictEqual', () => {
+    > 58 |   assert.deepStrictEqual({a: 1}, {a: 2});
+         |          ^
+      59 | });
+      60 |
+      61 | test('assert.notDeepStrictEqual', () => {
+
+      at Object.deepStrictEqual (__tests__/assertionError.test.js:58:10)
+
+  ● assert.notDeepStrictEqual
+
+    assert.notDeepStrictEqual(received, expected)
+
+    Expected value not to deeply and strictly equal to:
+      {"a": 1}
+    Received:
+      {"a": 1}
+
+    Difference:
+
+    Compared values have no visual difference.
+
+      60 |
+      61 | test('assert.notDeepStrictEqual', () => {
+    > 62 |   assert.notDeepStrictEqual({a: 1}, {a: 1});
+         |          ^
+      63 | });
+      64 |
+      65 | test('assert.ifError', () => {
+
+      at Object.notDeepStrictEqual (__tests__/assertionError.test.js:62:10)
+
+  ● assert.ifError
+
+    assert.ifError(received, expected)
+
+    Expected value ifError to:
+      null
+    Received:
+      1
+
+    Message:
+      ifError got unwanted exception: 1
+
+    Difference:
+
+      Comparing two different types of values. Expected null but received number.
+
+      64 |
+      65 | test('assert.ifError', () => {
+    > 66 |   assert.ifError(1);
+         |          ^
+      67 | });
+      68 |
+      69 | test('assert.doesNotThrow', () => {
+
+      at Object.ifError (__tests__/assertionError.test.js:66:10)
+
+  ● assert.doesNotThrow
+
+    assert.doesNotThrow(function)
+
+    Expected the function not to throw an error.
+    Instead, it threw:
+      [Error: err!]
+
+    Message:
+      Got unwanted exception.
+    Actual message: "err!"
+
+      68 |
+      69 | test('assert.doesNotThrow', () => {
+    > 70 |   assert.doesNotThrow(() => {
+         |          ^
+      71 |     throw new Error('err!');
+      72 |   });
+      73 | });
+
+      at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)
+
+  ● assert.throws
+
+    assert.throws(function)
+
+    Expected the function to throw an error.
+    But it didn't throw anything.
+
+    Message:
+      Missing expected exception.
+
+      74 |
+      75 | test('assert.throws', () => {
+    > 76 |   assert.throws(() => {});
+         |          ^
+      77 | });
+      78 |
+      79 | test('assert.throws with different error messages', () => {
+
+      at Object.throws (__tests__/assertionError.test.js:76:10)
+
+  ● assert.throws with different error messages
+
+    assert.throws(function)
+
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      Comparison {
+    +   message: 'message 1'
+    -   message: 'message 2'
+      }
+
+      78 |
+      79 | test('assert.throws with different error messages', () => {
+    > 80 |   assert.throws(
+         |          ^
+      81 |     () => {
+      82 |       throw new Error('message 1');
+      83 |     },
+
+      at Object.throws (__tests__/assertionError.test.js:80:10)
+
+  ● assert.throws with different error types
+
+    assert.throws(function)
+
+    The "TypeError" validation function is expected to return "true". Received TypeError: SyntaxError: message 1
+
+      89 |
+      90 | test('assert.throws with different error types', () => {
+    > 91 |   assert.throws(() => {
+         |          ^
+      92 |     throw new SyntaxError('message 1');
+      93 |   }, TypeError);
+      94 | });
+
+      at Object.throws (__tests__/assertionError.test.js:91:10)
+      Caught error:
+      SyntaxError: message 1
+      at Object.throws (__tests__/assertionError.test.js:91:10)
+
+  ● async
+
+    assert.equal(received, expected)
+
+    Expected value to be equal to:
+      "hello"
+    Received:
+      "hello
+    goodbye"
+
+    Message:
+      hmmm
+
+    Difference:
+
+    - Expected
+    + Received
+
+      hello
+    + goodbye
+
+       95 |
+       96 | test('async', async () => {
+    >  97 |   assert.equal('hello\\ngoodbye', 'hello', 'hmmm');
+          |          ^
+       98 | });
+       99 |
+      100 | test('assert.fail', () => {
+
+      at Object.equal (__tests__/assertionError.test.js:97:10)
+
+  ● assert.fail
+
+    assert.fail(received, expected)
+
+       99 |
+      100 | test('assert.fail', () => {
+    > 101 |   assert.fail();
+          |          ^
+      102 | });
+      103 |
+      104 | test('assert.fail with a message', () => {
+
+      at Object.fail (__tests__/assertionError.test.js:101:10)
+
+  ● assert.fail with a message
+
+    assert.fail(received, expected)
+
+    Message:
+      error!
+
+      103 |
+      104 | test('assert.fail with a message', () => {
+    > 105 |   assert.fail('error!');
+          |          ^
+      106 | });
+      107 |
+
+      at Object.fail (__tests__/assertionError.test.js:105:10)"
+`;
+
+exports[`works with snapshot failures 1`] = `
+"FAIL __tests__/snapshot.test.js
+  ✕ failing snapshot
+
+  ● failing snapshot
+
+    expect(received).toMatchSnapshot()
+
+    Snapshot name: \`failing snapshot 1\`
+
+    Snapshot: "bar"
+    Received: "foo"
+
+       9 |
+      10 | test('failing snapshot', () => {
+    > 11 |   expect('foo').toMatchSnapshot();
+         |                 ^
+      12 | });
+      13 |
+
+      at Object.toMatchSnapshot (__tests__/snapshot.test.js:11:17)
+
+ › 1 snapshot failed.
+"
+`;
+
+exports[`works with snapshot failures with hint 1`] = `
+"FAIL __tests__/snapshotWithHint.test.js
+  ✕ failing snapshot with hint
+
+  ● failing snapshot with hint
+
+    expect(received).toMatchSnapshot(hint)
+
+    Snapshot name: \`failing snapshot with hint: descriptive hint 1\`
+
+    Snapshot: "bar"
+    Received: "foo"
+
+       9 |
+      10 | test('failing snapshot with hint', () => {
+    > 11 |   expect('foo').toMatchSnapshot('descriptive hint');
+         |                 ^
+      12 | });
+      13 |
+
+      at Object.toMatchSnapshot (__tests__/snapshotWithHint.test.js:11:17)
+
+ › 1 snapshot failed.
+"
+`;

@@ -1,0 +1,7 @@
+{
+  "extends": "../../../tsconfig.typetest.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["./**/*"]
+}

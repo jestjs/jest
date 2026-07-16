@@ -1,0 +1,10 @@
+{
+  "name": "fake-dep",
+  "version": "1.0.0",
+  "exports": {
+    ".": {
+      "import": "./module.mjs",
+      "require": "./module.cjs"
+    }
+  }
+}

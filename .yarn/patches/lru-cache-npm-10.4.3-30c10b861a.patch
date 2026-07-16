@@ -1,0 +1,26 @@
+diff --git a/dist/commonjs/index.d.ts b/dist/commonjs/index.d.ts
+index f59de7602a528afde714e56dcf8c25ee496e39fb..804042b5ff381b8594307296de29d31d1b564c92 100644
+--- a/dist/commonjs/index.d.ts
++++ b/dist/commonjs/index.d.ts
+@@ -837,7 +837,7 @@ export declare namespace LRUCache {
+  *
+  * Changing any of these will alter the defaults for subsequent method calls.
+  */
+-export declare class LRUCache<K extends {}, V extends {}, FC = unknown> implements Map<K, V> {
++export declare class LRUCache<K extends {}, V extends {}, FC = unknown> {
+     #private;
+     /**
+      * {@link LRUCache.OptionsBase.ttl}
+diff --git a/dist/esm/index.d.ts b/dist/esm/index.d.ts
+index f59de7602a528afde714e56dcf8c25ee496e39fb..804042b5ff381b8594307296de29d31d1b564c92 100644
+--- a/dist/esm/index.d.ts
++++ b/dist/esm/index.d.ts
+@@ -837,7 +837,7 @@ export declare namespace LRUCache {
+  *
+  * Changing any of these will alter the defaults for subsequent method calls.
+  */
+-export declare class LRUCache<K extends {}, V extends {}, FC = unknown> implements Map<K, V> {
++export declare class LRUCache<K extends {}, V extends {}, FC = unknown> {
+     #private;
+     /**
+      * {@link LRUCache.OptionsBase.ttl}

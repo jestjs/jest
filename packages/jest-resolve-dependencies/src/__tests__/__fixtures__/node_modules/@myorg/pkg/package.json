@@ -1,0 +1,5 @@
+{
+  "name": "@myorg/pkg",
+  "private": true,
+  "main": "index.js"
+}

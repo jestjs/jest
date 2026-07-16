@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "yarn",
+  "command": {
+    "version": {
+      "syncWorkspaceLock": true
+    }
+  },
+  "version": "30.4.2"
+}

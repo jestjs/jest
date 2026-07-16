@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@babel/preset-flow": "^7.0.0"
+  }
+}

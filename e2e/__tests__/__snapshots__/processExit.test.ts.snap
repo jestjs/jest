@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`prints stack trace pointing to process.exit call 1`] = `
+"  ●  process.exit called with "1"
+
+       6 |  */
+       7 |
+    >  8 | process.exit(1);
+         |         ^
+       9 |
+      10 | test('something', () => {
+      11 |   expect(true).toBe(true);
+
+      at Object.exit (__tests__/test.js:8:9)"
+`;

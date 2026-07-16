@@ -1,0 +1,60 @@
+{
+  "name": "jest-circus",
+  "version": "30.4.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/jest-circus"
+  },
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./runner": "./build/runner.js"
+  },
+  "dependencies": {
+    "@jest/environment": "workspace:*",
+    "@jest/expect": "workspace:*",
+    "@jest/test-result": "workspace:*",
+    "@jest/types": "workspace:*",
+    "@types/node": "*",
+    "chalk": "^4.1.2",
+    "co": "^4.6.0",
+    "dedent": "^1.6.0",
+    "is-generator-fn": "^2.1.0",
+    "jest-each": "workspace:*",
+    "jest-matcher-utils": "workspace:*",
+    "jest-message-util": "workspace:*",
+    "jest-runtime": "workspace:*",
+    "jest-snapshot": "workspace:*",
+    "jest-util": "workspace:*",
+    "p-limit": "^3.1.0",
+    "pretty-format": "workspace:*",
+    "pure-rand": "^7.0.0",
+    "slash": "^3.0.0",
+    "stack-utils": "^2.0.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/register": "^7.27.1",
+    "@types/co": "^4.6.6",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/stack-utils": "^2.0.3",
+    "execa": "^5.1.1",
+    "graceful-fs": "^4.2.11",
+    "tempy": "^1.0.1"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

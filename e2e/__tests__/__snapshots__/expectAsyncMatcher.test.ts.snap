@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`shows the correct errors in stderr when failing tests 1`] = `
+"FAIL __tests__/failure.test.js
+  ✕ fail with expected non promise values
+  ✕ fail with expected non promise values and not
+  ✕ fail with expected promise values
+  ✕ fail with expected promise values and not
+
+  ● fail with expected non promise values
+
+    Expected value to have length:
+      2
+    Received:
+      1
+    received.length:
+      1
+
+      11 |
+      12 | it('fail with expected non promise values', () =>
+    > 13 |   expect([1]).toHaveLengthAsync(Promise.resolve(2)));
+         |               ^
+      14 |
+      15 | it('fail with expected non promise values and not', () =>
+      16 |   expect([1, 2]).not.toHaveLengthAsync(Promise.resolve(2)));
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:13:15)
+
+  ● fail with expected non promise values and not
+
+    Expected value to not have length:
+      2
+    Received:
+      1,2
+    received.length:
+      2
+
+      14 |
+      15 | it('fail with expected non promise values and not', () =>
+    > 16 |   expect([1, 2]).not.toHaveLengthAsync(Promise.resolve(2)));
+         |                      ^
+      17 |
+      18 | it('fail with expected promise values', () =>
+      19 |   expect(Promise.resolve([1])).resolves.toHaveLengthAsync(Promise.resolve(2)));
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:16:22)
+
+  ● fail with expected promise values
+
+    Expected value to have length:
+      2
+    Received:
+      1
+    received.length:
+      1
+
+      17 |
+      18 | it('fail with expected promise values', () =>
+    > 19 |   expect(Promise.resolve([1])).resolves.toHaveLengthAsync(Promise.resolve(2)));
+         |                                         ^
+      20 |
+      21 | it('fail with expected promise values and not', () =>
+      22 |   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:19:41)
+
+  ● fail with expected promise values and not
+
+    Expected value to not have length:
+      2
+    Received:
+      1,2
+    received.length:
+      2
+
+      20 |
+      21 | it('fail with expected promise values and not', () =>
+    > 22 |   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
+         |                                                ^
+      23 |     Promise.resolve(2),
+      24 |   ));
+      25 |
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:22:48)"
+`;

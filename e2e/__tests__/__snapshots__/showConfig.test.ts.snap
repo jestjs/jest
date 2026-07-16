@@ -1,0 +1,166 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`--showConfig outputs config info and exits 1`] = `
+"{
+  "configs": [
+    {
+      "automock": false,
+      "cache": false,
+      "cacheDirectory": "/tmp/jest",
+      "clearMocks": false,
+      "collectCoverage": false,
+      "collectCoverageFrom": [],
+      "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
+      "coveragePathIgnorePatterns": [
+        "/node_modules/"
+      ],
+      "coverageProvider": "babel",
+      "coverageReporters": [
+        "json",
+        "text",
+        "lcov",
+        "clover"
+      ],
+      "cwd": "<<REPLACED_ROOT_DIR>>",
+      "detectLeaks": false,
+      "detectOpenHandles": false,
+      "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
+      "fakeTimers": {
+        "enableGlobally": false
+      },
+      "forceCoverageMatch": [],
+      "globals": {},
+      "haste": {
+        "computeSha1": false,
+        "enableSymlinks": false,
+        "forceNodeFilesystemAPI": true,
+        "throwOnModuleCollision": false
+      },
+      "id": "[md5 hash]",
+      "injectGlobals": true,
+      "moduleDirectories": [
+        "node_modules"
+      ],
+      "moduleFileExtensions": [
+        "js",
+        "mjs",
+        "cjs",
+        "jsx",
+        "ts",
+        "mts",
+        "cts",
+        "tsx",
+        "json",
+        "node"
+      ],
+      "moduleNameMapper": [],
+      "modulePathIgnorePatterns": [],
+      "openHandlesTimeout": 1000,
+      "prettierPath": "prettier",
+      "resetMocks": false,
+      "resetModules": false,
+      "restoreMocks": false,
+      "rootDir": "<<REPLACED_ROOT_DIR>>",
+      "roots": [
+        "<<REPLACED_ROOT_DIR>>"
+      ],
+      "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
+      "runnerOptions": {},
+      "sandboxInjectedGlobals": [],
+      "setupFiles": [],
+      "setupFilesAfterEnv": [],
+      "skipFilter": false,
+      "slowTestThreshold": 5,
+      "snapshotFormat": {
+        "escapeString": false,
+        "printBasicPrototype": false
+      },
+      "snapshotSerializers": [],
+      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
+      "testEnvironmentOptions": {},
+      "testLocationInResults": false,
+      "testMatch": [
+        "**/__tests__/**/*.?([mc])[jt]s?(x)",
+        "**/?(*.)+(spec|test).?([mc])[jt]s?(x)"
+      ],
+      "testPathIgnorePatterns": [
+        "/node_modules/"
+      ],
+      "testRegex": [],
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/build/runner.js",
+      "transform": [
+        [
+          "\\\\.[jt]sx?$",
+          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
+          {}
+        ]
+      ],
+      "transformIgnorePatterns": [
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
+      ],
+      "waitForUnhandledRejections": false,
+      "watchPathIgnorePatterns": []
+    }
+  ],
+  "globalConfig": {
+    "bail": 0,
+    "changedFilesWithAncestor": false,
+    "ci": true,
+    "collectCoverage": false,
+    "collectCoverageFrom": [],
+    "collectTests": false,
+    "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
+    "coverageProvider": "babel",
+    "coverageReporters": [
+      "json",
+      "text",
+      "lcov",
+      "clover"
+    ],
+    "detectLeaks": false,
+    "detectOpenHandles": false,
+    "errorOnDeprecated": false,
+    "expand": false,
+    "findRelatedTests": false,
+    "forceExit": false,
+    "json": false,
+    "lastCommit": false,
+    "listTests": false,
+    "logHeapUsage": false,
+    "maxConcurrency": 5,
+    "maxWorkers": "[maxWorkers]",
+    "noStackTrace": false,
+    "nonFlagArgs": [],
+    "notify": false,
+    "notifyMode": "failure-change",
+    "onlyChanged": false,
+    "onlyFailures": false,
+    "openHandlesTimeout": 1000,
+    "passWithNoTests": false,
+    "projects": [],
+    "rootDir": "<<REPLACED_ROOT_DIR>>",
+    "runInBand": false,
+    "runTestsByPath": false,
+    "seed": <<RANDOM_SEED>>,
+    "skipFilter": false,
+    "snapshotFormat": {
+      "escapeString": false,
+      "printBasicPrototype": false
+    },
+    "testFailureExitCode": 1,
+    "testPathPatterns": [],
+    "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
+    "updateSnapshot": "none",
+    "useStderr": false,
+    "waitForUnhandledRejections": false,
+    "watch": false,
+    "watchAll": false,
+    "watchman": true,
+    "workerGracefulExitTimeout": 500,
+    "workerThreads": false
+  },
+  "version": "[version]"
+}"
+`;

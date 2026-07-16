@@ -1,0 +1,6 @@
+{
+  "name": "jest-resolve-test",
+  "version": "1.0.0",
+  "main": "./node.js",
+  "browser": "./browser.js"
+}

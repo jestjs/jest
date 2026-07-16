@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`chai assertion errors should display properly 1`] = `
+"FAIL __tests__/chai_assertion.js
+  ● chai.js assertion library test › expect
+
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      11 | describe('chai.js assertion library test', () => {
+      12 |   it('expect', () => {
+    > 13 |     chai.expect('hello world').to.equal('hello sunshine');
+         |                                   ^
+      14 |   });
+      15 |
+      16 |   it('should', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:13:35)
+
+  ● chai.js assertion library test › should
+
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello world"
+    Received:
+      "hello sunshine"
+
+    Message:
+      expected 'hello sunshine' to equal 'hello world'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello world
+    + hello sunshine
+
+      18 |     const expectedString = 'hello world';
+      19 |     const actualString = 'hello sunshine';
+    > 20 |     actualString.should.equal(expectedString);
+         |                         ^
+      21 |   });
+      22 |
+      23 |   it('assert', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:20:25)
+
+  ● chai.js assertion library test › assert
+
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      22 |
+      23 |   it('assert', () => {
+    > 24 |     chai.assert.strictEqual('hello world', 'hello sunshine');
+         |                 ^
+      25 |   });
+      26 | });
+      27 |
+
+      at Object.strictEqual (__tests__/chai_assertion.js:24:17)"
+`;

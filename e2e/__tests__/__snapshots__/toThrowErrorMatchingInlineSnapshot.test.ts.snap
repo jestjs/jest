@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`should support rejecting promises 1`] = `
+"test('should support rejecting promises', async () => {
+  await expect(
+    Promise.reject(new Error('octopus')),
+  ).rejects.toThrowErrorMatchingInlineSnapshot(\`"octopus"\`);
+});
+"
+`;
+
+exports[`updates existing snapshot: updated snapshot 1`] = `
+"test('updates existing snapshot', () => {
+  expect(() => {
+    throw new Error('apple');
+  }).toThrowErrorMatchingInlineSnapshot(\`"apple"\`);
+});
+"
+`;
+
+exports[`works fine when function throws error with cause: initial write with cause 1`] = `
+"test('works fine when function throws error', () => {
+  function ErrorWithCause(message, cause) {
+    const err = new Error(message, {cause});
+    if (err.cause !== cause) {
+      // cause does not exist in old versions of node
+      err.cause = cause;
+    }
+    return err;
+  }
+  expect(() => {
+    throw ErrorWithCause(
+      'apple',
+      ErrorWithCause('banana', ErrorWithCause('orange')),
+    );
+  }).toThrowErrorMatchingInlineSnapshot(\`
+    "apple
+    Cause: banana
+    Cause: orange"
+  \`);
+});
+"
+`;
+
+exports[`works fine when function throws error with string cause: initial write with cause 1`] = `
+"test('works fine when function throws error', () => {
+  function ErrorWithCause(message, cause) {
+    const err = new Error(message, {cause});
+    if (err.cause !== cause) {
+      // cause does not exist in old versions of node
+      err.cause = cause;
+    }
+    return err;
+  }
+  expect(() => {
+    throw ErrorWithCause('apple', 'here is a cause');
+  }).toThrowErrorMatchingInlineSnapshot(\`
+    "apple
+    Cause: here is a cause"
+  \`);
+});
+"
+`;
+
+exports[`works fine when function throws error: initial write 1`] = `
+"test('works fine when function throws error', () => {
+  expect(() => {
+    throw new Error('apple');
+  }).toThrowErrorMatchingInlineSnapshot(\`"apple"\`);
+});
+"
+`;

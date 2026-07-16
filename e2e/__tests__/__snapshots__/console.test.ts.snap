@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`console printing 1`] = `
+"PASS __tests__/console.test.js
+  ● Console
+
+    console.log
+      This is a log message.
+
+      at Object.log (__tests__/console.test.js:10:11)
+
+    console.info
+      This is an info message.
+
+      at Object.info (__tests__/console.test.js:12:11)
+
+    console.warn
+      This is a warning message.
+
+      12 |   console.info('This is an info message.');
+      13 |
+    > 14 |   console.warn('This is a warning message.');
+         |           ^
+      15 |
+      16 |   console.error('This is an error message.');
+      17 | });
+
+      at Object.warn (__tests__/console.test.js:14:11)
+
+    console.error
+      This is an error message.
+
+      14 |   console.warn('This is a warning message.');
+      15 |
+    > 16 |   console.error('This is an error message.');
+         |           ^
+      17 | });
+      18 |
+
+      at Object.error (__tests__/console.test.js:16:11)"
+`;
+
+exports[`console printing 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`console printing with --verbose 1`] = `
+"  console.log
+    This is a log message.
+
+      at Object.log (__tests__/console.test.js:10:11)
+
+  console.info
+    This is an info message.
+
+      at Object.info (__tests__/console.test.js:12:11)
+
+  console.warn
+    This is a warning message.
+
+      12 |   console.info('This is an info message.');
+      13 |
+    > 14 |   console.warn('This is a warning message.');
+         |           ^
+      15 |
+      16 |   console.error('This is an error message.');
+      17 | });
+
+      at Object.warn (__tests__/console.test.js:14:11)
+
+  console.error
+    This is an error message.
+
+      14 |   console.warn('This is a warning message.');
+      15 |
+    > 16 |   console.error('This is an error message.');
+         |           ^
+      17 | });
+      18 |
+
+      at Object.error (__tests__/console.test.js:16:11)
+"
+`;
+
+exports[`console printing with --verbose 2`] = `
+"PASS __tests__/console.test.js
+  ✓ works just fine"
+`;
+
+exports[`console printing with --verbose 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`does not error out when using winston 1`] = `""`;
+
+exports[`does not error out when using winston 2`] = `
+"PASS __tests__/console.test.js
+  ● Console
+
+    console.log
+      {"level":"info","message":"Log message from winston"}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      {"level":"info","message":"Info message from winston"}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      {"level":"warn","message":"Warn message from winston"}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)
+
+    console.log
+      {"level":"error","message":"Error message from winston"}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:87:23)"
+`;
+
+exports[`does not error out when using winston 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`does not print to console with --silent 1`] = `""`;
+
+exports[`does not print to console with --silent 2`] = `"PASS __tests__/console.test.js"`;
+
+exports[`does not print to console with --silent 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>"
+`;
+
+exports[`respects --noStackTrace 1`] = `
+"  console.log
+    This is a log message.
+
+      at Object.log (__tests__/console.test.js:10:11)
+
+  console.info
+    This is an info message.
+
+      at Object.info (__tests__/console.test.js:12:11)
+
+  console.warn
+    This is a warning message.
+
+      at Object.warn (__tests__/console.test.js:14:11)
+
+  console.error
+    This is an error message.
+
+      at Object.error (__tests__/console.test.js:16:11)
+"
+`;
+
+exports[`respects --noStackTrace 2`] = `
+"PASS __tests__/console.test.js
+  ✓ works just fine"
+`;
+
+exports[`respects --noStackTrace 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`respects noStackTrace in config 1`] = `
+"  console.log
+    This is a log message.
+
+      at Object.log (__tests__/console.test.js:10:11)
+
+  console.info
+    This is an info message.
+
+      at Object.info (__tests__/console.test.js:12:11)
+
+  console.warn
+    This is a warning message.
+
+      at Object.warn (__tests__/console.test.js:14:11)
+
+  console.error
+    This is an error message.
+
+      at Object.error (__tests__/console.test.js:16:11)
+"
+`;
+
+exports[`respects noStackTrace in config 2`] = `
+"PASS __tests__/console.test.js
+  ✓ works just fine"
+`;
+
+exports[`respects noStackTrace in config 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`the jsdom console is the same as the test console 1`] = `""`;
+
+exports[`the jsdom console is the same as the test console 2`] = `
+"PASS __tests__/console.test.js
+  ✓ can mock console.error calls from jsdom"
+`;
+
+exports[`the jsdom console is the same as the test console 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;

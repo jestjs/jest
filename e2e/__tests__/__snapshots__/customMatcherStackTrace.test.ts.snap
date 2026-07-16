@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`custom async matchers 1`] = `
+"FAIL __tests__/asynchronous.test.js
+  ✕ showing the stack trace for an async matcher
+
+  ● showing the stack trace for an async matcher
+
+    We expect the stack trace and code fence for this matcher to be shown in the console.
+
+       9 |
+      10 | test('showing the stack trace for an async matcher', () =>
+    > 11 |   expect(true).toThrowCustomAsyncMatcherError());
+         |                ^
+      12 |
+      13 | function toThrowCustomAsyncMatcherError() {
+      14 |   const message = () =>
+
+      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:16)"
+`;
+
+exports[`works with custom matchers 1`] = `
+"FAIL __tests__/sync.test.js
+  Custom matcher
+    ✓ passes
+    ✓ fails
+    ✕ preserves error stack
+
+  ● Custom matcher › preserves error stack
+
+    qux
+
+      44 |     const baz = () => {
+      45 |       // eslint-disable-next-line unicorn/throw-new-error,unicorn/new-for-builtins
+    > 46 |       throw Error('qux');
+         |             ^
+      47 |     };
+      48 |
+      49 |     // This expectation fails due to an error we throw (intentionally)
+
+      at Error (__tests__/sync.test.js:46:13)
+      at baz (__tests__/sync.test.js:43:23)
+      at bar (__tests__/sync.test.js:42:23)
+      at foo (__tests__/sync.test.js:53:7)
+      at Object.callback (__tests__/sync.test.js:11:18)
+      at Object.toCustomMatch (__tests__/sync.test.js:54:8)"
+`;
