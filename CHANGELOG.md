@@ -20,6 +20,7 @@
 
 ### Chore & Maintenance
 
+- `[*]` Upgrade `tstyche` to `7.2.1` and configuration to `tstyche.json` to prevent crashes when testing against TypeScript 7.0+ targets; remove deprecated `esModuleInterop: false` from typetest TSConfig
 - `[babel-jest, @jest/transform, website]` Upgrade `babel-plugin-istanbul` and `@crowdin/cli` to resolve deprecated `inflight` dependency ([#16228](https://github.com/jestjs/jest/pull/16228))
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
