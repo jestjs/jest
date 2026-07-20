@@ -28,7 +28,7 @@
     "@babel-8/core": "npm:@babel/core@^8.0.0",
     "@babel-8/preset-react": "npm:@babel/preset-react@8.0.0-rc.5",
     "@babel-8/preset-typescript": "npm:@babel/preset-typescript@8.0.0-rc.5",
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^8.0.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@babel/types": "^7.27.3",
