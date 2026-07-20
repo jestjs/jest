@@ -22,7 +22,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/code-frame": "^7.27.1",
+    "@babel/code-frame": "^8.0.0",
     "@jest/types": "workspace:*",
     "@types/stack-utils": "^2.0.3",
     "chalk": "^4.1.2",

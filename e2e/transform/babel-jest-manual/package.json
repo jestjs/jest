@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@babel/preset-flow": "^7.0.0"
+    "@babel/preset-flow": "^8.0.0"
   },
   "jest": {
     "testEnvironment": "node",
