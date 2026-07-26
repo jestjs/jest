@@ -202,10 +202,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^8.0.0":
-  version: 8.0.2
-  resolution: "@babel/helper-validator-identifier@npm:8.0.2"
-  checksum: 10/175f09f4c370668d163123ad154a753df0642a9d6dff799af637bf882c788cfacfbd0b1656ff8f81bd99ad1028e6c1516c5aa5a810c28f41fe28d9c90f57dba4
+"@babel/helper-validator-identifier@npm:^8.0.0, @babel/helper-validator-identifier@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "@babel/helper-validator-identifier@npm:8.0.4"
+  checksum: 10/4b9d741e990a62d49d138e0b7205cd8d1bf9df87afdc20243a2053f411ae22cf327b00a06c4a1119a2d839c148f809500c04036e45ec8a382f0876a26556ee3d
   languageName: node
   linkType: hard
 
@@ -227,14 +227,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@babel/parser@npm:8.0.0"
+"@babel/parser@npm:^8.0.0, @babel/parser@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "@babel/parser@npm:8.0.4"
   dependencies:
-    "@babel/types": "npm:^8.0.0"
+    "@babel/types": "npm:^8.0.4"
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 10/c4b12bfba9129b6630ff83b7c5f8d4a139f3f11f0f973599eaca0b98a4574d1ca458b6e037b9f148d4964073db25e34f6a951d795f2f68dd730ee15ed7068ec1
+  checksum: 10/230554794a2c296ce1fb60f57459d94903802369e14e1d83c3ea266b64a4f88ab292eadf5213823d87c04541c9c43b8b6daaae919f25551d3637800663fb25bf
   languageName: node
   linkType: hard
 
@@ -308,13 +308,13 @@ __metadata:
   linkType: hard
 
 "@babel/plugin-syntax-typescript@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@babel/plugin-syntax-typescript@npm:8.0.1"
+  version: 8.0.3
+  resolution: "@babel/plugin-syntax-typescript@npm:8.0.3"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^8.0.1"
   peerDependencies:
     "@babel/core": ^8.0.0
-  checksum: 10/143ee4f29cb2e83c903ac445a35e5214451cc1ea49d6ef4a0d242e7890a7ae9d90772400de446dbe256a08e7e58e1631ee8c8b9296d6b0acec8c64d5784c67d5
+  checksum: 10/557fe5227c6a283732ea45f37b498f597c64de0ac85625b61211d38c000ffd8c75894f25c198e41439e553d0153606d155dfb7f1a11918baf3ca33d4ae5af22d
   languageName: node
   linkType: hard
 
@@ -1045,27 +1045,27 @@ __metadata:
   linkType: hard
 
 "@babel/traverse@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@babel/traverse@npm:8.0.0"
+  version: 8.0.4
+  resolution: "@babel/traverse@npm:8.0.4"
   dependencies:
     "@babel/code-frame": "npm:^8.0.0"
     "@babel/generator": "npm:^8.0.0"
     "@babel/helper-globals": "npm:^8.0.0"
-    "@babel/parser": "npm:^8.0.0"
+    "@babel/parser": "npm:^8.0.4"
     "@babel/template": "npm:^8.0.0"
-    "@babel/types": "npm:^8.0.0"
+    "@babel/types": "npm:^8.0.4"
     obug: "npm:^2.1.1"
-  checksum: 10/509d430151bc166fec2de376dd14237bb456be9dc78f9f75cdb8a799f43d6023f1acafcd342092fd5ec188c330409ec4f75d41396822abb65a5270ce1db2b0e0
+  checksum: 10/234bc16c8c14af13e9471141bfd371186bb7fd2c347b1b416c46040e6fc1995242e3852d36181fa7a0240543b8d642a91d33261f942880584c87a7420df7247d
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@babel/types@npm:8.0.0"
+"@babel/types@npm:^8.0.0, @babel/types@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "@babel/types@npm:8.0.4"
   dependencies:
     "@babel/helper-string-parser": "npm:^8.0.0"
-    "@babel/helper-validator-identifier": "npm:^8.0.0"
-  checksum: 10/9bc81523b9619df23c470ceafbfef6c792f6aeb2b1a5397c462d1e771829abd52edc6ee32c718c45e7e9a065baaa1cb3157a8144866b315a930a15615f15c7f0
+    "@babel/helper-validator-identifier": "npm:^8.0.4"
+  checksum: 10/7b58bdb4c9149fb5ea6a272912f8cd8af082939a9fc97c6de126299b38f258dd9f78717f7cad3c7fe8bfa7d1fce4cff5fa26b0e80885935255fd3a062e9296ad
   languageName: node
   linkType: hard
 
@@ -1207,9 +1207,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^11.0.0":
-  version: 11.5.1
-  resolution: "lru-cache@npm:11.5.1"
-  checksum: 10/02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
+  version: 11.5.2
+  resolution: "lru-cache@npm:11.5.2"
+  checksum: 10/122789c66605ddf29df58ff279e9e2c9499499d0b80b895ec524496f14bcde045d1582e3e38008f3457226d98067556719573b352119d6be8bdb1f8849f85681
   languageName: node
   linkType: hard
 
@@ -1221,9 +1221,9 @@ __metadata:
   linkType: hard
 
 "obug@npm:^2.1.1":
-  version: 2.1.3
-  resolution: "obug@npm:2.1.3"
-  checksum: 10/574e5c3d3def75440c54c29ce8a6d82a5698116962d2f9f28fb13f6fd5dbcc01b7df1b8e02a95f816c8dba482dcf315d9c5c97d9e718516cfea8bd6c896dcf67
+  version: 2.1.4
+  resolution: "obug@npm:2.1.4"
+  checksum: 10/05e3ac83f60ef18edb935d67703bada2cbc0feb1a1cef575240b1e48e6e877df95b74048e69bbe549759df18c57ad1808e1e60a9fc4f785525c8549bf7fe81db
   languageName: node
   linkType: hard
 

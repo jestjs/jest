@@ -1347,13 +1347,13 @@ __metadata:
   linkType: hard
 
 "@babel/plugin-syntax-typescript@npm:^8.0.0, @babel/plugin-syntax-typescript@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@babel/plugin-syntax-typescript@npm:8.0.1"
+  version: 8.0.3
+  resolution: "@babel/plugin-syntax-typescript@npm:8.0.3"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^8.0.1"
   peerDependencies:
     "@babel/core": ^8.0.0
-  checksum: 10/143ee4f29cb2e83c903ac445a35e5214451cc1ea49d6ef4a0d242e7890a7ae9d90772400de446dbe256a08e7e58e1631ee8c8b9296d6b0acec8c64d5784c67d5
+  checksum: 10/557fe5227c6a283732ea45f37b498f597c64de0ac85625b61211d38c000ffd8c75894f25c198e41439e553d0153606d155dfb7f1a11918baf3ca33d4ae5af22d
   languageName: node
   linkType: hard
 
