@@ -20,8 +20,6 @@ module.exports = {
         [
           '@babel/preset-typescript',
           {
-            // will be the default in Babel 8, so let's just turn it on now
-            allowDeclareFields: true,
             // will be default in the future, but we don't want to use it
             allowNamespaces: false,
           },
