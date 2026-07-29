@@ -14,20 +14,29 @@ yarn
 
 in the root directory.
 
-Fetch `backers.json` file by running
+Change to the `website` directory:
+
+```bash
+cd website
+```
+
+Fetch the `backers.json` file by running:
 
 ```bash
 node fetchSupporters.js
 ```
 
-Then, run the server via
+Then start the development server:
 
 ```bash
 yarn start
 ```
 
-Note, you can also use `yarn workspace jest-website start` from the root of the Jest monorepo.
+Alternatively, from the root of the Jest monorepo, you can run:
 
+```bash
+yarn workspace jest-website start
+```
 ## Publish the website
 
 The site is deployed on each PR merged to main by Netlify:
