@@ -587,7 +587,16 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): string {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const isVirtualMock = virtualMocks.get(
+      this.getModulePath(from, moduleName),
+    );
+    const key =
+      from +
+      path.delimiter +
+      moduleName +
+      stringifiedOptions +
+      path.delimiter +
+      String(isVirtualMock);
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
@@ -621,7 +630,16 @@ export default class Resolver {
     options: ResolveModuleConfig,
   ): Promise<string> {
     const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const isVirtualMock = virtualMocks.get(
+      this.getModulePath(from, moduleName),
+    );
+    const key =
+      from +
+      path.delimiter +
+      moduleName +
+      stringifiedOptions +
+      path.delimiter +
+      String(isVirtualMock);
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
