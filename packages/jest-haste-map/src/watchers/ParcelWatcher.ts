@@ -10,7 +10,6 @@ import * as path from 'node:path';
 import * as parcelWatcher from '@parcel/watcher';
 import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
-import type {HasteRegExp} from '../types';
 import {
   ADD_EVENT,
   ALL_EVENT,
@@ -42,43 +41,13 @@ function pickBackend(useWatchman: boolean): parcelWatcher.BackendType {
 
 const VCS_IGNORE_GLOBS = ['**/.git', '**/.hg', '**/.sl'];
 
-// Extract simple directory names from a HasteRegExp and convert to globs so
-// parcel can skip them at the OS-watch level (e.g. node_modules). Complex
-// patterns that can't be expressed as globs are handled by _doIgnore.
-//
-// Ideally we'd pass the regex source directly to parcel's ignoreGlobs, but
-// parcel's API only accepts glob strings (converted to regex by picomatch
-// internally). Once https://github.com/parcel-bundler/watcher/pull/248 lands
-// this whole function can be replaced with passing opts.ignored directly.
-export function ignoredToGlobs(
-  ignored: HasteRegExp | undefined,
-): Array<string> {
-  if (!(ignored instanceof RegExp)) {
-    return VCS_IGNORE_GLOBS;
-  }
-  const extra = ignored.source
-    .split('|')
-    .map(s =>
-      s
-        // Strip lookaheads/non-capturing groups before the char-class strip so
-        // `(?:foo` yields `foo` rather than `:foo` (which fails the name filter).
-        .replaceAll(/\?[:=!]/g, '')
-        .replaceAll(/[()[\]{}^$*+?]/g, '')
-        .replaceAll('\\.', '.')
-        .trim(),
-    )
-    .filter(name => /^[\w.]+$/.test(name))
-    .map(name => `**/${name}`);
-  return [...new Set([...VCS_IGNORE_GLOBS, ...extra])];
-}
-
 export class ParcelWatcher extends EventEmitter implements IWatcher {
   readonly root: string;
   private readonly _dot: boolean;
   private readonly _glob: ReadonlyArray<string>;
   private readonly _doIgnore: (path: string) => boolean;
   private readonly _backend: parcelWatcher.BackendType;
-  private readonly _ignoreGlobs: Array<string>;
+  private readonly _parcelIgnore: parcelWatcher.Options['ignore'];
   private readonly _snapshotPath: string;
   private _subscription: parcelWatcher.AsyncSubscription | null = null;
   private _closed = false;
@@ -88,9 +57,16 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     this.root = path.resolve(root);
     this._dot = opts.dot;
     this._glob = opts.glob;
+    // Fallback for patterns parcel's native matcher can't take: flagged
+    // regexes, and sources std::regex rejects or matches differently.
     this._doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
     this._backend = pickBackend(opts.useWatchman);
-    this._ignoreGlobs = ignoredToGlobs(opts.ignored);
+    // Parcel matches the pattern against the path relative to the watched
+    // root, same as isFileIncluded does — but flags are unsupported.
+    this._parcelIgnore =
+      opts.ignored instanceof RegExp && opts.ignored.flags === ''
+        ? [opts.ignored]
+        : VCS_IGNORE_GLOBS;
     this._snapshotPath = opts.snapshotPath ?? '';
 
     setImmediate(() => this._start());
@@ -99,7 +75,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private async _start(): Promise<void> {
     const parcelOpts: parcelWatcher.Options = {
       backend: this._backend,
-      ignore: this._ignoreGlobs,
+      ignore: this._parcelIgnore,
     };
 
     try {
@@ -199,7 +175,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       try {
         await parcelWatcher.writeSnapshot(this.root, this._snapshotPath, {
           backend: this._backend,
-          ignore: this._ignoreGlobs,
+          ignore: this._parcelIgnore,
         });
       } catch {
         // best-effort

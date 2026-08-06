@@ -10,7 +10,7 @@ import * as path from 'node:path';
 import type * as parcelWatcherType from '@parcel/watcher';
 import * as gracefulFs from 'graceful-fs';
 import type {WatcherOptions} from '../types';
-import {ParcelWatcher, ignoredToGlobs} from '../ParcelWatcher';
+import {ParcelWatcher} from '../ParcelWatcher';
 
 jest.mock('@parcel/watcher');
 jest.mock('graceful-fs', () => ({
@@ -377,40 +377,50 @@ describe('ParcelWatcher', () => {
       );
     });
   });
-});
 
-describe('ignoredToGlobs', () => {
-  const VCS = ['**/.git', '**/.hg', '**/.sl'];
+  describe('ignore patterns passed to parcel', () => {
+    const VCS = ['**/.git', '**/.hg', '**/.sl'];
 
-  it('returns only VCS globs when ignored is undefined', () => {
-    expect(ignoredToGlobs(undefined)).toEqual(VCS);
-  });
+    async function subscribedIgnore(
+      ignored: WatcherOptions['ignored'],
+    ): Promise<unknown> {
+      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored});
+      await waitReady(watcher);
+      return (
+        parcelWatcher.subscribe as jest.MockedFunction<
+          typeof parcelWatcher.subscribe
+        >
+      ).mock.calls[0][2]?.ignore;
+    }
 
-  it('returns only VCS globs when ignored is a function', () => {
-    expect(ignoredToGlobs(() => false)).toEqual(VCS);
-  });
+    it('passes an unflagged regex through natively', async () => {
+      const ignored = /node_modules/;
+      expect(await subscribedIgnore(ignored)).toEqual([ignored]);
+    });
 
-  it('extracts simple directory names from a regex', () => {
-    expect(ignoredToGlobs(/node_modules/)).toEqual([...VCS, '**/node_modules']);
-  });
+    it('falls back to VCS globs for a regex with flags', async () => {
+      expect(await subscribedIgnore(/node_modules/i)).toEqual(VCS);
+    });
 
-  it('extracts multiple alternation segments', () => {
-    const result = ignoredToGlobs(/node_modules|\.cache/);
-    expect(result).toEqual([...VCS, '**/node_modules', '**/.cache']);
-  });
+    it('falls back to VCS globs when ignored is undefined', async () => {
+      expect(await subscribedIgnore(undefined)).toEqual(VCS);
+    });
 
-  it('deduplicates VCS dirs already present in the regex', () => {
-    const result = ignoredToGlobs(/node_modules|\.git/);
-    expect(result).toEqual([...VCS, '**/node_modules']);
-  });
+    it('falls back to VCS globs when ignored is a function', async () => {
+      expect(await subscribedIgnore(() => false)).toEqual(VCS);
+    });
 
-  it('skips segments containing regex special characters', () => {
-    const result = ignoredToGlobs(/node_modules|foo[0-9]+/);
-    expect(result).toEqual([...VCS, '**/node_modules']);
-  });
+    it('writes the snapshot with the same ignore value', async () => {
+      const ignored = /node_modules/;
+      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored});
+      await waitReady(watcher);
+      await watcher.close();
 
-  it('extracts names from non-capturing group syntax', () => {
-    const result = ignoredToGlobs(/(?:node_modules|\.cache)/);
-    expect(result).toEqual([...VCS, '**/node_modules', '**/.cache']);
+      expect(parcelWatcher.writeSnapshot).toHaveBeenLastCalledWith(
+        expect.any(String),
+        '/tmp/snapshot',
+        expect.objectContaining({ignore: [ignored]}),
+      );
+    });
   });
 });

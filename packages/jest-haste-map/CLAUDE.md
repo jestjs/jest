@@ -12,7 +12,7 @@ Key files to know:
 - `watchers/ChangeQueue.ts` — 30 ms debounce, O(1) mtime-dedup via `Set<string>`, copy-on-write for the live map, file-processing dispatch.
 - `crawlers/watchman.ts` — fb-watchman with clock-based incremental updates. `crawlers/node.ts` — `findNative` (`find(1)` shell-out) + `find` (`fdir` via `lib/walk`); `forceNodeFilesystemAPI` gates shell-out vs `fdir`.
 - `watchers/types.ts` — `IWatcher`, `WatcherOptions`, `WatcherCtor`. New backends must implement `IWatcher` and accept `(root: string, opts: WatcherOptions)`.
-- `watchers/WatchmanWatcher.js` — watchman backend. `watchers/ParcelWatcher.ts` — `@parcel/watcher`-backed watcher used for all non-watchman paths; picks the native backend per platform (`fs-events`/`inotify`/`windows`/`brute-force`) and uses `writeSnapshot`/`getEventsSince` for incremental startup.
+- `watchers/WatchmanWatcher.js` — watchman backend. `watchers/ParcelWatcher.ts` — `@parcel/watcher`-backed watcher used for all non-watchman paths; picks the native backend per platform (`fs-events`/`inotify`/`windows`/`brute-force`) and uses `writeSnapshot`/`getEventsSince` for incremental startup. `opts.ignored` is handed to parcel's native matcher as a `RegExp`, which matches it against the path relative to the watched root — the same input `isFileIncluded` sees. Only unflagged regexes qualify (parcel throws on any non-empty `.flags`); everything else falls back to `VCS_IGNORE_GLOBS`, with the in-process `_doIgnore`/`anymatch` check as the backstop.
 
 ## Data model
 
