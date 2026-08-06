@@ -56,17 +56,10 @@ function isRecrawlWarningDupe(warningMessage) {
  */
 
 export default function WatchmanWatcher(dir, opts) {
-  opts = opts || {};
-  this.globs = opts.glob || [];
-  this.dot = opts.dot || false;
-  if (!Array.isArray(this.globs)) {
-    this.globs = [this.globs];
-  }
+  this.globs = opts.glob;
+  this.dot = opts.dot;
   this.hasIgnore = Boolean(opts.ignored);
   this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
-  if (opts.watchman && opts.watchmanPath) {
-    this.watchmanPath = opts.watchmanPath;
-  }
   this.root = path.resolve(dir);
   this.init();
 }
