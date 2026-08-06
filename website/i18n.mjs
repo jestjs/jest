@@ -50,7 +50,7 @@ const localeConfigs = {
 };
 
 // Docusaurus 2 i18n config
-module.exports = {
+export default {
   defaultLocale: 'en',
   locales,
   localeConfigs,

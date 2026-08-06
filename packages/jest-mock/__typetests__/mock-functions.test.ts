@@ -530,6 +530,28 @@ describe('jest.fn()', () => {
     ).type.not.toBeCallableWith();
   });
 
+  test('.mockResolvedValue() / .mockRejectedValue() see overloaded return types', () => {
+    // Regression for #16174. `pg.Client['end']` is the canonical example: the
+    // promise-returning overload is shadowed by a callback overload that
+    // returns `void`, so `ReturnType` collapses to `void` and the resolve /
+    // reject value types infer `never`. Walking the overload list and
+    // unioning return types lets the Promise-shaped overload survive.
+    interface OverloadedEnd {
+      (): Promise<void>;
+      (callback: (err: Error) => void): void;
+    }
+    const overloaded = fn<OverloadedEnd>();
+
+    expect(overloaded.mockResolvedValue).type.toBeCallableWith(undefined);
+    expect(overloaded.mockResolvedValueOnce).type.toBeCallableWith(undefined);
+    expect(overloaded.mockRejectedValue).type.toBeCallableWith(
+      new Error('boom'),
+    );
+    expect(overloaded.mockRejectedValueOnce).type.toBeCallableWith(
+      new Error('boom'),
+    );
+  });
+
   test('.withImplementation()', () => {
     expect(mockFn.withImplementation(mockFnImpl, () => {})).type.toBe<void>();
     expect(mockFn.withImplementation(mockFnImpl, async () => {})).type.toBe<

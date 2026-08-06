@@ -131,11 +131,49 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type ResolveType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<infer U> ? U : never;
+// `ReturnType<T>` picks the LAST overload signature of `T`, so for a function
+// like `pg.Client['end']` whose overloads are `(): Promise<void>` and
+// `(cb): void`, `ReturnType` collapses to `void` and the Promise-shaped
+// overload disappears — `mockResolvedValue` / `mockRejectedValue` then infer
+// `never` and reject any value. Walk up to four overloads and union their
+// return types so the Promise-shaped overload (if any) survives.
+type OverloadedReturnType<T> = T extends {
+  (...args: Array<any>): infer R1;
+  (...args: Array<any>): infer R2;
+  (...args: Array<any>): infer R3;
+  (...args: Array<any>): infer R4;
+}
+  ? R1 | R2 | R3 | R4
+  : T extends {
+        (...args: Array<any>): infer R1;
+        (...args: Array<any>): infer R2;
+        (...args: Array<any>): infer R3;
+      }
+    ? R1 | R2 | R3
+    : T extends {
+          (...args: Array<any>): infer R1;
+          (...args: Array<any>): infer R2;
+        }
+      ? R1 | R2
+      : T extends (...args: Array<any>) => infer R
+        ? R
+        : never;
 
-type RejectType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<any> ? unknown : never;
+type ResolveType<T extends FunctionLike> = [
+  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
+] extends [never]
+  ? never
+  : Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
+        infer U
+      >
+    ? U
+    : never;
+
+type RejectType<T extends FunctionLike> = [
+  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
+] extends [never]
+  ? never
+  : unknown;
 
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
@@ -1297,8 +1335,12 @@ export class ModuleMocker {
       if (descriptor && descriptor.get) {
         const originalGet = descriptor.get;
         mock = this._makeComponent({type: 'function'}, () => {
-          descriptor!.get = originalGet;
-          Object.defineProperty(object, methodKey, descriptor!);
+          if (isMethodOwner) {
+            descriptor!.get = originalGet;
+            Object.defineProperty(object, methodKey, descriptor!);
+          } else {
+            delete object[methodKey];
+          }
         });
         descriptor.get = () => mock;
         Object.defineProperty(object, methodKey, descriptor);
@@ -1327,6 +1369,11 @@ export class ModuleMocker {
     propertyKey: keyof T,
     accessType: 'get' | 'set',
   ): MockInstance {
+    const isPropertyOwner = Object.prototype.hasOwnProperty.call(
+      object,
+      propertyKey,
+    );
+
     let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
     let proto = Object.getPrototypeOf(object);
 
@@ -1377,9 +1424,15 @@ export class ModuleMocker {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-expect-error: mock is assignable
-        descriptor![accessType] = original;
-        Object.defineProperty(object, propertyKey, descriptor!);
+        if (isPropertyOwner) {
+          // @ts-expect-error: mock is assignable
+          descriptor![accessType] = original;
+          Object.defineProperty(object, propertyKey, descriptor!);
+        } else {
+          // Inherited accessor: drop the own property the spy installed so the
+          // prototype accessor is exposed again instead of a stale copy.
+          delete object[propertyKey];
+        }
       });
 
       (descriptor[accessType] as Mock).mockImplementation(function (

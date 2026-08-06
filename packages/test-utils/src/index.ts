@@ -15,6 +15,7 @@ export {
   testWithLinkedSyntheticModule,
   testWithSyncEsm,
   testWithVmEsm,
+  testWithoutSyncEsm,
 } from './ConditionalTest';
 
 export {makeGlobalConfig, makeProjectConfig} from './config';
