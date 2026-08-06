@@ -16,10 +16,3 @@ const consumer = require('../lib/consumer');
 test('uses a virtual mock for a resolvable module', () => {
   expect(consumer.getName()).toBe('virtual mock');
 });
-
-// Jest runs larger suites first when no timing cache exists, so this padding
-// ensures the virtual lookup populates the shared resolver cache first.
-// Padding padding padding padding padding padding padding padding padding.
-// Padding padding padding padding padding padding padding padding padding.
-// Padding padding padding padding padding padding padding padding padding.
-// Padding padding padding padding padding padding padding padding padding.
