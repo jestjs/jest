@@ -33,7 +33,6 @@ function makeReadyWatcher(): EventEmitter & WatcherInstance {
 }
 
 const driverOpts = {
-  cacheFilePath: '/tmp/haste-map-cache',
   extensions: ['js'],
   ignorePattern: undefined,
   roots: ['/root/a'],

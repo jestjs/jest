@@ -12,7 +12,6 @@ export type WatcherOptions = {
   dot: boolean;
   glob: ReadonlyArray<string>;
   ignored: HasteRegExp | undefined;
-  snapshotPath?: string;
   useWatchman: boolean;
 };
 

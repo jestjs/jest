@@ -15,15 +15,11 @@ import {ParcelWatcher} from '../ParcelWatcher';
 jest.mock('@parcel/watcher');
 jest.mock('graceful-fs', () => ({
   ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
-  existsSync: jest.fn(() => false),
   lstat: jest.fn(),
 }));
 
 const parcelWatcher =
   jest.requireMock<typeof parcelWatcherType>('@parcel/watcher');
-const mockExistsSync = gracefulFs.existsSync as jest.MockedFunction<
-  typeof gracefulFs.existsSync
->;
 type LstatSimple = (
   path: gracefulFs.PathLike,
   cb: (err: NodeJS.ErrnoException | null, stats: gracefulFs.Stats) => void,
@@ -38,7 +34,6 @@ const defaultOpts: WatcherOptions = {
   dot: true,
   glob: ['**/*.js'],
   ignored: undefined,
-  snapshotPath: '/tmp/snapshot',
   useWatchman: false,
 };
 
@@ -55,7 +50,6 @@ describe('ParcelWatcher', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockExistsSync.mockReturnValue(false);
     (
       parcelWatcher.subscribe as jest.MockedFunction<
         typeof parcelWatcher.subscribe
@@ -64,16 +58,6 @@ describe('ParcelWatcher', () => {
       subscribeCallback = fn;
       return makeSubscription();
     });
-    (
-      parcelWatcher.writeSnapshot as jest.MockedFunction<
-        typeof parcelWatcher.writeSnapshot
-      >
-    ).mockResolvedValue('/tmp/snapshot');
-    (
-      parcelWatcher.getEventsSince as jest.MockedFunction<
-        typeof parcelWatcher.getEventsSince
-      >
-    ).mockResolvedValue([]);
   });
 
   function makeWatcher(root = ROOT, opts = defaultOpts): ParcelWatcher {
@@ -210,57 +194,7 @@ describe('ParcelWatcher', () => {
     expect(onError).toHaveBeenCalledWith(expect.any(Error));
   });
 
-  it('falls back to a fresh subscribe when getEventsSince rejects', async () => {
-    mockExistsSync.mockReturnValue(true);
-    (
-      parcelWatcher.getEventsSince as jest.MockedFunction<
-        typeof parcelWatcher.getEventsSince
-      >
-    ).mockRejectedValue(new Error('corrupt snapshot'));
-
-    const watcher = makeWatcher();
-    await waitReady(watcher);
-
-    expect(parcelWatcher.subscribe).toHaveBeenCalledTimes(1);
-  });
-
-  it('replays events from snapshot when snapshotPath exists', async () => {
-    mockExistsSync.mockReturnValue(true);
-    const fakeStat = {isDirectory: () => false, mtime: new Date(), size: 100};
-    mockLstat.mockImplementation((_p, cb) =>
-      cb(null, fakeStat as gracefulFs.Stats),
-    );
-
-    (
-      parcelWatcher.getEventsSince as jest.MockedFunction<
-        typeof parcelWatcher.getEventsSince
-      >
-    ).mockResolvedValue([{path: path.join(ROOT, 'old.js'), type: 'create'}]);
-
-    const watcher = makeWatcher();
-    const onChange = jest.fn();
-    // Attach listener inside 'ready' handler — mirrors WatcherDriver behaviour
-    // and verifies replay fires after 'ready' (not before).
-    watcher.once('ready', () => watcher.on('all', onChange));
-    await waitReady(watcher);
-    await flush();
-
-    expect(parcelWatcher.getEventsSince).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith('add', 'old.js', ROOT, fakeStat);
-  });
-
-  it('writes snapshot after subscribing', async () => {
-    const watcher = makeWatcher();
-    await waitReady(watcher);
-
-    expect(parcelWatcher.writeSnapshot).toHaveBeenCalledWith(
-      expect.any(String),
-      '/tmp/snapshot',
-      expect.objectContaining({backend: expect.any(String)}),
-    );
-  });
-
-  it('close() calls unsubscribe and writes snapshot', async () => {
+  it('close() calls unsubscribe', async () => {
     const subscription = makeSubscription();
     (
       parcelWatcher.subscribe as jest.MockedFunction<
@@ -274,11 +208,9 @@ describe('ParcelWatcher', () => {
     const watcher = makeWatcher();
     await waitReady(watcher);
 
-    jest.clearAllMocks();
     await watcher.close();
 
     expect(subscription.unsubscribe).toHaveBeenCalledTimes(1);
-    expect(parcelWatcher.writeSnapshot).toHaveBeenCalledTimes(1);
   });
 
   it('close() before _start resolves unsubscribes the late subscription', async () => {
@@ -449,36 +381,6 @@ describe('ParcelWatcher', () => {
 
       expect(subscribeMock).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith(expect.any(Error));
-    });
-
-    it('writes the snapshot with the same ignore value', async () => {
-      const ignored = /node_modules/;
-      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored});
-      await waitReady(watcher);
-      await watcher.close();
-
-      expect(parcelWatcher.writeSnapshot).toHaveBeenLastCalledWith(
-        expect.any(String),
-        '/tmp/snapshot',
-        expect.objectContaining({ignore: [ignored, ...VCS]}),
-      );
-    });
-
-    it('writes the snapshot with the fallback ignore value after a retry', async () => {
-      const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
-        typeof parcelWatcher.subscribe
-      >;
-      subscribeMock.mockRejectedValueOnce(new Error('regex parse error'));
-
-      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored: /(?<=x)y/});
-      await waitReady(watcher);
-      await watcher.close();
-
-      expect(parcelWatcher.writeSnapshot).toHaveBeenLastCalledWith(
-        expect.any(String),
-        '/tmp/snapshot',
-        expect.objectContaining({ignore: VCS}),
-      );
     });
   });
 });

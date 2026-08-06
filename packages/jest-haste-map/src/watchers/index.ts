@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as crypto from 'node:crypto';
 import type {Stats} from 'graceful-fs';
 import isWatchmanInstalled from '../lib/isWatchmanInstalled';
 import type {HasteRegExp} from '../types';
@@ -40,7 +39,6 @@ type OnChangeCallback = (
 const MAX_WAIT_TIME = 240_000;
 
 export class WatcherDriver {
-  private readonly _cacheFilePath: string;
   private readonly _extensions: Array<string>;
   private readonly _ignorePattern: HasteRegExp | undefined;
   private readonly _roots: Array<string>;
@@ -48,13 +46,11 @@ export class WatcherDriver {
   private _watchers: Array<IWatcher> = [];
 
   constructor(opts: {
-    cacheFilePath: string;
     extensions: Array<string>;
     ignorePattern: HasteRegExp | undefined;
     roots: Array<string>;
     useWatchman: boolean;
   }) {
-    this._cacheFilePath = opts.cacheFilePath;
     this._extensions = opts.extensions;
     this._ignorePattern = opts.ignorePattern;
     this._roots = opts.roots;
@@ -87,19 +83,6 @@ export class WatcherDriver {
     this._watchers = [];
   }
 
-  private _snapshotPath(root: string): string {
-    const hash = crypto
-      .createHash('sha1')
-      .update(root)
-      .digest('hex')
-      .slice(0, 16);
-    // Snapshot files are never explicitly deleted. When cacheFilePath changes
-    // (config/version bump) new snapshots are written under the new prefix and
-    // old ones are orphaned. They are harmless (never read) but accumulate in
-    // the cache directory until the user clears it manually.
-    return `${this._cacheFilePath}.parcel-snapshot.${hash}`;
-  }
-
   private _createWatcher(
     Backend: WatcherCtor,
     root: string,
@@ -109,7 +92,6 @@ export class WatcherDriver {
       dot: true,
       glob: this._extensions.map(ext => `**/*.${ext}`),
       ignored: this._ignorePattern,
-      snapshotPath: this._snapshotPath(root),
       useWatchman: this._useWatchman,
     });
 

@@ -12,7 +12,7 @@ Key files to know:
 - `watchers/ChangeQueue.ts` — 30 ms debounce, O(1) mtime-dedup via `Set<string>`, copy-on-write for the live map, file-processing dispatch.
 - `crawlers/watchman.ts` — fb-watchman with clock-based incremental updates. `crawlers/node.ts` — `findNative` (`find(1)` shell-out) + `find` (`fdir` via `lib/walk`); `forceNodeFilesystemAPI` gates shell-out vs `fdir`.
 - `watchers/types.ts` — `IWatcher`, `WatcherOptions`, `WatcherCtor`. New backends must implement `IWatcher` and accept `(root: string, opts: WatcherOptions)`.
-- `watchers/WatchmanWatcher.js` — watchman backend. `watchers/ParcelWatcher.ts` — `@parcel/watcher`-backed watcher used for all non-watchman paths; picks the native backend per platform (`fs-events`/`inotify`/`windows`/`brute-force`) and uses `writeSnapshot`/`getEventsSince` for incremental startup. `opts.ignored` is handed to parcel's native matcher as a `RegExp`, which matches it against the path relative to the watched root — the same input `isFileIncluded` sees. Only unflagged regexes qualify (parcel throws on any non-empty `.flags`); everything else falls back to `VCS_IGNORE_GLOBS`, with the in-process `_doIgnore`/`anymatch` check as the backstop.
+- `watchers/WatchmanWatcher.js` — watchman backend. `watchers/ParcelWatcher.ts` — `@parcel/watcher`-backed watcher used for all non-watchman paths; picks the native backend per platform (`fs-events`/`inotify`/`windows`/`brute-force`). `opts.ignored` is handed to parcel's native matcher as a `RegExp`, which matches it against the path relative to the watched root — the same input `isFileIncluded` sees, but with **no leading separator**, so separator-anchored patterns never match the root's own entries (that is why the VCS globs are always appended, in both bare and `/**` forms). Only unflagged regexes qualify (parcel throws on any non-empty `.flags`), and sources C++ `std::regex` can't parse (lookbehind, named groups) reject at subscribe time — `ParcelWatcher` retries once without the regex. The in-process `_doIgnore`/`anymatch` check is the backstop in all fallback cases. Parcel's snapshot API (`writeSnapshot`/`getEventsSince`) is deliberately unused: nothing skips the fdir crawl, and replayed `create` events bypass `ChangeQueue`'s mtime dedup (it only applies to `change`), causing spurious re-runs at watch startup.
 
 ## Data model
 
@@ -35,7 +35,7 @@ Key files to know:
 
 **`ChangeQueue` `stat` is required for add/change events.** The queue reads `stat.isDirectory()`, `stat.mtime.getTime()`, and `stat.size`. New watcher backends must supply `stat` (via `lstat` if the backend doesn't provide it). Delete events omit `stat` — that is correct.
 
-**`WatchmanWatcher` ≠ parcel-watcher.** They both may use watchman internally but are independent codepaths. `WatchmanWatcher` stores clocks in `InternalHasteMap.clocks`; `ParcelWatcher` uses parcel's opaque snapshot files.
+**`WatchmanWatcher` ≠ parcel-watcher.** They both may use watchman internally but are independent codepaths. `WatchmanWatcher` stores clocks in `InternalHasteMap.clocks`; `ParcelWatcher` keeps no persistent state.
 
 **`useWatchman`, `enableSymlinks`, `forceNodeFilesystemAPI` are flat fields on `InternalOptions`**, copied directly from the `Options` input in the constructor. All decisions flow through `shouldUseWatchman(useWatchman)`.
 

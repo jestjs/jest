@@ -58,7 +58,6 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private readonly _doIgnore: (path: string) => boolean;
   private readonly _backend: parcelWatcher.BackendType;
   private _parcelIgnore: NonNullable<parcelWatcher.Options['ignore']>;
-  private readonly _snapshotPath: string;
   private _subscription: parcelWatcher.AsyncSubscription | null = null;
   private _closed = false;
 
@@ -80,7 +79,6 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       opts.ignored instanceof RegExp && opts.ignored.flags === ''
         ? [opts.ignored, ...VCS_IGNORE_GLOBS]
         : VCS_IGNORE_GLOBS;
-    this._snapshotPath = opts.snapshotPath ?? '';
 
     setImmediate(() => this._start());
   }
@@ -116,24 +114,6 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
 
   private async _start(): Promise<void> {
     try {
-      let replayEvents: Array<parcelWatcher.Event> = [];
-      if (this._snapshotPath && fs.existsSync(this._snapshotPath)) {
-        try {
-          replayEvents = await parcelWatcher.getEventsSince(
-            this.root,
-            this._snapshotPath,
-            this._parcelOpts(),
-          );
-        } catch {
-          // Stale/corrupt snapshot — fall back to a fresh subscribe.
-        }
-      }
-
-      // Note: events that occur between getEventsSince and subscribe are not
-      // captured by either call. This is an inherent gap in snapshot-based
-      // startup. In practice haste-map's fdir crawl runs before the watcher
-      // starts and detects any mtime changes, so the impact is limited to the
-      // brief window while the subscription is being established.
       const subscription = await this._subscribe();
 
       // WatcherDriver may time out and call close() while subscribe() was in
@@ -144,19 +124,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       }
       this._subscription = subscription;
 
-      if (this._snapshotPath) {
-        await parcelWatcher.writeSnapshot(
-          this.root,
-          this._snapshotPath,
-          this._parcelOpts(),
-        );
-      }
-
       this.emit('ready');
-
-      if (replayEvents.length > 0) {
-        setImmediate(() => this._handleEvents(null, replayEvents));
-      }
     } catch (error) {
       this.emit('error', error);
     }
@@ -204,17 +172,6 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     this._closed = true;
     await this._subscription?.unsubscribe();
     this._subscription = null;
-    if (this._snapshotPath) {
-      try {
-        await parcelWatcher.writeSnapshot(
-          this.root,
-          this._snapshotPath,
-          this._parcelOpts(),
-        );
-      } catch {
-        // best-effort
-      }
-    }
     this.removeAllListeners();
   }
 }
