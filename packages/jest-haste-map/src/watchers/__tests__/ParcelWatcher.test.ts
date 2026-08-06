@@ -379,7 +379,14 @@ describe('ParcelWatcher', () => {
   });
 
   describe('ignore patterns passed to parcel', () => {
-    const VCS = ['**/.git', '**/.hg', '**/.sl'];
+    const VCS = [
+      '**/.git',
+      '**/.git/**',
+      '**/.hg',
+      '**/.hg/**',
+      '**/.sl',
+      '**/.sl/**',
+    ];
 
     async function subscribedIgnore(
       ignored: WatcherOptions['ignored'],
@@ -393,9 +400,9 @@ describe('ParcelWatcher', () => {
       ).mock.calls[0][2]?.ignore;
     }
 
-    it('passes an unflagged regex through natively', async () => {
+    it('passes an unflagged regex through natively, with VCS globs appended', async () => {
       const ignored = /node_modules/;
-      expect(await subscribedIgnore(ignored)).toEqual([ignored]);
+      expect(await subscribedIgnore(ignored)).toEqual([ignored, ...VCS]);
     });
 
     it('falls back to VCS globs for a regex with flags', async () => {
@@ -410,6 +417,40 @@ describe('ParcelWatcher', () => {
       expect(await subscribedIgnore(() => false)).toEqual(VCS);
     });
 
+    it('retries without the regex when the native matcher rejects it', async () => {
+      const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
+        typeof parcelWatcher.subscribe
+      >;
+      subscribeMock.mockRejectedValueOnce(
+        new Error(
+          'One of *?+{ was not preceded by a valid regular expression.',
+        ),
+      );
+
+      const ignored = /(?<=x)dist/;
+      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored});
+      await waitReady(watcher);
+
+      expect(subscribeMock).toHaveBeenCalledTimes(2);
+      expect(subscribeMock.mock.calls[0][2]?.ignore).toEqual([ignored, ...VCS]);
+      expect(subscribeMock.mock.calls[1][2]?.ignore).toEqual(VCS);
+    });
+
+    it('does not retry when the ignore list has no regex', async () => {
+      const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
+        typeof parcelWatcher.subscribe
+      >;
+      subscribeMock.mockRejectedValueOnce(new Error('backend failure'));
+
+      const watcher = makeWatcher(ROOT, defaultOpts);
+      const onError = jest.fn();
+      watcher.on('error', onError);
+      await flush();
+
+      expect(subscribeMock).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    });
+
     it('writes the snapshot with the same ignore value', async () => {
       const ignored = /node_modules/;
       const watcher = makeWatcher(ROOT, {...defaultOpts, ignored});
@@ -419,7 +460,24 @@ describe('ParcelWatcher', () => {
       expect(parcelWatcher.writeSnapshot).toHaveBeenLastCalledWith(
         expect.any(String),
         '/tmp/snapshot',
-        expect.objectContaining({ignore: [ignored]}),
+        expect.objectContaining({ignore: [ignored, ...VCS]}),
+      );
+    });
+
+    it('writes the snapshot with the fallback ignore value after a retry', async () => {
+      const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
+        typeof parcelWatcher.subscribe
+      >;
+      subscribeMock.mockRejectedValueOnce(new Error('regex parse error'));
+
+      const watcher = makeWatcher(ROOT, {...defaultOpts, ignored: /(?<=x)y/});
+      await waitReady(watcher);
+      await watcher.close();
+
+      expect(parcelWatcher.writeSnapshot).toHaveBeenLastCalledWith(
+        expect.any(String),
+        '/tmp/snapshot',
+        expect.objectContaining({ignore: VCS}),
       );
     });
   });

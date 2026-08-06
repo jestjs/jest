@@ -116,16 +116,30 @@ export class WatcherDriver {
     return new Promise((resolve, reject) => {
       const onReady = () => {
         clearTimeout(rejectTimeout);
+        watcher.off('error', onStartupError);
+        // Post-startup errors are non-fatal: the watcher stays subscribed,
+        // and an unhandled 'error' emit would crash the process.
+        watcher.on('error', error => {
+          console.error('jest-haste-map: watch error:', error);
+        });
         watcher.on('all', onChange);
         resolve(watcher);
       };
+      const onStartupError = (startupError: unknown) => {
+        clearTimeout(rejectTimeout);
+        watcher.off('ready', onReady);
+        watcher.close().catch(() => undefined);
+        reject(startupError);
+      };
       const rejectTimeout = setTimeout(() => {
         watcher.off('ready', onReady);
+        watcher.off('error', onStartupError);
         watcher.close().catch(() => undefined);
         reject(new Error('Failed to start watch mode.'));
       }, MAX_WAIT_TIME);
 
       watcher.once('ready', onReady);
+      watcher.once('error', onStartupError);
     });
   }
 }

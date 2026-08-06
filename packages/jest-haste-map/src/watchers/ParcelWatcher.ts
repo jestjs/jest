@@ -39,7 +39,17 @@ function pickBackend(useWatchman: boolean): parcelWatcher.BackendType {
   }
 }
 
-const VCS_IGNORE_GLOBS = ['**/.git', '**/.hg', '**/.sl'];
+// Both forms are needed: the bare glob prunes the directory itself from
+// parcel's initial scan, while the `/**` variant filters per-event paths —
+// fs-events delivers paths inside the directory that only match the latter.
+const VCS_IGNORE_GLOBS = [
+  '**/.git',
+  '**/.git/**',
+  '**/.hg',
+  '**/.hg/**',
+  '**/.sl',
+  '**/.sl/**',
+];
 
 export class ParcelWatcher extends EventEmitter implements IWatcher {
   readonly root: string;
@@ -47,7 +57,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private readonly _glob: ReadonlyArray<string>;
   private readonly _doIgnore: (path: string) => boolean;
   private readonly _backend: parcelWatcher.BackendType;
-  private readonly _parcelIgnore: parcelWatcher.Options['ignore'];
+  private _parcelIgnore: NonNullable<parcelWatcher.Options['ignore']>;
   private readonly _snapshotPath: string;
   private _subscription: parcelWatcher.AsyncSubscription | null = null;
   private _closed = false;
@@ -62,22 +72,49 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     this._doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
     this._backend = pickBackend(opts.useWatchman);
     // Parcel matches the pattern against the path relative to the watched
-    // root, same as isFileIncluded does — but flags are unsupported.
+    // root, same as isFileIncluded does — but flags are unsupported. The VCS
+    // globs are always appended: the path parcel matches has no leading
+    // separator, so HasteMap's separator-anchored VCS alternation
+    // (`/\.git/|…`) never matches the root's own `.git` directory.
     this._parcelIgnore =
       opts.ignored instanceof RegExp && opts.ignored.flags === ''
-        ? [opts.ignored]
+        ? [opts.ignored, ...VCS_IGNORE_GLOBS]
         : VCS_IGNORE_GLOBS;
     this._snapshotPath = opts.snapshotPath ?? '';
 
     setImmediate(() => this._start());
   }
 
-  private async _start(): Promise<void> {
-    const parcelOpts: parcelWatcher.Options = {
-      backend: this._backend,
-      ignore: this._parcelIgnore,
-    };
+  private _parcelOpts(): parcelWatcher.Options {
+    return {backend: this._backend, ignore: this._parcelIgnore};
+  }
 
+  // Parcel compiles the regex source with C++ std::regex, which rejects some
+  // JS-valid constructs (lookbehind, named groups, \p{…}) at subscribe time.
+  // There is no way to validate against std::regex from JS ahead of time, so
+  // rejection is the signal: drop the regex (per-event filtering still happens
+  // through _doIgnore) and retry with the VCS globs alone.
+  private async _subscribe(): Promise<parcelWatcher.AsyncSubscription> {
+    try {
+      return await parcelWatcher.subscribe(
+        this.root,
+        this._handleEvents,
+        this._parcelOpts(),
+      );
+    } catch (error) {
+      if (!this._parcelIgnore.some(pattern => pattern instanceof RegExp)) {
+        throw error;
+      }
+      this._parcelIgnore = VCS_IGNORE_GLOBS;
+      return parcelWatcher.subscribe(
+        this.root,
+        this._handleEvents,
+        this._parcelOpts(),
+      );
+    }
+  }
+
+  private async _start(): Promise<void> {
     try {
       let replayEvents: Array<parcelWatcher.Event> = [];
       if (this._snapshotPath && fs.existsSync(this._snapshotPath)) {
@@ -85,7 +122,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
           replayEvents = await parcelWatcher.getEventsSince(
             this.root,
             this._snapshotPath,
-            parcelOpts,
+            this._parcelOpts(),
           );
         } catch {
           // Stale/corrupt snapshot — fall back to a fresh subscribe.
@@ -97,11 +134,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       // startup. In practice haste-map's fdir crawl runs before the watcher
       // starts and detects any mtime changes, so the impact is limited to the
       // brief window while the subscription is being established.
-      const subscription = await parcelWatcher.subscribe(
-        this.root,
-        this._handleEvents,
-        parcelOpts,
-      );
+      const subscription = await this._subscribe();
 
       // WatcherDriver may time out and call close() while subscribe() was in
       // flight. Unsubscribe immediately rather than leaking the subscription.
@@ -115,7 +148,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
         await parcelWatcher.writeSnapshot(
           this.root,
           this._snapshotPath,
-          parcelOpts,
+          this._parcelOpts(),
         );
       }
 
@@ -173,10 +206,11 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     this._subscription = null;
     if (this._snapshotPath) {
       try {
-        await parcelWatcher.writeSnapshot(this.root, this._snapshotPath, {
-          backend: this._backend,
-          ignore: this._parcelIgnore,
-        });
+        await parcelWatcher.writeSnapshot(
+          this.root,
+          this._snapshotPath,
+          this._parcelOpts(),
+        );
       } catch {
         // best-effort
       }

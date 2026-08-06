@@ -157,6 +157,43 @@ describe('WatcherDriver', () => {
     jest.useRealTimers();
   });
 
+  it('rejects start when the watcher emits error before ready', async () => {
+    const close = jest.fn(async () => {});
+    const watcher = Object.assign(new EventEmitter(), {close});
+    MockParcelWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
+    );
+
+    const startPromise = new WatcherDriver({...driverOpts}).start(jest.fn());
+    setImmediate(() => watcher.emit('error', new Error('backend failure')));
+
+    await expect(startPromise).rejects.toThrow('Failed to start watch mode.');
+    expect(close).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs errors emitted after ready instead of crashing', async () => {
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    const watcher = makeReadyWatcher();
+    MockParcelWatcher.mockImplementation(
+      () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
+    );
+
+    const driver = new WatcherDriver({...driverOpts});
+    await driver.start(jest.fn());
+
+    const error = new Error('lstat failed');
+    // Would throw ERR_UNHANDLED_ERROR without a listener.
+    watcher.emit('error', error);
+
+    expect(consoleError).toHaveBeenCalledWith(
+      'jest-haste-map: watch error:',
+      error,
+    );
+    consoleError.mockRestore();
+  });
+
   it('closes already-started watchers when one root fails to start', async () => {
     const closeA = jest.fn(async () => {});
     let call = 0;
