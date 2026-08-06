@@ -23,7 +23,9 @@ import type {IWatcher, WatcherOptions} from './types';
 // is true, so the 'watchman' branch below is unreachable through normal Jest
 // operation. It exists so ParcelWatcher can be used standalone (e.g. in tests
 // or custom tooling) with watchman as the parcel backend.
-function pickBackend(useWatchman: boolean): parcelWatcher.BackendType {
+function pickBackend(
+  useWatchman: boolean,
+): parcelWatcher.BackendType | undefined {
   if (useWatchman) {
     return 'watchman';
   }
@@ -35,7 +37,12 @@ function pickBackend(useWatchman: boolean): parcelWatcher.BackendType {
     case 'win32':
       return 'windows';
     default:
-      return 'brute-force';
+      // Jest only supports the three platforms above. Elsewhere, omit the
+      // option so parcel's own default resolution picks the best compiled
+      // backend. Never name 'brute-force': it is the snapshot-only backend
+      // and its subscribe() aborts the process (throws a non-std::exception
+      // the binding doesn't catch).
+      return undefined;
   }
 }
 
@@ -56,7 +63,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private readonly _dot: boolean;
   private readonly _glob: ReadonlyArray<string>;
   private readonly _doIgnore: (path: string) => boolean;
-  private readonly _backend: parcelWatcher.BackendType;
+  private readonly _backend: parcelWatcher.BackendType | undefined;
   private _parcelIgnore: NonNullable<parcelWatcher.Options['ignore']>;
   private _subscription: parcelWatcher.AsyncSubscription | null = null;
   private _closed = false;
@@ -111,9 +118,17 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
         this._parcelOpts(),
       );
     } catch (error) {
-      if (!this._parcelIgnore.some(pattern => pattern instanceof RegExp)) {
+      const rejectedPattern = this._parcelIgnore.find(
+        pattern => pattern instanceof RegExp,
+      );
+      if (rejectedPattern == null) {
         throw error;
       }
+      // The retry can also swallow failures unrelated to the regex, silently
+      // costing the native-level ignore for the session — make it diagnosable.
+      console.warn(
+        `jest-haste-map: @parcel/watcher rejected the ignore pattern ${rejectedPattern}; ignored paths will still be watched and filtered in JS`,
+      );
       this._parcelIgnore = VCS_IGNORE_GLOBS;
       return parcelWatcher.subscribe(
         this.root,

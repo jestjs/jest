@@ -146,6 +146,47 @@ describe('ChangeQueue', () => {
     queue.stop();
   });
 
+  it('drops a delete event for a path that was never tracked', async () => {
+    const hasteMap = createEmptyMap();
+    const callbacks = makeCallbacks();
+
+    const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
+    queue.start();
+    queue.onChange('delete', path.join('src', 'Ghost.js'), ROOT, undefined);
+    await Promise.resolve();
+    jest.advanceTimersByTime(INTERVAL);
+
+    expect(callbacks.emit).not.toHaveBeenCalled();
+    queue.stop();
+  });
+
+  it('emits a delete event for a tracked path', async () => {
+    const hasteMap = createEmptyMap();
+    hasteMap.files.set(path.join('src', 'Banana.js'), [
+      'Banana',
+      999,
+      42,
+      1,
+      '',
+      null,
+    ]);
+    const callbacks = makeCallbacks();
+
+    const queue = new ChangeQueue(hasteMap, ['js'], callbacks);
+    queue.start();
+    queue.onChange('delete', path.join('src', 'Banana.js'), ROOT, undefined);
+    await Promise.resolve();
+    jest.advanceTimersByTime(INTERVAL);
+
+    expect(callbacks.emit).toHaveBeenCalledTimes(1);
+    const [event] = jest.mocked(callbacks.emit).mock.calls[0];
+    expect(event.eventsQueue[0]).toMatchObject({
+      filePath: path.join(ROOT, 'src', 'Banana.js'),
+      type: 'delete',
+    });
+    queue.stop();
+  });
+
   it('stop() clears the interval so no further emissions occur', async () => {
     const hasteMap = createEmptyMap();
     const callbacks = makeCallbacks();

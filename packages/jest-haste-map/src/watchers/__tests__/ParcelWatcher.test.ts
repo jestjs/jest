@@ -325,7 +325,6 @@ describe('ParcelWatcher', () => {
       ['darwin', 'fs-events'],
       ['linux', 'inotify'],
       ['win32', 'windows'],
-      ['freebsd', 'brute-force'],
     ])(
       'selects %s backend on %s when useWatchman=false',
       async (platform, backend) => {
@@ -342,6 +341,18 @@ describe('ParcelWatcher', () => {
         );
       },
     );
+
+    it('omits the backend on unsupported platforms so parcel picks its default', async () => {
+      Object.defineProperty(process, 'platform', {value: 'freebsd'});
+      const watcher = makeWatcher(ROOT, {...defaultOpts, useWatchman: false});
+      await waitReady(watcher);
+      const subscribeOpts = (
+        parcelWatcher.subscribe as jest.MockedFunction<
+          typeof parcelWatcher.subscribe
+        >
+      ).mock.calls[0][2];
+      expect(subscribeOpts?.backend).toBeUndefined();
+    });
 
     it('selects watchman backend when useWatchman=true', async () => {
       const watcher = makeWatcher(ROOT, {...defaultOpts, useWatchman: true});
@@ -393,7 +404,10 @@ describe('ParcelWatcher', () => {
       expect(await subscribedIgnore(() => false)).toEqual(VCS);
     });
 
-    it('retries without the regex when the native matcher rejects it', async () => {
+    it('retries without the regex when the native matcher rejects it, and warns', async () => {
+      const consoleWarn = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
       const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
         typeof parcelWatcher.subscribe
       >;
@@ -410,6 +424,10 @@ describe('ParcelWatcher', () => {
       expect(subscribeMock).toHaveBeenCalledTimes(2);
       expect(subscribeMock.mock.calls[0][2]?.ignore).toEqual([ignored, ...VCS]);
       expect(subscribeMock.mock.calls[1][2]?.ignore).toEqual(VCS);
+      expect(consoleWarn).toHaveBeenCalledWith(
+        expect.stringContaining(String(ignored)),
+      );
+      consoleWarn.mockRestore();
     });
 
     it('does not retry when the ignore list has no regex', async () => {
