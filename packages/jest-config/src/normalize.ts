@@ -28,7 +28,14 @@ import {
   requireOrImportModule,
   tryRealpath,
 } from 'jest-util';
-import {ValidationError, validate} from 'jest-validate';
+import {
+  ValidationError,
+  type ValidationOptions,
+  createDidYouMeanMessage,
+  format,
+  logValidationWarning,
+  validate,
+} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
@@ -54,6 +61,47 @@ import {
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
+
+const GLOBAL_ONLY_OPTIONS = new Set(
+  Object.keys(VALID_CONFIG).filter(
+    key => !Object.hasOwn(VALID_PROJECT_CONFIG, key),
+  ),
+);
+
+const unknownProjectOption = (
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
+  option: string,
+  options: ValidationOptions,
+  path?: Array<string>,
+): void => {
+  const warningTitle =
+    (options.title && options.title.warning) ?? 'Validation Warning';
+  const optionPath = path && path.length > 0 ? `${path.join('.')}.` : '';
+  if ((!path || path.length === 0) && GLOBAL_ONLY_OPTIONS.has(option)) {
+    logValidationWarning(
+      warningTitle,
+      `  Option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} is not supported in an individual project configuration.\n  Move it to the root configuration.`,
+      options.comment,
+    );
+  } else {
+    const didYouMean = createDidYouMeanMessage(
+      option,
+      Object.keys(exampleConfig),
+    );
+    logValidationWarning(
+      warningTitle,
+      `  Unknown option ${chalk.bold(
+        `"${optionPath}${option}"`,
+      )} with value ${chalk.bold(format(config[option]))} was found.${
+        didYouMean && ` ${didYouMean}`
+      }\n  This is probably a typing mistake. Fixing it will remove this message.`,
+      options.comment,
+    );
+  }
+};
 
 export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
@@ -126,9 +174,9 @@ const setupPreset = async (
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.startsWith('.')
+    presetPath.startsWith('.') || path.isAbsolute(presetPath)
       ? presetPath
-      : path.join(presetPath, PRESET_NAME),
+      : `${presetPath}/${PRESET_NAME}`,
     {
       basedir: options.rootDir,
       extensions: PRESET_EXTENSIONS,
@@ -169,7 +217,9 @@ const setupPreset = async (
           );
         }
         throw createConfigError(
-          `  Preset ${chalk.bold(presetPath)} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
+          `  Preset ${chalk.bold(
+            presetPath,
+          )} not found relative to rootDir ${chalk.bold(options.rootDir)}.`,
         );
       }
       throw createConfigError(
@@ -504,6 +554,7 @@ export default async function normalize(
       'testEnvironmentOptions',
       'transform',
     ],
+    ...(isProjectOptions && {unknown: unknownProjectOption}),
   });
 
   let options = normalizeMissingOptions(
@@ -654,10 +705,39 @@ export default async function normalize(
       }
       case 'runner': {
         const option = oldOptions[key];
+        let runnerPath: string | undefined;
+        if (Array.isArray(option)) {
+          if (typeof option[0] !== 'string' || option[0].length === 0) {
+            throw createConfigError(
+              '  Runner must be a string or a tuple [string, object].\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          runnerPath = option[0];
+          const runnerOptions = option[1];
+          if (
+            runnerOptions != null &&
+            (typeof runnerOptions !== 'object' ||
+              Array.isArray(runnerOptions) ||
+              Object.getPrototypeOf(runnerOptions) !== Object.prototype)
+          ) {
+            throw createConfigError(
+              '  Runner options must be a plain object.\n' +
+                '  Configuration Documentation:\n' +
+                '  https://jestjs.io/docs/configuration#runner-string--string-object',
+            );
+          }
+          newOptions.runnerOptions =
+            (runnerOptions as Record<string, unknown>) ?? {};
+        } else {
+          runnerPath = option;
+          newOptions.runnerOptions = {};
+        }
         value =
-          option &&
+          runnerPath &&
           resolveRunner(newOptions.resolver, {
-            filePath: option,
+            filePath: runnerPath,
             requireResolveFunction: requireResolve,
             rootDir: options.rootDir,
           });
@@ -859,7 +939,11 @@ export default async function normalize(
           value = oldOptions[key];
         } else {
           value = {
-            color: getDisplayNameColor(options.runner),
+            color: getDisplayNameColor(
+              Array.isArray(options.runner)
+                ? options.runner[0]
+                : options.runner,
+            ),
             name: displayName,
           };
         }
@@ -937,6 +1021,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerGracefulExitTimeout':
       case 'workerThreads':
         value = oldOptions[key];
         break;
@@ -1000,6 +1085,10 @@ export default async function normalize(
 
   if (newOptions.runner === DEFAULT_CONFIG.runner) {
     newOptions.runner = require.resolve(newOptions.runner);
+  }
+
+  if (newOptions.runnerOptions == null) {
+    newOptions.runnerOptions = {};
   }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);

@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`does not enforce import assertions 1`] = `
-"Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching native-esm-missing-import-assertions.test.js."
-`;
-
 exports[`on node >=16.11.0 support re-exports from CJS of dual packages 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
@@ -16,12 +8,28 @@ Time:        <<REPLACED>>
 Ran all test suites matching native-esm-deep-cjs-reexport.test.js."
 `;
 
-exports[`on node >=16.12.0 <22.0.0 supports import assertions 1`] = `
+exports[`on node >=16.12.0 <22.0.0 supports legacy import assertions 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
+Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching native-esm-import-assertions.test.js."
+`;
+
+exports[`on node >=22.0.0 rejects mismatched import attributes 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching native-esm-import-attribute-mismatch.test.js."
+`;
+
+exports[`on node >=22.0.0 supports import attributes 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching native-esm-import-attributes.test.js."
 `;
 
 exports[`properly handle re-exported native modules in ESM via CJS 1`] = `
@@ -70,4 +78,12 @@ Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching native-esm.tla.test.js."
+`;
+
+exports[`warns but does not throw on JSON import without attribute 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching native-esm-missing-import-assertions.test.js."
 `;

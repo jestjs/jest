@@ -7,24 +7,28 @@
 
 import greet, {helper} from '../babel-style-default.cjs';
 import plainDefault, {multiply, value} from '../plain-cjs.cjs';
+import fnDefault, {
+  helper as fnHelper,
+  splitCookiesString,
+} from '../fn-exports.cjs';
 import {getCount as countA, increment as incA} from '../importer-a.mjs';
 import {getCount as countB, increment as incB} from '../importer-b.mjs';
 
 // ── __esModule interop ────────────────────────────────────────────────────────
 
-test('default import of __esModule CJS unwraps .default, not the whole exports', () => {
-  // greet should be the function, not {__esModule: true, default: fn, helper: fn}
-  expect(typeof greet).toBe('function');
-  expect(greet('World')).toBe('Hello, World!');
+test('default import of __esModule CJS is the whole module.exports (Node-aligned)', () => {
+  // default is the whole module.exports, matching Node's native CJS-from-ESM behavior.
+  expect(typeof greet).toBe('object');
+  expect(greet.default('World')).toBe('Hello, World!');
 });
 
 test('named imports of __esModule CJS work alongside default', () => {
   expect(helper(7)).toBe(14);
 });
 
-test('__esModule key is not exposed as a named export', async () => {
+test('__esModule key is exposed as a named export, matching Node behavior', async () => {
   const ns = await import('../babel-style-default.cjs');
-  expect(Object.keys(ns)).not.toContain('__esModule');
+  expect(ns.__esModule).toBe(true);
 });
 
 // ── plain CJS (no __esModule flag) ───────────────────────────────────────────
@@ -36,6 +40,18 @@ test('default import of plain CJS is the whole module.exports object', () => {
 test('named imports from plain CJS work', () => {
   expect(value).toBe(99);
   expect(multiply(6, 7)).toBe(42);
+});
+
+// ── CJS with function module.exports ─────────────────────────────────────────
+
+test('default import of function-export CJS is the function itself', () => {
+  expect(typeof fnDefault).toBe('function');
+  expect(fnDefault('x')).toEqual({input: 'x'});
+});
+
+test('named imports from function-export CJS work', () => {
+  expect(splitCookiesString('a,b')).toEqual(['a', 'b']);
+  expect(fnHelper(21)).toBe(42);
 });
 
 // ── CJS-as-ESM caching (singleton) ───────────────────────────────────────────

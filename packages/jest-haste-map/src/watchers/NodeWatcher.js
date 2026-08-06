@@ -50,6 +50,7 @@ module.exports = class NodeWatcher extends EventEmitter {
       this.emit.bind(this, 'ready'),
       this.checkedEmitError,
       this.ignored,
+      opts.statCache,
     );
   }
 

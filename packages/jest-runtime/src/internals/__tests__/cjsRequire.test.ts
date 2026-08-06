@@ -42,6 +42,7 @@ function makeResolution(
     isCoreModule: jest.fn(() => false),
     resolveCjs: jest.fn(),
     resolveCjsFromDirIfExists: jest.fn(() => null),
+    resolveCjsStub: jest.fn(() => null),
     ...overrides,
   } as unknown as Resolution;
 }
@@ -168,6 +169,25 @@ describe('RequireBuilder', () => {
       expect(() => resolveVia(builder, 'foo', {paths: ['./a', './b']})).toThrow(
         Resolver.ModuleNotFoundError,
       );
+    });
+
+    test('resolves moduleNameMapper before walking options.paths', () => {
+      const resolveCjsStub = jest.fn(
+        (_from: string, _moduleName: string) => '/mapped.js',
+      );
+      const resolveCjsFromDirIfExists = jest.fn(() => null);
+      const builder = makeBuilder({
+        resolution: makeResolution({
+          resolveCjsFromDirIfExists,
+          resolveCjsStub,
+        }),
+      });
+
+      expect(resolveVia(builder, '@foo/js', {paths: ['./a']})).toBe(
+        '/mapped.js',
+      );
+      expect(resolveCjsStub).toHaveBeenCalledWith('/a/b/from.js', '@foo/js');
+      expect(resolveCjsFromDirIfExists).not.toHaveBeenCalled();
     });
 
     test('falls back to mock module when resolveCjs throws', () => {

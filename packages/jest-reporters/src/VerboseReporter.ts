@@ -84,7 +84,8 @@ export default class VerboseReporter extends DefaultReporter {
         test.context.config,
         result,
       );
-      if (!result.testExecError && !result.skipped) {
+      const verbose = test.context.config.verbose ?? this._globalConfig.verbose;
+      if (verbose && !result.testExecError && !result.skipped) {
         this._logTestResults(result.testResults);
       }
       this.printTestFileFailureMessage(

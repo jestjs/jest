@@ -8,6 +8,8 @@
 import type {SyntheticModule, Module as VMModule} from 'node:vm';
 import type {Module} from '@jest/environment';
 
+export type ImportAttributes = Record<string, string | undefined>;
+
 export type ESModule = VMModule | SyntheticModule;
 export type JestModule = ESModule | Promise<ESModule>;
 export type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;

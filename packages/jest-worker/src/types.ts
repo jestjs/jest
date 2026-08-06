@@ -147,6 +147,7 @@ export type WorkerFarmOptions = {
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerPoolOptions = {
@@ -157,6 +158,7 @@ export type WorkerPoolOptions = {
   numWorkers: number;
   enableWorkerThreads: boolean;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerOptions = {

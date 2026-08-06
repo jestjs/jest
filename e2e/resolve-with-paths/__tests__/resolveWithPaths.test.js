@@ -40,3 +40,9 @@ test('throws module not found error if the module cannot be found from given pat
     expect.objectContaining({code: 'MODULE_NOT_FOUND'}),
   );
 });
+
+test('resolves moduleNameMapper with paths option', () => {
+  expect(require.resolve('@foo/js', {paths: [__dirname]})).toBe(
+    require.resolve('../js/index.js'),
+  );
+});

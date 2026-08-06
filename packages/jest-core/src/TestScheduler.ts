@@ -8,6 +8,7 @@
 import chalk from 'chalk';
 import {GITHUB_ACTIONS} from 'ci-info';
 import exit from 'exit-x';
+import stableStringify from 'fast-json-stable-stringify';
 import {
   AgentReporter,
   CoverageReporter,
@@ -76,6 +77,7 @@ export type ReporterConstructor = new (
 type TestRunnerConstructor = new (
   globalConfig: Config.GlobalConfig,
   testRunnerContext: TestRunnerContext,
+  options?: Record<string, unknown>,
 ) => JestTestRunner;
 
 export type TestSchedulerContext = ReporterContext & TestRunnerContext;
@@ -84,11 +86,7 @@ export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
   context: TestSchedulerContext,
 ): Promise<TestScheduler> {
-  const scheduler = new TestScheduler(globalConfig, context);
-
-  await scheduler._setupReporters();
-
-  return scheduler;
+  return new TestScheduler(globalConfig, context);
 }
 
 class TestScheduler {
@@ -117,6 +115,8 @@ class TestScheduler {
     tests: Array<Test>,
     watcher: TestWatcher,
   ): Promise<AggregatedResult> {
+    await this._setupReporters(tests);
+
     const onTestFileStart = this._dispatcher.onTestFileStart.bind(
       this._dispatcher,
     );
@@ -245,16 +245,21 @@ class TestScheduler {
       await Promise.all(
         [...testContexts].map(async context => {
           const {config} = context;
-          if (!testRunners[config.runner]) {
+          const runnerKey = `${config.runner}\0${stableRunnerOptionsKey(config.runnerOptions)}`;
+          if (!testRunners[runnerKey]) {
             const transformer = await createScriptTransformer(config);
             const Runner: TestRunnerConstructor =
               await transformer.requireAndTranspileModule(config.runner);
-            const runner = new Runner(this._globalConfig, {
-              changedFiles: this._context.changedFiles,
-              sourcesRelatedToTestsInChangedFiles:
-                this._context.sourcesRelatedToTestsInChangedFiles,
-            });
-            testRunners[config.runner] = runner;
+            const runner = new Runner(
+              this._globalConfig,
+              {
+                changedFiles: this._context.changedFiles,
+                sourcesRelatedToTestsInChangedFiles:
+                  this._context.sourcesRelatedToTestsInChangedFiles,
+              },
+              config.runnerOptions,
+            );
+            testRunners[runnerKey] = runner;
             contextsByTestRunner.set(runner, context);
           }
         }),
@@ -354,25 +359,30 @@ class TestScheduler {
   ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
-        const runner = test.context.config.runner;
-        if (!testRuns[runner]) {
-          testRuns[runner] = [];
+        const {config} = test.context;
+        const runnerKey = `${config.runner}\0${stableRunnerOptionsKey(config.runnerOptions)}`;
+        if (!testRuns[runnerKey]) {
+          testRuns[runnerKey] = [];
         }
-        testRuns[runner].push(test);
+        testRuns[runnerKey].push(test);
         return testRuns;
       }, Object.create(null));
     } else if (tests.length > 0 && tests[0] != null) {
       // If there is only one runner, don't partition the tests.
+      const {config} = tests[0].context;
+      const runnerKey = `${config.runner}\0${stableRunnerOptionsKey(config.runnerOptions)}`;
       return Object.assign(Object.create(null), {
-        [tests[0].context.config.runner]: tests,
+        [runnerKey]: tests,
       });
     } else {
       return null;
     }
   }
 
-  async _setupReporters() {
-    const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
+  async _setupReporters(tests: Array<Test>) {
+    const {collectCoverage: coverage, notify} = this._globalConfig;
+    const verbose =
+      this._globalConfig.verbose || tests.some(t => t.context.config.verbose);
     const reporters = this._globalConfig.reporters || [
       [detectAgent() ? 'agent' : 'default', {}],
     ];
@@ -425,8 +435,8 @@ class TestScheduler {
     options: Record<string, unknown>,
   ) {
     try {
-      const Reporter: ReporterConstructor =
-        await requireOrImportModule(reporter);
+      const Reporter =
+        await requireOrImportModule<ReporterConstructor>(reporter);
 
       this.addReporter(
         new Reporter(this._globalConfig, options, this._context),
@@ -514,3 +524,10 @@ const buildExecError = (err: unknown): SerializableError => {
   }
   return strToError(JSON.stringify(err));
 };
+
+function stableRunnerOptionsKey(
+  options: Record<string, unknown> | undefined,
+): string {
+  if (options == null || Object.keys(options).length === 0) return '{}';
+  return stableStringify(options);
+}

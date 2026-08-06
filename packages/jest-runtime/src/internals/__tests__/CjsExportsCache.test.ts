@@ -7,6 +7,7 @@
 
 import {CjsExportsCache} from '../CjsExportsCache';
 import type {FileCache} from '../FileCache';
+import {CjsParseError} from '../ModuleExecutor';
 import type {Resolution} from '../Resolution';
 import type {TransformCache} from '../TransformCache';
 
@@ -146,6 +147,24 @@ describe('CjsExportsCache', () => {
     ]);
     expect(loadNativeAddon).toHaveBeenCalledWith('/from.js', '/addon.node');
     expect(readFile).not.toHaveBeenCalled();
+  });
+
+  test('throws CjsParseError when source contains ESM syntax', () => {
+    const {resolution} = makeResolution();
+    const {fileCache} = makeFileCache({
+      '/esm.js': 'export default function thunk() {}',
+    });
+    const cache = new CjsExportsCache({
+      fileCache,
+      loadCoreReexport: jest.fn(),
+      loadNativeAddon: jest.fn(),
+      resolution,
+      transformCache: makeTransformCache(),
+    });
+
+    expect(() => cache.getExportsOf('/from.js', '/esm.js')).toThrow(
+      CjsParseError,
+    );
   });
 
   test('clear() drops the cache so subsequent calls re-parse', () => {

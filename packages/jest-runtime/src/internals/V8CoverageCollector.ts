@@ -78,7 +78,9 @@ export class V8CoverageCollector {
       .filter(
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
-          res.url.startsWith(this.config.rootDir) &&
+          res.url.startsWith(
+            this.coverageOptions.globalRootDir ?? this.config.rootDir,
+          ) &&
           shouldInstrument(
             res.url,
             this.coverageOptions,

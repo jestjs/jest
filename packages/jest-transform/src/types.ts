@@ -14,6 +14,7 @@ export interface ShouldInstrumentOptions extends Pick<
 > {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
+  globalRootDir?: string;
 }
 
 export interface Options

@@ -6,10 +6,12 @@
  */
 
 import {
-  type FakeTimerWithContext,
+  type FakeTimers as FakeTimerWithContext,
   type FakeMethod as FakeableAPI,
-  type InstalledClock,
-  type FakeTimerInstallOpts as SinonFakeTimersConfig,
+  type Clock as InstalledClock,
+  type Config as SinonFakeTimersConfig,
+  type TemporalDuration,
+  type TemporalTimelike,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -98,15 +100,27 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number): void {
+  advanceTimersByTime(msToRun: number | TemporalDuration): void {
     if (this._checkFakeTimers()) {
-      this._clock.tick(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      this._clock.tick(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
-  async advanceTimersByTimeAsync(msToRun: number): Promise<void> {
+  async advanceTimersByTimeAsync(
+    msToRun: number | TemporalDuration,
+  ): Promise<void> {
     if (this._checkFakeTimers()) {
-      await this._clock.tickAsync(msToRun);
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      await this._clock.tickAsync(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
     }
   }
 
@@ -149,9 +163,9 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date): void {
+  setSystemTime(now?: number | Date | TemporalTimelike): void {
     if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now instanceof Date ? now.getTime() : now);
+      this._clock.setSystemTime(now);
     }
   }
 
@@ -226,10 +240,7 @@ export default class FakeTimers {
     return {
       advanceTimeDelta,
       loopLimit: fakeTimersConfig.timerLimit || 100_000,
-      now:
-        fakeTimersConfig.now instanceof Date
-          ? fakeTimersConfig.now.getTime()
-          : (fakeTimersConfig.now ?? Date.now()),
+      now: fakeTimersConfig.now ?? Date.now(),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
       toFake: [...toFake],

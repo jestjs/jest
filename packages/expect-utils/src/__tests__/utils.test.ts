@@ -653,6 +653,18 @@ describe('iterableEquality', () => {
 
     expect(iterableEquality(a, b)).toBe(false);
   });
+
+  test('does not throw when iterating an object with a TypedArray iterator', () => {
+    const badIterable = {
+      [Symbol.iterator]: Uint8Array.prototype[Symbol.iterator],
+    };
+
+    expect(() => iterableEquality(badIterable, badIterable)).not.toThrow();
+    // Returns undefined so equals() can fall through to Object.is / property checks.
+    expect(iterableEquality(badIterable, badIterable)).toBeUndefined();
+    // Same reference must still be considered equal via equals().
+    expect(equals(badIterable, badIterable, [iterableEquality])).toBe(true);
+  });
 });
 
 describe('typeEquality', () => {

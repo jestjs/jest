@@ -539,6 +539,172 @@ test('async test', async () => {
 });
 ```
 
+### `mockFn.whenCalledWith(...args)`
+
+Configures a return value or implementation that only fires when the mock is called with arguments matching `...args`. Useful when a single mock needs to behave differently for different argument lists without branching logic inside `mockImplementation`.
+
+```js
+const fn = jest.fn();
+fn.whenCalledWith('apple').mockReturnValue('red');
+fn.whenCalledWith('banana').mockReturnValue('yellow');
+
+fn('apple'); // 'red'
+fn('banana'); // 'yellow'
+fn('grape'); // undefined
+```
+
+The returned object is a real `Mock`, so anything you can chain on a regular `jest.fn()` chains here too: `mockReturnValue`, `mockReturnValueOnce`, `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue`, `mockRejectedValueOnce`, `mockImplementation`, `mockImplementationOnce`. Each matched call routes to that sub-mock; non-matching calls fall through to the base mock.
+
+#### Matching
+
+Each `args` slot accepts a literal or any [asymmetric matcher](ExpectAPI.md#expectanyconstructor):
+
+```js
+fn.whenCalledWith(expect.any(Number)).mockReturnValue('numeric');
+fn.whenCalledWith({user: expect.any(String)}).mockReturnValue('user');
+
+fn(42); // 'numeric'
+fn({user: 'alice'}); // 'user'
+```
+
+Structural equality, Map/Set discrimination, and asymmetric matchers all behave as you'd expect from [`toHaveBeenCalledWith()`](ExpectAPI.md#tohavebeencalledwitharg1-arg2-). Custom testers registered via `expect.addEqualityTesters(...)` are **not currently** applied to `whenCalledWith` matching — if that's a gap for your use case, please open an issue.
+
+- **Arity** — `whenCalledWith('a')` matches `fn('a')` and `fn('a', undefined)`, but **not** `fn('a', 'b')` or `fn()`. (Trailing `undefined` is allowed for parity with Jest's existing call-tracking semantics.)
+- **Deep equality** — objects, arrays, Maps, and Sets are compared structurally.
+
+#### Multiple matchers
+
+Distinct matchers route independently:
+
+```js
+const fn = jest.fn();
+fn.whenCalledWith('a').mockReturnValue(1);
+fn.whenCalledWith('b').mockReturnValue(2);
+fn.whenCalledWith('c').mockReturnValue(3);
+
+fn('a'); // 1
+fn('b'); // 2
+fn('c'); // 3
+fn('z'); // undefined
+```
+
+Two registrations whose matchers _overlap_ on a given call (e.g. `expect.objectContaining({a: 1})` and `expect.objectContaining({b: 2})` against `fn({a: 1, b: 2})`) both match. The [precedence rules](#precedence) below decide which one fires.
+
+#### Onces and persistents
+
+`mockReturnValueOnce` queues a one-shot value on the matched branch; `mockReturnValue` sets the persistent fallback. Once values drain in registration order, then the persistent fires:
+
+```js
+fn.whenCalledWith('x')
+  .mockReturnValueOnce('A')
+  .mockReturnValueOnce('B')
+  .mockReturnValue('persistent');
+
+fn('x'); // 'A'
+fn('x'); // 'B'
+fn('x'); // 'persistent'
+fn('x'); // 'persistent'
+```
+
+Async variants work identically:
+
+```js
+const fetchUser = jest.fn();
+fetchUser.whenCalledWith(1).mockResolvedValue({id: 1});
+fetchUser.whenCalledWith(2).mockRejectedValue(new Error('not found'));
+```
+
+#### Repeat calls return fresh branches
+
+Each `whenCalledWith(...)` call returns a brand-new sub-mock, even when the matchers look the same. Calls with overlapping matchers are resolved by the [precedence rules](#precedence) below — the most recently registered persistent wins, and queued onces drain in registration order across every matching branch:
+
+```js
+fn.whenCalledWith('x')
+  .mockReturnValueOnce('first-once')
+  .mockReturnValue('first-persistent');
+fn.whenCalledWith('x')
+  .mockReturnValueOnce('second-once')
+  .mockReturnValue('second-persistent');
+
+fn('x'); // 'first-once'         (earliest matching branch's queued once)
+fn('x'); // 'second-once'        (next branch's queued once)
+fn('x'); // 'second-persistent'  (last-registered persistent wins after onces drain)
+fn('x'); // 'second-persistent'
+```
+
+#### Fall-through
+
+When a matched branch is exhausted (queued onces consumed and no persistent set) the call falls through to the base mock — it does **not** silently return `undefined`:
+
+```js
+fn.mockReturnValue('default');
+fn.whenCalledWith('x').mockReturnValueOnce('once');
+
+fn('x'); // 'once'
+fn('x'); // 'default' (matched branch drained, falls through)
+fn('y'); // 'default' (no matcher fires)
+```
+
+#### Precedence
+
+When multiple registrations could match a single call, they're resolved in this order:
+
+| Priority | Source |
+| --- | --- |
+| 1 | Base `*Once` queue (`fn.mockReturnValueOnce`, `fn.mockImplementationOnce`, etc.) — the most explicit one-shot override, fires regardless of matching branches |
+| 2 | Earliest-registered matching branch with a queued `*Once` |
+| 3 | Last-registered matching branch with a persistent impl |
+| 4 | Implementation set on the base (`fn.mockReturnValue`, the `spyOn` original method, etc.) — or `undefined` if none |
+
+```js
+fn.mockReturnValue('base');
+fn.whenCalledWith('x').mockReturnValue('matched-persistent');
+fn.whenCalledWith('x').mockReturnValueOnce('matched-once');
+fn.mockReturnValueOnce('base-once');
+
+fn('x'); // 'base-once'           — priority 1
+fn('x'); // 'matched-once'        — priority 2
+fn('x'); // 'matched-persistent'  — priority 3
+fn('y'); // 'base'                — priority 4 (no match)
+```
+
+#### On spies
+
+Works with [`jest.spyOn()`](JestObjectAPI.md#jestspyonobject-methodname). Non-matching calls fall through to the spied object's original method:
+
+```js
+const target = {greet: name => `hello ${name}`};
+const spy = jest.spyOn(target, 'greet');
+spy.whenCalledWith('world').mockReturnValue('hi world');
+
+target.greet('world'); // 'hi world'
+target.greet('jest'); // 'hello jest' (original method)
+```
+
+#### Resetting
+
+`mockReset()` on the parent clears all `whenCalledWith` registrations and cascades the reset to each sub-mock — so any references you kept reflect the reset state. Calling `mockReset()` on a sub-mock clears only that branch.
+
+```js
+fn.whenCalledWith('x').mockReturnValue('X');
+fn('x'); // 'X'
+fn.mockReset();
+fn('x'); // undefined — registration gone
+```
+
+#### TypeScript
+
+`whenCalledWith` accepts the same matcher tuple as `toHaveBeenCalledWith` — each parameter slot is constrained by the mock's parameter type, but also accepts an asymmetric matcher in that slot. Chained `mockReturnValue`/`mockResolvedValue` are constrained by the mock's return type:
+
+```ts
+const fn = jest.fn<(id: number, options?: {strict: boolean}) => string>();
+
+fn.whenCalledWith(1, {strict: true}).mockReturnValue('exact');
+fn.whenCalledWith(expect.any(Number)).mockReturnValue('any number');
+fn.whenCalledWith(1).mockReturnValue(42); // Type error — return must be string
+fn.whenCalledWith('one'); // Type error — first arg must be number
+```
+
 ### `mockFn.withImplementation(fn, callback)`
 
 Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.

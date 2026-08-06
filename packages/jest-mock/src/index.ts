@@ -9,6 +9,11 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
+import {
+  type FunctionParameters,
+  equals,
+  iterableEquality,
+} from '@jest/expect-utils';
 import {isPromise} from 'jest-util';
 
 export type MockMetadataType =
@@ -126,11 +131,49 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type ResolveType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<infer U> ? U : never;
+// `ReturnType<T>` picks the LAST overload signature of `T`, so for a function
+// like `pg.Client['end']` whose overloads are `(): Promise<void>` and
+// `(cb): void`, `ReturnType` collapses to `void` and the Promise-shaped
+// overload disappears — `mockResolvedValue` / `mockRejectedValue` then infer
+// `never` and reject any value. Walk up to four overloads and union their
+// return types so the Promise-shaped overload (if any) survives.
+type OverloadedReturnType<T> = T extends {
+  (...args: Array<any>): infer R1;
+  (...args: Array<any>): infer R2;
+  (...args: Array<any>): infer R3;
+  (...args: Array<any>): infer R4;
+}
+  ? R1 | R2 | R3 | R4
+  : T extends {
+        (...args: Array<any>): infer R1;
+        (...args: Array<any>): infer R2;
+        (...args: Array<any>): infer R3;
+      }
+    ? R1 | R2 | R3
+    : T extends {
+          (...args: Array<any>): infer R1;
+          (...args: Array<any>): infer R2;
+        }
+      ? R1 | R2
+      : T extends (...args: Array<any>) => infer R
+        ? R
+        : never;
 
-type RejectType<T extends FunctionLike> =
-  ReturnType<T> extends PromiseLike<any> ? unknown : never;
+type ResolveType<T extends FunctionLike> = [
+  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
+] extends [never]
+  ? never
+  : Extract<OverloadedReturnType<T>, PromiseLike<any>> extends PromiseLike<
+        infer U
+      >
+    ? U
+    : never;
+
+type RejectType<T extends FunctionLike> = [
+  Extract<OverloadedReturnType<T>, PromiseLike<any>>,
+] extends [never]
+  ? never
+  : unknown;
 
 export interface MockInstance<
   T extends FunctionLike = UnknownFunction,
@@ -155,6 +198,7 @@ export interface MockInstance<
   mockResolvedValueOnce(value: ResolveType<T>): this;
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
+  whenCalledWith(...args: FunctionParameters<T>): Mock<T>;
 }
 
 export interface Replaced<T = unknown> {
@@ -233,10 +277,17 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
   results: Array<MockFunctionResult<T>>;
 };
 
+type WhenCalledWithRegistration = {
+  matchers: ReadonlyArray<unknown>;
+  subMock: Mock;
+};
+
 type MockFunctionConfig = {
+  fallbackImpl: Function | undefined;
   mockImpl: Function | undefined;
   mockName: string;
   specificMockImpls: Array<Function>;
+  whenCalledWithRegistrations: Array<WhenCalledWithRegistration>;
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
@@ -547,6 +598,69 @@ export class ModuleMocker {
     return [...slots];
   }
 
+  // Without this, sub-mock references the user kept via `whenCalledWith(...)`
+  // would silently retain their prior impl and queued onces after the parent
+  // is reset.
+  private _resetWhenCalledWithSubMocks(f: Mock): void {
+    const config = this._mockConfigRegistry.get(f);
+    if (!config) return;
+    for (const branch of config.whenCalledWithRegistrations) {
+      branch.subMock.mockReset();
+    }
+  }
+
+  private _makeWhenDispatcherImpl<T extends FunctionLike>(
+    f: Mock<T>,
+  ): Function {
+    const ensureConfig = (mock: Mock) => this._ensureMockConfig(mock);
+    // Precedence rules, in order of priority:
+    //   1. The earliest matching branch with a queued `*Once` impl drains
+    //      first. This is what gives users the intuitive "exhaust all queued
+    //      onces before falling back" behavior even when the queued once was
+    //      registered against a different (but overlapping) matcher.
+    //   2. Among matching branches with no queued onces, the most-recently
+    //      registered persistent impl wins.
+    //   3. If no matching branch has any active impl, fall through to
+    //      `fallbackImpl` — whatever mockImpl was present when this
+    //      dispatcher took over (e.g. spyOn's original-method bridge).
+    // Targets are always invoked via `.apply` (never `Reflect.construct`),
+    // mirroring `mockConstructor`'s own handling of `new` and keeping the
+    // behavior consistent for non-constructable targets (arrow fn fallbacks,
+    // method-shorthand spies, etc.).
+    return function whenCalledWithDispatcherImpl(
+      this: unknown,
+      ...callArgs: Parameters<T>
+    ) {
+      const config = ensureConfig(f);
+      const matching = config.whenCalledWithRegistrations.filter(branch =>
+        equals(branch.matchers, callArgs, [iterableEquality]),
+      );
+      // (1) Forward find: first matching branch with a queued once.
+      const onceBranch = matching.find(
+        branch => ensureConfig(branch.subMock).specificMockImpls.length > 0,
+      );
+      if (onceBranch) {
+        return onceBranch.subMock.apply(this, callArgs);
+      }
+      // (2) Reverse walk for last-registered persistent.
+      for (let i = matching.length - 1; i >= 0; i--) {
+        const branch = matching[i];
+        if (ensureConfig(branch.subMock).mockImpl !== undefined) {
+          return branch.subMock.apply(this, callArgs);
+        }
+      }
+      // (3) Fall through to the pre-dispatcher impl.
+      if (config.fallbackImpl !== undefined) {
+        return config.fallbackImpl.apply(this, callArgs);
+      }
+      // (4) Fall through to the prototype impl (class hierarchy auto-mocks).
+      if (f._protoImpl) {
+        return f._protoImpl.apply(this, callArgs);
+      }
+      return undefined;
+    };
+  }
+
   private _ensureMockConfig(f: Mock): MockFunctionConfig {
     let config = this._mockConfigRegistry.get(f);
     if (!config) {
@@ -572,9 +686,11 @@ export class ModuleMocker {
 
   private _defaultMockConfig(): MockFunctionConfig {
     return {
+      fallbackImpl: undefined,
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
+      whenCalledWithRegistrations: [],
     };
   }
 
@@ -731,7 +847,19 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
+      // One dispatcher per mock, captured in closure. We compare it against
+      // mockConfig.mockImpl by identity to detect whether the dispatcher is
+      // currently installed or whether some other call (e.g. mockImplementation)
+      // replaced it.
+      const dispatcherImpl = this._makeWhenDispatcherImpl(f);
+      f.getMockImplementation = () => {
+        const mockConfig = this._ensureMockConfig(f);
+        // The dispatcher is internal — surface the user's underlying impl.
+        if (mockConfig.mockImpl === dispatcherImpl) {
+          return mockConfig.fallbackImpl as T;
+        }
+        return mockConfig.mockImpl as T;
+      };
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -754,6 +882,7 @@ export class ModuleMocker {
 
       f.mockReset = () => {
         f.mockClear();
+        this._resetWhenCalledWithSubMocks(f);
         this._mockConfigRegistry.delete(f);
         return f;
       };
@@ -818,6 +947,7 @@ export class ModuleMocker {
         const mockConfig = this._ensureMockConfig(f);
         const previousImplementation = mockConfig.mockImpl;
         const previousSpecificImplementations = mockConfig.specificMockImpls;
+        const previousFallbackImpl = mockConfig.fallbackImpl;
         mockConfig.mockImpl = fn;
         mockConfig.specificMockImpls = [];
 
@@ -827,18 +957,41 @@ export class ModuleMocker {
           return returnedValue.then(() => {
             mockConfig.mockImpl = previousImplementation;
             mockConfig.specificMockImpls = previousSpecificImplementations;
+            mockConfig.fallbackImpl = previousFallbackImpl;
           });
         } else {
           mockConfig.mockImpl = previousImplementation;
           mockConfig.specificMockImpls = previousSpecificImplementations;
+          mockConfig.fallbackImpl = previousFallbackImpl;
         }
       }
 
       f.mockImplementation = (fn: T) => {
-        // next function call will use mock implementation return value
+        // next function call will use mock implementation return value;
+        // when whenCalledWith routing is active, set the fall-through instead
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.mockImpl = fn;
+        if (mockConfig.mockImpl === dispatcherImpl) {
+          mockConfig.fallbackImpl = fn;
+        } else {
+          mockConfig.mockImpl = fn;
+        }
         return f;
+      };
+
+      f.whenCalledWith = (...args: FunctionParameters<T>) => {
+        const mockConfig = this._ensureMockConfig(f);
+
+        // If the user replaced our dispatcher (e.g. via mockImplementation),
+        // reinstall it with their new mockImpl as the fallback. Keep prior
+        // registrations — re-arming a fallback shouldn't silently drop them.
+        if (mockConfig.mockImpl !== dispatcherImpl) {
+          mockConfig.fallbackImpl = mockConfig.mockImpl;
+          mockConfig.mockImpl = dispatcherImpl;
+        }
+
+        const subMock = this._makeComponent({type: 'function'}) as Mock<T>;
+        mockConfig.whenCalledWithRegistrations.push({matchers: args, subMock});
+        return subMock;
       };
 
       f.mockReturnThis = () =>
@@ -1182,8 +1335,12 @@ export class ModuleMocker {
       if (descriptor && descriptor.get) {
         const originalGet = descriptor.get;
         mock = this._makeComponent({type: 'function'}, () => {
-          descriptor!.get = originalGet;
-          Object.defineProperty(object, methodKey, descriptor!);
+          if (isMethodOwner) {
+            descriptor!.get = originalGet;
+            Object.defineProperty(object, methodKey, descriptor!);
+          } else {
+            delete object[methodKey];
+          }
         });
         descriptor.get = () => mock;
         Object.defineProperty(object, methodKey, descriptor);
@@ -1212,6 +1369,11 @@ export class ModuleMocker {
     propertyKey: keyof T,
     accessType: 'get' | 'set',
   ): MockInstance {
+    const isPropertyOwner = Object.prototype.hasOwnProperty.call(
+      object,
+      propertyKey,
+    );
+
     let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
     let proto = Object.getPrototypeOf(object);
 
@@ -1262,9 +1424,15 @@ export class ModuleMocker {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-expect-error: mock is assignable
-        descriptor![accessType] = original;
-        Object.defineProperty(object, propertyKey, descriptor!);
+        if (isPropertyOwner) {
+          // @ts-expect-error: mock is assignable
+          descriptor![accessType] = original;
+          Object.defineProperty(object, propertyKey, descriptor!);
+        } else {
+          // Inherited accessor: drop the own property the spy installed so the
+          // prototype accessor is exposed again instead of a stale copy.
+          delete object[propertyKey];
+        }
       });
 
       (descriptor[accessType] as Mock).mockImplementation(function (

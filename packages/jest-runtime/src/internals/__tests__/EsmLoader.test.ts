@@ -6,10 +6,16 @@
  */
 
 import {SourceTextModule, SyntheticModule, createContext} from 'node:vm';
-import {testWithSyncEsm, testWithVmEsm} from '@jest/test-utils';
+import {
+  testWithLinkedSyntheticModule,
+  testWithSyncEsm,
+  testWithVmEsm,
+} from '@jest/test-utils';
 import type {JestEnvironment} from '@jest/environment';
+import {invariant} from 'jest-util';
 import type {CjsExportsCache} from '../CjsExportsCache';
-import {EsmLoader} from '../EsmLoader';
+import {EsmLoader, LOAD_ASYNC, validateImportAttributes} from '../EsmLoader';
+import {CjsParseError} from '../ModuleExecutor';
 import type {FileCache} from '../FileCache';
 import type {JestGlobals} from '../JestGlobals';
 import type {MockState} from '../MockState';
@@ -104,17 +110,18 @@ function makeLoader(overrides: Partial<Stubs> = {}) {
 }
 
 describe('EsmLoader.tryLoadGraphSync', () => {
-  testWithSyncEsm('returns null when testState reports torn down', () => {
+  test('throws when testState reports torn down', () => {
     const {loader, stubs} = makeLoader();
     stubs.testState.teardown();
-    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-    expect(result).toBeNull();
+    expect(() =>
+      loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred'),
+    ).toThrow('torn down');
     expect(stubs.logFormattedReferenceError).toHaveBeenCalledWith(
       expect.stringContaining('torn down'),
     );
   });
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'returns cached fully-evaluated entry from registry',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -133,7 +140,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'bails when registry holds an unlinked module (legacy mid-flight stash)',
     () => {
       // Regression: `loadEsmModule`'s source-text branch does `registry.set`
@@ -149,11 +156,11 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       expect(stashed.status).toBe('unlinked');
       esmRegistry.set('/m.mjs', stashed);
       const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
-  testWithSyncEsm(
+  testWithVmEsm(
     'rethrows the cached error when registry holds an errored module',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -177,7 +184,7 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'rethrows when tryCommitSynthetic finds an errored entry (CJS-as-ESM)',
     async () => {
       // `resolveSpecifierForSyncGraph`'s CJS-as-ESM branch goes through
@@ -214,6 +221,36 @@ describe('EsmLoader.tryLoadGraphSync', () => {
   );
 
   testWithSyncEsm(
+    'falls through to native ESM when a CJS dep throws CjsParseError',
+    () => {
+      // When a .cjs file has ESM syntax, `buildCjsAsEsmSyntheticModule` throws
+      // `CjsParseError`. `resolveSpecifierForSyncGraph` catches it and falls
+      // through to the native ESM enqueue path rather than crashing the graph.
+      const {loader, stubs} = makeLoader({
+        shouldLoadAsEsm: jest.fn(p => !p.endsWith('.cjs')),
+      });
+      stubs.requireModuleOrMock.mockImplementation(() => {
+        throw new CjsParseError(new SyntaxError('export is not defined'));
+      });
+      // TLA in the dep triggers hasAsyncGraph → LOAD_ASYNC, proving the dep
+      // was enqueued as native ESM rather than crashing on CjsParseError.
+      stubs.transformCache.transform.mockImplementation((modulePath: string) =>
+        modulePath === '/dep.cjs'
+          ? 'export const x = await Promise.resolve(1);'
+          : "import {x} from './dep.cjs'; globalThis.__x = x;",
+      );
+      stubs.resolution.resolveEsm.mockReturnValue('/dep.cjs');
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+      expect(result).toBe(LOAD_ASYNC);
+    },
+  );
+
+  testWithLinkedSyntheticModule(
     'rethrows when an existing module mock is errored (importMockSync)',
     async () => {
       const {context, esmRegistry, loader, stubs} = makeLoader({
@@ -252,33 +289,27 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
-  testWithSyncEsm(
-    'returns null when registry has a mid-flight Promise (legacy async load)',
-    () => {
-      const {esmRegistry, loader} = makeLoader();
-      esmRegistry.set('/m.mjs', Promise.resolve());
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
-    },
-  );
+  test("returns 'load-async' when registry has a mid-flight Promise (legacy async load)", () => {
+    const {esmRegistry, loader} = makeLoader();
+    esmRegistry.set('/m.mjs', Promise.resolve());
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+  });
 
-  testWithSyncEsm(
-    'returns null when transformCache holds a mutex on the root',
-    () => {
-      const {loader, stubs} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => true),
-          hasMutex: jest.fn(() => true),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
-      expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
-    },
-  );
+  test("returns 'load-async' when transformCache holds a mutex on the root", () => {
+    const {loader, stubs} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => true),
+        hasMutex: jest.fn(() => true),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+    expect(stubs.transformCache.hasMutex).toHaveBeenCalledWith('/m.mjs');
+  });
 
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'routes core-module specifiers through coreModule.require',
     () => {
       const {loader, stubs} = makeLoader({
@@ -290,48 +321,44 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
       expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
-      expect(result?.namespace).toMatchObject({
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect(result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
       });
     },
   );
 
-  testWithSyncEsm(
-    'sync-required mode rejects async transformers with ERR_REQUIRE_ASYNC_MODULE',
-    () => {
-      const {loader} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => false),
-          hasMutex: jest.fn(() => false),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      expect(() =>
-        loader.tryLoadGraphSync('/m.mjs', '', 'sync-required'),
-      ).toThrow(
-        expect.objectContaining({
-          code: 'ERR_REQUIRE_ASYNC_MODULE',
-          message: expect.stringContaining('async-only'),
-        }),
-      );
-    },
-  );
+  test('sync-required mode rejects async transformers with ERR_REQUIRE_ASYNC_MODULE', () => {
+    const {loader} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => false),
+        hasMutex: jest.fn(() => false),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    expect(() =>
+      loader.tryLoadGraphSync('/m.mjs', '', 'sync-required'),
+    ).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ASYNC_MODULE',
+        message: expect.stringContaining('async-only'),
+      }),
+    );
+  });
 
-  testWithSyncEsm(
-    'sync-preferred mode bails (returns null) on async-only transformer',
-    () => {
-      const {loader} = makeLoader({
-        transformCache: {
-          canTransformSync: jest.fn(() => false),
-          hasMutex: jest.fn(() => false),
-          transform: jest.fn(),
-        } as unknown as jest.Mocked<TransformCache>,
-      });
-      const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
-      expect(result).toBeNull();
-    },
-  );
+  test("sync-preferred mode bails ('load-async') on async-only transformer", () => {
+    const {loader} = makeLoader({
+      transformCache: {
+        canTransformSync: jest.fn(() => false),
+        hasMutex: jest.fn(() => false),
+        transform: jest.fn(),
+      } as unknown as jest.Mocked<TransformCache>,
+    });
+    const result = loader.tryLoadGraphSync('/m.mjs', '', 'sync-preferred');
+    expect(result).toBe(LOAD_ASYNC);
+  });
 });
 
 describe('EsmLoader bridges', () => {
@@ -356,7 +383,7 @@ describe('EsmLoader bridges', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBeNull();
+      expect(result).not.toBe(LOAD_ASYNC);
       expect(stubs.requireModuleOrMock).toHaveBeenCalledWith(
         '/entry.mjs',
         '/dep.cjs',
@@ -394,7 +421,7 @@ describe('EsmLoader bridges', () => {
 });
 
 describe('EsmLoader mock dispatch', () => {
-  testWithSyncEsm(
+  testWithLinkedSyntheticModule(
     'sync-required mode rejects async mock factory with ERR_REQUIRE_ASYNC_MODULE',
     () => {
       const {loader, stubs} = makeLoader({
@@ -417,8 +444,8 @@ describe('EsmLoader mock dispatch', () => {
     },
   );
 
-  testWithSyncEsm(
-    'sync-preferred mode bails on async mock factory (returns null)',
+  testWithLinkedSyntheticModule(
+    "sync-preferred mode bails on async mock factory ('load-async')",
     () => {
       const {loader, stubs} = makeLoader({
         mockState: {
@@ -439,7 +466,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).toBeNull();
+      expect(result).toBe(LOAD_ASYNC);
     },
   );
 
@@ -466,7 +493,7 @@ describe('EsmLoader mock dispatch', () => {
         '',
         'sync-preferred',
       );
-      expect(result).not.toBeNull();
+      expect(result).not.toBe(LOAD_ASYNC);
       expect(factory).toHaveBeenCalled();
       expect((context as any).__mocked).toBe('value');
     },
@@ -474,7 +501,7 @@ describe('EsmLoader mock dispatch', () => {
 });
 
 describe('EsmLoader.requireEsmModule', () => {
-  testWithSyncEsm(
+  testWithVmEsm(
     'returns the module namespace on a successful sync load',
     async () => {
       const {context, esmRegistry, loader} = makeLoader();
@@ -497,19 +524,16 @@ describe('EsmLoader.requireEsmModule', () => {
     },
   );
 
-  testWithSyncEsm(
-    'throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise',
-    () => {
-      const {esmRegistry, loader} = makeLoader();
-      esmRegistry.set('/m.mjs', Promise.resolve());
-      expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
-        expect.objectContaining({
-          code: 'ERR_REQUIRE_ESM',
-          message: expect.stringContaining('concurrent'),
-        }),
-      );
-    },
-  );
+  test('throws ERR_REQUIRE_ESM when the registry has a mid-flight Promise', () => {
+    const {esmRegistry, loader} = makeLoader();
+    esmRegistry.set('/m.mjs', Promise.resolve());
+    expect(() => loader.requireEsmModule('/m.mjs')).toThrow(
+      expect.objectContaining({
+        code: 'ERR_REQUIRE_ESM',
+        message: expect.stringContaining('concurrent'),
+      }),
+    );
+  });
 });
 
 describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
@@ -545,4 +569,194 @@ describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
       ).rejects.toThrow('original eval error');
     },
   );
+});
+
+describe('validateImportAttributes', () => {
+  // Each test uses a unique modulePath/referencingIdentifier pair so the
+  // deprecation-warn dedup cache (module-scoped in EsmLoader) doesn't suppress
+  // across tests.
+  let counter = 0;
+  const uniquePaths = () => {
+    counter += 1;
+    return {
+      js: `/test-${counter}.js`,
+      json: `/test-${counter}.json`,
+      referencer: `/referencer-${counter}.mjs`,
+    };
+  };
+
+  describe('JSON modules', () => {
+    test('accepts type: json', () => {
+      const {json, referencer} = uniquePaths();
+      expect(() =>
+        validateImportAttributes(json, {type: 'json'}, referencer),
+      ).not.toThrow();
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is wrong', () => {
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(json, {type: 'css'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error).not.toBeNull();
+      expect(error).toBeInstanceOf(TypeError);
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+      expect(error?.message).toMatch(/not of type "css"/);
+    });
+
+    test('warns once per (referencer, module) when no attribute is present', () => {
+      const {json, referencer} = uniquePaths();
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, referencer);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'importing JSON without an import attribute is deprecated',
+          ),
+        );
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    test('warns again for a different referencer importing the same module', () => {
+      const {json, referencer} = uniquePaths();
+      const otherReferencer = `${referencer}-other`;
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        validateImportAttributes(json, {}, otherReferencer);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    test('treats data:application/json URIs as JSON modules', () => {
+      const {referencer} = uniquePaths();
+      const dataUri = 'data:application/json,{"x":1}';
+      // type: 'json' is accepted
+      expect(() =>
+        validateImportAttributes(dataUri, {type: 'json'}, referencer),
+      ).not.toThrow();
+      // Wrong type is rejected
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(dataUri, {type: 'css'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+    });
+
+    test('truncates data: URI payload in the deprecation warning', () => {
+      const {referencer} = uniquePaths();
+      const huge = 'a'.repeat(10_000);
+      const dataUri = `data:application/json,${encodeURIComponent(huge)}`;
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(dataUri, {}, referencer);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        const message = warnSpy.mock.calls[0][0];
+        expect(message).toContain('data:application/json,…');
+        expect(message).not.toContain(huge);
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    test('warning mentions both static and dynamic syntax', () => {
+      const {json, referencer} = uniquePaths();
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        validateImportAttributes(json, {}, referencer);
+        const message = warnSpy.mock.calls[0][0];
+        expect(message).toContain("with { type: 'json' }");
+        expect(message).toContain("{ with: { type: 'json' } }");
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+  });
+
+  describe('non-JSON modules', () => {
+    test('accepts no attributes', () => {
+      const {js, referencer} = uniquePaths();
+      expect(() => validateImportAttributes(js, {}, referencer)).not.toThrow();
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE when type is set', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {type: 'javascript'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+      expect(error?.message).toMatch(/not of type "javascript"/);
+    });
+
+    test('throws when type: json is asserted on non-JSON', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {type: 'json'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE');
+    });
+  });
+
+  describe('unknown attribute keys', () => {
+    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a JSON module', () => {
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(
+          json,
+          {cache: 'no-store', type: 'json'},
+          referencer,
+        );
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+      expect(error?.message).toMatch(/Import attribute "cache"/);
+    });
+
+    test('throws ERR_IMPORT_ATTRIBUTE_UNSUPPORTED on a non-JSON module', () => {
+      const {js, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(js, {foo: 'bar'}, referencer);
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+    });
+
+    test('rejects unknown key before reporting type-mismatch', () => {
+      // Unknown-key check is first per Node's `validateAttributes` order.
+      const {json, referencer} = uniquePaths();
+      let error: NodeJS.ErrnoException | null = null;
+      try {
+        validateImportAttributes(
+          json,
+          {nonsense: 'x', type: 'css'},
+          referencer,
+        );
+      } catch (error_) {
+        error = error_ as NodeJS.ErrnoException;
+      }
+      expect(error?.code).toBe('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED');
+    });
+  });
 });

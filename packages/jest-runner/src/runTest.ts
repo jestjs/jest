@@ -135,9 +135,9 @@ async function runTestInternal(
 
   let testConsole;
 
-  if (globalConfig.silent) {
+  if (projectConfig.silent ?? globalConfig.silent) {
     testConsole = new NullConsole(consoleOut, consoleOut, consoleFormatter);
-  } else if (globalConfig.verbose) {
+  } else if (projectConfig.verbose ?? globalConfig.verbose) {
     testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
     testConsole = new BufferedConsole();
@@ -197,6 +197,7 @@ async function runTestInternal(
       collectCoverage: globalConfig.collectCoverage,
       collectCoverageFrom: globalConfig.collectCoverageFrom,
       coverageProvider: globalConfig.coverageProvider,
+      globalRootDir: globalConfig.rootDir,
       sourcesRelatedToTestsInChangedFiles:
         context.sourcesRelatedToTestsInChangedFiles,
     },

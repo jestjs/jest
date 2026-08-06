@@ -25,18 +25,25 @@ import type {Resolution} from './Resolution';
 import type {TestMainModule} from './TestMainModule';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {RequireBuilder} from './cjsRequire';
-import type {InitialModule, ModuleRegistry} from './moduleTypes';
+import {hasEsmSyntax} from './esmLexer';
+import type {
+  ImportAttributes,
+  InitialModule,
+  ModuleRegistry,
+} from './moduleTypes';
 import {runtimeSupportsVmModules} from './nodeCapabilities';
 
 export type ExecResult = 'loaded' | 'env-disposed';
 
-// Marker used by the CJS-as-ESM SyntaxError fallback paths to distinguish
-// parse-time errors (where retrying as ESM is correct) from runtime errors
-// a user might throw from inside a module body.
-export const CJS_PARSE_ERROR = Symbol('jest-runtime CJS parse error');
-export const isCjsParseError = (error: unknown): error is Error =>
-  isError(error) &&
-  (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] === true;
+// Thrown by the CJS-as-ESM fallback paths when a file has ESM syntax but no
+// ESM marker (.mjs / "type":"module"). Callers catch it by instanceof and
+// retry with loadEsmModule / requireEsm. The original error is in `.cause`.
+export class CjsParseError extends SyntaxError {
+  override name = 'CjsParseError';
+  constructor(cause: Error) {
+    super(cause.message, {cause});
+  }
+}
 
 export interface ModuleExecutorOptions {
   resolution: Resolution;
@@ -51,6 +58,7 @@ export interface ModuleExecutorOptions {
     specifier: string,
     identifier: string,
     context: VMContext,
+    importAttributes?: ImportAttributes,
   ) => Promise<VMModule>;
 }
 
@@ -190,22 +198,33 @@ export class ModuleExecutor {
         this.constructInjectedModuleParameters(),
         {
           filename: scriptFilename,
-          importModuleDynamically: async specifier => {
+          importModuleDynamically: async (
+            specifier,
+            _function,
+            importAttributes,
+          ) => {
             invariant(
               runtimeSupportsVmModules,
               'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
-            return this.dynamicImport(specifier, scriptFilename, vmContext);
+            return this.dynamicImport(
+              specifier,
+              scriptFilename,
+              vmContext,
+              importAttributes as ImportAttributes | undefined,
+            );
           },
           parsingContext: vmContext,
         },
       ) as ModuleWrapper;
     } catch (error: any) {
-      // Tag so callers can distinguish parse-time SyntaxErrors (where the
-      // ESM-syntax-in-CJS fallback applies) from runtime SyntaxErrors a user
-      // might throw from inside a CJS module body.
-      if (isError(error)) {
-        (error as unknown as Record<symbol, unknown>)[CJS_PARSE_ERROR] = true;
+      if (
+        runtimeSupportsVmModules &&
+        isError(error) &&
+        error.name === 'SyntaxError' &&
+        hasEsmSyntax(scriptSource)
+      ) {
+        throw new CjsParseError(error);
       }
       throw handlePotentialSyntaxError(error);
     }

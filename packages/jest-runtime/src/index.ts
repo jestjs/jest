@@ -57,6 +57,11 @@ import type {EnvironmentGlobals} from './internals/types';
 // through the VM.
 const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 
+// Framework modules that define shared singleton state (e.g. `JestAssertionError`).
+// Redirecting user requires to the internal registry ensures test code and the
+// framework see the same class instances.
+const FRAMEWORK_SINGLETON_MODULES = new Set(['@jest/expect', 'expect']);
+
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
 type HasteMapOptions = {
@@ -221,8 +226,13 @@ export default class Runtime {
     });
     this.executor = new ModuleExecutor({
       config,
-      dynamicImport: (specifier, identifier, context) =>
-        this.esmLoader.dynamicImportFromCjs(specifier, identifier, context),
+      dynamicImport: (specifier, identifier, context, importAttributes) =>
+        this.esmLoader.dynamicImportFromCjs(
+          specifier,
+          identifier,
+          context,
+          importAttributes,
+        ),
       environment: this._environment,
       jestGlobals: this.jestGlobals,
       requireBuilder: this.requireBuilder,
@@ -395,6 +405,9 @@ export default class Runtime {
   }
 
   requireActual<T = unknown>(from: string, moduleName: string): T {
+    if (FRAMEWORK_SINGLETON_MODULES.has(moduleName)) {
+      return this.requireInternalModule<T>(from, moduleName);
+    }
     return this.requireModule<T>(from, moduleName, undefined, true);
   }
 
@@ -485,6 +498,9 @@ export default class Runtime {
       if (shouldMock) {
         return this._requireMockWithId<T>(from, moduleName, moduleID);
       }
+      if (FRAMEWORK_SINGLETON_MODULES.has(moduleName)) {
+        return this.requireInternalModule<T>(from, moduleName);
+      }
       return this.requireModule<T>(from, moduleName);
     } catch (error) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(error);
@@ -539,7 +555,7 @@ export default class Runtime {
 
     if (this._environment) {
       if (this._environment.global) {
-        this._moduleMocker.clearMocksOnScope(this._environment.global);
+        this._moduleMocker.clearMocksOnScope?.(this._environment.global);
       }
 
       if (this._environment.fakeTimers) {

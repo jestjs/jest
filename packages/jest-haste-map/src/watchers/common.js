@@ -6,7 +6,7 @@ const platform = require('node:os').platform();
 const path = require('node:path');
 const anymatch = require('anymatch');
 const picomatch = require('picomatch');
-const walker = require('walker');
+const {walk} = require('../lib/walk');
 
 /**
  * Constants
@@ -21,7 +21,7 @@ exports.ALL_EVENT = 'all';
 /**
  * Assigns options to the watcher.
  *
- * @param {NodeWatcher|PollWatcher|WatchmanWatcher} watcher
+ * @param {NodeWatcher|PollWatcher} watcher
  * @param {?object} opts
  * @return {boolean}
  * @public
@@ -83,19 +83,36 @@ exports.recReaddir = function (
   endCallback,
   errorCallback,
   ignored,
+  statCache,
 ) {
-  walker(dir)
-    .filterDir(currentDir => !anymatch(ignored, currentDir))
-    .on('dir', normalizeProxy(dirCallback))
-    .on('file', normalizeProxy(fileCallback))
-    .on('error', errorCallback)
-    .on('end', () => {
-      if (platform === 'win32') {
+  const normDir = normalizeProxy(dirCallback);
+  const normFile = normalizeProxy(fileCallback);
+  const exclude = anymatch(ignored);
+  walk(
+    {
+      exclude,
+      includeDirs: true,
+      onEntry(kind, filePath, stats) {
+        if (kind === 'dir') {
+          normDir(filePath, stats);
+        } else {
+          normFile(filePath, stats);
+        }
+      },
+      onError: errorCallback,
+      root: dir,
+      statCache,
+    },
+    err => {
+      if (err) {
+        errorCallback(err);
+      } else if (platform === 'win32') {
         setTimeout(endCallback, 1000);
       } else {
         endCallback();
       }
-    });
+    },
+  );
 };
 
 /**

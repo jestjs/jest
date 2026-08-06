@@ -10,6 +10,7 @@ import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
+import {walk} from '../lib/walk';
 import type {
   CrawlerOptions,
   FileData,
@@ -63,70 +64,36 @@ function find(
   enableSymlinks: boolean,
   callback: Callback,
 ): void {
+  const extSet = new Set(extensions);
   const result: Result = [];
-  let activeCalls = 0;
+  const statCache = new Map<string, fs.Stats>();
+  let remaining = roots.length;
 
-  function search(directory: string): void {
-    activeCalls++;
-    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
-      activeCalls--;
-      if (err) {
-        if (activeCalls === 0) {
-          callback(result);
-        }
-        return;
-      }
-      for (const entry of entries) {
-        const file = path.join(directory, entry.name);
-
-        if (ignore(file)) {
-          continue;
-        }
-
-        if (entry.isSymbolicLink()) {
-          continue;
-        }
-        if (entry.isDirectory()) {
-          search(file);
-          continue;
-        }
-
-        activeCalls++;
-
-        const stat = enableSymlinks ? fs.stat : fs.lstat;
-
-        stat(file, (err, stat) => {
-          activeCalls--;
-
-          // This logic is unnecessary for node > v10.10, but leaving it in
-          // since we need it for backwards-compatibility still.
-          if (!err && stat && !stat.isSymbolicLink()) {
-            if (stat.isDirectory()) {
-              search(file);
-            } else {
-              const ext = path.extname(file).slice(1);
-              if (extensions.includes(ext)) {
-                result.push([file, stat.mtime.getTime(), stat.size]);
-              }
-            }
-          }
-
-          if (activeCalls === 0) {
-            callback(result);
-          }
-        });
-      }
-
-      if (activeCalls === 0) {
-        callback(result);
-      }
-    });
+  if (remaining === 0) {
+    callback(result);
+    return;
   }
 
-  if (roots.length > 0) {
-    for (const root of roots) search(root);
-  } else {
-    callback(result);
+  for (const root of roots) {
+    walk(
+      {
+        enableSymlinks,
+        exclude: ignore,
+        onEntry: (kind, filePath, stats) => {
+          if (kind === 'file' && extSet.has(path.extname(filePath).slice(1))) {
+            result.push([filePath, stats.mtime.getTime(), stats.size]);
+          }
+        },
+        root,
+        statCache,
+      },
+      () => {
+        remaining--;
+        if (remaining === 0) {
+          callback(result);
+        }
+      },
+    );
   }
 }
 
@@ -158,20 +125,21 @@ function findNative(
   }
 
   const child = spawn('find', args);
-  let stdout = '';
   if (child.stdout === null) {
     throw new Error(
       'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
   child.stdout.setEncoding('utf8');
-  child.stdout.on('data', data => (stdout += data));
+  const chunks: Array<string> = [];
+  child.stdout.on('data', data => chunks.push(data));
 
   child.stdout.on('close', () => {
-    const lines = stdout
+    const lines = chunks
+      .join('')
       .trim()
       .split('\n')
-      .filter(x => !ignore(x));
+      .filter(x => x && !ignore(x));
     const result: Result = [];
     let count = lines.length;
     if (count) {
@@ -198,11 +166,11 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
 }> {
   const {
     data,
+    enableSymlinks,
     extensions,
     forceNodeFilesystemAPI,
     ignore,
     rootDir,
-    enableSymlinks,
     roots,
   } = options;
 
@@ -233,6 +201,12 @@ export async function nodeCrawl(options: CrawlerOptions): Promise<{
     };
 
     if (useNativeFind) {
+      // TODO: consider making forceNodeFilesystemAPI the default. find(1) does
+      // not receive the ignore predicate, so it traverses ignored directories
+      // (e.g. node_modules, .git) in full and discards results afterward.
+      // find() via fdir prunes those subtrees at readdir time. For a typical
+      // project where node_modules dwarfs source files, the wasted traversal
+      // likely outweighs find(1)'s native speed advantage.
       findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
       find(roots, extensions, ignore, enableSymlinks, callback);

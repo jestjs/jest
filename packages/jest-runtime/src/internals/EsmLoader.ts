@@ -14,19 +14,24 @@ import {
   type Module as VMModule,
 } from 'node:vm';
 import type {JestEnvironment, JestImportMeta} from '@jest/environment';
-import {invariant, isError, isPromise} from 'jest-util';
+import {invariant, isPromise} from 'jest-util';
 import {noop} from '../helpers';
 import type {CjsExportsCache} from './CjsExportsCache';
 import type {FileCache} from './FileCache';
 import type {JestGlobals} from './JestGlobals';
 import type {MockState} from './MockState';
-import {isCjsParseError} from './ModuleExecutor';
+import {CjsParseError} from './ModuleExecutor';
 import type {ModuleRegistries} from './ModuleRegistries';
 import {type Resolution, isWasm} from './Resolution';
 import type {TestState} from './TestState';
 import type {TransformCache, TransformOptions} from './TransformCache';
 import type {CoreModuleProvider} from './cjsRequire';
-import type {ESModule, JestModule, ModuleRegistry} from './moduleTypes';
+import type {
+  ESModule,
+  ImportAttributes,
+  JestModule,
+  ModuleRegistry,
+} from './moduleTypes';
 import {
   runtimeSupportsVmModules,
   supportsSyncEvaluate,
@@ -45,7 +50,7 @@ interface VMModuleWithAsyncGraph extends VMModule {
   hasTopLevelAwait?: () => boolean;
   moduleRequests?: ReadonlyArray<{
     specifier: string;
-    attributes: Record<string, string>;
+    attributes: ImportAttributes;
     phase?: string;
   }>;
   linkRequests?: (deps: ReadonlyArray<VMModule>) => void;
@@ -58,9 +63,30 @@ interface VMModuleWithAsyncGraph extends VMModule {
 // loader on any unsupported edge).
 export type SyncEsmMode = 'sync-preferred' | 'sync-required';
 
+// Returned by sync-graph methods when a dependency or condition prevents
+// synchronous loading. Callers propagate it upward; the top-level
+// `tryLoadGraphSync` caller falls back to the legacy async path.
+export const LOAD_ASYNC = 'load-async' as const;
+type LoadAsync = typeof LOAD_ASYNC;
+
 type WorklistEntry = {
   cacheKey: string;
   modulePath: string;
+};
+
+type ResolvedSyncSpecifier = {
+  cacheKey: string;
+  enqueue: WorklistEntry | null;
+  modulePath: string;
+};
+
+// Shape of the third arg Node passes to the `module.link` callback. TC39 final
+// is `{attributes}`; legacy was `{assert}`. `@types/node@18` only types the
+// legacy field, so we declare both ourselves.
+// TODO(jest next major): drop `assert` once we require Node 22+.
+type ModuleLinkExtra = {
+  assert?: ImportAttributes;
+  attributes?: ImportAttributes;
 };
 
 // Source-text entries carry their dep cacheKeys (used for `linkRequests`).
@@ -124,6 +150,101 @@ function parseDataUri(specifier: string): {
     return {code: Buffer.from(code, 'base64').toString(), mime};
   }
   throw new Error(`Invalid data URI encoding: ${encoding}`);
+}
+
+// Mirrors Node's `validateAttributes` in lib/internal/modules/esm/assert.js.
+// The only deliberate divergence: missing `type: 'json'` warns instead of
+// throwing — see the JSON branch below.
+const warnedMissingJsonAttributePairs = new Set<string>();
+// Soft cap so a long-lived process (watch mode, --runInBand) can't grow the
+// set without bound. When we hit it we drop everything; users see at most one
+// extra repeated warning per pair, which is benign.
+const MAX_WARNED_PAIRS = 10_000;
+
+function isJsonModule(modulePath: string): boolean {
+  return (
+    modulePath.endsWith('.json') ||
+    modulePath.startsWith('data:application/json')
+  );
+}
+
+// Avoid dumping the full payload of data: URIs (or other very long specifiers)
+// into stderr.
+function describeForWarning(modulePath: string): string {
+  if (modulePath.startsWith('data:')) {
+    const comma = modulePath.indexOf(',');
+    if (comma > 0) return `${modulePath.slice(0, comma)},…`;
+  }
+  return modulePath;
+}
+
+function makeImportAttributeError(
+  code:
+    | 'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED'
+    | 'ERR_IMPORT_ATTRIBUTE_MISSING'
+    | 'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+  message: string,
+): NodeJS.ErrnoException {
+  const error: NodeJS.ErrnoException = new TypeError(message);
+  error.code = code;
+  return error;
+}
+
+export function validateImportAttributes(
+  modulePath: string,
+  attributes: ImportAttributes,
+  referencingIdentifier: string,
+): void {
+  for (const key of Object.keys(attributes)) {
+    if (key !== 'type') {
+      throw makeImportAttributeError(
+        'ERR_IMPORT_ATTRIBUTE_UNSUPPORTED',
+        `Import attribute "${key}" with value "${attributes[key]}" is not supported (importing "${modulePath}" from ${referencingIdentifier})`,
+      );
+    }
+  }
+
+  const declaredType = attributes.type;
+  const isJson = isJsonModule(modulePath);
+
+  if (isJson) {
+    if (declaredType === undefined) {
+      // TODO(jest next major): match Node and throw
+      // ERR_IMPORT_ATTRIBUTE_MISSING here. Until then, warn so existing users
+      // without `with { type: 'json' }` keep working.
+      const dedupeKey = `${referencingIdentifier}::${modulePath}`;
+      if (!warnedMissingJsonAttributePairs.has(dedupeKey)) {
+        if (warnedMissingJsonAttributePairs.size >= MAX_WARNED_PAIRS) {
+          warnedMissingJsonAttributePairs.clear();
+        }
+        warnedMissingJsonAttributePairs.add(dedupeKey);
+        const moduleLabel = describeForWarning(modulePath);
+        console.warn(
+          'Jest: importing JSON without an import attribute is deprecated and will be a hard error in the next major. ' +
+            `Update the import of "${moduleLabel}" (from ${referencingIdentifier}): ` +
+            "use `with { type: 'json' }` for static imports, or pass " +
+            "`{ with: { type: 'json' } }` as the second argument to dynamic `import()`.",
+        );
+      }
+      return;
+    }
+    if (declaredType !== 'json') {
+      throw makeImportAttributeError(
+        'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+        `Module "${modulePath}" is not of type "${declaredType}"`,
+      );
+    }
+    return;
+  }
+
+  // Non-JSON (implicit-type) module. Per HTML spec, the default type cannot
+  // be re-asserted, so any explicit `type` attribute is rejected.
+  if (declaredType !== undefined) {
+    throw makeImportAttributeError(
+      'ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE',
+      `Module "${modulePath}" is not of type "${declaredType}"`,
+    );
+  }
 }
 
 const ESM_TRANSFORM_OPTIONS: TransformOptions = {
@@ -190,9 +311,9 @@ export class EsmLoader {
     this.testState = options.testState;
   }
 
-  // A `null` here means the legacy async path is mid-flight on this same
-  // module (registry holds a Promise from a concurrent `await import()`);
-  // surface as ERR_REQUIRE_ESM with actionable context.
+  // `'load-async'` means the sync graph could not be completed — a concurrent
+  // `await import()` is mid-flight, a dependency is async-only, etc. Surface
+  // as ERR_REQUIRE_ESM with actionable context.
   //
   // Root-level mocks (`jest.unstable_mockModule(spec)` then `require(spec)`)
   // are not consulted - driving a SyntheticModule from `unlinked` to
@@ -200,7 +321,7 @@ export class EsmLoader {
   // still apply via the graph walker.
   requireEsmModule<T>(modulePath: string): T {
     const module = this.tryLoadGraphSync(modulePath, '', 'sync-required');
-    if (!module) {
+    if (module === LOAD_ASYNC) {
       const error: NodeJS.ErrnoException = new Error(
         `Cannot require() ES Module ${modulePath} synchronously: it is currently being loaded by a concurrent \`import()\`. Await that import before calling require(), or import this module instead of requiring it.`,
       );
@@ -217,21 +338,17 @@ export class EsmLoader {
     rootPath: string,
     rootQuery: string,
     mode: SyncEsmMode,
-  ): ESModule | null {
-    if (
-      this.testState.bailIfTornDown(
-        'You are trying to `import` a file after the Jest environment has been torn down.',
-      )
-    ) {
-      return null;
-    }
+  ): ESModule | LoadAsync {
+    this.testState.throwIfTornDown(
+      'You are trying to `import` a file after the Jest environment has been torn down.',
+    );
 
     const registry = this.registries.getActiveEsmRegistry();
     const rootKey = rootPath + rootQuery;
 
     const cached = registry.get(rootKey);
     if (cached) {
-      if (cached instanceof Promise) return null;
+      if (cached instanceof Promise) return LOAD_ASYNC;
       // The legacy `loadEsmModule` source-text branch does `registry.set`
       // while the `SourceTextModule` is still `'unlinked'` (link runs later
       // in `linkAndEvaluateModule`); accessing `.namespace` on a non-evaluated
@@ -239,12 +356,12 @@ export class EsmLoader {
       // (`'evaluated'` / `'errored'`); bail otherwise.
       if (cached.status === 'evaluated') return cached as ESModule;
       if (cached.status === 'errored') throw cached.error;
-      return null;
+      return LOAD_ASYNC;
     }
 
     const context = this.getContext();
 
-    if (this.transformCache.hasMutex(rootKey)) return null;
+    if (this.transformCache.hasMutex(rootKey)) return LOAD_ASYNC;
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
@@ -261,10 +378,10 @@ export class EsmLoader {
       // module into the parent's `linkRequests` would fail Node's link
       // cascade; plugging a `'linked'` one would skip its body. Bail.
       const fromRegistry = registry.get(cacheKey);
-      if (fromRegistry instanceof Promise) return null;
+      if (fromRegistry instanceof Promise) return LOAD_ASYNC;
       if (fromRegistry) {
         if (fromRegistry.status === 'errored') throw fromRegistry.error;
-        if (fromRegistry.status !== 'evaluated') return null;
+        if (fromRegistry.status !== 'evaluated') return LOAD_ASYNC;
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
@@ -272,7 +389,7 @@ export class EsmLoader {
         });
         continue;
       }
-      if (this.transformCache.hasMutex(cacheKey)) return null;
+      if (this.transformCache.hasMutex(cacheKey)) return LOAD_ASYNC;
 
       if (this.resolution.isCoreModule(modulePath)) {
         scratch.set(cacheKey, {
@@ -297,7 +414,7 @@ export class EsmLoader {
           worklist,
           mode,
         );
-        if (built === null) return null;
+        if (built === LOAD_ASYNC) return LOAD_ASYNC;
         scratch.set(cacheKey, built);
         continue;
       }
@@ -313,7 +430,7 @@ export class EsmLoader {
           worklist,
           mode,
         );
-        if (wasmEntry === null) return null;
+        if (wasmEntry === LOAD_ASYNC) return LOAD_ASYNC;
         scratch.set(cacheKey, wasmEntry);
         continue;
       }
@@ -325,7 +442,7 @@ export class EsmLoader {
             'a configured transformer is async-only',
           );
         }
-        return null;
+        return LOAD_ASYNC;
       }
 
       if (modulePath.endsWith('.json')) {
@@ -378,7 +495,7 @@ export class EsmLoader {
         if (mode === 'sync-required') {
           throw makeRequireAsyncError(modulePath, 'top-level await');
         }
-        return null;
+        return LOAD_ASYNC;
       }
 
       // If we got here without `moduleRequests`, the capability gate is lying.
@@ -387,7 +504,7 @@ export class EsmLoader {
         `moduleRequests unavailable on ${modulePath}`,
       );
       const deps: Array<string> = [];
-      for (const {specifier} of module.moduleRequests) {
+      for (const {specifier, attributes} of module.moduleRequests) {
         const resolved = this.resolveSpecifierForSyncGraph(
           modulePath,
           specifier,
@@ -396,7 +513,8 @@ export class EsmLoader {
           registry,
           mode,
         );
-        if (resolved === null) return null;
+        if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
+        validateImportAttributes(resolved.modulePath, attributes, modulePath);
         deps.push(resolved.cacheKey);
         if (resolved.enqueue) worklist.push(resolved.enqueue);
       }
@@ -452,7 +570,7 @@ export class EsmLoader {
               : `a dependency uses top-level await (${culprit})`,
           );
         }
-        return null;
+        return LOAD_ASYNC;
       }
     }
 
@@ -518,13 +636,13 @@ export class EsmLoader {
     scratch: Map<string, ScratchEntry>,
     registry: ModuleRegistry | Map<string, JestModule>,
     mode: SyncEsmMode,
-  ): {cacheKey: string; enqueue: WorklistEntry | null} | null {
+  ): ResolvedSyncSpecifier | LoadAsync {
     if (specifier === '@jest/globals') {
       const cacheKey = `@jest/globals/${referencingIdentifier}`;
       const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
         this.jestGlobals.esmGlobalsModule(referencingIdentifier, context),
       );
-      return ok ? {cacheKey, enqueue: null} : null;
+      return ok ? {cacheKey, enqueue: null, modulePath: cacheKey} : LOAD_ASYNC;
     }
 
     if (specifier.startsWith('data:')) {
@@ -532,6 +650,7 @@ export class EsmLoader {
       return {
         cacheKey,
         enqueue: {cacheKey, modulePath: specifier},
+        modulePath: specifier,
       };
     }
     specifier = stripFileScheme(specifier);
@@ -550,8 +669,12 @@ export class EsmLoader {
         scratch,
         mode,
       );
-      if (mocked === null) return null;
-      return {cacheKey: mocked.cacheKey, enqueue: null};
+      if (mocked === LOAD_ASYNC) return LOAD_ASYNC;
+      return {
+        cacheKey: mocked.cacheKey,
+        enqueue: null,
+        modulePath: specifierPath,
+      };
     }
 
     if (this.resolution.isCoreModule(specifierPath)) {
@@ -559,6 +682,7 @@ export class EsmLoader {
       return {
         cacheKey,
         enqueue: {cacheKey, modulePath: specifierPath},
+        modulePath: specifierPath,
       };
     }
 
@@ -570,7 +694,7 @@ export class EsmLoader {
       );
     } catch (error) {
       if (mode === 'sync-required') throw error;
-      return null;
+      return LOAD_ASYNC;
     }
 
     const cacheKey = resolved + query;
@@ -579,19 +703,27 @@ export class EsmLoader {
       !isWasm(resolved) &&
       !this.shouldLoadAsEsm(resolved)
     ) {
-      const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
-        this.buildCjsAsEsmSyntheticModule(
-          referencingIdentifier,
-          resolved,
-          context,
-        ),
-      );
-      return ok ? {cacheKey, enqueue: null} : null;
+      try {
+        const ok = this.tryCommitSynthetic(cacheKey, registry, scratch, () =>
+          this.buildCjsAsEsmSyntheticModule(
+            referencingIdentifier,
+            resolved,
+            context,
+          ),
+        );
+        return ok
+          ? {cacheKey, enqueue: null, modulePath: resolved}
+          : LOAD_ASYNC;
+      } catch (error) {
+        if (!(error instanceof CjsParseError)) throw error;
+        // File has ESM syntax but no ESM marker — fall through to the enqueue path.
+      }
     }
 
     return {
       cacheKey,
       enqueue: {cacheKey, modulePath: resolved},
+      modulePath: resolved,
     };
   }
 
@@ -601,9 +733,9 @@ export class EsmLoader {
     context: VMContext,
     scratch: Map<string, ScratchEntry>,
     mode: SyncEsmMode,
-  ): {cacheKey: string} | null {
+  ): {cacheKey: string} | LoadAsync {
     const existing = this.registries.getModuleMock(moduleID);
-    if (existing instanceof Promise) return null;
+    if (existing instanceof Promise) return LOAD_ASYNC;
     if (existing) {
       if (existing.status === 'errored') throw existing.error;
 
@@ -630,7 +762,7 @@ export class EsmLoader {
       if (mode === 'sync-required') {
         throw makeRequireAsyncError(moduleName, 'mock factory is async');
       }
-      return null;
+      return LOAD_ASYNC;
     }
 
     const synth = syntheticFromExports(
@@ -662,7 +794,7 @@ export class EsmLoader {
     registry: ModuleRegistry | Map<string, JestModule>,
     worklist: Array<WorklistEntry>,
     mode: SyncEsmMode,
-  ): ScratchEntry | null {
+  ): ScratchEntry | LoadAsync {
     const wasmModule = new WebAssembly.Module(bytes);
 
     const moduleSpecToCacheKey = new Map<string, string>();
@@ -676,7 +808,7 @@ export class EsmLoader {
         registry,
         mode,
       );
-      if (resolved === null) return null;
+      if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
       moduleSpecToCacheKey.set(depSpec, resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
@@ -707,7 +839,7 @@ export class EsmLoader {
     registry: ModuleRegistry | Map<string, JestModule>,
     worklist: Array<WorklistEntry>,
     mode: SyncEsmMode,
-  ): ScratchEntry | null {
+  ): ScratchEntry | LoadAsync {
     const esmDynamicImport = this.dynamicImport;
     const {mime, code} = parseDataUri(specifier);
 
@@ -754,7 +886,7 @@ export class EsmLoader {
       if (mode === 'sync-required') {
         throw makeRequireAsyncError(specifier, 'top-level await');
       }
-      return null;
+      return LOAD_ASYNC;
     }
 
     invariant(
@@ -762,7 +894,7 @@ export class EsmLoader {
       `moduleRequests unavailable on ${specifier}`,
     );
     const deps: Array<string> = [];
-    for (const {specifier: depSpec} of module.moduleRequests) {
+    for (const {specifier: depSpec, attributes} of module.moduleRequests) {
       const resolved = this.resolveSpecifierForSyncGraph(
         specifier,
         depSpec,
@@ -771,7 +903,8 @@ export class EsmLoader {
         registry,
         mode,
       );
-      if (resolved === null) return null;
+      if (resolved === LOAD_ASYNC) return LOAD_ASYNC;
+      validateImportAttributes(resolved.modulePath, attributes, specifier);
       deps.push(resolved.cacheKey);
       if (resolved.enqueue) worklist.push(resolved.enqueue);
     }
@@ -805,9 +938,17 @@ export class EsmLoader {
     specifier: string,
     identifier: string,
     context: VMContext,
+    importAttributes?: ImportAttributes,
   ): Promise<VMModule> {
     return this.resolveModule<VMModule>(specifier, identifier, context).then(
-      m => this.linkAndEvaluateModule(m),
+      m => {
+        validateImportAttributes(
+          m.identifier,
+          importAttributes ?? {},
+          identifier,
+        );
+        return this.linkAndEvaluateModule(m);
+      },
     );
   }
 
@@ -839,7 +980,7 @@ export class EsmLoader {
     // resolver and would silently miss user mappings.
     if (supportsSyncEvaluate && this.resolution.canResolveSync()) {
       const synced = this.tryLoadGraphSync(modulePath, query, 'sync-preferred');
-      if (synced) return synced;
+      if (synced !== LOAD_ASYNC) return synced;
     }
 
     const cacheKey = modulePath + query;
@@ -855,13 +996,15 @@ export class EsmLoader {
       let transformResolve: () => void;
       let transformReject: (error?: unknown) => void;
 
-      this.transformCache.setMutex(
-        cacheKey,
-        new Promise((resolve, reject) => {
-          transformResolve = resolve;
-          transformReject = reject;
-        }),
-      );
+      const mutex = new Promise<void>((resolve, reject) => {
+        transformResolve = resolve;
+        transformReject = reject;
+      });
+      // Prevent an unhandled-rejection warning when no concurrent caller is
+      // awaiting the mutex — the originating caller re-throws the error itself.
+      // Concurrent waiters still see the rejection because they await `mutex`.
+      mutex.catch(noop);
+      this.transformCache.setMutex(cacheKey, mutex);
 
       invariant(
         transformResolve! && transformReject!,
@@ -1070,13 +1213,20 @@ export class EsmLoader {
     if (module.status === 'unlinked') {
       this.linkingMap.set(
         module,
-        module.link((specifier, referencingModule) =>
-          this.resolveModule(
+        module.link(async (specifier, referencingModule, extra) => {
+          const resolved = await this.resolveModule<VMModule>(
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-          ),
-        ),
+          );
+          const extraAttrs = extra as ModuleLinkExtra | undefined;
+          validateImportAttributes(
+            resolved.identifier,
+            extraAttrs?.attributes ?? extraAttrs?.assert ?? {},
+            referencingModule.identifier,
+          );
+          return resolved;
+        }),
       );
     }
 
@@ -1145,17 +1295,8 @@ export class EsmLoader {
     try {
       synthetic = this.buildCjsAsEsmSyntheticModule(from, modulePath, context);
     } catch (error) {
-      if (!isCjsParseError(error)) {
-        throw error;
-      }
-      // The file may contain ESM syntax with no ESM marker (.mjs /
-      // "type":"module") - try loading as native ESM. If the ESM parser also
-      // rejects it, the original CJS error was the genuine one.
-      return this.loadEsmModule(modulePath).catch(esmError => {
-        throw isError(esmError) && esmError.name === 'SyntaxError'
-          ? error
-          : esmError;
-      });
+      if (!(error instanceof CjsParseError)) throw error;
+      return this.loadEsmModule(modulePath);
     }
 
     const evaluated = evaluateSyntheticModule(synthetic);
@@ -1223,6 +1364,7 @@ export class EsmLoader {
   private dynamicImport = async (
     specifier: string,
     referencingModule: VMModule,
+    importAttributes?: ImportAttributes,
   ): Promise<VMModule> => {
     invariant(
       runtimeSupportsVmModules,
@@ -1238,6 +1380,11 @@ export class EsmLoader {
       specifier,
       referencingModule.identifier,
       referencingModule.context,
+    );
+    validateImportAttributes(
+      dyn.identifier,
+      importAttributes ?? {},
+      referencingModule.identifier,
     );
     return this.linkAndEvaluateModule(dyn);
   };

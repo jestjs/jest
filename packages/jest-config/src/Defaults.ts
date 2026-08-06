@@ -95,6 +95,7 @@ const defaultOptions: Config.DefaultOptions = {
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
+  workerGracefulExitTimeout: 500,
   workerThreads: false,
 };
 

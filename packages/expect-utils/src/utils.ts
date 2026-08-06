@@ -303,13 +303,30 @@ export const iterableEquality = (
     }
   }
 
-  const bIterator = b[IteratorSymbol]();
+  let aIterator: Iterator<unknown>;
+  let bIterator: Iterator<unknown>;
+  try {
+    aIterator = a[IteratorSymbol]();
+    bIterator = b[IteratorSymbol]();
+  } catch {
+    // If the iterator factory itself throws (e.g. a TypedArray method used as
+    // [Symbol.iterator] on a plain object), we cannot compare as iterables.
+    // Return undefined so equals() falls through to Object.is / property checks.
+    aStack.pop();
+    bStack.pop();
+    return undefined;
+  }
 
-  for (const aValue of a) {
-    const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, filteredCustomTesters)) {
+  let aStep = aIterator.next();
+  while (!aStep.done) {
+    const bStep = bIterator.next();
+    if (
+      bStep.done ||
+      !equals(aStep.value, bStep.value, filteredCustomTesters)
+    ) {
       return false;
     }
+    aStep = aIterator.next();
   }
   if (!bIterator.next().done) {
     return false;

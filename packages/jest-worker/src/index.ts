@@ -109,6 +109,7 @@ export class Worker {
         this._options.numWorkers ?? Math.max(availableParallelism() - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
+      workerGracefulExitTimeout: this._options.workerGracefulExitTimeout,
     };
 
     if (this._options.WorkerPool) {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {WriteStream} from 'node:tty';
+import type {WriteStream} from 'tty';
 import chalk from 'chalk';
 import clearLine from './clearLine';
 import isInteractive from './isInteractive';

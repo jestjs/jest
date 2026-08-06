@@ -6,3 +6,4 @@ tsconfig.json
 tsconfig.tsbuildinfo
 api-extractor.json
 .eslintcache
+CLAUDE.md

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isNativeError} from 'node:util/types';
+import {isNativeError} from 'util/types';
 
 export const isError =
   typeof Error.isError === 'function' ? Error.isError : isNativeError;
