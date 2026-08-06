@@ -424,9 +424,9 @@ describe('ParcelWatcher', () => {
       expect(subscribeMock).toHaveBeenCalledTimes(2);
       expect(subscribeMock.mock.calls[0][2]?.ignore).toEqual([ignored, ...VCS]);
       expect(subscribeMock.mock.calls[1][2]?.ignore).toEqual(VCS);
-      expect(consoleWarn).toHaveBeenCalledWith(
-        expect.stringContaining(String(ignored)),
-      );
+      const [warning] = consoleWarn.mock.calls[0];
+      expect(warning).toContain(String(ignored));
+      expect(warning).toContain('was not preceded by a valid');
       consoleWarn.mockRestore();
     });
 

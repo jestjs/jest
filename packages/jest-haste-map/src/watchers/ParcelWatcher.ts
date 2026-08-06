@@ -39,9 +39,7 @@ function pickBackend(
     default:
       // Jest only supports the three platforms above. Elsewhere, omit the
       // option so parcel's own default resolution picks the best compiled
-      // backend. Never name 'brute-force': it is the snapshot-only backend
-      // and its subscribe() aborts the process (throws a non-std::exception
-      // the binding doesn't catch).
+      // backend
       return undefined;
   }
 }
@@ -127,7 +125,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       // The retry can also swallow failures unrelated to the regex, silently
       // costing the native-level ignore for the session — make it diagnosable.
       console.warn(
-        `jest-haste-map: @parcel/watcher rejected the ignore pattern ${rejectedPattern}; ignored paths will still be watched and filtered in JS`,
+        `jest-haste-map: subscribing with the ignore pattern ${rejectedPattern} failed (${error}); ignored paths will still be watched and filtered in JS`,
       );
       this._parcelIgnore = VCS_IGNORE_GLOBS;
       return parcelWatcher.subscribe(
