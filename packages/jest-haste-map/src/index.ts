@@ -518,6 +518,8 @@ class HasteMap extends EventEmitter implements IHasteMap {
     this._watcherDriver = new WatcherDriver({
       extensions: this._options.extensions,
       ignorePattern: this._options.ignorePattern,
+      onError: error =>
+        this._console.error(`jest-haste-map: watch error:\n  ${error.stack}\n`),
       roots: this._options.roots,
       useWatchman: await shouldUseWatchman(this._options.useWatchman),
     });

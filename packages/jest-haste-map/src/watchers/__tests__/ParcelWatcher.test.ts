@@ -237,6 +237,50 @@ describe('ParcelWatcher', () => {
     expect(subscription.unsubscribe).toHaveBeenCalledTimes(1);
   });
 
+  it('does not emit error when subscribe rejects after close()', async () => {
+    let rejectSubscribe!: (error: Error) => void;
+    (
+      parcelWatcher.subscribe as jest.MockedFunction<
+        typeof parcelWatcher.subscribe
+      >
+    ).mockImplementation(
+      () => new Promise((_resolve, reject) => (rejectSubscribe = reject)),
+    );
+
+    const watcher = makeWatcher();
+    // Let _start run up to the point it awaits subscribe
+    await flush();
+    await watcher.close();
+
+    // close() removed all listeners — emitting 'error' now would throw
+    // ERR_UNHANDLED_ERROR and fail this test.
+    rejectSubscribe(new Error('subscribe timed out'));
+    await flush();
+  });
+
+  it('does not emit error when an in-flight lstat fails after close()', async () => {
+    let lstatCallback!: Parameters<LstatSimple>[1];
+    mockLstat.mockImplementation((_p, cb) => {
+      lstatCallback = cb;
+    });
+
+    const watcher = makeWatcher();
+    await waitReady(watcher);
+
+    subscribeCallback(null, [
+      {path: path.join(ROOT, 'file.js'), type: 'create'},
+    ]);
+    await watcher.close();
+
+    lstatCallback(
+      Object.assign(new Error('EACCES'), {
+        code: 'EACCES',
+      }) as NodeJS.ErrnoException,
+      null as unknown as gracefulFs.Stats,
+    );
+    await flush();
+  });
+
   it('filters events for paths excluded by ignore pattern', async () => {
     const fakeStat = {isDirectory: () => false, mtime: new Date(), size: 100};
     mockLstat.mockImplementation((_p, cb) =>

@@ -41,6 +41,7 @@ const MAX_WAIT_TIME = 240_000;
 export class WatcherDriver {
   private readonly _extensions: Array<string>;
   private readonly _ignorePattern: HasteRegExp | undefined;
+  private readonly _onError: (error: Error) => void;
   private readonly _roots: Array<string>;
   private readonly _useWatchman: boolean;
   private _watchers: Array<IWatcher> = [];
@@ -48,11 +49,13 @@ export class WatcherDriver {
   constructor(opts: {
     extensions: Array<string>;
     ignorePattern: HasteRegExp | undefined;
+    onError: (error: Error) => void;
     roots: Array<string>;
     useWatchman: boolean;
   }) {
     this._extensions = opts.extensions;
     this._ignorePattern = opts.ignorePattern;
+    this._onError = opts.onError;
     this._roots = opts.roots;
     this._useWatchman = opts.useWatchman;
   }
@@ -101,9 +104,7 @@ export class WatcherDriver {
         watcher.off('error', onStartupError);
         // Post-startup errors are non-fatal: the watcher stays subscribed,
         // and an unhandled 'error' emit would crash the process.
-        watcher.on('error', error => {
-          console.error('jest-haste-map: watch error:', error);
-        });
+        watcher.on('error', error => this._onError(error));
         watcher.on('all', onChange);
         resolve(watcher);
       };

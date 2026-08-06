@@ -87,6 +87,17 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     return {backend: this._backend, ignore: this._parcelIgnore};
   }
 
+  // close() ends with removeAllListeners(), and an 'error' emit without a
+  // listener throws. Async work started before close() can still fail after
+  // it (a hung subscribe finally rejecting, an in-flight lstat) — swallow
+  // those instead of crashing the process.
+  private _emitError(error: unknown): void {
+    if (this._closed) {
+      return;
+    }
+    this.emit('error', error);
+  }
+
   // Parcel compiles the regex source with C++ std::regex, which rejects some
   // JS-valid constructs (lookbehind, named groups, \p{…}) at subscribe time.
   // There is no way to validate against std::regex from JS ahead of time, so
@@ -126,7 +137,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
 
       this.emit('ready');
     } catch (error) {
-      this.emit('error', error);
+      this._emitError(error);
     }
   }
 
@@ -138,7 +149,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       return;
     }
     if (err) {
-      this.emit('error', err);
+      this._emitError(err);
       return;
     }
 
@@ -158,7 +169,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
         fs.lstat(absPath, (error, stat) => {
           if (error?.code === 'ENOENT') return;
           if (error) {
-            this.emit('error', error);
+            this._emitError(error);
             return;
           }
           this.emit(type, relPath, this.root, stat);

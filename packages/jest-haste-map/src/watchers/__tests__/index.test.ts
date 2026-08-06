@@ -35,6 +35,7 @@ function makeReadyWatcher(): EventEmitter & WatcherInstance {
 const driverOpts = {
   extensions: ['js'],
   ignorePattern: undefined,
+  onError: jest.fn(),
   roots: ['/root/a'],
   useWatchman: false,
 };
@@ -170,27 +171,21 @@ describe('WatcherDriver', () => {
     expect(close).toHaveBeenCalledTimes(1);
   });
 
-  it('logs errors emitted after ready instead of crashing', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+  it('reports errors emitted after ready via onError instead of crashing', async () => {
+    const onError = jest.fn();
     const watcher = makeReadyWatcher();
     MockParcelWatcher.mockImplementation(
       () => watcher as unknown as jest.MockedObject<ParcelWatcher>,
     );
 
-    const driver = new WatcherDriver({...driverOpts});
+    const driver = new WatcherDriver({...driverOpts, onError});
     await driver.start(jest.fn());
 
     const error = new Error('lstat failed');
     // Would throw ERR_UNHANDLED_ERROR without a listener.
     watcher.emit('error', error);
 
-    expect(consoleError).toHaveBeenCalledWith(
-      'jest-haste-map: watch error:',
-      error,
-    );
-    consoleError.mockRestore();
+    expect(onError).toHaveBeenCalledWith(error);
   });
 
   it('closes already-started watchers when one root fails to start', async () => {
