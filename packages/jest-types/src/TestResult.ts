@@ -6,13 +6,7 @@
  */
 
 type Status =
-  | 'passed'
-  | 'failed'
-  | 'skipped'
-  | 'pending'
-  | 'todo'
-  | 'disabled'
-  | 'focused';
+  'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled' | 'focused';
 
 type Callsite = {
   column: number;

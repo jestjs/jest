@@ -274,6 +274,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
     for (const pattern of [customJSPattern, customTSPattern]) {
       if (pattern) {
         const customTransformer = transform[pattern];
+        /* eslint-disable no-useless-assignment */
         if (Array.isArray(customTransformer)) {
           if (customTransformer[0] === 'babel-jest') {
             babelJest = require.resolve('babel-jest');
@@ -289,6 +290,7 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
             babelJest = customTransformer;
           }
         }
+        /* eslint-enable */
       }
     }
   } else {
@@ -405,8 +407,7 @@ const normalizeReporters = ({
   reporters,
   rootDir,
 }: Config.InitialOptionsWithRootDir):
-  | Array<Config.ReporterConfig>
-  | undefined => {
+  Array<Config.ReporterConfig> | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
     return undefined;
   }
