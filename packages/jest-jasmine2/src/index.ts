@@ -10,8 +10,9 @@ import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
 import {
   type AssertionResult,
+  type Status,
   type TestResult,
-  createEmptyTestResult,
+  makeCollectedTestResult,
 } from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
@@ -32,47 +33,86 @@ const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 export type SuiteLike = {
   children: Array<SuiteLike | SpecLike>;
   description: string;
+  id?: string;
+  markedPending?: boolean;
 };
 
 export type SpecLike = {
   description: string;
   getFullName: () => string;
+  id?: string;
+  markedPending?: boolean;
+  markedTodo?: boolean;
+};
+
+type CollectContext = {
+  ancestors: Array<string>;
+  focusedRunnableIds: Array<string>;
+  parentEnabled: boolean;
+  parentPending: boolean;
+  testNamePatternRE: RegExp | null;
 };
 
 export const collectSpecs = (
   suite: SuiteLike,
-  ancestors: Array<string>,
-  testNamePatternRE: RegExp | null,
+  context: CollectContext,
 ): Array<AssertionResult> => {
   const results: Array<AssertionResult> = [];
+  const isEnabled = (node: SuiteLike | SpecLike): boolean =>
+    context.parentEnabled ||
+    (node.id != null && context.focusedRunnableIds.includes(node.id));
+
   for (const child of suite.children) {
     if ('children' in child) {
       results.push(
-        ...collectSpecs(
-          child,
-          [...ancestors, child.description],
-          testNamePatternRE,
-        ),
+        ...collectSpecs(child, {
+          ...context,
+          ancestors: [...context.ancestors, child.description],
+          parentEnabled: isEnabled(child),
+          parentPending: context.parentPending || child.markedPending === true,
+        }),
       );
     } else {
       const fullName = child.getFullName();
-      if (!testNamePatternRE || testNamePatternRE.test(fullName)) {
-        results.push({
-          ancestorTitles: [...ancestors],
-          duration: null,
-          failing: false,
-          failureDetails: [],
-          failureMessages: [],
-          fullName,
-          invocations: 0,
-          location: null,
-          numPassingAsserts: 0,
-          retryReasons: [],
-          startAt: null,
-          status: 'pending',
-          title: child.description,
-        });
+      const deselected =
+        context.testNamePatternRE !== null &&
+        !context.testNamePatternRE.test(fullName);
+
+      // Mirror `Spec.status` without executing, in the same precedence order: a
+      // spec not selected by focus (`fit`/`fdescribe`) or deselected by
+      // `--testNamePattern` reports as `pending` (an actual run still counts
+      // these); `markedTodo` reports as `todo`; a skipped (`markedPending`) spec
+      // reports as `pending`; otherwise the spec would run and is reported in
+      // the passed bucket and flagged as `wouldRun`.
+      let status: Status;
+      let wouldRun: true | undefined;
+      if (!isEnabled(child) || deselected) {
+        status = 'pending';
+      } else if (child.markedTodo) {
+        status = 'todo';
+      } else if (context.parentPending || child.markedPending) {
+        status = 'pending';
+      } else {
+        status = 'passed';
+        wouldRun = true;
       }
+
+      results.push({
+        ancestorTitles: [...context.ancestors],
+        duration: null,
+        failing: false,
+        failureDetails: [],
+        failureMessages: [],
+        fullName,
+        invocations: 0,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: [],
+        startAt: null,
+        status,
+        title: child.description,
+        wouldRun,
+      });
     }
   }
   return results;
@@ -80,11 +120,13 @@ export const collectSpecs = (
 
 export const buildCollectedTestResult = ({
   config,
+  focusedRunnableIds = [],
   suite,
   testNamePattern,
   testPath,
 }: {
   config: Config.ProjectConfig;
+  focusedRunnableIds?: Array<string>;
   suite: SuiteLike;
   testNamePattern: string | undefined;
   testPath: string;
@@ -92,14 +134,19 @@ export const buildCollectedTestResult = ({
   const testNamePatternRE = testNamePattern
     ? new RegExp(testNamePattern, 'i')
     : null;
-  const assertionResults = collectSpecs(suite, [], testNamePatternRE);
-  return {
-    ...createEmptyTestResult(),
+  const assertionResults = collectSpecs(suite, {
+    ancestors: [],
+    focusedRunnableIds,
+    // With no focus the whole tree runs; with focus only the focused subtrees
+    // do, so the root suite is enabled only when nothing is focused.
+    parentEnabled: focusedRunnableIds.length === 0,
+    parentPending: suite.markedPending === true,
+    testNamePatternRE,
+  });
+  return makeCollectedTestResult(assertionResults, {
     displayName: config.displayName,
-    numPendingTests: assertionResults.length,
     testFilePath: testPath,
-    testResults: assertionResults,
-  };
+  });
 };
 
 export default async function jasmine2(
@@ -279,6 +326,7 @@ export default async function jasmine2(
   if (globalConfig.collectTests) {
     return buildCollectedTestResult({
       config,
+      focusedRunnableIds: env.focusedRunnableIds(),
       suite: env.topSuite() as unknown as SuiteLike,
       testNamePattern: globalConfig.testNamePattern,
       testPath,
