@@ -7529,10 +7529,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supports-color@npm:^8.1.3":
-  version: 8.1.3
-  resolution: "@types/supports-color@npm:8.1.3"
-  checksum: 10/f5a3ca4aa94ac9d45beae8aa06dcba45e6d56b77999707a2708b54a9b042f84c68e619b10ef6e4b6f447f801824adebb9ed4d7a82c0b5d5d7bf29d5ff34d53a9
+"@types/supports-color@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/supports-color@npm:10.0.0"
+  dependencies:
+    supports-color: "npm:*"
+  checksum: 10/25b6b2c87b9dd4847f031ac6f4f904c79bb44f2f28e22962a10c76b135fc330f9b5d5ddd22adbc82272ff812b162a930e75b22038b6d79c747f833b493e5f32f
   languageName: node
   linkType: hard
 
@@ -15078,7 +15080,7 @@ __metadata:
     "@babel/core": "npm:^7.27.4"
     "@types/merge-stream": "npm:^2.0.0"
     "@types/node": "npm:*"
-    "@types/supports-color": "npm:^8.1.3"
+    "@types/supports-color": "npm:^10.0.0"
     "@types/ungap__structured-clone": "npm:^1.2.0"
     "@ungap/structured-clone": "npm:^1.3.0"
     get-stream: "npm:^6.0.0"
@@ -21544,6 +21546,13 @@ __metadata:
   peerDependencies:
     postcss: ^8.4.31
   checksum: 10/e22766db1d3a723e21e63af3d27b2623caf43af81c97c571944c0f420d51a629784ece4e5cc146cc79d800e1fe56c53f50666635c1fe8a640f68db91371bf06f
+  languageName: node
+  linkType: hard
+
+"supports-color@npm:*":
+  version: 11.0.0
+  resolution: "supports-color@npm:11.0.0"
+  checksum: 10/6480981c00359da2cd22a25543e8bee3cea248a32194e98fade18ac5ada178bcb950fa225d262ff4dbf23c81caaed65660eb4093302bbdd0d1f1d93a18768854
   languageName: node
   linkType: hard
 
