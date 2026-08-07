@@ -53,11 +53,66 @@ test('Node crawler picks up symlinked files when option is set as flag', () => {
   expect(exitCode).toBe(0);
 });
 
+test('Node crawler picks up symlinked files when using the fdir crawler', () => {
+  // Symlinks are only enabled on windows with developer mode.
+  // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
+  if (process.platform === 'win32') {
+    return;
+  }
+
+  // forceNodeFilesystemAPI routes the crawl through fdir instead of find(1),
+  // which is otherwise the default on this platform.
+  const {stdout, stderr, exitCode} = runJest(DIR, [
+    '--haste={"enableSymlinks": true, "forceNodeFilesystemAPI": true}',
+    '--no-watchman',
+  ]);
+
+  expect(stdout).toBe('');
+  expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+  expect(exitCode).toBe(0);
+});
+
 test('Node crawler does not pick up symlinked files by default', () => {
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stdout).toContain('No tests found, exiting with code 1');
   expect(stderr).toBe('');
   expect(exitCode).toBe(1);
+});
+
+test('Node crawler does not crawl into symlinked directories', () => {
+  if (process.platform === 'win32') {
+    return;
+  }
+
+  writeFiles(DIR, {
+    'package.json': JSON.stringify({
+      jest: {
+        testMatch: ['<rootDir>/test-dirs/test.js'],
+      },
+    }),
+    'symlinked-dir/test.js': `
+      test('1+1', () => {
+        expect(1).toBe(1);
+      });
+    `,
+  });
+  writeSymlinks(DIR, {
+    'symlinked-dir': 'test-dirs',
+  });
+
+  for (const hasteConfig of [
+    '--haste={"enableSymlinks": true}',
+    '--haste={"enableSymlinks": true, "forceNodeFilesystemAPI": true}',
+  ]) {
+    const {stdout, stderr, exitCode} = runJest(DIR, [
+      hasteConfig,
+      '--no-watchman',
+    ]);
+
+    expect(stdout).toContain('No tests found, exiting with code 1');
+    expect(stderr).toBe('');
+    expect(exitCode).toBe(1);
+  }
 });
 
 test('Should throw if watchman used with haste.enableSymlinks', () => {
