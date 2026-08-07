@@ -7,9 +7,14 @@
 
 import * as os from 'os';
 import * as path from 'path';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import * as fs from 'graceful-fs';
 import {cleanup, writeFiles, writeSymlinks} from '../Utils';
 import {runContinuous} from '../runJest';
+
+// Symlinks are only enabled on windows with developer mode.
+// https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
+skipSuiteOnWindows();
 
 // `realpathSync` because file watchers report real paths: with the macOS
 // tmpdir (`/var` -> `/private/var`) unresolved, event paths would not be
@@ -23,12 +28,7 @@ const OUTSIDE_DIR = path.resolve(
 const sleep = (time: number) =>
   new Promise(resolve => setTimeout(resolve, time));
 
-// Symlinks are only enabled on windows with developer mode.
-// https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
-const describeSkipWin32 =
-  process.platform === 'win32' ? describe.skip : describe;
-
-describeSkipWin32('watch mode with symlinks', () => {
+describe('watch mode with symlinks', () => {
   let testRun: ReturnType<typeof runContinuous> | undefined;
 
   beforeEach(() => {
