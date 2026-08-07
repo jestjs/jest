@@ -50,7 +50,7 @@
     "@types/prettier-v2": "npm:@types/prettier@^2.1.5",
     "@types/semver": "^7.7.0",
     "ansi-regex": "^5.0.1",
-    "ansi-styles": "^5.2.0",
+    "ansi-styles": "^7.0.0",
     "prettier": "^3.0.3",
     "prettier-v2": "npm:prettier@^2.1.5"
   },

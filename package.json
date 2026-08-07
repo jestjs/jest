@@ -27,7 +27,7 @@
     "@types/which": "^3.0.4",
     "@yarnpkg/types": "^4.0.1",
     "ansi-regex": "^5.0.1",
-    "ansi-styles": "^5.2.0",
+    "ansi-styles": "^7.0.0",
     "babel-jest": "workspace:*",
     "babel-loader": "^9.2.1",
     "camelcase": "^6.3.0",
