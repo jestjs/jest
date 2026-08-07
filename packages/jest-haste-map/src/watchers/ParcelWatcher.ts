@@ -155,9 +155,9 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     let lastError: unknown = cause;
     for (let attempt = 0; attempt < MAX_RESUBSCRIBE_ATTEMPTS; attempt++) {
       if (attempt > 0) {
-        await new Promise(resolve =>
-          setTimeout(resolve, RESUBSCRIBE_RETRY_DELAY),
-        );
+        await new Promise(resolve => {
+          setTimeout(resolve, RESUBSCRIBE_RETRY_DELAY).unref();
+        });
         if (this._closed) {
           return;
         }
