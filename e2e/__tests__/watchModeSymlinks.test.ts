@@ -114,4 +114,15 @@ describe('watch mode with symlinks', () => {
       'Test Suites: 3 passed, 3 total',
     );
   });
+
+  test('removes a symlinked test file that is deleted', async () => {
+    testRun = runContinuous(DIR, ['--watchAll', '--no-watchman']);
+    await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 1);
+
+    fs.unlinkSync(path.join(DIR, '__tests__', 'linked.test.js'));
+    await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
+    expect(testRun.getCurrentOutput().stderr).toContain(
+      'Test Suites: 1 passed, 1 total',
+    );
+  });
 });
