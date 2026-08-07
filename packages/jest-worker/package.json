@@ -23,7 +23,7 @@
     "@ungap/structured-clone": "^1.3.0",
     "jest-util": "workspace:*",
     "merge-stream": "^2.0.0",
-    "supports-color": "^8.1.1"
+    "supports-color": "^11.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",
