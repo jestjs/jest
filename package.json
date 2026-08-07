@@ -31,7 +31,7 @@
     "babel-jest": "workspace:*",
     "babel-loader": "^9.2.1",
     "camelcase": "^6.3.0",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "dedent": "^1.6.0",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.5",

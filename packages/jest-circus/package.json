@@ -25,7 +25,7 @@
     "@jest/test-result": "workspace:*",
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "co": "^4.6.0",
     "dedent": "^1.6.0",
     "is-generator-fn": "^2.1.0",

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@jest/types": "workspace:*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "exit-x": "^0.2.2",
     "graceful-fs": "^4.2.11",
     "jest-config": "workspace:*",

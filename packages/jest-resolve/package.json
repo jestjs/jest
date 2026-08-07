@@ -19,7 +19,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "graceful-fs": "^4.2.11",
     "jest-haste-map": "workspace:*",
     "jest-util": "workspace:*",

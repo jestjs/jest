@@ -41,7 +41,7 @@
     "@jest/test-sequencer": "workspace:*",
     "@jest/types": "workspace:*",
     "babel-jest": "workspace:*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "ci-info": "^4.2.0",
     "deepmerge": "^4.3.1",
     "glob": "^10.5.0",

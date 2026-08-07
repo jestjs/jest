@@ -21,7 +21,7 @@
     "@jest/types": "workspace:*",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@types/node": "*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "collect-v8-coverage": "^1.0.2",
     "exit-x": "^0.2.2",
     "glob": "^10.5.0",

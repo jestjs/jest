@@ -21,7 +21,7 @@
   "dependencies": {
     "@jest/types": "workspace:*",
     "@types/node": "*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "ci-info": "^4.2.0",
     "graceful-fs": "^4.2.11",
     "picomatch": "^4.0.3"

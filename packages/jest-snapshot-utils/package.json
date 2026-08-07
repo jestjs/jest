@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@jest/types": "workspace:*",
-    "chalk": "^4.1.2",
+    "chalk": "^6.0.0",
     "graceful-fs": "^4.2.11",
     "natural-compare": "^1.4.0"
   },

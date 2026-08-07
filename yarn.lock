@@ -4223,7 +4223,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/node": "npm:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     jest-message-util: "workspace:*"
     jest-util: "workspace:*"
     slash: "npm:^3.0.0"
@@ -4245,7 +4245,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
     ansi-escapes: "npm:^4.3.2"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     ci-info: "npm:^4.2.0"
     exit-x: "npm:^0.2.2"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -4418,7 +4418,7 @@ __metadata:
     babel-jest: "workspace:*"
     babel-loader: "npm:^9.2.1"
     camelcase: "npm:^6.3.0"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     dedent: "npm:^1.6.0"
     eslint: "npm:^10.8.0"
     eslint-config-prettier: "npm:^10.1.5"
@@ -4506,7 +4506,7 @@ __metadata:
     "@types/istanbul-reports": "npm:^3.0.4"
     "@types/node": "npm:*"
     "@types/node-notifier": "npm:^8.0.5"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     collect-v8-coverage: "npm:^1.0.2"
     exit-x: "npm:^0.2.2"
     glob: "npm:^10.5.0"
@@ -4557,7 +4557,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/natural-compare": "npm:^1.4.3"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     graceful-fs: "npm:^4.2.11"
     natural-compare: "npm:^1.4.0"
   languageName: unknown
@@ -4640,7 +4640,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/write-file-atomic": "npm:^4.0.3"
     babel-plugin-istanbul: "npm:^7.0.1"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     convert-source-map: "npm:^2.0.0"
     dedent: "npm:^1.6.0"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -4691,7 +4691,7 @@ __metadata:
     "@types/istanbul-reports": "npm:^3.0.4"
     "@types/node": "npm:*"
     "@types/yargs": "npm:^17.0.33"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -8630,7 +8630,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     babel-plugin-istanbul: "npm:^7.0.1"
     babel-preset-jest: "workspace:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     graceful-fs: "npm:^4.2.11"
     slash: "npm:^3.0.0"
   peerDependencies:
@@ -9244,6 +9244,13 @@ __metadata:
   version: 5.6.2
   resolution: "chalk@npm:5.6.2"
   checksum: 10/1b2f48f6fba1370670d5610f9cd54c391d6ede28f4b7062dd38244ea5768777af72e5be6b74fb6c6d54cb84c4a2dff3f3afa9b7cb5948f7f022cfd3d087989e0
+  languageName: node
+  linkType: hard
+
+"chalk@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "chalk@npm:6.0.0"
+  checksum: 10/bdcb895b9c848ddbce38f38df5a10a3e272d6c04d759161789c4a2fa5a1fa78bf9eecf4eef73433a2a3be7324d6da96c3c9baf5c80862f37683cc0b890597831
   languageName: node
   linkType: hard
 
@@ -9990,7 +9997,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/prompts": "npm:^2.4.9"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     exit-x: "npm:^0.2.2"
     graceful-fs: "npm:^4.2.11"
     jest-config: "workspace:*"
@@ -11983,7 +11990,7 @@ __metadata:
     "@jest/expect-utils": "workspace:*"
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     immutable: "npm:^5.1.2"
     jest-matcher-utils: "workspace:*"
     jest-message-util: "workspace:*"
@@ -14448,7 +14455,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
     "@types/stack-utils": "npm:^2.0.3"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     co: "npm:^4.6.0"
     dedent: "npm:^1.6.0"
     execa: "npm:^5.1.1"
@@ -14477,7 +14484,7 @@ __metadata:
     "@jest/test-result": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     exit-x: "npm:^0.2.2"
     import-local: "npm:^3.2.0"
     jest-config: "workspace:*"
@@ -14507,7 +14514,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/parse-json": "npm:^4.0.2"
     babel-jest: "workspace:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     ci-info: "npm:^4.2.0"
     deepmerge: "npm:^4.3.1"
     esbuild: "npm:^0.28.0"
@@ -14550,7 +14557,7 @@ __metadata:
     "@jest/diff-sequences": "workspace:*"
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     pretty-format: "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14570,7 +14577,7 @@ __metadata:
   dependencies:
     "@jest/get-type": "workspace:*"
     "@jest/types": "workspace:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     jest-util: "workspace:*"
     pretty-format: "workspace:*"
   languageName: unknown
@@ -14652,7 +14659,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/co": "npm:^4.6.6"
     "@types/node": "npm:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     co: "npm:^4.6.0"
     is-generator-fn: "npm:^2.1.0"
     jest-each: "workspace:*"
@@ -14695,7 +14702,7 @@ __metadata:
     "@jest/get-type": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@types/node": "npm:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     jest-diff: "workspace:*"
     pretty-format: "workspace:*"
   languageName: unknown
@@ -14711,7 +14718,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/picomatch": "npm:^4.0.0"
     "@types/stack-utils": "npm:^2.0.3"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     graceful-fs: "npm:^4.2.11"
     jest-util: "workspace:*"
     picomatch: "npm:^4.0.3"
@@ -14794,7 +14801,7 @@ __metadata:
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
     "@types/graceful-fs": "npm:^4.1.9"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     graceful-fs: "npm:^4.2.11"
     jest-haste-map: "workspace:*"
     jest-util: "workspace:*"
@@ -14818,7 +14825,7 @@ __metadata:
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
     "@types/source-map-support": "npm:^0.5.10"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     emittery: "npm:^0.13.1"
     exit-x: "npm:^0.2.2"
     graceful-fs: "npm:^4.2.11"
@@ -14852,7 +14859,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     cjs-module-lexer: "npm:^2.2.0"
     collect-v8-coverage: "npm:^1.0.2"
     es-module-lexer: "npm:^2.1.0"
@@ -14914,7 +14921,7 @@ __metadata:
     ansi-regex: "npm:^5.0.1"
     ansi-styles: "npm:^5.2.0"
     babel-preset-current-node-syntax: "npm:^1.2.0"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     expect: "workspace:*"
     graceful-fs: "npm:^4.2.11"
     jest-diff: "workspace:*"
@@ -14966,7 +14973,7 @@ __metadata:
     "@types/micromatch": "npm:^4.0.10"
     "@types/node": "npm:*"
     "@types/picomatch": "npm:^4.0.0"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     ci-info: "npm:^4.2.0"
     graceful-fs: "npm:^4.2.11"
     lodash: "npm:^4.17.19"
@@ -14997,7 +15004,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
     camelcase: "npm:^6.3.0"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     leven: "npm:^3.1.0"
     pretty-format: "workspace:*"
   languageName: unknown
@@ -15028,7 +15035,7 @@ __metadata:
     "@jest/types": "workspace:*"
     "@types/node": "npm:*"
     ansi-escapes: "npm:^4.3.2"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^6.0.0"
     emittery: "npm:^0.13.1"
     jest-util: "workspace:*"
     string-length: "npm:^4.0.2"
