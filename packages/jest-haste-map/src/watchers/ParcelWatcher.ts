@@ -7,7 +7,12 @@
 
 import {EventEmitter} from 'node:events';
 import * as path from 'node:path';
-import * as parcelWatcher from '@parcel/watcher';
+import type {
+  AsyncSubscription,
+  BackendType,
+  Event as ParcelEvent,
+  Options as ParcelOptions,
+} from '@parcel/watcher';
 import anymatch from 'anymatch';
 import * as fs from 'graceful-fs';
 import {
@@ -23,9 +28,7 @@ import type {IWatcher, WatcherOptions} from './types';
 // is true, so the 'watchman' branch below is unreachable through normal Jest
 // operation. It exists so ParcelWatcher can be used standalone (e.g. in tests
 // or custom tooling) with watchman as the parcel backend.
-function pickBackend(
-  useWatchman: boolean,
-): parcelWatcher.BackendType | undefined {
+function pickBackend(useWatchman: boolean): BackendType | undefined {
   if (useWatchman) {
     return 'watchman';
   }
@@ -67,9 +70,9 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private readonly _dot: boolean;
   private readonly _glob: ReadonlyArray<string>;
   private readonly _doIgnore: (path: string) => boolean;
-  private readonly _backend: parcelWatcher.BackendType | undefined;
-  private _parcelIgnore: NonNullable<parcelWatcher.Options['ignore']>;
-  private _subscription: parcelWatcher.AsyncSubscription | null = null;
+  private readonly _backend: BackendType | undefined;
+  private _parcelIgnore: NonNullable<ParcelOptions['ignore']>;
+  private _subscription: AsyncSubscription | null = null;
   private _closed = false;
 
   constructor(root: string, opts: WatcherOptions) {
@@ -95,7 +98,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     setImmediate(() => this._start());
   }
 
-  private _parcelOpts(): parcelWatcher.Options {
+  private _parcelOpts(): ParcelOptions {
     return {backend: this._backend, ignore: this._parcelIgnore};
   }
 
@@ -115,13 +118,15 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   // There is no way to validate against std::regex from JS ahead of time, so
   // rejection is the signal: drop the regex (per-event filtering still happens
   // through _doIgnore) and retry with the VCS globs alone.
-  private async _subscribe(): Promise<parcelWatcher.AsyncSubscription> {
+  private async _subscribe(): Promise<AsyncSubscription> {
+    // Watch mode is the only consumer of the native binding — loading it with
+    // the module would take down every jest run on platforms without a
+    // prebuild. The build's lazy commonjs transform already defers top-level
+    // imports, but that guarantee lives in build config; keep it in the code.
+    const {subscribe} =
+      require('@parcel/watcher') as typeof import('@parcel/watcher');
     try {
-      return await parcelWatcher.subscribe(
-        this.root,
-        this._handleEvents,
-        this._parcelOpts(),
-      );
+      return await subscribe(this.root, this._handleEvents, this._parcelOpts());
     } catch (error) {
       const rejectedPattern = this._parcelIgnore.find(
         pattern => pattern instanceof RegExp,
@@ -135,11 +140,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
         `jest-haste-map: subscribing with the ignore pattern ${rejectedPattern} failed (${error}); ignored paths will still be watched and filtered in JS`,
       );
       this._parcelIgnore = VCS_IGNORE_GLOBS;
-      return parcelWatcher.subscribe(
-        this.root,
-        this._handleEvents,
-        this._parcelOpts(),
-      );
+      return subscribe(this.root, this._handleEvents, this._parcelOpts());
     }
   }
 
@@ -197,7 +198,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
 
   private _handleEvents = (
     err: Error | null,
-    events: Array<parcelWatcher.Event>,
+    events: ReadonlyArray<ParcelEvent>,
   ) => {
     if (this._closed) {
       return;
