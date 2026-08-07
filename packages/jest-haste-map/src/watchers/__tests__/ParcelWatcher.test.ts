@@ -30,7 +30,10 @@ const mockLstat =
 // Use path.resolve so paths are correct on all platforms (e.g. 'D:\root' on Windows).
 const ROOT = path.resolve('/root');
 
+const mockConsole = {warn: jest.fn()} as unknown as Console;
+
 const defaultOpts: WatcherOptions = {
+  console: mockConsole,
   dot: true,
   glob: ['**/*.js'],
   ignored: undefined,
@@ -182,9 +185,6 @@ describe('ParcelWatcher', () => {
   });
 
   it('re-subscribes when the subscribe callback receives an error', async () => {
-    const consoleWarn = jest
-      .spyOn(console, 'warn')
-      .mockImplementation(() => {});
     const fakeStat = {isDirectory: () => false, mtime: new Date(), size: 100};
     mockLstat.mockImplementation((_p, cb) =>
       cb(null, fakeStat as gracefulFs.Stats),
@@ -203,7 +203,7 @@ describe('ParcelWatcher', () => {
 
     expect(parcelWatcher.subscribe).toHaveBeenCalledTimes(2);
     expect(onError).not.toHaveBeenCalled();
-    expect(consoleWarn).toHaveBeenCalledWith(
+    expect(mockConsole.warn).toHaveBeenCalledWith(
       expect.stringContaining('inotify queue overflow'),
     );
 
@@ -214,13 +214,9 @@ describe('ParcelWatcher', () => {
     await flush();
 
     expect(onChange).toHaveBeenCalledWith('add', 'file.js', ROOT, fakeStat);
-    consoleWarn.mockRestore();
   });
 
   it('emits error when every re-subscribe attempt fails', async () => {
-    const consoleWarn = jest
-      .spyOn(console, 'warn')
-      .mockImplementation(() => {});
     const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
       typeof parcelWatcher.subscribe
     >;
@@ -233,13 +229,19 @@ describe('ParcelWatcher', () => {
 
     const resubscribeError = new Error('backend gone');
     subscribeMock.mockRejectedValue(resubscribeError);
+    jest.useFakeTimers({doNotFake: ['setImmediate']});
     subscribeCallback(new Error('watch error'), []);
     await flush();
+
+    // The two retries each sit behind a delay.
+    await jest.advanceTimersByTimeAsync(1000);
+    await jest.advanceTimersByTimeAsync(1000);
+    await flush();
+    jest.useRealTimers();
 
     // Initial subscribe plus three failed re-subscribe attempts.
     expect(subscribeMock).toHaveBeenCalledTimes(4);
     expect(onError).toHaveBeenCalledWith(resubscribeError);
-    consoleWarn.mockRestore();
   });
 
   it('close() calls unsubscribe', async () => {
@@ -453,9 +455,6 @@ describe('ParcelWatcher', () => {
     });
 
     it('retries without the regex when the native matcher rejects it, and warns', async () => {
-      const consoleWarn = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
       const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
         typeof parcelWatcher.subscribe
       >;
@@ -472,10 +471,9 @@ describe('ParcelWatcher', () => {
       expect(subscribeMock).toHaveBeenCalledTimes(2);
       expect(subscribeMock.mock.calls[0][2]?.ignore).toEqual([ignored, ...VCS]);
       expect(subscribeMock.mock.calls[1][2]?.ignore).toEqual(VCS);
-      const [warning] = consoleWarn.mock.calls[0];
+      const [warning] = jest.mocked(mockConsole.warn).mock.calls[0];
       expect(warning).toContain(String(ignored));
       expect(warning).toContain('was not preceded by a valid');
-      consoleWarn.mockRestore();
     });
 
     it('does not retry when the ignore list has no regex', async () => {

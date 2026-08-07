@@ -39,6 +39,7 @@ type OnChangeCallback = (
 const MAX_WAIT_TIME = 240_000;
 
 export class WatcherDriver {
+  private readonly _console: Console;
   private readonly _extensions: Array<string>;
   private readonly _ignorePattern: HasteRegExp | undefined;
   private readonly _onError: (error: Error) => void;
@@ -47,12 +48,14 @@ export class WatcherDriver {
   private _watchers: Array<IWatcher> = [];
 
   constructor(opts: {
+    console: Console;
     extensions: Array<string>;
     ignorePattern: HasteRegExp | undefined;
     onError: (error: Error) => void;
     roots: Array<string>;
     useWatchman: boolean;
   }) {
+    this._console = opts.console;
     this._extensions = opts.extensions;
     this._ignorePattern = opts.ignorePattern;
     this._onError = opts.onError;
@@ -63,7 +66,7 @@ export class WatcherDriver {
   async start(onChange: OnChangeCallback): Promise<void> {
     const Backend: WatcherCtor = this._useWatchman
       ? WatchmanWatcher
-      : (ParcelWatcher as unknown as WatcherCtor);
+      : ParcelWatcher;
 
     const results = await Promise.allSettled(
       this._roots.map(root => this._createWatcher(Backend, root, onChange)),
@@ -92,6 +95,7 @@ export class WatcherDriver {
     onChange: OnChangeCallback,
   ): Promise<IWatcher> {
     const watcher = new Backend(root, {
+      console: this._console,
       dot: true,
       glob: this._extensions.map(ext => `**/*.${ext}`),
       ignored: this._ignorePattern,

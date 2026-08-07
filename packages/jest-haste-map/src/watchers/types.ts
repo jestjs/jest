@@ -9,6 +9,7 @@ import type {EventEmitter} from 'node:events';
 import type {HasteRegExp} from '../types';
 
 export type WatcherOptions = {
+  console: Console;
   dot: boolean;
   glob: ReadonlyArray<string>;
   ignored: HasteRegExp | undefined;

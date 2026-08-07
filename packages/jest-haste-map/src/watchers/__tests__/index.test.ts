@@ -33,6 +33,7 @@ function makeReadyWatcher(): EventEmitter & WatcherInstance {
 }
 
 const driverOpts = {
+  console: globalThis.console,
   extensions: ['js'],
   ignorePattern: undefined,
   onError: jest.fn(),

@@ -57,9 +57,13 @@ const VCS_IGNORE_GLOBS = [
 ];
 
 const MAX_RESUBSCRIBE_ATTEMPTS = 3;
+// Give transient conditions (fd exhaustion, inotify limits) a moment to
+// clear instead of burning every attempt within milliseconds.
+const RESUBSCRIBE_RETRY_DELAY = 1000;
 
 export class ParcelWatcher extends EventEmitter implements IWatcher {
   readonly root: string;
+  private readonly _console: Console;
   private readonly _dot: boolean;
   private readonly _glob: ReadonlyArray<string>;
   private readonly _doIgnore: (path: string) => boolean;
@@ -71,6 +75,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   constructor(root: string, opts: WatcherOptions) {
     super();
     this.root = path.resolve(root);
+    this._console = opts.console;
     this._dot = opts.dot;
     this._glob = opts.glob;
     // Fallback for patterns parcel's native matcher can't take: flagged
@@ -126,7 +131,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       }
       // The retry can also swallow failures unrelated to the regex, silently
       // costing the native-level ignore for the session — make it diagnosable.
-      console.warn(
+      this._console.warn(
         `jest-haste-map: subscribing with the ignore pattern ${rejectedPattern} failed (${error}); ignored paths will still be watched and filtered in JS`,
       );
       this._parcelIgnore = VCS_IGNORE_GLOBS;
@@ -141,7 +146,7 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
   private async _resubscribe(cause: Error): Promise<void> {
     // Events occurring while the watcher is down are lost — they surface on
     // the next restart, when the startup crawl picks up the mtime changes.
-    console.warn(
+    this._console.warn(
       `jest-haste-map: watch error (${cause}); re-subscribing. Changes made in the meantime are not detected until the next restart`,
     );
     this._subscription?.unsubscribe().catch(() => undefined);
@@ -149,6 +154,14 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
 
     let lastError: unknown = cause;
     for (let attempt = 0; attempt < MAX_RESUBSCRIBE_ATTEMPTS; attempt++) {
+      if (attempt > 0) {
+        await new Promise(resolve =>
+          setTimeout(resolve, RESUBSCRIBE_RETRY_DELAY),
+        );
+        if (this._closed) {
+          return;
+        }
+      }
       try {
         const subscription = await this._subscribe();
         if (this._closed) {
