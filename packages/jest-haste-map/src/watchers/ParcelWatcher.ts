@@ -56,6 +56,8 @@ const VCS_IGNORE_GLOBS = [
   '**/.sl/**',
 ];
 
+const MAX_RESUBSCRIBE_ATTEMPTS = 3;
+
 export class ParcelWatcher extends EventEmitter implements IWatcher {
   readonly root: string;
   private readonly _dot: boolean;
@@ -136,6 +138,32 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
     }
   }
 
+  private async _resubscribe(cause: Error): Promise<void> {
+    // Events occurring while the watcher is down are lost — they surface on
+    // the next restart, when the startup crawl picks up the mtime changes.
+    console.warn(
+      `jest-haste-map: watch error (${cause}); re-subscribing. Changes made in the meantime are not detected until the next restart`,
+    );
+    this._subscription?.unsubscribe().catch(() => undefined);
+    this._subscription = null;
+
+    let lastError: unknown = cause;
+    for (let attempt = 0; attempt < MAX_RESUBSCRIBE_ATTEMPTS; attempt++) {
+      try {
+        const subscription = await this._subscribe();
+        if (this._closed) {
+          await subscription.unsubscribe();
+          return;
+        }
+        this._subscription = subscription;
+        return;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    this._emitError(lastError);
+  }
+
   private async _start(): Promise<void> {
     try {
       const subscription = await this._subscribe();
@@ -162,7 +190,12 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       return;
     }
     if (err) {
-      this._emitError(err);
+      // Parcel tears the subscription down before reporting a watcher error
+      // (Backend::handleWatcherError unwatches it and Watcher::notifyError
+      // clears its callbacks), so no further events can arrive on it —
+      // recover by subscribing anew, like WatchmanWatcher re-inits on a
+      // lost connection.
+      void this._resubscribe(err);
       return;
     }
 

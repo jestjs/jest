@@ -181,17 +181,65 @@ describe('ParcelWatcher', () => {
     expect(onError).toHaveBeenCalledWith(expect.any(Error));
   });
 
-  it('emits error when the subscribe callback receives an error', async () => {
+  it('re-subscribes when the subscribe callback receives an error', async () => {
+    const consoleWarn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {});
+    const fakeStat = {isDirectory: () => false, mtime: new Date(), size: 100};
+    mockLstat.mockImplementation((_p, cb) =>
+      cb(null, fakeStat as gracefulFs.Stats),
+    );
+
+    const watcher = makeWatcher();
+    await waitReady(watcher);
+
+    const onError = jest.fn();
+    const onChange = jest.fn();
+    watcher.on('error', onError);
+    watcher.on('all', onChange);
+
+    subscribeCallback(new Error('inotify queue overflow'), []);
+    await flush();
+
+    expect(parcelWatcher.subscribe).toHaveBeenCalledTimes(2);
+    expect(onError).not.toHaveBeenCalled();
+    expect(consoleWarn).toHaveBeenCalledWith(
+      expect.stringContaining('inotify queue overflow'),
+    );
+
+    // The replacement subscription's events flow through.
+    subscribeCallback(null, [
+      {path: path.join(ROOT, 'file.js'), type: 'create'},
+    ]);
+    await flush();
+
+    expect(onChange).toHaveBeenCalledWith('add', 'file.js', ROOT, fakeStat);
+    consoleWarn.mockRestore();
+  });
+
+  it('emits error when every re-subscribe attempt fails', async () => {
+    const consoleWarn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {});
+    const subscribeMock = parcelWatcher.subscribe as jest.MockedFunction<
+      typeof parcelWatcher.subscribe
+    >;
+
     const watcher = makeWatcher();
     await waitReady(watcher);
 
     const onError = jest.fn();
     watcher.on('error', onError);
 
+    const resubscribeError = new Error('backend gone');
+    subscribeMock.mockRejectedValue(resubscribeError);
     subscribeCallback(new Error('watch error'), []);
     await flush();
 
-    expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    // Initial subscribe plus three failed re-subscribe attempts.
+    expect(subscribeMock).toHaveBeenCalledTimes(4);
+    expect(onError).toHaveBeenCalledWith(resubscribeError);
+    consoleWarn.mockRestore();
   });
 
   it('close() calls unsubscribe', async () => {
