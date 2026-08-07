@@ -45,7 +45,7 @@
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^8.0.0",
     "@crowdin/cli": "^4.7.0",
     "@docusaurus/module-type-aliases": "^3.0.0",
     "@docusaurus/tsconfig": "^3.0.0",
