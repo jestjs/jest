@@ -47,7 +47,7 @@
     "@types/co": "^4.6.6",
     "@types/graceful-fs": "^4.1.9",
     "@types/stack-utils": "^2.0.3",
-    "execa": "^5.1.1",
+    "execa": "^10.0.0",
     "graceful-fs": "^4.2.11",
     "tempy": "^1.0.1"
   },

@@ -4429,7 +4429,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.4.1"
     eslint-plugin-promise: "npm:^7.2.1"
     eslint-plugin-unicorn: "npm:^64.0.0"
-    execa: "npm:^5.1.1"
+    execa: "npm:^10.0.0"
     find-process: "npm:^2.0.0"
     glob: "npm:^10.5.0"
     globals: "npm:^17.0.0"
@@ -12074,6 +12074,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"execa@npm:^10.0.0":
+  version: 10.0.1
+  resolution: "execa@npm:10.0.1"
+  dependencies:
+    "@sindresorhus/merge-streams": "npm:^4.0.0"
+    figures: "npm:^6.1.0"
+    get-stream: "npm:^9.0.1"
+    human-signals: "npm:^8.0.1"
+    is-plain-obj: "npm:^4.1.0"
+    is-stream: "npm:^4.0.1"
+    npm-run-path: "npm:^6.0.0"
+    pretty-ms: "npm:^9.3.0"
+    signal-exit: "npm:^4.1.0"
+    strip-final-newline: "npm:^4.0.0"
+    which-command: "npm:^0.1.0"
+    yoctocolors: "npm:^2.1.2"
+  checksum: 10/30f69e68f1700121ba995308b35ed3a260478078d850af80f5aa0411dfb5b43a945d94698a350ade4f8aaae280cc9354439805d1a07096340a9617b0e5f706bc
+  languageName: node
+  linkType: hard
+
 "execa@npm:^5.1.1":
   version: 5.1.1
   resolution: "execa@npm:5.1.1"
@@ -12771,7 +12791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-stream@npm:^9.0.0":
+"get-stream@npm:^9.0.0, get-stream@npm:^9.0.1":
   version: 9.0.1
   resolution: "get-stream@npm:9.0.1"
   dependencies:
@@ -14571,7 +14591,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
-    execa: "npm:^5.1.1"
+    execa: "npm:^10.0.0"
     jest-util: "workspace:*"
     p-limit: "npm:^3.1.0"
   languageName: unknown
@@ -14594,7 +14614,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     co: "npm:^4.6.0"
     dedent: "npm:^1.6.0"
-    execa: "npm:^5.1.1"
+    execa: "npm:^10.0.0"
     graceful-fs: "npm:^4.2.11"
     is-generator-fn: "npm:^2.1.0"
     jest-each: "workspace:*"
@@ -19383,7 +19403,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"pretty-ms@npm:^9.2.0":
+"pretty-ms@npm:^9.2.0, pretty-ms@npm:^9.3.0":
   version: 9.3.0
   resolution: "pretty-ms@npm:9.3.0"
   dependencies:
@@ -23272,6 +23292,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"which-command@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "which-command@npm:0.1.0"
+  bin:
+    which-command: cli.js
+  checksum: 10/19f71ba9de01d3013d158d54a2ce44511fc7ae190591c94504e0295cd038f535856f87847a86aadcf9736161869d73c7812a5f5e97ef86c760575d9327898ab1
+  languageName: node
+  linkType: hard
+
 "which-typed-array@npm:^1.1.16, which-typed-array@npm:^1.1.19":
   version: 1.1.22
   resolution: "which-typed-array@npm:1.1.22"
@@ -23877,7 +23906,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yoctocolors@npm:^2.1.1":
+"yoctocolors@npm:^2.1.1, yoctocolors@npm:^2.1.2":
   version: 2.2.0
   resolution: "yoctocolors@npm:2.2.0"
   checksum: 10/8b2761daad30ca3b5b717fc12d9a30aea23f8d757d355b29b6b53c3a570de236fd85b17040c5196b18573fe38a4a981f48f111efa9a29c743e0878e26137b2b1
