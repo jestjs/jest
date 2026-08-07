@@ -31,6 +31,14 @@ export function skipSuiteOnJestCircus(): void {
   }
 }
 
+export function skipSuiteOnWindows(): void {
+  if (process.platform === 'win32') {
+    test.only('does not work on Windows', () => {
+      console.warn('[SKIP] Does not work on Windows');
+    });
+  }
+}
+
 export function testWithVmEsm(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
