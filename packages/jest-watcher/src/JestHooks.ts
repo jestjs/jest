@@ -14,9 +14,7 @@ import type {
 } from './types';
 
 type AvailableHooks =
-  | 'onFileChange'
-  | 'onTestRunComplete'
-  | 'shouldRunTestSuite';
+  'onFileChange' | 'onTestRunComplete' | 'shouldRunTestSuite';
 
 class JestHooks {
   private readonly _listeners: {

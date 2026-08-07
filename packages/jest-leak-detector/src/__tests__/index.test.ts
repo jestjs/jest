@@ -60,6 +60,7 @@ it('correctly checks simple leaks', async () => {
   expect(isLeaking).toBe(true);
 
   // We destroy the only reference to the object we had.
+  // eslint-disable-next-line no-useless-assignment
   reference = null;
 
   // Reference should be gone.
@@ -114,6 +115,7 @@ it('correctly checks more complex leaks', async () => {
   expect(isLeaking2).toBe(true);
 
   // We destroy the reference to ref1.
+  // eslint-disable-next-line no-useless-assignment
   ref1 = null;
 
   // It will still be referenced by ref2, so both references are still leaking.
@@ -123,6 +125,7 @@ it('correctly checks more complex leaks', async () => {
   expect(isLeaking2).toBe(true);
 
   // We destroy the reference to ref2.
+  // eslint-disable-next-line no-useless-assignment
   ref2 = null;
 
   // Now both references should be gone (yay mark & sweep!).

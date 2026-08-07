@@ -88,22 +88,21 @@ type FunctionParametersInternal<F> = F extends {
   (...args: infer P14): any;
   (...args: infer P15): any;
 }
-  ?
-      | WithAsymmetricMatchers<P1>
-      | WithAsymmetricMatchers<P2>
-      | WithAsymmetricMatchers<P3>
-      | WithAsymmetricMatchers<P4>
-      | WithAsymmetricMatchers<P5>
-      | WithAsymmetricMatchers<P6>
-      | WithAsymmetricMatchers<P7>
-      | WithAsymmetricMatchers<P8>
-      | WithAsymmetricMatchers<P9>
-      | WithAsymmetricMatchers<P10>
-      | WithAsymmetricMatchers<P11>
-      | WithAsymmetricMatchers<P12>
-      | WithAsymmetricMatchers<P13>
-      | WithAsymmetricMatchers<P14>
-      | WithAsymmetricMatchers<P15>
+  ? | WithAsymmetricMatchers<P1>
+    | WithAsymmetricMatchers<P2>
+    | WithAsymmetricMatchers<P3>
+    | WithAsymmetricMatchers<P4>
+    | WithAsymmetricMatchers<P5>
+    | WithAsymmetricMatchers<P6>
+    | WithAsymmetricMatchers<P7>
+    | WithAsymmetricMatchers<P8>
+    | WithAsymmetricMatchers<P9>
+    | WithAsymmetricMatchers<P10>
+    | WithAsymmetricMatchers<P11>
+    | WithAsymmetricMatchers<P12>
+    | WithAsymmetricMatchers<P13>
+    | WithAsymmetricMatchers<P14>
+    | WithAsymmetricMatchers<P15>
   : F extends (...args: infer P) => any
     ? WithAsymmetricMatchers<P>
     : never;

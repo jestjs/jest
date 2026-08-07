@@ -165,6 +165,7 @@ function loadNotifier(): typeof import('node-notifier') {
 
     throw new Error(
       'notify reporter requires optional peer dependency "node-notifier" but it was not found',
+      {cause: error},
     );
   }
 }
