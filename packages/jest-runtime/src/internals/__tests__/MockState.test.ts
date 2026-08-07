@@ -12,19 +12,21 @@ import type {ModuleRegistries} from '../ModuleRegistries';
 import type {Resolution} from '../Resolution';
 
 type ResolutionStub = {
-  [K in
-    | 'getCjsModuleId'
-    | 'getEsmModuleId'
-    | 'getEsmModuleIdAsync'
-    | 'resolveCjs'
-    | 'resolveCjsStub'
-    | 'resolveEsm'
-    | 'resolveEsmAsync'
-    | 'getCjsMockModule'
-    | 'getEsmMockModule'
-    | 'getEsmMockModuleAsync'
-    | 'getModulePath'
-    | 'isCoreModule']: jest.MockedFunction<Resolution[K]>;
+  [
+    K in
+      | 'getCjsModuleId'
+      | 'getEsmModuleId'
+      | 'getEsmModuleIdAsync'
+      | 'resolveCjs'
+      | 'resolveCjsStub'
+      | 'resolveEsm'
+      | 'resolveEsmAsync'
+      | 'getCjsMockModule'
+      | 'getEsmMockModule'
+      | 'getEsmMockModuleAsync'
+      | 'getModulePath'
+      | 'isCoreModule'
+  ]: jest.MockedFunction<Resolution[K]>;
 };
 
 function makeResolution(): {
