@@ -8,28 +8,58 @@
 import {strict as assert} from 'node:assert';
 import {EventEmitter} from 'node:events';
 import * as path from 'node:path';
+import anymatch from 'anymatch';
 import watchman from 'fb-watchman';
 import fs from 'graceful-fs';
-import RecrawlWarning from './RecrawlWarning';
-import common from './common';
+import * as common from './common';
 
 const CHANGE_EVENT = common.CHANGE_EVENT;
 const DELETE_EVENT = common.DELETE_EVENT;
 const ADD_EVENT = common.ADD_EVENT;
 const ALL_EVENT = common.ALL_EVENT;
-const SUB_NAME = 'sane-sub';
+const SUB_NAME = 'jest-haste-map';
+
+// Dedupe repeated "Recrawled this watch N times" warnings from watchman.
+const RECRAWL_WARNINGS = [];
+const RECRAWL_REGEXP =
+  /Recrawled this watch (\d+) times, most recently because:\n([^:]+)/;
+
+function isRecrawlWarningDupe(warningMessage) {
+  if (typeof warningMessage !== 'string') {
+    return false;
+  }
+  const match = warningMessage.match(RECRAWL_REGEXP);
+  if (!match) {
+    return false;
+  }
+  const count = Number(match[1]);
+  const root = match[2];
+  const existing = RECRAWL_WARNINGS.find(w => w.root === root);
+  if (existing) {
+    if (existing.count >= count) {
+      return true;
+    }
+    existing.count = count;
+    return false;
+  }
+  RECRAWL_WARNINGS.push({count, root});
+  return false;
+}
 
 /**
  * Watches `dir`.
  *
- * @class PollWatcher
+ * @class WatchmanWatcher
  * @param String dir
  * @param {Object} opts
  * @public
  */
 
 export default function WatchmanWatcher(dir, opts) {
-  common.assignOptions(this, opts);
+  this.globs = opts.glob;
+  this.dot = opts.dot;
+  this.hasIgnore = Boolean(opts.ignored);
+  this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
   this.root = path.resolve(dir);
   this.init();
 }
@@ -54,7 +84,9 @@ WatchmanWatcher.prototype.init = function () {
   });
   this.client.on('subscription', this.handleChangeEvent.bind(this));
   this.client.on('end', () => {
-    console.warn('[sane] Warning: Lost connection to watchman, reconnecting..');
+    console.warn(
+      '[jest-haste-map] Warning: Lost connection to watchman, reconnecting..',
+    );
     self.init();
   });
 
@@ -138,10 +170,10 @@ WatchmanWatcher.prototype.init = function () {
         }
       } else {
         options.expression = ['anyof'];
-        for (const i in self.globs) {
+        for (const glob of self.globs) {
           options.expression.push([
             'match',
-            self.globs[i],
+            glob,
             'wholename',
             {
               includedotfiles: self.dot,
@@ -188,9 +220,6 @@ WatchmanWatcher.prototype.init = function () {
 
 WatchmanWatcher.prototype.handleChangeEvent = function (resp) {
   assert.equal(resp.subscription, SUB_NAME, 'Invalid subscription event.');
-  if (resp.is_fresh_instance) {
-    this.emit('fresh_instance');
-  }
   if (resp.is_fresh_instance) {
     this.emit('fresh_instance');
   }
@@ -311,7 +340,7 @@ function handleError(self, error) {
 
 function handleWarning(resp) {
   if ('warning' in resp) {
-    if (RecrawlWarning.isRecrawlWarningDupe(resp.warning)) {
+    if (isRecrawlWarningDupe(resp.warning)) {
       return true;
     }
     console.warn(resp.warning);

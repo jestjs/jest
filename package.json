@@ -84,6 +84,9 @@
     "which": "^4.0.0"
   },
   "dependenciesMeta": {
+    "@parcel/watcher": {
+      "built": true
+    },
     "esbuild": {
       "built": true
     },

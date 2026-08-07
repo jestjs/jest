@@ -8,14 +8,11 @@
 import type {Stats} from 'graceful-fs';
 import isWatchmanInstalled from '../lib/isWatchmanInstalled';
 import type {HasteRegExp} from '../types';
-import {FSEventsWatcher} from './FSEventsWatcher';
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/10919
-import NodeWatcherImpl from './NodeWatcher';
+import {ParcelWatcher} from './ParcelWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/jestjs/jest/pull/5387
 import WatchmanWatcherImpl from './WatchmanWatcher';
 import type {IWatcher, WatcherCtor} from './types';
 
-const NodeWatcher = NodeWatcherImpl as WatcherCtor;
 const WatchmanWatcher = WatchmanWatcherImpl as WatcherCtor;
 
 let isWatchmanInstalledPromise: Promise<boolean> | undefined;
@@ -42,20 +39,26 @@ type OnChangeCallback = (
 const MAX_WAIT_TIME = 240_000;
 
 export class WatcherDriver {
+  private readonly _console: Console;
   private readonly _extensions: Array<string>;
   private readonly _ignorePattern: HasteRegExp | undefined;
+  private readonly _onError: (error: Error) => void;
   private readonly _roots: Array<string>;
   private readonly _useWatchman: boolean;
   private _watchers: Array<IWatcher> = [];
 
   constructor(opts: {
+    console: Console;
     extensions: Array<string>;
     ignorePattern: HasteRegExp | undefined;
+    onError: (error: Error) => void;
     roots: Array<string>;
     useWatchman: boolean;
   }) {
+    this._console = opts.console;
     this._extensions = opts.extensions;
     this._ignorePattern = opts.ignorePattern;
+    this._onError = opts.onError;
     this._roots = opts.roots;
     this._useWatchman = opts.useWatchman;
   }
@@ -63,15 +66,10 @@ export class WatcherDriver {
   async start(onChange: OnChangeCallback): Promise<void> {
     const Backend: WatcherCtor = this._useWatchman
       ? WatchmanWatcher
-      : FSEventsWatcher.isSupported()
-        ? (FSEventsWatcher as unknown as WatcherCtor)
-        : NodeWatcher;
+      : ParcelWatcher;
 
-    const statCache = new Map<string, Stats>();
     const results = await Promise.allSettled(
-      this._roots.map(root =>
-        this._createWatcher(Backend, root, onChange, statCache),
-      ),
+      this._roots.map(root => this._createWatcher(Backend, root, onChange)),
     );
     const fulfilled = results
       .filter(r => r.status === 'fulfilled')
@@ -95,28 +93,40 @@ export class WatcherDriver {
     Backend: WatcherCtor,
     root: string,
     onChange: OnChangeCallback,
-    statCache: Map<string, Stats>,
   ): Promise<IWatcher> {
     const watcher = new Backend(root, {
+      console: this._console,
       dot: true,
       glob: this._extensions.map(ext => `**/*.${ext}`),
       ignored: this._ignorePattern,
-      statCache,
+      useWatchman: this._useWatchman,
     });
 
     return new Promise((resolve, reject) => {
       const onReady = () => {
         clearTimeout(rejectTimeout);
+        watcher.off('error', onStartupError);
+        // Post-startup errors are non-fatal: the watcher stays subscribed,
+        // and an unhandled 'error' emit would crash the process.
+        watcher.on('error', error => this._onError(error));
         watcher.on('all', onChange);
         resolve(watcher);
       };
+      const onStartupError = (startupError: unknown) => {
+        clearTimeout(rejectTimeout);
+        watcher.off('ready', onReady);
+        watcher.close().catch(() => undefined);
+        reject(startupError);
+      };
       const rejectTimeout = setTimeout(() => {
         watcher.off('ready', onReady);
+        watcher.off('error', onStartupError);
         watcher.close().catch(() => undefined);
         reject(new Error('Failed to start watch mode.'));
       }, MAX_WAIT_TIME);
 
       watcher.once('ready', onReady);
+      watcher.once('error', onStartupError);
     });
   }
 }
