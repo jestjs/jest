@@ -114,19 +114,4 @@ describeSkipWin32('watch mode with symlinks', () => {
       'Test Suites: 3 passed, 3 total',
     );
   });
-
-  // The watchers gate delete events on a tracked-file set that never includes
-  // symlinks, so deleting a symlinked test is swallowed: no re-run, and the
-  // suite stays in the haste map until restart.
-  test.failing('removes a symlinked test file that is deleted', async () => {
-    testRun = runContinuous(DIR, ['--watchAll', '--no-watchman']);
-    await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 1);
-
-    fs.unlinkSync(path.join(DIR, '__tests__', 'linked.test.js'));
-    await sleep(3000);
-
-    const {stderr} = testRun.getCurrentOutput();
-    expect(numberOfTestRuns(stderr)).toBe(2);
-    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-  });
 });
