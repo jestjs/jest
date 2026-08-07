@@ -131,12 +131,6 @@ export class ChangeQueue {
 
         const currentMetadata = this._hasteMap.files.get(relativeFilePath);
 
-        // A delete for a path that was never tracked can't affect the haste
-        // map; emitting it would only trigger a spurious re-run.
-        if (type === 'delete' && currentMetadata == null) {
-          return null;
-        }
-
         // If it's not an addition, delete the file and all its metadata.
         if (currentMetadata != null) {
           const moduleName = currentMetadata[H.ID];

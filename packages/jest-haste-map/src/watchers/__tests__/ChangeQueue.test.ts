@@ -146,7 +146,10 @@ describe('ChangeQueue', () => {
     queue.stop();
   });
 
-  it('drops a delete event for a path that was never tracked', async () => {
+  // Deletes emit even for paths the haste map never tracked (e.g.
+  // node_modules files from before _watch() enables retainAllFiles) —
+  // matching the emit-regardless behavior changes to such files get.
+  it('emits a delete event for an untracked path', async () => {
     const hasteMap = createEmptyMap();
     const callbacks = makeCallbacks();
 
@@ -156,7 +159,7 @@ describe('ChangeQueue', () => {
     await Promise.resolve();
     jest.advanceTimersByTime(INTERVAL);
 
-    expect(callbacks.emit).not.toHaveBeenCalled();
+    expect(callbacks.emit).toHaveBeenCalledTimes(1);
     queue.stop();
   });
 
