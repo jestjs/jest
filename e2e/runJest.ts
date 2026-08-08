@@ -172,12 +172,15 @@ export const json = function (
       json: JSON.parse(result.stdout),
     };
   } catch (error: any) {
-    throw new Error(dedent`
+    throw new Error(
+      dedent`
       Can't parse JSON.
       ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
-    `);
+    `,
+      {cause: error},
+    );
   }
 };
 

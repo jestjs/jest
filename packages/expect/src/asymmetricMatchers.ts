@@ -364,7 +364,7 @@ class CloseTo extends AsymmetricMatcher<number> {
     if (!isA<number>('Number', other)) {
       return false;
     }
-    let result = false;
+    let result: boolean;
     if (
       other === Number.POSITIVE_INFINITY &&
       this.sample === Number.POSITIVE_INFINITY

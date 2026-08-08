@@ -45,6 +45,7 @@ export default class LeakDetector {
       opt?.shouldGenerateV8HeapSnapshot ?? true;
 
     // Ensure value is not leaked by the closure created by the "weak" callback.
+    // eslint-disable-next-line no-useless-assignment
     value = null;
   }
 
