@@ -118,7 +118,7 @@ export type HasteConfig = {
   forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   *   This options cannot be used in projects which use watchman.
+   *   This option cannot be used in projects which use watchman.
    *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;

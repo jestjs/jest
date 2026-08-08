@@ -913,11 +913,22 @@ type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
-  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  /**
+   * Force use of Node's `fs` APIs (via `fdir`) rather than shelling out to
+   * the system `find` binary. Defaults to `false` on Linux/macOS.
+   *
+   * **Consider setting this to `true`**: `find(1)` receives no ignore
+   * predicate, so it traverses ignored directories (e.g. `node_modules`,
+   * `.git`) in full and discards the results afterward. The Node `fs` crawler
+   * prunes those subtrees at `readdir` time. For most projects where
+   * `node_modules` dwarfs source files, this makes the Node crawler faster
+   * in practice despite `find(1)` being native code. A future Jest version
+   * may flip this default.
+   */
   forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   *   This options cannot be used in projects which use watchman.
+   *   This option cannot be used in projects which use watchman.
    *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;

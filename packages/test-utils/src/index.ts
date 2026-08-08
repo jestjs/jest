@@ -12,9 +12,11 @@ export {
   onNodeVersions,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
+  skipSuiteOnWindows,
   testWithLinkedSyntheticModule,
   testWithSyncEsm,
   testWithVmEsm,
+  testWithoutSyncEsm,
 } from './ConditionalTest';
 
 export {makeGlobalConfig, makeProjectConfig} from './config';

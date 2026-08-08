@@ -5,22 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {execFile} from 'child_process';
+import {execFile} from 'node:child_process';
 import isWatchmanInstalled from '../isWatchmanInstalled';
 
-jest.mock('child_process');
+jest.mock('node:child_process');
+
+const mockExecFile = jest.mocked(execFile);
 
 describe('isWatchmanInstalled', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('executes watchman --version and returns true on success', async () => {
-    execFile.mockImplementation((file, args, cb) => {
-      expect(file).toBe('watchman');
-      expect(args).toStrictEqual(['--version']);
+    mockExecFile.mockImplementation(((
+      _file: string,
+      _args: Array<string>,
+      cb: (err: null, result: {stdout: string}) => void,
+    ) => {
       cb(null, {stdout: 'v123'});
-    });
+    }) as unknown as typeof execFile);
     expect(await isWatchmanInstalled()).toBe(true);
-    expect(execFile).toHaveBeenCalledWith(
+    expect(mockExecFile).toHaveBeenCalledWith(
       'watchman',
       ['--version'],
       expect.any(Function),
@@ -28,10 +34,14 @@ describe('isWatchmanInstalled', () => {
   });
 
   it('returns false when execFile fails', async () => {
-    execFile.mockImplementation((file, args, cb) => {
+    mockExecFile.mockImplementation(((
+      _file: string,
+      _args: Array<string>,
+      cb: (err: Error) => void,
+    ) => {
       cb(new Error());
-    });
+    }) as unknown as typeof execFile);
     expect(await isWatchmanInstalled()).toBe(false);
-    expect(execFile).toHaveBeenCalled();
+    expect(mockExecFile).toHaveBeenCalled();
   });
 });

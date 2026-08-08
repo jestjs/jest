@@ -31,6 +31,14 @@ export function skipSuiteOnJestCircus(): void {
   }
 }
 
+export function skipSuiteOnWindows(): void {
+  if (process.platform === 'win32') {
+    test.only('does not work on Windows', () => {
+      console.warn('[SKIP] Does not work on Windows');
+    });
+  }
+}
+
 export function testWithVmEsm(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
@@ -38,15 +46,20 @@ export function testWithVmEsm(
   return fn(...args);
 }
 
+const hasSyncEsm =
+  // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
+  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
+
 export function testWithSyncEsm(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
-  const fn =
-    // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
-    typeof SourceTextModule?.prototype.hasAsyncGraph === 'function'
-      ? test
-      : test.skip;
-  return fn(...args);
+  return (hasSyncEsm ? test : test.skip)(...args);
+}
+
+export function testWithoutSyncEsm(
+  ...args: Parameters<typeof test>
+): ReturnType<typeof test> {
+  return (hasSyncEsm ? test.skip : test)(...args);
 }
 
 export function testWithLinkedSyntheticModule(
