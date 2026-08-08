@@ -80,22 +80,21 @@ export type FunctionSignatures<F> = F extends {
   (...args: infer A14): infer R14;
   (...args: infer A15): infer R15;
 }
-  ?
-      | ((...args: A1) => R1)
-      | ((...args: A2) => R2)
-      | ((...args: A3) => R3)
-      | ((...args: A4) => R4)
-      | ((...args: A5) => R5)
-      | ((...args: A6) => R6)
-      | ((...args: A7) => R7)
-      | ((...args: A8) => R8)
-      | ((...args: A9) => R9)
-      | ((...args: A10) => R10)
-      | ((...args: A11) => R11)
-      | ((...args: A12) => R12)
-      | ((...args: A13) => R13)
-      | ((...args: A14) => R14)
-      | ((...args: A15) => R15)
+  ? | ((...args: A1) => R1)
+    | ((...args: A2) => R2)
+    | ((...args: A3) => R3)
+    | ((...args: A4) => R4)
+    | ((...args: A5) => R5)
+    | ((...args: A6) => R6)
+    | ((...args: A7) => R7)
+    | ((...args: A8) => R8)
+    | ((...args: A9) => R9)
+    | ((...args: A10) => R10)
+    | ((...args: A11) => R11)
+    | ((...args: A12) => R12)
+    | ((...args: A13) => R13)
+    | ((...args: A14) => R14)
+    | ((...args: A15) => R15)
   : F extends (...args: any) => any
     ? F
     : never;

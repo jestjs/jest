@@ -235,22 +235,21 @@ type FunctionSignaturesWithThis<F> = F extends {
   (this: infer T14, ...args: infer A14): infer R14;
   (this: infer T15, ...args: infer A15): infer R15;
 }
-  ?
-      | ((this: T1, ...args: A1) => R1)
-      | ((this: T2, ...args: A2) => R2)
-      | ((this: T3, ...args: A3) => R3)
-      | ((this: T4, ...args: A4) => R4)
-      | ((this: T5, ...args: A5) => R5)
-      | ((this: T6, ...args: A6) => R6)
-      | ((this: T7, ...args: A7) => R7)
-      | ((this: T8, ...args: A8) => R8)
-      | ((this: T9, ...args: A9) => R9)
-      | ((this: T10, ...args: A10) => R10)
-      | ((this: T11, ...args: A11) => R11)
-      | ((this: T12, ...args: A12) => R12)
-      | ((this: T13, ...args: A13) => R13)
-      | ((this: T14, ...args: A14) => R14)
-      | ((this: T15, ...args: A15) => R15)
+  ? | ((this: T1, ...args: A1) => R1)
+    | ((this: T2, ...args: A2) => R2)
+    | ((this: T3, ...args: A3) => R3)
+    | ((this: T4, ...args: A4) => R4)
+    | ((this: T5, ...args: A5) => R5)
+    | ((this: T6, ...args: A6) => R6)
+    | ((this: T7, ...args: A7) => R7)
+    | ((this: T8, ...args: A8) => R8)
+    | ((this: T9, ...args: A9) => R9)
+    | ((this: T10, ...args: A10) => R10)
+    | ((this: T11, ...args: A11) => R11)
+    | ((this: T12, ...args: A12) => R12)
+    | ((this: T13, ...args: A13) => R13)
+    | ((this: T14, ...args: A14) => R14)
+    | ((this: T15, ...args: A15) => R15)
   : F extends FunctionLike
     ? F
     : never;
