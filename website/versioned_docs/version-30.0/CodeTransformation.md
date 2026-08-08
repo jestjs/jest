@@ -131,8 +131,7 @@ interface AsyncTransformer<TransformerConfig = unknown> {
 }
 
 type Transformer<TransformerConfig = unknown> =
-  | SyncTransformer<TransformerConfig>
-  | AsyncTransformer<TransformerConfig>;
+  SyncTransformer<TransformerConfig> | AsyncTransformer<TransformerConfig>;
 
 type TransformerCreator<
   X extends Transformer<TransformerConfig>,

@@ -323,10 +323,9 @@ testIfHg('gets changed files for hg', async () => {
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test"`, DIR);
 
-  let stdout;
   let stderr;
 
-  ({stdout} = runJest(DIR, ['-o']));
+  const {stdout} = runJest(DIR, ['-o']);
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
@@ -345,11 +344,11 @@ testIfHg('gets changed files for hg', async () => {
     '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
-  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  ({stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
@@ -367,10 +366,9 @@ testIfSl('gets changed files for sl', async () => {
   run(`${SL} add .`, DIR);
   run(`${SL} commit -m "test"`, DIR);
 
-  let stdout;
   let stderr;
 
-  ({stdout} = runJest(DIR, ['-o']));
+  const {stdout} = runJest(DIR, ['-o']);
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
@@ -389,11 +387,11 @@ testIfSl('gets changed files for sl', async () => {
     '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
-  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  ({stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
