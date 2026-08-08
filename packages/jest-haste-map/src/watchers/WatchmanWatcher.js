@@ -261,9 +261,9 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
 
   if (changeDescriptor.exists) {
     fs.lstat(absPath, (error, stat) => {
-      // Files can be deleted between the event and the lstat call
-      // the most reliable thing to do here is to ignore the event.
-      if (error && error.code === 'ENOENT') {
+      // Files can disappear or temporarily become unreadable between the
+      // Watchman event and the lstat call, so ignore that stale event.
+      if (error && common.isIgnorableFileError(error)) {
         return;
       }
 
