@@ -10,7 +10,6 @@
 
 ### Fixes
 
-- `[jest-runtime]`: Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[jest-config]` Add missing `findRelatedTests`, `outputFile`, and `replname` entries to `ValidConfig` so they no longer trigger spurious "Unknown option" warnings ([#16224](https://github.com/jestjs/jest/pull/16224))
@@ -21,6 +20,7 @@
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
+- `[jest-runtime]`: Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
 
 ### Chore & Maintenance
 
