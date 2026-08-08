@@ -14,6 +14,7 @@ import {
   type TestFileEvent,
   type TestResult,
   createEmptyTestResult,
+  makeCollectedTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -147,54 +148,80 @@ export const collectTestsWithoutRunning = async ({
   config: Config.ProjectConfig;
   testPath: string;
 }): Promise<TestResult> => {
-  const {rootDescribeBlock, testNamePattern} = getRunnerState();
+  const {hasFocusedTests, rootDescribeBlock, testNamePattern} =
+    getRunnerState();
 
   const assertionResults: Array<AssertionResult> = [];
 
-  const walk = (
-    block: Circus.DescribeBlock,
-    ancestors: Array<string>,
-  ): void => {
+  // Mirror the status resolution performed by an actual run (see `_runTest` in
+  // `run.ts` and `parseSingleTestResult` in `utils.ts`) so collected counts
+  // match what executing the suite would report — without running test bodies.
+  const walk = (block: Circus.DescribeBlock, parent: WalkContext): void => {
     for (const child of block.children) {
       if (child.type === 'describeBlock') {
-        walk(child, [...ancestors, child.name]);
+        walk(child, {
+          ancestors: [...parent.ancestors, child.name],
+          skipped: parent.skipped || child.mode === 'skip',
+        });
         continue;
       }
 
-      if (testNamePattern && !testNamePattern.test(getTestID(child))) {
-        continue;
+      // Same conditions `_runTest` uses to dispatch `test_skip`: an actual run
+      // still reports these as pending, so collection counts them too.
+      const deselected =
+        testNamePattern != null && !testNamePattern.test(getTestID(child));
+      const skipped =
+        parent.skipped ||
+        child.mode === 'skip' ||
+        (hasFocusedTests && child.mode === undefined) ||
+        deselected;
+
+      let status: Status;
+      let wouldRun: true | undefined;
+      if (skipped) {
+        status = 'pending';
+      } else if (child.mode === 'todo') {
+        status = 'todo';
+      } else {
+        // Test bodies are never executed in collection mode, so a selected test
+        // is reported in the passed bucket and flagged as `wouldRun`.
+        status = 'passed';
+        wouldRun = true;
       }
 
       const title = child.name;
       assertionResults.push({
-        ancestorTitles: [...ancestors],
+        ancestorTitles: [...parent.ancestors],
         duration: null,
-        failing: false,
+        failing: child.failing,
         failureDetails: [],
         failureMessages: [],
-        fullName: [...ancestors, title].join(' '),
+        fullName: [...parent.ancestors, title].join(' '),
         invocations: 0,
         location: null,
         numPassingAsserts: 0,
         retryReasons: [],
         startAt: null,
-        status: 'pending' as Status,
+        status,
         title,
+        wouldRun,
       });
     }
   };
-  walk(rootDescribeBlock, []);
+  walk(rootDescribeBlock, {
+    ancestors: [],
+    skipped: rootDescribeBlock.mode === 'skip',
+  });
 
   await dispatch({name: 'teardown'});
 
-  return {
-    ...createEmptyTestResult(),
+  return makeCollectedTestResult(assertionResults, {
     displayName: config.displayName,
-    numPendingTests: assertionResults.length,
     testFilePath: testPath,
-    testResults: assertionResults,
-  };
+  });
 };
+
+type WalkContext = {ancestors: Array<string>; skipped: boolean};
 
 export const runAndTransformResultsToJestFormat = async ({
   config,

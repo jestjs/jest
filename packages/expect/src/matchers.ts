@@ -170,7 +170,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    let pass = false;
+    let pass: boolean;
     let expectedDiff = 0;
     let receivedDiff = 0;
 
