@@ -218,7 +218,7 @@ export const processInlineSnapshotsWithBabel = (
   // by one to formatting parser.
   const snapshotMatcherNames: Array<string> = [];
 
-  let ast: ParseResult | null = null;
+  let ast: ParseResult | null;
 
   try {
     ast = parseSync(sourceFile, {

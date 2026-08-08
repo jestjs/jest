@@ -6,13 +6,7 @@
  */
 
 type Status =
-  | 'passed'
-  | 'failed'
-  | 'skipped'
-  | 'pending'
-  | 'todo'
-  | 'disabled'
-  | 'focused';
+  'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled' | 'focused';
 
 type Callsite = {
   column: number;
@@ -43,6 +37,12 @@ export type AssertionResult = {
   retryReasons?: Array<string>;
   status: Status;
   title: string;
+  /**
+   * Set by `jest --collectTests` on a test that was discovered as selected to
+   * run but never executed. Distinguishes a test reported in the `passed`
+   * bucket because it would run from one that actually passed.
+   */
+  wouldRun?: boolean;
 };
 
 export type SerializableError = {

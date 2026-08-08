@@ -6,7 +6,6 @@
  */
 
 import * as path from 'node:path';
-import type {Module as VMModule} from 'node:vm';
 import type {JestEnvironment, Module} from '@jest/environment';
 import {isError} from 'jest-util';
 import type {MockState} from './MockState';
@@ -106,7 +105,12 @@ export class CjsLoader {
       const reg = this.registries.getActiveEsmRegistry();
       const cached = reg.get(modulePath);
       if (cached && !(cached instanceof Promise)) {
-        return (cached as VMModule).namespace as T;
+        const cachedNamespace = cached.namespace as Record<string, unknown>;
+        return (
+          'module.exports' in cachedNamespace
+            ? cachedNamespace['module.exports']
+            : cachedNamespace
+        ) as T;
       }
       return this.requireEsm<T>(modulePath);
     }

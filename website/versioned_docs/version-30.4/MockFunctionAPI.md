@@ -82,9 +82,7 @@ For example: A mock function `f` that has been called three times, returning `'r
   },
   {
     type: 'throw',
-    value: {
-      /* Error instance */
-    },
+    value: {/* Error instance */},
   },
   {
     type: 'return',

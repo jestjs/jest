@@ -328,7 +328,10 @@ export class EsmLoader {
       error.code = 'ERR_REQUIRE_ESM';
       throw error;
     }
-    return module.namespace as T;
+    const namespace = module.namespace as Record<string, unknown>;
+    return (
+      'module.exports' in namespace ? namespace['module.exports'] : namespace
+    ) as T;
   }
 
   // Public for unit-test access. Production callers reach the sync graph
