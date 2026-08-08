@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'node:os';
 import picomatch from 'picomatch';
+
+const platform = os.platform();
 
 export const CHANGE_EVENT = 'change';
 export const DELETE_EVENT = 'delete';
@@ -22,6 +25,19 @@ function getMatcher(glob: string, dot: boolean): picomatch.Matcher {
     matcherCache.set(key, matcher);
   }
   return matcher;
+}
+
+/**
+ * A file can vanish between a watcher event and the `lstat` that follows it,
+ * which is `ENOENT`. On Windows an outside process holding the file open --
+ * `git maintenance` touching `.git/index.lock` or `.git/objects`, for instance
+ * -- surfaces as `EPERM` instead (nodejs/node#4337). Neither means the watcher
+ * is broken, so neither should tear it down.
+ */
+export function isIgnorableFileError(error: NodeJS.ErrnoException): boolean {
+  return (
+    error.code === 'ENOENT' || (error.code === 'EPERM' && platform === 'win32')
+  );
 }
 
 export function isFileIncluded(

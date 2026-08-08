@@ -21,6 +21,7 @@ import {
   CHANGE_EVENT,
   DELETE_EVENT,
   isFileIncluded,
+  isIgnorableFileError,
 } from './common';
 import type {IWatcher, WatcherOptions} from './types';
 
@@ -227,9 +228,10 @@ export class ParcelWatcher extends EventEmitter implements IWatcher {
       } else {
         const type = event.type === 'create' ? ADD_EVENT : CHANGE_EVENT;
         fs.lstat(absPath, (error, stat) => {
-          if (error?.code === 'ENOENT') return;
           if (error) {
-            this._emitError(error);
+            if (!isIgnorableFileError(error)) {
+              this._emitError(error);
+            }
             return;
           }
           this.emit(type, relPath, this.root, stat);
