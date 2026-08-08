@@ -744,6 +744,18 @@ describe('nodeModulesPaths', () => {
       './customFolder3',
     ]);
   });
+
+  it('does not throw when require.resolve.paths is unavailable', () => {
+    const originalResolvePaths = require.resolve.paths;
+    require.resolve.paths = undefined as typeof require.resolve.paths;
+
+    try {
+      const src = require.resolve('../');
+      expect(() => nodeModulesPaths(src, {})).not.toThrow();
+    } finally {
+      require.resolve.paths = originalResolvePaths;
+    }
+  });
 });
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
