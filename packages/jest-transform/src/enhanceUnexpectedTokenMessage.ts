@@ -41,9 +41,6 @@ Out of the box Jest supports Babel, which will be used to transform your files i
 By default "node_modules" folder is ignored by transformers.
 
 Here's what you can do:
-${DOT}If you are trying to use ECMAScript Modules, see ${chalk.underline(
-    'https://jestjs.io/docs/ecmascript-modules',
-  )} for how to enable it.
 ${DOT}If you are trying to use TypeScript, see ${chalk.underline(
     'https://jestjs.io/docs/getting-started#using-typescript',
   )}

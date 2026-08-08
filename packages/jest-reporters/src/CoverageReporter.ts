@@ -139,8 +139,7 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     let worker:
-      | JestWorkerFarm<CoverageWorker>
-      | typeof import('./CoverageWorker');
+      JestWorkerFarm<CoverageWorker> | typeof import('./CoverageWorker');
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./CoverageWorker');
@@ -355,9 +354,7 @@ export default class CoverageReporter extends BaseReporter {
           .reduce(
             (
               combinedCoverage:
-                | istanbulCoverage.CoverageSummary
-                | null
-                | undefined,
+                istanbulCoverage.CoverageSummary | null | undefined,
               nextFileCoverage: istanbulCoverage.FileCoverage,
             ) => {
               if (combinedCoverage === undefined || combinedCoverage === null) {

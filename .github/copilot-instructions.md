@@ -33,6 +33,7 @@ yarn test-ci-partial:parallel --max-workers <N> --shard=<M>/<N>   # CI-mode shar
 - New test files are `.ts` (some legacy `.js` remain).
 - Each `__tests__/` directory under packages covered by `yarn typecheck:tests` has its own `tsconfig.json` extending `tsconfig.test.json`. Add `"node"` to its `types` array when using Node globals like `Console`/`Stats`/`__dirname`.
 - **`yarn typecheck:tests` is gated in CI** — must exit 0. Adding a new package's tests means appending it to the glob in `package.json`.
+- **Type tests for `expect` matchers belong in `packages/jest-types/__typetests__/expect/`**, not in `packages/expect/__typetests__/`. The `jest-types` suite tests the public `@jest/globals` surface (what users import); `packages/expect/__typetests__/` covers internal `expect`-package concerns only (e.g. `MatcherFunction`, `JestExpect` shape). When adding type tests for matcher signatures, add them to `jest-types`.
 - **E2E tests (`e2e/__tests__/`) can't use `jest.mock`/`jest.fn`** — ESLint enforces this. Use fixture files instead.
 - Some e2e tests need Mercurial: `brew install hg`.
 - **Docblock pragmas** in test files: `@jest-environment <name>` overrides the test environment; `@jest-environment-options {"key": value}` merges into `testEnvironmentOptions`. Both are extracted by `jest-runner` and apply only to that file.
