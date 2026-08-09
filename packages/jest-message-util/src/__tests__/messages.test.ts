@@ -592,3 +592,70 @@ it('should return the inner errors of an AggregateError', () => {
   );
   expect(message).toMatchSnapshot();
 });
+
+const formatAggregateErrorFailure = (
+  aggError: AggregateError,
+  noStackTrace: boolean,
+) =>
+  formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [aggError],
+        failureMessages: [aggError.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'AggregateError test failure',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace,
+    },
+  );
+
+it('should return the inner errors of an AggregateError test failure with their stacks', () => {
+  const aggError = new AggregateError([
+    new Error('inner reason A'),
+    new Error('inner reason B'),
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, false)).toMatchSnapshot();
+});
+
+it('should return the nested inner errors of an AggregateError test failure', () => {
+  const aggError = new AggregateError([
+    new Error('outer reason', {cause: new Error('the cause')}),
+    new AggregateError([new Error('deeply nested')]),
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, true)).toMatchSnapshot();
+});
+
+it('should not crash on AggregateError test failures holding non-errors', () => {
+  // `Promise.reject(null)` ends up here, so `errors` can hold anything.
+  const aggError = new AggregateError([
+    null,
+    undefined,
+    42,
+    'a string',
+    {code: 'E_OOPS'},
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, true)).toMatchSnapshot();
+});
+
+it('should not add a section for an empty AggregateError test failure', () => {
+  const messages = formatAggregateErrorFailure(new AggregateError([]), true);
+
+  expect(messages).not.toContain('Errors contained in AggregateError');
+  expect(messages).toMatchSnapshot();
+});

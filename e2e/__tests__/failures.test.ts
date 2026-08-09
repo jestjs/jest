@@ -89,6 +89,13 @@ test('works with snapshot failures with hint', () => {
   expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
+test('works with AggregateError', () => {
+  const {stderr} = runJest(dir, ['aggregateError.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('works with error with cause', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));

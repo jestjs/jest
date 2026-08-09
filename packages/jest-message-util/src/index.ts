@@ -153,12 +153,7 @@ export const formatExecError = (
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
-      } else if (isError(error.cause) || error.cause instanceof Error) {
-        /* `isError` is used, because the error might come from another realm.
-         `instanceof Error` is used because `isError` does return `false` for some
-         things that are `instanceof Error` like the errors provided in
-         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
-        */
+      } else if (isErrorLike(error.cause)) {
         const formatted = formatExecError(
           error.cause,
           config,
@@ -392,15 +387,39 @@ type FailedResults = Array<{
   result: TestResult.AssertionResult;
 }>;
 
+/* `isError` is used, because the error might come from another realm.
+ `instanceof Error` is used because `isError` does return `false` for some
+ things that are `instanceof Error` like the errors provided in
+ [verror](https://www.npmjs.com/package/verror) or
+ [axios](https://axios-http.com).
+*/
+function isErrorLike(error: unknown): error is Error {
+  return isError(error) || error instanceof Error;
+}
+
 function isErrorOrStackWithCause(
   errorOrStack: Error | string,
 ): errorOrStack is Error & {cause: Error | string} {
   return (
     typeof errorOrStack !== 'string' &&
     'cause' in errorOrStack &&
-    (typeof errorOrStack.cause === 'string' ||
-      isError(errorOrStack.cause) ||
-      errorOrStack.cause instanceof Error)
+    (typeof errorOrStack.cause === 'string' || isErrorLike(errorOrStack.cause))
+  );
+}
+
+function toErrorOrStack(value: unknown): Error | string {
+  return typeof value === 'string' || isErrorLike(value)
+    ? value
+    : `thrown: ${prettyFormat(value, {maxDepth: 3})}`;
+}
+
+function isErrorOrStackWithErrors(
+  errorOrStack: Error | string,
+): errorOrStack is Error & {errors: Array<unknown>} {
+  return (
+    typeof errorOrStack !== 'string' &&
+    'errors' in errorOrStack &&
+    Array.isArray(errorOrStack.errors)
   );
 }
 
@@ -432,10 +451,24 @@ function formatErrorStack(
       options,
       testPath,
     );
-    cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
+    cause = indentAllLines(`\nCause:\n${nestedCause}`);
   }
 
-  return `${message}\n${stack}${cause}`;
+  let subErrors = '';
+  if (
+    isErrorOrStackWithErrors(errorOrStack) &&
+    errorOrStack.errors.length > 0
+  ) {
+    const nestedErrors = errorOrStack.errors.map(error =>
+      formatErrorStack(toErrorOrStack(error), config, options, testPath),
+    );
+
+    subErrors = indentAllLines(
+      `\nErrors contained in AggregateError:\n${nestedErrors.join('\n')}`,
+    );
+  }
+
+  return `${message}\n${stack}${cause}${subErrors}`;
 }
 
 function failureDetailsToErrorOrStack(
@@ -445,13 +478,13 @@ function failureDetailsToErrorOrStack(
   if (!failureDetails) {
     return content;
   }
-  if (isError(failureDetails) || failureDetails instanceof Error) {
+  if (isErrorLike(failureDetails)) {
     return failureDetails; // receiving raw errors for jest-circus
   }
   if (
     typeof failureDetails === 'object' &&
     'error' in failureDetails &&
-    (isError(failureDetails.error) || failureDetails.error instanceof Error)
+    isErrorLike(failureDetails.error)
   ) {
     return failureDetails.error; // receiving instances of FailedAssertion for jest-jasmine
   }
