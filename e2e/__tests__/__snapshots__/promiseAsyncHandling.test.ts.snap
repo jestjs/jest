@@ -221,6 +221,91 @@ Ran all test suites matching unhandledRejectionTest.test.js.",
 }
 `;
 
+exports[`reports the cause of an unhandled rejection 1`] = `
+Object {
+  "rest": "FAIL __tests__/unhandledRejectionWithCause.test.js
+
+
+  ● Test suite failed to run
+
+    error during f
+
+      18 |     g();
+      19 |   } catch (error) {
+    > 20 |     throw new Error('error during f', {cause: error});
+         |           ^
+      21 |   }
+      22 | }
+      23 |
+
+      at f (__tests__/unhandledRejectionWithCause.test.js:20:11)
+      at Object.f (__tests__/unhandledRejectionWithCause.test.js:27:5)
+
+    Cause:
+     error during g
+
+          11 |
+          12 | function g() {
+        > 13 |   throw new Error('error during g');
+             |         ^
+          14 | }
+          15 |
+          16 | function f() {
+
+          at g (__tests__/unhandledRejectionWithCause.test.js:13:9)
+          at g (__tests__/unhandledRejectionWithCause.test.js:18:5)
+          at Object.f (__tests__/unhandledRejectionWithCause.test.js:27:5)",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching unhandledRejectionWithCause.test.js.",
+}
+`;
+
+exports[`reports the inner errors of an unhandled AggregateError rejection 1`] = `
+Object {
+  "rest": "FAIL __tests__/unhandledRejectionAggregate.test.js
+
+
+  ● Test suite failed to run
+
+    AggregateError: All promises were rejected
+
+    Errors contained in AggregateError:
+     ECONNREFUSED primary
+
+          11 |
+          12 | function connectToPrimary() {
+        > 13 |   return Promise.reject(new Error('ECONNREFUSED primary'));
+             |                         ^
+          14 | }
+          15 |
+          16 | function connectToReplica() {
+
+          at connectToPrimary (__tests__/unhandledRejectionAggregate.test.js:13:25)
+          at Object.connectToPrimary (__tests__/unhandledRejectionAggregate.test.js:21:16)
+
+     ETIMEDOUT replica
+
+          15 |
+          16 | function connectToReplica() {
+        > 17 |   return Promise.reject(new Error('ETIMEDOUT replica'));
+             |                         ^
+          18 | }
+          19 |
+          20 | afterAll(async () => {
+
+          at connectToReplica (__tests__/unhandledRejectionAggregate.test.js:17:25)
+          at Object.connectToReplica (__tests__/unhandledRejectionAggregate.test.js:21:36)",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching unhandledRejectionAggregate.test.js.",
+}
+`;
+
 exports[`succeeds for async handled promise rejections 1`] = `
 Object {
   "rest": "PASS __tests__/rejectionHandled.test.js

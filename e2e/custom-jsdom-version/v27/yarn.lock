@@ -45,33 +45,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@csstools/color-helpers@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "@csstools/color-helpers@npm:6.0.2"
-  checksum: 10/c47a943e947d76980d0e1071027cb70481ac481968e744a05a7aea7ede9886f10d062b2e3691e03c115d97b053d4140c1ca28e24c1ffe2d21693e126de6522e9
+"@csstools/color-helpers@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@csstools/color-helpers@npm:6.1.0"
+  checksum: 10/acb6a7e0f2dad6cd5527b455732d6ceab836de8469e7f31be0f60748a1609794fd0a478e116931fddee63577562a40d9ef122a58c4f19de229ae233d1307c373
   languageName: node
   linkType: hard
 
-"@csstools/css-calc@npm:^3.0.0, @csstools/css-calc@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@csstools/css-calc@npm:3.2.1"
+"@csstools/css-calc@npm:^3.0.0, @csstools/css-calc@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@csstools/css-calc@npm:3.3.0"
   peerDependencies:
     "@csstools/css-parser-algorithms": ^4.0.0
     "@csstools/css-tokenizer": ^4.0.0
-  checksum: 10/39042a9382cbd7c4fa241c1a6c10d64c23fa7653970fc11df532e9bc42a366a8b50c3ac3036bd5f2a77b94144e7f804f19d2b52800ad2f48bd9a3840377165d8
+  checksum: 10/46dde1c26c8a62d7b849a616a521cb97abc2d6c8c480f7be6f14c70fe60689a2a58c1f5f905aae237250ad27172968e10c70f6f83864c7dc48d8f8921f55f6a9
   languageName: node
   linkType: hard
 
 "@csstools/css-color-parser@npm:^4.0.1":
-  version: 4.1.7
-  resolution: "@csstools/css-color-parser@npm:4.1.7"
+  version: 4.1.10
+  resolution: "@csstools/css-color-parser@npm:4.1.10"
   dependencies:
-    "@csstools/color-helpers": "npm:^6.0.2"
-    "@csstools/css-calc": "npm:^3.2.1"
+    "@csstools/color-helpers": "npm:^6.1.0"
+    "@csstools/css-calc": "npm:^3.3.0"
   peerDependencies:
     "@csstools/css-parser-algorithms": ^4.0.0
     "@csstools/css-tokenizer": ^4.0.0
-  checksum: 10/c7d351048bf1ce079afe3cd8e8a9092a498e9a229ace5eda7cf5b22badcaaf5ea5f34249307cab02316b534ee67abd4223ac9dd4ba0adf1ec50fd03993388d3b
+  checksum: 10/92f5f590617a2cc9ff358b2d79716cbe15dd4cc7537cdc45ffc55878282677a9ef6c8bfb215a7dc0731f302c32bf1b0d1b7fc3c550147fd8a6d85f7c3cfb0cdd
   languageName: node
   linkType: hard
 
@@ -85,14 +85,14 @@ __metadata:
   linkType: hard
 
 "@csstools/css-syntax-patches-for-csstree@npm:^1.0.21":
-  version: 1.1.5
-  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.5"
+  version: 1.1.7
+  resolution: "@csstools/css-syntax-patches-for-csstree@npm:1.1.7"
   peerDependencies:
     css-tree: ^3.2.1
   peerDependenciesMeta:
     css-tree:
       optional: true
-  checksum: 10/536460c6a9e97e0a0d1f9fc3f27efd2dd805b8a4207f5c77ad732600d80d41f99504c050c906b41443542b32fda09f0de8d364962fd2bb095b3c1537efc1a596
+  checksum: 10/ba372ab41c351509d47e77f58eb56112fe6fd42e104b70c9c9c797faf4fbb3e837a5df5c9d7e3464b04607ee42e91701e34f935aeec8abb94f24be67cfa1b707
   languageName: node
   linkType: hard
 
@@ -259,9 +259,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^11.2.4, lru-cache@npm:^11.2.5, lru-cache@npm:^11.2.6":
-  version: 11.5.1
-  resolution: "lru-cache@npm:11.5.1"
-  checksum: 10/02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
+  version: 11.5.2
+  resolution: "lru-cache@npm:11.5.2"
+  checksum: 10/122789c66605ddf29df58ff279e9e2c9499499d0b80b895ec524496f14bcde045d1582e3e38008f3457226d98067556719573b352119d6be8bdb1f8849f85681
   languageName: node
   linkType: hard
 
@@ -333,30 +333,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-core@npm:^7.4.3":
-  version: 7.4.3
-  resolution: "tldts-core@npm:7.4.3"
-  checksum: 10/08ba5b9308e78394d125fabb9d8b556b6225d29a0f018f14d6553591094c4d6775b1a14b6d707496982a9d7a045dba511a17428b66fd018aa5f0a1c5cf0b023b
+"tldts-core@npm:^7.4.10":
+  version: 7.4.10
+  resolution: "tldts-core@npm:7.4.10"
+  checksum: 10/eb09428c7dde4f75e4bc0a4f23c677588b4598d0019298247e8a6be255953038f383e12d8bae2d4cd403cecb9c14830c3e992fe66f3862608aa97212dabda385
   languageName: node
   linkType: hard
 
 "tldts@npm:^7.0.5":
-  version: 7.4.3
-  resolution: "tldts@npm:7.4.3"
+  version: 7.4.10
+  resolution: "tldts@npm:7.4.10"
   dependencies:
-    tldts-core: "npm:^7.4.3"
+    tldts-core: "npm:^7.4.10"
   bin:
     tldts: bin/cli.js
-  checksum: 10/05d1ec95958a5bab72aa9d6a493ebf61ea5ad26977c2d1cfba1e9ed544ac096b3bf163e15a98f280ec00cd830eaecb1c72ddc5fdb2fcae84756632c512643969
+  checksum: 10/17c1ac25f9426f1ac4a121d65827080a4a6b21c755141c4db695ab270adc85898d12d2ea29e1760e27e10c92ff9b9e682bc1f10d7791c1c28ea327e8fd4f38c9
   languageName: node
   linkType: hard
 
 "tough-cookie@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "tough-cookie@npm:6.0.1"
+  version: 6.0.2
+  resolution: "tough-cookie@npm:6.0.2"
   dependencies:
     tldts: "npm:^7.0.5"
-  checksum: 10/915b1167e0630598eb0644e8bc089ddc28a23bf05f3c329a4a0d879c6b9801a2603be65acb06b5d2dd0f589cabb06bb638837f8222dd82a7023655f07269451a
+  checksum: 10/b231eb744709ce2369ea063f7a3d3816c0c7801a22ccd30a7ab46e90a5bbc531fcbbcc26520f79cfd8516de4340eb9f3568616beb93302548fc989ccb6a974b8
   languageName: node
   linkType: hard
 
@@ -410,8 +410,8 @@ __metadata:
   linkType: hard
 
 "ws@npm:^8.18.3":
-  version: 8.21.0
-  resolution: "ws@npm:8.21.0"
+  version: 8.21.2
+  resolution: "ws@npm:8.21.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -420,7 +420,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/088411956432c8f876158409d5a285cb9ad1382f593391f51d3a599bd0a5b277f876609ebd00fc3596321c4a4c9064d6fffe1ebad960e8ea7fd9ae25324f35c2
+  checksum: 10/1fa65bfadc0dc73674638482b448e2a8cf1833d0acc2263fd27bf74b98f6f2917b2db8263b460a1ff37b6c2b8b892eba0e0eca33325a1ed7a8fe187f38550b40
   languageName: node
   linkType: hard
 

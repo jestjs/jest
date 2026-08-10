@@ -726,6 +726,57 @@ describe('getMockModuleAsync', () => {
   });
 });
 
+describe('getModuleID', () => {
+  let moduleMap: IModuleMap;
+
+  beforeEach(() => {
+    moduleMap = ModuleMap.create('/');
+  });
+
+  test('does not share cached IDs between virtual and normal mocks', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const from = require.resolve('../');
+    const moduleName = './__mocks__/mockJsDependency';
+    const virtualMockPath = resolver.getModulePath(from, moduleName);
+
+    const virtualID = resolver.getModuleID(
+      new Map([[virtualMockPath, true]]),
+      from,
+      moduleName,
+      {},
+    );
+    const normalID = resolver.getModuleID(new Map(), from, moduleName, {});
+
+    expect(normalID).not.toBe(virtualID);
+  });
+
+  test('does not share async cached IDs between virtual and normal mocks', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const from = require.resolve('../');
+    const moduleName = './__mocks__/mockJsDependency';
+    const virtualMockPath = resolver.getModulePath(from, moduleName);
+
+    const virtualID = await resolver.getModuleIDAsync(
+      new Map([[virtualMockPath, true]]),
+      from,
+      moduleName,
+      {},
+    );
+    const normalID = await resolver.getModuleIDAsync(
+      new Map(),
+      from,
+      moduleName,
+      {},
+    );
+
+    expect(normalID).not.toBe(virtualID);
+  });
+});
+
 describe('nodeModulesPaths', () => {
   it('provides custom module paths after node_modules', () => {
     const src = require.resolve('../');
@@ -743,6 +794,18 @@ describe('nodeModulesPaths', () => {
       './customFolder2',
       './customFolder3',
     ]);
+  });
+
+  it('does not throw when require.resolve.paths is unavailable', () => {
+    const originalResolvePaths = require.resolve.paths;
+    require.resolve.paths = undefined as typeof require.resolve.paths;
+
+    try {
+      const src = require.resolve('../');
+      expect(() => nodeModulesPaths(src, {})).not.toThrow();
+    } finally {
+      require.resolve.paths = originalResolvePaths;
+    }
   });
 });
 

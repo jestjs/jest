@@ -57,9 +57,9 @@ __metadata:
   linkType: hard
 
 "color-name@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "color-name@npm:2.1.0"
-  checksum: 10/eb014f71d87408e318e95d3f554f188370d354ba8e0ffa4341d0fd19de391bfe2bc96e563d4f6614644d676bc24f475560dffee3fe310c2d6865d007410a9a2b
+  version: 2.1.1
+  resolution: "color-name@npm:2.1.1"
+  checksum: 10/17bbb03a1e64299e5f61ccc514c502baf66980b88d013ca0161e8c0009edc3813ab3ffc8558ae99b8633d23c2e94b6551a248015b86cb5f3a84b645b4d0f3bb5
   languageName: node
   linkType: hard
 

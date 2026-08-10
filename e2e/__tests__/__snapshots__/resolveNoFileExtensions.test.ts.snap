@@ -23,7 +23,6 @@ exports[`show error message with matching files 1`] = `
       index.js
       __tests__/test.js
 
-
     However, Jest was able to find:
     	'./some-json-file.json'
 

@@ -130,6 +130,62 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
+exports[`processChild handles asymmetric matchers 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 1
+
+    - Object {
+    -   "value1": 0,
+    -   "value2": Any<String>,
+    - }
+    + Object {}
+
+      1 | it('test', () => {
+    > 2 |   expect({}).toEqual({
+        |              ^
+      3 |     value1: 0,
+      4 |     value2: expect.any(String),
+      5 |   });
+
+      at Object.toEqual (__tests__/test-1.js:2:14)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 1
+
+    - Object {
+    -   "value1": 0,
+    -   "value2": Any<String>,
+    - }
+    + Object {}
+
+      1 | it('test', () => {
+    > 2 |   expect({}).toEqual({
+        |              ^
+      3 |     value1: 0,
+      4 |     value2: expect.any(String),
+      5 |   });
+
+      at Object.toEqual (__tests__/test-2.js:2:14)"
+`;
+
+exports[`processChild handles asymmetric matchers 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
 exports[`processChild handles circular inequality properly 1`] = `
 "FAIL __tests__/test-1.js
   ● test
@@ -389,6 +445,62 @@ FAIL __tests__/test-2.js
 `;
 
 exports[`workerThreads handles \`Symbol\` 2`] = `
+"Test Suites: 2 failed, 2 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`workerThreads handles asymmetric matchers 1`] = `
+"FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 1
+
+    - Object {
+    -   "value1": 0,
+    -   "value2": Any<String>,
+    - }
+    + Object {}
+
+      1 | it('test', () => {
+    > 2 |   expect({}).toEqual({
+        |              ^
+      3 |     value1: 0,
+      4 |     value2: expect.any(String),
+      5 |   });
+
+      at Object.toEqual (__tests__/test-1.js:2:14)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 1
+
+    - Object {
+    -   "value1": 0,
+    -   "value2": Any<String>,
+    - }
+    + Object {}
+
+      1 | it('test', () => {
+    > 2 |   expect({}).toEqual({
+        |              ^
+      3 |     value1: 0,
+      4 |     value2: expect.any(String),
+      5 |   });
+
+      at Object.toEqual (__tests__/test-2.js:2:14)"
+`;
+
+exports[`workerThreads handles asymmetric matchers 2`] = `
 "Test Suites: 2 failed, 2 total
 Tests:       2 failed, 2 total
 Snapshots:   0 total

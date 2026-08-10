@@ -208,8 +208,20 @@ export default class DefaultReporter extends BaseReporter {
         this.log(
           `${chalk.reset.inverse.bold.yellow(' LOGGING RETRY ERRORS ')} ${chalk.bold(testResult.fullName)}`,
         );
-        for (const [index, retryReasons] of testRetryReasons.entries()) {
-          let {message, stack} = separateMessageFromStack(retryReasons);
+        for (const [index, retryReason] of testRetryReasons.entries()) {
+          this.log(
+            `${chalk.reset.inverse.bold.blueBright(` RETRY ${index + 1} `)}\n`,
+          );
+
+          const retryMessage = testResult.retryMessages?.[index];
+          if (retryMessage != null) {
+            this.log(`${retryMessage.trimEnd()}\n`);
+            continue;
+          }
+
+          // Test frameworks other than jest-circus only provide the
+          // serialized reason.
+          let {message, stack} = separateMessageFromStack(retryReason);
           stack = this._globalConfig.noStackTrace
             ? ''
             : chalk.dim(
@@ -218,9 +230,6 @@ export default class DefaultReporter extends BaseReporter {
 
           message = indentAllLines(message);
 
-          this.log(
-            `${chalk.reset.inverse.bold.blueBright(` RETRY ${index + 1} `)}\n`,
-          );
           this.log(`${message}\n${stack}\n`);
         }
       }
