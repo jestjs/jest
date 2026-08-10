@@ -15,8 +15,9 @@
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@react-native/jest-preset": "0.86.2",
+    "@testing-library/react-native": "^14.0.1",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
-    "react-test-renderer": "^19.2.3"
+    "test-renderer": "^1.2.0"
   }
 }

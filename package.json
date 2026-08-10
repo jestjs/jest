@@ -207,6 +207,8 @@
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "resolutions": {
+    "@testing-library/react-native/jest-matcher-utils": "workspace:*",
+    "@testing-library/react-native/pretty-format": "workspace:*",
     "@types/node": "18.x",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:*",
