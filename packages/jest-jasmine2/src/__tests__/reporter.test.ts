@@ -97,4 +97,26 @@ describe('Jasmine2Reporter', () => {
 
     expect(message).toContain('[Circular cause]');
   });
+
+  it('serializes the inner errors of an AggregateError in failure messages', () => {
+    const message = extractFailureMessage(
+      new AggregateError([new Error('inner A'), new Error('inner B')]),
+    );
+
+    expect(message).toContain('[errors]: Error: inner A');
+    expect(message).toContain('[errors]: Error: inner B');
+  });
+
+  it('keeps the message prepended for an error with nothing nested', () => {
+    // Some errors (e.g. Angular injection errors) don't prepend the message to
+    // the stack, so `_addMissingMessageToStack` has to. Only errors carrying a
+    // cause or aggregated errors may bypass that.
+    const error = new Error('error during f');
+    error.stack = 'Error\n    at f (spec.js:1:1)';
+
+    const message = extractFailureMessage(error);
+
+    expect(message).toBe('error during f\n    at f (spec.js:1:1)');
+    expect(message).not.toContain('[cause]');
+  });
 });

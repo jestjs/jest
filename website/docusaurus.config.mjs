@@ -10,22 +10,22 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const path = require('node:path');
-const fs = require('node:fs');
-const yaml = require('js-yaml');
-const i18n = require('./i18n');
-const ArchivedVersions = require('./archivedVersions.json');
+import * as path from 'node:path';
+import * as fs from 'node:fs';
+import * as yaml from 'js-yaml';
+import i18n from './i18n.mjs';
+import ArchivedVersions from './archivedVersions.json';
 
 const JestThemeColor = '#15c213';
 
 const crowdinConfig = yaml.load(
-  fs.readFileSync(path.resolve(__dirname, '../crowdin.yaml'), 'utf8')
+  fs.readFileSync(path.resolve(__dirname, '../crowdin.yaml'), 'utf8'),
 );
 
 const localeMapping = new Map(
   Object.entries(crowdinConfig.languages_mapping.locale).map(
-    ([translation, locale]) => [locale, translation]
-  )
+    ([translation, locale]) => [locale, translation],
+  ),
 );
 
 /** @type {import('@docusaurus/types').Config} */
@@ -183,7 +183,7 @@ const config = {
                 ([versionName, versionUrl]) => ({
                   href: versionUrl,
                   label: versionName,
-                })
+                }),
               ),
               {
                 to: '/versions',
@@ -311,4 +311,4 @@ const config = {
     }),
 };
 
-module.exports = config;
+export default config;

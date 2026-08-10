@@ -418,8 +418,7 @@ export class JestGlobals {
       setTimeout,
       setTimerTickMode: (
         mode:
-          | {mode: 'manual' | 'nextAsync'}
-          | {mode: 'interval'; delta?: number},
+          {mode: 'manual' | 'nextAsync'} | {mode: 'interval'; delta?: number},
       ) => {
         const fakeTimers = _getFakeTimers();
         if (fakeTimers === this.environment.fakeTimersModern) {

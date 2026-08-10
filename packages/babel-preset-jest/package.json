@@ -17,7 +17,7 @@
     "babel-preset-current-node-syntax": "^1.2.0"
   },
   "peerDependencies": {
-    "@babel/core": "^7.11.0 || ^8.0.0-beta.1"
+    "@babel/core": "^7.11.0 || ^8.0.0-beta.1 || ^8.0.0"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
