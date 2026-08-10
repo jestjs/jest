@@ -111,7 +111,7 @@ test('should throw module not found error if the module has dependencies that ca
         Require stack:
           requiresUnexistingModule.js
           Test7.js
-          __tests__/resolve.test.js\n
+          __tests__/resolve.test.js
       `,
     }),
   );

@@ -5,6 +5,8 @@
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[jest-circus, jest-core, jest-jasmine2, jest-test-result, jest-types]` `--collectTests` now expands `test.each`/`describe.each` cases and reports per-status counts (skipped/todo via the new `wouldRun` flag for selected tests) plus a summary line that match a real run, including under `--testNamePattern` and `.only`/`fdescribe` focus on both the circus and jasmine2 runners ([#16259](https://github.com/jestjs/jest/pull/16259))
+- `[jest-circus, jest-message-util, jest-reporters, jest-types]` Add `retryMessages` to `AssertionResult` and export `formatErrorStack`, so the retry log renders nested `cause` and `AggregateError` sections with code frames instead of serialized `[cause]:`/`[errors]:` markers ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[jest-circus, jest-types]` Add `unhandledErrorsDetailed` to `Circus.RunResult`, so an unhandled rejection reports its `cause` chain and `AggregateError` entries with code frames instead of a pre-serialized stack ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-haste-map]` Replace `NodeWatcher` and `FSEventsWatcher` with `@parcel/watcher` for the non-watchman watch path ([#16188](https://github.com/jestjs/jest/pull/16188))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 
@@ -12,8 +14,12 @@
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
+- `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-config]` Add missing `findRelatedTests`, `outputFile`, and `replname` entries to `ValidConfig` so they no longer trigger spurious "Unknown option" warnings ([#16224](https://github.com/jestjs/jest/pull/16224))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
+- `[jest-message-util]` Print the inner errors of an `AggregateError` thrown inside a test ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[jest-message-util]` Indent nested `cause` and `AggregateError` sections of a test failure by one level per depth, so the nesting is legible instead of rendering flat ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[jest-message-util]` Color stack traces line by line so blank lines stay blank ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-mock]` `mockResolvedValue` / `mockRejectedValue` now see all overload return types, so a Promise-returning overload survives even when a later overload returns a non-Promise (e.g. `pg.Client['end']`) ([#16237](https://github.com/jestjs/jest/pull/16237))
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))

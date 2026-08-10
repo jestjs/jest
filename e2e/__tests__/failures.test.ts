@@ -89,6 +89,13 @@ test('works with snapshot failures with hint', () => {
   expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
+test('works with AggregateError', () => {
+  const {stderr} = runJest(dir, ['aggregateError.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('works with error with cause', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
@@ -126,6 +133,21 @@ test('includes error causes in JSON failureMessages', () => {
   expect(failureMessages).toHaveLength(3);
   expect(failureOutput).toContain('[cause]: Error: error during g');
   expect(failureOutput).toContain('[cause]: here is the cause');
+});
+
+test('includes AggregateError inner errors in JSON failureMessages', () => {
+  const {json} = runJestJson(dir, ['aggregateError.test.js']);
+
+  const result = json.testResults[0];
+  const failureMessages =
+    result.assertionResults.flatMap(result => result.failureMessages) ?? [];
+  const failureOutput = failureMessages.join('\n');
+
+  expect(failureMessages).toHaveLength(2);
+  expect(failureOutput).toContain('[errors]: Error: inner A');
+  expect(failureOutput).toContain('[errors]: Error: inner B');
+  expect(failureOutput).toContain('[errors]: Error: ECONNREFUSED primary');
+  expect(failureOutput).toContain('[errors]: Error: ETIMEDOUT replica');
 });
 
 test('errors after test has completed', () => {

@@ -17,7 +17,11 @@ import {
   makeCollectedTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {formatExecError, formatResultsErrors} from 'jest-message-util';
+import {
+  formatErrorStack,
+  formatExecError,
+  formatResultsErrors,
+} from 'jest-message-util';
 import type Runtime from 'jest-runtime';
 import {
   SnapshotState,
@@ -39,6 +43,18 @@ import {getTestID} from '../utils';
 interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;
 }
+
+// Retry errors are rendered here rather than by the reporter, because the
+// reporter only sees what survives worker serialization — which drops the
+// `errors` of an `AggregateError`.
+const makeRetryErrorFormatter =
+  (
+    config: Config.ProjectConfig,
+    globalConfig: Config.GlobalConfig,
+    testPath: string,
+  ) =>
+  (error: Error): string =>
+    formatErrorStack(error, config, globalConfig, testPath);
 
 export const initialize = async ({
   config,
@@ -130,7 +146,13 @@ export const initialize = async ({
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
-    addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
+    addEventHandler(
+      testCaseReportHandler(
+        testPath,
+        sendMessageToJest,
+        makeRetryErrorFormatter(config, globalConfig, testPath),
+      ),
+    );
   }
 
   addEventHandler(
@@ -235,6 +257,11 @@ export const runAndTransformResultsToJestFormat = async ({
   setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
+  const formatRetryError = makeRetryErrorFormatter(
+    config,
+    globalConfig,
+    testPath,
+  );
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -275,6 +302,7 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
+        retryMessages: testResult.retryReasonsDetailed.map(formatRetryError),
         retryReasons: testResult.retryReasons,
         startAt: testResult.startedAt,
         status,
@@ -296,8 +324,8 @@ export const runAndTransformResultsToJestFormat = async ({
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
     };
-    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrors
-      .map(err => formatExecError(err, config, globalConfig))
+    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrorsDetailed
+      .map(error => formatExecError(error, config, globalConfig))
       .join('\n')}`;
   }
 

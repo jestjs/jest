@@ -224,11 +224,13 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
+  retryReasonsDetailed: Array<Error>;
   testPath: TestNamesPath;
 };
 
 export type RunResult = {
   unhandledErrors: Array<FormattedError>;
+  unhandledErrorsDetailed: Array<Error>;
   testResults: TestResults;
 };
 
