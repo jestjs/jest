@@ -7405,6 +7405,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mdx@patch:@types/mdx@npm:^2.0.0#~/.yarn/patches/@types-mdx-npm-2.0.14-ebb2ecb0d6.patch":
+  version: 2.0.14
+  resolution: "@types/mdx@patch:@types/mdx@npm%3A2.0.14#~/.yarn/patches/@types-mdx-npm-2.0.14-ebb2ecb0d6.patch::version=2.0.14&hash=e5eb3e"
+  checksum: 10/e267adc63b8a61c576ae59a7b4bbc06ac5ee86cdd23ec35bfe39cbd7e482675d1fbb0114a879be1c3600139de478be3e41407f2aa78ea6a811ec96113d6e2e34
+  languageName: node
+  linkType: hard
+
 "@types/merge-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "@types/merge-stream@npm:2.0.0"
