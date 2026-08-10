@@ -491,6 +491,7 @@ const resolveTestCaseStartInfo = (
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,
+  formatRetryError?: (error: Error) => string,
 ): TestCaseResult => {
   let status: Status;
   if (testResult.status === 'skip') {
@@ -517,6 +518,9 @@ export const parseSingleTestResult = (
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
+    retryMessages: formatRetryError
+      ? testResult.retryReasonsDetailed.map(formatRetryError)
+      : undefined,
     retryReasons: [...testResult.retryReasons],
     startedAt: testResult.startedAt,
     status,

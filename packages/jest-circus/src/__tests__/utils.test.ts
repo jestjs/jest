@@ -12,6 +12,7 @@ import {
   makeRunResult,
   makeSingleTestResult,
   makeTest,
+  parseSingleTestResult,
 } from '../utils';
 
 const makeFailedTestResult = (error: Error) => {
@@ -122,6 +123,13 @@ test('makeSingleTestResult serializes retry reasons', () => {
   expect(result.retryReasons[0]).toContain('Error: flaked');
   expect(result.retryReasons[0]).toContain('[cause]: Error: the flake reason');
   expect(result.retryReasonsDetailed[0]).toBe(retryReason);
+
+  // The per-test-case result reports the same retries, rendered by the caller
+  // that owns the config.
+  expect(
+    parseSingleTestResult(result, error => `rendered: ${error.message}`)
+      .retryMessages,
+  ).toEqual(['rendered: flaked']);
 });
 
 test('makeRunResult keeps the unserialized unhandled errors', () => {

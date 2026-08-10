@@ -44,6 +44,18 @@ interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;
 }
 
+// Retry errors are rendered here rather than by the reporter, because the
+// reporter only sees what survives worker serialization — which drops the
+// `errors` of an `AggregateError`.
+const makeRetryErrorFormatter =
+  (
+    config: Config.ProjectConfig,
+    globalConfig: Config.GlobalConfig,
+    testPath: string,
+  ) =>
+  (error: Error): string =>
+    formatErrorStack(error, config, globalConfig, testPath);
+
 export const initialize = async ({
   config,
   environment,
@@ -134,7 +146,13 @@ export const initialize = async ({
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
-    addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
+    addEventHandler(
+      testCaseReportHandler(
+        testPath,
+        sendMessageToJest,
+        makeRetryErrorFormatter(config, globalConfig, testPath),
+      ),
+    );
   }
 
   addEventHandler(
@@ -239,6 +257,11 @@ export const runAndTransformResultsToJestFormat = async ({
   setupAfterEnvPerfStats: Config.SetupAfterEnvPerfStats;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
+  const formatRetryError = makeRetryErrorFormatter(
+    config,
+    globalConfig,
+    testPath,
+  );
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -279,12 +302,7 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
-        // Rendered here rather than by the reporter, because the reporter only
-        // sees what survives worker serialization — which drops the `errors`
-        // of an `AggregateError`.
-        retryMessages: testResult.retryReasonsDetailed.map(error =>
-          formatErrorStack(error, config, globalConfig, testPath),
-        ),
+        retryMessages: testResult.retryReasonsDetailed.map(formatRetryError),
         retryReasons: testResult.retryReasons,
         startAt: testResult.startedAt,
         status,
