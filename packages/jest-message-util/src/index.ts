@@ -374,6 +374,9 @@ export function getTopFrame(lines: Array<string>): Frame | null {
   return null;
 }
 
+// Renders the frames of a stack string: paths made relative, noisy internal
+// frames dropped, and a code frame for the top frame. Takes the stack alone, so
+// callers holding an error usually want `formatErrorStack` instead.
 export function formatStackTrace(
   stack: string,
   config: StackTraceConfig,
@@ -464,6 +467,8 @@ function isErrorOrStackWithErrors(
   );
 }
 
+// Whether an error carries anything the flattener would append: a `cause` (an
+// error or a plain string) or a non-empty `AggregateError.errors`.
 export function hasNestedErrors(value: unknown): value is Error {
   return (
     isErrorLike(value) &&
@@ -541,9 +546,13 @@ function formatErrorStackWithSeen(
   testPath?: string,
 ): string {
   // The stack of new Error('message') contains both the message and the stack,
-  // thus we need to sanitize and clean it for proper display using separateMessageFromStack.
+  // thus we need to sanitize and clean it for proper display using
+  // separateMessageFromStack. An error whose stack was blanked still has its
+  // message, which is better than rendering nothing.
   const sourceStack =
-    typeof errorOrStack === 'string' ? errorOrStack : errorOrStack.stack || '';
+    typeof errorOrStack === 'string'
+      ? errorOrStack
+      : errorOrStack.stack || errorOrStack.message || '';
   let {message, stack} = separateMessageFromStack(sourceStack);
   const renderedStack = options.noStackTrace
     ? ''

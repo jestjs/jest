@@ -11,6 +11,7 @@ import slash from 'slash';
 import tempy from 'tempy';
 import {
   flattenErrorStack,
+  formatErrorStack,
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
@@ -892,6 +893,23 @@ describe('hasNestedErrors', () => {
     ['an error-shaped object', {message: 'bang'}],
   ])('is false for %s', (_label, value) => {
     expect(hasNestedErrors(value)).toBe(false);
+  });
+});
+
+describe('formatErrorStack', () => {
+  it('falls back to the message when the stack was blanked', () => {
+    const error = new Error('no stack here');
+    error.stack = '';
+
+    expect(
+      formatErrorStack(
+        error,
+        {rootDir: '', testMatch: []},
+        {
+          noStackTrace: true,
+        },
+      ),
+    ).toContain('no stack here');
   });
 });
 
