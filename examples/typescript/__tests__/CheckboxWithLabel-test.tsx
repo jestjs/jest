@@ -5,8 +5,6 @@ import {createRoot} from 'react-dom/client';
 import {expect, it} from '@jest/globals';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
-
 it('CheckboxWithLabel changes the text after click', () => {
   const checkboxLabelRef: React.RefObject<HTMLLabelElement> = React.createRef();
   const checkboxInputRef: React.RefObject<HTMLInputElement> = React.createRef();

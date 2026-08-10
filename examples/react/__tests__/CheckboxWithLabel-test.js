@@ -4,8 +4,6 @@ import {act, createRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
-
 it('CheckboxWithLabel changes the text after click', () => {
   const checkboxLabelRef = createRef();
   const checkboxInputRef = createRef();

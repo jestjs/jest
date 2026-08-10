@@ -21,6 +21,9 @@
     "test": "jest"
   },
   "jest": {
+    "setupFiles": [
+      "<rootDir>/setupTests.ts"
+    ],
     "testEnvironment": "jsdom"
   }
 }
