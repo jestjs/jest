@@ -1,22 +1,30 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import * as React from 'react';
-import * as TestUtils from 'react-dom/test-utils';
+import {createRoot} from 'react-dom/client';
 import {expect, it} from '@jest/globals';
 import CheckboxWithLabel from '../CheckboxWithLabel';
+
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 it('CheckboxWithLabel changes the text after click', () => {
   const checkboxLabelRef: React.RefObject<HTMLLabelElement> = React.createRef();
   const checkboxInputRef: React.RefObject<HTMLInputElement> = React.createRef();
   // Render a checkbox with label in the document
-  TestUtils.renderIntoDocument(
-    <CheckboxWithLabel
-      labelRef={checkboxLabelRef}
-      inputRef={checkboxInputRef}
-      labelOn="On"
-      labelOff="Off"
-    />,
-  );
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+
+  React.act(() => {
+    root.render(
+      <CheckboxWithLabel
+        labelRef={checkboxLabelRef}
+        inputRef={checkboxInputRef}
+        labelOn="On"
+        labelOff="Off"
+      />,
+    );
+  });
 
   const labelNode = checkboxLabelRef.current;
   const inputNode = checkboxInputRef.current;
@@ -25,6 +33,8 @@ it('CheckboxWithLabel changes the text after click', () => {
   expect(labelNode.textContent).toBe('Off');
 
   // Simulate a click and verify that it is now On
-  TestUtils.Simulate.change(inputNode);
+  React.act(() => {
+    inputNode.click();
+  });
   expect(labelNode.textContent).toBe('On');
 });
