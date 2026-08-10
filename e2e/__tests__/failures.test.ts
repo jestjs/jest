@@ -135,6 +135,21 @@ test('includes error causes in JSON failureMessages', () => {
   expect(failureOutput).toContain('[cause]: here is the cause');
 });
 
+test('includes AggregateError inner errors in JSON failureMessages', () => {
+  const {json} = runJestJson(dir, ['aggregateError.test.js']);
+
+  const result = json.testResults[0];
+  const failureMessages =
+    result.assertionResults.flatMap(result => result.failureMessages) ?? [];
+  const failureOutput = failureMessages.join('\n');
+
+  expect(failureMessages).toHaveLength(2);
+  expect(failureOutput).toContain('[errors]: Error: inner A');
+  expect(failureOutput).toContain('[errors]: Error: inner B');
+  expect(failureOutput).toContain('[errors]: Error: ECONNREFUSED primary');
+  expect(failureOutput).toContain('[errors]: Error: ETIMEDOUT replica');
+});
+
 test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
 

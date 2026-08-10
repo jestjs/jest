@@ -70,3 +70,49 @@ test('makeSingleTestResult protects against circular Error.cause', () => {
 
   expect(result.errors[0]).toContain('[Circular cause]');
 });
+
+test('makeSingleTestResult serializes the inner errors of an AggregateError', () => {
+  const error = new AggregateError([
+    new Error('inner A'),
+    new Error('inner B'),
+  ]);
+
+  const result = makeFailedTestResult(error);
+
+  expect(result.errors[0]).toContain('[errors]: Error: inner A');
+  expect(result.errors[0]).toContain('[errors]: Error: inner B');
+});
+
+test('makeSingleTestResult protects against a circular AggregateError', () => {
+  const error = new AggregateError([]);
+  error.errors.push(error);
+
+  const result = makeFailedTestResult(error);
+
+  expect(result.errors[0]).toContain('[Circular errors]');
+});
+
+test('makeSingleTestResult serializes retry reasons', () => {
+  const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const test = makeTest(
+    () => {},
+    undefined,
+    false,
+    'flaky test',
+    rootDescribe,
+    undefined,
+    new Error('async error'),
+    false,
+  );
+
+  test.retryReasons.push(
+    new Error('flaked', {cause: new Error('the flake reason')}),
+  );
+  test.errors.push(new Error('failed for good'));
+  test.status = 'done';
+
+  const result = makeSingleTestResult(test);
+
+  expect(result.retryReasons[0]).toContain('Error: flaked');
+  expect(result.retryReasons[0]).toContain('[cause]: Error: the flake reason');
+});

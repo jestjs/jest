@@ -128,13 +128,11 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   );
 }
 
-// ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
-// are executed.
-export const formatExecError = (
+const formatExecErrorWithSeen = (
   error: Error | TestResult.SerializableError | string | number | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
+  seen: Set<unknown>,
   testPath?: string,
   reuseMessage?: boolean,
   noTitle?: boolean,
@@ -158,15 +156,19 @@ export const formatExecError = (
       typeof error.stack === 'string'
         ? error.stack
         : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    // Serialized errors from workers are plain objects, so cycle tracking must
+    // cover any object, not just error-likes.
+    seen.add(error);
     if ('cause' in error) {
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
       } else if (isErrorLike(error.cause)) {
-        const formatted = formatExecError(
-          error.cause,
+        const formatted = formatExecErrorWithSeen(
+          markIfCircular(error.cause, 'cause', seen),
           config,
           options,
+          seen,
           testPath,
           reuseMessage,
           true,
@@ -179,10 +181,11 @@ export const formatExecError = (
     if ('errors' in error && Array.isArray(error.errors)) {
       for (const subError of error.errors) {
         subErrors.push(
-          formatExecError(
-            subError,
+          formatExecErrorWithSeen(
+            seen.has(subError) ? '[Circular errors]' : subError,
             config,
             options,
+            seen,
             testPath,
             reuseMessage,
             true,
@@ -190,6 +193,7 @@ export const formatExecError = (
         );
       }
     }
+    seen.delete(error);
   }
   if (cause !== '') {
     cause = indentAllLines(cause);
@@ -242,6 +246,27 @@ export const formatExecError = (
 
   return `${title + messageToUse + stack + cause + subErrorStr}\n`;
 };
+
+// ExecError is an error thrown outside of the test suite (not inside an `it` or
+// `before/after each` hooks). If it's thrown, none of the tests in the file
+// are executed.
+export const formatExecError = (
+  error: Error | TestResult.SerializableError | string | number | undefined,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: string,
+  reuseMessage?: boolean,
+  noTitle?: boolean,
+): string =>
+  formatExecErrorWithSeen(
+    error,
+    config,
+    options,
+    new Set(),
+    testPath,
+    reuseMessage,
+    noTitle,
+  );
 
 const removeInternalStackEntries = (
   lines: Array<string>,
@@ -439,10 +464,80 @@ function isErrorOrStackWithErrors(
   );
 }
 
+export function hasNestedErrors(value: unknown): value is Error {
+  return (
+    isErrorLike(value) &&
+    (isErrorOrStackWithCause(value) ||
+      (isErrorOrStackWithErrors(value) && value.errors.length > 0))
+  );
+}
+
+// Replaces an error already on the current ancestor path with a marker, so a
+// cyclic `cause` or a self-referential `AggregateError` terminates.
+function markIfCircular(
+  value: Error | string,
+  kind: 'cause' | 'errors',
+  seen: ReadonlySet<unknown>,
+): Error | string {
+  return typeof value === 'string' || !seen.has(value)
+    ? value
+    : `[Circular ${kind}]`;
+}
+
+function flattenErrorStackWithSeen(
+  errorOrStack: Error | string,
+  seen: Set<Error>,
+): string {
+  if (typeof errorOrStack === 'string') {
+    return errorOrStack;
+  }
+
+  const {message, stack} = errorOrStack;
+  let flattened;
+  if (typeof stack === 'string' && stack !== '') {
+    // Some errors (e.g. Angular injection errors) don't embed the message in
+    // the stack; prepend it so it isn't lost.
+    flattened =
+      message && !stack.includes(message)
+        ? message + stack.replace(/^Error:?\s*\n/, '\n')
+        : stack;
+  } else {
+    flattened = message;
+  }
+
+  // Tracks the current ancestor path rather than everything already visited, so
+  // that repeating the same error across sibling branches is not a cycle.
+  seen.add(errorOrStack);
+
+  if (isErrorOrStackWithCause(errorOrStack)) {
+    const cause = markIfCircular(errorOrStack.cause, 'cause', seen);
+    flattened += `\n\n[cause]: ${flattenErrorStackWithSeen(cause, seen)}`;
+  }
+
+  if (isErrorOrStackWithErrors(errorOrStack)) {
+    for (const error of errorOrStack.errors) {
+      const nested = markIfCircular(toErrorOrStack(error), 'errors', seen);
+      flattened += `\n\n[errors]: ${flattenErrorStackWithSeen(nested, seen)}`;
+    }
+  }
+
+  seen.delete(errorOrStack);
+
+  return flattened;
+}
+
+// Flattens an error, its `cause` chain and any `AggregateError` entries into one
+// plain string. Unlike the `format*` renderers this carries no colour or code
+// frames, because it feeds `--json` output and reporter annotations.
+export function flattenErrorStack(error: Error): string {
+  return flattenErrorStackWithSeen(error, new Set());
+}
+
 function formatErrorStack(
   errorOrStack: Error | string,
   config: StackTraceConfig,
   options: StackTraceOptions,
+  seen: Set<Error>,
   testPath?: string,
 ): string {
   // The stack of new Error('message') contains both the message and the stack,
@@ -460,12 +555,17 @@ function formatErrorStack(
   message = checkForCommonEnvironmentErrors(message);
   message = indentAllLines(message);
 
+  if (typeof errorOrStack !== 'string') {
+    seen.add(errorOrStack);
+  }
+
   let cause = '';
   if (isErrorOrStackWithCause(errorOrStack)) {
     const nestedCause = formatErrorStack(
-      errorOrStack.cause,
+      markIfCircular(errorOrStack.cause, 'cause', seen),
       config,
       options,
+      seen,
       testPath,
     );
     cause = indentAllLines(`\nCause:\n${nestedCause}`);
@@ -477,12 +577,22 @@ function formatErrorStack(
     errorOrStack.errors.length > 0
   ) {
     const nestedErrors = errorOrStack.errors.map(error =>
-      formatErrorStack(toErrorOrStack(error), config, options, testPath),
+      formatErrorStack(
+        markIfCircular(toErrorOrStack(error), 'errors', seen),
+        config,
+        options,
+        seen,
+        testPath,
+      ),
     );
 
     subErrors = indentAllLines(
       `\nErrors contained in AggregateError:\n${nestedErrors.join('\n')}`,
     );
+  }
+
+  if (typeof errorOrStack !== 'string') {
+    seen.delete(errorOrStack);
   }
 
   return `${message}\n${stack}${cause}${subErrors}`;
@@ -545,6 +655,7 @@ export const formatResultsErrors = (
         rootErrorOrStack,
         config,
         options,
+        new Set(),
         testPath,
       )}`;
     })
