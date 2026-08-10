@@ -13,12 +13,12 @@ import slash from 'slash';
 import StackUtils from 'stack-utils';
 import type {Status, TestCaseResult} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
+import {flattenErrorStack} from 'jest-message-util';
 import {
   ErrorWithStack,
   convertDescriptorToString,
   formatTime,
   invariant,
-  isError,
   isPromise,
 } from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
@@ -319,10 +319,15 @@ export const getTestDuration = (test: Circus.TestEntry): number | null => {
 export const makeRunResult = (
   describeBlock: Circus.DescribeBlock,
   unhandledErrors: Array<Error>,
-): Circus.RunResult => ({
-  testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
-});
+): Circus.RunResult => {
+  const unhandledErrorsDetailed = unhandledErrors.map(_getError);
+
+  return {
+    testResults: makeTestResults(describeBlock),
+    unhandledErrors: unhandledErrorsDetailed.map(flattenErrorStack),
+    unhandledErrorsDetailed,
+  };
+};
 
 const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
   const titles = [];
@@ -366,16 +371,18 @@ export const makeSingleTestResult = (
   }
 
   const errorsDetailed = test.errors.map(_getError);
+  const retryReasonsDetailed = test.retryReasons.map(_getError);
 
   return {
     duration: test.duration,
-    errors: errorsDetailed.map(getErrorStack),
+    errors: errorsDetailed.map(flattenErrorStack),
     errorsDetailed,
     failing: test.failing,
     invocations: test.invocations,
     location,
     numPassingAsserts: test.numPassingAsserts,
-    retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    retryReasons: retryReasonsDetailed.map(flattenErrorStack),
+    retryReasonsDetailed,
     startedAt: test.startedAt,
     status,
     testPath: [...testPath],
@@ -442,41 +449,6 @@ const _getError = (
   return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
 };
 
-const isErrorOrStackWithCause = (
-  errorOrStack: Error | string,
-): errorOrStack is Error & {cause: Error | string} =>
-  typeof errorOrStack !== 'string' &&
-  'cause' in errorOrStack &&
-  (typeof errorOrStack.cause === 'string' ||
-    isError(errorOrStack.cause) ||
-    errorOrStack.cause instanceof Error);
-
-const formatErrorStackWithCause = (error: Error, seen: Set<Error>): string => {
-  const stack =
-    typeof error.stack === 'string' && error.stack !== ''
-      ? error.stack
-      : error.message;
-
-  if (!isErrorOrStackWithCause(error)) {
-    return stack;
-  }
-
-  let cause: string;
-  if (typeof error.cause === 'string') {
-    cause = error.cause;
-  } else if (seen.has(error.cause)) {
-    cause = '[Circular cause]';
-  } else {
-    seen.add(error);
-    cause = formatErrorStackWithCause(error.cause, seen);
-  }
-
-  return `${stack}\n\n[cause]: ${cause}`;
-};
-
-const getErrorStack = (error: Error): string =>
-  formatErrorStackWithCause(error, new Set());
-
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
@@ -519,6 +491,7 @@ const resolveTestCaseStartInfo = (
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,
+  formatRetryError?: (error: Error) => string,
 ): TestCaseResult => {
   let status: Status;
   if (testResult.status === 'skip') {
@@ -545,6 +518,9 @@ export const parseSingleTestResult = (
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: testResult.numPassingAsserts,
+    retryMessages: formatRetryError
+      ? testResult.retryReasonsDetailed.map(formatRetryError)
+      : undefined,
     retryReasons: [...testResult.retryReasons],
     startedAt: testResult.startedAt,
     status,

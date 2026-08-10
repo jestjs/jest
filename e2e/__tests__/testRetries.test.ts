@@ -42,6 +42,18 @@ describe('Test Retries', () => {
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
+  it('logs the inner errors of an AggregateError before retry', () => {
+    const result = runJest('test-retries', [
+      'logAggregateErrorsBeforeRetries.test.js',
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(result.stderr).toContain('Errors contained in AggregateError:');
+    expect(result.stderr).not.toContain('[errors]:');
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
+  });
+
   it('wait before retry', () => {
     const result = runJest('test-retries', ['waitBeforeRetry.test.js']);
     expect(result.exitCode).toBe(0);

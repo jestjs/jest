@@ -77,6 +77,7 @@ export default async function runGlobalHook({
             error,
             {maxDepth: 3},
           )}`,
+          {cause: error},
         );
       }
     }

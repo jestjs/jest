@@ -1143,9 +1143,7 @@ Configuration options:
 
 ```ts
 type TimerTickMode =
-  | {mode: 'manual'}
-  | {mode: 'nextAsync'}
-  | {mode: 'interval'; delta?: number};
+  {mode: 'manual'} | {mode: 'nextAsync'} | {mode: 'interval'; delta?: number};
 ```
 
 - `manual`: Timers do not advance without explicit, manual calls to the tick APIs (`jest.advanceTimersByTime(ms)`, `jest.runAllTimers()`, etc).

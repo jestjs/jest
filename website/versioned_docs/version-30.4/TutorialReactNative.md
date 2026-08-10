@@ -73,6 +73,12 @@ export default Intro;
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
+:::caution
+
+`react-test-renderer` is [deprecated](https://react.dev/warnings/react-test-renderer). We recommend using [`@testing-library/react-native`](https://callstack.github.io/react-native-testing-library/) for new tests.
+
+:::
+
 ```tsx title="__tests__/Intro-test.js"
 import React from 'react';
 import renderer from 'react-test-renderer';

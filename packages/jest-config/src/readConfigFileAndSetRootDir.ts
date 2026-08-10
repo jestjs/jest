@@ -97,6 +97,7 @@ export default async function readConfigFileAndSetRootDir(
       throw new Error(
         `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
           `  ${error}`,
+        {cause: error},
       );
     }
 

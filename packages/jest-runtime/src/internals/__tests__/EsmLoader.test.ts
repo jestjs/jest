@@ -534,6 +534,29 @@ describe('EsmLoader.requireEsmModule', () => {
       }),
     );
   });
+
+  testWithVmEsm(
+    'unwraps a "module.exports" named export instead of returning the raw namespace',
+    async () => {
+      const {context, esmRegistry, loader} = makeLoader();
+      const unwrapped = {fromModuleExports: true};
+      const synth = new SyntheticModule(
+        ['module.exports', 'named'],
+        function () {
+          this.setExport('module.exports', unwrapped);
+          this.setExport('named', 'should-be-invisible');
+        },
+        {context, identifier: '/m.mjs'},
+      );
+      await synth.link(() => {
+        throw new Error('no deps');
+      });
+      await synth.evaluate();
+      esmRegistry.set('/m.mjs', synth);
+      const result = loader.requireEsmModule<any>('/m.mjs');
+      expect(result).toBe(unwrapped);
+    },
+  );
 });
 
 describe('EsmLoader.dynamicImportFromCjs (legacy linkAndEvaluate)', () => {
