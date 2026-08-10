@@ -22,6 +22,7 @@ import {ErrorWithStack} from 'jest-util';
 export const useNativeTypeScript = semver.satisfies(
   process.versions.node,
   '^22.18.0 || >=23.6.0',
+  {includePrerelease: true},
 );
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
