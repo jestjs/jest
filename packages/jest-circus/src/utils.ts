@@ -371,6 +371,7 @@ export const makeSingleTestResult = (
   }
 
   const errorsDetailed = test.errors.map(_getError);
+  const retryReasonsDetailed = test.retryReasons.map(_getError);
 
   return {
     duration: test.duration,
@@ -380,7 +381,8 @@ export const makeSingleTestResult = (
     invocations: test.invocations,
     location,
     numPassingAsserts: test.numPassingAsserts,
-    retryReasons: test.retryReasons.map(_getError).map(flattenErrorStack),
+    retryReasons: retryReasonsDetailed.map(flattenErrorStack),
+    retryReasonsDetailed,
     startedAt: test.startedAt,
     status,
     testPath: [...testPath],

@@ -34,6 +34,12 @@ export type AssertionResult = {
   invocations?: number;
   location?: Callsite | null;
   numPassingAsserts: number;
+  /**
+   * Human-readable render of `retryReasons`, formatted where the errors are
+   * still live so nested causes and `AggregateError` entries survive worker
+   * serialization.
+   */
+  retryMessages?: Array<string>;
   retryReasons?: Array<string>;
   status: Status;
   title: string;

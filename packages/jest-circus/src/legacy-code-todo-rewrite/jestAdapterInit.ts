@@ -17,7 +17,11 @@ import {
   makeCollectedTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {formatExecError, formatResultsErrors} from 'jest-message-util';
+import {
+  formatErrorStack,
+  formatExecError,
+  formatResultsErrors,
+} from 'jest-message-util';
 import type Runtime from 'jest-runtime';
 import {
   SnapshotState,
@@ -275,6 +279,12 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: testResult.numPassingAsserts,
+        // Rendered here rather than by the reporter, because the reporter only
+        // sees what survives worker serialization — which drops the `errors`
+        // of an `AggregateError`.
+        retryMessages: testResult.retryReasonsDetailed.map(error =>
+          formatErrorStack(error, config, globalConfig, testPath),
+        ),
         retryReasons: testResult.retryReasons,
         startAt: testResult.startedAt,
         status,

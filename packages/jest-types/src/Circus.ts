@@ -224,6 +224,7 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
+  retryReasonsDetailed: Array<Error>;
   testPath: TestNamesPath;
 };
 

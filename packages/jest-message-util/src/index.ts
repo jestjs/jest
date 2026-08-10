@@ -533,7 +533,7 @@ export function flattenErrorStack(error: Error): string {
   return flattenErrorStackWithSeen(error, new Set());
 }
 
-function formatErrorStack(
+function formatErrorStackWithSeen(
   errorOrStack: Error | string,
   config: StackTraceConfig,
   options: StackTraceOptions,
@@ -561,7 +561,7 @@ function formatErrorStack(
 
   let cause = '';
   if (isErrorOrStackWithCause(errorOrStack)) {
-    const nestedCause = formatErrorStack(
+    const nestedCause = formatErrorStackWithSeen(
       markIfCircular(errorOrStack.cause, 'cause', seen),
       config,
       options,
@@ -577,7 +577,7 @@ function formatErrorStack(
     errorOrStack.errors.length > 0
   ) {
     const nestedErrors = errorOrStack.errors.map(error =>
-      formatErrorStack(
+      formatErrorStackWithSeen(
         markIfCircular(toErrorOrStack(error), 'errors', seen),
         config,
         options,
@@ -596,6 +596,24 @@ function formatErrorStack(
   }
 
   return `${message}\n${stack}${cause}${subErrors}`;
+}
+
+// Renders a single error the way a test failure is rendered inside
+// `formatResultsErrors`: message, coloured stack with code frame, and nested
+// `Cause:` / `Errors contained in AggregateError:` sections.
+export function formatErrorStack(
+  errorOrStack: Error | string,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: string,
+): string {
+  return formatErrorStackWithSeen(
+    errorOrStack,
+    config,
+    options,
+    new Set(),
+    testPath,
+  );
 }
 
 function failureDetailsToErrorOrStack(
@@ -651,7 +669,7 @@ export const formatResultsErrors = (
           result.title,
       )}\n`;
 
-      return `${title}\n${formatErrorStack(
+      return `${title}\n${formatErrorStackWithSeen(
         rootErrorOrStack,
         config,
         options,

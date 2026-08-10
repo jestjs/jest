@@ -110,9 +110,10 @@ test('makeSingleTestResult serializes retry reasons', () => {
     false,
   );
 
-  test.retryReasons.push(
-    new Error('flaked', {cause: new Error('the flake reason')}),
-  );
+  const retryReason = new Error('flaked', {
+    cause: new Error('the flake reason'),
+  });
+  test.retryReasons.push(retryReason);
   test.errors.push(new Error('failed for good'));
   test.status = 'done';
 
@@ -120,6 +121,7 @@ test('makeSingleTestResult serializes retry reasons', () => {
 
   expect(result.retryReasons[0]).toContain('Error: flaked');
   expect(result.retryReasons[0]).toContain('[cause]: Error: the flake reason');
+  expect(result.retryReasonsDetailed[0]).toBe(retryReason);
 });
 
 test('makeRunResult keeps the unserialized unhandled errors', () => {
