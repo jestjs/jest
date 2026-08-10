@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {execFile} from 'child_process';
-import {promisify} from 'util';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 
 export default async function isWatchmanInstalled(): Promise<boolean> {
   try {

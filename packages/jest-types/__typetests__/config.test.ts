@@ -127,4 +127,25 @@ describe('Config', () => {
       ],
     });
   });
+
+  test('runner accepts string', () => {
+    expect(config).type.toBeAssignableFrom({
+      runner: 'jest-runner',
+    });
+  });
+
+  test('runner accepts tuple [string, object]', () => {
+    expect(config).type.toBeAssignableFrom({
+      runner: ['jest-runner', {numWorkers: 4}] as [
+        string,
+        Record<string, unknown>,
+      ],
+    });
+  });
+
+  test('runner rejects invalid tuple', () => {
+    expect(config).type.not.toBeAssignableFrom({
+      runner: [123, {}],
+    });
+  });
 });

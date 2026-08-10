@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import * as util from 'util';
+import * as path from 'node:path';
+import * as util from 'node:util';
 import exit from 'exit-x';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -165,6 +165,7 @@ function loadNotifier(): typeof import('node-notifier') {
 
     throw new Error(
       'notify reporter requires optional peer dependency "node-notifier" but it was not found',
+      {cause: error},
     );
   }
 }

@@ -1768,6 +1768,28 @@ describe('moduleMocker', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('does not leave an own descriptor when restoring a spy on an inherited getter-defined method', () => {
+      let calls = 0;
+      const parent = {
+        get method() {
+          return function () {
+            calls++;
+          };
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker.spyOn(child, 'method');
+      child.method();
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockRestore();
+
+      expect(Object.prototype.hasOwnProperty.call(child, 'method')).toBe(false);
+      child.method();
+      expect(calls).toBe(2);
+    });
+
     it('should work with object of null prototype', () => {
       const Foo = Object.assign(Object.create(null), {
         foo() {},
@@ -1843,6 +1865,62 @@ describe('moduleMocker', () => {
       obj.property = true;
       expect(spy).not.toHaveBeenCalled();
       expect(obj.property).toBe(true);
+    });
+
+    it('does not leave an own descriptor on the instance after restoring an inherited getter', () => {
+      const parent = {
+        get value() {
+          return 'parent';
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker
+        .spyOn(child, 'value', 'get')
+        .mockReturnValue('spied');
+      expect(child.value).toBe('spied');
+
+      spy.mockRestore();
+
+      expect(child.value).toBe('parent');
+      // The accessor was inherited, so restoring should not leave an own
+      // property shadowing the prototype.
+      expect(Object.prototype.hasOwnProperty.call(child, 'value')).toBe(false);
+
+      // Because the own property was removed, later changes to the prototype
+      // accessor are still observed through the instance.
+      Object.defineProperty(parent, 'value', {
+        configurable: true,
+        get() {
+          return 'parent updated';
+        },
+      });
+      expect(child.value).toBe('parent updated');
+    });
+
+    it('does not leave an own descriptor on the instance after restoring an inherited setter', () => {
+      const received: Array<unknown> = [];
+      let stored: unknown;
+      const parent = {
+        get value() {
+          return stored;
+        },
+        set value(next: unknown) {
+          stored = next;
+          received.push(next);
+        },
+      };
+      const child = Object.create(parent);
+
+      const spy = moduleMocker.spyOn(child, 'value', 'set');
+      child.value = 'a';
+      expect(spy).toHaveBeenCalledWith('a');
+
+      spy.mockRestore();
+
+      expect(Object.prototype.hasOwnProperty.call(child, 'value')).toBe(false);
+      child.value = 'b';
+      expect(received).toEqual(['a', 'b']);
     });
 
     it('should throw on invalid input', () => {
@@ -2425,6 +2503,51 @@ describe('moduleMocker', () => {
         expect(result).toBe(replaced);
       });
     });
+  });
+});
+
+describe('moduleMocker.clearMocksOnScope', () => {
+  let moduleMocker: ModuleMocker;
+
+  beforeEach(() => {
+    const mockContext = createContext();
+    moduleMocker = new ModuleMocker(runInNewContext('this', mockContext));
+  });
+
+  it('calls mockClear on every mock function found on the scope object', () => {
+    const fn1 = moduleMocker.fn();
+    const fn2 = moduleMocker.fn();
+    fn1();
+    fn2();
+    fn2();
+    expect(fn1.mock.calls).toHaveLength(1);
+    expect(fn2.mock.calls).toHaveLength(2);
+
+    moduleMocker.clearMocksOnScope({fn1, fn2});
+
+    expect(fn1.mock.calls).toHaveLength(0);
+    expect(fn2.mock.calls).toHaveLength(0);
+  });
+
+  it('skips non-mock functions and primitives', () => {
+    const realFn = () => {};
+    const fn = moduleMocker.fn();
+    fn();
+    expect(() =>
+      moduleMocker.clearMocksOnScope({
+        notAMock: realFn,
+        nullish: null,
+        num: 1,
+        str: 'hi',
+        target: fn,
+      }),
+    ).not.toThrow();
+    expect(fn.mock.calls).toHaveLength(0);
+  });
+
+  it('skips forged values that set _isMockFunction but lack mockClear', () => {
+    const forged = {_isMockFunction: true};
+    expect(() => moduleMocker.clearMocksOnScope({forged})).not.toThrow();
   });
 });
 

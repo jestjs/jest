@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
-import * as path from 'path';
-import {fileURLToPath} from 'url';
+import {createRequire} from 'node:module';
+import * as path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';

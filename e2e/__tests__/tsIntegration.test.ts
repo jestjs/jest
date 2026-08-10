@@ -17,6 +17,7 @@ afterAll(() => cleanup(DIR));
 // Node.js's builtin TypeScript support doesn't do type checking, so skip tests
 // that validate type-checking behavior.
 const testIfTsLoader = useNativeTypeScript ? test.skip : test;
+const testIfNativeTypeScript = useNativeTypeScript ? test : test.skip;
 
 describe('when `Config` type is imported from "@jest/types"', () => {
   test('with object config exported from TS file', () => {
@@ -96,6 +97,49 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     expect(configs[0].displayName?.name).toBe('ts-async-function-config');
     expect(globalConfig.verbose).toBe(true);
   });
+
+  testIfNativeTypeScript(
+    'with object config exported from MTS file when package.json#type=commonjs',
+    () => {
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js':
+          "test('dummy', () => expect(123).toBe(123));",
+        'jest.config.mts': `
+        import type {Config} from '@jest/types';
+        const config: Config.InitialOptions = {displayName: 'ts-mts-object-config', verbose: true};
+        export default config;
+      `,
+        'package.json': '{"type": "commonjs"}',
+      });
+
+      const {configs, globalConfig} = getConfig(path.join(DIR));
+
+      expect(configs).toHaveLength(1);
+      expect(configs[0].displayName?.name).toBe('ts-mts-object-config');
+      expect(globalConfig.verbose).toBe(true);
+    },
+  );
+
+  testIfNativeTypeScript(
+    'with object config exported from MTS file when package.json#type=module',
+    () => {
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
+        'jest.config.mts': `
+        import type {Config} from '@jest/types';
+        const config: Config.InitialOptions = {displayName: 'ts-mts-esm-object-config', verbose: true};
+        export default config;
+      `,
+        'package.json': '{"type": "module"}',
+      });
+
+      const {configs, globalConfig} = getConfig(path.join(DIR));
+
+      expect(configs).toHaveLength(1);
+      expect(configs[0].displayName?.name).toBe('ts-mts-esm-object-config');
+      expect(globalConfig.verbose).toBe(true);
+    },
+  );
 
   testIfTsLoader('throws if type errors are encountered', () => {
     writeFiles(DIR, {

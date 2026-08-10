@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk from 'chalk';
@@ -119,7 +119,7 @@ export default class CoverageReporter extends BaseReporter {
       ) {
         for (const filePath of context.hasteFS.matchFilesWithGlob(
           this._globalConfig.collectCoverageFrom,
-          config.rootDir,
+          this._globalConfig.rootDir,
         ))
           files.push({
             config,
@@ -139,8 +139,7 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     let worker:
-      | JestWorkerFarm<CoverageWorker>
-      | typeof import('./CoverageWorker');
+      JestWorkerFarm<CoverageWorker> | typeof import('./CoverageWorker');
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./CoverageWorker');
@@ -249,7 +248,7 @@ export default class CoverageReporter extends BaseReporter {
               }
             } else if (actual < threshold) {
               errors.push(
-                `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
+                `Jest: Coverage for ${key} (${actual}%) does not meet "${name}" threshold (${threshold}%)`,
               );
             }
           }
@@ -273,6 +272,11 @@ export default class CoverageReporter extends BaseReporter {
         const pathOrGlobMatches = thresholdGroups.reduce<
           Array<[string, string]>
         >((agg, thresholdGroup) => {
+          // Skip 'global' here as it will be handled separately for all files
+          if (thresholdGroup === THRESHOLD_GROUP_TYPES.GLOBAL) {
+            return agg;
+          }
+
           // Preserve trailing slash, but not required if root dir
           // See https://github.com/jestjs/jest/issues/12703
           const resolvedThresholdGroup = path.resolve(thresholdGroup);
@@ -333,6 +337,12 @@ export default class CoverageReporter extends BaseReporter {
         return files;
       }, []);
 
+      // Mark global threshold group if it exists
+      if (thresholdGroups.includes(THRESHOLD_GROUP_TYPES.GLOBAL)) {
+        groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+          THRESHOLD_GROUP_TYPES.GLOBAL;
+      }
+
       const getFilesInThresholdGroup = (thresholdGroup: string) =>
         coveredFilesSortedIntoThresholdGroup
           .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
@@ -344,9 +354,7 @@ export default class CoverageReporter extends BaseReporter {
           .reduce(
             (
               combinedCoverage:
-                | istanbulCoverage.CoverageSummary
-                | null
-                | undefined,
+                istanbulCoverage.CoverageSummary | null | undefined,
               nextFileCoverage: istanbulCoverage.FileCoverage,
             ) => {
               if (combinedCoverage === undefined || combinedCoverage === null) {
@@ -363,8 +371,11 @@ export default class CoverageReporter extends BaseReporter {
       for (const thresholdGroup of thresholdGroups) {
         switch (groupTypeByThresholdGroup[thresholdGroup]) {
           case THRESHOLD_GROUP_TYPES.GLOBAL: {
+            const globalFiles = getFilesInThresholdGroup(
+              THRESHOLD_GROUP_TYPES.GLOBAL,
+            );
             const coverage = combineCoverage(
-              getFilesInThresholdGroup(THRESHOLD_GROUP_TYPES.GLOBAL),
+              globalFiles.length > 0 ? globalFiles : coveredFiles,
             );
             if (coverage) {
               errors = [

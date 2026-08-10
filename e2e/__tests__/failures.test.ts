@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {extractSummary, runYarnInstall} from '../Utils';
-import runJest from '../runJest';
+import runJest, {json as runJestJson} from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
@@ -89,6 +89,13 @@ test('works with snapshot failures with hint', () => {
   expect(result.slice(0, result.indexOf('Snapshot Summary'))).toMatchSnapshot();
 });
 
+test('works with AggregateError', () => {
+  const {stderr} = runJest(dir, ['aggregateError.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('works with error with cause', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
@@ -111,6 +118,36 @@ test('works with error with cause thrown outside tests', () => {
     // the comparison when the stack starts to be reported
     sanitizedSummary.slice(sanitizedSummary.indexOf('error during f')),
   ).toMatchSnapshot();
+});
+
+test('includes error causes in JSON failureMessages', () => {
+  // Stderr cause coverage is handled by snapshot tests above; this assertion
+  // targets the structured JSON payload consumed by reporters and integrations.
+  const {json} = runJestJson(dir, ['errorWithCause.test.js']);
+
+  const result = json.testResults[0];
+  const failureMessages =
+    result.assertionResults.flatMap(result => result.failureMessages) ?? [];
+  const failureOutput = failureMessages.join('\n');
+
+  expect(failureMessages).toHaveLength(3);
+  expect(failureOutput).toContain('[cause]: Error: error during g');
+  expect(failureOutput).toContain('[cause]: here is the cause');
+});
+
+test('includes AggregateError inner errors in JSON failureMessages', () => {
+  const {json} = runJestJson(dir, ['aggregateError.test.js']);
+
+  const result = json.testResults[0];
+  const failureMessages =
+    result.assertionResults.flatMap(result => result.failureMessages) ?? [];
+  const failureOutput = failureMessages.join('\n');
+
+  expect(failureMessages).toHaveLength(2);
+  expect(failureOutput).toContain('[errors]: Error: inner A');
+  expect(failureOutput).toContain('[errors]: Error: inner B');
+  expect(failureOutput).toContain('[errors]: Error: ECONNREFUSED primary');
+  expect(failureOutput).toContain('[errors]: Error: ETIMEDOUT replica');
 });
 
 test('errors after test has completed', () => {

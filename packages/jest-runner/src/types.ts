@@ -94,6 +94,7 @@ abstract class BaseTestRunner {
   constructor(
     protected readonly _globalConfig: Config.GlobalConfig,
     protected readonly _context: TestRunnerContext,
+    protected readonly _options?: Record<string, unknown>,
   ) {}
 }
 

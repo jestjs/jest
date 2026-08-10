@@ -145,7 +145,7 @@ describe('Runtime requireModule', () => {
 
   it('provides `require.main` to modules', async () => {
     const runtime = await createRuntime(__filename);
-    runtime._mainModule = module;
+    runtime.testMainModule.current = module;
     for (const modulePath of [
       './test_root/modules_with_main/export_main.js',
       './test_root/modules_with_main/re_export_main.js',

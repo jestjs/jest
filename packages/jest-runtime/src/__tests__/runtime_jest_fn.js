@@ -8,6 +8,8 @@
 
 'use strict';
 
+const {testWithVmEsm} = require('@jest/test-utils');
+
 let createRuntime;
 
 describe('Runtime', () => {
@@ -75,6 +77,84 @@ describe('Runtime', () => {
       runtime.teardown();
       expect(root.jest.isEnvironmentTornDown()).toBe(true);
     });
+  });
+
+  describe('require after environment torn down', () => {
+    const originalExitCode = process.exitCode;
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      process.exitCode = originalExitCode;
+    });
+
+    it('should log error and set exit code when require is called after teardown', async () => {
+      const runtime = await createRuntime(__filename);
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      runtime.teardown();
+      runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule');
+
+      expect(process.exitCode).toBe(1);
+      expect(console.error).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'You are trying to `require` a file after the Jest environment has been torn down.',
+        ),
+      );
+    });
+  });
+
+  describe('import() after environment torn down', () => {
+    const originalExitCode = process.exitCode;
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      process.exitCode = originalExitCode;
+    });
+
+    testWithVmEsm(
+      'should log error, set exit code, and throw when import() is called after teardown',
+      async () => {
+        const runtime = await createRuntime(__filename);
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        runtime.teardown();
+
+        await expect(
+          runtime.esmLoader.dynamicImport('RegularModule', {
+            context: runtime._environment.getVmContext(),
+            identifier: __filename,
+          }),
+        ).rejects.toThrow(
+          'You are trying to `import` a file after the Jest environment has been torn down.',
+        );
+
+        expect(process.exitCode).toBe(1);
+        expect(console.error).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'You are trying to `import` a file after the Jest environment has been torn down.',
+          ),
+        );
+      },
+    );
+
+    testWithVmEsm(
+      'should throw when import() is called outside of test code scope',
+      async () => {
+        const runtime = await createRuntime(__filename);
+
+        runtime.enterTestCode();
+        runtime.leaveTestCode();
+
+        await expect(
+          runtime.esmLoader.dynamicImport('RegularModule', {
+            context: runtime._environment.getVmContext(),
+            identifier: __filename,
+          }),
+        ).rejects.toThrow(
+          'You are trying to `import` a file outside of the scope of the test code.',
+        );
+      },
+    );
   });
 
   describe('jest.isolateModules', () => {

@@ -14,6 +14,7 @@ export interface ShouldInstrumentOptions extends Pick<
 > {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
+  globalRootDir?: string;
 }
 
 export interface Options
@@ -141,8 +142,7 @@ export interface AsyncTransformer<TransformerConfig = unknown> {
  * For more info on the sync vs async model, see https://jestjs.io/docs/code-transformation#writing-custom-transformers
  */
 export type Transformer<TransformerConfig = unknown> =
-  | SyncTransformer<TransformerConfig>
-  | AsyncTransformer<TransformerConfig>;
+  SyncTransformer<TransformerConfig> | AsyncTransformer<TransformerConfig>;
 
 export type TransformerCreator<
   X extends Transformer<TransformerConfig>,

@@ -6,5 +6,5 @@
  */
 
 module.exports = {
-  plugins: ['@babel/plugin-proposal-explicit-resource-management'],
+  plugins: ['@babel/plugin-transform-explicit-resource-management'],
 };

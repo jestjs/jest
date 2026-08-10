@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`React 17 context consumer 1`] = `
+"<Context.Consumer>
+  [Function children]
+</Context.Consumer>"
+`;
+
+exports[`React 17 context provider 1`] = `
+"<Context.Provider
+  value="test-value"
+>
+  child
+</Context.Provider>"
+`;
+
+exports[`React 17 forwardRef 1`] = `
+"<ForwardRef(Cat)>
+  mouse
+</ForwardRef(Cat)>"
+`;
+
+exports[`React 17 fragment 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 17 host element 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;
+
+exports[`React 17 memo 1`] = `
+"<Memo(Dog)>
+  cat
+</Memo(Dog)>"
+`;
+
+exports[`React 17 suspense 1`] = `
+"<React.Suspense
+  fallback={
+    <span>
+      loading
+    </span>
+  }
+>
+  <div>
+    content
+  </div>
+</React.Suspense>"
+`;
+
+exports[`React 18 context consumer 1`] = `
+"<Context.Consumer>
+  [Function children]
+</Context.Consumer>"
+`;
+
+exports[`React 18 context provider 1`] = `
+"<Context.Provider
+  value="test-value"
+>
+  child
+</Context.Provider>"
+`;
+
+exports[`React 18 forwardRef 1`] = `
+"<ForwardRef(Cat)>
+  mouse
+</ForwardRef(Cat)>"
+`;
+
+exports[`React 18 fragment 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 18 host element 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;
+
+exports[`React 18 memo 1`] = `
+"<Memo(Dog)>
+  cat
+</Memo(Dog)>"
+`;
+
+exports[`React 18 suspense 1`] = `
+"<React.Suspense
+  fallback={
+    <span>
+      loading
+    </span>
+  }
+>
+  <div>
+    content
+  </div>
+</React.Suspense>"
+`;
+
+exports[`React 19 context consumer 1`] = `
+"<Context.Consumer>
+  [Function children]
+</Context.Consumer>"
+`;
+
+exports[`React 19 context provider 1`] = `
+"<Context.Provider
+  value="test-value"
+>
+  child
+</Context.Provider>"
+`;
+
+exports[`React 19 forwardRef 1`] = `
+"<ForwardRef(Cat)>
+  mouse
+</ForwardRef(Cat)>"
+`;
+
+exports[`React 19 fragment 1`] = `
+"<React.Fragment>
+  <div
+    className="foo"
+  >
+    hello
+  </div>
+</React.Fragment>"
+`;
+
+exports[`React 19 host element 1`] = `
+"<div>
+  <span
+    className="bar"
+  >
+    world
+  </span>
+</div>"
+`;
+
+exports[`React 19 memo 1`] = `
+"<Memo(Dog)>
+  cat
+</Memo(Dog)>"
+`;
+
+exports[`React 19 suspense 1`] = `
+"<React.Suspense
+  fallback={
+    <span>
+      loading
+    </span>
+  }
+>
+  <div>
+    content
+  </div>
+</React.Suspense>"
+`;

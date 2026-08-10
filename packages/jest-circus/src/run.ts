@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AsyncLocalStorage} from 'async_hooks';
+import {AsyncLocalStorage} from 'node:async_hooks';
 import pLimit from 'p-limit';
 import {jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';

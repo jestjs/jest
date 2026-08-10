@@ -14,6 +14,7 @@ import {
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
+  replaceJestBuildLineNumbers,
   runYarnInstall,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -51,7 +52,9 @@ describe('babel-jest ignored', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {exitCode, stderr} = runJest(dir, ['--no-cache']);
     expect(exitCode).toBe(1);
-    expect(extractSummary(stderr).rest).toMatchSnapshot();
+    expect(
+      replaceJestBuildLineNumbers(extractSummary(stderr).rest),
+    ).toMatchSnapshot();
   });
 });
 

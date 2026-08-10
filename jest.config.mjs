@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
+import {createRequire} from 'node:module';
 const require = createRequire(import.meta.url);
 
 /** @type {import('jest').Config} */
@@ -28,6 +28,7 @@ export default {
     'packages/.*/build',
     'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
+    'packages/jest-runtime/src/__tests__/test_esm_*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
     'e2e/node-url-manual-mocks/__mocks__',

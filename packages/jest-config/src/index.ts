@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import chalk from 'chalk';
 import deepMerge from 'deepmerge';
 import * as fs from 'graceful-fs';
@@ -133,6 +133,7 @@ const groupOptions = (
     ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
+    collectTests: options.collectTests,
     coverageDirectory: options.coverageDirectory,
     coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
@@ -189,6 +190,7 @@ const groupOptions = (
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
+    workerGracefulExitTimeout: options.workerGracefulExitTimeout,
     workerIdleMemoryLimit: options.workerIdleMemoryLimit,
     workerThreads: options.workerThreads,
   }),
@@ -197,9 +199,11 @@ const groupOptions = (
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
+    collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     coverageDirectory: options.coverageDirectory,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
+    coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
     cwd: options.cwd,
     dependencyExtractor: options.dependencyExtractor,
@@ -232,10 +236,12 @@ const groupOptions = (
     rootDir: options.rootDir,
     roots: options.roots,
     runner: options.runner,
+    runnerOptions: options.runnerOptions,
     runtime: options.runtime,
     sandboxInjectedGlobals: options.sandboxInjectedGlobals,
     setupFiles: options.setupFiles,
     setupFilesAfterEnv: options.setupFilesAfterEnv,
+    silent: options.silent,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
     slowTestThreshold: options.slowTestThreshold,
@@ -253,6 +259,7 @@ const groupOptions = (
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
+    verbose: options.verbose,
     waitForUnhandledRejections: options.waitForUnhandledRejections,
     watchPathIgnorePatterns: options.watchPathIgnorePatterns,
   }),
@@ -415,6 +422,13 @@ export async function readConfigs(
       // and its config has `projects` settings, use that value instead.
       projects = globalConfig.projects;
     }
+  } else if (projectPaths.length > 1 && argv.config) {
+    // Every per-project read below sets `skipArgvConfigOption`, so this is the
+    // only place `--config` is read for the global scope.
+    const parsedConfig = await readConfig(argv, process.cwd());
+    configPath = parsedConfig.configPath;
+    hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
+    globalConfig = parsedConfig.globalConfig;
   }
 
   if (projects.length > 0) {

@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {AssertionError} from 'assert';
+import {AssertionError} from 'node:assert';
 import type {Circus} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
@@ -57,6 +57,7 @@ export default function jasmineEnv(j$: Jasmine) {
     throwOnExpectationFailure: (value: unknown) => void;
     catchingExceptions: () => boolean;
     topSuite: () => Suite;
+    focusedRunnableIds: () => Array<string>;
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
@@ -428,6 +429,13 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       const focusedRunnables: Array<string> = [];
+
+      // Ids of the runnables (`fit`/`fdescribe`) that focus execution. When
+      // non-empty, an actual run only executes these subtrees and reports the
+      // rest as pending. `--collectTests` reads this to mirror that selection.
+      this.focusedRunnableIds = function () {
+        return [...focusedRunnables];
+      };
 
       this.fdescribe = function (description, specDefinitions) {
         const suite = suiteFactory(description);

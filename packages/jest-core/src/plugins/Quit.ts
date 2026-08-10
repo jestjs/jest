@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ReadStream, WriteStream} from 'tty';
+import type {ReadStream, WriteStream} from 'node:tty';
 import {BaseWatchPlugin, type UsageData} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {

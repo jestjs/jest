@@ -135,6 +135,96 @@ it('validation warning occurs when options not for projects is set', async () =>
   expect(mockWarn).toHaveBeenCalledTimes(1);
 });
 
+it('global-only option in project config emits targeted warning', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true,
+      forceExit: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(2);
+  const warnMessages = mockWarn.mock.calls.map(call => call[0] as string);
+  expect(warnMessages.some(msg => msg.includes('root configuration'))).toBe(
+    true,
+  );
+});
+
+it('no validation warning for collectCoverage in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      collectCoverage: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for coverageProvider in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      coverageProvider: 'v8',
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for verbose in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      verbose: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for silent in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      silent: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
 it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
@@ -1544,6 +1634,105 @@ describe('runner', () => {
         {} as Config.Argv,
       ),
     ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('resolves runner from tuple config [path, options]', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {workers: 4}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({workers: 4});
+  });
+
+  it('sets runnerOptions to empty object for string runner', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: 'my-runner-foo',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('sets runnerOptions to empty object when tuple has no options', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('throws error when runner options is not a plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', 'invalid' as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner options is an array', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', [] as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner tuple has empty string', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['', {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner tuple has non-string first element', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: [123, {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner options is a non-plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', new Date() as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
   });
 });
 

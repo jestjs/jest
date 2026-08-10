@@ -75,9 +75,7 @@ const generateConfigFile = (
     if (overrideKeys.includes(opt)) {
       properties.push(stringifyOption(opt, overrides));
     } else {
-      properties.push(
-        stringifyOption(opt, defaults as Config.InitialOptions, '// '),
-      );
+      properties.push(stringifyOption(opt, defaults, '// '));
     }
   }
 

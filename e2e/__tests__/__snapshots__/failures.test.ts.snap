@@ -281,6 +281,82 @@ exports[`not throwing Error objects 6`] = `
       }"
 `;
 
+exports[`works with AggregateError 1`] = `
+"FAIL __tests__/aggregateError.test.js
+  ✕ throws an AggregateError
+  ✕ rejects with an AggregateError from Promise.any
+
+  ● throws an AggregateError
+
+    AggregateError:
+
+      18 |
+      19 | it('throws an AggregateError', () => {
+    > 20 |   throw new AggregateError([new Error('inner A'), new Error('inner B')]);
+         |         ^
+      21 | });
+      22 |
+      23 | it('rejects with an AggregateError from Promise.any', async () => {
+
+      at Object.<anonymous> (__tests__/aggregateError.test.js:20:9)
+
+    Errors contained in AggregateError:
+        inner A
+
+          18 |
+          19 | it('throws an AggregateError', () => {
+        > 20 |   throw new AggregateError([new Error('inner A'), new Error('inner B')]);
+             |                             ^
+          21 | });
+          22 |
+          23 | it('rejects with an AggregateError from Promise.any', async () => {
+
+          at Object.<anonymous> (__tests__/aggregateError.test.js:20:29)
+
+        inner B
+
+          18 |
+          19 | it('throws an AggregateError', () => {
+        > 20 |   throw new AggregateError([new Error('inner A'), new Error('inner B')]);
+             |                                                   ^
+          21 | });
+          22 |
+          23 | it('rejects with an AggregateError from Promise.any', async () => {
+
+          at Object.<anonymous> (__tests__/aggregateError.test.js:20:51)
+
+  ● rejects with an AggregateError from Promise.any
+
+    AggregateError: All promises were rejected
+
+    Errors contained in AggregateError:
+        ECONNREFUSED primary
+
+          10 |
+          11 | function connectToPrimary() {
+        > 12 |   return Promise.reject(new Error('ECONNREFUSED primary'));
+             |                         ^
+          13 | }
+          14 |
+          15 | function connectToReplica() {
+
+          at connectToPrimary (__tests__/aggregateError.test.js:12:25)
+          at Object.connectToPrimary (__tests__/aggregateError.test.js:24:22)
+
+        ETIMEDOUT replica
+
+          14 |
+          15 | function connectToReplica() {
+        > 16 |   return Promise.reject(new Error('ETIMEDOUT replica'));
+             |                         ^
+          17 | }
+          18 |
+          19 | it('throws an AggregateError', () => {
+
+          at connectToReplica (__tests__/aggregateError.test.js:16:25)
+          at Object.connectToReplica (__tests__/aggregateError.test.js:24:42)"
+`;
+
 exports[`works with assertions in separate files 1`] = `
 "FAIL __tests__/testMacro.test.js
   ✕ use some imported macro to make assertion
@@ -428,19 +504,19 @@ exports[`works with error with cause 1`] = `
       at Object.f (__tests__/errorWithCause.test.js:32:3)
 
     Cause:
-    error during g
+        error during g
 
-      19 |
-      20 | function g() {
-    > 21 |   throw new Error('error during g');
-         |         ^
-      22 | }
-      23 | function f() {
-      24 |   try {
+          19 |
+          20 | function g() {
+        > 21 |   throw new Error('error during g');
+             |         ^
+          22 | }
+          23 | function f() {
+          24 |   try {
 
-      at g (__tests__/errorWithCause.test.js:21:9)
-      at g (__tests__/errorWithCause.test.js:25:5)
-      at Object.f (__tests__/errorWithCause.test.js:32:3)
+          at g (__tests__/errorWithCause.test.js:21:9)
+          at g (__tests__/errorWithCause.test.js:25:5)
+          at Object.f (__tests__/errorWithCause.test.js:32:3)
 
   ● describe block › error with cause in describe/it
 
@@ -459,19 +535,19 @@ exports[`works with error with cause 1`] = `
       at Object.f (__tests__/errorWithCause.test.js:37:5)
 
     Cause:
-    error during g
+        error during g
 
-      19 |
-      20 | function g() {
-    > 21 |   throw new Error('error during g');
-         |         ^
-      22 | }
-      23 | function f() {
-      24 |   try {
+          19 |
+          20 | function g() {
+        > 21 |   throw new Error('error during g');
+             |         ^
+          22 | }
+          23 | function f() {
+          24 |   try {
 
-      at g (__tests__/errorWithCause.test.js:21:9)
-      at g (__tests__/errorWithCause.test.js:25:5)
-      at Object.f (__tests__/errorWithCause.test.js:37:5)
+          at g (__tests__/errorWithCause.test.js:21:9)
+          at g (__tests__/errorWithCause.test.js:25:5)
+          at Object.f (__tests__/errorWithCause.test.js:37:5)
 
   ● describe block › error with string cause in describe/it
 
@@ -489,7 +565,7 @@ exports[`works with error with cause 1`] = `
       at Object.buildErrorWithCause (__tests__/errorWithCause.test.js:41:11)
 
     Cause:
-    here is the cause"
+        here is the cause"
 `;
 
 exports[`works with error with cause thrown outside tests 1`] = `

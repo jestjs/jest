@@ -6,7 +6,7 @@
 
 - **Parallel crawling and analysis:** jest-haste-map crawls the entire project, extracts dependencies, and analyzes files in parallel across worker processes.This can significantly improve the performance of the map building process.
 - **Cached file system:** jest-haste-map keeps a cache of the file system in memory and on disk. This allows for fast file related operations, such as resolving module imports and checking for changes.
-- **Minimal work**: jest-haste-map only does the minimal amount of work necessary when files change. (If you are using [watchman](https://facebook.github.io/watchman/) (recommended for large projects), Jest will ask watchman for changed files instead of crawling the file system. This is very fast even if you have tens of thousands of files.)
+- **Minimal work**: jest-haste-map only does the minimal amount of work necessary when files change. When using [watchman](https://facebook.github.io/watchman/) (recommended for large projects), Jest asks watchman for changed files instead of crawling the file system. Without watchman, [@parcel/watcher](https://github.com/parcel-bundler/watcher) is used — it picks the best native backend for the platform (`fs-events` on macOS, `inotify` on Linux, `windows` on Windows).
 - **File system watching:** jest-haste-map can watch the file system for changes. This is useful for building interactive tools, such as watch mode.
 
 ## Installation
@@ -73,9 +73,9 @@ console.log(files);
 | dependencyExtractor    | string \| null      | No       | `null`        |
 | enableSymlinks         | boolean             | No       | `false`       |
 | extensions             | Array&lt;string&gt; | Yes      | -             |
-| forceNodeFilesystemAPI | boolean             | Yes      | -             |
-| hasteImplModulePath    | string              | Yes      | -             |
-| hasteMapModulePath     | string              | Yes      | -             |
+| forceNodeFilesystemAPI | boolean             | No       | `false`       |
+| hasteImplModulePath    | string              | No       | -             |
+| hasteMapModulePath     | string              | No       | -             |
 | id                     | string              | Yes      | -             |
 | ignorePattern          | HasteRegExp         | No       | -             |
 | maxWorkers             | number              | Yes      | -             |
@@ -85,8 +85,8 @@ console.log(files);
 | retainAllFiles         | boolean             | Yes      | -             |
 | rootDir                | string              | Yes      | -             |
 | roots                  | Array&lt;string&gt; | Yes      | -             |
-| skipPackageJson        | boolean             | Yes      | -             |
-| throwOnModuleCollision | boolean             | Yes      | -             |
+| skipPackageJson        | boolean             | No       | `false`       |
+| throwOnModuleCollision | boolean             | No       | `false`       |
 | useWatchman            | boolean             | No       | `true`        |
 
 For more, you can check [github](https://github.com/jestjs/jest/tree/main/packages/jest-haste-map)

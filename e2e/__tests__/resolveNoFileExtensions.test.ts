@@ -6,7 +6,12 @@
  */
 
 import * as path from 'path';
-import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {
+  cleanup,
+  extractSummary,
+  replaceJestBuildLineNumbers,
+  writeFiles,
+} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
@@ -19,7 +24,7 @@ test('show error message with matching files', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('show error message when no js moduleFileExtensions', () => {

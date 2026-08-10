@@ -111,6 +111,74 @@ PASS __tests__/logErrorsBeforeRetries.test.js
   ✓ retryTimes set"
 `;
 
+exports[`Test Retries logs the inner errors of an AggregateError before retry 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    AggregateError: All promises were rejected
+
+    Errors contained in AggregateError:
+        ECONNREFUSED primary
+
+           8 |
+           9 | function connectToPrimary() {
+        > 10 |   return Promise.reject(new Error('ECONNREFUSED primary'));
+             |                         ^
+          11 | }
+          12 |
+          13 | function connectToReplica() {
+
+          at connectToPrimary (__tests__/logAggregateErrorsBeforeRetries.test.js:10:25)
+          at Object.connectToPrimary (__tests__/logAggregateErrorsBeforeRetries.test.js:22:24)
+
+        ETIMEDOUT replica
+
+          12 |
+          13 | function connectToReplica() {
+        > 14 |   return Promise.reject(new Error('ETIMEDOUT replica'));
+             |                         ^
+          15 | }
+          16 |
+          17 | let i = 0;
+
+          at connectToReplica (__tests__/logAggregateErrorsBeforeRetries.test.js:14:25)
+          at Object.connectToReplica (__tests__/logAggregateErrorsBeforeRetries.test.js:22:44)
+
+ RETRY 2 
+
+    AggregateError: All promises were rejected
+
+    Errors contained in AggregateError:
+        ECONNREFUSED primary
+
+           8 |
+           9 | function connectToPrimary() {
+        > 10 |   return Promise.reject(new Error('ECONNREFUSED primary'));
+             |                         ^
+          11 | }
+          12 |
+          13 | function connectToReplica() {
+
+          at connectToPrimary (__tests__/logAggregateErrorsBeforeRetries.test.js:10:25)
+          at Object.connectToPrimary (__tests__/logAggregateErrorsBeforeRetries.test.js:22:24)
+
+        ETIMEDOUT replica
+
+          12 |
+          13 | function connectToReplica() {
+        > 14 |   return Promise.reject(new Error('ETIMEDOUT replica'));
+             |                         ^
+          15 | }
+          16 |
+          17 | let i = 0;
+
+          at connectToReplica (__tests__/logAggregateErrorsBeforeRetries.test.js:14:25)
+          at Object.connectToReplica (__tests__/logAggregateErrorsBeforeRetries.test.js:22:44)
+
+PASS __tests__/logAggregateErrorsBeforeRetries.test.js
+  ✓ retryTimes set"
+`;
+
 exports[`Test Retries wait before retry 1`] = `
 "LOGGING RETRY ERRORS  retryTimes set
  RETRY 1 

@@ -7,11 +7,16 @@
 
 import {
   type AssertionResult,
+  type FailedAssertion,
   type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {formatResultsErrors} from 'jest-message-util';
+import {
+  flattenErrorStack,
+  formatResultsErrors,
+  hasNestedErrors,
+} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
@@ -125,6 +130,19 @@ export default class Jasmine2Reporter implements Reporter {
     return stack;
   }
 
+  private _getFailureMessage(failed: FailedAssertion): string {
+    const message =
+      !failed.matcherName && typeof failed.stack === 'string'
+        ? this._addMissingMessageToStack(failed.stack, failed.message)
+        : failed.message || '';
+
+    if (hasNestedErrors(failed.error)) {
+      return flattenErrorStack(failed.error);
+    }
+
+    return message;
+  }
+
   private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
@@ -155,10 +173,7 @@ export default class Jasmine2Reporter implements Reporter {
     };
 
     for (const failed of specResult.failedExpectations) {
-      const message =
-        !failed.matcherName && typeof failed.stack === 'string'
-          ? this._addMissingMessageToStack(failed.stack, failed.message)
-          : failed.message || '';
+      const message = this._getFailureMessage(failed);
       results.failureMessages.push(message);
       results.failureDetails.push(failed);
     }

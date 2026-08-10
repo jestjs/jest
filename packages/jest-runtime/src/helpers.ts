@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import {glob} from 'glob';
 import slash from 'slash';
 import type {Config} from '@jest/types';
@@ -73,3 +73,7 @@ export const findSiblingsWithFileExtension = (
 
   return '';
 };
+
+export function noop(): void {
+  // empty
+}

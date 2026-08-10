@@ -89,8 +89,7 @@ const dedentMarkup = (input: Array<string>, output: Array<string>): boolean => {
   }
 
   let isText = false;
-  const stack: Array<number> = [];
-  stack.push(getIndentationLength(line));
+  const stack = [getIndentationLength(line)];
 
   while (stack.length > 0 && output.length < input.length) {
     line = input[output.length];

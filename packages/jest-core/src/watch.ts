@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import type {WriteStream} from 'tty';
+import * as path from 'node:path';
+import type {WriteStream} from 'node:tty';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit-x';

@@ -30,6 +30,10 @@ it('instruments files', async () => {
   const instrumented = scriptTransformer.transform(FILE_PATH_TO_INSTRUMENT, {
     ...makeGlobalConfig({collectCoverage: true}),
     changedFiles: undefined,
+    supportsDynamicImport: false,
+    supportsExportNamespaceFrom: false,
+    supportsStaticESM: false,
+    supportsTopLevelAwait: false,
   });
   // We can't really snapshot the resulting coverage, because it depends on
   // absolute path of the file, which will be different on different

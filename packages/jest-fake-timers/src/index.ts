@@ -7,3 +7,7 @@
 
 export {default as LegacyFakeTimers} from './legacyFakeTimers';
 export {default as ModernFakeTimers} from './modernFakeTimers';
+export type {
+  TemporalDuration as TemporalDurationLike,
+  TemporalTimelike as TemporalEpochLike,
+} from '@sinonjs/fake-timers';

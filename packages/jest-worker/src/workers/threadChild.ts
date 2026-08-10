@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isMainThread, parentPort} from 'worker_threads';
+import {isMainThread, parentPort} from 'node:worker_threads';
 import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,

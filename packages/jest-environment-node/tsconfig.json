@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "lib": ["es2021", "ESNext.Disposable"]
+    "lib": ["es2023", "ESNext.Disposable"]
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],

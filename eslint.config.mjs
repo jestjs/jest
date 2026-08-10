@@ -7,12 +7,12 @@
 
 /* eslint-disable sort-keys */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import eslintJs from '@eslint/js';
 import eslintMarkdown from '@eslint/markdown';
 import eslintPluginEslintCommentsConfigs from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import {defineConfig} from 'eslint/config';
+import {defineConfig, globalIgnores} from 'eslint/config';
 import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript';
 import eslintPluginImportX from 'eslint-plugin-import-x';
 import eslintPluginJest from 'eslint-plugin-jest';
@@ -210,6 +210,7 @@ const config = defineConfig(
       'no-restricted-imports': [
         'error',
         {message: 'Please use graceful-fs instead.', name: 'fs'},
+        {message: 'Please use graceful-fs instead.', name: 'node:fs'},
       ],
       'no-restricted-modules': 'off',
       'no-restricted-syntax': 'off',
@@ -274,6 +275,10 @@ const config = defineConfig(
       'wrap-regex': 'off',
       yoda: 'off',
 
+      // Needs Node 20 as minimum
+      'unicorn/no-array-reverse': 'off',
+      'unicorn/no-array-sort': 'off',
+
       // doesn't work without ESModuleInterop
       'unicorn/import-style': 'off',
       // we're a CJS project
@@ -308,11 +313,7 @@ const config = defineConfig(
       'unicorn/prefer-reflect-apply': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-structured-clone': 'off',
-
-      // enabling this is blocked by https://github.com/microsoft/rushstack/issues/2780
       'unicorn/prefer-export-from': 'off',
-      // enabling this is blocked by https://github.com/jestjs/jest/pull/14297
-      'unicorn/prefer-node-protocol': 'off',
     },
   },
   [
@@ -451,6 +452,8 @@ const config = defineConfig(
       'jest/require-to-throw-message': 'error',
       'jest/valid-expect': 'error',
       'import-x/order': 'off',
+      // we don't wanna mess with tests
+      'unicorn/prefer-node-protocol': 'off',
     },
   },
 
@@ -475,7 +478,6 @@ const config = defineConfig(
 
   {
     files: [
-      'website/docusaurus.config.js',
       'website/fetchSupporters.js',
       'website/src/prism/themeLight.js',
       'website/src/prism/themeDark.js',
@@ -486,6 +488,13 @@ const config = defineConfig(
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,
+    },
+  },
+
+  {
+    files: ['website/docusaurus.config.mjs'],
+    languageOptions: {
+      globals: globals.nodeBuiltin,
     },
   },
 
@@ -503,6 +512,8 @@ const config = defineConfig(
     languageOptions: {parserOptions: {ecmaFeatures: {jsx: true}}},
     linterOptions: {reportUnusedDisableDirectives: 'off'},
     rules: {
+      'no-useless-assignment': 'off',
+      'preserve-caught-error': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-namespace': 'off',
@@ -522,10 +533,13 @@ const config = defineConfig(
       'unicorn/error-message': 'off',
       'unicorn/no-anonymous-default-export': 'off',
       'unicorn/no-await-expression-member': 'off',
+      'unicorn/no-immediate-mutation': 'off',
       'unicorn/no-static-only-class': 'off',
+      'unicorn/prefer-class-fields': 'off',
       'unicorn/prefer-number-properties': 'off',
       'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-global-this': 'off',
+      'unicorn/require-module-specifiers': 'off',
       // The following disabled when upgrade ESLint to v9, some of them make sense to enable
       'prefer-template': 'off',
       '@typescript-eslint/no-require-imports': 'off',
@@ -591,7 +605,7 @@ const config = defineConfig(
     },
   },
   {
-    files: ['examples/**/*', 'eslint.config.mjs'],
+    files: ['examples/**/*', 'eslint.config.mjs', 'website/**/*'],
     rules: {
       'no-restricted-imports': 'off',
     },
@@ -603,6 +617,32 @@ const config = defineConfig(
       '@typescript-eslint/consistent-type-imports': [
         'error',
         {prefer: 'no-type-imports', disallowTypeAnnotations: false},
+      ],
+    },
+  },
+  {
+    // These packages are consumed by webpack/browser bundles (see CHANGELOG #16167).
+    // They must not use the `node:` protocol — it is not available in all bundler targets.
+    files: [
+      'packages/expect/src/**/*',
+      'packages/expect-utils/src/**/*',
+      'packages/jest-matcher-utils/src/**/*',
+      'packages/jest-message-util/src/**/*',
+      'packages/jest-pattern/src/**/*',
+      'packages/jest-regex-util/src/**/*',
+      'packages/jest-util/src/**/*',
+    ],
+    rules: {
+      // Don't require the node: prefix (would break browser bundling).
+      'unicorn/prefer-node-protocol': 'off',
+      // Actively ban node: protocol imports in case a contributor adds one.
+      'no-restricted-syntax': [
+        'error',
+        {
+          message:
+            'Use the bare module name (e.g. "path") instead of the "node:" protocol — this package must be browser-bundle compatible.',
+          selector: 'ImportDeclaration[source.value=/^node:/]',
+        },
       ],
     },
   },
@@ -641,6 +681,7 @@ const config = defineConfig(
       '**/vendor/**/*',
     ],
     rules: {
+      'preserve-caught-error': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-await-expression-member': 'off',
@@ -673,6 +714,18 @@ const config = defineConfig(
         jasmine: 'readonly',
         pending: 'readonly',
       },
+    },
+  },
+  {
+    files: ['e2e/fake-timers-temporal/__tests__/*'],
+    languageOptions: {
+      globals: {Temporal: 'readonly'},
+    },
+  },
+  {
+    files: ['e2e/vmscript-coverage/package/vmscript.js'],
+    rules: {
+      'no-useless-assignment': 'off',
     },
   },
   {
@@ -779,61 +832,90 @@ const config = defineConfig(
       'unicorn/prefer-number-properties': 'off',
     },
   },
-
+  // Instruction files for AI agents
   {
-    ignores: [
-      '!.*',
-      '**/coverage/**',
-      '**/node_modules/**',
-      'bin/',
-      'packages/*/build/**',
-      'packages/*/dist/**',
-      'website/.docusaurus',
-      'website/build',
-      'website/node_modules',
-      'website/i18n/*.js',
-      'website/static',
+    files: ['**/CLAUDE.md/**', '.github/copilot-instructions.md/**'],
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
+  globalIgnores([
+    '!.*',
+    '**/coverage/**',
+    '**/node_modules/**',
+    'bin/',
+    'packages/*/build/**',
+    'packages/*/dist/**',
+    'website/.docusaurus',
+    'website/build',
+    'website/node_modules',
+    'website/i18n/*.js',
+    'website/static',
 
-      // Third-party script
-      'packages/jest-diff/src/cleanupSemantic.ts',
-      'e2e/native-esm/wasm-bindgen/index_bg.js',
+    // Third-party script
+    'packages/jest-diff/src/cleanupSemantic.ts',
+    'e2e/native-esm/wasm-bindgen/index_bg.js',
 
-      '**/.yarn',
-      '**/.pnp.*',
+    '**/.yarn',
+    '**/.pnp.*',
 
-      '**/*.snap',
-      '**/*.json',
+    '**/*.snap',
+    '**/*.json',
 
-      // JS Syntax error
-      '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
-      '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
+    // JS Syntax error
+    '{docs,website/versioned_docs/version-*}/ECMAScriptModules.md',
+    '{docs,website/versioned_docs/version-*}/JestObjectAPI.md',
+    'packages/jest-runtime/src/__tests__/test_esm_sync_graph_root/syntax-error.mjs',
 
-      // Bug? Uses TS syntax
-      'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
-      'e2e/coverage-report/notRequiredInTestSuite.js',
-      'e2e/expect-async-matcher/matchers.js',
-      'e2e/explicit-resource-management/__tests__/index.js',
-      'e2e/failures/__tests__/errorWithCause.test.js',
-      'e2e/failures/__tests__/errorWithCauseInDescribe.test.js',
-      'e2e/failures/macros.js',
-      'e2e/global-setup/invalidSetupWithNamedExport.js',
-      'e2e/global-setup/setup.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/global-teardown/invalidTeardownWithNamedExport.js',
-      'e2e/global-teardown/teardownWithDefaultExport.js',
-      'e2e/multi-project-babel/prj-1/index.js',
-      'e2e/multi-project-babel/prj-2/index.js',
-      'e2e/multi-project-babel/prj-3/src/index.js',
-      'e2e/multi-project-babel/prj-4/src/index.js',
-      'e2e/multi-project-babel/prj-5/src/index.js',
-      'e2e/native-esm/__tests__/native-esm-import-assertions.test.js',
-      'e2e/transform-linked-modules/ignored/symlink.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/global-setup/setupWithDefaultExport.js',
-      'e2e/failures/macros.js',
-      'e2e/transform/**/*',
-      'examples/react-native/index.js',
+    // Bug? Uses TS syntax
+    'e2e/babel-plugin-jest-hoist/__tests__/integration.test.js',
+    'e2e/coverage-report/notRequiredInTestSuite.js',
+    'e2e/expect-async-matcher/matchers.js',
+    'e2e/explicit-resource-management/__tests__/index.js',
+    'e2e/failures/__tests__/errorWithCause.test.js',
+    'e2e/failures/__tests__/errorWithCauseInDescribe.test.js',
+    'e2e/failures/macros.js',
+    'e2e/global-setup/invalidSetupWithNamedExport.js',
+    'e2e/global-setup/setup.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/global-teardown/invalidTeardownWithNamedExport.js',
+    'e2e/global-teardown/teardownWithDefaultExport.js',
+    'e2e/multi-project-babel/prj-1/index.js',
+    'e2e/multi-project-babel/prj-2/index.js',
+    'e2e/multi-project-babel/prj-3/src/index.js',
+    'e2e/multi-project-babel/prj-4/src/index.js',
+    'e2e/multi-project-babel/prj-5/src/index.js',
+    'e2e/native-esm/__tests__/native-esm-import-assertions.test.js',
+    'e2e/transform-linked-modules/ignored/symlink.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/global-setup/setupWithDefaultExport.js',
+    'e2e/failures/macros.js',
+    'e2e/transform/**/*',
+    'examples/react-native/index.js',
+  ]),
+  {
+    files: [
+      'packages/expect/src/__tests__/**/*',
+      'packages/expect-utils/src/__tests__/**/*',
+      'packages/jest-get-type/src/__tests__/**/*',
+      'packages/jest-matcher-utils/src/__tests__/**/*',
+      'packages/pretty-format/src/__tests__/**/*',
     ],
+    rules: {
+      'unicorn/no-immediate-mutation': 'off',
+      'unicorn/prefer-bigint-literals': 'off',
+    },
+  },
+  {
+    files: [
+      'e2e/coverage-provider-v8/*/uncovered.{ts,js}',
+      'e2e/babel-plugin-jest-hoist/__test_modules__/**/*',
+    ],
+    rules: {
+      'unicorn/prefer-class-fields': 'off',
+      'unicorn/require-module-specifiers': 'off',
+    },
   },
 );
 
