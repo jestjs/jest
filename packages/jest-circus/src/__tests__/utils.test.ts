@@ -7,7 +7,12 @@
 
 import {runTest} from '../__mocks__/testUtils';
 import {ROOT_DESCRIBE_BLOCK_NAME} from '../state';
-import {makeDescribe, makeSingleTestResult, makeTest} from '../utils';
+import {
+  makeDescribe,
+  makeRunResult,
+  makeSingleTestResult,
+  makeTest,
+} from '../utils';
 
 const makeFailedTestResult = (error: Error) => {
   const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
@@ -115,4 +120,12 @@ test('makeSingleTestResult serializes retry reasons', () => {
 
   expect(result.retryReasons[0]).toContain('Error: flaked');
   expect(result.retryReasons[0]).toContain('[cause]: Error: the flake reason');
+});
+
+test('makeRunResult keeps the unserialized unhandled errors', () => {
+  const error = new Error('unhandled');
+  const result = makeRunResult(makeDescribe(ROOT_DESCRIBE_BLOCK_NAME), [error]);
+
+  expect(result.unhandledErrorsDetailed[0]).toBe(error);
+  expect(result.unhandledErrors[0]).toBe(error.stack);
 });

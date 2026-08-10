@@ -296,8 +296,8 @@ export const runAndTransformResultsToJestFormat = async ({
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
     };
-    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrors
-      .map(err => formatExecError(err, config, globalConfig))
+    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrorsDetailed
+      .map(error => formatExecError(error, config, globalConfig))
       .join('\n')}`;
   }
 

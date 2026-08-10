@@ -319,10 +319,15 @@ export const getTestDuration = (test: Circus.TestEntry): number | null => {
 export const makeRunResult = (
   describeBlock: Circus.DescribeBlock,
   unhandledErrors: Array<Error>,
-): Circus.RunResult => ({
-  testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_getError).map(flattenErrorStack),
-});
+): Circus.RunResult => {
+  const unhandledErrorsDetailed = unhandledErrors.map(_getError);
+
+  return {
+    testResults: makeTestResults(describeBlock),
+    unhandledErrors: unhandledErrorsDetailed.map(flattenErrorStack),
+    unhandledErrorsDetailed,
+  };
+};
 
 const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
   const titles = [];

@@ -229,6 +229,7 @@ export type TestResult = {
 
 export type RunResult = {
   unhandledErrors: Array<FormattedError>;
+  unhandledErrorsDetailed: Array<Error>;
   testResults: TestResults;
 };
 
