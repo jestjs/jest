@@ -1,7 +1,7 @@
 const {resolve} = require('node:path');
 
 module.exports = {
-  preset: 'react-native',
+  preset: '@react-native/jest-preset',
   testEnvironmentOptions: {
     globalsCleanup: 'soft',
   },
