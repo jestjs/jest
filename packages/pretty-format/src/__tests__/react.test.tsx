@@ -577,7 +577,7 @@ test('min option', () => {
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
-      React.createElement(
+      React.createElement<{customProp: unknown; onclick: unknown}>(
         'Mouse',
         {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
         'HELLO',
