@@ -27,16 +27,19 @@
     "react-is-19": "npm:react-is@^19.2.5"
   },
   "devDependencies": {
-    "@types/react": "^18.3.23",
+    "@types/react": "^19.2.18",
     "@types/react-is": "^19.0.0",
-    "@types/react-test-renderer": "^18.3.1",
+    "@types/react-test-renderer": "^19.1.0",
     "immutable": "^5.1.2",
     "jest-util": "workspace:*",
-    "react": "18.3.1",
+    "react": "^19.2.3",
     "react-17": "npm:react@^17.0.2",
     "react-18": "npm:react@^18.3.1",
-    "react-19": "npm:react@^19.2.5",
-    "react-test-renderer": "18.3.1"
+    "react-19": "npm:react@^19.2.3",
+    "react-test-renderer": "^19.2.3",
+    "react-test-renderer-17": "npm:react-test-renderer@^17.0.2",
+    "react-test-renderer-18": "npm:react-test-renderer@^18.3.1",
+    "react-test-renderer-19": "npm:react-test-renderer@^19.2.3"
   },
   "engines": {
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
