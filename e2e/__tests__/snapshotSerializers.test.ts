@@ -13,8 +13,14 @@ const testDir = path.resolve(__dirname, '../snapshot-serializers');
 const snapshotsDir = path.resolve(testDir, '__tests__/__snapshots__');
 const snapshotPath = path.resolve(snapshotsDir, 'snapshot.test.js.snap');
 
-const runAndAssert = () => {
-  const {exitCode, json} = runWithJson('snapshot-serializers', [
+const esmSnapshotsDir = path.resolve(
+  __dirname,
+  '../snapshot-serializers-esm/__tests__/__snapshots__',
+);
+const esmSnapshotPath = path.resolve(esmSnapshotsDir, 'snapshot.test.js.snap');
+
+const runAndAssert = (dir: string) => {
+  const {exitCode, json} = runWithJson(dir, [
     '-w=1',
     '--ci=false',
     '--no-cache',
@@ -31,14 +37,30 @@ describe('Snapshot serializers', () => {
   afterEach(() => cleanup(snapshotsDir));
 
   it('renders snapshot', () => {
-    runAndAssert();
+    runAndAssert('snapshot-serializers');
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });
 
   it('compares snapshots correctly', () => {
     // run twice, second run compares result with snapshot from first run
-    runAndAssert();
-    runAndAssert();
+    runAndAssert('snapshot-serializers');
+    runAndAssert('snapshot-serializers');
+  });
+});
+
+describe('Snapshot serializers written in ESM', () => {
+  beforeEach(() => cleanup(esmSnapshotsDir));
+  afterEach(() => cleanup(esmSnapshotsDir));
+
+  it('renders snapshot', () => {
+    runAndAssert('snapshot-serializers-esm');
+    const snapshot = require(esmSnapshotPath);
+    expect(snapshot).toMatchSnapshot();
+  });
+
+  it('compares snapshots correctly', () => {
+    runAndAssert('snapshot-serializers-esm');
+    runAndAssert('snapshot-serializers-esm');
   });
 });

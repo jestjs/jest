@@ -6,6 +6,6 @@
  *
  */
 
-import {createPlugin} from '../utils';
+import {createPlugin} from '../utils.mjs';
 
-// We inject the call to "createPlugin('bar') through the transformer"
+export default createPlugin('bar');

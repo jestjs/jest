@@ -42,6 +42,8 @@ export function saveInlineSnapshots(
   let workerFn: WorkerFn | undefined = prettierPath
     ? (cachedPrettier.get(`worker|${prettierPath}`) as WorkerFn)
     : undefined;
+  // TODO: `prettierPath` cannot be ESM (#11167) — `saveInlineSnapshots` is
+  // called synchronously at teardown, so there is no place to `await import()`.
   if (prettierPath && !prettier) {
     try {
       prettier = require(

@@ -5,7 +5,7 @@
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[jest-circus, jest-core, jest-jasmine2, jest-test-result, jest-types]` `--collectTests` now expands `test.each`/`describe.each` cases and reports per-status counts (skipped/todo via the new `wouldRun` flag for selected tests) plus a summary line that match a real run, including under `--testNamePattern` and `.only`/`fdescribe` focus on both the circus and jasmine2 runners ([#16259](https://github.com/jestjs/jest/pull/16259))
-- `[jest-circus, jest-jasmine2, jest-snapshot]` Add support for `snapshotResolver` and `snapshotSerializers` written in ESM ([#12014](https://github.com/jestjs/jest/pull/12014))
+- `[jest-circus, jest-jasmine2, jest-runtime, jest-snapshot]` Add support for `snapshotResolver` and `snapshotSerializers` written in ESM, by loading both outside the test sandbox — no `--experimental-vm-modules` needed ([#12014](https://github.com/jestjs/jest/pull/12014))
 - `[jest-circus, jest-message-util, jest-reporters, jest-types]` Add `retryMessages` to `AssertionResult` and export `formatErrorStack`, so the retry log renders nested `cause` and `AggregateError` sections with code frames instead of serialized `[cause]:`/`[errors]:` markers ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-circus, jest-types]` Add `unhandledErrorsDetailed` to `Circus.RunResult`, so an unhandled rejection reports its `cause` chain and `AggregateError` entries with code frames instead of a pre-serialized stack ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-haste-map]` Replace `NodeWatcher` and `FSEventsWatcher` with `@parcel/watcher` for the non-watchman watch path ([#16188](https://github.com/jestjs/jest/pull/16188))
@@ -32,6 +32,7 @@
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
 - `[jest-runtime]` Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
+- `[jest-snapshot]` Apply `interopRequireDefault` to `snapshotSerializers`, so a serializer with a `default` export works ([#12014](https://github.com/jestjs/jest/pull/12014))
 
 ### Chore & Maintenance
 

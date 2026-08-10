@@ -10,7 +10,7 @@ import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
-import {deepCyclicCopy, interopRequireDefault} from 'jest-util';
+import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -30,30 +30,10 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  const localRequire = async <T = unknown>(
-    path: string,
-    applyInteropRequireDefault = false,
-  ): Promise<T> => {
-    if (runtime.unstable_shouldLoadAsEsm(path)) {
-      const {namespace} = (await runtime.unstable_importModule(path)) as {
-        namespace: {default: T};
-      };
-
-      return namespace.default;
-    }
-
-    const requiredModule = runtime.requireModule<T>(path);
-
-    return applyInteropRequireDefault
-      ? interopRequireDefault(requiredModule).default
-      : requiredModule;
-  };
-
   const {globals, snapshotState} = await initialize({
     config,
     environment,
     globalConfig,
-    localRequire,
     parentProcess: process,
     runtime,
     sendMessageToJest,

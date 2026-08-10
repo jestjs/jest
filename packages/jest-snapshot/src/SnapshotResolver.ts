@@ -25,6 +25,9 @@ export const DOT_EXTENSION = `.${EXTENSION}`;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
+// Keyed on `snapshotResolver` as well as `rootDir`: this cache outlives a
+// single test file, and projects sharing a `rootDir` may configure different
+// resolvers.
 const cache = new Map<string, SnapshotResolver>();
 
 type LocalRequire = <T = unknown>(
@@ -34,29 +37,27 @@ type LocalRequire = <T = unknown>(
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
-    config,
-  ),
+  localRequire?: LocalRequire,
 ): Promise<SnapshotResolver> => {
-  const key = config.rootDir;
+  const key = `${config.rootDir}\0${config.snapshotResolver ?? ''}`;
+  const cached = cache.get(key);
+
+  if (cached) {
+    return cached;
+  }
 
   const resolver =
-    cache.get(key) ??
-    (await createSnapshotResolver(await localRequire, config.snapshotResolver));
+    typeof config.snapshotResolver === 'string'
+      ? await createCustomSnapshotResolver(
+          config.snapshotResolver,
+          localRequire ?? (await createTranspilingRequire(config)),
+        )
+      : createDefaultSnapshotResolver();
 
   cache.set(key, resolver);
 
   return resolver;
 };
-
-async function createSnapshotResolver(
-  localRequire: LocalRequire,
-  snapshotResolverPath?: string | null,
-): Promise<SnapshotResolver> {
-  return typeof snapshotResolverPath === 'string'
-    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
-    : createDefaultSnapshotResolver();
-}
 
 function createDefaultSnapshotResolver(): SnapshotResolver {
   return {

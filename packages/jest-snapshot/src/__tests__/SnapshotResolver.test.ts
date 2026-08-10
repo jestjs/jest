@@ -81,44 +81,10 @@ describe('custom resolver in project config', () => {
   });
 });
 
-describe('custom resolver written in ESM in project config', () => {
-  let snapshotResolver: SnapshotResolver;
-  const customSnapshotResolverFile = path.join(
-    __dirname,
-    'fixtures',
-    'customSnapshotResolver.mjs',
-  );
-  const projectConfig = makeProjectConfig({
-    rootDir: 'custom1',
-    snapshotResolver: customSnapshotResolverFile,
-  });
-
-  beforeEach(async () => {
-    snapshotResolver = await buildSnapshotResolver(projectConfig);
-  });
-
-  it('returns cached object if called multiple times', async () => {
-    await expect(buildSnapshotResolver(projectConfig)).resolves.toBe(
-      snapshotResolver,
-    );
-  });
-
-  it('resolveSnapshotPath()', () => {
-    expect(
-      snapshotResolver.resolveSnapshotPath(
-        path.resolve('/abc/cde/__tests__/a.test.js'),
-      ),
-    ).toBe(path.resolve('/abc/cde/__snapshots__/a.test.js.snap'));
-  });
-
-  it('resolveTestPath()', () => {
-    expect(
-      snapshotResolver.resolveTestPath(
-        path.resolve('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
-      ),
-    ).toBe(path.resolve('/abc/cde/__tests__/a.test.js'));
-  });
-});
+// A resolver written in ESM can only be covered end to end: these tests run
+// inside the sandbox, where `import()` needs `--experimental-vm-modules`. In a
+// real run the load happens in `Runtime`, outside the sandbox. See
+// `e2e/__tests__/snapshotResolver.test.ts`.
 
 describe('malformed custom resolver in project config', () => {
   const newProjectConfig = (filename: string) => {

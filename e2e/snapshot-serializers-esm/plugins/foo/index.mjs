@@ -6,5 +6,6 @@
  *
  */
 
-import {createPlugin} from '../../utils';
+import {createPlugin} from '../../utils.mjs';
+
 export default createPlugin('foo');

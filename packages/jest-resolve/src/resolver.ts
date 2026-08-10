@@ -969,6 +969,8 @@ function loadResolver(
     return defaultResolver;
   }
 
+  // TODO: `resolver` cannot be ESM (#11167) — resolution is synchronous, so
+  // this cannot become `await import()`.
   const loadedResolver = require(resolver);
 
   if (loadedResolver == null) {

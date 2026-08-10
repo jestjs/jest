@@ -8,7 +8,11 @@
 import type {Expression} from '@babel/types';
 import type {MatcherContext} from 'expect';
 import type {Frame} from 'jest-message-util';
-import type {PrettyFormatOptions} from 'pretty-format';
+import type {
+  PrettyFormatOptions,
+  Plugins as PrettyFormatPlugins,
+} from 'pretty-format';
+import type {SnapshotResolver} from './SnapshotResolver';
 import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
@@ -80,4 +84,13 @@ export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
   node?: Expression;
+};
+
+/**
+ * The `snapshotResolver` and `snapshotSerializers` modules, loaded outside the
+ * test sandbox so they may be written in ESM.
+ */
+export type SnapshotSetup = {
+  resolver: SnapshotResolver;
+  serializers: PrettyFormatPlugins;
 };
