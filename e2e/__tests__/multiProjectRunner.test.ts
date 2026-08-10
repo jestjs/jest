@@ -636,3 +636,30 @@ test('uses --config for the global config when multiple projects are specified',
   const {globalConfig} = JSON.parse(stdout);
   expect(globalConfig.testTimeout).toBe(30_000);
 });
+
+test('errors on a missing --config when multiple projects are specified', () => {
+  writeFiles(DIR, {
+    'p1/jest.config.js': 'module.exports = {};',
+    'p1/some.test.js': "test('a', () => expect(1).toBe(1));",
+    'p2/jest.config.js': 'module.exports = {};',
+    'p2/other.test.js': "test('b', () => expect(1).toBe(1));",
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '--projects',
+    'p1',
+    'p2',
+    '-c',
+    'does-not-exist.config.js',
+    '--listTests',
+  ]);
+
+  expect(exitCode).toBe(1);
+  expect(stderr).toContain(
+    "Can't find a root directory while resolving a config file path.",
+  );
+  expect(stderr).toContain(
+    'Provided path to resolve: does-not-exist.config.js',
+  );
+});
