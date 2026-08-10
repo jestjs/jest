@@ -30,9 +30,7 @@ export type NameLike = number | Function;
 export type TestName = string;
 export type TestNameLike = TestName | NameLike;
 export type TestFn =
-  | PromiseReturningTestFn
-  | GeneratorReturningTestFn
-  | DoneTakingTestFn;
+  PromiseReturningTestFn | GeneratorReturningTestFn | DoneTakingTestFn;
 export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
 export type BlockName = string;

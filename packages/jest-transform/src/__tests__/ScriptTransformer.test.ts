@@ -2061,6 +2061,67 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
+  describe('canTransformSync', () => {
+    it('returns true when no transform is configured', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [],
+      });
+
+      expect(scriptTransformer.canTransformSync('/fruits/banana.js')).toBe(
+        true,
+      );
+    });
+
+    it('returns true for a sync transformer', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [['\\.js$', 'test_preprocessor', {}]],
+      });
+
+      expect(scriptTransformer.canTransformSync('/fruits/banana.js')).toBe(
+        true,
+      );
+    });
+
+    it('returns false for an async-only transformer', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [
+          ['\\.js$', 'skipped-required-props-preprocessor-only-async', {}],
+        ],
+      });
+
+      expect(scriptTransformer.canTransformSync('/fruits/banana.js')).toBe(
+        false,
+      );
+    });
+
+    it('returns true when transform is configured but no pattern matches the file', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [['\\.ts$', 'test_preprocessor', {}]],
+      });
+
+      expect(scriptTransformer.canTransformSync('/fruits/banana.js')).toBe(
+        true,
+      );
+    });
+
+    it('returns true for ignored paths even when an async transformer matches', async () => {
+      const scriptTransformer = await createScriptTransformer({
+        ...config,
+        transform: [
+          ['\\.js$', 'skipped-required-props-preprocessor-only-async', {}],
+        ],
+      });
+
+      expect(scriptTransformer.canTransformSync('/node_modules/react.js')).toBe(
+        true,
+      );
+    });
+  });
+
   it('preload transformer when using `createScriptTransformer`', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,

@@ -176,6 +176,7 @@ test('should only copy the properties mapped to be serializable', () => {
 });
 
 test('json from Response', async () => {
+  // eslint-disable-next-line unicorn/prefer-response-static-json
   const response = () => new Response(JSON.stringify({}));
 
   const text = JSON.parse(await response().text());

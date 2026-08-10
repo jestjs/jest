@@ -10,7 +10,7 @@
     "jest-environment-jsdom": "workspace:*"
   },
   "dependencies": {
-    "jquery": "^3.2.1"
+    "jquery": "^4.0.0"
   },
   "scripts": {
     "test": "jest"

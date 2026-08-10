@@ -7,6 +7,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
+import type {TemporalDuration} from '@sinonjs/fake-timers';
 import FakeTimers from '../modernFakeTimers';
 
 describe('FakeTimers', () => {
@@ -1019,8 +1020,8 @@ describe('FakeTimers', () => {
         'mock1',
         'mock2',
         'mock2',
-        'mock3',
         'mock5',
+        'mock3',
         'mock1',
         'mock2',
       ]);
@@ -1518,6 +1519,72 @@ describe('FakeTimers', () => {
       const after = Date.now();
       expect(now).toBeGreaterThanOrEqual(before);
       expect(now).toBeLessThanOrEqual(after);
+    });
+  });
+
+  describe('Temporal', () => {
+    const epoch_ms = new Date('2026-01-01T00:00:00Z').getTime();
+    let timers: FakeTimers;
+    let fakedGlobal: typeof globalThis;
+
+    beforeEach(() => {
+      fakedGlobal = {
+        Date,
+        clearInterval,
+        clearTimeout,
+        process,
+        setInterval,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      timers = new FakeTimers({
+        config: makeProjectConfig(),
+        global: fakedGlobal,
+      });
+    });
+
+    afterEach(() => {
+      timers.useRealTimers();
+    });
+
+    it('setSystemTime accepts an object with epochMilliseconds', () => {
+      timers.useFakeTimers();
+      timers.setSystemTime({epochMilliseconds: epoch_ms});
+      expect(fakedGlobal.Date.now()).toBe(epoch_ms);
+    });
+
+    it('useFakeTimers({now}) accepts an object with epochMilliseconds', () => {
+      timers.useFakeTimers({now: {epochMilliseconds: epoch_ms}});
+      expect(fakedGlobal.Date.now()).toBe(epoch_ms);
+    });
+
+    it('advanceTimersByTime accepts an object with total()', () => {
+      timers.useFakeTimers({now: 0});
+      timers.advanceTimersByTime({
+        total: ({unit}) => (unit === 'millisecond' ? 5000 : 5),
+      } as TemporalDuration);
+      expect(fakedGlobal.Date.now()).toBe(5000);
+    });
+
+    it('advanceTimersByTimeAsync accepts an object with total()', async () => {
+      const asyncGlobal = {
+        Date,
+        Promise,
+        clearInterval,
+        clearTimeout,
+        process,
+        setInterval,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      const asyncTimers = new FakeTimers({
+        config: makeProjectConfig(),
+        global: asyncGlobal,
+      });
+      asyncTimers.useFakeTimers({now: 0});
+      await asyncTimers.advanceTimersByTimeAsync({
+        total: ({unit}) => (unit === 'millisecond' ? 5000 : 5),
+      } as TemporalDuration);
+      expect(asyncGlobal.Date.now()).toBe(5000);
+      asyncTimers.useRealTimers();
     });
   });
 });

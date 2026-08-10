@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git push * main:*)",
+      "Bash(git push * master:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git checkout --:*)",
+      "Bash(git restore --staged --worktree --source:*)",
+      "Bash(git clean -f:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git clean -fdx:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git branch --delete --force:*)",
+      "Bash(git rebase -i:*)",
+      "Bash(git commit --no-verify:*)",
+      "Bash(git commit --no-gpg-sign:*)",
+      "Bash(git config --global:*)",
+      "Bash(git config --system:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(npm publish:*)",
+      "Bash(yarn publish:*)",
+      "Bash(yarn npm publish:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(rm -rf $HOME:*)",
+      "Bash(rm -rf ..:*)"
+    ]
+  }
+}

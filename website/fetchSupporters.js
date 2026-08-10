@@ -7,9 +7,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs');
-const path = require('path');
-const {promisify} = require('util');
+const fs = require('node:fs');
+const path = require('node:path');
+const {promisify} = require('node:util');
 const {gql, request} = require('graphql-request');
 
 // These sponsors will be featured on the homepage.

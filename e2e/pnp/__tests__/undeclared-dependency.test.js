@@ -9,5 +9,7 @@
 it('should surface pnp errors', () => {
   expect(() => {
     require('undeclared');
-  }).toThrow(expect.objectContaining({code: 'MODULE_NOT_FOUND'}));
+  }).toThrow(
+    "undeclared tried to access unesitent_module__, but it isn't declared in its dependencies; this makes the require call ambiguous and unsound.",
+  );
 });

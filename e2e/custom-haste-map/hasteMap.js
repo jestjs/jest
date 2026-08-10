@@ -7,7 +7,7 @@
 
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const fakeFile = {
   file: path.resolve(__dirname, '__tests__/hasteExampleHelper.js'),
   moduleName: 'fakeModuleName',

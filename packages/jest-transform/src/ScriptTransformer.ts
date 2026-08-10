@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -842,6 +842,17 @@ class ScriptTransformer {
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
     return this._config.transform.length > 0 && !isIgnored;
+  }
+
+  canTransformSync(filename: string): boolean {
+    if (!this.shouldTransform(filename)) {
+      return true;
+    }
+    const transformerEntry = this._getTransformer(filename);
+    if (transformerEntry == null) {
+      return true;
+    }
+    return typeof transformerEntry.transformer.process === 'function';
   }
 }
 

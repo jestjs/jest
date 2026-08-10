@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as Process from 'process';
+import type * as Process from 'node:process';
 import type {Circus} from '@jest/types';
 import {dispatchSync} from './state';
 

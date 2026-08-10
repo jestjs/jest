@@ -23,7 +23,6 @@ exports[`show error message with matching files 1`] = `
       index.js
       __tests__/test.js
 
-
     However, Jest was able to find:
     	'./some-json-file.json'
 
@@ -37,7 +36,7 @@ exports[`show error message with matching files 1`] = `
         |                  ^
       9 |
 
-      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:863:11)
+      at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/index.js:<<REPLACED>>)
       at Object.require (index.js:8:18)
       at Object.require (__tests__/test.js:8:11)"
 `;

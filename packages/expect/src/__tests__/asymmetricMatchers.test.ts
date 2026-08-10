@@ -6,7 +6,7 @@
  *
  */
 
-import {runInNewContext} from 'node:vm';
+import {runInNewContext} from 'vm';
 import jestExpect from '../';
 import {
   any,

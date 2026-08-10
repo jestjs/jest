@@ -270,12 +270,9 @@ describe.each([
       } as unknown as WorkerOptions;
 
       if (workerClass === ThreadsWorker) {
-        options.resourceLimits = {
-          codeRangeSizeMb: workerHeapLimit * 2,
-          maxOldGenerationSizeMb: workerHeapLimit,
-          maxYoungGenerationSizeMb: workerHeapLimit * 2,
-          stackSizeMb: workerHeapLimit * 2,
-        };
+        // Larger limits cause the worker OOM to abort the parent process on
+        // Node 25 (V8 14.1). 8 MB is reliably safe across all Node versions.
+        options.resourceLimits = {maxOldGenerationSizeMb: 8};
       } else if (workerClass === ChildProcessWorker) {
         options.forkOptions = {
           // Forcibly set the heap limit so we can crash the process easily.

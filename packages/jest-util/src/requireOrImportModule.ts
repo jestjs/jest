@@ -36,6 +36,7 @@ async function importModule(
     if (error.message === 'Not supported') {
       throw new Error(
         `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${filePath}`,
+        {cause: error},
       );
     }
     throw error;
@@ -52,7 +53,7 @@ export default async function requireOrImportModule<T>(
     );
   }
   try {
-    if (filePath.endsWith('.mjs')) {
+    if (filePath.endsWith('.mjs') || filePath.endsWith('.mts')) {
       return importModule(filePath, applyInteropRequireDefault);
     }
 

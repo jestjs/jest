@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isBuiltin} from 'module';
-import {fileURLToPath} from 'url';
-import pnpResolver from 'jest-pnp-resolver';
+import {isBuiltin} from 'node:module';
 import {
   type ResolveResult,
   ResolverFactory,
@@ -15,37 +13,36 @@ import {
 } from 'unrs-resolver';
 import {getResolver, setResolver} from './fileWalkers';
 
-export interface ResolverOptions extends UpstreamResolveOptions {
+export interface ResolverOptions extends Omit<
+  UpstreamResolveOptions,
+  'extensions'
+> {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
-  conditions?: Array<string>;
+  conditions?: ReadonlyArray<string>;
   /** Instance of default resolver. */
   defaultResolver: SyncResolver;
   /** Instance of default async resolver. */
   defaultAsyncResolver: AsyncResolver;
+  /** List of file extensions to be considered when resolving. */
+  extensions?: ReadonlyArray<string>;
   /**
    * List of directory names to be looked up for modules recursively.
    *
    * @defaultValue
    * The default is `['node_modules']`.
    */
-  moduleDirectory?: Array<string>;
+  moduleDirectory?: ReadonlyArray<string>;
   /**
    * List of `require.paths` to use if nothing is found in `node_modules`.
    *
    * @defaultValue
    * The default is `undefined`.
    */
-  paths?: Array<string>;
+  paths?: ReadonlyArray<string>;
   /** Current root directory. */
   rootDir?: string;
-
-  /**
-   * @internal Whether to allow the `jest-pnp-resolver` to be used.
-   * @see https://github.com/arcanis/jest-pnp-resolver/blob/ae8e3992349f3b43d1476572e9315e14358e8944/index.js#L49
-   */
-  allowPnp?: boolean;
 }
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
@@ -63,6 +60,23 @@ const handleResolveResult = (result: ResolveResult) => {
   return result.path!;
 };
 
+/**
+ * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
+ *
+ * @see https://nodejs.org/api/cli.html#--preserve-symlinks
+ */
+function shouldPreserveSymlinks(): boolean {
+  // `NODE_PRESERVE_SYMLINKS` is on only when exactly `1`, and `--preserve-symlinks`
+  // is matched exactly so `--preserve-symlinks-main` (entry point only) is excluded.
+  return (
+    process.env.NODE_PRESERVE_SYMLINKS === '1' ||
+    process.execArgv.includes('--preserve-symlinks') ||
+    (process.env.NODE_OPTIONS ?? '')
+      .split(/\s+/)
+      .includes('--preserve-symlinks')
+  );
+}
+
 function baseResolver(path: string, options: ResolverOptions): string;
 function baseResolver(
   path: string,
@@ -74,18 +88,9 @@ function baseResolver(
   options: ResolverOptions,
   async?: true,
 ): string | Promise<string> {
-  // https://github.com/oxc-project/oxc-resolver/issues/565
-  // https://github.com/jestjs/jest/issues/15676
+  // `builtins` in `unrs-resolver` is static which could be wrong at runtime.
   if (isBuiltin(path)) {
     return path;
-  }
-
-  if (process.versions.pnp && options.allowPnp !== false) {
-    return pnpResolver(path, options);
-  }
-
-  if (path.startsWith('file://')) {
-    path = fileURLToPath(path);
   }
 
   /* eslint-disable prefer-const */
@@ -93,6 +98,7 @@ function baseResolver(
     basedir,
     conditions,
     conditionNames,
+    extensions,
     modules,
     moduleDirectory,
     paths,
@@ -102,13 +108,21 @@ function baseResolver(
     /* eslint-enable prefer-const */
   } = options;
 
-  modules = modules || moduleDirectory;
+  modules = modules || (moduleDirectory as Array<string>);
 
   const resolveOptions: UpstreamResolveOptions = {
     conditionNames: conditionNames ||
-      conditions || ['require', 'node', 'default'],
+      (conditions as Array<string> | undefined) || [
+        'require',
+        'node',
+        'default',
+      ],
+    extensions: extensions as Array<string> | undefined,
     modules,
     roots: roots || (rootDir ? [rootDir] : undefined),
+    // Honor Node's `--preserve-symlinks`; `unrs-resolver` realpaths by default.
+    // An explicit `symlinks` option still wins via the `...rest` spread below.
+    ...(shouldPreserveSymlinks() ? {symlinks: false} : {}),
     ...rest,
   };
 
@@ -135,7 +149,7 @@ function baseResolver(
         if (paths.length > 0) {
           unrsResolver = unrsResolver!.cloneWithOptions({
             ...resolveOptions,
-            modules: paths,
+            modules: paths as Array<string>,
           });
           setResolver(unrsResolver);
           return resolve();

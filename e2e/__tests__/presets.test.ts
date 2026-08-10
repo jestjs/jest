@@ -23,3 +23,8 @@ test.each(['mjs', 'js-type-module'])('supports %s preset', presetDir => {
 
   expect(result.exitCode).toBe(0);
 });
+
+test('supports preset exposed only via package.json subpath exports', () => {
+  const result = runJest('presets/exports-subpath');
+  expect(result.exitCode).toBe(0);
+});

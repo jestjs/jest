@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ForkOptions} from 'child_process';
-import type {ResourceLimits} from 'worker_threads';
+import type {ForkOptions} from 'node:child_process';
+import type {ResourceLimits} from 'node:worker_threads';
 
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
 type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
@@ -23,10 +23,9 @@ type Promisify<T extends FunctionLike> =
     : (...args: Parameters<T>) => Promise<ReturnType<T>>;
 
 export type WorkerModule<T> = {
-  [K in keyof T as Extract<
-    ExcludeReservedKeys<K>,
-    MethodLikeKeys<T>
-  >]: T[K] extends FunctionLike ? Promisify<T[K]> : never;
+  [
+    K in keyof T as Extract<ExcludeReservedKeys<K>, MethodLikeKeys<T>>
+  ]: T[K] extends FunctionLike ? Promisify<T[K]> : never;
 };
 
 // Because of the dynamic nature of a worker communication process, all messages
@@ -46,8 +45,7 @@ export const PARENT_MESSAGE_CUSTOM = 3;
 export const PARENT_MESSAGE_MEM_USAGE = 4;
 
 export type PARENT_MESSAGE_ERROR =
-  | typeof PARENT_MESSAGE_CLIENT_ERROR
-  | typeof PARENT_MESSAGE_SETUP_ERROR;
+  typeof PARENT_MESSAGE_CLIENT_ERROR | typeof PARENT_MESSAGE_SETUP_ERROR;
 
 export type WorkerCallback = (
   workerId: number,
@@ -147,6 +145,7 @@ export type WorkerFarmOptions = {
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerPoolOptions = {
@@ -157,6 +156,7 @@ export type WorkerPoolOptions = {
   numWorkers: number;
   enableWorkerThreads: boolean;
   idleMemoryLimit?: number;
+  workerGracefulExitTimeout?: number;
 };
 
 export type WorkerOptions = {
@@ -196,8 +196,7 @@ export type WorkerOptions = {
    */
   on?: {
     [WorkerEvents.STATE_CHANGE]:
-      | OnStateChangeHandler
-      | ReadonlyArray<OnStateChangeHandler>;
+      OnStateChangeHandler | ReadonlyArray<OnStateChangeHandler>;
   };
 };
 

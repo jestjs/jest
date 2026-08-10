@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {extractSummary} from '../Utils';
+import {extractSummary, replaceJestBuildLineNumbers} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 test('moduleNameMapper wrong configuration', () => {
@@ -13,7 +13,7 @@ test('moduleNameMapper wrong configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper wrong array configuration', () => {
@@ -21,7 +21,7 @@ test('moduleNameMapper wrong array configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {

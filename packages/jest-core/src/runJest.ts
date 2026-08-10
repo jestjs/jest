@@ -5,15 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {performance} from 'perf_hooks';
-import type {WriteStream} from 'tty';
+import * as path from 'node:path';
+import {performance} from 'node:perf_hooks';
+import type {WriteStream} from 'node:tty';
 import chalk from 'chalk';
 import exit from 'exit-x';
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
+import {VerboseReporter} from '@jest/reporters';
 import {
   type AggregatedResult,
+  type AssertionResult,
+  type Suite,
   type Test,
   type TestContext,
   type TestResultsProcessor,
@@ -36,6 +39,86 @@ import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import serializeToJSON from './lib/serializeToJSON';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
+
+export const printCollectedTestTree = (
+  testResults: Array<AssertionResult>,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  const annotate = (test: AssertionResult): string => {
+    if (test.status === 'todo') {
+      return chalk.dim(' [todo]');
+    }
+    if (test.status === 'pending') {
+      return chalk.dim(' [skipped]');
+    }
+    return '';
+  };
+  const printSuite = (suite: Suite, indent: number): void => {
+    if (suite.title) {
+      outputStream.write(`${'  '.repeat(indent)}${suite.title}\n`);
+    }
+    for (const t of suite.tests) {
+      outputStream.write(
+        `${'  '.repeat(indent + 1)}${t.title}${annotate(t)}\n`,
+      );
+    }
+    for (const child of suite.suites) {
+      printSuite(child, indent + 1);
+    }
+  };
+  const root = VerboseReporter.groupTestsBySuites(testResults);
+  printSuite(root, 0);
+};
+
+const printCollectedTestSummary = (
+  results: AggregatedResult,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  const testsLine = [`${chalk.bold(results.numTotalTests)} total`];
+  if (results.numPassedTests > 0) {
+    testsLine.push(chalk.green(`${results.numPassedTests} runnable`));
+  }
+  if (results.numPendingTests > 0) {
+    testsLine.push(chalk.yellow(`${results.numPendingTests} skipped`));
+  }
+  if (results.numTodoTests > 0) {
+    testsLine.push(chalk.magenta(`${results.numTodoTests} todo`));
+  }
+
+  outputStream.write(
+    `\n${chalk.bold('Test suites:')} ${results.numTotalTestSuites}\n`,
+  );
+  outputStream.write(`${chalk.bold('Tests:')}       ${testsLine.join(', ')}\n`);
+
+  if (results.numRuntimeErrorTestSuites > 0) {
+    outputStream.write(
+      chalk.bold.red(
+        `\n${results.numRuntimeErrorTestSuites} test suite(s) failed to load and could not be collected.\n`,
+      ),
+    );
+  }
+};
+
+// Human-readable (non-JSON) rendering for `--collectTests`: each file's tree,
+// any file that failed to load (with its error), then the summary line.
+export const printCollectedResults = (
+  results: AggregatedResult,
+  outputStream: NodeJS.WritableStream,
+): void => {
+  for (const testResult of results.testResults) {
+    if (testResult.testExecError) {
+      outputStream.write(
+        `${chalk.red(testResult.testFilePath)}\n${
+          testResult.failureMessage ?? testResult.testExecError.message
+        }\n`,
+      );
+    } else if (testResult.testResults.length > 0) {
+      outputStream.write(`${testResult.testFilePath}\n`);
+      printCollectedTestTree(testResult.testResults, outputStream);
+    }
+  }
+  printCollectedTestSummary(results, outputStream);
+};
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -247,6 +330,41 @@ export default async function runJest({
   }
 
   const hasTests = allTests.length > 0;
+
+  if (globalConfig.collectTests) {
+    if (!hasTests) {
+      // eslint-disable-next-line no-console
+      console.log('No tests found.');
+      onComplete?.(makeEmptyAggregatedTestResult());
+      return;
+    }
+
+    // Suppress reporters; circus collects tests without executing.
+    const collectTestsConfig: Config.GlobalConfig = Object.freeze({
+      ...globalConfig,
+      collectCoverage: false,
+      reporters: [],
+      silent: true,
+    });
+    const scheduler = await createTestScheduler(collectTestsConfig, {
+      startRun,
+      ...testSchedulerContext,
+    });
+    const results = await scheduler.scheduleTests(allTests, testWatcher);
+
+    if (!globalConfig.json) {
+      printCollectedResults(results, outputStream);
+    }
+
+    await processResults(results, {
+      json: globalConfig.json,
+      onComplete,
+      outputFile: globalConfig.outputFile,
+      outputStream,
+      testResultsProcessor: globalConfig.testResultsProcessor,
+    });
+    return;
+  }
 
   if (!hasTests) {
     const {exitWith0, message: noTestsFoundMessage} = getNoTestsFoundMessage(

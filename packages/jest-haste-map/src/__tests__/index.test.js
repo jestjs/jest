@@ -78,7 +78,9 @@ const mockWatcherConstructor = jest.fn(root => {
   return mockEmitters[root];
 });
 
-jest.mock('../watchers/NodeWatcher', () => mockWatcherConstructor);
+jest.mock('../watchers/ParcelWatcher', () => ({
+  ParcelWatcher: mockWatcherConstructor,
+}));
 jest.mock('../watchers/WatchmanWatcher', () => mockWatcherConstructor);
 
 let mockChangedFiles;
@@ -788,7 +790,7 @@ describe('HasteMap', () => {
 
     // Duplicate modules are removed so that it doesn't cause
     // non-determinism later on.
-    expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).toBeUndefined();
+    expect(data.map.get('Strawberry')?.[H.GENERIC_PLATFORM]).toBeUndefined();
 
     expect(
       console.warn.mock.calls[0][0].replaceAll('\\', '/'),
@@ -1115,7 +1117,7 @@ describe('HasteMap', () => {
           }),
         }),
       );
-      expect(data.map.get('Strawberry')).toEqual({});
+      expect(data.map.get('Strawberry')).toBeUndefined();
     });
 
     it('recovers when a duplicate file is deleted', async () => {

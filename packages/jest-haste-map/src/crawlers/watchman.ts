@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as watchman from 'fb-watchman';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';

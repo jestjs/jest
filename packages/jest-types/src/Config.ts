@@ -30,7 +30,8 @@ export type FakeableAPI =
   | 'setInterval'
   | 'clearInterval'
   | 'setTimeout'
-  | 'clearTimeout';
+  | 'clearTimeout'
+  | 'Temporal';
 
 export type GlobalFakeTimersConfig = {
   /**
@@ -61,12 +62,13 @@ export type FakeTimersConfig = {
    */
   doNotFake?: Array<FakeableAPI>;
   /**
-   * Sets current system time to be used by fake timers, in milliseconds.
+   * Sets current system time to be used by fake timers. Accepts a millisecond
+   * timestamp, a `Date`, a `Temporal.Instant`, or a `Temporal.ZonedDateTime`.
    *
    * @defaultValue
    * The default is `Date.now()`.
    */
-  now?: number | Date;
+  now?: number | Date | {epochMilliseconds: number};
   /**
    * The maximum number of recursive timers that will be run when calling
    * `jest.runAllTimers()`.
@@ -99,7 +101,10 @@ export type LegacyFakeTimersConfig = {
 type FakeTimers = GlobalFakeTimersConfig &
   (
     | (FakeTimersConfig & {
-        now?: Exclude<FakeTimersConfig['now'], Date>;
+        now?: Exclude<
+          FakeTimersConfig['now'],
+          Date | {epochMilliseconds: number}
+        >;
       })
     | LegacyFakeTimersConfig
   );
@@ -113,7 +118,7 @@ export type HasteConfig = {
   forceNodeFilesystemAPI?: boolean;
   /**
    * Whether to follow symlinks when crawling for files.
-   *   This options cannot be used in projects which use watchman.
+   *   This option cannot be used in projects which use watchman.
    *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;
@@ -211,6 +216,7 @@ export type DefaultOptions = {
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerGracefulExitTimeout: number;
   workerThreads: boolean;
 };
 
@@ -223,7 +229,7 @@ export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
 export type InitialProjectOptions = Pick<
-  InitialOptions & {cwd?: string},
+  InitialOptions & {cwd?: string; runnerOptions?: Record<string, unknown>},
   keyof ProjectConfig
 >;
 
@@ -261,6 +267,7 @@ export type GlobalConfig = {
   ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
+  collectTests: boolean;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
@@ -321,6 +328,7 @@ export type GlobalConfig = {
     path: string;
     config: Record<string, unknown>;
   }> | null;
+  workerGracefulExitTimeout?: number;
   workerIdleMemoryLimit?: number;
   // TODO: make non-optional in Jest 30
   workerThreads?: boolean;
@@ -331,9 +339,11 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   cwd: string;
   dependencyExtractor?: string;
@@ -367,10 +377,12 @@ export type ProjectConfig = {
   rootDir: string;
   roots: Array<string>;
   runner: string;
+  runnerOptions: Record<string, unknown>;
   runtime?: string;
   sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  silent?: boolean;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
   slowTestThreshold: number;
@@ -389,6 +401,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  verbose?: boolean;
   waitForUnhandledRejections: boolean;
   workerIdleMemoryLimit?: number;
 };
@@ -412,6 +425,7 @@ export type Argv = Arguments<
     clearMocks: boolean;
     collectCoverage: boolean;
     collectCoverageFrom: string;
+    collectTests: boolean;
     color: boolean;
     colors: boolean;
     config: string;
@@ -490,6 +504,7 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
+    workerGracefulExitTimeout: number;
     workerIdleMemoryLimit: number | string;
     workerThreads: boolean;
   }>

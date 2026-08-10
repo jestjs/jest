@@ -10,5 +10,5 @@
 // 'domain' has to be required before Jest performs the copy, i.e. in the global-setup phase represented by this file.
 
 module.exports = () => {
-  require('domain');
+  require('node:domain');
 };

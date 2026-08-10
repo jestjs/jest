@@ -49,11 +49,13 @@ const asyncResolver: AsyncResolver = async (path, options) => {
   expect(path).type.toBe<string>();
 
   expect(options.basedir).type.toBe<string>();
-  expect(options.conditions).type.toBe<Array<string> | undefined>();
+  expect(options.conditions).type.toBe<ReadonlyArray<string> | undefined>();
   expect(options.defaultResolver).type.toBe<SyncResolver>();
-  expect(options.extensions).type.toBe<Array<string> | undefined>();
-  expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
-  expect(options.paths).type.toBe<Array<string> | undefined>();
+  expect(options.extensions).type.toBe<ReadonlyArray<string> | undefined>();
+  expect(options.moduleDirectory).type.toBe<
+    ReadonlyArray<string> | undefined
+  >();
+  expect(options.paths).type.toBe<ReadonlyArray<string> | undefined>();
   expect(options.rootDir).type.toBe<string | undefined>();
 
   return path;
@@ -70,11 +72,13 @@ const syncResolver: SyncResolver = (path, options) => {
   expect(path).type.toBe<string>();
 
   expect(options.basedir).type.toBe<string>();
-  expect(options.conditions).type.toBe<Array<string> | undefined>();
+  expect(options.conditions).type.toBe<ReadonlyArray<string> | undefined>();
   expect(options.defaultResolver).type.toBe<SyncResolver>();
-  expect(options.extensions).type.toBe<Array<string> | undefined>();
-  expect(options.moduleDirectory).type.toBe<Array<string> | undefined>();
-  expect(options.paths).type.toBe<Array<string> | undefined>();
+  expect(options.extensions).type.toBe<ReadonlyArray<string> | undefined>();
+  expect(options.moduleDirectory).type.toBe<
+    ReadonlyArray<string> | undefined
+  >();
+  expect(options.paths).type.toBe<ReadonlyArray<string> | undefined>();
   expect(options.rootDir).type.toBe<string | undefined>();
 
   return path;

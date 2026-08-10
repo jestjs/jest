@@ -15,8 +15,8 @@
 
 'use strict';
 
-const assert = require('assert');
-const {performance} = require('perf_hooks');
+const assert = require('node:assert');
+const {performance} = require('node:perf_hooks');
 const workerFarm = require('worker-farm');
 const JestWorker = require('../').Worker;
 

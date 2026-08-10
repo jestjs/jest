@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, resolve} from 'path';
+import {dirname, resolve} from 'node:path';
 import * as fs from 'graceful-fs';
 import type {ResolverFactory} from 'unrs-resolver';
 import {tryRealpath} from 'jest-util';

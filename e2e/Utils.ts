@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import * as util from 'util';
-import dedentBase from 'dedent';
+import * as path from 'node:path';
+import * as util from 'node:util';
+import dedent from 'dedent';
 import {
   type ExecaSyncError,
   type SyncOptions as ExecaSyncOptions,
@@ -15,10 +15,11 @@ import {
   sync as spawnSync,
 } from 'execa';
 import * as fs from 'graceful-fs';
+import slash from 'slash';
 import which from 'which';
 import type {Config} from '@jest/types';
 
-const dedent = dedentBase.withOptions({escapeSpecialCharacters: true});
+const dedentWithoutTrim = dedent.withOptions({trimWhitespace: false});
 
 export const run = (
   cmd: string,
@@ -128,7 +129,9 @@ export const cleanup = (directory: string) => {
 export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
+  {skipTrim = false}: {skipTrim?: boolean} = {},
 ) => {
+  const format = skipTrim ? dedentWithoutTrim : dedent;
   fs.mkdirSync(directory, {recursive: true});
   for (const fileOrPath of Object.keys(files)) {
     const dirname = path.dirname(fileOrPath);
@@ -138,7 +141,7 @@ export const writeFiles = (
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      dedent(files[fileOrPath]),
+      format(files[fileOrPath]),
     );
   }
 };
@@ -195,10 +198,28 @@ export const copyDir = (src: string, dest: string) => {
 export const replaceSeed = (str: string) =>
   str.replaceAll(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
 
-export const replaceTime = (str: string) =>
+const replaceTime = (str: string) =>
   str
     .replaceAll(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replaceAll(', estimated <<REPLACED>>', '');
+
+export const replaceNodeInfo = (str: string) =>
+  str
+    .replaceAll(/[^\n]*node:internal\/[^\n]*\n?/g, '')
+    .replaceAll(/Node\.js v\d+\.\d+\.\d+/g, 'Node.js <<REPLACED>>');
+
+export const replaceJestBuildLineNumbers = (str: string) =>
+  str.replaceAll(
+    /([^:\s]*[\w-]+[/\\]build[/\\][^:\s]+:)\d+(?::\d+)?/g,
+    '$1<<REPLACED>>',
+  );
+
+const repoRoot = path.resolve(__dirname, '..');
+
+export const replaceRepoRoot = (str: string) =>
+  str
+    .replaceAll(repoRoot, '<<REPO_ROOT>>')
+    .replaceAll(/<<REPO_ROOT>>[^\s()"']+/g, p => slash(p));
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>

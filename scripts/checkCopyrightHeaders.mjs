@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {execSync} from 'child_process';
+import {execSync} from 'node:child_process';
 import fs from 'graceful-fs';
 import {isBinaryFileSync} from 'isbinaryfile';
 

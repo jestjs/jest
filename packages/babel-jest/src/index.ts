@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import type {
   TransformOptions as BabelTransformOptions,
   PartialConfig,
@@ -51,12 +51,15 @@ function assertLoadedBabelConfig(
 }
 
 function addIstanbulInstrumentation(
+  filename: string,
   babelOptions: BabelTransformOptions,
   transformOptions: JestTransformOptions,
 ): BabelTransformOptions {
   if (transformOptions.instrument) {
-    const copiedBabelOptions: BabelTransformOptions = {...babelOptions};
-    copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+    const copiedBabelOptions: BabelTransformOptions = {
+      ...babelOptions,
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+    };
     // Copied from jest-runtime transform.js
     copiedBabelOptions.plugins = [
       ...(copiedBabelOptions.plugins ?? []),
@@ -66,6 +69,7 @@ function addIstanbulInstrumentation(
           // files outside `cwd` will not be instrumented
           cwd: transformOptions.config.cwd,
           exclude: [],
+          extension: [path.extname(filename)],
         },
       ],
     ];
@@ -142,7 +146,7 @@ function loadBabelOptions(
 ): BabelTransformOptions {
   const {options} = loadBabelConfig(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
 async function loadBabelOptionsAsync(
@@ -153,7 +157,7 @@ async function loadBabelOptionsAsync(
 ): Promise<BabelTransformOptions> {
   const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
 export const createTransformer: TransformerCreator<

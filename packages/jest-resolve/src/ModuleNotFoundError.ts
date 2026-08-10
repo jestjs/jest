@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
+import * as path from 'node:path';
 import slash from 'slash';
 
 export default class ModuleNotFoundError extends Error {
@@ -37,8 +37,7 @@ Require stack:
   ${this.requireStack
     .map(p => p.replace(`${rootDir}${path.sep}`, ''))
     .map(slash)
-    .join('\n  ')}
-`;
+    .join('\n  ')}`;
     }
 
     if (this.hint) {

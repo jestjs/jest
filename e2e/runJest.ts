@@ -6,9 +6,9 @@
  *
  */
 
-import * as path from 'path';
-import {Writable} from 'stream';
-import {stripVTControlCharacters as stripAnsi} from 'util';
+import * as path from 'node:path';
+import {Writable} from 'node:stream';
+import {stripVTControlCharacters as stripAnsi} from 'node:util';
 import dedent from 'dedent';
 import execa from 'execa';
 import * as fs from 'graceful-fs';
@@ -172,12 +172,15 @@ export const json = function (
       json: JSON.parse(result.stdout),
     };
   } catch (error: any) {
-    throw new Error(dedent`
+    throw new Error(
+      dedent`
       Can't parse JSON.
       ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
-    `);
+    `,
+      {cause: error},
+    );
   }
 };
 

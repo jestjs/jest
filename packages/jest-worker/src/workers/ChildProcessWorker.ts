@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type ChildProcess, type ForkOptions, fork} from 'child_process';
-import {totalmem} from 'os';
+import {type ChildProcess, type ForkOptions, fork} from 'node:child_process';
+import {totalmem} from 'node:os';
 import mergeStream from 'merge-stream';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {

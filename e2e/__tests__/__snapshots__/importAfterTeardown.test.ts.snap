@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`prints useful error for imports after test is done w/ \`waitForUnhandledRejections\` 1`] = `
+"FAIL __tests__/lateImport.test.mjs
+  ✕ import after done
+
+  ● import after done
+
+    ReferenceError: You are trying to \`import\` a file outside of the scope of the test code.
+
+       8 | test('import after done', () => {
+       9 |   setTimeout(async () => {
+    > 10 |     const {double} = await import('../double.mjs');
+         |                      ^
+      11 |     expect(double(5)).toBe(10);
+      12 |   }, 0);
+      13 | });
+
+      at TestState.throwIfBetweenTests (../../packages/jest-runtime/build/index.js:<<REPLACED>>)
+      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)"
+`;
+
+exports[`prints useful error for imports after test is done w/o \`waitForUnhandledRejections\` 1`] = `
+"PASS __tests__/lateImport.test.mjs
+  ✓ import after done
+
+
+ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down. From __tests__/lateImport.test.mjs.
+
+       8 | test('import after done', () => {
+       9 |   setTimeout(async () => {
+    > 10 |     const {double} = await import('../double.mjs');
+         |                      ^
+      11 |     expect(double(5)).toBe(10);
+      12 |   }, 0);
+      13 | });
+
+      at Timeout._onTimeout (__tests__/lateImport.test.mjs:10:22)
+<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>
+      throw new ReferenceError(message);
+            ^
+
+ReferenceError: You are trying to \`import\` a file after the Jest environment has been torn down.
+    at TestState.throwIfTornDown (<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>)
+    at dynamicImport (<<REPO_ROOT>>/packages/jest-runtime/build/index.js:<<REPLACED>>)
+    at Timeout._onTimeout (<<REPO_ROOT>>/e2e/import-after-teardown/__tests__/lateImport.test.mjs:10:22)
+
+Node.js <<REPLACED>>"
+`;

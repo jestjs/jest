@@ -36,3 +36,4 @@ export {
   protectProperties,
   deleteProperties,
 } from './garbage-collection-utils';
+export {isError} from './isError';

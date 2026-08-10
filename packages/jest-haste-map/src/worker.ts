@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
@@ -57,7 +57,9 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
         module = [relativeFilePath, H.PACKAGE];
       }
     } catch (error: any) {
-      throw new Error(`Cannot parse ${filePath} as JSON: ${error.message}`);
+      throw new Error(`Cannot parse ${filePath} as JSON: ${error.message}`, {
+        cause: error,
+      });
     }
   } else if (!blacklist.has(filePath.slice(filePath.lastIndexOf('.')))) {
     // Process a random file that is returned as a MODULE.

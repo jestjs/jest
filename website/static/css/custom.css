@@ -107,6 +107,7 @@ div.jest-card-front,
   height: 100%;
   border-radius: 15px;
   backface-visibility: hidden;
+  transform: rotateX(0deg);
   pointer-events: none;
   display: flex;
   justify-content: center;
@@ -126,7 +127,7 @@ div.jest-card-back {
   background-size: 20px;
   border: 5px solid #c2a813;
   backface-visibility: hidden;
-  transform: rotateY(180deg) translateZ(1px);
+  transform: rotateX(0deg) rotateY(180deg) translateZ(1px);
 }
 
 div.jest-card-running {

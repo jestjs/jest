@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as asyncHooks from 'async_hooks';
-import {promisify, stripVTControlCharacters as stripAnsi} from 'util';
-import * as v8 from 'v8';
-import * as vm from 'vm';
+import * as asyncHooks from 'node:async_hooks';
+import {promisify, stripVTControlCharacters as stripAnsi} from 'node:util';
+import * as v8 from 'node:v8';
+import * as vm from 'node:vm';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';

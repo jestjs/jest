@@ -8,24 +8,66 @@
 import fs from 'graceful-fs';
 
 const linkRegex =
-  /\[#(\d+)]\(https:\/\/github.com\/facebook\/jest\/(issues|pull)\/(\d+)\)/g;
+  /\[#(\d+)]\(https:\/\/github.com\/([^/]+)\/jest\/([^/]+)\/(\d+)\)/g;
 
-const changelogPath = 'CHANGELOG.md';
-const data = fs.readFileSync(changelogPath, 'utf8');
+const mainChangelogPath = 'CHANGELOG.md';
+const changelogPaths = [mainChangelogPath, 'CHANGELOG_PRE_v30.md'];
+const prNumber = process.argv[2];
 
-let error = false;
-let lineNumber = 1;
-for (const line of data.split('\n')) {
-  for (const match of line.matchAll(linkRegex))
-    if (match[1] !== match[3]) {
+const errors = [];
+
+for (const changelogPath of changelogPaths) {
+  const data = fs.readFileSync(changelogPath, 'utf8');
+
+  let lineNumber = 1;
+  for (const line of data.split('\n')) {
+    for (const match of line.matchAll(linkRegex)) {
+      const [, linkNumber, org, type, urlNumber] = match;
       const column = match.index + 1;
-      console.error(
-        `${changelogPath}:${lineNumber}:${column}: error: ` +
-          `Link is incorrect: ${match[0]}`,
-      );
-      error = true;
+      const location = `${changelogPath}:${lineNumber}:${column}: error: `;
+      if (org !== 'jestjs') {
+        errors.push(
+          `${location}Expected org 'jestjs', got '${org}': ${match[0]}`,
+        );
+      }
+      if (type !== 'pull') {
+        errors.push(`${location}Expected 'pull', got '${type}': ${match[0]}`);
+      }
+      if (linkNumber !== urlNumber) {
+        errors.push(
+          `${location}Link number ${linkNumber} does not match URL number ${urlNumber}: ${match[0]}`,
+        );
+      }
     }
-  ++lineNumber;
+    ++lineNumber;
+  }
 }
 
-process.exit(error ? 1 : 0);
+if (prNumber != null) {
+  if (!/^[1-9]\d*$/.test(prNumber)) {
+    throw new Error(`PR number must be a positive integer, got: ${prNumber}`);
+  }
+
+  const mainChangelog = fs.readFileSync(mainChangelogPath, 'utf8');
+  const mainSection = mainChangelog
+    .split(/^## /m)
+    .find(s => s.startsWith('main\n'));
+  const expectedLink = `[#${prNumber}](https://github.com/jestjs/jest/pull/${prNumber})`;
+  if (mainSection == null || !mainSection.includes(expectedLink)) {
+    errors.push(
+      `${mainChangelogPath}: missing entry for PR #${prNumber} in "## main" — expected: ${expectedLink}`,
+    );
+  }
+}
+
+if (errors.length > 0) {
+  console.error(
+    `Found ${errors.length} error${
+      errors.length === 1 ? '' : 's'
+    } in changelog:\n`,
+  );
+  for (const error of errors) {
+    console.error(error);
+  }
+  process.exit(1);
+}

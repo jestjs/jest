@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {fileURLToPath} from 'url';
+import * as path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
 import fs from 'graceful-fs';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import tempy from 'tempy';
 
 const rootDirectory = path.resolve(
@@ -31,6 +31,8 @@ try {
     path.join(cwd, '.yarnrc.yml'),
     dedent`
       enableGlobalCache: true
+
+      enableScripts: true
 
       yarnPath: ${path.resolve(rootDirectory, yarnConfig.yarnPath)}
     `,
