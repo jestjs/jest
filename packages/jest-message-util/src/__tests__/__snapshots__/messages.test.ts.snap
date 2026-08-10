@@ -44,20 +44,20 @@ exports[`formatStackTrace should properly handle deeply nested causes 1`] = `
 "<bold><red>  <bold>● </intensity><bold>Error with cause test</color></intensity>
 
     intercepted by f
-<dim></intensity>
+
 <dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
 <dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
     Cause:
         intercepted by g
-    <dim></intensity>
+
     <dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:8:11)</intensity><dim></intensity>
     <dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
     <dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
         Cause:
             boom
-        <dim></intensity>
+
         <dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:2:9)</intensity><dim></intensity>
         <dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:6:5)</intensity><dim></intensity>
         <dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
@@ -69,13 +69,12 @@ exports[`formatStackTrace should properly handle string causes 1`] = `
 "<bold><red>  <bold>● </intensity><bold>Error with string cause test</color></intensity>
 
     boom
-<dim></intensity>
+
 <dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
 <dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
     Cause:
         string cause
-
 "
 `;
 
@@ -89,7 +88,7 @@ exports[`formatStackTrace should strip node internals 1`] = `
           ""
         type:
           "string"
-<dim></intensity>
+
 <dim>      <dim>at Object.it (</intensity><dim>__tests__/test.js<dim>:8:14)</intensity><dim></intensity>
 "
 `;
@@ -115,7 +114,7 @@ exports[`retains message in babel code frame error 1`] = `
 
       
         packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
-<dim></intensity>
+
 <dim>          </> <gray> 18 | </color>        <cyan>false</color><yellow>,</color></intensity>
 <dim>           <gray> 19 | </color>        <green>'forwardRef requires a render function but received a \`memo\` '</color></intensity>
 <dim>          <red><bold>></intensity><dim></color><gray> 20 | </color>          <green>'component. Instead of forwardRef(memo(...)), use '</color> <yellow>+</color></intensity>
@@ -130,7 +129,7 @@ exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
 "<bold><red>  <bold>● </intensity><bold>Unix test</color></intensity>
 
       at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
-<dim></intensity>
+
 <dim>      <dim>at Object.addResult (</intensity><dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)</intensity><dim></intensity>
 <dim>      <dim>at Object.it (</intensity><dim>build/__tests__/messages-test.js<dim>:45:41)</intensity><dim></intensity>
 "
@@ -171,7 +170,7 @@ exports[`should not exclude vendor from stack trace 1`] = `
           ""
         type:
           "string"
-<dim></intensity>
+
 <dim>      <dim>at Object.it (</intensity><dim>__tests__/vendor/cool_test.js<dim>:6:666)</intensity><dim></intensity>
 <dim>      <dim>at Object.asyncFn (</intensity><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</intensity><dim></intensity>
 "
@@ -188,7 +187,6 @@ exports[`should return the error cause if there is one 1`] = `
      Cause Error
 
           <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:565:12)</intensity>
-
 "
 `;
 
@@ -207,7 +205,6 @@ exports[`should return the inner errors of an AggregateError 1`] = `
      Err 2
 
           <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:582:60)</intensity>
-
 "
 `;
 
@@ -215,16 +212,16 @@ exports[`should return the inner errors of an AggregateError test failure with t
 "<bold><red>  <bold>● </intensity><bold>AggregateError test failure</color></intensity>
 
     AggregateError:
-<dim></intensity>
+
 <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:626:20)</intensity><dim></intensity>
 
     Errors contained in AggregateError:
         inner reason A
-    <dim></intensity>
+
     <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:627:5)</intensity><dim></intensity>
 
         inner reason B
-    <dim></intensity>
+
     <dim>      <dim>at Object.<anonymous> (</intensity><dim>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:628:5)</intensity><dim></intensity>
 "
 `;

@@ -659,3 +659,22 @@ it('should not add a section for an empty AggregateError test failure', () => {
   expect(messages).not.toContain('Errors contained in AggregateError');
   expect(messages).toMatchSnapshot();
 });
+
+it('should not leave consecutive blank lines between a message and its sections', () => {
+  const aggError = new AggregateError([new Error('inner reason')]);
+  // An AggregateError from `Promise.any` has no frames of its own left after
+  // filtering, which used to leave the stack as a lone newline next to the
+  // section separator.
+  aggError.stack = 'AggregateError: All promises were rejected';
+
+  expect(formatAggregateErrorFailure(aggError, false)).not.toMatch(/\n\n\n/);
+});
+
+it('should preserve blank lines inside the error message itself', () => {
+  const error = new Error('first part\n\n\nsecond part');
+  error.stack = '';
+
+  expect(
+    formatExecError(error, {rootDir: '', testMatch: []}, {noStackTrace: true}),
+  ).toContain('first part\n\n\n    second part');
+});

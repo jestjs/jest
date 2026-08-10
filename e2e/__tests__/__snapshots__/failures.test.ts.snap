@@ -329,7 +329,6 @@ exports[`works with AggregateError 1`] = `
 
     AggregateError: All promises were rejected
 
-
     Errors contained in AggregateError:
         ECONNREFUSED primary
 

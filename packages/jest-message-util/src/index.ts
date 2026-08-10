@@ -67,6 +67,15 @@ const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 export const indentAllLines = (lines: string): string =>
   lines.replaceAll(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
 
+// chalk colours each line of its input separately, so handing it a multi-line
+// string turns the blank ones into escape-code-only lines that no longer compare
+// equal to ''. Colouring line by line keeps blank lines genuinely blank.
+const colorStackLines = (stack: string): string =>
+  stack
+    .split('\n')
+    .map(line => (line === '' ? line : STACK_TRACE_COLOR(line)))
+    .join('\n');
+
 const trim = (string: string) => (string || '').trim();
 
 // Some errors contain not only line numbers in stack traces
@@ -162,7 +171,9 @@ export const formatExecError = (
           reuseMessage,
           true,
         );
-        cause += `${prefix}${formatted}`;
+        // The recursive call ends with a newline of its own; the seam owns
+        // the spacing.
+        cause += `${prefix}${formatted.trimEnd()}`;
       }
     }
     if ('errors' in error && Array.isArray(error.errors)) {
@@ -196,10 +207,13 @@ export const formatExecError = (
 
   message = indentAllLines(message);
 
-  stack =
+  const renderedStack =
     stack && !options.noStackTrace
-      ? `\n${formatStackTrace(stack, config, options, testPath)}`
+      ? formatStackTrace(stack, config, options, testPath)
       : '';
+  // A stack whose every frame was filtered out contributes nothing, not a
+  // blank line.
+  stack = renderedStack === '' ? '' : `\n${renderedStack}`;
 
   if (
     typeof stack !== 'string' ||
@@ -220,7 +234,9 @@ export const formatExecError = (
   const subErrorStr =
     subErrors.length > 0
       ? indentAllLines(
-          `\n\nErrors contained in AggregateError:\n${subErrors.join('\n')}`,
+          `\n\nErrors contained in AggregateError:\n${subErrors
+            .map(subError => subError.trimEnd())
+            .join('\n\n')}`,
         )
       : '';
 
@@ -434,11 +450,12 @@ function formatErrorStack(
   const sourceStack =
     typeof errorOrStack === 'string' ? errorOrStack : errorOrStack.stack || '';
   let {message, stack} = separateMessageFromStack(sourceStack);
-  stack = options.noStackTrace
+  const renderedStack = options.noStackTrace
     ? ''
-    : `${STACK_TRACE_COLOR(
-        formatStackTrace(stack, config, options, testPath),
-      )}\n`;
+    : colorStackLines(formatStackTrace(stack, config, options, testPath));
+  // A stack whose every frame was filtered out contributes nothing, not a
+  // blank line.
+  stack = renderedStack === '' ? '' : `${renderedStack}\n`;
 
   message = checkForCommonEnvironmentErrors(message);
   message = indentAllLines(message);
