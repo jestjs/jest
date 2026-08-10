@@ -432,7 +432,7 @@ Run the tests of the specified projects. Jest uses the attribute `displayName` i
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
-A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
+A list of paths to modules that run some code to configure or to set up the testing framework before each test file. Beware that files imported by the setup scripts will not be mocked during testing.
 
 ### `--shard`
 
