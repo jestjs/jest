@@ -92,7 +92,11 @@ export function onNodeVersions(
   testBody: () => void,
 ): void {
   const description = `on node ${versionRange}`;
-  if (semver.satisfies(process.versions.node, versionRange)) {
+  if (
+    semver.satisfies(process.versions.node, versionRange, {
+      includePrerelease: true,
+    })
+  ) {
     describe(description, () => {
       testBody();
     });
