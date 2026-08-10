@@ -12,18 +12,14 @@ import {stripVTControlCharacters as stripAnsi} from 'node:util';
 import dedent from 'dedent';
 import execa from 'execa';
 import * as fs from 'graceful-fs';
-import * as semver from 'semver';
 import {TestPathPatterns} from '@jest/pattern';
 import type {FormattedTestResults} from '@jest/test-result';
 import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 
-export const useNativeTypeScript = semver.satisfies(
-  process.versions.node,
-  '^22.18.0 || >=23.6.0',
-  {includePrerelease: true},
-);
+// @ts-expect-error: Type assertion can be removed once @types/node is updated to 23 https://nodejs.org/api/process.html#processfeaturestypescript
+export const useNativeTypeScript = Boolean(process.features.typescript);
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
