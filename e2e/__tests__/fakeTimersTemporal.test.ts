@@ -9,9 +9,9 @@ import runJest from '../runJest';
 
 // Temporal needs ICU4X at Node's configure time, so a Node version that should
 // have it can still ship without the global.
-const hasTemporal = 'Temporal' in globalThis;
+const testTemporal = 'Temporal' in globalThis ? test : test.skip;
 
-(hasTemporal ? test : test.skip)(
+testTemporal(
   'useFakeTimers({now}) and setSystemTime accept Temporal instances',
   () => {
     const result = runJest('fake-timers-temporal');
