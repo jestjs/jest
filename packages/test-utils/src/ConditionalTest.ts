@@ -7,12 +7,26 @@
 
 /* eslint-disable jest/no-focused-tests */
 
+import {spawnSync} from 'node:child_process';
 import {SourceTextModule, SyntheticModule} from 'node:vm';
 import * as semver from 'semver';
 import {describe, test} from '@jest/globals';
 
 export function isJestJasmineRun(): boolean {
   return process.env.JEST_JASMINE === '1';
+}
+
+export function isWatchmanAvailable(): boolean {
+  const {error, status} = spawnSync('watchman', ['--version']);
+  return error == null && status === 0;
+}
+
+export function skipSuiteWithoutWatchman(): void {
+  if (!isWatchmanAvailable()) {
+    test.only('requires watchman', () => {
+      console.warn('[SKIP] Requires watchman to be installed');
+    });
+  }
 }
 
 export function skipSuiteOnJasmine(): void {
