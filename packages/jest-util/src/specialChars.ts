@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,4 +15,6 @@ export const ICONS = {
   todo: '\u270E',
 };
 
-export const CLEAR = isWindows ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H';
+export const CLEAR = isWindows
+  ? '\u001B[2J\u001B[0f'
+  : '\u001B[2J\u001B[3J\u001B[H';

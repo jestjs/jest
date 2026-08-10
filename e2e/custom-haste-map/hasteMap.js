@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
 
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const fakeFile = {
   file: path.resolve(__dirname, '__tests__/hasteExampleHelper.js'),
   moduleName: 'fakeModuleName',
@@ -109,7 +109,7 @@ class HasteMap {
   constructor(options) {
     this._cachePath = HasteMap.getCacheFilePath(
       options.cacheDirectory,
-      options.name,
+      options.id,
     );
   }
 
@@ -120,8 +120,8 @@ class HasteMap {
     };
   }
 
-  static getCacheFilePath(tmpdir, name) {
-    return path.join(tmpdir, name);
+  static getCacheFilePath(tmpdir, id) {
+    return path.join(tmpdir, id);
   }
 
   getCacheFilePath() {

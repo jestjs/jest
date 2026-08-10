@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -33,12 +33,12 @@ test('empty external', () => {
   // is not confused with new snapshot not written because of --ci option.
   const filename = 'empty-external.test.js';
   const template = makeTemplate(
-    `test('string serializer', () => { expect($1).toMatchSnapshot(); })`,
+    "test('string serializer', () => { expect($1).toMatchSnapshot(); })",
   );
 
   {
     writeFiles(TESTS_DIR, {
-      [filename]: template([`''`]),
+      [filename]: template(["''"]),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
@@ -54,7 +54,7 @@ test('empty external', () => {
 
   {
     writeFiles(TESTS_DIR, {
-      [filename]: template([`'non-empty'`]),
+      [filename]: template(["'non-empty'"]),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
@@ -69,11 +69,11 @@ test('empty internal ci false', () => {
   // is not confused with absence of snapshot.
   const filename = 'empty-internal-ci-false.test.js';
   const template = makeTemplate(
-    `test('string serializer', () => { expect($1).toMatchInlineSnapshot(); })`,
+    "test('string serializer', () => { expect($1).toMatchInlineSnapshot(); })",
   );
 
-  const received1 = `''`;
-  const received2 = `'non-empty'`;
+  const received1 = "''";
+  const received2 = "'non-empty'";
 
   {
     writeFiles(TESTS_DIR, {
@@ -101,12 +101,12 @@ test('undefined internal ci true', () => {
   // is not confused with ordinary failure for empty string as expected value.
   const filename = 'undefined-internal-ci-true.test.js';
   const template = makeTemplate(
-    `test('explicit update', () => { expect($1).toMatchInlineSnapshot(); })`,
+    "test('explicit update', () => { expect($1).toMatchInlineSnapshot(); })",
   );
 
   {
     writeFiles(TESTS_DIR, {
-      [filename]: template([`'non-empty'`]),
+      [filename]: template(["'non-empty'"]),
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=true', filename]);
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');

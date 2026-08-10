@@ -1,9 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`renders correctly 1`] = `
 <View
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "#F5FCFF",
       "flex": 1,
@@ -13,7 +13,7 @@ exports[`renders correctly 1`] = `
 >
   <Text
     style={
-      Object {
+      {
         "fontSize": 20,
         "margin": 10,
         "textAlign": "center",
@@ -24,7 +24,7 @@ exports[`renders correctly 1`] = `
   </Text>
   <Text
     style={
-      Object {
+      {
         "color": "#333333",
         "marginBottom": 5,
         "textAlign": "center",
@@ -39,8 +39,6 @@ exports[`renders correctly 1`] = `
 exports[`renders the ActivityIndicator component 1`] = `
 <ActivityIndicator
   animating={true}
-  color="#999999"
-  hidesWhenStopped={true}
   size="small"
 />
 `;
@@ -48,36 +46,31 @@ exports[`renders the ActivityIndicator component 1`] = `
 exports[`renders the FlatList component 1`] = `
 <RCTScrollView
   data={
-    Array [
+    [
       "apple",
       "banana",
       "kiwi",
     ]
   }
-  disableVirtualization={false}
   getItem={[Function]}
   getItemCount={[Function]}
-  horizontal={false}
-  initialNumToRender={10}
   keyExtractor={[Function]}
-  maxToRenderPerBatch={10}
   onContentSizeChange={[Function]}
-  onEndReachedThreshold={2}
   onLayout={[Function]}
+  onMomentumScrollBegin={[Function]}
   onMomentumScrollEnd={[Function]}
   onScroll={[Function]}
   onScrollBeginDrag={[Function]}
   onScrollEndDrag={[Function]}
   removeClippedSubviews={false}
   renderItem={[Function]}
-  scrollEventThrottle={50}
-  stickyHeaderIndices={Array []}
-  updateCellsBatchingPeriod={50}
-  viewabilityConfigCallbackPairs={Array []}
-  windowSize={21}
+  scrollEventThrottle={0.0001}
+  stickyHeaderIndices={[]}
+  viewabilityConfigCallbackPairs={[]}
 >
   <View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >
@@ -86,6 +79,7 @@ exports[`renders the FlatList component 1`] = `
       </Text>
     </View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >
@@ -94,6 +88,7 @@ exports[`renders the FlatList component 1`] = `
       </Text>
     </View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >
@@ -107,10 +102,7 @@ exports[`renders the FlatList component 1`] = `
 
 exports[`renders the TextInput component 1`] = `
 <TextInput
-  allowFontScaling={true}
   autoCorrect={false}
-  rejectResponderTermination={true}
-  underlineColorAndroid="transparent"
   value="apple banana kiwi"
 />
 `;

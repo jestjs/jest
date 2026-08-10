@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,11 +24,13 @@ describe('shouldInstrument', () => {
       filename = defaultFilename,
       options: Partial<Options>,
       config: Partial<Config.ProjectConfig>,
+      loadedFilenames?: Array<string>,
     ) => {
       const result = shouldInstrument(
         filename,
         {...defaultOptions, ...options},
         {...defaultConfig, ...config},
+        loadedFilenames,
       );
       expect(result).toBe(true);
     };
@@ -77,16 +79,6 @@ describe('shouldInstrument', () => {
       });
     });
 
-    it('should return true when file is in collectCoverageOnlyFrom when provided', () => {
-      testShouldInstrument(
-        'collect/only/from/here.js',
-        {
-          collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
-        },
-        defaultConfig,
-      );
-    });
-
     it('should return true when filename matches collectCoverageFrom', () => {
       testShouldInstrument(
         'do/collect/coverage.js',
@@ -109,6 +101,52 @@ describe('shouldInstrument', () => {
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
+
+    it('when file is in loadedFilenames list', () => {
+      testShouldInstrument(
+        'do/collect/coverage.js',
+        defaultOptions,
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is in not loadedFilenames list, but matches collectCoverageFrom', () => {
+      testShouldInstrument(
+        'do/collect/coverage.js',
+        {collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js']},
+        defaultConfig,
+        ['dont/collect/coverage.js'],
+      );
+    });
+
+    it('when file is a .json module, but matches forceCoverageMatch', () => {
+      testShouldInstrument('do/collect/coverage.json', defaultOptions, {
+        forceCoverageMatch: ['**/do/**/*.json'],
+      });
+    });
+
+    it('when using projects with globalRootDir and file matches collectCoverageFrom', () => {
+      testShouldInstrument(
+        '/root/packages/server/server.js',
+        {
+          collectCoverageFrom: ['server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/server'},
+      );
+    });
+
+    it('when using projects with globalRootDir and file matches collectCoverageFrom with multiple patterns', () => {
+      testShouldInstrument(
+        '/root/packages/client/client.js',
+        {
+          collectCoverageFrom: ['client/**/*.js', 'server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/client'},
+      );
+    });
   });
 
   describe('should return false', () => {
@@ -116,11 +154,13 @@ describe('shouldInstrument', () => {
       filename = defaultFilename,
       options: Partial<Options>,
       config: Partial<Config.ProjectConfig>,
+      loadedFilenames?: Array<string>,
     ) => {
       const result = shouldInstrument(
         filename,
         {...defaultOptions, ...options},
         {...defaultConfig, ...config},
+        loadedFilenames,
       );
       expect(result).toBe(false);
     };
@@ -154,27 +194,17 @@ describe('shouldInstrument', () => {
     });
 
     it('when testRegex and testPathIgnorePatterns are provided and filename is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testPathIgnorePatterns: ['src/'],
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
 
     it('when testMatch and testPathIgnorePatterns are provided and file is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testMatch: ['**/?(*.)(test).js'],
         testPathIgnorePatterns: ['src/'],
       });
-    });
-
-    it('when file is not in collectCoverageOnlyFrom when provided', () => {
-      testShouldInstrument(
-        'source_file.js',
-        {
-          collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
-        },
-        defaultConfig,
-      );
     });
 
     it('when filename does not match collectCoverageFrom', () => {
@@ -224,6 +254,43 @@ describe('shouldInstrument', () => {
       testShouldInstrument('setupTest.js', defaultOptions, {
         setupFilesAfterEnv: ['setupTest.js'],
       });
+    });
+
+    it('when file is not in loadedFilenames list', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.js',
+        defaultOptions,
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is in not loadedFilenames list and does not match collectCoverageFrom', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.js',
+        {collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js']},
+        defaultConfig,
+        ['do/collect/coverage.js'],
+      );
+    });
+
+    it('when file is a .json module', () => {
+      testShouldInstrument(
+        'dont/collect/coverage.json',
+        defaultOptions,
+        defaultConfig,
+      );
+    });
+
+    it('when using projects with globalRootDir and file does not match collectCoverageFrom', () => {
+      testShouldInstrument(
+        '/root/packages/utils/utils.js',
+        {
+          collectCoverageFrom: ['client/**/*.js', 'server/**/*.js'],
+          globalRootDir: '/root/packages',
+        },
+        {rootDir: '/root/packages/utils'},
+      );
     });
   });
 });

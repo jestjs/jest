@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`hook in describe with skipped test 1`] = `
 Object {
@@ -7,7 +7,7 @@ Object {
 Tests:       1 skipped, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /hookInDescribeWithSkippedTest.test.js/i.",
+Ran all test suites matching hookInDescribeWithSkippedTest.test.js.",
 }
 `;
 
@@ -34,7 +34,7 @@ Object {
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /hookInEmptyDescribe.test.js/i.",
+Ran all test suites matching hookInEmptyDescribe.test.js.",
 }
 `;
 
@@ -61,7 +61,7 @@ Object {
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /hookInEmptyNestedDescribe.test.js/i.",
+Ran all test suites matching hookInEmptyNestedDescribe.test.js.",
 }
 `;
 
@@ -133,6 +133,6 @@ Object {
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /multipleHooksInEmptyDescribe.test.js/i.",
+Ran all test suites matching multipleHooksInEmptyDescribe.test.js.",
 }
 `;

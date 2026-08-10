@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import {diffStringsUnified} from '../printDiffs';
 
 // 1. Use options to omit line colors.
 const identity = (string: string) => string;
-const changeColor = (string: string) => '<i>' + string + '</i>';
+const changeColor = (string: string) => `<i>${string}</i>`;
 const options = {
   aColor: identity,
   bColor: identity,

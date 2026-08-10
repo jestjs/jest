@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import micromatch = require('micromatch');
+import micromatch from 'micromatch';
 import globsToMatcher from '../globsToMatcher';
 
 it('works like micromatch with only positive globs', () => {
@@ -59,7 +59,7 @@ it('works like micromatch with only negative globs', () => {
 });
 
 it('works like micromatch with empty globs', () => {
-  const globs = [];
+  const globs: Array<string> = [];
   const matcher = globsToMatcher(globs);
 
   expect(matcher('some-module.js')).toBe(

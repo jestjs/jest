@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -39,7 +38,70 @@ test('works fine when function throws error', () => {
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(exitCode).toBe(0);
+  }
+});
+
+test('works fine when function throws error with cause', () => {
+  const filename = 'works-fine-when-function-throws-error-with-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      function ErrorWithCause(message, cause) {
+        const err = new Error(message, {cause});
+        if (err.cause !== cause) {
+          // cause does not exist in old versions of node
+          err.cause = cause;
+        }
+        return err;
+      }
+      expect(() => {
+        throw ErrorWithCause('apple',
+          ErrorWithCause('banana',
+            ErrorWithCause('orange')
+          )
+        );
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
+    expect(exitCode).toBe(0);
+  }
+});
+
+test('works fine when function throws error with string cause', () => {
+  const filename =
+    'works-fine-when-function-throws-error-with-string-cause.test.js';
+  const template = makeTemplate(`
+    test('works fine when function throws error', () => {
+      function ErrorWithCause(message, cause) {
+        const err = new Error(message, {cause});
+        if (err.cause !== cause) {
+          // cause does not exist in old versions of node
+          err.cause = cause;
+        }
+        return err;
+      }
+      expect(() => {
+        throw ErrorWithCause('apple', 'here is a cause');
+      })
+        .toThrowErrorMatchingInlineSnapshot();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template()});
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(fileAfter).toMatchSnapshot('initial write with cause');
     expect(exitCode).toBe(0);
   }
 });
@@ -65,7 +127,7 @@ test('updates existing snapshot', () => {
     ]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(wrap(fileAfter)).toMatchSnapshot('updated snapshot');
+    expect(fileAfter).toMatchSnapshot('updated snapshot');
     expect(exitCode).toBe(0);
   }
 });
@@ -101,6 +163,6 @@ test('should support rejecting promises', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(wrap(fileAfter)).toMatchSnapshot();
+  expect(fileAfter).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

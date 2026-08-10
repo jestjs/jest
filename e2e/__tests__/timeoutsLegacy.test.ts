@@ -1,12 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -41,7 +40,7 @@ test('exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -61,8 +60,8 @@ test('does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL', () =>
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -83,6 +82,6 @@ test('can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {summary} = extractSummary(stderr);
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

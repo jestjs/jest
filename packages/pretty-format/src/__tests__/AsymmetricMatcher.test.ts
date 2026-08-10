@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,7 +24,7 @@ beforeEach(() => {
   options = {plugins: [AsymmetricMatcher]};
 });
 
-[
+for (const type of [
   String,
   Function,
   Array,
@@ -33,11 +33,11 @@ beforeEach(() => {
   Symbol,
   Function,
   () => {},
-  function namedFuntction() {},
-].forEach(type => {
+  function namedFunction() {},
+]) {
   test(`supports any(${fnNameFor(type)})`, () => {
     const result = prettyFormat(expect.any(type), options);
-    expect(result).toEqual(`Any<${fnNameFor(type)}>`);
+    expect(result).toBe(`Any<${fnNameFor(type)}>`);
   });
 
   test(`supports nested any(${fnNameFor(type)})`, () => {
@@ -49,89 +49,140 @@ beforeEach(() => {
       },
       options,
     );
-    expect(result).toEqual(
+    expect(result).toBe(
       `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(
         type,
       )}>,\n  },\n}`,
     );
   });
-});
+}
 
-test(`anything()`, () => {
+test('anything()', () => {
   const result = prettyFormat(expect.anything(), options);
-  expect(result).toEqual('Anything');
+  expect(result).toBe('Anything');
 });
 
-test(`arrayContaining()`, () => {
+test('arrayContaining()', () => {
   const result = prettyFormat(expect.arrayContaining([1, 2]), options);
-  expect(result).toEqual(`ArrayContaining [
+  expect(result).toBe(`ArrayContaining [
   1,
   2,
 ]`);
 });
 
-test(`arrayNotContaining()`, () => {
+test('arrayNotContaining()', () => {
   const result = prettyFormat(expect.not.arrayContaining([1, 2]), options);
-  expect(result).toEqual(`ArrayNotContaining [
+  expect(result).toBe(`ArrayNotContaining [
   1,
   2,
 ]`);
 });
 
-test(`objectContaining()`, () => {
+test('arrayOf()', () => {
+  const result = prettyFormat(expect.arrayOf(expect.any(String)), options);
+  expect(result).toBe('ArrayOf Any<String>');
+});
+
+test('notArrayOf()', () => {
+  const result = prettyFormat(expect.not.arrayOf(expect.any(String)), options);
+  expect(result).toBe('NotArrayOf Any<String>');
+});
+
+test('objectContaining()', () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
-  expect(result).toEqual(`ObjectContaining {
+  expect(result).toBe(`ObjectContaining {
   "a": "test",
 }`);
 });
 
-test(`objectNotContaining()`, () => {
+test('objectNotContaining()', () => {
   const result = prettyFormat(
     expect.not.objectContaining({a: 'test'}),
     options,
   );
-  expect(result).toEqual(`ObjectNotContaining {
+  expect(result).toBe(`ObjectNotContaining {
   "a": "test",
 }`);
 });
 
-test(`stringContaining(string)`, () => {
+test('stringContaining(string)', () => {
   const result = prettyFormat(expect.stringContaining('jest'), options);
-  expect(result).toEqual(`StringContaining "jest"`);
+  expect(result).toBe('StringContaining "jest"');
 });
 
-test(`not.stringContaining(string)`, () => {
+test('not.stringContaining(string)', () => {
   const result = prettyFormat(expect.not.stringContaining('jest'), options);
-  expect(result).toEqual(`StringNotContaining "jest"`);
+  expect(result).toBe('StringNotContaining "jest"');
 });
 
-test(`stringMatching(string)`, () => {
+test('stringMatching(string)', () => {
   const result = prettyFormat(expect.stringMatching('jest'), options);
-  expect(result).toEqual('StringMatching /jest/');
+  expect(result).toBe('StringMatching /jest/');
 });
 
-test(`stringMatching(regexp)`, () => {
+test('stringMatching(regexp)', () => {
   const result = prettyFormat(expect.stringMatching(/(jest|niema).*/), options);
-  expect(result).toEqual('StringMatching /(jest|niema).*/');
+  expect(result).toBe('StringMatching /(jest|niema).*/');
 });
 
-test(`stringMatching(regexp) {escapeRegex: false}`, () => {
+test('stringMatching(regexp) {escapeRegex: false}', () => {
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
-  expect(result).toEqual('StringMatching /regexp\\d/gi');
+  expect(result).toBe('StringMatching /regexp\\d/gi');
 });
 
-test(`stringMatching(regexp) {escapeRegex: true}`, () => {
-  options.escapeRegex = true;
-  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
-  expect(result).toEqual('StringMatching /regexp\\\\d/gi');
+test('stringMatching(regexp) {escapeRegex: true}', () => {
+  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), {
+    ...options,
+    escapeRegex: true,
+  });
+  expect(result).toBe('StringMatching /regexp\\\\d/gi');
 });
 
-test(`stringNotMatching(string)`, () => {
+test('stringNotMatching(string)', () => {
   const result = prettyFormat(expect.not.stringMatching('jest'), options);
-  expect(result).toEqual('StringNotMatching /jest/');
+  expect(result).toBe('StringNotMatching /jest/');
 });
 
-test(`supports multiple nested asymmetric matchers`, () => {
+test('closeTo(number, precision)', () => {
+  const result = prettyFormat(expect.closeTo(1.2345, 4), options);
+  expect(result).toBe('NumberCloseTo 1.2345 (4 digits)');
+});
+
+test('notCloseTo(number, precision)', () => {
+  const result = prettyFormat(expect.not.closeTo(1.2345, 1), options);
+  expect(result).toBe('NumberNotCloseTo 1.2345 (1 digit)');
+});
+
+test('closeTo(number)', () => {
+  const result = prettyFormat(expect.closeTo(1.2345), options);
+  expect(result).toBe('NumberCloseTo 1.2345 (2 digits)');
+});
+
+test('closeTo(Infinity)', () => {
+  const result = prettyFormat(
+    expect.closeTo(Number.NEGATIVE_INFINITY),
+    options,
+  );
+  expect(result).toBe('NumberCloseTo -Infinity (2 digits)');
+});
+
+test('closeTo(scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-3, 4), options);
+  expect(result).toBe('NumberCloseTo 0.00156 (4 digits)');
+});
+
+test('closeTo(very small scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-10, 4), options);
+  expect(result).toBe('NumberCloseTo 1.56e-10 (4 digits)');
+});
+
+test('correctly handles inability to pretty-print matcher', () => {
+  expect(() => prettyFormat(new DummyMatcher(1), options)).toThrow(
+    'Asymmetric matcher DummyMatcher does not implement toAsymmetricMatcher()',
+  );
+});
+
+test('supports multiple nested asymmetric matchers', () => {
   const result = prettyFormat(
     {
       test: {
@@ -142,12 +193,17 @@ test(`supports multiple nested asymmetric matchers`, () => {
           d: expect.stringContaining('jest'),
           e: expect.stringMatching('jest'),
           f: expect.objectContaining({test: 'case'}),
+          g: expect.arrayOf(
+            expect.objectContaining({
+              nested: expect.any(Number),
+            }),
+          ),
         }),
       },
     },
     options,
   );
-  expect(result).toEqual(`Object {
+  expect(result).toBe(`Object {
   "test": Object {
     "nested": ObjectContaining {
       "a": ArrayContaining [
@@ -160,12 +216,15 @@ test(`supports multiple nested asymmetric matchers`, () => {
       "f": ObjectContaining {
         "test": "case",
       },
+      "g": ArrayOf ObjectContaining {
+        "nested": Any<Number>,
+      },
     },
   },
 }`);
 });
 
-describe(`indent option`, () => {
+describe('indent option', () => {
   const val = {
     nested: expect.objectContaining({
       a: expect.arrayContaining([1]),
@@ -198,30 +257,28 @@ describe(`indent option`, () => {
   },
 }`;
 
-  test(`default implicit: 2 spaces`, () => {
+  test('default implicit: 2 spaces', () => {
     expect(prettyFormat(val, options)).toEqual(result);
   });
-  test(`default explicit: 2 spaces`, () => {
-    options.indent = 2;
-    expect(prettyFormat(val, options)).toEqual(result);
+  test('default explicit: 2 spaces', () => {
+    expect(prettyFormat(val, {...options, indent: 2})).toEqual(result);
   });
 
   // Tests assume that no strings in val contain multiple adjacent spaces!
-  test(`non-default: 0 spaces`, () => {
-    options.indent = 0;
-    expect(prettyFormat(val, options)).toEqual(result.replace(/ {2}/g, ''));
+  test('non-default: 0 spaces', () => {
+    expect(prettyFormat(val, {...options, indent: 0})).toEqual(
+      result.replaceAll(/ {2}/g, ''),
+    );
   });
   test('non-default: 4 spaces', () => {
-    options.indent = 4;
-    expect(prettyFormat(val, options)).toEqual(
-      result.replace(/ {2}/g, ' '.repeat(4)),
+    expect(prettyFormat(val, {...options, indent: 4})).toEqual(
+      result.replaceAll(/ {2}/g, ' '.repeat(4)),
     );
   });
 });
 
-describe(`maxDepth option`, () => {
-  test(`matchers as leaf nodes`, () => {
-    options.maxDepth = 2;
+describe('maxDepth option', () => {
+  test('matchers as leaf nodes', () => {
     const val = {
       // ++depth === 1
       nested: [
@@ -241,8 +298,8 @@ describe(`maxDepth option`, () => {
         expect.anything(),
       ],
     };
-    const result = prettyFormat(val, options);
-    expect(result).toEqual(`Object {
+    const result = prettyFormat(val, {...options, maxDepth: 2});
+    expect(result).toBe(`Object {
   "nested": Array [
     [ArrayContaining],
     [ObjectContaining],
@@ -253,8 +310,7 @@ describe(`maxDepth option`, () => {
   ],
 }`);
   });
-  test(`matchers as internal nodes`, () => {
-    options.maxDepth = 2;
+  test('matchers as internal nodes', () => {
     const val = [
       // ++depth === 1
       expect.arrayContaining([
@@ -276,8 +332,8 @@ describe(`maxDepth option`, () => {
         primitive: 'printed',
       }),
     ];
-    const result = prettyFormat(val, options);
-    expect(result).toEqual(`Array [
+    const result = prettyFormat(val, {...options, maxDepth: 2});
+    expect(result).toBe(`Array [
   ArrayContaining [
     "printed",
     [Object],
@@ -290,8 +346,7 @@ describe(`maxDepth option`, () => {
   });
 });
 
-test(`min option`, () => {
-  options.min = true;
+test('min option', () => {
   const result = prettyFormat(
     {
       test: {
@@ -305,9 +360,27 @@ test(`min option`, () => {
         }),
       },
     },
-    options,
+    {...options, min: true},
   );
-  expect(result).toEqual(
-    `{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}`,
+  expect(result).toBe(
+    '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',
   );
 });
+
+class DummyMatcher {
+  $$typeof = Symbol.for('jest.asymmetricMatcher');
+
+  constructor(private readonly sample: number) {}
+
+  asymmetricMatch(other: number) {
+    return this.sample === other;
+  }
+
+  toString() {
+    return 'DummyMatcher';
+  }
+
+  getExpectedType() {
+    return 'number';
+  }
+}

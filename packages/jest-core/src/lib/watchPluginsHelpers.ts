@@ -1,11 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import type {Config} from '@jest/types';
+import {isNonNullable} from 'jest-util';
 import type {UsageData, WatchPlugin} from 'jest-watcher';
 
 export const filterInteractivePlugins = (
@@ -26,10 +27,6 @@ export const filterInteractivePlugins = (
     return false;
   });
 };
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
 
 export const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,
@@ -56,4 +53,4 @@ export const getSortedUsageRows = (
       return 0;
     })
     .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
-    .filter(notEmpty);
+    .filter(isNonNullable);

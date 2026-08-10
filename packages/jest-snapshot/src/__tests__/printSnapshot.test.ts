@@ -1,14 +1,23 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex = require('ansi-regex');
-import styles = require('ansi-styles');
-import chalk = require('chalk');
+import ansiRegex from 'ansi-regex';
+import styles from 'ansi-styles';
+import chalk from 'chalk';
+import type {SyncExpectationResult} from 'expect';
 import format from 'pretty-format';
+import {
+  type Context,
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../';
+import type SnapshotState from '../State';
 import {
   aBackground2,
   aBackground3,
@@ -19,7 +28,6 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
-import jestSnapshot = require('../index');
 import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
@@ -132,13 +140,6 @@ expect.addSnapshotSerializer({
   },
 });
 
-const {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} = jestSnapshot;
-
 describe('chalk', () => {
   // Because these tests give code coverage of get functions
   // and give confidence that the escape sequences are correct,
@@ -146,7 +147,7 @@ describe('chalk', () => {
   // so snapshot tests pass in any environment with chalk level >= 1.
 
   // Simulate comparison lines from printSnapshotAndReceived.
-  const formatLines = chalkInstance => {
+  const formatLines = (chalkInstance: chalk.Chalk) => {
     const aColor = getSnapshotColorForChalkInstance(chalkInstance);
     const bColor = getReceivedColorForChalkInstance(chalkInstance);
     const cColor = chalkInstance.dim;
@@ -156,7 +157,7 @@ describe('chalk', () => {
     return [
       aColor(`- delete 1${changeLineTrailingSpaceColor(' ')}`),
       cColor(`  common 2${commonLineTrailingSpaceColor('  ')}`),
-      bColor(`+ insert 0`),
+      bColor('+ insert 0'),
     ].join('\n');
   };
 
@@ -179,8 +180,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground1 + aOpenBackground1 + '-');
-    expect(formatted).toMatch(bOpenForeground1 + bOpenBackground1 + '+');
+    expect(formatted).toMatch(`${aOpenForeground1 + aOpenBackground1}-`);
+    expect(formatted).toMatch(`${bOpenForeground1 + bOpenBackground1}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -191,8 +192,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground2 + aOpenBackground2 + '-');
-    expect(formatted).toMatch(bOpenForeground2 + bOpenBackground2 + '+');
+    expect(formatted).toMatch(`${aOpenForeground2 + aOpenBackground2}-`);
+    expect(formatted).toMatch(`${bOpenForeground2 + bOpenBackground2}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -203,8 +204,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground3 + aOpenBackground3 + '-');
-    expect(formatted).toMatch(bOpenForeground3 + bOpenBackground3 + '+');
+    expect(formatted).toMatch(`${aOpenForeground3 + aOpenBackground3}-`);
+    expect(formatted).toMatch(`${bOpenForeground3 + bOpenBackground3}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -222,10 +223,11 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = false;
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -234,11 +236,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
       const snapshot = '';
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -247,11 +250,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'resolves',
-      };
+      } as Context;
       const properties = {};
       const snapshot = Symbol('is not a string');
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -260,7 +264,7 @@ describe('matcher error', () => {
       const context = {
         isNot: true,
         promise: '',
-      };
+      } as Context;
       const received = -13;
       const snapshot = '13';
 
@@ -281,7 +285,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = () => {};
 
       expect(() => {
@@ -293,11 +297,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
       const hint = 'reminder';
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchSnapshot.call(context, received, properties, hint);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -306,10 +311,11 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -320,7 +326,7 @@ describe('matcher error', () => {
         isNot: false,
         promise: '',
         snapshotState: {},
-      };
+      } as Context;
       const properties = {};
 
       test('(non-null)', () => {
@@ -342,7 +348,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'resolves',
-      };
+      } as Context;
       const hint = 'initialize me';
 
       expect(() => {
@@ -356,7 +362,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = () => {
         throw new Error('Not found');
       };
@@ -367,6 +373,7 @@ describe('matcher error', () => {
         toThrowErrorMatchingInlineSnapshot.call(
           context,
           received,
+          // @ts-expect-error: Testing runtime error
           snapshot,
           fromPromise,
         );
@@ -377,7 +384,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'rejects',
-      };
+      } as Context;
       const received = new Error('404');
       const snapshot = '"Not found"';
       const fromPromise = true;
@@ -398,7 +405,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = 13;
       const fromPromise = false;
 
@@ -416,7 +423,7 @@ describe('matcher error', () => {
       const context = {
         isNot: true,
         promise: '',
-      };
+      } as Context;
       const received = new Error('received');
       const hint = 'reminder';
       const fromPromise = true;
@@ -436,7 +443,7 @@ describe('other error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = () => {};
       const fromPromise = false;
 
@@ -466,13 +473,13 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: (fullTestName: string) => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id: 'abcdefg',
           text: 'Increase code coverage',
@@ -486,7 +493,7 @@ describe('pass false', () => {
             received,
             properties,
             snapshot,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -496,7 +503,7 @@ describe('pass false', () => {
             context,
             received,
             properties,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -518,12 +525,12 @@ describe('pass false', () => {
                 pass: false,
               };
             },
-          },
+          } as SnapshotState,
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id,
           text: 'received',
@@ -540,7 +547,7 @@ describe('pass false', () => {
           received,
           properties,
           snapshot,
-        );
+        ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
       });
@@ -563,11 +570,15 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = 'To write or not to write,\nthat is the question.';
       const hint = '(CI)';
 
-      const {message, pass} = toMatchSnapshot.call(context, received, hint);
+      const {message, pass} = toMatchSnapshot.call(
+        context,
+        received,
+        hint,
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -587,11 +598,15 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = 'Write me if you can!';
       const hint = '(CI)';
 
-      const {message, pass} = toMatchSnapshot.call(context, received, hint);
+      const {message, pass} = toMatchSnapshot.call(
+        context,
+        received,
+        hint,
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -608,20 +623,20 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: (fullTestName: string) => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
 
         test('isLineDiffable false', () => {
           const {message, pass} = toMatchSnapshot.call(
             context,
             new RangeError('Invalid array length'),
             {name: 'Error'},
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -637,7 +652,7 @@ describe('pass false', () => {
             context,
             received,
             properties,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -663,12 +678,12 @@ describe('pass false', () => {
                 pass: false,
               };
             },
-          },
+          } as SnapshotState,
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id,
           text: 'received',
@@ -681,7 +696,7 @@ describe('pass false', () => {
           received,
           properties,
           hint,
-        );
+        ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
       });
@@ -705,7 +720,7 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = new Error('received');
       const snapshot = '"inline snapshot"';
       const fromPromise = true;
@@ -715,7 +730,7 @@ describe('pass false', () => {
         received,
         snapshot,
         fromPromise,
-      );
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -736,10 +751,73 @@ describe('pass true', () => {
             };
           },
         },
-      };
+      } as unknown as Context;
       const received = 7;
 
-      const {pass} = toMatchSnapshot.call(context, received);
+      const {pass} = toMatchSnapshot.call(
+        context,
+        received,
+      ) as SyncExpectationResult;
+      expect(pass).toBe(true);
+    });
+
+    test('array', () => {
+      const context = {
+        equals: () => true,
+        isNot: false,
+        promise: '',
+        snapshotState: {
+          match() {
+            return {
+              expected: [],
+              pass: true,
+            };
+          },
+        },
+        utils: {
+          iterableEquality: () => [],
+          subsetEquality: () => [],
+        },
+      } as unknown as Context;
+      const received: Array<unknown> = [];
+      const properties: Array<unknown> = [];
+
+      const {pass} = toMatchSnapshot.call(
+        context,
+        received,
+        properties,
+      ) as SyncExpectationResult;
+      expect(pass).toBe(true);
+    });
+  });
+
+  describe('toMatchInlineSnapshot', () => {
+    test('array', () => {
+      const context = {
+        equals: () => true,
+        isNot: false,
+        promise: '',
+        snapshotState: {
+          match() {
+            return {
+              expected: [],
+              pass: true,
+            };
+          },
+        },
+        utils: {
+          iterableEquality: () => [],
+          subsetEquality: () => [],
+        },
+      } as unknown as Context;
+      const received: Array<unknown> = [];
+      const properties: Array<unknown> = [];
+
+      const {pass} = toMatchInlineSnapshot.call(
+        context,
+        received,
+        properties,
+      ) as SyncExpectationResult;
       expect(pass).toBe(true);
     });
   });
@@ -762,6 +840,21 @@ describe('printPropertiesAndReceived', () => {
       path: expect.any(String),
     };
 
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
+  });
+
+  test('only highlight non passing properties', () => {
+    const received = {
+      a: 1,
+      b: 'some string',
+      c: 'another string',
+    };
+    const properties = {
+      a: expect.any(Number),
+      b: expect.any(Number),
+    };
     expect(
       printPropertiesAndReceived(properties, received, false),
     ).toMatchSnapshot();
@@ -947,7 +1040,7 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsUnified if either string is longer than max.
       const lessChange = chalk.inverse('single ');
       const less = 'single line';
-      const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
+      const more = `multi line${'\n123456789'.repeat(2000)}`; // 10 + 20K chars
 
       test('both are less', () => {
         const less2 = 'multi\nline';
@@ -980,9 +1073,9 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsRaw if either string is longer than max.
       const lessChange = chalk.inverse('no');
       const less = 'no numbers';
-      const more = 'many numbers' + ' 123456789'.repeat(2000); // 12 + 20K chars
-      const lessQuoted = '"' + less + '"';
-      const moreQuoted = '"' + more + '"';
+      const more = `many numbers${' 123456789'.repeat(2000)}`; // 12 + 20K chars
+      const lessQuoted = `"${less}"`;
+      const moreQuoted = `"${more}"`;
 
       test('both are less', () => {
         const lessQuoted2 = '"0 numbers"';
@@ -1071,7 +1164,7 @@ describe('printSnapshotAndReceived', () => {
 
       test('number', () => {
         const expected = -0;
-        const received = NaN;
+        const received = Number.NaN;
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
       });
@@ -1119,14 +1212,14 @@ describe('printSnapshotAndReceived', () => {
       });
 
       test('single line expected and received', () => {
-        const expected = [];
+        const expected: Array<unknown> = [];
         const received = {};
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
       });
 
       test('single line expected and multi line received', () => {
-        const expected = [];
+        const expected: Array<unknown> = [];
         const received = [0];
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
@@ -1332,7 +1425,7 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
         '<img src="test.png" alt="John &quot;ShotGun&quot; Nelson" />',
@@ -1345,10 +1438,10 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson' />`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\' />',
         '',
         '================================================================================',
       ].join('\n');

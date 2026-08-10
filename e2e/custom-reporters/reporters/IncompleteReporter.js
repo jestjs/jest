@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,11 +15,11 @@
  * This only implements one method onRunComplete which should be called
  */
 class IncompleteReporter {
-  onRunComplete(contexts, results) {
+  onRunComplete(testContexts, results) {
     console.log('onRunComplete is called');
-    console.log('Passed Tests: ' + results.numPassedTests);
-    console.log('Failed Tests: ' + results.numFailedTests);
-    console.log('Total Tests: ' + results.numTotalTests);
+    console.log(`Passed Tests: ${results.numPassedTests}`);
+    console.log(`Failed Tests: ${results.numFailedTests}`);
+    console.log(`Total Tests: ${results.numTotalTests}`);
   }
 }
 

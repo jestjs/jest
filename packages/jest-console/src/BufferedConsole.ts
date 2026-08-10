@@ -1,15 +1,20 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
-import {Console} from 'console';
-import {InspectOptions, format, formatWithOptions, inspect} from 'util';
-import chalk = require('chalk');
-import {ErrorWithStack, formatTime} from 'jest-util';
+import {AssertionError, strict as assert} from 'node:assert';
+import {Console} from 'node:console';
+import {
+  type InspectOptions,
+  format,
+  formatWithOptions,
+  inspect,
+} from 'node:util';
+import chalk from 'chalk';
+import {ErrorWithStack, formatTime, invariant} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -19,17 +24,17 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer = [];
+  private readonly _buffer: ConsoleBuffer = [];
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
-  Console: typeof Console = Console;
+  override Console: typeof Console = Console;
 
   constructor() {
     super({
       write: (message: string) => {
-        BufferedConsole.write(this._buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message);
 
         return true;
       },
@@ -37,15 +42,15 @@ export default class BufferedConsole extends Console {
   }
 
   static write(
+    this: void,
     buffer: ConsoleBuffer,
     type: LogType,
     message: LogMessage,
-    level?: number | null,
+    stackLevel = 2,
   ): ConsoleBuffer {
-    const stackLevel = level != null ? level : 2;
     const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
-    invariant(rawStack, 'always have a stack trace');
+    invariant(rawStack != null, 'always have a stack trace');
 
     const origin = rawStack
       .split('\n')
@@ -71,15 +76,19 @@ export default class BufferedConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): void {
+  override assert(value: unknown, message?: string | Error): void {
     try {
-      assert(value, message);
-    } catch (error: any) {
-      this._log('assert', error.toString());
+      assert.ok(value, message);
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._log('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
     }
   }
 
-  count(label: string = 'default'): void {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -87,69 +96,69 @@ export default class BufferedConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default'): void {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: unknown, ...rest: Array<unknown>): void {
+  override debug(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('debug', format(firstArg, ...rest));
   }
 
-  dir(firstArg: unknown, options: InspectOptions = {}): void {
+  override dir(firstArg: unknown, options: InspectOptions = {}): void {
     const representation = inspect(firstArg, options);
     this._log('dir', formatWithOptions(options, representation));
   }
 
-  dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
+  override dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...rest));
   }
 
-  error(firstArg: unknown, ...rest: Array<unknown>): void {
+  override error(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('error', format(firstArg, ...rest));
   }
 
-  group(title?: string, ...rest: Array<unknown>): void {
+  override group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('group', chalk.bold(format(title, ...rest)));
     }
   }
 
-  groupCollapsed(title?: string, ...rest: Array<unknown>): void {
+  override groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...rest)));
     }
   }
 
-  groupEnd(): void {
+  override groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: unknown, ...rest: Array<unknown>): void {
+  override info(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('info', format(firstArg, ...rest));
   }
 
-  log(firstArg: unknown, ...rest: Array<unknown>): void {
+  override log(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('log', format(firstArg, ...rest));
   }
 
-  time(label: string = 'default'): void {
-    if (this._timers[label]) {
+  override time(label = 'default'): void {
+    if (this._timers[label] != null) {
       return;
     }
 
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default'): void {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
@@ -157,27 +166,21 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  timeLog(label = 'default', ...data: Array<unknown>): void {
+  override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
     }
   }
 
-  warn(firstArg: unknown, ...rest: Array<unknown>): void {
+  override warn(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('warn', format(firstArg, ...rest));
   }
 
   getBuffer(): ConsoleBuffer | undefined {
-    return this._buffer.length ? this._buffer : undefined;
-  }
-}
-
-function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
+    return this._buffer.length > 0 ? this._buffer : undefined;
   }
 }

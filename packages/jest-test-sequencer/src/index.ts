@@ -1,20 +1,39 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as crypto from 'node:crypto';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
-import type {AggregatedResult, Test} from '@jest/test-result';
+import slash from 'slash';
+import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
-import type {Context} from 'jest-runtime';
 
 const FAIL = 0;
 const SUCCESS = 1;
 
+export type TestSequencerOptions = {
+  contexts: ReadonlyArray<TestContext>;
+  globalConfig: Config.GlobalConfig;
+};
+
 type Cache = {
-  [key: string]: [0 | 1, number];
+  [key: string]:
+    | [testStatus: typeof FAIL | typeof SUCCESS, testDuration: number]
+    | undefined;
+};
+
+export type ShardOptions = {
+  shardIndex: number;
+  shardCount: number;
+};
+
+type ShardPositionOptions = ShardOptions & {
+  suiteLength: number;
 };
 
 /**
@@ -31,14 +50,17 @@ type Cache = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<Context, Cache> = new Map();
+  private readonly _cache = new Map<TestContext, Cache>();
 
-  _getCachePath(context: Context): string {
-    const {config} = context;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-useless-constructor
+  constructor(_options: TestSequencerOptions) {}
+
+  _getCachePath(testContext: TestContext): string {
+    const {config} = testContext;
     const HasteMapClass = HasteMap.getStatic(config);
     return HasteMapClass.getCacheFilePath(
       config.cacheDirectory,
-      'perf-cache-' + config.name,
+      `perf-cache-${config.id}`,
     );
   }
 
@@ -50,7 +72,7 @@ export default class TestSequencer {
         try {
           this._cache.set(
             context,
-            JSON.parse(fs.readFileSync(cachePath, 'utf8')),
+            JSON.parse(fs.readFileSync(cachePath, 'utf8')) as Cache,
           );
         } catch {}
       }
@@ -65,43 +87,125 @@ export default class TestSequencer {
     return cache;
   }
 
+  private _shardPosition(options: ShardPositionOptions): number {
+    const shardRest = options.suiteLength % options.shardCount;
+    const ratio = options.suiteLength / options.shardCount;
+
+    return Array.from({length: options.shardIndex}).reduce<number>(
+      (acc, _, shardIndex) => {
+        const dangles = shardIndex < shardRest;
+        const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
+        return acc + shardSize;
+      },
+      0,
+    );
+  }
+
   /**
-   * Sorting tests is very important because it has a great impact on the
-   * user-perceived responsiveness and speed of the test run.
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
    *
-   * If such information is on cache, tests are sorted based on:
-   * -> Has it failed during the last run ?
-   * Since it's important to provide the most expected feedback as quickly
-   * as possible.
-   * -> How long it took to run ?
-   * Because running long tests first is an effort to minimize worker idle
-   * time at the end of a long test run.
-   * And if that information is not available they are sorted based on file size
-   * since big test files usually take longer to complete.
+   * @param tests All tests
+   * @param options shardIndex and shardIndex to select
    *
-   * Note that a possible improvement would be to analyse other information
-   * from the file other than its size.
-   *
+   * @example
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *  shard(tests, { shardIndex, shardCount }) {
+   *    const shardSize = Math.ceil(tests.length / options.shardCount);
+   *    const shardStart = shardSize * (options.shardIndex - 1);
+   *    const shardEnd = shardSize * options.shardIndex;
+   *    return [...tests]
+   *     .sort((a, b) => (a.path > b.path ? 1 : -1))
+   *     .slice(shardStart, shardEnd);
+   *  }
+   * }
+   * ```
    */
-  sort(tests: Array<Test>): Array<Test> {
+  shard(
+    tests: Array<Test>,
+    options: ShardOptions,
+  ): Array<Test> | Promise<Array<Test>> {
+    const shardStart = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex - 1,
+      suiteLength: tests.length,
+    });
+
+    const shardEnd = this._shardPosition({
+      shardCount: options.shardCount,
+      shardIndex: options.shardIndex,
+      suiteLength: tests.length,
+    });
+
+    return tests
+      .map(test => {
+        const relativeTestPath = path.posix.relative(
+          slash(test.context.config.rootDir),
+          slash(test.path),
+        );
+
+        return {
+          hash: crypto
+            .createHash('sha1')
+            .update(relativeTestPath)
+            .digest('hex'),
+          test,
+        };
+      })
+      .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0))
+      .slice(shardStart, shardEnd)
+      .map(result => result.test);
+  }
+
+  /**
+   * Sort test to determine order of execution
+   * Sorting is applied after sharding
+   * @param tests
+   *
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *   sort(tests) {
+   *     const copyTests = Array.from(tests);
+   *     return [...tests].sort((a, b) => (a.path > b.path ? 1 : -1));
+   *   }
+   * }
+   * ```
+   */
+  sort(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
+    /**
+     * Sorting tests is very important because it has a great impact on the
+     * user-perceived responsiveness and speed of the test run.
+     *
+     * If such information is on cache, tests are sorted based on:
+     * -> Has it failed during the last run ?
+     * Since it's important to provide the most expected feedback as quickly
+     * as possible.
+     * -> How long it took to run ?
+     * Because running long tests first is an effort to minimize worker idle
+     * time at the end of a long test run.
+     * And if that information is not available they are sorted based on file size
+     * since big test files usually take longer to complete.
+     *
+     * Note that a possible improvement would be to analyse other information
+     * from the file other than its size.
+     *
+     */
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
-      stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][0] === FAIL;
-    const time = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][1];
+      stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
 
-    tests.forEach(test => (test.duration = time(this._getCache(test), test)));
+    for (const test of tests) {
+      test.duration = this.time(test);
+    }
     return tests.sort((testA, testB) => {
-      const cacheA = this._getCache(testA);
-      const cacheB = this._getCache(testB);
-      const failedA = hasFailed(cacheA, testA);
-      const failedB = hasFailed(cacheB, testB);
+      const failedA = this.hasFailed(testA);
+      const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
+      const hasTimeB = testB.duration != null;
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
-      } else if (hasTimeA != (testB.duration != null)) {
+      } else if (hasTimeA !== hasTimeB) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
       } else if (testA.duration != null && testB.duration != null) {
@@ -112,30 +216,40 @@ export default class TestSequencer {
     });
   }
 
-  allFailedTests(tests: Array<Test>): Array<Test> {
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    return this.sort(
-      tests.filter(test => hasFailed(this._getCache(test), test)),
-    );
+  allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
+    return this.sort(tests.filter(test => this.hasFailed(test)));
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
-    const map = Object.create(null);
-    tests.forEach(test => (map[test.path] = test));
-    results.testResults.forEach(testResult => {
-      if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
-        const cache = this._getCache(map[testResult.testFilePath]);
+    const map = Object.create(null) as Record<string, Test | undefined>;
+    for (const test of tests) map[test.path] = test;
+    for (const testResult of results.testResults) {
+      const test = map[testResult.testFilePath];
+      if (test != null && !testResult.skipped) {
+        const cache = this._getCache(test);
         const perf = testResult.perfStats;
+        const testRuntime =
+          perf.runtime ?? test.duration ?? perf.end - perf.start;
         cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.runtime || 0,
+          testResult.numFailingTests > 0 || testResult.testExecError
+            ? FAIL
+            : SUCCESS,
+          testRuntime || 0,
         ];
       }
-    });
+    }
 
-    this._cache.forEach((cache, context) =>
-      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)),
-    );
+    for (const [context, cache] of this._cache.entries())
+      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache));
+  }
+
+  private hasFailed(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[0] === FAIL;
+  }
+
+  private time(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[1];
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,7 +31,7 @@ const hasUnmatchedDoubleQuoteMarks = (string: string): boolean => {
   return n % 2 !== 0;
 };
 
-const isFirstLineOfTag = (line: string) => /^( {2})*\</.test(line);
+const isFirstLineOfTag = (line: string) => /^( {2})*</.test(line);
 
 // The length of the output array is the index of the next input line.
 
@@ -89,8 +89,7 @@ const dedentMarkup = (input: Array<string>, output: Array<string>): boolean => {
   }
 
   let isText = false;
-  const stack: Array<number> = [];
-  stack.push(getIndentationLength(line));
+  const stack = [getIndentationLength(line)];
 
   while (stack.length > 0 && output.length < input.length) {
     line = input[output.length];
@@ -114,7 +113,7 @@ const dedentMarkup = (input: Array<string>, output: Array<string>): boolean => {
         return false; // because text has more than one adjacent line
       }
 
-      const indentationLengthOfTag = stack[stack.length - 1];
+      const indentationLengthOfTag = stack.at(-1)!;
       output.push(line.slice(indentationLengthOfTag + 2));
       isText = true;
     }

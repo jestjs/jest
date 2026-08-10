@@ -1,31 +1,45 @@
 {
   "name": "jest-environment-node",
-  "version": "27.3.1",
+  "version": "30.4.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-environment-node"
   },
   "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^27.3.1",
-    "@jest/fake-timers": "^27.3.1",
-    "@jest/types": "^27.2.5",
+    "@jest/environment": "workspace:*",
+    "@jest/fake-timers": "workspace:*",
+    "@jest/types": "workspace:*",
     "@types/node": "*",
-    "jest-mock": "^27.3.0",
-    "jest-util": "^27.3.1"
+    "jest-mock": "workspace:*",
+    "jest-util": "workspace:*",
+    "jest-validate": "workspace:*"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.3.1"
+    "@jest/test-utils": "workspace:*",
+    "clsx": "^2.1.1"
+  },
+  "scripts": {
+    "test:base": "echo GLOBALS_CLEANUP=$GLOBALS_CLEANUP && yarn --cwd='../.' jest --runInBand packages/jest-environment-node/src/__tests__",
+    "test:globals-cleanup-off": "GLOBALS_CLEANUP=off yarn test:base",
+    "test:globals-cleanup-soft": "GLOBALS_CLEANUP=soft yarn test:base",
+    "test:globals-cleanup-on": "GLOBALS_CLEANUP=on yarn test:base",
+    "test": "yarn test:globals-cleanup-off && yarn test:globals-cleanup-soft && yarn test:globals-cleanup-on"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"

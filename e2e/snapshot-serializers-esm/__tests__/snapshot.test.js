@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -69,7 +69,7 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides foo specified by Jest config in package.json
     expect.addSnapshotSerializer({
       print: (val, serialize) => `Foo: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
   });
@@ -87,7 +87,7 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides preceding added plugin
     expect.addSnapshotSerializer({
       print: (val, serialize) => `FOO: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
   });

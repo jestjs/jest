@@ -1,16 +1,28 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, resolve} from 'path';
+import {dirname, resolve} from 'node:path';
 import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
+import type {ResolverFactory} from 'unrs-resolver';
 import {tryRealpath} from 'jest-util';
+import type {PackageJSON} from './types';
+
+let unrsResolver: ResolverFactory | undefined;
+
+export function getResolver(): ResolverFactory | undefined {
+  return unrsResolver;
+}
+
+export function setResolver(nextResolver: ResolverFactory): void {
+  unrsResolver = nextResolver;
+}
 
 export function clearFsCache(): void {
+  unrsResolver?.clearCache();
   checkedPaths.clear();
   checkedRealpathPaths.clear();
   packageContents.clear();
@@ -30,10 +42,10 @@ function statSyncCached(path: string): IPathType {
 
   let stat;
   try {
-    stat = fs.statSync(path);
-  } catch (e: any) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
+    stat = fs.statSync(path, {throwIfNoEntry: false});
+  } catch (error: any) {
+    if (!(error && (error.code === 'ENOENT' || error.code === 'ENOTDIR'))) {
+      throw error;
     }
   }
 
@@ -52,7 +64,7 @@ function statSyncCached(path: string): IPathType {
 }
 
 const checkedRealpathPaths = new Map<string, string>();
-function realpathCached(path: Config.Path): Config.Path {
+function realpathCached(path: string): string {
   let result = checkedRealpathPaths.get(path);
 
   if (result != null) {
@@ -71,17 +83,15 @@ function realpathCached(path: Config.Path): Config.Path {
   return result;
 }
 
-export type PkgJson = Record<string, unknown>;
-
-const packageContents = new Map<string, PkgJson>();
-export function readPackageCached(path: Config.Path): PkgJson {
+const packageContents = new Map<string, PackageJSON>();
+export function readPackageCached(path: string): PackageJSON {
   let result = packageContents.get(path);
 
   if (result != null) {
     return result;
   }
 
-  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PkgJson;
+  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PackageJSON;
 
   packageContents.set(path, result);
 
@@ -91,9 +101,7 @@ export function readPackageCached(path: Config.Path): PkgJson {
 // adapted from
 // https://github.com/lukeed/escalade/blob/2477005062cdbd8407afc90d3f48f4930354252b/src/sync.js
 // to use cached `fs` calls
-export function findClosestPackageJson(
-  start: Config.Path,
-): Config.Path | undefined {
+export function findClosestPackageJson(start: string): string | undefined {
   let dir = resolve('.', start);
   if (!isDirectory(dir)) {
     dir = dirname(dir);
@@ -119,14 +127,14 @@ export function findClosestPackageJson(
 /*
  * helper functions
  */
-export function isFile(file: Config.Path): boolean {
+export function isFile(file: string): boolean {
   return statSyncCached(file) === IPathType.FILE;
 }
 
-export function isDirectory(dir: Config.Path): boolean {
+export function isDirectory(dir: string): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
 }
 
-export function realpathSync(file: Config.Path): Config.Path {
+export function realpathSync(file: string): string {
   return realpathCached(file);
 }

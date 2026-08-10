@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ describe('snapshot', () => {
     const test = {
       a: 43,
       b: '43',
-      c: 'fourtythree',
+      c: 'fortythree',
     };
     expect(test).toMatchSnapshot();
   });
@@ -34,7 +34,7 @@ describe('snapshot', () => {
     );
   });
 
-  // Issue reported here: https://github.com/facebook/jest/issues/2969
+  // Issue reported here: https://github.com/jestjs/jest/issues/2969
   it('works with \\r\\n', () => {
     expect('<div>\r\n</div>').toMatchSnapshot();
   });

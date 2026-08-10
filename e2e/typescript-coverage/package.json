@@ -7,6 +7,6 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "typescript": "^3.3.1"
+    "typescript": "^5.0.0"
   }
 }

@@ -1,32 +1,38 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
-import {Console} from 'console';
-import {InspectOptions, format, formatWithOptions, inspect} from 'util';
-import chalk = require('chalk');
+import {AssertionError, strict as assert} from 'node:assert';
+import {Console} from 'node:console';
+import type {WriteStream} from 'node:tty';
+import {
+  type InspectOptions,
+  format,
+  formatWithOptions,
+  inspect,
+} from 'node:util';
+import chalk from 'chalk';
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WriteStream;
-  private _stderr: NodeJS.WriteStream;
-  private _formatBuffer: Formatter;
+  private readonly _stdout: WriteStream;
+  private readonly _stderr: WriteStream;
+  private readonly _formatBuffer: Formatter;
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
-  Console: typeof Console = Console;
+  override Console: typeof Console = Console;
 
   constructor(
-    stdout: NodeJS.WriteStream,
-    stderr: NodeJS.WriteStream,
+    stdout: WriteStream,
+    stderr: WriteStream,
     formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
@@ -49,15 +55,19 @@ export default class CustomConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): asserts value {
+  override assert(value: unknown, message?: string | Error): asserts value {
     try {
-      assert(value, message);
-    } catch (error: any) {
-      this._logError('assert', error.toString());
+      assert.ok(value, message);
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+      // https://github.com/jestjs/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replaceAll(/:\n\n.*\n/gs, ''));
     }
   }
 
-  count(label: string = 'default'): void {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -65,87 +75,87 @@ export default class CustomConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default'): void {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: unknown, ...args: Array<unknown>): void {
+  override debug(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('debug', format(firstArg, ...args));
   }
 
-  dir(firstArg: unknown, options: InspectOptions = {}): void {
+  override dir(firstArg: unknown, options: InspectOptions = {}): void {
     const representation = inspect(firstArg, options);
     this._log('dir', formatWithOptions(options, representation));
   }
 
-  dirxml(firstArg: unknown, ...args: Array<unknown>): void {
+  override dirxml(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...args));
   }
 
-  error(firstArg: unknown, ...args: Array<unknown>): void {
+  override error(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('error', format(firstArg, ...args));
   }
 
-  group(title?: string, ...args: Array<unknown>): void {
+  override group(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('group', chalk.bold(format(title, ...args)));
     }
   }
 
-  groupCollapsed(title?: string, ...args: Array<unknown>): void {
+  override groupCollapsed(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...args)));
     }
   }
 
-  groupEnd(): void {
+  override groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: unknown, ...args: Array<unknown>): void {
+  override info(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('info', format(firstArg, ...args));
   }
 
-  log(firstArg: unknown, ...args: Array<unknown>): void {
+  override log(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('log', format(firstArg, ...args));
   }
 
-  time(label: string = 'default'): void {
-    if (this._timers[label]) {
+  override time(label = 'default'): void {
+    if (this._timers[label] != null) {
       return;
     }
 
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default'): void {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
-      const endTime = new Date().getTime();
+    if (startTime != null) {
+      const endTime = Date.now();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
     }
   }
 
-  timeLog(label = 'default', ...data: Array<unknown>): void {
+  override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
     }
   }
 
-  warn(firstArg: unknown, ...args: Array<unknown>): void {
+  override warn(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('warn', format(firstArg, ...args));
   }
 

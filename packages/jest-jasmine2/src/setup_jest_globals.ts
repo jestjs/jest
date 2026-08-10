@@ -1,15 +1,14 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, Global} from '@jest/types';
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import {jestExpect} from '@jest/expect';
+import type {Config} from '@jest/types';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -18,9 +17,6 @@ import type {
   default as JasmineSpec,
   SpecResult,
 } from './jasmine/Spec';
-import type {Jasmine} from './types';
-
-declare const global: Global.Global;
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -29,16 +25,16 @@ export type SetupOptions = {
     path: string,
     applyInteropRequireDefault?: boolean,
   ) => Promise<T>;
-  testPath: Config.Path;
+  testPath: string;
 };
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = (result: SpecResult) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
+  const {suppressedErrors} = jestExpect.getState();
+  jestExpect.setState({suppressedErrors: []});
+  if (suppressedErrors.length > 0) {
     result.status = 'failed';
 
     result.failedExpectations = suppressedErrors.map(error => ({
@@ -55,8 +51,8 @@ const addSuppressedErrors = (result: SpecResult) => {
 };
 
 const addAssertionErrors = (result: SpecResult) => {
-  const assertionErrors = extractExpectedAssertionsErrors();
-  if (assertionErrors.length) {
+  const assertionErrors = jestExpect.extractExpectedAssertionsErrors();
+  if (assertionErrors.length > 0) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
       expected,
@@ -64,12 +60,16 @@ const addAssertionErrors = (result: SpecResult) => {
       passed: false,
     }));
     result.status = 'failed';
-    result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
+    result.failedExpectations = [
+      ...result.failedExpectations,
+      ...jasmineErrors,
+    ];
   }
 };
 
 const patchJasmine = () => {
-  (global.jasmine as Jasmine).Spec = (realSpec => {
+  // @ts-expect-error: jasmine doesn't exist on globalThis
+  globalThis.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
@@ -80,43 +80,44 @@ const patchJasmine = () => {
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
-          setState({currentTestName: context.getFullName()});
-          onStart && onStart.call(attr, context);
+          jestExpect.setState({currentTestName: context.getFullName()});
+          onStart?.call(attr, context);
         };
         super(attr);
       }
     }
 
     return Spec;
-  })((global.jasmine as Jasmine).Spec);
+    // @ts-expect-error: jasmine doesn't exist on globalThis
+  })(globalThis.jasmine.Spec);
 };
 
-export default async ({
+export default async function setupJestGlobals({
   config,
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions): Promise<SnapshotStateType> => {
+}: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  const snapshotSerializers = config.snapshotSerializers.concat().reverse();
-  for (const path of snapshotSerializers) {
-    addSerializer(await localRequire(path));
+  for (let i = config.snapshotSerializers.length - 1; i >= 0; i--) {
+    addSerializer(await localRequire(config.snapshotSerializers[i]));
   }
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const {prettierPath, snapshotFormat} = config;
+  const {prettierPath, rootDir, snapshotFormat} = config;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     prettierPath,
+    rootDir,
     snapshotFormat,
     updateSnapshot,
   });
-  // @ts-expect-error: snapshotState is a jest extension of `expect`
-  setState({snapshotState, testPath});
+
+  jestExpect.setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
-};
+}

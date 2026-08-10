@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,23 +8,6 @@
 import chalk from 'chalk';
 import {KEYS} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
-
-jest
-  .mock('ansi-escapes', () => ({
-    cursorRestorePosition: '[MOCK - cursorRestorePosition]',
-    cursorSavePosition: '[MOCK - cursorSavePosition]',
-    cursorScrollDown: '[MOCK - cursorScrollDown]',
-    cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
-    cursorUp: () => '[MOCK - cursorUp]',
-    eraseDown: '[MOCK - eraseDown]',
-  }))
-  .mock('jest-util', () => {
-    const {specialChars, ...util} = jest.requireActual('jest-util');
-    return {
-      ...util,
-      specialChars: {...specialChars, CLEAR: '[MOCK - clear]'},
-    };
-  });
 
 jest.doMock('chalk', () =>
   Object.assign(new chalk.Instance({level: 0}), {
@@ -55,7 +38,7 @@ describe('SnapshotInteractiveMode', () => {
     ];
     instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
-    expect(mockCallback).toBeCalledWith(assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledWith(assertions[0], false);
   });
 
   test('call to abort', () => {
@@ -68,7 +51,7 @@ describe('SnapshotInteractiveMode', () => {
     instance.abort();
     expect(instance.isActive()).toBeFalsy();
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).toBeCalledWith(null, false);
+    expect(mockCallback).toHaveBeenCalledWith(null, false);
   });
 
   test('call to reset', () => {
@@ -81,7 +64,7 @@ describe('SnapshotInteractiveMode', () => {
     instance.restart();
     expect(instance.isActive()).toBeTruthy();
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).toBeCalledWith(assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledWith(assertions[0], false);
   });
 
   test('press Q or ESC triggers an abort', () => {
@@ -103,7 +86,7 @@ describe('SnapshotInteractiveMode', () => {
     const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
@@ -114,7 +97,7 @@ describe('SnapshotInteractiveMode', () => {
 
     instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).nthCalledWith(2, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
@@ -123,7 +106,7 @@ describe('SnapshotInteractiveMode', () => {
     const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
@@ -134,7 +117,7 @@ describe('SnapshotInteractiveMode', () => {
 
     instance.put('q');
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).nthCalledWith(2, null, false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, null, false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
   });
 
@@ -153,18 +136,18 @@ describe('SnapshotInteractiveMode', () => {
     const assertions = [{fullName: 'test one', path: 'first.js'}];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('u');
-    expect(mockCallback).nthCalledWith(2, assertions[0], true);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[0], true);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
 
     instance.put(KEYS.ENTER);
     expect(instance.isActive()).toBe(false);
-    expect(mockCallback).nthCalledWith(3, null, false);
+    expect(mockCallback).toHaveBeenNthCalledWith(3, null, false);
   });
 
   test('skip 2 tests, then finish and restart', () => {
@@ -173,12 +156,12 @@ describe('SnapshotInteractiveMode', () => {
       {fullName: 'test two', path: 'first.js'},
     ];
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('s');
-    expect(mockCallback).nthCalledWith(2, assertions[1], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
@@ -190,7 +173,7 @@ describe('SnapshotInteractiveMode', () => {
 
     instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).nthCalledWith(3, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(3, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
@@ -219,27 +202,27 @@ describe('SnapshotInteractiveMode', () => {
     ];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('u');
-    expect(mockCallback).nthCalledWith(2, assertions[0], true);
-    expect(mockCallback).nthCalledWith(3, assertions[1], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[0], true);
+    expect(mockCallback).toHaveBeenNthCalledWith(3, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('u');
-    expect(mockCallback).nthCalledWith(4, assertions[1], true);
+    expect(mockCallback).toHaveBeenNthCalledWith(4, assertions[1], true);
     expect(mockCallback).toHaveBeenCalledTimes(4);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put(KEYS.ENTER);
     expect(instance.isActive()).toBe(false);
-    expect(mockCallback).nthCalledWith(5, null, false);
+    expect(mockCallback).toHaveBeenNthCalledWith(5, null, false);
     expect(mockCallback).toHaveBeenCalledTimes(5);
   });
 
@@ -267,14 +250,14 @@ describe('SnapshotInteractiveMode', () => {
     ];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('u');
-    expect(mockCallback).nthCalledWith(2, assertions[0], true);
-    expect(mockCallback).nthCalledWith(3, assertions[1], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[0], true);
+    expect(mockCallback).toHaveBeenNthCalledWith(3, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
@@ -286,7 +269,7 @@ describe('SnapshotInteractiveMode', () => {
 
     instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).nthCalledWith(4, assertions[1], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(4, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(4);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });
@@ -315,26 +298,26 @@ describe('SnapshotInteractiveMode', () => {
     ];
 
     instance.run(assertions, mockCallback);
-    expect(mockCallback).nthCalledWith(1, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(1, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('s');
-    expect(mockCallback).nthCalledWith(2, assertions[1], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(2, assertions[1], false);
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('u');
-    expect(mockCallback).nthCalledWith(3, assertions[1], true);
+    expect(mockCallback).toHaveBeenNthCalledWith(3, assertions[1], true);
     expect(mockCallback).toHaveBeenCalledTimes(3);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     pipe.write.mockClear();
 
     instance.put('r');
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).nthCalledWith(4, assertions[0], false);
+    expect(mockCallback).toHaveBeenNthCalledWith(4, assertions[0], false);
     expect(mockCallback).toHaveBeenCalledTimes(4);
     expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
   });

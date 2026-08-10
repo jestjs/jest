@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import {SpecResult} from '../jasmine/Spec';
-import {SuiteResult} from '../jasmine/Suite';
+import type {SpecResult} from '../jasmine/Spec';
+import type {SuiteResult} from '../jasmine/Suite';
 import JasmineReporter from '../reporter';
 
 describe('Jasmine2Reporter', () => {
@@ -24,7 +24,7 @@ describe('Jasmine2Reporter', () => {
         description: 'description',
         failedExpectations: [],
         fullName: name,
-      } as SpecResult);
+      }) as any as SpecResult;
     reporter.suiteStarted({description: 'parent'} as SuiteResult);
     reporter.suiteStarted({description: 'child'} as SuiteResult);
     reporter.specDone(makeSpec('spec 1'));
@@ -42,5 +42,81 @@ describe('Jasmine2Reporter', () => {
       const secondResult = runResults.testResults[1];
       expect(secondResult.ancestorTitles[1]).toBe('child 2');
     });
+  });
+
+  const extractFailureMessage = (error: Error) => {
+    const spec = {
+      description: 'description',
+      failedExpectations: [
+        {
+          error,
+          matcherName: '',
+          message: error.message,
+          passed: false,
+          stack: error.stack,
+        },
+      ],
+      fullName: 'spec with cause',
+      id: '1',
+      status: 'failed',
+    } as any as SpecResult;
+
+    const extracted = (
+      reporter as unknown as {
+        _extractSpecResults: (
+          specResult: SpecResult,
+          ancestorTitles: Array<string>,
+        ) => {failureMessages: Array<string>};
+      }
+    )._extractSpecResults(spec, []);
+
+    return extracted.failureMessages[0];
+  };
+
+  it('serializes nested Error.cause in failure messages', () => {
+    const message = extractFailureMessage(
+      new Error('error during f', {cause: new Error('error during g')}),
+    );
+
+    expect(message).toContain('[cause]: Error: error during g');
+  });
+
+  it('serializes string Error.cause in failure messages', () => {
+    const message = extractFailureMessage(
+      new Error('error during f', {cause: 'here is the cause'}),
+    );
+
+    expect(message).toContain('[cause]: here is the cause');
+  });
+
+  it('protects against circular Error.cause in failure messages', () => {
+    const error = new Error('error during f') as Error & {cause?: unknown};
+    error.cause = error;
+
+    const message = extractFailureMessage(error);
+
+    expect(message).toContain('[Circular cause]');
+  });
+
+  it('serializes the inner errors of an AggregateError in failure messages', () => {
+    const message = extractFailureMessage(
+      new AggregateError([new Error('inner A'), new Error('inner B')]),
+    );
+
+    expect(message).toContain('[errors]: Error: inner A');
+    expect(message).toContain('[errors]: Error: inner B');
+  });
+
+  it('keeps the message prepended for an error with nothing nested', () => {
+    // Some errors (e.g. Angular injection errors) don't prepend the message to
+    // the stack, so `_addMissingMessageToStack` has to. Only errors carrying a
+    // cause or aggregated errors may bypass that.
+    const error = new Error('error during f');
+    error.stack = 'Error\n    at f (spec.js:1:1)';
+
+    const message = extractFailureMessage(error);
+
+    expect(message).toBe('error during f\n    at f (spec.js:1:1)');
+    expect(message).not.toContain('[cause]');
   });
 });

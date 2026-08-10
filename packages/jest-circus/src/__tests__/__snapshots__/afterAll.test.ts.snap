@@ -1,7 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`child tests marked with only should not run if describe block is skipped 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: afterAll
 add_hook: beforeAll
 add_test: my test
@@ -15,11 +15,11 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`child tests marked with todo should not run if describe block is skipped 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: afterAll
 add_hook: beforeAll
 add_test: my test
@@ -33,11 +33,11 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`describe block _can_ have hooks if a child describe block has tests 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: afterEach
 add_hook: beforeEach
 add_hook: afterAll
@@ -54,6 +54,7 @@ hook_start: beforeAll
 hook_success: beforeAll
 run_describe_start: child describe
 test_start: my test
+test_started: my test
 hook_start: beforeEach
 > beforeEach
 hook_success: beforeEach
@@ -72,11 +73,11 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`describe block cannot have hooks and no tests 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: afterEach
 add_hook: beforeEach
 add_hook: afterAll
@@ -89,11 +90,11 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 4
+unhandledErrors: 4"
 `;
 
 exports[`describe block hooks must not run if describe block is skipped 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: afterAll
 add_hook: beforeAll
 add_test: my test
@@ -107,7 +108,7 @@ run_describe_finish: describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`tests are not marked done until their parent afterAll runs 1`] = `
@@ -132,24 +133,29 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 test_start: one
+test_started: one
 test_fn_start: one
 test_fn_success: one
 test_done: one
 test_start: two
+test_started: two
 test_fn_start: two
 test_fn_success: two
 test_done: two
 run_describe_start: 2nd level describe
 test_start: 2nd level test
+test_started: 2nd level test
 test_fn_start: 2nd level test
 test_fn_success: 2nd level test
 test_done: 2nd level test
 run_describe_start: 3rd level describe
 test_start: 3rd level test
+test_started: 3rd level test
 test_fn_start: 3rd level test
 test_fn_success: 3rd level test
 test_done: 3rd level test
 test_start: 3rd level test#2
+test_started: 3rd level test#2
 test_fn_start: 3rd level test#2
 test_fn_success: 3rd level test#2
 test_done: 3rd level test#2
@@ -162,6 +168,7 @@ hook_success: afterAll
 run_describe_finish: describe
 run_describe_start: 2nd describe
 test_start: 2nd describe test
+test_started: 2nd describe test
 test_fn_start: 2nd describe test
 test_fn_success: 2nd describe test
 test_done: 2nd describe test

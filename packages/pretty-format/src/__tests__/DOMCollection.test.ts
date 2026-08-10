@@ -1,12 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @jest-environment jsdom
  */
-/* eslint-env browser*/
+
+/// <reference lib="dom" />
+
+/* global document */
 
 import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
@@ -51,7 +54,7 @@ describe('DOMCollection plugin for list items', () => {
   ].join('');
 
   const form = document.createElement('form');
-  form.appendChild(select);
+  form.append(select);
 
   const expectedOption1 = [
     '  <option',
@@ -84,6 +87,7 @@ describe('DOMCollection plugin for list items', () => {
   ].join('\n');
 
   it('supports HTMLCollection for getElementsByTagName', () => {
+    // eslint-disable-next-line unicorn/prefer-query-selector
     const options = form.getElementsByTagName('option');
     expect(options).toPrettyPrintTo(expectedHTMLCollection);
   });
@@ -125,10 +129,8 @@ describe('DOMCollection plugin for list items', () => {
     expect(select.options).toPrettyPrintTo(expectedHTMLOptionsCollection);
   });
 
-  // When Jest upgrades to a version of jsdom later than 12.2.0,
-  // the class name might become HTMLFormControlsCollection
   const expectedHTMLFormControlsCollection = [
-    'HTMLCollection [',
+    'HTMLFormControlsCollection [',
     '  <select>',
     '    <option',
     '      value="1"',

@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import runJest from '../runJest';
 
 jest.mock('@jest/console');
@@ -22,6 +23,8 @@ describe('runJest', () => {
       changedFilesPromise: Promise.resolve({repos: {git: {size: 0}}}),
       contexts: [],
       globalConfig: {
+        rootDir: '',
+        testPathPatterns: new TestPathPatterns([]),
         testSequencer: require.resolve('@jest/test-sequencer'),
         watch: true,
       },
@@ -42,5 +45,32 @@ describe('runJest', () => {
 
   test('when watch is set then an error message is printed', () => {
     expect(stderrSpy).toHaveBeenCalled();
+  });
+});
+
+describe('runJest with collectTests', () => {
+  test('handles no tests found', async () => {
+    const onComplete = jest.fn();
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    await runJest({
+      contexts: [],
+      globalConfig: {
+        collectTests: true,
+        rootDir: '',
+        testPathPatterns: new TestPathPatterns([]),
+        testSequencer: require.resolve('@jest/test-sequencer'),
+      },
+      onComplete,
+      outputStream: {write: jest.fn()},
+      startRun: jest.fn(),
+      testWatcher: {isInterrupted: () => false},
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith('No tests found.');
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({numTotalTests: 0}),
+    );
+    consoleSpy.mockRestore();
   });
 });

@@ -1,29 +1,27 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestSnapshot from '../';
+import {type Context, toMatchSnapshot} from '../';
 
-const {toMatchSnapshot} = jestSnapshot;
-
-it(`matcher returns matcher name, expected and actual values`, () => {
-  const actual = 'a';
-  const expected = 'b';
-  const matcher = toMatchSnapshot.bind({
+test('returns matcher name, expected and actual values', () => {
+  const mockedContext = {
     snapshotState: {
-      match: (_testName: string, _received: unknown) => ({actual, expected}),
+      match: () => ({actual: 'a', expected: 'b'}),
     },
-  });
+  } as unknown as Context;
 
-  const matcherResult = matcher({a: 1});
+  const matcherResult = toMatchSnapshot.call(mockedContext, {
+    a: 1,
+  });
 
   expect(matcherResult).toEqual(
     expect.objectContaining({
-      actual,
-      expected,
+      actual: 'a',
+      expected: 'b',
       name: 'toMatchSnapshot',
     }),
   );

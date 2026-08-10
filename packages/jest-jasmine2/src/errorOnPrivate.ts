@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@
 
 import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import type {Jasmine} from './types';
 
 type DisabledGlobalKeys = 'fail' | 'pending' | 'spyOn' | 'spyOnProperty';
 
@@ -40,24 +39,24 @@ const disabledJasmineMethods: Record<DisabledJasmineMethodsKeys, string> = {
 };
 
 export function installErrorOnPrivate(global: Global.Global): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
 
-  (Object.keys(disabledGlobals) as Array<DisabledGlobalKeys>).forEach(
-    functionName => {
-      global[functionName] = () => {
-        throwAtFunction(disabledGlobals[functionName], global[functionName]);
-      };
-    },
-  );
+  for (const functionName of Object.keys(
+    disabledGlobals,
+  ) as Array<DisabledGlobalKeys>) {
+    global[functionName] = () => {
+      throwAtFunction(disabledGlobals[functionName], global[functionName]);
+    };
+  }
 
-  (
-    Object.keys(disabledJasmineMethods) as Array<DisabledJasmineMethodsKeys>
-  ).forEach(methodName => {
-    // @ts-expect-error
+  for (const methodName of Object.keys(
+    disabledJasmineMethods,
+  ) as Array<DisabledJasmineMethodsKeys>) {
+    // @ts-expect-error - void unallowd, but it throws 🤷
     jasmine[methodName] = () => {
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
     };
-  });
+  }
 
   function set() {
     throwAtFunction(

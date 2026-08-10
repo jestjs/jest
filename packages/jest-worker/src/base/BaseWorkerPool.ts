@@ -1,25 +1,23 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import mergeStream = require('merge-stream');
+import mergeStream from 'merge-stream';
 import {
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
-  PoolExitResult,
-  WorkerInterface,
-  WorkerOptions,
-  WorkerPoolOptions,
+  type PoolExitResult,
+  type WorkerInterface,
+  type WorkerOptions,
+  type WorkerPoolOptions,
+  WorkerStates,
 } from '../types';
 
-// How long to wait for the child process to terminate
-// after CHILD_MESSAGE_END before sending force exiting.
-const FORCE_EXIT_DELAY = 500;
-
 /* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
@@ -27,14 +25,12 @@ export default class BaseWorkerPool {
   private readonly _stdout: NodeJS.ReadableStream;
   protected readonly _options: WorkerPoolOptions;
   private readonly _workers: Array<WorkerInterface>;
+  private readonly _workerPath: string;
 
   constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
-    this._workers = new Array(options.numWorkers);
-
-    if (!path.isAbsolute(workerPath)) {
-      workerPath = require.resolve(workerPath);
-    }
+    this._workerPath = workerPath;
+    this._workers = Array.from({length: options.numWorkers});
 
     const stdout = mergeStream();
     const stderr = mergeStream();
@@ -44,6 +40,7 @@ export default class BaseWorkerPool {
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
         forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
         maxRetries,
         resourceLimits,
         setupArgs,
@@ -86,8 +83,49 @@ export default class BaseWorkerPool {
     return this._workers[workerId];
   }
 
+  restartWorkerIfShutDown(workerId: number): void {
+    if (this._workers[workerId].state === WorkerStates.SHUT_DOWN) {
+      const {forkOptions, maxRetries, resourceLimits, setupArgs} =
+        this._options;
+      const workerOptions: WorkerOptions = {
+        forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
+        maxRetries,
+        resourceLimits,
+        setupArgs,
+        workerId,
+        workerPath: this._workerPath,
+      };
+      const worker = this.createWorker(workerOptions);
+      this._workers[workerId] = worker;
+    }
+  }
+
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
-    throw Error('Missing method createWorker in WorkerPool');
+    throw new Error('Missing method createWorker in WorkerPool');
+  }
+
+  async start(): Promise<void> {
+    await Promise.all(
+      this._workers.map(async worker => {
+        await worker.waitForWorkerReady();
+
+        await new Promise<void>((resolve, reject) => {
+          worker.send(
+            [CHILD_MESSAGE_CALL_SETUP],
+            emptyMethod,
+            error => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve();
+              }
+            },
+            emptyMethod,
+          );
+        });
+      }),
+    );
   }
 
   async end(): Promise<PoolExitResult> {
@@ -107,7 +145,7 @@ export default class BaseWorkerPool {
       const forceExitTimeout = setTimeout(() => {
         worker.forceExit();
         forceExited = true;
-      }, FORCE_EXIT_DELAY);
+      }, this._options.workerGracefulExitTimeout ?? 500);
 
       await worker.waitForExit();
       // Worker ideally exited gracefully, don't send force exit then

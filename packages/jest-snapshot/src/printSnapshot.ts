@@ -1,38 +1,33 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
-import chalk = require('chalk');
-// Temporary hack because getObjectSubset has known limitations,
-// is not in the public interface of the expect package,
-// and the long-term goal is to use a non-serialization diff.
-// Make sure to remove file from `exports` in `expect/package.json`.
-import {getObjectSubset} from 'expect/build/utils';
+import chalk from 'chalk';
+import {getObjectSubset} from '@jest/expect-utils';
+import {getType, isPrimitive} from '@jest/get-type';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptionsColor,
+  type Diff,
+  type DiffOptionsColor,
   diffLinesUnified,
   diffLinesUnified2,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
   INVERTED_COLOR,
-  MatcherHintOptions,
+  type MatcherHintOptions,
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
+  replaceMatchedToAsymmetricMatcher,
 } from 'jest-matcher-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
@@ -46,7 +41,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import type {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig, SnapshotFormat} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
@@ -119,7 +114,7 @@ export const matcherHintFromConfig = (
       options.expectedColor = noColor;
     }
 
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       options.secondArgument = HINT_ARG;
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -131,7 +126,7 @@ export const matcherHintFromConfig = (
       }
     }
   } else {
-    if (typeof hint === 'string' && hint.length !== 0) {
+    if (typeof hint === 'string' && hint.length > 0) {
       expectedArgument = HINT_ARG;
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
@@ -160,11 +155,11 @@ const joinDiffs = (
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
-        : diff[0] !== op
-        ? ''
-        : hasCommon
-        ? INVERTED_COLOR(diff[1])
-        : diff[1]),
+        : diff[0] === op
+          ? hasCommon
+            ? INVERTED_COLOR(diff[1])
+            : diff[1]
+          : ''),
     '',
   );
 
@@ -211,9 +206,13 @@ export const printPropertiesAndReceived = (
   const bAnnotation = 'Received value';
 
   if (isLineDiffable(properties) && isLineDiffable(received)) {
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(properties, received, [], []);
     return diffLinesUnified(
-      serialize(properties).split('\n'),
-      serialize(getObjectSubset(received, properties)).split('\n'),
+      serialize(replacedExpected).split('\n'),
+      serialize(getObjectSubset(replacedReceived, replacedExpected)).split(
+        '\n',
+      ),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,
@@ -229,22 +228,19 @@ export const printPropertiesAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    printExpected(properties) +
-    '\n' +
-    printLabel(bAnnotation) +
-    printReceived(received)
-  );
+  return `${printLabel(aAnnotation) + printExpected(properties)}\n${printLabel(
+    bAnnotation,
+  )}${printReceived(received)}`;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+const MAX_DIFF_STRING_LENGTH = 20_000;
 
 export const printSnapshotAndReceived = (
   a: string, // snapshot without extra line breaks
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  snapshotFormat?: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
@@ -284,18 +280,14 @@ export const printSnapshotAndReceived = (
         ) {
           const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
           const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
-          aQuoted = '"' + joinDiffs(diffs, DIFF_DELETE, hasCommon) + '"';
-          bQuoted = '"' + joinDiffs(diffs, DIFF_INSERT, hasCommon) + '"';
+          aQuoted = `"${joinDiffs(diffs, DIFF_DELETE, hasCommon)}"`;
+          bQuoted = `"${joinDiffs(diffs, DIFF_INSERT, hasCommon)}"`;
         }
 
         const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-        return (
-          printLabel(aAnnotation) +
-          aColor(aQuoted) +
-          '\n' +
-          printLabel(bAnnotation) +
-          bColor(bQuoted)
-        );
+        return `${printLabel(aAnnotation) + aColor(aQuoted)}\n${printLabel(
+          bAnnotation,
+        )}${bColor(bQuoted)}`;
       }
 
       // Else either string is multiline, so display as unquoted strings.
@@ -317,7 +309,7 @@ export const printSnapshotAndReceived = (
 
     // Fall through to fix a regression for custom serializers
     // like jest-snapshot-serializer-raw that ignore the indent option.
-    const b0 = serialize(received, 0);
+    const b0 = serialize(received, 0, snapshotFormat);
     if (b0 !== b) {
       const aLines0 = dedentLines(aLines2);
 
@@ -337,11 +329,7 @@ export const printSnapshotAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    aColor(a) +
-    '\n' +
-    printLabel(bAnnotation) +
-    bColor(b)
-  );
+  return `${printLabel(aAnnotation) + aColor(a)}\n${printLabel(
+    bAnnotation,
+  )}${bColor(b)}`;
 };

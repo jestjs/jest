@@ -1,11 +1,10 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import wrap from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
@@ -16,6 +15,6 @@ test('errors when a test both returns a promise and takes a callback', () => {
   const result = runJest('promise-and-callback');
 
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(result.exitCode).toBe(1);
 });

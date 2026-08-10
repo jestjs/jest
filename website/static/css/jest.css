@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,8 +19,8 @@
 
 .sponsor-avatar {
   display: inline-block;
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   border: 1px solid white;
   overflow: hidden;
@@ -151,12 +151,16 @@
   padding: 12px 0;
 }
 
+.logos {
+  align-items: baseline;
+}
+
 .logos > a {
   margin-left: 0;
 }
 
 .logos > p.others {
-  padding-top: 1.5rem !important;
+  align-self: center;
 }
 
 @media only screen and (min-width: 736px) {
@@ -171,10 +175,13 @@
   margin-left: 0;
 }
 
+.logos .logo-item {
+  margin: 10px;
+}
+
 .logos img {
-  max-height: 56px;
-  padding: 10px;
-  width: 56px;
+  max-height: 75px;
+  width: 75px;
 }
 
 .gridBlockV1 > *:first-child {

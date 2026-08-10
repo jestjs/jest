@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 
 import type {Global} from '@jest/types';
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString} from 'jest-util';
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
 import {
@@ -16,9 +16,9 @@ import {
   validateTemplateTableArguments,
 } from './validation';
 
-export type EachTests = Array<{
+export type EachTests = ReadonlyArray<{
   title: string;
-  arguments: Array<unknown>;
+  arguments: ReadonlyArray<unknown>;
 }>;
 
 // type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
@@ -26,37 +26,64 @@ type GlobalCallback = (
   testName: string,
   fn: Global.ConcurrentTestFn,
   timeout?: number,
+  eachError?: Error,
 ) => void;
 
-export default <EachCallback extends Global.TestCallback>(
-    cb: GlobalCallback,
-    supportsDone: boolean = true,
-  ) =>
-  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
-    function eachBind(
-      title: string,
+export default function bind<EachCallback extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone = true,
+  needsEachError = false,
+): Global.EachTestFn<any> {
+  const bindWrap = (
+    table: Global.EachTable,
+    ...taggedTemplateData: Global.TemplateData
+  ) => {
+    const errorWithStack = new ErrorWithStack(undefined, bindWrap);
+
+    return function eachBind(
+      title: Global.BlockNameLike,
       test: Global.EachTestFn<EachCallback>,
       timeout?: number,
     ): void {
+      title = convertDescriptorToString(title);
       try {
         const tests = isArrayTable(taggedTemplateData)
           ? buildArrayTests(title, table)
           : buildTemplateTests(title, table, taggedTemplateData);
 
-        return tests.forEach(row =>
-          cb(
-            row.title,
-            applyArguments(supportsDone, row.arguments, test),
-            timeout,
-          ),
+        for (const row of tests) {
+          if (needsEachError) {
+            cb(
+              row.title,
+              applyArguments(supportsDone, row.arguments, test),
+              timeout,
+              errorWithStack,
+            );
+          } else {
+            cb(
+              row.title,
+              applyArguments(supportsDone, row.arguments, test),
+              timeout,
+            );
+          }
+        }
+
+        return;
+      } catch (error: any) {
+        const err = new Error(error.message);
+        err.stack = errorWithStack.stack?.replace(
+          /^Error: /s,
+          `Error: ${error.message}`,
         );
-      } catch (e: any) {
-        const error = new ErrorWithStack(e.message, eachBind);
+
         return cb(title, () => {
-          throw error;
+          throw err;
         });
       }
     };
+  };
+  return bindWrap;
+}
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 
@@ -76,11 +103,11 @@ const buildTemplateTests = (
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  extractValidTemplateHeadings(headings).replace(/\s/g, '').split('|');
+  extractValidTemplateHeadings(headings).replaceAll(/\s/g, '').split('|');
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
-  params: Array<unknown>,
+  params: ReadonlyArray<unknown>,
   test: Global.EachTestFn<EachCallback>,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length

@@ -1,16 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import terminalLink = require('terminal-link');
+import chalk from 'chalk';
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime} from 'jest-util';
-import {formatTestPath, printDisplayName} from './utils';
+import formatTestPath from './formatTestPath';
+import printDisplayName from './printDisplayName';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
@@ -26,19 +26,12 @@ const PASS = chalk.supportsColor
   ? chalk.reset.inverse.bold.green(` ${PASS_TEXT} `)
   : PASS_TEXT;
 
-export default (
+export default function getResultHeader(
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-): string => {
+): string {
   const testPath = result.testFilePath;
-  const formattedTestPath = formatTestPath(
-    projectConfig ? projectConfig : globalConfig,
-    testPath,
-  );
-  const fileLink = terminalLink(formattedTestPath, `file://${testPath}`, {
-    fallback: () => formattedTestPath,
-  });
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
@@ -57,11 +50,11 @@ export default (
 
   const projectDisplayName =
     projectConfig && projectConfig.displayName
-      ? printDisplayName(projectConfig) + ' '
+      ? `${printDisplayName(projectConfig)} `
       : '';
 
-  return (
-    `${status} ${projectDisplayName}${fileLink}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
-  );
-};
+  return `${status} ${projectDisplayName}${formatTestPath(
+    projectConfig ?? globalConfig,
+    testPath,
+  )}${testDetail.length > 0 ? ` (${testDetail.join(', ')})` : ''}`;
+}

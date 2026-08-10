@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,26 +7,41 @@
  */
 
 import {createHash} from 'crypto';
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import semver = require('semver');
-import stripAnsi from 'strip-ansi';
+import * as path from 'path';
+import * as semver from 'semver';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
-import normalize from '../normalize';
+import normalize, {type AllOptions} from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
-  .mock('path', () => jest.requireActual('path').posix)
+  .mock('path', () => jest.requireActual<typeof import('path')>('path').posix)
   .mock('graceful-fs', () => {
-    const realFs = jest.requireActual('fs');
+    const realFs = jest.requireActual<typeof import('fs')>('fs');
 
     return {
       ...realFs,
       statSync: () => ({isDirectory: () => true}),
+    };
+  })
+  .mock('jest-util', () => {
+    const realUtil =
+      jest.requireActual<typeof import('jest-util')>('jest-util');
+
+    return {
+      ...realUtil,
+      requireOrImportModule: (filePath: string, interop = true) => {
+        const result = require(filePath);
+
+        if (interop) {
+          return realUtil.interopRequireDefault(result).default;
+        }
+
+        return result;
+      },
     };
   });
 
@@ -37,8 +52,10 @@ let expectedPathAbs: string;
 let expectedPathAbsAnother: string;
 
 let virtualModuleRegexes: Array<RegExp>;
-beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
-const findNodeModule = jest.fn(name => {
+beforeEach(() => {
+  virtualModuleRegexes = [/jest-circus/, /babel-jest/];
+});
+const findNodeModule = jest.fn((name: string) => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
   }
@@ -59,64 +76,174 @@ beforeEach(() => {
   expectedPathAbs = path.join(root, 'an', 'abs', 'path');
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 
-  require('jest-resolve').default.findNodeModule = findNodeModule;
+  (
+    require('jest-resolve') as typeof import('jest-resolve')
+  ).default.findNodeModule = findNodeModule;
 
   jest.spyOn(console, 'warn');
 });
 
 afterEach(() => {
-  (console.warn as unknown as jest.SpyInstance).mockRestore();
+  jest.mocked(console.warn).mockRestore();
 });
 
-it('picks a name based on the rootDir', async () => {
+it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = createHash('md5')
+  const expected = createHash('sha1')
     .update('/root/path/foo')
-    .update(String(Infinity))
-    .digest('hex');
+    .update(String(Number.POSITIVE_INFINITY))
+    .digest('hex')
+    .slice(0, 32);
   const {options} = await normalize(
     {
       rootDir,
     },
     {} as Config.Argv,
   );
-  expect(options.name).toBe(expected);
+  expect(options.id).toBe(expected);
 });
 
-it('keeps custom project name based on the projects rootDir', async () => {
-  const name = 'test';
+it('keeps custom project id based on the projects rootDir', async () => {
+  const id = 'test';
   const {options} = await normalize(
     {
-      projects: [{name, rootDir: '/path/to/foo'}],
+      projects: [{id, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect((options.projects as Array<Config.InitialProjectOptions>)[0].id).toBe(
+    id,
+  );
 });
 
-it('keeps custom names based on the rootDir', async () => {
+it('validation warning occurs when options not for projects is set', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true, // an option not for projects
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(1);
+});
+
+it('global-only option in project config emits targeted warning', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true,
+      forceExit: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(2);
+  const warnMessages = mockWarn.mock.calls.map(call => call[0] as string);
+  expect(warnMessages.some(msg => msg.includes('root configuration'))).toBe(
+    true,
+  );
+});
+
+it('no validation warning for collectCoverage in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      collectCoverage: true,
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for coverageProvider in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      coverageProvider: 'v8',
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for verbose in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      verbose: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('no validation warning for silent in project config', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      rootDir,
+      silent: true,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).not.toHaveBeenCalled();
+});
+
+it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
-      name: 'custom-name',
+      id: 'custom-id',
       rootDir: '/root/path/foo',
     },
     {} as Config.Argv,
   );
 
-  expect(options.name).toBe('custom-name');
+  expect(options.id).toBe('custom-id');
 });
 
 it('minimal config is stable across runs', async () => {
-  const firstNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
-  const secondNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
+  const firstNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55_555,
+  } as Config.Argv);
+  const secondNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55_555,
+  } as Config.Argv);
 
   expect(firstNormalization).toEqual(secondNormalization);
   expect(JSON.stringify(firstNormalization)).toBe(
@@ -137,6 +264,20 @@ it('sets coverageReporters correctly when argv.json is set', async () => {
   expect(options.coverageReporters).toEqual(['json', 'lcov', 'clover']);
 });
 
+it('keeps text coverage reporter when argv.json and outputFile are set', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/path/foo',
+    },
+    {
+      json: true,
+      outputFile: 'results.json',
+    } as Config.Argv,
+  );
+
+  expect(options.coverageReporters).toEqual(['json', 'text', 'lcov', 'clover']);
+});
+
 describe('rootDir', () => {
   it('throws if the options is missing a rootDir property', async () => {
     expect.assertions(1);
@@ -149,7 +290,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         automock: false,
@@ -162,65 +303,8 @@ describe('automock', () => {
   });
 });
 
-describe('collectCoverageOnlyFrom', () => {
-  it('normalizes all paths relative to rootDir', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          'bar/baz': true,
-          'qux/quux/': true,
-        },
-        rootDir: '/root/path/foo/',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-    expected[expectedPathFooQux] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('does not change absolute paths', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '/an/abs/path': true,
-          '/another/abs/path': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathAbs] = true;
-    expected[expectedPathAbsAnother] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('substitutes <rootDir> tokens', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '<rootDir>/bar/baz': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-});
-
 describe('collectCoverageFrom', () => {
-  it('substitutes <rootDir> tokens', async () => {
+  it('ignores <rootDir> tokens', async () => {
     const barBaz = 'bar/baz';
     const quxQuux = 'qux/quux/';
     const notQuxQuux = `!${quxQuux}`;
@@ -269,7 +353,7 @@ describe('findRelatedTests', () => {
   });
 });
 
-function testPathArray(key: string) {
+function testPathArray(key: keyof AllOptions) {
   it('normalizes all paths relative to rootDir', async () => {
     const {options} = await normalize(
       {
@@ -311,11 +395,113 @@ describe('roots', () => {
   testPathArray('roots');
 });
 
-describe('transform', () => {
-  let Resolver;
+describe('reporters', () => {
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
+  });
+
+  it('allows empty list', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([]);
+  });
+
+  it('normalizes the path and options object', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [
+          'default',
+          'github-actions',
+          '<rootDir>/custom-reporter.js',
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+          ['jest-junit', {outputName: 'report.xml'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['default', {}],
+      ['github-actions', {}],
+      ['/root/custom-reporter.js', {}],
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+      ['jest-junit', {outputName: 'report.xml'}],
+    ]);
+  });
+
+  it('throws an error if value is neither string nor array', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          // @ts-expect-error: Testing runtime error
+          reporters: [123],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if first value in the tuple is not a string', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          // @ts-expect-error: Testing runtime error
+          reporters: [[123]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value is missing in the tuple', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          // @ts-expect-error: Testing runtime error
+          reporters: [['some-reporter']],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value in the tuple is not an object', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          // @ts-expect-error: Testing runtime error
+          reporters: [['some-reporter', true]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('transform', () => {
+  let Resolver: typeof import('jest-resolve').default;
+  beforeEach(() => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
   });
 
   it('normalizes the path', async () => {
@@ -358,10 +544,11 @@ describe('transform', () => {
 });
 
 describe('haste', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
   });
 
   it('normalizes the path for hasteImplModulePath', async () => {
@@ -382,11 +569,12 @@ describe('haste', () => {
 });
 
 describe('setupFilesAfterEnv', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
-      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) =>
+      name.startsWith('/') ? name : `/root/path/foo${path.sep}${name}`,
     );
   });
 
@@ -424,45 +612,6 @@ describe('setupFilesAfterEnv', () => {
     );
 
     expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
-  });
-});
-
-describe('setupTestFrameworkScriptFile', () => {
-  let Resolver;
-
-  beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
-      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
-    );
-  });
-
-  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', async () => {
-    await normalize(
-      {
-        rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: 'bar/baz',
-      },
-      {} as Config.Argv,
-    );
-
-    expect(
-      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
-    ).toMatchSnapshot();
-  });
-
-  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', async () => {
-    await expect(
-      normalize(
-        {
-          rootDir: '/root/path/foo',
-          setupFilesAfterEnv: ['bar/baz'],
-          setupTestFrameworkScriptFile: 'bar/baz',
-        },
-        {} as Config.Argv,
-      ),
-    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -683,8 +832,9 @@ describe('testRunner', () => {
   });
 
   it('resolves jasmine', async () => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
     const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
@@ -698,8 +848,9 @@ describe('testRunner', () => {
   });
 
   it('is overwritten by argv', async () => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
     const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
@@ -727,10 +878,11 @@ describe('coverageDirectory', () => {
 });
 
 describe('testEnvironment', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
         return `node_modules/${name}`;
       }
@@ -750,9 +902,7 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual(
-      'node_modules/jest-environment-jsdom',
-    );
+    expect(options.testEnvironment).toBe('node_modules/jest-environment-jsdom');
   });
 
   it('resolves to node environment by default', async () => {
@@ -789,18 +939,19 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
+    expect(options.testEnvironment).toBe('/root/testEnvironment.js');
   });
 });
 
 describe('babel-jest', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
-      name.indexOf('babel-jest') === -1
-        ? path.sep + 'node_modules' + path.sep + name
-        : name,
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) =>
+      name.includes('babel-jest')
+        ? name
+        : `${path.sep}node_modules${path.sep}${name}`,
     );
   });
 
@@ -830,45 +981,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(customJSPattern);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-  });
-});
-
-describe('Upgrade help', () => {
-  beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
-
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
-      if (name == 'bar/baz') {
-        return '/node_modules/bar/baz';
-      }
-      return findNodeModule(name);
-    });
-  });
-
-  it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', async () => {
-    const {options: options, hasDeprecationWarnings} = await normalize(
-      {
-        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
-        rootDir: '/root/path/foo',
-        scriptPreprocessor: 'bar/baz',
-      },
-      {} as Config.Argv,
-    );
-
-    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz', {}]]);
-    expect(options.transformIgnorePatterns).toEqual([
-      joinForPattern('bar', 'baz'),
-      joinForPattern('qux', 'quux'),
-    ]);
-
-    expect(options).not.toHaveProperty('scriptPreprocessor');
-    expect(options).not.toHaveProperty('preprocessorIgnorePatterns');
-    expect(hasDeprecationWarnings).toBeTruthy();
-
-    expect(
-      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
-    ).toMatchSnapshot();
   });
 });
 
@@ -918,7 +1030,7 @@ describe('testMatch', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testMatch.length).toBe(0);
+    expect(options.testMatch).toHaveLength(0);
   });
 
   it('testRegex default not applied if testMatch is set', async () => {
@@ -946,7 +1058,7 @@ describe('testMatch', () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('normalizes testMatch', async () => {
+  it('normalizes testMatch root directory', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root',
@@ -956,6 +1068,18 @@ describe('testMatch', () => {
     );
 
     expect(options.testMatch).toEqual(['/root/**/*.js']);
+  });
+
+  it('normalizes testMatch to array', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+        testMatch: '**/*.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testMatch).toEqual(['**/*.js']);
   });
 });
 
@@ -984,8 +1108,9 @@ describe('moduleDirectories', () => {
 
 describe('preset', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
@@ -1006,7 +1131,7 @@ describe('preset', () => {
         return null;
       }
 
-      return '/node_modules/' + name;
+      return `/node_modules/${name}`;
     });
     jest.doMock(
       '/node_modules/react-native/jest-preset.json',
@@ -1099,15 +1224,17 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
-      /Cannot find module 'library-that-is-not-installed'/,
-    );
+    ).rejects.toThrow(/Cannot find module 'library-that-is-not-installed'/);
   });
 
   test('throws when preset is invalid', async () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       jest.requireActual('./jest-preset.json'),
     );
+
+    const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
+      ? /Unexpected token } in JSON at position (104|110)[\S\s]* at /
+      : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
 
     await expect(
       normalize(
@@ -1117,23 +1244,22 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
-      /Unexpected token } in JSON at position 104[\s\S]* at /,
-    );
+    ).rejects.toThrow(errorMessage);
   });
 
   test('throws when preset evaluation throws type error', async () => {
     jest.doMock(
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => ({
+        // @ts-expect-error: Testing runtime error
+        // eslint-disable-next-line unicorn/prefer-prototype-methods
         transform: {}.nonExistingProp.call(),
       }),
       {virtual: true},
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '>=16.9.1')
-      ? "TypeError: Cannot read properties of undefined (reading 'call')"
-      : /TypeError: Cannot read property 'call' of undefined[\s\S]* at /;
+    const errorMessage =
+      "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
       normalize(
@@ -1143,7 +1269,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(errorMessage);
+    ).rejects.toThrow(errorMessage);
   });
 
   test('works with "react-native"', async () => {
@@ -1160,11 +1286,11 @@ describe('preset', () => {
 
   test.each(['react-native-js-preset', 'cjs-preset'])(
     'works with cjs preset',
-    async presetName => {
+    async preset => {
       await expect(
         normalize(
           {
-            preset: presetName,
+            preset,
             rootDir: '/root/path/foo',
           },
           {} as Config.Argv,
@@ -1186,7 +1312,8 @@ describe('preset', () => {
   });
 
   test('searches for .json, .js, .cjs, .mjs preset files', async () => {
-    const Resolver = require('jest-resolve').default;
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
 
     await normalize(
       {
@@ -1196,7 +1323,7 @@ describe('preset', () => {
       {} as Config.Argv,
     );
 
-    const options = Resolver.findNodeModule.mock.calls[0][1];
+    const options = jest.mocked(Resolver.findNodeModule).mock.calls[0][1];
     expect(options.extensions).toEqual(['.json', '.js', '.cjs', '.mjs']);
   });
 
@@ -1300,13 +1427,14 @@ describe('preset', () => {
 
 describe('preset with globals', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (name === 'global-foo/jest-preset') {
         return '/node_modules/global-foo/jest-preset.json';
       }
 
-      return '/node_modules/' + name;
+      return `/node_modules/${name}`;
     });
     jest.doMock(
       '/node_modules/global-foo/jest-preset.json',
@@ -1356,14 +1484,15 @@ describe('preset with globals', () => {
   });
 });
 
-describe.each(['setupFiles', 'setupFilesAfterEnv'])(
+describe.each(['setupFiles', 'setupFilesAfterEnv'] as const)(
   'preset without %s',
   configKey => {
     let Resolver;
     beforeEach(() => {
-      Resolver = require('jest-resolve').default;
+      Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+        .default;
       Resolver.findNodeModule = jest.fn(
-        name => path.sep + 'node_modules' + path.sep + name,
+        name => `${path.sep}node_modules${path.sep}${name}`,
       );
     });
 
@@ -1399,11 +1528,62 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
   },
 );
 
-describe('runner', () => {
-  let Resolver;
+describe("preset with 'reporters' option", () => {
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
+      if (name === 'with-reporters/jest-preset') {
+        return '/node_modules/with-reporters/jest-preset.json';
+      }
+
+      return `/node_modules/${name}`;
+    });
+    jest.doMock(
+      '/node_modules/with-reporters/jest-preset.json',
+      () => ({
+        reporters: ['default'],
+      }),
+      {virtual: true},
+    );
+  });
+
+  afterEach(() => {
+    jest.dontMock('/node_modules/with-reporters/jest-preset.json');
+  });
+
+  test("normalizes 'reporters' option defined in preset", async () => {
+    const {options} = await normalize(
+      {
+        preset: 'with-reporters',
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([['default', {}]]);
+  });
+
+  test("overrides 'reporters' option defined in preset", async () => {
+    const {options} = await normalize(
+      {
+        preset: 'with-reporters',
+        reporters: ['summary'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([['summary', {}]]);
+  });
+});
+
+describe('runner', () => {
+  let Resolver: typeof import('jest-resolve').default;
+  beforeEach(() => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (['eslint', 'jest-runner-eslint', 'my-runner-foo'].includes(name)) {
         return `node_modules/${name}`;
       }
@@ -1455,13 +1635,113 @@ describe('runner', () => {
       ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
+
+  it('resolves runner from tuple config [path, options]', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {workers: 4}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({workers: 4});
+  });
+
+  it('sets runnerOptions to empty object for string runner', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: 'my-runner-foo',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('sets runnerOptions to empty object when tuple has no options', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/',
+        runner: ['my-runner-foo', {}],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+    expect(options.runnerOptions).toEqual({});
+  });
+
+  it('throws error when runner options is not a plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', 'invalid' as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner options is an array', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', [] as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
+
+  it('throws error when runner tuple has empty string', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['', {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner tuple has non-string first element', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: [123, {option: true}] as any,
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner must be a string or a tuple [string, object]');
+  });
+
+  it('throws error when runner options is a non-plain object', async () => {
+    await expect(
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: ['my-runner-foo', new Date() as any],
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrow('Runner options must be a plain object');
+  });
 });
 
 describe('watchPlugins', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (
         ['typeahead', 'jest-watch-typeahead', 'my-watch-plugin'].includes(name)
       ) {
@@ -1478,7 +1758,7 @@ describe('watchPlugins', () => {
   it('defaults to undefined', async () => {
     const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
-    expect(options.watchPlugins).toEqual(undefined);
+    expect(options.watchPlugins).toBeUndefined();
   });
 
   it('resolves to watch plugins and prefers jest-watch-`name`', async () => {
@@ -1537,7 +1817,7 @@ describe('watchPlugins', () => {
   });
 });
 
-describe('testPathPattern', () => {
+describe('testPathPatterns', () => {
   const initialOptions = {rootDir: '/root'};
   const consoleLog = console.log;
 
@@ -1552,106 +1832,52 @@ describe('testPathPattern', () => {
   it('defaults to empty', async () => {
     const {options} = await normalize(initialOptions, {} as Config.Argv);
 
-    expect(options.testPathPattern).toBe('');
+    expect(options.testPathPatterns.patterns).toEqual([]);
   });
 
   const cliOptions = [
-    {name: '--testPathPattern', property: 'testPathPattern'},
+    {name: '--testPathPatterns', property: 'testPathPatterns'},
     {name: '<regexForTestFiles>', property: '_'},
   ];
   for (const opt of cliOptions) {
     describe(opt.name, () => {
-      it('uses ' + opt.name + ' if set', async () => {
+      it(`uses ${opt.name} if set`, async () => {
         const argv = {[opt.property]: ['a/b']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('a/b');
+        expect(options.testPathPatterns.patterns).toEqual(['a/b']);
       });
 
       it('ignores invalid regular expressions and logs a warning', async () => {
         const argv = {[opt.property]: ['a(']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('');
-        expect(
-          (console.log as unknown as jest.SpyInstance).mock.calls[0][0],
-        ).toMatchSnapshot();
+        expect(options.testPathPatterns.patterns).toEqual([]);
+        expect(jest.mocked(console.log).mock.calls[0][0]).toMatchSnapshot();
       });
 
-      it('joins multiple ' + opt.name + ' if set', async () => {
-        const argv = {testPathPattern: ['a/b', 'c/d']} as Config.Argv;
+      it(`joins multiple ${opt.name} if set`, async () => {
+        const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
-        expect(options.testPathPattern).toBe('a/b|c/d');
-      });
-
-      describe('posix', () => {
-        it('should not escape the pattern', async () => {
-          const argv = {
-            [opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b'],
-          } as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('a\\/b|a/b|a\\b|a\\\\b');
-        });
-      });
-
-      describe('win32', () => {
-        beforeEach(() => {
-          jest.mock('path', () => jest.requireActual('path').win32);
-          require('jest-resolve').default.findNodeModule = findNodeModule;
-        });
-
-        afterEach(() => {
-          jest.resetModules();
-        });
-
-        it('preserves any use of "\\"', async () => {
-          const argv = {[opt.property]: ['a\\b', 'c\\\\d']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
-
-          expect(options.testPathPattern).toBe('a\\b|c\\\\d');
-        });
-
-        it('replaces POSIX path separators', async () => {
-          const argv = {[opt.property]: ['a/b']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
-
-          expect(options.testPathPattern).toBe('a\\\\b');
-        });
-
-        it('replaces POSIX paths in multiple args', async () => {
-          const argv = {[opt.property]: ['a/b', 'c/d']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
-
-          expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
-        });
-
-        it('coerces all patterns to strings', async () => {
-          const argv = {[opt.property]: [1]} as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('1');
-        });
+        expect(options.testPathPatterns.patterns).toEqual(['a/b', 'c/d']);
       });
     });
   }
 
+  it('coerces <regexForTestFiles> patterns to strings', async () => {
+    const argv = {_: [1]} as Config.Argv;
+    const {options} = await normalize(initialOptions, argv);
+
+    expect(options.testPathPatterns.patterns).toEqual(['1']);
+  });
+
   it('joins multiple --testPathPatterns and <regexForTestFiles>', async () => {
     const {options} = await normalize(initialOptions, {
       _: ['a', 'b'],
-      testPathPattern: ['c', 'd'],
+      testPathPatterns: ['c', 'd'],
     } as Config.Argv);
-    expect(options.testPathPattern).toBe('a|b|c|d');
+    expect(options.testPathPatterns.patterns).toEqual(['a', 'b', 'c', 'd']);
   });
 
   it('gives precedence to --all', async () => {
@@ -1670,15 +1896,19 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
+      'mts',
+      'cts',
       'tsx',
       'json',
       'node',
     ]);
   });
 
-  it.each([undefined, 'jest-runner'])(
+  it.each([undefined, 'jest-runner'] as const)(
     'throws if missing `js` but using jest-runner',
     async runner => {
       await expect(
@@ -1690,7 +1920,7 @@ describe('moduleFileExtensions', () => {
           },
           {} as Config.Argv,
         ),
-      ).rejects.toThrowError("moduleFileExtensions must include 'js'");
+      ).rejects.toThrow("moduleFileExtensions must include 'js'");
     },
   );
 
@@ -1715,7 +1945,7 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1737,7 +1967,7 @@ describe('Defaults', () => {
 });
 
 describe('displayName', () => {
-  test.each`
+  test.each<{displayName: Config.DisplayName; description: string}>`
     displayName             | description
     ${{}}                   | ${'is an empty object'}
     ${{name: 'hello'}}      | ${'missing color'}
@@ -1783,7 +2013,7 @@ describe('displayName', () => {
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,
@@ -1812,13 +2042,7 @@ describe('extensionsToTreatAsEsm', () => {
     }>;
     (): any;
   }) {
-    expect.assertions(1);
-
-    try {
-      await callback();
-    } catch (error: any) {
-      expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
-    }
+    await expect(callback()).rejects.toThrowErrorMatchingSnapshot();
   }
 
   it('should pass valid config through', async () => {
@@ -1852,19 +2076,22 @@ describe('extensionsToTreatAsEsm', () => {
 describe('haste.enableSymlinks', () => {
   it('should throw if watchman is not disabled', async () => {
     await expect(
-      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/'},
+        {} as Config.Argv,
+      ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     await expect(
       normalize(
         {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
-        {},
+        {} as Config.Argv,
       ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     const {options} = await normalize(
       {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.enableSymlinks).toBe(true);
@@ -1876,10 +2103,307 @@ describe('haste.forceNodeFilesystemAPI', () => {
   it('should pass option through', async () => {
     const {options} = await normalize(
       {haste: {forceNodeFilesystemAPI: true}, rootDir: '/root/'},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.forceNodeFilesystemAPI).toBe(true);
     expect(console.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateSnapshot', () => {
+  it('should be all if updateSnapshot is true', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      updateSnapshot: true,
+    } as Config.Argv);
+    expect(options.updateSnapshot).toBe('all');
+  });
+  it('should be new if updateSnapshot is falsy', async () => {
+    {
+      const {options} = await normalize(
+        {ci: false, rootDir: '/root/'},
+        {} as Config.Argv,
+      );
+      expect(options.updateSnapshot).toBe('new');
+    }
+    {
+      const {options} = await normalize({ci: false, rootDir: '/root/'}, {
+        updateSnapshot: false,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('new');
+    }
+  });
+  it('should be none if updateSnapshot is falsy and ci mode is true', async () => {
+    const defaultCiConfig = Defaults.ci;
+    {
+      Defaults.ci = false;
+      const {options} = await normalize({rootDir: '/root/'}, {
+        ci: true,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+    }
+    {
+      Defaults.ci = true;
+      const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+    }
+    Defaults.ci = defaultCiConfig;
+  });
+});
+
+describe('shards', () => {
+  it('should be object if defined', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      shard: '1/2',
+    } as Config.Argv);
+
+    expect(options.shard).toEqual({shardCount: 2, shardIndex: 1});
+  });
+});
+
+describe('logs a deprecation warning', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  test("when 'browser' option is passed", async () => {
+    await normalize(
+      {
+        // @ts-expect-error: Testing deprecated option
+        browser: true,
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'collectCoverageOnlyFrom' option is passed", async () => {
+    await normalize(
+      {
+        // @ts-expect-error: Testing deprecated option
+        collectCoverageOnlyFrom: {
+          '<rootDir>/this-directory-is-covered/Covered.js': true,
+        },
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'extraGlobals' option is passed", async () => {
+    await normalize(
+      {
+        // @ts-expect-error: Testing deprecated option
+        extraGlobals: ['Math'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'moduleLoader' option is passed", async () => {
+    await normalize(
+      {
+        // @ts-expect-error: Testing deprecated option
+        moduleLoader: '<rootDir>/runtime.js',
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'preprocessorIgnorePatterns' option is passed", async () => {
+    await normalize(
+      {
+        // @ts-expect-error: Testing deprecated option
+        preprocessorIgnorePatterns: ['/node_modules/'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'scriptPreprocessor' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
+        scriptPreprocessor: 'preprocessor.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'setupTestFrameworkScriptFile' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
+        setupTestFrameworkScriptFile: 'setup.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'testPathDirs' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
+        testPathDirs: ['<rootDir>'],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'testURL' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
+        testURL: 'https://jestjs.io',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'timers' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
+        timers: 'real',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+it('parses workerIdleMemoryLimit', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/',
+      workerIdleMemoryLimit: '45MiB',
+    },
+    {} as Config.Argv,
+  );
+
+  expect(options.workerIdleMemoryLimit).toBe(47_185_920);
+});
+
+describe('seed', () => {
+  it('generates seed when not specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.seed).toEqual(expect.any(Number));
+  });
+
+  it('uses seed specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      seed: 4321,
+    } as Config.Argv);
+    expect(options.seed).toBe(4321);
+  });
+
+  it('throws if seed is too large or too small', async () => {
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: 2 ** 33,
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is 8589934592',
+    );
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: -(2 ** 33),
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - instead it is -8589934592',
+    );
+  });
+});
+
+describe('showSeed', () => {
+  test('showSeed is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      showSeed: true,
+    } as Config.Argv);
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is set when the config is set', async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', showSeed: true},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.showSeed).toBeFalsy();
+  });
+
+  test('showSeed is true when randomize is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+});
+
+describe('randomize', () => {
+  test('randomize is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      randomize: true,
+    } as Config.Argv);
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is set when the config is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.randomize).toBeFalsy();
+  });
+});
+
+describe('runInBand', () => {
+  test('always set it', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.runInBand).toBe(false);
+  });
+
+  test('respect argv', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      runInBand: true,
+    } as Config.Argv);
+    expect(options.runInBand).toBe(true);
   });
 });

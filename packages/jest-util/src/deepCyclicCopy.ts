@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,10 +14,11 @@ export type DeepCyclicCopyOptions = {
 
 export default function deepCyclicCopy<T>(
   value: T,
-  options: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
-  cycles: WeakMap<any, any> = new WeakMap(),
+  options?: DeepCyclicCopyOptions,
+  cycles = new WeakMap<any, any>(),
 ): T {
-  if (typeof value !== 'object' || value === null) {
+  options = {blacklist: EMPTY, keepPrototype: false, ...options};
+  if (typeof value !== 'object' || value === null || Buffer.isBuffer(value)) {
     return value;
   } else if (cycles.has(value)) {
     return cycles.get(value);
@@ -41,14 +42,14 @@ function deepCyclicCopyObject<T>(
 
   cycles.set(object, newObject);
 
-  Object.keys(descriptors).forEach(key => {
+  for (const key of Object.keys(descriptors)) {
     if (options.blacklist && options.blacklist.has(key)) {
       delete descriptors[key];
-      return;
+      continue;
     }
 
     const descriptor = descriptors[key];
-    if (typeof descriptor.value !== 'undefined') {
+    if (descriptor.value !== undefined) {
       descriptor.value = deepCyclicCopy(
         descriptor.value,
         {blacklist: EMPTY, keepPrototype: options.keepPrototype},
@@ -57,7 +58,7 @@ function deepCyclicCopyObject<T>(
     }
 
     descriptor.configurable = true;
-  });
+  }
 
   return Object.defineProperties(newObject, descriptors);
 }

@@ -4,10 +4,11 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-message-util"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-util"}
   ]
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,8 +23,8 @@ test('understands dependencies using jest.requireActual', () => {
 
       test('a', () => {});
     `,
-    '__tests__/b.test.js': `test('b', () => {});`,
-    'a.js': `module.exports = {}`,
+    '__tests__/b.test.js': "test('b', () => {});",
+    'a.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {}}),
   });
 

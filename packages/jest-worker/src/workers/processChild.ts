@@ -1,21 +1,29 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isError, isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
-  ChildMessageCall,
-  ChildMessageInitialize,
+  CHILD_MESSAGE_MEM_USAGE,
+  type ChildMessageCall,
+  type ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_ERROR,
+  type PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
+  type ParentMessageMemUsage,
 } from '../types';
+import {packMessage} from './safeMessageTransferring';
+
+type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -39,7 +47,7 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
+      setupArgs = init[3];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -51,9 +59,35 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
       end();
       break;
 
+    case CHILD_MESSAGE_MEM_USAGE:
+      reportMemoryUsage();
+      break;
+
+    case CHILD_MESSAGE_CALL_SETUP:
+      if (initialized) {
+        reportSuccess(void 0);
+      } else {
+        const main = require(file!);
+
+        initialized = true;
+
+        if (main.setup) {
+          execFunction(
+            main.setup,
+            main,
+            setupArgs,
+            reportSuccess,
+            reportInitializeError,
+          );
+        } else {
+          reportSuccess(void 0);
+        }
+      }
+      break;
+
     default:
       throw new TypeError(
-        'Unexpected request from parent process: ' + request[0],
+        `Unexpected request from parent process: ${request[0]}`,
       );
   }
 };
@@ -64,7 +98,21 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  process.send([PARENT_MESSAGE_OK, result]);
+  try {
+    process.send([PARENT_MESSAGE_OK, result]);
+  } catch (error) {
+    if (
+      isError(error) &&
+      // if .send is a function, it's a serialization issue
+      !error.message.includes('.send is not a function')
+    ) {
+      // Apply specific serialization only in error cases
+      // to avoid affecting performance in regular cases.
+      process.send([PARENT_MESSAGE_OK, packMessage(result)]);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function reportClientError(error: Error) {
@@ -73,6 +121,19 @@ function reportClientError(error: Error) {
 
 function reportInitializeError(error: Error) {
   return reportError(error, PARENT_MESSAGE_SETUP_ERROR);
+}
+
+function reportMemoryUsage() {
+  if (!process || !process.send) {
+    throw new Error('Child can only be used on a forked process');
+  }
+
+  const msg: ParentMessageMemUsage = [
+    PARENT_MESSAGE_MEM_USAGE,
+    process.memoryUsage().heapUsed,
+  ];
+
+  process.send(msg);
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
@@ -113,10 +174,10 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: (...args: Array<unknown>) => unknown;
+  let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }
@@ -136,24 +197,19 @@ function execMethod(method: string, args: Array<unknown>): void {
   execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
 }
 
-const isPromise = (obj: any): obj is PromiseLike<unknown> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
-
 function execFunction(
-  fn: (...args: Array<unknown>) => unknown | Promise<unknown>,
+  fn: UnknownFunction,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,
   onError: (error: Error) => void,
 ): void {
-  let result;
+  let result: unknown;
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err: any) {
-    onError(err);
+  } catch (error: any) {
+    onError(error);
 
     return;
   }

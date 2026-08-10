@@ -1,46 +1,47 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'node:tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
   Prompt,
-  UpdateConfigCallback,
-  UsageData,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
-  private _prompt: Prompt;
+  private readonly _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;
   }
 
-  getUsageInfo(): UsageData {
+  override getUsageInfo(): UsageData {
     return {
       key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     this._prompt.put(key);
   }
 
-  run(
+  override run(
     globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       const testPathPatternPrompt = new TestPathPatternPrompt(
         this._stdout,
         this._prompt,
@@ -48,10 +49,13 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
       testPathPatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({mode: 'watch', testPathPattern: value});
-          res();
+          updateConfigAndRun({
+            mode: 'watch',
+            testPathPatterns: [value],
+          });
+          resolve();
         },
-        rej,
+        reject,
         {
           header: activeFilters(globalConfig),
         },

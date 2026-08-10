@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -28,6 +28,14 @@ if (typeof Buffer !== 'undefined') {
   builtInObject.push(Buffer);
 }
 
+if (typeof Window !== 'undefined') {
+  builtInObject.push(Window);
+}
+
+export const SERIALIZABLE_PROPERTIES = Symbol.for(
+  '@jest/serializableProperties',
+);
+
 const isBuiltInObject = (object: any) =>
   builtInObject.includes(object.constructor);
 
@@ -36,7 +44,7 @@ const isMap = (value: any): value is Map<unknown, unknown> =>
 
 export default function deepCyclicCopyReplaceable<T>(
   value: T,
-  cycles: WeakMap<any, any> = new WeakMap(),
+  cycles = new WeakMap<any, any>(),
 ): T {
   if (typeof value !== 'object' || value === null) {
     return value;
@@ -57,9 +65,31 @@ export default function deepCyclicCopyReplaceable<T>(
 
 function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
   const newObject = Object.create(Object.getPrototypeOf(object));
-  const descriptors: {
-    [x: string]: PropertyDescriptor;
-  } = Object.getOwnPropertyDescriptors(object);
+  let descriptors: Record<string | symbol, PropertyDescriptor> = {};
+  let obj = object;
+  do {
+    const serializableProperties = getSerializableProperties(obj);
+
+    if (serializableProperties === undefined) {
+      descriptors = Object.assign(
+        Object.create(null),
+        Object.getOwnPropertyDescriptors(obj),
+        descriptors,
+      );
+    } else {
+      for (const property of serializableProperties) {
+        if (!descriptors[property]) {
+          descriptors[property] = Object.getOwnPropertyDescriptor(
+            obj,
+            property,
+          )!;
+        }
+      }
+    }
+  } while (
+    (obj = Object.getPrototypeOf(obj)) &&
+    obj !== Object.getPrototypeOf({})
+  );
 
   cycles.set(object, newObject);
 
@@ -71,21 +101,35 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
     //https://github.com/microsoft/TypeScript/issues/1863
     (newDescriptors: {[x: string]: PropertyDescriptor}, key: string) => {
       const enumerable = descriptors[key].enumerable;
+      const descriptor = descriptors[key];
+
+      let value;
+
+      if (descriptor.get) {
+        const getterRes = (object as Record<string | symbol, unknown>)[key];
+        const isSelfReferential =
+          getterRes?.constructor === (object as any).constructor &&
+          getterRes?.constructor !== Object;
+
+        value = isSelfReferential
+          ? '[Getter]'
+          : deepCyclicCopyReplaceable(getterRes, cycles);
+      } else {
+        value = deepCyclicCopyReplaceable(
+          (object as Record<string | symbol, unknown>)[key],
+          cycles,
+        );
+      }
 
       newDescriptors[key] = {
         configurable: true,
         enumerable,
-        value: deepCyclicCopyReplaceable(
-          // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
-          // it has the side effect of invoking the getter here though, rather than copying it over
-          (object as Record<string | symbol, unknown>)[key],
-          cycles,
-        ),
+        value,
         writable: true,
       };
       return newDescriptors;
     },
-    {},
+    Object.create(null),
   );
   //@ts-expect-error because typescript do not support symbol key in object
   //https://github.com/microsoft/TypeScript/issues/1863
@@ -116,9 +160,30 @@ function deepCyclicCopyMap<T>(
 
   cycles.set(map, newMap);
 
-  map.forEach((value, key) => {
+  for (const [key, value] of map) {
     newMap.set(key, deepCyclicCopyReplaceable(value, cycles));
-  });
+  }
 
   return newMap as any;
+}
+
+function getSerializableProperties<T>(
+  obj: T,
+): Array<string | symbol> | undefined {
+  if (typeof obj !== 'object' || obj === null) {
+    return;
+  }
+
+  const serializableProperties: unknown = (obj as Record<string | symbol, any>)[
+    SERIALIZABLE_PROPERTIES
+  ];
+
+  if (!Array.isArray(serializableProperties)) {
+    return;
+  }
+
+  return serializableProperties.filter(
+    (key): key is string | symbol =>
+      typeof key === 'string' || typeof key === 'symbol',
+  );
 }

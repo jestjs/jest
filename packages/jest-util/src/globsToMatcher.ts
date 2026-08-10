@@ -1,22 +1,19 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import picomatch = require('picomatch');
-import type {Config} from '@jest/types';
+import picomatch from 'picomatch';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
-type Matcher = (str: Config.Path) => boolean;
+type Matcher = (str: string) => boolean;
 
 const globsToMatchersMap = new Map<
   string,
   {isMatch: Matcher; negated: boolean}
 >();
-
-const picomatchOptions = {dot: true};
 
 /**
  * Converts a list of globs into a function that matches a path against the
@@ -35,7 +32,11 @@ const picomatchOptions = {dot: true};
  * isMatch('pizza.js'); // true
  * isMatch('pizza.test.js'); // false
  */
-export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
+export default function globsToMatcher(
+  globs: Array<string>,
+  picomatchOptions?: picomatch.PicomatchOptions,
+): Matcher {
+  const dot = picomatchOptions?.dot ?? true;
   if (globs.length === 0) {
     // Since there were no globs given, we can simply have a fast path here and
     // return with a very simple function.
@@ -44,7 +45,7 @@ export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
 
   const matchers = globs.map(glob => {
     if (!globsToMatchersMap.has(glob)) {
-      const isMatch = picomatch(glob, picomatchOptions, true);
+      const isMatch = picomatch(glob, {dot, ...picomatchOptions}, true);
 
       const matcher = {
         isMatch,
@@ -64,8 +65,8 @@ export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
     let kept = undefined;
     let negatives = 0;
 
-    for (let i = 0; i < matchers.length; i++) {
-      const {isMatch, negated} = matchers[i];
+    for (const matcher of matchers) {
+      const {isMatch, negated} = matcher;
 
       if (negated) {
         negatives++;

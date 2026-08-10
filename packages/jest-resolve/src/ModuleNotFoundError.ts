@@ -1,18 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import slash = require('slash');
-import type {Config} from '@jest/types';
+import * as path from 'node:path';
+import slash from 'slash';
 
 export default class ModuleNotFoundError extends Error {
   public code = 'MODULE_NOT_FOUND';
   public hint?: string;
-  public requireStack?: Array<Config.Path>;
+  public requireStack?: Array<string>;
   public siblingWithSimilarExtensionFound?: boolean;
   public moduleName?: string;
 
@@ -24,7 +23,7 @@ export default class ModuleNotFoundError extends Error {
     this.moduleName = moduleName;
   }
 
-  public buildMessage(rootDir: Config.Path): void {
+  public buildMessage(rootDir: string): void {
     if (!this._originalMessage) {
       this._originalMessage = this.message || '';
     }
@@ -38,8 +37,7 @@ Require stack:
   ${this.requireStack
     .map(p => p.replace(`${rootDir}${path.sep}`, ''))
     .map(slash)
-    .join('\n  ')}
-`;
+    .join('\n  ')}`;
     }
 
     if (this.hint) {

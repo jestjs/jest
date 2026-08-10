@@ -1,12 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, replaceJestBuildLineNumbers} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 test('moduleNameMapper wrong configuration', () => {
@@ -14,7 +13,7 @@ test('moduleNameMapper wrong configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper wrong array configuration', () => {
@@ -22,7 +21,7 @@ test('moduleNameMapper wrong array configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -32,7 +31,7 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration mocking module of absolute path', () => {
@@ -46,7 +45,7 @@ test('moduleNameMapper correct configuration mocking module of absolute path', (
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper with mocking', () => {

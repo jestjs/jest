@@ -1,0 +1,4 @@
+{
+  "name": "foo-other-name",
+  "exports": "./file.js"
+}

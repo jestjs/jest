@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -25,12 +25,29 @@ export type TreeNode = {
   children?: Array<TreeNode>;
 } & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
+function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
+  return function fn(done: (error?: unknown) => void = noop) {
+    node.execute(done, enabled);
+  };
+}
+
+function hasNoEnabledTest(node: TreeNode): boolean {
+  return (
+    node.disabled ||
+    node.markedPending ||
+    (node.children?.every(hasNoEnabledTest) ?? false)
+  );
+}
+
 export default function treeProcessor(options: Options): void {
   const {nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} =
     options;
 
   function isEnabled(node: TreeNode, parentEnabled: boolean) {
-    return parentEnabled || runnableIds.indexOf(node.id) !== -1;
+    return parentEnabled || runnableIds.includes(node.id);
   }
 
   function getNodeHandler(node: TreeNode, parentEnabled: boolean) {
@@ -40,14 +57,8 @@ export default function treeProcessor(options: Options): void {
       : getNodeWithoutChildrenHandler(node, enabled);
   }
 
-  function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
-    return function fn(done: (error?: unknown) => void = () => {}) {
-      node.execute(done, enabled);
-    };
-  }
-
   function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
-    return async function fn(done: (error?: unknown) => void = () => {}) {
+    return async function fn(done: (error?: unknown) => void = noop) {
       nodeStart(node);
       await queueRunnerFactory({
         onException: (error: Error) => node.onException(error),
@@ -57,14 +68,6 @@ export default function treeProcessor(options: Options): void {
       nodeComplete(node);
       done();
     };
-  }
-
-  function hasNoEnabledTest(node: TreeNode): boolean {
-    return (
-      node.disabled ||
-      node.markedPending ||
-      (node.children?.every(hasNoEnabledTest) ?? false)
-    );
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
@@ -77,7 +80,7 @@ export default function treeProcessor(options: Options): void {
     if (hasNoEnabledTest(node)) {
       return children;
     }
-    return node.beforeAllFns.concat(children).concat(node.afterAllFns);
+    return [...node.beforeAllFns, ...children, ...node.afterAllFns];
   }
 
   const treeHandler = getNodeHandler(tree, false);

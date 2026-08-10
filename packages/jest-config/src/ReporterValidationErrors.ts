@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
+import {getType} from '@jest/get-type';
 import type {Config} from '@jest/types';
-import {getType} from 'jest-get-type';
 import {ValidationError} from 'jest-validate';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
@@ -29,7 +29,7 @@ export function createReporterError(
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
     `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
-    `  but instead received:\n` +
+    '  but instead received:\n' +
     `    ${chalk.bold.red(getType(reporterValue))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
@@ -50,7 +50,7 @@ export function createArrayReporterError(
     `    ${chalk.bold.red(expectedType)}\n` +
     '  Got:\n' +
     `    ${chalk.bold.green(getType(value))}\n` +
-    `  Reporter configuration:\n` +
+    '  Reporter configuration:\n' +
     `    ${chalk.bold.green(
       JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
     )}`;

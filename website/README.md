@@ -1,10 +1,10 @@
 # Jest website
 
-The Jest website is based on [Docusaurus 2](http://v2.docusaurus.io/).
+The Jest website is based on [Docusaurus 2](http://docusaurus.io/).
 
 ## Run the dev server
 
-You will need Node >=10.
+You will need Node >=14.
 
 The first time, get all the dependencies loaded via
 
@@ -44,4 +44,4 @@ An older Docusaurus v1 site exist for versions <= 25.x:
 
 - Netlify site: https://app.netlify.com/sites/jest-archive
 - Url: https://archive.jestjs.io
-- GitHub branch: https://github.com/facebook/jest/tree/jest-website-v1
+- GitHub branch: https://github.com/jestjs/jest/tree/jest-website-v1

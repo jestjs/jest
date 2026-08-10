@@ -1,11 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-const baseTheme = require('prism-react-renderer/themes/github');
+const {themes} = require('prism-react-renderer');
+const baseTheme = themes.github;
 
 const themeLight = [
   {
@@ -55,5 +56,5 @@ const themeLight = [
 
 module.exports = {
   plain: Object.assign(baseTheme.plain, {backgroundColor: '#f6f6f6'}),
-  styles: baseTheme.styles.concat(themeLight),
+  styles: [...baseTheme.styles, ...themeLight],
 };

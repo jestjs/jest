@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {
-  DiffOptions,
+  type DiffOptions,
   diff,
   printExpected,
   printReceived,
@@ -42,10 +42,6 @@ const getOperatorName = (operator: string | null, stack: string) => {
   if (stack.match('.throws')) {
     return 'throws';
   }
-  // this fallback is only needed for versions older than node 10
-  if (stack.match('.fail')) {
-    return 'fail';
-  }
   return '';
 };
 
@@ -61,7 +57,7 @@ const operatorMessage = (operator: string | null) => {
 const assertThrowingMatcherHint = (operatorName: string) =>
   operatorName
     ? chalk.dim('assert') +
-      chalk.dim('.' + operatorName + '(') +
+      chalk.dim(`.${operatorName}(`) +
       chalk.red('function') +
       chalk.dim(')')
     : '';
@@ -82,7 +78,7 @@ const assertMatcherHint = (
   } else if (operatorName) {
     message =
       chalk.dim('assert') +
-      chalk.dim('.' + operatorName + '(') +
+      chalk.dim(`.${operatorName}(`) +
       chalk.red('received') +
       chalk.dim(', ') +
       chalk.green('expected') +
@@ -102,25 +98,32 @@ function assertionErrorMessage(
   const operatorName = getOperatorName(operator, stack);
   const trimmedStack = stack
     .replace(message, '')
-    .replace(/AssertionError(.*)/g, '');
+    .replaceAll(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
-    return (
+    return `${
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function not to throw an error.\n`) +
-      chalk.reset(`Instead, it threw:\n`) +
-      `  ${printReceived(actual)}` +
-      chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
-      trimmedStack
-    );
+      chalk.reset('Expected the function not to throw an error.\n') +
+      chalk.reset('Instead, it threw:\n')
+    }  ${printReceived(actual)}${chalk.reset(
+      hasCustomMessage ? `\n\nMessage:\n  ${message}` : '',
+    )}${trimmedStack}`;
   }
 
   if (operatorName === 'throws') {
+    if (error.generatedMessage) {
+      return (
+        buildHintString(assertThrowingMatcherHint(operatorName)) +
+        chalk.reset(error.message) +
+        chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        trimmedStack
+      );
+    }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function to throw an error.\n`) +
-      chalk.reset(`But it didn't throw anything.`) +
-      chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+      chalk.reset('Expected the function to throw an error.\n') +
+      chalk.reset("But it didn't throw anything.") +
+      chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -128,25 +131,23 @@ function assertionErrorMessage(
   if (operatorName === 'fail') {
     return (
       buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
+      chalk.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
       trimmedStack
     );
   }
 
-  return (
+  return `${
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-    chalk.reset(`Expected value ${operatorMessage(operator)}`) +
-    `  ${printExpected(expected)}\n` +
-    chalk.reset(`Received:\n`) +
-    `  ${printReceived(actual)}` +
-    chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
-    (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
-    trimmedStack
-  );
+    chalk.reset(`Expected value ${operatorMessage(operator)}`)
+  }  ${printExpected(expected)}\n${chalk.reset('Received:\n')}  ${printReceived(
+    actual,
+  )}${chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '')}${
+    diffString ? `\n\nDifference:\n\n${diffString}` : ''
+  }${trimmedStack}`;
 }
 
 function buildHintString(hint: string) {
-  return hint ? hint + '\n\n' : '';
+  return hint ? `${hint}\n\n` : '';
 }
 
 export default assertionErrorMessage;

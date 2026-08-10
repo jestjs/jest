@@ -4,7 +4,6 @@
     "collectCoverageFrom": [
       "<rootDir>/*.js"
     ],
-    "transform": {
-    }
+    "transform": {}
   }
 }

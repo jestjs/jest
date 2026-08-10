@@ -1,19 +1,20 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import chalk = require('chalk');
+import {runInContext} from 'node:vm';
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import sourcemapSupport = require('source-map-support');
+import * as sourcemapSupport from 'source-map-support';
 import {
   BufferedConsole,
   CustomConsole,
-  LogMessage,
-  LogType,
+  type LogMessage,
+  type LogType,
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
@@ -24,6 +25,7 @@ import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -60,7 +62,7 @@ function freezeConsole(
       true,
     );
 
-    process.stderr.write('\n' + formattedError + '\n');
+    process.stderr.write(`\n${formattedError}\n`);
     process.exitCode = 1;
   };
 }
@@ -75,36 +77,38 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  projectConfig: Config.ProjectConfig,
   resolver: Resolver,
-  context?: TestRunnerContext,
+  context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
   const customEnvironment = docblockPragmas['jest-environment'];
 
-  let testEnvironment = config.testEnvironment;
+  const loadTestEnvironmentStart = Date.now();
+  let testEnvironment = projectConfig.testEnvironment;
 
   if (customEnvironment) {
     if (Array.isArray(customEnvironment)) {
-      throw new Error(
+      throw new TypeError(
         `You can only define a single test environment through docblocks, got "${customEnvironment.join(
           ', ',
         )}"`,
       );
     }
     testEnvironment = resolveTestEnvironment({
-      ...config,
-      requireResolveFunction: require.resolve,
+      ...projectConfig,
+      // we wanna avoid webpack trying to be clever
+      requireResolveFunction: module => require.resolve(module),
       testEnvironment: customEnvironment,
     });
   }
 
   const cacheFS = new Map([[path, testSource]]);
-  const transformer = await createScriptTransformer(config, cacheFS);
+  const transformer = await createScriptTransformer(projectConfig, cacheFS);
 
   const TestEnvironment: typeof JestEnvironment =
     await transformer.requireAndTranspileModule(testEnvironment);
@@ -112,11 +116,11 @@ async function runTestInternal(
     await transformer.requireAndTranspileModule(
       process.env.JEST_JASMINE === '1'
         ? require.resolve('jest-jasmine2')
-        : config.testRunner,
+        : projectConfig.testRunner,
     );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
-    config.moduleLoader
-      ? require(config.moduleLoader)
+    projectConfig.runtime
+      ? require(projectConfig.runtime)
       : require('jest-runtime'),
   ).default;
 
@@ -125,25 +129,49 @@ async function runTestInternal(
     getConsoleOutput(
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
-      config,
+      projectConfig,
       globalConfig,
     );
 
   let testConsole;
 
-  if (globalConfig.silent) {
+  if (projectConfig.silent ?? globalConfig.silent) {
     testConsole = new NullConsole(consoleOut, consoleOut, consoleFormatter);
-  } else if (globalConfig.verbose) {
+  } else if (projectConfig.verbose ?? globalConfig.verbose) {
     testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
     testConsole = new BufferedConsole();
   }
 
-  const environment = new TestEnvironment(config, {
-    console: testConsole,
-    docblockPragmas,
-    testPath: path,
-  });
+  let extraTestEnvironmentOptions;
+
+  const docblockEnvironmentOptions =
+    docblockPragmas['jest-environment-options'];
+
+  if (typeof docblockEnvironmentOptions === 'string') {
+    extraTestEnvironmentOptions = JSON.parse(docblockEnvironmentOptions);
+  }
+
+  const environment = new TestEnvironment(
+    {
+      globalConfig,
+      projectConfig: extraTestEnvironmentOptions
+        ? {
+            ...projectConfig,
+            testEnvironmentOptions: {
+              ...projectConfig.testEnvironmentOptions,
+              ...extraTestEnvironmentOptions,
+            },
+          }
+        : projectConfig,
+    },
+    {
+      console: testConsole,
+      docblockPragmas,
+      testPath: path,
+    },
+  );
+  const loadTestEnvironmentEnd = Date.now();
 
   if (typeof environment.getVmContext !== 'function') {
     console.error(
@@ -152,45 +180,68 @@ async function runTestInternal(
     process.exit(1);
   }
 
-  const leakDetector = config.detectLeaks
+  const leakDetector = projectConfig.detectLeaks
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(
-    environment.global as unknown as typeof globalThis,
-    'console',
-    testConsole,
-  );
+  setGlobal(environment.global, 'console', testConsole, 'retain');
 
   const runtime = new Runtime(
-    config,
+    projectConfig,
     environment,
     resolver,
     transformer,
     cacheFS,
     {
-      changedFiles: context?.changedFiles,
+      changedFiles: context.changedFiles,
       collectCoverage: globalConfig.collectCoverage,
       collectCoverageFrom: globalConfig.collectCoverageFrom,
-      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
       coverageProvider: globalConfig.coverageProvider,
+      globalRootDir: globalConfig.rootDir,
       sourcesRelatedToTestsInChangedFiles:
-        context?.sourcesRelatedToTestsInChangedFiles,
+        context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
+    globalConfig,
   );
+
+  let isTornDown = false;
+
+  const tearDownEnv = async () => {
+    if (!isTornDown) {
+      runtime.teardown();
+
+      // source-map-support keeps memory leftovers in `Error.prepareStackTrace`
+      runInContext(
+        "Error.prepareStackTrace = () => '';",
+        environment.getVmContext()!,
+      );
+      sourcemapSupport.resetRetrieveHandlers();
+
+      try {
+        await environment.teardown();
+      } finally {
+        isTornDown = true;
+      }
+    }
+  };
 
   const start = Date.now();
 
-  for (const path of config.setupFiles) {
+  const setupFilesStart = Date.now();
+  for (const path of projectConfig.setupFiles) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
+  const setupFilesEnd = Date.now();
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
@@ -214,7 +265,6 @@ async function runTestInternal(
   runtime
     .requireInternalModule<typeof import('source-map-support')>(
       require.resolve('source-map-support'),
-      'source-map-support',
     )
     .install(sourcemapOptions);
 
@@ -236,7 +286,7 @@ async function runTestInternal(
 
       const formattedError = formatExecError(
         error,
-        config,
+        projectConfig,
         {noStackTrace: false},
         undefined,
         true,
@@ -250,9 +300,13 @@ async function runTestInternal(
 
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
+    globalConfig.collectCoverage &&
     globalConfig.coverageProvider === 'v8' &&
     typeof environment.getVmContext === 'function';
 
+  // Node's error-message stack size is limited at 10, but it's pretty useful
+  // to see more than that when a test fails.
+  Error.stackTraceLimit = 100;
   try {
     await environment.setup();
 
@@ -264,24 +318,29 @@ async function runTestInternal(
       }
       result = await testFramework(
         globalConfig,
-        config,
+        projectConfig,
         environment,
         runtime,
         path,
         sendMessageToJest,
       );
-    } catch (err: any) {
-      // Access stack before uninstalling sourcemaps
-      err.stack;
+    } catch (error: any) {
+      // Access all stacks before uninstalling sourcemaps
+      let e = error;
+      while (typeof e === 'object' && e !== null && 'stack' in e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        e.stack;
+        e = e?.cause;
+      }
 
-      throw err;
+      throw error;
     } finally {
       if (collectV8Coverage) {
         await runtime.stopCollectingV8Coverage();
       }
     }
 
-    freezeConsole(testConsole, config);
+    freezeConsole(testConsole, projectConfig);
 
     const testCount =
       result.numPassingTests +
@@ -292,20 +351,25 @@ async function runTestInternal(
     const end = Date.now();
     const testRuntime = end - start;
     result.perfStats = {
+      ...result.perfStats,
       end,
+      loadTestEnvironmentEnd,
+      loadTestEnvironmentStart,
       runtime: testRuntime,
-      slow: testRuntime / 1000 > config.slowTestThreshold,
+      setupFilesEnd,
+      setupFilesStart,
+      slow: testRuntime / 1000 > projectConfig.slowTestThreshold,
       start,
     };
     result.testFilePath = path;
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
-    result.displayName = config.displayName;
+    result.displayName = projectConfig.displayName;
 
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
-      if (coverageKeys.length) {
+      if (coverageKeys.length > 0) {
         result.coverage = coverage;
       }
     }
@@ -318,30 +382,28 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      if (global.gc) {
-        global.gc();
-      }
+      globalThis.gc?.();
+
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
+    await tearDownEnv();
+
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    runtime.teardown();
-    await environment.teardown();
-
-    sourcemapSupport.resetRetrieveHandlers();
+    await tearDownEnv();
   }
 }
 
 export default async function runTest(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  context?: TestRunnerContext,
+  context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(

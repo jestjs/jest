@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,22 +16,26 @@ import {DependencyResolver} from '../index';
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
-let Runtime: typeof import('jest-runtime');
 let config: Config.ProjectConfig;
-const cases: Record<string, jest.Mock> = {
-  fancyCondition: jest.fn(path => path.length > 10),
-  testRegex: jest.fn(path => /.test.js$/.test(path)),
+const cases: Record<string, (path: string) => boolean> = {
+  fancyCondition: path => path.length > 10,
+  testRegex: path => /.test.js$/.test(path),
 };
-const filter = (path: Config.Path) =>
+const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(async () => {
-  Runtime = require('jest-runtime').default;
+  const Runtime = (require('jest-runtime') as typeof import('jest-runtime'))
+    .default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
     moduleNameMapper: [['^\\$asdf/(.*)$', '<rootDir>/$1']],
-    rootDir: '.',
+    /**
+     * `rootDir` must be an absolute path
+     * @See https://github.com/jestjs/jest/blob/76632c6ec3f56708ec5781158972a295d0cc9332/packages/jest-haste-map/src/lib/fast_path.ts#L19-L25
+     */
+    rootDir: process.cwd(),
     roots: ['./packages/jest-resolve-dependencies'],
   });
   const runtimeContext = await Runtime.createContext(config, {
@@ -49,7 +53,7 @@ beforeEach(async () => {
 
 test('resolves no dependencies for non-existent path', () => {
   const resolved = dependencyResolver.resolve('/non/existent/path');
-  expect(resolved.length).toEqual(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves dependencies for existing path', () => {
@@ -84,15 +88,15 @@ test('resolves dependencies for scoped packages', () => {
 });
 
 test('resolves no inverse dependencies for empty paths set', () => {
-  const paths = new Set();
+  const paths = new Set<string>();
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toEqual(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves no inverse dependencies for set of non-existent paths', () => {
   const paths = new Set(['/non/existent/path', '/another/one']);
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toEqual(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves inverse dependencies for existing path', () => {

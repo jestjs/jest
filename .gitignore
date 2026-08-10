@@ -1,26 +1,33 @@
 .idea
-.DS_STORE
+.DS_Store
 .eslintcache
 *.swp
 *~
 /examples/*/node_modules/
-/examples/mongodb/globalConfig.json
+/examples/react-native/.watchman-cookie-*
 
+/e2e/setup-files-after-env-config/package.json
 /e2e/*/node_modules
 /e2e/*/.pnp
 /e2e/*/.pnp.js
+!/e2e/native-esm-js-esm-syntax-fallback/node_modules
 !/e2e/presets/json/node_modules
 !/e2e/presets/js/node_modules
 /e2e/transform/*/coverage
 /e2e/transform/*/node_modules
+/e2e/custom-jsdom-version/*/node_modules
+
+!packages/jest-runtime/src/__tests__/test_root/node_modules
 
 /node_modules
 
 /packages/*/build/
+/packages/*/dist/
 /packages/*/coverage/
 /packages/*/node_modules/
 
 /website/.docusaurus
+/website/.cache-loader
 /website/build
 /website/backers.json
 /website/node_modules
@@ -40,6 +47,7 @@ junit.xml
 package-lock.json
 
 *.tsbuildinfo
+api-extractor.json
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored but nested for e2e directories
 **/.yarn/*
@@ -51,3 +59,8 @@ package-lock.json
 **/.pnp.*
 
 crowdin-cli.jar
+
+# We don't want these temp files
+packages/jest-worker/src/workers/__tests__/__temp__
+
+.zed

@@ -1,4 +1,4 @@
-[type-definitions]: https://github.com/facebook/jest/blob/main/packages/jest-types/src/Circus.ts
+[type-definitions]: https://github.com/jestjs/jest/blob/main/packages/jest-types/src/Circus.ts
 
 <h1 align="center">
   <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
@@ -13,9 +13,9 @@ Circus is a flux-based test runner for Jest that is fast, maintainable, and simp
 
 Circus allows you to bind to events via an optional event handler on any [custom environment](https://jestjs.io/docs/configuration#testenvironment-string). See the [type definitions][type-definitions] for more information on the events and state data currently available.
 
-```js
-import {Event, State} from 'jest-circus';
-import NodeEnvironment from 'jest-environment-node';
+```ts
+import type {Event, State} from 'jest-circus';
+import {TestEnvironment as NodeEnvironment} from 'jest-environment-node';
 
 class MyCustomEnvironment extends NodeEnvironment {
   //...

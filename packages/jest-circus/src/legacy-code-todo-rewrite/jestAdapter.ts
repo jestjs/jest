@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 import {deepCyclicCopy, interopRequireDefault} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -22,26 +22,31 @@ const jestAdapter = async (
   testPath: string,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
-  const {initialize, runAndTransformResultsToJestFormat} =
-    runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
-      FRAMEWORK_INITIALIZER,
-    );
+  const {
+    collectTestsWithoutRunning,
+    initialize,
+    runAndTransformResultsToJestFormat,
+  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+    FRAMEWORK_INITIALIZER,
+  );
 
   const localRequire = async <T = unknown>(
     path: string,
-    applyInteropRequireDefault: boolean = false,
+    applyInteropRequireDefault = false,
   ): Promise<T> => {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    if (runtime.unstable_shouldLoadAsEsm(path)) {
+      const {namespace} = (await runtime.unstable_importModule(path)) as {
+        namespace: {default: T};
+      };
 
-    if (esm) {
-      return runtime.unstable_importModule(path) as any;
-    } else {
-      const requiredModule = runtime.requireModule<T>(path);
-      if (!applyInteropRequireDefault) {
-        return requiredModule;
-      }
-      return interopRequireDefault(requiredModule).default;
+      return namespace.default;
     }
+
+    const requiredModule = runtime.requireModule<T>(path);
+
+    return applyInteropRequireDefault
+      ? interopRequireDefault(requiredModule).default
+      : requiredModule;
   };
 
   const {globals, snapshotState} = await initialize({
@@ -50,16 +55,19 @@ const jestAdapter = async (
     globalConfig,
     localRequire,
     parentProcess: process,
+    runtime,
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake' || config.timers === 'modern') {
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimersModern!.useFakeTimers();
-  } else if (config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      // during setup, this cannot be null (and it's fine to explode if it is)
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   globals.beforeEach(() => {
@@ -74,7 +82,10 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'legacy') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
@@ -85,14 +96,45 @@ const jestAdapter = async (
     }
   });
 
+  const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
-    await localRequire(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
+    }
   }
-  await localRequire(testPath);
+  const setupAfterEnvEnd = Date.now();
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
+  if (globalConfig.collectTests) {
+    const results = await collectTestsWithoutRunning({
+      config,
+      testPath,
+    });
+    return deepCyclicCopy(results, {keepPrototype: false});
+  }
+
+  const setupAfterEnvPerfStats = {
+    setupAfterEnvEnd,
+    setupAfterEnvStart,
+  };
 
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
+    setupAfterEnvPerfStats,
     testPath,
   });
 
@@ -106,15 +148,21 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult,
-  snapshotState: SnapshotStateType,
+  snapshotState: SnapshotState,
 ) => {
-  results.testResults.forEach(({fullName, status}) => {
-    if (status === 'pending' || status === 'failed') {
-      // if test is skipped or failed, we don't want to mark
+  for (const {fullName, status, failing} of results.testResults) {
+    if (
+      status === 'pending' ||
+      status === 'failed' ||
+      (failing && status === 'passed')
+    ) {
+      // If test is skipped or failed, we don't want to mark
       // its snapshots as obsolete.
+      // When tests called with test.failing pass, they've thrown an exception,
+      // so maintain any snapshots after the error.
       snapshotState.markSnapshotsAsCheckedForTest(fullName);
     }
-  });
+  }
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
@@ -128,9 +176,9 @@ const _addSnapshotData = (
   results.snapshot.matched = snapshotState.matched;
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
-  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  results.snapshot.unchecked = status.deleted ? 0 : uncheckedCount;
   // Copy the array to prevent memory leaks
-  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
+  results.snapshot.uncheckedKeys = [...uncheckedKeys];
 };
 
-export = jestAdapter;
+export default jestAdapter;

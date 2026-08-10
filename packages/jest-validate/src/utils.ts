@@ -1,15 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import leven from 'leven';
 import {format as prettyFormat} from 'pretty-format';
 
-const BULLET: string = chalk.bold('\u25cf');
+const BULLET: string = chalk.bold('\u25CF');
 export const DEPRECATION = `${BULLET} Deprecation Warning`;
 export const ERROR = `${BULLET} Validation Error`;
 export const WARNING = `${BULLET} Validation Warning`;
@@ -22,17 +22,20 @@ export const format = (value: unknown): string =>
 export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
-    : JSON.stringify(value, null, 2).split('\n').join('\n    ');
+    : value === undefined
+      ? 'undefined'
+      : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
-  name: string;
-  message: string;
+  override name: string;
+  override message: string;
 
   constructor(name: string, message: string, comment?: string | null) {
     super();
-    comment = comment ? '\n\n' + comment : '\n';
+    comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
-    this.message = chalk.red(chalk.bold(name) + ':\n\n' + message + comment);
+    this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});
   }
 }
@@ -42,8 +45,8 @@ export const logValidationWarning = (
   message: string,
   comment?: string | null,
 ): void => {
-  comment = comment ? '\n\n' + comment : '\n';
-  console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
+  comment = comment ? `\n\n${comment}` : '\n';
+  console.warn(chalk.yellow(`${chalk.bold(name)}:\n\n${message}${comment}`));
 };
 
 export const createDidYouMeanMessage = (

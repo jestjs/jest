@@ -1,4 +1,4 @@
-## 👉 [Please follow one of these issue templates](https://github.com/facebook/jest/issues/new/choose) 👈
+## 👉 [Please follow one of these issue templates](https://github.com/jestjs/jest/issues/new/choose) 👈
 
 <!-- Love Jest? Please consider supporting our collective: 👉  https://opencollective.com/jest/donate -->
 

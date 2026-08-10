@@ -1,4 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 function infiniteTimerGame(callback) {
   console.log('Ready....go!');
@@ -10,7 +10,7 @@ function infiniteTimerGame(callback) {
     // Schedule the next game in 10 seconds
     setTimeout(() => {
       infiniteTimerGame(callback);
-    }, 10000);
+    }, 10_000);
   }, 1000);
 }
 

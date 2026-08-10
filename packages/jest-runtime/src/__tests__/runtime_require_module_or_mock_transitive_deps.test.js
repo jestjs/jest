@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,8 +29,8 @@ describe('transitive dependencies', () => {
   const expectUnmocked = nodeModule => {
     const moduleData = nodeModule();
     expect(moduleData.isUnmocked()).toBe(true);
-    expect(moduleData.transitiveNPM3Dep).toEqual('npm3-transitive-dep');
-    expect(moduleData.internalImplementation()).toEqual('internal-module-code');
+    expect(moduleData.transitiveNPM3Dep).toBe('npm3-transitive-dep');
+    expect(moduleData.internalImplementation()).toBe('internal-module-code');
   };
 
   it('mocks a manually mocked and mapped module', async () => {
@@ -73,7 +73,7 @@ describe('transitive dependencies', () => {
       runtime.__mockRootPath,
       'npm3-transitive-dep',
     );
-    expect(transitiveDep()).toEqual(undefined);
+    expect(transitiveDep()).toBeUndefined();
   });
 
   it('unmocks transitive dependencies in node_modules when using unmock', async () => {
@@ -98,7 +98,7 @@ describe('transitive dependencies', () => {
       runtime.__mockRootPath,
       'npm3-transitive-dep',
     );
-    expect(transitiveDep()).toEqual(undefined);
+    expect(transitiveDep()).toBeUndefined();
   });
 
   it('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', async () => {
@@ -124,7 +124,7 @@ describe('transitive dependencies', () => {
       runtime.__mockRootPath,
       'npm3-transitive-dep',
     );
-    expect(transitiveDep()).toEqual(undefined);
+    expect(transitiveDep()).toBeUndefined();
   });
 
   it('mocks deep dependencies when using unmock', async () => {

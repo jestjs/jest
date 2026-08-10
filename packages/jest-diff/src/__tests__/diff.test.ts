@@ -1,26 +1,26 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import stripAnsi = require('strip-ansi');
+import {stripVTControlCharacters as stripAnsi} from 'util';
+import chalk from 'chalk';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {diff} from '../';
 import {NO_DIFF_MESSAGE} from '../constants';
 import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
-import {DiffOptions} from '../types';
+import type {DiffOptions} from '../types';
 
 const optionsCounts: DiffOptions = {
   includeChangeCounts: true,
 };
 
 // Use only in toBe assertions for edge case messages.
-const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
+const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) ?? '');
 
 // Use in toBe assertions for comparison lines.
 const optionsBe: DiffOptions = {
@@ -47,13 +47,13 @@ const elementSymbol = Symbol.for('react.element');
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('different types', () => {
-  [
+  for (const values of [
     [1, 'a', 'number', 'string'],
     [{}, 'a', 'object', 'string'],
     [[], 2, 'array', 'number'],
     [null, undefined, 'null', 'undefined'],
     [() => {}, 3, 'function', 'number'],
-  ].forEach(values => {
+  ]) {
     const a = values[0];
     const b = values[1];
     const typeA = values[2];
@@ -62,14 +62,14 @@ describe('different types', () => {
     test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(stripped(a, b)).toBe(
         '  Comparing two different types of values. ' +
-          `Expected ${typeA} but received ${typeB}.`,
+          `Expected ${String(typeA)} but received ${String(typeB)}.`,
       );
     });
-  });
+  }
 });
 
 describe('no visual difference', () => {
-  [
+  for (const values of [
     ['a', 'a'],
     [{}, {}],
     [[], []],
@@ -78,21 +78,23 @@ describe('no visual difference', () => {
       [1, 2],
     ],
     [11, 11],
+    /* eslint-disable unicorn/prefer-number-properties */
     [NaN, NaN],
     [Number.NaN, NaN],
+    /* eslint-enable */
     [() => {}, () => {}],
     [null, null],
     [undefined, undefined],
     [false, false],
     [{a: 1}, {a: 1}],
     [{a: {b: 5}}, {a: {b: 5}}],
-  ].forEach(values => {
+  ]) {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
       values[1],
     )}'`, () => {
       expect(stripped(values[0], values[1])).toBe(NO_DIFF_MESSAGE);
     });
-  });
+  }
 
   test('Map key order should be irrelevant', () => {
     const arg1 = new Map([
@@ -665,7 +667,7 @@ describe('outer React element (non-snapshot)', () => {
 
 describe('trailing newline in multiline string not enclosed in quotes', () => {
   const a = ['line 1', 'line 2', 'line 3'].join('\n');
-  const b = a + '\n';
+  const b = `${a}\n`;
 
   describe('from less to more', () => {
     const expected = ['  line 1', '  line 2', '  line 3', '+'].join('\n');
@@ -851,7 +853,7 @@ describe('diffLinesUnified2 edge cases', () => {
     test('a', () => {
       const aDisplay = 'MiXeD cAsE';
       const bDisplay = 'Mixed case\nUPPER CASE';
-      const aCompare = aDisplay.toLowerCase() + '\nlower case';
+      const aCompare = `${aDisplay.toLowerCase()}\nlower case`;
       const bCompare = bDisplay.toLowerCase();
 
       const received = diffLinesUnified2(
@@ -1077,7 +1079,8 @@ describe('options', () => {
     });
 
     test('diff middle dot', () => {
-      const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
+      const replaceSpacesWithMiddleDot = (string: string) =>
+        '·'.repeat(string.length);
       const options = {
         changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
         commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,

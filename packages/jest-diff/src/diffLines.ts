@@ -1,18 +1,98 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff from 'diff-sequences';
+import diff from '@jest/diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {escapeControlCharacters} from './escapeControlCharacters';
+import {
+  joinAlignedDiffsExpand,
+  joinAlignedDiffsNoExpand,
+} from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {printDiffLines} from './printDiffs';
-import type {DiffOptions} from './types';
+import type {DiffOptions, DiffOptionsNormalized} from './types';
 
 const isEmptyString = (lines: Array<string>) =>
   lines.length === 1 && lines[0].length === 0;
+
+type ChangeCounts = {
+  a: number;
+  b: number;
+};
+
+const countChanges = (diffs: Array<Diff>): ChangeCounts => {
+  let a = 0;
+  let b = 0;
+
+  for (const diff of diffs) {
+    switch (diff[0]) {
+      case DIFF_DELETE:
+        a += 1;
+        break;
+
+      case DIFF_INSERT:
+        b += 1;
+        break;
+    }
+  }
+
+  return {a, b};
+};
+
+const printAnnotation = (
+  {
+    aAnnotation,
+    aColor,
+    aIndicator,
+    bAnnotation,
+    bColor,
+    bIndicator,
+    includeChangeCounts,
+    omitAnnotationLines,
+  }: DiffOptionsNormalized,
+  changeCounts: ChangeCounts,
+): string => {
+  if (omitAnnotationLines) {
+    return '';
+  }
+
+  let aRest = '';
+  let bRest = '';
+
+  if (includeChangeCounts) {
+    const aCount = String(changeCounts.a);
+    const bCount = String(changeCounts.b);
+
+    // Padding right aligns the ends of the annotations.
+    const baAnnotationLengthDiff = bAnnotation.length - aAnnotation.length;
+    const aAnnotationPadding = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
+    const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
+
+    // Padding left aligns the ends of the counts.
+    const baCountLengthDiff = bCount.length - aCount.length;
+    const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
+    const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
+
+    aRest = `${aAnnotationPadding}  ${aIndicator} ${aCountPadding}${aCount}`;
+    bRest = `${bAnnotationPadding}  ${bIndicator} ${bCountPadding}${bCount}`;
+  }
+
+  const a = `${aIndicator} ${aAnnotation}${aRest}`;
+  const b = `${bIndicator} ${bAnnotation}${bRest}`;
+  return `${aColor(a)}\n${bColor(b)}\n\n`;
+};
+
+export const printDiffLines = (
+  diffs: Array<Diff>,
+  options: DiffOptionsNormalized,
+): string =>
+  printAnnotation(options, countChanges(diffs)) +
+  (options.expand
+    ? joinAlignedDiffsExpand(diffs, options)
+    : joinAlignedDiffsNoExpand(diffs, options));
 
 // Compare two arrays of strings line-by-line. Format as comparison lines.
 export const diffLinesUnified = (
@@ -22,8 +102,8 @@ export const diffLinesUnified = (
 ): string =>
   printDiffLines(
     diffLinesRaw(
-      isEmptyString(aLines) ? [] : aLines,
-      isEmptyString(bLines) ? [] : bLines,
+      isEmptyString(aLines) ? [] : aLines.map(escapeControlCharacters),
+      isEmptyString(bLines) ? [] : bLines.map(escapeControlCharacters),
     ),
     normalizeDiffOptions(options),
   );
@@ -60,7 +140,7 @@ export const diffLinesUnified2 = (
   // Replace comparison lines with displayable lines.
   let aIndex = 0;
   let bIndex = 0;
-  diffs.forEach((diff: Diff) => {
+  for (const diff of diffs) {
     switch (diff[0]) {
       case DIFF_DELETE:
         diff[1] = aLinesDisplay[aIndex];
@@ -77,7 +157,7 @@ export const diffLinesUnified2 = (
         aIndex += 1;
         bIndex += 1;
     }
-  });
+  }
 
   return printDiffLines(diffs, normalizeDiffOptions(options));
 };

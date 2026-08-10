@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,18 +8,19 @@
 const tsc = require('typescript');
 
 module.exports = {
-  process(src, path) {
-    if (path.endsWith('.ts') || path.endsWith('.tsx')) {
-      return tsc.transpile(
-        src,
-        {
+  process(sourceText, fileName) {
+    if (fileName.endsWith('.ts') || fileName.endsWith('.tsx')) {
+      const {outputText, sourceMapText} = tsc.transpileModule(sourceText, {
+        compilerOptions: {
           jsx: tsc.JsxEmit.React,
           module: tsc.ModuleKind.CommonJS,
+          sourceMap: true, // if code is transformed, source map is necessary for coverage
         },
-        path,
-        [],
-      );
+        fileName,
+      });
+
+      return {code: outputText, map: sourceMapText};
     }
-    return src;
+    return {code: sourceText};
   },
 };

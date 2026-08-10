@@ -1,13 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {
+  cleanup,
+  extractSummary,
+  replaceJestBuildLineNumbers,
+  writeFiles,
+} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
@@ -20,7 +24,7 @@ test('show error message with matching files', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(replaceJestBuildLineNumbers(rest)).toMatchSnapshot();
 });
 
 test('show error message when no js moduleFileExtensions', () => {
@@ -47,5 +51,5 @@ test('show error message when no js moduleFileExtensions', () => {
   const {exitCode, stderr} = runJest('resolve-no-extensions-no-js');
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toMatchSnapshot();
 });

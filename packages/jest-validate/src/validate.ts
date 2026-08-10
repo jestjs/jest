@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -57,7 +57,7 @@ const _validate = (
           throw new ValidationError(
             'Validation Error',
             `${key} has to be of type string or number`,
-            `maxWorkers=50% or\nmaxWorkers=3`,
+            'maxWorkers=50% or\nmaxWorkers=3',
           );
         }
       }
@@ -74,8 +74,7 @@ const _validate = (
     ) {
       // skip validating unknown options inside blacklisted paths
     } else {
-      options.unknown &&
-        options.unknown(config, exampleConfig, key, options, path);
+      options.unknown?.(config, exampleConfig, key, options, path);
     }
 
     if (

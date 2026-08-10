@@ -8,6 +8,10 @@ base_path: '.'
 base_url: 'https://api.crowdin.com'
 preserve_hierarchy: true
 
+# Force a specific MDX parser version for all newly added files .md/.mdx files
+# See https://github.com/jestjs/jest/issues/15947#issuecomment-3853479828
+mdx_file_type: &mdx_file_type mdx_v1_2
+
 # See Yaml anchors: https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/
 languages_mapping: &languages_mapping
   locale:
@@ -25,25 +29,21 @@ languages_mapping: &languages_mapping
 # see https://support.crowdin.com/configuration-file/
 #
 files:
-  [
-    {
-      'source': '/website/i18n/en/**/*',
-      'translation': '/website/i18n/%locale%/**/%original_file_name%',
-      'languages_mapping': *languages_mapping,
-    },
-    {
-      'source': '/docs/**/*',
-      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-docs/current/**/%original_file_name%',
-      'languages_mapping': *languages_mapping,
-    },
-    {
-      'source': '/website/versioned_docs/**/*',
-      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-docs/**/%original_file_name%',
-      'languages_mapping': *languages_mapping,
-    },
-    {
-      'source': '/website/blog/**/*',
-      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-blog/**/%original_file_name%',
-      'languages_mapping': *languages_mapping,
-    },
-  ]
+  - source: /website/i18n/en/**/*
+    translation: /website/i18n/%two_letters_code%/**/%original_file_name%
+    languages_mapping: *languages_mapping
+
+  - source: /docs/**/*
+    translation: /website/i18n/%two_letters_code%/docusaurus-plugin-content-docs/current/**/%original_file_name%
+    languages_mapping: *languages_mapping
+    type: *mdx_file_type # Force specific MDX parser version
+
+  - source: /website/versioned_docs/**/*
+    translation: /website/i18n/%two_letters_code%/docusaurus-plugin-content-docs/**/%original_file_name%
+    languages_mapping: *languages_mapping
+    type: *mdx_file_type # Force specific MDX parser version
+
+  - source: /website/blog/**/*
+    translation: /website/i18n/%two_letters_code%/docusaurus-plugin-content-blog/**/%original_file_name%
+    languages_mapping: *languages_mapping
+    type: *mdx_file_type # Force specific MDX parser version

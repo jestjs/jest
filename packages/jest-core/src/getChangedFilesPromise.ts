@@ -1,35 +1,32 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {Config} from '@jest/types';
-import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
+import {
+  type ChangedFilesPromise,
+  getChangedFilesForRoots,
+} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 
-export default (
+export default function getChangedFilesPromise(
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
-): ChangedFilesPromise | undefined => {
+): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
-      (roots, config) => {
-        if (config.roots) {
-          roots.push(...config.roots);
-        }
-        return roots;
-      },
-      [],
+    const allRootsForAllProjects = new Set(
+      configs.flatMap(config => config.roots || []),
     );
-    return getChangedFilesForRoots(allRootsForAllProjects, {
+    return getChangedFilesForRoots([...allRootsForAllProjects], {
       changedSince: globalConfig.changedSince,
       lastCommit: globalConfig.lastCommit,
       withAncestor: globalConfig.changedFilesWithAncestor,
-    }).catch(e => {
-      const message = formatExecError(e, configs[0], {noStackTrace: true})
+    }).catch(error => {
+      const message = formatExecError(error, configs[0], {noStackTrace: true})
         .split('\n')
         .filter(line => !line.includes('Command failed:'))
         .join('\n');
@@ -41,4 +38,4 @@ export default (
   }
 
   return undefined;
-};
+}

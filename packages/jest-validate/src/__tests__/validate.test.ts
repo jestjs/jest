@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,11 +10,21 @@ import {multipleValidOptions} from '../condition';
 import jestValidateDefaultConfig from '../defaultConfig';
 import jestValidateExampleConfig from '../exampleConfig';
 import validate from '../validate';
-const {
+import {
   defaultConfig,
-  validConfig,
   deprecatedConfig,
-} = require('./fixtures/jestConfig');
+  validConfig,
+} from './__fixtures__/jestConfig';
+
+const spyConsoleWarn = jest.spyOn(console, 'warn');
+
+beforeEach(() => {
+  spyConsoleWarn.mockImplementation(() => {});
+});
+
+afterEach(() => {
+  spyConsoleWarn.mockReset();
+});
 
 test('recursively validates default Jest config', () => {
   expect(
@@ -43,7 +53,7 @@ test.each([
   ['Array', {coverageReporters: {}}],
   ['String', {preset: 1337}],
   ['Object', {haste: 42}],
-])('pretty prints valid config for %s', (type, config) => {
+])('pretty prints valid config for %s', (_type, config) => {
   expect(() =>
     validate(config, {
       exampleConfig: validConfig,
@@ -51,9 +61,12 @@ test.each([
   ).toThrowErrorMatchingSnapshot();
 });
 
-test(`pretty prints valid config for Function`, () => {
+test('pretty prints valid config for Function', () => {
   const config = {fn: 'test'};
-  const validConfig = {fn: (_config, _option, _deprecatedOptions) => true};
+  const validConfig = {
+    fn: (_config: unknown, _option: unknown, _deprecatedOptions: unknown) =>
+      true,
+  };
   expect(() =>
     validate(config, {
       exampleConfig: validConfig,
@@ -101,8 +114,6 @@ test.each([
 );
 
 test('respects recursiveDenylist', () => {
-  const warn = console.warn;
-  console.warn = jest.fn();
   const config = {
     something: {
       nested: {
@@ -121,35 +132,29 @@ test('respects recursiveDenylist', () => {
 
   validate(config, {exampleConfig});
 
-  expect(console.warn).toBeCalled();
+  expect(spyConsoleWarn).toHaveBeenCalled();
 
-  console.warn.mockReset();
+  spyConsoleWarn.mockReset();
 
   validate(config, {
     exampleConfig,
     recursiveDenylist: ['something.nested'],
   });
 
-  expect(console.warn).not.toBeCalled();
-  console.warn = warn;
+  expect(spyConsoleWarn).not.toHaveBeenCalled();
 });
 
 test('displays warning for unknown config options', () => {
   const config = {unkwon: {}};
   const validConfig = {unknown: 'string'};
-  const warn = console.warn;
-  console.warn = jest.fn();
 
   validate(config, {exampleConfig: validConfig});
 
-  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-  console.warn = warn;
+  expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
 });
 
 test('displays warning for deprecated config options', () => {
   const config = {scriptPreprocessor: 'test'};
-  const warn = console.warn;
-  console.warn = jest.fn();
 
   expect(
     validate(config, {
@@ -161,14 +166,12 @@ test('displays warning for deprecated config options', () => {
     isValid: true,
   });
 
-  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-  console.warn = warn;
+  expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
 });
 
 test('works with custom warnings', () => {
   const config = {unknown: 'string'};
   const validConfig = {test: [1, 2]};
-  const warn = console.warn;
   const options = {
     comment: 'My custom comment',
     deprecatedConfig,
@@ -177,12 +180,10 @@ test('works with custom warnings', () => {
       warning: 'My Custom Warning',
     },
   };
-  console.warn = jest.fn();
 
   validate(config, options);
 
-  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-  console.warn = warn;
+  expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
 });
 
 test('works with custom errors', () => {
@@ -202,7 +203,6 @@ test('works with custom errors', () => {
 
 test('works with custom deprecations', () => {
   const config = {scriptPreprocessor: 'test'};
-  const warn = console.warn;
   const options = {
     comment: 'My custom comment',
     deprecatedConfig,
@@ -211,12 +211,10 @@ test('works with custom deprecations', () => {
       deprecation: 'My Custom Deprecation Warning',
     },
   };
-  console.warn = jest.fn();
 
   validate(config, options);
 
-  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-  console.warn = warn;
+  expect(spyConsoleWarn.mock.calls[0][0]).toMatchSnapshot();
 });
 
 test('works with multiple valid types', () => {
@@ -279,21 +277,18 @@ test('Repeated types within multiple valid examples are coalesced in error repor
 });
 
 test('Comments in config JSON using "//" key are not warned', () => {
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
   const config = {'//': 'a comment'};
 
   validate(config, {
     exampleConfig: validConfig,
   });
-  expect(console.warn).not.toBeCalled();
+  expect(spyConsoleWarn).not.toHaveBeenCalled();
 
-  console.warn.mockReset();
+  spyConsoleWarn.mockReset();
 
   validate(config, {
     exampleConfig: validConfig,
     recursiveDenylist: ['myCustomKey' as "don't validate this"],
   });
-  expect(console.warn).not.toBeCalled();
-
-  console.warn.mockRestore();
+  expect(spyConsoleWarn).not.toHaveBeenCalled();
 });

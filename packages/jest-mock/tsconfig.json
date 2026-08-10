@@ -2,7 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build"
+    "outDir": "build",
+    "lib": ["es2023", "ESNext.Disposable"]
   },
-  "references": [{"path": "../jest-types"}]
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
+  "references": [
+    {"path": "../expect-utils"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"}
+  ]
 }

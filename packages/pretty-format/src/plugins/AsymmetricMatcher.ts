@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import type {Config, NewPlugin, Printer, Refs} from '../types';
 const asymmetricMatcher =
   typeof Symbol === 'function' && Symbol.for
     ? Symbol.for('jest.asymmetricMatcher')
-    : 0x1357a5;
+    : 0x13_57_a5;
 const SPACE = ' ';
 
 export const serialize: NewPlugin['serialize'] = (
@@ -29,15 +29,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ArrayNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '[' +
-      printListItems(val.sample, config, indentation, depth, refs, printer) +
-      ']'
-    );
+    return `${stringedValue + SPACE}[${printListItems(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}]`;
   }
 
   if (
@@ -45,22 +46,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ObjectNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '{' +
-      printObjectProperties(
-        val.sample,
-        config,
-        indentation,
-        depth,
-        refs,
-        printer,
-      ) +
-      '}'
-    );
+    return `${stringedValue + SPACE}{${printObjectProperties(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}}`;
   }
 
   if (
@@ -82,6 +77,25 @@ export const serialize: NewPlugin['serialize'] = (
       stringedValue +
       SPACE +
       printer(val.sample, config, indentation, depth, refs)
+    );
+  }
+
+  if (stringedValue === 'ArrayOf' || stringedValue === 'NotArrayOf') {
+    if (++depth > config.maxDepth) {
+      return `[${stringedValue}]`;
+    }
+    return `${stringedValue + SPACE}${printer(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+    )}`;
+  }
+
+  if (typeof val.toAsymmetricMatcher !== 'function') {
+    throw new TypeError(
+      `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
     );
   }
 

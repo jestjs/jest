@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,9 +14,9 @@ const fileToTransform = require.resolve('./module');
 export default {
   process(src, filepath) {
     if (filepath === fileToTransform) {
-      return 'module.exports = 42;';
+      return {code: 'module.exports = 42;'};
     }
 
-    return src;
+    return {code: src};
   },
 };

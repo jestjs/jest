@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,8 +7,8 @@
 
 export default function formatTime(
   time: number,
-  prefixPower: number = -3,
-  padLeftLength: number = 0,
+  prefixPower = -3,
+  padLeftLength = 0,
 ): string {
   const prefixes = ['n', 'μ', 'm', ''];
   const prefixIndex = Math.max(

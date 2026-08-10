@@ -1,49 +1,52 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
-import {getStackTraceLines, getTopFrame} from 'jest-message-util';
-import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
-import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {SnapshotData} from './types';
 import {
-  addExtraLineBreaks,
+  type SnapshotData,
   getSnapshotData,
   keyToTestName,
+  saveSnapshotFile,
+  testNameToKey,
+} from '@jest/snapshot-utils';
+import type {Config} from '@jest/types';
+import {getStackTraceLines, getTopFrame} from 'jest-message-util';
+import {saveInlineSnapshots} from './InlineSnapshots';
+import type {InlineSnapshot, SnapshotFormat} from './types';
+import {
+  addExtraLineBreaks,
   removeExtraLineBreaks,
   removeLinesBeforeExternalMatcherTrap,
-  saveSnapshotFile,
   serialize,
-  testNameToKey,
 } from './utils';
-
 export type SnapshotStateOptions = {
-  updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath: Config.Path;
-  expand?: boolean;
-  snapshotFormat: PrettyFormatOptions;
+  readonly updateSnapshot: Config.SnapshotUpdateState;
+  readonly prettierPath?: string | null;
+  readonly expand?: boolean;
+  readonly snapshotFormat: SnapshotFormat;
+  readonly rootDir: string;
 };
 
 export type SnapshotMatchOptions = {
-  testName: string;
-  received: unknown;
-  key?: string;
-  inlineSnapshot?: string;
-  isInline: boolean;
-  error?: Error;
+  readonly testName: string;
+  readonly received: unknown;
+  readonly key?: string;
+  readonly inlineSnapshot?: string;
+  readonly isInline: boolean;
+  readonly error?: Error;
+  readonly testFailing?: boolean;
 };
 
 type SnapshotReturnOptions = {
-  actual: string;
-  count: number;
-  expected?: string;
-  key: string;
-  pass: boolean;
+  readonly actual: string;
+  readonly count: number;
+  readonly expected?: string;
+  readonly key: string;
+  readonly pass: boolean;
 };
 
 type SaveStatus = {
@@ -54,16 +57,18 @@ type SaveStatus = {
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
-  // @ts-expect-error
+  // @ts-expect-error - seemingly unused?
   private _index: number;
-  private _updateSnapshot: Config.SnapshotUpdateState;
+  private readonly _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
-  private _initialData: SnapshotData;
-  private _snapshotPath: Config.Path;
+  private readonly _initialData: SnapshotData;
+  private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private _uncheckedKeys: Set<string>;
-  private _prettierPath: Config.Path;
-  private _snapshotFormat: PrettyFormatOptions;
+  private readonly _uncheckedKeys: Set<string>;
+  private readonly _prettierPath: string | null;
+  private readonly _rootDir: string;
+
+  readonly snapshotFormat: SnapshotFormat;
 
   added: number;
   expand: boolean;
@@ -71,7 +76,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: string, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
@@ -80,7 +85,7 @@ export default class SnapshotState {
     this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
-    this._prettierPath = options.prettierPath;
+    this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
@@ -91,15 +96,16 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-    this._snapshotFormat = options.snapshotFormat;
+    this.snapshotFormat = options.snapshotFormat;
+    this._rootDir = options.rootDir;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
-    this._uncheckedKeys.forEach(uncheckedKey => {
+    for (const uncheckedKey of this._uncheckedKeys) {
       if (keyToTestName(uncheckedKey) === testName) {
         this._uncheckedKeys.delete(uncheckedKey);
       }
-    });
+    }
   }
 
   private _addSnapshot(
@@ -109,6 +115,7 @@ export default class SnapshotState {
   ): void {
     this._dirty = true;
     if (options.isInline) {
+      // eslint-disable-next-line unicorn/error-message
       const error = options.error || new Error();
       const lines = getStackTraceLines(
         removeLinesBeforeExternalMatcherTrap(error.stack || ''),
@@ -149,12 +156,16 @@ export default class SnapshotState {
       saved: false,
     };
 
-    if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
+    if ((this._dirty || this._uncheckedKeys.size > 0) && !isEmpty) {
       if (hasExternalSnapshots) {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshots, this._prettierPath);
+        saveInlineSnapshots(
+          this._inlineSnapshots,
+          this._rootDir,
+          this._prettierPath,
+        );
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
@@ -172,13 +183,13 @@ export default class SnapshotState {
   }
 
   getUncheckedKeys(): Array<string> {
-    return Array.from(this._uncheckedKeys);
+    return [...this._uncheckedKeys];
   }
 
   removeUncheckedKeys(): void {
-    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size) {
+    if (this._updateSnapshot === 'all' && this._uncheckedKeys.size > 0) {
       this._dirty = true;
-      this._uncheckedKeys.forEach(key => delete this._snapshotData[key]);
+      for (const key of this._uncheckedKeys) delete this._snapshotData[key];
       this._uncheckedKeys.clear();
     }
   }
@@ -190,6 +201,7 @@ export default class SnapshotState {
     inlineSnapshot,
     isInline,
     error,
+    testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
@@ -206,7 +218,7 @@ export default class SnapshotState {
     }
 
     const receivedSerialized = addExtraLineBreaks(
-      serialize(received, undefined, this._snapshotFormat),
+      serialize(received, undefined, this.snapshotFormat),
     );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
@@ -223,10 +235,27 @@ export default class SnapshotState {
       this._snapshotData[key] = receivedSerialized;
     }
 
+    // In pure matching only runs, return the match result while skipping any updates
+    // reports.
+    if (testFailing) {
+      if (hasSnapshot && !isInline) {
+        // Retain current snapshot values.
+        this._addSnapshot(key, expected, {error, isInline});
+      }
+      return {
+        actual: removeExtraLineBreaks(receivedSerialized),
+        count,
+        expected:
+          expected === undefined ? undefined : removeExtraLineBreaks(expected),
+        key,
+        pass,
+      };
+    }
+
     // These are the conditions on when to write snapshots:
     //  * There's no snapshot file in a non-CI environment.
     //  * There is a snapshot file and we decided to update the snapshot.
-    //  * There is a snapshot file, but it doesn't have this snaphsot.
+    //  * There is a snapshot file, but it doesn't have this snapshot.
     // These are the conditions on when not to write snapshots:
     //  * The update flag is set to 'none'.
     //  * There's no snapshot file or a file without this snapshot on a CI environment.
@@ -236,15 +265,15 @@ export default class SnapshotState {
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
-        if (!pass) {
+        if (pass) {
+          this.matched++;
+        } else {
           if (hasSnapshot) {
             this.updated++;
           } else {
             this.added++;
           }
           this._addSnapshot(key, receivedSerialized, {error, isInline});
-        } else {
-          this.matched++;
         }
       } else {
         this._addSnapshot(key, receivedSerialized, {error, isInline});
@@ -259,19 +288,7 @@ export default class SnapshotState {
         pass: true,
       };
     } else {
-      if (!pass) {
-        this.unmatched++;
-        return {
-          actual: removeExtraLineBreaks(receivedSerialized),
-          count,
-          expected:
-            expected !== undefined
-              ? removeExtraLineBreaks(expected)
-              : undefined,
-          key,
-          pass: false,
-        };
-      } else {
+      if (pass) {
         this.matched++;
         return {
           actual: '',
@@ -279,6 +296,18 @@ export default class SnapshotState {
           expected: '',
           key,
           pass: true,
+        };
+      } else {
+        this.unmatched++;
+        return {
+          actual: removeExtraLineBreaks(receivedSerialized),
+          count,
+          expected:
+            expected === undefined
+              ? undefined
+              : removeExtraLineBreaks(expected),
+          key,
+          pass: false,
         };
       }
     }

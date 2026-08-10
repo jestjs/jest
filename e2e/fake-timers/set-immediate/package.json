@@ -1,0 +1,8 @@
+{
+  "name": "set-immediate",
+  "jest": {
+    "fakeTimers": {
+      "enableGlobally": true
+    }
+  }
+}

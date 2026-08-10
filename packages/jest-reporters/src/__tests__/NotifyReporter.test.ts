@@ -1,24 +1,26 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
 import {makeGlobalConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import Resolver from 'jest-resolve';
 import NotifyReporter from '../NotifyReporter';
+import type {ReporterContext} from '../types';
 
 jest.mock('../DefaultReporter');
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
 }));
 
-const initialContext = {
+const initialContext: ReporterContext = {
   firstRun: true,
   previousSuccess: false,
+  startRun: () => {},
 };
 
 const aggregatedResultsSuccess = {
@@ -78,20 +80,20 @@ const testModes = ({
   Partial<Pick<Config.ProjectConfig, 'rootDir'>>) => {
   const notify = require('node-notifier');
 
-  const config = makeGlobalConfig({notify: true, notifyMode, rootDir});
+  const globalConfig = makeGlobalConfig({notify: true, notifyMode, rootDir});
 
   let previousContext = initialContext;
-  arl.forEach((ar, i) => {
-    const newContext = Object.assign(previousContext, {
+  for (const [i, ar] of arl.entries()) {
+    const newContext: ReporterContext = Object.assign(previousContext, {
       firstRun: i === 0,
       previousSuccess: previousContext.previousSuccess,
     });
-    const reporter = new NotifyReporter(config, () => {}, newContext);
+    const reporter = new NotifyReporter(globalConfig, newContext);
     previousContext = newContext;
-    const contexts = new Set();
+    const testContexts = new Set<TestContext>();
 
     if (moduleName != null) {
-      contexts.add({
+      testContexts.add({
         hasteFS: {
           getModuleName() {
             return moduleName;
@@ -101,15 +103,15 @@ const testModes = ({
             return ['package.json'];
           },
         },
-      });
+      } as unknown as TestContext);
     }
 
-    reporter.onRunComplete(contexts, ar);
+    reporter.onRunComplete(testContexts, ar);
 
     if (ar.numTotalTests === 0) {
       expect(notify.notify).not.toHaveBeenCalled();
     }
-  });
+  }
 
   const calls: Array<any> = notify.notify.mock.calls;
   expect(
@@ -214,12 +216,12 @@ describe('node-notifier is an optional dependency', () => {
   });
 
   const ctor = () => {
-    const config = makeGlobalConfig({
+    const globalConfig = makeGlobalConfig({
       notify: true,
       notifyMode: 'success',
       rootDir: 'some-test',
     });
-    return new NotifyReporter(config, () => {}, initialContext);
+    return new NotifyReporter(globalConfig, initialContext);
   };
 
   test('without node-notifier uses mock function that throws an error', () => {
@@ -246,7 +248,7 @@ describe('node-notifier is an optional dependency', () => {
     const mockNodeNotifier = {notify: jest.fn()};
     jest.doMock('node-notifier', () => mockNodeNotifier);
     const result = ctor();
-    expect(result['_notifier']).toBe(mockNodeNotifier);
+    expect(result._notifier).toBe(mockNodeNotifier);
   });
 });
 

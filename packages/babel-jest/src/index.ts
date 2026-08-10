@@ -1,38 +1,43 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createHash} from 'crypto';
-import * as path from 'path';
-import {
+import {createHash} from 'node:crypto';
+import * as path from 'node:path';
+import type {
+  TransformOptions as BabelTransformOptions,
   PartialConfig,
-  TransformOptions,
-  transformSync as babelTransform,
-  transformAsync as babelTransformAsync,
 } from '@babel/core';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import slash = require('slash');
+import slash from 'slash';
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
+  TransformerCreator,
 } from '@jest/transform';
-import type {Config} from '@jest/types';
-import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
+import {
+  transformSync as babelTransform,
+  transformAsync as babelTransformAsync,
+  loadPartialConfigAsync,
+  loadPartialConfigSync,
+} from './babel';
+
+export interface TransformerConfig extends BabelTransformOptions {
+  excludeJestPreset?: boolean;
+}
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
-
 function assertLoadedBabelConfig(
   babelConfig: Readonly<PartialConfig> | null,
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
 ): asserts babelConfig {
   if (!babelConfig) {
     throw new Error(
@@ -46,23 +51,28 @@ function assertLoadedBabelConfig(
 }
 
 function addIstanbulInstrumentation(
-  babelOptions: TransformOptions,
+  filename: string,
+  babelOptions: BabelTransformOptions,
   transformOptions: JestTransformOptions,
-): TransformOptions {
+): BabelTransformOptions {
   if (transformOptions.instrument) {
-    const copiedBabelOptions: TransformOptions = {...babelOptions};
-    copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+    const copiedBabelOptions: BabelTransformOptions = {
+      ...babelOptions,
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+    };
     // Copied from jest-runtime transform.js
-    copiedBabelOptions.plugins = (copiedBabelOptions.plugins || []).concat([
+    copiedBabelOptions.plugins = [
+      ...(copiedBabelOptions.plugins ?? []),
       [
         babelIstanbulPlugin,
         {
           // files outside `cwd` will not be instrumented
           cwd: transformOptions.config.cwd,
           exclude: [],
+          extension: [path.extname(filename)],
         },
       ],
-    ]);
+    ];
 
     return copiedBabelOptions;
   }
@@ -72,15 +82,15 @@ function addIstanbulInstrumentation(
 
 function getCacheKeyFromConfig(
   sourceText: string,
-  sourcePath: Config.Path,
+  sourcePath: string,
   babelOptions: PartialConfig,
   transformOptions: JestTransformOptions,
 ): string {
   const {config, configString, instrument} = transformOptions;
 
-  const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
+  const configPath = [babelOptions.config ?? '', babelOptions.babelrc ?? ''];
 
-  return createHash('md5')
+  return createHash('sha1')
     .update(THIS_FILE)
     .update('\0', 'utf8')
     .update(JSON.stringify(babelOptions.options))
@@ -95,18 +105,21 @@ function getCacheKeyFromConfig(
     .update('\0', 'utf8')
     .update(instrument ? 'instrument' : '')
     .update('\0', 'utf8')
-    .update(process.env.NODE_ENV || '')
+    .update(process.env.NODE_ENV ?? '')
     .update('\0', 'utf8')
-    .update(process.env.BABEL_ENV || '')
-    .digest('hex');
+    .update(process.env.BABEL_ENV ?? '')
+    .update('\0', 'utf8')
+    .update(process.version)
+    .digest('hex')
+    .slice(0, 32);
 }
 
 function loadBabelConfig(
-  cwd: Config.Path,
-  filename: Config.Path,
-  transformOptions: TransformOptions,
+  cwd: string,
+  filename: string,
+  transformOptions: BabelTransformOptions,
 ): PartialConfig {
-  const babelConfig = loadPartialConfig(transformOptions);
+  const babelConfig = loadPartialConfigSync(transformOptions);
 
   assertLoadedBabelConfig(babelConfig, cwd, filename);
 
@@ -114,9 +127,9 @@ function loadBabelConfig(
 }
 
 async function loadBabelConfigAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
-  transformOptions: TransformOptions,
+  cwd: string,
+  filename: string,
+  transformOptions: BabelTransformOptions,
 ): Promise<PartialConfig> {
   const babelConfig = await loadPartialConfigAsync(transformOptions);
 
@@ -126,29 +139,32 @@ async function loadBabelConfigAsync(
 }
 
 function loadBabelOptions(
-  cwd: Config.Path,
-  filename: Config.Path,
-  transformOptions: TransformOptions,
+  cwd: string,
+  filename: string,
+  transformOptions: BabelTransformOptions,
   jestTransformOptions: JestTransformOptions,
-): TransformOptions {
+): BabelTransformOptions {
   const {options} = loadBabelConfig(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
 async function loadBabelOptionsAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
-  transformOptions: TransformOptions,
+  cwd: string,
+  filename: string,
+  transformOptions: BabelTransformOptions,
   jestTransformOptions: JestTransformOptions,
-): Promise<TransformOptions> {
+): Promise<BabelTransformOptions> {
   const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
 
-  return addIstanbulInstrumentation(options, jestTransformOptions);
+  return addIstanbulInstrumentation(filename, options, jestTransformOptions);
 }
 
-const createTransformer: CreateTransformer = userOptions => {
-  const inputOptions = userOptions ?? {};
+export const createTransformer: TransformerCreator<
+  SyncTransformer<TransformerConfig>,
+  TransformerConfig
+> = transformerConfig => {
+  const {excludeJestPreset, ...inputOptions} = transformerConfig ?? {};
 
   const options = {
     ...inputOptions,
@@ -162,18 +178,22 @@ const createTransformer: CreateTransformer = userOptions => {
     },
     compact: false,
     plugins: inputOptions.plugins ?? [],
-    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
+    presets: [
+      ...(inputOptions.presets ?? []),
+      ...(excludeJestPreset === true ? [] : [jestPresetPath]),
+    ],
     sourceMaps: 'both',
-  } as const;
+  } satisfies BabelTransformOptions;
 
   function mergeBabelTransformOptions(
-    filename: Config.Path,
+    filename: string,
     transformOptions: JestTransformOptions,
-  ): TransformOptions {
-    const {cwd} = transformOptions.config;
-    // `cwd` first to allow incoming options to override it
+  ): BabelTransformOptions {
+    const {cwd, rootDir} = transformOptions.config;
+    // `cwd` and `root` first to allow incoming options to override it
     return {
       cwd,
+      root: rootDir,
       ...options,
       caller: {
         ...options.caller,
@@ -241,7 +261,7 @@ const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelOptionsAsync(
@@ -263,16 +283,15 @@ const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
   };
 };
 
-const transformer: SyncTransformer<TransformOptions> = {
-  ...createTransformer(),
-  // Assigned here so only the exported transformer has `createTransformer`,
-  // instead of all created transformers by the function
+const transformerFactory = {
+  // Assigned here, instead of as a separate export, due to limitations in Jest's
+  // requireOrImportModule, requiring all exports to be on the `default` export
   createTransformer,
 };
 
-export default transformer;
+export default transformerFactory;

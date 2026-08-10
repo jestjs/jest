@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,
@@ -21,7 +21,7 @@ const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2).*\n/g, '');
+  return rest.replaceAll(/.*(jest-jasmine2).*\n/g, '');
 }
 
 beforeEach(() => {
@@ -47,8 +47,8 @@ test('basic test constructs', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -85,8 +85,8 @@ test('interleaved describe and test children order', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -116,8 +116,8 @@ test('skips', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -146,8 +146,8 @@ test('only', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -163,8 +163,8 @@ test('cannot have describe with no implementation', () => {
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
 
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -180,8 +180,8 @@ test('cannot test with no implementation', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary} = extractSummary(stderr);
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -211,8 +211,8 @@ test('skips with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -241,8 +241,8 @@ test('only with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -258,12 +258,12 @@ test('cannot test with no implementation with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary} = extractSummary(stderr);
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
-test('function as descriptor', () => {
+test('function as describe() descriptor', () => {
   const filename = 'functionAsDescriptor.test.js';
   const content = `
     function Foo() {}
@@ -276,7 +276,43 @@ test('function as descriptor', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
+});
+
+test('function as it() descriptor', () => {
+  const filename = 'functionAsDescriptor.test.js';
+  const content = `
+    function Foo() {}
+    it(Foo, () => {});
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, exitCode} = runJest(DIR);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
+
+onNodeVersions('^18.18.0 || >=20.4.0', () => {
+  test("Symbol's `dispose` are available", () => {
+    const filename = 'symbolDispose.test.js';
+    const content = `
+    it('test', () => {
+      expect(Symbol.dispose).toBeDefined();
+      expect(Symbol.asyncDispose).toBeDefined();
+    });
+  `;
+
+    writeFiles(TEST_DIR, {[filename]: content});
+    const {stderr, exitCode} = runJest(DIR);
+
+    const {summary, rest} = extractSummary(stderr);
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
+    expect(exitCode).toBe(0);
+  });
 });

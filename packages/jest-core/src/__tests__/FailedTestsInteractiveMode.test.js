@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ describe('FailedTestsInteractiveMode', () => {
 
       expect(mockWrite).toHaveBeenCalledWith(
         `${chalk.bold('Watch Usage')}\n${chalk.dim(
-          ARROW + 'Press',
+          `${ARROW}Press`,
         )} Enter ${chalk.dim('to return to watch mode.')}\n`,
       );
     });

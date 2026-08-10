@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ test('mock with 0 calls and default name', () => {
 });
 
 test('mock with 2 calls, 1 return, 1 throw', () => {
-  const fn = jest.fn(value => {
+  const fn = jest.fn((value: number) => {
     if (value % 2 === 0) {
       return value * 2;
     } else {
@@ -85,7 +85,7 @@ test('mock with 2 calls', () => {
 });
 
 test('indent option', () => {
-  const fn = jest.fn(val => val);
+  const fn = jest.fn((val: {key: string}) => val);
   fn({key: 'value'});
   const expected = [
     '[MockFunction] {',
@@ -110,7 +110,7 @@ test('indent option', () => {
 });
 
 test('min option', () => {
-  const fn = jest.fn(val => val);
+  const fn = jest.fn((val: {key: string}) => val);
   fn({key: 'value'});
   const expected =
     '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"type": "return", "value": {"key": "value"}}]}';

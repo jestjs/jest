@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,7 +26,7 @@ type ReactTestChild = ReactTestObject | string | number;
 const testSymbol =
   typeof Symbol === 'function' && Symbol.for
     ? Symbol.for('react.test.json')
-    : 0xea71357;
+    : 0xe_a7_13_57;
 
 const getPropKeys = (object: ReactTestObject) => {
   const {props} = object;

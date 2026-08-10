@@ -1,0 +1,6 @@
+{
+  "name": "do-not-fake",
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

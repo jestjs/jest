@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'node:tty';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 
@@ -17,7 +18,7 @@ type TestSuiteInfo = {
 export type JestHookExposedFS = {
   projects: Array<{
     config: Config.ProjectConfig;
-    testPaths: Array<Config.Path>;
+    testPaths: Array<string>;
   }>;
 };
 
@@ -53,7 +54,6 @@ export type AllowedConfigOptions = Partial<
     | 'changedSince'
     | 'collectCoverage'
     | 'collectCoverageFrom'
-    | 'collectCoverageOnlyFrom'
     | 'coverageDirectory'
     | 'coverageReporters'
     | 'findRelatedTests'
@@ -63,10 +63,12 @@ export type AllowedConfigOptions = Partial<
     | 'onlyFailures'
     | 'reporters'
     | 'testNamePattern'
-    | 'testPathPattern'
     | 'updateSnapshot'
     | 'verbose'
-  > & {mode: 'watch' | 'watchAll'}
+  > & {
+    mode: 'watch' | 'watchAll';
+    testPathPatterns: Array<string>;
+  }
 >;
 
 export type UpdateConfigCallback = (config?: AllowedConfigOptions) => void;
@@ -81,13 +83,11 @@ export interface WatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }
-export interface WatchPluginClass {
-  new (options: {
-    config: Record<string, unknown>;
-    stdin: NodeJS.ReadStream;
-    stdout: NodeJS.WriteStream;
-  }): WatchPlugin;
-}
+export type WatchPluginClass = new (options: {
+  config: Record<string, unknown>;
+  stdin: ReadStream;
+  stdout: WriteStream;
+}) => WatchPlugin;
 
 export type ScrollOptions = {
   offset: number;

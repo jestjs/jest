@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,8 +19,8 @@ const IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
-const getImmutableName = (name: string) => 'Immutable.' + name;
-const printAsLeaf = (name: string) => '[' + name + ']';
+const getImmutableName = (name: string) => `Immutable.${name}`;
+const printAsLeaf = (name: string) => `[${name}]`;
 const SPACE = ' ';
 const LAZY = '…'; // Seq is lazy if it calls a method like filter
 
@@ -35,18 +35,14 @@ const printImmutableEntries = (
 ): string =>
   ++depth > config.maxDepth
     ? printAsLeaf(getImmutableName(type))
-    : getImmutableName(type) +
-      SPACE +
-      '{' +
-      printIteratorEntries(
+    : `${getImmutableName(type) + SPACE}{${printIteratorEntries(
         val.entries(),
         config,
         indentation,
         depth,
         refs,
         printer,
-      ) +
-      '}';
+      )}}`;
 
 // Record has an entries method because it is a collection in immutable v3.
 // Return an iterator for Immutable Record from version v3 or v4.
@@ -76,18 +72,14 @@ const printImmutableRecord = (
   const name = getImmutableName(val._name || 'Record');
   return ++depth > config.maxDepth
     ? printAsLeaf(name)
-    : name +
-        SPACE +
-        '{' +
-        printIteratorEntries(
-          getRecordEntries(val),
-          config,
-          indentation,
-          depth,
-          refs,
-          printer,
-        ) +
-        '}';
+    : `${name + SPACE}{${printIteratorEntries(
+        getRecordEntries(val),
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      )}}`;
 };
 
 const printImmutableSeq = (
@@ -105,12 +97,9 @@ const printImmutableSeq = (
   }
 
   if (val[IS_KEYED_SENTINEL]) {
-    return (
-      name +
-      SPACE +
-      '{' +
+    return `${name + SPACE}{${
       // from Immutable collection of entries or from ECMAScript object
-      (val._iter || val._object
+      val._iter || val._object
         ? printIteratorEntries(
             val.entries(),
             config,
@@ -119,16 +108,12 @@ const printImmutableSeq = (
             refs,
             printer,
           )
-        : LAZY) +
-      '}'
-    );
+        : LAZY
+    }}`;
   }
 
-  return (
-    name +
-    SPACE +
-    '[' +
-    (val._iter || // from Immutable collection of values
+  return `${name + SPACE}[${
+    val._iter || // from Immutable collection of values
     val._array || // from ECMAScript array
     val._collection || // from ECMAScript collection in immutable v4
     val._iterable // from ECMAScript collection in immutable v3
@@ -140,9 +125,8 @@ const printImmutableSeq = (
           refs,
           printer,
         )
-      : LAZY) +
-    ']'
-  );
+      : LAZY
+  }]`;
 };
 
 const printImmutableValues = (
@@ -156,18 +140,14 @@ const printImmutableValues = (
 ): string =>
   ++depth > config.maxDepth
     ? printAsLeaf(getImmutableName(type))
-    : getImmutableName(type) +
-      SPACE +
-      '[' +
-      printIteratorValues(
+    : `${getImmutableName(type) + SPACE}[${printIteratorValues(
         val.values(),
         config,
         indentation,
         depth,
         refs,
         printer,
-      ) +
-      ']';
+      )}]`;
 
 export const serialize: NewPlugin['serialize'] = (
   val: any,

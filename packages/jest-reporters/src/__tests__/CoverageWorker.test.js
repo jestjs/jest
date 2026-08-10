@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,8 @@ jest.mock('graceful-fs').mock('../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
-const workerOptions = {config, globalConfig, path: 'banana.js'};
+const context = {};
+const workerOptions = {config, context, globalConfig, path: 'banana.js'};
 
 let fs;
 let generateEmptyCoverage;
@@ -35,7 +36,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
 
   const result = await worker(workerOptions);
 
-  expect(generateEmptyCoverage).toBeCalledWith(
+  expect(generateEmptyCoverage).toHaveBeenCalledWith(
     validJS,
     'banana.js',
     globalConfig,
@@ -44,7 +45,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     undefined,
   );
 
-  expect(result).toEqual(42);
+  expect(result).toBe(42);
 });
 
 test('throws errors on invalid JavaScript', async () => {

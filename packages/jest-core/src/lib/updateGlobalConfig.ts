@@ -1,22 +1,22 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
-import {replacePathSepForRegex} from 'jest-regex-util';
 import type {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<
   Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
 >;
 
-export default (
+export default function updateGlobalConfig(
   globalConfig: Config.GlobalConfig,
   options: AllowedConfigOptions & ExtraConfigOptions = {},
-): Config.GlobalConfig => {
+): Config.GlobalConfig {
   const newConfig: Config.GlobalConfig = {...globalConfig};
 
   if (options.mode === 'watch') {
@@ -31,15 +31,14 @@ export default (
     newConfig.testNamePattern = options.testNamePattern || '';
   }
 
-  if (options.testPathPattern !== undefined) {
-    newConfig.testPathPattern =
-      replacePathSepForRegex(options.testPathPattern) || '';
+  if (options.testPathPatterns !== undefined) {
+    newConfig.testPathPatterns = new TestPathPatterns(options.testPathPatterns);
   }
 
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&
-    !newConfig.testPathPattern;
+    !newConfig.testPathPatterns.isSet();
 
   if (typeof options.bail === 'boolean') {
     newConfig.bail = options.bail ? 1 : 0;
@@ -57,10 +56,6 @@ export default (
 
   if (options.collectCoverageFrom !== undefined) {
     newConfig.collectCoverageFrom = options.collectCoverageFrom;
-  }
-
-  if (options.collectCoverageOnlyFrom !== undefined) {
-    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
   }
 
   if (options.coverageDirectory !== undefined) {
@@ -112,4 +107,4 @@ export default (
   }
 
   return Object.freeze(newConfig);
-};
+}

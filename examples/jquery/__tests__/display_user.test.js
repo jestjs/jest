@@ -1,6 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
-
-/* global document */
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 'use strict';
 
@@ -34,6 +32,6 @@ it('displays a user after a click', () => {
 
   // Assert that the fetchCurrentUser function was called, and that the
   // #username span's inner text was updated as we'd expect it to.
-  expect(fetchCurrentUser).toBeCalled();
-  expect($('#username').text()).toEqual('Johnny Cash - Logged In');
+  expect(fetchCurrentUser).toHaveBeenCalled();
+  expect($('#username').text()).toBe('Johnny Cash - Logged In');
 });

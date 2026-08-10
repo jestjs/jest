@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {cpus} from 'os';
+import {availableParallelism} from 'node:os';
 import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(
@@ -22,8 +22,7 @@ export default function getMaxWorkers(
     return parseWorkers(defaultOptions.maxWorkers);
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
-    const cpusInfo = cpus();
-    const numCpus = cpusInfo?.length ?? 1;
+    const numCpus = availableParallelism();
     const isWatchModeEnabled = argv.watch || argv.watchAll;
     return Math.max(
       isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1,
@@ -33,7 +32,7 @@ export default function getMaxWorkers(
 }
 
 const parseWorkers = (maxWorkers: string | number): number => {
-  const parsed = parseInt(maxWorkers.toString(), 10);
+  const parsed = Number.parseInt(maxWorkers.toString(), 10);
 
   if (
     typeof maxWorkers === 'string' &&
@@ -41,7 +40,7 @@ const parseWorkers = (maxWorkers: string | number): number => {
     parsed > 0 &&
     parsed <= 100
   ) {
-    const numCpus = cpus().length;
+    const numCpus = availableParallelism();
     const workers = Math.floor((parsed / 100) * numCpus);
     return Math.max(workers, 1);
   }

@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import {JestEnvironment} from '@jest/environment';
-import {TestResult, createEmptyTestResult} from '@jest/test-result';
-import {Config} from '@jest/types';
-import Runtime from 'jest-runtime';
+import type {JestEnvironment} from '@jest/environment';
+import {type TestResult, createEmptyTestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type Runtime from 'jest-runtime';
 
 export default async function testRunner(
   globalConfig: Config.GlobalConfig,
@@ -24,6 +24,7 @@ export default async function testRunner(
       {
         ancestorTitles: [],
         duration: 2,
+        failureDetails: [],
         failureMessages: [],
         fullName: 'sample test',
         location: null,

@@ -1,4 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 jest.mock('jquery');
 
@@ -14,7 +14,7 @@ it('calls into $.ajax with the correct params', () => {
 
   // Now make sure that $.ajax was properly called during the previous
   // 2 lines
-  expect($.ajax).toBeCalledWith({
+  expect($.ajax).toHaveBeenCalledWith({
     success: expect.any(Function),
     type: 'GET',
     url: 'http://example.com/currentUser',

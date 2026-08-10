@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,28 +7,10 @@
  */
 
 import chalk from 'chalk';
-import wrap from 'jest-snapshot-serializer-raw';
-// eslint-disable-next-line import/order
+import {TestPathPatterns} from '@jest/pattern';
 import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
-
-jest
-  .mock('ansi-escapes', () => ({
-    cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
-    cursorHide: '[MOCK - cursorHide]',
-    cursorRestorePosition: '[MOCK - cursorRestorePosition]',
-    cursorSavePosition: '[MOCK - cursorSavePosition]',
-    cursorShow: '[MOCK - cursorShow]',
-    cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
-  }))
-  .mock('jest-util', () => {
-    const {specialChars, ...util} = jest.requireActual('jest-util');
-    return {
-      ...util,
-      specialChars: {...specialChars, CLEAR: '[MOCK - clear]'},
-    };
-  });
 
 jest.mock(
   '../SearchSource',
@@ -42,14 +24,11 @@ jest.mock(
 
 jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 
-jest.doMock('strip-ansi');
-require('strip-ansi').mockImplementation(str => str);
-
 jest.doMock(
   '../runJest',
   () =>
     function () {
-      const args = Array.from(arguments);
+      const args = [...arguments];
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
 
@@ -101,6 +80,8 @@ jest.doMock(
 const watch = require('../watch').default;
 
 const globalConfig = {
+  rootDir: '',
+  testPathPatterns: new TestPathPatterns([]),
   watch: true,
 };
 
@@ -125,25 +106,27 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('t');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
       stdin.emit(hex);
-      expect(wrap(pipe.write.mock.calls.join('\n'))).toMatchSnapshot();
+      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     };
 
     // Write a pattern
-    ['c', 'o', 'n', ' ', '1', '2'].forEach(assertPattern);
+    for (const pattern of ['c', 'o', 'n', ' ', '1', '2'])
+      assertPattern(pattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
+    for (const pattern of [KEYS.BACKSPACE, KEYS.BACKSPACE])
+      assertPattern(pattern);
 
-    ['*'].forEach(assertPattern);
+    for (const pattern of ['*']) assertPattern(pattern);
 
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
@@ -171,6 +154,6 @@ class MockStdin {
   }
 
   emit(key) {
-    this._callbacks.forEach(cb => cb(key));
+    for (const cb of this._callbacks) cb(key);
   }
 }

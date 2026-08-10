@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,20 +11,20 @@ import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'unexpected-token');
-const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
 test('triggers unexpected token error message for non-JS assets', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'asset.css': '.style {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
   writeFiles(DIR, {
-    '__tests__/asset.test.js': `require('../asset.css'); test('asset', () => {});`,
+    '__tests__/asset.test.js':
+      "require('../asset.css'); test('asset', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
@@ -35,42 +35,39 @@ test('triggers unexpected token error message for non-JS assets', () => {
   expect(stderr).toMatch(/Unexpected token ./);
 });
 
-test('triggers unexpected token error message for untranspiled node_modules', () => {
+test('triggers ERR_REQUIRE_ESM for untranspiled node_modules with ESM syntax', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'node_modules/untranspiled-module': 'import {module} from "some-module"',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
   writeFiles(DIR, {
-    '__tests__/untranspiledModule.test.js': `require('untranspiled-module'); test('untranspiled', () => {});`,
+    '__tests__/untranspiledModule.test.js':
+      "require('untranspiled-module'); test('untranspiled', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
 
   expect(stdout).toBe('');
-  expect(stderr).toMatch(/Jest encountered an unexpected token/);
-  expect(stderr).toMatch(/import {module}/);
-  if (nodeMajorVersion < 12) {
-    expect(stderr).toMatch(/Unexpected token/);
-  } else {
-    expect(stderr).toMatch(
-      /SyntaxError: Cannot use import statement outside a module/,
-    );
-  }
+  expect(stderr).toMatch(
+    /Must use import to load ES Module.*untranspiled-module/,
+  );
 });
 
 test('does not trigger unexpected token error message for regular syntax errors', () => {
   writeFiles(DIR, {
-    '.watchmanconfig': '',
+    '.watchmanconfig': '{}',
     'faulty.js': 'import {module from "some-module"',
     'faulty2.js': 'const name = {first: "Name" second: "Second"}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
   writeFiles(DIR, {
-    '__tests__/faulty.test.js': `require('../faulty'); test('faulty', () => {});`,
-    '__tests__/faulty2.test.js': `require('../faulty2'); test('faulty2', () => {});`,
+    '__tests__/faulty.test.js':
+      "require('../faulty'); test('faulty', () => {});",
+    '__tests__/faulty2.test.js':
+      "require('../faulty2'); test('faulty2', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);

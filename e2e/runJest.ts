@@ -1,24 +1,33 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import * as path from 'path';
-import {Writable} from 'stream';
-import execa = require('execa');
+import * as path from 'node:path';
+import {Writable} from 'node:stream';
+import {stripVTControlCharacters as stripAnsi} from 'node:util';
+import dedent from 'dedent';
+import execa from 'execa';
 import * as fs from 'graceful-fs';
-import stripAnsi = require('strip-ansi');
+import * as semver from 'semver';
+import {TestPathPatterns} from '@jest/pattern';
 import type {FormattedTestResults} from '@jest/test-result';
+import {normalizeIcons} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import {normalizeIcons} from './Utils';
+
+export const useNativeTypeScript = semver.satisfies(
+  process.versions.node,
+  '^22.18.0 || >=23.6.0',
+);
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
+  keepTrailingNewline?: boolean; // keep final newline in output from stdout and stderr
   nodeOptions?: string;
   nodePath?: string;
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
@@ -35,10 +44,17 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestResult {
-  return normalizeStdoutAndStderrOnResult(
-    spawnJest(dir, args, options),
-    options,
-  );
+  const result = spawnJest(dir, args, options);
+
+  if (result.killed) {
+    throw new Error(dedent`
+      Spawned process was killed.
+      DETAILS:
+        ${JSON.stringify(result, null, 2)}
+    `);
+  }
+
+  return normalizeStdoutAndStderrOnResult(result, options);
 }
 
 function spawnJest(
@@ -59,7 +75,7 @@ function spawnJest(
   dir: string,
   args: Array<string> = [],
   options: RunJestOptions = {},
-  spawnAsync: boolean = false,
+  spawnAsync = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
@@ -69,18 +85,28 @@ function spawnJest(
 
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
-    throw new Error(
-      `
+    throw new Error(dedent`
       Make sure you have a local package.json file at
         "${localPackageJson}".
-      Otherwise Jest will try to traverse the directory tree and find the
-      global package.json, which will send Jest into infinite loop.
-    `,
-    );
+      Otherwise Jest will try to traverse the directory tree and find the global package.json, which will send Jest into infinite loop.
+    `);
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
+    // Prevent AI agent detection from leaking into child processes, which
+    // would activate the AgentReporter and break output-dependent e2e tests.
+    AI_AGENT: undefined,
+    AUGMENT_AGENT: undefined,
+    CLAUDECODE: undefined,
+    CLAUDE_CODE: undefined,
+    CODEX_SANDBOX: undefined,
+    CODEX_THREAD_ID: undefined,
+    CURSOR_AGENT: undefined,
     FORCE_COLOR: '0',
+    GEMINI_CLI: undefined,
+    GOOSE_PROVIDER: undefined,
+    NO_COLOR: '1',
+    OPENCODE: undefined,
     ...options.env,
   };
 
@@ -92,6 +118,7 @@ function spawnJest(
     cwd: dir,
     env,
     reject: false,
+    stripFinalNewline: !options.keepTrailingNewline,
     timeout: options.timeout || 0,
   };
 
@@ -142,16 +169,17 @@ export const json = function (
   try {
     return {
       ...result,
-      json: JSON.parse(result.stdout || ''),
+      json: JSON.parse(result.stdout),
     };
-  } catch (e: any) {
+  } catch (error: any) {
     throw new Error(
-      `
+      dedent`
       Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
+      ERROR: ${error.name} ${error.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
     `,
+      {cause: error},
     );
   }
 };
@@ -160,14 +188,14 @@ type StdErrAndOutString = {stderr: string; stdout: string};
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
 type CheckerFunction = (arg: StdErrAndOutString) => void;
 
-// Runs `jest` continously (watch mode) and allows the caller to wait for
+// Runs `jest` continuously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
 export const runContinuous = function (
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
+  const jestPromise = spawnJest(dir, args, {timeout: 30_000, ...options}, true);
 
   let stderr = '';
   let stdout = '';
@@ -266,13 +294,23 @@ export function getConfig(
   configs: Array<Config.ProjectConfig>;
   version: string;
 } {
-  const {exitCode, stdout} = runJest(
+  const {exitCode, stdout, stderr} = runJest(
     dir,
-    args.concat('--show-config'),
+    [...args, '--show-config'],
     options,
   );
 
-  expect(exitCode).toBe(0);
+  try {
+    expect(exitCode).toBe(0);
+  } catch (error) {
+    console.error('Exit code is not 0', {stderr, stdout});
+    throw error;
+  }
 
-  return JSON.parse(stdout);
+  const {testPathPatterns, ...globalConfig} = JSON.parse(stdout);
+
+  return {
+    ...globalConfig,
+    testPathPatterns: new TestPathPatterns(testPathPatterns),
+  };
 }

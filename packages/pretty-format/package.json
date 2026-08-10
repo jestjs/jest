@@ -1,9 +1,9 @@
 {
   "name": "pretty-format",
-  "version": "27.3.1",
+  "version": "30.4.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/pretty-format"
   },
   "license": "MIT",
@@ -11,28 +11,35 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^27.2.5",
-    "ansi-regex": "^5.0.1",
-    "ansi-styles": "^5.0.0",
-    "react-is": "^17.0.1"
+    "@jest/schemas": "workspace:*",
+    "ansi-styles": "^5.2.0",
+    "react-is-18": "npm:react-is@^18.3.1",
+    "react-is-19": "npm:react-is@^19.2.5"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "@types/react-is": "^17.0.0",
-    "@types/react-test-renderer": "*",
-    "immutable": "4.0.0-rc.9",
-    "jest-util": "^27.3.1",
-    "react": "*",
-    "react-dom": "*",
-    "react-test-renderer": "*"
+    "@types/react": "^18.3.23",
+    "@types/react-is": "^19.0.0",
+    "@types/react-test-renderer": "^18.3.1",
+    "immutable": "^5.1.2",
+    "jest-util": "workspace:*",
+    "react": "18.3.1",
+    "react-17": "npm:react@^17.0.2",
+    "react-18": "npm:react@^18.3.1",
+    "react-19": "npm:react@^19.2.5",
+    "react-test-renderer": "18.3.1"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"

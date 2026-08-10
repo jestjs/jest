@@ -1,39 +1,49 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
-import {cpus} from 'os';
+import {availableParallelism} from 'node:os';
+import {isAbsolute} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
-  FarmOptions,
   PoolExitResult,
-  PromiseWithCustomMessage,
-  TaskQueue,
+  WorkerFarmOptions,
+  WorkerModule,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+
 export {default as PriorityQueue} from './PriorityQueue';
 export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
 
+export type {
+  PromiseWithCustomMessage,
+  TaskQueue,
+  WorkerFarmOptions,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
+
+export type JestWorkerFarm<T extends Record<string, unknown>> = Worker &
+  WorkerModule<T>;
+
 function getExposedMethods(
   workerPath: string,
-  options: FarmOptions,
+  options: WorkerFarmOptions,
 ): ReadonlyArray<string> {
   let exposedMethods = options.exposedMethods;
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Record<string, unknown> = require(workerPath);
+    const module: Record<string, unknown> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
-      // @ts-expect-error: no index
       name => typeof module[name] === 'function',
     );
 
@@ -72,25 +82,37 @@ function getExposedMethods(
  */
 export class Worker {
   private _ending: boolean;
-  private _farm: Farm;
-  private _options: FarmOptions;
-  private _workerPool: WorkerPoolInterface;
+  private readonly _farm: Farm;
+  private readonly _options: WorkerFarmOptions;
+  private readonly _workerPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: FarmOptions) {
+  constructor(workerPath: string | URL, options?: WorkerFarmOptions) {
     this._options = {...options};
     this._ending = false;
+
+    if (typeof workerPath !== 'string') {
+      workerPath = workerPath.href;
+    }
+
+    if (workerPath.startsWith('file:')) {
+      workerPath = fileURLToPath(workerPath);
+    } else if (!isAbsolute(workerPath)) {
+      throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
+    }
 
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
+      idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
-      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      numWorkers:
+        this._options.numWorkers ?? Math.max(availableParallelism() - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
+      workerGracefulExitTimeout: this._options.workerGracefulExitTimeout,
     };
 
     if (this._options.WorkerPool) {
-      // @ts-expect-error: constructor target any?
       this._workerPool = new this._options.WorkerPool(
         workerPath,
         workerPoolOptions,
@@ -114,25 +136,26 @@ export class Worker {
 
   private _bindExposedWorkerMethods(
     workerPath: string,
-    options: FarmOptions,
+    options: WorkerFarmOptions,
   ): void {
-    getExposedMethods(workerPath, options).forEach(name => {
+    for (const name of getExposedMethods(workerPath, options)) {
       if (name.startsWith('_')) {
-        return;
+        continue;
       }
 
+      // eslint-disable-next-line no-prototype-builtins
       if (this.constructor.prototype.hasOwnProperty(name)) {
-        throw new TypeError('Cannot define a method called ' + name);
+        throw new TypeError(`Cannot define a method called ${name}`);
       }
 
       // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
-    });
+    }
   }
 
   private _callFunctionWithArgs(
     method: string,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ): Promise<unknown> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
@@ -149,6 +172,10 @@ export class Worker {
     return this._workerPool.getStdout();
   }
 
+  async start(): Promise<void> {
+    await this._workerPool.start();
+  }
+
   async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
@@ -158,5 +185,3 @@ export class Worker {
     return this._workerPool.end();
   }
 }
-
-export type {PromiseWithCustomMessage, TaskQueue};

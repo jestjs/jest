@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,8 +17,8 @@ describe('.isPrimitive()', () => {
     true,
     Symbol.for('a'),
     0,
-    NaN,
-    Infinity,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
     BigInt(1),
   ])('returns true when given primitive value of: %s', primitive => {
     expect(isPrimitive(primitive)).toBe(true);

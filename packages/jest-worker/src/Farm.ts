@@ -1,31 +1,29 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
-  ChildMessage,
-  FarmOptions,
-  OnCustomMessage,
-  OnEnd,
-  OnStart,
-  PromiseWithCustomMessage,
-  QueueChildMessage,
-  TaskQueue,
-  WorkerInterface,
+  type ChildMessage,
+  type OnCustomMessage,
+  type OnEnd,
+  type OnStart,
+  type PromiseWithCustomMessage,
+  type QueueChildMessage,
+  type TaskQueue,
+  type WorkerCallback,
+  type WorkerFarmOptions,
+  type WorkerInterface,
+  type WorkerSchedulingPolicy,
 } from './types';
 
 export default class Farm {
-  private readonly _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private readonly _workerSchedulingPolicy: NonNullable<
-    FarmOptions['workerSchedulingPolicy']
-  >;
+  private readonly _computeWorkerKey: WorkerFarmOptions['computeWorkerKey'];
+  private readonly _workerSchedulingPolicy: WorkerSchedulingPolicy;
   private readonly _cacheKeys: Record<string, WorkerInterface> =
     Object.create(null);
   private readonly _locks: Array<boolean> = [];
@@ -33,13 +31,9 @@ export default class Farm {
   private readonly _taskQueue: TaskQueue;
 
   constructor(
-    private _numOfWorkers: number,
-    private _callback: Function,
-    options: {
-      computeWorkerKey?: FarmOptions['computeWorkerKey'];
-      workerSchedulingPolicy?: FarmOptions['workerSchedulingPolicy'];
-      taskQueue?: TaskQueue;
-    } = {},
+    private readonly _numOfWorkers: number,
+    private readonly _callback: WorkerCallback,
+    options: WorkerFarmOptions = {},
   ) {
     this._computeWorkerKey = options.computeWorkerKey;
     this._workerSchedulingPolicy =
@@ -61,13 +55,13 @@ export default class Farm {
     };
 
     const onCustomMessage: OnCustomMessage = message => {
-      customMessageListeners.forEach(listener => listener(message));
+      for (const listener of customMessageListeners) listener(message);
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(
       // Bind args to this function so it won't reference to the parent scope.
       // This prevents a memory leak in v8, because otherwise the function will
-      // retaine args for the closure.
+      // retain args for the closure.
       ((
         args: Array<unknown>,
         resolve: (value: unknown) => void,
@@ -133,9 +127,12 @@ export default class Farm {
     // Reference the task object outside so it won't be retained by onEnd,
     // and other properties of the task object, such as task.request can be
     // garbage collected.
-    const taskOnEnd = task.onEnd;
-    const onEnd = (error: Error | null, result: unknown) => {
-      taskOnEnd(error, result);
+    let taskOnEnd: OnEnd | null = task.onEnd;
+    const onEnd: OnEnd = (error, result) => {
+      if (taskOnEnd) {
+        taskOnEnd(error, result);
+      }
+      taskOnEnd = null;
 
       this._unlock(workerId);
       this._process(workerId);

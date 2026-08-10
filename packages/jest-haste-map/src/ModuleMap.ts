@@ -1,11 +1,10 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import H from './constants';
 import * as fastPath from './lib/fast_path';
 import type {
@@ -20,7 +19,7 @@ import type {
 const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
 
-export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
+export default class ModuleMap implements IModuleMap {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;
@@ -28,7 +27,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
   private static mapToArrayRecursive(
     map: Map<string, any>,
   ): Array<[string, unknown]> {
-    let arr = Array.from(map);
+    let arr = [...map];
     if (arr[0] && arr[0][1] instanceof Map) {
       arr = arr.map(
         el => [el[0], this.mapToArrayRecursive(el[1])] as [string, unknown],
@@ -58,7 +57,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     platform?: string | null,
     supportsNativePlatform?: boolean | null,
     type?: HTypeValue | null,
-  ): Config.Path | null {
+  ): string | null {
     if (type == null) {
       type = H.MODULE;
     }
@@ -78,13 +77,13 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     name: string,
     platform: string | null | undefined,
     _supportsNativePlatform: boolean | null,
-  ): Config.Path | null {
+  ): string | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }
 
-  getMockModule(name: string): Config.Path | undefined {
+  getMockModule(name: string): string | undefined {
     const mockPath =
-      this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
+      this._raw.mocks.get(name) || this._raw.mocks.get(`${name}/index`);
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
   }
 
@@ -103,8 +102,8 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
         duplicates: ModuleMap.mapToArrayRecursive(
           this._raw.duplicates,
         ) as SerializableModuleMap['duplicates'],
-        map: Array.from(this._raw.map),
-        mocks: Array.from(this._raw.mocks),
+        map: [...this._raw.map],
+        mocks: [...this._raw.mocks],
         rootDir: this._raw.rootDir,
       };
     }
@@ -197,7 +196,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     );
   }
 
-  static create(rootDir: Config.Path): ModuleMap {
+  static create(rootDir: string): ModuleMap {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),
@@ -222,17 +221,18 @@ class DuplicateHasteCandidatesError extends Error {
     const platformMessage = getPlatformMessage(platform);
     super(
       `The name \`${name}\` was looked up in the Haste module map. It ` +
-        `cannot be resolved, because there exists several different ` +
-        `files, or packages, that provide a module for ` +
+        'cannot be resolved, because there exists several different ' +
+        'files, or packages, that provide a module for ' +
         `that particular name and platform. ${platformMessage} You must ` +
-        `delete or exclude files until there remains only one of these:\n\n` +
-        Array.from(duplicatesSet)
+        `delete or exclude files until there remains only one of these:\n\n${[
+          ...duplicatesSet,
+        ]
           .map(
             ([dupFilePath, dupFileType]) =>
               `  * \`${dupFilePath}\` (${getTypeMessage(dupFileType)})\n`,
           )
           .sort()
-          .join(''),
+          .join('')}`,
     );
     this.hasteName = name;
     this.platform = platform;

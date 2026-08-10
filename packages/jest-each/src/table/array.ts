@@ -1,30 +1,33 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import * as util from 'util';
+import * as util from 'node:util';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
-import type {Templates} from './interpolation';
-import {interpolateVariables} from './interpolation';
+import {type Templates, interpolateVariables} from './interpolation';
 
-const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp]/g;
+const SUPPORTED_PLACEHOLDERS = /%[#Odfijops]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
+const NUMBER_PLACEHOLDER = '%$';
 const PLACEHOLDER_PREFIX = '%';
-const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
+const ESCAPED_PLACEHOLDER_PREFIX = '%%';
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
-export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
+export default function array(
+  title: string,
+  arrayTable: Global.ArrayTable,
+): EachTests {
   if (isTemplates(title, arrayTable)) {
     return arrayTable.map((template, index) => ({
       arguments: [template],
-      title: interpolateVariables(title, template, index).replace(
+      title: interpolateVariables(title, template, index).replaceAll(
         ESCAPED_PLACEHOLDER_PREFIX,
         PLACEHOLDER_PREFIX,
       ),
@@ -34,7 +37,7 @@ export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
     arguments: row,
     title: formatTitle(title, row, index),
   }));
-};
+}
 
 const isTemplates = (
   title: string,
@@ -58,34 +61,39 @@ const formatTitle = (
   rowIndex: number,
 ): string =>
   row
-    .reduce<string>((formattedTitle, value) => {
-      const [placeholder] = getMatchingPlaceholders(formattedTitle);
-      const normalisedValue = normalisePlaceholderValue(value);
-      if (!placeholder) return formattedTitle;
+    .reduce<string>(
+      (formattedTitle, value) => {
+        const [placeholder] = getMatchingPlaceholders(formattedTitle);
+        const normalisedValue = normalisePlaceholderValue(value);
+        if (!placeholder) return formattedTitle;
 
-      if (placeholder === PRETTY_PLACEHOLDER)
-        return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
+        if (placeholder === PRETTY_PLACEHOLDER)
+          return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
-      return util.format(formattedTitle, normalisedValue);
-    }, interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex))
-    .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
+        return util.format(formattedTitle, normalisedValue);
+      },
+      interpolateTitleIndexAndNumber(
+        interpolateEscapedPlaceholders(title),
+        rowIndex,
+      ),
+    )
+    .replaceAll(JEST_EACH_PLACEHOLDER_ESCAPE, PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>
   typeof value === 'string'
-    ? value.replace(
-        new RegExp(PLACEHOLDER_PREFIX, 'g'),
-        JEST_EACH_PLACEHOLDER_ESCAPE,
-      )
+    ? value.replaceAll(PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE)
     : value;
 
 const getMatchingPlaceholders = (title: string) =>
   title.match(SUPPORTED_PLACEHOLDERS) || [];
 
 const interpolateEscapedPlaceholders = (title: string) =>
-  title.replace(ESCAPED_PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE);
+  title.replaceAll(ESCAPED_PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE);
 
-const interpolateTitleIndex = (title: string, index: number) =>
-  title.replace(INDEX_PLACEHOLDER, index.toString());
+const interpolateTitleIndexAndNumber = (title: string, index: number) =>
+  title
+    .replace(INDEX_PLACEHOLDER, index.toString())
+    .replace(NUMBER_PLACEHOLDER, (index + 1).toString());
 
 const interpolatePrettyPlaceholder = (title: string, value: unknown) =>
   title.replace(PRETTY_PLACEHOLDER, pretty(value, {maxDepth: 1, min: true}));

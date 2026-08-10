@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,7 +20,7 @@ describe('my test', () => {
       p1: 'hello',
       p2: 'world',
     }).toMatchInlineSnapshot(`
-      Object {
+      {
         "p1": "hello",
         "p2": "sunshine",
       }
@@ -33,5 +33,6 @@ it('throws!', () => {
 });
 
 test('promise rejection', async () => {
-  await expect(Promise.resolve(1)).rejects.toThrowError();
+  // eslint-disable-next-line jest/require-to-throw-message
+  await expect(Promise.resolve(1)).rejects.toThrow();
 });

@@ -1,6 +1,6 @@
 # babel-jest
 
-[Babel](https://github.com/babel/babel) [jest](https://github.com/facebook/jest) plugin
+[Babel](https://github.com/babel/babel) [jest](https://github.com/jestjs/jest) plugin
 
 ## Usage
 
@@ -18,8 +18,26 @@ _Note: this step is only required if you are using `babel-jest` with additional 
 
 To explicitly define `babel-jest` as a transformer for your JavaScript code, map _.js_ files to the `babel-jest` module. Typescript files are also supported.
 
+By default, it loads your existing Babel configuration (if any)
+
 ```json
 "transform": {
   "\\.[jt]sx?$": "babel-jest"
 },
+```
+
+You can also pass further [babel options](https://babeljs.io/docs/options)
+
+```json
+"transform": {
+  "\\.[jt]sx?$": ["babel-jest", { "extends": "./babel.config.js", "plugins": ["babel-plugin-transform-import-meta"] }]
+},
+```
+
+By default, `babel-jest` includes `babel-preset-jest`. In addition to the babel options, we introduce a new option, `excludeJestPreset`, which allows you to disable this behavior. Note that this will break `jest.mock` hoisting.
+
+```json
+"transform": {
+  "\\.[jt]sx?$": ["babel-jest", { "excludeJestPreset": true }],
+}
 ```

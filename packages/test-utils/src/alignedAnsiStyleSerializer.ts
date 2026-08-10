@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex = require('ansi-regex');
-import style = require('ansi-styles');
+import ansiRegex from 'ansi-regex';
+import style from 'ansi-styles';
 import type {NewPlugin} from 'pretty-format';
 
 export const alignedAnsiStyleSerializer: NewPlugin = {

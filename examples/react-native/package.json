@@ -7,15 +7,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "17.0.1",
-    "react-native": "0.64.0"
+    "@react-native/babel-preset": "^0.81.1",
+    "react": "18.3.1",
+    "react-native": "0.81.4"
   },
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "babel-jest": "*",
-    "jest": "*",
-    "metro-react-native-babel-preset": "0.65.2",
-    "react-test-renderer": "17.0.1"
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
+    "react-test-renderer": "18.3.1"
   }
 }

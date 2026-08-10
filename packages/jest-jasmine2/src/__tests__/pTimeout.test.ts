@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,8 +12,8 @@ import pTimeout from '../pTimeout';
 
 describe('pTimeout', () => {
   beforeEach(() => {
-    jest.spyOn(global, 'setTimeout');
-    jest.spyOn(global, 'clearTimeout');
+    jest.spyOn(globalThis, 'setTimeout');
+    jest.spyOn(globalThis, 'clearTimeout');
   });
 
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {

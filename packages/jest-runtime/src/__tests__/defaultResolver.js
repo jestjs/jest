@@ -1,9 +1,10 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import resolver from 'jest-resolve/build/defaultResolver.js';
-module.exports = resolver;
+module.exports = (request, opts) => {
+  return opts.defaultResolver(request, opts);
+};

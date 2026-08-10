@@ -1,126 +1,183 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
-import pnpResolver from 'jest-pnp-resolver';
-import {sync as resolveSync} from 'resolve';
+import {isBuiltin} from 'node:module';
 import {
-  Options as ResolveExportsOptions,
-  resolve as resolveExports,
-} from 'resolve.exports';
-import type {Config} from '@jest/types';
-import {
-  PkgJson,
-  isDirectory,
-  isFile,
-  readPackageCached,
-  realpathSync,
-} from './fileWalkers';
+  type ResolveResult,
+  ResolverFactory,
+  type NapiResolveOptions as UpstreamResolveOptions,
+} from 'unrs-resolver';
+import {getResolver, setResolver} from './fileWalkers';
 
-// copy from `resolve`'s types so we don't have their types in our definition
-// files
-interface ResolverOptions {
-  basedir: Config.Path;
-  browser?: boolean;
-  conditions?: Array<string>;
-  defaultResolver: typeof defaultResolver;
-  extensions?: Array<string>;
-  moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
-  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
-  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
+export interface ResolverOptions extends Omit<
+  UpstreamResolveOptions,
+  'extensions'
+> {
+  /** Directory to begin resolving from. */
+  basedir: string;
+  /** List of export conditions. */
+  conditions?: ReadonlyArray<string>;
+  /** Instance of default resolver. */
+  defaultResolver: SyncResolver;
+  /** Instance of default async resolver. */
+  defaultAsyncResolver: AsyncResolver;
+  /** List of file extensions to be considered when resolving. */
+  extensions?: ReadonlyArray<string>;
+  /**
+   * List of directory names to be looked up for modules recursively.
+   *
+   * @defaultValue
+   * The default is `['node_modules']`.
+   */
+  moduleDirectory?: ReadonlyArray<string>;
+  /**
+   * List of `require.paths` to use if nothing is found in `node_modules`.
+   *
+   * @defaultValue
+   * The default is `undefined`.
+   */
+  paths?: ReadonlyArray<string>;
+  /** Current root directory. */
+  rootDir?: string;
 }
 
-// https://github.com/facebook/jest/pull/10617
-declare global {
-  namespace NodeJS {
-    export interface ProcessVersions {
-      pnp?: any;
-    }
-  }
-}
-
-export default function defaultResolver(
-  path: Config.Path,
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
+  path: string,
   options: ResolverOptions,
-): Config.Path {
-  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
-  // needed for Yarn 1 which implements version 1 of the pnp spec
-  if (process.versions.pnp === '1') {
-    return pnpResolver(path, options);
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
+
+const handleResolveResult = (result: ResolveResult) => {
+  if (result.error) {
+    throw new Error(result.error);
   }
+  return result.path!;
+};
 
-  const result = resolveSync(path, {
-    ...options,
-    isDirectory,
-    isFile,
-    packageFilter: createPackageFilter(
-      options.conditions,
-      options.packageFilter,
-    ),
-    preserveSymlinks: false,
-    readPackageSync,
-    realpathSync,
-  });
-
-  // Dereference symlinks to ensure we don't create a separate
-  // module instance depending on how it was referenced.
-  return realpathSync(result);
-}
-
-/*
- * helper functions
+/**
+ * Whether Node was started with `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS`.
+ *
+ * @see https://nodejs.org/api/cli.html#--preserve-symlinks
  */
-
-function readPackageSync(_: unknown, file: Config.Path): PkgJson {
-  return readPackageCached(file);
+function shouldPreserveSymlinks(): boolean {
+  // `NODE_PRESERVE_SYMLINKS` is on only when exactly `1`, and `--preserve-symlinks`
+  // is matched exactly so `--preserve-symlinks-main` (entry point only) is excluded.
+  return (
+    process.env.NODE_PRESERVE_SYMLINKS === '1' ||
+    process.execArgv.includes('--preserve-symlinks') ||
+    (process.env.NODE_OPTIONS ?? '')
+      .split(/\s+/)
+      .includes('--preserve-symlinks')
+  );
 }
 
-function createPackageFilter(
-  conditions?: Array<string>,
-  userFilter?: ResolverOptions['packageFilter'],
-): ResolverOptions['packageFilter'] {
-  function attemptExportsFallback(pkg: PkgJson) {
-    const options: ResolveExportsOptions = conditions
-      ? {conditions, unsafe: true}
-      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
-        {browser: false, require: true};
-
-    try {
-      return resolveExports(pkg, '.', options);
-    } catch {
-      return undefined;
-    }
+function baseResolver(path: string, options: ResolverOptions): string;
+function baseResolver(
+  path: string,
+  options: ResolverOptions,
+  async: true,
+): Promise<string>;
+function baseResolver(
+  path: string,
+  options: ResolverOptions,
+  async?: true,
+): string | Promise<string> {
+  // `builtins` in `unrs-resolver` is static which could be wrong at runtime.
+  if (isBuiltin(path)) {
+    return path;
   }
 
-  return function packageFilter(pkg, packageDir) {
-    let filteredPkg = pkg;
+  /* eslint-disable prefer-const */
+  let {
+    basedir,
+    conditions,
+    conditionNames,
+    extensions,
+    modules,
+    moduleDirectory,
+    paths,
+    roots,
+    rootDir,
+    ...rest
+    /* eslint-enable prefer-const */
+  } = options;
 
-    if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, packageDir);
-    }
+  modules = modules || (moduleDirectory as Array<string>);
 
-    if (filteredPkg.main != null) {
-      return filteredPkg;
-    }
-
-    const indexInRoot = resolve(packageDir, './index.js');
-
-    // if the module contains an `index.js` file in root, `resolve` will request
-    // that if there is no `main`. Since we don't wanna break that, add this
-    // check
-    if (isFile(indexInRoot)) {
-      return filteredPkg;
-    }
-
-    return {
-      ...filteredPkg,
-      main: attemptExportsFallback(filteredPkg),
-    };
+  const resolveOptions: UpstreamResolveOptions = {
+    conditionNames: conditionNames ||
+      (conditions as Array<string> | undefined) || [
+        'require',
+        'node',
+        'default',
+      ],
+    extensions: extensions as Array<string> | undefined,
+    modules,
+    roots: roots || (rootDir ? [rootDir] : undefined),
+    // Honor Node's `--preserve-symlinks`; `unrs-resolver` realpaths by default.
+    // An explicit `symlinks` option still wins via the `...rest` spread below.
+    ...(shouldPreserveSymlinks() ? {symlinks: false} : {}),
+    ...rest,
   };
+
+  let unrsResolver = getResolver();
+
+  if (unrsResolver) {
+    unrsResolver = unrsResolver.cloneWithOptions(resolveOptions);
+  } else {
+    unrsResolver = new ResolverFactory(resolveOptions);
+  }
+
+  setResolver(unrsResolver);
+
+  const finalResolver = (
+    resolve: () => ResolveResult | Promise<ResolveResult>,
+  ) => {
+    const resolveWithPathsFallback = (result: ResolveResult) => {
+      if (!result.path && paths?.length) {
+        const modulesArr =
+          modules == null || Array.isArray(modules) ? modules : [modules];
+        if (modulesArr?.length) {
+          paths = paths.filter(p => !modulesArr.includes(p));
+        }
+        if (paths.length > 0) {
+          unrsResolver = unrsResolver!.cloneWithOptions({
+            ...resolveOptions,
+            modules: paths as Array<string>,
+          });
+          setResolver(unrsResolver);
+          return resolve();
+        }
+      }
+      return result;
+    };
+    const result = resolve();
+    if ('then' in result) {
+      return result.then(resolveWithPathsFallback).then(handleResolveResult);
+    }
+    return handleResolveResult(
+      resolveWithPathsFallback(result) as ResolveResult,
+    );
+  };
+
+  return finalResolver(() =>
+    async
+      ? unrsResolver!.async(basedir, path)
+      : unrsResolver!.sync(basedir, path),
+  );
 }
+
+export const defaultResolver: SyncResolver = baseResolver;
+
+export const defaultAsyncResolver: AsyncResolver = (
+  path: string,
+  options: ResolverOptions,
+) => baseResolver(path, options, true);
+
+export default defaultResolver;

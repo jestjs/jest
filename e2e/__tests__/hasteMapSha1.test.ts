@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,14 +26,14 @@ test('exits the process after test are done but before timers complete', async (
     'node_modules/bar/index.js': '"node modules bar"',
   });
 
-  const haste = new JestHasteMap({
+  const haste = await JestHasteMap.create({
     computeSha1: true,
     extensions: ['js', 'json', 'png'],
     forceNodeFilesystemAPI: true,
+    id: 'tmp',
     ignorePattern: / ^/,
     maxWorkers: 2,
     mocksPattern: '',
-    name: 'tmp',
     platforms: ['ios', 'android'],
     retainAllFiles: true,
     rootDir: DIR,
@@ -66,13 +66,13 @@ test('exits the process after test are done but before timers complete', async (
 
   // Ignored files do not get the SHA-1 computed.
 
-  expect(hasteFS.getSha1(path.join(DIR, 'fileWithExtension.ignored'))).toBe(
-    null,
-  );
+  expect(
+    hasteFS.getSha1(path.join(DIR, 'fileWithExtension.ignored')),
+  ).toBeNull();
 
   expect(
     hasteFS.getSha1(
       path.join(DIR, 'node_modules/bar/fileWithExtension.ignored'),
     ),
-  ).toBe(null);
+  ).toBeNull();
 });

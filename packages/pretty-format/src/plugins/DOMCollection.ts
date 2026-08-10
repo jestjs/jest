@@ -1,22 +1,20 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-/* eslint-disable local/ban-types-eventually */
 
 import {printListItems, printObjectProperties} from '../collections';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const SPACE = ' ';
 
-const OBJECT_NAMES = ['DOMStringMap', 'NamedNodeMap'];
+const OBJECT_NAMES = new Set(['DOMStringMap', 'NamedNodeMap']);
 const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 
 const testName = (name: any) =>
-  OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
+  OBJECT_NAMES.has(name) || ARRAY_REGEXP.test(name);
 
 export const test: NewPlugin['test'] = (val: object) =>
   val &&
@@ -37,16 +35,15 @@ export const serialize: NewPlugin['serialize'] = (
 ) => {
   const name = collection.constructor.name;
   if (++depth > config.maxDepth) {
-    return '[' + name + ']';
+    return `[${name}]`;
   }
 
   return (
     (config.min ? '' : name + SPACE) +
-    (OBJECT_NAMES.indexOf(name) !== -1
-      ? '{' +
-        printObjectProperties(
+    (OBJECT_NAMES.has(name)
+      ? `{${printObjectProperties(
           isNamedNodeMap(collection)
-            ? Array.from(collection).reduce<Record<string, string>>(
+            ? [...collection].reduce<Record<string, string>>(
                 (props, attribute) => {
                   props[attribute.name] = attribute.value;
                   return props;
@@ -59,18 +56,15 @@ export const serialize: NewPlugin['serialize'] = (
           depth,
           refs,
           printer,
-        ) +
-        '}'
-      : '[' +
-        printListItems(
-          Array.from(collection),
+        )}}`
+      : `[${printListItems(
+          [...collection],
           config,
           indentation,
           depth,
           refs,
           printer,
-        ) +
-        ']')
+        )}]`)
   );
 };
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -37,7 +37,7 @@ describe('Runtime', () => {
       moduleDirectories,
     });
     const exports = runtime.requireModule(runtime.__mockRootPath, 'my-module');
-    expect(exports.isNodeModule).toEqual(true);
+    expect(exports.isNodeModule).toBe(true);
   });
 
   it('finds closest module from moduleDirectories', async () => {
@@ -46,9 +46,7 @@ describe('Runtime', () => {
       path.join(rootDir, 'subdir2', 'my_module.js'),
       'module_dir_module',
     );
-    expect(exports.modulePath).toEqual(
-      'subdir2/module_dir/module_dir_module.js',
-    );
+    expect(exports.modulePath).toBe('subdir2/module_dir/module_dir_module.js');
   });
 
   it('only checks the configured directories', async () => {

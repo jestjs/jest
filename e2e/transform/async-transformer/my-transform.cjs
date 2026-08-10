@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,12 +24,14 @@ module.exports = {
       // we want to wait to ensure the module cache is populated with the correct module
       await wait(100);
 
-      return src;
+      return {code: src};
     }
 
-    return src.replace(
-      "export default 'It was not transformed!!'",
-      'export default 42',
-    );
+    return {
+      code: src.replace(
+        "export default 'It was not transformed!!'",
+        'export default 42',
+      ),
+    };
   },
 };

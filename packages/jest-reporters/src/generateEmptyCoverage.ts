@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
 
 import type {V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
+import {type FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {createScriptTransformer, shouldInstrument} from '@jest/transform';
 import type {Config} from '@jest/types';
@@ -24,20 +24,20 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default async function (
+export default async function generateEmptyCoverage(
   source: string,
-  filename: Config.Path,
+  filename: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  changedFiles?: Set<Config.Path>,
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
+  changedFiles?: Set<string>,
+  sourcesRelatedToTestsInChangedFiles?: Set<string>,
 ): Promise<CoverageWorkerResult | null> {
   const coverageOptions = {
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    globalRootDir: globalConfig.rootDir,
     sourcesRelatedToTestsInChangedFiles,
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;

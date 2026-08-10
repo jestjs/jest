@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,8 +15,9 @@
  * to get the output.
  */
 class TestReporter {
-  constructor(globalConfig, options) {
-    this._options = options;
+  constructor(globalConfig, reporterOptions, reporterContext) {
+    this._context = reporterContext;
+    this._options = reporterOptions;
 
     /**
      * statsCollected property
@@ -30,7 +31,8 @@ class TestReporter {
       onRunStart: {},
       onTestResult: {times: 0},
       onTestStart: {},
-      options,
+      reporterContext,
+      reporterOptions,
     };
   }
 
@@ -40,7 +42,7 @@ class TestReporter {
    */
   clearLine() {
     if (process.stdout.isTTY) {
-      process.stderr.write('\x1b[999D\x1b[K');
+      process.stderr.write('\u001B[999D\u001B[K');
     }
   }
 
@@ -66,7 +68,7 @@ class TestReporter {
     onRunStart.options = typeof options;
   }
 
-  onRunComplete(contexts, results) {
+  onRunComplete(testContexts, results) {
     const onRunComplete = this._statsCollected.onRunComplete;
 
     onRunComplete.called = true;
@@ -75,9 +77,9 @@ class TestReporter {
     onRunComplete.numFailedTests = results.numFailedTests;
     onRunComplete.numTotalTests = results.numTotalTests;
 
-    if (this._statsCollected.options.maxWorkers) {
+    if (this._statsCollected.reporterOptions.maxWorkers) {
       // Since it's a different number on different machines.
-      this._statsCollected.options.maxWorkers = '<<REPLACED>>';
+      this._statsCollected.reporterOptions.maxWorkers = '<<REPLACED>>';
     }
     // The Final Call
     process.stdout.write(JSON.stringify(this._statsCollected, null, 4));

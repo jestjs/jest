@@ -1,9 +1,9 @@
 {
-  "name": "diff-sequences",
-  "version": "27.0.6",
+  "name": "@jest/diff-sequences",
+  "version": "30.4.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/diff-sequences"
   },
   "license": "MIT",
@@ -16,21 +16,23 @@
     "diff"
   ],
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
-  "scripts": {
-    "perf": "node --expose-gc perf/index.js"
-  },
   "devDependencies": {
+    "@fast-check/jest": "^2.1.1",
     "benchmark": "^2.1.4",
-    "diff": "^5.0.0",
-    "fast-check": "^2.0.0"
+    "diff": "^9.0.0"
   },
   "publishConfig": {
     "access": "public"

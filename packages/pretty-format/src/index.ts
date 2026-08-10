@@ -1,13 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
-import style = require('ansi-styles');
+import style from 'ansi-styles';
 import {
   printIteratorEntries,
   printIteratorValues,
@@ -15,7 +13,6 @@ import {
   printObjectProperties,
 } from './collections';
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
-import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';
 import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
@@ -64,6 +61,7 @@ const getConstructorName = (val: new (...args: Array<any>) => unknown) =>
 /* global window */
 /** Is val is equal to global window object? Works even if it does not exist :) */
 const isWindow = (val: unknown) =>
+  // eslint-disable-next-line unicorn/prefer-global-this
   typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
@@ -106,7 +104,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
   }
-  return '[Function ' + (val.name || 'anonymous') + ']';
+  return `[Function ${val.name || 'anonymous'}]`;
 }
 
 function printSymbol(val: symbol): string {
@@ -114,7 +112,7 @@ function printSymbol(val: symbol): string {
 }
 
 function printError(val: Error): string {
-  return '[' + errorToString.call(val) + ']';
+  return `[${errorToString.call(val)}]`;
 }
 
 /**
@@ -128,7 +126,7 @@ function printBasicValue(
   escapeString: boolean,
 ): string | null {
   if (val === true || val === false) {
-    return '' + val;
+    return `${val}`;
   }
   if (val === undefined) {
     return 'undefined';
@@ -147,9 +145,9 @@ function printBasicValue(
   }
   if (typeOf === 'string') {
     if (escapeString) {
-      return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+      return `"${val.replaceAll(/"|\\/g, '\\$&')}"`;
     }
-    return '"' + val + '"';
+    return `"${val}"`;
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -160,6 +158,9 @@ function printBasicValue(
 
   const toStringed = toString.call(val);
 
+  if (toStringed === '[object Promise]') {
+    return 'Promise {}';
+  }
   if (toStringed === '[object WeakMap]') {
     return 'WeakMap {}';
   }
@@ -176,7 +177,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
+    return Number.isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);
@@ -184,7 +185,7 @@ function printBasicValue(
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
       // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
-      return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+      return regExpToString.call(val).replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
     }
     return regExpToString.call(val);
   }
@@ -197,8 +198,8 @@ function printBasicValue(
 }
 
 /**
- * Handles more complex objects ( such as objects with circular references.
- * maps and sets etc )
+ * Handles more complex objects (such as objects with circular references,
+ * maps and sets etc.)
  */
 function printComplexValue(
   val: any,
@@ -208,11 +209,10 @@ function printComplexValue(
   refs: Refs,
   hasCalledToJSON?: boolean,
 ): string {
-  if (refs.indexOf(val) !== -1) {
+  if (refs.includes(val)) {
     return '[Circular]';
   }
-  refs = refs.slice();
-  refs.push(val);
+  refs = [...refs, val];
 
   const hitMaxDepth = ++depth > config.maxDepth;
   const min = config.min;
@@ -231,65 +231,70 @@ function printComplexValue(
   if (toStringed === '[object Arguments]') {
     return hitMaxDepth
       ? '[Arguments]'
-      : (min ? '' : 'Arguments ') +
-          '[' +
-          printListItems(val, config, indentation, depth, refs, printer) +
-          ']';
+      : `${min ? '' : 'Arguments '}[${printListItems(
+          val,
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}]`;
   }
   if (isToStringedArrayType(toStringed)) {
     return hitMaxDepth
-      ? '[' + val.constructor.name + ']'
-      : (min
-          ? ''
-          : !config.printBasicPrototype && val.constructor.name === 'Array'
-          ? ''
-          : val.constructor.name + ' ') +
-          '[' +
-          printListItems(val, config, indentation, depth, refs, printer) +
-          ']';
+      ? `[${val.constructor.name}]`
+      : `${
+          min
+            ? ''
+            : !config.printBasicPrototype && val.constructor.name === 'Array'
+              ? ''
+              : `${val.constructor.name} `
+        }[${printListItems(val, config, indentation, depth, refs, printer)}]`;
   }
   if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
-      : 'Map {' +
-          printIteratorEntries(
-            val.entries(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-            ' => ',
-          ) +
-          '}';
+      : `Map {${printIteratorEntries(
+          val.entries(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+          ' => ',
+        )}}`;
   }
   if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
-      : 'Set {' +
-          printIteratorValues(
-            val.values(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-          ) +
-          '}';
+      : `Set {${printIteratorValues(
+          val.values(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}}`;
   }
 
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
-    ? '[' + getConstructorName(val) + ']'
-    : (min
-        ? ''
-        : !config.printBasicPrototype && getConstructorName(val) === 'Object'
-        ? ''
-        : getConstructorName(val) + ' ') +
-        '{' +
-        printObjectProperties(val, config, indentation, depth, refs, printer) +
-        '}';
+    ? `[${getConstructorName(val)}]`
+    : `${
+        min
+          ? ''
+          : !config.printBasicPrototype && getConstructorName(val) === 'Object'
+            ? ''
+            : `${getConstructorName(val)} `
+      }{${printObjectProperties(
+        val,
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      )}}`;
 }
 
 function isNewPlugin(plugin: Plugin): plugin is NewPlugin {
@@ -316,7 +321,7 @@ function printPlugin(
             const indentationNext = indentation + config.indent;
             return (
               indentationNext +
-              str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+              str.replaceAll(NEWLINE_REGEXP, `\n${indentationNext}`)
             );
           },
           {
@@ -330,7 +335,7 @@ function printPlugin(
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
-    throw new Error(
+    throw new TypeError(
       `pretty-format: Plugin must return type "string" but instead returned "${typeof printed}".`,
     );
   }
@@ -338,10 +343,10 @@ function printPlugin(
 }
 
 function findPlugin(plugins: Plugins, val: unknown) {
-  for (let p = 0; p < plugins.length; p++) {
+  for (const plugin of plugins) {
     try {
-      if (plugins[p].test(val)) {
-        return plugins[p];
+      if (plugin.test(val)) {
+        return plugin;
       }
     } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);
@@ -396,27 +401,31 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-export const DEFAULT_OPTIONS: Options = {
+// could be replaced by `satisfies` operator in the future: https://github.com/microsoft/TypeScript/issues/47920
+const toOptionsSubtype = <T extends Options>(options: T) => options;
+
+export const DEFAULT_OPTIONS = toOptionsSubtype({
   callToJSON: true,
   compareKeys: undefined,
   escapeRegex: false,
   escapeString: true,
   highlight: false,
   indent: 2,
-  maxDepth: Infinity,
+  maxDepth: Number.POSITIVE_INFINITY,
+  maxWidth: Number.POSITIVE_INFINITY,
   min: false,
   plugins: [],
   printBasicPrototype: true,
   printFunctionName: true,
   theme: DEFAULT_THEME,
-};
+});
 
 function validateOptions(options: OptionsReceived) {
-  Object.keys(options).forEach(key => {
-    if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
+  for (const key of Object.keys(options)) {
+    if (!Object.prototype.hasOwnProperty.call(DEFAULT_OPTIONS, key)) {
       throw new Error(`pretty-format: Unknown option "${key}".`);
     }
-  });
+  }
 
   if (options.min && options.indent !== undefined && options.indent !== 0) {
     throw new Error(
@@ -426,11 +435,11 @@ function validateOptions(options: OptionsReceived) {
 
   if (options.theme !== undefined) {
     if (options.theme === null) {
-      throw new Error(`pretty-format: Option "theme" must not be null.`);
+      throw new Error('pretty-format: Option "theme" must not be null.');
     }
 
     if (typeof options.theme !== 'object') {
-      throw new Error(
+      throw new TypeError(
         `pretty-format: Option "theme" must be of type "object" but instead received "${typeof options.theme}".`,
       );
     }
@@ -465,60 +474,38 @@ const getColorsEmpty = (): Colors =>
   }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>
-  options && options.printFunctionName !== undefined
-    ? options.printFunctionName
-    : DEFAULT_OPTIONS.printFunctionName;
+  options?.printFunctionName ?? DEFAULT_OPTIONS.printFunctionName;
 
 const getEscapeRegex = (options?: OptionsReceived) =>
-  options && options.escapeRegex !== undefined
-    ? options.escapeRegex
-    : DEFAULT_OPTIONS.escapeRegex;
+  options?.escapeRegex ?? DEFAULT_OPTIONS.escapeRegex;
 
 const getEscapeString = (options?: OptionsReceived) =>
-  options && options.escapeString !== undefined
-    ? options.escapeString
-    : DEFAULT_OPTIONS.escapeString;
+  options?.escapeString ?? DEFAULT_OPTIONS.escapeString;
 
 const getConfig = (options?: OptionsReceived): Config => ({
-  callToJSON:
-    options && options.callToJSON !== undefined
-      ? options.callToJSON
-      : DEFAULT_OPTIONS.callToJSON,
-  colors:
-    options && options.highlight
-      ? getColorsHighlight(options)
-      : getColorsEmpty(),
+  callToJSON: options?.callToJSON ?? DEFAULT_OPTIONS.callToJSON,
+  colors: options?.highlight ? getColorsHighlight(options) : getColorsEmpty(),
   compareKeys:
-    options && typeof options.compareKeys === 'function'
+    typeof options?.compareKeys === 'function' || options?.compareKeys === null
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
-  indent:
-    options && options.min
-      ? ''
-      : createIndent(
-          options && options.indent !== undefined
-            ? options.indent
-            : DEFAULT_OPTIONS.indent,
-        ),
-  maxDepth:
-    options && options.maxDepth !== undefined
-      ? options.maxDepth
-      : DEFAULT_OPTIONS.maxDepth,
-  min: options && options.min !== undefined ? options.min : DEFAULT_OPTIONS.min,
-  plugins:
-    options && options.plugins !== undefined
-      ? options.plugins
-      : DEFAULT_OPTIONS.plugins,
+  indent: options?.min
+    ? ''
+    : createIndent(options?.indent ?? DEFAULT_OPTIONS.indent),
+  maxDepth: options?.maxDepth ?? DEFAULT_OPTIONS.maxDepth,
+  maxWidth: options?.maxWidth ?? DEFAULT_OPTIONS.maxWidth,
+  min: options?.min ?? DEFAULT_OPTIONS.min,
+  plugins: options?.plugins ?? DEFAULT_OPTIONS.plugins,
   printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
-  spacingInner: options && options.min ? ' ' : '\n',
-  spacingOuter: options && options.min ? '' : '\n',
+  spacingInner: options?.min ? ' ' : '\n',
+  spacingOuter: options?.min ? '' : '\n',
 });
 
 function createIndent(indent: number): string {
-  return new Array(indent + 1).join(' ');
+  return Array.from({length: indent + 1}).join(' ');
 }
 
 /**
@@ -552,7 +539,6 @@ export function format(val: unknown, options?: OptionsReceived): string {
 
 export const plugins = {
   AsymmetricMatcher,
-  ConvertAnsi,
   DOMCollection,
   DOMElement,
   Immutable,

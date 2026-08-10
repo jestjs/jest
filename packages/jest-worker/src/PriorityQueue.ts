@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,7 +19,7 @@ type QueueItem = {
 
 /**
  * Priority queue that processes tasks in natural ordering (lower priority first)
- * accoridng to the priority computed by the function passed in the constructor.
+ * according to the priority computed by the function passed in the constructor.
  *
  * FIFO ordering isn't guaranteed for tasks with the same priority.
  *
@@ -28,9 +28,9 @@ type QueueItem = {
  */
 export default class PriorityQueue implements TaskQueue {
   private _queue: Array<MinHeap<QueueItem>> = [];
-  private _sharedQueue = new MinHeap<QueueItem>();
+  private readonly _sharedQueue = new MinHeap<QueueItem>();
 
-  constructor(private _computePriority: ComputeTaskPriorityCallback) {}
+  constructor(private readonly _computePriority: ComputeTaskPriorityCallback) {}
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
     if (workerId == null) {
@@ -86,7 +86,7 @@ type HeapItem = {
 };
 
 class MinHeap<TItem extends HeapItem> {
-  private _heap: Array<TItem | null> = [];
+  private readonly _heap: Array<TItem | null> = [];
 
   peek(): TItem | null {
     return this._heap[0] ?? null;

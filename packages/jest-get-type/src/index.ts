@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -41,16 +41,14 @@ export function getType(value: unknown): ValueType {
   } else if (typeof value === 'bigint') {
     return 'bigint';
   } else if (typeof value === 'object') {
-    if (value != null) {
-      if (value.constructor === RegExp) {
-        return 'regexp';
-      } else if (value.constructor === Map) {
-        return 'map';
-      } else if (value.constructor === Set) {
-        return 'set';
-      } else if (value.constructor === Date) {
-        return 'date';
-      }
+    if (value.constructor === RegExp) {
+      return 'regexp';
+    } else if (value.constructor === Map) {
+      return 'map';
+    } else if (value.constructor === Set) {
+      return 'set';
+    } else if (value.constructor === Date) {
+      return 'date';
     }
     return 'object';
   } else if (typeof value === 'symbol') {
@@ -60,4 +58,7 @@ export function getType(value: unknown): ValueType {
   throw new Error(`value of unknown type: ${value}`);
 }
 
-export const isPrimitive = (value: unknown): boolean => Object(value) !== value;
+export const isPrimitive = (
+  value: unknown,
+): value is null | undefined | string | number | boolean | symbol | bigint =>
+  Object(value) !== value;

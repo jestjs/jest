@@ -1,0 +1,43 @@
+{
+  "name": "create-jest",
+  "description": "Create a new Jest project",
+  "version": "30.4.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jestjs/jest.git",
+    "directory": "packages/create-jest"
+  },
+  "license": "MIT",
+  "bin": "./bin/create-jest.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/create-jest": "./bin/create-jest.js"
+  },
+  "dependencies": {
+    "@jest/types": "workspace:*",
+    "chalk": "^4.1.2",
+    "exit-x": "^0.2.2",
+    "graceful-fs": "^4.2.11",
+    "jest-config": "workspace:*",
+    "jest-util": "workspace:*",
+    "prompts": "^2.4.2"
+  },
+  "engines": {
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/graceful-fs": "^4.1.9",
+    "@types/prompts": "^2.4.9"
+  }
+}

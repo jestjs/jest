@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+Copyright (c) 2008-2016 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -28,17 +28,18 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys */
 
-import {AssertionError} from 'assert';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import {AssertionError} from 'node:assert';
+import type {Circus} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
 import queueRunner, {
-  Options as QueueRunnerOptions,
-  QueueableFn,
+  type Options as QueueRunnerOptions,
+  type QueueableFn,
 } from '../queueRunner';
-import treeProcessor, {TreeNode} from '../treeProcessor';
+import treeProcessor, {type TreeNode} from '../treeProcessor';
 import type {
   AssertionErrorWithStack,
   Jasmine,
@@ -49,17 +50,22 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
     throwOnExpectationFailure: (value: unknown) => void;
     catchingExceptions: () => boolean;
     topSuite: () => Suite;
+    focusedRunnableIds: () => Array<string>;
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
-    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    fit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     throwingExpectationFailures: () => boolean;
     randomizeTests: (value: unknown) => void;
     randomTests: () => boolean;
@@ -69,7 +75,7 @@ export default function (j$: Jasmine) {
       suiteTree?: Suite,
     ) => Promise<void>;
     fdescribe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
     spyOn: (
@@ -84,18 +90,26 @@ export default function (j$: Jasmine) {
     afterEach: (afterEachFunction: QueueableFn['fn'], timeout?: number) => void;
     clearReporters: () => void;
     addReporter: (reporterToAdd: Reporter) => void;
-    it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    it: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     xdescribe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
-    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    xit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
     describe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
 
@@ -104,10 +118,8 @@ export default function (j$: Jasmine) {
 
       let catchExceptions = true;
 
-      const realSetTimeout =
-        global.setTimeout as typeof globalThis['setTimeout'];
-      const realClearTimeout =
-        global.clearTimeout as typeof globalThis['clearTimeout'];
+      const realSetTimeout = globalThis.setTimeout;
+      const realClearTimeout = globalThis.clearTimeout;
 
       const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
@@ -119,11 +131,11 @@ export default function (j$: Jasmine) {
       let nextSuiteId = 0;
 
       const getNextSpecId = function () {
-        return 'spec' + nextSpecId++;
+        return `spec${nextSpecId++}`;
       };
 
       const getNextSuiteId = function () {
-        return 'suite' + nextSuiteId++;
+        return `suite${nextSuiteId++}`;
       };
 
       const topSuite = new j$.Suite({
@@ -136,7 +148,7 @@ export default function (j$: Jasmine) {
       let currentDeclarationSuite = topSuite;
 
       const currentSuite = function () {
-        return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+        return currentlyExecutingSuites.at(-1)!;
       };
 
       const currentRunnable = function () {
@@ -258,8 +270,8 @@ export default function (j$: Jasmine) {
       let oldListenersRejection: Array<NodeJS.UnhandledRejectionListener>;
       const executionSetup = function () {
         // Need to ensure we are the only ones handling these exceptions.
-        oldListenersException = process.listeners('uncaughtException').slice();
-        oldListenersRejection = process.listeners('unhandledRejection').slice();
+        oldListenersException = [...process.listeners('uncaughtException')];
+        oldListenersRejection = [...process.listeners('unhandledRejection')];
 
         j$.process.removeAllListeners('uncaughtException');
         j$.process.removeAllListeners('unhandledRejection');
@@ -273,18 +285,18 @@ export default function (j$: Jasmine) {
         j$.process.removeListener('unhandledRejection', uncaught);
 
         // restore previous exception handlers
-        oldListenersException.forEach(listener => {
+        for (const listener of oldListenersException) {
           j$.process.on('uncaughtException', listener);
-        });
+        }
 
-        oldListenersRejection.forEach(listener => {
+        for (const listener of oldListenersRejection) {
           j$.process.on('unhandledRejection', listener);
-        });
+        }
       };
 
       this.execute = async function (runnablesToRun, suiteTree = topSuite) {
         if (!runnablesToRun) {
-          if (focusedRunnables.length) {
+          if (focusedRunnables.length > 0) {
             runnablesToRun = focusedRunnables;
           } else {
             runnablesToRun = [suiteTree.id];
@@ -366,7 +378,7 @@ export default function (j$: Jasmine) {
         return spyRegistry.spyOn.apply(spyRegistry, args);
       };
 
-      const suiteFactory = function (description: string) {
+      const suiteFactory = function (description: Circus.TestNameLike) {
         const suite = new j$.Suite({
           id: getNextSuiteId(),
           description,
@@ -380,15 +392,18 @@ export default function (j$: Jasmine) {
         return suite;
       };
 
-      this.describe = function (description: string, specDefinitions) {
+      this.describe = function (
+        description: Circus.TestNameLike,
+        specDefinitions,
+      ) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
           );
         }
@@ -415,6 +430,13 @@ export default function (j$: Jasmine) {
 
       const focusedRunnables: Array<string> = [];
 
+      // Ids of the runnables (`fit`/`fdescribe`) that focus execution. When
+      // non-empty, an actual run only executes these subtrees and reports the
+      // rest as pending. `--collectTests` reads this to mirror that selection.
+      this.focusedRunnableIds = function () {
+        return [...focusedRunnables];
+      };
+
       this.fdescribe = function (description, specDefinitions) {
         const suite = suiteFactory(description);
         suite.isFocused = true;
@@ -438,8 +460,8 @@ export default function (j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e: any) {
-          declarationError = e;
+        } catch (error: any) {
+          declarationError = error;
         }
 
         if (isPromise(describeReturnValue)) {
@@ -485,7 +507,7 @@ export default function (j$: Jasmine) {
       }
 
       const specFactory = (
-        description: string,
+        description: Circus.TestNameLike,
         fn: QueueableFn['fn'],
         suite: Suite,
         timeout?: number,
@@ -536,18 +558,14 @@ export default function (j$: Jasmine) {
       };
 
       this.it = function (description, fn, timeout) {
-        if (typeof description !== 'string') {
-          throw new Error(
-            `Invalid first argument, ${description}. It must be a string.`,
-          );
-        }
+        description = convertDescriptorToString(description);
         if (fn === undefined) {
           throw new Error(
             'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
           );
         }
         if (typeof fn !== 'function') {
-          throw new Error(
+          throw new TypeError(
             `Invalid second argument, ${fn}. It must be a callback function.`,
           );
         }
@@ -589,6 +607,7 @@ export default function (j$: Jasmine) {
 
         const spec = specFactory(
           description,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {},
           currentDeclarationSuite,
         );
@@ -677,15 +696,13 @@ export default function (j$: Jasmine) {
           const check = isError(error);
 
           checkIsError = check.isError;
-          message = check.message;
+          message = check.message || undefined;
         }
-        const errorAsErrorObject = checkIsError ? error : new Error(message!);
+        const errorAsErrorObject = checkIsError ? error : new Error(message);
         const runnable = currentRunnable();
 
         if (!runnable) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
           throw errorAsErrorObject;
         }

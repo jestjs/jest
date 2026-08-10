@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,6 +15,9 @@ beforeEach(() => {
   process.env.NODE_ENV = 'test';
   BABEL_ENV = process.env.BABEL_ENV;
   process.env.BABEL_ENV = 'test';
+  Object.defineProperty(process, 'platform', {
+    value: 'linux',
+  });
 });
 
 afterEach(() => {
@@ -40,7 +43,23 @@ test('creation of a cache key', () => {
     instrument: true,
   });
 
-  expect(hashA.length).toEqual(32);
+  expect(hashA).toHaveLength(32);
   expect(hashA).not.toEqual(hashB);
   expect(hashA).not.toEqual(hashC);
+});
+
+test('creation of a cache key on win32', () => {
+  Object.defineProperty(process, 'platform', {
+    value: 'win32',
+  });
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
+  const createCacheKey = createCacheKeyFunction([], ['value']);
+  const hashA = createCacheKey('test', 'test.js', null, {
+    config: {},
+    instrument: false,
+  });
+
+  expect(hashA).toHaveLength(16);
 });

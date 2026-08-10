@@ -1,36 +1,49 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isMainThread, parentPort} from 'node:worker_threads';
+import {isError} from 'jest-util';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
-
-const isWorkerThread: boolean = (() => {
-  try {
-    // `Require` here to support Node v10
-    const {isMainThread, parentPort} =
-      require('worker_threads') as typeof import('worker_threads');
-    return !isMainThread && parentPort != null;
-  } catch {
-    return false;
-  }
-})();
+import {isDataCloneError} from './isDataCloneError';
+import {packMessage} from './safeMessageTransferring';
 
 export default function messageParent(
   message: unknown,
   parentProcess = process,
 ): void {
-  if (isWorkerThread) {
-    // `Require` here to support Node v10
-    const {parentPort} =
-      require('worker_threads') as typeof import('worker_threads');
-    // ! is safe due to `null` check in `isWorkerThread`
-    parentPort!.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+  if (!isMainThread && parentPort != null) {
+    try {
+      parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+    } catch (error) {
+      // Try to handle https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeinternal
+      // for `symbols` and `functions`
+      if (isDataCloneError(error)) {
+        parentPort.postMessage([PARENT_MESSAGE_CUSTOM, packMessage(message)]);
+      } else {
+        throw error;
+      }
+    }
   } else if (typeof parentProcess.send === 'function') {
-    parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
+    try {
+      parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
+    } catch (error) {
+      if (
+        isError(error) &&
+        // if .send is a function, it's a serialization issue
+        !error.message.includes('.send is not a function')
+      ) {
+        // Apply specific serialization only in error cases
+        // to avoid affecting performance in regular cases.
+        parentProcess.send([PARENT_MESSAGE_CUSTOM, packMessage(message)]);
+      } else {
+        throw error;
+      }
+    }
   } else {
-    throw new Error('"messageParent" can only be used inside a worker');
+    throw new TypeError('"messageParent" can only be used inside a worker');
   }
 }

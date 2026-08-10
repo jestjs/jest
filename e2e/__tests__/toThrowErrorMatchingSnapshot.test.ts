@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -34,7 +33,7 @@ test('works fine when function throws error', () => {
   }
 });
 
-test(`throws the error if tested function didn't throw error`, () => {
+test("throws the error if tested function didn't throw error", () => {
   const filename = 'throws-if-tested-function-did-not-throw.test.js';
   const template =
     makeTemplate(`test('throws the error if tested function did not throw error', () => {
@@ -101,7 +100,7 @@ test('should support rejecting promises', () => {
     );
 
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(wrap(snapshot)).toMatchSnapshot();
+    expect(snapshot).toMatchSnapshot();
     expect(exitCode).toBe(0);
   }
 });

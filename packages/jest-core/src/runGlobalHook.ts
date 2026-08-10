@@ -1,17 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as util from 'util';
 import type {Test} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {isError} from 'jest-util';
 import prettyFormat from 'pretty-format';
 
-export default async ({
+export default async function runGlobalHook({
   allTests,
   globalConfig,
   moduleName,
@@ -19,7 +19,7 @@ export default async ({
   allTests: Array<Test>;
   globalConfig: Config.GlobalConfig;
   moduleName: 'globalSetup' | 'globalTeardown';
-}): Promise<void> => {
+}): Promise<void> {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
   );
@@ -55,11 +55,18 @@ export default async ({
               );
             }
 
-            await globalModule(globalConfig);
+            await globalModule(globalConfig, projectConfig);
           },
         );
-      } catch (error: unknown) {
-        if (util.types.isNativeError(error)) {
+      } catch (error) {
+        if (
+          isError(error) &&
+          (Object.getOwnPropertyDescriptor(error, 'message')?.writable ||
+            Object.getOwnPropertyDescriptor(
+              Object.getPrototypeOf(error),
+              'message',
+            )?.writable)
+        ) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 
           throw error;
@@ -70,8 +77,9 @@ export default async ({
             error,
             {maxDepth: 3},
           )}`,
+          {cause: error},
         );
       }
     }
   }
-};
+}

@@ -1,15 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {spawn} from 'child_process';
-import * as path from 'path';
+import {spawn} from 'node:child_process';
+import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
+import {walk} from '../lib/walk';
 import type {
   CrawlerOptions,
   FileData,
@@ -63,76 +64,36 @@ function find(
   enableSymlinks: boolean,
   callback: Callback,
 ): void {
+  const extSet = new Set(extensions);
   const result: Result = [];
-  let activeCalls = 0;
+  const statCache = new Map<string, fs.Stats>();
+  let remaining = roots.length;
 
-  function search(directory: string): void {
-    activeCalls++;
-    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
-      activeCalls--;
-      if (err) {
-        callback(result);
-        return;
-      }
-      // node < v10.10 does not support the withFileTypes option, and
-      // entry will be a string.
-      entries.forEach((entry: string | fs.Dirent) => {
-        const file = path.join(
-          directory,
-          typeof entry === 'string' ? entry : entry.name,
-        );
-
-        if (ignore(file)) {
-          return;
-        }
-
-        if (typeof entry !== 'string') {
-          if (entry.isSymbolicLink()) {
-            return;
-          }
-
-          if (entry.isDirectory()) {
-            search(file);
-            return;
-          }
-        }
-
-        activeCalls++;
-
-        const stat = enableSymlinks ? fs.stat : fs.lstat;
-
-        stat(file, (err, stat) => {
-          activeCalls--;
-
-          // This logic is unnecessary for node > v10.10, but leaving it in
-          // since we need it for backwards-compatibility still.
-          if (!err && stat && !stat.isSymbolicLink()) {
-            if (stat.isDirectory()) {
-              search(file);
-            } else {
-              const ext = path.extname(file).substr(1);
-              if (extensions.indexOf(ext) !== -1) {
-                result.push([file, stat.mtime.getTime(), stat.size]);
-              }
-            }
-          }
-
-          if (activeCalls === 0) {
-            callback(result);
-          }
-        });
-      });
-
-      if (activeCalls === 0) {
-        callback(result);
-      }
-    });
+  if (remaining === 0) {
+    callback(result);
+    return;
   }
 
-  if (roots.length > 0) {
-    roots.forEach(search);
-  } else {
-    callback(result);
+  for (const root of roots) {
+    walk(
+      {
+        enableSymlinks,
+        exclude: ignore,
+        onEntry: (kind, filePath, stats) => {
+          if (kind === 'file' && extSet.has(path.extname(filePath).slice(1))) {
+            result.push([filePath, stats.mtime.getTime(), stats.size]);
+          }
+        },
+        root,
+        statCache,
+      },
+      () => {
+        remaining--;
+        if (remaining === 0) {
+          callback(result);
+        }
+      },
+    );
   }
 }
 
@@ -143,48 +104,46 @@ function findNative(
   enableSymlinks: boolean,
   callback: Callback,
 ): void {
-  const args = Array.from(roots);
+  const args = [...roots];
   if (enableSymlinks) {
     args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
   } else {
     args.push('-type', 'f');
   }
 
-  if (extensions.length) {
+  if (extensions.length > 0) {
     args.push('(');
   }
-  extensions.forEach((ext, index) => {
+  for (const [index, ext] of extensions.entries()) {
     if (index) {
       args.push('-o');
     }
-    args.push('-iname');
-    args.push('*.' + ext);
-  });
-  if (extensions.length) {
+    args.push('-iname', `*.${ext}`);
+  }
+  if (extensions.length > 0) {
     args.push(')');
   }
 
   const child = spawn('find', args);
-  let stdout = '';
   if (child.stdout === null) {
     throw new Error(
-      'stdout is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+      'stdout is null - this should never happen. Please open up an issue at https://github.com/jestjs/jest',
     );
   }
-  child.stdout.setEncoding('utf-8');
-  child.stdout.on('data', data => (stdout += data));
+  child.stdout.setEncoding('utf8');
+  const chunks: Array<string> = [];
+  child.stdout.on('data', data => chunks.push(data));
 
   child.stdout.on('close', () => {
-    const lines = stdout
+    const lines = chunks
+      .join('')
       .trim()
       .split('\n')
-      .filter(x => !ignore(x));
+      .filter(x => x && !ignore(x));
     const result: Result = [];
     let count = lines.length;
-    if (!count) {
-      callback([]);
-    } else {
-      lines.forEach(path => {
+    if (count) {
+      for (const path of lines) {
         fs.stat(path, (err, stat) => {
           // Filter out symlinks that describe directories
           if (!err && stat && !stat.isDirectory()) {
@@ -194,22 +153,24 @@ function findNative(
             callback(result);
           }
         });
-      });
+      }
+    } else {
+      callback([]);
     }
   });
 }
 
-export = async function nodeCrawl(options: CrawlerOptions): Promise<{
+export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
   const {
     data,
+    enableSymlinks,
     extensions,
     forceNodeFilesystemAPI,
     ignore,
     rootDir,
-    enableSymlinks,
     roots,
   } = options;
 
@@ -219,7 +180,7 @@ export = async function nodeCrawl(options: CrawlerOptions): Promise<{
     const callback = (list: Result) => {
       const files = new Map();
       const removedFiles = new Map(data.files);
-      list.forEach(fileData => {
+      for (const fileData of list) {
         const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
         const existingFile = data.files.get(relativeFilePath);
@@ -230,7 +191,7 @@ export = async function nodeCrawl(options: CrawlerOptions): Promise<{
           files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
         }
         removedFiles.delete(relativeFilePath);
-      });
+      }
       data.files = files;
 
       resolve({
@@ -240,9 +201,15 @@ export = async function nodeCrawl(options: CrawlerOptions): Promise<{
     };
 
     if (useNativeFind) {
+      // TODO: consider making forceNodeFilesystemAPI the default. find(1) does
+      // not receive the ignore predicate, so it traverses ignored directories
+      // (e.g. node_modules, .git) in full and discards results afterward.
+      // find() via fdir prunes those subtrees at readdir time. For a typical
+      // project where node_modules dwarfs source files, the wasted traversal
+      // likely outweighs find(1)'s native speed advantage.
       findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
       find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
-};
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -43,9 +43,9 @@ class Help extends React.Component {
         content: (
           <Translate>
             {`Find out what's new with Jest.
-- Follow [Jest](https://twitter.com/fbjest) on Twitter.
+- Follow [Jest](https://twitter.com/jestjs_) on Twitter.
 - Subscribe to the [Jest blog](/blog/).
-- Look at the [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md).`}
+- Look at the [changelog](https://github.com/jestjs/jest/blob/main/CHANGELOG.md).`}
           </Translate>
         ),
         title: <Translate>Stay up to date</Translate>,

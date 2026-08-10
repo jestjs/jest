@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
+  version: 6
 
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local

@@ -1,24 +1,22 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test} from '@jest/test-result';
-import type {Config} from '@jest/types';
-import type {Context} from 'jest-runtime';
+import type {Test, TestContext} from '@jest/test-result';
 
 export type Stats = {
   roots: number;
   testMatch: number;
   testPathIgnorePatterns: number;
   testRegex: number;
-  testPathPattern?: number;
+  testPathPatterns?: number;
 };
 
 export type TestRunData = Array<{
-  context: Context;
+  context: TestContext;
   matches: {
     allTests: number;
     tests: Array<Test>;
@@ -29,18 +27,13 @@ export type TestRunData = Array<{
 
 export type TestPathCases = Array<{
   stat: keyof Stats;
-  isMatch: (path: Config.Path) => boolean;
+  isMatch: (path: string) => boolean;
 }>;
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
-  testPathPattern: (path: Config.Path) => boolean;
-};
-
-export type FilterResult = {
-  test: string;
-  message: string;
+  testPathPatterns: (path: string) => boolean;
 };
 
 export type Filter = (testPaths: Array<string>) => Promise<{
-  filtered: Array<FilterResult>;
+  filtered: Array<string>;
 }>;

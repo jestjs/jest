@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,15 +16,6 @@ import type {
   WorkerPoolInterface,
 } from './types';
 
-const canUseWorkerThreads = () => {
-  try {
-    require('worker_threads');
-    return true;
-  } catch {
-    return false;
-  }
-};
-
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
     workerId: number,
@@ -33,12 +24,13 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     onEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
+    this.restartWorkerIfShutDown(workerId);
     this.getWorkerById(workerId).send(request, onStart, onEnd, onCustomMessage);
   }
 
-  createWorker(workerOptions: WorkerOptions): WorkerInterface {
+  override createWorker(workerOptions: WorkerOptions): WorkerInterface {
     let Worker;
-    if (this._options.enableWorkerThreads && canUseWorkerThreads()) {
+    if (this._options.enableWorkerThreads) {
       Worker = require('./workers/NodeThreadsWorker').default;
     } else {
       Worker = require('./workers/ChildProcessWorker').default;

@@ -1,17 +1,20 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {WriteStream} from 'node:tty';
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
+  TestContext,
   TestResult,
 } from '@jest/test-result';
-import {preRunMessage} from 'jest-util';
-import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
+import {isInteractive, preRunMessage} from 'jest-util';
+import type {Reporter, ReporterOnStartOptions} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 
@@ -19,7 +22,7 @@ export default class BaseReporter implements Reporter {
   private _error?: Error;
 
   log(message: string): void {
-    process.stderr.write(message + '\n');
+    process.stderr.write(`${message}\n`);
   }
 
   onRunStart(
@@ -29,6 +32,7 @@ export default class BaseReporter implements Reporter {
     preRunMessageRemove(process.stderr);
   }
 
+  /* eslint-disable @typescript-eslint/no-empty-function */
   onTestCaseResult(_test: Test, _testCaseResult: TestCaseResult): void {}
 
   onTestResult(
@@ -40,9 +44,10 @@ export default class BaseReporter implements Reporter {
   onTestStart(_test?: Test): void {}
 
   onRunComplete(
-    _contexts?: Set<Context>,
+    _testContexts?: Set<TestContext>,
     _aggregatedResults?: AggregatedResult,
   ): Promise<void> | void {}
+  /* eslint-enable */
 
   protected _setError(error: Error): void {
     this._error = error;
@@ -52,5 +57,17 @@ export default class BaseReporter implements Reporter {
   // define whether the test run was successful or failed.
   getLastError(): Error | undefined {
     return this._error;
+  }
+
+  protected __beginSynchronizedUpdate(write: WriteStream['write']): void {
+    if (isInteractive) {
+      write('\u001B[?2026h');
+    }
+  }
+
+  protected __endSynchronizedUpdate(write: WriteStream['write']): void {
+    if (isInteractive) {
+      write('\u001B[?2026l');
+    }
   }
 }

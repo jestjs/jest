@@ -1,17 +1,22 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {
-  AssertionResult,
-  TestResult,
+  type AssertionResult,
+  type FailedAssertion,
+  type TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {formatResultsErrors} from 'jest-message-util';
+import {
+  flattenErrorStack,
+  formatResultsErrors,
+  hasNestedErrors,
+} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
@@ -19,19 +24,19 @@ import type {Reporter, RunDetails} from './types';
 type Microseconds = number;
 
 export default class Jasmine2Reporter implements Reporter {
-  private _testResults: Array<AssertionResult>;
-  private _globalConfig: Config.GlobalConfig;
-  private _config: Config.ProjectConfig;
-  private _currentSuites: Array<string>;
+  private readonly _testResults: Array<AssertionResult>;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _currentSuites: Array<string>;
   private _resolve: any;
-  private _resultsPromise: Promise<TestResult>;
-  private _startTimes: Map<string, Microseconds>;
-  private _testPath: Config.Path;
+  private readonly _resultsPromise: Promise<TestResult>;
+  private readonly _startTimes: Map<string, Microseconds>;
+  private readonly _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
-    testPath: Config.Path,
+    testPath: string,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -43,6 +48,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   jasmineStarted(_runDetails: RunDetails): void {}
 
   specStarted(spec: SpecResult): void {
@@ -51,7 +57,7 @@ export default class Jasmine2Reporter implements Reporter {
 
   specDone(result: SpecResult): void {
     this._testResults.push(
-      this._extractSpecResults(result, this._currentSuites.slice(0)),
+      this._extractSpecResults(result, [...this._currentSuites]),
     );
   }
 
@@ -69,7 +75,7 @@ export default class Jasmine2Reporter implements Reporter {
     let numPendingTests = 0;
     let numTodoTests = 0;
     const testResults = this._testResults;
-    testResults.forEach(testResult => {
+    for (const testResult of testResults) {
       if (testResult.status === 'failed') {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
@@ -79,7 +85,7 @@ export default class Jasmine2Reporter implements Reporter {
       } else {
         numPassingTests++;
       }
-    });
+    }
 
     const testResult = {
       ...createEmptyTestResult(),
@@ -124,14 +130,30 @@ export default class Jasmine2Reporter implements Reporter {
     return stack;
   }
 
+  private _getFailureMessage(failed: FailedAssertion): string {
+    const message =
+      !failed.matcherName && typeof failed.stack === 'string'
+        ? this._addMissingMessageToStack(failed.stack, failed.message)
+        : failed.message || '';
+
+    if (hasNestedErrors(failed.error)) {
+      return flattenErrorStack(failed.error);
+    }
+
+    return message;
+  }
+
   private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
-    const start = this._startTimes.get(specResult.id);
-    const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
+    const start = this._startTimes.get(specResult.id);
+    const duration =
+      start && !['pending', 'skipped'].includes(status)
+        ? Date.now() - start
+        : null;
     const location = specResult.__callsite
       ? {
           column: specResult.__callsite.getColumnNumber(),
@@ -150,14 +172,11 @@ export default class Jasmine2Reporter implements Reporter {
       title: specResult.description,
     };
 
-    specResult.failedExpectations.forEach(failed => {
-      const message =
-        !failed.matcherName && typeof failed.stack === 'string'
-          ? this._addMissingMessageToStack(failed.stack, failed.message)
-          : failed.message || '';
+    for (const failed of specResult.failedExpectations) {
+      const message = this._getFailureMessage(failed);
       results.failureMessages.push(message);
       results.failureDetails.push(failed);
-    });
+    }
 
     return results;
   }

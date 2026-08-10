@@ -1,26 +1,23 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {isJestJasmineRun} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const cleanupRunnerStack = (stderr: string) =>
-  wrap(
-    stderr
-      .split('\n')
-      .filter(
-        line =>
-          !line.includes('packages/jest-jasmine2/build') &&
-          !line.includes('packages/jest-circus/build'),
-      )
-      .join('\n'),
-  );
+  stderr
+    .split('\n')
+    .filter(
+      line =>
+        !line.includes('packages/jest-jasmine2/build') &&
+        !line.includes('packages/jest-circus/build'),
+    )
+    .join('\n');
 
 test('print correct error message with nested test definitions outside describe', () => {
   const result = runJest('nested-test-definitions', ['outside']);

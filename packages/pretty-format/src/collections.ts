@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,14 +12,16 @@ const getKeysOfEnumerableProperties = (
   object: Record<string, unknown>,
   compareKeys: CompareKeys,
 ) => {
-  const keys: Array<string | symbol> = Object.keys(object).sort(compareKeys);
+  const rawKeys = Object.keys(object);
+  const keys: Array<string | symbol> =
+    compareKeys === null ? rawKeys : rawKeys.sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
-    Object.getOwnPropertySymbols(object).forEach(symbol => {
+    for (const symbol of Object.getOwnPropertySymbols(object)) {
       if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
-    });
+    }
   }
 
   return keys as Array<string>;
@@ -40,9 +42,10 @@ export function printIteratorEntries(
   // Too bad, so sad that separator for ECMAScript Map has been ' => '
   // What a distracting diff if you change a data structure to/from
   // ECMAScript Object or Immutable.Map/OrderedMap which use the default.
-  separator: string = ': ',
+  separator = ': ',
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -51,6 +54,13 @@ export function printIteratorEntries(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '…';
+        break;
+      }
+
       const name = printer(
         current.value[0],
         config,
@@ -66,12 +76,12 @@ export function printIteratorEntries(
         refs,
       );
 
-      result += indentationNext + name + separator + value;
+      result += name + separator + value;
 
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -97,6 +107,7 @@ export function printIteratorValues(
   printer: Printer,
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -105,14 +116,19 @@ export function printIteratorValues(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
-      result +=
-        indentationNext +
-        printer(current.value, config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '…';
+        break;
+      }
+
+      result += printer(current.value, config, indentationNext, depth, refs);
 
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -130,7 +146,7 @@ export function printIteratorValues(
  * without surrounding punctuation (for example, brackets)
  **/
 export function printListItems(
-  list: ArrayLike<unknown>,
+  list: ArrayLike<unknown> | DataView | ArrayBuffer,
   config: Config,
   indentation: string,
   depth: number,
@@ -138,21 +154,35 @@ export function printListItems(
   printer: Printer,
 ): string {
   let result = '';
+  list = list instanceof ArrayBuffer ? new DataView(list) : list;
+  const isDataView = (l: unknown): l is DataView => l instanceof DataView;
+  const length = isDataView(list) ? list.byteLength : list.length;
 
-  if (list.length) {
+  if (length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < length; i++) {
       result += indentationNext;
 
-      if (i in list) {
-        result += printer(list[i], config, indentationNext, depth, refs);
+      if (i === config.maxWidth) {
+        result += '…';
+        break;
       }
 
-      if (i < list.length - 1) {
-        result += ',' + config.spacingInner;
+      if (isDataView(list) || i in list) {
+        result += printer(
+          isDataView(list) ? list.getInt8(i) : list[i],
+          config,
+          indentationNext,
+          depth,
+          refs,
+        );
+      }
+
+      if (i < length - 1) {
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -180,7 +210,7 @@ export function printObjectProperties(
   let result = '';
   const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
-  if (keys.length) {
+  if (keys.length > 0) {
     result += config.spacingOuter;
 
     const indentationNext = indentation + config.indent;
@@ -190,10 +220,10 @@ export function printObjectProperties(
       const name = printer(key, config, indentationNext, depth, refs);
       const value = printer(val[key], config, indentationNext, depth, refs);
 
-      result += indentationNext + name + ': ' + value;
+      result += `${indentationNext + name}: ${value}`;
 
       if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,12 +11,14 @@ import {dedentLines} from '../dedentLines';
 const $$typeof = Symbol.for('react.test.json');
 const plugins = [builtinPlugins.ReactTestComponent];
 
-const formatLines2 = val => format(val, {indent: 2, plugins}).split('\n');
-const formatLines0 = val => format(val, {indent: 0, plugins}).split('\n');
+const formatLines2 = (val: unknown) =>
+  format(val, {indent: 2, plugins}).split('\n');
+const formatLines0 = (val: unknown) =>
+  format(val, {indent: 0, plugins}).split('\n');
 
 describe('dedentLines non-null', () => {
   test('no lines', () => {
-    const indented = [];
+    const indented: Array<string> = [];
     const dedented = indented;
 
     expect(dedentLines(indented)).toEqual(dedented);
@@ -129,8 +131,8 @@ describe('dedentLines null', () => {
     ['object key multi-line', {'multi\nline\nkey': false}],
     ['object value multi-line', {key: 'multi\nline\nvalue'}],
     ['object key and value multi-line', {'multi\nline': '\nleading nl'}],
-  ])('%s', (name, val) => {
-    expect(dedentLines(formatLines2(val))).toEqual(null);
+  ])('%s', (_name, val) => {
+    expect(dedentLines(formatLines2(val))).toBeNull();
   });
 
   test('markup prop multi-line', () => {
@@ -145,7 +147,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup prop component with multi-line text', () => {
@@ -178,7 +180,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup text multi-line', () => {
@@ -205,7 +207,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup text multiple lines', () => {
@@ -232,18 +234,18 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup unclosed self-closing start tag', () => {
     const indented = ['<img', '  alt="Jest logo"', '  src="jest.svg"'];
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup unclosed because no end tag', () => {
     const indented = ['<p>', '  Delightful JavaScript testing'];
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 });

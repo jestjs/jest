@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,11 +9,10 @@ import runJest, {getConfig} from '../runJest';
 
 test('config as JSON', () => {
   const result = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-        testMatch: ['banana strawberry kiwi'],
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+      testMatch: ['banana strawberry kiwi'],
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(1);
@@ -22,10 +21,9 @@ test('config as JSON', () => {
 
 test('works with sane config JSON', () => {
   const result = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(1);
@@ -44,11 +42,10 @@ test('watchman config option is respected over default argv', () => {
 
 test('config from argv is respected with sane config JSON', () => {
   const {stdout} = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-        watchman: false,
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+      watchman: false,
+    })}`,
     '--debug',
   ]);
 
@@ -57,13 +54,12 @@ test('config from argv is respected with sane config JSON', () => {
 
 test('works with jsdom testEnvironmentOptions config JSON', () => {
   const result = runJest('environmentOptions', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'jsdom',
-        testEnvironmentOptions: {
-          url: 'https://jestjs.io',
-        },
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'jsdom',
+      testEnvironmentOptions: {
+        url: 'https://jestjs.io',
+      },
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -77,5 +73,50 @@ test('negated flags override previous flags', () => {
     '--silent',
   ]);
 
-  expect(globalConfig.silent).toEqual(true);
+  expect(globalConfig.silent).toBe(true);
+});
+
+test('should work with define config function taking in config object', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.config.ts',
+    '__tests__/simple.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with define config function taking in callback', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.callback.config.ts',
+    '__tests__/simple.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config of 2 config objects', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config of one config object with a define function config', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge-with-define.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test('should work with merged config as callback for define function config', () => {
+  const result = runJest('config-utils', [
+    '--config=jest.merge-with-callback.config.ts',
+    '__tests__/merge.test.js',
+  ]);
+
+  expect(result.exitCode).toBe(0);
 });

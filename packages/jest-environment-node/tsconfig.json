@@ -2,14 +2,17 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["es2023", "ESNext.Disposable"]
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-environment"},
     {"path": "../jest-fake-timers"},
     {"path": "../jest-mock"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-validate"}
   ]
 }

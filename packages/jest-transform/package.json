@@ -1,48 +1,49 @@
 {
   "name": "@jest/transform",
-  "version": "27.3.1",
+  "version": "30.4.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git",
+    "url": "https://github.com/jestjs/jest.git",
     "directory": "packages/jest-transform"
   },
   "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "import": "./build/index.mjs",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/core": "^7.1.0",
-    "@jest/types": "^27.2.5",
-    "babel-plugin-istanbul": "^6.0.0",
-    "chalk": "^4.0.0",
-    "convert-source-map": "^1.4.0",
-    "fast-json-stable-stringify": "^2.0.0",
-    "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.3.1",
-    "jest-regex-util": "^27.0.6",
-    "jest-util": "^27.3.1",
-    "micromatch": "^4.0.4",
-    "pirates": "^4.0.1",
+    "@babel/core": "^7.27.4",
+    "@jest/types": "workspace:*",
+    "@jridgewell/trace-mapping": "^0.3.25",
+    "babel-plugin-istanbul": "^7.0.1",
+    "chalk": "^4.1.2",
+    "convert-source-map": "^2.0.0",
+    "fast-json-stable-stringify": "^2.1.0",
+    "graceful-fs": "^4.2.11",
+    "jest-haste-map": "workspace:*",
+    "jest-regex-util": "workspace:*",
+    "jest-util": "workspace:*",
+    "pirates": "^4.0.7",
     "slash": "^3.0.0",
-    "source-map": "^0.6.1",
-    "write-file-atomic": "^3.0.0"
+    "write-file-atomic": "^5.0.1"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.3.1",
-    "@types/babel__core": "^7.1.0",
-    "@types/convert-source-map": "^1.5.1",
-    "@types/fast-json-stable-stringify": "^2.0.0",
-    "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^4.0.1",
-    "@types/write-file-atomic": "^3.0.0",
-    "dedent": "^0.7.0",
-    "jest-snapshot-serializer-raw": "^1.1.0"
+    "@jest/test-utils": "workspace:*",
+    "@types/babel__core": "^7.20.5",
+    "@types/convert-source-map": "^2.0.3",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/write-file-atomic": "^4.0.3",
+    "dedent": "^1.6.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "publishConfig": {
     "access": "public"

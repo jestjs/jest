@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+Copyright (c) 2008-2016 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -29,9 +29,9 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually, sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys */
 
-import type {Config} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
@@ -43,22 +43,22 @@ export type SuiteResult = {
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: string;
   status?: string;
 };
 
 export type Attributes = {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
 };
 
 export default class Suite {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure: boolean;
   beforeFns: Array<QueueableFn>;
   afterFns: Array<QueueableFn>;
@@ -68,14 +68,11 @@ export default class Suite {
   children: Array<Suite | Spec>;
   result: SuiteResult;
   sharedContext?: object;
-  markedPending: boolean;
-  markedTodo: boolean;
-  isFocused: boolean;
+  markedPending = false;
+  markedTodo = false;
+  isFocused = false;
 
   constructor(attrs: Attributes) {
-    this.markedPending = false;
-    this.markedTodo = false;
-    this.isFocused = false;
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = convertDescriptorToString(attrs.description);
@@ -100,6 +97,7 @@ export default class Suite {
   getFullName() {
     const fullName = [];
     for (
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let parentSuite: Suite | undefined = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
@@ -158,7 +156,7 @@ export default class Suite {
   }
 
   getResult() {
-    this.result.status! = this.status();
+    this.result.status = this.status();
     return this.result;
   }
 
@@ -189,8 +187,7 @@ export default class Suite {
       };
       this.result.failedExpectations.push(expectationResultFactory(data));
     } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
+      for (const child of this.children) {
         child.onException.apply(child, args);
       }
     }
@@ -204,8 +201,7 @@ export default class Suite {
         throw new ExpectationFailed();
       }
     } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
+      for (const child of this.children) {
         try {
           child.addExpectationResult.apply(child, args);
         } catch {
@@ -215,6 +211,7 @@ export default class Suite {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   execute(..._args: Array<any>) {}
 }
 

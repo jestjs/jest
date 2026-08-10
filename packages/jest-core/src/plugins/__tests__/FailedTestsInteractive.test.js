@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,7 +40,7 @@ describe('FailedTestsInteractive', () => {
     expect(mockUpdate).toHaveBeenCalledWith({
       mode: 'watch',
       testNamePattern: `^${testAggregate.testResults[0].testResults[0].fullName}$`,
-      testPathPattern: testAggregate.testResults[0].testFilePath,
+      testPathPatterns: [testAggregate.testResults[0].testFilePath],
     });
   });
 });

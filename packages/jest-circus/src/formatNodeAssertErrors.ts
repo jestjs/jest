@@ -1,15 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AssertionError} from 'assert';
-import chalk = require('chalk');
+import {AssertionError} from 'node:assert';
+import chalk from 'chalk';
 import type {Circus} from '@jest/types';
 import {
-  DiffOptions,
+  type DiffOptions,
   diff,
   printExpected,
   printReceived,
@@ -50,14 +50,19 @@ const formatNodeAssertErrors = (
 
         if (originalError == null) {
           error = asyncError;
-        } else if (!originalError.stack) {
+        } else if (originalError.stack) {
+          error = originalError;
+        } else if (asyncError) {
           error = asyncError;
 
-          error.message = originalError.message
-            ? originalError.message
-            : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
+          error.message =
+            originalError.message ||
+            `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
         } else {
-          error = originalError;
+          error = new Error(
+            originalError.message ||
+              `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`,
+          );
         }
       } else {
         error = errors;
@@ -79,10 +84,6 @@ const getOperatorName = (operator: string | undefined, stack: string) => {
   if (stack.match('.throws')) {
     return 'throws';
   }
-  // this fallback is only needed for versions older than node 10
-  if (stack.match('.fail')) {
-    return 'fail';
-  }
   return '';
 };
 
@@ -98,7 +99,7 @@ const operatorMessage = (operator: string | undefined) => {
 const assertThrowingMatcherHint = (operatorName: string) =>
   operatorName
     ? chalk.dim('assert') +
-      chalk.dim('.' + operatorName + '(') +
+      chalk.dim(`.${operatorName}(`) +
       chalk.red('function') +
       chalk.dim(')')
     : '';
@@ -119,7 +120,7 @@ const assertMatcherHint = (
   } else if (operatorName) {
     message =
       chalk.dim('assert') +
-      chalk.dim('.' + operatorName + '(') +
+      chalk.dim(`.${operatorName}(`) +
       chalk.red('received') +
       chalk.dim(', ') +
       chalk.green('expected') +
@@ -139,25 +140,34 @@ function assertionErrorMessage(
   const operatorName = getOperatorName(operator, stack);
   const trimmedStack = stack
     .replace(message, '')
-    .replace(/AssertionError(.*)/g, '');
+    .replaceAll(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
     return (
+      // eslint-disable-next-line prefer-template
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function not to throw an error.\n`) +
-      chalk.reset(`Instead, it threw:\n`) +
+      chalk.reset('Expected the function not to throw an error.\n') +
+      chalk.reset('Instead, it threw:\n') +
       `  ${printReceived(actual)}` +
-      chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+      chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
 
   if (operatorName === 'throws') {
+    if (error.generatedMessage) {
+      return (
+        buildHintString(assertThrowingMatcherHint(operatorName)) +
+        chalk.reset(error.message) +
+        chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        trimmedStack
+      );
+    }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function to throw an error.\n`) +
-      chalk.reset(`But it didn't throw anything.`) +
-      chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+      chalk.reset('Expected the function to throw an error.\n') +
+      chalk.reset("But it didn't throw anything.") +
+      chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
       trimmedStack
     );
   }
@@ -165,18 +175,19 @@ function assertionErrorMessage(
   if (operatorName === 'fail') {
     return (
       buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
+      chalk.reset(hasCustomMessage ? `Message:\n  ${message}` : '') +
       trimmedStack
     );
   }
 
   return (
+    // eslint-disable-next-line prefer-template
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
-    chalk.reset(`Received:\n`) +
+    chalk.reset('Received:\n') +
     `  ${printReceived(actual)}` +
-    chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+    chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
     trimmedStack
   );
@@ -194,7 +205,7 @@ function isAssertionError(
 }
 
 function buildHintString(hint: string) {
-  return hint ? hint + '\n\n' : '';
+  return hint ? `${hint}\n\n` : '';
 }
 
 export default formatNodeAssertErrors;

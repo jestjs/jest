@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,7 +24,7 @@ it('successfully runs the tests inside `pnp/`', () => {
       YARN_ENABLE_GLOBAL_CACHE: 'false',
       YARN_NODE_LINKER: 'pnp',
     },
-    nodeOptions: `--require ${DIR}/.pnp.js`,
+    nodeOptions: `--require ${DIR}/.pnp.cjs`,
   });
 
   expect(json.success).toBe(true);

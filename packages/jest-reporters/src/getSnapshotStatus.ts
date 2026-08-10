@@ -1,11 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {TestResult} from '@jest/test-result';
 import {pluralize} from 'jest-util';
 
@@ -16,16 +16,16 @@ const SNAPSHOT_ADDED = chalk.bold.green;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 const SNAPSHOT_OUTDATED = chalk.bold.yellow;
 
-export default (
+export default function getSnapshotStatus(
   snapshot: TestResult['snapshot'],
   afterUpdate: boolean,
-): Array<string> => {
+): Array<string> {
   const statuses = [];
 
   if (snapshot.added) {
     statuses.push(
       SNAPSHOT_ADDED(
-        ARROW + pluralize('snapshot', snapshot.added) + ' written.',
+        `${ARROW + pluralize('snapshot', snapshot.added)} written.`,
       ),
     );
   }
@@ -33,7 +33,7 @@ export default (
   if (snapshot.updated) {
     statuses.push(
       SNAPSHOT_UPDATED(
-        ARROW + pluralize('snapshot', snapshot.updated) + ' updated.',
+        `${ARROW + pluralize('snapshot', snapshot.updated)} updated.`,
       ),
     );
   }
@@ -41,7 +41,7 @@ export default (
   if (snapshot.unmatched) {
     statuses.push(
       FAIL_COLOR(
-        ARROW + pluralize('snapshot', snapshot.unmatched) + ' failed.',
+        `${ARROW + pluralize('snapshot', snapshot.unmatched)} failed.`,
       ),
     );
   }
@@ -50,25 +50,25 @@ export default (
     if (afterUpdate) {
       statuses.push(
         SNAPSHOT_UPDATED(
-          ARROW + pluralize('snapshot', snapshot.unchecked) + ' removed.',
+          `${ARROW + pluralize('snapshot', snapshot.unchecked)} removed.`,
         ),
       );
     } else {
       statuses.push(
-        SNAPSHOT_OUTDATED(
-          ARROW + pluralize('snapshot', snapshot.unchecked) + ' obsolete',
-        ) + '.',
+        `${SNAPSHOT_OUTDATED(
+          `${ARROW + pluralize('snapshot', snapshot.unchecked)} obsolete`,
+        )}.`,
       );
     }
 
-    snapshot.uncheckedKeys.forEach(key => {
+    for (const key of snapshot.uncheckedKeys) {
       statuses.push(`  ${DOT}${key}`);
-    });
+    }
   }
 
   if (snapshot.fileDeleted) {
-    statuses.push(SNAPSHOT_UPDATED(ARROW + 'snapshot file removed.'));
+    statuses.push(SNAPSHOT_UPDATED(`${ARROW}snapshot file removed.`));
   }
 
   return statuses;
-};
+}

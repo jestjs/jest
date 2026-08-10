@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 import type {JestEnvironment} from '@jest/environment';
 import {bind as bindEach} from 'jest-each';
 
-export default (environment: JestEnvironment): void => {
+export default function each(environment: JestEnvironment): void {
   environment.global.it.each = bindEach(environment.global.it);
   environment.global.fit.each = bindEach(environment.global.fit);
   environment.global.xit.each = bindEach(environment.global.xit);
@@ -36,4 +36,4 @@ export default (environment: JestEnvironment): void => {
     environment.global.it.concurrent.skip,
     false,
   );
-};
+}

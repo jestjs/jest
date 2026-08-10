@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,7 +15,7 @@
 //
 // Feel free to add any extensions that cannot be a Haste module.
 
-const extensions: Set<string> = new Set([
+const extensions = new Set<string>([
   // JSONs are never haste modules, except for "package.json", which is handled.
   '.json',
 

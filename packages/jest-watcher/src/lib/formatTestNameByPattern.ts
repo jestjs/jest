@@ -1,18 +1,22 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import colorize from './colorize';
 
 const DOTS = '...';
 const ENTER = '⏎';
 
-export default (testName: string, pattern: string, width: number): string => {
-  const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
+export default function formatTestNameByPattern(
+  testName: string,
+  pattern: string,
+  width: number,
+): string {
+  const inlineTestName = testName.replaceAll(/(\r\n|\n|\r)/gm, ENTER);
 
   let regexp;
 
@@ -28,7 +32,7 @@ export default (testName: string, pattern: string, width: number): string => {
     return chalk.dim(inlineTestName);
   }
 
-  const startPatternIndex = Math.max(match.index || 0, 0);
+  const startPatternIndex = Math.max(match.index ?? 0, 0);
   const endPatternIndex = startPatternIndex + match[0].length;
 
   if (inlineTestName.length <= width) {
@@ -54,4 +58,4 @@ export default (testName: string, pattern: string, width: number): string => {
   }
 
   return `${chalk.dim(slicedTestName)}${chalk.reset(DOTS)}`;
-};
+}

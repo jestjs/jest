@@ -1,7 +1,6 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
-import React, {createRef} from 'react';
-
+import {createRef} from 'react';
 import * as TestUtils from 'react-dom/test-utils';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
@@ -22,9 +21,9 @@ it('CheckboxWithLabel changes the text after click', () => {
   const inputNode = checkboxInputRef.current;
 
   // Verify that it's Off by default
-  expect(labelNode.textContent).toEqual('Off');
+  expect(labelNode.textContent).toBe('Off');
 
   // Simulate a click and verify that it is now On
   TestUtils.Simulate.change(inputNode);
-  expect(labelNode.textContent).toEqual('On');
+  expect(labelNode.textContent).toBe('On');
 });

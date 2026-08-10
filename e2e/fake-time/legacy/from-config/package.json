@@ -1,6 +1,0 @@
-{
-  "jest": {
-    "timers": "legacy",
-    "testEnvironment": "node"
-  }
-}

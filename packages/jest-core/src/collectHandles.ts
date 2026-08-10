@@ -1,15 +1,14 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
-import * as asyncHooks from 'async_hooks';
-import {promisify} from 'util';
-import stripAnsi = require('strip-ansi');
+import * as asyncHooks from 'node:async_hooks';
+import {promisify, stripVTControlCharacters as stripAnsi} from 'node:util';
+import * as v8 from 'node:v8';
+import * as vm from 'node:vm';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
@@ -40,10 +39,25 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
-// @ts-expect-error: doesn't exist in v10 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
+
+let gcFunc: (() => void) | undefined = (globalThis as any).gc;
+function runGC() {
+  if (!gcFunc) {
+    v8.setFlagsFromString('--expose-gc');
+    gcFunc = vm.runInNewContext('gc');
+    v8.setFlagsFromString('--no-expose-gc');
+    if (!gcFunc) {
+      throw new Error(
+        'Cannot find `global.gc` function. Please run node with `--expose-gc` and report this issue in jest repo.',
+      );
+    }
+  }
+
+  gcFunc();
+}
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
@@ -60,18 +74,25 @@ export default function collectHandles(): HandleCollectionResult {
       asyncId,
       type,
       triggerAsyncId,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       resource: {} | NodeJS.Timeout,
     ) {
       // Skip resources that should not generally prevent the process from
       // exiting, not last a meaningfully long time, or otherwise shouldn't be
       // tracked.
       if (
-        type === 'PROMISE' ||
-        type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM' ||
-        type === 'PerformanceObserver' ||
-        type === 'RANDOMBYTESREQUEST' ||
-        type === 'DNSCHANNEL'
+        [
+          'PROMISE',
+          'TIMERWRAP',
+          'ELDHISTOGRAM',
+          'PerformanceObserver',
+          'RANDOMBYTESREQUEST',
+          'DNSCHANNEL',
+          'ZLIB',
+          'SIGNREQUEST',
+          'TLSWRAP',
+          'TCPWRAP',
+        ].includes(type)
       ) {
         return;
       }
@@ -92,25 +113,18 @@ export default function collectHandles(): HandleCollectionResult {
       if (fromUser) {
         let isActive: () => boolean;
 
-        if (type === 'Timeout' || type === 'Immediate') {
-          // Timer that supports hasRef (Node v11+)
-          if ('hasRef' in resource) {
-            if (hasWeakRef) {
-              // @ts-expect-error: doesn't exist in v10 typings
-              const ref = new WeakRef(resource);
-              isActive = () => {
-                return ref.deref()?.hasRef() ?? false;
-              };
-            } else {
-              // @ts-expect-error: doesn't exist in v10 typings
-              isActive = resource.hasRef.bind(resource);
-            }
+        // Handle that supports hasRef
+        if ('hasRef' in resource) {
+          if (hasWeakRef) {
+            const ref = new WeakRef(resource);
+            isActive = () => {
+              return ref.deref()?.hasRef() ?? false;
+            };
           } else {
-            // Timer that doesn't support hasRef
-            isActive = alwaysActive;
+            isActive = resource.hasRef.bind(resource);
           }
         } else {
-          // Any other async resource
+          // Handle that doesn't support hasRef
           isActive = alwaysActive;
         }
 
@@ -127,12 +141,22 @@ export default function collectHandles(): HandleCollectionResult {
     // For example, Node.js TCP Servers are not destroyed until *after* their
     // `close` callback runs. If someone finishes a test from the `close`
     // callback, we will not yet have seen the resource be destroyed here.
-    await asyncSleep(100);
+    await asyncSleep(0);
+
+    if (activeHandles.size > 0) {
+      await asyncSleep(30);
+
+      if (activeHandles.size > 0) {
+        runGC();
+
+        await asyncSleep(0);
+      }
+    }
 
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
-    const result = Array.from(activeHandles.values())
+    const result = [...activeHandles.values()]
       .filter(({isActive}) => isActive())
       .map(({error}) => error);
 
@@ -145,33 +169,44 @@ export function formatHandleErrors(
   errors: Array<Error>,
   config: Config.ProjectConfig,
 ): Array<string> {
-  const stacks = new Set();
+  const stacks = new Map<string, {stack: string; names: Set<string>}>();
 
-  return (
-    errors
-      .map(err =>
-        formatExecError(err, config, {noStackTrace: false}, undefined, true),
-      )
-      // E.g. timeouts might give multiple traces to the same line of code
-      // This hairy filtering tries to remove entries with duplicate stack traces
-      .filter(handle => {
-        const ansiFree: string = stripAnsi(handle);
+  for (const err of errors) {
+    const formatted = formatExecError(
+      err,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
 
-        const match = ansiFree.match(/\s+at(.*)/);
+    // E.g. timeouts might give multiple traces to the same line of code
+    // This hairy filtering tries to remove entries with duplicate stack traces
 
-        if (!match || match.length < 2) {
-          return true;
-        }
+    const ansiFree: string = stripAnsi(formatted);
+    const match = ansiFree.match(/\s+at(.*)/);
+    if (!match || match.length < 2) {
+      continue;
+    }
 
-        const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+    const stackText = ansiFree.slice(ansiFree.indexOf(match[1])).trim();
 
-        if (stacks.has(stack)) {
-          return false;
-        }
+    const name = ansiFree.match(/(?<=● {2}).*$/m);
+    if (name == null || name.length === 0) {
+      continue;
+    }
 
-        stacks.add(stack);
+    const stack = stacks.get(stackText) || {
+      names: new Set(),
+      stack: formatted.replace(name[0], '%%OBJECT_NAME%%'),
+    };
 
-        return true;
-      })
+    stack.names.add(name[0]);
+
+    stacks.set(stackText, stack);
+  }
+
+  return [...stacks.values()].map(({stack, names}) =>
+    stack.replace('%%OBJECT_NAME%%', [...names].join(',')),
   );
 }

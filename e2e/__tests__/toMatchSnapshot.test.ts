@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,7 +18,7 @@ afterAll(() => cleanup(TESTS_DIR));
 test('basic support', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(
-    `test('snapshots', () => expect($1).toMatchSnapshot());`,
+    "test('snapshots', () => expect($1).toMatchSnapshot());",
   );
 
   {
@@ -98,14 +98,14 @@ test('first snapshot fails, second passes', () => {
     });`);
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template([`'apple'`, `'banana'`])});
+    writeFiles(TESTS_DIR, {[filename]: template(["'apple'", "'banana'"])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('2 snapshots written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
+    writeFiles(TESTS_DIR, {[filename]: template(["'kiwi'", "'banana'"])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshot name: `snapshots 1`');
     // Match lines separately because empty line has been replaced with space:
@@ -209,7 +209,7 @@ test('handles invalid property matchers', () => {
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      `To provide a hint without properties: toMatchSnapshot('hint')`,
+      "To provide a hint without properties: toMatchSnapshot('hint')",
     );
     expect(exitCode).toBe(1);
   }
@@ -223,7 +223,7 @@ test('handles invalid property matchers', () => {
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      `To provide a hint without properties: toMatchSnapshot('hint')`,
+      "To provide a hint without properties: toMatchSnapshot('hint')",
     );
     expect(exitCode).toBe(1);
   }

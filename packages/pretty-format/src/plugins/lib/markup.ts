@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,7 +26,7 @@ export const printProps = (
       let printed = printer(value, config, indentationNext, depth, refs);
 
       if (typeof value !== 'string') {
-        if (printed.indexOf('\n') !== -1) {
+        if (printed.includes('\n')) {
           printed =
             config.spacingOuter +
             indentationNext +
@@ -34,20 +34,16 @@ export const printProps = (
             config.spacingOuter +
             indentation;
         }
-        printed = '{' + printed + '}';
+        printed = `{${printed}}`;
       }
 
-      return (
+      return `${
         config.spacingInner +
         indentation +
         colors.prop.open +
         key +
-        colors.prop.close +
-        '=' +
-        colors.value.open +
-        printed +
-        colors.value.close
-      );
+        colors.prop.close
+      }=${colors.value.open}${printed}${colors.value.close}`;
     })
     .join('');
 };
@@ -79,13 +75,9 @@ export const printText = (text: string, config: Config): string => {
 
 export const printComment = (comment: string, config: Config): string => {
   const commentColor = config.colors.comment;
-  return (
-    commentColor.open +
-    '<!--' +
-    escapeHTML(comment) +
-    '-->' +
+  return `${commentColor.open}<!--${escapeHTML(comment)}-->${
     commentColor.close
-  );
+  }`;
 };
 
 // Separate the functions to format props, children, and element,
@@ -100,41 +92,21 @@ export const printElement = (
   indentation: string,
 ): string => {
   const tagColor = config.colors.tag;
-  return (
-    tagColor.open +
-    '<' +
-    type +
-    (printedProps &&
-      tagColor.close +
-        printedProps +
-        config.spacingOuter +
-        indentation +
-        tagColor.open) +
-    (printedChildren
-      ? '>' +
-        tagColor.close +
-        printedChildren +
-        config.spacingOuter +
-        indentation +
-        tagColor.open +
-        '</' +
-        type
-      : (printedProps && !config.min ? '' : ' ') + '/') +
-    '>' +
-    tagColor.close
-  );
+  return `${tagColor.open}<${type}${
+    printedProps &&
+    tagColor.close +
+      printedProps +
+      config.spacingOuter +
+      indentation +
+      tagColor.open
+  }${
+    printedChildren
+      ? `>${tagColor.close}${printedChildren}${config.spacingOuter}${indentation}${tagColor.open}</${type}`
+      : `${printedProps && !config.min ? '' : ' '}/`
+  }>${tagColor.close}`;
 };
 
 export const printElementAsLeaf = (type: string, config: Config): string => {
   const tagColor = config.colors.tag;
-  return (
-    tagColor.open +
-    '<' +
-    type +
-    tagColor.close +
-    ' …' +
-    tagColor.open +
-    ' />' +
-    tagColor.close
-  );
+  return `${tagColor.open}<${type}${tagColor.close} …${tagColor.open} />${tagColor.close}`;
 };

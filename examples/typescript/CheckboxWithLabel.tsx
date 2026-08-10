@@ -1,6 +1,6 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
-import * as React from 'react';
+import {useState} from 'react';
 
 type CheckboxWithLabelProps = {
   labelRef: React.LegacyRef<HTMLLabelElement>;
@@ -9,13 +9,13 @@ type CheckboxWithLabelProps = {
   labelOn: string;
 };
 
-const CheckboxWithLabel = ({
+export default function CheckboxWithLabel({
   labelRef,
   inputRef,
   labelOn,
   labelOff,
-}: CheckboxWithLabelProps) => {
-  const [isChecked, setIsChecked] = React.useState(false);
+}: CheckboxWithLabelProps) {
+  const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
     setIsChecked(!isChecked);
@@ -32,6 +32,4 @@ const CheckboxWithLabel = ({
       {isChecked ? labelOn : labelOff}
     </label>
   );
-};
-
-export default CheckboxWithLabel;
+}

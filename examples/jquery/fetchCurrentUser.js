@@ -1,10 +1,10 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 const $ = require('jquery');
 
 function parseJSON(user) {
   return {
-    fullName: user.firstName + ' ' + user.lastName,
+    fullName: `${user.firstName} ${user.lastName}`,
     loggedIn: true,
   };
 }

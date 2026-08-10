@@ -1,0 +1,13 @@
+{
+  "jest": {
+    "projects": [
+      "<rootDir>/packages/client",
+      "<rootDir>/packages/server"
+    ],
+    "collectCoverageFrom": [
+      "packages/client/**/*.js",
+      "packages/server/**/*.js"
+    ],
+    "testEnvironment": "node"
+  }
+}

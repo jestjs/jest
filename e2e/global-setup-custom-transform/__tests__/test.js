@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,5 +21,5 @@ test('should exist setup file', () => {
 });
 
 test('should transform imported file', () => {
-  expect(greeting).toEqual('hello, world!');
+  expect(greeting).toBe('hello, world!');
 });

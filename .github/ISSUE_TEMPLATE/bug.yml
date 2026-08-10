@@ -41,7 +41,7 @@ body:
       label: Version
       description: |
         The version of Jest you are using.
-        Is it the [latest](https://github.com/facebook/jest/releases)? Test and see if the bug has already been fixed.
+        Is it the [latest](https://github.com/jestjs/jest/releases)? Test and see if the bug has already been fixed.
       placeholder: ex. 27.0.6
     validations:
       required: true

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -30,13 +30,13 @@ test('maps special values to valid options', () => {
 test('maps regular values to themselves', () => {
   const options = {} as Config.InitialOptions;
   const argv = {
-    collectCoverageOnlyFrom: ['a', 'b'],
+    collectCoverageFrom: '**/*.{js,jsx}',
     coverageDirectory: 'covDir',
     watchman: true,
   } as Config.Argv;
 
   expect(setFromArgv(options, argv)).toMatchObject({
-    collectCoverageOnlyFrom: ['a', 'b'],
+    collectCoverageFrom: '**/*.{js,jsx}',
     coverageDirectory: 'covDir',
     watchman: true,
   });

@@ -4,12 +4,12 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-regex-util"},
-    {"path": "../jest-serializer"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../jest-worker"},
-    {"path": "../test-utils"}
+    {"path": "../jest-worker"}
   ]
 }

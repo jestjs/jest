@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,6 @@ import {makeGlobalConfig} from '@jest/test-utils';
 import {formatStackTrace} from 'jest-message-util';
 import BufferedConsole from '../BufferedConsole';
 import getConsoleOutput from '../getConsoleOutput';
-import type {LogType} from '../types';
 
 jest.mock('jest-message-util', () => ({
   formatStackTrace: jest.fn(),
@@ -17,25 +16,26 @@ jest.mock('jest-message-util', () => ({
 
 describe('getConsoleOutput', () => {
   const globalConfig = makeGlobalConfig({noStackTrace: true});
-  formatStackTrace.mockImplementation(() => 'throw new Error("Whoops!");');
+  jest
+    .mocked(formatStackTrace)
+    .mockImplementation(() => 'throw new Error("Whoops!");');
 
-  it.each`
-    logType
-    ${'assert'}
-    ${'count'}
-    ${'debug'}
-    ${'dir'}
-    ${'dirxml'}
-    ${'error'}
-    ${'group'}
-    ${'groupCollapsed'}
-    ${'info'}
-    ${'log'}
-    ${'time'}
-    ${'warn'}
-  `('takes noStackTrace and pass it on for $logType', logType => {
+  it.each([
+    'assert',
+    'count',
+    'debug',
+    'dir',
+    'dirxml',
+    'error',
+    'group',
+    'groupCollapsed',
+    'info',
+    'log',
+    'time',
+    'warn',
+  ] as const)('takes noStackTrace and pass it on for %s', logType => {
     getConsoleOutput(
-      BufferedConsole.write([], logType as LogType, 'message', 4),
+      BufferedConsole.write([], logType, 'message', 4),
       {
         rootDir: 'root',
         testMatch: [],

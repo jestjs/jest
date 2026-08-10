@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,7 +31,7 @@ describe('promise it', () => {
     new Promise(resolve => {
       if (this.someContextValue !== 'value') {
         throw new Error(
-          'expected this.someContextValue to be set: ' + this.someContextValue,
+          `expected this.someContextValue to be set: ${this.someContextValue}`,
         );
       }
       resolve();
@@ -50,13 +50,13 @@ describe('promise it', () => {
   });
 
   it('fails if failed expectation with done', done => {
-    expect(true).toEqual(false);
+    expect(true).toBe(false);
     done();
   });
 
   it('fails if failed expectation with done - async', done => {
     setTimeout(() => {
-      expect(true).toEqual(false);
+      expect(true).toBe(false);
       done();
     }, 1);
   });

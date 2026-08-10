@@ -1,13 +1,13 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import os from 'os';
-import path from 'path';
+import * as os from 'os';
+import * as path from 'path';
 import {promises as fs} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type Runtime from '..';
@@ -19,7 +19,7 @@ let createRuntime: (
 ) => Promise<Runtime & {__mockRootPath: string}>;
 
 const getTmpDir = async () =>
-  await fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
+  fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
 
 describe('Runtime require.resolve', () => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('Runtime require.resolve', () => {
     await fs.writeFile(
       absoluteFilePath,
       'module.exports = require.resolve(__filename);',
-      'utf-8',
+      'utf8',
     );
 
     const runtime = await createRuntime(__filename);
@@ -66,10 +66,10 @@ describe('Runtime require.resolve', () => {
       `module.exports = require.resolve(${JSON.stringify(
         target,
       )}, {paths: []});`,
-      'utf-8',
+      'utf8',
     );
 
-    await fs.writeFile(target, `module.exports = {}`, 'utf-8');
+    await fs.writeFile(target, 'module.exports = {}', 'utf8');
 
     const runtime = await createRuntime(__filename);
     const resolved = runtime.requireModule(runtime.__mockRootPath, entrypoint);
@@ -94,7 +94,7 @@ describe('Runtime require.resolve', () => {
   describe('with the jest-resolve-outside-vm-option', () => {
     it('forwards to the real Node require in an internal context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireInternalModule(
+      const module = runtime.requireInternalModule<{required: unknown}>(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
@@ -105,7 +105,7 @@ describe('Runtime require.resolve', () => {
 
     it('ignores the option in an external context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireModule(
+      const module = runtime.requireModule<{required: {foo: string}}>(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );

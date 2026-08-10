@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,29 +9,28 @@ import {KEYS} from '../constants';
 import type {ScrollOptions} from '../types';
 
 export default class Prompt {
-  private _entering: boolean;
-  private _value: string;
+  // Copied from `enter` to satisfy TS
+  private _entering = true;
+  private _value = '';
   private _onChange: () => void;
   private _onSuccess: (value: string) => void;
   private _onCancel: (value: string) => void;
   private _offset: number;
   private _promptLength: number;
-  private _selection: string | null;
+  private _selection: string | null = null;
 
   constructor() {
-    // Copied from `enter` to satisfy TS
-    this._entering = true;
-    this._value = '';
-    this._selection = null;
     this._offset = -1;
     this._promptLength = 0;
 
+    /* eslint-disable @typescript-eslint/no-empty-function */
     this._onChange = () => {};
     this._onSuccess = () => {};
     this._onCancel = () => {};
+    /* eslint-enable */
   }
 
-  private _onResize = (): void => {
+  private readonly _onResize = (): void => {
     this._onChange();
   };
 
@@ -70,7 +69,7 @@ export default class Prompt {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._selection || this._value);
+        this._onSuccess(this._selection ?? this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:

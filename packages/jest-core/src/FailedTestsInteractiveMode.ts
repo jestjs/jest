@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';
@@ -16,7 +16,7 @@ type RunnerUpdateFunction = (failure?: AssertionLocation) => void;
 const {ARROW, CLEAR} = specialChars;
 
 function describeKey(key: string, description: string) {
-  return `${chalk.dim(ARROW + 'Press')} ${key} ${chalk.dim(description)}`;
+  return `${chalk.dim(`${ARROW}Press`)} ${key} ${chalk.dim(description)}`;
 }
 
 const TestProgressLabel = chalk.bold('Interactive Test Progress');
@@ -28,7 +28,7 @@ export default class FailedTestsInteractiveMode {
   private _testAssertions: Array<AssertionLocation> = [];
   private _updateTestRunnerConfig?: RunnerUpdateFunction;
 
-  constructor(private _pipe: NodeJS.WritableStream) {}
+  constructor(private readonly _pipe: NodeJS.WritableStream) {}
 
   isActive(): boolean {
     return this._isActive;
@@ -109,7 +109,7 @@ export default class FailedTestsInteractiveMode {
       describeKey('Enter', 'to return to watch mode.'),
     ];
 
-    this._pipe.write(messages.join('\n') + '\n');
+    this._pipe.write(`${messages.join('\n')}\n`);
   }
 
   private _drawUIDoneWithSkipped() {
@@ -119,7 +119,7 @@ export default class FailedTestsInteractiveMode {
 
     if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('test', this._skippedNum) + ' skipped',
+        `${pluralize('test', this._skippedNum)} skipped`,
       );
 
       stats = `${stats}, ${skippedText}`;
@@ -147,7 +147,7 @@ export default class FailedTestsInteractiveMode {
 
     if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('test', this._skippedNum) + ' skipped',
+        `${pluralize('test', this._skippedNum)} skipped`,
       );
 
       stats = `${stats}, ${skippedText}`;

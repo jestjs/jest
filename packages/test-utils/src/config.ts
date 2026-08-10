@@ -1,19 +1,21 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
+  ci: false,
   collectCoverage: false,
   collectCoverageFrom: [],
-  collectCoverageOnlyFrom: undefined,
+  collectTests: false,
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   coverageReporters: [],
@@ -40,25 +42,29 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   notifyMode: 'failure-change',
   onlyChanged: false,
   onlyFailures: false,
+  openHandlesTimeout: 1000,
   outputFile: undefined,
   passWithNoTests: false,
   projects: [],
   replname: undefined,
   reporters: [],
   rootDir: '/test_root_dir/',
+  runInBand: false,
   runTestsByPath: false,
+  seed: 1234,
   silent: false,
   skipFilter: false,
   snapshotFormat: {},
   testFailureExitCode: 1,
   testNamePattern: '',
-  testPathPattern: '',
+  testPathPatterns: new TestPathPatterns([]),
   testResultsProcessor: undefined,
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   updateSnapshot: 'none',
   useStderr: false,
   verbose: false,
+  waitForUnhandledRejections: false,
   watch: false,
   watchAll: false,
   watchPlugins: [],
@@ -70,29 +76,39 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   cache: false,
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
+  collectCoverage: false,
+  collectCoverageFrom: ['src', '!public'],
+  coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [],
+  coverageProvider: 'babel',
+  coverageReporters: [],
   cwd: '/test_root_dir/',
   detectLeaks: false,
   detectOpenHandles: false,
   displayName: undefined,
   errorOnDeprecated: false,
   extensionsToTreatAsEsm: [],
-  extraGlobals: [],
+  fakeTimers: {enableGlobally: false},
   filter: undefined,
   forceCoverageMatch: [],
   globalSetup: undefined,
   globalTeardown: undefined,
   globals: {},
   haste: {},
+  id: 'test_name',
   injectGlobals: true,
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
-  moduleLoader: '/test_module_loader_path',
   moduleNameMapper: [],
   modulePathIgnorePatterns: [],
   modulePaths: [],
-  name: 'test_name',
+  openHandlesTimeout: 1000,
   prettierPath: 'prettier',
+  reporters: [
+    'default',
+    'custom-reporter-1',
+    ['custom-reporter-2', {configValue: true}],
+  ],
   resetMocks: false,
   resetModules: false,
   resolver: undefined,
@@ -100,6 +116,9 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   rootDir: '/test_root_dir/',
   roots: [],
   runner: 'jest-runner',
+  runnerOptions: {},
+  runtime: '/test_module_loader_path',
+  sandboxInjectedGlobals: [],
   setupFiles: [],
   setupFilesAfterEnv: [],
   skipFilter: false,
@@ -115,11 +134,11 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-circus/runner',
-  testURL: 'http://localhost',
-  timers: 'real',
+  testTimeout: 5000,
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,
+  waitForUnhandledRejections: false,
   watchPathIgnorePatterns: [],
 };
 
@@ -127,12 +146,14 @@ export const makeGlobalConfig = (
   overrides: Partial<Config.GlobalConfig> = {},
 ): Config.GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  Object.keys(DEFAULT_GLOBAL_CONFIG).forEach(key => overridesKeys.delete(key));
+  for (const key of Object.keys(DEFAULT_GLOBAL_CONFIG)) {
+    overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of GlobalConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 
@@ -143,12 +164,14 @@ export const makeProjectConfig = (
   overrides: Partial<Config.ProjectConfig> = {},
 ): Config.ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
-  Object.keys(DEFAULT_PROJECT_CONFIG).forEach(key => overridesKeys.delete(key));
+  for (const key of Object.keys(DEFAULT_PROJECT_CONFIG)) {
+    overridesKeys.delete(key);
+  }
 
   if (overridesKeys.size > 0) {
     throw new Error(`
       Properties that are not part of ProjectConfig type were passed:
-      ${JSON.stringify(Array.from(overridesKeys))}
+      ${JSON.stringify([...overridesKeys])}
     `);
   }
 

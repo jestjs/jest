@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import semver = require('semver');
-import {cleanup, run, testIfHg, writeFiles} from '../Utils';
+import * as semver from 'semver';
+import {cleanup, run, testIfHg, testIfSl, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
@@ -46,7 +46,7 @@ afterEach(() => cleanup(DIR));
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -69,7 +69,7 @@ test('run for "onlyChanged" and "changedSince"', () => {
 test('run only changed files', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -90,10 +90,10 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR, ['-o']));
@@ -105,7 +105,7 @@ test('run only changed files', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(DIR, {
@@ -246,10 +246,10 @@ test('collect test coverage when using onlyChanged', () => {
   expect(exitCode).toBe(0);
 });
 
-test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
+test('onlyChanged in config is overwritten by --all or testPathPatterns', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {onlyChanged: true}}),
   });
@@ -273,10 +273,10 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR));
@@ -288,7 +288,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR));
+  ({stdout} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
 
   ({stderr, stdout} = runJest(DIR, ['file2.test.js']));
@@ -312,16 +312,9 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
 });
 
 testIfHg('gets changed files for hg', async () => {
-  if (process.env.CI) {
-    // Circle and Travis have very old version of hg (v2, and current
-    // version is v4.2) and its API changed since then and not compatible
-    // any more. Changing the SCM version on CIs is not trivial, so we'll just
-    // skip this test and run it only locally.
-    return;
-  }
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -330,33 +323,75 @@ testIfHg('gets changed files for hg', async () => {
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test"`, DIR);
 
-  let stdout;
   let stderr;
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  const {stdout} = runJest(DIR, ['-o']);
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test2"`, DIR);
 
   writeFiles(DIR, {
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
-  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  ({stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+});
+
+const SL = 'sl --config ui.username=jest_test';
+testIfSl('gets changed files for sl', async () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
+    'file1.js': 'module.exports = {}',
+    'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+  });
+
+  run(`${SL} init --git`, DIR);
+  run(`${SL} add .`, DIR);
+  run(`${SL} commit -m "test"`, DIR);
+
+  let stderr;
+
+  const {stdout} = runJest(DIR, ['-o']);
+  expect(stdout).toMatch('No tests found related to files changed');
+
+  writeFiles(DIR, {
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    'file2.js': 'module.exports = {}',
+    'file3.js': "require('./file2')",
+  });
+
+  ({stderr} = runJest(DIR, ['-o']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+
+  run(`${SL} add .`, DIR);
+  run(`${SL} commit -m "test2"`, DIR);
+
+  writeFiles(DIR, {
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
+  });
+
+  ({stderr} = runJest(DIR, ['-o']));
+  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+
+  ({stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
@@ -372,7 +407,7 @@ test('path on Windows is case-insensitive', () => {
 
   writeFiles(modifiedDIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -385,10 +420,10 @@ test('path on Windows is case-insensitive', () => {
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   const {stderr} = runJest(incorrectModifiedDIR, ['-o']);

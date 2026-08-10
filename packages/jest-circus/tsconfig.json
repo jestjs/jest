@@ -4,10 +4,12 @@
     "outDir": "build",
     "rootDir": "src"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__mocks__/**/*", "./**/__tests__/**/*"],
   "references": [
-    {"path": "../expect"},
     {"path": "../jest-each"},
     {"path": "../jest-environment"},
+    {"path": "../jest-expect"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
     {"path": "../jest-runtime"},
@@ -15,7 +17,6 @@
     {"path": "../jest-test-result"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../pretty-format"},
-    {"path": "../test-utils"}
+    {"path": "../pretty-format"}
   ]
 }

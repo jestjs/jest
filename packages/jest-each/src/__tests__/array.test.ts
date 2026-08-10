@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@ import each from '../';
 const noop = () => {};
 const expectFunction = expect.any(Function);
 
-const get = (object, lensPath) =>
+const get = <T>(object: T, lensPath: Array<string>): T =>
   lensPath.reduce((acc, key) => acc[key], object);
 
 const getGlobalTestMocks = () => {
@@ -39,7 +39,7 @@ const getGlobalTestMocks = () => {
 };
 
 describe('jest-each', () => {
-  [
+  for (const keyPath of [
     ['test'],
     ['test', 'concurrent'],
     ['test', 'concurrent', 'only'],
@@ -51,7 +51,7 @@ describe('jest-each', () => {
     ['describe'],
     ['fdescribe'],
     ['describe', 'only'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('throws an error when not called with an array', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -126,8 +126,8 @@ describe('jest-each', () => {
             {foo: 'bar'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
           [
             'world',
@@ -138,13 +138,13 @@ describe('jest-each', () => {
             {baz: 'qux'},
             () => {},
             [],
-            Infinity,
-            NaN,
+            Number.POSITIVE_INFINITY,
+            Number.NaN,
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
         testFunction(
-          'expected string: %% %%s %s %d %s %s %d %j %s %j %d %d %#',
+          'expected string: %% %%s %s %d %s %s %d %j %s %j %d %d %# %$',
           noop,
         );
 
@@ -153,14 +153,14 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: % %s hello 1 null undefined 1.2 ${JSON.stringify({
             foo: 'bar',
-          })} () => {} [] Infinity NaN 0`,
+          })} () => {} [] Infinity NaN 0 1`,
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: % %s world 1 null undefined 1.2 ${JSON.stringify({
             baz: 'qux',
-          })} () => {} [] Infinity NaN 1`,
+          })} () => {} [] Infinity NaN 1 2`,
           expectFunction,
           undefined,
         );
@@ -283,12 +283,12 @@ describe('jest-each', () => {
         const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
 
         const testFunction = get(eachObject, keyPath);
-        testFunction('some test', noop, 10000);
+        testFunction('some test', noop, 10_000);
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledWith(
           'some test',
           expect.any(Function),
-          10000,
+          10_000,
         );
       });
 
@@ -304,8 +304,8 @@ describe('jest-each', () => {
             f: {key: 'foo'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
           {
             a: 'world',
@@ -316,8 +316,8 @@ describe('jest-each', () => {
             f: {key: 'bar'},
             g: () => {},
             h: [],
-            i: Infinity,
-            j: NaN,
+            i: Number.POSITIVE_INFINITY,
+            j: Number.NaN,
           },
         ]);
         const testFunction = get(eachObject, keyPath);
@@ -368,8 +368,54 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title containing param values when using %#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: %#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('calls global with title containing param values when using $#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: $#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
     });
-  });
+  }
 
   describe('done callback', () => {
     test.each([
@@ -404,15 +450,16 @@ describe('jest-each', () => {
         const testFunction = get(eachObject, keyPath);
         testFunction('expected string', function (hello, done) {
           expect(hello).toBe('hello');
-          expect(arguments.length).toBe(1);
-          expect(done).toBe(undefined);
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
+          expect(done).toBeUndefined();
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },
     );
   });
 
-  [
+  for (const keyPath of [
     ['xtest'],
     ['test', 'skip'],
     ['test', 'concurrent', 'skip'],
@@ -420,7 +467,7 @@ describe('jest-each', () => {
     ['it', 'skip'],
     ['xdescribe'],
     ['describe', 'skip'],
-  ].forEach(keyPath => {
+  ]) {
     describe(`.${keyPath.join('.')}`, () => {
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -504,5 +551,5 @@ describe('jest-each', () => {
         );
       });
     });
-  });
+  }
 });

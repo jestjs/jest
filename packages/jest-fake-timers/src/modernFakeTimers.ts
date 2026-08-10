@@ -1,37 +1,38 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
 import {
-  FakeTimerWithContext,
-  InstalledClock,
+  type FakeTimers as FakeTimerWithContext,
+  type FakeMethod as FakeableAPI,
+  type Clock as InstalledClock,
+  type Config as SinonFakeTimersConfig,
+  type TemporalDuration,
+  type TemporalTimelike,
   withGlobal,
 } from '@sinonjs/fake-timers';
-import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {Config} from '@jest/types';
+import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _config: StackTraceConfig;
+  private readonly _config: Config.ProjectConfig;
   private _fakingTime: boolean;
-  private _global: typeof globalThis;
-  private _fakeTimers: FakeTimerWithContext;
-  private _maxLoops: number;
+  private readonly _global: typeof globalThis;
+  private readonly _fakeTimers: FakeTimerWithContext;
 
   constructor({
     global,
     config,
-    maxLoops,
   }: {
     global: typeof globalThis;
-    config: StackTraceConfig;
-    maxLoops?: number;
+    config: Config.ProjectConfig;
   }) {
     this._global = global;
     this._config = config;
-    this._maxLoops = maxLoops || 100000;
 
     this._fakingTime = false;
     this._fakeTimers = withGlobal(global);
@@ -53,9 +54,21 @@ export default class FakeTimers {
     }
   }
 
+  async runAllTimersAsync(): Promise<void> {
+    if (this._checkFakeTimers()) {
+      await this._clock.runAllAsync();
+    }
+  }
+
   runOnlyPendingTimers(): void {
     if (this._checkFakeTimers()) {
       this._clock.runToLast();
+    }
+  }
+
+  async runOnlyPendingTimersAsync(): Promise<void> {
+    if (this._checkFakeTimers()) {
+      await this._clock.runToLastAsync();
     }
   }
 
@@ -73,15 +86,52 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number): void {
+  async advanceTimersToNextTimerAsync(steps = 1): Promise<void> {
     if (this._checkFakeTimers()) {
-      this._clock.tick(msToRun);
+      for (let i = steps; i > 0; i--) {
+        await this._clock.nextAsync();
+        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
+        await this._clock.tickAsync(0);
+
+        if (this._clock.countTimers() === 0) {
+          break;
+        }
+      }
+    }
+  }
+
+  advanceTimersByTime(msToRun: number | TemporalDuration): void {
+    if (this._checkFakeTimers()) {
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      this._clock.tick(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
+    }
+  }
+
+  async advanceTimersByTimeAsync(
+    msToRun: number | TemporalDuration,
+  ): Promise<void> {
+    if (this._checkFakeTimers()) {
+      // TODO: pass msToRun directly once https://github.com/sinonjs/fake-timers/pull/574 is published
+      await this._clock.tickAsync(
+        typeof msToRun === 'number'
+          ? msToRun
+          : msToRun.total({unit: 'millisecond'}),
+      );
+    }
+  }
+
+  advanceTimersToNextFrame(): void {
+    if (this._checkFakeTimers()) {
+      this._clock.runToFrame();
     }
   }
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error
       this._clock.runMicrotasks();
     }
   }
@@ -93,20 +143,16 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(): void {
-    if (!this._fakingTime) {
-      const toFake = Object.keys(this._fakeTimers.timers) as Array<
-        keyof FakeTimerWithContext['timers']
-      >;
-
-      this._clock = this._fakeTimers.install({
-        loopLimit: this._maxLoops,
-        now: Date.now(),
-        toFake,
-      });
-
-      this._fakingTime = true;
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
+    if (this._fakingTime) {
+      this._clock.uninstall();
     }
+
+    this._clock = this._fakeTimers.install(
+      this._toSinonFakeTimersConfig(fakeTimersConfig),
+    );
+
+    this._fakingTime = true;
   }
 
   reset(): void {
@@ -117,13 +163,29 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number | Date): void {
+  setSystemTime(now?: number | Date | TemporalTimelike): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(now);
     }
   }
 
+  setTimerTickMode(tickModeConfig: {
+    mode: 'interval' | 'manual' | 'nextAsync';
+    delta?: number;
+  }): void {
+    if (this._checkFakeTimers()) {
+      this._clock.setTickMode(tickModeConfig);
+    }
+  }
+
   getRealSystemTime(): number {
+    return Date.now();
+  }
+
+  now(): number {
+    if (this._fakingTime) {
+      return this._clock.now;
+    }
     return Date.now();
   }
 
@@ -138,16 +200,50 @@ export default class FakeTimers {
   private _checkFakeTimers() {
     if (!this._fakingTime) {
       this._global.console.warn(
-        'A function to advance timers was called but the timers API is not ' +
-          'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
-          'enable fake timers globally by setting `"timers": "fake"` in the ' +
-          'configuration file\nStack Trace:\n' +
-          formatStackTrace(new Error().stack!, this._config, {
-            noStackTrace: false,
-          }),
+        'A function to advance timers was called but the timers APIs are not replaced ' +
+          'with fake timers. Call `jest.useFakeTimers()` in this test file or enable ' +
+          "fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} " +
+          `in Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            // eslint-disable-next-line unicorn/error-message
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
       );
     }
 
     return this._fakingTime;
+  }
+
+  private _toSinonFakeTimersConfig(
+    fakeTimersConfig: Config.FakeTimersConfig = {},
+  ): SinonFakeTimersConfig {
+    fakeTimersConfig = {
+      ...this._config.fakeTimers,
+      ...fakeTimersConfig,
+    } as Config.FakeTimersConfig;
+
+    const advanceTimeDelta =
+      typeof fakeTimersConfig.advanceTimers === 'number'
+        ? fakeTimersConfig.advanceTimers
+        : undefined;
+
+    const toFake = new Set(
+      Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
+    );
+
+    if (fakeTimersConfig.doNotFake)
+      for (const nameOfFakeableAPI of fakeTimersConfig.doNotFake) {
+        toFake.delete(nameOfFakeableAPI);
+      }
+
+    return {
+      advanceTimeDelta,
+      loopLimit: fakeTimersConfig.timerLimit || 100_000,
+      now: fakeTimersConfig.now ?? Date.now(),
+      shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
+      shouldClearNativeTimers: true,
+      toFake: [...toFake],
+    };
   }
 }

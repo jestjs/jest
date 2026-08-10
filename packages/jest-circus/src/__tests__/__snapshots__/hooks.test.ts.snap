@@ -1,7 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`beforeAll is exectued correctly 1`] = `
-start_describe_definition: describe 1
+exports[`beforeAll is executed correctly 1`] = `
+"start_describe_definition: describe 1
 add_hook: beforeAll
 add_test: test 1
 start_describe_definition: 2nd level describe
@@ -17,6 +17,7 @@ hook_start: beforeAll
 > beforeAll 1
 hook_success: beforeAll
 test_start: test 1
+test_started: test 1
 test_fn_start: test 1
 > test 1
 test_fn_success: test 1
@@ -26,11 +27,13 @@ hook_start: beforeAll
 > beforeAll 2
 hook_success: beforeAll
 test_start: test 2
+test_started: test 2
 test_fn_start: test 2
 > test 2
 test_fn_success: test 2
 test_done: test 2
 test_start: test 3
+test_started: test 3
 test_fn_start: test 3
 > test 3
 test_fn_success: test 3
@@ -40,11 +43,11 @@ run_describe_finish: describe 1
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`beforeEach is executed before each test in current/child describe blocks 1`] = `
-start_describe_definition: describe
+"start_describe_definition: describe
 add_hook: beforeEach
 add_test: one
 add_test: two
@@ -65,6 +68,7 @@ run_start
 run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe
 test_start: one
+test_started: one
 hook_start: beforeEach
 > describe beforeEach
 hook_success: beforeEach
@@ -72,6 +76,7 @@ test_fn_start: one
 test_fn_success: one
 test_done: one
 test_start: two
+test_started: two
 hook_start: beforeEach
 > describe beforeEach
 hook_success: beforeEach
@@ -80,6 +85,7 @@ test_fn_success: two
 test_done: two
 run_describe_start: 2nd level describe
 test_start: 2nd level test
+test_started: 2nd level test
 hook_start: beforeEach
 > describe beforeEach
 hook_success: beforeEach
@@ -91,6 +97,7 @@ test_fn_success: 2nd level test
 test_done: 2nd level test
 run_describe_start: 3rd level describe
 test_start: 3rd level test
+test_started: 3rd level test
 hook_start: beforeEach
 > describe beforeEach
 hook_success: beforeEach
@@ -101,6 +108,7 @@ test_fn_start: 3rd level test
 test_fn_success: 3rd level test
 test_done: 3rd level test
 test_start: 3rd level test#2
+test_started: 3rd level test#2
 hook_start: beforeEach
 > describe beforeEach
 hook_success: beforeEach
@@ -115,6 +123,7 @@ run_describe_finish: 2nd level describe
 run_describe_finish: describe
 run_describe_start: 2nd describe
 test_start: 2nd describe test
+test_started: 2nd describe test
 hook_start: beforeEach
 > 2nd describe beforeEach that throws
 hook_failure: beforeEach
@@ -124,11 +133,11 @@ run_describe_finish: 2nd describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;
 
 exports[`multiple before each hooks in one describe are executed in the right order 1`] = `
-start_describe_definition: describe 1
+"start_describe_definition: describe 1
 add_hook: beforeEach
 add_hook: beforeEach
 start_describe_definition: 2nd level describe
@@ -140,6 +149,7 @@ run_describe_start: ROOT_DESCRIBE_BLOCK
 run_describe_start: describe 1
 run_describe_start: 2nd level describe
 test_start: test
+test_started: test
 hook_start: beforeEach
 before each 1
 hook_success: beforeEach
@@ -154,5 +164,5 @@ run_describe_finish: describe 1
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
 
-unhandledErrors: 0
+unhandledErrors: 0"
 `;

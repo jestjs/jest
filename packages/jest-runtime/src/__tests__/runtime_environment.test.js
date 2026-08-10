@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,9 +21,9 @@ describe('Runtime', () => {
       let hasThrown = false;
       try {
         runtime.requireModule(runtime.__mockRootPath, './throwing.js');
-      } catch (err) {
+      } catch (error) {
         hasThrown = true;
-        expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
+        expect(error.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
       }
       expect(hasThrown).toBe(true);
     });
@@ -38,14 +38,14 @@ describe('Runtime', () => {
 
       try {
         sum();
-      } catch (err) {
+      } catch (error) {
         hasThrown = true;
         if (process.platform === 'win32') {
-          expect(err.stack).toMatch(
+          expect(error.stack).toMatch(
             /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing_fn\.js/,
           );
         } else {
-          expect(err.stack).toMatch(
+          expect(error.stack).toMatch(
             /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing_fn\.js/,
           );
         }

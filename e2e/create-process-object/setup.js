@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,5 +10,5 @@
 // 'domain' has to be required before Jest performs the copy, i.e. in the global-setup phase represented by this file.
 
 module.exports = () => {
-  require('domain');
+  require('node:domain');
 };

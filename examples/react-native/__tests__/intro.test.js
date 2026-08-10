@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 /**
  * Sample React Native Snapshot Test
@@ -9,7 +9,7 @@ import {ActivityIndicator, FlatList, Text, TextInput} from 'react-native';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
 
-jest.setTimeout(15000);
+jest.setTimeout(15_000);
 
 it('renders correctly', () => {
   const tree = renderer.create(<Intro />).toJSON();

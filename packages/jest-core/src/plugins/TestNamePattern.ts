@@ -1,16 +1,17 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {ReadStream, WriteStream} from 'node:tty';
 import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
   Prompt,
-  UpdateConfigCallback,
-  UsageData,
+  type UpdateConfigCallback,
+  type UsageData,
 } from 'jest-watcher';
 import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';
@@ -19,28 +20,28 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
+  constructor(options: {stdin: ReadStream; stdout: WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;
   }
 
-  getUsageInfo(): UsageData {
+  override getUsageInfo(): UsageData {
     return {
       key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     this._prompt.put(key);
   }
 
-  run(
+  override run(
     globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       const testNamePatternPrompt = new TestNamePatternPrompt(
         this._stdout,
         this._prompt,
@@ -49,9 +50,9 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
       testNamePatternPrompt.run(
         (value: string) => {
           updateConfigAndRun({mode: 'watch', testNamePattern: value});
-          res();
+          resolve();
         },
-        rej,
+        reject,
         {
           header: activeFilters(globalConfig),
         },

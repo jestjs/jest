@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,8 +15,9 @@ class CancelError extends Error {
 export default class PCancelable<T> implements PromiseLike<T> {
   private _pending = true;
   private _canceled = false;
-  private _promise: Promise<T>;
+  private readonly _promise: Promise<T>;
   private _cancel?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _reject: (reason?: unknown) => void = () => {};
 
   constructor(
@@ -45,11 +46,10 @@ export default class PCancelable<T> implements PromiseLike<T> {
     });
   }
 
+  // eslint-disable-next-line unicorn/no-thenable
   then<TResult1 = T, TResult2 = never>(
     onFulfilled?:
-      | ((value: T) => TResult1 | PromiseLike<TResult1>)
-      | undefined
-      | null,
+      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
     onRejected?:
       | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
       | undefined
@@ -60,9 +60,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
 
   catch<TResult>(
     onRejected?:
-      | ((reason: unknown) => TResult | PromiseLike<TResult>)
-      | undefined
-      | null,
+      ((reason: unknown) => TResult | PromiseLike<TResult>) | undefined | null,
   ): Promise<T | TResult> {
     return this._promise.catch(onRejected);
   }
@@ -75,8 +73,8 @@ export default class PCancelable<T> implements PromiseLike<T> {
     if (typeof this._cancel === 'function') {
       try {
         this._cancel();
-      } catch (err: unknown) {
-        this._reject(err);
+      } catch (error) {
+        this._reject(error);
       }
     }
 

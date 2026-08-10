@@ -1,16 +1,16 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
-  MatcherHintOptions,
+  type MatcherHintOptions,
   diff,
   ensureNoExpected,
   ensureNumbers,
@@ -23,7 +23,7 @@ import {
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('stringify()', () => {
-  [
+  for (const [v, s] of [
     [[], '[]'],
     [{}, '{}'],
     [1, '1'],
@@ -33,17 +33,22 @@ describe('stringify()', () => {
     [undefined, 'undefined'],
     ['abc', '"abc"'],
     [Symbol.for('abc'), 'Symbol(abc)'],
+    /* eslint-disable unicorn/prefer-number-properties */
     [NaN, 'NaN'],
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
+    /* eslint-enable */
+    [Number.NaN, 'NaN'],
+    [Number.POSITIVE_INFINITY, 'Infinity'],
+    [Number.NEGATIVE_INFINITY, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
     [BigInt(1), '1n'],
     [BigInt(0), '0n'],
-  ].forEach(([v, s]) => {
+  ]) {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
     });
-  });
+  }
 
   test('circular references', () => {
     const a: any = {};
@@ -86,7 +91,7 @@ describe('stringify()', () => {
   test('reduces maxDepth if stringifying very large objects', () => {
     const big: any = {a: 1, b: {}};
     const small: any = {a: 1, b: {}};
-    for (let i = 0; i < 10000; i += 1) {
+    for (let i = 0; i < 10_000; i += 1) {
       big.b[i] = 'test';
     }
 
@@ -95,6 +100,23 @@ describe('stringify()', () => {
     }
 
     expect(stringify(big)).toBe(prettyFormat(big, {maxDepth: 1, min: true}));
+    expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
+  });
+
+  test('reduces maxWidth if stringifying very large arrays', () => {
+    const big: any = [];
+    const small: any = [];
+    const testString = Array.from({length: 1000}).join('x');
+
+    for (let i = 0; i < 100; i += 1) {
+      big[i] = testString;
+    }
+
+    for (let i = 0; i < 3; i += 1) {
+      small[i] = testString;
+    }
+
+    expect(stringify(big)).toBe(prettyFormat(big, {maxWidth: 5, min: true}));
     expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
   });
 });
@@ -214,7 +236,7 @@ jest.mock('jest-diff', () => ({
 }));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
-    [
+    for (const [actual, expected] of [
       ['a', 'b'],
       ['a', {}],
       ['a', null],
@@ -223,28 +245,27 @@ describe('diff', () => {
       ['a', true],
       [1, true],
       [BigInt(1), true],
-    ].forEach(([actual, expected]) =>
-      expect(diff(actual, expected)).toBe('diff output'),
-    );
+    ])
+      expect(diff(actual, expected)).toBe('diff output');
   });
 
   test('two booleans', () => {
-    expect(diff(false, true)).toBe(null);
+    expect(diff(false, true)).toBeNull();
   });
 
   test('two numbers', () => {
-    expect(diff(1, 2)).toBe(null);
+    expect(diff(1, 2)).toBeNull();
   });
 
   test('two bigints', () => {
-    expect(diff(BigInt(1), BigInt(2))).toBe(null);
+    expect(diff(BigInt(1), BigInt(2))).toBeNull();
   });
 });
 
 describe('pluralize()', () => {
-  test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
-  test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
-  test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));
+  test('one', () => expect(pluralize('apple', 1)).toBe('one apple'));
+  test('two', () => expect(pluralize('apple', 2)).toBe('two apples'));
+  test('20', () => expect(pluralize('apple', 20)).toBe('20 apples'));
 });
 
 describe('getLabelPrinter', () => {
@@ -293,7 +314,7 @@ describe('getLabelPrinter', () => {
     expect(printLabel(stringConsistent)).toBe('Expected:       ');
     expect(() => {
       printLabel(stringInconsistentLonger);
-    }).toThrow();
+    }).toThrow('Invalid count value');
   });
 });
 
@@ -340,5 +361,39 @@ describe('matcherHint', () => {
 
     expect(received).not.toMatch(substringNegative);
     expect(received).toMatch(substringPositive);
+  });
+});
+
+describe('printDiffOrStringify', () => {
+  test('expected asymmetric matchers should be diffable', () => {
+    jest.dontMock('jest-diff');
+    jest.resetModules();
+    const {printDiffOrStringify} = require('../');
+
+    const expected = expect.objectContaining({
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 2,
+        },
+      ],
+      foo: 'bar',
+    });
+    const received = {
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 1,
+        },
+      ],
+      foo: 'bar',
+    };
+    expect(
+      printDiffOrStringify(expected, received, 'Expected', 'Received', false),
+    ).toMatchSnapshot();
   });
 });

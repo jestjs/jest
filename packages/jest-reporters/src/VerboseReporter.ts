@@ -1,28 +1,29 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import type {WriteStream} from 'node:tty';
+import chalk from 'chalk';
 import type {
   AggregatedResult,
   AssertionResult,
   Suite,
+  Test,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime, specialChars} from 'jest-util';
 import DefaultReporter from './DefaultReporter';
-import type {Test} from './types';
 
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
-  protected _globalConfig: Config.GlobalConfig;
+  protected override _globalConfig: Config.GlobalConfig;
 
-  static readonly filename = __filename;
+  static override readonly filename = __filename;
 
   constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
@@ -30,9 +31,9 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   // Verbose mode is for debugging. Buffering of output is undesirable.
-  // See https://github.com/facebook/jest/issues/8208
-  protected __wrapStdio(
-    stream: NodeJS.WritableStream | NodeJS.WriteStream,
+  // See https://github.com/jestjs/jest/issues/8208
+  protected override __wrapStdio(
+    stream: NodeJS.WritableStream | WriteStream,
   ): void {
     const write = stream.write.bind(stream);
 
@@ -52,7 +53,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   static groupTestsBySuites(testResults: Array<AssertionResult>): Suite {
     const root: Suite = {suites: [], tests: [], title: ''};
-    testResults.forEach(testResult => {
+    for (const testResult of testResults) {
       let targetSuite = root;
 
       // Find the target suite for this test,
@@ -67,11 +68,11 @@ export default class VerboseReporter extends DefaultReporter {
       }
 
       targetSuite.tests.push(testResult);
-    });
+    }
     return root;
   }
 
-  onTestResult(
+  override onTestResult(
     test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
@@ -83,7 +84,8 @@ export default class VerboseReporter extends DefaultReporter {
         test.context.config,
         result,
       );
-      if (!result.testExecError && !result.skipped) {
+      const verbose = test.context.config.verbose ?? this._globalConfig.verbose;
+      if (verbose && !result.testExecError && !result.skipped) {
         this._logTestResults(result.testResults);
       }
       this.printTestFileFailureMessage(
@@ -107,7 +109,9 @@ export default class VerboseReporter extends DefaultReporter {
 
     this._logTests(suite.tests, indentLevel + 1);
 
-    suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
+    for (const innerSuite of suite.suites) {
+      this._logSuite(innerSuite, indentLevel + 1);
+    }
   }
 
   private _getIcon(status: string) {
@@ -127,12 +131,12 @@ export default class VerboseReporter extends DefaultReporter {
     const time = test.duration
       ? ` (${formatTime(Math.round(test.duration))})`
       : '';
-    this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
+    this._logLine(`${status} ${chalk.dim(test.title + time)}`, indentLevel);
   }
 
   private _logTests(tests: Array<AssertionResult>, indentLevel: number) {
     if (this._globalConfig.expand) {
-      tests.forEach(test => this._logTest(test, indentLevel));
+      for (const test of tests) this._logTest(test, indentLevel);
     } else {
       const summedTests = tests.reduce<{
         pending: Array<AssertionResult>;
@@ -152,12 +156,13 @@ export default class VerboseReporter extends DefaultReporter {
         {pending: [], todo: []},
       );
 
+      const logTodoOrPendingTest = this._logTodoOrPendingTest(indentLevel);
       if (summedTests.pending.length > 0) {
-        summedTests.pending.forEach(this._logTodoOrPendingTest(indentLevel));
+        for (const test of summedTests.pending) logTodoOrPendingTest(test);
       }
 
       if (summedTests.todo.length > 0) {
-        summedTests.todo.forEach(this._logTodoOrPendingTest(indentLevel));
+        for (const test of summedTests.todo) logTodoOrPendingTest(test);
       }
     }
   }

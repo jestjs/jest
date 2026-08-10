@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -24,7 +24,7 @@ function validationConditionSingle(
 export function getValues<T = unknown>(validOption: T): Array<T> {
   if (
     Array.isArray(validOption) &&
-    // @ts-expect-error
+    // @ts-expect-error: no index signature
     validOption[MULTIPLE_VALID_OPTIONS_SYMBOL]
   ) {
     return validOption;
@@ -42,8 +42,8 @@ export function validationCondition(
 export function multipleValidOptions<T extends Array<unknown>>(
   ...args: T
 ): T[number] {
-  const options = <T>[...args];
-  // @ts-expect-error
+  const options = [...args] as T;
+  // @ts-expect-error: no index signature
   options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
 
   return options;

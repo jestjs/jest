@@ -213,7 +213,7 @@ final class JestUnitTestEngine extends ArcanistUnitTestEngine {
     if (count($paths) < self::TOO_MANY_FILES_TO_COVER) {
       $options[] = '--findRelatedTests ' . join(' ', $paths);
       $options[] = '--coverage';
-      $options[] = '--collectCoverageOnlyFrom '. join(' ', $paths);
+      $options[] = '--collectCoverageFrom '. join(' ', $paths);
     }
 
     return $options;

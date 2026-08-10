@@ -1,10 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Process from 'process';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
@@ -22,7 +23,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
 
   function deletePropertyWin32(_target: unknown, key: unknown) {
     for (const name in real) {
-      if (real.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(real, name)) {
         if (typeof key === 'string') {
           if (name.toLowerCase() === key.toLowerCase()) {
             delete real[name];
@@ -64,7 +65,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     get: isWin32 ? getPropertyWin32 : getProperty,
 
     set(_target, key, value) {
-      const strValue = '' + value;
+      const strValue = `${value}`;
 
       if (typeof key === 'string') {
         lookup[key.toLowerCase()] = strValue;
@@ -79,7 +80,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function (): NodeJS.Process {
+export default function createProcessObject(): typeof Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
@@ -89,14 +90,12 @@ export default function (): NodeJS.Process {
   try {
     // This fails on Node 12, but it's already set to 'process'
     newProcess[Symbol.toStringTag] = 'process';
-  } catch (e: any) {
+  } catch (error: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      e.message =
-        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n' +
-        e.message;
+      error.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/jestjs/jest\n\n${error.message}`;
 
-      throw e;
+      throw error;
     }
   }
 
@@ -117,6 +116,33 @@ export default function (): NodeJS.Process {
       return process.domain;
     },
   });
+
+  // Ensure feature flags reflect Jest's capabilities inside the VM.
+  // Node may expose `process.features.require_module` which signals that
+  // requiring ESM via `require()` is supported. Jest's runtime does not
+  // support requiring ESM modules through CJS `require`, so we override
+  // the flag to false to allow defensive code paths to behave correctly.
+  //
+  const features: unknown = (newProcess as any).features;
+  if (features && typeof features === 'object') {
+    // Only override if the host process exposes the flag
+    if ('require_module' in (features as Record<string, unknown>)) {
+      try {
+        Object.defineProperty(features as object, 'require_module', {
+          configurable: true,
+          enumerable: true,
+          get: () => false,
+        });
+      } catch {
+        // If redefining fails for any reason, fall back to direct assignment
+        try {
+          (features as any).require_module = false;
+        } catch {
+          // ignore if we cannot override
+        }
+      }
+    }
+  }
 
   return newProcess;
 }

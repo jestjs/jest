@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import _unusedRequireOverridingPromise from '..';
 
 describe('parent', () => {
   beforeEach(() => {
-    console.log('Promise is: ' + Promise.toString());
+    console.log(`Promise is: ${Promise.toString()}`);
   });
 
   describe('child', () => {
@@ -21,10 +21,17 @@ describe('parent', () => {
         try {
           expect(() => new Promise()).toThrow('Booo');
           done();
-        } catch (e) {
-          done.fail(e);
+        } catch (error) {
+          done.fail(error);
         }
       }, 10);
     });
+  });
+
+  it('can override atob and btoa', () => {
+    globalThis.atob = () => 'hello';
+    globalThis.btoa = () => 'there';
+
+    expect(`${atob()} ${btoa()}`).toBe('hello there');
   });
 });

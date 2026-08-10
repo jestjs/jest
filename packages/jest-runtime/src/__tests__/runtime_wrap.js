@@ -1,12 +1,11 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 let createRuntime;
 
 describe('Runtime', () => {
@@ -14,21 +13,48 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  describe('wrapCodeInModuleWrapper', () => {
-    it('generates the correct args for the module wrapper', async () => {
+  describe('constructInjectedModuleParameters', () => {
+    it('generates the correct args', async () => {
       const runtime = await createRuntime(__filename);
 
-      expect(
-        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
-      ).toMatchSnapshot();
+      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+        'module',
+        'exports',
+        'require',
+        '__dirname',
+        '__filename',
+        'jest',
+      ]);
     });
 
     it('injects "extra globals"', async () => {
-      const runtime = await createRuntime(__filename, {extraGlobals: ['Math']});
+      const runtime = await createRuntime(__filename, {
+        sandboxInjectedGlobals: ['Math'],
+      });
 
-      expect(
-        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
-      ).toMatchSnapshot();
+      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+        'module',
+        'exports',
+        'require',
+        '__dirname',
+        '__filename',
+        'jest',
+        'Math',
+      ]);
+    });
+
+    it('avoid injecting `jest` if `injectGlobals = false`', async () => {
+      const runtime = await createRuntime(__filename, {
+        injectGlobals: false,
+      });
+
+      expect(runtime.executor.constructInjectedModuleParameters()).toEqual([
+        'module',
+        'exports',
+        'require',
+        '__dirname',
+        '__filename',
+      ]);
     });
   });
 });

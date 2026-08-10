@@ -5,57 +5,80 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - '**'
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
 
 jobs:
-  cleanup-runs:
+  prepare-yarn-cache-ubuntu:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: ubuntu-latest
+  prepare-yarn-cache-macos:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: macos-latest
+  prepare-yarn-cache-windows:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: windows-latest
+
+  ts-compatibility:
+    name: TypeScript Compatibility
     runs-on: ubuntu-latest
-    steps:
-      - uses: rokroskar/workflow-run-cleanup-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
-
-  prepare-yarn-cache:
-    name: Prepare yarn cache
-    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 14.x
-          cache: yarn
-
-      - name: Validate cache
-        env:
-          # Use PnP and disable postinstall scripts as this just needs to
-          # populate the cache for the other jobs
-          YARN_NODE_LINKER: pnp
-          YARN_ENABLE_SCRIPTS: false
-        run: yarn --immutable
-
-  lint-and-typecheck:
-    name: Running TypeScript compiler & ESLint
-    runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 12.x
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable
       - name: build
         run: yarn build
-      - name: test typings
-        run: yarn test-types
-      - name: verify TypeScript@3.8 compatibility
+      - name: ts integration
+        run: yarn test-ts --selectProjects ts-integration
+      - name: type tests
+        run: yarn test-types --target '>=5.4 <6.0' # For documentation, see: https://tstyche.org/guides/typescript-versions
+      - name: verify TypeScript@5.4 compatibility
         run: yarn verify-old-ts
+      - name: run ESLint with type info
+        run: yarn lint-ts-files
+      - name: Run tests depending on type information
+        run: yarn test-with-type-info
+
+  static-checks:
+    name: Static Checks (Lint, Typecheck, Yarn Validate)
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build TypeScript
+        run: yarn build:ts
+      - name: build JavaScript
+        run: yarn build:js
+      - name: typecheck examples
+        run: yarn typecheck:examples
+      - name: typecheck tests
+        run: yarn typecheck:tests
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
       - name: run eslint
@@ -64,26 +87,81 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
-  test:
-    name: Node v${{ matrix.node-version }} on ${{ matrix.os }}
+      - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
+        run: yarn constraints
+      - name: 'Check for duplicate dependencies (fix w/ "yarn dedupe")'
+        run: yarn dedupe --check
+
+  test-ubuntu:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-ubuntu
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.x, 17.x]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
+        shard: ['1/4', '2/4', '3/4', '4/4']
+    name: Ubuntu with shard ${{ matrix.shard }}
+    with:
+      os: ubuntu-latest
+      shard: ${{ matrix.shard }}
+  test-macos:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-macos
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/3', '2/3', '3/3']
+    name: macOS with shard ${{ matrix.shard }}
+    with:
+      os: macos-latest
+      shard: ${{ matrix.shard }}
+  test-windows:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-windows
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
+    name: Windows with shard ${{ matrix.shard }}
+    with:
+      os: windows-latest
+      shard: ${{ matrix.shard }}
+
+  test-leak:
+    name: Node LTS on Ubuntu with leak detection
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Use Node.js LTS
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:js
+      - name: run tests with leak detection
+        run: yarn test-leak
+
+  test-runtime-vm-modules:
+    name: Node ${{ matrix.node-version }} on Ubuntu with --experimental-vm-modules (jest-runtime)
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x, 22.x, 24.x, 25.x]
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
@@ -93,31 +171,40 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
+        uses: SimenB/github-actions-cpu-cores@97330871fe1b7d3529392ea000e3d2c4b357e403 # v3
+      - name: run jest-runtime tests with --experimental-vm-modules
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          command: yarn jest-runtime-vm-modules-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+      - name: map coverage
+        run: node ./scripts/mapCoverage.mjs
+        if: always()
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        if: always()
+        with:
+          directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
 
-  test-jasmine:
-    name: Node LTS on ${{ matrix.os }} using jest-jasmine2
+  test-coverage:
+    name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
+        shard: ['1/4', '2/4', '3/4', '4/4']
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 14.x
+          persist-credentials: false
+      - name: Use Node.js LTS
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -125,6 +212,19 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+        uses: SimenB/github-actions-cpu-cores@97330871fe1b7d3529392ea000e3d2c4b357e403 # v3
+      - name: run tests with coverage
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          command: yarn jest-coverage --color --config jest.config.ci.mjs --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+      - name: map coverage
+        run: node ./scripts/mapCoverage.mjs
+        if: always()
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        if: always()
+        with:
+          directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}

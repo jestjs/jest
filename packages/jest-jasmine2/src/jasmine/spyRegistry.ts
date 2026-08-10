@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+Copyright (c) 2008-2016 Pivotal Labs
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -35,8 +35,8 @@ import SpyStrategy from './SpyStrategy';
 import createSpy from './createSpy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
-  const usageDefinition = usage ? '\nUsage: ' + usage : '';
-  return (msg: string) => domain + ' : ' + msg + usageDefinition;
+  const usageDefinition = usage ? `\nUsage: ${usage}` : '';
+  return (msg: string) => `${domain} : ${msg}${usageDefinition}`;
 };
 
 function isSpy(putativeSpy: {
@@ -64,7 +64,7 @@ export default class SpyRegistry {
   clearSpies: () => void;
   respy: unknown;
 
-  private _spyOnProperty: (
+  private readonly _spyOnProperty: (
     obj: Record<string, Spy>,
     propertyName: string,
     accessType: keyof PropertyDescriptor,
@@ -87,7 +87,7 @@ export default class SpyRegistry {
       if (obj === void 0) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + methodName + '()',
+            `could not find an object to spy upon for ${methodName}()`,
           ),
         );
       }
@@ -97,7 +97,7 @@ export default class SpyRegistry {
       }
 
       if (obj[methodName] === void 0) {
-        throw new Error(getErrorMsg(methodName + '() method does not exist'));
+        throw new Error(getErrorMsg(`${methodName}() method does not exist`));
       }
 
       if (obj[methodName] && isSpy(obj[methodName])) {
@@ -105,7 +105,7 @@ export default class SpyRegistry {
           return obj[methodName];
         } else {
           throw new Error(
-            getErrorMsg(methodName + ' has already been spied upon'),
+            getErrorMsg(`${methodName} has already been spied upon`),
           );
         }
       }
@@ -120,7 +120,7 @@ export default class SpyRegistry {
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(
           getErrorMsg(
-            methodName + ' is not declared writable or has no setter',
+            `${methodName} is not declared writable or has no setter`,
           ),
         );
       }
@@ -154,7 +154,7 @@ export default class SpyRegistry {
       if (!obj) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + propertyName,
+            `could not find an object to spy upon for ${propertyName}`,
           ),
         );
       }
@@ -171,22 +171,19 @@ export default class SpyRegistry {
       }
 
       if (!descriptor) {
-        throw new Error(getErrorMsg(propertyName + ' property does not exist'));
+        throw new Error(getErrorMsg(`${propertyName} property does not exist`));
       }
 
       if (!descriptor.configurable) {
         throw new Error(
-          getErrorMsg(propertyName + ' is not declared configurable'),
+          getErrorMsg(`${propertyName} is not declared configurable`),
         );
       }
 
       if (!descriptor[accessType]) {
         throw new Error(
           getErrorMsg(
-            'Property ' +
-              propertyName +
-              ' does not have access type ' +
-              accessType,
+            `Property ${propertyName} does not have access type ${accessType}`,
           ),
         );
       }
@@ -196,7 +193,7 @@ export default class SpyRegistry {
           return obj[propertyName];
         } else {
           throw new Error(
-            getErrorMsg(propertyName + ' has already been spied upon'),
+            getErrorMsg(`${propertyName} has already been spied upon`),
           );
         }
       }

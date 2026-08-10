@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -43,17 +43,9 @@ div.bottom-margin {
 
 .blockContent div.video {
   width: 100%;
-  height: 280px;
+  height: 350px;
   margin-top: 20px;
   padding-right: 80px;
-}
-
-div.video iframe {
-  display: block;
-  margin: 0 auto 10px;
-  min-height: 280px;
-  width: 100%;
-  height: auto;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
@@ -115,6 +107,7 @@ div.jest-card-front,
   height: 100%;
   border-radius: 15px;
   backface-visibility: hidden;
+  transform: rotateX(0deg);
   pointer-events: none;
   display: flex;
   justify-content: center;
@@ -123,6 +116,7 @@ div.jest-card-front,
 }
 
 div.jest-card-front {
+  z-index: 1;
   background-color: #fff;
   border: 1px solid #bbb;
 }
@@ -133,7 +127,7 @@ div.jest-card-back {
   background-size: 20px;
   border: 5px solid #c2a813;
   backface-visibility: hidden;
-  transform: rotateY(180deg) translateZ(1px);
+  transform: rotateX(0deg) rotateY(180deg) translateZ(1px);
 }
 
 div.jest-card-running {

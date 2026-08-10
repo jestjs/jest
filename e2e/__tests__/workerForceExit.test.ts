@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,13 +7,15 @@
 
 import {tmpdir} from 'os';
 import {resolve} from 'path';
-import findProcess = require('find-process');
+import findProcess from 'find-process';
 import {
   cleanup,
   generateTestFilesToForceUsingWorkers,
   writeFiles,
 } from '../Utils';
 import runJest from '../runJest';
+
+jest.retryTimes(3);
 
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
@@ -63,11 +65,15 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
 
-  const execRes = /pid: \d+/.exec(stderr);
+  const execRes = /pid: (\d+)/.exec(stderr);
 
-  expect(execRes).toHaveLength(1);
+  expect(execRes).toHaveLength(2);
 
-  const [pid] = execRes!;
+  const [, pid] = execRes!;
 
-  expect(await findProcess('pid', Number(pid))).toHaveLength(0);
-});
+  const pidNumber = Number(pid);
+
+  expect(pidNumber).not.toBeNaN();
+
+  expect(await findProcess('pid', pidNumber)).toHaveLength(0);
+}, 15_000);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,6 +11,7 @@ import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
+import LiteYouTubeEmbed from 'react-lite-youtube-embed';
 
 import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimation';
 
@@ -28,12 +29,12 @@ import GitHubButton from 'react-github-btn';
 function TwitterButton() {
   return (
     <a
-      href="https://twitter.com/intent/follow?screen_name=fbjest&region=follow_link"
+      href="https://twitter.com/intent/follow?screen_name=jestjs_&region=follow_link"
       target="_blank"
       className={styles['twitter-follow-button']}
     >
       <div className={styles['twitter-follow-button--icon']} />
-      Follow @fbjest
+      Follow @jestjs_
     </a>
   );
 }
@@ -42,7 +43,7 @@ function GitHubStarButton() {
   return (
     <div className="github-button">
       <GitHubButton
-        href="https://github.com/facebook/jest"
+        href="https://github.com/jestjs/jest"
         data-icon="octicon-star"
         data-size="large"
         aria-label="Star facebook/jest on GitHub"
@@ -116,36 +117,50 @@ class Contributors extends React.Component {
     return (
       <div className="opencollective">
         <h3>
-          <Translate>Sponsors</Translate>
+          <Translate>Gold Sponsors</Translate>
         </h3>
-        <p>
-          <Translate>
-            Sponsors are those who contribute $100 or more per month to Jest
-          </Translate>
-        </p>
         <div className="opencollective-avatars">
-          {backers
-            .filter(b => b.tier && b.tier.slug === 'sponsor')
-            .map(Sponsor)}
+          <a
+            className="sponsor-item"
+            title="Thordata"
+            target="_blank"
+            rel="nofollow noopener"
+            href="https://www.thordata.com/?ls=waOicIkB&lk=jest"
+          >
+            <img
+              className="sponsor-avatar"
+              src="/img/logos/thordata.svg"
+              alt="Thordata logo"
+            />
+          </a>
         </div>
         <h3>
-          <Translate>Backers</Translate>
+          <Translate>Featured Sponsors</Translate>
         </h3>
-        <p>
-          <Translate>
-            Backers are those who contribute $2 or more per month to Jest
-          </Translate>
-        </p>
         <div className="opencollective-avatars">
           {backers
-            .filter(
-              b =>
-                b.tier &&
-                b.tier.slug === 'backer' &&
-                !b.fromAccount.slug.includes('adult')
-            )
-            .map(Backer)}
+            .filter(b => b.featured)
+            .sort((a, b) => b.totalDonations.value - a.totalDonations.value)
+            .map(Sponsor)}
         </div>
+        <p>
+          <a
+            href="https://opencollective.com/jest#section-contributors"
+            target="_blank"
+            rel="nofollow noopener"
+          >
+            Join 600+ donors
+          </a>{' '}
+          who sponsor Jest for $3 or more per month on{' '}
+          <a
+            href="https://opencollective.com/jest#section-contributors"
+            target="_blank"
+            rel="nofollow noopener"
+          >
+            opencollective.com
+          </a>
+          .
+        </p>
       </div>
     );
   }
@@ -250,12 +265,7 @@ class Card extends React.Component {
 class Hand extends React.Component {
   render() {
     const cards = [0, 1, 2, 3, 4].map(i => <Card key={i} index={i} />);
-    return (
-      <div className="jest-hand">
-        {cards}
-        <script src="/landing.js" />
-      </div>
-    );
+    return <div className="jest-hand">{cards}</div>;
   }
 }
 
@@ -289,7 +299,7 @@ class Index extends React.Component {
   render() {
     const {config: siteConfig} = this.props;
     const showcase = UsersJSON.users.map((user, i) => (
-      <a href={user.infoLink} key={i}>
+      <a className="logo-item" href={user.infoLink} key={i}>
         <img src={user.image} title={user.caption} alt={user.caption} />
       </a>
     ));
@@ -510,16 +520,9 @@ class Index extends React.Component {
             className="section-container bottom-margin docs"
           >
             <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent ">
+              <div className="blockContent">
                 <div className="video">
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/cAKYQpTC7MA"
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                  />
+                  <LiteYouTubeEmbed id="cAKYQpTC7MA" />
                 </div>
               </div>
             </div>
@@ -548,16 +551,15 @@ class Index extends React.Component {
             background="light"
             className="section-container community imageAlignSide twoByGridBlock"
           >
-            <div className="gridBlockV1 yellow">
+            <div className="yellow">
               <div className="blockContent">
                 <h2>
                   <Translate>Open Collective</Translate>
                 </h2>
                 <MarkdownBlock>
                   <Translate>
-                    With so many users, the core team of Jest uses an [Open
-                    Collective](https://opencollective.com/jest) for
-                    non-Facebook contributors.
+                    Jest uses Open Collective to support developers contributing
+                    to Jest.
                   </Translate>
                 </MarkdownBlock>
                 <Contributors />
@@ -568,18 +570,19 @@ class Index extends React.Component {
                 </h2>
                 <MarkdownBlock>
                   <Translate>
-                    A lot of people! With
-                    [20m](https://www.npmjs.com/package/jest) downloads in the
-                    last month, and used on over
-                    [1,293,000](https://github.com/facebook/jest/network/dependents)
-                    public repos on GitHub. Jest is used extensively at these
-                    companies:
+                    A lot of people! With [100m+
+                    million](https://www.npmjs.com/package/jest) downloads in
+                    the last month, and used on over
+                    [15,000,000](https://github.com/jestjs/jest/network/dependents)
+                    public repos on GitHub.
                   </Translate>
                 </MarkdownBlock>
-                <div className="gridBlockV1 logos">
-                  {showcase}
-                  <p className="others">And many others</p>
-                </div>
+                <MarkdownBlock>
+                  <Translate>
+                    Jest is used extensively at these companies:
+                  </Translate>
+                </MarkdownBlock>
+                <div className="gridBlockV1 logos">{showcase}</div>
               </div>
             </div>
           </Container>

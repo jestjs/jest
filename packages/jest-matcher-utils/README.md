@@ -9,7 +9,7 @@ To add this package as a dependency of a project, run either of the following co
 - `npm install jest-matcher-utils`
 - `yarn add jest-matcher-utils`
 
-## Exports ([src/index.ts](jest-matcher-utils/src/index.ts))
+## Exports ([src/index.ts](https://github.com/jestjs/jest/blob/HEAD/packages/jest-matcher-utils/src/index.ts))
 
 ### Functions
 
@@ -21,4 +21,4 @@ To add this package as a dependency of a project, run either of the following co
 
 ### Constants
 
-`EXPECTED_COLOR` `RECEIVED_COLOR` `INVERTED_COLOR` `BOLD_WEIGHT` `DIM_COLOR` `SUGGEST_TO_CONTAIN_EQUAL`
+`EXPECTED_COLOR` `RECEIVED_COLOR` `INVERTED_COLOR` `BOLD_WEIGHT` `DIM_COLOR` `SUGGEST_TO_CONTAIN_EQUAL` `SERIALIZABLE_PROPERTIES`
