@@ -17,7 +17,11 @@ const buildDir = path.resolve(path.sep, 'repo', 'build');
 const generatedPath = path.join(buildDir, 'out.js');
 const adjacentMapPath = path.join(buildDir, 'out.js.map');
 const originalPath = path.join(buildDir, 'input.ts');
-const registeredMapPath = path.resolve(path.sep, 'cache', 'out.js.map');
+// Jest derives this path from the file's contents and the transform config, so
+// distinct content means a distinct path. Parsed maps are cached against it for
+// the lifetime of the process, so each test needs its own.
+let registeredMapPath = '';
+let mapPathCounter = 0;
 
 // Generated line 2, column 0 maps to input.ts line 10, column 2, named `double`.
 const decodedMap = {
@@ -40,6 +44,12 @@ function mockFileContents(read: (filePath: string) => string) {
 beforeEach(() => {
   jest.clearAllMocks();
   existsSyncMock.mockReturnValue(true);
+  mapPathCounter += 1;
+  registeredMapPath = path.resolve(
+    path.sep,
+    'cache',
+    `out-${mapPathCounter}.js.map`,
+  );
 });
 
 describe('SourceMapCache', () => {
@@ -125,6 +135,37 @@ describe('SourceMapCache', () => {
     cache.get(generatedPath);
 
     expect(readFileMock).toHaveBeenCalledTimes(1);
+  });
+
+  test('parses a map once for every file that shares the cache path', () => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    // Two test files in one worker: different registries, same transform-cache
+    // entry, so the map should be read and parsed only once.
+    const first = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+    const second = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+
+    expect(first.get(generatedPath)).not.toBeNull();
+    expect(second.get(generatedPath)).not.toBeNull();
+    expect(readFileMock).toHaveBeenCalledTimes(1);
+  });
+
+  // The runtime empties the registry at teardown, and stacks are still
+  // formatted after that — a stray timer, a floating promise.
+  test('keeps a loaded map after the registry is emptied', () => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    const sourceMaps = new Map([[generatedPath, registeredMapPath]]);
+    const cache = new SourceMapCache(sourceMaps);
+    const loaded = cache.get(generatedPath);
+
+    sourceMaps.clear();
+
+    expect(cache.get(generatedPath)).toBe(loaded);
   });
 
   test('survives an unparsable map', () => {

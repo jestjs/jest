@@ -29,6 +29,16 @@ function mockFileContents(read: (filePath: string) => string) {
     .mockImplementation(read as unknown as typeof fs.readFileSync);
 }
 
+// Parsed maps are cached for the process lifetime against this path, which is
+// content-addressed in real runs, so each test needs its own.
+let mapPathCounter = 0;
+let mapPath = '';
+
+beforeEach(() => {
+  mapPathCounter += 1;
+  mapPath = `mockedSourceMapFile-${mapPathCounter}`;
+});
+
 describe('getCallsite', () => {
   test('without source map', () => {
     const site = getCallsite(0);
@@ -45,12 +55,12 @@ describe('getCallsite', () => {
       throw new Error('Mock error');
     });
 
-    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
+    const site = getCallsite(0, new Map([[__filename, mapPath]]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(expect.any(Number));
     expect(site.getLineNumber()).toEqual(expect.any(Number));
-    expect(fs.readFileSync).toHaveBeenCalledWith('mockedSourceMapFile', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(mapPath, 'utf8');
   });
 
   test('reads source map file to determine line and column', () => {
@@ -76,7 +86,7 @@ describe('getCallsite', () => {
       source: 'file.js',
     }));
 
-    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
+    const site = getCallsite(0, new Map([[__filename, mapPath]]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(sourceMapColumn);
@@ -86,6 +96,6 @@ describe('getCallsite', () => {
       column: expect.any(Number),
       line: expect.any(Number),
     });
-    expect(fs.readFileSync).toHaveBeenCalledWith('mockedSourceMapFile', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(mapPath, 'utf8');
   });
 });

@@ -15,20 +15,20 @@ import {
 import {existsSync, readFileSync} from 'graceful-fs';
 import type {SourceMapRegistry} from './types';
 
-export type GeneratedPosition = {
+export interface GeneratedPosition {
   column: number | null;
   line: number | null;
   source: string;
-};
+}
 
-export type MappedPosition = GeneratedPosition & {
+export interface MappedPosition extends GeneratedPosition {
   name?: string | null;
-};
+}
 
-type LoadedSourceMap = {
+interface LoadedSourceMap {
   map: TraceMap;
   url: string;
-};
+}
 
 // Keep executing the search to find the *last* sourceMappingURL, to avoid
 // picking up ones from comments, strings, etc.
@@ -94,6 +94,39 @@ function findSourceMapUrl(source: string): string | null {
   return lastMatch == null ? null : (lastMatch[1] ?? lastMatch[2] ?? null);
 }
 
+// Jest writes each map to a path derived from the file's contents, the
+// transform config and the transformer's own cache key, so the path is already
+// content-addressed: an edit or a config change produces a different one and
+// the stale entry is never asked for again. That makes it safe to keep parsed
+// maps for the lifetime of the process rather than re-reading and re-parsing
+// them for every test file a worker runs.
+const parsedByCachePath = new Map<string, TraceMap | null>();
+
+function parseMap(content: string): TraceMap | null {
+  try {
+    // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
+    // bundlers emit as a top-level `sections` array.
+    return AnyMap(content);
+  } catch {
+    return null;
+  }
+}
+
+function parseRegisteredMap(sourceMapPath: string): TraceMap | null {
+  const cached = parsedByCachePath.get(sourceMapPath);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const content = readFile(sourceMapPath);
+  const map = content == null ? null : parseMap(content);
+
+  parsedByCachePath.set(sourceMapPath, map);
+
+  return map;
+}
+
 export class SourceMapCache {
   private readonly sourceMaps: SourceMapRegistry | null;
   private readonly loaded = new Map<string, LoadedSourceMap | null>();
@@ -109,12 +142,14 @@ export class SourceMapCache {
 
     // The registry fills in as files are transformed, so a file looked up
     // before its map was registered must not stay unmapped for the rest of the
-    // run. Retry only when the registry entry itself changed, otherwise a map
-    // that fails to load is re-read for every frame that mentions the file.
-    if (
-      cached !== undefined &&
-      this.attempted.get(generatedPath) === registered
-    ) {
+    // run. Retry only when it now points somewhere new: a map that failed to
+    // load would otherwise be re-read for every frame naming the file, and the
+    // runtime empties the registry at teardown, where an entry going away must
+    // not throw away a map already loaded — stacks are still formatted then.
+    const isStale =
+      registered != null && this.attempted.get(generatedPath) !== registered;
+
+    if (cached !== undefined && !isStale) {
       return cached;
     }
 
@@ -127,35 +162,24 @@ export class SourceMapCache {
   }
 
   private load(generatedPath: string): LoadedSourceMap | null {
-    const rawMap =
-      this.readRegistered(generatedPath) ?? this.readAdjacent(generatedPath);
+    // The map Jest itself produced while transforming the file.
+    const sourceMapPath = this.sourceMaps?.get(generatedPath);
+
+    if (sourceMapPath != null && sourceMapPath !== '') {
+      const map = parseRegisteredMap(sourceMapPath);
+
+      return map == null ? null : {map, url: generatedPath};
+    }
+
+    const rawMap = this.readAdjacent(generatedPath);
 
     if (rawMap == null) {
       return null;
     }
 
-    try {
-      // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
-      // bundlers emit as a top-level `sections` array.
-      return {map: AnyMap(rawMap.content), url: rawMap.url};
-    } catch {
-      return null;
-    }
-  }
+    const map = parseMap(rawMap.content);
 
-  // The map Jest itself produced while transforming the file.
-  private readRegistered(
-    generatedPath: string,
-  ): {content: string; url: string} | null {
-    const sourceMapPath = this.sourceMaps?.get(generatedPath);
-
-    if (sourceMapPath == null || sourceMapPath === '') {
-      return null;
-    }
-
-    const content = readFile(sourceMapPath);
-
-    return content == null ? null : {content, url: generatedPath};
+    return map == null ? null : {map, url: rawMap.url};
   }
 
   // A `sourceMappingURL` comment on a file Jest did not transform, which covers
