@@ -126,10 +126,7 @@ export class SourceMapCache {
 
     try {
       return {map: new TraceMap(rawMap.content), url: rawMap.url};
-    } catch (error) {
-      if (process.env.JEST_SMS_DEBUG) {
-        console.error('[sms] TraceMap failed', error);
-      }
+    } catch {
       return null;
     }
   }
