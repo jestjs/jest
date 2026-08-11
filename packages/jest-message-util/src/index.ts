@@ -43,17 +43,30 @@ export type StackTraceOptions = {
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
-const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
+// In a checkout of this repo the packages sit next to each other, and frames
+// from any of them — not just the `jest-` prefixed ones — are internal. Derive
+// that directory rather than matching its name, so it holds whatever the
+// checkout is called. An install resolves to `node_modules`, covered above.
+const ownGrandparentDir = path.resolve(__dirname, '..', '..');
+const PATH_JEST_PACKAGES =
+  path.basename(ownGrandparentDir) === 'packages'
+    ? ownGrandparentDir + path.sep
+    : null;
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE =
   /^\s+at(?:(?:.jasmine-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE =
-  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
-const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
-const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
-const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
+  /^\s+at(?:.*[/\\])?(?:@jest[/\\][^/\\]+|[^/\\]*jest[^/\\]*)[/\\](?:build|node_modules|packages)[/\\]/;
+// `packages` matches this repo's own checkout, so it is too broad to decide
+// where a code frame points: a user monorepo named `jest-something` would lose
+// every frame and end up without one.
+const JEST_PACKAGE_BUILD_IGNORE =
+  /^\s+at(?:.*[/\\])?(?:@jest[/\\][^/\\]+|[^/\\]*jest[^/\\]*)[/\\](?:build|node_modules)[/\\]/;
+const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>/;
+const ANONYMOUS_PROMISE_IGNORE = /^\s+at (?:new )?Promise \(<anonymous>\)/;
+const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator\.next \(<anonymous>\)/;
+const NATIVE_NEXT_IGNORE = /^\s+at next \(native\)/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -357,7 +370,11 @@ export function getStackTraceLines(
 
 export function getTopFrame(lines: Array<string>): Frame | null {
   for (const line of lines) {
-    if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
+    if (
+      line.includes(PATH_NODE_MODULES) ||
+      (PATH_JEST_PACKAGES !== null && line.includes(PATH_JEST_PACKAGES)) ||
+      JEST_PACKAGE_BUILD_IGNORE.test(line)
+    ) {
       continue;
     }
 

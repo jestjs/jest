@@ -24,6 +24,7 @@
 - `[jest-message-util]` Print the inner errors of an `AggregateError` thrown inside a test ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Indent nested `cause` and `AggregateError` sections of a test failure by one level per depth, so the nesting is legible instead of rendering flat ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-message-util]` Color stack traces line by line so blank lines stay blank ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[jest-message-util]` Detect Jest's own frames by package name rather than a hardcoded `jest/packages` path, and cover `@jest/*` packages, so stack traces and code frames point at user code ([#16326](https://github.com/jestjs/jest/pull/16326))
 - `[jest-mock]` `mockResolvedValue` / `mockRejectedValue` now see all overload return types, so a Promise-returning overload survives even when a later overload returns a non-Promise (e.g. `pg.Client['end']`) ([#16237](https://github.com/jestjs/jest/pull/16237))
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
