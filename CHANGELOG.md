@@ -29,7 +29,7 @@
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
-- `[jest-runner]` Keep the stack of an error thrown after the test environment was torn down, instead of blanking it and leaving Node to print `[TypeError: …]` ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down, instead of blanking it and leaving Node to print `[TypeError: …]` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))

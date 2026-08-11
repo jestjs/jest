@@ -7,7 +7,11 @@
 
 import * as path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
+import {
+  AnyMap,
+  type TraceMap,
+  originalPositionFor,
+} from '@jridgewell/trace-mapping';
 import {existsSync, readFileSync} from 'graceful-fs';
 import type {SourceMapRegistry} from './types';
 
@@ -101,8 +105,16 @@ export class SourceMapCache {
   get(generatedPath: string): LoadedSourceMap | null {
     const cached = this.loaded.get(generatedPath);
 
-    if (cached !== undefined) {
+    if (cached != null) {
       return cached;
+    }
+
+    // The registry fills in as files are transformed, so a file looked up
+    // before its map was registered must not stay unmapped for the rest of the
+    // run. Only the registry is re-checked; re-reading from disk on every miss
+    // would mean a `sourceMappingURL` scan per frame.
+    if (cached === null && this.sourceMaps?.get(generatedPath) == null) {
+      return null;
     }
 
     const loaded = this.load(generatedPath);
@@ -125,7 +137,9 @@ export class SourceMapCache {
     }
 
     try {
-      return {map: new TraceMap(rawMap.content), url: rawMap.url};
+      // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
+      // bundlers emit as a top-level `sections` array.
+      return {map: AnyMap(rawMap.content), url: rawMap.url};
     } catch {
       return null;
     }

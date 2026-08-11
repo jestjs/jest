@@ -5,13 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {installSourceMaps, uninstallSourceMaps} from '../installSourceMaps';
+import {installSourceMaps} from '../installSourceMaps';
 
 jest.mock('graceful-fs');
 
-const generatedPath = '/repo/build/out.js';
-const mapPath = '/cache/out.js.map';
+// Built with `path` so the expectations survive on Windows, where the resolved
+// source of a mapping comes back with backslashes.
+const buildDir = path.resolve(path.sep, 'repo', 'build');
+const generatedPath = path.join(buildDir, 'out.js');
+const originalPath = path.join(buildDir, 'input.ts');
+const mapPath = path.resolve(path.sep, 'cache', 'out.js.map');
 
 // Generated line 2 has two mapped columns: column 0 carries the name
 // `toBeTruthy` and column 20 carries no name at all.
@@ -86,9 +91,11 @@ const callSitePrototype = {
 };
 
 function createCallSite(spec: FrameSpec): NodeJS.CallSite {
-  return Object.assign(Object.create(callSitePrototype), {
-    spec,
-  }) as unknown as NodeJS.CallSite;
+  const site: unknown = Object.create(callSitePrototype);
+
+  (site as {spec: FrameSpec}).spec = spec;
+
+  return site as NodeJS.CallSite;
 }
 
 // A frame in the mapped file, sitting on the segment that carries a name.
@@ -101,15 +108,24 @@ function mappedFrame(spec: FrameSpec = {}): NodeJS.CallSite {
   });
 }
 
+type StackFormatter = (error: Error, stack: Array<NodeJS.CallSite>) => unknown;
+
+// `@types/node` declares `prepareStackTrace` as a method, so reading it off
+// `Error` directly trips `unbound-method`.
+function currentFormatter(): StackFormatter {
+  return (Error as unknown as {prepareStackTrace: StackFormatter})
+    .prepareStackTrace;
+}
+
 function format(error: Error, stack: Array<NodeJS.CallSite>): string {
-  return Error.prepareStackTrace!(error, stack) as string;
+  return currentFormatter()(error, stack) as string;
 }
 
 function frameOf(error: Error, frame: NodeJS.CallSite): string {
   return format(error, [frame]).split('\n    at ')[1];
 }
 
-const originalPrepareStackTrace = Error.prepareStackTrace;
+const originalPrepareStackTrace = currentFormatter();
 
 beforeEach(() => {
   jest.mocked(fs.existsSync).mockReturnValue(true);
@@ -118,7 +134,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  uninstallSourceMaps();
   (Error as {prepareStackTrace?: unknown}).prepareStackTrace =
     originalPrepareStackTrace;
 });
@@ -138,13 +153,13 @@ describe('positions', () => {
   test('are translated back to the original source', () => {
     const frame = mappedFrame({columnNumber: 21, isToplevel: true});
 
-    expect(frameOf(new Error('x'), frame)).toBe('/repo/build/input.ts:12:5');
+    expect(frameOf(new Error('x'), frame)).toBe(`${originalPath}:12:5`);
   });
 
   test('stay at the generated position when nothing maps to them', () => {
     const frame = mappedFrame({isToplevel: true, lineNumber: 40});
 
-    expect(frameOf(new Error('x'), frame)).toBe('/repo/build/out.js:40:1');
+    expect(frameOf(new Error('x'), frame)).toBe(`${generatedPath}:40:1`);
   });
 });
 
@@ -156,7 +171,7 @@ describe('function names', () => {
     const frame = mappedFrame({functionName: 'throws', typeName: 'Object'});
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'Object.toBeTruthy (/repo/build/input.ts:10:3)',
+      `Object.toBeTruthy (${originalPath}:10:3)`,
     );
   });
 
@@ -168,14 +183,14 @@ describe('function names', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'Object.throws (/repo/build/input.ts:12:5)',
+      `Object.throws (${originalPath}:12:5)`,
     );
   });
 
   test('are omitted for a toplevel frame with no name anywhere', () => {
     const frame = mappedFrame({columnNumber: 21, isToplevel: true});
 
-    expect(frameOf(new Error('x'), frame)).toBe('/repo/build/input.ts:12:5');
+    expect(frameOf(new Error('x'), frame)).toBe(`${originalPath}:12:5`);
   });
 
   test('fall back to the type and method name', () => {
@@ -186,7 +201,7 @@ describe('function names', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'Runner.run (/repo/build/input.ts:12:5)',
+      `Runner.run (${originalPath}:12:5)`,
     );
   });
 });
@@ -201,7 +216,7 @@ describe('frame shapes', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'Timeout.requireModule [as _onTimeout] (/repo/build/input.ts:12:5)',
+      `Timeout.requireModule [as _onTimeout] (${originalPath}:12:5)`,
     );
   });
 
@@ -214,7 +229,7 @@ describe('frame shapes', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'Console.log (/repo/build/input.ts:12:5)',
+      `Console.log (${originalPath}:12:5)`,
     );
   });
 
@@ -226,7 +241,7 @@ describe('frame shapes', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'new Thing (/repo/build/input.ts:12:5)',
+      `new Thing (${originalPath}:12:5)`,
     );
   });
 
@@ -244,32 +259,37 @@ describe('frame shapes', () => {
     });
 
     expect(frameOf(new Error('x'), frame)).toBe(
-      'eval at run (/repo/build/input.ts:10:3), <anonymous>',
+      `eval at run (${originalPath}:10:3), <anonymous>`,
     );
   });
 });
 
-describe('uninstall', () => {
-  test('restores the previous formatter', () => {
-    const previous = jest.fn();
+describe('install', () => {
+  test('swaps the cache for each test file', () => {
+    const other = path.join(buildDir, 'other.js');
 
-    uninstallSourceMaps();
-    Error.prepareStackTrace = previous;
-    installSourceMaps(null);
+    installSourceMaps(new Map([[other, mapPath]]));
 
-    expect(Error.prepareStackTrace).not.toBe(previous);
+    const frame = createCallSite({
+      columnNumber: 1,
+      fileName: other,
+      isToplevel: true,
+      lineNumber: 2,
+    });
 
-    uninstallSourceMaps();
-
-    expect(Error.prepareStackTrace).toBe(previous);
+    expect(frameOf(new Error('x'), frame)).toBe(
+      `toBeTruthy (${originalPath}:10:3)`,
+    );
   });
 
-  test('leaves a formatter installed by someone else alone', () => {
-    const other = jest.fn();
+  // A stray timer or floating promise reports after teardown, and that stack
+  // has to still be mapped.
+  test('keeps the formatter in place so later stacks stay mapped', () => {
+    const installed = currentFormatter();
 
-    Error.prepareStackTrace = other;
-    uninstallSourceMaps();
+    installSourceMaps(new Map());
 
-    expect(Error.prepareStackTrace).toBe(other);
+    expect(installed).not.toBe(originalPrepareStackTrace);
+    expect(currentFormatter()).toBe(installed);
   });
 });

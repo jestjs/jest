@@ -5,13 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {SourceMapCache, mapSourcePosition} from '../SourceMapCache';
 
 jest.mock('graceful-fs');
 
-const generatedPath = '/repo/build/out.js';
-const registeredMapPath = '/cache/out.js.map';
+// Built with `path` so the expectations survive on Windows, where the resolved
+// source of a mapping comes back with backslashes.
+const buildDir = path.resolve(path.sep, 'repo', 'build');
+const generatedPath = path.join(buildDir, 'out.js');
+const adjacentMapPath = path.join(buildDir, 'out.js.map');
+const originalPath = path.join(buildDir, 'input.ts');
+const registeredMapPath = path.resolve(path.sep, 'cache', 'out.js.map');
 
 // Generated line 2, column 0 maps to input.ts line 10, column 2, named `double`.
 const decodedMap = {
@@ -87,6 +93,42 @@ describe('SourceMapCache', () => {
     expect(readFileMock).toHaveBeenCalledTimes(2);
   });
 
+  // `TraceMap` alone throws on these, which would silently leave every frame
+  // in a bundled file at its generated position.
+  test('reads an indexed map built from `sections`', () => {
+    mockFileContents(() =>
+      JSON.stringify({
+        file: 'out.js',
+        sections: [{map: decodedMap, offset: {column: 0, line: 0}}],
+        version: 3,
+      }),
+    );
+
+    const cache = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+
+    expect(
+      mapSourcePosition(cache, {column: 0, line: 2, source: generatedPath}),
+    ).toEqual({column: 2, line: 10, name: 'double', source: originalPath});
+  });
+
+  test('re-checks the registry after a miss, since it fills in lazily', () => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    const sourceMaps = new Map<string, string>();
+    const cache = new SourceMapCache(sourceMaps);
+
+    expect(cache.get(generatedPath)).toBeNull();
+
+    sourceMaps.set(generatedPath, registeredMapPath);
+
+    expect(cache.get(generatedPath)).toEqual({
+      map: expect.anything(),
+      url: generatedPath,
+    });
+  });
+
   test('survives an unparsable map', () => {
     mockFileContents(() => '{not json');
 
@@ -126,7 +168,7 @@ describe('SourceMapCache', () => {
 
       expect(cache.get(generatedPath)).toEqual({
         map: expect.anything(),
-        url: '/repo/build/out.js.map',
+        url: adjacentMapPath,
       });
     });
 
@@ -139,7 +181,7 @@ describe('SourceMapCache', () => {
 
       const cache = new SourceMapCache(new Map());
 
-      expect(cache.get(generatedPath)?.url).toBe('/repo/build/out.js.map');
+      expect(cache.get(generatedPath)?.url).toBe(adjacentMapPath);
     });
   });
 });
@@ -158,7 +200,7 @@ describe('mapSourcePosition', () => {
       column: 2,
       line: 10,
       name: 'double',
-      source: '/repo/build/input.ts',
+      source: originalPath,
     });
   });
 

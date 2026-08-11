@@ -2,9 +2,10 @@
 
 ## What's public
 
-- `installSourceMaps(sourceMaps)` / `uninstallSourceMaps()` — replace `Error.prepareStackTrace` in the current realm so every `error.stack` is rendered against the original sources. `jest-runner` calls these around a test file.
+- `installSourceMaps(sourceMaps)` — replaces `Error.prepareStackTrace` in the current realm so every `error.stack` is rendered against the original sources. `jest-runner` calls it once per test file.
 - `getCallsite(level, sourceMaps?)` — one remapped `CallSite`, used by `jest-jasmine2` for `--testLocationInResults`.
-- `SourceMapCache` / `getSourceMapCache(sourceMaps)` / `mapSourcePosition(cache, position)` — the map loader both of the above share.
+
+`SourceMapCache` / `getSourceMapCache(sourceMaps)` / `mapSourcePosition(cache, position)` are the shared map loader behind both, and are internal — they are not exported from `src/index.ts`.
 
 `sourceMaps` is the `SourceMapRegistry` (`Map<generatedPath, sourceMapPath>`) that `jest-runtime` builds while transforming; reach it via `runtime.getSourceMaps()`.
 
@@ -28,6 +29,8 @@ Node's own support is not an alternative: `--enable-source-maps` and `module.set
 
 **Unmapped positions are returned unchanged.** A precise location in the compiled file beats a vague one in the original, so `mapSourcePosition` falls back to its input whenever `originalPositionFor` finds nothing.
 
-**Uninstall matters.** The formatter closes over the cache, which holds every parsed `TraceMap` for the run; leaving it on `Error.prepareStackTrace` retains them (#15233). `uninstallSourceMaps` restores the previous formatter and clears the cache, and `e2e/source-map-teardown` fails if it stops doing so.
+**The formatter is never uninstalled.** It stays for the lifetime of the worker and each `installSourceMaps` swaps in that file's cache. Restoring V8's formatter at teardown instead leaves anything thrown afterwards — a stray timer, a floating promise — reporting a position in the transformed file, which is when a readable stack matters most; `requireAfterTeardown` and `requireAfterTeardownJasmine` pin that. This is safe where `source-map-support` was not: its `retrieveSourceMap` closure captured `runtime` and so retained the whole environment (#15233), whereas `SourceMapCache` only ever references path strings and parsed maps.
+
+**Indexed maps need `AnyMap`.** Bundlers emit maps with a top-level `sections` array; `TraceMap` throws on those, and the `catch` around it would silently leave every frame in such a file at its generated position.
 
 **Fixtures with committed compiler output** (`e2e/source-map-not-transformed/lib/boom.js`) encode their columns in an inline map, so they are excluded from ESLint and Prettier. Reformatting them makes the map point at the wrong columns.

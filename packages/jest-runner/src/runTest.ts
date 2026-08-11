@@ -210,8 +210,6 @@ async function runTestInternal(
     if (!isTornDown) {
       runtime.teardown();
 
-      sourceMaps.uninstallSourceMaps();
-
       try {
         await environment.teardown();
       } finally {

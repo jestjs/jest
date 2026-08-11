@@ -18,8 +18,20 @@ type PrepareStackTrace = (
 ) => unknown;
 
 let activeCache: SourceMapCache | null = null;
-let isInstalled = false;
-let previousPrepareStackTrace: PrepareStackTrace | undefined;
+
+// V8 treats an empty name as no name at all. Every fallback below has to keep
+// doing the same, which is why none of them can become `??`.
+function isPresent(value: string | null | undefined): value is string {
+  return value != null && value !== '';
+}
+
+function orAnonymous(value: string | null | undefined): string {
+  return isPresent(value) ? value : '<anonymous>';
+}
+
+function frameToString(frame: NodeJS.CallSite): string {
+  return (frame as unknown as {toString(): string}).toString();
+}
 
 // Copied almost verbatim from the V8 source, by way of `source-map-support`.
 // Every non-native frame is rendered through this rather than through V8's own
@@ -34,14 +46,14 @@ function callSiteToString(this: NodeJS.CallSite): string {
   } else {
     fileName = this.getScriptNameOrSourceURL();
 
-    if (!fileName && this.isEval()) {
+    if (!isPresent(fileName) && this.isEval()) {
       fileLocation = `${this.getEvalOrigin() ?? ''}, `;
     }
 
     // Source code does not originate from a file and is not native, but we can
     // still get the source position inside the source string, e.g. in an eval
     // string.
-    fileLocation += fileName || '<anonymous>';
+    fileLocation += orAnonymous(fileName);
 
     const lineNumber = this.getLineNumber();
 
@@ -50,7 +62,7 @@ function callSiteToString(this: NodeJS.CallSite): string {
 
       const columnNumber = this.getColumnNumber();
 
-      if (columnNumber) {
+      if (columnNumber != null && columnNumber !== 0) {
         fileLocation += `:${columnNumber}`;
       }
     }
@@ -65,8 +77,8 @@ function callSiteToString(this: NodeJS.CallSite): string {
     const typeName = this.getTypeName();
     const methodName = this.getMethodName();
 
-    if (functionName) {
-      if (typeName && !functionName.startsWith(typeName)) {
+    if (isPresent(functionName)) {
+      if (isPresent(typeName) && !functionName.startsWith(typeName)) {
         line += `${typeName}.`;
       }
 
@@ -75,18 +87,18 @@ function callSiteToString(this: NodeJS.CallSite): string {
       // Skips the suffix when the function name already is the method name:
       // both sides are -1 then.
       if (
-        methodName &&
+        isPresent(methodName) &&
         functionName.indexOf(`.${methodName}`) !==
           functionName.length - methodName.length - 1
       ) {
         line += ` [as ${methodName}]`;
       }
     } else {
-      line += `${typeName}.${methodName || '<anonymous>'}`;
+      line += `${String(typeName)}.${orAnonymous(methodName)}`;
     }
   } else if (isConstructor) {
-    line += `new ${functionName || '<anonymous>'}`;
-  } else if (functionName) {
+    line += `new ${orAnonymous(functionName)}`;
+  } else if (isPresent(functionName)) {
     line += functionName;
   } else {
     return fileLocation;
@@ -100,12 +112,11 @@ function cloneCallSite(frame: NodeJS.CallSite): NodeJS.CallSite {
   const source = frame as unknown as Record<string, unknown>;
 
   for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(frame))) {
-    const value = source[name];
-
-    clone[name] =
-      /^(?:is|get)/.test(name) && typeof value === 'function'
-        ? () => (value as () => unknown).call(frame)
-        : value;
+    // Resolved at call time rather than now, so that accessors on the
+    // prototype are not invoked here.
+    clone[name] = /^(?:is|get)/.test(name)
+      ? () => (source[name] as () => unknown).call(frame)
+      : source[name];
   }
 
   clone.toString = callSiteToString;
@@ -151,9 +162,12 @@ function wrapCallSite(
   // Most call sites will return the source file from `getFileName()`, but code
   // passed to eval() ending in "//# sourceURL=..." will return the source file
   // from `getScriptNameOrSourceURL()` instead.
-  const source = frame.getFileName() || frame.getScriptNameOrSourceURL();
+  const fileName = frame.getFileName();
+  const source = isPresent(fileName)
+    ? fileName
+    : frame.getScriptNameOrSourceURL();
 
-  if (source) {
+  if (isPresent(source)) {
     const column = frame.getColumnNumber();
     const position = mapSourcePosition(cache, {
       column: column == null ? null : column - 1,
@@ -161,7 +175,7 @@ function wrapCallSite(
       source,
     });
     const mapped = cloneCallSite(frame);
-    const originalGetFunctionName = mapped.getFunctionName;
+    const originalGetFunctionName = mapped.getFunctionName.bind(mapped);
 
     // Deliberately the name at the frame's *own* mapped position, which is the
     // identifier being called there rather than the enclosing function. It
@@ -169,7 +183,8 @@ function wrapCallSite(
     // (assertionCount.test.js:12:17)` — which is what makes a failing
     // assertion's stack readable. Taking the caller's position instead would be
     // the spec-correct reading and would collapse these to `Object.<anonymous>`.
-    mapped.getFunctionName = () => position.name || originalGetFunctionName();
+    mapped.getFunctionName = () =>
+      isPresent(position.name) ? position.name : originalGetFunctionName();
     mapped.getFileName = () => position.source;
     mapped.getLineNumber = () => position.line;
     mapped.getColumnNumber = () =>
@@ -180,9 +195,9 @@ function wrapCallSite(
   }
 
   // Code called using eval() needs special handling
-  const origin = frame.isEval() && frame.getEvalOrigin();
+  const origin = frame.isEval() ? frame.getEvalOrigin() : undefined;
 
-  if (origin) {
+  if (isPresent(origin)) {
     const mapped = cloneCallSite(frame);
     const mappedOrigin = mapEvalOrigin(cache, origin);
 
@@ -196,46 +211,38 @@ function wrapCallSite(
 }
 
 const formatStackTrace: PrepareStackTrace = (error, stack) => {
-  const name = error.name || 'Error';
-  const message = error.message || '';
+  const name = isPresent(error.name) ? error.name : 'Error';
+  const message = error.message ?? '';
   const errorString = `${name}: ${message}`;
   const cache = activeCache;
 
   if (cache == null) {
-    return errorString + stack.map(frame => `\n    at ${frame}`).join('');
+    return (
+      errorString +
+      stack.map(frame => `\n    at ${frameToString(frame)}`).join('')
+    );
   }
 
   return (
     errorString +
-    stack.map(frame => `\n    at ${wrapCallSite(cache, frame)}`).join('')
+    stack
+      .map(frame => `\n    at ${frameToString(wrapCallSite(cache, frame))}`)
+      .join('')
   );
 };
 
+// Stays installed for the lifetime of the worker, and each test file swaps in
+// its own cache. Restoring V8's formatter at teardown instead would leave any
+// error thrown after the environment is torn down pointing at a position in the
+// transformed file — exactly when a readable stack matters most. Holding the
+// cache does not retain the environment: it only ever references path strings
+// and parsed source maps.
 export function installSourceMaps(
   sourceMaps: SourceMapRegistry | null | undefined,
 ): void {
   activeCache = getSourceMapCache(sourceMaps);
 
-  if (isInstalled) {
-    return;
+  if (Error.prepareStackTrace !== formatStackTrace) {
+    Error.prepareStackTrace = formatStackTrace;
   }
-
-  isInstalled = true;
-  previousPrepareStackTrace = Error.prepareStackTrace;
-  Error.prepareStackTrace = formatStackTrace;
-}
-
-export function uninstallSourceMaps(): void {
-  // Leave a formatter installed by anything else alone.
-  if (isInstalled && Error.prepareStackTrace === formatStackTrace) {
-    // `@types/node` declares this as a required method, but handing the
-    // formatting back to V8 means assigning `undefined`.
-    (Error as {prepareStackTrace?: PrepareStackTrace}).prepareStackTrace =
-      previousPrepareStackTrace;
-  }
-
-  activeCache?.clear();
-  activeCache = null;
-  isInstalled = false;
-  previousPrepareStackTrace = undefined;
 }
