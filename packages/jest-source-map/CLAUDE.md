@@ -10,7 +10,7 @@
 
 ## Why this package exists
 
-Jest ran on `source-map-support` until #16326. Upstream's `0.5.14` changed a frame's function name to come from the **caller's** mapped position, which is the spec-correct reading and makes Jest's output worse, so the dependency sat pinned at `0.5.13` for years while going unmaintained. `@cspotcode/source-map-support` forked after that change and carries it too.
+Jest ran on `source-map-support` until #16327. Upstream's `0.5.14` changed a frame's function name to come from the **caller's** mapped position, which is the spec-correct reading and makes Jest's output worse, so the dependency sat pinned at `0.5.13` for years while going unmaintained. `@cspotcode/source-map-support` forked after that change and carries it too.
 
 Node's own support is not an alternative: `--enable-source-maps` and `module.setSourceMapsSupport()` do not cover code compiled through `vm` (verified on Node 26 for `runInContext`, `runInThisContext` and `new vm.Script()`, with and without a `//# sourceURL` comment), and there is no public API to register a map for a filename — which is exactly what serving maps out of the registry needs.
 
