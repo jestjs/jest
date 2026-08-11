@@ -190,6 +190,23 @@ describe('SourceMapCache', () => {
     });
   });
 
+  test('declines to guess when a file has been transformed two ways', () => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    const asCjs = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+    const asEsm = new SourceMapCache(
+      new Map([[generatedPath, `${registeredMapPath}.esm`]]),
+    );
+
+    expect(asCjs.get(generatedPath)).not.toBeNull();
+    expect(asEsm.get(generatedPath)).not.toBeNull();
+
+    // Which of the two produced a late frame is unknowable, so neither answers.
+    expect(new SourceMapCache(new Map()).get(generatedPath)).toBeNull();
+  });
+
   test('survives an unparsable map', () => {
     mockFileContents(() => '{not json');
 

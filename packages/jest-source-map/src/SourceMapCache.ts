@@ -117,7 +117,10 @@ const parsedByCachePath = new Map<string, TraceMap | null>();
 // generated file's map lived so those frames stay resolvable. The path is
 // content-addressed, so a remembered entry can only ever answer for a file the
 // live registry has never heard of.
-const rememberedMapPaths = new Map<string, string>();
+// `null` means the same file has been transformed more than one way — as ESM
+// and as CJS, say — which yields a different map for each. A frame does not say
+// which one it came from, so stop answering for that path rather than guess.
+const rememberedMapPaths = new Map<string, string | null>();
 
 function parseMap(content: string): TraceMap | null {
   try {
@@ -183,7 +186,14 @@ export class SourceMapCache {
     const registered = this.sourceMaps?.get(generatedPath);
 
     if (registered != null && registered !== '') {
-      rememberedMapPaths.set(generatedPath, registered);
+      const remembered = rememberedMapPaths.get(generatedPath);
+
+      rememberedMapPaths.set(
+        generatedPath,
+        remembered === undefined || remembered === registered
+          ? registered
+          : null,
+      );
     }
 
     const sourceMapPath =
