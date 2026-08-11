@@ -488,7 +488,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-In the resulting object `column` is 0-indexed while `line` is not.
+`line` and `column` are both 1-indexed, matching the positions V8 reports in a stack trace.
 
 ```json
 {

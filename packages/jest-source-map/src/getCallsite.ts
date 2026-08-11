@@ -20,8 +20,9 @@ const addSourceMapConsumer = (
   let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
+    // V8 counts columns from one, source maps count them from zero.
     position ??= originalPositionFor(tracer, {
-      column: getColumnNumber() ?? -1,
+      column: (getColumnNumber() ?? 1) - 1,
       line: getLineNumber() ?? -1,
     });
 
@@ -31,16 +32,17 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
-        const value = getPosition().column;
-        return value == null || value === 0 ? getColumnNumber() : value;
+        const {column} = getPosition();
+
+        return column == null ? getColumnNumber() : column + 1;
       },
       writable: false,
     },
     getLineNumber: {
       value() {
-        const value = getPosition().line;
+        const {line} = getPosition();
 
-        return value == null || value === 0 ? getLineNumber() : value;
+        return line ?? getLineNumber();
       },
       writable: false,
     },
