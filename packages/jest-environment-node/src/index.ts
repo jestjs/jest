@@ -100,8 +100,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
 
-    const globalsCleanupMode = readGlobalsCleanupConfig(projectConfig);
-    initializeGarbageCollectionUtils(globalThis, globalsCleanupMode);
+    const globalsCleanupMode = initializeGarbageCollectionUtils(
+      globalThis,
+      readGlobalsCleanupConfig(projectConfig),
+    );
 
     this._globalProxy = new GlobalProxy();
     this.context = createContext(this._globalProxy.proxy());
@@ -370,7 +372,7 @@ class GlobalProxy implements ProxyHandler<typeof globalThis> {
 
 function readGlobalsCleanupConfig(
   projectConfig: Config.ProjectConfig,
-): DeletionMode {
+): DeletionMode | undefined {
   const rawConfig = projectConfig.testEnvironmentOptions.globalsCleanup;
   const config = rawConfig?.toString()?.toLowerCase();
   switch (config) {
@@ -386,7 +388,7 @@ function readGlobalsCleanupConfig(
           'Available options are: [on, soft, off]',
         );
       }
-      return 'soft';
+      return undefined;
     }
   }
 }
