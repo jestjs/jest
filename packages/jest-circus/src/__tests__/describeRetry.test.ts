@@ -8,11 +8,13 @@
 import {jestExpect} from '@jest/expect';
 import type {Circus} from '@jest/types';
 import {
+  addEventHandler,
   afterAll as circusAfterAll,
   beforeAll as circusBeforeAll,
   describe as circusDescribe,
   test as circusTest,
   getState,
+  removeEventHandler,
   resetState,
   run,
 } from '../';
@@ -33,7 +35,7 @@ const getDescribeBlock = (name: string): Circus.DescribeBlock => {
 const runIsolated = async (
   defineTests: () => void,
 ): Promise<Circus.RunResult> => {
-  const expectState = jestExpect.getState();
+  const expectState = {...jestExpect.getState()};
   resetState();
 
   try {
@@ -122,7 +124,7 @@ test('does not retry errors that existed before entering the describe', async ()
   expect(result.testResults[0].invocations).toBe(1);
 });
 
-test('does not retry after a process-level error is recorded', async () => {
+test('does not retry a test failure after a process-level error', async () => {
   let attempts = 0;
 
   const result = await runIsolated(() => {
@@ -130,6 +132,7 @@ test('does not retry after a process-level error is recorded', async () => {
       circusTest('test', () => {
         attempts++;
         dispatchSync({error: new Error('process failed'), name: 'error'});
+        throw new Error('test failed');
       });
     });
 
@@ -141,5 +144,81 @@ test('does not retry after a process-level error is recorded', async () => {
 
   expect(attempts).toBe(1);
   expect(result.testResults[0].errors[0]).toContain('process failed');
+  expect(result.testResults[0].errors[1]).toContain('test failed');
   expect(result.testResults[0].invocations).toBe(1);
+});
+
+test('supports snapshot states without retry checkpoints', async () => {
+  let attempts = 0;
+
+  const result = await runIsolated(() => {
+    jestExpect.setState({snapshotState: {} as never});
+    circusDescribe('without snapshot checkpoints', () => {
+      circusTest('flaky', () => {
+        attempts++;
+        expect(attempts).toBe(2);
+      });
+    });
+
+    getInternalState().describeRetryOptions.set(
+      getDescribeBlock('without snapshot checkpoints'),
+      {numRetries: 1},
+    );
+  });
+
+  expect(attempts).toBe(2);
+  expect(result.testResults[0].errors).toEqual([]);
+});
+
+test('shuffles each describe once at its existing lifecycle point', async () => {
+  let attempt = 0;
+  const attemptOrders: Array<Array<string>> = [];
+  const ordersAtDescribeStart: Array<Array<string>> = [];
+  const handler: Circus.EventHandler = event => {
+    if (
+      event.name === 'run_describe_start' &&
+      event.describeBlock.name === 'randomized'
+    ) {
+      ordersAtDescribeStart.push(
+        event.describeBlock.children.map(child => child.name),
+      );
+    }
+  };
+  addEventHandler(handler);
+
+  try {
+    await runIsolated(() => {
+      const state = getInternalState();
+      state.randomize = true;
+      state.seed = 3;
+
+      circusDescribe('randomized', () => {
+        circusBeforeAll(() => {
+          attempt++;
+          attemptOrders.push([]);
+        });
+        circusTest('one', () => {
+          attemptOrders[attempt - 1].push('one');
+        });
+        circusTest('two', () => {
+          attemptOrders[attempt - 1].push('two');
+        });
+        circusTest('flaky', () => {
+          attemptOrders[attempt - 1].push('flaky');
+          expect(attempt).toBe(2);
+        });
+      });
+
+      getInternalState().describeRetryOptions.set(
+        getDescribeBlock('randomized'),
+        {numRetries: 1},
+      );
+    });
+  } finally {
+    removeEventHandler(handler);
+  }
+
+  expect(ordersAtDescribeStart[0]).toEqual(['one', 'two', 'flaky']);
+  expect(attemptOrders[0]).toEqual(attemptOrders[1]);
+  expect(ordersAtDescribeStart[1]).toEqual(attemptOrders[0]);
 });

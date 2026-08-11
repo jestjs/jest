@@ -42,9 +42,16 @@ type PromiseMatchers<T = unknown> = {
     Inverse<JestMatchers<Promise<void>, T>>;
 };
 
+type SnapshotStateWithRetry = SnapshotState & {
+  getRetryCheckpoint?: () => {
+    commit: () => void;
+    restore: () => void;
+  };
+};
+
 declare module 'expect' {
   interface MatcherState {
-    snapshotState: SnapshotState;
+    snapshotState: SnapshotStateWithRetry;
     /** Whether the test was called with `test.failing()` */
     testFailing?: boolean;
   }

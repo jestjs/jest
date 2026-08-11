@@ -154,6 +154,9 @@ describe('Test Retries', () => {
     expect(result.failed).toBe(true);
     expect(result.stderr).toContain('afterAll attempt 1');
     expect(result.stderr).not.toContain('afterAll attempt 2');
+    expect(result.stderr).toContain('transient test failure');
+    expect(result.stderr).toContain('mixed afterAll attempt 1');
+    expect(result.stderr).not.toContain('mixed afterAll attempt 2');
     expect(result.stderr).toContain('persistent beforeAll failure');
     expect(result.stderr).toContain('fails on every attempt');
     expect(result.stderr).toContain('process error after todo');
@@ -168,6 +171,60 @@ describe('Test Retries', () => {
         setupFilesAfterEnv: ['<rootDir>/setupGlobalRetry.js'],
       }),
       'entireDescribeGlobalRetry.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+  });
+
+  it('composes nested describe retry settings', () => {
+    const result = runJest('test-retries', [
+      '--config',
+      JSON.stringify({
+        setupFilesAfterEnv: ['<rootDir>/setupGlobalDescribeRetry.js'],
+      }),
+      'entireDescribeNestedComposition.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+  });
+
+  it('treats zero describe retries as an explicit retry boundary', () => {
+    const reporterConfig = {
+      reporters: [
+        'default',
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+      ],
+      setupFilesAfterEnv: ['<rootDir>/setupGlobalRetry.js'],
+    };
+    const result = runJest('test-retries', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      '__tests__/entireDescribeZeroRetry.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.failed).toBe(true);
+    const jsonResult = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(jsonResult.testResults[0].testResults[0]).toMatchObject({
+      invocations: 1,
+      status: 'failed',
+    });
+  });
+
+  it('retries describes after beforeEach and afterEach failures', () => {
+    const result = runJest('test-retries', ['entireDescribeEachHooks.test.js']);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+  });
+
+  it('keeps randomized test order stable across describe attempts', () => {
+    const result = runJest('test-retries', [
+      '--randomize',
+      '--seed=1234',
+      'entireDescribeRandomize.test.js',
     ]);
 
     expect(result.exitCode).toBe(0);

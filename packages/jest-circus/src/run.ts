@@ -7,7 +7,7 @@
 
 import {AsyncLocalStorage} from 'node:async_hooks';
 import pLimit from 'p-limit';
-import {jestExpect} from '@jest/expect';
+import {type MatcherState, jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';
 import {invariant} from 'jest-util';
 import shuffleArray, {
@@ -36,10 +36,9 @@ const {setTimeout} = globalThis;
 
 const testNameStorage = new AsyncLocalStorage<string>();
 
-type SnapshotRetryCheckpoint = {
-  commit: () => void;
-  restore: () => void;
-};
+type SnapshotRetryCheckpoint = ReturnType<
+  NonNullable<MatcherState['snapshotState']['getRetryCheckpoint']>
+>;
 
 type DescribeRetryAttempt = {
   errorsBeforeAttempt: Map<Circus.TestEntry, number>;
@@ -55,18 +54,8 @@ type DescribeRetryAttempt = {
 
 type RunContext = {
   insideDescribeRetry: boolean;
-};
-
-const shuffleDescribeBlocks = (
-  describeBlock: Circus.DescribeBlock,
-  rng: RandomNumberGenerator,
-): void => {
-  describeBlock.children = shuffleArray(describeBlock.children, rng);
-  for (const child of describeBlock.children) {
-    if (child.type === 'describeBlock') {
-      shuffleDescribeBlocks(child, rng);
-    }
-  }
+  rng: RandomNumberGenerator | undefined;
+  shuffledDescribeBlocks: WeakSet<Circus.DescribeBlock>;
 };
 
 const run = async (): Promise<Circus.RunResult> => {
@@ -76,12 +65,11 @@ const run = async (): Promise<Circus.RunResult> => {
     currentConcurrentTestName: () => testNameStorage.getStore(),
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
-  if (rng) {
-    shuffleDescribeBlocks(rootDescribeBlock, rng);
-  }
   await dispatch({name: 'run_start'});
   await _runTestsForDescribeBlock(rootDescribeBlock, {
     insideDescribeRetry: false,
+    rng,
+    shuffledDescribeBlocks: new WeakSet(),
   });
   await dispatch({name: 'run_finish'});
   return makeRunResult(
@@ -146,13 +134,13 @@ const _runTestsForDescribeBlock = async (
         isExpectingAssertions ||
         suppressedErrors.length > 0,
       processErrorGenerationBeforeAttempt: state.processErrorGeneration,
-      snapshotCheckpoint: (
-        jestExpect.getState().snapshotState as unknown as
-          {getRetryCheckpoint: () => SnapshotRetryCheckpoint} | undefined
-      )?.getRetryCheckpoint(),
+      snapshotCheckpoint: jestExpect
+        .getState()
+        .snapshotState?.getRetryCheckpoint?.(),
       unhandledErrorsBeforeAttempt: state.unhandledErrors.length,
     };
     await _runTestsForDescribeBlockOnce(describeBlock, {
+      ...runContext,
       insideDescribeRetry: true,
     });
 
@@ -288,6 +276,14 @@ const _runTestsForDescribeBlockOnce = async (
     ((globalThis as Global.Global)[RETRY_IMMEDIATELY] as any) || false;
 
   const deferredRetryTests: Array<Circus.TestEntry> = [];
+
+  if (runContext.rng && !runContext.shuffledDescribeBlocks.has(describeBlock)) {
+    describeBlock.children = shuffleArray(
+      describeBlock.children,
+      runContext.rng,
+    );
+    runContext.shuffledDescribeBlocks.add(describeBlock);
+  }
 
   // Regroup concurrent tests as a single "sequential" unit
   const children = regroupConcurrentChildren(describeBlock.children);

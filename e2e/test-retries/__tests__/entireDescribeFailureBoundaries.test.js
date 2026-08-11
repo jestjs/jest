@@ -22,6 +22,26 @@ describe('afterAll failure', () => {
   });
 });
 
+describe('test and afterAll failures', () => {
+  let attempt = 0;
+
+  jest.retryTimes(1, {entireDescribe: true});
+
+  beforeAll(() => {
+    attempt += 1;
+  });
+
+  test('would pass on a retry', () => {
+    if (attempt === 1) {
+      throw new Error('transient test failure');
+    }
+  });
+
+  afterAll(() => {
+    throw new Error(`mixed afterAll attempt ${attempt}`);
+  });
+});
+
 describe('persistent beforeAll failure', () => {
   jest.retryTimes(1, {entireDescribe: true});
 
