@@ -19,7 +19,7 @@
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
-    "@jridgewell/trace-mapping": "^0.3.25",
+    "@jridgewell/trace-mapping": "^0.3.31",
     "@types/node": "*",
     "chalk": "^4.1.2",
     "collect-v8-coverage": "^1.0.2",
