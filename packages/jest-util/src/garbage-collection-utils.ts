@@ -113,12 +113,17 @@ export function protectProperties<T>(
       writable: true,
     });
     for (const key of getProtectedKeys(value, properties)) {
-      // Reading an accessor resolves it, which both triggers deprecation
-      // warnings and defeats lazy globals. Its value is protected once
-      // whoever owns it resolves it.
-      const descriptor = Reflect.getOwnPropertyDescriptor(value, key);
-      if (descriptor && 'value' in descriptor) {
-        protectProperties(descriptor.value, [], depth - 1);
+      try {
+        // Reading an accessor resolves it, which both triggers deprecation
+        // warnings and defeats lazy globals. Its value is protected once
+        // whoever owns it resolves it.
+        const descriptor = Reflect.getOwnPropertyDescriptor(value, key);
+        if (descriptor && 'value' in descriptor) {
+          protectProperties(descriptor.value, [], depth - 1);
+        }
+      } catch {
+        // Inspecting exotic objects might fail, e.g. a proxy with a throwing trap.
+        // Instead of failing the entire process, we will skip the property.
       }
     }
     return result;
