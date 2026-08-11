@@ -89,7 +89,7 @@ describe('getCallsite', () => {
     const site = getCallsite(0, new Map([[__filename, mapPath]]));
 
     expect(site.getFileName()).toEqual(__filename);
-    expect(site.getColumnNumber()).toEqual(sourceMapColumn + 1);
+    expect(site.getColumnNumber()).toEqual(sourceMapColumn);
     expect(site.getLineNumber()).toEqual(sourceMapLine);
     expect(originalPositionFor).toHaveBeenCalledTimes(1);
     expect(originalPositionFor).toHaveBeenCalledWith(expect.anything(), {
@@ -100,7 +100,7 @@ describe('getCallsite', () => {
   });
 });
 
-test('converts between V8 and source map column numbering', () => {
+test('looks up the segment at the zero-based column', () => {
   jest.mocked(fs.existsSync).mockReturnValue(true);
   mockFileContents(() =>
     JSON.stringify({
@@ -111,22 +111,31 @@ test('converts between V8 and source map column numbering', () => {
       version: 3,
     }),
   );
-  jest.mocked(originalPositionFor).mockImplementation(() => ({
+  // An unmapped lookup first, so `bare` reports V8's own column. Both calls
+  // start at the same column, so the needles are comparable.
+  jest.mocked(originalPositionFor).mockReturnValue({
+    column: null,
+    line: null,
+    name: null,
+    source: null,
+  });
+
+  const bare = getCallsite(0, new Map([[__filename, mapPath]]));
+  const rawColumn = bare.getColumnNumber()!;
+
+  jest.mocked(originalPositionFor).mockReturnValue({
     column: 2,
     line: 7,
     name: null,
     source: 'file.js',
-  }));
+  });
 
-  const raw = getCallsite(0);
-  const rawColumn = raw.getColumnNumber()!;
   const site = getCallsite(0, new Map([[__filename, mapPath]]));
-  const [, needle] = jest.mocked(originalPositionFor).mock.calls[0];
+  const needles = jest.mocked(originalPositionFor).mock.calls;
 
-  // V8 counts columns from one and source maps from zero, so the lookup goes
-  // in one lower than V8 reported and the answer comes back one higher.
-  expect(needle.column).toBeGreaterThanOrEqual(0);
-  expect(rawColumn).toBeGreaterThan(0);
-  expect(site.getColumnNumber()).toBe(3);
+  // V8 counts columns from one and the needle is zero-based, so the lookup
+  // goes in one lower than V8 reported. The result is passed through as-is.
+  expect(needles.at(-1)![1].column).toBe(rawColumn - 1);
+  expect(site.getColumnNumber()).toBe(2);
   expect(site.getLineNumber()).toBe(7);
 });

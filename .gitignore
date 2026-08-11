@@ -18,6 +18,11 @@
 /e2e/timeouts
 /e2e/timeouts-legacy
 /e2e/ts-node-integration
+/e2e/to-match-inline-snapshot/__tests__
+/e2e/to-match-snapshot/__tests__
+
+# written to the repo root by e2e/__tests__/listTests.test.ts
+/test-lists.json
 
 /e2e/*/node_modules
 /e2e/*/.pnp

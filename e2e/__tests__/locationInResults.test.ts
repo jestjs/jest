@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isJestJasmineRun} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
 
 it('defaults to null for location', () => {
@@ -29,52 +30,52 @@ it('adds correct location info when provided with flag', () => {
   expect(result.numTotalTests).toBe(10);
 
   expect(assertions[0].location).toEqual({
-    column: 1,
+    column: isJestJasmineRun() ? 0 : 1,
     line: 10,
   });
 
   expect(assertions[1].location).toEqual({
-    column: 1,
+    column: isJestJasmineRun() ? 0 : 1,
     line: 14,
   });
 
   expect(assertions[2].location).toEqual({
-    column: 1,
+    column: isJestJasmineRun() ? 0 : 1,
     line: 19,
   });
 
   expect(assertions[3].location).toEqual({
-    column: 22,
+    column: isJestJasmineRun() ? 21 : 22,
     line: 23,
   });
 
   expect(assertions[4].location).toEqual({
-    column: 22,
+    column: isJestJasmineRun() ? 21 : 22,
     line: 23,
   });
 
   expect(assertions[5].location).toEqual({
-    column: 3,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 28,
   });
 
   expect(assertions[6].location).toEqual({
-    column: 3,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 32,
   });
 
   expect(assertions[7].location).toEqual({
-    column: 3,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 37,
   });
 
   expect(assertions[8].location).toEqual({
-    column: 24,
+    column: isJestJasmineRun() ? 23 : 24,
     line: 41,
   });
 
   expect(assertions[9].location).toEqual({
-    column: 24,
+    column: isJestJasmineRun() ? 23 : 24,
     line: 41,
   });
 });

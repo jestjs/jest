@@ -22,7 +22,8 @@ const addSourceMapConsumer = (
   let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
-    // V8 counts columns from one, source maps count them from zero.
+    // The needle is zero-based while V8 counts columns from one, so looking up
+    // V8's number directly finds the segment one column to the right.
     position ??= originalPositionFor(tracer, {
       column: (getColumnNumber() ?? 1) - 1,
       line: getLineNumber() ?? -1,
@@ -34,9 +35,16 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
+        // TODO: return `column + 1` in Jest 31, so this matches V8 and
+        // jest-circus. Reported zero-based until then, which is what
+        // `--testLocationInResults` documents for jest-jasmine2, and changing
+        // it breaks anyone reading that field.
+        //
+        // A mapping to the first column is a real answer either way, not the
+        // miss the old truthiness check took it for.
         const {column} = getPosition();
 
-        return column == null ? getColumnNumber() : column + 1;
+        return column ?? getColumnNumber();
       },
       writable: false,
     },
