@@ -447,9 +447,9 @@ const _getError = (
     const message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
     const errorWithStack = new Error(message);
     if (typeof asyncError.stack === 'string') {
-      const firstLineEnd = asyncError.stack.indexOf('\n');
+      const firstStackFrame = asyncError.stack.search(/\n\s+at /);
       errorWithStack.stack = `${errorWithStack.name}: ${message}${
-        firstLineEnd === -1 ? '' : asyncError.stack.slice(firstLineEnd)
+        firstStackFrame === -1 ? '' : asyncError.stack.slice(firstStackFrame)
       }`;
     }
     return errorWithStack;
