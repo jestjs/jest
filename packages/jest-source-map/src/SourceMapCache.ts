@@ -97,6 +97,7 @@ function findSourceMapUrl(source: string): string | null {
 export class SourceMapCache {
   private readonly sourceMaps: SourceMapRegistry | null;
   private readonly loaded = new Map<string, LoadedSourceMap | null>();
+  private readonly attempted = new Map<string, string | undefined>();
 
   constructor(sourceMaps: SourceMapRegistry | null) {
     this.sourceMaps = sourceMaps;
@@ -104,28 +105,25 @@ export class SourceMapCache {
 
   get(generatedPath: string): LoadedSourceMap | null {
     const cached = this.loaded.get(generatedPath);
-
-    if (cached != null) {
-      return cached;
-    }
+    const registered = this.sourceMaps?.get(generatedPath);
 
     // The registry fills in as files are transformed, so a file looked up
     // before its map was registered must not stay unmapped for the rest of the
-    // run. Only the registry is re-checked; re-reading from disk on every miss
-    // would mean a `sourceMappingURL` scan per frame.
-    if (cached === null && this.sourceMaps?.get(generatedPath) == null) {
-      return null;
+    // run. Retry only when the registry entry itself changed, otherwise a map
+    // that fails to load is re-read for every frame that mentions the file.
+    if (
+      cached !== undefined &&
+      this.attempted.get(generatedPath) === registered
+    ) {
+      return cached;
     }
 
     const loaded = this.load(generatedPath);
 
     this.loaded.set(generatedPath, loaded);
+    this.attempted.set(generatedPath, registered);
 
     return loaded;
-  }
-
-  clear(): void {
-    this.loaded.clear();
   }
 
   private load(generatedPath: string): LoadedSourceMap | null {

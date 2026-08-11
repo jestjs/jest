@@ -79,22 +79,6 @@ describe('SourceMapCache', () => {
     expect(readFileMock).toHaveBeenCalledTimes(1);
   });
 
-  test('clear drops parsed maps', () => {
-    mockFileContents(() => JSON.stringify(decodedMap));
-
-    const cache = new SourceMapCache(
-      new Map([[generatedPath, registeredMapPath]]),
-    );
-
-    cache.get(generatedPath);
-    cache.clear();
-    cache.get(generatedPath);
-
-    expect(readFileMock).toHaveBeenCalledTimes(2);
-  });
-
-  // `TraceMap` alone throws on these, which would silently leave every frame
-  // in a bundled file at its generated position.
   test('reads an indexed map built from `sections`', () => {
     mockFileContents(() =>
       JSON.stringify({
@@ -127,6 +111,20 @@ describe('SourceMapCache', () => {
       map: expect.anything(),
       url: generatedPath,
     });
+  });
+
+  test('does not retry a registered map that failed to load', () => {
+    mockFileContents(() => '{not json');
+
+    const cache = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+
+    cache.get(generatedPath);
+    cache.get(generatedPath);
+    cache.get(generatedPath);
+
+    expect(readFileMock).toHaveBeenCalledTimes(1);
   });
 
   test('survives an unparsable map', () => {
