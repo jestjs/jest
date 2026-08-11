@@ -12,14 +12,13 @@ import {SourceMapCache, mapSourcePosition} from '../SourceMapCache';
 jest.mock('graceful-fs');
 
 // Built with `path` so the expectations survive on Windows, where the resolved
-// source of a mapping comes back with backslashes.
-const buildDir = path.resolve(path.sep, 'repo', 'build');
-const generatedPath = path.join(buildDir, 'out.js');
-const adjacentMapPath = path.join(buildDir, 'out.js.map');
-const originalPath = path.join(buildDir, 'input.ts');
-// Jest derives this path from the file's contents and the transform config, so
-// distinct content means a distinct path. Parsed maps are cached against it for
-// the lifetime of the process, so each test needs its own.
+// source of a mapping comes back with backslashes. Both paths are per-test:
+// parsed maps are held against the map path and the map path is remembered
+// against the generated path, both for the lifetime of the process.
+let buildDir = '';
+let generatedPath = '';
+let adjacentMapPath = '';
+let originalPath = '';
 let registeredMapPath = '';
 let mapPathCounter = 0;
 
@@ -45,6 +44,10 @@ beforeEach(() => {
   jest.clearAllMocks();
   existsSyncMock.mockReturnValue(true);
   mapPathCounter += 1;
+  buildDir = path.resolve(path.sep, 'repo', `build-${mapPathCounter}`);
+  generatedPath = path.join(buildDir, 'out.js');
+  adjacentMapPath = path.join(buildDir, 'out.js.map');
+  originalPath = path.join(buildDir, 'input.ts');
   registeredMapPath = path.resolve(
     path.sep,
     'cache',
@@ -168,6 +171,25 @@ describe('SourceMapCache', () => {
     expect(cache.get(generatedPath)).toBe(loaded);
   });
 
+  // A worker runs the next test file while a stray timer from the previous one
+  // can still throw, and that frame names a file the new registry never saw.
+  test('still resolves a file the current registry has never seen', () => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    const first = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+
+    expect(first.get(generatedPath)).not.toBeNull();
+
+    const next = new SourceMapCache(new Map());
+
+    expect(next.get(generatedPath)).toEqual({
+      map: expect.anything(),
+      url: generatedPath,
+    });
+  });
+
   test('survives an unparsable map', () => {
     mockFileContents(() => '{not json');
 
@@ -240,6 +262,25 @@ describe('mapSourcePosition', () => {
       line: 10,
       name: 'double',
       source: originalPath,
+    });
+  });
+
+  test('leaves a source that already names a scheme alone', () => {
+    mockFileContents(() =>
+      JSON.stringify({...decodedMap, sources: ['webpack:///src/input.ts']}),
+    );
+
+    const cache = new SourceMapCache(
+      new Map([[generatedPath, registeredMapPath]]),
+    );
+
+    expect(
+      mapSourcePosition(cache, {column: 0, line: 2, source: generatedPath}),
+    ).toEqual({
+      column: 2,
+      line: 10,
+      name: 'double',
+      source: 'webpack:///src/input.ts',
     });
   });
 

@@ -60,8 +60,18 @@ function readFile(source: string): string | null {
   }
 }
 
+// A scheme needs at least two characters before the colon, so a Windows drive
+// letter is not mistaken for one.
+const ABSOLUTE_URI_REGEXP = /^[a-zA-Z][\w+\-.]+:/;
+
 // Resolve a URL relative to a directory, keeping any protocol prefix intact.
 function resolveRelativeTo(from: string, url: string): string {
+  // Bundlers name their sources with a scheme — `webpack:///src/a.ts`. Resolving
+  // one against a directory invents a path that has never existed.
+  if (ABSOLUTE_URI_REGEXP.test(url)) {
+    return url;
+  }
+
   const dir = path.dirname(from);
   const protocol = /^\w+:\/\/[^/]*/.exec(dir)?.[0] ?? '';
   const startPath = dir.slice(protocol.length);
@@ -101,6 +111,13 @@ function findSourceMapUrl(source: string): string | null {
 // maps for the lifetime of the process rather than re-reading and re-parsing
 // them for every test file a worker runs.
 const parsedByCachePath = new Map<string, TraceMap | null>();
+
+// Every test file gets a fresh registry, but a worker moves on to the next file
+// while a stray timer from the previous one can still throw. Remember where each
+// generated file's map lived so those frames stay resolvable. The path is
+// content-addressed, so a remembered entry can only ever answer for a file the
+// live registry has never heard of.
+const rememberedMapPaths = new Map<string, string>();
 
 function parseMap(content: string): TraceMap | null {
   try {
@@ -163,7 +180,16 @@ export class SourceMapCache {
 
   private load(generatedPath: string): LoadedSourceMap | null {
     // The map Jest itself produced while transforming the file.
-    const sourceMapPath = this.sourceMaps?.get(generatedPath);
+    const registered = this.sourceMaps?.get(generatedPath);
+
+    if (registered != null && registered !== '') {
+      rememberedMapPaths.set(generatedPath, registered);
+    }
+
+    const sourceMapPath =
+      registered != null && registered !== ''
+        ? registered
+        : rememberedMapPaths.get(generatedPath);
 
     if (sourceMapPath != null && sourceMapPath !== '') {
       const map = parseRegisteredMap(sourceMapPath);
