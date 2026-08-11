@@ -37,6 +37,11 @@ import {
   getState as getRunnerState,
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
+import {
+  type DescribeRetryOptions,
+  type InternalCircusState,
+  RETRY_TIMES_SETTER,
+} from '../types';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID} from '../utils';
 
@@ -111,6 +116,20 @@ export const initialize = async ({
     expect: jestExpect,
   };
   setGlobalsForRuntime(runtimeGlobals);
+  environment.global[RETRY_TIMES_SETTER] = (
+    retryOptions: DescribeRetryOptions,
+  ) => {
+    const state = getRunnerState() as InternalCircusState;
+    if (state.hasStarted) {
+      state.unhandledErrors.push(
+        new Error(
+          'Cannot set retry options after tests have started running. Retry options must be set synchronously.',
+        ),
+      );
+      return;
+    }
+    state.describeRetryOptions.set(state.currentDescribeBlock, retryOptions);
+  };
 
   if (config.injectGlobals) {
     Object.assign(environment.global, runtimeGlobals);
@@ -144,7 +163,7 @@ export const initialize = async ({
 
   jestExpect.setState({snapshotState, testPath});
 
-  addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+  addEventHandler(setupSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
     addEventHandler(
       testCaseReportHandler(
@@ -352,13 +371,10 @@ export const runAndTransformResultsToJestFormat = async ({
   };
 };
 
-const handleSnapshotStateAfterRetry =
+const setupSnapshotStateAfterRetry =
   (snapshotState: SnapshotState) => (event: Circus.Event) => {
-    switch (event.name) {
-      case 'test_retry': {
-        // Clear any snapshot data that occurred in previous test run
-        snapshotState.clear();
-      }
+    if (event.name === 'test_retry') {
+      snapshotState.clear();
     }
   };
 

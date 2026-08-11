@@ -132,6 +132,33 @@ test('makeSingleTestResult serializes retry reasons', () => {
   ).toEqual(['rendered: flaked']);
 });
 
+test('makeSingleTestResult keeps primitive retry errors independent', () => {
+  const rootDescribe = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const asyncError = new Error('hook location');
+  const test = makeTest(
+    () => {},
+    undefined,
+    false,
+    'primitive hook errors',
+    rootDescribe,
+    undefined,
+    asyncError,
+    false,
+  );
+
+  test.retryReasons.push(['first primitive', asyncError]);
+  test.errors.push(['second primitive', asyncError]);
+  test.status = 'done';
+
+  const result = makeSingleTestResult(test);
+
+  expect(result.retryReasons[0]).toContain('first primitive');
+  expect(result.retryReasons[0]).not.toContain('second primitive');
+  expect(result.errors[0]).toContain('second primitive');
+  expect(result.errors[0]).not.toContain('first primitive');
+  expect(asyncError.message).toBe('hook location');
+});
+
 test('makeRunResult keeps the unserialized unhandled errors', () => {
   const error = new Error('unhandled');
   const result = makeRunResult(makeDescribe(ROOT_DESCRIBE_BLOCK_NAME), [error]);

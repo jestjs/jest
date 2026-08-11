@@ -1224,6 +1224,36 @@ test('will fail', () => {
 });
 ```
 
+`entireDescribe` retries all tests and hooks in the `describe` block where `jest.retryTimes()` is called. When called at the top level, it retries the root `describe` block for the test file. While a describe retry is active, per-test retries are not applied within its subtree.
+
+```js
+describe('workflow', () => {
+  jest.retryTimes(3, {entireDescribe: true});
+
+  beforeAll(() => {
+    // Runs again before each retry.
+  });
+
+  test('first step', () => {
+    // Passing tests run again with the rest of the block.
+  });
+
+  test('second step', () => {
+    // A failure retries the entire block.
+  });
+
+  afterAll(() => {
+    // Runs after every attempt.
+  });
+});
+```
+
+Each attempt runs the block's `beforeAll` hooks, child tests and nested describes, and `afterAll` hooks. When a retryable test or hook failure is recorded, passing tests run again with the rest of the block. If `entireDescribe` is omitted or `false`, `jest.retryTimes()` keeps its existing per-test behavior.
+
+`afterAll` hooks still run after every attempt, but failures from `afterAll` and process-level errors do not trigger a describe retry and remain reported.
+
+`retryImmediately` only applies to ordinary per-test retries. A describe retry always finishes the complete current attempt before starting the next one.
+
 Returns the `jest` object for chaining.
 
 :::caution

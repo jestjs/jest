@@ -11,7 +11,11 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
+import {
+  type InternalCircusState,
+  LOG_ERRORS_BEFORE_RETRY,
+  TEST_TIMEOUT_SYMBOL,
+} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -184,10 +188,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_skip': {
       event.test.status = 'skip';
+      state.currentlyRunningTest = null;
       break;
     }
     case 'test_todo': {
       event.test.status = 'todo';
+      state.currentlyRunningTest = null;
       break;
     }
     case 'test_done': {
@@ -271,6 +277,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       // execution, which will result in one test's error failing another test.
       // In any way, it should be possible to track where the error was thrown
       // from.
+      const internalState = state as InternalCircusState;
       if (state.currentlyRunningTest) {
         if (event.promise) {
           state.currentlyRunningTest.unhandledRejectionErrorByPromise.set(
@@ -278,17 +285,13 @@ const eventHandler: Circus.EventHandler = (event, state) => {
             event.error,
           );
         } else {
+          internalState.processErrorGeneration++;
           state.currentlyRunningTest.errors.push(event.error);
         }
+      } else if (event.promise) {
+        state.unhandledRejectionErrorByPromise.set(event.promise, event.error);
       } else {
-        if (event.promise) {
-          state.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
-          );
-        } else {
-          state.unhandledErrors.push(event.error);
-        }
+        state.unhandledErrors.push(event.error);
       }
       break;
     }

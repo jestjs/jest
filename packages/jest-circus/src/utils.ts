@@ -214,12 +214,13 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (doneCallback) {
       let returnedValue: unknown = undefined;
+      let seenDone = false;
 
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
 
-        if (!completed && testOrHook.seenDone) {
+        if (!completed && seenDone) {
           errorAtDone.message =
             'Expected done to be called once, but it was called multiple times.';
 
@@ -230,7 +231,8 @@ export const callAsyncCircusFn = (
           }
           reject(errorAtDone);
           throw errorAtDone;
-        } else {
+        } else if (!completed) {
+          seenDone = true;
           testOrHook.seenDone = true;
         }
 
@@ -442,8 +444,15 @@ const _getError = (
   }
 
   if (asyncError) {
-    asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
-    return asyncError;
+    const message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    const errorWithStack = new Error(message);
+    if (typeof asyncError.stack === 'string') {
+      const firstLineEnd = asyncError.stack.indexOf('\n');
+      errorWithStack.stack = `${errorWithStack.name}: ${message}${
+        firstLineEnd === -1 ? '' : asyncError.stack.slice(firstLineEnd)
+      }`;
+    }
+    return errorWithStack;
   }
 
   return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);
@@ -452,7 +461,7 @@ const _getError = (
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
-  asyncError: Circus.Exception,
+  asyncError?: Circus.Exception,
 ): void => {
   for (const child of describeBlock.children) {
     switch (child.type) {
@@ -460,7 +469,7 @@ export const addErrorToEachTestUnderDescribe = (
         addErrorToEachTestUnderDescribe(child, error, asyncError);
         break;
       case 'test':
-        child.errors.push([error, asyncError]);
+        child.errors.push(asyncError ? [error, asyncError] : error);
         break;
     }
   }

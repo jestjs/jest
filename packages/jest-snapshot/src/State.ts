@@ -64,6 +64,7 @@ export default class SnapshotState {
   private readonly _initialData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
+  private _inlineSnapshotsForTestRetry: Array<InlineSnapshot>;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -87,6 +88,7 @@ export default class SnapshotState {
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
+    this._inlineSnapshotsForTestRetry = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -137,13 +139,51 @@ export default class SnapshotState {
 
   clear(): void {
     this._snapshotData = this._initialData;
-    this._inlineSnapshots = [];
+    this._inlineSnapshots = [...this._inlineSnapshotsForTestRetry];
     this._counters = new Map();
     this._index = 0;
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
     this.updated = 0;
+  }
+
+  /** @internal */
+  getRetryCheckpoint(): {commit: () => void; restore: () => void} {
+    const added = this.added;
+    const counters = new Map(this._counters);
+    const dirty = this._dirty;
+    const inlineSnapshots = [...this._inlineSnapshots];
+    const inlineSnapshotsForTestRetry = [...this._inlineSnapshotsForTestRetry];
+    const matched = this.matched;
+    const snapshotData = {...this._snapshotData};
+    const uncheckedKeys = new Set(this._uncheckedKeys);
+    const unmatched = this.unmatched;
+    const updated = this.updated;
+
+    return {
+      commit: () => {
+        this._inlineSnapshotsForTestRetry = [...this._inlineSnapshots];
+      },
+      restore: () => {
+        this.added = added;
+        this._counters = counters;
+        this._dirty = dirty;
+        this._inlineSnapshots = inlineSnapshots;
+        this._inlineSnapshotsForTestRetry = inlineSnapshotsForTestRetry;
+        this.matched = matched;
+        for (const key of Object.keys(this._snapshotData)) {
+          delete this._snapshotData[key];
+        }
+        Object.assign(this._snapshotData, snapshotData);
+        this._uncheckedKeys.clear();
+        for (const key of uncheckedKeys) {
+          this._uncheckedKeys.add(key);
+        }
+        this.unmatched = unmatched;
+        this.updated = updated;
+      },
+    };
   }
 
   save(): SaveStatus {

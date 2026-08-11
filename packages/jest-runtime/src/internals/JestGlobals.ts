@@ -17,10 +17,17 @@ import {syntheticFromExports} from './syntheticBuilders';
 import type {EnvironmentGlobals, JestGlobalsWithJest} from './types';
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
+const retryTimesSetterSymbol = Symbol.for('RETRY_TIMES_SETTER');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
 const retryImmediatelySymbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
+
+type DescribeRetryOptions = {
+  logErrorsBeforeRetry?: boolean;
+  numRetries: number;
+  waitBeforeRetry?: number;
+};
 
 export interface JestGlobalsOptions {
   config: Config.ProjectConfig;
@@ -281,12 +288,25 @@ export class JestGlobals {
     };
 
     const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
-      this.environment.global[retryTimesSymbol] = numTestRetries;
-      this.environment.global[logErrorsBeforeRetrySymbol] =
-        options?.logErrorsBeforeRetry;
-      this.environment.global[waitBeforeRetrySymbol] = options?.waitBeforeRetry;
-      this.environment.global[retryImmediatelySymbol] =
-        options?.retryImmediately;
+      const retryTimesSetter = this.environment.global[
+        retryTimesSetterSymbol
+      ] as ((retryOptions: DescribeRetryOptions) => void) | undefined;
+
+      if (options?.entireDescribe) {
+        retryTimesSetter?.({
+          logErrorsBeforeRetry: options.logErrorsBeforeRetry,
+          numRetries: numTestRetries,
+          waitBeforeRetry: options.waitBeforeRetry,
+        });
+      } else {
+        this.environment.global[retryTimesSymbol] = numTestRetries;
+        this.environment.global[logErrorsBeforeRetrySymbol] =
+          options?.logErrorsBeforeRetry;
+        this.environment.global[waitBeforeRetrySymbol] =
+          options?.waitBeforeRetry;
+        this.environment.global[retryImmediatelySymbol] =
+          options?.retryImmediately;
+      }
 
       return jestObject;
     };

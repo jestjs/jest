@@ -9,7 +9,7 @@ import type {Circus, Global} from '@jest/types';
 import {protectProperties, setGlobal} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
-import {EVENT_HANDLERS, STATE_SYM} from './types';
+import {EVENT_HANDLERS, type InternalCircusState, STATE_SYM} from './types';
 import {makeDescribe} from './utils';
 
 const handlers: Array<Circus.EventHandler> = ((globalThis as Global.Global)[
@@ -19,17 +19,19 @@ setGlobal(globalThis, EVENT_HANDLERS, handlers, 'retain');
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
-const createState = (): Circus.State => {
+const createState = (): InternalCircusState => {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   return {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,
+    describeRetryOptions: new WeakMap(),
     expand: undefined,
     hasFocusedTests: false,
     hasStarted: false,
     includeTestLocationInResult: false,
     maxConcurrency: 5,
     parentProcess: null,
+    processErrorGeneration: 0,
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     seed: 0,
     testNamePattern: null,
@@ -39,22 +41,32 @@ const createState = (): Circus.State => {
   };
 };
 
+const initializeInternalState = (state: Circus.State): InternalCircusState => {
+  const internalState = state as InternalCircusState;
+  internalState.describeRetryOptions ??= new WeakMap();
+  internalState.processErrorGeneration ??= 0;
+  return internalState;
+};
+
 export const getState = (): Circus.State =>
   (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State => {
-  setGlobal(globalThis, STATE_SYM, state);
-  protectProperties(state, [
+  const internalState = initializeInternalState(state);
+  setGlobal(globalThis, STATE_SYM, internalState);
+  protectProperties(internalState, [
+    'describeRetryOptions',
     'hasFocusedTests',
     'hasStarted',
     'includeTestLocationInResult',
     'maxConcurrency',
+    'processErrorGeneration',
     'seed',
     'testNamePattern',
     'testTimeout',
     'unhandledErrors',
     'unhandledRejectionErrorByPromise',
   ]);
-  return state;
+  return internalState;
 };
 export const resetState = (): void => {
   setState(createState());

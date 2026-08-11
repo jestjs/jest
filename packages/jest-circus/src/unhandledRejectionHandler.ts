@@ -8,6 +8,7 @@
 import type {Circus} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import {invariant} from 'jest-util';
+import type {InternalCircusState} from './types';
 import {addErrorToEachTestUnderDescribe} from './utils';
 
 // Global values can be overwritten by mocks or tests. We'll capture
@@ -25,6 +26,9 @@ export const unhandledRejectionHandler = (
   waitForUnhandledRejections: boolean,
 ): Circus.EventHandler => {
   return async (event, state) => {
+    const markDescribeRetryNonRetryable = () =>
+      (state as InternalCircusState).processErrorGeneration++;
+
     if (event.name === 'hook_start') {
       runtime.enterTestCode();
     } else if (event.name === 'hook_success' || event.name === 'hook_failure') {
@@ -41,18 +45,23 @@ export const unhandledRejectionHandler = (
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
         for (const error of state.unhandledRejectionErrorByPromise.values()) {
+          markDescribeRetryNonRetryable();
           addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
         }
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         for (const error of state.unhandledRejectionErrorByPromise.values()) {
-          state.unhandledErrors.push([error, asyncError]);
+          const hookError: Circus.Exception = [error, asyncError];
+          markDescribeRetryNonRetryable();
+          state.unhandledErrors.push(hookError);
         }
       } else {
         invariant(test, 'always present for `*Each` hooks');
         for (const error of test.unhandledRejectionErrorByPromise.values()) {
-          test.errors.push([error, asyncError]);
+          const hookError: Circus.Exception = [error, asyncError];
+          markDescribeRetryNonRetryable();
+          test.errors.push(hookError);
         }
       }
     } else if (event.name === 'test_fn_start') {
@@ -72,7 +81,9 @@ export const unhandledRejectionHandler = (
       invariant(test, 'always present for `*Each` hooks');
 
       for (const error of test.unhandledRejectionErrorByPromise.values()) {
-        test.errors.push([error, event.test.asyncError]);
+        const testError: Circus.Exception = [error, event.test.asyncError];
+        markDescribeRetryNonRetryable();
+        test.errors.push(testError);
       }
     } else if (event.name === 'teardown') {
       if (waitForUnhandledRejections) {

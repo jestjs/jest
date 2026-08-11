@@ -5,7 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Circus} from '@jest/types';
+
+export type DescribeRetryOptions = {
+  logErrorsBeforeRetry?: boolean;
+  numRetries: number;
+  waitBeforeRetry?: number;
+};
+
+export type InternalCircusState = Circus.State & {
+  describeRetryOptions: WeakMap<Circus.DescribeBlock, DescribeRetryOptions>;
+  processErrorGeneration: number;
+};
+
 export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
+export const RETRY_TIMES_SETTER = Symbol.for('RETRY_TIMES_SETTER');
 export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
 export const RETRY_IMMEDIATELY = Symbol.for('RETRY_IMMEDIATELY');
 export const WAIT_BEFORE_RETRY = Symbol.for('WAIT_BEFORE_RETRY');
