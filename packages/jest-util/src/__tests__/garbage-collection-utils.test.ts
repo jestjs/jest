@@ -20,6 +20,46 @@ it('protection symbol doesnt leak', () => {
   expect({b: 2}).toStrictEqual(omit(obj, 'a'));
 });
 
+describe('protectProperties', () => {
+  // `Object.prototype` itself gets protected, so a plain object inherits that
+  // protection and would not be walked at all.
+  const makeUnprotectedObject = <T extends object>(properties: T) =>
+    Object.assign(Object.create(null) as T, properties);
+
+  it('does not resolve accessors while protecting nested values', () => {
+    let resolutions = 0;
+    const obj = Object.create(null) as {lazy: unknown};
+    Object.defineProperty(obj, 'lazy', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        resolutions++;
+        return {};
+      },
+    });
+
+    protectProperties(obj);
+
+    expect(resolutions).toBe(0);
+  });
+
+  it('skips values that cannot be inspected', () => {
+    const throwOnInspection = () => {
+      throw new Error('cannot inspect');
+    };
+    const obj = makeUnprotectedObject({
+      nested: new Proxy(Object.create(null), {
+        defineProperty: throwOnInspection,
+        getOwnPropertyDescriptor: throwOnInspection,
+        has: throwOnInspection,
+        ownKeys: throwOnInspection,
+      }),
+    });
+
+    expect(() => protectProperties(obj)).not.toThrow();
+  });
+});
+
 describe('initializeGarbageCollectionUtils', () => {
   let globalObject: typeof globalThis;
   let warn: jest.Spied<typeof console.warn>;
