@@ -161,9 +161,13 @@ function deleteProperty(obj: object, key: string | symbol): boolean {
     return Reflect.deleteProperty(obj, key);
   }
 
-  const originalGetter = descriptor.get ?? (() => descriptor.value);
+  let storedValue = descriptor.value;
+  const originalGetter = descriptor.get ?? (() => storedValue);
   const originalSetter =
-    descriptor.set ?? (value => Reflect.set(obj, key, value));
+    descriptor.set ??
+    (value => {
+      storedValue = value;
+    });
 
   return Reflect.defineProperty(obj, key, {
     configurable: true,
