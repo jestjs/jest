@@ -6,4 +6,11 @@
  */
 
 export {default as getCallsite} from './getCallsite';
+export {
+  SourceMapCache,
+  getSourceMapCache,
+  mapSourcePosition,
+} from './SourceMapCache';
+export type {GeneratedPosition, MappedPosition} from './SourceMapCache';
+export {installSourceMaps, uninstallSourceMaps} from './installSourceMaps';
 export type {SourceMapRegistry} from './types';

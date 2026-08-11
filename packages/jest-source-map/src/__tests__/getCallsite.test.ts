@@ -21,6 +21,14 @@ jest.mock('@jridgewell/trace-mapping', () => {
   };
 });
 
+// `readFileSync` is overloaded, so an implementation returning a string does
+// not satisfy its type directly.
+function mockFileContents(read: (filePath: string) => string) {
+  jest
+    .mocked(fs.readFileSync)
+    .mockImplementation(read as unknown as typeof fs.readFileSync);
+}
+
 describe('getCallsite', () => {
   test('without source map', () => {
     const site = getCallsite(0);
@@ -32,7 +40,8 @@ describe('getCallsite', () => {
   });
 
   test('ignores errors when fs throws', () => {
-    jest.mocked(fs.readFileSync).mockImplementation(() => {
+    jest.mocked(fs.existsSync).mockReturnValue(true);
+    mockFileContents(() => {
       throw new Error('Mock error');
     });
 
@@ -45,7 +54,8 @@ describe('getCallsite', () => {
   });
 
   test('reads source map file to determine line and column', () => {
-    jest.mocked(fs.readFileSync).mockImplementation(() =>
+    jest.mocked(fs.existsSync).mockReturnValue(true);
+    mockFileContents(() =>
       JSON.stringify({
         file: 'file.js',
         mappings: 'AAAA,OAAO,MAAM,KAAK,GAAG,QAAd',
@@ -62,6 +72,8 @@ describe('getCallsite', () => {
     jest.mocked(originalPositionFor).mockImplementation(() => ({
       column: sourceMapColumn,
       line: sourceMapLine,
+      name: null,
+      source: 'file.js',
     }));
 
     const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));

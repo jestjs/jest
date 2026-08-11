@@ -234,5 +234,5 @@ Alphabetize by first package name within each section. `yarn check-changelog` va
 
 ## When in doubt
 
-- Per-package `CLAUDE.md` files exist for: `expect`, `jest-circus`, `jest-config`, `jest-environment-node`, `jest-fake-timers`, `jest-haste-map`, `jest-mock`, `jest-reporters`, `jest-resolve`, `jest-runtime`, `jest-snapshot`, `jest-transform`, `jest-worker`. Read the relevant one for package-specific gotchas.
+- Per-package `CLAUDE.md` files exist for: `expect`, `jest-circus`, `jest-config`, `jest-environment-node`, `jest-fake-timers`, `jest-haste-map`, `jest-mock`, `jest-reporters`, `jest-resolve`, `jest-runtime`, `jest-snapshot`, `jest-source-map`, `jest-transform`, `jest-worker`. Read the relevant one for package-specific gotchas.
 - Trust the code over this file. When something contradicts what you see, fix this file as part of your change.

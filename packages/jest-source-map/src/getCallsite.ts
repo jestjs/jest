@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
+import {type TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
 import callsites from 'callsites';
-import {readFileSync} from 'graceful-fs';
+import {getSourceMapCache} from './SourceMapCache';
 import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
@@ -53,15 +53,12 @@ export default function getCallsite(
 ): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps?.get(stack.getFileName() ?? '');
+  const sourceMap = getSourceMapCache(sourceMaps).get(
+    stack.getFileName() ?? '',
+  );
 
-  if (sourceMapFileName != null && sourceMapFileName !== '') {
-    try {
-      const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-      addSourceMapConsumer(stack, new TraceMap(sourceMap));
-    } catch {
-      // ignore
-    }
+  if (sourceMap != null) {
+    addSourceMapConsumer(stack, sourceMap.map);
   }
 
   return stack;

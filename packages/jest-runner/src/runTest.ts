@@ -6,10 +6,8 @@
  *
  */
 
-import {runInContext} from 'node:vm';
 import chalk from 'chalk';
 import * as fs from 'graceful-fs';
-import * as sourcemapSupport from 'source-map-support';
 import {
   BufferedConsole,
   CustomConsole,
@@ -19,6 +17,7 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
+import * as sourceMaps from '@jest/source-map';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
@@ -211,12 +210,7 @@ async function runTestInternal(
     if (!isTornDown) {
       runtime.teardown();
 
-      // source-map-support keeps memory leftovers in `Error.prepareStackTrace`
-      runInContext(
-        "Error.prepareStackTrace = () => '';",
-        environment.getVmContext()!,
-      );
-      sourcemapSupport.resetRetrieveHandlers();
+      sourceMaps.uninstallSourceMaps();
 
       try {
         await environment.teardown();
@@ -243,33 +237,7 @@ async function runTestInternal(
   }
   const setupFilesEnd = Date.now();
 
-  const sourcemapOptions: sourcemapSupport.Options = {
-    environment: 'node',
-    handleUncaughtExceptions: false,
-    retrieveSourceMap: source => {
-      const sourceMapSource = runtime.getSourceMaps()?.get(source);
-
-      if (sourceMapSource) {
-        try {
-          return {
-            map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
-            url: source,
-          };
-        } catch {}
-      }
-      return null;
-    },
-  };
-
-  // For tests
-  runtime
-    .requireInternalModule<typeof import('source-map-support')>(
-      require.resolve('source-map-support'),
-    )
-    .install(sourcemapOptions);
-
-  // For runtime errors
-  sourcemapSupport.install(sourcemapOptions);
+  sourceMaps.installSourceMaps(runtime.getSourceMaps());
 
   if (
     environment.global &&

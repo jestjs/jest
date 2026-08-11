@@ -857,6 +857,9 @@ const config = defineConfig(
     'packages/jest-diff/src/cleanupSemantic.ts',
     'e2e/native-esm/wasm-bindgen/index_bg.js',
 
+    // Compiler output whose inline source map encodes its exact columns
+    'e2e/source-map-not-transformed/lib/boom.js',
+
     '**/.yarn',
     '**/.pnp.*',
 
