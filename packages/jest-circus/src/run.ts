@@ -151,7 +151,6 @@ const _runTestsForDescribeBlock = async (
         retryAttempt.processErrorGenerationBeforeAttempt ||
       state.unhandledErrors.length > retryAttempt.unhandledErrorsBeforeAttempt;
     if (!hasErrors || nonRetryable || numRetriesAvailable <= 0) {
-      retryAttempt.snapshotCheckpoint?.commit();
       return;
     }
 
@@ -299,7 +298,9 @@ const _runTestsForDescribeBlockOnce = async (
         await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
       }
 
-      await _runTest(test, isSkipped);
+      await testNameStorage.run(getTestID(test), () =>
+        _runTest(test, isSkipped),
+      );
       numRetriesAvailable--;
     }
   };

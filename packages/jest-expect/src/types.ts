@@ -44,7 +44,6 @@ type PromiseMatchers<T = unknown> = {
 
 type SnapshotStateWithRetry = SnapshotState & {
   getRetryCheckpoint?: () => {
-    commit: () => void;
     restore: () => void;
   };
 };

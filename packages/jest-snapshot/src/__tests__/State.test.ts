@@ -10,8 +10,7 @@ import SnapshotState from '../State';
 
 type RetryableSnapshotState = {
   _inlineSnapshots: Array<unknown>;
-  _inlineSnapshotsForTestRetry: Array<unknown>;
-  getRetryCheckpoint: () => {commit: () => void; restore: () => void};
+  getRetryCheckpoint: () => {restore: () => void};
 };
 
 test('restores snapshot state to a describe retry checkpoint', () => {
@@ -52,7 +51,7 @@ test('restores snapshot state to a describe retry checkpoint', () => {
   expect(state.unmatched).toBe(0);
 });
 
-test('commits inline snapshots for an ordinary test retry', () => {
+test('clears only inline snapshots owned by the retried test', () => {
   const state = new SnapshotState(
     path.join(__dirname, '__does_not_exist__.snap'),
     {
@@ -62,22 +61,34 @@ test('commits inline snapshots for an ordinary test retry', () => {
     },
   );
   const retryState = state as unknown as RetryableSnapshotState;
-  const inlineError = new Error('inline snapshot callsite');
-  inlineError.stack =
-    'Error: inline snapshot callsite\n    at Object.<anonymous> (/tmp/inline-snapshot-test.ts:1:1)';
+  const addInlineSnapshot = (
+    received: string,
+    line: number,
+    testRetryId?: string,
+  ) => {
+    const inlineError = new Error('inline snapshot callsite');
+    inlineError.stack = `Error: inline snapshot callsite\n    at Object.<anonymous> (/tmp/inline-snapshot-test.ts:${line}:1)`;
+    state.match({
+      error: inlineError,
+      inlineSnapshot: undefined,
+      isInline: true,
+      received,
+      testName: testRetryId ?? 'hook',
+      testRetryId,
+    });
+  };
 
-  state.match({
-    error: inlineError,
-    inlineSnapshot: undefined,
-    isInline: true,
-    received: 'inline',
-    testName: 'test',
-  });
-  retryState.getRetryCheckpoint().commit();
+  addInlineSnapshot('discarded', 1, 'retried test');
+  addInlineSnapshot('other test', 2, 'other test');
+  addInlineSnapshot('hook', 3);
 
-  expect(retryState._inlineSnapshotsForTestRetry).toHaveLength(1);
-  state.clear();
+  expect(retryState._inlineSnapshots).toHaveLength(3);
+  state.clear('retried test');
 
   expect(state.added).toBe(0);
+  expect(retryState._inlineSnapshots).toHaveLength(2);
+  state.clear('other test');
   expect(retryState._inlineSnapshots).toHaveLength(1);
+  state.clear();
+  expect(retryState._inlineSnapshots).toHaveLength(0);
 });

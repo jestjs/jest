@@ -374,7 +374,7 @@ export const runAndTransformResultsToJestFormat = async ({
 const setupSnapshotStateAfterRetry =
   (snapshotState: SnapshotState) => (event: Circus.Event) => {
     if (event.name === 'test_retry') {
-      snapshotState.clear();
+      snapshotState.clear(getTestID(event.test));
     }
   };
 

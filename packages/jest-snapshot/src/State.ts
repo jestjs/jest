@@ -33,6 +33,7 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   readonly testName: string;
+  readonly testRetryId?: string;
   readonly received: unknown;
   readonly key?: string;
   readonly inlineSnapshot?: string;
@@ -64,7 +65,7 @@ export default class SnapshotState {
   private readonly _initialData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private _inlineSnapshotsForTestRetry: Array<InlineSnapshot>;
+  private readonly _inlineSnapshotTestIds: WeakMap<InlineSnapshot, string>;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -88,7 +89,7 @@ export default class SnapshotState {
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
-    this._inlineSnapshotsForTestRetry = [];
+    this._inlineSnapshotTestIds = new WeakMap();
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -113,7 +114,7 @@ export default class SnapshotState {
   private _addSnapshot(
     key: string,
     receivedSerialized: string,
-    options: {isInline: boolean; error?: Error},
+    options: {isInline: boolean; error?: Error; testRetryId?: string},
   ): void {
     this._dirty = true;
     if (options.isInline) {
@@ -128,18 +129,28 @@ export default class SnapshotState {
           "Jest: Couldn't infer stack frame for inline snapshot.",
         );
       }
-      this._inlineSnapshots.push({
+      const inlineSnapshot = {
         frame,
         snapshot: receivedSerialized,
-      });
+      };
+      this._inlineSnapshots.push(inlineSnapshot);
+      if (options.testRetryId !== undefined) {
+        this._inlineSnapshotTestIds.set(inlineSnapshot, options.testRetryId);
+      }
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
   }
 
-  clear(): void {
+  clear(testRetryId?: string): void {
     this._snapshotData = this._initialData;
-    this._inlineSnapshots = [...this._inlineSnapshotsForTestRetry];
+    this._inlineSnapshots =
+      testRetryId === undefined
+        ? []
+        : this._inlineSnapshots.filter(
+            snapshot =>
+              this._inlineSnapshotTestIds.get(snapshot) !== testRetryId,
+          );
     this._counters = new Map();
     this._index = 0;
     this.added = 0;
@@ -149,12 +160,11 @@ export default class SnapshotState {
   }
 
   /** @internal */
-  getRetryCheckpoint(): {commit: () => void; restore: () => void} {
+  getRetryCheckpoint(): {restore: () => void} {
     const added = this.added;
     const counters = new Map(this._counters);
     const dirty = this._dirty;
     const inlineSnapshots = [...this._inlineSnapshots];
-    const inlineSnapshotsForTestRetry = [...this._inlineSnapshotsForTestRetry];
     const matched = this.matched;
     const snapshotData = {...this._snapshotData};
     const uncheckedKeys = new Set(this._uncheckedKeys);
@@ -162,15 +172,11 @@ export default class SnapshotState {
     const updated = this.updated;
 
     return {
-      commit: () => {
-        this._inlineSnapshotsForTestRetry = [...this._inlineSnapshots];
-      },
       restore: () => {
         this.added = added;
         this._counters = counters;
         this._dirty = dirty;
         this._inlineSnapshots = inlineSnapshots;
-        this._inlineSnapshotsForTestRetry = inlineSnapshotsForTestRetry;
         this.matched = matched;
         for (const key of Object.keys(this._snapshotData)) {
           delete this._snapshotData[key];
@@ -236,6 +242,7 @@ export default class SnapshotState {
 
   match({
     testName,
+    testRetryId,
     received,
     key,
     inlineSnapshot,
@@ -280,7 +287,7 @@ export default class SnapshotState {
     if (testFailing) {
       if (hasSnapshot && !isInline) {
         // Retain current snapshot values.
-        this._addSnapshot(key, expected, {error, isInline});
+        this._addSnapshot(key, expected, {error, isInline, testRetryId});
       }
       return {
         actual: removeExtraLineBreaks(receivedSerialized),
@@ -313,10 +320,18 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized, {error, isInline});
+          this._addSnapshot(key, receivedSerialized, {
+            error,
+            isInline,
+            testRetryId,
+          });
         }
       } else {
-        this._addSnapshot(key, receivedSerialized, {error, isInline});
+        this._addSnapshot(key, receivedSerialized, {
+          error,
+          isInline,
+          testRetryId,
+        });
         this.added++;
       }
 
