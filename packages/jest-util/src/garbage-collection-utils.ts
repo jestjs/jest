@@ -101,38 +101,29 @@ export function protectProperties<T>(
     return false;
   }
 
-  // Reflect.get may cause deprecation warnings, so we disable them temporarily
-  const originalEmitWarning = process.emitWarning;
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    process.emitWarning = () => {};
-    if (
-      depth >= 0 &&
-      canDeleteProperties(value) &&
-      !Reflect.has(value, PROTECT_SYMBOL)
-    ) {
-      const result = Reflect.defineProperty(value, PROTECT_SYMBOL, {
-        configurable: true,
-        enumerable: false,
-        value: properties,
-        writable: true,
-      });
-      for (const key of getProtectedKeys(value, properties)) {
-        try {
-          const nested = Reflect.get(value, key);
-          protectProperties(nested, [], depth - 1);
-        } catch {
-          // Reflect.get might fail in certain edge-cases
-          // Instead of failing the entire process, we will skip the property.
-        }
+  if (
+    depth >= 0 &&
+    canDeleteProperties(value) &&
+    !Reflect.has(value, PROTECT_SYMBOL)
+  ) {
+    const result = Reflect.defineProperty(value, PROTECT_SYMBOL, {
+      configurable: true,
+      enumerable: false,
+      value: properties,
+      writable: true,
+    });
+    for (const key of getProtectedKeys(value, properties)) {
+      // Reading an accessor resolves it, which both triggers deprecation
+      // warnings and defeats lazy globals. Its value is protected once
+      // whoever owns it resolves it.
+      const descriptor = Reflect.getOwnPropertyDescriptor(value, key);
+      if (descriptor && 'value' in descriptor) {
+        protectProperties(descriptor.value, [], depth - 1);
       }
-      return result;
     }
-    return false;
-  } finally {
-    process.emitWarning = originalEmitWarning;
+    return result;
   }
+  return false;
 }
 
 /**

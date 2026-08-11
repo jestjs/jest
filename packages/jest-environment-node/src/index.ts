@@ -117,8 +117,12 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       Object.getOwnPropertyNames(global) as GlobalProperties,
     );
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
-      if (!storageGlobals.has(nodeGlobalsKey as string)) {
-        protectProperties(globalThis[nodeGlobalsKey]);
+      // Reading an accessor global resolves it - on Node 26 the builtin modules
+      // are lazy globals, so this would load every one of them (and emit their
+      // deprecation warnings) for each environment. Those are protected when the
+      // sandbox resolves them instead.
+      if ('value' in descriptor) {
+        protectProperties(descriptor.value);
       }
       if (!contextGlobals.has(nodeGlobalsKey)) {
         if (storageGlobals.has(nodeGlobalsKey as string)) {
@@ -141,6 +145,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             enumerable: descriptor.enumerable,
             get() {
               const value = globalThis[nodeGlobalsKey];
+
+              protectProperties(value);
 
               // override lazy getter
               Object.defineProperty(global, nodeGlobalsKey, {
