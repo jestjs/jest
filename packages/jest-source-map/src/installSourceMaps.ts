@@ -5,11 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  type SourceMapCache,
-  getSourceMapCache,
-  mapSourcePosition,
-} from './SourceMapCache';
+import {type SourceMapCache, mapSourcePosition} from './SourceMapCache';
+import {getSourceMapCache} from './getSourceMapCache';
 import type {SourceMapRegistry} from './types';
 
 type PrepareStackTrace = (
@@ -231,12 +228,16 @@ const formatStackTrace: PrepareStackTrace = (error, stack) => {
   );
 };
 
-// Stays installed for the lifetime of the worker, and each test file swaps in
-// its own cache. Restoring V8's formatter at teardown instead would leave any
-// error thrown after the environment is torn down pointing at a position in the
-// transformed file — exactly when a readable stack matters most. Holding the
-// cache does not retain the environment: it only ever references path strings
-// and parsed source maps.
+/**
+ * Replaces `Error.prepareStackTrace` in the current realm, so `error.stack`
+ * renders frames against the original sources.
+ *
+ * Stays installed for the lifetime of the worker — each call swaps in its own
+ * cache. Restoring V8's formatter at teardown instead would leave an error
+ * thrown after the environment is torn down pointing into the transformed
+ * file. Holding the cache does not retain the environment: it only ever
+ * references path strings and parsed source maps.
+ */
 export function installSourceMaps(
   sourceMaps: SourceMapRegistry | null | undefined,
 ): void {

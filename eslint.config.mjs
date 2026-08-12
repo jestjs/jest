@@ -647,6 +647,26 @@ const config = defineConfig(
     },
   },
   {
+    // The core of @jest/source-map is platform-neutral: everything that
+    // touches Node sits behind the `SourceMapFileReader` implemented in
+    // nodeFileReader.ts.
+    files: [
+      'packages/jest-source-map/src/SourceMapCache.ts',
+      'packages/jest-source-map/src/getCallsite.ts',
+      'packages/jest-source-map/src/installSourceMaps.ts',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          message:
+            'This module is platform-neutral — reach Node through the `SourceMapFileReader` implemented in nodeFileReader.ts.',
+          selector: 'ImportDeclaration[source.value=/^node:|^graceful-fs$/]',
+        },
+      ],
+    },
+  },
+  {
     files: ['packages/**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'error',

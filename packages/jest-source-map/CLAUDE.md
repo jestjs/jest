@@ -7,6 +7,12 @@
 
 `SourceMapCache` / `getSourceMapCache(sourceMaps)` / `mapSourcePosition(cache, position)` are the shared map loader behind both, and are internal — they are not exported from `src/index.ts`.
 
+## Module layout
+
+`SourceMapCache.ts` (the loader and `mapSourcePosition`), `installSourceMaps.ts` and `getCallsite.ts` have no Node imports — an `eslint.config.mjs` block bans `node:` and `graceful-fs` imports in them. Everything platform-specific — `graceful-fs`, `pathToFileURL`/`fileURLToPath`, `Buffer` — lives behind the `SourceMapFileReader` interface in `types.ts`, implemented once by `nodeFileReader.ts`. `getSourceMapCache.ts` is the composition root that wires the two together, and is the only reason the Node reader is reachable from `index.ts`.
+
+There is no browser reader today. The seam exists so adding one is a new file rather than a rewrite.
+
 `sourceMaps` is the `SourceMapRegistry` (`Map<generatedPath, sourceMapPath>`) that `jest-runtime` builds while transforming; reach it via `runtime.getSourceMaps()`.
 
 ## Why this package exists
@@ -15,7 +21,7 @@ Jest ran on `source-map-support` until #16327. Upstream's `0.5.14` changed a fra
 
 Node's own support is not an alternative: `--enable-source-maps` and `module.setSourceMapsSupport()` do not cover code compiled through `vm` (verified on Node 26 for `runInContext`, `runInThisContext` and `new vm.Script()`, with and without a `//# sourceURL` comment), and there is no public API to register a map for a filename — which is exactly what serving maps out of the registry needs.
 
-`installSourceMaps.ts` is therefore a trimmed port of `source-map-support@0.5.13` onto `@jridgewell/trace-mapping`. Dropped along the way: browser support, `hookRequire`, the uncaught-exception shim, the retrieve-handler stacks, and the `headerLength = 62` line-1 column fudge (fixed upstream for Node ≥ 10.16).
+`installSourceMaps.ts` is therefore a trimmed port of `source-map-support@0.5.13` onto `@jridgewell/trace-mapping`. Dropped along the way: XHR-based file retrieval, `hookRequire`, the uncaught-exception shim, the retrieve-handler stacks, and the `headerLength = 62` line-1 column fudge (fixed upstream for Node ≥ 10.16).
 
 ## Non-obvious details
 
@@ -25,7 +31,11 @@ Node's own support is not an alternative: `--enable-source-maps` and `module.set
 
 **The error header keeps its trailing separator.** `Error: ` with an empty message, not `Error`. `failureDetailsProperty` snapshots that.
 
-**Install happens in the host realm only.** A `prepareStackTrace` installed outside a `vm` context still runs for errors created inside it, so `jest-runner` no longer loads this package into the sandbox. Don't reintroduce the sandbox install: the webpack build requires dependencies lazily on first use, and the first stack is often formatted after the test finished, when `jest-runtime` refuses to load new modules.
+**Install happens in the host realm only.** A `prepareStackTrace` installed outside a `vm` context still runs for errors created inside it, so `jest-runner` no longer loads this package into the sandbox. A sandbox install also breaks: the webpack build requires dependencies lazily on first use, and the first stack is often formatted after the test finished, when `jest-runtime` refuses to load new modules.
+
+**Sources resolve with URL semantics, upstream.** `AnyMap(content, mapUrl)` gets the generated file as a `file:` URL and `trace-mapping` resolves `sources`, `sourceRoot` and every `sections` entry itself — there is no hand-rolled path resolution here to keep in sync with it. `mapSourcePosition` converts the result back with `fileURLToPath`, and leaves other schemes (`webpack:///…`) alone. Two consequences fall out of the URL grammar and are accepted rather than worked around: a source named `weird#name.ts` loses everything from the `#`, and one named `50%off.ts` cannot convert back, so the frame shows the href. Node's `--enable-source-maps` and browsers behave the same way.
+
+**A registered map is parsed against the generated file, not against itself.** Jest writes maps into its transform cache, while the `sources` inside are relative to the file that was transformed — so `mapUrl` is the generated path. The base is baked into the parsed map's resolved sources, which is why the process-lifetime parse cache is keyed on the map path plus the base: a transformer with its own `getCacheKey` can hand two generated files the same map path.
 
 **Unmapped positions are returned unchanged.** A precise location in the compiled file beats a vague one in the original, so `mapSourcePosition` falls back to its input whenever `originalPositionFor` finds nothing.
 

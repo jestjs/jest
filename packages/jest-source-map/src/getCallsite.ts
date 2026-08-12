@@ -9,7 +9,7 @@ import {type TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
 // TODO: replace with `util.getCallSites()`, whose `columnNumber` landed in
 // Node 22.14 — the floor is still 18.
 import callsites from 'callsites';
-import {getSourceMapCache} from './SourceMapCache';
+import {getSourceMapCache} from './getSourceMapCache';
 import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
@@ -39,9 +39,6 @@ const addSourceMapConsumer = (
         // jest-circus. Reported zero-based until then, which is what
         // `--testLocationInResults` documents for jest-jasmine2, and changing
         // it breaks anyone reading that field.
-        //
-        // A mapping to the first column is a real answer either way, not the
-        // miss the old truthiness check took it for.
         const {column} = getPosition();
 
         return column ?? getColumnNumber();
@@ -59,6 +56,10 @@ const addSourceMapConsumer = (
   });
 };
 
+/**
+ * One remapped `CallSite`, `level` frames above the caller. Shares its parsed
+ * maps with `installSourceMaps`.
+ */
 export default function getCallsite(
   level: number,
   sourceMaps?: SourceMapRegistry | null,
@@ -70,7 +71,7 @@ export default function getCallsite(
   );
 
   if (sourceMap != null) {
-    addSourceMapConsumer(stack, sourceMap.map);
+    addSourceMapConsumer(stack, sourceMap);
   }
 
   return stack;

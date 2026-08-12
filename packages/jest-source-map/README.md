@@ -16,7 +16,7 @@ $ npm install --save @jest/source-map
 
 Replaces `Error.prepareStackTrace` in the current realm, so reading `.stack` on any error renders frames against the original sources. `jest-runner` calls this once per test file.
 
-`sourceMaps` maps a transformed file to the `.map` file written beside it — inside Jest, `runtime.getSourceMaps()`. Files missing from it fall back to a `sourceMappingURL` comment on the file itself, which covers pre-compiled output that ships its own map.
+`sourceMaps` maps a transformed file to the `.map` file Jest wrote into its transform cache — inside Jest, `runtime.getSourceMaps()`. The `sources` inside a map resolve with URL semantics against the transformed file, not against the map's own location. Files missing from the registry fall back to a `sourceMappingURL` comment on the file itself, which covers pre-compiled output that ships its own map.
 
 ```javascript
 import {installSourceMaps} from '@jest/source-map';

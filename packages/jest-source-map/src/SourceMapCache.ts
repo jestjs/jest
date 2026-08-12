@@ -5,15 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'node:path';
-import {fileURLToPath} from 'node:url';
 import {
   AnyMap,
   type TraceMap,
   originalPositionFor,
 } from '@jridgewell/trace-mapping';
-import {existsSync, readFileSync} from 'graceful-fs';
-import type {SourceMapRegistry} from './types';
+import type {SourceMapFileReader, SourceMapRegistry} from './types';
 
 export interface GeneratedPosition {
   column: number | null;
@@ -25,74 +22,12 @@ export interface MappedPosition extends GeneratedPosition {
   name?: string | null;
 }
 
-interface LoadedSourceMap {
-  map: TraceMap;
-  url: string;
-}
-
 // Keep executing the search to find the *last* sourceMappingURL, to avoid
 // picking up ones from comments, strings, etc.
 const SOURCE_MAPPING_URL_REGEXP =
-  /(?:\/\/[#@]\s*sourceMappingURL=([^\s'"]+)\s*$)|(?:\/\*[#@]\s*sourceMappingURL=([^\s*'"]+)\s*\*\/\s*$)/gm;
-const INLINE_SOURCE_MAP_REGEXP = /^data:application\/json[^,]+base64,/;
+  /\/\/[#@]\s*sourceMappingURL=([^\s'"]+)\s*$|\/\*[#@]\s*sourceMappingURL=([^\s*'"]+)\s*\*\/\s*$/gm;
 
-function toFilePath(source: string): string {
-  const trimmed = source.trim();
-
-  if (!trimmed.startsWith('file:')) {
-    return trimmed;
-  }
-
-  try {
-    return fileURLToPath(trimmed);
-  } catch {
-    return trimmed;
-  }
-}
-
-function readFile(source: string): string | null {
-  const filePath = toFilePath(source);
-
-  try {
-    return existsSync(filePath) ? readFileSync(filePath, 'utf8') : null;
-  } catch {
-    return null;
-  }
-}
-
-// A scheme needs at least two characters before the colon, so a Windows drive
-// letter is not mistaken for one.
-const ABSOLUTE_URI_REGEXP = /^[a-zA-Z][\w+\-.]+:/;
-
-// Resolve a URL relative to a directory, keeping any protocol prefix intact.
-function resolveRelativeTo(from: string, url: string): string {
-  // Bundlers name their sources with a scheme — `webpack:///src/a.ts`. Resolving
-  // one against a directory invents a path that has never existed.
-  if (ABSOLUTE_URI_REGEXP.test(url)) {
-    return url;
-  }
-
-  const dir = path.dirname(from);
-  const protocol = /^\w+:\/\/[^/]*/.exec(dir)?.[0] ?? '';
-  const startPath = dir.slice(protocol.length);
-
-  if (protocol && /^\/\w:/.test(startPath)) {
-    // file:///C:/dir/file
-    return `${protocol}/${path
-      .resolve(startPath.slice(1), url)
-      .replaceAll('\\', '/')}`;
-  }
-
-  return protocol + path.resolve(startPath, url);
-}
-
-function findSourceMapUrl(source: string): string | null {
-  const fileContent = readFile(source);
-
-  if (fileContent == null) {
-    return null;
-  }
-
+function findSourceMapUrl(fileContent: string): string | null {
   let lastMatch: RegExpExecArray | null = null;
   let match: RegExpExecArray | null;
 
@@ -104,68 +39,62 @@ function findSourceMapUrl(source: string): string | null {
   return lastMatch == null ? null : (lastMatch[1] ?? lastMatch[2] ?? null);
 }
 
-// Jest writes each map to a path derived from the file's contents, the
-// transform config and the transformer's own cache key, so the path is already
-// content-addressed: an edit or a config change produces a different one and
-// the stale entry is never asked for again. That makes it safe to keep parsed
-// maps for the lifetime of the process rather than re-reading and re-parsing
-// them for every test file a worker runs.
-const parsedByCachePath = new Map<string, TraceMap | null>();
-
-// Every test file gets a fresh registry, but a worker moves on to the next file
-// while a stray timer from the previous one can still throw. Remember where each
-// generated file's map lived so those frames stay resolvable. The path is
-// content-addressed, so a remembered entry can only ever answer for a file the
-// live registry has never heard of.
-// `null` means the same file has been transformed more than one way — as ESM
-// and as CJS, say — which yields a different map for each. A frame does not say
-// which one it came from, so stop answering for that path rather than guess.
-const rememberedMapPaths = new Map<string, string | null>();
-
-function parseMap(content: string): TraceMap | null {
+function resolveUrl(url: string, base: string): string | null {
   try {
-    // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
-    // bundlers emit as a top-level `sections` array.
-    return AnyMap(content);
+    return new URL(url, base).href;
   } catch {
     return null;
   }
 }
 
-function parseRegisteredMap(sourceMapPath: string): TraceMap | null {
-  const cached = parsedByCachePath.get(sourceMapPath);
+// Map paths are content-addressed, so a stale one is never asked for again and
+// a parsed map can live for the whole process. The base URL joins the key
+// because it is baked into the resolved sources, and a transformer with its
+// own `getCacheKey` can hand two generated files the same map path.
+const parsedByCachePath = new Map<string, TraceMap | null>();
 
-  if (cached !== undefined) {
-    return cached;
+// A worker moves on to the next test file while a stray timer from the
+// previous one can still throw; remembering where each file's map lived keeps
+// those frames resolvable. `null` marks a file transformed more than one way —
+// as ESM and as CJS, say — where a frame does not say which map it came from,
+// so decline rather than guess.
+const rememberedMapPaths = new Map<string, string | null>();
+
+// `mapUrl` is what the map's `sources` resolve against.
+function parseMap(content: string, mapUrl: string): TraceMap | null {
+  try {
+    // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
+    // bundlers emit as a top-level `sections` array.
+    return AnyMap(content, mapUrl);
+  } catch {
+    return null;
   }
-
-  const content = readFile(sourceMapPath);
-  const map = content == null ? null : parseMap(content);
-
-  parsedByCachePath.set(sourceMapPath, map);
-
-  return map;
 }
 
 export class SourceMapCache {
   private readonly sourceMaps: SourceMapRegistry | null;
-  private readonly loaded = new Map<string, LoadedSourceMap | null>();
+  private readonly reader: SourceMapFileReader;
+  private readonly loaded = new Map<string, TraceMap | null>();
   private readonly attempted = new Map<string, string | undefined>();
 
-  constructor(sourceMaps: SourceMapRegistry | null) {
+  constructor(
+    sourceMaps: SourceMapRegistry | null,
+    reader: SourceMapFileReader,
+  ) {
     this.sourceMaps = sourceMaps;
+    this.reader = reader;
   }
 
-  get(generatedPath: string): LoadedSourceMap | null {
+  get(generatedPath: string): TraceMap | null {
     const cached = this.loaded.get(generatedPath);
     const registered = this.sourceMaps?.get(generatedPath);
 
-    // The registry fills in as files are transformed, so a file looked up
-    // before its map was registered must not stay unmapped for the rest of the
-    // run. Retry only when it now points somewhere new: a map that failed to
-    // load would otherwise be re-read for every frame naming the file, and the
-    // runtime empties the registry at teardown, where an entry going away must
-    // not throw away a map already loaded — stacks are still formatted then.
+    // The registry fills in lazily, so a file looked up before its map was
+    // registered must not stay unmapped. Retry only when the entry points
+    // somewhere new: a map that failed to load would otherwise be re-read for
+    // every frame, and the runtime empties the registry at teardown while
+    // stacks are still being formatted — an entry going away must not drop a
+    // loaded map.
     const isStale =
       registered != null && this.attempted.get(generatedPath) !== registered;
 
@@ -181,7 +110,13 @@ export class SourceMapCache {
     return loaded;
   }
 
-  private load(generatedPath: string): LoadedSourceMap | null {
+  // A mapped source comes back as a URL, which is not what a stack frame should
+  // show for a file on disk.
+  toDisplayPath(url: string): string {
+    return this.reader.toPath(url);
+  }
+
+  private load(generatedPath: string): TraceMap | null {
     // The map Jest itself produced while transforming the file.
     const registered = this.sourceMaps?.get(generatedPath);
 
@@ -202,73 +137,72 @@ export class SourceMapCache {
         : rememberedMapPaths.get(generatedPath);
 
     if (sourceMapPath != null && sourceMapPath !== '') {
-      const map = parseRegisteredMap(sourceMapPath);
-
-      return map == null ? null : {map, url: generatedPath};
+      return this.parseRegisteredMap(sourceMapPath, generatedPath);
     }
 
-    const rawMap = this.readAdjacent(generatedPath);
+    return this.readAdjacent(generatedPath);
+  }
 
-    if (rawMap == null) {
-      return null;
+  private parseRegisteredMap(
+    sourceMapPath: string,
+    generatedPath: string,
+  ): TraceMap | null {
+    // Jest's transform writes the map to its cache directory, but the sources
+    // it names are relative to the file that was transformed.
+    const mapUrl = this.reader.toUrl(generatedPath);
+    const cacheKey = `${sourceMapPath}\0${mapUrl}`;
+    const cached = parsedByCachePath.get(cacheKey);
+
+    if (cached !== undefined) {
+      return cached;
     }
 
-    const map = parseMap(rawMap.content);
+    const content = this.reader.read(sourceMapPath);
+    const map = content == null ? null : parseMap(content, mapUrl);
 
-    return map == null ? null : {map, url: rawMap.url};
+    parsedByCachePath.set(cacheKey, map);
+
+    return map;
   }
 
   // A `sourceMappingURL` comment on a file Jest did not transform, which covers
   // pre-compiled output shipping its own map.
-  private readAdjacent(
-    generatedPath: string,
-  ): {content: string; url: string} | null {
-    const sourceMapUrl = findSourceMapUrl(generatedPath);
+  private readAdjacent(generatedPath: string): TraceMap | null {
+    const fileContent = this.reader.read(generatedPath);
+
+    if (fileContent == null) {
+      return null;
+    }
+
+    const sourceMapUrl = findSourceMapUrl(fileContent);
 
     if (sourceMapUrl == null) {
       return null;
     }
 
-    if (INLINE_SOURCE_MAP_REGEXP.test(sourceMapUrl)) {
-      const base64 = sourceMapUrl.slice(sourceMapUrl.indexOf(',') + 1);
+    const generatedUrl = this.reader.toUrl(generatedPath);
+    const resolvedUrl = resolveUrl(sourceMapUrl, generatedUrl);
 
-      return {
-        content: Buffer.from(base64, 'base64').toString(),
-        url: generatedPath,
-      };
+    if (resolvedUrl == null) {
+      return null;
     }
 
-    const resolvedUrl = resolveRelativeTo(generatedPath, sourceMapUrl);
-    const content = readFile(resolvedUrl);
+    const content = this.reader.read(resolvedUrl);
 
-    return content == null ? null : {content, url: resolvedUrl};
+    if (content == null) {
+      return null;
+    }
+
+    // An inline map's sources are relative to the file carrying it. Every other
+    // map resolves them against wherever the map itself lives.
+    const mapUrl = resolvedUrl.startsWith('data:') ? generatedUrl : resolvedUrl;
+
+    return parseMap(content, mapUrl);
   }
 }
 
-const cachesByRegistry = new WeakMap<SourceMapRegistry, SourceMapCache>();
-
-// One cache per registry, so the stack trace formatter and `getCallsite` parse
-// each `.map` file once between them.
-export function getSourceMapCache(
-  sourceMaps: SourceMapRegistry | null | undefined,
-): SourceMapCache {
-  if (sourceMaps == null) {
-    return new SourceMapCache(null);
-  }
-
-  let cache = cachesByRegistry.get(sourceMaps);
-
-  if (cache == null) {
-    cache = new SourceMapCache(sourceMaps);
-    cachesByRegistry.set(sourceMaps, cache);
-  }
-
-  return cache;
-}
-
-// Translate a position in transformed code back to the original source. Returns
-// the position unchanged when there is no mapping for it: a precise location in
-// the compiled file beats a vague one in the original.
+// Returns the position unchanged when nothing maps to it: a precise location
+// in the compiled file beats a vague one in the original.
 export function mapSourcePosition(
   cache: SourceMapCache,
   position: GeneratedPosition,
@@ -279,13 +213,13 @@ export function mapSourcePosition(
     return position;
   }
 
-  const sourceMap = cache.get(source);
+  const map = cache.get(source);
 
-  if (sourceMap == null) {
+  if (map == null) {
     return position;
   }
 
-  const originalPosition = originalPositionFor(sourceMap.map, {column, line});
+  const originalPosition = originalPositionFor(map, {column, line});
 
   if (originalPosition.source == null) {
     return position;
@@ -295,6 +229,6 @@ export function mapSourcePosition(
     column: originalPosition.column,
     line: originalPosition.line,
     name: originalPosition.name,
-    source: resolveRelativeTo(sourceMap.url, originalPosition.source),
+    source: cache.toDisplayPath(originalPosition.source),
   };
 }
