@@ -6,6 +6,8 @@
  *
  */
 
+import * as path from 'path';
+import {stripVTControlCharacters} from 'util';
 import {readFileSync} from 'graceful-fs';
 import slash from 'slash';
 import tempy from 'tempy';
@@ -15,6 +17,7 @@ import {
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
+  getStackTraceLines,
   getTopFrame,
   hasNestedErrors,
 } from '..';
@@ -959,5 +962,77 @@ describe('cyclic errors in the styled renderers', () => {
     ['a self-referential AggregateError', buildCyclicAggregate],
   ])('formatResultsErrors survives %s', (_label, build) => {
     expect(() => formatAggregateErrorFailure(build(), true)).not.toThrow();
+  });
+});
+
+describe('frame classification', () => {
+  const checkoutPackagesDir = path.resolve(__dirname, '..', '..', '..');
+  const testFile = `${slash(rootDir)}/__tests__/x.test.js`;
+  const frameFor = (file: string) => `    at someFn (${file}:1:1)`;
+
+  const internalFiles: Array<[string, string]> = [
+    ['a published jest package', '/app/node_modules/jest-circus/build/run.js'],
+    [
+      'a scoped @jest package',
+      '/app/node_modules/@jest/globals/build/index.js',
+    ],
+    [
+      'a third-party jest integration',
+      '/app/node_modules/babel-jest/build/index.js',
+    ],
+    [
+      'a package of this checkout',
+      path.join(checkoutPackagesDir, 'expect', 'build', 'index.js'),
+    ],
+    [
+      'a windows-style path',
+      String.raw`C:\app\node_modules\@jest\globals\build\index.js`,
+    ],
+  ];
+
+  const externalFiles: Array<[string, string]> = [
+    [
+      'build output under a jest-ish directory',
+      '/home/me/jest-helpers/src/util/build/app.js',
+    ],
+    [
+      'a monorepo named after jest',
+      '/work/jest-clone/packages/app/__tests__/x.test.js',
+    ],
+  ];
+
+  const format = (...files: Array<string>) =>
+    stripVTControlCharacters(
+      formatStackTrace(
+        ['Error: boom', ...files.map(frameFor)].join('\n'),
+        {rootDir, testMatch: []},
+        {noStackTrace: false},
+      ),
+    );
+
+  beforeEach(() => {
+    jest.mocked(readFileSync).mockImplementation(file => `source of ${file}`);
+  });
+
+  it.each(internalFiles)('drops a frame in %s', (_label, file) => {
+    // the first frame of a stack is kept even when it is Jest's own, so the
+    // frame under test needs one ahead of it
+    expect(format(testFile, file)).not.toContain(
+      slash(path.relative(rootDir, file)),
+    );
+  });
+
+  it.each(externalFiles)('keeps a frame in %s', (_label, file) => {
+    expect(format(testFile, file)).toContain(
+      slash(path.relative(rootDir, file)),
+    );
+  });
+
+  it.each(internalFiles)('renders no code frame for %s', (_label, file) => {
+    expect(format(file, testFile)).toContain(`source of ${testFile}`);
+  });
+
+  it.each(externalFiles)('renders the code frame of %s', (_label, file) => {
+    expect(format(file, testFile)).toContain(`source of ${file}`);
   });
 });
