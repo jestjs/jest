@@ -38,6 +38,12 @@ export const nodeFileReader: SourceMapFileReader = {
       return Buffer.from(base64, 'base64').toString();
     }
 
+    // A resource named by any other scheme — `node:internal/…`,
+    // `webpack:///…` — cannot be read off disk.
+    if (ABSOLUTE_URI_REGEXP.test(urlOrPath) && !urlOrPath.startsWith('file:')) {
+      return null;
+    }
+
     const filePath = toPath(urlOrPath);
 
     try {

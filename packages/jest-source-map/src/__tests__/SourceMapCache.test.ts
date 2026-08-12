@@ -227,6 +227,14 @@ describe('SourceMapCache', () => {
     expect(cache.get(generatedPath)).toBeNull();
   });
 
+  test('never touches the filesystem for a scheme-named file', () => {
+    const cache = createCache(new Map());
+
+    expect(cache.get('node:internal/modules/cjs/loader')).toBeNull();
+    expect(existsSyncMock).not.toHaveBeenCalled();
+    expect(readFileMock).not.toHaveBeenCalled();
+  });
+
   test('goes through the injected reader rather than the filesystem', () => {
     const reader: SourceMapFileReader = {
       read: jest.fn((urlOrPath: string) =>
