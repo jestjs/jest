@@ -461,7 +461,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-In the resulting object `column` is 0-indexed while `line` is not.
+`line` is 1-indexed. `column` is 1-indexed with the default `jest-circus` runner, but 0-indexed with `jest-jasmine2`. Both will be 1-indexed in Jest 31, matching the positions V8 reports in a stack trace and through [`CallSite`](https://nodejs.org/api/util.html#utilgetcallsitesframecount-options).
 
 ```json
 {
