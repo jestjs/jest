@@ -22,14 +22,14 @@
   "dependencies": {
     "@jest/transform": "workspace:*",
     "@types/babel__core": "^7.20.5",
-    "babel-plugin-istanbul": "^7.0.1",
+    "babel-plugin-istanbul": "^8.0.0",
     "babel-preset-jest": "workspace:*",
     "chalk": "^4.1.2",
     "graceful-fs": "^4.2.11",
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel-8/core": "npm:@babel/core@8.0.0-rc.5",
+    "@babel-8/core": "npm:@babel/core@^8.0.0",
     "@babel/core": "^7.27.4",
     "@jest/test-utils": "workspace:*",
     "@types/graceful-fs": "^4.1.9"

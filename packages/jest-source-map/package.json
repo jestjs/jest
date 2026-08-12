@@ -19,11 +19,13 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jridgewell/trace-mapping": "^0.3.25",
+    "@jridgewell/trace-mapping": "^0.3.31",
     "callsites": "^3.1.0",
+    "convert-source-map": "^2.0.0",
     "graceful-fs": "^4.2.11"
   },
   "devDependencies": {
+    "@types/convert-source-map": "^2.0.3",
     "@types/graceful-fs": "^4.1.9"
   },
   "engines": {

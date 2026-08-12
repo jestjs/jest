@@ -6,16 +6,48 @@
  */
 
 import prettyFormat, {plugins} from '../';
-const {ReactElement} = plugins;
+const {ReactElement, ReactTestComponent} = plugins;
+
+declare global {
+  var IS_REACT_ACT_ENVIRONMENT: boolean;
+}
+
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 const formatElement = (element: unknown) =>
   prettyFormat(element, {plugins: [ReactElement]});
 
+const formatTestObject = (object: unknown) =>
+  prettyFormat(object, {plugins: [ReactTestComponent, ReactElement]});
+
 describe.each([
-  ['React 17', require('react-17') as typeof import('react')],
-  ['React 18', require('react-18') as typeof import('react')],
-  ['React 19', require('react-19') as typeof import('react')],
-])('%s', (_name, React) => {
+  ['React 17', 'react-17', 'react-test-renderer-17'],
+  ['React 18', 'react-18', 'react-test-renderer-18'],
+  ['React 19', 'react-19', 'react-test-renderer-19'],
+])('%s', (_name, reactPackage, rendererPackage) => {
+  const React = require(reactPackage) as typeof import('react');
+
+  // The renderer reaches into React's shared internals, so it only works
+  // against the matching React copy rather than the hoisted one.
+  const renderToJSON = (
+    createElement: (React: typeof import('react')) => React.ReactElement,
+  ) => {
+    let json: unknown;
+    jest.isolateModules(() => {
+      jest.doMock('react', () => require(reactPackage));
+      const isolatedReact = require(reactPackage) as typeof import('react');
+      const TestRenderer = require(
+        rendererPackage,
+      ) as typeof import('react-test-renderer');
+      let testRenderer: import('react-test-renderer').ReactTestRenderer;
+      TestRenderer.act(() => {
+        testRenderer = TestRenderer.create(createElement(isolatedReact));
+      });
+      json = testRenderer!.toJSON();
+    });
+    return json;
+  };
+
   test('fragment', () => {
     expect(
       formatElement(
@@ -85,6 +117,48 @@ describe.each([
       formatElement(
         React.createElement(Consumer, {
           children: () => React.createElement('div', null, 'child'),
+        }),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('test object for host element', () => {
+    expect(
+      formatTestObject(
+        renderToJSON(React =>
+          React.createElement(
+            'div',
+            {className: 'foo'},
+            React.createElement('span', null, 'hello'),
+          ),
+        ),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('test object for fragment', () => {
+    expect(
+      formatTestObject(
+        renderToJSON(React =>
+          React.createElement(
+            React.Fragment,
+            null,
+            React.createElement('div', null, 'one'),
+            React.createElement('div', null, 'two'),
+          ),
+        ),
+      ),
+    ).toMatchSnapshot();
+  });
+
+  test('test object for composite element', () => {
+    expect(
+      formatTestObject(
+        renderToJSON(React => {
+          function Cat({name}: {name: string}) {
+            return React.createElement('div', {id: 'cat'}, name);
+          }
+          return React.createElement(Cat, {name: 'Tom'});
         }),
       ),
     ).toMatchSnapshot();

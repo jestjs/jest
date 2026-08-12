@@ -6,14 +6,20 @@
  *
  */
 
+import * as path from 'path';
+import {stripVTControlCharacters} from 'util';
 import {readFileSync} from 'graceful-fs';
 import slash from 'slash';
 import tempy from 'tempy';
 import {
+  flattenErrorStack,
+  formatErrorStack,
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
+  getStackTraceLines,
   getTopFrame,
+  hasNestedErrors,
 } from '..';
 
 const rootDir = tempy.directory();
@@ -591,4 +597,442 @@ it('should return the inner errors of an AggregateError', () => {
     },
   );
   expect(message).toMatchSnapshot();
+});
+
+const formatAggregateErrorFailure = (
+  aggError: AggregateError,
+  noStackTrace: boolean,
+) =>
+  formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [aggError],
+        failureMessages: [aggError.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'AggregateError test failure',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace,
+    },
+  );
+
+it('should return the inner errors of an AggregateError test failure with their stacks', () => {
+  const aggError = new AggregateError([
+    new Error('inner reason A'),
+    new Error('inner reason B'),
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, false)).toMatchSnapshot();
+});
+
+it('should return the nested inner errors of an AggregateError test failure', () => {
+  const aggError = new AggregateError([
+    new Error('outer reason', {cause: new Error('the cause')}),
+    new AggregateError([new Error('deeply nested')]),
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, true)).toMatchSnapshot();
+});
+
+it('should not crash on AggregateError test failures holding non-errors', () => {
+  // `Promise.reject(null)` ends up here, so `errors` can hold anything.
+  const aggError = new AggregateError([
+    null,
+    undefined,
+    42,
+    'a string',
+    {code: 'E_OOPS'},
+  ]);
+
+  expect(formatAggregateErrorFailure(aggError, true)).toMatchSnapshot();
+});
+
+it('should not add a section for an empty AggregateError test failure', () => {
+  const messages = formatAggregateErrorFailure(new AggregateError([]), true);
+
+  expect(messages).not.toContain('Errors contained in AggregateError');
+  expect(messages).toMatchSnapshot();
+});
+
+it('should not leave consecutive blank lines between a message and its sections', () => {
+  const aggError = new AggregateError([new Error('inner reason')]);
+  // An AggregateError from `Promise.any` has no frames of its own left after
+  // filtering, which used to leave the stack as a lone newline next to the
+  // section separator.
+  aggError.stack = 'AggregateError: All promises were rejected';
+
+  expect(formatAggregateErrorFailure(aggError, false)).not.toMatch(/\n\n\n/);
+});
+
+it('should preserve blank lines inside the error message itself', () => {
+  const error = new Error('first part\n\n\nsecond part');
+  error.stack = '';
+
+  expect(
+    formatExecError(error, {rootDir: '', testMatch: []}, {noStackTrace: true}),
+  ).toContain('first part\n\n\n    second part');
+});
+
+// The real stacks of these fixtures would embed absolute paths and Jest's own
+// build line numbers, so they get a fixed one-frame stack instead. That keeps
+// the flattened output short enough to assert on in full.
+const buildErrorFixture = (message: string, cause?: unknown): Error => {
+  const error = buildErrorWithCause(message, {cause});
+  error.stack = `Error: ${message}\n    at ${message} (flatten.test.js:1:1)`;
+  return error;
+};
+
+const buildAggregateFixture = (
+  message: string,
+  errors: Array<unknown>,
+): AggregateError => {
+  const aggError = new AggregateError(errors, message);
+  aggError.stack = `AggregateError: ${message}\n    at ${message} (flatten.test.js:1:1)`;
+  return aggError;
+};
+
+describe('flattenErrorStack', () => {
+  it('flattens a cause chain', () => {
+    const error = buildErrorFixture(
+      'outer',
+      buildErrorFixture('middle', buildErrorFixture('root')),
+    );
+
+    expect(flattenErrorStack(error)).toBe(
+      [
+        'Error: outer',
+        '    at outer (flatten.test.js:1:1)',
+        '',
+        '[cause]: Error: middle',
+        '    at middle (flatten.test.js:1:1)',
+        '',
+        '[cause]: Error: root',
+        '    at root (flatten.test.js:1:1)',
+      ].join('\n'),
+    );
+  });
+
+  it('flattens a string cause', () => {
+    const error = buildErrorFixture('outer', 'the string cause');
+
+    expect(flattenErrorStack(error)).toBe(
+      [
+        'Error: outer',
+        '    at outer (flatten.test.js:1:1)',
+        '',
+        '[cause]: the string cause',
+      ].join('\n'),
+    );
+  });
+
+  it('falls back to the message when the stack is empty', () => {
+    const error = new Error('no stack here');
+    error.stack = '';
+
+    expect(flattenErrorStack(error)).toBe('no stack here');
+  });
+
+  it('prepends the message when the stack does not include it', () => {
+    // Some errors (e.g. Angular injection errors) have a stack whose first
+    // line is a bare 'Error' without the message.
+    const aggError = new AggregateError(
+      [buildErrorFixture('inner')],
+      'important message',
+    );
+    aggError.stack = 'Error\n    at foo (flatten.test.js:1:1)';
+
+    expect(flattenErrorStack(aggError)).toBe(
+      [
+        'important message',
+        '    at foo (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: inner',
+        '    at inner (flatten.test.js:1:1)',
+      ].join('\n'),
+    );
+  });
+
+  it('flattens the inner errors of an AggregateError', () => {
+    const aggError = buildAggregateFixture('all rejected', [
+      buildErrorFixture('inner A'),
+      buildErrorFixture('inner B'),
+    ]);
+
+    expect(flattenErrorStack(aggError)).toBe(
+      [
+        'AggregateError: all rejected',
+        '    at all rejected (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: inner A',
+        '    at inner A (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: inner B',
+        '    at inner B (flatten.test.js:1:1)',
+      ].join('\n'),
+    );
+  });
+
+  it('flattens a cause nested inside an AggregateError entry', () => {
+    const aggError = buildAggregateFixture('all rejected', [
+      buildErrorFixture('outer', buildErrorFixture('the cause')),
+      buildAggregateFixture('nested', [buildErrorFixture('deeply nested')]),
+    ]);
+
+    expect(flattenErrorStack(aggError)).toBe(
+      [
+        'AggregateError: all rejected',
+        '    at all rejected (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: outer',
+        '    at outer (flatten.test.js:1:1)',
+        '',
+        '[cause]: Error: the cause',
+        '    at the cause (flatten.test.js:1:1)',
+        '',
+        '[errors]: AggregateError: nested',
+        '    at nested (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: deeply nested',
+        '    at deeply nested (flatten.test.js:1:1)',
+      ].join('\n'),
+    );
+  });
+
+  it('renders non-errors held by an AggregateError', () => {
+    const aggError = new AggregateError([null, 42, 'a string']);
+
+    const flattened = flattenErrorStack(aggError);
+
+    expect(flattened).toContain('[errors]: thrown: null');
+    expect(flattened).toContain('[errors]: thrown: 42');
+    expect(flattened).toContain('[errors]: a string');
+  });
+
+  it('adds no section for an empty AggregateError', () => {
+    expect(flattenErrorStack(new AggregateError([]))).not.toContain('[errors]');
+  });
+
+  it('reports a self-referential cause once instead of recursing', () => {
+    const error = buildErrorFixture('self');
+    error.cause = error;
+
+    // Marking the parent only after descending used to print the root twice
+    // before tripping the guard.
+    expect(flattenErrorStack(error)).toBe(
+      [
+        'Error: self',
+        '    at self (flatten.test.js:1:1)',
+        '',
+        '[cause]: [Circular cause]',
+      ].join('\n'),
+    );
+  });
+
+  it('reports a self-referential AggregateError instead of recursing', () => {
+    const aggError = buildAggregateFixture('self', []);
+    aggError.errors.push(aggError);
+
+    expect(flattenErrorStack(aggError)).toBe(
+      [
+        'AggregateError: self',
+        '    at self (flatten.test.js:1:1)',
+        '',
+        '[errors]: [Circular errors]',
+      ].join('\n'),
+    );
+  });
+
+  it('does not treat the same error repeated across siblings as a cycle', () => {
+    const shared = buildErrorFixture('shared');
+    const aggError = buildAggregateFixture('all rejected', [shared, shared]);
+
+    // `seen` tracks the ancestor path, not everything visited, so an acyclic
+    // graph that reuses an error is not mistaken for a cycle.
+    expect(flattenErrorStack(aggError)).toBe(
+      [
+        'AggregateError: all rejected',
+        '    at all rejected (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: shared',
+        '    at shared (flatten.test.js:1:1)',
+        '',
+        '[errors]: Error: shared',
+        '    at shared (flatten.test.js:1:1)',
+      ].join('\n'),
+    );
+  });
+});
+
+describe('hasNestedErrors', () => {
+  it.each([
+    [
+      'an error cause',
+      buildErrorWithCause('outer', {cause: new Error('bang')}),
+    ],
+    ['a string cause', buildErrorWithCause('outer', {cause: 'bang'})],
+    ['a non-empty AggregateError', new AggregateError([new Error('bang')])],
+  ])('is true for %s', (_label, value) => {
+    expect(hasNestedErrors(value)).toBe(true);
+  });
+
+  it.each([
+    ['a plain error', new Error('bang')],
+    ['an empty AggregateError', new AggregateError([])],
+    ['a numeric cause', buildErrorWithCause('outer', {cause: 42})],
+    ['a string', 'not an error'],
+    ['undefined', undefined],
+    ['an error-shaped object', {message: 'bang'}],
+  ])('is false for %s', (_label, value) => {
+    expect(hasNestedErrors(value)).toBe(false);
+  });
+});
+
+describe('formatErrorStack', () => {
+  it('falls back to the message when the stack was blanked', () => {
+    const error = new Error('no stack here');
+    error.stack = '';
+
+    expect(
+      formatErrorStack(
+        error,
+        {rootDir: '', testMatch: []},
+        {
+          noStackTrace: true,
+        },
+      ),
+    ).toContain('no stack here');
+  });
+});
+
+describe('cyclic errors in the styled renderers', () => {
+  const buildCyclicCause = () => {
+    const error = new Error('self');
+    error.cause = error;
+    return error;
+  };
+
+  const buildCyclicAggregate = () => {
+    const aggError = new AggregateError([]);
+    aggError.errors.push(aggError);
+    return aggError;
+  };
+
+  // Serialized errors from workers are plain objects, and structured clone
+  // preserves cycles.
+  const buildCyclicPlainObject = () => {
+    const error: {message: string; stack: string; errors: Array<unknown>} = {
+      errors: [],
+      message: 'plain aggregate',
+      stack: 'AggregateError: plain aggregate\n    at x (f.js:1:1)',
+    };
+    error.errors.push(error);
+    return error;
+  };
+
+  it.each([
+    ['a self-referential cause', buildCyclicCause],
+    ['a self-referential AggregateError', buildCyclicAggregate],
+    ['a self-referential plain object', buildCyclicPlainObject],
+  ])('formatExecError survives %s', (_label, build) => {
+    expect(() =>
+      formatExecError(
+        build(),
+        {rootDir: '', testMatch: []},
+        {
+          noStackTrace: true,
+        },
+      ),
+    ).not.toThrow();
+  });
+
+  it.each([
+    ['a self-referential cause', buildCyclicCause],
+    ['a self-referential AggregateError', buildCyclicAggregate],
+  ])('formatResultsErrors survives %s', (_label, build) => {
+    expect(() => formatAggregateErrorFailure(build(), true)).not.toThrow();
+  });
+});
+
+describe('frame classification', () => {
+  const checkoutPackagesDir = path.resolve(__dirname, '..', '..', '..');
+  const testFile = `${slash(rootDir)}/__tests__/x.test.js`;
+  const frameFor = (file: string) => `    at someFn (${file}:1:1)`;
+
+  const internalFiles: Array<[string, string]> = [
+    ['a published jest package', '/app/node_modules/jest-circus/build/run.js'],
+    [
+      'a scoped @jest package',
+      '/app/node_modules/@jest/globals/build/index.js',
+    ],
+    [
+      'a third-party jest integration',
+      '/app/node_modules/babel-jest/build/index.js',
+    ],
+    [
+      'a package of this checkout',
+      path.join(checkoutPackagesDir, 'expect', 'build', 'index.js'),
+    ],
+    [
+      'a windows-style path',
+      String.raw`C:\app\node_modules\@jest\globals\build\index.js`,
+    ],
+  ];
+
+  const externalFiles: Array<[string, string]> = [
+    [
+      'build output under a jest-ish directory',
+      '/home/me/jest-helpers/src/util/build/app.js',
+    ],
+    [
+      'a monorepo named after jest',
+      '/work/jest-clone/packages/app/__tests__/x.test.js',
+    ],
+  ];
+
+  const format = (...files: Array<string>) =>
+    stripVTControlCharacters(
+      formatStackTrace(
+        ['Error: boom', ...files.map(frameFor)].join('\n'),
+        {rootDir, testMatch: []},
+        {noStackTrace: false},
+      ),
+    );
+
+  beforeEach(() => {
+    jest.mocked(readFileSync).mockImplementation(file => `source of ${file}`);
+  });
+
+  it.each(internalFiles)('drops a frame in %s', (_label, file) => {
+    // the first frame of a stack is kept even when it is Jest's own, so the
+    // frame under test needs one ahead of it
+    expect(format(testFile, file)).not.toContain(
+      slash(path.relative(rootDir, file)),
+    );
+  });
+
+  it.each(externalFiles)('keeps a frame in %s', (_label, file) => {
+    expect(format(testFile, file)).toContain(
+      slash(path.relative(rootDir, file)),
+    );
+  });
+
+  it.each(internalFiles)('renders no code frame for %s', (_label, file) => {
+    expect(format(file, testFile)).toContain(`source of ${testFile}`);
+  });
+
+  it.each(externalFiles)('renders the code frame of %s', (_label, file) => {
+    expect(format(file, testFile)).toContain(`source of ${file}`);
+  });
 });

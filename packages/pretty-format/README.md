@@ -99,7 +99,7 @@ const DEFAULT_THEME = {
 The `pretty-format` package provides some built-in plugins, including:
 
 - `ReactElement` for elements from `react`
-- `ReactTestComponent` for test objects from `react-test-renderer`
+- `ReactTestComponent` for test objects from `react-test-renderer` (deprecated)
 
 ```js
 // CommonJS

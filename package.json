@@ -11,7 +11,7 @@
     "@babel/register": "^7.27.1",
     "@crowdin/cli": "^4.7.0",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
-    "@eslint/js": "^9.28.0",
+    "@eslint/js": "^10.0.0",
     "@eslint/markdown": "^8.0.0",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
@@ -33,12 +33,12 @@
     "camelcase": "^6.3.0",
     "chalk": "^4.1.2",
     "dedent": "^1.6.0",
-    "eslint": "^9.28.0",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.2",
     "eslint-plugin-import-x": "^4.15.0",
     "eslint-plugin-jest": "^29.0.0",
-    "eslint-plugin-jsdoc": "^62.0.0",
+    "eslint-plugin-jsdoc": "^64.0.0",
     "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-unicorn": "^64.0.0",
@@ -60,7 +60,7 @@
     "jest-snapshot": "workspace:*",
     "jest-util": "workspace:*",
     "jest-watch-typeahead": "^3.0.1",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^5.0.0",
     "mock-fs": "^5.5.0",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.1",
@@ -76,7 +76,7 @@
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.1",
     "ts-node": "^10.5.0",
-    "tstyche": "^6.0.2",
+    "tstyche": "^7.0.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "webpack": "^5.68.0",
@@ -84,6 +84,9 @@
     "which": "^4.0.0"
   },
   "dependenciesMeta": {
+    "@parcel/watcher": {
+      "built": true
+    },
     "esbuild": {
       "built": true
     },
@@ -109,7 +112,7 @@
     "jest-runtime-vm-modules": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" yarn jest packages/jest-runtime",
     "jest-runtime-vm-modules-ci": "yarn jest-runtime-vm-modules --color --config jest.config.ci.mjs --coverage",
     "jest-coverage": "yarn jest --coverage",
-    "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md",
+    "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md --concurrency auto",
     "lint:prettier-script": "prettier . \"!**/*.{js,jsx,cjs,mjs,ts,tsx}\" --cache",
     "lint:prettier": "yarn lint:prettier-script --write",
     "lint:prettier:ci": "yarn lint:prettier-script --check",
@@ -117,14 +120,15 @@
     "remove-examples": "node ./scripts/remove-examples.mjs",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
     "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.mjs",
-    "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff pretty-format",
+    "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-source-map pretty-format",
     "test-ts": "yarn jest --config jest.config.ts.mjs",
-    "test-types": "yarn tstyche",
+    "test-types": "tstyche",
+    "test-watchman": "yarn jest --color --config jest.config.ci.mjs e2e/__tests__/watchModeWatchman.test.ts packages/jest-haste-map",
     "test-with-type-info": "yarn jest e2e/__tests__/jest.config.ts.test.ts",
     "test": "yarn lint && yarn jest",
     "typecheck": "yarn typecheck:examples && yarn typecheck:tests",
     "typecheck:examples": "tsc -p examples/expect-extend && tsc -p examples/typescript",
-    "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,create-jest,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-haste-map,jest-runtime,jest-snapshot,jest-util,jest-validate,jest-watcher,jest-worker,pretty-format}/**/__tests__",
+    "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,create-jest,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-haste-map,jest-runtime,jest-snapshot,jest-source-map,jest-util,jest-validate,jest-watcher,jest-worker,pretty-format}/**/__tests__",
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
     "verify-pnp": "node ./scripts/verifyPnP.mjs",
     "watch": "node ./scripts/watch.mjs",
@@ -204,8 +208,10 @@
     "node": "^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"
   },
   "resolutions": {
+    "@testing-library/react-native/jest-matcher-utils": "workspace:*",
+    "@testing-library/react-native/pretty-format": "workspace:*",
+    "@types/mdx@npm:^2.0.0": "patch:@types/mdx@npm:^2.0.0#~/.yarn/patches/@types-mdx-npm-2.0.14-ebb2ecb0d6.patch",
     "@types/node": "18.x",
-    "@types/react": "^18.2.21",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
@@ -215,5 +221,5 @@
     "lru-cache@^10.2.2": "patch:lru-cache@npm:10.4.3#./.yarn/patches/lru-cache-npm-10.4.3-30c10b861a.patch",
     "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
-  "packageManager": "yarn@4.15.0"
+  "packageManager": "yarn@4.18.0"
 }

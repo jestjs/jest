@@ -224,11 +224,13 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
+  retryReasonsDetailed: Array<Error>;
   testPath: TestNamesPath;
 };
 
 export type RunResult = {
   unhandledErrors: Array<FormattedError>;
+  unhandledErrorsDetailed: Array<Error>;
   testResults: TestResults;
 };
 
@@ -274,8 +276,7 @@ export type DescribeBlock = {
 };
 
 export type TestError =
-  | Exception
-  | [Exception | undefined, Exception | undefined]; // the error from the test, as well as a backup error for async
+  Exception | [Exception | undefined, Exception | undefined]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
   type: 'test';

@@ -7,6 +7,26 @@
 /examples/react-native/.watchman-cookie-*
 
 /e2e/setup-files-after-env-config/package.json
+
+# written by the e2e tests that own them, and left behind by an interrupted run
+/e2e/console-log-output-when-run-in-band
+/e2e/coverage-threshold
+/e2e/execute-tests-once-in-mpr
+/e2e/jest-config-js
+/e2e/jest-config-ts
+/e2e/resolve-no-extensions-no-js
+/e2e/timeouts
+/e2e/timeouts-legacy
+/e2e/ts-node-integration
+/e2e/to-match-inline-snapshot/__tests__
+/e2e/to-match-snapshot/__tests__
+
+# written to the repo root by e2e/__tests__/listTests.test.ts
+/test-lists.json
+
+# left at the repo root by an interrupted e2e/__tests__/jestChangedFiles.test.ts run
+/.sl
+
 /e2e/*/node_modules
 /e2e/*/.pnp
 /e2e/*/.pnp.js
@@ -62,3 +82,5 @@ crowdin-cli.jar
 
 # We don't want these temp files
 packages/jest-worker/src/workers/__tests__/__temp__
+
+.zed

@@ -62,6 +62,30 @@ test('fails because of unhandled promise rejection in afterAll hook', () => {
   expect(sortedSummary).toMatchSnapshot();
 });
 
+test('reports the cause of an unhandled rejection', () => {
+  const {stderr, exitCode} = runJest(dir, [
+    'unhandledRejectionWithCause.test.js',
+  ]);
+
+  expect(exitCode).toBe(1);
+  // The unhandled path hands `formatExecError` the errors themselves, so the
+  // cause is rendered rather than serialized with a `[cause]:` marker.
+  expect(stderr).toContain('Cause:');
+  expect(stderr).not.toContain('[cause]:');
+  expect(extractSortedSummary(stderr)).toMatchSnapshot();
+});
+
+test('reports the inner errors of an unhandled AggregateError rejection', () => {
+  const {stderr, exitCode} = runJest(dir, [
+    'unhandledRejectionAggregate.test.js',
+  ]);
+
+  expect(exitCode).toBe(1);
+  expect(stderr).toContain('Errors contained in AggregateError:');
+  expect(stderr).not.toContain('[errors]:');
+  expect(extractSortedSummary(stderr)).toMatchSnapshot();
+});
+
 test('succeeds for async handled promise rejections', () => {
   const {stderr, exitCode} = runJest(dir, ['rejectionHandled.test.js']);
 

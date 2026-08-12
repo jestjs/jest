@@ -150,16 +150,28 @@ A glob pattern relative to `rootDir` matching the files that coverage info needs
 
 Discover and print all test suites and test names without executing them. Jest loads each test file, evaluates the top-level `describe` blocks to register tests, then exits before running any test code or lifecycle hooks.
 
-Output is a tree of file paths with their nested describe and test names:
+Output is a tree of file paths with their nested describe and test names, followed by a summary of the total counts. Skipped and todo tests are annotated, and any file that throws while loading is reported with its error (and the exit code is non-zero):
 
 ```
 path/to/my.test.ts
   My suite
     passes
-    fails
+    skips [skipped]
+    write later [todo]
+
+Test suites: 1
+Tests:       3 total, 1 runnable, 1 skipped, 1 todo
 ```
 
-Use `--json` to get machine-readable output instead.
+Parametrized tests declared with [`test.each`](GlobalAPI.md#testeachtablename-fn-timeout) / `describe.each` are expanded to one entry per case, and each collected test is categorized exactly as a real run would categorize it:
+
+- a test that would run is reported in the `passed` bucket and flagged `wouldRun: true` (it was selected but never executed);
+- [`test.skip`](GlobalAPI.md#testskipname-fn), tests inside a skipped `describe`, tests deselected by `test.only`, and tests excluded by `--testNamePattern` are reported as `pending`;
+- [`test.todo`](GlobalAPI.md#testtodoname) is reported as `todo`.
+
+Because every test is accounted for in the same bucket an actual run would use, the counts reported by `--collectTests` match those of a run in which every selected test passes — so it can be used to count tests without executing them, including under `--testNamePattern`.
+
+Use `--json` to get machine-readable output instead. The JSON uses the same shape as a normal run, including `numTotalTests`, `numPassedTests`, `numPendingTests` and `numTodoTests`, and each assertion carries the `wouldRun` flag described above.
 
 ### `--colors`
 
@@ -432,7 +444,7 @@ Run the tests of the specified projects. Jest uses the attribute `displayName` i
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
-A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
+A list of paths to modules that run some code to configure or to set up the testing framework before each test file. Beware that files imported by the setup scripts will not be mocked during testing.
 
 ### `--shard`
 
@@ -476,7 +488,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-In the resulting object `column` is 0-indexed while `line` is not.
+`line` is 1-indexed. `column` is 1-indexed with the default `jest-circus` runner, but 0-indexed with `jest-jasmine2`. Both will be 1-indexed in Jest 31, matching the positions V8 reports in a stack trace and through [`CallSite`](https://nodejs.org/api/util.html#utilgetcallsitesframecount-options).
 
 ```json
 {

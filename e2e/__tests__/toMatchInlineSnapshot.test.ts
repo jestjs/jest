@@ -382,14 +382,15 @@ test('indentation is correct in the presences of existing snapshots', () => {
 
 test('indentation is correct in the presences of existing snapshots, when the file is correctly formatted by prettier', () => {
   const filename = 'existing-snapshot.test.js';
-  const test = `
-    it('is true', () => {
+  // A prettier-formatted file has no leading blank line and ends with a single
+  // trailing newline; skipTrim keeps the newline that dedent would otherwise eat.
+  const test = `    it('is true', () => {
       expect(true).toMatchInlineSnapshot(\`true\`);
       expect([1, 2, 3]).toMatchInlineSnapshot();
-    });\\n
-  `;
+    });
+`;
 
-  writeFiles(TESTS_DIR, {[filename]: test});
+  writeFiles(TESTS_DIR, {[filename]: test}, {skipTrim: true});
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');

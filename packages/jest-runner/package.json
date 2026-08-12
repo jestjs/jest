@@ -21,6 +21,7 @@
   "dependencies": {
     "@jest/console": "workspace:*",
     "@jest/environment": "workspace:*",
+    "@jest/source-map": "workspace:*",
     "@jest/test-result": "workspace:*",
     "@jest/transform": "workspace:*",
     "@jest/types": "workspace:*",
@@ -39,13 +40,11 @@
     "jest-util": "workspace:*",
     "jest-watcher": "workspace:*",
     "jest-worker": "workspace:*",
-    "p-limit": "^3.1.0",
-    "source-map-support": "0.5.13"
+    "p-limit": "^3.1.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:*",
     "@types/graceful-fs": "^4.1.9",
-    "@types/source-map-support": "^0.5.10",
     "jest-jasmine2": "workspace:*"
   },
   "engines": {

@@ -7,12 +7,26 @@
 
 /* eslint-disable jest/no-focused-tests */
 
+import {spawnSync} from 'node:child_process';
 import {SourceTextModule, SyntheticModule} from 'node:vm';
 import * as semver from 'semver';
 import {describe, test} from '@jest/globals';
 
 export function isJestJasmineRun(): boolean {
   return process.env.JEST_JASMINE === '1';
+}
+
+export function isWatchmanAvailable(): boolean {
+  const {error, status} = spawnSync('watchman', ['--version']);
+  return error == null && status === 0;
+}
+
+export function skipSuiteWithoutWatchman(): void {
+  if (!isWatchmanAvailable()) {
+    test.only('requires watchman', () => {
+      console.warn('[SKIP] Requires watchman to be installed');
+    });
+  }
 }
 
 export function skipSuiteOnJasmine(): void {
@@ -31,6 +45,14 @@ export function skipSuiteOnJestCircus(): void {
   }
 }
 
+export function skipSuiteOnWindows(): void {
+  if (process.platform === 'win32') {
+    test.only('does not work on Windows', () => {
+      console.warn('[SKIP] Does not work on Windows');
+    });
+  }
+}
+
 export function testWithVmEsm(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
@@ -38,15 +60,20 @@ export function testWithVmEsm(
   return fn(...args);
 }
 
+const hasSyncEsm =
+  // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
+  typeof SourceTextModule?.prototype.hasAsyncGraph === 'function';
+
 export function testWithSyncEsm(
   ...args: Parameters<typeof test>
 ): ReturnType<typeof test> {
-  const fn =
-    // @ts-expect-error - hasAsyncGraph is in Node v24.9+, not yet typed
-    typeof SourceTextModule?.prototype.hasAsyncGraph === 'function'
-      ? test
-      : test.skip;
-  return fn(...args);
+  return (hasSyncEsm ? test : test.skip)(...args);
+}
+
+export function testWithoutSyncEsm(
+  ...args: Parameters<typeof test>
+): ReturnType<typeof test> {
+  return (hasSyncEsm ? test.skip : test)(...args);
 }
 
 export function testWithLinkedSyntheticModule(
@@ -65,7 +92,11 @@ export function onNodeVersions(
   testBody: () => void,
 ): void {
   const description = `on node ${versionRange}`;
-  if (semver.satisfies(process.versions.node, versionRange)) {
+  if (
+    semver.satisfies(process.versions.node, versionRange, {
+      includePrerelease: true,
+    })
+  ) {
     describe(description, () => {
       testBody();
     });
