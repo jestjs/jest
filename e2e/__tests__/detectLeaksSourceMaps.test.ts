@@ -43,7 +43,11 @@ test('formatting a mapped stack does not retain the environment', () => {
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
-  const {stderr} = runJest(DIR, ['--detect-leaks', '--runInBand']);
+  const {exitCode, stderr} = runJest(DIR, ['--detect-leaks', '--runInBand']);
+
+  // A leak is reported as a failed suite, so the exit code is what says the
+  // environment was collectable.
   expect(stderr).toMatch(/PASS\s__tests__\/a.test.js/);
   expect(stderr).toMatch(/PASS\s__tests__\/b.test.js/);
+  expect(exitCode).toBe(0);
 });
