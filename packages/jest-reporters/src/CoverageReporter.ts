@@ -111,20 +111,45 @@ export default class CoverageReporter extends BaseReporter {
   ): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
-    for (const context of testContexts) {
-      const config = context.config;
-      if (
-        this._globalConfig.collectCoverageFrom &&
-        this._globalConfig.collectCoverageFrom.length > 0
-      ) {
+    if (
+      this._globalConfig.collectCoverageFrom &&
+      this._globalConfig.collectCoverageFrom.length > 0
+    ) {
+      const seenFiles = new Set<string>();
+      const contexts = [...testContexts];
+
+      for (const context of contexts) {
+        const config = context.config;
         for (const filePath of context.hasteFS.matchFilesWithGlob(
           this._globalConfig.collectCoverageFrom,
           this._globalConfig.rootDir,
-        ))
-          files.push({
-            config,
-            path: filePath,
-          });
+        )) {
+          if (!seenFiles.has(filePath)) {
+            seenFiles.add(filePath);
+            files.push({config, path: filePath});
+          }
+        }
+      }
+
+      // Also find files matching collectCoverageFrom that are not in any
+      // project's hasteFS (e.g. shared files outside all project roots in a
+      // multi-project setup).
+      if (contexts.length > 0) {
+        const firstConfig = contexts[0].config;
+        const globbedFiles = await glob(
+          this._globalConfig.collectCoverageFrom,
+          {
+            absolute: true,
+            cwd: this._globalConfig.rootDir,
+            windowsPathsNoEscape: true,
+          },
+        );
+        for (const filePath of globbedFiles) {
+          if (!seenFiles.has(filePath)) {
+            seenFiles.add(filePath);
+            files.push({config: firstConfig, path: filePath});
+          }
+        }
       }
     }
 
