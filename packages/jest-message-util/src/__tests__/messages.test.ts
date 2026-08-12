@@ -982,7 +982,7 @@ describe('frame classification', () => {
     ],
     [
       'a package of this checkout',
-      `${checkoutPackagesDir}/expect/build/index.js`,
+      path.join(checkoutPackagesDir, 'expect', 'build', 'index.js'),
     ],
     [
       'a windows-style path',
@@ -1017,11 +1017,15 @@ describe('frame classification', () => {
   it.each(internalFiles)('drops a frame in %s', (_label, file) => {
     // the first frame of a stack is kept even when it is Jest's own, so the
     // frame under test needs one ahead of it
-    expect(format(testFile, file)).not.toContain(path.relative(rootDir, file));
+    expect(format(testFile, file)).not.toContain(
+      slash(path.relative(rootDir, file)),
+    );
   });
 
   it.each(externalFiles)('keeps a frame in %s', (_label, file) => {
-    expect(format(testFile, file)).toContain(path.relative(rootDir, file));
+    expect(format(testFile, file)).toContain(
+      slash(path.relative(rootDir, file)),
+    );
   });
 
   it.each(internalFiles)('renders no code frame for %s', (_label, file) => {
