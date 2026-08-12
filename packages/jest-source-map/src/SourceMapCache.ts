@@ -46,6 +46,9 @@ function resolveUrl(url: string, base: string): string | null {
 // a parsed map can live for the whole process. The base URL joins the key
 // because it is baked into the resolved sources, and a transformer with its
 // own `getCacheKey` can hand two generated files the same map path.
+// Nothing evicts these, so a worker ends up holding one parsed map per file it
+// has formatted a stack for. That is the point: re-reading and re-parsing on
+// every frame of every stack costs far more than keeping them.
 const parsedByCachePath = new Map<string, TraceMap | null>();
 
 // A worker moves on to the next test file while a stray timer from the
@@ -53,6 +56,9 @@ const parsedByCachePath = new Map<string, TraceMap | null>();
 // those frames resolvable. `null` marks a file transformed more than one way —
 // as ESM and as CJS, say — where a frame does not say which map it came from,
 // so decline rather than guess.
+// This also grows for the worker's lifetime, holding two path strings per file
+// — small enough that bounding it would cost more than it saves, and a frame
+// arriving after its file's registry is gone has nowhere else to look.
 const rememberedMapPaths = new Map<string, string | null>();
 
 // `mapUrl` is what the map's `sources` resolve against.

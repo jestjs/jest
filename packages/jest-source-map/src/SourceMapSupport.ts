@@ -264,8 +264,13 @@ function wrapCallSite(
 }
 
 export class SourceMapSupport {
+  // Holding this keeps the current test file's registry reachable after its
+  // environment is gone, which is what lets a stray timer's stack still map.
+  // The next `install` drops it, so it is one file's worth of path strings at a
+  // time rather than an accumulating set.
   private activeCache: SourceMapCache | null = null;
   private nullCache: SourceMapCache | null = null;
+  // Keyed weakly, so a registry nothing else holds takes its cache with it.
   private readonly cachesByRegistry = new WeakMap<
     SourceMapRegistry,
     SourceMapCache
