@@ -24,6 +24,9 @@
 # written to the repo root by e2e/__tests__/listTests.test.ts
 /test-lists.json
 
+# left at the repo root by an interrupted e2e/__tests__/jestChangedFiles.test.ts run
+/.sl
+
 /e2e/*/node_modules
 /e2e/*/.pnp
 /e2e/*/.pnp.js
