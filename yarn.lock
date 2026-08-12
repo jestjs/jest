@@ -4570,8 +4570,10 @@ __metadata:
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.31"
+    "@types/convert-source-map": "npm:^2.0.3"
     "@types/graceful-fs": "npm:^4.1.9"
     callsites: "npm:^3.1.0"
+    convert-source-map: "npm:^2.0.0"
     graceful-fs: "npm:^4.2.11"
   languageName: unknown
   linkType: soft

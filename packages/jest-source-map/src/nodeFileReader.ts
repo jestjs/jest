@@ -6,13 +6,13 @@
  */
 
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {fromComment} from 'convert-source-map';
 import {existsSync, readFileSync} from 'graceful-fs';
 import type {SourceMapFileReader} from './types';
 
 // A scheme needs at least two characters before the colon, so a Windows drive
 // letter is not mistaken for one.
 const ABSOLUTE_URI_REGEXP = /^[a-zA-Z][\w+\-.]+:/;
-const INLINE_SOURCE_MAP_REGEXP = /^data:application\/json[^,]+base64,/;
 
 function toPath(url: string): string {
   if (!url.startsWith('file:')) {
@@ -29,13 +29,13 @@ function toPath(url: string): string {
 export const nodeFileReader: SourceMapFileReader = {
   read(urlOrPath) {
     if (urlOrPath.startsWith('data:')) {
-      if (!INLINE_SOURCE_MAP_REGEXP.test(urlOrPath)) {
+      try {
+        // Reads both the base64 and the URI encoding the spec allows. Takes a
+        // whole comment rather than the URL on its own.
+        return fromComment(`//# sourceMappingURL=${urlOrPath}`).toJSON();
+      } catch {
         return null;
       }
-
-      const base64 = urlOrPath.slice(urlOrPath.indexOf(',') + 1);
-
-      return Buffer.from(base64, 'base64').toString();
     }
 
     // A resource named by any other scheme — `node:internal/…`,

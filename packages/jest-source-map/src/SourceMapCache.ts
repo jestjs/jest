@@ -10,6 +10,7 @@ import {
   type TraceMap,
   originalPositionFor,
 } from '@jridgewell/trace-mapping';
+import {mapFileCommentRegex} from 'convert-source-map';
 import type {SourceMapFileReader, SourceMapRegistry} from './types';
 
 export interface GeneratedPosition {
@@ -22,19 +23,10 @@ export interface MappedPosition extends GeneratedPosition {
   name?: string | null;
 }
 
-// Keep executing the search to find the *last* sourceMappingURL, to avoid
-// picking up ones from comments, strings, etc.
-const SOURCE_MAPPING_URL_REGEXP =
-  /\/\/[#@]\s*sourceMappingURL=([^\s'"]+)\s*$|\/\*[#@]\s*sourceMappingURL=([^\s*'"]+)\s*\*\/\s*$/gm;
-
+// The *last* sourceMappingURL wins, so one inside a comment or a string does
+// not shadow the real one.
 function findSourceMapUrl(fileContent: string): string | null {
-  let lastMatch: RegExpExecArray | null = null;
-  let match: RegExpExecArray | null;
-
-  SOURCE_MAPPING_URL_REGEXP.lastIndex = 0;
-  while ((match = SOURCE_MAPPING_URL_REGEXP.exec(fileContent)) != null) {
-    lastMatch = match;
-  }
+  const lastMatch = [...fileContent.matchAll(mapFileCommentRegex)].at(-1);
 
   return lastMatch == null ? null : (lastMatch[1] ?? lastMatch[2] ?? null);
 }

@@ -270,6 +270,16 @@ describe('SourceMapCache', () => {
       expect(readFileMock).toHaveBeenCalledTimes(1);
     });
 
+    test('reads a URI-encoded inline `data:` sourceMappingURL', () => {
+      const inline = encodeURIComponent(JSON.stringify(decodedMap));
+
+      mockFileContents(
+        () => `code();\n//# sourceMappingURL=data:application/json,${inline}\n`,
+      );
+
+      expect(sourceOf(createCache(new Map())).source).toBe(originalPath);
+    });
+
     test('follows a relative sourceMappingURL', () => {
       mockFileContents(filePath =>
         filePath === generatedPath
