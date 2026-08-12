@@ -32,7 +32,7 @@ export const nodeFileReader: SourceMapFileReader = {
       try {
         // Reads both the base64 and the URI encoding the spec allows. Takes a
         // whole comment rather than the URL on its own.
-        return fromComment(`//# sourceMappingURL=${urlOrPath}`).toJSON();
+        return fromComment(`//# sourceMappingURL=${urlOrPath}`).toObject();
       } catch {
         return null;
       }

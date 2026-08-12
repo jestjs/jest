@@ -7,6 +7,7 @@
 
 import {
   AnyMap,
+  type SectionedSourceMapInput,
   type TraceMap,
   originalPositionFor,
 } from '@jridgewell/trace-mapping';
@@ -53,7 +54,10 @@ const parsedByCachePath = new Map<string, TraceMap | null>();
 const rememberedMapPaths = new Map<string, string | null>();
 
 // `mapUrl` is what the map's `sources` resolve against.
-function parseMap(content: string, mapUrl: string): TraceMap | null {
+function parseMap(
+  content: SectionedSourceMapInput,
+  mapUrl: string,
+): TraceMap | null {
   try {
     // `AnyMap` rather than `TraceMap`, which throws on the indexed maps that
     // bundlers emit as a top-level `sections` array.
@@ -162,7 +166,9 @@ export class SourceMapCache {
   private readAdjacent(generatedPath: string): TraceMap | null {
     const fileContent = this.reader.read(generatedPath);
 
-    if (fileContent == null) {
+    // A frame can name a `data:` URL — a dynamic `import()` of one — and what
+    // that decodes to is not a file a `sourceMappingURL` comment sits on.
+    if (typeof fileContent !== 'string') {
       return null;
     }
 
