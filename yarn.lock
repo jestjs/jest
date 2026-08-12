@@ -4499,7 +4499,7 @@ __metadata:
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
-    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    "@jridgewell/trace-mapping": "npm:^0.3.31"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/istanbul-lib-coverage": "npm:^2.0.6"
     "@types/istanbul-lib-instrument": "npm:^1.7.7"
@@ -4569,9 +4569,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
   dependencies:
-    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    "@jridgewell/trace-mapping": "npm:^0.3.31"
+    "@types/convert-source-map": "npm:^2.0.3"
     "@types/graceful-fs": "npm:^4.1.9"
     callsites: "npm:^3.1.0"
+    convert-source-map: "npm:^2.0.0"
     graceful-fs: "npm:^4.2.11"
   languageName: unknown
   linkType: soft
@@ -4636,7 +4638,7 @@ __metadata:
     "@babel/core": "npm:^7.27.4"
     "@jest/test-utils": "workspace:*"
     "@jest/types": "workspace:*"
-    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    "@jridgewell/trace-mapping": "npm:^0.3.31"
     "@types/babel__core": "npm:^7.20.5"
     "@types/convert-source-map": "npm:^2.0.3"
     "@types/graceful-fs": "npm:^4.1.9"
@@ -4751,7 +4753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.18, @jridgewell/trace-mapping@npm:^0.3.23, @jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.25, @jridgewell/trace-mapping@npm:^0.3.28":
+"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.18, @jridgewell/trace-mapping@npm:^0.3.23, @jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.25, @jridgewell/trace-mapping@npm:^0.3.28, @jridgewell/trace-mapping@npm:^0.3.31":
   version: 0.3.31
   resolution: "@jridgewell/trace-mapping@npm:0.3.31"
   dependencies:
@@ -7688,15 +7690,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/b4b5381122465d80ea8b158537c00bc82317222d3fb31fd7229ff25b31fa89134abfbab969118da55622236bf3d8fee75759f3959908b5688991f492008f29bc
-  languageName: node
-  linkType: hard
-
-"@types/source-map-support@npm:^0.5.10":
-  version: 0.5.10
-  resolution: "@types/source-map-support@npm:0.5.10"
-  dependencies:
-    source-map: "npm:^0.6.0"
-  checksum: 10/72486b93c3340ed89537bc4f75cfcaa7ed8d4384c916b5fea919a1e39592696ab868ff73aae9e4a7d0099921aa1c35941be1ec02cd5fc7e045110a9f4707d4c8
   languageName: node
   linkType: hard
 
@@ -14987,13 +14980,13 @@ __metadata:
   dependencies:
     "@jest/console": "workspace:*"
     "@jest/environment": "workspace:*"
+    "@jest/source-map": "workspace:*"
     "@jest/test-result": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@jest/transform": "workspace:*"
     "@jest/types": "workspace:*"
     "@types/graceful-fs": "npm:^4.1.9"
     "@types/node": "npm:*"
-    "@types/source-map-support": "npm:^0.5.10"
     chalk: "npm:^4.1.2"
     emittery: "npm:^0.13.1"
     exit-x: "npm:^0.2.2"
@@ -15010,7 +15003,6 @@ __metadata:
     jest-watcher: "workspace:*"
     jest-worker: "workspace:*"
     p-limit: "npm:^3.1.0"
-    source-map-support: "npm:0.5.13"
   languageName: unknown
   linkType: soft
 
@@ -21321,16 +21313,6 @@ __metadata:
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
   checksum: 10/ff9d8c8bf096d534a5b7707e0382ef827b4dd360a577d3f34d2b9f48e12c9d230b5747974ee7c607f0df65113732711bb701fe9ece3c7edbd43cb2294d707df3
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:0.5.13":
-  version: 0.5.13
-  resolution: "source-map-support@npm:0.5.13"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    source-map: "npm:^0.6.0"
-  checksum: 10/d1514a922ac9c7e4786037eeff6c3322f461cd25da34bb9fefb15387b3490531774e6e31d95ab6d5b84a3e139af9c3a570ccaee6b47bd7ea262691ed3a8bc34e
   languageName: node
   linkType: hard
 

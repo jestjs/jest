@@ -27,7 +27,7 @@ export class TransformCache {
   ) => TransformationOptions;
   private readonly transforms = new Map<string, TransformResult>();
   private readonly mutex = new Map<string, Promise<void>>();
-  private readonly sourceMaps: SourceMapRegistry = new Map();
+  private readonly sourceMaps = new Map<string, string>();
 
   constructor(
     scriptTransformer: ScriptTransformer,

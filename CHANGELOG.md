@@ -30,6 +30,10 @@
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
+- `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))
@@ -43,6 +47,8 @@
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
+- `[jest-runner, @jest/source-map]` Replace `source-map-support` with an implementation in `@jest/source-map` ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[@jest/source-map]` Deprecate `getCallsite` in favour of `SourceMapSupport#getCallsite` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
 
 ## 30.4.2
