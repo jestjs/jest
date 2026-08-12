@@ -38,7 +38,9 @@ const addSourceMapConsumer = (
         // TODO: return `column + 1` in Jest 31, so this matches V8 and
         // jest-circus. Reported zero-based until then, which is what
         // `--testLocationInResults` documents for jest-jasmine2, and changing
-        // it breaks anyone reading that field.
+        // it breaks anyone reading that field. An unmapped position falls back
+        // to V8's one-based column, as it always has — the Jest 31 change
+        // turns that fallback consistent instead of one off.
         const {column} = getPosition();
 
         return column ?? getColumnNumber();

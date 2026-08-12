@@ -238,9 +238,7 @@ const formatStackTrace: PrepareStackTrace = (error, stack) => {
  * file. Holding the cache does not retain the environment: it only ever
  * references path strings and parsed source maps.
  */
-export function installSourceMaps(
-  sourceMaps: SourceMapRegistry | null | undefined,
-): void {
+export function installSourceMaps(sourceMaps?: SourceMapRegistry | null): void {
   activeCache = getSourceMapCache(sourceMaps);
 
   if (Error.prepareStackTrace !== formatStackTrace) {
