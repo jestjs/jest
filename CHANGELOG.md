@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- `[jest-reporters]` Find untested files matching `collectCoverageFrom` that live outside every project's `hasteFS` in a multi-project configuration ([#16328](https://github.com/jestjs/jest/pull/16328))
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
