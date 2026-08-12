@@ -653,7 +653,7 @@ const config = defineConfig(
     files: [
       'packages/jest-source-map/src/SourceMapCache.ts',
       'packages/jest-source-map/src/getCallsite.ts',
-      'packages/jest-source-map/src/installSourceMaps.ts',
+      'packages/jest-source-map/src/SourceMapSupport.ts',
     ],
     rules: {
       'no-restricted-syntax': [

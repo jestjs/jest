@@ -17,7 +17,7 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import * as sourceMaps from '@jest/source-map';
+import {SourceMapSupport} from '@jest/source-map';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
@@ -34,6 +34,10 @@ type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
   result: TestResult;
 };
+
+// One per worker: the formatter it installs stays for the worker's lifetime,
+// and each test file swaps in its own source map registry.
+const sourceMapSupport = new SourceMapSupport();
 
 function freezeConsole(
   testConsole: BufferedConsole | CustomConsole | NullConsole,
@@ -235,7 +239,7 @@ async function runTestInternal(
   }
   const setupFilesEnd = Date.now();
 
-  sourceMaps.installSourceMaps(runtime.getSourceMaps());
+  sourceMapSupport.install(runtime.getSourceMaps());
 
   if (
     environment.global &&

@@ -5,16 +5,72 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type SourceMapCache, mapSourcePosition} from './SourceMapCache';
-import {getSourceMapCache} from './getSourceMapCache';
+import {type TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
+// TODO: replace with `util.getCallSites()`, whose `columnNumber` landed in
+// Node 22.14 — the floor is still 18.
+import callsites from 'callsites';
+import {SourceMapCache, mapSourcePosition} from './SourceMapCache';
+import {nodeFileReader} from './nodeFileReader';
 import type {SourceMapRegistry} from './types';
 
-type PrepareStackTrace = (
-  error: Error,
-  stack: Array<NodeJS.CallSite>,
-) => unknown;
+export interface InstallSourceMapsOptions {
+  /** Turns off the once-per-map warning about maps that cannot be parsed. */
+  suppressWarnings?: boolean;
+}
 
-let activeCache: SourceMapCache | null = null;
+// Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
+export const addSourceMapConsumer = (
+  callsite: callsites.CallSite,
+  tracer: TraceMap,
+): void => {
+  const getLineNumber = callsite.getLineNumber.bind(callsite);
+  const getColumnNumber = callsite.getColumnNumber.bind(callsite);
+  let position: ReturnType<typeof originalPositionFor> | null = null;
+
+  function getPosition() {
+    if (position != null) {
+      return position;
+    }
+
+    // The needle is zero-based while V8 counts columns from one, so looking up
+    // V8's number directly finds the segment one column to the right.
+    const line = getLineNumber();
+    const column = (getColumnNumber() ?? 1) - 1;
+
+    // The tracer throws on out-of-range needles.
+    position =
+      line == null || line < 1 || column < 0
+        ? {column: null, line: null, name: null, source: null}
+        : originalPositionFor(tracer, {column, line});
+
+    return position;
+  }
+
+  Object.defineProperties(callsite, {
+    getColumnNumber: {
+      value() {
+        // TODO: return `column + 1` in Jest 31, so this matches V8 and
+        // jest-circus. Reported zero-based until then, which is what
+        // `--testLocationInResults` documents for jest-jasmine2, and changing
+        // it breaks anyone reading that field. An unmapped position falls back
+        // to V8's one-based column, as it always has — the Jest 31 change
+        // turns that fallback consistent instead of one off.
+        const {column} = getPosition();
+
+        return column ?? getColumnNumber();
+      },
+      writable: false,
+    },
+    getLineNumber: {
+      value() {
+        const {line} = getPosition();
+
+        return line ?? getLineNumber();
+      },
+      writable: false,
+    },
+  });
+};
 
 // V8 treats an empty name as no name at all. Every fallback below has to keep
 // doing the same, which is why none of them can become `??`.
@@ -207,41 +263,135 @@ function wrapCallSite(
   return frame;
 }
 
-const formatStackTrace: PrepareStackTrace = (error, stack) => {
-  const name = isPresent(error.name) ? error.name : 'Error';
-  const message = error.message ?? '';
-  const errorString = `${name}: ${message}`;
-  const cache = activeCache;
+export class SourceMapSupport {
+  private activeCache: SourceMapCache | null = null;
+  private nullCache: SourceMapCache | null = null;
+  private readonly cachesByRegistry = new WeakMap<
+    SourceMapRegistry,
+    SourceMapCache
+  >();
+  private suppressWarnings = false;
+  private readonly reportedMapPaths = new Set<string>();
+  // V8 calls the formatter unbound, and `install` compares it by identity, so
+  // the bound copy has to be the same object every time.
+  private readonly boundFormatStackTrace: (
+    error: Error,
+    stack: Array<NodeJS.CallSite>,
+  ) => string;
 
-  if (cache == null) {
-    return (
-      errorString +
-      stack.map(frame => `\n    at ${frameToString(frame)}`).join('')
+  constructor() {
+    this.boundFormatStackTrace = this.formatStackTrace.bind(this);
+  }
+
+  /**
+   * Replaces `Error.prepareStackTrace` in the current realm, so `error.stack`
+   * renders frames against the original sources.
+   *
+   * Stays installed for the lifetime of the worker — each call swaps in its
+   * own cache. There is deliberately no `uninstall`: restoring V8's formatter
+   * at teardown would leave an error thrown after the environment is torn
+   * down pointing into the transformed file. Holding the cache does not
+   * retain the environment: it only ever references path strings and parsed
+   * source maps.
+   */
+  install(
+    sourceMaps?: SourceMapRegistry | null,
+    options: InstallSourceMapsOptions = {},
+  ): void {
+    this.suppressWarnings = options.suppressWarnings === true;
+    this.activeCache = this.cacheFor(sourceMaps);
+
+    if (Error.prepareStackTrace !== this.boundFormatStackTrace) {
+      Error.prepareStackTrace = this.boundFormatStackTrace;
+    }
+  }
+
+  /** One remapped `CallSite`, `level` frames above the caller. */
+  getCallsite(
+    level: number,
+    sourceMaps?: SourceMapRegistry | null,
+  ): callsites.CallSite {
+    const levelAfterThisCall = level + 1;
+    const stack = callsites()[levelAfterThisCall];
+    const sourceMap = this.cacheFor(sourceMaps).get(stack.getFileName() ?? '');
+
+    if (sourceMap != null) {
+      addSourceMapConsumer(stack, sourceMap);
+    }
+
+    return stack;
+  }
+
+  // One cache per registry, so repeated lookups in a test file reuse it.
+  private cacheFor(
+    sourceMaps: SourceMapRegistry | null | undefined,
+  ): SourceMapCache {
+    if (sourceMaps == null) {
+      this.nullCache ??= new SourceMapCache(
+        null,
+        nodeFileReader,
+        (mapPath, generatedPath) =>
+          this.reportUnparsable(mapPath, generatedPath),
+      );
+
+      return this.nullCache;
+    }
+
+    let cache = this.cachesByRegistry.get(sourceMaps);
+
+    if (cache == null) {
+      cache = new SourceMapCache(
+        sourceMaps,
+        nodeFileReader,
+        (mapPath, generatedPath) =>
+          this.reportUnparsable(mapPath, generatedPath),
+      );
+      this.cachesByRegistry.set(sourceMaps, cache);
+    }
+
+    return cache;
+  }
+
+  // A broken map silently leaves frames at their generated positions, which
+  // reads as "source maps do not work". Say so, once per map.
+  private reportUnparsable(mapPath: string, generatedPath: string): void {
+    if (this.suppressWarnings || this.reportedMapPaths.has(mapPath)) {
+      return;
+    }
+
+    this.reportedMapPaths.add(mapPath);
+
+    const location =
+      mapPath === generatedPath
+        ? 'the inline source map'
+        : `the source map at ${mapPath}`;
+
+    console.warn(
+      `Failed to parse ${location} for ${generatedPath}; its stack frames stay untranslated.`,
     );
   }
 
-  return (
-    errorString +
-    stack
-      .map(frame => `\n    at ${frameToString(wrapCallSite(cache, frame))}`)
-      .join('')
-  );
-};
+  private formatStackTrace(
+    error: Error,
+    stack: Array<NodeJS.CallSite>,
+  ): string {
+    const name = isPresent(error.name) ? error.name : 'Error';
+    const message = error.message ?? '';
+    const errorString = `${name}: ${message}`;
+    const cache = this.activeCache;
 
-/**
- * Replaces `Error.prepareStackTrace` in the current realm, so `error.stack`
- * renders frames against the original sources.
- *
- * Stays installed for the lifetime of the worker — each call swaps in its own
- * cache. Restoring V8's formatter at teardown instead would leave an error
- * thrown after the environment is torn down pointing into the transformed
- * file. Holding the cache does not retain the environment: it only ever
- * references path strings and parsed source maps.
- */
-export function installSourceMaps(sourceMaps?: SourceMapRegistry | null): void {
-  activeCache = getSourceMapCache(sourceMaps);
+    if (cache == null) {
+      return (
+        errorString +
+        stack.map(frame => `\n    at ${frameToString(frame)}`).join('')
+      );
+    }
 
-  if (Error.prepareStackTrace !== formatStackTrace) {
-    Error.prepareStackTrace = formatStackTrace;
+    return (
+      errorString +
+      stack
+        .map(frame => `\n    at ${frameToString(wrapCallSite(cache, frame))}`)
+        .join('')
+    );
   }
 }

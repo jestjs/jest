@@ -8,7 +8,7 @@
 import type {SectionedSourceMapInput} from '@jridgewell/trace-mapping';
 
 /** Transformed file path to the map file written for it. */
-export type SourceMapRegistry = Map<string, string>;
+export type SourceMapRegistry = ReadonlyMap<string, string>;
 
 /** The platform's mapping between file names, URLs and bytes. */
 export interface SourceMapFileReader {

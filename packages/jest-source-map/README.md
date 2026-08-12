@@ -12,16 +12,17 @@ $ npm install --save @jest/source-map
 
 ## API
 
-### `installSourceMaps(sourceMaps?: SourceMapRegistry | null): void`
+### `SourceMapSupport#install(sourceMaps?: SourceMapRegistry | null, options?: InstallSourceMapsOptions): void`
 
-Replaces `Error.prepareStackTrace` in the current realm, so reading `.stack` on any error renders frames against the original sources. `jest-runner` calls this once per test file.
+Replaces `Error.prepareStackTrace` in the current realm, so reading `.stack` on any error renders frames against the original sources. `jest-runner` holds one instance per worker and installs once per test file.
 
 `sourceMaps` maps a transformed file to the `.map` file Jest wrote into its transform cache — inside Jest, `runtime.getSourceMaps()`. The `sources` inside a map resolve with URL semantics against the transformed file, not against the map's own location. Files missing from the registry fall back to a `sourceMappingURL` comment on the file itself, which covers pre-compiled output that ships its own map.
 
 ```javascript
-import {installSourceMaps} from '@jest/source-map';
+import {SourceMapSupport} from '@jest/source-map';
 
-installSourceMaps(new Map([['/build/app.js', '/cache/app.js.map']]));
+const sourceMapSupport = new SourceMapSupport();
+sourceMapSupport.install(new Map([['/build/app.js', '/cache/app.js.map']]));
 
 new Error('boom').stack;
 // Error: boom
@@ -30,9 +31,15 @@ new Error('boom').stack;
 
 The formatter stays installed for the lifetime of the process, and each call swaps in a new registry. Nothing is restored, deliberately: an error thrown after a test finishes — a stray timer, a floating promise — is the one users have the hardest time placing, and it would otherwise report a position in the transformed file.
 
+A map that cannot be parsed is reported once via `console.warn`; pass `{suppressWarnings: true}` to turn that off.
+
+### `SourceMapSupport#getCallsite(level: number, sourceMaps?: SourceMapRegistry | null): CallSite`
+
+Returns a single remapped [`CallSite`](https://v8.dev/docs/stack-trace-api#customizing-stack-traces), `level` frames above the caller. Used for `--testLocationInResults`. Shares its parsed maps with the installed formatter, so each `.map` file is read once.
+
 ### `getCallsite(level: number, sourceMaps?: SourceMapRegistry | null): CallSite`
 
-Returns a single remapped [`CallSite`](https://v8.dev/docs/stack-trace-api#customizing-stack-traces), `level` frames above the caller. Used for `--testLocationInResults`. Shares its parsed maps with `installSourceMaps`, so each `.map` file is read once.
+Deprecated free-function alias of `SourceMapSupport#getCallsite`.
 
 ### `SourceMapRegistry`
 

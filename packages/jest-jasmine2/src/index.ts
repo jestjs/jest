@@ -7,7 +7,7 @@
 
 import * as path from 'node:path';
 import type {JestEnvironment} from '@jest/environment';
-import {getCallsite} from '@jest/source-map';
+import {SourceMapSupport} from '@jest/source-map';
 import {
   type AssertionResult,
   type Status,
@@ -175,6 +175,8 @@ export default async function jasmine2(
   // TODO: Remove config option if V8 exposes some way of getting location of caller
   // in a future version
   if (config.testLocationInResults === true) {
+    const sourceMapSupport = new SourceMapSupport();
+
     function wrapIt<T extends Global.ItBase>(original: T): T {
       const wrapped = (
         testName: Global.TestName,
@@ -182,11 +184,11 @@ export default async function jasmine2(
         timeout?: number,
       ) => {
         const sourcemaps = runtime.getSourceMaps();
-        let stack = getCallsite(1, sourcemaps);
+        let stack = sourceMapSupport.getCallsite(1, sourcemaps);
         const it = original(testName, fn, timeout);
 
         if (stack.getFileName()?.startsWith(jestEachBuildDir)) {
-          stack = getCallsite(2, sourcemaps);
+          stack = sourceMapSupport.getCallsite(2, sourcemaps);
         }
         // @ts-expect-error: `it` is `void` for some reason
         it.result.__callsite = stack;

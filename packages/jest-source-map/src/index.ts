@@ -6,5 +6,8 @@
  */
 
 export {default as getCallsite} from './getCallsite';
-export {installSourceMaps} from './installSourceMaps';
+export {
+  type InstallSourceMapsOptions,
+  SourceMapSupport,
+} from './SourceMapSupport';
 export type {SourceMapRegistry} from './types';

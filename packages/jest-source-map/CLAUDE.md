@@ -2,14 +2,15 @@
 
 ## What's public
 
-- `installSourceMaps(sourceMaps)` — replaces `Error.prepareStackTrace` in the current realm so every `error.stack` is rendered against the original sources. `jest-runner` calls it once per test file.
-- `getCallsite(level, sourceMaps?)` — one remapped `CallSite`, used by `jest-jasmine2` for `--testLocationInResults`.
+- `SourceMapSupport#install(sourceMaps, options?)` — replaces `Error.prepareStackTrace` in the current realm so every `error.stack` is rendered against the original sources. `jest-runner` holds one instance per worker and installs once per test file. `{suppressWarnings: true}` turns off the broken-map warning.
+- `SourceMapSupport#getCallsite(level, sourceMaps?)` — one remapped `CallSite`, used by `jest-jasmine2` for `--testLocationInResults`.
+- `getCallsite(level, sourceMaps?)` — deprecated free-function alias of the method, kept for compatibility. Self-contained: it carries its own module-level registry cache and dies together with it.
 
-`SourceMapCache` / `getSourceMapCache(sourceMaps)` / `mapSourcePosition(cache, position)` are the shared map loader behind both, and are internal — they are not exported from `src/index.ts`.
+`SourceMapCache` / `mapSourcePosition(cache, position)` are the map loader behind both, and are internal — they are not exported from `src/index.ts`.
 
 ## Module layout
 
-`SourceMapCache.ts` (the loader and `mapSourcePosition`), `installSourceMaps.ts` and `getCallsite.ts` have no Node imports — an `eslint.config.mjs` block bans `node:` and `graceful-fs` imports in them. Everything platform-specific — `graceful-fs`, `pathToFileURL`/`fileURLToPath`, `Buffer` — lives behind the `SourceMapFileReader` interface in `types.ts`, implemented once by `nodeFileReader.ts`. `getSourceMapCache.ts` is the composition root that wires the two together, and is the only reason the Node reader is reachable from `index.ts`.
+`SourceMapCache.ts` (the loader and `mapSourcePosition`), `SourceMapSupport.ts` and `getCallsite.ts` have no Node imports — an `eslint.config.mjs` block bans `node:` and `graceful-fs` imports in them. Everything platform-specific — `graceful-fs`, `pathToFileURL`/`fileURLToPath`, `Buffer` — lives behind the `SourceMapFileReader` interface in `types.ts`, implemented once by `nodeFileReader.ts`. A `SourceMapSupport` instance wires the reader in and holds all the formatter state — active cache, per-registry cache reuse, warning bookkeeping — rather than the module.
 
 There is no browser reader today. The seam exists so adding one is a new file rather than a rewrite.
 
@@ -37,7 +38,9 @@ Node's own support is not an alternative: `--enable-source-maps` and `module.set
 
 **A registered map is parsed against the generated file, not against itself.** Jest writes maps into its transform cache, while the `sources` inside are relative to the file that was transformed — so `mapUrl` is the generated path. The base is baked into the parsed map's resolved sources, which is why the process-lifetime parse cache is keyed on the map path plus the base: a transformer with its own `getCacheKey` can hand two generated files the same map path.
 
-**Unmapped positions are returned unchanged.** A precise location in the compiled file beats a vague one in the original, so `mapSourcePosition` falls back to its input whenever `originalPositionFor` finds nothing.
+**Unmapped positions are returned unchanged.** A precise location in the compiled file beats a vague one in the original, so `mapSourcePosition` falls back to its input whenever `originalPositionFor` finds nothing. Out-of-range positions (line < 1, column < 0) get the same treatment without asking the tracer, which throws on them — and a throw inside `prepareStackTrace` replaces the whole stack with the exception.
+
+**An unparsable map warns once, from `SourceMapSupport`.** Silence reads as "source maps do not work"; naming the file once per map says why. The cache reports through a callback; the support instance dedupes, honours `suppressWarnings`, and emits via `console.warn` — the host realm's console, not the per-test `BufferedConsole`, so nothing is captured into a test's output. `getCallsite`'s path stays quiet: the formatter reports the same map when a stack formats.
 
 **The formatter is never uninstalled.** It stays for the lifetime of the worker and each `installSourceMaps` swaps in that file's cache. Restoring V8's formatter at teardown instead leaves anything thrown afterwards — a stray timer, a floating promise — reporting a position in the transformed file, which is when a readable stack matters most; `requireAfterTeardown` and `requireAfterTeardownJasmine` pin that. This is safe where `source-map-support` was not: its `retrieveSourceMap` closure captured `runtime` and so retained the whole environment (#15233), whereas `SourceMapCache` only ever references path strings and parsed maps.
 

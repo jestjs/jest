@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {installSourceMaps} from '../installSourceMaps';
+import {SourceMapSupport} from '../SourceMapSupport';
 
 jest.mock('graceful-fs');
 
@@ -125,12 +125,14 @@ function frameOf(error: Error, frame: NodeJS.CallSite): string {
   return format(error, [frame]).split('\n    at ')[1];
 }
 
+const sourceMapSupport = new SourceMapSupport();
 const originalPrepareStackTrace = currentFormatter();
 
 beforeEach(() => {
+  jest.clearAllMocks();
   jest.mocked(fs.existsSync).mockReturnValue(true);
   jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(decodedMap));
-  installSourceMaps(new Map([[generatedPath, mapPath]]));
+  sourceMapSupport.install(new Map([[generatedPath, mapPath]]));
 });
 
 afterEach(() => {
@@ -268,7 +270,7 @@ describe('install', () => {
   test('swaps the cache for each test file', () => {
     const other = path.join(buildDir, 'other.js');
 
-    installSourceMaps(new Map([[other, mapPath]]));
+    sourceMapSupport.install(new Map([[other, mapPath]]));
 
     const frame = createCallSite({
       columnNumber: 1,
@@ -287,9 +289,51 @@ describe('install', () => {
   test('keeps the formatter in place so later stacks stay mapped', () => {
     const installed = currentFormatter();
 
-    installSourceMaps(new Map());
+    sourceMapSupport.install(new Map());
 
     expect(installed).not.toBe(originalPrepareStackTrace);
     expect(currentFormatter()).toBe(installed);
+  });
+
+  test('warns once when a map cannot be parsed', () => {
+    const consoleWarnMock = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {});
+    const brokenMapPath = path.resolve(path.sep, 'cache', 'broken.js.map');
+
+    jest.mocked(fs.readFileSync).mockReturnValue('{not json');
+    sourceMapSupport.install(new Map([[generatedPath, brokenMapPath]]));
+
+    expect(frameOf(new Error('x'), mappedFrame())).toContain(generatedPath);
+    expect(frameOf(new Error('y'), mappedFrame())).toContain(generatedPath);
+    expect(consoleWarnMock).toHaveBeenCalledTimes(1);
+    expect(consoleWarnMock).toHaveBeenCalledWith(
+      `Failed to parse the source map at ${brokenMapPath} for ${generatedPath}; its stack frames stay untranslated.`,
+    );
+  });
+
+  test('`suppressWarnings` silences the unparsable-map warning', () => {
+    const consoleWarnMock = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {});
+    const brokenMapPath = path.resolve(path.sep, 'cache', 'broken2.js.map');
+
+    jest.mocked(fs.readFileSync).mockReturnValue('{not json');
+    sourceMapSupport.install(new Map([[generatedPath, brokenMapPath]]), {
+      suppressWarnings: true,
+    });
+
+    expect(frameOf(new Error('x'), mappedFrame())).toContain(generatedPath);
+    expect(consoleWarnMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('getCallsite', () => {
+  test('returns the caller’s frame', () => {
+    const site = sourceMapSupport.getCallsite(0, new Map());
+
+    expect(site.getFileName()).toBe(__filename);
+    expect(site.getColumnNumber()).toEqual(expect.any(Number));
+    expect(site.getLineNumber()).toEqual(expect.any(Number));
   });
 });

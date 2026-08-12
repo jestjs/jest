@@ -35,6 +35,7 @@ const decodedMap = {
 
 const readFileMock = jest.mocked(fs.readFileSync);
 const existsSyncMock = jest.mocked(fs.existsSync);
+const reportUnparsableMock = jest.fn<(map: string, file: string) => void>();
 
 // `readFileSync` is overloaded, so an implementation returning a string does
 // not satisfy its type directly.
@@ -43,7 +44,7 @@ function mockFileContents(read: (filePath: string) => string) {
 }
 
 function createCache(sourceMaps: SourceMapRegistry | null) {
-  return new SourceMapCache(sourceMaps, nodeFileReader);
+  return new SourceMapCache(sourceMaps, nodeFileReader, reportUnparsableMock);
 }
 
 function sourceOf(cache: SourceMapCache) {
@@ -227,6 +228,36 @@ describe('SourceMapCache', () => {
     expect(cache.get(generatedPath)).toBeNull();
   });
 
+  test('reports an unparsable map once', () => {
+    mockFileContents(() => '{not json');
+
+    createCache(new Map([[generatedPath, registeredMapPath]])).get(
+      generatedPath,
+    );
+    createCache(new Map([[generatedPath, registeredMapPath]])).get(
+      generatedPath,
+    );
+
+    expect(reportUnparsableMock).toHaveBeenCalledTimes(1);
+    expect(reportUnparsableMock).toHaveBeenCalledWith(
+      registeredMapPath,
+      generatedPath,
+    );
+  });
+
+  test('reports an inline map that fails to decode', () => {
+    mockFileContents(
+      () => 'code();\n//# sourceMappingURL=data:application/json;base64,!!!\n',
+    );
+
+    createCache(new Map()).get(generatedPath);
+
+    expect(reportUnparsableMock).toHaveBeenCalledWith(
+      generatedPath,
+      generatedPath,
+    );
+  });
+
   test('never touches the filesystem for a scheme-named file', () => {
     const cache = createCache(new Map());
 
@@ -246,6 +277,7 @@ describe('SourceMapCache', () => {
     const cache = new SourceMapCache(
       new Map([[generatedPath, registeredMapPath]]),
       reader,
+      reportUnparsableMock,
     );
 
     expect(sourceOf(cache).source).toBe('native:app:///build/input.ts');
@@ -323,6 +355,7 @@ describe('SourceMapCache', () => {
         const cache = new SourceMapCache(
           new Map([[path.join(dir, 'out.js'), registeredMapPath]]),
           nodeFileReader,
+          reportUnparsableMock,
         );
 
         expect(
@@ -383,6 +416,20 @@ describe('mapSourcePosition', () => {
 
     const cache = createCache(new Map([[generatedPath, registeredMapPath]]));
     const generated = {column: 4, line: 40, source: generatedPath};
+
+    expect(mapSourcePosition(cache, generated)).toBe(generated);
+  });
+
+  // The tracer throws on out-of-range needles, which inside `prepareStackTrace`
+  // would replace the whole stack with the exception.
+  test.each([
+    ['a negative column', {column: -1, line: 2}],
+    ['line zero', {column: 0, line: 0}],
+  ])('returns the generated position for %s', (_label, needle) => {
+    mockFileContents(() => JSON.stringify(decodedMap));
+
+    const cache = createCache(new Map([[generatedPath, registeredMapPath]]));
+    const generated = {...needle, source: generatedPath};
 
     expect(mapSourcePosition(cache, generated)).toBe(generated);
   });

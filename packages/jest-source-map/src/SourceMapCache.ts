@@ -14,6 +14,8 @@ import {
 import {mapFileCommentRegex} from 'convert-source-map';
 import type {SourceMapFileReader, SourceMapRegistry} from './types';
 
+type ReportUnparsable = (mapPath: string, generatedPath: string) => void;
+
 export interface GeneratedPosition {
   column: number | null;
   line: number | null;
@@ -70,15 +72,18 @@ function parseMap(
 export class SourceMapCache {
   private readonly sourceMaps: SourceMapRegistry | null;
   private readonly reader: SourceMapFileReader;
+  private readonly reportUnparsable: ReportUnparsable;
   private readonly loaded = new Map<string, TraceMap | null>();
   private readonly attempted = new Map<string, string | undefined>();
 
   constructor(
     sourceMaps: SourceMapRegistry | null,
     reader: SourceMapFileReader,
+    reportUnparsable: ReportUnparsable,
   ) {
     this.sourceMaps = sourceMaps;
     this.reader = reader;
+    this.reportUnparsable = reportUnparsable;
   }
 
   get(generatedPath: string): TraceMap | null {
@@ -156,6 +161,10 @@ export class SourceMapCache {
     const content = this.reader.read(sourceMapPath);
     const map = content == null ? null : parseMap(content, mapUrl);
 
+    if (content != null && map == null) {
+      this.reportUnparsable(sourceMapPath, generatedPath);
+    }
+
     parsedByCachePath.set(cacheKey, map);
 
     return map;
@@ -185,17 +194,32 @@ export class SourceMapCache {
       return null;
     }
 
+    const isInline = resolvedUrl.startsWith('data:');
     const content = this.reader.read(resolvedUrl);
 
     if (content == null) {
+      // A `data:` URL that fails to decode is a broken inline map; a missing
+      // `.map` file next to the code is not worth reporting.
+      if (isInline) {
+        this.reportUnparsable(generatedPath, generatedPath);
+      }
+
       return null;
     }
 
     // An inline map's sources are relative to the file carrying it. Every other
     // map resolves them against wherever the map itself lives.
-    const mapUrl = resolvedUrl.startsWith('data:') ? generatedUrl : resolvedUrl;
+    const mapUrl = isInline ? generatedUrl : resolvedUrl;
+    const map = parseMap(content, mapUrl);
 
-    return parseMap(content, mapUrl);
+    if (map == null) {
+      this.reportUnparsable(
+        isInline ? generatedPath : this.reader.toPath(resolvedUrl),
+        generatedPath,
+      );
+    }
+
+    return map;
   }
 }
 
@@ -207,7 +231,9 @@ export function mapSourcePosition(
 ): MappedPosition {
   const {column, line, source} = position;
 
-  if (column == null || line == null) {
+  // The tracer throws on out-of-range needles, and a throw inside
+  // `prepareStackTrace` replaces the whole stack with the exception.
+  if (column == null || line == null || column < 0 || line < 1) {
     return position;
   }
 
