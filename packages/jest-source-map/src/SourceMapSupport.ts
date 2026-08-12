@@ -13,7 +13,7 @@ import {SourceMapCache, mapSourcePosition} from './SourceMapCache';
 import {nodeFileReader} from './nodeFileReader';
 import type {SourceMapRegistry} from './types';
 
-export interface InstallSourceMapsOptions {
+export interface SourceMapSupportInstallOptions {
   /** Turns off the once-per-map warning about maps that cannot be parsed. */
   suppressWarnings?: boolean;
 }
@@ -296,7 +296,7 @@ export class SourceMapSupport {
    */
   install(
     sourceMaps?: SourceMapRegistry | null,
-    options: InstallSourceMapsOptions = {},
+    options: SourceMapSupportInstallOptions = {},
   ): void {
     this.suppressWarnings = options.suppressWarnings === true;
     this.activeCache = this.cacheFor(sourceMaps);

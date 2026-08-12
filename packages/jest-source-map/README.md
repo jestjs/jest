@@ -12,7 +12,7 @@ $ npm install --save @jest/source-map
 
 ## API
 
-### `SourceMapSupport#install(sourceMaps?: SourceMapRegistry | null, options?: InstallSourceMapsOptions): void`
+### `SourceMapSupport#install(sourceMaps?: SourceMapRegistry | null, options?: SourceMapSupportInstallOptions): void`
 
 Replaces `Error.prepareStackTrace` in the current realm, so reading `.stack` on any error renders frames against the original sources. `jest-runner` holds one instance per worker and installs once per test file.
 
