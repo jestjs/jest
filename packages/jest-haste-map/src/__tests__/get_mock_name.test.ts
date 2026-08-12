@@ -7,7 +7,7 @@
  */
 
 import * as path from 'node:path';
-import getMockName, {getMockCandidateModulePath} from '../getMockName';
+import getMockName, {getAdjacentModulePath} from '../getMockName';
 
 describe('getMockName', () => {
   it('extracts mock name from file path', () => {
@@ -18,9 +18,21 @@ describe('getMockName', () => {
     );
   });
 
-  it('resolves the mocked module adjacent to the __mocks__ directory', () => {
+  it('names the module a mock sits next to', () => {
     expect(
-      getMockCandidateModulePath(path.join('a', 'b', '__mocks__', 'index.js')),
+      getAdjacentModulePath(path.join('a', 'b', '__mocks__', 'index.js')),
     ).toBe(path.join('a', 'b', 'index.js'));
+
+    expect(getAdjacentModulePath(path.join('__mocks__', 'index.js'))).toBe(
+      'index.js',
+    );
+  });
+
+  it('has no adjacent module when the mock is nested deeper', () => {
+    expect(
+      getAdjacentModulePath(path.join('a', '__mocks__', 'b', 'index.js')),
+    ).toBeNull();
+
+    expect(getAdjacentModulePath(path.join('a', 'b', 'index.js'))).toBeNull();
   });
 });

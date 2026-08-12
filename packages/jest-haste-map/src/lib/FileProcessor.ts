@@ -8,7 +8,7 @@
 import * as path from 'node:path';
 import type {JestWorkerFarm} from 'jest-worker';
 import H from '../constants';
-import getMockName, {getMockCandidateModulePath} from '../getMockName';
+import getMockName, {getAdjacentModulePath} from '../getMockName';
 import type {
   FileData,
   InternalHasteMap,
@@ -76,11 +76,6 @@ export class FileProcessor {
     workerOptions?: WorkerOptions,
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
-
-    const isAdjacentManualMock = (mockFilePath: string) =>
-      hasteMap.files.has(
-        fastPath.relative(rootDir, getMockCandidateModulePath(mockFilePath)),
-      );
 
     const setModule = (id: string, module: ModuleMetaData) => {
       let moduleMap = map.get(id);
@@ -221,11 +216,14 @@ export class FileProcessor {
       if (existingMockPath) {
         const secondMockPath = fastPath.relative(rootDir, filePath);
         if (existingMockPath !== secondMockPath) {
-          const duplicateIsAdjacentManualMock =
-            isAdjacentManualMock(fastPath.resolve(rootDir, existingMockPath)) &&
-            isAdjacentManualMock(filePath);
+          // Both mocks keep working, because each one is found through the
+          // module it sits next to. Asking for one of them to be deleted would
+          // be wrong.
+          const bothMocksAreAdjacent =
+            this._isAdjacentMock(hasteMap, existingMockPath) &&
+            this._isAdjacentMock(hasteMap, secondMockPath);
 
-          if (!duplicateIsAdjacentManualMock) {
+          if (!bothMocksAreAdjacent) {
             const method = this._options.throwOnModuleCollision
               ? 'error'
               : 'warn';
@@ -354,6 +352,14 @@ export class FileProcessor {
         throw error;
       },
     );
+  }
+
+  private _isAdjacentMock(
+    hasteMap: InternalHasteMap,
+    relativeMockPath: string,
+  ): boolean {
+    const relativeModulePath = getAdjacentModulePath(relativeMockPath);
+    return relativeModulePath != null && hasteMap.files.has(relativeModulePath);
   }
 
   private _getWorker(
