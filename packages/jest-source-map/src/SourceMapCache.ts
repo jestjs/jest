@@ -61,6 +61,17 @@ const parsedByCachePath = new Map<string, TraceMap | null>();
 // arriving after its file's registry is gone has nowhere else to look.
 const rememberedMapPaths = new Map<string, string | null>();
 
+function rememberMapPath(generatedPath: string, sourceMapPath: string): void {
+  const remembered = rememberedMapPaths.get(generatedPath);
+
+  rememberedMapPaths.set(
+    generatedPath,
+    remembered === undefined || remembered === sourceMapPath
+      ? sourceMapPath
+      : null,
+  );
+}
+
 // `mapUrl` is what the map's `sources` resolve against.
 function parseMap(
   content: SectionedSourceMapInput,
@@ -123,19 +134,29 @@ export class SourceMapCache {
     return this.reader.toPath(url);
   }
 
+  // Formatting a stack remembers a file's map as a side effect, but a file no
+  // stack ever mentioned is never recorded that way. Called before this cache
+  // stops being the active one, so a late frame from such a file still finds
+  // its map. The same ambiguity rule applies: a file already remembered with a
+  // different map path flips to `null` and the fallback declines.
+  rememberAll(): void {
+    if (this.sourceMaps == null) {
+      return;
+    }
+
+    for (const [generatedPath, sourceMapPath] of this.sourceMaps) {
+      if (sourceMapPath !== '') {
+        rememberMapPath(generatedPath, sourceMapPath);
+      }
+    }
+  }
+
   private load(generatedPath: string): TraceMap | null {
     // The map Jest itself produced while transforming the file.
     const registered = this.sourceMaps?.get(generatedPath);
 
     if (registered != null && registered !== '') {
-      const remembered = rememberedMapPaths.get(generatedPath);
-
-      rememberedMapPaths.set(
-        generatedPath,
-        remembered === undefined || remembered === registered
-          ? registered
-          : null,
-      );
+      rememberMapPath(generatedPath, registered);
     }
 
     const sourceMapPath =

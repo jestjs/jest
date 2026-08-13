@@ -304,7 +304,17 @@ export class SourceMapSupport {
     options: SourceMapSupportInstallOptions = {},
   ): void {
     this.suppressWarnings = options.suppressWarnings === true;
-    this.activeCache = this.cacheFor(sourceMaps);
+
+    const cache = this.cacheFor(sourceMaps);
+
+    // The registry going out of service is the last chance to remember where
+    // each file's map lives — a stray timer from the file it served can still
+    // throw, and a file no formatted stack mentioned was never recorded.
+    if (this.activeCache != null && this.activeCache !== cache) {
+      this.activeCache.rememberAll();
+    }
+
+    this.activeCache = cache;
 
     if (Error.prepareStackTrace !== this.boundFormatStackTrace) {
       Error.prepareStackTrace = this.boundFormatStackTrace;
