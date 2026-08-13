@@ -769,33 +769,21 @@ describe('testPathIgnorePatterns', () => {
 });
 
 describe('stackTraceIgnorePatterns', () => {
-  it('does not normalize paths relative to rootDir', async () => {
+  it('passes patterns through without path normalization', async () => {
     const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
-        stackTraceIgnorePatterns: ['bar/baz', 'qux/quux'],
+        stackTraceIgnorePatterns: [
+          '/node_modules/react-dom/',
+          'node_modules[\\\\/]@scope[\\\\/]',
+        ],
       },
       {} as Config.Argv,
     );
 
     expect(options.stackTraceIgnorePatterns).toEqual([
-      joinForPattern('bar', 'baz'),
-      joinForPattern('qux', 'quux'),
-    ]);
-  });
-
-  it('substitutes <rootDir> tokens', async () => {
-    const {options} = await normalize(
-      {
-        rootDir: '/root/path/foo',
-        stackTraceIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
-      },
-      {} as Config.Argv,
-    );
-
-    expect(options.stackTraceIgnorePatterns).toEqual([
-      'hasNoToken',
-      joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
+      '/node_modules/react-dom/',
+      'node_modules[\\\\/]@scope[\\\\/]',
     ]);
   });
 });

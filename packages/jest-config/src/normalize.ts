@@ -339,7 +339,6 @@ const normalizeUnmockedModulePathPatterns = (
     Config.InitialOptions,
     | 'coveragePathIgnorePatterns'
     | 'modulePathIgnorePatterns'
-    | 'stackTraceIgnorePatterns'
     | 'testPathIgnorePatterns'
     | 'transformIgnorePatterns'
     | 'watchPathIgnorePatterns'
@@ -795,7 +794,6 @@ export default async function normalize(
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
-      case 'stackTraceIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
       case 'watchPathIgnorePatterns':
@@ -1013,6 +1011,7 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
+      case 'stackTraceIgnorePatterns':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
