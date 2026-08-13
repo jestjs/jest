@@ -85,6 +85,17 @@ describe('isCoreModule', () => {
 });
 
 describe('findNodeModule', () => {
+  it('is possible to override the default resolver with an ES module', () => {
+    const newPath = Resolver.findNodeModule('test', {
+      basedir: '/',
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      resolver: require.resolve('../__mocks__/userResolverEsm'),
+    });
+
+    expect(newPath).toBe('module');
+  });
+
   it('should resolve builtin modules as-is', () => {
     expect(
       Resolver.findNodeModule('url', {
@@ -402,6 +413,17 @@ describe('findNodeModule', () => {
 });
 
 describe('findNodeModuleAsync', () => {
+  it('is possible to override the default resolver with an ES module', async () => {
+    const newPath = await Resolver.findNodeModuleAsync('test', {
+      basedir: '/',
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      resolver: require.resolve('../__mocks__/userResolverEsmAsync'),
+    });
+
+    expect(newPath).toBe('module');
+  });
+
   it('is possible to override the default resolver', async () => {
     const cwd = process.cwd();
     const resolvedCwd = fs.realpathSync(cwd) || cwd;
@@ -974,6 +996,14 @@ describe('canResolveSync', () => {
       resolver: require.resolve('../__mocks__/userResolverAsync'),
     } as ResolverConfig);
     expect(resolver.canResolveSync()).toBe(false);
+  });
+
+  it('returns true when the user resolver is an ES module exporting a function as `default`', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      resolver: require.resolve('../__mocks__/userResolverEsm'),
+    } as ResolverConfig);
+    expect(resolver.canResolveSync()).toBe(true);
   });
 });
 

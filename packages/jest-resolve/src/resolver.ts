@@ -962,6 +962,25 @@ type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
 type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
 export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
+function asResolver(
+  loadedResolver: unknown,
+): SyncResolver | ResolverObject | null {
+  if (typeof loadedResolver === 'function') {
+    return loadedResolver as SyncResolver;
+  }
+
+  if (
+    typeof loadedResolver === 'object' &&
+    loadedResolver != null &&
+    ((loadedResolver as ResolverObject).sync != null ||
+      (loadedResolver as ResolverObject).async != null)
+  ) {
+    return loadedResolver as ResolverObject;
+  }
+
+  return null;
+}
+
 function loadResolver(
   resolver: string | undefined | null,
 ): SyncResolver | ResolverObject {
@@ -975,15 +994,20 @@ function loadResolver(
     throw new Error(`Resolver located at ${resolver} does not export anything`);
   }
 
-  if (typeof loadedResolver === 'function') {
-    return loadedResolver as SyncResolver;
+  const resolverModule = asResolver(loadedResolver);
+
+  if (resolverModule != null) {
+    return resolverModule;
   }
 
-  if (
-    typeof loadedResolver === 'object' &&
-    (loadedResolver.sync != null || loadedResolver.async != null)
-  ) {
-    return loadedResolver as ResolverObject;
+  // An ES module resolver is seen as a module namespace object, with the
+  // resolver assigned to `default`, so look there before giving up.
+  if (typeof loadedResolver === 'object' && loadedResolver.default != null) {
+    const defaultExport = asResolver(loadedResolver.default);
+
+    if (defaultExport != null) {
+      return defaultExport;
+    }
   }
 
   throw new Error(
