@@ -40,6 +40,7 @@ export type StackTraceConfig = Pick<
 export type StackTraceOptions = {
   noStackTrace: boolean;
   noCodeFrame?: boolean;
+  stackTraceIgnorePatterns?: Array<string>;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -292,9 +293,11 @@ export const formatExecError = (
 const removeInternalStackEntries = (
   lines: Array<string>,
   options: StackTraceOptions,
-  stackTraceIgnorePatterns: Array<RegExp> = [],
 ): Array<string> => {
   let pathCounter = 0;
+  const stackTraceIgnorePatterns = compileStackTraceIgnorePatterns(
+    options.stackTraceIgnorePatterns,
+  );
 
   return lines.filter(line => {
     if (!line) {
@@ -376,22 +379,17 @@ export const formatPath = (
 export function getStackTraceLines(
   stack: string,
   options?: StackTraceOptions,
-  stackTraceIgnorePatterns?: Array<string>,
 ): Array<string> {
   options = {noCodeFrame: false, noStackTrace: false, ...options};
-  return removeInternalStackEntries(
-    stack.split(/\n/),
-    options,
-    compileStackTraceIgnorePatterns(stackTraceIgnorePatterns),
-  );
+  return removeInternalStackEntries(stack.split(/\n/), options);
 }
 
 export function getTopFrame(
   lines: Array<string>,
-  stackTraceIgnorePatterns?: Array<string>,
+  options?: StackTraceOptions,
 ): Frame | null {
   const ignorePatterns = compileStackTraceIgnorePatterns(
-    stackTraceIgnorePatterns,
+    options?.stackTraceIgnorePatterns,
   );
 
   for (const line of lines) {
@@ -425,18 +423,21 @@ export function formatStackTrace(
   options: StackTraceOptions,
   testPath?: string,
 ): string {
-  const lines = getStackTraceLines(
-    stack,
-    options,
-    config.stackTraceIgnorePatterns,
-  );
+  // Callers often pass `globalConfig` as `options` (for `noStackTrace`). Project
+  // patterns live on `config`; prefer an explicit options value when present.
+  const effectiveOptions: StackTraceOptions = {
+    ...options,
+    stackTraceIgnorePatterns:
+      options.stackTraceIgnorePatterns ?? config.stackTraceIgnorePatterns,
+  };
+  const lines = getStackTraceLines(stack, effectiveOptions);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (!options.noStackTrace && !options.noCodeFrame) {
-    const topFrame = getTopFrame(lines, config.stackTraceIgnorePatterns);
+  if (!effectiveOptions.noStackTrace && !effectiveOptions.noCodeFrame) {
+    const topFrame = getTopFrame(lines, effectiveOptions);
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
 
