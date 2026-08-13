@@ -37,7 +37,7 @@
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
-- `[jest-resolve]` Load a user resolver written as an ES module, whose resolver arrives on `default` ([#PRNUM](https://github.com/jestjs/jest/pull/PRNUM))
+- `[jest-resolve]` Load a user resolver written as an ES module, whose resolver arrives on `default` ([#16332](https://github.com/jestjs/jest/pull/16332))
 - `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
