@@ -34,7 +34,7 @@ try {
 
 export type StackTraceConfig = Pick<
   Config.ProjectConfig,
-  'rootDir' | 'testMatch'
+  'rootDir' | 'stackTraceIgnorePatterns' | 'testMatch'
 >;
 
 export type StackTraceOptions = {
@@ -87,6 +87,15 @@ const colorStackLines = (stack: string): string =>
 const isJestInternalFrame = (line: string) =>
   JEST_INTERNALS_IGNORE.test(line) ||
   (PATH_JEST_PACKAGES !== null && line.includes(PATH_JEST_PACKAGES));
+
+const matchesStackTraceIgnorePatterns = (
+  line: string,
+  patterns: Array<RegExp>,
+) => patterns.some(pattern => pattern.test(line));
+
+const compileStackTraceIgnorePatterns = (
+  patterns: Array<string> | undefined,
+): Array<RegExp> => (patterns ?? []).map(pattern => new RegExp(pattern));
 
 const trim = (string: string) => (string || '').trim();
 
@@ -283,6 +292,7 @@ export const formatExecError = (
 const removeInternalStackEntries = (
   lines: Array<string>,
   options: StackTraceOptions,
+  stackTraceIgnorePatterns: Array<RegExp> = [],
 ): Array<string> => {
   let pathCounter = 0;
 
@@ -316,6 +326,10 @@ const removeInternalStackEntries = (
     }
 
     if (JASMINE_IGNORE.test(line)) {
+      return false;
+    }
+
+    if (matchesStackTraceIgnorePatterns(line, stackTraceIgnorePatterns)) {
       return false;
     }
 
@@ -362,14 +376,30 @@ export const formatPath = (
 export function getStackTraceLines(
   stack: string,
   options?: StackTraceOptions,
+  stackTraceIgnorePatterns?: Array<string>,
 ): Array<string> {
   options = {noCodeFrame: false, noStackTrace: false, ...options};
-  return removeInternalStackEntries(stack.split(/\n/), options);
+  return removeInternalStackEntries(
+    stack.split(/\n/),
+    options,
+    compileStackTraceIgnorePatterns(stackTraceIgnorePatterns),
+  );
 }
 
-export function getTopFrame(lines: Array<string>): Frame | null {
+export function getTopFrame(
+  lines: Array<string>,
+  stackTraceIgnorePatterns?: Array<string>,
+): Frame | null {
+  const ignorePatterns = compileStackTraceIgnorePatterns(
+    stackTraceIgnorePatterns,
+  );
+
   for (const line of lines) {
-    if (line.includes(PATH_NODE_MODULES) || isJestInternalFrame(line)) {
+    if (
+      line.includes(PATH_NODE_MODULES) ||
+      isJestInternalFrame(line) ||
+      matchesStackTraceIgnorePatterns(line, ignorePatterns)
+    ) {
       continue;
     }
 
@@ -395,14 +425,18 @@ export function formatStackTrace(
   options: StackTraceOptions,
   testPath?: string,
 ): string {
-  const lines = getStackTraceLines(stack, options);
+  const lines = getStackTraceLines(
+    stack,
+    options,
+    config.stackTraceIgnorePatterns,
+  );
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
   if (!options.noStackTrace && !options.noCodeFrame) {
-    const topFrame = getTopFrame(lines);
+    const topFrame = getTopFrame(lines, config.stackTraceIgnorePatterns);
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
 

@@ -77,6 +77,7 @@ const defaultOptions: Config.DefaultOptions = {
   slowTestThreshold: 5,
   snapshotFormat: {escapeString: false, printBasicPrototype: false},
   snapshotSerializers: [],
+  stackTraceIgnorePatterns: [],
   testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {},
   testFailureExitCode: 1,

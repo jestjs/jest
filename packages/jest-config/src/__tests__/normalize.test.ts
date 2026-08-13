@@ -768,6 +768,38 @@ describe('testPathIgnorePatterns', () => {
   });
 });
 
+describe('stackTraceIgnorePatterns', () => {
+  it('does not normalize paths relative to rootDir', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/path/foo',
+        stackTraceIgnorePatterns: ['bar/baz', 'qux/quux'],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.stackTraceIgnorePatterns).toEqual([
+      joinForPattern('bar', 'baz'),
+      joinForPattern('qux', 'quux'),
+    ]);
+  });
+
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root/path/foo',
+        stackTraceIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.stackTraceIgnorePatterns).toEqual([
+      'hasNoToken',
+      joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
+    ]);
+  });
+});
+
 describe('modulePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are

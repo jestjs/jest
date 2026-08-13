@@ -77,6 +77,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "printBasicPrototype": false
       },
       "snapshotSerializers": [],
+      "stackTraceIgnorePatterns": [],
       "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
