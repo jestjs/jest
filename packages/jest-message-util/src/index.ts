@@ -332,7 +332,9 @@ const removeInternalStackEntries = (
       return false;
     }
 
-    if (matchesStackTraceIgnorePatterns(line, stackTraceIgnorePatterns)) {
+    if (
+      matchesStackTraceIgnorePatterns(slash(line), stackTraceIgnorePatterns)
+    ) {
       return false;
     }
 

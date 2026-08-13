@@ -535,6 +535,26 @@ describe('formatStackTrace', () => {
       at ProfileForm (src/ProfileForm.js:42:5)`);
   });
 
+  it('omits frames matching stackTraceIgnorePatterns with Windows separators', () => {
+    const lines = getStackTraceLines(
+      [
+        'Error: An update to ProfileForm inside a test was not wrapped in act(...).',
+        '    at warnIfUpdatesNotWrappedWithActDEV (C:\\app\\node_modules\\react-dom\\cjs\\react-dom-client.development.js:18757:9)',
+        '    at scheduleUpdateOnFiber (C:\\app\\node_modules\\react-dom\\cjs\\react-dom-client.development.js:16409:11)',
+        '    at ProfileForm (C:\\app\\src\\ProfileForm.js:42:5)',
+      ].join('\n'),
+      {
+        noStackTrace: false,
+        stackTraceIgnorePatterns: ['/node_modules/react-dom/'],
+      },
+    );
+
+    expect(lines).toEqual([
+      'Error: An update to ProfileForm inside a test was not wrapped in act(...).',
+      '    at ProfileForm (C:\\app\\src\\ProfileForm.js:42:5)',
+    ]);
+  });
+
   it('does not print code frame when noCodeFrame = true', () => {
     jest
       .mocked(readFileSync)
