@@ -38,7 +38,7 @@ export type StackTraceConfig = Pick<
 >;
 
 export type StackTraceOptions = {
-  noStackTrace: boolean;
+  noStackTrace?: boolean;
   noCodeFrame?: boolean;
   stackTraceIgnorePatterns?: Array<string>;
 };
@@ -412,20 +412,17 @@ export function formatStackTrace(
   options: StackTraceOptions,
   testPath?: string,
 ): string {
-  // Callers often pass `globalConfig` as `options` (for `noStackTrace`). Project
-  // patterns live on `config`; prefer an explicit options value when present.
-  const effectiveOptions: StackTraceOptions = {
+  const lines = getStackTraceLines(stack, {
     ...options,
     stackTraceIgnorePatterns:
       options.stackTraceIgnorePatterns ?? config.stackTraceIgnorePatterns,
-  };
-  const lines = getStackTraceLines(stack, effectiveOptions);
+  });
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (!effectiveOptions.noStackTrace && !effectiveOptions.noCodeFrame) {
+  if (!options.noStackTrace && !options.noCodeFrame) {
     const topFrame = getTopFrame(lines);
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
