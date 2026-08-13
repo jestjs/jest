@@ -121,7 +121,9 @@ class ScriptTransformer {
     if (transformerCacheKey != null) {
       return createHash('sha1')
         .update(transformerCacheKey)
+        .update('\0', 'utf8')
         .update(callerSupport(transformOptions))
+        .update('\0', 'utf8')
         .update(CACHE_VERSION)
         .digest('hex')
         .slice(0, 32);
@@ -129,10 +131,15 @@ class ScriptTransformer {
 
     return createHash('sha1')
       .update(fileData)
+      .update('\0', 'utf8')
       .update(transformOptions.configString)
+      .update('\0', 'utf8')
       .update(transformOptions.instrument ? 'instrument' : '')
+      .update('\0', 'utf8')
       .update(callerSupport(transformOptions))
+      .update('\0', 'utf8')
       .update(filename)
+      .update('\0', 'utf8')
       .update(CACHE_VERSION)
       .digest('hex')
       .slice(0, 32);
