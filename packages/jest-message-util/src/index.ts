@@ -384,20 +384,9 @@ export function getStackTraceLines(
   return removeInternalStackEntries(stack.split(/\n/), options);
 }
 
-export function getTopFrame(
-  lines: Array<string>,
-  options?: StackTraceOptions,
-): Frame | null {
-  const ignorePatterns = compileStackTraceIgnorePatterns(
-    options?.stackTraceIgnorePatterns,
-  );
-
+export function getTopFrame(lines: Array<string>): Frame | null {
   for (const line of lines) {
-    if (
-      line.includes(PATH_NODE_MODULES) ||
-      isJestInternalFrame(line) ||
-      matchesStackTraceIgnorePatterns(line, ignorePatterns)
-    ) {
+    if (line.includes(PATH_NODE_MODULES) || isJestInternalFrame(line)) {
       continue;
     }
 
@@ -437,7 +426,7 @@ export function formatStackTrace(
     : null;
 
   if (!effectiveOptions.noStackTrace && !effectiveOptions.noCodeFrame) {
-    const topFrame = getTopFrame(lines, effectiveOptions);
+    const topFrame = getTopFrame(lines);
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
 

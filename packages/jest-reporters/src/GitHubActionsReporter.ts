@@ -132,10 +132,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       noStackTrace: false,
       stackTraceIgnorePatterns: config.stackTraceIgnorePatterns,
     });
-    const topFrame = getTopFrame(stackLines, {
-      noStackTrace: false,
-      stackTraceIgnorePatterns: config.stackTraceIgnorePatterns,
-    });
+    const topFrame = getTopFrame(stackLines);
 
     const normalizedStackLines = stackLines.map(line =>
       formatPath(line, config),
