@@ -1855,6 +1855,14 @@ Default: `5`
 
 The number of seconds after which a test is considered as slow and reported as such in the results.
 
+### `stackTraceIgnorePatterns` \[array&lt;string&gt;]
+
+Default: `[]`
+
+An array of regexp pattern strings that are matched against stack trace lines. If a line matches any of the patterns, it is omitted from printed stack traces (test failures, `console.warn` / `console.error` origins, etc.).
+
+These pattern strings match against each stack frame line. Use them to hide noisy dependency frames while keeping stacks that point into your application code. Example: `["/node_modules/react-dom/"]`.
+
 ### `snapshotFormat` \[object]
 
 Default: `{escapeString: false, printBasicPrototype: false}`
