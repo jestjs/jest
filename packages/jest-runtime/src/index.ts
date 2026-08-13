@@ -551,7 +551,7 @@ export default class Runtime {
 
     this.v8Coverage.snapshotTransforms();
 
-    this.transformCache.clearForReset();
+    this.transformCache.clear();
 
     if (this._environment) {
       if (this._environment.global) {

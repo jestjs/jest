@@ -264,8 +264,13 @@ function wrapCallSite(
 }
 
 export class SourceMapSupport {
+  // Holding this keeps the current test file's registry reachable after its
+  // environment is gone, which is what lets a stray timer's stack still map.
+  // The next `install` drops it, so it is one file's worth of path strings at a
+  // time rather than an accumulating set.
   private activeCache: SourceMapCache | null = null;
   private nullCache: SourceMapCache | null = null;
+  // Keyed weakly, so a registry nothing else holds takes its cache with it.
   private readonly cachesByRegistry = new WeakMap<
     SourceMapRegistry,
     SourceMapCache
@@ -299,7 +304,17 @@ export class SourceMapSupport {
     options: SourceMapSupportInstallOptions = {},
   ): void {
     this.suppressWarnings = options.suppressWarnings === true;
-    this.activeCache = this.cacheFor(sourceMaps);
+
+    const cache = this.cacheFor(sourceMaps);
+
+    // The registry going out of service is the last chance to remember where
+    // each file's map lives — a stray timer from the file it served can still
+    // throw, and a file no formatted stack mentioned was never recorded.
+    if (this.activeCache != null && this.activeCache !== cache) {
+      this.activeCache.rememberAll();
+    }
+
+    this.activeCache = cache;
 
     if (Error.prepareStackTrace !== this.boundFormatStackTrace) {
       Error.prepareStackTrace = this.boundFormatStackTrace;

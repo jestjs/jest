@@ -34,6 +34,7 @@
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Warn when a source map cannot be parsed, instead of silently leaving its frames untranslated ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runner, @jest/source-map]` Keep a source-mapped stack for an error thrown after the test environment was torn down ([#16327](https://github.com/jestjs/jest/pull/16327))
+- `[jest-runtime, @jest/source-map]` Keep source maps past teardown and past the next test file's `install`, so a stack from a file no earlier stack mentioned still points at the original source ([#16330](https://github.com/jestjs/jest/pull/16330))
 - `[jest-runtime]` Fall back to native ESM when a `.js` file contains ESM syntax but has no `"type":"module"` marker ([#16152](https://github.com/jestjs/jest/pull/16152))
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))

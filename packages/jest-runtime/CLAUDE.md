@@ -58,6 +58,8 @@ Sync code paths must validate `vm.Module#status` before reuse:
 
 ### Mutex hygiene
 
+`TransformCache.clear()` deliberately keeps `sourceMaps` while dropping transforms and mutexes. Whatever throws after teardown — a stray timer, a floating promise — has its stack formatted once the run has already reported (`requireAfterTeardown` shows the uncaught exception printing after the summary), so there is no point in the test lifecycle late enough to clear at. The registry holds path strings only, and the one strong reference to it is `@jest/source-map`'s active cache, which the next test file's `install` replaces.
+
 `TransformCache.mutex` entries that aren't cleared after settle become permanent — every later sync-graph read of `hasMutex` returns `true` forever. Clear in `finally` after `transformResolve()` / `transformReject()`. Concurrent awaiters that grabbed the Promise reference before clear still see the rejection (the reference is independent of the Map entry).
 
 ## Tests

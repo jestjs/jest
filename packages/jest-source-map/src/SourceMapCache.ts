@@ -46,6 +46,9 @@ function resolveUrl(url: string, base: string): string | null {
 // a parsed map can live for the whole process. The base URL joins the key
 // because it is baked into the resolved sources, and a transformer with its
 // own `getCacheKey` can hand two generated files the same map path.
+// Nothing evicts these, so a worker ends up holding one parsed map per file it
+// has formatted a stack for. That is the point: re-reading and re-parsing on
+// every frame of every stack costs far more than keeping them.
 const parsedByCachePath = new Map<string, TraceMap | null>();
 
 // A worker moves on to the next test file while a stray timer from the
@@ -53,7 +56,21 @@ const parsedByCachePath = new Map<string, TraceMap | null>();
 // those frames resolvable. `null` marks a file transformed more than one way —
 // as ESM and as CJS, say — where a frame does not say which map it came from,
 // so decline rather than guess.
+// This also grows for the worker's lifetime, holding two path strings per file
+// — small enough that bounding it would cost more than it saves, and a frame
+// arriving after its file's registry is gone has nowhere else to look.
 const rememberedMapPaths = new Map<string, string | null>();
+
+function rememberMapPath(generatedPath: string, sourceMapPath: string): void {
+  const remembered = rememberedMapPaths.get(generatedPath);
+
+  rememberedMapPaths.set(
+    generatedPath,
+    remembered === undefined || remembered === sourceMapPath
+      ? sourceMapPath
+      : null,
+  );
+}
 
 // `mapUrl` is what the map's `sources` resolve against.
 function parseMap(
@@ -117,19 +134,29 @@ export class SourceMapCache {
     return this.reader.toPath(url);
   }
 
+  // Formatting a stack remembers a file's map as a side effect, but a file no
+  // stack ever mentioned is never recorded that way. Called before this cache
+  // stops being the active one, so a late frame from such a file still finds
+  // its map. The same ambiguity rule applies: a file already remembered with a
+  // different map path flips to `null` and the fallback declines.
+  rememberAll(): void {
+    if (this.sourceMaps == null) {
+      return;
+    }
+
+    for (const [generatedPath, sourceMapPath] of this.sourceMaps) {
+      if (sourceMapPath !== '') {
+        rememberMapPath(generatedPath, sourceMapPath);
+      }
+    }
+  }
+
   private load(generatedPath: string): TraceMap | null {
     // The map Jest itself produced while transforming the file.
     const registered = this.sourceMaps?.get(generatedPath);
 
     if (registered != null && registered !== '') {
-      const remembered = rememberedMapPaths.get(generatedPath);
-
-      rememberedMapPaths.set(
-        generatedPath,
-        remembered === undefined || remembered === registered
-          ? registered
-          : null,
-      );
+      rememberMapPath(generatedPath, registered);
     }
 
     const sourceMapPath =
