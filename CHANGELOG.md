@@ -2,12 +2,12 @@
 
 ### Features
 
-- `[jest-cli, jest-config, jest-message-util, jest-reporters, jest-schemas, jest-types]` Add `stackTraceIgnorePatterns` to omit matching stack frames from printed traces
 - `[@jest/expect-utils, jest-mock]` Add `mockFn.whenCalledWith(...args)` for configuring return values per argument list, with first-class asymmetric-matcher support ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[@jest/expect-utils]` Export `AsymmetricMatcher` and `FunctionParameters` types (previously private to `expect`) ([#16053](https://github.com/jestjs/jest/pull/16053))
 - `[jest-circus, jest-core, jest-jasmine2, jest-test-result, jest-types]` `--collectTests` now expands `test.each`/`describe.each` cases and reports per-status counts (skipped/todo via the new `wouldRun` flag for selected tests) plus a summary line that match a real run, including under `--testNamePattern` and `.only`/`fdescribe` focus on both the circus and jasmine2 runners ([#16259](https://github.com/jestjs/jest/pull/16259))
 - `[jest-circus, jest-message-util, jest-reporters, jest-types]` Add `retryMessages` to `AssertionResult` and export `formatErrorStack`, so the retry log renders nested `cause` and `AggregateError` sections with code frames instead of serialized `[cause]:`/`[errors]:` markers ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-circus, jest-types]` Add `unhandledErrorsDetailed` to `Circus.RunResult`, so an unhandled rejection reports its `cause` chain and `AggregateError` entries with code frames instead of a pre-serialized stack ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[jest-cli, jest-config, jest-message-util, jest-reporters, jest-schemas, jest-types]` Add `stackTraceIgnorePatterns` to omit matching stack frames from printed traces ([#16334](https://github.com/jestjs/jest/pull/16334))
 - `[jest-haste-map]` Replace `NodeWatcher` and `FSEventsWatcher` with `@parcel/watcher` for the non-watchman watch path ([#16188](https://github.com/jestjs/jest/pull/16188))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 - `[jest-resolve]` Honor Node's `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS` in the default resolver by passing `symlinks: false` to `unrs-resolver` ([#16260](https://github.com/jestjs/jest/pull/16260))
