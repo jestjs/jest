@@ -724,7 +724,11 @@ it('should preserve blank lines inside the error message itself', () => {
   error.stack = '';
 
   expect(
-    formatExecError(error, {rootDir: '', stackTraceIgnorePatterns: [], testMatch: []}, {noStackTrace: true}),
+    formatExecError(
+      error,
+      {rootDir: '', stackTraceIgnorePatterns: [], testMatch: []},
+      {noStackTrace: true},
+    ),
   ).toContain('first part\n\n\n    second part');
 });
 

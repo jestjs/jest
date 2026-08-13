@@ -283,6 +283,9 @@ const config: Config = {
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
 
+  // An array of regexp pattern strings that are matched against stack trace lines, matched lines are omitted from stack traces
+  // stackTraceIgnorePatterns: [],
+
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
 
@@ -487,6 +490,9 @@ const config = {
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
 
+  // An array of regexp pattern strings that are matched against stack trace lines, matched lines are omitted from stack traces
+  // stackTraceIgnorePatterns: [],
+
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
 
@@ -690,6 +696,9 @@ const config = {
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
+
+  // An array of regexp pattern strings that are matched against stack trace lines, matched lines are omitted from stack traces
+  // stackTraceIgnorePatterns: [],
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
