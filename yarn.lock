@@ -4488,6 +4488,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/react-is-18@npm:react-is@^18.3.1, react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^18.0.0, react-is@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-is@npm:18.3.1"
+  checksum: 10/d5f60c87d285af24b1e1e7eaeb123ec256c3c8bdea7061ab3932e3e14685708221bf234ec50b21e10dd07f008f1b966a2730a0ce4ff67905b3872ff2042aec22
+  languageName: node
+  linkType: hard
+
+"@jest/react-is-19@npm:react-is@^19.2.5, react-is@npm:^19.2.8":
+  version: 19.2.8
+  resolution: "react-is@npm:19.2.8"
+  checksum: 10/09d053ff36e0ba4d47164baf9eab1c7772791f0371aa92281f0e547e0f6a5a5c8a1eb939aadd1a08b3c565958dd63ee59c746b6ac0d5ccb14ad742ac0314ab15
+  languageName: node
+  linkType: hard
+
 "@jest/reporters@workspace:*, @jest/reporters@workspace:packages/jest-reporters":
   version: 0.0.0-use.local
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
@@ -19396,6 +19410,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
+    "@jest/react-is-18": "npm:react-is@^18.3.1"
+    "@jest/react-is-19": "npm:react-is@^19.2.5"
     "@jest/schemas": "workspace:*"
     "@types/react": "npm:^19.2.18"
     "@types/react-is": "npm:^19.0.0"
@@ -19407,8 +19423,6 @@ __metadata:
     react-17: "npm:react@^17.0.2"
     react-18: "npm:react@^18.3.1"
     react-19: "npm:react@^19.2.3"
-    react-is-18: "npm:react-is@^18.3.1"
-    react-is-19: "npm:react-is@^19.2.5"
     react-test-renderer: "npm:^19.2.3"
     react-test-renderer-17: "npm:react-test-renderer@^17.0.2"
     react-test-renderer-18: "npm:react-test-renderer@^18.3.1"
@@ -19781,20 +19795,6 @@ __metadata:
     react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10/76854c3a9220e1adc7b4aece55926146583d43b6bf08905d8cb6a7e3ee0ac60f7a03b285c2bb6c4aa3110e8d048e5dee4e3bdcea9c4b9b5c00db67ba002b95ce
-  languageName: node
-  linkType: hard
-
-"react-is-18@npm:react-is@^18.3.1, react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^18.0.0, react-is@npm:^18.3.1":
-  version: 18.3.1
-  resolution: "react-is@npm:18.3.1"
-  checksum: 10/d5f60c87d285af24b1e1e7eaeb123ec256c3c8bdea7061ab3932e3e14685708221bf234ec50b21e10dd07f008f1b966a2730a0ce4ff67905b3872ff2042aec22
-  languageName: node
-  linkType: hard
-
-"react-is-19@npm:react-is@^19.2.5, react-is@npm:^19.2.8":
-  version: 19.2.8
-  resolution: "react-is@npm:19.2.8"
-  checksum: 10/09d053ff36e0ba4d47164baf9eab1c7772791f0371aa92281f0e547e0f6a5a5c8a1eb939aadd1a08b3c565958dd63ee59c746b6ac0d5ccb14ad742ac0314ab15
   languageName: node
   linkType: hard
 
