@@ -16,6 +16,7 @@
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
+- `[@jest/transform]` Include the caller support flags in a transform's cache key, so a file transformed both as ESM and as CJS no longer serves one shape's output for the other ([#16332](https://github.com/jestjs/jest/pull/16332))
 - `[jest-config]` Add missing `findRelatedTests`, `outputFile`, and `replname` entries to `ValidConfig` so they no longer trigger spurious "Unknown option" warnings ([#16224](https://github.com/jestjs/jest/pull/16224))
 - `[jest-config]` Use `--config` for the global config when multiple `--projects` are specified ([#16273](https://github.com/jestjs/jest/pull/16273))
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
