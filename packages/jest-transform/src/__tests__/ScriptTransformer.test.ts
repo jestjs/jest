@@ -2150,10 +2150,9 @@ describe('ScriptTransformer', () => {
     beforeEach(() => {
       jest
         .mocked(
-          (require('passthrough-preprocessor') as Transformer)
-            .process as jest.Mock,
+          (require('passthrough-preprocessor') as SyncTransformer).process,
         )
-        .mockImplementation((content, filename, options) => ({
+        .mockImplementation((sourceText, sourcePath, options) => ({
           code: options.supportsStaticESM
             ? 'export default 1;'
             : 'module.exports = 1;',
