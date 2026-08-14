@@ -22,6 +22,7 @@
 - `[@jest/transform]` Include the caller support flags in a transform's cache key, so a file transformed both as ESM and as CJS no longer serves one shape's output for the other ([#16331](https://github.com/jestjs/jest/pull/16331))
 - `[jest-config]` Add missing `findRelatedTests`, `outputFile`, and `replname` entries to `ValidConfig` so they no longer trigger spurious "Unknown option" warnings ([#16224](https://github.com/jestjs/jest/pull/16224))
 - `[jest-config]` Use `--config` for the global config when multiple `--projects` are specified ([#16273](https://github.com/jestjs/jest/pull/16273))
+- `[jest-core]` Serialize `bigint` values in `--json` and `--outputFile` output as their literal form (`4n`), instead of failing the run with `TypeError: Do not know how to serialize a BigInt` ([#16338](https://github.com/jestjs/jest/pull/16338))
 - `[jest-environment-node, jest-util]` Only warn about a conflicting `globalsCleanup` mode when one was explicitly configured, and follow the mode that is actually in effect ([#16323](https://github.com/jestjs/jest/pull/16323))
 - `[jest-environment-node, jest-util]` Stop resolving lazy globals when setting up an environment, so Node 26's builtin module globals are no longer loaded (and no longer emit their deprecation warnings) for every test file ([#16324](https://github.com/jestjs/jest/pull/16324))
 - `[jest-haste-map]` Keep watch mode alive when an outside process briefly makes a file unreadable on Windows, instead of tearing the watcher down on `EPERM` ([#16295](https://github.com/jestjs/jest/pull/16295))
