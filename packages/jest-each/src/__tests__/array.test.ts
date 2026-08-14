@@ -166,6 +166,38 @@ describe('jest-each', () => {
         );
       });
 
+      test('calls global test with title containing bigint param values', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          [1n, {nested: 2n}, [3n], -4n],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %j %j %j %s', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: "1n" {"nested":"2n"} ["3n"] -4n',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('calls global test with title containing a cyclic %j param value', () => {
+        const cyclic: Record<string, unknown> = {};
+        cyclic.self = cyclic;
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([[cyclic]]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %j', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: [Circular]',
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('does not call global test with title containing more param values than sprintf placeholders', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([

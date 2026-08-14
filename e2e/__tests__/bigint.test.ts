@@ -14,8 +14,19 @@ it('reports bigint assertions without a serialization error', () => {
   expect(stderr).not.toContain('Do not know how to serialize a BigInt');
   expect(stderr).toContain('Expected: 10n');
   expect(stderr).toContain('Received: 4n');
-  expect(stderr).toMatch(/1 failed, 1 passed/);
+  expect(stderr).toMatch(/1 failed, 2 passed/);
   expect(exitCode).toBe(1);
+});
+
+it('interpolates bigints into an each title', () => {
+  const {exitCode, stderr} = runJest('bigint', [
+    '--verbose',
+    '--testPathPatterns=each',
+  ]);
+
+  expect(stderr).not.toContain('Do not know how to serialize a BigInt');
+  expect(stderr).toContain('adds "1n" and "2n" to "3n"');
+  expect(exitCode).toBe(0);
 });
 
 it('serializes bigint assertions to JSON', () => {

@@ -8,3 +8,7 @@
 it.each([[1n, 2n, 3n]])('adds bigints', (a, b, expected) => {
   expect(a + b).toBe(expected);
 });
+
+it.each([[1n, 2n, 3n]])('adds %j and %j to %j', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
