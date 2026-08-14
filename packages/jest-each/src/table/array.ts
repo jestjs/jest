@@ -99,8 +99,10 @@ const interpolateTitleIndexAndNumber = (title: string, index: number) =>
     .replace(INDEX_PLACEHOLDER, index.toString())
     .replace(NUMBER_PLACEHOLDER, (index + 1).toString());
 
-const interpolatePrettyPlaceholder = (title: string, value: unknown) =>
-  title.replace(PRETTY_PLACEHOLDER, pretty(value, {maxDepth: 1, min: true}));
+const interpolatePrettyPlaceholder = (title: string, value: unknown) => {
+  const prettyValue = pretty(value, {maxDepth: 1, min: true});
+  return title.replace(PRETTY_PLACEHOLDER, () => prettyValue);
+};
 
 const interpolateJsonPlaceholder = (title: string, value: unknown) => {
   const json = stringifyJson(value);

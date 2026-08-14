@@ -198,6 +198,22 @@ describe('jest-each', () => {
         );
       });
 
+      test('calls global test with title containing param values holding replacement patterns', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          ['$&', '$`', {nested: "$'"}],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %p %p %j', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          `expected string: ${pretty('$&')} ${pretty('$`')} {"nested":"$'"}`,
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('does not call global test with title containing more param values than sprintf placeholders', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([
