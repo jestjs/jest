@@ -60,12 +60,12 @@ test('should have correct import.meta', () => {
   expect(
     import.meta
       .resolve('colors')
-      .endsWith('jest/e2e/native-esm/node_modules/colors/lib/index.js'),
+      .endsWith('/e2e/native-esm/node_modules/colors/lib/index.js'),
   ).toBe(true);
   expect(
     import.meta
       .resolve('./native-esm.test')
-      .endsWith('jest/e2e/native-esm/__tests__/native-esm.test.js'),
+      .endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 

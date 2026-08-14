@@ -31,6 +31,17 @@ onNodeVersions('>=24.9.0', () => {
     expect(stderr).toContain('2 passed');
     expect(exitCode).toBe(0);
   });
+
+  test('require() resolves the "module-sync" condition and rejects a TLA graph', () => {
+    const {exitCode, stderr} = runJest(
+      DIR,
+      ['__tests__/require-module-sync-package.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    expect(stderr).toContain('2 passed');
+    expect(exitCode).toBe(0);
+  });
 });
 
 onNodeVersions('<24.9.0', () => {

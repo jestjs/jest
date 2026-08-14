@@ -8,6 +8,7 @@
 import * as path from 'node:path';
 import * as fs from 'graceful-fs';
 import Resolver from 'jest-resolve';
+import {supportsSyncEvaluate} from './nodeCapabilities';
 
 export const isWasm = (modulePath: string): boolean =>
   modulePath.endsWith('.wasm');
@@ -28,10 +29,19 @@ export class Resolution {
   ) {
     this.resolver = resolver;
     this.cjsConditions = [
-      ...new Set(['require', 'node', 'default', ...envExportConditions]),
+      ...new Set([
+        'require',
+        // Node only offers `module-sync` to `require()` when it can load ESM
+        // that way. Claiming it otherwise resolves dual packages to their ESM
+        // entry point, which we then cannot execute.
+        ...(supportsSyncEvaluate ? ['module-sync'] : []),
+        'node',
+        'default',
+        ...envExportConditions,
+      ]),
     ];
     this.esmConditions = [
-      ...new Set(['import', 'default', ...envExportConditions]),
+      ...new Set(['import', 'module-sync', 'default', ...envExportConditions]),
     ];
     this.extensionsToTreatAsEsm = extensionsToTreatAsEsm;
   }
