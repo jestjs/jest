@@ -15,7 +15,7 @@
 ### Fixes
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
-- `[expect]` Isolate `expect.assertions` / `expect.hasAssertions` state per concurrent test so `test.concurrent` no longer shares assertion counts ([#14263](https://github.com/jestjs/jest/issues/14263))
+- `[expect]` Isolate `expect.assertions` / `expect.hasAssertions` state per concurrent test so `test.concurrent` no longer shares assertion counts ([#16340](https://github.com/jestjs/jest/pull/16340))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[@jest/create-cache-key-function]` Include the caller support flags in the generated key, so a transformer that emits ESM or CJS based on them no longer shares one cache entry between the two ([#16331](https://github.com/jestjs/jest/pull/16331))
