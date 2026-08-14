@@ -21,10 +21,10 @@
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
+    "@jest/react-is-18": "npm:react-is@^18.3.1",
+    "@jest/react-is-19": "npm:react-is@^19.2.5",
     "@jest/schemas": "workspace:*",
-    "ansi-styles": "^5.2.0",
-    "react-is-18": "npm:react-is@^18.3.1",
-    "react-is-19": "npm:react-is@^19.2.5"
+    "ansi-styles": "^5.2.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
