@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isJestJasmineRun} from '@jest/test-utils';
 import type {FormattedTestResults} from '@jest/test-result';
 import runJest from '../runJest';
 
@@ -40,6 +41,11 @@ it('serializes bigint assertions to JSON', () => {
   const jsonResult: FormattedTestResults = JSON.parse(stdout);
 
   expect(jsonResult.numFailedTests).toBe(1);
-  expect(stdout).toContain('"actual":"4n"');
-  expect(stdout).toContain('"expected":"10n"');
+
+  // jasmine2 fills `failureDetails` with its own result objects rather than
+  // `expect`'s `matcherResult`, so no bigint reaches the serializer there
+  if (!isJestJasmineRun()) {
+    expect(stdout).toContain('"actual":"4n"');
+    expect(stdout).toContain('"expected":"10n"');
+  }
 });
