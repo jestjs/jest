@@ -34,6 +34,7 @@ import {
 } from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
 import type {
+  CallerTransformOptions,
   FixedRawSourceMap,
   Options,
   ReducedTransformOptions,
@@ -120,6 +121,9 @@ class ScriptTransformer {
     if (transformerCacheKey != null) {
       return createHash('sha1')
         .update(transformerCacheKey)
+        .update('\0', 'utf8')
+        .update(callerSupport(transformOptions))
+        .update('\0', 'utf8')
         .update(CACHE_VERSION)
         .digest('hex')
         .slice(0, 32);
@@ -127,9 +131,15 @@ class ScriptTransformer {
 
     return createHash('sha1')
       .update(fileData)
+      .update('\0', 'utf8')
       .update(transformOptions.configString)
+      .update('\0', 'utf8')
       .update(transformOptions.instrument ? 'instrument' : '')
+      .update('\0', 'utf8')
+      .update(callerSupport(transformOptions))
+      .update('\0', 'utf8')
       .update(filename)
+      .update('\0', 'utf8')
       .update(CACHE_VERSION)
       .digest('hex')
       .slice(0, 32);
@@ -699,7 +709,7 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -727,7 +737,7 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, options);
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
@@ -997,10 +1007,36 @@ const readCacheFile = (cachePath: string): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: string, instrument: boolean) => {
+// A transformer can emit ESM or CJS for the same file depending on these, so
+// the two shapes must not share a cache entry. The `Record` makes a forgotten
+// flag a type error.
+function callerSupport(options: CallerTransformOptions): string {
+  const flags: Record<keyof CallerTransformOptions, boolean> = {
+    supportsDynamicImport: options.supportsDynamicImport,
+    supportsExportNamespaceFrom: options.supportsExportNamespaceFrom,
+    supportsStaticESM: options.supportsStaticESM,
+    supportsTopLevelAwait: options.supportsTopLevelAwait,
+  };
+
+  return JSON.stringify(flags);
+}
+
+function getScriptCacheKey(
+  filename: string,
+  instrument: boolean,
+  options: CallerTransformOptions,
+): string {
   const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
-};
+
+  return [
+    filename,
+    mtime.getTime().toString(),
+    instrument ? 'instrumented' : '',
+    callerSupport(options),
+  ]
+    .filter(Boolean)
+    .join('_');
+}
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (
