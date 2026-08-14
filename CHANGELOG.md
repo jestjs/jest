@@ -33,6 +33,7 @@
 - `[@jest-environment/jsdom-abstract]` Make `@types/jsdom` a peer dependency ([#16166](https://github.com/jestjs/jest/pull/16166))
 - `[jest-mock]` Remove the leftover own accessor descriptor when restoring a `spyOn` of an inherited getter or setter, so the instance keeps reflecting the prototype ([#16226](https://github.com/jestjs/jest/pull/16226))
 - `[jest-resolve]` Keep virtual and ordinary mock module IDs isolated across test files ([#16296](https://github.com/jestjs/jest/pull/16296))
+- `[jest-resolve]` Look up manual mocks for `node:` protocol specifiers under the unprefixed name ([#16339](https://github.com/jestjs/jest/pull/16339))
 - `[jest-resolve]` Guard missing `require.resolve.paths` ([#16052](https://github.com/jestjs/jest/pull/16052))
 - `[@jest/source-map]` Keep source map sources that name a scheme, such as `webpack:///`, instead of resolving them into a path that does not exist ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Look up `--testLocationInResults` positions at the right column, and keep a mapping to the first column instead of discarding it ([#16327](https://github.com/jestjs/jest/pull/16327))
