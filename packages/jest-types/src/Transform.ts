@@ -8,28 +8,28 @@
 import type * as Config from './Config';
 
 // this is here to make it possible to avoid huge dependency trees just for types
-export type CallerTransformOptions = {
+export interface CallerTransformOptions {
   // names are copied from babel: https://babeljs.io/docs/en/options#caller
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
-};
+}
 
-export type ReducedTransformOptions = CallerTransformOptions & {
+export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
-};
+}
 
 /** What a `Transformer`'s cache key can depend on. */
-export type CacheKeyOptions = ReducedTransformOptions & {
+export interface CacheKeyOptions extends ReducedTransformOptions {
   /** Jest configuration of currently running project. */
   config: Config.ProjectConfig;
   /** Stringified version of the `config` - useful in cache busting. */
   configString: string;
-};
+}
 
-export type TransformResult = {
+export interface TransformResult {
   code: string;
   originalCode: string;
   sourceMapPath: string | null;
-};
+}
