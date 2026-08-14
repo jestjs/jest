@@ -112,7 +112,8 @@ const createIsolatedStateView = (
     },
     set(target, prop, value, receiver) {
       if (isIsolatedStateKey(prop)) {
-        isolated[prop] = value;
+        // IsolatedMatcherState values are not a single assignable union.
+        (isolated as Record<IsolatedStateKey, unknown>)[prop] = value;
         return true;
       }
       return Reflect.set(target, prop, value, receiver);
