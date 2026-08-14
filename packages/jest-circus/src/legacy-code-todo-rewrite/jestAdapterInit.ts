@@ -23,11 +23,7 @@ import {
   formatResultsErrors,
 } from 'jest-message-util';
 import type Runtime from 'jest-runtime';
-import {
-  SnapshotState,
-  addSerializer,
-  buildSnapshotResolver,
-} from 'jest-snapshot';
+import {SnapshotState, addSerializer} from 'jest-snapshot';
 import globals from '..';
 import run from '../run';
 import {
@@ -61,7 +57,6 @@ export const initialize = async ({
   environment,
   runtime,
   globalConfig,
-  localRequire,
   parentProcess,
   sendMessageToJest,
   setGlobalsForRuntime,
@@ -71,7 +66,6 @@ export const initialize = async ({
   environment: JestEnvironment;
   runtime: Runtime;
   globalConfig: Config.GlobalConfig;
-  localRequire: <T = unknown>(path: string) => T;
   testPath: string;
   parentProcess: typeof Process;
   sendMessageToJest?: TestFileEvent;
@@ -127,12 +121,13 @@ export const initialize = async ({
     await dispatch({name: 'include_test_location_in_result'});
   }
 
-  // Jest tests snapshotSerializers in order preceding built-in serializers.
-  // Therefore, add in reverse because the last added is the first tested.
-  for (const path of [...config.snapshotSerializers].reverse())
-    addSerializer(localRequire(path));
+  const {resolver: snapshotResolver, serializers} =
+    await runtime.loadSnapshotSetup();
 
-  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
+  for (const serializer of serializers) {
+    addSerializer(serializer);
+  }
+
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand: globalConfig.expand,

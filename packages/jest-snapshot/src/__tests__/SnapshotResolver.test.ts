@@ -81,6 +81,11 @@ describe('custom resolver in project config', () => {
   });
 });
 
+// A resolver written in ESM can only be covered end to end: these tests run
+// inside the sandbox, where `import()` needs `--experimental-vm-modules`. In a
+// real run the load happens in `Runtime`, outside the sandbox. See
+// `e2e/__tests__/snapshotResolver.test.ts`.
+
 describe('malformed custom resolver in project config', () => {
   const newProjectConfig = (filename: string) => {
     const customSnapshotResolverFile = path.join(

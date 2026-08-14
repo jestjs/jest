@@ -1921,6 +1921,8 @@ module.exports = {
 };
 ```
 
+The module is loaded outside the test sandbox, so it does not see `jest.mock()` or `moduleNameMapper`. Your `transform` still applies, except to `.mjs` and `.mts` files — those are loaded as native ESM and must be valid JavaScript as written. A resolver written in ESM assigns the same object to `export default`.
+
 ### `snapshotSerializers` \[array&lt;string&gt;]
 
 Default: `[]`
@@ -1958,6 +1960,8 @@ export default plugin;
 ```
 
 `printer` is a function that serializes a value using existing plugins.
+
+Serializers are loaded outside the test sandbox, so they do not see `jest.mock()` or `moduleNameMapper`. Your `transform` still applies, except to `.mjs` and `.mts` files — those are loaded as native ESM and must be valid JavaScript as written. A serializer written in ESM has to use a `default` export.
 
 Add `custom-serializer` to your Jest configuration:
 
