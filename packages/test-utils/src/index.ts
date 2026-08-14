@@ -8,6 +8,7 @@
 export {alignedAnsiStyleSerializer} from './alignedAnsiStyleSerializer';
 
 export {
+  hasSyncEsm,
   isJestJasmineRun,
   isWatchmanAvailable,
   onNodeVersions,

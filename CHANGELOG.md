@@ -10,6 +10,7 @@
 - `[jest-haste-map]` Replace `NodeWatcher` and `FSEventsWatcher` with `@parcel/watcher` for the non-watchman watch path ([#16188](https://github.com/jestjs/jest/pull/16188))
 - `[jest-resolve]` Bump `unrs-resolver` to 1.12.1, remove `jest-pnp-resolver` and unnecessary checks ([#15721](https://github.com/jestjs/jest/pull/15721))
 - `[jest-resolve]` Honor Node's `--preserve-symlinks` / `NODE_PRESERVE_SYMLINKS` in the default resolver by passing `symlinks: false` to `unrs-resolver` ([#16260](https://github.com/jestjs/jest/pull/16260))
+- `[jest-runtime]` Resolve the `module-sync` export condition, so a package that exposes its ESM entry point for `require()` loads the same file Node would ([#16336](https://github.com/jestjs/jest/pull/16336))
 
 ### Fixes
 
