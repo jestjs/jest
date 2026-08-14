@@ -259,6 +259,13 @@ function stripFileScheme(specifier: string): string {
   return specifier.startsWith('file://') ? fileURLToPath(specifier) : specifier;
 }
 
+// Every builtin has a `node:`-prefixed spelling, but not every builtin has a
+// bare one - `node:sea`, `node:sqlite`, `node:test` and `node:test/reporters`
+// exist only with the prefix. Prefixing is therefore the total direction.
+function canonicalCoreSpecifier(specifier: string): string {
+  return specifier.startsWith('node:') ? specifier : `node:${specifier}`;
+}
+
 export interface EsmLoaderOptions {
   resolution: Resolution;
   fileCache: FileCache;
@@ -347,7 +354,10 @@ export class EsmLoader {
     );
 
     const registry = this.registries.getActiveEsmRegistry();
-    const rootKey = rootPath + rootQuery;
+    const canonicalRootPath = this.resolution.isCoreModule(rootPath)
+      ? canonicalCoreSpecifier(rootPath)
+      : rootPath;
+    const rootKey = canonicalRootPath + rootQuery;
 
     const cached = registry.get(rootKey);
     if (cached) {
@@ -368,7 +378,7 @@ export class EsmLoader {
 
     const scratch = new Map<string, ScratchEntry>();
     const worklist: Array<WorklistEntry> = [
-      {cacheKey: rootKey, modulePath: rootPath},
+      {cacheKey: rootKey, modulePath: canonicalRootPath},
     ];
 
     while (worklist.length > 0) {
@@ -398,10 +408,8 @@ export class EsmLoader {
         scratch.set(cacheKey, {
           cacheKey,
           kind: 'synthetic',
-          module: buildCoreSyntheticModule(
-            modulePath,
-            context,
-            (name, prefix) => this.coreModule.require(name, prefix),
+          module: buildCoreSyntheticModule(modulePath, context, name =>
+            this.coreModule.require(name),
           ),
         });
         continue;
@@ -681,11 +689,15 @@ export class EsmLoader {
     }
 
     if (this.resolution.isCoreModule(specifierPath)) {
-      const cacheKey = specifierPath + query;
+      // `fs` and `node:fs` are one module to Node, so they have to share one
+      // registry entry - otherwise each form gets its own synthetic wrapper and
+      // `import * as a from 'fs'` !== `import * as b from 'node:fs'`.
+      const canonical = canonicalCoreSpecifier(specifierPath);
+      const cacheKey = canonical + query;
       return {
         cacheKey,
-        enqueue: {cacheKey, modulePath: specifierPath},
-        modulePath: specifierPath,
+        enqueue: {cacheKey, modulePath: canonical},
+        modulePath: canonical,
       };
     }
 
@@ -1028,8 +1040,8 @@ export class EsmLoader {
 
         if (this.resolution.isCoreModule(modulePath)) {
           const core = evaluateSyntheticModule(
-            buildCoreSyntheticModule(modulePath, context, (name, prefix) =>
-              this.coreModule.require(name, prefix),
+            buildCoreSyntheticModule(modulePath, context, name =>
+              this.coreModule.require(name),
             ),
           );
           registry.set(cacheKey, core);

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import dns from 'dns';
+import dns, * as dnsNamespace from 'dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
-import prefixDns from 'node:dns';
+import prefixDns, * as prefixDnsNamespace from 'node:dns';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
@@ -215,6 +215,7 @@ test('handle circular dependency', async () => {
 
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
+  expect(dnsNamespace).toBe(prefixDnsNamespace);
 });
 
 test('supports imports from "data:text/javascript" URI with charset=utf-8 encoding', async () => {

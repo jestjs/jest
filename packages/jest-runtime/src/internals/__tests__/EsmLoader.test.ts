@@ -320,13 +320,78 @@ describe('EsmLoader.tryLoadGraphSync', () => {
       });
       stubs.coreModule.require.mockReturnValue({foo: 'bar'});
       const result = loader.tryLoadGraphSync('fs', '', 'sync-preferred');
-      expect(stubs.coreModule.require).toHaveBeenCalledWith('fs', true);
+      expect(stubs.coreModule.require).toHaveBeenCalledWith('node:fs');
       expect(result).not.toBe(LOAD_ASYNC);
       invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
       expect(result.namespace).toMatchObject({
         default: {foo: 'bar'},
         foo: 'bar',
       });
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'gives `fs` and `node:fs` the same namespace object',
+    () => {
+      const {esmRegistry, loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn(
+            (name: string) => name === 'fs' || name === 'node:fs',
+          ),
+          resolveEsm: jest.fn(),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.coreModule.require.mockReturnValue({readFileSync: () => 'x'});
+      stubs.transformCache.transform.mockReturnValue(
+        [
+          "import * as bare from 'fs';",
+          "import * as prefixed from 'node:fs';",
+          'export const same = bare === prefixed;',
+        ].join('\n'),
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {same: boolean}).same).toBe(true);
+      expect(stubs.coreModule.require).toHaveBeenCalledTimes(1);
+      expect([...esmRegistry.keys()]).toContain('node:fs');
+      expect([...esmRegistry.keys()]).not.toContain('fs');
+    },
+  );
+
+  testWithLinkedSyntheticModule(
+    'keeps the prefix for builtins that only exist as `node:`',
+    () => {
+      // `node:sqlite` has no bare counterpart, so stripping the prefix would
+      // send the loader looking for a `sqlite` file on disk.
+      const {esmRegistry, loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn((name: string) => name === 'node:sqlite'),
+          resolveEsm: jest.fn(),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.coreModule.require.mockReturnValue({DatabaseSync: () => {}});
+      stubs.transformCache.transform.mockReturnValue(
+        "import * as sqlite from 'node:sqlite';\nexport const loaded = typeof sqlite.DatabaseSync;",
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {loaded: string}).loaded).toBe('function');
+      expect(stubs.coreModule.require).toHaveBeenCalledWith('node:sqlite');
+      expect([...esmRegistry.keys()]).toContain('node:sqlite');
     },
   );
 
