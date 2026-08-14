@@ -692,9 +692,43 @@ describe('getMockModule', () => {
       path.dirname(src),
     );
   });
+
+  it('resolves a manual mock for a node: protocol specifier', () => {
+    const mockPath = path.join('/root', '__mocks__', 'fs.js');
+    const moduleMap = ModuleMap.create('/');
+    jest.spyOn(moduleMap, 'getMockModule').mockImplementation(name => {
+      return name === 'fs' ? mockPath : undefined;
+    });
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+
+    expect(resolver.getMockModule(src, 'node:fs')).toBe(mockPath);
+    expect(resolver.getMockModule(src, 'fs')).toBe(mockPath);
+  });
 });
 
 describe('getMockModuleAsync', () => {
+  it('resolves a manual mock for a node: protocol specifier', async () => {
+    const mockPath = path.join('/root', '__mocks__', 'fs.js');
+    const moduleMap = ModuleMap.create('/');
+    jest.spyOn(moduleMap, 'getMockModule').mockImplementation(name => {
+      return name === 'fs' ? mockPath : undefined;
+    });
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+
+    await expect(resolver.getMockModuleAsync(src, 'node:fs', {})).resolves.toBe(
+      mockPath,
+    );
+    await expect(resolver.getMockModuleAsync(src, 'fs', {})).resolves.toBe(
+      mockPath,
+    );
+  });
+
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', async () => {
     mockUserResolverAsync.async.mockResolvedValue('module');
 

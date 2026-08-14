@@ -523,14 +523,14 @@ export default class Resolver {
     name: string,
     options?: Pick<ResolveModuleConfig, 'conditions'>,
   ): string | null {
-    const mock = this._moduleMap.getMockModule(name);
+    const mock = this._lookupManualMock(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = this.resolveStubModuleName(from, name, options);
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
-      }
+    }
+
+    const resolvedName = this.resolveStubModuleName(from, name, options);
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
     }
     return null;
   }
@@ -540,17 +540,33 @@ export default class Resolver {
     name: string,
     options: Pick<ResolveModuleConfig, 'conditions'>,
   ): Promise<string | null> {
+    const mock = this._lookupManualMock(name);
+    if (mock) {
+      return mock;
+    }
+
+    const resolvedName = await this.resolveStubModuleNameAsync(
+      from,
+      name,
+      options,
+    );
+    if (resolvedName) {
+      return this._lookupManualMock(resolvedName);
+    }
+    return null;
+  }
+
+  // Manual mocks are stored as `fs`, not `node:fs` — a colon is not a legal
+  // filename on Windows, so look up the unprefixed core specifier as well.
+  private _lookupManualMock(name: string): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
-    } else {
-      const resolvedName = await this.resolveStubModuleNameAsync(
-        from,
-        name,
-        options,
-      );
-      if (resolvedName) {
-        return this._moduleMap.getMockModule(resolvedName) ?? null;
+    }
+    if (this.isCoreModule(name)) {
+      const normalized = this.normalizeCoreModuleSpecifier(name);
+      if (normalized !== name) {
+        return this._moduleMap.getMockModule(normalized) ?? null;
       }
     }
     return null;
