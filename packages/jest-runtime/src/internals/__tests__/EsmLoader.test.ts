@@ -395,6 +395,36 @@ describe('EsmLoader.tryLoadGraphSync', () => {
     },
   );
 
+  testWithLinkedSyntheticModule(
+    'import.meta.resolve answers with `node:` for a specifier that maps to a builtin',
+    () => {
+      // Pins the order: the builtin check has to run on the *resolved* name.
+      // `my-dns` is not itself a core module, so checking the incoming
+      // specifier would fall through and hand back a bogus `file://` URL.
+      const {loader, stubs} = makeLoader({
+        resolution: {
+          isCoreModule: jest.fn((name: string) => name === 'dns'),
+          resolveEsm: jest.fn((_from: string, name: string) =>
+            name === 'my-dns' ? 'dns' : name,
+          ),
+        } as unknown as jest.Mocked<Resolution>,
+      });
+      stubs.transformCache.transform.mockReturnValue(
+        "export const mapped = import.meta.resolve('my-dns');",
+      );
+
+      const result = loader.tryLoadGraphSync(
+        '/entry.mjs',
+        '',
+        'sync-preferred',
+      );
+
+      expect(result).not.toBe(LOAD_ASYNC);
+      invariant(result !== LOAD_ASYNC, 'Asserted above by the expect');
+      expect((result.namespace as {mapped: string}).mapped).toBe('node:dns');
+    },
+  );
+
   test('sync-required mode rejects async transformers with ERR_REQUIRE_ASYNC_MODULE', () => {
     const {loader} = makeLoader({
       transformCache: {

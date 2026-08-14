@@ -489,9 +489,7 @@ export class EsmLoader {
             meta.dirname = path.dirname(modulePath);
             meta.resolve = (specifier, parent: string | URL = metaUrl) => {
               const parentPath = fileURLToPath(parent);
-              return pathToFileURL(
-                this.resolution.resolveEsm(parentPath, specifier),
-              ).href;
+              return this.resolveForImportMeta(parentPath, specifier);
             };
             (meta as JestImportMeta).jest =
               this.jestGlobals.jestObjectFor(modulePath);
@@ -638,6 +636,15 @@ export class EsmLoader {
     if (!fromRegistry) registry.set(cacheKey, module);
     scratch.set(cacheKey, {cacheKey, kind: 'synthetic', module});
     return true;
+  }
+
+  // Node answers `import.meta.resolve('fs')` with `'node:fs'`, not a file URL -
+  // a builtin has no path to turn into one.
+  private resolveForImportMeta(parentPath: string, specifier: string): string {
+    const resolved = this.resolution.resolveEsm(parentPath, specifier);
+    return this.resolution.isCoreModule(resolved)
+      ? canonicalCoreSpecifier(resolved)
+      : pathToFileURL(resolved).href;
   }
 
   private resolveSpecifierForSyncGraph(
@@ -1077,9 +1084,7 @@ export class EsmLoader {
               meta.dirname = path.dirname(modulePath);
               meta.resolve = (specifier, parent: string | URL = metaUrl) => {
                 const parentPath = fileURLToPath(parent);
-                return pathToFileURL(
-                  this.resolution.resolveEsm(parentPath, specifier),
-                ).href;
+                return this.resolveForImportMeta(parentPath, specifier);
               };
               (meta as JestImportMeta).jest =
                 this.jestGlobals.jestObjectFor(modulePath);

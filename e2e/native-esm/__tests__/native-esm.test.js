@@ -67,6 +67,9 @@ test('should have correct import.meta', () => {
       .resolve('./native-esm.test')
       .endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
+  // Builtins have no path, so Node answers with the `node:` specifier itself.
+  expect(import.meta.resolve('dns')).toBe('node:dns');
+  expect(import.meta.resolve('node:dns')).toBe('node:dns');
 });
 
 test('should double stuff', () => {
