@@ -16,6 +16,7 @@
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
+- `[jest-circus]` Clear `currentlyRunningTest` after skipped and todo tests ([#16342](https://github.com/jestjs/jest/pull/16342))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[@jest/create-cache-key-function]` Include the caller support flags in the generated key, so a transformer that emits ESM or CJS based on them no longer shares one cache entry between the two ([#16331](https://github.com/jestjs/jest/pull/16331))
 - `[@jest/create-cache-key-function]` Include the stringified project config in the generated key, so editing a transformer's own settings invalidates what it cached ([#16331](https://github.com/jestjs/jest/pull/16331))
