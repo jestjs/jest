@@ -18,13 +18,9 @@ import {
   resetState,
   run,
 } from '../';
-import {dispatchSync} from '../state';
-import type {InternalCircusState} from '../types';
-
-const getInternalState = () => getState() as InternalCircusState;
 
 const getDescribeBlock = (name: string): Circus.DescribeBlock => {
-  const block = getInternalState().rootDescribeBlock.children.find(
+  const block = getState().rootDescribeBlock.children.find(
     child => child.type === 'describeBlock' && child.name === name,
   );
 
@@ -71,14 +67,11 @@ test('retries the complete describe lifecycle and keeps retry reasons', async ()
       });
     });
 
-    getInternalState().describeRetryOptions.set(
-      getDescribeBlock('retrying describe'),
-      {
-        logErrorsBeforeRetry: true,
-        numRetries: 1,
-        waitBeforeRetry: 1,
-      },
-    );
+    getState().describeRetryOptions.set(getDescribeBlock('retrying describe'), {
+      logErrorsBeforeRetry: true,
+      numRetries: 1,
+      waitBeforeRetry: 1,
+    });
   });
 
   expect(calls).toEqual([
@@ -99,6 +92,47 @@ test('retries the complete describe lifecycle and keeps retry reasons', async ()
   ]);
 });
 
+test('dispatches describe_retry before the next describe attempt', async () => {
+  const events: Array<string> = [];
+  const handler: Circus.EventHandler = event => {
+    if (
+      (event.name === 'run_describe_start' ||
+        event.name === 'describe_retry') &&
+      event.describeBlock.name === 'retrying describe'
+    ) {
+      events.push(event.name);
+    }
+  };
+  addEventHandler(handler);
+
+  try {
+    let attempt = 0;
+    await runIsolated(() => {
+      circusDescribe('retrying describe', () => {
+        circusBeforeAll(() => {
+          attempt++;
+        });
+        circusTest('flaky', () => {
+          expect(attempt).toBe(2);
+        });
+      });
+
+      getState().describeRetryOptions.set(
+        getDescribeBlock('retrying describe'),
+        {numRetries: 1},
+      );
+    });
+  } finally {
+    removeEventHandler(handler);
+  }
+
+  expect(events).toEqual([
+    'run_describe_start',
+    'describe_retry',
+    'run_describe_start',
+  ]);
+});
+
 test('does not retry errors that existed before entering the describe', async () => {
   let beforeAllCalls = 0;
 
@@ -113,10 +147,9 @@ test('does not retry errors that existed before entering the describe', async ()
       circusTest('test', () => {});
     });
 
-    getInternalState().describeRetryOptions.set(
-      getDescribeBlock('inner describe'),
-      {numRetries: 1},
-    );
+    getState().describeRetryOptions.set(getDescribeBlock('inner describe'), {
+      numRetries: 1,
+    });
   });
 
   expect(beforeAllCalls).toBe(1);
@@ -126,17 +159,20 @@ test('does not retry errors that existed before entering the describe', async ()
 
 test('does not retry a test failure after a process-level error', async () => {
   let attempts = 0;
+  let testEntry!: Circus.TestEntry;
 
   const result = await runIsolated(() => {
     circusDescribe('non-retryable describe', () => {
       circusTest('test', () => {
         attempts++;
-        dispatchSync({error: new Error('process failed'), name: 'error'});
+        getState().processErrorGeneration++;
+        testEntry.errors.push(new Error('process failed'));
         throw new Error('test failed');
       });
+      testEntry = getState().currentDescribeBlock.tests[0];
     });
 
-    getInternalState().describeRetryOptions.set(
+    getState().describeRetryOptions.set(
       getDescribeBlock('non-retryable describe'),
       {numRetries: 1},
     );
@@ -160,7 +196,7 @@ test('supports snapshot states without retry checkpoints', async () => {
       });
     });
 
-    getInternalState().describeRetryOptions.set(
+    getState().describeRetryOptions.set(
       getDescribeBlock('without snapshot checkpoints'),
       {numRetries: 1},
     );
@@ -188,7 +224,7 @@ test('shuffles each describe once at its existing lifecycle point', async () => 
 
   try {
     await runIsolated(() => {
-      const state = getInternalState();
+      const state = getState();
       state.randomize = true;
       state.seed = 3;
 
@@ -209,10 +245,9 @@ test('shuffles each describe once at its existing lifecycle point', async () => 
         });
       });
 
-      getInternalState().describeRetryOptions.set(
-        getDescribeBlock('randomized'),
-        {numRetries: 1},
-      );
+      getState().describeRetryOptions.set(getDescribeBlock('randomized'), {
+        numRetries: 1,
+      });
     });
   } finally {
     removeEventHandler(handler);

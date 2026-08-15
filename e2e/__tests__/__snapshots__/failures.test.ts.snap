@@ -127,43 +127,58 @@ exports[`not throwing Error objects 5`] = `
 
     thrown: Promise {}
 
-      12 | };
-      13 |
-    > 14 | test('Promise thrown during test', () => {
-         | ^
-      15 |   throw Promise.resolve(5);
-      16 | });
-      17 |
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:14:1)
+    Cause:
+        thrown: Promise {}
+
+          12 | };
+          13 |
+        > 14 | test('Promise thrown during test', () => {
+             | ^
+          15 |   throw Promise.resolve(5);
+          16 | });
+          17 |
+
+          at Object.test (__tests__/duringTests.test.js:14:1)
 
   ● Boolean thrown during test
 
     thrown: false
 
-      16 | });
-      17 |
-    > 18 | test('Boolean thrown during test', () => {
-         | ^
-      19 |   // eslint-disable-next-line no-throw-literal
-      20 |   throw false;
-      21 | });
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:18:1)
+    Cause:
+        thrown: false
+
+          16 | });
+          17 |
+        > 18 | test('Boolean thrown during test', () => {
+             | ^
+          19 |   // eslint-disable-next-line no-throw-literal
+          20 |   throw false;
+          21 | });
+
+          at Object.test (__tests__/duringTests.test.js:18:1)
 
   ● undefined thrown during test
 
     thrown: undefined
 
-      21 | });
-      22 |
-    > 23 | test('undefined thrown during test', () => {
-         | ^
-      24 |   // eslint-disable-next-line no-throw-literal
-      25 |   throw undefined;
-      26 | });
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:23:1)
+    Cause:
+
+
+          21 | });
+          22 |
+        > 23 | test('undefined thrown during test', () => {
+             | ^
+          24 |   // eslint-disable-next-line no-throw-literal
+          25 |   throw undefined;
+          26 | });
+
+          at Object.test (__tests__/duringTests.test.js:23:1)
 
   ● Object thrown during test
 
@@ -176,15 +191,27 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      26 | });
-      27 |
-    > 28 | test('Object thrown during test', () => {
-         | ^
-      29 |   throw deepObject;
-      30 | });
-      31 |
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:28:1)
+    Cause:
+        thrown: Object {
+          "notAnError": Array [
+            Object {
+              "hello": true,
+              "tooDeep": [Object],
+            },
+          ],
+        }
+
+          26 | });
+          27 |
+        > 28 | test('Object thrown during test', () => {
+             | ^
+          29 |   throw deepObject;
+          30 | });
+          31 |
+
+          at Object.test (__tests__/duringTests.test.js:28:1)
 
   ● Object with stack prop thrown during test
 
@@ -192,15 +219,20 @@ exports[`not throwing Error objects 5`] = `
       "stack": 42,
     }
 
-      30 | });
-      31 |
-    > 32 | test('Object with stack prop thrown during test', () => {
-         | ^
-      33 |   // eslint-disable-next-line no-throw-literal
-      34 |   throw {stack: 42};
-      35 | });
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:32:1)
+    Cause:
+
+
+          30 | });
+          31 |
+        > 32 | test('Object with stack prop thrown during test', () => {
+             | ^
+          33 |   // eslint-disable-next-line no-throw-literal
+          34 |   throw {stack: 42};
+          35 | });
+
+          at Object.test (__tests__/duringTests.test.js:32:1)
 
   ● Error during test
 
@@ -262,13 +294,25 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      48 | });
-      49 |
-    > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
-         | ^
-      51 |
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/duringTests.test.js:50:1)"
+    Cause:
+        thrown: Object {
+          "notAnError": Array [
+            Object {
+              "hello": true,
+              "tooDeep": [Object],
+            },
+          ],
+        }
+
+          48 | });
+          49 |
+        > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
+             | ^
+          51 |
+
+          at Object.test (__tests__/duringTests.test.js:50:1)"
 `;
 
 exports[`not throwing Error objects 6`] = `
@@ -469,15 +513,21 @@ exports[`works with async failures 1`] = `
 
 <REPLACED>
 
-      20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
-      21 |
-    > 22 | test('timeout', done => {
-         | ^
-      23 |   setTimeout(done, 50);
-      24 | }, 5);
-      25 |
+          at Array.map (<anonymous>)
 
-      at Object.test (__tests__/asyncFailures.test.js:22:1)"
+    Cause:
+        thrown: "Exceeded timeout of 5 ms for a test while waiting for \`done()\` to be called.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
+          21 |
+        > 22 | test('timeout', done => {
+             | ^
+          23 |   setTimeout(done, 50);
+          24 | }, 5);
+          25 |
+
+          at Object.test (__tests__/asyncFailures.test.js:22:1)"
 `;
 
 exports[`works with error with cause 1`] = `

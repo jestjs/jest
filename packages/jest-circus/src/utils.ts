@@ -214,13 +214,12 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (doneCallback) {
       let returnedValue: unknown = undefined;
-      let seenDone = false;
 
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
 
-        if (!completed && seenDone) {
+        if (!completed && testOrHook.seenDone) {
           errorAtDone.message =
             'Expected done to be called once, but it was called multiple times.';
 
@@ -231,8 +230,7 @@ export const callAsyncCircusFn = (
           }
           reject(errorAtDone);
           throw errorAtDone;
-        } else if (!completed) {
-          seenDone = true;
+        } else {
           testOrHook.seenDone = true;
         }
 
@@ -445,14 +443,7 @@ const _getError = (
 
   if (asyncError) {
     const message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
-    const errorWithStack = new Error(message);
-    if (typeof asyncError.stack === 'string') {
-      const firstStackFrame = asyncError.stack.search(/\n\s+at /);
-      errorWithStack.stack = `${errorWithStack.name}: ${message}${
-        firstStackFrame === -1 ? '' : asyncError.stack.slice(firstStackFrame)
-      }`;
-    }
-    return errorWithStack;
+    return new Error(message, {cause: asyncError});
   }
 
   return new Error(`thrown: ${prettyFormat(error, {maxDepth: 3})}`);

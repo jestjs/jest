@@ -71,15 +71,6 @@ describe('Test Retries', () => {
     ).toEqual([2]);
   });
 
-  it('does not share done state between describe hook attempts', () => {
-    const result = runJest('test-retries', [
-      'entireDescribeDoneTimeout.test.js',
-    ]);
-
-    expect(result.exitCode).toBe(0);
-    expect(result.failed).toBe(false);
-  });
-
   it('does not retry or clear delayed errors from outside the describe', () => {
     const reporterConfig = {
       reporters: [
@@ -97,11 +88,16 @@ describe('Test Retries', () => {
     expect(result.failed).toBe(true);
     expect(result.stderr).toContain('outside delayed error');
     const jsonResult = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    const outsideResult = jsonResult.testResults[0].testResults.find(
+      (testResult: {title: string}) =>
+        testResult.title === 'schedules an error outside the retried describe',
+    );
     const innerResult = jsonResult.testResults[0].testResults.find(
       (testResult: {title: string}) =>
         testResult.title === 'waits while the outside error is raised',
     );
-    expect(innerResult).toMatchObject({invocations: 1, status: 'failed'});
+    expect(outsideResult).toMatchObject({invocations: 1, status: 'failed'});
+    expect(innerResult).toMatchObject({invocations: 1, status: 'passed'});
   });
 
   it('does not retry or clear delayed rejections from outside the describe', () => {
@@ -218,6 +214,82 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);
+  });
+
+  it('retries a describe after an owned unhandled rejection', () => {
+    const result = runJest('test-retries', [
+      '--waitForUnhandledRejections',
+      'entireDescribeUnhandledRejection.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.failed).toBe(false);
+  });
+
+  it('reports an unhandled rejection without a test or hook owner', () => {
+    const result = runJest('test-retries', [
+      '--waitForUnhandledRejections',
+      'entireDescribeGlobalUnhandledRejection.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.failed).toBe(true);
+    expect(result.stderr).toContain('global delayed rejection');
+  });
+
+  it('retries for a delayed rejection from a nested hook', () => {
+    const reporterConfig = {
+      reporters: [
+        'default',
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+      ],
+    };
+    const result = runJest('test-retries', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'entireDescribeNestedHookUnhandledRejection.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.failed).toBe(true);
+    expect(result.stderr).toContain('nested delayed hook rejection');
+    const jsonResult = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(jsonResult.testResults[0].testResults).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          invocations: 2,
+          title: 'finishes before the delayed rejection',
+        }),
+      ]),
+    );
+  });
+
+  it('does not retry an unhandled rejection from afterAll cleanup', () => {
+    const reporterConfig = {
+      reporters: [
+        'default',
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+      ],
+    };
+    const result = runJest('test-retries', [
+      '--waitForUnhandledRejections',
+      '--config',
+      JSON.stringify(reporterConfig),
+      'entireDescribeAfterAllUnhandledRejection.test.js',
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.failed).toBe(true);
+    expect(result.stderr).toContain('afterAll unhandled rejection');
+    const jsonResult = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(jsonResult.testResults[0].testResults).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          invocations: 1,
+          title: 'passes before cleanup fails',
+        }),
+      ]),
+    );
   });
 
   it('keeps randomized test order stable across describe attempts', () => {

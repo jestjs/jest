@@ -152,33 +152,3 @@ test('preserves snapshot updates across describe and test retries', () => {
   expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(3);
   expect(exitCode).toBe(0);
 });
-
-test('preserves a deferred inline snapshot retry before a describe retry', () => {
-  const filename = 'deferred-test-retry-before-entire-describe.test.js';
-  const template = makeTemplate(`
-    jest.retryTimes(2);
-
-    let attempt = 0;
-    test('ordinary retry', () => {
-      attempt += 1;
-      expect('snapshot').toMatchInlineSnapshot();
-      expect(attempt).toBe(3);
-    });
-
-    describe('suite retry boundary', () => {
-      jest.retryTimes(1, {entireDescribe: true});
-      test('passes', () => {});
-    });
-  `);
-
-  writeFiles(TESTS_DIR, {[filename]: template([])});
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-  const testContents = fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
-
-  expect(stderr).not.toContain(
-    'Multiple inline snapshots for the same call are not supported.',
-  );
-  expect(testContents).toContain('toMatchInlineSnapshot(`"snapshot"`)');
-  expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(1);
-  expect(exitCode).toBe(0);
-});

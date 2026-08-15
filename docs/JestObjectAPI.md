@@ -1254,6 +1254,8 @@ Nested describe retry settings compose from the innermost block outwards. Each t
 
 `afterAll` hooks still run after every attempt, but failures from `afterAll` and process-level errors do not trigger a describe retry. If either occurs during an attempt, no further attempts run, even if another failure would otherwise be retried, and all errors remain reported.
 
+Unhandled rejections owned by a test, `beforeAll`, `beforeEach`, or `afterEach` participate in describe retries. Ownerless rejections remain reported, while `afterAll` failures remain non-retryable.
+
 When test randomization is enabled, each describe block keeps the order selected for its first attempt across all of its retries.
 
 `retryImmediately` only applies to ordinary per-test retries. A describe retry always finishes the complete current attempt before starting the next one.

@@ -9,7 +9,7 @@ import type {Circus, Global} from '@jest/types';
 import {protectProperties, setGlobal} from 'jest-util';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
-import {EVENT_HANDLERS, type InternalCircusState, STATE_SYM} from './types';
+import {EVENT_HANDLERS, STATE_SYM} from './types';
 import {makeDescribe} from './utils';
 
 const handlers: Array<Circus.EventHandler> = ((globalThis as Global.Global)[
@@ -19,7 +19,7 @@ setGlobal(globalThis, EVENT_HANDLERS, handlers, 'retain');
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
-const createState = (): InternalCircusState => {
+const createState = (): Circus.State => {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   return {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
@@ -38,22 +38,25 @@ const createState = (): InternalCircusState => {
     testTimeout: 5000,
     unhandledErrors: [],
     unhandledRejectionErrorByPromise: new Map(),
+    unhandledRejectionErrorByPromiseByHook: new WeakMap(),
+    unhandledRejectionErrorByPromiseTarget: new WeakMap(),
   };
 };
 
-const initializeInternalState = (state: Circus.State): InternalCircusState => {
-  const internalState = state as InternalCircusState;
-  internalState.describeRetryOptions ??= new WeakMap();
-  internalState.processErrorGeneration ??= 0;
-  return internalState;
+const initializeState = (state: Circus.State): Circus.State => {
+  state.describeRetryOptions ??= new WeakMap();
+  state.processErrorGeneration ??= 0;
+  state.unhandledRejectionErrorByPromiseByHook ??= new WeakMap();
+  state.unhandledRejectionErrorByPromiseTarget ??= new WeakMap();
+  return state;
 };
 
 export const getState = (): Circus.State =>
   (globalThis as Global.Global)[STATE_SYM] as Circus.State;
 export const setState = (state: Circus.State): Circus.State => {
-  const internalState = initializeInternalState(state);
-  setGlobal(globalThis, STATE_SYM, internalState);
-  protectProperties(internalState, [
+  const initializedState = initializeState(state);
+  setGlobal(globalThis, STATE_SYM, initializedState);
+  protectProperties(initializedState, [
     'describeRetryOptions',
     'hasFocusedTests',
     'hasStarted',
@@ -65,8 +68,10 @@ export const setState = (state: Circus.State): Circus.State => {
     'testTimeout',
     'unhandledErrors',
     'unhandledRejectionErrorByPromise',
+    'unhandledRejectionErrorByPromiseByHook',
+    'unhandledRejectionErrorByPromiseTarget',
   ]);
-  return internalState;
+  return initializedState;
 };
 export const resetState = (): void => {
   setState(createState());

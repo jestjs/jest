@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AsyncLocalStorage} from 'node:async_hooks';
 import pLimit from 'p-limit';
 import {type MatcherState, jestExpect} from '@jest/expect';
 import type {Circus, Global} from '@jest/types';
@@ -16,11 +15,12 @@ import shuffleArray, {
 } from './shuffleArray';
 import {dispatch, getState} from './state';
 import {
-  type InternalCircusState,
-  RETRY_IMMEDIATELY,
-  RETRY_TIMES,
-  WAIT_BEFORE_RETRY,
-} from './types';
+  finishDescribeRetryAttempt,
+  getTestExecutionContext,
+  runInTestExecutionContext,
+  startDescribeRetryAttempt,
+} from './testExecutionContext';
+import {RETRY_IMMEDIATELY, RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   callAsyncCircusFn,
@@ -34,10 +34,8 @@ import {
 // the original values in the variables before we require any files.
 const {setTimeout} = globalThis;
 
-const testNameStorage = new AsyncLocalStorage<string>();
-
 type SnapshotRetryCheckpoint = ReturnType<
-  NonNullable<MatcherState['snapshotState']['getRetryCheckpoint']>
+  MatcherState['snapshotState']['getRetryCheckpoint']
 >;
 
 type DescribeRetryAttempt = {
@@ -59,10 +57,13 @@ type RunContext = {
 };
 
 const run = async (): Promise<Circus.RunResult> => {
-  const state = getState() as InternalCircusState;
+  const state = getState();
   const {rootDescribeBlock, seed, randomize} = state;
   jestExpect.setState({
-    currentConcurrentTestName: () => testNameStorage.getStore(),
+    currentConcurrentTestName: () => {
+      const test = getTestExecutionContext()?.test;
+      return test ? getTestID(test) : undefined;
+    },
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
   await dispatch({name: 'run_start'});
@@ -106,7 +107,7 @@ const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
   runContext: RunContext,
 ): Promise<void> => {
-  const state = getState() as InternalCircusState;
+  const state = getState();
   const retryOptions = state.describeRetryOptions.get(describeBlock);
   if (!retryOptions) {
     await _runTestsForDescribeBlockOnce(describeBlock, runContext);
@@ -139,10 +140,15 @@ const _runTestsForDescribeBlock = async (
         .snapshotState?.getRetryCheckpoint?.(),
       unhandledErrorsBeforeAttempt: state.unhandledErrors.length,
     };
-    await _runTestsForDescribeBlockOnce(describeBlock, {
-      ...runContext,
-      insideDescribeRetry: true,
-    });
+    startDescribeRetryAttempt();
+    try {
+      await _runTestsForDescribeBlockOnce(describeBlock, {
+        ...runContext,
+        insideDescribeRetry: true,
+      });
+    } finally {
+      finishDescribeRetryAttempt();
+    }
 
     const hasErrors = hasErrorsAddedDuringAttempt(retryAttempt);
     const nonRetryable =
@@ -151,6 +157,7 @@ const _runTestsForDescribeBlock = async (
         retryAttempt.processErrorGenerationBeforeAttempt ||
       state.unhandledErrors.length > retryAttempt.unhandledErrorsBeforeAttempt;
     if (!hasErrors || nonRetryable || numRetriesAvailable <= 0) {
+      retryAttempt.snapshotCheckpoint?.commit?.();
       return;
     }
 
@@ -158,6 +165,7 @@ const _runTestsForDescribeBlock = async (
     clearTestErrors(retryAttempt, logErrorsBeforeRetry);
     retryAttempt.snapshotCheckpoint?.restore();
     jestExpect.setState(retryAttempt.expectStateBeforeAttempt);
+    await dispatch({describeBlock, name: 'describe_retry'});
 
     if ((retryOptions.waitBeforeRetry ?? 0) > 0) {
       await new Promise(resolve =>
@@ -298,9 +306,7 @@ const _runTestsForDescribeBlockOnce = async (
         await new Promise(resolve => setTimeout(resolve, waitBeforeRetry));
       }
 
-      await testNameStorage.run(getTestID(test), () =>
-        _runTest(test, isSkipped),
-      );
+      await _runTest(test, isSkipped);
       numRetriesAvailable--;
     }
   };
@@ -325,10 +331,8 @@ const _runTestsForDescribeBlockOnce = async (
   };
   const runTestWithContext = async (child: Circus.TestEntry) => {
     const hasErrorsBeforeTestRun = child.errors.length > 0;
-    return testNameStorage.run(getTestID(child), async () => {
-      await _runTest(child, isSkipped);
-      await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
-    });
+    await _runTest(child, isSkipped);
+    await handleRetry(child, hasErrorsBeforeTestRun, hasRetryTimes);
   };
 
   for (const child of children) {
@@ -390,6 +394,14 @@ const _runTestsForDescribeBlockOnce = async (
 const _runTest = async (
   test: Circus.TestEntry,
   parentSkipped: boolean,
+): Promise<void> =>
+  runInTestExecutionContext({test}, () =>
+    _runTestInContext(test, parentSkipped),
+  );
+
+const _runTestInContext = async (
+  test: Circus.TestEntry,
+  parentSkipped: boolean,
 ): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
@@ -446,20 +458,21 @@ const _callCircusHook = async ({
   describeBlock?: Circus.DescribeBlock;
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
-}): Promise<void> => {
-  await dispatch({hook, name: 'hook_start'});
-  const timeout = hook.timeout || getState().testTimeout;
+}): Promise<void> =>
+  runInTestExecutionContext({hook, test}, async () => {
+    await dispatch({hook, name: 'hook_start'});
+    const timeout = hook.timeout || getState().testTimeout;
 
-  try {
-    await callAsyncCircusFn(hook, testContext, {
-      isHook: true,
-      timeout,
-    });
-    await dispatch({describeBlock, hook, name: 'hook_success', test});
-  } catch (error) {
-    await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
-  }
-};
+    try {
+      await callAsyncCircusFn(hook, testContext, {
+        isHook: true,
+        timeout,
+      });
+      await dispatch({describeBlock, hook, name: 'hook_success', test});
+    } catch (error) {
+      await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
+    }
+  });
 
 const _callCircusTest = async (
   test: Circus.TestEntry,

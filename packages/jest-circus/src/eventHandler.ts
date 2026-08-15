@@ -12,10 +12,10 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 import {
-  type InternalCircusState,
-  LOG_ERRORS_BEFORE_RETRY,
-  TEST_TIMEOUT_SYMBOL,
-} from './types';
+  getTestExecutionContext,
+  hasActiveDescribeRetryAttempt,
+} from './testExecutionContext';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -188,12 +188,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_skip': {
       event.test.status = 'skip';
-      state.currentlyRunningTest = null;
       break;
     }
     case 'test_todo': {
       event.test.status = 'todo';
-      state.currentlyRunningTest = null;
       break;
     }
     case 'test_done': {
@@ -277,32 +275,48 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       // execution, which will result in one test's error failing another test.
       // In any way, it should be possible to track where the error was thrown
       // from.
-      const internalState = state as InternalCircusState;
-      if (state.currentlyRunningTest) {
-        if (event.promise) {
-          state.currentlyRunningTest.unhandledRejectionErrorByPromise.set(
-            event.promise,
-            event.error,
+      const context = getTestExecutionContext();
+      if (event.promise) {
+        let target = state.unhandledRejectionErrorByPromise;
+        if (context?.test) {
+          target = context.test.unhandledRejectionErrorByPromise;
+        } else if (context?.hook) {
+          const hookTarget = state.unhandledRejectionErrorByPromiseByHook.get(
+            context.hook,
           );
-        } else {
-          internalState.processErrorGeneration++;
-          state.currentlyRunningTest.errors.push(event.error);
+          if (hookTarget) {
+            target = hookTarget;
+          } else {
+            target = new Map();
+            state.unhandledRejectionErrorByPromiseByHook.set(
+              context.hook,
+              target,
+            );
+          }
         }
-      } else if (event.promise) {
-        state.unhandledRejectionErrorByPromise.set(event.promise, event.error);
+        target.set(event.promise, event.error);
+        state.unhandledRejectionErrorByPromiseTarget.set(event.promise, target);
+
+        const hasOwner =
+          context?.test !== undefined || context?.hook !== undefined;
+        if (hasActiveDescribeRetryAttempt() && !hasOwner) {
+          state.processErrorGeneration++;
+        }
+      } else if (context?.test) {
+        state.processErrorGeneration++;
+        context.test.errors.push(event.error);
       } else {
+        state.processErrorGeneration++;
         state.unhandledErrors.push(event.error);
       }
       break;
     }
     case 'error_handled': {
-      if (state.currentlyRunningTest) {
-        state.currentlyRunningTest.unhandledRejectionErrorByPromise.delete(
-          event.promise,
-        );
-      } else {
-        state.unhandledRejectionErrorByPromise.delete(event.promise);
-      }
+      const target = state.unhandledRejectionErrorByPromiseTarget.get(
+        event.promise,
+      );
+      target?.delete(event.promise);
+      state.unhandledRejectionErrorByPromiseTarget.delete(event.promise);
       break;
     }
   }

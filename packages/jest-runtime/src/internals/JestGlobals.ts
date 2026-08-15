@@ -9,7 +9,7 @@ import type {SyntheticModule, Context as VMContext} from 'node:vm';
 import type {Jest, JestEnvironment} from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {expect} from '@jest/globals';
-import type {Config} from '@jest/types';
+import type {Circus, Config} from '@jest/types';
 import type {ModuleMocker} from 'jest-mock';
 import type {MockState} from './MockState';
 import type {TestState} from './TestState';
@@ -22,12 +22,6 @@ const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 const waitBeforeRetrySymbol = Symbol.for('WAIT_BEFORE_RETRY');
 const retryImmediatelySymbol = Symbol.for('RETRY_IMMEDIATELY');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
-
-type DescribeRetryOptions = {
-  logErrorsBeforeRetry?: boolean;
-  numRetries: number;
-  waitBeforeRetry?: number;
-};
 
 export interface JestGlobalsOptions {
   config: Config.ProjectConfig;
@@ -288,11 +282,10 @@ export class JestGlobals {
     };
 
     const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
-      const retryTimesSetter = this.environment.global[
-        retryTimesSetterSymbol
-      ] as ((retryOptions: DescribeRetryOptions) => void) | undefined;
-
       if (options?.entireDescribe) {
+        const retryTimesSetter = this.environment.global[
+          retryTimesSetterSymbol
+        ] as ((retryOptions: Circus.DescribeRetryOptions) => void) | undefined;
         retryTimesSetter?.({
           logErrorsBeforeRetry: options.logErrorsBeforeRetry,
           numRetries: numTestRetries,

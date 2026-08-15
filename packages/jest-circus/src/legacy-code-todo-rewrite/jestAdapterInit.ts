@@ -37,11 +37,7 @@ import {
   getState as getRunnerState,
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
-import {
-  type DescribeRetryOptions,
-  type InternalCircusState,
-  RETRY_TIMES_SETTER,
-} from '../types';
+import {RETRY_TIMES_SETTER} from '../types';
 import {unhandledRejectionHandler} from '../unhandledRejectionHandler';
 import {getTestID} from '../utils';
 
@@ -117,9 +113,9 @@ export const initialize = async ({
   };
   setGlobalsForRuntime(runtimeGlobals);
   environment.global[RETRY_TIMES_SETTER] = (
-    retryOptions: DescribeRetryOptions,
+    retryOptions: Circus.DescribeRetryOptions,
   ) => {
-    const state = getRunnerState() as InternalCircusState;
+    const state = getRunnerState();
     if (state.hasStarted) {
       state.unhandledErrors.push(
         new Error(
@@ -374,7 +370,7 @@ export const runAndTransformResultsToJestFormat = async ({
 const setupSnapshotStateAfterRetry =
   (snapshotState: SnapshotState) => (event: Circus.Event) => {
     if (event.name === 'test_retry') {
-      snapshotState.clear(getTestID(event.test));
+      snapshotState.clear();
     }
   };
 
