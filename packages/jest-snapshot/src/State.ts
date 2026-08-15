@@ -279,11 +279,7 @@ export default class SnapshotState {
     if (testFailing) {
       if (hasSnapshot && !isInline) {
         // Retain current snapshot values.
-        this._addSnapshot(key, expected, {
-          error,
-          isInline,
-          testRetryOwner,
-        });
+        this._addSnapshot(key, expected, {error, isInline});
       }
       return {
         actual: removeExtraLineBreaks(receivedSerialized),

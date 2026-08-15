@@ -8,9 +8,12 @@
 import {type Context, toMatchSnapshot} from '../';
 
 test('returns matcher name, expected and actual values', () => {
+  const testRetryOwner = {};
+  const match = jest.fn((_options: unknown) => ({actual: 'a', expected: 'b'}));
   const mockedContext = {
+    currentTestRetryOwner: () => testRetryOwner,
     snapshotState: {
-      match: () => ({actual: 'a', expected: 'b'}),
+      match,
     },
   } as unknown as Context;
 
@@ -25,4 +28,5 @@ test('returns matcher name, expected and actual values', () => {
       name: 'toMatchSnapshot',
     }),
   );
+  expect(match).toHaveBeenCalledWith(expect.objectContaining({testRetryOwner}));
 });
