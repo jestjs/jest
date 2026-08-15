@@ -16,6 +16,7 @@ import {TestPathPatterns} from '@jest/pattern';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver, {
+  preloadResolver,
   resolveRunner,
   resolveSequencer,
   resolveTestEnvironment,
@@ -621,6 +622,9 @@ export default async function normalize(
       key: 'resolver',
       rootDir: options.rootDir,
     });
+    // Resolution itself is synchronous, so the resolver has to be in memory
+    // before it starts. This is the only place it can be awaited.
+    await preloadResolver(newOptions.resolver);
   }
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);

@@ -16,7 +16,7 @@ import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver, {defaultAsyncResolver} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
-import Resolver from '../resolver';
+import Resolver, {preloadResolver} from '../resolver';
 import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
@@ -85,12 +85,17 @@ describe('isCoreModule', () => {
 });
 
 describe('findNodeModule', () => {
-  it('is possible to override the default resolver with an ES module', () => {
+  it('is possible to override the default resolver with an ES module', async () => {
+    const resolver = require.resolve('../__mocks__/userResolverEsm');
+
+    // As `normalize` and the test worker's `setup` do, before resolving.
+    await preloadResolver(resolver);
+
     const newPath = Resolver.findNodeModule('test', {
       basedir: '/',
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      resolver: require.resolve('../__mocks__/userResolverEsm'),
+      resolver,
     });
 
     expect(newPath).toBe('module');
@@ -414,11 +419,15 @@ describe('findNodeModule', () => {
 
 describe('findNodeModuleAsync', () => {
   it('is possible to override the default resolver with an ES module', async () => {
+    const resolver = require.resolve('../__mocks__/userResolverEsmAsync');
+
+    await preloadResolver(resolver);
+
     const newPath = await Resolver.findNodeModuleAsync('test', {
       basedir: '/',
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
-      resolver: require.resolve('../__mocks__/userResolverEsmAsync'),
+      resolver,
     });
 
     expect(newPath).toBe('module');
@@ -998,10 +1007,14 @@ describe('canResolveSync', () => {
     expect(resolver.canResolveSync()).toBe(false);
   });
 
-  it('returns true when the user resolver is an ES module exporting a function as `default`', () => {
+  it('returns true when the user resolver is an ES module exporting a function as `default`', async () => {
+    const resolverPath = require.resolve('../__mocks__/userResolverEsm');
+
+    await preloadResolver(resolverPath);
+
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
-      resolver: require.resolve('../__mocks__/userResolverEsm'),
+      resolver: resolverPath,
     } as ResolverConfig);
     expect(resolver.canResolveSync()).toBe(true);
   });

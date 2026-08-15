@@ -10,7 +10,7 @@ import * as path from 'node:path';
 import chalk from 'chalk';
 import slash from 'slash';
 import type {IModuleMap} from 'jest-haste-map';
-import {tryRealpath} from 'jest-util';
+import {requireOrImportModule, tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
   type AsyncResolver,
@@ -981,15 +981,10 @@ function asResolver(
   return null;
 }
 
-function loadResolver(
-  resolver: string | undefined | null,
+function toResolver(
+  resolver: string,
+  loadedResolver: unknown,
 ): SyncResolver | ResolverObject {
-  if (resolver == null) {
-    return defaultResolver;
-  }
-
-  const loadedResolver = require(resolver);
-
   if (loadedResolver == null) {
     throw new Error(`Resolver located at ${resolver} does not export anything`);
   }
@@ -1000,10 +995,12 @@ function loadResolver(
     return resolverModule;
   }
 
-  // An ES module resolver is seen as a module namespace object, with the
-  // resolver assigned to `default`, so look there before giving up.
-  if (typeof loadedResolver === 'object' && loadedResolver.default != null) {
-    const defaultExport = asResolver(loadedResolver.default);
+  // An ES module is seen as a module namespace object, so a resolver written
+  // as `export default` arrives on `default`. Look there before giving up.
+  if (typeof loadedResolver === 'object') {
+    const defaultExport = asResolver(
+      (loadedResolver as {default?: unknown}).default,
+    );
 
     if (defaultExport != null) {
       return defaultExport;
@@ -1013,4 +1010,66 @@ function loadResolver(
   throw new Error(
     `Resolver located at ${resolver} does not export a function or an object with "sync" and "async" props`,
   );
+}
+
+// `Resolver.findNodeModule` is synchronous, but an ES module resolver can only
+// be loaded asynchronously - and one with a top-level await can never be
+// `require`d at all. Resolvers are therefore loaded ahead of time, once per
+// process, and read back out of here when resolution actually runs.
+const preloadedResolvers = new Map<string, SyncResolver | ResolverObject>();
+
+/**
+ * Load a user resolver so that later synchronous resolution can use it.
+ * Called from `normalize` in the main process and from the test worker's
+ * `setup`, both of which run before any module is resolved.
+ */
+export async function preloadResolver(
+  resolver: string | undefined | null,
+): Promise<void> {
+  if (resolver == null || preloadedResolvers.has(resolver)) {
+    return;
+  }
+
+  preloadedResolvers.set(
+    resolver,
+    toResolver(
+      resolver,
+      // Keep the namespace object intact: a resolver may expose `sync`/`async`
+      // as named exports rather than a default export.
+      await requireOrImportModule<unknown>(resolver, false),
+    ),
+  );
+}
+
+function loadResolver(
+  resolver: string | undefined | null,
+): SyncResolver | ResolverObject {
+  if (resolver == null) {
+    return defaultResolver;
+  }
+
+  const preloaded = preloadedResolvers.get(resolver);
+
+  if (preloaded != null) {
+    return preloaded;
+  }
+
+  // Not preloaded - an embedder built a `Resolver` without going through
+  // `normalize`. CommonJS still works; ES modules cannot, so say so plainly
+  // instead of surfacing a bare ERR_REQUIRE_ESM.
+  try {
+    return toResolver(resolver, require(resolver));
+  } catch (error: any) {
+    if (
+      error.code === 'ERR_REQUIRE_ESM' ||
+      error.code === 'ERR_REQUIRE_ASYNC_MODULE'
+    ) {
+      throw new Error(
+        `Jest: resolver located at ${resolver} is an ES module and must be loaded before resolution starts. Call \`preloadResolver\` from "jest-resolve" first.`,
+        {cause: error},
+      );
+    }
+
+    throw error;
+  }
 }
