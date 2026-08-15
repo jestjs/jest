@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -121,4 +122,49 @@ test('works when multiple tests have snapshots but only one of them failed multi
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
+});
+
+test('preserves added and updated snapshots from colliding full names', () => {
+  const filename = 'preserve-unrelated-inline-snapshots.test.js';
+  const template = makeTemplate(`
+    let attempt = 0;
+    jest.retryTimes(2);
+
+    describe('a', () => {
+      test('b c', () => {
+        expect('before retry').toMatchInlineSnapshot(\`"outdated"\`);
+        expect('new snapshot').toMatchInlineSnapshot();
+      });
+    });
+
+    describe('a b', () => {
+      test('c', () => {
+        attempt += 1;
+        expect('retry ' + attempt).toMatchInlineSnapshot();
+        expect(attempt).toBe(3);
+      });
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {[filename]: template([])});
+  const {stderr, exitCode} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '-u',
+    filename,
+  ]);
+  const testContents = fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
+
+  expect(stderr).not.toContain(
+    'Multiple inline snapshots for the same call are not supported.',
+  );
+  expect(stderr).toMatch('2 snapshots written from 1 test suite.');
+  expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
+  expect(testContents).toContain('toMatchInlineSnapshot(`"before retry"`)');
+  expect(testContents).toContain('toMatchInlineSnapshot(`"new snapshot"`)');
+  expect(testContents).toContain('toMatchInlineSnapshot(`"retry 3"`)');
+  expect(testContents).not.toContain('`"retry 1"`');
+  expect(testContents).not.toContain('`"retry 2"`');
+  expect(testContents.match(/toMatchInlineSnapshot\(`/g)).toHaveLength(3);
+  expect(exitCode).toBe(0);
 });

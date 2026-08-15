@@ -33,6 +33,7 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   readonly testName: string;
+  readonly testRetryOwner?: object;
   readonly received: unknown;
   readonly key?: string;
   readonly inlineSnapshot?: string;
@@ -54,6 +55,11 @@ type SaveStatus = {
   saved: boolean;
 };
 
+type InlineSnapshotMetadata = {
+  readonly snapshotStatus: 'added' | 'updated';
+  readonly testRetryOwner?: object;
+};
+
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
@@ -64,6 +70,10 @@ export default class SnapshotState {
   private readonly _initialData: SnapshotData;
   private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
+  private readonly _inlineSnapshotMetadata: WeakMap<
+    InlineSnapshot,
+    InlineSnapshotMetadata
+  >;
   private readonly _uncheckedKeys: Set<string>;
   private readonly _prettierPath: string | null;
   private readonly _rootDir: string;
@@ -87,6 +97,7 @@ export default class SnapshotState {
     this._dirty = dirty;
     this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
+    this._inlineSnapshotMetadata = new WeakMap();
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -111,7 +122,12 @@ export default class SnapshotState {
   private _addSnapshot(
     key: string,
     receivedSerialized: string,
-    options: {isInline: boolean; error?: Error},
+    options: {
+      error?: Error;
+      isInline: boolean;
+      snapshotStatus?: InlineSnapshotMetadata['snapshotStatus'];
+      testRetryOwner?: object;
+    },
   ): void {
     this._dirty = true;
     if (options.isInline) {
@@ -126,24 +142,46 @@ export default class SnapshotState {
           "Jest: Couldn't infer stack frame for inline snapshot.",
         );
       }
-      this._inlineSnapshots.push({
+      const inlineSnapshot = {
         frame,
         snapshot: receivedSerialized,
+      };
+      this._inlineSnapshots.push(inlineSnapshot);
+      this._inlineSnapshotMetadata.set(inlineSnapshot, {
+        snapshotStatus: options.snapshotStatus ?? 'added',
+        testRetryOwner: options.testRetryOwner,
       });
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
   }
 
-  clear(): void {
+  clear(testRetryOwner?: object): void {
     this._snapshotData = this._initialData;
-    this._inlineSnapshots = [];
+    this._inlineSnapshots =
+      testRetryOwner === undefined
+        ? []
+        : this._inlineSnapshots.filter(
+            snapshot =>
+              this._inlineSnapshotMetadata.get(snapshot)?.testRetryOwner !==
+              testRetryOwner,
+          );
+    let retainedAdded = 0;
+    let retainedUpdated = 0;
+    for (const snapshot of this._inlineSnapshots) {
+      const metadata = this._inlineSnapshotMetadata.get(snapshot);
+      if (metadata?.snapshotStatus === 'added') {
+        retainedAdded++;
+      } else if (metadata?.snapshotStatus === 'updated') {
+        retainedUpdated++;
+      }
+    }
     this._counters = new Map();
     this._index = 0;
-    this.added = 0;
+    this.added = retainedAdded;
     this.matched = 0;
     this.unmatched = 0;
-    this.updated = 0;
+    this.updated = retainedUpdated;
   }
 
   save(): SaveStatus {
@@ -196,6 +234,7 @@ export default class SnapshotState {
 
   match({
     testName,
+    testRetryOwner,
     received,
     key,
     inlineSnapshot,
@@ -240,7 +279,11 @@ export default class SnapshotState {
     if (testFailing) {
       if (hasSnapshot && !isInline) {
         // Retain current snapshot values.
-        this._addSnapshot(key, expected, {error, isInline});
+        this._addSnapshot(key, expected, {
+          error,
+          isInline,
+          testRetryOwner,
+        });
       }
       return {
         actual: removeExtraLineBreaks(receivedSerialized),
@@ -273,10 +316,20 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized, {error, isInline});
+          this._addSnapshot(key, receivedSerialized, {
+            error,
+            isInline,
+            snapshotStatus: hasSnapshot ? 'updated' : 'added',
+            testRetryOwner,
+          });
         }
       } else {
-        this._addSnapshot(key, receivedSerialized, {error, isInline});
+        this._addSnapshot(key, receivedSerialized, {
+          error,
+          isInline,
+          snapshotStatus: 'added',
+          testRetryOwner,
+        });
         this.added++;
       }
 

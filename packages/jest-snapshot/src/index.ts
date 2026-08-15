@@ -287,9 +287,15 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {currentConcurrentTestName, isNot, snapshotState} = context;
+  const {
+    currentConcurrentTestName,
+    currentTestRetryOwner,
+    isNot,
+    snapshotState,
+  } = context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
+  const testRetryOwner = currentTestRetryOwner?.();
 
   if (isNot) {
     throw new Error(
@@ -369,6 +375,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     received,
     testFailing,
     testName: fullTestName,
+    testRetryOwner,
   });
   const {actual, count, expected, pass} = result;
 
