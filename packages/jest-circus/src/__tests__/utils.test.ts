@@ -156,6 +156,8 @@ test('makeSingleTestResult keeps primitive retry errors independent', () => {
   expect(result.retryReasons[0]).not.toContain('second primitive');
   expect(result.errors[0]).toContain('second primitive');
   expect(result.errors[0]).not.toContain('first primitive');
+  expect(result.retryReasonsDetailed[0].cause).toBe(asyncError);
+  expect(result.errorsDetailed[0].cause).toBe(asyncError);
   expect(asyncError.message).toBe('hook location');
 });
 

@@ -459,7 +459,7 @@ const _callCircusHook = async ({
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
 }): Promise<void> =>
-  runInTestExecutionContext({hook, test}, async () => {
+  runInTestExecutionContext({hook, test}, async function _callCircusHook() {
     await dispatch({hook, name: 'hook_start'});
     const timeout = hook.timeout || getState().testTimeout;
 

@@ -13,11 +13,27 @@ const dir = path.resolve(__dirname, '../failures');
 
 const normalizeDots = (text: string) => text.replaceAll(/\.+$/gm, '.');
 
+// These snapshots run with both Circus and Jasmine, which format the wrapper
+// around non-Error failures differently. Keep the user-facing stack comparable.
+function normalizeCircusErrorCauses(text: string) {
+  return text.replaceAll(
+    /\n {10}at Array\.map \(<anonymous>\)\n\n {4}Cause:\n([\s\S]*?)(?=\n {2}● |$)/g,
+    (match, cause: string) => {
+      const stackStart = cause.search(/\n {10}(?:\d+ \||at )/);
+      return stackStart === -1
+        ? match
+        : `\n${cause.slice(stackStart + 1).replaceAll(/^ {4}/gm, '')}`;
+    },
+  );
+}
+
 function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
-  return rest
-    .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
-    .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
+  return normalizeCircusErrorCauses(
+    rest
+      .replaceAll(/.*(jest-jasmine2|jest-circus).*\n/g, '')
+      .replaceAll(new RegExp('Failed: Object {', 'g'), 'thrown: Object {'),
+  );
 }
 
 beforeAll(() => {
