@@ -1030,15 +1030,11 @@ export async function preloadResolver(
     return;
   }
 
-  preloadedResolvers.set(
-    resolver,
-    toResolver(
-      resolver,
-      // Keep the namespace object intact: a resolver may expose `sync`/`async`
-      // as named exports rather than a default export.
-      await requireOrImportModule<unknown>(resolver, false),
-    ),
-  );
+  // Keep the namespace object intact: a resolver may expose `sync`/`async`
+  // as named exports rather than a default export.
+  const loadedResolver = await requireOrImportModule<unknown>(resolver, false);
+
+  preloadedResolvers.set(resolver, toResolver(resolver, loadedResolver));
 }
 
 function loadResolver(
@@ -1055,8 +1051,8 @@ function loadResolver(
   }
 
   // Not preloaded - an embedder built a `Resolver` without going through
-  // `normalize`. CommonJS still works; ES modules cannot, so say so plainly
-  // instead of surfacing a bare ERR_REQUIRE_ESM.
+  // `normalize`. `require` still covers CommonJS, and ES modules too on the
+  // versions of Node that can `require` them.
   try {
     return toResolver(resolver, require(resolver));
   } catch (error: any) {
@@ -1065,7 +1061,7 @@ function loadResolver(
       error.code === 'ERR_REQUIRE_ASYNC_MODULE'
     ) {
       throw new Error(
-        `Jest: resolver located at ${resolver} is an ES module and must be loaded before resolution starts. Call \`preloadResolver\` from "jest-resolve" first.`,
+        `Jest: resolver located at ${resolver} could not be loaded synchronously. Call \`preloadResolver\` from "jest-resolve" before resolving - a resolver with a top-level await always needs it, and so does any ES module on Node older than 20.19 / 22.12.`,
         {cause: error},
       );
     }
