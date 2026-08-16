@@ -16,6 +16,7 @@
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
+- `[jest-circus]` Capture the error listeners of the parent process instead of the in-sandbox `process`, so listeners registered before the test file survive teardown and sandbox listeners no longer leak onto the parent ([#16347](https://github.com/jestjs/jest/pull/16347))
 - `[jest-circus]` Clear `currentlyRunningTest` after skipped and todo tests ([#16342](https://github.com/jestjs/jest/pull/16342))
 - `[jest-circus]` Prevent late `done()` callbacks from affecting later test or hook invocations ([#16343](https://github.com/jestjs/jest/pull/16343))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
