@@ -16,6 +16,8 @@
 
 - `[expect, jest-message-util, jest-pattern, jest-regex-util, jest-util]` Revert `node:` protocol imports to restore webpack/browser-bundle compatibility ([#16167](https://github.com/jestjs/jest/pull/16167))
 - `[expect]` Widen `toMatchObject` and `objectContaining` parameter type from `Record<string, unknown>` to `object` so class instances are accepted ([#16196](https://github.com/jestjs/jest/pull/16196))
+- `[jest-circus]` Clear `currentlyRunningTest` after skipped and todo tests ([#16342](https://github.com/jestjs/jest/pull/16342))
+- `[jest-circus]` Prevent late `done()` callbacks from affecting later test or hook invocations ([#16343](https://github.com/jestjs/jest/pull/16343))
 - `[jest-circus, jest-jasmine2, jest-message-util]` Serialize the inner errors of an `AggregateError` into `failureMessages`, `retryReasons` and `unhandledErrors`, so `--json` output and reporter annotations include them ([#16316](https://github.com/jestjs/jest/pull/16316))
 - `[jest-circus, jest-snapshot]` Preserve inline snapshots from other tests when retrying a failed test ([#16344](https://github.com/jestjs/jest/pull/16344))
 - `[@jest/create-cache-key-function]` Include the caller support flags in the generated key, so a transformer that emits ESM or CJS based on them no longer shares one cache entry between the two ([#16331](https://github.com/jestjs/jest/pull/16331))
@@ -50,6 +52,7 @@
 - `[jest-runtime]` Allow `require()` of ESM-marked files on Node < 24.9 via transform fallback ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime, @jest/transform]` Surface actionable `ERR_REQUIRE_ESM` error for files with untransformed ESM syntax instead of the generic "unexpected token" message ([#16244](https://github.com/jestjs/jest/pull/16244))
 - `[jest-runtime]` Support older test environments whose `moduleMocker` does not implement `clearMocksOnScope` ([#16169](https://github.com/jestjs/jest/pull/16169))
+- `[jest-reporters]` Fix coverage report table formatting in CI/GitHub Actions environments where `process.stdout.columns` is undefined by falling back to the `COLUMNS` env var or `80` columns in CI, preserving existing behaviour in other non-TTY environments ([#16227](https://github.com/jestjs/jest/pull/16227))
 - `[jest-runtime]` Support CJS-in-ESM exports via `"module.exports"` named exports ([#16277](https://github.com/jestjs/jest/pull/16277))
 - `[pretty-format]` Move the `react-is` aliases into the `@jest` scope, so they cannot be shadowed by unrelated packages published under the alias names ([#16333](https://github.com/jestjs/jest/pull/16333))
 

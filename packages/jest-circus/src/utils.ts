@@ -230,7 +230,7 @@ export const callAsyncCircusFn = (
           }
           reject(errorAtDone);
           throw errorAtDone;
-        } else {
+        } else if (!completed) {
           testOrHook.seenDone = true;
         }
 

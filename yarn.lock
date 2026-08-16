@@ -7007,9 +7007,9 @@ __metadata:
   linkType: hard
 
 "@tsconfig/node18@npm:^18.2.4":
-  version: 18.2.6
-  resolution: "@tsconfig/node18@npm:18.2.6"
-  checksum: 10/e3d907c20d04f0292288eb62af3481b11549eafdc686cd6357785083f9d00c99d49c5d9bdb10b1151d11cadbd8c39f2e0cb2644e2ba7612af7cbbcee38b01c3f
+  version: 18.2.7
+  resolution: "@tsconfig/node18@npm:18.2.7"
+  checksum: 10/625d1a390f77b03e8c8d999db76f7ddacf261156a76e906d972e89a4b7fccdafecd44c9d8ed7d51c3cd752f1d15a8deeb459ef0f870c072d7c53094817ab6373
   languageName: node
   linkType: hard
 
