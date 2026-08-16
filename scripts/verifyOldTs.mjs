@@ -54,7 +54,13 @@ function smoketest() {
   try {
     fs.writeFileSync(
       path.join(cwd, '.yarnrc.yml'),
-      'nodeLinker: node-modules\n',
+      // the CI defaults that protect a real lockfile break the throwaway one
+      [
+        'enableHardenedMode: false',
+        'enableImmutableInstalls: false',
+        'nodeLinker: node-modules',
+        '',
+      ].join('\n'),
     );
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
