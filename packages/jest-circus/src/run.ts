@@ -44,7 +44,7 @@ const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
   jestExpect.setState({
     currentConcurrentTestName: () => testEntryStorage.getStore()?.id,
-    currentTestRetryOwner: () => testEntryStorage.getStore()?.test,
+    currentTestIdentity: () => testEntryStorage.getStore()?.test,
   });
   const rng = randomize ? rngBuilder(seed) : undefined;
   await dispatch({name: 'run_start'});

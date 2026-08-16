@@ -65,8 +65,13 @@ export interface MatcherUtils {
 export interface MatcherState {
   assertionCalls: number;
   currentConcurrentTestName?: () => string | undefined;
+  /**
+   * Stable identity of the currently running test: the same object across the
+   * retries of one test, a different object for every other test, even when
+   * full test names collide. `undefined` outside a test.
+   */
+  currentTestIdentity?: () => object | undefined;
   currentTestName?: string;
-  currentTestRetryOwner?: () => object | undefined;
   error?: Error;
   expand?: boolean;
   expectedAssertionsNumber: number | null;

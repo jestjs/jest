@@ -31,14 +31,14 @@ afterEach(() => {
 
 test('expect state exposes the same test entry across retries', async () => {
   const observedNames: Array<string | undefined> = [];
-  const observedOwners: Array<object | undefined> = [];
+  const observedIdentities: Array<object | undefined> = [];
   let attempts = 0;
 
   circusTest('retried test', () => {
     attempts++;
     const expectState = jestExpect.getState();
     observedNames.push(expectState.currentConcurrentTestName?.());
-    observedOwners.push(expectState.currentTestRetryOwner?.());
+    observedIdentities.push(expectState.currentTestIdentity?.());
     if (attempts === 1) {
       throw new Error('retry');
     }
@@ -52,7 +52,7 @@ test('expect state exposes the same test entry across retries', async () => {
   expect(result.testResults[0].status).toBe('done');
   expect(attempts).toBe(2);
   expect(observedNames).toEqual(['retried test', 'retried test']);
-  expect(observedOwners).toEqual([testEntry, testEntry]);
+  expect(observedIdentities).toEqual([testEntry, testEntry]);
   expect(jestExpect.getState().currentConcurrentTestName?.()).toBeUndefined();
-  expect(jestExpect.getState().currentTestRetryOwner?.()).toBeUndefined();
+  expect(jestExpect.getState().currentTestIdentity?.()).toBeUndefined();
 });

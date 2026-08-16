@@ -33,7 +33,7 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   readonly testName: string;
-  readonly testRetryOwner?: object;
+  readonly testIdentity?: object;
   readonly received: unknown;
   readonly key?: string;
   readonly inlineSnapshot?: string;
@@ -129,7 +129,7 @@ export default class SnapshotState {
     options: {
       error?: Error;
       isInline: boolean;
-      testRetryOwner?: object;
+      testIdentity?: object;
     },
   ): void {
     this._dirty = true;
@@ -150,14 +150,14 @@ export default class SnapshotState {
         snapshot: receivedSerialized,
       };
       this._inlineSnapshots.push(inlineSnapshot);
-      this._recordFor(options.testRetryOwner)?.inlineSnapshots.add(
+      this._recordFor(options.testIdentity)?.inlineSnapshots.add(
         inlineSnapshot,
       );
     } else {
       // A retried attempt must not leave its writes behind, or the next attempt
       // sees the key as pre-existing and reports it as matched, not written.
       const fileSnapshots = this._recordFor(
-        options.testRetryOwner,
+        options.testIdentity,
       )?.fileSnapshots;
       if (fileSnapshots !== undefined && !fileSnapshots.has(key)) {
         fileSnapshots.set(key, this._snapshotData[key]);
@@ -166,11 +166,11 @@ export default class SnapshotState {
     }
   }
 
-  private _recordFor(testRetryOwner?: object): AttemptRecord | undefined {
-    if (testRetryOwner === undefined) {
+  private _recordFor(testIdentity?: object): AttemptRecord | undefined {
+    if (testIdentity === undefined) {
       return undefined;
     }
-    let record = this._attemptRecordsByTest.get(testRetryOwner);
+    let record = this._attemptRecordsByTest.get(testIdentity);
     if (record === undefined) {
       record = {
         checkedKeys: new Set(),
@@ -179,24 +179,24 @@ export default class SnapshotState {
         fileSnapshots: new Map(),
         inlineSnapshots: new Set(),
       };
-      this._attemptRecordsByTest.set(testRetryOwner, record);
+      this._attemptRecordsByTest.set(testIdentity, record);
     }
     return record;
   }
 
   // `match` marks a key as checked so it is not reported obsolete. A key only
   // reached on a discarded attempt has to go back to being unchecked.
-  private _markKeyChecked(key: string, testRetryOwner?: object): void {
+  private _markKeyChecked(key: string, testIdentity?: object): void {
     if (this._uncheckedKeys.delete(key)) {
-      this._recordFor(testRetryOwner)?.checkedKeys.add(key);
+      this._recordFor(testIdentity)?.checkedKeys.add(key);
     }
   }
 
   // Counters number keys per full test name, and full names can collide
   // across tests. Undoing an increment could double-undo a collision, so the
   // record keeps each counter's value from before the test first touched it.
-  private _bumpCounter(testName: string, testRetryOwner?: object): number {
-    const record = this._recordFor(testRetryOwner);
+  private _bumpCounter(testName: string, testIdentity?: object): number {
+    const record = this._recordFor(testIdentity);
     if (record !== undefined && !record.counters.has(testName)) {
       record.counters.set(testName, this._counters.get(testName));
     }
@@ -205,11 +205,11 @@ export default class SnapshotState {
     return count;
   }
 
-  clear(testRetryOwner?: object): void {
-    if (testRetryOwner === undefined) {
+  clear(testIdentity?: object): void {
+    if (testIdentity === undefined) {
       this._counters = new Map();
-      // TODO(jest next major): require `testRetryOwner` and drop this branch.
-      // Unlike the per-owner path below it rolls back neither file snapshot
+      // TODO(jest next major): require `testIdentity` and drop this branch.
+      // Unlike the per-test path below it rolls back neither file snapshot
       // data nor unchecked keys, so a snapshot added before the reset is
       // reported as matched and one it checked is never reported obsolete.
       this._inlineSnapshots = [];
@@ -221,11 +221,11 @@ export default class SnapshotState {
       return;
     }
 
-    const record = this._attemptRecordsByTest.get(testRetryOwner);
+    const record = this._attemptRecordsByTest.get(testIdentity);
     if (record === undefined) {
       return;
     }
-    this._attemptRecordsByTest.delete(testRetryOwner);
+    this._attemptRecordsByTest.delete(testIdentity);
 
     this._inlineSnapshots = this._inlineSnapshots.filter(
       snapshot => !record.inlineSnapshots.has(snapshot),
@@ -255,10 +255,10 @@ export default class SnapshotState {
 
   private _incrementSnapshotCount(
     status: keyof SnapshotCounts,
-    testRetryOwner?: object,
+    testIdentity?: object,
   ): void {
     this[status]++;
-    const record = this._recordFor(testRetryOwner);
+    const record = this._recordFor(testIdentity);
     if (record !== undefined) {
       record.counts[status]++;
     }
@@ -314,7 +314,7 @@ export default class SnapshotState {
 
   match({
     testName,
-    testRetryOwner,
+    testIdentity,
     received,
     key,
     inlineSnapshot,
@@ -322,7 +322,7 @@ export default class SnapshotState {
     error,
     testFailing = false,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
-    const count = this._bumpCounter(testName, testRetryOwner);
+    const count = this._bumpCounter(testName, testIdentity);
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -332,7 +332,7 @@ export default class SnapshotState {
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
     if (!(isInline && this._snapshotData[key] !== undefined)) {
-      this._markKeyChecked(key, testRetryOwner);
+      this._markKeyChecked(key, testIdentity);
     }
 
     const receivedSerialized = addExtraLineBreaks(
@@ -384,26 +384,26 @@ export default class SnapshotState {
     ) {
       if (this._updateSnapshot === 'all') {
         if (pass) {
-          this._incrementSnapshotCount('matched', testRetryOwner);
+          this._incrementSnapshotCount('matched', testIdentity);
         } else {
           if (hasSnapshot) {
-            this._incrementSnapshotCount('updated', testRetryOwner);
+            this._incrementSnapshotCount('updated', testIdentity);
           } else {
-            this._incrementSnapshotCount('added', testRetryOwner);
+            this._incrementSnapshotCount('added', testIdentity);
           }
           this._addSnapshot(key, receivedSerialized, {
             error,
             isInline,
-            testRetryOwner,
+            testIdentity,
           });
         }
       } else {
         this._addSnapshot(key, receivedSerialized, {
           error,
           isInline,
-          testRetryOwner,
+          testIdentity,
         });
-        this._incrementSnapshotCount('added', testRetryOwner);
+        this._incrementSnapshotCount('added', testIdentity);
       }
 
       return {
@@ -415,7 +415,7 @@ export default class SnapshotState {
       };
     } else {
       if (pass) {
-        this._incrementSnapshotCount('matched', testRetryOwner);
+        this._incrementSnapshotCount('matched', testIdentity);
         return {
           actual: '',
           count,
@@ -424,7 +424,7 @@ export default class SnapshotState {
           pass: true,
         };
       } else {
-        this._incrementSnapshotCount('unmatched', testRetryOwner);
+        this._incrementSnapshotCount('unmatched', testIdentity);
         return {
           actual: removeExtraLineBreaks(receivedSerialized),
           count,
@@ -443,16 +443,16 @@ export default class SnapshotState {
     testName: string,
     _received: unknown,
     key?: string,
-    testRetryOwner?: object,
+    testIdentity?: object,
   ): string {
-    const count = this._bumpCounter(testName, testRetryOwner);
+    const count = this._bumpCounter(testName, testIdentity);
 
     if (!key) {
       key = testNameToKey(testName, count);
     }
 
-    this._markKeyChecked(key, testRetryOwner);
-    this._incrementSnapshotCount('unmatched', testRetryOwner);
+    this._markKeyChecked(key, testIdentity);
+    this._incrementSnapshotCount('unmatched', testIdentity);
     return key;
   }
 }

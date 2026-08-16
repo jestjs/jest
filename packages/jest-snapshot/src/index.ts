@@ -287,15 +287,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     context.dontThrow();
   }
 
-  const {
-    currentConcurrentTestName,
-    currentTestRetryOwner,
-    isNot,
-    snapshotState,
-  } = context;
+  const {currentConcurrentTestName, currentTestIdentity, isNot, snapshotState} =
+    context;
   const currentTestName =
     currentConcurrentTestName?.() ?? context.currentTestName;
-  const testRetryOwner = currentTestRetryOwner?.();
+  const testIdentity = currentTestIdentity?.();
 
   if (isNot) {
     throw new Error(
@@ -349,7 +345,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         fullTestName,
         received,
         undefined,
-        testRetryOwner,
+        testIdentity,
       );
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
@@ -379,8 +375,8 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     isInline,
     received,
     testFailing,
+    testIdentity,
     testName: fullTestName,
-    testRetryOwner,
   });
   const {actual, count, expected, pass} = result;
 

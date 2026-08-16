@@ -47,8 +47,8 @@ expect(1).toMatchInlineSnapshot();
 `,
   );
   const snapshotState = makeSnapshotState(rootDir, 'all');
-  const retainedOwner = {};
-  const retriedOwner = {};
+  const retainedTest = {};
+  const retriedTest = {};
 
   snapshotState.match({
     error: makeErrorAt(filename, 1),
@@ -56,14 +56,14 @@ expect(1).toMatchInlineSnapshot();
     isInline: true,
     received: 'updated',
     testName: 'updated snapshot',
-    testRetryOwner: retainedOwner,
+    testIdentity: retainedTest,
   });
   snapshotState.match({
     error: makeErrorAt(filename, 2),
     isInline: true,
     received: 'added',
     testName: 'added snapshot',
-    testRetryOwner: retainedOwner,
+    testIdentity: retainedTest,
   });
   snapshotState.match({
     error: makeErrorAt(filename, 3),
@@ -71,38 +71,38 @@ expect(1).toMatchInlineSnapshot();
     isInline: true,
     received: 'updated on retry',
     testName: 'updated snapshot on retry',
-    testRetryOwner: retriedOwner,
+    testIdentity: retriedTest,
   });
   snapshotState.match({
     error: makeErrorAt(filename, 4),
     isInline: true,
     received: 'retry',
     testName: 'retried snapshot',
-    testRetryOwner: retriedOwner,
+    testIdentity: retriedTest,
   });
   snapshotState.match({
     inlineSnapshot: '"matched"',
     isInline: true,
     received: 'matched',
     testName: 'retained match',
-    testRetryOwner: retainedOwner,
+    testIdentity: retainedTest,
   });
   snapshotState.match({
     inlineSnapshot: '"matched"',
     isInline: true,
     received: 'matched',
     testName: 'retried match',
-    testRetryOwner: retriedOwner,
+    testIdentity: retriedTest,
   });
-  snapshotState.fail('retained failure', undefined, undefined, retainedOwner);
-  snapshotState.fail('retried failure', undefined, undefined, retriedOwner);
+  snapshotState.fail('retained failure', undefined, undefined, retainedTest);
+  snapshotState.fail('retried failure', undefined, undefined, retriedTest);
 
   expect(snapshotState.added).toBe(2);
   expect(snapshotState.matched).toBe(2);
   expect(snapshotState.unmatched).toBe(2);
   expect(snapshotState.updated).toBe(2);
 
-  snapshotState.clear(retriedOwner);
+  snapshotState.clear(retriedTest);
 
   expect(snapshotState.added).toBe(1);
   expect(snapshotState.matched).toBe(1);
@@ -118,7 +118,7 @@ expect(1).toMatchInlineSnapshot();
   );
 });
 
-test('clear without an owner removes all pending inline snapshots', () => {
+test('clear without a test identity removes all pending inline snapshots', () => {
   const filename = path.join(rootDir, 'example.test.js');
   fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot();\n');
   const snapshotState = makeSnapshotState(rootDir, 'new');
@@ -128,7 +128,7 @@ test('clear without an owner removes all pending inline snapshots', () => {
     isInline: true,
     received: 'added',
     testName: 'added snapshot',
-    testRetryOwner: {},
+    testIdentity: {},
   });
   expect(snapshotState.added).toBe(1);
 
