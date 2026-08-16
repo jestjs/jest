@@ -63,6 +63,25 @@ describe('injectGlobalErrorHandlers', () => {
     }
   });
 
+  test('keeps a restored `once` listener one-shot', () => {
+    const {emitter, parentProcess} = makeParentProcess();
+    let calls = 0;
+    emitter.once('uncaughtException', () => {
+      calls++;
+    });
+
+    restoreGlobalErrorHandlers(
+      parentProcess,
+      injectGlobalErrorHandlers(parentProcess),
+    );
+
+    emitter.emit('uncaughtException', new Error('first'));
+    emitter.emit('uncaughtException', new Error('second'));
+
+    expect(calls).toBe(1);
+    expect(emitter.listeners('uncaughtException')).toHaveLength(0);
+  });
+
   test('does not leak listeners added inside the sandbox onto the parent process', () => {
     const {emitter, parentProcess} = makeParentProcess();
     const originalHandlers = injectGlobalErrorHandlers(parentProcess);
