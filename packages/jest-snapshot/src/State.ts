@@ -9,6 +9,7 @@ import * as fs from 'graceful-fs';
 import {
   type SnapshotData,
   getSnapshotData,
+  keyToNameOccurrence,
   keyToTestName,
   saveSnapshotFile,
   testNameToKey,
@@ -135,15 +136,30 @@ export default class SnapshotState {
     this._rootDir = options.rootDir;
   }
 
-  markSnapshotsAsCheckedForTest(testName: string): void {
+  markSnapshotsAsCheckedForTest(
+    testName: string,
+    nameOccurrence?: number,
+  ): void {
     for (const uncheckedKey of this._uncheckedKeys) {
       const keyTestName = keyToTestName(uncheckedKey);
       // A hint is joined onto the test name with ': ' before the key is built,
       // so the recovered name of a hinted snapshot is longer than the name the
       // runner reports for the test that took it.
-      if (keyTestName === testName || keyTestName.startsWith(`${testName}: `)) {
-        this._uncheckedKeys.delete(uncheckedKey);
+      if (
+        keyTestName !== testName &&
+        !keyTestName.startsWith(`${testName}: `)
+      ) {
+        continue;
       }
+      // Without a position there is nothing to tell namesakes apart with, so
+      // the name claims every key under it.
+      if (
+        nameOccurrence !== undefined &&
+        keyToNameOccurrence(uncheckedKey) !== nameOccurrence
+      ) {
+        continue;
+      }
+      this._uncheckedKeys.delete(uncheckedKey);
     }
   }
 

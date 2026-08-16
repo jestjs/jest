@@ -33,6 +33,12 @@ export type AssertionResult = {
   fullName: string;
   invocations?: number;
   location?: Callsite | null;
+  /**
+   * Position of this test among the tests in its file that share its full
+   * name, counting from 1 in definition order. Absent when no other test
+   * shares the name.
+   */
+  nameOccurrence?: number;
   numPassingAsserts: number;
   /**
    * Human-readable render of `retryReasons`, formatted where the errors are

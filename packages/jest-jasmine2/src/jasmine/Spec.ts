@@ -63,6 +63,12 @@ export type SpecResult = {
   id: string;
   description: string;
   fullName: string;
+  /**
+   * Position of this spec among the specs in its file that share its full
+   * name, counting from 1 in declaration order. Absent when no other spec
+   * shares the name.
+   */
+  nameOccurrence?: number;
   duration?: number;
   failedExpectations: Array<FailedAssertion>;
   testPath: string;

@@ -345,11 +345,11 @@ export default async function jasmine2(
 }
 
 const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
-  for (const {fullName, status} of results.testResults) {
+  for (const {fullName, nameOccurrence, status} of results.testResults) {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
       // its snapshots as obsolete.
-      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+      snapshotState.markSnapshotsAsCheckedForTest(fullName, nameOccurrence);
     }
   }
 

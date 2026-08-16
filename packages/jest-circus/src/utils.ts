@@ -342,7 +342,7 @@ const getTestNamesPath = (test: Circus.TestEntry): Circus.TestNamesPath => {
 export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
-  const {includeTestLocationInResult} = getState();
+  const {includeTestLocationInResult, nameOccurrences} = getState();
 
   const {status} = test;
   invariant(status, 'Status should be present after tests are run.');
@@ -380,6 +380,7 @@ export const makeSingleTestResult = (
     failing: test.failing,
     invocations: test.invocations,
     location,
+    nameOccurrence: nameOccurrences.get(test),
     numPassingAsserts: test.numPassingAsserts,
     retryReasons: retryReasonsDetailed.map(flattenErrorStack),
     retryReasonsDetailed,
@@ -563,6 +564,7 @@ export const parseSingleTestResult = (
     fullName,
     invocations: testResult.invocations,
     location: testResult.location,
+    nameOccurrence: testResult.nameOccurrence,
     numPassingAsserts: testResult.numPassingAsserts,
     retryMessages: formatRetryError
       ? testResult.retryReasonsDetailed.map(formatRetryError)

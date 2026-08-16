@@ -125,9 +125,12 @@ const patchJasmine = () => {
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
+          // Runs before a pending spec bails out, so a skipped spec still
+          // carries the position its snapshots were keyed under.
+          context.result.nameOccurrence = getTestNameOccurrence(context);
           jestExpect.setState({
             currentTestName: context.getFullName(),
-            currentTestNameOccurrence: () => getTestNameOccurrence(context),
+            currentTestNameOccurrence: () => context.result.nameOccurrence,
           });
           onStart?.call(attr, context);
         };

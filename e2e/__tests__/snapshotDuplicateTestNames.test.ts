@@ -127,6 +127,47 @@ testOnCircus('keeps the keys stable when concurrent tests interleave', () => {
   expect(exitCode).toBe(0);
 });
 
+test('reports one namesake obsolete without dropping the other', () => {
+  const filename = 'obsolete-namesake.test.js';
+  const template = makeTemplate(`
+    describe('suite', () => {
+      test('same name', () => {
+        expect(true).toBe(true);
+      });
+      test.skip('same name', () => {
+        expect('second').toMatchSnapshot();
+      });
+    });
+  `);
+
+  writeFiles(TESTS_DIR, {
+    [filename]: template(),
+    [`__snapshots__/${filename}.snap`]: `// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[\`suite same name 1\`] = \`"stale, nothing takes this any more"\`;
+
+exports[\`suite same name 2.1\`] = \`"second"\`;
+`,
+  });
+
+  // The first test claims no key and the skipped one claims only its own, so
+  // the stale key has to survive as obsolete rather than be hidden by its
+  // namesake.
+  const {exitCode, stderr} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '-u',
+    filename,
+  ]);
+
+  expect(stderr).toMatch('1 snapshot removed from 1 test suite.');
+  expect(exitCode).toBe(0);
+
+  const snapshot = readSnapshot(filename);
+  expect(snapshot).toContain('exports[`suite same name 2.1`] = `"second"`;');
+  expect(snapshot).not.toContain('stale');
+});
+
 test('reports the key it wrote when a namesake fails to match', () => {
   const filename = 'mismatch.test.js';
   const template = makeTemplate(`

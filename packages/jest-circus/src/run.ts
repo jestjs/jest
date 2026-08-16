@@ -57,7 +57,7 @@ const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = state;
   // Collection is over, so this is the last moment the tree is still in
   // definition order — the shuffle below reorders each block as it is reached.
-  const nameOccurrences = getTestNameOccurrences(rootDescribeBlock);
+  state.nameOccurrences = getTestNameOccurrences(rootDescribeBlock);
   jestExpect.setState({
     currentConcurrentTestName: () => {
       const test = getTestExecutionContext()?.test;
@@ -68,7 +68,7 @@ const run = async (): Promise<Circus.RunResult> => {
     },
     currentTestNameOccurrence: () => {
       const test = getTestExecutionContext()?.test;
-      return test && nameOccurrences.get(test);
+      return test && getState().nameOccurrences.get(test);
     },
   });
   const rng = randomize ? rngBuilder(seed) : undefined;

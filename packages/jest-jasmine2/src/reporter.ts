@@ -167,6 +167,7 @@ export default class Jasmine2Reporter implements Reporter {
       failureMessages: [],
       fullName: specResult.fullName,
       location,
+      nameOccurrence: specResult.nameOccurrence,
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       status,
       title: specResult.description,

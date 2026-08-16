@@ -18,6 +18,7 @@ import {
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
   getSnapshotData,
+  keyToNameOccurrence,
   keyToTestName,
   saveSnapshotFile,
   testNameToKey,
@@ -46,6 +47,15 @@ test('testNameToKey gives each test sharing a name its own key space', () => {
 
   expect(testNameToKey('abc cde', 1, 2)).not.toBe(testNameToKey('abc cde', 2));
   expect(keyToTestName(testNameToKey('abc cde', 12, 3))).toBe('abc cde');
+});
+
+test('keyToNameOccurrence recovers which namesake a key belongs to', () => {
+  expect(keyToNameOccurrence('abc cde 1')).toBe(1);
+  expect(keyToNameOccurrence('abc cde 12')).toBe(1);
+  expect(keyToNameOccurrence('abc cde 2.1')).toBe(2);
+  expect(keyToNameOccurrence('abc cde 13.12')).toBe(13);
+  // A name ending in a number is not a position.
+  expect(keyToNameOccurrence('abc cde 2 1')).toBe(1);
 });
 
 test('testNameToKey escapes line endings to prevent collisions', () => {

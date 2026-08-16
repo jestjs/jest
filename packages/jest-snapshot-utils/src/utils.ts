@@ -133,6 +133,14 @@ export const testNameToKey = (
     : `${normalizeTestNameForKey(testName)} ${count}`;
 
 const KEY_COUNT_SUFFIX = / \d+(\.\d+)?$/;
+const KEY_OCCURRENCE_SUFFIX = / (\d+)\.\d+$/;
+
+// Which of the tests sharing a name a key belongs to. A bare count means the
+// first, which is the only one whose keys carry no position.
+export const keyToNameOccurrence = (key: string): number => {
+  const match = KEY_OCCURRENCE_SUFFIX.exec(key);
+  return match === null ? 1 : Number(match[1]);
+};
 
 export const keyToTestName = (key: string): string => {
   if (!KEY_COUNT_SUFFIX.test(key)) {

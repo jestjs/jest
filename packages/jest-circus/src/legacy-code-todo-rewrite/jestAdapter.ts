@@ -131,7 +131,12 @@ const _addSnapshotData = (
   results: TestResult,
   snapshotState: SnapshotState,
 ) => {
-  for (const {fullName, status, failing} of results.testResults) {
+  for (const {
+    fullName,
+    nameOccurrence,
+    status,
+    failing,
+  } of results.testResults) {
     if (
       status === 'pending' ||
       status === 'failed' ||
@@ -141,7 +146,7 @@ const _addSnapshotData = (
       // its snapshots as obsolete.
       // When tests called with test.failing pass, they've thrown an exception,
       // so maintain any snapshots after the error.
-      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+      snapshotState.markSnapshotsAsCheckedForTest(fullName, nameOccurrence);
     }
   }
 
