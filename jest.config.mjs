@@ -24,6 +24,7 @@ export default {
     '!e2e/**',
   ],
   modulePathIgnorePatterns: [
+    '\\.claude/.*',
     'examples/.*',
     'packages/.*/build',
     'packages/.*/tsconfig.*',
@@ -42,6 +43,7 @@ export default {
     globalsCleanup: process.env.GLOBALS_CLEANUP ?? 'on',
   },
   testPathIgnorePatterns: [
+    '/\\.claude/',
     '/__arbitraries__/',
     '/__benchmarks__/',
     '/__fixtures__/',
@@ -78,6 +80,7 @@ export default {
     '\\.[jt]sx?$': require.resolve('babel-jest'),
   },
   watchPathIgnorePatterns: [
+    '\\.claude',
     'coverage',
     '<rootDir>/packages/jest-worker/src/workers/__tests__/__temp__',
   ],
