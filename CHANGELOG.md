@@ -67,7 +67,7 @@
 - `[babel-jest, @jest/transform]` Update `babel-plugin-istanbul` to v8 ([#16049](https://github.com/jestjs/jest/pull/16049))
 - `[jest-haste-map]` Refactor massive class into multiple files ([#16180](https://github.com/jestjs/jest/pull/16180))
 - `[jest-haste-map]` Drop `walker` dependency; replace hand-rolled directory recursion in the JS crawler and watcher startup with `fdir` ([#16187](https://github.com/jestjs/jest/pull/16187))
-- `[jest-haste-map]` Reuse cached metadata for files whose haste name is a known duplicate, instead of re-reading and re-parsing them on every startup ([#16349](https://github.com/jestjs/jest/pull/16349))
+- `[jest-haste-map]` Reuse cached metadata for files whose haste name is a known duplicate, instead of re-reading and re-parsing them on every startup ([#16351](https://github.com/jestjs/jest/pull/16351))
 - `[jest-runner, @jest/source-map]` Replace `source-map-support` with an implementation in `@jest/source-map` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[@jest/source-map]` Deprecate `getCallsite` in favour of `SourceMapSupport#getCallsite` ([#16327](https://github.com/jestjs/jest/pull/16327))
 - `[jest-runtime]` Avoid magical `null` value in ESM loader ([#16160](https://github.com/jestjs/jest/pull/16160))
